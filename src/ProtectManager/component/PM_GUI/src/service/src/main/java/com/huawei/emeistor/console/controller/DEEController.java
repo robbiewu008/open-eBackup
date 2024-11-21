@@ -211,22 +211,15 @@ public class DEEController {
      * rfi文件下载
      *
      * @param copyId copyId
-     * @param archiveType archiveType
-     * @param deviceId deviceId
-     * @param chainId chainId
      * @param response response
      */
     @ExterAttack
     @GetMapping(DOWNLOAD_RFI_FILE_URL)
     public void downloadRfiFile(
-            @RequestParam(name = "uuid", required = true) String copyId,
-            @RequestParam(name = "generatedBy", required = true) String archiveType,
-            @RequestParam(name = "deviceEsn", required = true) String deviceId,
-            @RequestParam(name = "chainId", required = true) String chainId, HttpServletResponse response) {
+            @RequestParam(name = "uuid", required = true) String copyId, HttpServletResponse response) {
         HttpHeaders headers = requestUtil.getForwardHeaderAndValidCsrf();
         String rfiDownloadUrl = NormalizerUtil.normalizeForString(
-                antiUrl + DOWNLOAD_RFI_FILE_URL + "?uuid=" + copyId + "&generatedBy=" + archiveType
-                        + "&deviceEsn=" + deviceId + "&chainId=" + chainId);
+                antiUrl + DOWNLOAD_RFI_FILE_URL + "?uuid=" + copyId);
         String fileName = "RFI_" + copyId + ".json";
         restTemplate.execute(rfiDownloadUrl, HttpMethod.GET,
                 clientHttpRequest -> clientHttpRequest.getHeaders().setAll(headers.toSingleValueMap()),

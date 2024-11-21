@@ -1,0 +1,129 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤7：执行备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="hcs_gud_0011.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="hcs_gud_0019">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤7：执行备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hcs_gud_0019"></a><a name="hcs_gud_0019"></a>
+
+<h1 class="topictitle1">步骤7：执行备份</h1>
+<div><p>执行备份前将需要保护的资源关联到指定SLA策略，系统将对这些资源按照SLA策略进行保护，并根据SLA策略周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><ul><li>请确保生产存储已预留用于备份的快照空间，快照预留空间=源LUN数据量*备份周期内数据变化量百分比。默认情况下，建议预留源LUN容量的20%用于创建快照。</li><li>云服务器处于以下状态时支持备份：“运行中 ”、“正在开机”、“正在关机 ”、“关机”、“重装操作系统中”、“重装操作系统失败”、“切换操作系统中”、“切换操作系统失败”。</li><li>备份时，每个ProtectAgent的并发任务数默认为20，不建议修改此并发数，否则可能出现扫盘失败进而导致备份失败的问题。</li><li>如果华为分布式块存储上的云服务器/云硬盘迁移到了SAN存储，执行云服务器/云硬盘备份前，需要先将SAN存储资源添加到<span>OceanProtect</span>中。注册操作请参见<a href="hcs_gud_0014.html">步骤2：注册华为云Stack</a>中的<a href="hcs_gud_0014.html#hcs_gud_0014__li89549137399">3</a>。</li><li>首次备份前，请先完成资源扫描，以便系统显示最新的云服务器信息，具体操作请参见<span>《OceanProtect <span id="hcs_gud_0019__zh-cn_topic_0000001792502994_ph19170214112011">备份一体机 1.5.0-1.6.0</span> ProtectAgent安装指南》</span>中的“管理代理主机”章节。</li><li>对于1.6.0及后续版本，如果备份任务异常，导致快照删除失败，当下一次执行全量备份任务时，系统会自动删除无用的快照。</li><li>手动备份时，SLA中定义的参数（<span class="uicontrol">“<span>失败后自动重试</span>”</span>除外）会应用到手动备份任务中。</li><li>手动备份产生的副本保留时长按照SLA中定义的保留时长进行保留。<p>如果手动备份时选择的保护策略未在SLA中定义，则产生的备份副本保留时长为永久保留。如SLA中未定义全量备份，而手动备份时选择的是全量备份，则本次手动全量备份产生的副本保留时长为永久保留。</p>
+</li><li>如果SLA定义了复制策略或归档策略，则执行手动备份时，系统会按照SLA的定义执行一次复制或归档。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="hcs_gud_0019__zh-cn_topic_0000001839142377_uicontrol23517341412">“<span id="hcs_gud_0019__zh-cn_topic_0000001839142377_text635183444114">保护</span> &gt; 云平台 &gt; 华为云Stack”</span>。</span></li><li><span>选择“<span>项目/资源集</span>”或“<span>云服务器</span>”页签，选择需要保护的弹性云服务器，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>当在“<span>项目/资源集</span>”页签选择项目/资源集时，系统将对该项目/资源集下的所有弹性云服务器进行保护。</li><li>如果系统未显示需要保护的项目/资源集或弹性云服务器，请先单击界面左侧区域的<span class="uicontrol">“<span>更多</span> &gt; <span>资源扫描</span>”</span>，更新资源信息。</li></ul>
+</div></div>
+</p></li><li><span>当时选择“<span>云服务器</span>”进行保护时，请选择是否开启自动保护云硬盘。否则，请跳过本步骤。</span><p><p>系统默认开启“<span>自动保护云硬盘</span>”，系统将保护云服务器下的所有存储类型为FusionStorage、OceanStor Dorado、OceanStor的云硬盘（含新发现的云硬盘）。</p>
+<p>您可以关闭“<span>自动保护云硬盘</span>”，单击“<span>请选择</span>”手动选择部分云硬盘备份。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>选择部分云硬盘进行备份后，生成的副本仅支持云硬盘级的恢复，不支持云服务器级恢复。</li><li>如果系统盘被排除，生成的副本不支持文件级的恢复。</li></ul>
+</div></div>
+</p></li><li><span>选择SLA。</span><p><div class="p" id="hcs_gud_0019__zh-cn_topic_0000001964713008_p16181740836">您也可以单击<span class="uicontrol" id="hcs_gud_0019__zh-cn_topic_0000001964713008_uicontrol744210206420">“<span id="hcs_gud_0019__zh-cn_topic_0000001964713008_text1873812341015">创建</span>”</span>，创建新的SLA。<div class="note" id="hcs_gud_0019__zh-cn_topic_0000001964713008_note25947145710"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="hcs_gud_0019__zh-cn_topic_0000001964713008_p125947145711"><span id="hcs_gud_0019__zh-cn_topic_0000001964713008_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
+</div></div>
+</div>
+</p></li><li><span>参考<a href="#hcs_gud_0019__table8104151484520">表1</a>，在<span class="uicontrol">“<span>高级配置</span>”</span>中配置参数。</span><p>
+<div class="tablenoborder"><a name="hcs_gud_0019__table8104151484520"></a><a name="table8104151484520"></a><table cellpadding="4" cellspacing="0" summary="" id="hcs_gud_0019__table8104151484520" frame="border" border="1" rules="all"><caption><b>表1 </b>高级配置参数</caption><colgroup><col style="width:20.48%"><col style="width:79.52%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20.48%" id="mcps1.3.3.2.5.2.1.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.52%" id="mcps1.3.3.2.5.2.1.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span>代理主机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>选择用于执行备份的代理主机。如果不选择，系统将随机选择一个代理主机执行备份任务。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>对于1.5.0.SPC9之前版本，如果选择了外置代理，且租户对应资源的保护权限已授权给指定的数据保护管理员，则请在<span class="uicontrol">“<span id="hcs_gud_0019__zh-cn_topic_0000001666345505_text22651956143811">保护</span> &gt; 客户端”</span>界面该外置代理所在行，单击<span class="uicontrol">“<span>更多</span> &gt; <span>资源授权</span>”</span>，将外置代理也授权给租户对应资源授权的数据保护管理员。否则，将导致备份失败。</li><li>对于1.6.0及后续版本，请在“系统 &gt; 安全 &gt; RBAC”界面，在已授权用户所关联的资源集中添加外置代理。具体操作可参考<span>《OceanProtect <span id="hcs_gud_0019__zh-cn_topic_0000001792502994_ph14959193919202">备份一体机 1.5.0-1.6.0</span> 管理员指南》</span>中的“修改资源集”章节。</li><li>对于其他版本，如果选择了外置代理，且租户对应资源的保护权限已授权给指定的数据保护管理员，则请在<span class="uicontrol">“<span id="hcs_gud_0019__zh-cn_topic_0000001666345505_text22651956143811_1">保护</span> &gt; 客户端”</span>界面该外置代理所在行，查看是否已开启“共享”。<ul><li>如果已开启共享，则无需执行其他操作。</li><li>如果未开启共享，请单击<span class="uicontrol">“<span>更多</span> &gt; <span>资源授权</span>”</span>，将外置代理也授权给租户对应资源授权的数据保护管理员。否则，将导致备份失败。</li></ul>
+</li></ul>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><div class="p">备份副本自动索引<div class="note" id="hcs_gud_0019__vmware_gud_0028_note17447255201"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hcs_gud_0019__vmware_gud_0028_vmware_gud_0028_p168431642184919">仅1.6.0及后续版本支持此参数。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><div class="p">当选择“<span>云服务器</span>”进行保护，且备份的磁盘包含了系统盘时，开启后，系统会对备份副本自动创建索引。使用该副本进行恢复时，支持选择副本中的单个或多个文件进行恢复，支持搜索副本中的文件、目录或链接。<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hcs_gud_0019__vmware_gud_0028_nas_s_0016_p0743109201911">索引需要占用备份存储空间，当系统中的索引文件总数超过10亿时，请按照<span id="hcs_gud_0019__vmware_gud_0028_nas_s_0016_cite23814569190">《OceanProtect <span id="hcs_gud_0019__vmware_gud_0028_zh-cn_topic_0000001792502994_ph187704762018">备份一体机 1.5.0-1.6.0</span> 故障处理》</span>中的“创建副本索引失败”章节进行处理。</p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span>SLA覆盖策略</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><div class="p">当选择项目/资源集进行保护时，支持选择是否用项目/资源集的SLA覆盖云服务器已有的SLA。<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>后续修改项目/资源集关联的SLA时，如果选择“不覆盖云服务器已有的SLA”，但云服务器的SLA与项目/资源集本身的SLA一致，则云服务器的SLA仍会被覆盖。</p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span>SLA应用策略</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><div class="p">当选择项目/资源集进行保护时，支持选择SLA策略的应用范围：<ul><li>将项目/资源集SLA策略应用到所有未关联SLA的云服务器上。</li><li>将项目/资源集SLA策略应用到新创建的云服务器上。<p>扫描项目/资源集后，新发现的云服务器关联与项目/资源集相同的SLA。</p>
+</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p>云服务器过滤</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><div class="p">当选择项目/资源集进行保护时，如需指定保护计划中要排除或包含的云服务器，请打开开关，并执行以下操作：<ol type="a"><li>选择过滤方式。</li><li>根据所选的过滤方式，在输入框中输入云服务器名称或关键字过滤云服务器。<ul><li>输入多个名称或关键字时用英文逗号(,)隔开。</li><li>支持精确匹配和模糊匹配云服务器名称，模糊匹配规则包括：前缀匹配（如abc*）、后缀匹配（如*abc）、中间匹配（如*abc*）。</li></ul>
+</li></ol>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><div class="p">安全归档<div class="note" id="hcs_gud_0019__fc_gud_0019_note2052965314120"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hcs_gud_0019__fc_gud_0019_zh-cn_topic_0000001792344090_p1816719214566">仅1.6.0及后续版本支持此功能。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><div class="p">当选择的SLA包含归档策略时，显示该参数。勾选后仅归档防勒索检测未感染的备份副本。<div class="note" id="hcs_gud_0019__fc_gud_0019_note1550211211513"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hcs_gud_0019__fc_gud_0019_p10502162125111"><span style="color:#1A1A1A;">如果SLA归档策略中“归档时间”未选择“备份成功后立即执行归档”或“归档策略”未选择“仅归档最新的副本”，以及并未设置防勒索策略时，</span>请单击“前往配置”为待保护资源设置防勒索策略。具体操作请参考<span id="hcs_gud_0019__fc_gud_0019_cite15733201398">《OceanProtect <span id="hcs_gud_0019__fc_gud_0019_zh-cn_topic_0000001792502994_ph662613174472">备份一体机 1.5.0-1.6.0</span> 数据备份特性指南(副本防勒索)》</span>中的“创建防勒索&amp;WORM策略”章节。</p>
+</div></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>单击<span class="uicontrol" id="hcs_gud_0019__zh-cn_topic_0000001792503842_uicontrol471113581111">“确定”</span>。</span><p><p id="hcs_gud_0019__zh-cn_topic_0000001792503842_p25041111535">如果当前系统时间已晚于该SLA首次备份的开始时间，则关联备份SLA后可以选择在当前立即执行备份或者根据SLA中设置的备份策略等待下次调度。</p>
+</p></li><li><strong>可选：</strong><span>执行手动备份。</span><p><div class="p" id="hcs_gud_0019__zh-cn_topic_0000001964713008_p11899115114511">当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。<ol type="a" id="hcs_gud_0019__zh-cn_topic_0000001964713008_ol1888313571212"><li id="hcs_gud_0019__zh-cn_topic_0000001964713008_li6449836144510">在需要备份的资源所在行单击“更多 &gt; <span id="hcs_gud_0019__zh-cn_topic_0000001964713008_text18439122416533">手动备份</span>”。<div class="note" id="hcs_gud_0019__zh-cn_topic_0000001964713008_note1527151103"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="hcs_gud_0019__zh-cn_topic_0000001964713008_zh-cn_topic_0000001607531736_p870125314544">支持选择多个资源批量进行手动备份。勾选多个已保护的资源，在资源列表左上角选择“更多 &gt; <span id="hcs_gud_0019__zh-cn_topic_0000001964713008_text122852865419">手动备份</span>”。</p>
+</div></div>
+</li><li id="hcs_gud_0019__zh-cn_topic_0000001964713008_li5644125184512">设置手动备份产生的副本名称。<p id="hcs_gud_0019__zh-cn_topic_0000001964713008_p444210492470"><a name="hcs_gud_0019__zh-cn_topic_0000001964713008_li5644125184512"></a><a name="zh-cn_topic_0000001964713008_li5644125184512"></a>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
+</li><li id="hcs_gud_0019__zh-cn_topic_0000001964713008_li9911344144518">选择保护策略：<span id="hcs_gud_0019__zh-cn_topic_0000001964713008_text66431546113916">全量备份</span>或<span id="hcs_gud_0019__zh-cn_topic_0000001964713008_text1343410023420">永久增量（合成全量）备份</span>。<div class="note" id="hcs_gud_0019__zh-cn_topic_0000001964713008_note1552298154910"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="hcs_gud_0019__zh-cn_topic_0000001964713008_p13522118194919"><span id="hcs_gud_0019__zh-cn_topic_0000001964713008_ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
+</div></div>
+</li><li id="hcs_gud_0019__zh-cn_topic_0000001964713008_li2637101024612">单击<span class="uicontrol" id="hcs_gud_0019__zh-cn_topic_0000001964713008_uicontrol37271318124613">“<span id="hcs_gud_0019__zh-cn_topic_0000001964713008_text6821948112410">确定</span>”</span>。</li></ol>
+</div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="hcs_gud_0011.html">备份云服务器/云硬盘</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

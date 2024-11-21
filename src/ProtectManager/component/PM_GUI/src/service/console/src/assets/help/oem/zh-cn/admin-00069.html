@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="添加外部集群">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839224421.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="admin-00069">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>添加外部集群</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="admin-00069"></a><a name="admin-00069"></a>
+  <h1 class="topictitle1">添加外部集群</h1>
+  <div>
+   <p id="admin-00069__zh-cn_topic_0000001792505410_p75271140114920">将外部集群添加至本集群，建立外部集群与本地集群的关系。通过该操作，添加被管理集群，用于多集群统一管理。</p>
+   <div class="section" id="admin-00069__zh-cn_topic_0000001792505410_section5343122851716">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul id="admin-00069__zh-cn_topic_0000001792505410_ul119820547554">
+     <li id="admin-00069__zh-cn_topic_0000001792505410_li11981954115512">已准备外部集群，且本端集群与外部集群的管理网络连通。</li>
+     <li id="admin-00069__zh-cn_topic_0000001792505410_li15214175247">已导入外部集群的证书，需要先在外部集群下载<span class="uicontrol" id="admin-00069__zh-cn_topic_0000001792505410_uicontrol639178242">“<span id="admin-00069__zh-cn_topic_0000001792505410_text14518121616417">服务端证书</span>”</span>类型的CA证书，然后将该证书导入本地集群，证书类型选择<span class="uicontrol" id="admin-00069__zh-cn_topic_0000001792505410_uicontrol13131716240">“<span id="admin-00069__zh-cn_topic_0000001792505410_text195309546408">备份集群/多域集群/复制集群</span>”</span>。详细操作请参见<span id="admin-00069__zh-cn_topic_0000001792505410_cite2527711612">《安全配置指南》</span>中的<span class="uicontrol" id="admin-00069__zh-cn_topic_0000001792505410_uicontrol17460256288">“下载证书”</span>章节和<span class="uicontrol" id="admin-00069__zh-cn_topic_0000001792505410_uicontrol15190594273">“导入证书”</span>章节中的<span class="uicontrol" id="admin-00069__zh-cn_topic_0000001792505410_uicontrol0601128280">“外部证书”</span>部分。</li>
+    </ul>
+   </div>
+   <div class="section" id="admin-00069__zh-cn_topic_0000001792505410_zh-cn_topic_0000001092505479_section18486144912501">
+    <h4 class="sectiontitle">背景信息</h4>
+    <p id="admin-00069__zh-cn_topic_0000001792505410_zh-cn_topic_0000001092505479_p4456175025019"><span id="admin-00069__zh-cn_topic_0000001792505410_text09941345133720">本产品</span>支持1:1复制，1:N复制，N:1复制。</p>
+    <ul id="admin-00069__zh-cn_topic_0000001792505410_ul328061312311">
+     <li id="admin-00069__zh-cn_topic_0000001792505410_li1280131313118">1:N复制时，N最大为4。</li>
+     <li id="admin-00069__zh-cn_topic_0000001792505410_li743192723116">N:1复制时，N最大为16。</li>
+    </ul>
+   </div>
+   <div class="section" id="admin-00069__zh-cn_topic_0000001792505410_section64752564918">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p id="admin-00069__zh-cn_topic_0000001792505410_p417212912491">如果本地集群已添加其他管理集群，在向本地集群添加外部集群时，需要确保外部集群的<span class="uicontrol" id="admin-00069__zh-cn_topic_0000001792505410_uicontrol37951240195216">“<span id="admin-00069__zh-cn_topic_0000001792505410_text11690633134117">服务端证书</span>”</span>类型的CA证书已导入到管理集群中。</p>
+   </div>
+   <div class="section" id="admin-00069__zh-cn_topic_0000001792505410_section57658477125">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="admin-00069__zh-cn_topic_0000001792505410_zh-cn_topic_0000001092505479_ol1038139939">
+     <li id="admin-00069__zh-cn_topic_0000001792505410_li0198134611381"><span>选择<span class="uicontrol" id="admin-00069__zh-cn_topic_0000001792505410_uicontrol9143133018394">“<span id="admin-00069__zh-cn_topic_0000001792505410_text34321217571">系统</span> &gt; <span id="admin-00069__zh-cn_topic_0000001792505410_text075328175610">基础设施</span> &gt; <span id="admin-00069__zh-cn_topic_0000001792505410_text3912011173416">集群管理</span>”</span>。</span></li>
+     <li id="admin-00069__zh-cn_topic_0000001792505410_zh-cn_topic_0000001092505479_li12591123311535"><span>在<span class="uicontrol" id="admin-00069__zh-cn_topic_0000001792505410_uicontrol432713591102">“<span id="admin-00069__zh-cn_topic_0000001792505410_text1651672072211">多域集群</span>”</span>区域，单击<span class="uicontrol" id="admin-00069__zh-cn_topic_0000001792505410_zh-cn_topic_0000001092505479_uicontrol1645154510534">“<span id="admin-00069__zh-cn_topic_0000001792505410_text26407307349">添加</span>”</span>。</span></li>
+     <li id="admin-00069__zh-cn_topic_0000001792505410_zh-cn_topic_0000001092505479_li10626045539"><span>配置多域集群参数。</span><p></p>
+      <div class="p" id="admin-00069__zh-cn_topic_0000001792505410_p344744712197">
+       相关参数说明如<a href="#admin-00069__zh-cn_topic_0000001792505410_table13641194661910">表1</a>所示。 
+       <div class="tablenoborder">
+        <a name="admin-00069__zh-cn_topic_0000001792505410_table13641194661910"></a><a name="zh-cn_topic_0000001792505410_table13641194661910"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="admin-00069__zh-cn_topic_0000001792505410_table13641194661910" frame="border" border="1" rules="all">
+         <caption>
+          <b>表1 </b>外部集群参数说明
+         </caption>
+         <colgroup>
+          <col style="width:34.949999999999996%">
+          <col style="width:65.05%">
+         </colgroup>
+         <thead align="left">
+          <tr id="admin-00069__zh-cn_topic_0000001792505410_row66412046151918">
+           <th align="left" class="cellrowborder" valign="top" width="34.949999999999996%" id="mcps1.3.5.2.3.2.1.2.2.3.1.1"><p id="admin-00069__zh-cn_topic_0000001792505410_p11641204641917">参数</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="65.05%" id="mcps1.3.5.2.3.2.1.2.2.3.1.2"><p id="admin-00069__zh-cn_topic_0000001792505410_p3641114610198">说明</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr id="admin-00069__zh-cn_topic_0000001792505410_row4230722204419">
+           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.5.2.3.2.1.2.2.3.1.1 "><p id="admin-00069__zh-cn_topic_0000001792505410_p4230192217448"><span id="admin-00069__zh-cn_topic_0000001792505410_text15946924164916">名称</span></p></td>
+           <td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.5.2.3.2.1.2.2.3.1.2 "><p id="admin-00069__zh-cn_topic_0000001792505410_p1639118224594">用户自定义外部集群的名称。</p></td>
+          </tr>
+          <tr id="admin-00069__zh-cn_topic_0000001792505410_row17641164617192">
+           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.5.2.3.2.1.2.2.3.1.1 "><p id="admin-00069__zh-cn_topic_0000001792505410_p1164184612196"><span id="admin-00069__zh-cn_topic_0000001792505410_text573293916494">IP地址</span></p></td>
+           <td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.5.2.3.2.1.2.2.3.1.2 "><p id="admin-00069__zh-cn_topic_0000001792505410_p0641104621913">外部集群的管理IP地址。</p></td>
+          </tr>
+          <tr id="admin-00069__zh-cn_topic_0000001792505410_row18641204619191">
+           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.5.2.3.2.1.2.2.3.1.1 "><p id="admin-00069__zh-cn_topic_0000001792505410_p116416464192"><span id="admin-00069__zh-cn_topic_0000001792505410_text2931198155018">端口</span></p></td>
+           <td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.5.2.3.2.1.2.2.3.1.2 "><p id="admin-00069__zh-cn_topic_0000001792505410_p16641144613195">外部集群的管理端口。默认端口号为25081。</p></td>
+          </tr>
+          <tr id="admin-00069__zh-cn_topic_0000001792505410_row16265655104819">
+           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.5.2.3.2.1.2.2.3.1.1 "><p id="admin-00069__zh-cn_topic_0000001792505410_p192665555481"><span id="admin-00069__zh-cn_topic_0000001792505410_text18577516818">角色</span></p></td>
+           <td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.5.2.3.2.1.2.2.3.1.2 "><p id="admin-00069__zh-cn_topic_0000001792505410_p18266755104816">添加被管理集群。添加后，可以在本地集群查看被管理集群的数据，也可以从本地集群切换到被管理集群执行操作。</p></td>
+          </tr>
+          <tr id="admin-00069__zh-cn_topic_0000001792505410_row9641346121912">
+           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.5.2.3.2.1.2.2.3.1.1 "><p id="admin-00069__zh-cn_topic_0000001792505410_p164113466197"><span id="admin-00069__zh-cn_topic_0000001792505410_text497961912506">用户名</span></p></td>
+           <td class="cellrowborder" rowspan="2" valign="top" width="65.05%" headers="mcps1.3.5.2.3.2.1.2.2.3.1.2 "><p id="admin-00069__zh-cn_topic_0000001792505410_p19303227111916">填写系统管理员的用户名及其密码。</p></td>
+          </tr>
+          <tr id="admin-00069__zh-cn_topic_0000001792505410_row12641194631915">
+           <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.3.2.1.2.2.3.1.1 "><p id="admin-00069__zh-cn_topic_0000001792505410_p20641646181916"><span id="admin-00069__zh-cn_topic_0000001792505410_text119016372505">密码</span></p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li id="admin-00069__zh-cn_topic_0000001792505410_li19740172314212"><span>单击<span class="uicontrol" id="admin-00069__zh-cn_topic_0000001792505410_uicontrol13740132319210">“<span id="admin-00069__zh-cn_topic_0000001792505410_text167273511413">确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001839224421.html">管理多域集群</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

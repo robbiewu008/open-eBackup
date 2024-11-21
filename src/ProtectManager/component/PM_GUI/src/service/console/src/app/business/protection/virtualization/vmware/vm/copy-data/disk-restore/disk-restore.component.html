@@ -1,3 +1,4 @@
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
     <ng-template #title>
         <span class="selected-disk-title">{{'protection_select_disks_label' | i18n }}</span>
         <span> {{isBatch ? selectedDiskDatas.length : selectedDiskDatas[0].NAME}}</span>
@@ -348,6 +348,17 @@
         </lv-form-label>
         <lv-form-control>
             <lv-switch formControlName="isForceNBDSsl"></lv-switch>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_start_snap_gen_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_start_snap_gen_tip_label' | i18n}}"
+                lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="isStartupSnapGen"></lv-switch>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item>

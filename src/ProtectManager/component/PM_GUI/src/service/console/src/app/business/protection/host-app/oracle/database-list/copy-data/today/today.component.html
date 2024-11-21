@@ -1,3 +1,4 @@
+<div class="aui-operation">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-operation">
   <lv-group></lv-group>
   <lv-radio-group [(ngModel)]="listView" (ngModelChange)='changeListView($event)' [lvGroupName]="'listViewGroup'">
     <lv-group lvGutter='8px'>
@@ -35,7 +35,7 @@
 </div>
 <ng-container *ngIf='!listView'>
   <div class="timeline-container">
-    <lv-slider [(ngModel)]="sliderVal" [lvMin]="0" [lvMax]="86399" [lvDivision]="24" [lvLines]="sliderLines"
+    <lv-slider [(ngModel)]="sliderVal" [lvMin]="0" [lvMax]="slideMax" [lvDivision]="slideDivision" [lvLines]="sliderLines"
       [lvTooltip]="tipTemp" [lvPoints]="sliderPoints" [lvHandleColor]="sliderHandleColor" [lvTrackVisible]="false"
       (onChange)="sliderChange($event)" (onSlideEnd)='queryCopyPoint($event)' [lvHoverShowTooltip]="false">
     </lv-slider>
@@ -47,8 +47,14 @@
       <i *ngIf='logData && !copyData' lv-icon='aui-file-log' lv-tooltip="{{ 'common_log_label' | i18n }}"></i>
       <i *ngIf='!copyData && !logData' lv-icon='aui-no-copy'
         lv-tooltip="{{ 'protection_unvaliable_label' | i18n }}"></i>
-      <lv-time-picker [(ngModel)]="timePickerValue" (ngModelChange)="timePickerChange($event)" lvPlaceholder="HH:mm:ss">
+      <lv-time-picker [(ngModel)]="timePickerValue" (ngModelChange)="timePickerChange($event)" lvPlaceholder="HH:mm:ss"
+        [lvFooter]="timePickerFooterTpl">
       </lv-time-picker>
+      <ng-template #timePickerFooterTpl>
+        <button lv-button lvType="link" class="time-picker-current" (click)="setSysTime()">
+          {{'common_current_time_label' | i18n}}
+        </button>
+      </ng-template>
     </lv-group>
   </div>
   <div class='aui-gutter-column-lg'></div>
@@ -66,7 +72,7 @@
             <td>
               <span class="aui-link" id='outerClosable' (click)="getDetail(item)">
                 <i lv-icon='aui-sla-oracle'></i>
-                {{item.display_timestamp | date : 'yyyy-MM-dd HH:mm:ss' : timeZone}}
+                {{item.display_timestamp | date : 'yyyy-MM-dd HH:mm:ss'}}
               </span>
             </td>
             <td width='110px'>
@@ -94,7 +100,7 @@
                 <ng-container [ngSwitch]="col.key">
                   <ng-container *ngSwitchCase="'display_timestamp'">
                     <a lv-overflow id="outerClosable" (click)="getDetail(item)">
-                      {{ item.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss' : timeZone}}
+                      {{ item.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss'}}
                     </a>
                   </ng-container>
                   <ng-container *ngSwitchCase="'status'">
@@ -107,7 +113,7 @@
                   </ng-container>
                   <ng-container *ngSwitchCase="'backup_type'">
                     <span lv-overflow>
-                      {{ item.backup_type | textMap: 'specialBackUpType' }}
+                      {{ (item?.source_copy_type || item.backup_type) | textMap: 'specialBackUpType' }}
                     </span>
                   </ng-container>
                   <ng-container *ngSwitchCase="'indexed'">
@@ -135,21 +141,29 @@
     </lv-datatable>
   </ng-container>
   <ng-container *ngIf='logData && !copyData'>
-    <lv-datatable [lvData]="[logData]" #lvLogTable>
+    <lv-datatable [lvData]="resType === archiveLogCopy ? archiveLogCopyData: [logData]" #lvLogTable lvCompareWith="uuid">
       <thead>
         <tr>
+          <th *ngIf="archiveLogCopy"> ID </th>
           <th>{{'common_time_stamp_label' | i18n}}</th>
+          <th lvCellKey='copy_type' *ngIf="archiveLogCopy">{{'common_generated_type_label'|i18n}}</th>
           <th width='110px'>{{'common_operation_label' | i18n}}</th>
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor='let item of lvLogTable.renderData'>
+        <ng-container *ngFor='let item of (archiveLogCopy ? archiveLogCopyData: [logData])'>
           <tr>
+              <td *ngIf="archiveLogCopy">
+                  {{item?.uuid|nil}}
+              </td>
             <td>
               <span>
-                {{_toString(getTodayTime(timePickerValue) * 1000) | date : 'yyyy-MM-dd HH:mm:ss'}}
+                {{_toString(getTodayTime(timePickerValue) * 1000) | date : 'yyyy-MM-dd HH:mm:ss':extTimeZone}}
               </span>
             </td>
+              <td *ngIf="archiveLogCopy">
+                  {{item?.generated_by | textMap: 'CopyData_generatedType' }}
+              </td>
             <td width='110px'>
               <lv-operation-menu [lvData]="item" [lvItemsFn]="optsCallback" lvMaxShowNum="1"></lv-operation-menu>
             </td>

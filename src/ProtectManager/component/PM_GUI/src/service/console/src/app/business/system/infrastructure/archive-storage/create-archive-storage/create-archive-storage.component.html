@@ -1,3 +1,4 @@
+<lv-form [formGroup]='formGroup' [lvLabelColon]='false' class="formGroup archive-storage-create">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]='formGroup' [lvLabelColon]='false' class="formGroup archive-storage-create">
     <h3 class="aui-gutter-column-xs">{{basicInfoLabel}}</h3>
     <lv-form-item>
         <lv-form-label lvRequired="true">{{nameLabel}}</lv-form-label>
@@ -68,8 +68,20 @@
             <lv-form-label lvRequired="true">
                 {{'system_azure_blob_container_label' | i18n}}
             </lv-form-label>
-            <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
+            <lv-form-control [lvErrorTip]='bucketNameErrorTip'>
                 <input formControlName="bucketName" lv-input />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'system_certificate_label' | i18n }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'system_azure_cert_tip_label' | i18n}}"
+                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                            lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>
+                <lv-select formControlName="certId" [lvOptions]='certItems' lvValueKey='value' lvShowClear>
+                </lv-select>
             </lv-form-control>
         </lv-form-item>
     </ng-container>
@@ -81,13 +93,14 @@
                     placeholder="{{'common_endpoint_placeholder_label' | i18n}}" />
             </lv-form-control>
         </lv-form-item>
+        <lv-alert lvType="info" lvClosable="false">{{'system_archive_storage_endpoint_tip_label' | i18n}}</lv-alert>
         <lv-form-item>
             <lv-form-label lvRequired="true">{{protocolLabel}}</lv-form-label>
             <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>
                 <lv-select formControlName="useHttps" [lvOptions]='protocolItems' lvValueKey='value' [lvDisabled]='data'
                     #protocolSelect>
                 </lv-select>
-                <div *ngIf="formGroup.value.useHttps === '0'">
+                <div *ngIf="formGroup.get('useHttps').value === '0'">
                     <i lv-icon="lv-icon-status-warning-info" lvColorState='true'></i>
                     <span>
                         {{'system_use_http_warn_label' | i18n}}
@@ -95,7 +108,7 @@
                 </div>
             </lv-form-control>
         </lv-form-item>
-        <ng-container *ngIf="formGroup.value.useHttps === '1'">
+        <ng-container *ngIf="formGroup.get('useHttps').value === '1'">
             <lv-form-item>
                 <lv-form-label lvRequired="true">{{ 'system_certificate_label' | i18n }}</lv-form-label>
                 <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>
@@ -107,13 +120,17 @@
         <ng-container
             *ngIf="formGroup.value.cloudType === dataMap.Storage_Cloud_Platform.azure.value && formGroup.value.connectType === dataMap.azureLinkMode.standard.value">
             <lv-form-item>
-                <lv-form-label lvRequired="true">AK</lv-form-label>
+                <lv-form-label lvRequired="true">
+                    {{'system_azure_account_name_label' | i18n}}
+                </lv-form-label>
                 <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
                     <input formControlName="ak" lv-input />
                 </lv-form-control>
             </lv-form-item>
             <lv-form-item>
-                <lv-form-label lvRequired="true">SK</lv-form-label>
+                <lv-form-label lvRequired="true">
+                    {{'system_azure_account_key_label' | i18n}}
+                </lv-form-label>
                 <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
                     <aui-inupt-with-eye formControlName="sk">
                     </aui-inupt-with-eye>
@@ -131,7 +148,7 @@
                 <lv-form-label lvRequired="true">
                     {{'system_azure_blob_container_label' | i18n}}
                 </lv-form-label>
-                <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
+                <lv-form-control [lvErrorTip]='bucketNameErrorTip'>
                     <input formControlName="bucketName" lv-input />
                 </lv-form-control>
             </lv-form-item>

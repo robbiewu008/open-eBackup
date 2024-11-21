@@ -1,3 +1,4 @@
+<div class="aui-operation" *ngIf="!componentData">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-operation" *ngIf="!componentData">
   <lv-group [lvGutter]="groupCommon.middleRowGutter">
     <button lvType="primary" lv-button (click)="addTargetCluster()" pmpermission pmOperation="AddingTargetCluster">
       {{ 'common_add_label' | i18n }}
@@ -246,7 +246,12 @@
 
 <ng-template #titleTpl>
   <lv-group>
-    <span class="custom-title">{{'system_multi_domain_cluster_label' | i18n}}({{total}})</span>
+    <ng-container *ngIf="i18n.isEn; else elseTemplate">
+      <span class="custom-title">{{'system_multi_domain_cluster_label' | i18n}} ({{total}})</span>
+    </ng-container>
+    <ng-template #elseTemplate>
+      <span class="custom-title">{{'system_multi_domain_cluster_label' | i18n}}({{total}})</span>
+    </ng-template>
     <i lv-icon="aui-icon-help" lv-tooltip="{{'system_multi_domain_cluster_tip_label' | i18n}}" lvTooltipTheme="light"
       class="cluster-help" lvColorState='true'></i>
   </lv-group>

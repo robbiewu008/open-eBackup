@@ -1,59 +1,59 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Input,
+  OnDestroy,
   OnInit,
   SimpleChanges,
   ViewChild,
-  ViewEncapsulation,
-  OnDestroy
+  ViewEncapsulation
 } from '@angular/core';
 import {
+  DatatableService,
+  DateService,
   FilterConfig,
+  I18NService,
   LvConfig,
+  SortDirective,
   TableFilterConfig,
   TagItem,
-  TypeUtils,
-  DatatableService,
-  SortDirective,
-  DateService,
-  I18NService
+  TypeUtils
 } from '@iux/live';
-import { TableConfig, TableCols, Filters, TableData } from './interface';
-import {
-  cloneDeep as _cloneDeep,
-  merge as _merge,
-  assign as _assign,
-  filter as _filter,
-  each,
-  isEmpty,
-  trim,
-  toString,
-  size,
-  assign,
-  map,
-  isFunction,
-  isArray,
-  isString,
-  includes
-} from 'lodash';
-import { Observable } from 'rxjs';
-import { DEFAULT_CONFIG } from './pro-table.config';
 import { CommonConsts, GlobalService } from 'app/shared';
 import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
+import {
+  assign,
+  assign as _assign,
+  cloneDeep as _cloneDeep,
+  each,
+  filter as _filter,
+  includes,
+  isArray,
+  isEmpty,
+  isFunction,
+  isString,
+  map,
+  merge as _merge,
+  size,
+  toString,
+  trim
+} from 'lodash';
+import { Observable } from 'rxjs';
+import { Filters, TableCols, TableConfig, TableData } from './interface';
+import { DEFAULT_CONFIG } from './pro-table.config';
 
 @Component({
   selector: 'lv-pro-table',
@@ -125,7 +125,8 @@ export class ProTableComponent implements OnInit, OnDestroy {
       renderData = this.table.renderData;
     }
     const all = renderData.length,
-      selected = this.table.getRenderSelection().length;
+      selected = this.table.getRenderSelection().filter(item => !item.disabled)
+        .length;
     return selected > 0 && all === selected;
   }
   _isHalfCheck() {
@@ -152,19 +153,9 @@ export class ProTableComponent implements OnInit, OnDestroy {
 
   _isHidePagination() {
     const page = this.initConfig.pagination;
+
     if (page) {
-      if (page.showPageSizeOptions) {
-        return this.tableData.data.length === 0;
-      } else if (page.showPagination) {
-        return this.tableData.data.length === 0;
-      } else {
-        return (
-          this.tableData.total <=
-          ((page && page.pageSize) ||
-            LvConfig.paginatorOptions.lvPageSize ||
-            CommonConsts.PAGE_SIZE_SMALL)
-        );
-      }
+      return this.tableData.data.length === 0;
     } else {
       return true;
     }
@@ -396,7 +387,10 @@ export class ProTableComponent implements OnInit, OnDestroy {
    */
   _toggleAllSelection() {
     const renderData = _filter(this.table.renderData, item => !item.disabled);
-    if (this.table.getRenderSelection().length === renderData.length) {
+    if (
+      this.table.getRenderSelection().filter(item => !item.disabled).length ===
+      renderData.length
+    ) {
       this.table.deleteSelection(renderData);
     } else {
       this.table.bulkSelection(renderData);
@@ -533,7 +527,7 @@ export class ProTableComponent implements OnInit, OnDestroy {
         );
         return item.value.length > 0;
       }
-      return false;
+      return true;
     });
   }
 

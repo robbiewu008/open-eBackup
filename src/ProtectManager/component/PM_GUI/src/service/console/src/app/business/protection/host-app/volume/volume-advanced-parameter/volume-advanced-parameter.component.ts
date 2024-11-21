@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -24,7 +24,16 @@ import {
   DataMap,
   I18NService
 } from 'app/shared';
-import { assign, each, includes, isArray, isString, set, trim } from 'lodash';
+import {
+  assign,
+  each,
+  includes,
+  isArray,
+  isString,
+  set,
+  toNumber,
+  trim
+} from 'lodash';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -45,8 +54,13 @@ export class VolumeAdvancedParameterComponent implements OnInit {
     invalidName: this.i18n.get('common_script_error_label'),
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [8192])
   };
+  percentErrorTip = {
+    ...this.baseUtilService.rangeErrorTip,
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 100])
+  };
 
   extParams;
+  isWindows = false;
 
   constructor(
     public fb: FormBuilder,
@@ -55,6 +69,8 @@ export class VolumeAdvancedParameterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isWindows =
+      this.resourceData?.environment?.osType === DataMap.Os_Type.windows.value;
     this.initForm();
     this.updateData();
   }
@@ -67,6 +83,13 @@ export class VolumeAdvancedParameterComponent implements OnInit {
       'protection_fileset_advance_script_linux_tips_label'
     );
     this.formGroup = this.fb.group({
+      snapshot_size_percent: new FormControl(5, {
+        validators: [
+          this.baseUtilService.VALID.required(),
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(1, 100)
+        ]
+      }),
       osBackup: new FormControl(
         this.resourceData.extendInfo?.system_backup_flag === 'true'
       ),
@@ -142,6 +165,7 @@ export class VolumeAdvancedParameterComponent implements OnInit {
       : this.resourceData.protectedObject?.extParameters;
 
     assign(extParameters, {
+      snapshot_size_percent: extParameters?.snapshot_size_percent || 5,
       osBackup: extParameters.system_backup_flag,
       script:
         extParameters?.pre_script ||
@@ -164,7 +188,10 @@ export class VolumeAdvancedParameterComponent implements OnInit {
   onOK() {
     const ext_parameters = {};
     assign(ext_parameters, {
-      system_backup_flag: this.formGroup.value?.osBackup
+      system_backup_flag: this.formGroup.value?.osBackup,
+      snapshot_size_percent: toNumber(
+        this.formGroup.get('snapshot_size_percent').value
+      )
     });
 
     if (this.formGroup.get('script').value) {

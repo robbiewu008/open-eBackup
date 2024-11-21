@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { NgModule, inject } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './shared/guards/auth.guard';
@@ -19,6 +19,7 @@ import { RedirectGuard } from './shared/guards/redirect.guard';
 import { InitMutli } from './shared/guards/init-mutli';
 import { InitLicense } from './shared/guards/init-license';
 import { PermissionService } from './shared/guards/permission.service';
+import { TimeZoneService } from './shared/guards/time-zone.service';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -70,7 +71,8 @@ const routes: Routes = [
       init: InitResolver,
       multi: InitMutli,
       license: InitLicense,
-      permission: () => inject(PermissionService).getUserPermission()
+      permission: () => inject(PermissionService).getUserPermission(),
+      timeZone: () => inject(TimeZoneService).getTimeZone()
     },
     canActivate: [RedirectGuard, AuthGuard],
     canActivateChild: [RedirectGuard, AuthGuard]
@@ -82,7 +84,8 @@ const routes: Routes = [
     resolve: {
       init: InitResolver,
       multi: InitMutli,
-      license: InitLicense
+      license: InitLicense,
+      timeZone: () => inject(TimeZoneService).getTimeZone()
     },
     canActivate: [RedirectGuard, AuthGuard],
     canActivateChild: [RedirectGuard, AuthGuard]
@@ -97,7 +100,8 @@ const routes: Routes = [
       init: InitResolver,
       multi: InitMutli,
       license: InitLicense,
-      permission: () => inject(PermissionService).getUserPermission()
+      permission: () => inject(PermissionService).getUserPermission(),
+      timeZone: () => inject(TimeZoneService).getTimeZone()
     },
     canActivate: [RedirectGuard, AuthGuard],
     canActivateChild: [RedirectGuard, AuthGuard]
@@ -109,7 +113,8 @@ const routes: Routes = [
     resolve: {
       init: InitResolver,
       multi: InitMutli,
-      permission: () => inject(PermissionService).getUserPermission()
+      permission: () => inject(PermissionService).getUserPermission(),
+      timeZone: () => inject(TimeZoneService).getTimeZone()
     },
     canActivate: [RedirectGuard, AuthGuard],
     canActivateChild: [RedirectGuard, AuthGuard]
@@ -123,7 +128,8 @@ const routes: Routes = [
     resolve: {
       init: InitResolver,
       multi: InitMutli,
-      permission: () => inject(PermissionService).getUserPermission()
+      permission: () => inject(PermissionService).getUserPermission(),
+      timeZone: () => inject(TimeZoneService).getTimeZone()
     },
     canActivate: [RedirectGuard, AuthGuard],
     canActivateChild: [RedirectGuard, AuthGuard]
@@ -138,7 +144,8 @@ const routes: Routes = [
       init: InitResolver,
       multi: InitMutli,
       license: InitLicense,
-      permission: () => inject(PermissionService).getUserPermission()
+      permission: () => inject(PermissionService).getUserPermission(),
+      timeZone: () => inject(TimeZoneService).getTimeZone()
     },
     canActivate: [RedirectGuard, AuthGuard],
     canActivateChild: [RedirectGuard, AuthGuard]
@@ -153,7 +160,8 @@ const routes: Routes = [
       init: InitResolver,
       multi: InitMutli,
       license: InitLicense,
-      permission: () => inject(PermissionService).getUserPermission()
+      permission: () => inject(PermissionService).getUserPermission(),
+      timeZone: () => inject(TimeZoneService).getTimeZone()
     },
     canActivate: [RedirectGuard, AuthGuard],
     canActivateChild: [RedirectGuard, AuthGuard]

@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤2：开启zkmeta自动备份功能（适用于分布式实例）">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="tdsql_gud_009.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="tdsql_gud_080">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤2：开启zkmeta自动备份功能（适用于分布式实例）</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="tdsql_gud_080"></a><a name="tdsql_gud_080"></a>
+  <h1 class="topictitle1">步骤2：开启zkmeta自动备份功能（适用于分布式实例）</h1>
+  <div>
+   <p>TDSQL在执行分布式实例备份任务前，需开启zkmeta自动备份功能，否则会导致跨集群恢复数据库失败。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <p id="tdsql_gud_080__tdsql_gud_010_p9667843103811"><span id="tdsql_gud_080__tdsql_gud_010_ph1292522251311">本节操作如无特殊说明均以TDSQL 10.3.22.1版本为例进行，不同版本操作可能存在差异，请以实际为准。</span></p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>使用<strong>root</strong>用户登录所有schedule节点。</span></li>
+     <li><span>执行以下命令，修改<span class="filepath">“confscheduler.xml”</span>配置文件。</span><p></p><pre class="screen">cd /data/application/scheduler/conf/</pre> <pre class="screen">vi scheduler.xml</pre> <p>在配置文件中的&lt;manager&gt;&lt;/manager&gt;标签内增加以下内容：</p> <pre class="screen">&lt;back_zkmeta value="on"/&gt;</pre> <p></p></li>
+     <li><span>使用<strong>root</strong>用户登录所有zk节点。</span><p></p><pre class="screen">cd /data/application/zookeeper/bin/</pre> <pre class="screen">./zkCli.sh -server 127.0.0.1:<em>端口号</em></pre> <p>示例：</p> <pre class="screen">cd /data/application/zookeeper/bin/
+./zkCli.sh -server 127.0.0.1:2118</pre>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>命令中的<em>端口号</em>为对应zk的端口号，请根据赤兔管理平台“调度与管理系统 &gt; Zookeeper监控”中实际查询到的端口号替换。</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>在所有zk节点执行以下操作，修改json配置。</span><p></p>
+      <ol type="a">
+       <li id="tdsql_gud_080__li8335103775513"><a name="tdsql_gud_080__li8335103775513"></a><a name="li8335103775513"></a>执行以下命令，查询json配置项内容。<pre class="screen">get /tdsqlzk/configs/agent@global</pre> <p>查询结果示例：</p> <pre class="screen">{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966"}</pre></li>
+       <li>执行以下命令，将<strong>"local_backup":"1"</strong>配置项添加到json配置中。
+        <div class="p">
+         即使<a href="#tdsql_gud_080__li8335103775513">4.a</a>中查询到的json配置中已存在<strong>"local_backup":"1"</strong>配置项，请仍执行以下命令进行配置，以确保配置生效。
+         <pre class="screen">set /tdsqlzk/configs/agent@global<strong> </strong><em>{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966","local_backup":"1"}</em></pre>
+         <div class="note">
+          <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <p>命令中的<em>{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966","local_backup":"1"}</em>仅为示例，请根据实际替换。</p>
+          </div>
+         </div>
+        </div></li>
+      </ol> <p></p></li>
+     <li><span>使用<strong>root</strong>用户登录集群所在的所有节点，执行以下命令，重启生产主机。</span><p></p><pre class="screen">reboot</pre> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="tdsql_gud_009.html">备份TDSQL数据库</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

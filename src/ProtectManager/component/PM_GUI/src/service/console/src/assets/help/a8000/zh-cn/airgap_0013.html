@@ -1,0 +1,86 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="关联Air Gap策略">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="airgap_0011.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="documenttype" content="usermanual">
+<meta name="prodname" content="csbs">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="airgap_0013">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>关联Air Gap策略</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="airgap_0013"></a><a name="airgap_0013"></a>
+
+<h1 class="topictitle1">关联Air Gap策略</h1>
+<div><p>创建Air Gap策略后，需要参考本节操作，为存储设备关联Air Gap策略，使Air Gap策略生效。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择“数据安全 &gt; Air Gap”。</span><p><div class="note" id="airgap_0013__airgap_0012_zh-cn_topic_0000001839142377_note811715311231"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="airgap_0013__airgap_0012_zh-cn_topic_0000001839142377_p201182362315">对于1.5.0版本，请选择“数据利用 &gt;  Air Gap”。</p>
+</div></div>
+</p></li><li><span>选择<span class="uicontrol">“存储设备”</span>页签。</span></li><li><span>在需要执行Air Gap的存储设备所在行，选择<span class="menucascade">“<span class="uicontrol">更多</span> &gt; <span class="uicontrol"> 关联策略</span>”</span>。</span></li><li><span>在系统右侧弹出的窗口中，填写相关信息。参数说明如<a href="#airgap_0013__table55532019113413">表1</a>所示。</span><p>
+<div class="tablenoborder"><a name="airgap_0013__table55532019113413"></a><a name="table55532019113413"></a><table cellpadding="4" cellspacing="0" summary="" id="airgap_0013__table55532019113413" frame="border" border="1" rules="all"><caption><b>表1 </b>关联策略参数说明</caption><colgroup><col style="width:31.830000000000002%"><col style="width:68.17%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="31.830000000000002%" id="mcps1.3.2.2.4.2.1.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="68.17%" id="mcps1.3.2.2.4.2.1.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="31.830000000000002%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p>Air Gap策略</p>
+</td>
+<td class="cellrowborder" valign="top" width="68.17%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p>选择已创建的Air Gap策略。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="31.830000000000002%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p>逻辑端口</p>
+</td>
+<td class="cellrowborder" valign="top" width="68.17%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p>在Air Gap策略设置的时间窗内，允许执行复制操作的端口。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="31.830000000000002%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p>强制中止复制</p>
+</td>
+<td class="cellrowborder" valign="top" width="68.17%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p><span style="color:#282B33;"> 开启后，当复制时长超过Air Gap策略设置的复制时间窗时，复制任务将被强制中止。</span>默认开启。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="31.830000000000002%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p>联动侦测</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>仅1.6.0及后续版本支持该参数。</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="68.17%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p>选择是否启用智能侦测与Air Gap策略联动。开启后，系统侦测到当前设备文件系统已感染，将强制断开复制链路，原Air Gap策略将失效。确认文件系统安全后，可在<span class="uicontrol">“存储设备”</span>页签，单击“更多 &gt; 开启策略”，重新启用策略。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="airgap_0011.html">配置Air Gap</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

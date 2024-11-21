@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup">
   <div class="aui-header-2 aui-gutter-column-sm">
     <h2>{{ 'common_basic_info_label' | i18n }}</h2>
   </div>
@@ -51,9 +51,18 @@
   <lv-form-item *ngIf="!isX3000">
     <lv-form-label>
       {{ 'operation_target_antiransomwarepolicy_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ antiRansomwareTip}}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
     </lv-form-label>
     <lv-form-control>
-      <lv-switch formControlName="needDetect"></lv-switch>
+      <lv-group lvDirection="vertical">
+        <lv-switch formControlName="needDetect" [lvDisabled]="isDisableRansomware"></lv-switch>
+      </lv-group>
     </lv-form-control>
   </lv-form-item>
   <ng-container *ngIf="formGroup.value.needDetect">
@@ -242,7 +251,7 @@
   <lv-form-item>
     <div class="aui-header-2 aui-gutter-column-sm mgt-10">
       <h2 style="width: 200px;">
-        {{ 'explore_detection_object_label' | i18n }}
+        {{ 'explore_resource_object_label' | i18n }}
       </h2>
     </div>
   </lv-form-item>
@@ -258,9 +267,7 @@
             <lv-radio [lvValue]="dataMap.Detecting_Data_Source.local.value">
               {{ dataMap.Detecting_Data_Source.local.label | i18n }}
             </lv-radio>
-            <lv-radio
-              [lvValue]="dataMap.Detecting_Data_Source.external.value"
-            >
+            <lv-radio [lvValue]="dataMap.Detecting_Data_Source.external.value">
               {{ dataMap.Detecting_Data_Source.external.label | i18n }}
             </lv-radio>
           </lv-group>
@@ -269,9 +276,9 @@
     </lv-form-control>
   </lv-form-item>
   <lv-form-item>
-    <lv-form-label lvRequired>{{
-      'common_resource_type_label' | i18n
-    }}</lv-form-label>
+    <lv-form-label lvRequired
+      >{{ 'common_resource_type_label' | i18n }}
+    </lv-form-label>
     <lv-form-control>
       <lv-select
         [lvOptions]="resourceTypes"

@@ -1,6 +1,4 @@
 .job-container {
-  width: 560px;
-  margin-right: 16px;
   flex-shrink: 0;
 }
 
@@ -22,6 +20,7 @@
 .job-chart-container {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 }
 
 .lv-select {
@@ -38,7 +37,14 @@
 
 .job-tags {
   margin-top: 20px;
-  width: 300px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.job-tag {
+  min-width: 50%;
+  max-width: 50%;
+  flex: 1;
 }
 
 .homepage-router-link {
@@ -59,7 +65,4 @@
 .job-count-row,
 .job-count-other-row {
   align-items: inherit;
-}
-.job-details-btn {
-  padding-right: 100px;
 }

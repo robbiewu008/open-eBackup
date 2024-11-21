@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
@@ -43,7 +43,8 @@ import {
   map as _map,
   pick,
   toString,
-  trim
+  trim,
+  includes
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 import { map, pairwise } from 'rxjs/operators';
@@ -214,8 +215,14 @@ export class LiveMountOptionsComponent implements OnInit {
     this.restoreToNewLocationOnly =
       this.componentData &&
       this.componentData.selectionCopy &&
-      this.componentData.selectionCopy.generated_by ===
-        DataMap.CopyData_generatedType.replicate.value;
+      includes(
+        [
+          DataMap.CopyData_generatedType.replicate.value,
+          DataMap.CopyData_generatedType.reverseReplication.value,
+          DataMap.CopyData_generatedType.cascadedReplication.value
+        ],
+        this.componentData.selectionCopy.generated_by
+      );
     if (this.restoreToNewLocationOnly) {
       this.formGroup
         .get('target_location')

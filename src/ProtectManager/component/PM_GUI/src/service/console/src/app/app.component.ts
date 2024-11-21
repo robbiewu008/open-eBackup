@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   NgZone,
@@ -27,18 +27,23 @@ import {
   BaseUtilService,
   CommonConsts,
   CookieService,
+  CUSTOM_VERSION,
   DataMap,
   DataMapService,
   EMIT_TASK,
   getAccessibleMenu,
   getAccessibleViewList,
+  getAppTheme,
   GlobalService,
   LANGUAGE,
   LogoutType,
   RoleType,
   RouterUrl,
   SUB_APP_REFRESH_FLAG,
-  SupportLicense
+  SupportLicense,
+  SYSTEM_TIME,
+  ThemeEnum,
+  THEME_TRIGGER_ACTION
 } from 'app/shared';
 import {
   IMAGE_PATH_PREFIX,
@@ -69,6 +74,7 @@ import {
   JobAPIService,
   SecurityApiService,
   SlaApiService,
+  SysVersionServiceService,
   UsersApiService
 } from './shared/api/services';
 import { ExportQueryResultsComponent } from './shared/components/export-query-results/export-query-results.component';
@@ -172,13 +178,37 @@ export class AppComponent implements OnInit, OnDestroy {
   guideTipShow = false;
   hasGuideTipShow = false;
 
-  colorDark = false;
+  cyberDarkHeader = false;
+  customVeriosnLoaded = false;
 
-  // 开源
-  isOpenVersion = includes(
-    [DataMap.Deploy_Type.openOem.value, DataMap.Deploy_Type.openServer.value],
-    this.i18n.get('deploy_type')
-  );
+  timeZone = SYSTEM_TIME.timeZone;
+
+  supportChangeTheme =
+    this.appUtilsService.isDataBackup ||
+    this.appUtilsService.isDecouple ||
+    this.appUtilsService.isDistributed;
+  appTheme = ThemeEnum.light;
+  themeKey = ThemeEnum.light;
+  themeTypes = [
+    {
+      value: ThemeEnum.light,
+      icon: 'aui-theme-light',
+      label: this.i18n.get('common_theme_light_label')
+    },
+    {
+      value: ThemeEnum.dark,
+      icon: 'aui-theme-dark',
+      label: this.i18n.get('common_theme_dark_label')
+    },
+    {
+      value: ThemeEnum.auto,
+      icon: 'aui-theme-auto',
+      label: this.i18n.get('common_theme_auto_label')
+    }
+  ];
+  taskPopoverClass = this.supportChangeTheme
+    ? 'themePopoverClass'
+    : 'taskPopoverClass';
 
   protectionRouterUrlList = [
     RouterUrl.ProtectionDatabase,
@@ -206,7 +236,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private messageBox: MessageboxService,
     private messageService: MessageService,
-    private appUtilsService: AppUtilsService,
+    public appUtilsService: AppUtilsService,
     private viewContainerRef: ViewContainerRef,
     private drawModalService: DrawModalService,
     private authApiService: AuthApiService,
@@ -230,7 +260,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private whitebox: WhiteboxService,
     private copyActionService: CopyActionService,
     private copiesDetectReportService: CopiesDetectReportService,
-    public adfsService: ADFSService
+    public adfsService: ADFSService,
+    private sysVersionService: SysVersionServiceService
   ) {}
 
   ngOnInit() {
@@ -272,20 +303,58 @@ export class AppComponent implements OnInit, OnDestroy {
       .titleService.setTitle(this.baseUtilService.getProductName());
     this.setFavicon();
     this.listenStoragechange();
-    // 开源处理
-    if (this.isOpenVersion) {
-      this.versionLabel = `${this.i18n.get(
-        'common_version_label',
-        [],
-        true
-      )}${this.i18n.get('common_open_version_label')}`;
+    this.getAppThemeKey();
+  }
+
+  getAppThemeKey() {
+    // 登录不需要深浅模式
+    if (includes(['/', RouterUrl.Login], this.router.url)) {
+      this.appTheme = ThemeEnum.light;
+    } else {
+      this.appTheme = getAppTheme(this.i18n);
     }
+    if (localStorage.getItem('app_theme')) {
+      this.themeKey = localStorage.getItem('app_theme') as any;
+    }
+  }
+
+  // 主题切换
+  themeChange() {
+    localStorage.setItem('app_theme', this.themeKey);
+    this.appTheme = getAppTheme(this.i18n);
+    // 发布全局消息流
+    this.globalService.emitStore({ action: THEME_TRIGGER_ACTION, state: true });
+  }
+
+  // 查询自定义的版本号
+  getCustomVersion() {
+    if (
+      this.isCyberEngine ||
+      this.customVeriosnLoaded ||
+      this.router.url === RouterUrl.Init
+    ) {
+      return;
+    }
+    this.customVeriosnLoaded = true;
+    this.sysVersionService
+      .GetSysbackupVersion({ akDoException: false, akLoading: false })
+      .subscribe((res: any) => {
+        if (res.selfVersion) {
+          this.versionLabel = `${this.i18n.get(
+            'common_version_label',
+            [],
+            true
+          )}${res.selfVersion}`;
+          DataMap.Agent_File.fileName.value = `${res.selfVersion}_client.zip`;
+          CUSTOM_VERSION.version = res.selfVersion;
+        }
+      });
   }
 
   showGuidePop() {
     if (
       this.needGuideProduct &&
-      localStorage.getItem(this.userName) !== 'true' &&
+      localStorage.getItem('user_guide') !== 'true' &&
       !this.hasGuideTipShow
     ) {
       setTimeout(() => {
@@ -296,7 +365,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   hasKnowGuide() {
-    localStorage.setItem(this.userName, 'true');
+    localStorage.setItem('user_guide', 'true');
     this.guideTipShow = false;
   }
 
@@ -314,8 +383,6 @@ export class AppComponent implements OnInit, OnDestroy {
       ? this.i18n.get('common_whitebox_about_warning_label', [
           this.whitebox.oem[`warn_${this.isZh ? 'zh' : 'en'}`]
         ])
-      : this.isOpenVersion
-      ? this.i18n.get('common_about_open_backup_label')
       : this.i18n.get('common_about_warning_label');
     this.copyRightLabel = this.whitebox.isWhitebox
       ? this.whitebox.oem[`copyright_${this.isZh ? 'zh' : 'en'}`]
@@ -363,6 +430,7 @@ export class AppComponent implements OnInit, OnDestroy {
                   label: this.i18n.get('common_database_label'),
                   routerLink: RouterUrl.ProtectionDatabase,
                   childrenLink: [
+                    RouterUrl.ProtectionDatabaseAntDB,
                     RouterUrl.ProtectionHostAppOracle,
                     RouterUrl.ProtectionHostAppMySQL,
                     RouterUrl.ProtectionHostAppSQLServer,
@@ -406,7 +474,8 @@ export class AppComponent implements OnInit, OnDestroy {
                     RouterUrl.ProtectionVirtualizationCnware,
                     RouterUrl.ProtectionVirtualizationFusionCompute,
                     RouterUrl.ProtectionVirtualizationHyperV,
-                    RouterUrl.ProtectionVirtualizationFusionOne
+                    RouterUrl.ProtectionVirtualizationFusionOne,
+                    RouterUrl.ProtectionVirtualizationNutanix
                   ]
                 },
                 {
@@ -436,7 +505,8 @@ export class AppComponent implements OnInit, OnDestroy {
                   childrenLink: [
                     RouterUrl.ProtectionActiveDirectory,
                     RouterUrl.ProtectionHostAppExchange,
-                    RouterUrl.ProtectionHostAppSapHana
+                    RouterUrl.ProtectionHostAppSapHana,
+                    RouterUrl.ProtectionHostAppSaponoracle
                   ]
                 },
                 {
@@ -447,6 +517,7 @@ export class AppComponent implements OnInit, OnDestroy {
                     RouterUrl.ProtectionStorageDeviceInfo,
                     RouterUrl.ProtectionDoradoFileSystem,
                     RouterUrl.ProtectionNasShared,
+                    RouterUrl.ProtectionNdmp,
                     RouterUrl.ProtectionCommonShare,
                     RouterUrl.ProtectionObject,
                     RouterUrl.ProtectionHostAppFilesetTemplate,
@@ -548,6 +619,7 @@ export class AppComponent implements OnInit, OnDestroy {
                   label: this.i18n.get('common_database_label'),
                   routerLink: '/explore/copy-data/database',
                   childrenLink: [
+                    RouterUrl.ExploreCopyDataAntDB,
                     RouterUrl.ExploreCopyDataOracle,
                     RouterUrl.ExploreCopyDataMySQL,
                     RouterUrl.ExploreCopyDataSQLServer,
@@ -591,7 +663,8 @@ export class AppComponent implements OnInit, OnDestroy {
                     RouterUrl.ExploreCopyDataCNware,
                     RouterUrl.ExploreCopyDataHyperv,
                     RouterUrl.ExploreCopyDataFusionCompute,
-                    RouterUrl.ExploreCopyDataFusionOne
+                    RouterUrl.ExploreCopyDataFusionOne,
+                    RouterUrl.ExploreCopyDataNutanix
                   ]
                 },
                 {
@@ -621,7 +694,8 @@ export class AppComponent implements OnInit, OnDestroy {
                   childrenLink: [
                     RouterUrl.ExploreCopyDataActiveDirectory,
                     RouterUrl.ExploreCopyDataDatabaseExchange,
-                    RouterUrl.ExploreCopyDataSapHana
+                    RouterUrl.ExploreCopyDataSapHana,
+                    RouterUrl.ExploreCopyDataSaponoracle
                   ]
                 },
                 {
@@ -631,6 +705,7 @@ export class AppComponent implements OnInit, OnDestroy {
                   childrenLink: [
                     RouterUrl.ExploreCopyDataFileSystem,
                     RouterUrl.ExploreCopyDataNasShared,
+                    RouterUrl.ExploreCopyDataNdmp,
                     RouterUrl.ExploreCopyDataCommonShare,
                     RouterUrl.ExploreCopyDataObject,
                     RouterUrl.ExploreCopyDataFileset,
@@ -728,35 +803,26 @@ export class AppComponent implements OnInit, OnDestroy {
           ].includes(this.i18n.get('deploy_type')),
           items: [
             {
-              id: 'ransomware-protection',
-              label: this.i18n.get('explore_ransomware_protection_label'),
-              routerLink: RouterUrl.ExploreAntiRansomwareProtectionDataBackup,
-              type: 'group',
-              items: [
-                {
-                  id: 'file-interception',
-                  label: this.i18n.get('explore_file_block_label'),
-                  routerLink:
-                    RouterUrl.ExploreAntiRansomwareProtectionFileInterception
-                },
-                {
-                  id: 'real-time-detection',
-                  label: this.i18n.get('explore_real_time_detection_new_label'),
-                  routerLink:
-                    RouterUrl.ExploreAntiRansomwareProtectionRealTimeDetection
-                },
-                {
-                  id: 'data-backup',
-                  label: this.i18n.get('explore_intelligent_detection_label'),
-                  routerLink:
-                    RouterUrl.ExploreAntiRansomwareProtectionDataBackup
-                },
-                {
-                  id: 'detection-model',
-                  label: this.i18n.get('explore_detection_models_new_label'),
-                  routerLink: RouterUrl.ExploreAntiRansomwareProtectionModel
-                }
-              ]
+              id: 'file-interception',
+              label: this.i18n.get('explore_file_block_label'),
+              routerLink:
+                RouterUrl.ExploreAntiRansomwareProtectionFileInterception
+            },
+            {
+              id: 'real-time-detection',
+              label: this.i18n.get('explore_real_time_detection_new_label'),
+              routerLink:
+                RouterUrl.ExploreAntiRansomwareProtectionRealTimeDetection
+            },
+            {
+              id: 'data-backup',
+              label: this.i18n.get('explore_intelligent_detection_label'),
+              routerLink: RouterUrl.ExploreAntiRansomwareProtectionDataBackup
+            },
+            {
+              id: 'detection-model',
+              label: this.i18n.get('explore_detection_models_new_label'),
+              routerLink: RouterUrl.ExploreAntiRansomwareProtectionModel
             },
             {
               id: 'data-desensitization',
@@ -909,7 +975,7 @@ export class AppComponent implements OnInit, OnDestroy {
           id: 'detection-report',
           icon: 'aui-menu-report',
           hidden: !this.isCyberEngine,
-          label: this.i18n.get('explore_desensitization_report_label'),
+          label: this.i18n.get('explore_desensitization_reports_label'),
           routerLink: RouterUrl.ExploreDetectionReport
         },
         {
@@ -957,7 +1023,7 @@ export class AppComponent implements OnInit, OnDestroy {
           id: 'storage-device',
           icon: 'aui-menu-storage-device',
           hidden: !this.isCyberEngine,
-          label: this.i18n.get('protection_storage_device_label'),
+          label: this.i18n.get('protection_storage_devices_label'),
           routerLink: RouterUrl.ExploreStorageDevice
         },
         {
@@ -1136,8 +1202,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 {
                   id: 'tag-management',
                   label: this.i18n.get('system_tag_management_label'),
-                  routerLink: '/system/settings/tag-management',
-                  childrenLink: RouterUrl.SystemTagManagement
+                  routerLink: RouterUrl.SystemTagManagement
                 },
                 {
                   id: 'system-backup',
@@ -1319,17 +1384,16 @@ export class AppComponent implements OnInit, OnDestroy {
   routeChange() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.colorDark = !includes(
-          [RouterUrl.Home, RouterUrl.Login],
-          this.router.url
-        );
-        // 首页加载字体是浅色，通过动态添加类实现
-        if (includes([RouterUrl.Home], this.router.url)) {
+        this.cyberDarkHeader =
+          this.isCyberEngine && includes([RouterUrl.Home], this.router.url);
+        // Oceancyber首页加载字体是浅色，通过动态添加类实现
+        if (includes([RouterUrl.Home], this.router.url) && this.isCyberEngine) {
           document.body.classList?.add('light-loading');
         } else {
           document.body.classList?.remove('light-loading');
         }
         this.drawModalService.destroyAllModals();
+        this.getAppThemeKey();
         this.isLogin = event.urlAfterRedirects.includes('login');
         this.isErrorPage = event.urlAfterRedirects.includes('error-page');
         this.isReportDetail = event.urlAfterRedirects.includes('report-detail');
@@ -1440,6 +1504,8 @@ export class AppComponent implements OnInit, OnDestroy {
         this.getMenus();
         this.closeTaskPopover();
         this.showGuidePop();
+        // 获取自定义版本
+        this.getCustomVersion();
       }
     });
   }
@@ -1473,8 +1539,8 @@ export class AppComponent implements OnInit, OnDestroy {
       this.usersApiService
         .getUsingGET2({ userId, akDoException: false })
         .pipe(map(res => res || { rolesSet: [{ roleId: RoleType.Null }] }))
-        .subscribe(
-          res => {
+        .subscribe({
+          next: res => {
             this.userName = res.userName;
             this.userType = res.userType;
             this.isHcsUser = res.userType === CommonConsts.HCS_USER_TYPE;
@@ -1482,7 +1548,7 @@ export class AppComponent implements OnInit, OnDestroy {
             observer.next(res);
             observer.complete();
           },
-          () => {
+          error: () => {
             // HCS服务化
             if (
               !isEmpty(get(window, 'parent.hcsData.ProjectName', '')) ||
@@ -1500,7 +1566,7 @@ export class AppComponent implements OnInit, OnDestroy {
             }
             this.timeoutLogout();
           }
-        );
+        });
     });
   }
 
@@ -1573,6 +1639,7 @@ export class AppComponent implements OnInit, OnDestroy {
     clearTimeout(this.sessionTimeout);
     clearTimeout(this.criticalAlarmTimeout);
     this.cookieService.removeAll(this.i18n.languageKey);
+    localStorage.removeItem(this.userName);
     this.messageBox.error({
       lvModalKey: 'errorMsgKey',
       lvHeader: this.i18n.get('common_error_label'),
@@ -1939,6 +2006,7 @@ export class AppComponent implements OnInit, OnDestroy {
     clearTimeout(this.jobTimeout);
     clearTimeout(this.sessionTimeout);
     this.cookieService.removeAll(this.i18n.languageKey);
+    localStorage.removeItem(this.userName);
     this.router.navigateByUrl('/login').then(() => {
       window.location.reload();
     });
@@ -1968,9 +2036,10 @@ export class AppComponent implements OnInit, OnDestroy {
     this.drawModalService.create(
       assign({}, MODAL_COMMON.generateDrawerOptions(), {
         lvType: 'modal',
+        lvModalKey: 'modify-pwd',
         lvOkDisabled: true,
         lvWidth: 500,
-        lvHeight: 330,
+        lvHeight: 400,
         lvHeader: this.i18n.get('common_update_password_label'),
         lvContent: ModifyPasswordComponent,
         lvAfterOpen: modal => {
@@ -1996,6 +2065,7 @@ export class AppComponent implements OnInit, OnDestroy {
                   clearTimeout(this.sessionTimeout);
                   clearTimeout(this.criticalAlarmTimeout);
                   this.cookieService.removeAll(this.i18n.languageKey);
+                  localStorage.removeItem(this.userName);
                   this.router.navigateByUrl('/login');
                 },
                 error: error => resolve(false)

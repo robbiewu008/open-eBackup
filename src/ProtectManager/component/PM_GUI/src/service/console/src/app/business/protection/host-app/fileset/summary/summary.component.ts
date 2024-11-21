@@ -1,18 +1,19 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
+  CAPACITY_UNIT,
   CommonConsts,
   CopiesService,
   DataMap,
@@ -20,7 +21,8 @@ import {
   FileSetFilterType,
   FilterBy,
   FilterMode,
-  I18NService
+  I18NService,
+  SYSTEM_TIME
 } from 'app/shared';
 import {
   cloneDeep,
@@ -48,6 +50,10 @@ export class SummaryComponent implements OnInit {
   pageSize = CommonConsts.PAGE_SIZE_SMALL;
   pageSizeOptions = [CommonConsts.PAGE_SIZE_SMALL];
   selectionPath = [];
+  isVolume = false;
+  isVolumeWindows = false; // 卷的操作系统类型
+  unitconst = CAPACITY_UNIT;
+
   constructor(
     public i18n: I18NService,
     public dataMapService: DataMapService,
@@ -89,7 +95,26 @@ export class SummaryComponent implements OnInit {
   }
 
   getProtectedFiles() {
-    this.selectionPath = JSON.parse(this.source.extendInfo.paths);
+    if (
+      this.source &&
+      this.source.type === DataMap.Resource_Type.fileset.value &&
+      this.source.subType === DataMap.Resource_Type.volume.value &&
+      this.source?.environment?.osType === DataMap.Os_Type.windows.value
+    ) {
+      this.selectionPath = map(
+        JSON.parse(this.source.extendInfo.paths),
+        item => {
+          return {
+            name: item.displayName,
+            fileSystem: item.fileSystem,
+            size: item.size,
+            volumeName: item.name
+          };
+        }
+      );
+    } else {
+      this.selectionPath = JSON.parse(this.source.extendInfo.paths);
+    }
   }
 
   getFilesFilter() {
@@ -231,6 +256,13 @@ export class SummaryComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.isVolume =
+      this.source &&
+      this.source.type === DataMap.Resource_Type.fileset.value &&
+      this.source.subType === DataMap.Resource_Type.volume.value;
+    this.isVolumeWindows =
+      this.isVolume &&
+      this.source?.environment?.osType === DataMap.Os_Type.windows.value;
     this.getProtectedInfos();
   }
 }

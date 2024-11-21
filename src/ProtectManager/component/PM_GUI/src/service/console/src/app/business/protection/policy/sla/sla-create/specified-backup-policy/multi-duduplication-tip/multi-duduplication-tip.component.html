@@ -1,3 +1,4 @@
+<ng-container *ngIf="isHcsUser && formGroup.value.source_deduplication; else elseTemplate">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<ng-container *ngIf="isHcsUser && formGroup.value.source_deduplication; else elseTemplate">
   <lv-group class="type-tip" [lvColumns]='["16px", "auto"]' lvRowGutter="4px">
     <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
     <span

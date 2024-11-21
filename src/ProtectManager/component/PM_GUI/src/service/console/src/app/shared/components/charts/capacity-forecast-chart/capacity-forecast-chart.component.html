@@ -1,3 +1,4 @@
+<div class="forecast-container">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="forecast-container">
   <div class="forecast-title">
     <h1 class="tittle">{{ 'common_capacity_forecast_label' | i18n }}</h1>
     <div class="forecast-subtitle" *ngIf="!(reachTo80 < 0 && reachTo100 < 0) && !isNoData">
@@ -53,9 +53,6 @@
     <div id="forecast-chart"></div>
   </div>
   <div class="forecast-chart-no-data" *ngIf="isNoData">
-    <i lv-icon="aui-icon-no-data"></i>
-    <div class="no-data-label">
-      {{'common_no_data_label' | i18n}}
-    </div>
+    <lv-empty></lv-empty>
   </div>
 </div>

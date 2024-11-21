@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -84,6 +84,7 @@ export class NormalResourcesetTemplateComponent
   @Input() appType;
   @Input() data;
   @Input() allSelect;
+  @Input() tableLabel;
   @Output() allSelectChange = new EventEmitter<any>();
   @Output() onNumChange = new EventEmitter<any>(); // 特殊应用如nas需要获取后更新数量
 
@@ -106,6 +107,10 @@ export class NormalResourcesetTemplateComponent
   slaComplianceExtraTpl: TemplateRef<any>;
   @ViewChild('storageDeviceTpl', { static: true })
   storageDeviceTpl: TemplateRef<any>;
+  @ViewChild('databaseTypeTpl', { static: true })
+  databaseTypeTpl: TemplateRef<any>;
+  @ViewChild('sapHanaDbDeployType', { static: true })
+  sapHanaDbDeployType: TemplateRef<any>;
 
   constructor(
     public globalService: GlobalService,
@@ -418,6 +423,28 @@ export class NormalResourcesetTemplateComponent
         key: 'databaseType',
         name: this.i18n.get('protection_database_type_label')
       },
+      sapHanaDbType: {
+        key: 'sapHanaDbType',
+        name: this.i18n.get('protection_database_type_label'),
+        filter: {
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: true,
+          options: this.dataMapService.toArray('saphanaDatabaseType')
+        },
+        cellRender: this.databaseTypeTpl
+      },
+      sapHanaDbDeployType: {
+        key: 'sapHanaDbDeployType',
+        name: this.i18n.get('common_database_deploy_type_label'),
+        filter: {
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: true,
+          options: this.dataMapService.toArray('saphanaDatabaseDeployType')
+        },
+        cellRender: this.sapHanaDbDeployType
+      },
       // 版本
       version: {
         name: this.i18n.get('common_version_label'),
@@ -554,12 +581,7 @@ export class NormalResourcesetTemplateComponent
       // 特殊ip
       nodeIpAddress: {
         key: 'nodeIpAddress',
-        name: includes(
-          [DataMap.Resource_Type.goldendbInstance.value],
-          this.resourceType
-        )
-          ? this.i18n.get('protection_manage_node_ip_address_label')
-          : this.i18n.get('protection_node_ip_address_label')
+        name: this.i18n.get('protection_node_ip_address_label')
       },
       // 所属父名
       parentName: {
@@ -810,6 +832,11 @@ export class NormalResourcesetTemplateComponent
       includes([DataMap.Resource_Type.ObjectSet.value], this.resourceType)
     ) {
       return this.i18n.get('protection_object_storage_owned_label');
+    } else if (
+      this.resourceType === DataMap.Resource_Type.saphanaDatabase.value
+    ) {
+      // 所属实例
+      return this.i18n.get('commom_owned_instance_label');
     } else {
       return this.i18n.get('insight_report_belong_cluster_label');
     }
@@ -856,6 +883,14 @@ export class NormalResourcesetTemplateComponent
         return this.dataMapService.toArray('Dameng_Type');
       case DataMap.Resource_Type.GaussDB_T.value:
         return this.dataMapService.toArray('gaussDBTClusterType');
+      case DataMap.Resource_Type.NASFileSystem.value:
+        if (this.appType === ResourceSetType.StorageEquipment) {
+          return this.dataMapService
+            .toArray('Device_Storage_Type')
+            .filter(item => {
+              return item.value !== DataMap.Device_Storage_Type.Other.value;
+            });
+        }
     }
   }
 
@@ -1030,11 +1065,31 @@ export class NormalResourcesetTemplateComponent
         return [cols.name, cols.osType];
       case resType.commonShare.value:
         return [...nameCols, ...slaCols];
+      case resType.ActiveDirectory.value:
+        return [
+          ...nameCols,
+          cols.environmentName,
+          cols.environmentEndpoint,
+          ...slaCols
+        ];
+      case resType.saphanaInstance.value:
+        return [...nameCols, cols.linkStatus, cols.version];
+      case resType.saphanaDatabase.value:
+        return [
+          ...nameCols,
+          cols.linkStatus,
+          cols.sapHanaDbType,
+          cols.sapHanaDbDeployType,
+          cols.environmentName,
+          cols.environmentEndpoint,
+          ...slaCols
+        ];
       case resType.NASFileSystem.value:
         if (this.appType === ResourceSetType.StorageEquipment) {
           return [
             ...nameCols,
             cols.linkStatus,
+            cols.subType,
             cols.path,
             cols.port,
             cols.wwn,
@@ -1057,6 +1112,12 @@ export class NormalResourcesetTemplateComponent
           cols.protocol,
           ...slaCols
         ];
+      case resType.ndmp.value:
+        if (this.tableLabel === this.i18n.get('common_file_systems_label')) {
+          return [...nameCols, cols.parentName, cols.tenantName, ...slaCols];
+        } else {
+          return [...nameCols, cols.parentName, ...slaCols];
+        }
       case resType.volume.value:
         return [
           ...nameCols,
@@ -1208,6 +1269,7 @@ export class NormalResourcesetTemplateComponent
         return this.i18n.get('insight_report_belong_cluster_label');
       case DataMap.Resource_Type.NASFileSystem.value:
       case DataMap.Resource_Type.NASShare.value:
+      case DataMap.Resource_Type.ndmp.value:
         // 存储设备
         return this.i18n.get('protection_storage_device_label');
       case DataMap.Resource_Type.kubernetesDatasetCommon.value:
@@ -1326,7 +1388,11 @@ export class NormalResourcesetTemplateComponent
             [
               ResourceSetType.NasFileSystem,
               ResourceSetType.NasShare,
-              ResourceSetType.StorageEquipment
+              ResourceSetType.StorageEquipment,
+              ResourceSetType.PostgreSQL,
+              ResourceSetType.Informix,
+              ResourceSetType.KingBase,
+              ResourceSetType.MySQL
             ],
             this.appType
           ) &&
@@ -1356,6 +1422,18 @@ export class NormalResourcesetTemplateComponent
         ) {
           // 只有在修改场景时第一次进入组件会获取一次
           this.getSelectedData();
+        } else if (
+          !!this.data &&
+          !isEmpty(this.allSelectionMap[this.appType]?.data) &&
+          !this.isDetail
+        ) {
+          // 一个大应用下的多层tab可能会触发不同的获取数据接口，如果时间差太多会导致不单独获取数据，需要手动回显
+          this.selectionData = cloneDeep(
+            this.allSelectionMap[this.appType].data
+          );
+          this.dataTable.setSelections(cloneDeep(this.selectionData));
+          this.allSelectChange.emit();
+          this.parentSelectChild();
         }
         this.cdr.detectChanges();
       });
@@ -1370,8 +1448,12 @@ export class NormalResourcesetTemplateComponent
         find(
           this.allSelectionMap[this.tmpAppType]?.data,
           val =>
-            val.uuid === item?.parentUuid ||
-            val.uuid === item?.environment?.uuid
+            (val.uuid === item?.parentUuid ||
+              val.uuid === item?.environment?.uuid) &&
+            !(
+              this.appType === ResourceSetType.StorageEquipment &&
+              val.uuid === item?.parentUuid
+            )
         )
       ) {
         assign(item, {
@@ -1410,7 +1492,12 @@ export class NormalResourcesetTemplateComponent
       scopeModule: this.appType,
       type: 'RESOURCE'
     };
-    this.resourceSetService.QueryResourceObjectIdList(params).subscribe(res => {
+    if ([ResourceSetType.PostgreSQL].includes(this.appType)) {
+      assign(params, {
+        isNameExist: true
+      });
+    }
+    this.resourceSetService.queryResourceObjectIdList(params).subscribe(res => {
       set(this.allSelectionMap, this.appType, {
         data: _map(res, item => {
           return { uuid: item };
@@ -1487,7 +1574,8 @@ export class NormalResourcesetTemplateComponent
           subType: [
             resType.KingBaseInstance.value,
             resType.KingBaseClusterInstance.value
-          ]
+          ],
+          isTopInstance: InstanceType.TopInstance
         };
       case resType.Dameng.value:
         return {
@@ -1534,12 +1622,29 @@ export class NormalResourcesetTemplateComponent
       case resType.NASFileSystem.value:
         if (this.appType === ResourceSetType.NasFileSystem) {
           return {
-            subType: [resType.NASFileSystem.value, resType.ndmp.value]
+            subType: [resType.NASFileSystem.value]
           };
         } else {
           return {
             type: 'StorageEquipment',
             subType: [['!='], DataMap.Device_Storage_Type.Other.value]
+          };
+        }
+      case DataMap.Resource_Type.saphanaInstance.value:
+        return {
+          subType: [DataMap.Resource_Type.saphanaInstance.value],
+          isTopInstance: InstanceType.TopInstance
+        };
+      case DataMap.Resource_Type.ndmp.value:
+        if (this.tableLabel === this.i18n.get('common_file_systems_label')) {
+          return {
+            subType: [DataMap.Resource_Type.ndmp.value],
+            isFs: [['!='], '0']
+          };
+        } else {
+          return {
+            subType: [DataMap.Resource_Type.ndmp.value],
+            isFs: [['=='], '0']
           };
         }
       default:
@@ -1560,6 +1665,25 @@ export class NormalResourcesetTemplateComponent
     // 名字太长了简化一下，搞一个resType
     const resType = DataMap.Resource_Type;
     switch (this.resourceType) {
+      case DataMap.Resource_Type.saphanaInstance.value:
+        assign(item, {
+          enableLogBackup: item?.extendInfo?.enableLogBackup
+        });
+        break;
+      case DataMap.Resource_Type.saphanaDatabase.value:
+        assign(item, {
+          sapHanaDbType: item?.extendInfo?.sapHanaDbType,
+          sapHanaDbDeployType: item?.extendInfo?.sapHanaDbDeployType,
+          linkStatus: item.extendInfo?.linkStatus,
+          environmentEndpoint: item.environment?.endpoint
+        });
+        break;
+      case DataMap.Resource_Type.ActiveDirectory.value:
+        assign(item, {
+          environmentEndpoint: item.environment?.endpoint,
+          environmentName: item.environment?.name
+        });
+        break;
       case resType.GaussDB_T.value:
         assign(item, {
           clusterState: item.extendInfo?.clusterState
@@ -1629,6 +1753,8 @@ export class NormalResourcesetTemplateComponent
             wwn:
               includes(
                 [
+                  DataMap.Device_Storage_Type.DoradoV7.value,
+                  DataMap.Device_Storage_Type.OceanStorDoradoV7.value,
                   DataMap.Device_Storage_Type.OceanStorDorado_6_1_3.value,
                   DataMap.Device_Storage_Type.OceanStor_6_1_3.value,
                   DataMap.Device_Storage_Type.OceanStor_v5.value,
@@ -1651,6 +1777,11 @@ export class NormalResourcesetTemplateComponent
             protocol: item.extendInfo?.protocol
           });
         }
+        break;
+      case resType.ndmp.value:
+        assign(item, {
+          tenantName: item.extendInfo?.tenantName
+        });
         break;
       case resType.fileset.value:
         assign(item, {
@@ -1706,6 +1837,12 @@ export class NormalResourcesetTemplateComponent
       case resType.volume.value:
         assign(item, {
           environmentEndpoint: item.environment?.endpoint
+        });
+        break;
+      case resType.SQLServerDatabase.value:
+        assign(item, {
+          ownedInstance: item.extendInfo?.instanceName,
+          clusterOrHostName: item.extendInfo?.hostName
         });
         break;
       case resType.SQLServerInstance.value:

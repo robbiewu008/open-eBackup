@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -34,6 +34,7 @@ import {
   isNumber,
   isString,
   map,
+  set,
   startsWith
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
@@ -69,6 +70,11 @@ export class GaussDBTRestoreComponent implements OnInit {
     invalidName: this.i18n.get('common_script_error_label'),
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [8192])
   };
+  parallelNumberPlaceHolder = '1~16';
+  parallelNumberErrorTip = {
+    invalidInteger: this.i18n.get('common_valid_integer_label'),
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 16])
+  };
 
   constructor(
     public i18n: I18NService,
@@ -83,6 +89,12 @@ export class GaussDBTRestoreComponent implements OnInit {
       restoreTo: new FormControl(RestoreV2LocationType.ORIGIN),
       cluster: new FormControl('', {
         validators: [this.baseUtilService.VALID.required()]
+      }),
+      parallel_process: new FormControl('', {
+        validators: [
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(1, 16)
+        ]
       })
     });
     this.watch();
@@ -193,14 +205,18 @@ export class GaussDBTRestoreComponent implements OnInit {
       targetEnv: tagetObj.rootUuid,
       restoreType: this.restoreType,
       targetLocation: this.formGroup.value.restoreTo,
-      targetObject: this.formGroup.value.cluster
+      targetObject: this.formGroup.value.cluster,
+      extendInfo: {}
     };
+    if (this.formGroup.value.parallel_process) {
+      set(
+        params,
+        'extendInfo.parallel_process',
+        Number(this.formGroup.value.parallel_process)
+      );
+    }
     if (this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value) {
-      assign(params, {
-        extendInfo: {
-          restoreTimestamp: this.rowCopy.restoreTimeStamp
-        }
-      });
+      set(params, 'extendInfo.restoreTimestamp', this.rowCopy.restoreTimeStamp);
     }
     return params;
   }

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -122,6 +122,14 @@ export class AntiPolicyComponent implements OnInit, AfterViewInit {
     if (this.appUtilsService.isDistributed || this.appUtilsService.isDecouple) {
       EXCLUDE_RESOURCE_TYPES.push(DataMap.Job_Target_Type.NASFileSystem);
     }
+    if (this.appUtilsService.isHcsUser) {
+      EXCLUDE_RESOURCE_TYPES.push(
+        DataMap.Job_Target_Type.OpenStackCloudServer,
+        DataMap.Job_Target_Type.kubernetesDatasetCommon,
+        DataMap.Job_Target_Type.kubernetesNamespaceCommon,
+        DataMap.Job_Target_Type.lightCloudGaussdbInstance
+      );
+    }
     this.initConfig();
   }
 
@@ -153,7 +161,11 @@ export class AntiPolicyComponent implements OnInit, AfterViewInit {
         id: 'modify',
         label: this.i18n.get('common_modify_label'),
         displayCheck: data => {
-          return this.cookieService.role === parseInt(data[0].roleId, 0);
+          return (
+            isNaN(Number(this.cookieService.role)) ||
+            isNaN(this.cookieService.role) ||
+            this.cookieService.role === parseInt(data[0].roleId, 0)
+          );
         },
         disableCheck: data => {
           return !data.length || some(data, item => !hasWormPermission(item));
@@ -230,7 +242,7 @@ export class AntiPolicyComponent implements OnInit, AfterViewInit {
       },
       {
         key: 'dataSourceType',
-        name: this.i18n.get('explore_data_source_label'),
+        name: this.i18n.get('system_project_type_label'),
         filter: {
           type: 'select',
           isMultiple: true,
@@ -408,7 +420,7 @@ export class AntiPolicyComponent implements OnInit, AfterViewInit {
       scopeModule: ResourceSetType.Worm,
       type: ResourceSetType.Worm
     };
-    this.resourceSetService.QueryResourceObjectIdList(params).subscribe(res => {
+    this.resourceSetService.queryResourceObjectIdList(params).subscribe(res => {
       set(this.allSelectionMap, ResourceSetType.Worm, {
         data: map(res, item => {
           return { id: Number(item) };
@@ -455,10 +467,7 @@ export class AntiPolicyComponent implements OnInit, AfterViewInit {
             const resourceSubType = content.formGroup.get('resourceSubType')
               .value;
             modalIns.lvOkDisabled =
-              res !== 'VALID' ||
-              _checkSwitch() ||
-              isEmpty(resourceSubType) ||
-              content.resourceCheckFaild;
+              res !== 'VALID' || _checkSwitch() || isEmpty(resourceSubType);
           });
         });
       },

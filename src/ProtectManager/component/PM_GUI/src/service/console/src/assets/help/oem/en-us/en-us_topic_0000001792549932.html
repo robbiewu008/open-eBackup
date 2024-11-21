@@ -1,4 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -13,23 +26,30 @@
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="EN-US_TOPIC_0000001792549932"></a><a name="EN-US_TOPIC_0000001792549932"></a>
-  <h1 class="topictitle1">Adding an Agent Host to Huawei Scale-Out Storage OceanStor Pacific (Applicable to Huawei Cloud Stack)</h1>
-  <div>
-   <p>If the storage resources of Huawei Cloud Stack are Huawei scale-out block storage OceanStor Pacific and a reverse proxy is configured, follow the instructions in this section to connect the agent host to Huawei scale-out storage as a VBS client and replace certificates, ensuring that the agent host can access Huawei scale-out block storage.</p>
-   <div class="section">
-    <h4 class="sectiontitle">Installing VBS</h4>
-    <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p04301219055">For details about how to install the VBS service, see section "Allocating Storage Space (SCSI Protocol-Linux)" &gt; "Creating VBS on Compute Nodes" in <em id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_i847618142122">Product Documentation</em> of the corresponding storage product version. A compute node is an agent host. Set the following parameters as required. Set other parameters based on the document requirements.</p>
+  <h1 class="topictitle1"><span id="ph26779362412">Adding an Agent Host to Huawei Scale-Out Storage OceanStor Pacific (Applicable to Huawei Cloud Stack)</span></h1>
+  <div id="body0000001814258413">
+   <p id="EN-US_TOPIC_0000001792549932__p8060118">If the storage resources of Huawei Cloud Stack are Huawei scale-out block storage OceanStor Pacific and a reverse proxy is configured, follow the instructions in this section to connect the agent host to Huawei scale-out storage as a VBS client and replace certificates, ensuring that the agent host can access Huawei scale-out block storage.</p>
+   <div class="section" id="EN-US_TOPIC_0000001792549932__section11855925204414">
+    <h4 class="sectiontitle">Install VBS on the Agent Host.</h4>
+    <div class="note" id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_note69529359463">
+     <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+     <div class="notebody">
+      <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p168872019505">If the compute node where VBS is to be installed does not run the scale-out storage OS, install the OS dependency package on the compute node before installing VBS. For details, see <strong id="EN-US_TOPIC_0000001792549932__b1913282919239">Basic Service Configuration Guide for Block</strong> &gt; <strong id="EN-US_TOPIC_0000001792549932__b131324297233">Appendix</strong> &gt; <strong id="EN-US_TOPIC_0000001792549932__b111329296235">Installing the OS Dependency Package</strong> in the product documentation of the corresponding storage device version.</p>
+     </div>
+    </div>
+    <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p04301219055">For details about how to install the VBS service, see "Allocating Storage Space (SCSI Protocol-Linux) &gt; Creating VBS on Compute Nodes" in the OceanStor Pacific product documentation of the corresponding version. A compute node is an agent host. Set the following parameters as required. Set other parameters based on the document requirements. To obtain the OceanStor Pacific product documentation of the corresponding version, go to <a href="https://support.huawei.com/enterprise/en/distributed-storage/oceanstor-pacific-series-pid-262589930" target="_blank" rel="noopener noreferrer">OceanStor Pacific Series</a> and select the corresponding model.</p>
     <ul id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_ul996111581773">
-     <li id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_li1096110589719"><strong id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_b1046454115581">Management IP Address</strong>: Enter the management IP address of the agent host.</li>
-     <li id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_li149611258279"><strong id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_b1040995525818">Cabinet</strong>: Specify the cabinet where the agent host is located. It can be any value.</li>
-     <li id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_li49619581879"><strong id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_b19708985915">Node Role</strong>: Select <strong id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_b1363373045810">Compute</strong>.</li>
-     <li id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_li119612582075"><strong id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_b892811256173">Installation Mode</strong>: Select <strong id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_b1693082531719">Regular installation</strong>.</li>
+     <li id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_li1096110589719"><strong id="EN-US_TOPIC_0000001792549932__b564693992317">Management IP Address</strong>: Enter the management IP address of the agent host.</li>
+     <li id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_li149611258279"><strong id="EN-US_TOPIC_0000001792549932__b196154113231">Cabinet</strong>: Specify the cabinet where the agent host is located. It can be any value.</li>
+     <li id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_li49619581879"><strong id="EN-US_TOPIC_0000001792549932__b1970444312234">Node Role</strong>: Select <strong id="EN-US_TOPIC_0000001792549932__b1370454342310">Compute</strong>.</li>
+     <li id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_li119612582075"><strong id="EN-US_TOPIC_0000001792549932__b2699174517232">Installation Mode</strong>: Select <strong id="EN-US_TOPIC_0000001792549932__b169974572311">Regular installation</strong>.</li>
     </ul>
    </div>
-   <div class="section">
+   <div class="section" id="EN-US_TOPIC_0000001792549932__section10625236164517">
+    <a name="EN-US_TOPIC_0000001792549932__section10625236164517"></a><a name="section10625236164517"></a>
     <h4 class="sectiontitle">Replacing OceanStor Pacific Certificates</h4>
-    <ol>
-     <li id="EN-US_TOPIC_0000001792549932__li116039278213"><a name="EN-US_TOPIC_0000001792549932__li116039278213"></a><a name="li116039278213"></a><span>Log in to the technical support website and obtain the OceanStor Pacific API package for Huawei Cloud Stack.</span><p></p>
+    <ol id="EN-US_TOPIC_0000001792549932__ol1563385610506">
+     <li id="EN-US_TOPIC_0000001792549932__li116039278213"><a name="EN-US_TOPIC_0000001792549932__li116039278213"></a><a name="li116039278213"></a><span>Log in to the technical support website and obtain the OceanStor Pacific API package.</span><p></p>
       <div class="p" id="EN-US_TOPIC_0000001792549932__p560372712219">
        To obtain the API package, go to the following path:
        <ul id="EN-US_TOPIC_0000001792549932__ul46031271529">
@@ -43,103 +63,112 @@
         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
         <div class="notebody">
          <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p1456922318392">To prevent the software package from being maliciously tampered with during transmission or storage, download the corresponding digital signature file for integrity verification while downloading the software package.</p>
-         <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p156932333915">After the software package is downloaded from the Huawei Support website, verify the PGP digital signature by referring to the <em id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_i196531028162319">OpenPGP Signature Verification Guide</em>. If the verification fails, do not use the software package, and contact Huawei technical support.</p>
+         <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p156932333915">After the software package is downloaded from the Huawei Support website, verify the PGP digital signature by referring to the <em id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_i196531028162319">OpenPGP Signature Verification Guide</em>. If the verification fails, do not use the software package, and contact Huawei technical support engineers.</p>
          <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p4569152323915">Before a software package is used in installation or upgrade, its digital signature also needs to be verified according to the <em id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_i178983813268">OpenPGP Signature Verification Guide</em> to ensure that the software package is not tampered with. Visit either of the following websites to obtain the <em id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_i148991289269">OpenPGP Signature Verification Guide</em>:</p>
          <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p145691623163911">For carrier users, visit <a href="https://support.huawei.com/carrier/digitalSignatureAction" target="_blank" rel="noopener noreferrer">https://support.huawei.com/carrier/digitalSignatureAction</a>.</p>
          <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p1256922316392">For enterprise users, visit <a href="https://support.huawei.com/enterprise/en/tool/pgp-verify-TL1000000054" target="_blank" rel="noopener noreferrer">https://support.huawei.com/enterprise/en/tool/pgp-verify-TL1000000054</a>.</p>
         </div>
        </div>
       </div> <p></p></li>
-     <li id="EN-US_TOPIC_0000001792549932__li06331156125019"><a name="EN-US_TOPIC_0000001792549932__li06331156125019"></a><a name="li06331156125019"></a><span>Log in to the scale-out block storage management node to obtain certificates.</span><p></p>
-      <ol type="a">
-       <li>Use PuTTY to log in to the scale-out block storage management node as user <strong>fsadmin</strong> through the floating IP address.</li>
-       <li>Run the following command and enter the password of user <strong>root</strong> to switch to user <strong>root</strong>.<pre class="screen">su - root</pre></li>
-       <li>Run the following command and enter the password of user <strong>admin</strong> to log in to the CLI.<pre class="screen">ismcli -u admin</pre></li>
-       <li>Run the following command to export FSM's certificate and key files.<pre class="screen">export fsm certificate</pre> <p>A password used to encrypt the exported files needs to be set during the export.</p>
-        <div class="p">
-         Command output similar to the following is displayed:
-         <pre class="screen">admin:/&gt;export fsm certificate 
-Export password:****** 
-Reenter password:******      
-fsm certificate path : /opt/omm/oms/workspace/certificate/fsm-server.pem    
-fsm key path         : /opt/omm/oms/workspace/certificate/fsm-server.key    
-ca certificate path  : /opt/omm/oms/workspace/certificate/ca.pem </pre>
-        </div></li>
-      </ol> <p></p></li>
-     <li id="EN-US_TOPIC_0000001792549932__li17527462313"><span>Use WinSCP to log in to the scale-out block storage management node as user <strong id="EN-US_TOPIC_0000001792549932__b1242463081510">fsadmin</strong> through the management IP address and download FSM's certificate and key files (<strong id="EN-US_TOPIC_0000001792549932__b154241730161516">fsm-server.pem</strong>, <strong id="EN-US_TOPIC_0000001792549932__b34240304159">fsm-server.key</strong>, and <strong id="EN-US_TOPIC_0000001792549932__b9424173031515">ca.pem</strong>) to a local directory.</span><p></p>
-      <div class="note" id="EN-US_TOPIC_0000001792549932__note1111311043017">
+     <li id="EN-US_TOPIC_0000001792549932__li51261828132511"><a name="EN-US_TOPIC_0000001792549932__li51261828132511"></a><a name="li51261828132511"></a><span>Obtain OceanStor Pacific certificate and key files.</span><p></p>
+      <ul id="EN-US_TOPIC_0000001792549932__ul326710393259">
+       <li id="EN-US_TOPIC_0000001792549932__li175411614142720">For OceanStor Pacific 8.1.2 and earlier versions, obtain certificate and key files by referring to "export fsm certificate" in the OceanStor Pacific product documentation of the corresponding version.</li>
+       <li id="EN-US_TOPIC_0000001792549932__li0138150103014">For OceanStor Pacific 8.2.0 and later versions, obtain certificate and key files by referring to "Obtaining the dsware-api Certificate File for Interconnecting with OceanStor Pacific" in the OceanStor Pacific product documentation of the corresponding version.</li>
+       <li id="EN-US_TOPIC_0000001792549932__li36921858193210">For other OceanStor Pacific versions, obtain certificate and key files by referring to "Obtaining the dsware-api Certificate File for Interconnecting with Distributed Storage" in the OceanStor Pacific product documentation of the corresponding version.</li>
+      </ul>
+      <div class="note" id="EN-US_TOPIC_0000001792549932__note18638114219404">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="EN-US_TOPIC_0000001792549932__p41131804301">If user <strong id="EN-US_TOPIC_0000001792549932__b12625331191510">fsadmin</strong> does not have the read and write permissions on FSM's certificate and key files (<strong id="EN-US_TOPIC_0000001792549932__b146251131121514">fsm-server.pem</strong>, <strong id="EN-US_TOPIC_0000001792549932__b5625143151519">fsm-server.key</strong>, and <strong id="EN-US_TOPIC_0000001792549932__b11625123110155">ca.pem</strong>), use user <strong id="EN-US_TOPIC_0000001792549932__b15625931111511">root</strong> to enable the read and write permissions on FSM's certificate and key files for user <strong id="EN-US_TOPIC_0000001792549932__b7625133121515">fsadmin</strong>, copy the files to the <strong id="EN-US_TOPIC_0000001792549932__b12625153110154">/home/fsadmin</strong> directory, and download them to a local directory.</p>
+        <p id="EN-US_TOPIC_0000001792549932__p1464020429407">To obtain the OceanStor Pacific product documentation of the corresponding version, go to <a href="https://support.huawei.com/enterprise/en/distributed-storage/oceanstor-pacific-series-pid-262589930" target="_blank" rel="noopener noreferrer">OceanStor Pacific Series</a> and select the corresponding model.</p>
        </div>
       </div> <p></p></li>
-     <li><span>Use PuTTY to log in to the agent host as user <strong>root</strong> through the management IP address.</span></li>
-     <li><span>Run the following command to create the <strong>/scripts</strong> directory:</span><p></p><pre class="screen">mkdir -p /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/</pre> <p></p></li>
-     <li><span>Use WinSCP to log in to the agent host as user <strong>root</strong> through the management IP address, and upload the obtained certificate and key files (<strong>fsm-server.pem</strong>, <strong>fsm-server.key</strong>, and <strong>ca.pem</strong>) to the <strong>/opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/</strong> directory.</span></li>
-     <li><span>Run the following commands to decompress the JRE file:</span><p></p><pre class="screen">mkdir -p /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/javarunenv/</pre> <pre class="screen">tar -zmxvf /opt/dsware/agent/jre-*.tar.gz -C /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/javarunenv/</pre> <p></p></li>
-     <li><span>Run the following command to create the <strong>OceanStor-Pacific_api</strong> directory:</span><p></p><pre class="screen">mkdir -p /opt/OceanStor-Pacific_api</pre> <p></p></li>
-     <li><span>Use WinSCP to log in to the agent host as user <strong>root</strong> through the management IP address and upload the obtained API package (<strong>OceanStor-Pacific_</strong><em>xxx</em><strong>_API.tar.gz</strong>) to the <strong>/opt/OceanStor-Pacific_api</strong> directory.</span></li>
-     <li><span>Decompress the API package and delete the files whose names start with <strong>log4j</strong>.</span><p></p><pre class="screen">cd /opt/OceanStor-Pacific_api</pre> <pre class="screen">tar -zmxvf <em>OceanStor-Pacific_xxx_API.tar.gz</em></pre> <pre class="screen">cd OceanStor-Pacific_<em>xxx</em>_API</pre> <pre class="screen">rm -rf lib/log4j-*</pre>
-      <div class="note">
+     <li id="EN-US_TOPIC_0000001792549932__li565294811410"><span>Use PuTTY to log in to the agent host as user <strong id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792390248_b18500141813914">root</strong> through the management IP address.</span></li>
+     <li id="EN-US_TOPIC_0000001792549932__li49701447195115"><span>Run the following command to create the <strong id="EN-US_TOPIC_0000001792549932__b1550312104513">/scripts</strong> directory:</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000001792549932__note92888313510">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p><strong>OceanStor-Pacific_</strong><em>xxx</em><strong>_API.tar.gz</strong> is the API package obtained in <a href="#EN-US_TOPIC_0000001792549932__li116039278213">1</a>, for example, <strong>OceanStor-Pacific_8.1.2_API.tar.gz</strong>.</p>
+        <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p28641722154719">In the preceding command, <em id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_i14147163953715">/opt</em> indicates the ProtectAgent installation directory. Replace it with the actual directory.</p>
        </div>
-      </div> <p></p></li>
-     <li id="EN-US_TOPIC_0000001792549932__li121290407536"><a name="EN-US_TOPIC_0000001792549932__li121290407536"></a><a name="li121290407536"></a><span>Run the following commands to copy the files:</span><p></p>
-      <div class="note">
-       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
-       <div class="notebody">
-        <p>In the command, <em>xxx</em> indicates the directory generated after the API package is decompressed. Change it based on the site requirements. For example, if the API package is <strong>OceanStor-Pacific_8.1.2_API.tar.gz</strong>, the directory generated after the decompression is <strong>OceanStor-Pacific_8.1.2_API</strong>.</p>
-       </div>
-      </div>
-      <ul>
-       <li>For OceanStor Pacific 8.1.2 and earlier versions, run the following commands:<pre class="screen">cd <em>xxx</em></pre> <pre class="screen">cp client_self.keystore client_trust.keystore dsware-api.properties fsa_server.key manager-ssl.properties primary_ks.key standby_ks.key /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf</pre> <pre class="screen">cp dr_cli.xml readme.txt version zk-client.jks /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf</pre> <pre class="screen">cp dsware-api-*.jar /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre> <pre class="screen">cp primary_ks.key standby_ks.key /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre> <pre class="screen">cp -r scripts/* /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/</pre> <pre class="screen">cp -r lib/* /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre></li>
-       <li>For OceanStor Pacific 8.1.3 and later versions, run the following commands:<pre class="screen">cd <em>xxx</em></pre> <pre class="screen">cp client_self.keystore client_trust.keystore dsware-api.properties manager-ssl.properties primary_ks.key standby_ks.key /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf</pre> <pre class="screen">cp dr_cli.xml readme.txt version zk-client.jks /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf</pre> <pre class="screen">cp dsware-api-*.jar /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre> <pre class="screen">cp primary_ks.key standby_ks.key /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre> <pre class="screen">cp -r scripts/* /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/</pre> <pre class="screen">cp -r lib/* /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre>
-        <div class="note">
+      </div> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen113053645210">mkdir -p <em id="EN-US_TOPIC_0000001792549932__i7990105683512">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792549932__li123914241463"><span>Use WinSCP to log in to the agent host as user <strong id="EN-US_TOPIC_0000001792549932__b4558175071312">root</strong> through the management IP address, and upload the certificate and key files obtained in <a href="#EN-US_TOPIC_0000001792549932__li51261828132511">2</a> to the <em id="EN-US_TOPIC_0000001792549932__i14558125019139">/opt</em><strong id="EN-US_TOPIC_0000001792549932__b115581150111310">/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/</strong> directory.</span></li>
+     <li id="EN-US_TOPIC_0000001792549932__li813153615524"><span>Run the following commands to query and decompress the JRE file.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000001792549932__ol85762048571">
+       <li id="EN-US_TOPIC_0000001792549932__li137381413488"><a name="EN-US_TOPIC_0000001792549932__li137381413488"></a><a name="li137381413488"></a>Run the following commands to query the JRE file:<pre class="screen" id="EN-US_TOPIC_0000001792549932__screen85472042174814"><em id="EN-US_TOPIC_0000001792549932__i19991184213486">cd /opt</em>/dsware/agent</pre> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen11285547484">ll</pre> <p id="EN-US_TOPIC_0000001792549932__p182934454911">Information similar to the following is displayed. Multiple JRE files may exist in the directory due to reasons such as upgrade. If multiple JRE files exist, obtain the JRE file name corresponding to the latest time.</p> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen7501159195011">total 171116
+drwx------. 2 root oam        49 Aug 31  2022 bin
+drwx------. 4 omm  oam        28 Aug 31  2022 conf
+-rwx------. 1 root root 81067968 Sep  9  2022 jre-8u302-linux-x64.tar.gz
+-rwx------. 1 root root 94152417 Jul 23 20:03 <strong id="EN-US_TOPIC_0000001792549932__b147351761517">jre-8u392-linux-x64.tar.gz</strong>
+drwxr-xr-x. 2 root oam        49 Jul 17 11:33 script
+drwxr-x---. 2 root oam        31 Aug 31  2022 tool</pre></li>
+       <li id="EN-US_TOPIC_0000001792549932__li172591312779">Run the following commands to decompress the JRE file:<pre class="screen" id="EN-US_TOPIC_0000001792549932__screen1514085312538">mkdir -p <em id="EN-US_TOPIC_0000001792549932__i12942145923514">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/javarunenv/</pre> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen86233198547">tar -zmxvf <em id="EN-US_TOPIC_0000001792549932__i7890111113612">/opt</em>/dsware/agent/<em id="EN-US_TOPIC_0000001792549932__i750918788">jre-8u392-linux-x64.tar.gz</em> -C <em id="EN-US_TOPIC_0000001792549932__i944017318368">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/javarunenv/</pre>
+        <div class="note" id="EN-US_TOPIC_0000001792549932__note278320499716">
          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
          <div class="notebody">
-          <p>During the command execution, if a message is displayed indicating that the <strong>client_self.keystore</strong>, <strong>client_trust.keystore</strong>, or <strong>zk-client.jks</strong> file does not exist, ignore it.</p>
+          <p id="EN-US_TOPIC_0000001792549932__p2078404911714">Replace <em id="EN-US_TOPIC_0000001792549932__i1445121814367">jre-8u392-linux-x64.tar.gz</em> in the command with the actual JRE file name queried in <a href="#EN-US_TOPIC_0000001792549932__li137381413488">6.a</a>.</p>
          </div>
         </div></li>
-      </ul> <p></p></li>
-     <li><span>Run the following command to copy the <strong>so</strong> file.</span><p></p>
-      <ul>
-       <li>If ProtectAgent uses the x86 architecture, run the following command:<pre class="screen">cp -r /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/linux-x86-64/* /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre></li>
-      </ul>
-      <ul>
-       <li>If ProtectAgent uses the Arm architecture, run the following command:<pre class="screen">cp -r /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/linux-aarch64/* /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre></li>
-      </ul> <p></p></li>
-     <li id="EN-US_TOPIC_0000001792549932__li1866134635319"><a name="EN-US_TOPIC_0000001792549932__li1866134635319"></a><a name="li1866134635319"></a><span>Run the following command to import environment variables:</span><p></p>
-      <ul>
-       <li>If ProtectAgent uses the x86 architecture, run the following command:<pre class="screen">export LD_LIBRARY_PATH=/usr/lib64:/opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/linux-x86-64</pre></li>
-       <li>If ProtectAgent uses the Arm architecture, run the following command:<pre class="screen">export LD_LIBRARY_PATH=/usr/lib64:/opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/linux-aarch64</pre></li>
-      </ul> <p></p></li>
-     <li id="EN-US_TOPIC_0000001792549932__li4984185795917"><a name="EN-US_TOPIC_0000001792549932__li4984185795917"></a><a name="li4984185795917"></a><span>Run the following commands to replace the certificates.</span><p></p><pre class="screen">JAVA_HOME=$(find /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/javarunenv -mindepth 1 -maxdepth 1 -type d)</pre> <pre class="screen">sh /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/replace_cert.sh -s /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/fsm-server.pem -c /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/ca.pem -k /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/fsm-server.key -f <em>FSM floating IP address</em> -j $JAVA_HOME</pre>
-      <div class="note">
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792549932__li18989104112161"><span>Run the following command to create the <strong id="EN-US_TOPIC_0000001792549932__b6403183764515">OceanStor-Pacific_api</strong> directory:</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001792549932__screen1418151918174">mkdir -p <em id="EN-US_TOPIC_0000001792549932__i2097097113620">/opt</em>/OceanStor-Pacific_api</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792549932__li171886259139"><span>Use WinSCP to log in to the agent host as user <strong id="EN-US_TOPIC_0000001792549932__b17498194383119">root</strong> through the management IP address and upload the obtained API package (<strong id="EN-US_TOPIC_0000001792549932__b4498154353117">OceanStor-Pacific_</strong><em id="EN-US_TOPIC_0000001792549932__i949854310314">xxx</em><strong id="EN-US_TOPIC_0000001792549932__b1149824363115">_API.tar.gz</strong>) to the <em id="EN-US_TOPIC_0000001792549932__i1788622903610">/opt</em><strong id="EN-US_TOPIC_0000001792549932__b1527217218327">/OceanStor-Pacific_api</strong> directory.</span></li>
+     <li id="EN-US_TOPIC_0000001792549932__li964511303126"><span>Run the following commands to decompress the API package.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000001792549932__note1269320166163">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p>During the replacement, you need to enter the certificate password, which is the password set in <a href="#EN-US_TOPIC_0000001792549932__li06331156125019">2</a>.</p>
+        <p id="EN-US_TOPIC_0000001792549932__p969391631619">In the command, <em id="EN-US_TOPIC_0000001792549932__i1951783353">OceanStor-Pacific_</em><em id="EN-US_TOPIC_0000001792549932__i72175161589">xxx</em><em id="EN-US_TOPIC_0000001792549932__i119511885350">_API.tar.gz</em> is the API package obtained in <a href="#EN-US_TOPIC_0000001792549932__li116039278213">1</a>. Replace it based on actual conditions.</p>
        </div>
-      </div>
-      <ul>
-       <li>For OceanStor Pacific 8.1.2 and earlier versions, if <strong>client_self.keystore</strong>, <strong>client_trust.keystore</strong>, and <strong>dsware-api.properties</strong> exist in the <strong>/opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf/cert/</strong><em>FSM floating IP address</em><strong>/</strong> directory, the certificates are successfully imported.</li>
-       <li>For OceanStor Pacific 8.1.3 and later versions, if <strong>dsware-api.properties</strong> exists in the <strong>/opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf/cert/</strong><em>FSM floating IP address</em><strong>/</strong> directory, the certificate is successfully imported.</li>
+      </div> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen162111210196">cd <em id="EN-US_TOPIC_0000001792549932__i478293217366">/opt</em>/OceanStor-Pacific_api</pre> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen2521058198">tar -zmxvf <em id="EN-US_TOPIC_0000001792549932__i128441435173712">OceanStor-Pacific_xxx_API.tar.gz</em></pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792549932__li121290407536"><a name="EN-US_TOPIC_0000001792549932__li121290407536"></a><a name="li121290407536"></a><span>Run the following commands to copy the files.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000001792549932__note2030917572551">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="EN-US_TOPIC_0000001792549932__ul638222817376">
+         <li id="EN-US_TOPIC_0000001792549932__li13383928163712">In the command, <em id="EN-US_TOPIC_0000001792549932__i434135153618">OceanStor-Pacific_</em><em id="EN-US_TOPIC_0000001792549932__i17341451203617">xxx</em><em id="EN-US_TOPIC_0000001792549932__i1434119516366">_API</em> indicates the directory generated after the API package is decompressed. Replace it based on actual conditions. For example, if the API package is <strong id="EN-US_TOPIC_0000001792549932__b1031405120335">OceanStor-Pacific_8.1.2_API.tar.gz</strong>, the directory generated after the decompression is <strong id="EN-US_TOPIC_0000001792549932__b4315551103310">OceanStor-Pacific_8.1.2_API</strong>.</li>
+         <li id="EN-US_TOPIC_0000001792549932__li1780733913718">During the command execution, if a message is displayed indicating that the <strong id="EN-US_TOPIC_0000001792549932__b142831933413">fsa_server.key</strong>, <strong id="EN-US_TOPIC_0000001792549932__b102961911348">client_self.keystore</strong>, <strong id="EN-US_TOPIC_0000001792549932__b17291019133413">client_trust.keystore</strong>, or <strong id="EN-US_TOPIC_0000001792549932__b192971912347">zk-client.jks</strong> file does not exist, ignore it.</li>
+        </ul>
+       </div>
+      </div> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen37081928141914">cd <em id="EN-US_TOPIC_0000001792549932__i2788184223610">OceanStor-Pacific_</em><em id="EN-US_TOPIC_0000001792549932__i678884293615">xxx</em><em id="EN-US_TOPIC_0000001792549932__i147883422366">_API</em></pre> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen187910279119">rm -rf lib/log4j-*</pre> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen6988111212197">cp client_self.keystore client_trust.keystore dsware-api.properties fsa_server.key manager-ssl.properties primary_ks.key standby_ks.key <em id="EN-US_TOPIC_0000001792549932__i141271234183614">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf</pre> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen498861218196">cp dr_cli.xml readme.txt version zk-client.jks <em id="EN-US_TOPIC_0000001792549932__i3182143514364">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf</pre> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen179891126195">cp dsware-api-*.jar <em id="EN-US_TOPIC_0000001792549932__i1533403613365">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen1798912121192">cp primary_ks.key standby_ks.key <em id="EN-US_TOPIC_0000001792549932__i8422837143618">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen1998913123192">cp -r scripts/* <em id="EN-US_TOPIC_0000001792549932__i73981838163617">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/</pre> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen19989212161913">cp -r lib/* <em id="EN-US_TOPIC_0000001792549932__i1942512395363">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792549932__li1797645185314"><span>Run the following command to copy the <strong id="EN-US_TOPIC_0000001792549932__b8325211476">so</strong> file.</span><p></p>
+      <ul id="EN-US_TOPIC_0000001792549932__ul161772219596">
+       <li id="EN-US_TOPIC_0000001792549932__li1417922105910">If ProtectAgent uses the x86 architecture, run the following command:<pre class="screen" id="EN-US_TOPIC_0000001792549932__screen1234916519598">cp -r <em id="EN-US_TOPIC_0000001792549932__i12686740163612">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/linux-x86-64/* <em id="EN-US_TOPIC_0000001792549932__i27101541103610">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre></li>
+      </ul>
+      <ul id="EN-US_TOPIC_0000001792549932__ul19680142425914">
+       <li id="EN-US_TOPIC_0000001792549932__li568192415912">If ProtectAgent uses the Arm architecture, run the following command:<pre class="screen" id="EN-US_TOPIC_0000001792549932__screen719015103598">cp -r <em id="EN-US_TOPIC_0000001792549932__i168625428367">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/linux-aarch64/* <em id="EN-US_TOPIC_0000001792549932__i14758343173611">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/</pre></li>
       </ul> <p></p></li>
-     <li><span>If the system displays a message indicating that the <strong>client_self.keystore</strong> and <strong>client_trust.keystore</strong> files do not exist in <a href="#EN-US_TOPIC_0000001792549932__li121290407536">11</a>, run the following commands to copy the files: In other scenarios, skip this step.</span><p></p><pre class="screen">cd /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf/cert/<em>FSM floating IP address</em>/
-cp client_self.keystore client_trust.keystore /opt/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792549932__li1866134635319"><span>Run the following command to import environment variables.</span><p></p>
+      <ul id="EN-US_TOPIC_0000001792549932__ul13371657165810">
+       <li id="EN-US_TOPIC_0000001792549932__li123918574580">If ProtectAgent uses the x86 architecture, run the following command:<pre class="screen" id="EN-US_TOPIC_0000001792549932__screen1697913395013">export LD_LIBRARY_PATH=/usr/lib64:<em id="EN-US_TOPIC_0000001792549932__i14102645133610">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/linux-x86-64</pre></li>
+       <li id="EN-US_TOPIC_0000001792549932__li153995785812">If ProtectAgent uses the Arm architecture, run the following command:<pre class="screen" id="EN-US_TOPIC_0000001792549932__screen2017816453019">export LD_LIBRARY_PATH=/usr/lib64:<em id="EN-US_TOPIC_0000001792549932__i123964653616">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/linux-aarch64</pre></li>
+      </ul> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792549932__li4984185795917"><span>Run the following commands to replace the certificates.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000001792549932__note768748210">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="EN-US_TOPIC_0000001792549932__ul4297114519381">
+         <li id="EN-US_TOPIC_0000001792549932__li1929734517385">During the replacement, you need to enter the certificate password, which is the password set in <a href="#EN-US_TOPIC_0000001792549932__li51261828132511">2</a>.</li>
+         <li id="EN-US_TOPIC_0000001792549932__li15276210193017">In the command, <em id="EN-US_TOPIC_0000001792549932__i1391945161814">fsm-server.pem</em> is the certificate file, <em id="EN-US_TOPIC_0000001792549932__i89203518186">fsm-server.key</em> is the key file, and <em id="EN-US_TOPIC_0000001792549932__i39206581816">ca.pem</em> is the CA certificate. Replace them with the names obtained in <a href="#EN-US_TOPIC_0000001792549932__li51261828132511">2</a>.</li>
+         <li id="EN-US_TOPIC_0000001792549932__li4754111153015">Replace <em id="EN-US_TOPIC_0000001792549932__i678438183512">FSM floating IP address</em> in the commands with the actual IP address.</li>
+        </ul>
+       </div>
+      </div> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen1833418223111">JAVA_HOME=$(find <em id="EN-US_TOPIC_0000001792549932__i11326547103612">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/javarunenv -mindepth 1 -maxdepth 1 -type d)</pre> <pre class="screen" id="EN-US_TOPIC_0000001792549932__screen18210727214">sh <em id="EN-US_TOPIC_0000001792549932__i83345482368">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/replace_cert.sh -s <em id="EN-US_TOPIC_0000001792549932__i61981849173610">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/<em id="EN-US_TOPIC_0000001792549932__i968101013818">fsm-server.pem</em> -c <em id="EN-US_TOPIC_0000001792549932__i1175550163616">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/<em id="EN-US_TOPIC_0000001792549932__i19644121143810">ca.pem</em> -k <em id="EN-US_TOPIC_0000001792549932__i9708513360">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/lib/scripts/<em id="EN-US_TOPIC_0000001792549932__i470718134385">fsm-server.key</em> -f <em id="EN-US_TOPIC_0000001792549932__i1279917345116">FSM floating IP address</em> -j $JAVA_HOME</pre>
+      <ul id="EN-US_TOPIC_0000001792549932__ul133438311958">
+       <li id="EN-US_TOPIC_0000001792549932__li33431131157">For OceanStor Pacific 8.1.2 and earlier versions, if <strong id="EN-US_TOPIC_0000001792549932__b1910773319351">client_self.keystore</strong>, <strong id="EN-US_TOPIC_0000001792549932__b51079336353">client_trust.keystore</strong>, and <strong id="EN-US_TOPIC_0000001792549932__b310793315356">dsware-api.properties</strong> exist in the <em id="EN-US_TOPIC_0000001792549932__i1951995213615">/opt</em><strong id="EN-US_TOPIC_0000001792549932__b1620904193613">/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf/cert/</strong><em id="EN-US_TOPIC_0000001792549932__i654585122711">FSM floating IP address</em><strong id="EN-US_TOPIC_0000001792549932__b11907176163616">/</strong> directory, the certificates are successfully imported.</li>
+       <li id="EN-US_TOPIC_0000001792549932__li416819337518">For OceanStor Pacific 8.1.3 and later versions, if <strong id="EN-US_TOPIC_0000001792549932__b1486072418361">dsware-api.properties</strong> exists in the <em id="EN-US_TOPIC_0000001792549932__i1434512368362">/opt</em><strong id="EN-US_TOPIC_0000001792549932__b19457204112368">/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf/cert/</strong><em id="EN-US_TOPIC_0000001792549932__i138607244361">FSM floating IP address</em><strong id="EN-US_TOPIC_0000001792549932__b1986002416360">/</strong> directory, the certificates are successfully imported.</li>
+      </ul> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001839269357_li9226919239"><span>For OceanStor Pacific 8.1.3, run the following command to adapt to the new interface. For other versions, skip this step.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001839269357_screen14651104761816">sed -i '/deleteVolume)/{n;s/"$@"/${@:1:9} 0/;}' <em id="EN-US_TOPIC_0000001792549932__i1255855412362">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/bin/vrmVBSTool.sh</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792549932__li78487520572"><span>If the system displays a message indicating that the <strong id="EN-US_TOPIC_0000001792549932__b44567915168">client_self.keystore</strong> and <strong id="EN-US_TOPIC_0000001792549932__b1645649131612">client_trust.keystore</strong> files do not exist in <a href="#EN-US_TOPIC_0000001792549932__li121290407536">10</a>, run the following commands to copy the files: In other scenarios, skip this step.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001792549932__screen169492935912">cd <em id="EN-US_TOPIC_0000001792549932__i146621055163610">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf/cert/<em id="EN-US_TOPIC_0000001792549932__i1743139132816">FSM floating IP address</em>/
+cp client_self.keystore client_trust.keystore <em id="EN-US_TOPIC_0000001792549932__i195421556163610">/opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/vbstool/conf</pre> <p></p></li>
     </ol>
    </div>
-   <div class="section">
+   <div class="section" id="EN-US_TOPIC_0000001792549932__section941381221317">
     <h4 class="sectiontitle">Changing the Backup Mode</h4>
-    <p>The default backup mode of an external agent is <span class="parmvalue"><b>VBS</b></span>. If you want to use an external agent to connect to multiple OceanStor Pacific clusters, set the backup mode to <span class="parmvalue"><b>ISCSI</b></span>. To change the backup mode, perform the following steps:</p>
-    <ol>
-     <li id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_en-us_topic_0000001356308068_li152465173517"><span>Use PuTTY to log in to the agent host as user <strong id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_en-us_topic_0000001792390308_b353514585163">root</strong> through the management IP address.</span></li>
+    <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p142672913815">The default backup mode is <span class="parmvalue" id="EN-US_TOPIC_0000001792549932__parmvalue1868614243141"><b>VBS</b></span> when ProtectAgent is deployed on independent agent hosts. If you want to use an agent host to connect to multiple OceanStor Pacific clusters, set the backup mode to <span class="parmvalue" id="EN-US_TOPIC_0000001792549932__parmvalue1968762410149"><b>ISCSI</b></span>. To change the backup mode, perform the following steps:</p>
+    <ol id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_ol1613614033819">
+     <li id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001356308068_li152465173517"><span>Use PuTTY to log in to the agent host as user <strong id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_en-us_topic_0000001792390308_en-us_topic_0000001792390248_b18500141813914">root</strong> through the management IP address.</span></li>
      <li id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_li196517513393"><span>Run the following command to set <span class="parmname" id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_parmname15271411115"><b>FusionStorageApiMode</b></span> in the configuration file to <span class="parmvalue" id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_parmvalue14880145816019"><b>ISCSI</b></span>:</span><p></p><p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p12512182813399"><strong id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_b52461854124714">vi </strong><em id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_i11611125754718">/opt</em><strong id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_b1124620545476">/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/conf/hcpconf.ini</strong></p>
       <div class="note" id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_note88645224472">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p28641722154719">Replace <em id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_i10652713105610">/opt</em> in the command with the actual ProtectAgent installation directory.</p>
+        <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p28641722154719_1">In the preceding command, <em id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_i14147163953715_1">/opt</em> indicates the ProtectAgent installation directory. Replace it with the actual directory.</p>
        </div>
       </div> <p id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_p15116171715211">Example:</p> <pre class="screen" id="EN-US_TOPIC_0000001792549932__en-us_topic_0000001792549972_screen19257231522">FusionStorageApiMode=ISCSI</pre> <p></p></li>
     </ol>

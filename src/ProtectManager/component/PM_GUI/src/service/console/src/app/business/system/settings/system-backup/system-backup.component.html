@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
   <div class="aui-header-1">
     <lv-group lvGutter='8px'>
       <h1>{{'common_management_data_backup_label' | i18n}}</h1>
@@ -56,11 +56,25 @@
           </lv-form-control>
         </lv-form-item>
       </lv-form-column>
+      <ng-container *ngIf="!isCyberengine && !isCloudBackup">
+        <lv-form-column lvWidth="20%" pmpermission pmOperation="ModifyingBackupPolicy">
+          <lv-form-item>
+            <lv-form-label>{{'system_enable_status_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+              <lv-switch [ngModel]="backupPolicySwitch" [lvControl]="true" [lvLoading]="loading"
+                (click)="updatePolicyStatus()" [lvDisabled]="_isEmpty(policyData?.destIp)">
+              </lv-switch>
+            </lv-form-control>
+          </lv-form-item>
+        </lv-form-column>
+      </ng-container>
     </lv-form>
 
     <div class="aui-operation">
       <lv-group [lvGutter]="groupCommon.middleRowGutter">
-        <button lv-button lvType='primary' (click)="policyConfig()" pmpermission pmOperation='ModifyingBackupPolicy'>
+        <button lv-button lvType='primary' (click)="policyConfig()" pmpermission pmOperation='ModifyingBackupPolicy'
+          [disabled]="!isCyberengine && !isCloudBackup && !_isEmpty(policyData?.destIp) && _isEmpty(policyData?.scheduleId)"
+          lv-tooltip="{{(!isCyberengine && !isCloudBackup && !_isEmpty(policyData?.destIp) && _isEmpty(policyData?.scheduleId) ? 'system_disable_backup_policy_tip_label' : '') | i18n}}">
           {{'common_backup_policy_label' | i18n}}
         </button>
         <lv-tooltip [lvContent]="manualBackupBtnTip">

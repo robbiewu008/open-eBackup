@@ -21,6 +21,7 @@ import com.huawei.emeistor.console.controller.response.LoginResponse;
 import com.huawei.emeistor.console.controller.response.PageListResponse;
 import com.huawei.emeistor.console.exception.LegoCheckedException;
 import com.huawei.emeistor.console.exterattack.ExterAttack;
+import com.huawei.emeistor.console.service.RsaService;
 import com.huawei.emeistor.console.service.SecurityPolicyService;
 import com.huawei.emeistor.console.service.SessionService;
 import com.huawei.emeistor.console.service.UserService;
@@ -101,6 +102,9 @@ public class UserController extends AdvBaseController {
 
     @Autowired
     private RequestUtil requestUtil;
+
+    @Autowired
+    private RsaService rsaService;
 
     /**
      * 登录

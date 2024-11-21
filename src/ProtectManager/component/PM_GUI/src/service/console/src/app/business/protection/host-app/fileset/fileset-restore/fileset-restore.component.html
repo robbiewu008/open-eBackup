@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,16 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item *ngIf="tapeCopy && restoreType === RestoreType.CommonRestore">
+    <lv-form-label>{{
+      'protection_tape_all_restore_label' | i18n
+    }}</lv-form-label>
+    <lv-form-control>
+      <lv-switch
+        formControlName="isDirectRecovery"
+      ></lv-switch>
+    </lv-form-control>
+  </lv-form-item>
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'protection_restore_to_label' | i18n }}
@@ -68,6 +78,28 @@
         </lv-select>
       </lv-form-control>
     </lv-form-item>
+  </ng-container>
+  <ng-container *ngIf="osType === dataMap.Fileset_Template_Os_Type.linux.value && isOsBackup">
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'explore_fileset_os_restore_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName="is_OS_restore"></lv-switch>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.get('is_OS_restore').value">
+      <lv-form-label>
+        {{ 'explore_volume_reboot_system_after_restore_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName="reboot_system_after_restore"></lv-switch>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <ng-container
+    *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW && !formGroup.get('is_OS_restore').value"
+  >
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ 'common_destination_path_label' | i18n }}
@@ -104,19 +136,20 @@
   <ng-container *ngIf="isIncremental">
     <lv-form-item>
       <lv-form-label>
-        {{'protection_incremental_restore_label'|i18n}}
+        {{ 'protection_incremental_restore_label' | i18n }}
         <i
           class="configform-constraint"
           lv-icon="aui-icon-help"
           lvTooltipTheme="light"
-          lv-tooltip="{{'protection_fileset_incremental_restore_tips_label'|i18n}}"
+          lv-tooltip="{{
+            'protection_fileset_incremental_restore_tips_label' | i18n
+          }}"
           lvColorState="true"
         >
         </i>
       </lv-form-label>
       <lv-form-control>
-        <lv-switch formControlName="incrementalRestore">
-        </lv-switch>
+        <lv-switch formControlName="incrementalRestore"> </lv-switch>
       </lv-form-control>
     </lv-form-item>
   </ng-container>
@@ -143,6 +176,26 @@
   <div class="advanced-container">
     <lv-collapse [lvType]="'simple'">
       <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+        <lv-form-item>
+          <lv-form-label
+            >{{ 'protection_channel_number_label' | i18n }}
+            <i
+              lv-icon="aui-icon-help"
+              lv-tooltip="{{ 'protection_fileset_channels_tips_label' | i18n }}"
+              lvTooltipTheme="light"
+              class="configform-constraint"
+              lvColorState="true"
+            ></i>
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="channelsErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="channels"
+              placeholder="1-40"
+            />
+          </lv-form-control>
+        </lv-form-item>
         <lv-form-item>
           <lv-form-label>
             {{ 'protection_restore_pre_script_label' | i18n }}

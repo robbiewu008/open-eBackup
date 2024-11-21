@@ -1,0 +1,58 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: rsa
+paths:
+  /v1/rsa:
+    get:
+      tags:
+        - rsa
+      x-dr-role: 'N'
+      x-product: OceanProtect X9000, OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: GetPublicKey
+      summary: 生成公私钥对并获取公钥
+      description: 生成公私钥对并获取公钥
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PublicKeyResponse'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+definitions:
+  PublicKeyResponse:
+    description: 公钥返回体
+    properties:
+      publicKey:
+        type: string
+        description: 公钥String，默认256位
+        minLength: 0
+        maxLength: 256

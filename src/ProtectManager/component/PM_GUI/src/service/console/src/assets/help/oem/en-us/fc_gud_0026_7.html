@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Creating a Logical Port for the Replication Network (Applicable to 1.5.0)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="mongodb-0022.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="fc_gud_0026_7">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Creating a Logical Port for the Replication Network (Applicable to 1.5.0)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="fc_gud_0026_7"></a><a name="fc_gud_0026_7"></a>
+  <h1 class="topictitle1">Step 1: Creating a Logical Port for the Replication Network (Applicable to 1.5.0)</h1>
+  <div>
+   <p>On DeviceManager of the primary and secondary storage systems, you can create logical ports for the replication network to remotely transmit replication data.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p>The replication network IP addresses have been planned at the primary and secondary ends.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Log in to DeviceManager.</span><p></p>
+      <ol type="a">
+       <li>Choose <span class="uicontrol" id="fc_gud_0026_7__en-us_topic_0000001839143213_en-us_topic_0000001311295305_en-us_topic_0000001149078659_uicontrol1098185683619"><b><span id="fc_gud_0026_7__en-us_topic_0000001839143213_text157651936143415"><strong>System</strong></span> &gt; <span id="fc_gud_0026_7__en-us_topic_0000001839143213_text49601653123416"><strong>Infrastructure</strong></span> &gt; <span id="fc_gud_0026_7__en-us_topic_0000001839143213_text112401684352"><strong>Cluster Management</strong></span></b></span>.</li>
+       <li>In the <span class="uicontrol" id="fc_gud_0026_7__en-us_topic_0000001839143213_uicontrol1050641575312"><b><span id="fc_gud_0026_7__en-us_topic_0000001839143213_text133861121163513"><strong>Local Cluster Nodes</strong></span></b></span> area of the <span class="uicontrol" id="fc_gud_0026_7__en-us_topic_0000001839143213_uicontrol13691645105219"><b><span id="fc_gud_0026_7__en-us_topic_0000001839143213_text1763193125313"><strong>Backup Cluster</strong></span></b></span> tab page, click the node name.</li>
+       <li>In the <span class="uicontrol" id="fc_gud_0026_7__en-us_topic_0000001839143213_uicontrol1144724616332"><b><span id="fc_gud_0026_7__en-us_topic_0000001839143213_text51761646203516"><strong>Node detail</strong></span></b></span> dialog box that is displayed, click <span class="uicontrol" id="fc_gud_0026_7__en-us_topic_0000001839143213_uicontrol1544714611335"><b><span id="fc_gud_0026_7__en-us_topic_0000001839143213_text1624910583612"><strong>Open the device management platform</strong></span></b></span> to go to DeviceManager.</li>
+      </ol> <p></p></li>
+     <li><span>Choose <span class="uicontrol"><b>Services &gt; Network &gt; Logical Ports</b></span>.</span></li>
+     <li><span>Select <strong>All vStores</strong> for <strong>vStore</strong>.</span></li>
+     <li><span>Click <span class="uicontrol"><b>Create</b></span> to create a logical port.</span><p></p><p><a href="#fc_gud_0026_7__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617">Table 1</a> describes the related parameters.</p>
+      <div class="tablenoborder">
+       <a name="fc_gud_0026_7__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617"></a><a name="fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="fc_gud_0026_7__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Logical port parameters
+        </caption>
+        <colgroup>
+         <col style="width:43.55%">
+         <col style="width:56.45%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="43.55%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="56.45%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>Name</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Name of a replication network logical port, which can be customized.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>Role</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Select <span class="uicontrol"><b>Replication</b></span>.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>IP Address Type</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>IP address type of a replication network logical port, which can be IPv4 or IPv6.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>IP Address</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>IP address of a replication network logical port.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>Subnet Mask</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>If an IP address is of IPv4 type, set a subnet mask for the IP address.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>Prefix</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>If an IP address is of IPv6 type, set a prefix for the IP address.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>Gateway</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Gateway used for the IP address of the replication network logical port.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>Port Type</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Type of the port used to create the replication network logical port. Available options include <strong>Ethernet port</strong>, <strong>Bond port</strong>, and <strong>VLAN</strong>.</p> <p>By default, the ports used for replication have been bonded during initialization of the <span>product</span>. Therefore, you need to select <strong>Bond port</strong> if you do not perform other operations (such as deleting bond ports).</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>Home Port</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Ethernet port, bond port, or VLAN to which the replication network logical port to be created belongs.</p> <p>The system has filtered all ports used for the replication network. Select any port in the <strong>Link up</strong> state.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+     <li><span>Repeat the preceding steps to configure a logical port for each home port.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="mongodb-0022.html">Replicating MongoDB Copies</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

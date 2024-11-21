@@ -1,3 +1,4 @@
+<lv-datatable [lvData]="tableData" class="aui-table-group" [lvPaginator]="page" (lvSortChange)="sortChange($event)"
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-datatable [lvData]="tableData" class="aui-table-group" [lvPaginator]="page" (lvSortChange)="sortChange($event)"
     lvSort #lvTable lvAsync>
     <thead>
         <tr>
@@ -40,10 +40,8 @@
                             lvFilterCheckAll>
                             {{col.label}}
                             <div lvCustom *ngIf="col.key === 'resourceId'">
-                                <i lv-icon="lv-icon-search" [lvColorState]="true" [ngClass]="{ active: !!resourceId }"
-                                    lv-popover [lvPopoverContent]="idFilterTpl" lvPopoverTheme="light"
-                                    lvPopoverPosition="bottom" lvPopoverTrigger="click"
-                                    #resourceIdPopover="lvPopover"></i>
+                                <aui-custom-table-search (search)="searchById($event)"
+                                    [filterTitle]="col.label"></aui-custom-table-search>
                             </div>
                             <div lvCustom *ngIf="col.key === 'resourceName'">
                                 <aui-custom-table-search (search)="searchByName($event)"
@@ -196,8 +194,9 @@
 </div>
 
 <ng-template #colHideTpl>
-    <lv-tree [lvData]="columns" [lvShowCheckbox]="true" [lvShowExpandedIcon]="false" lvSelectionMode="multiple"
-        [(lvSelection)]="columnSelection" (lvCheck)="columnCheck($event)"></lv-tree>
+    <lv-tree [lvData]="columns" [lvShowCheckbox]="true" lvSelectionMode="multiple"
+        [(lvSelection)]="columnSelection" (lvCheck)="columnCheck($event)" style="overflow: auto;"
+        [ngStyle]="{'max-height': virtualScroll.scrollParam?.y}"></lv-tree>
 </ng-template>
 
 <ng-template #emptyTpl>

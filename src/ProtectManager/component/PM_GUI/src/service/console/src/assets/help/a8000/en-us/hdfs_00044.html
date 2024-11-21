@@ -1,0 +1,146 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Creating an Archive SLA">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="hdfs_00040.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="hdfs_00044">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Creating an Archive SLA</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hdfs_00044"></a><a name="hdfs_00044"></a>
+
+<h1 class="topictitle1">Step 2: Creating an Archive SLA</h1>
+<div><p>If you need to archive a generated backup copy, configure an archive SLA by referring to this section.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><p>An SLA with a backup policy has been created. For details about how to create a backup SLA, see <a href="hdfs_00019.html">Step 7: Creating a Backup SLA</a>.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to the OceanProtect WebUI by referring to <a href="hdfs_00069.html">Logging In to the OceanProtect WebUI</a>.</span></li><li><span>Choose <span class="uicontrol" id="hdfs_00044__en-us_topic_0000001839142377_uicontrol8111821122820"><b><span id="hdfs_00044__en-us_topic_0000001839142377_text71111921162814"><strong>Protection</strong></span> &gt; Protection Policies &gt; SLAs</b></span>.</span></li><li><span>Locate the SLA for which you want to create an archive policy and choose <span class="uicontrol" id="hdfs_00044__en-us_topic_0000001792503806_en-us_topic_0000001091370109_uicontrol577717611320"><b><span id="hdfs_00044__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text19646163524813"><strong>More</strong></span> &gt; <span id="hdfs_00044__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text068935811482"><strong>Modify</strong></span></b></span>.</span><p><p id="hdfs_00044__en-us_topic_0000001792503806_p1816920251869">The preset SLAs cannot be modified.</p>
+</p></li><li><span>Click the <span class="uicontrol"><b><span><strong>Archive Policy</strong></span></b></span> icon.</span></li><li><span>Configure the archive policy.</span><p><p><a href="#hdfs_00044__en-us_topic_0000001188062717_en-us_topic_0000001091370109_table13531347181416">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="hdfs_00044__en-us_topic_0000001188062717_en-us_topic_0000001091370109_table13531347181416"></a><a name="en-us_topic_0000001188062717_en-us_topic_0000001091370109_table13531347181416"></a><table cellpadding="4" cellspacing="0" summary="" id="hdfs_00044__en-us_topic_0000001188062717_en-us_topic_0000001091370109_table13531347181416" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Archive parameters</caption><colgroup><col style="width:30.5%"><col style="width:69.5%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="30.5%" id="mcps1.3.3.2.5.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="69.5%" id="mcps1.3.3.2.5.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>A default archive policy name has been set. You can customize the name.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Archive Storage Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p><span class="uicontrol"><b><span><strong>Object Storage</strong></span></b></span> or <span class="uicontrol"><b><span><strong>Tape Library</strong></span></b></span> can be used as the archive storage.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Archive Storage</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>Select the added object storage or tape library. You can also click <span class="uicontrol"><b><span><strong>Add</strong></span></b></span> to add an object storage or a tape library.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Archive Time</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><div class="p">Set the archive time.<ul><li><span><strong>Periodically</strong></span><ul><li><span><strong>Interval</strong></span>: Data is archived every <em>xx</em> minutes, hours, days, or weeks.</li><li><span><strong>First Run At</strong></span>: Time when the initial archive job is executed.<p>If the start time is earlier than the current device time, the archive job is executed immediately after the protection plan is created.</p>
+</li></ul>
+</li><li><span><strong>Immediately after successful backup</strong></span><p>An archive job is executed immediately after a backup job is complete.</p>
+</li><li><span><strong>Specified time after copy generation</strong></span><p><span><strong>Time</strong></span>: An archive job is executed <em>xx</em> days after a copy is generated.</p>
+</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><strong>Archive &amp; Retention Rules</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><div class="p">Select the backup copy to be archived and set the retention period.<ul><li id="hdfs_00044__en-us_topic_0000001792503806_li2085311499432"><span id="hdfs_00044__en-us_topic_0000001792503806_text193951264318"><strong>Archive specified copies</strong></span>: An archive policy can be specified and the copy retention period can be set. Archive policies are described as follows:<ul id="hdfs_00044__en-us_topic_0000001792503806_ul1193014332306"><li id="hdfs_00044__en-us_topic_0000001792503806_li393063317305"><span id="hdfs_00044__en-us_topic_0000001792503806_text1792918330303"><strong>Only the latest copy</strong></span><p id="hdfs_00044__en-us_topic_0000001792503806_p893019338306">In each archive job, only the copy generated by the last backup job is archived.</p>
+</li><li id="hdfs_00044__en-us_topic_0000001792503806_li10930203320309"><span id="hdfs_00044__en-us_topic_0000001792503806_text17168339174311"><strong>All unarchived copies</strong></span><p id="hdfs_00044__en-us_topic_0000001792503806_p8930123320308">All copies that have not been archived are archived each time.</p>
+</li></ul>
+</li><li id="hdfs_00044__en-us_topic_0000001792503806_li169914211296"><span id="hdfs_00044__en-us_topic_0000001792503806_text876845119220"><strong>Archive on the specified date</strong></span>: Specify the date and set the copy retention period. You can select multiple of the following options:<ul id="hdfs_00044__en-us_topic_0000001792503806_ul15411165794010"><li id="hdfs_00044__en-us_topic_0000001792503806_li241110576407">Select the backup copies generated in month <em id="hdfs_00044__en-us_topic_0000001792503806_i136341131132817">x</em> of each year for archiving. The archive copies are retained for <em id="hdfs_00044__en-us_topic_0000001792503806_i18634193132810">x</em> years (the retention period can be 1 to 70 years).</li><li id="hdfs_00044__en-us_topic_0000001792503806_li156079239417">Select the first or last backup copy of each month for archiving. The archive copies are retained for <em id="hdfs_00044__en-us_topic_0000001792503806_i15614163412816">x</em> months (the retention period can be 1 to 840 months).</li><li id="hdfs_00044__en-us_topic_0000001792503806_li7824743184118">Select the backup copies generated on a specified day of each week for archiving. The archive copies are retained for <em id="hdfs_00044__en-us_topic_0000001792503806_i99971161311">x</em> weeks (the retention period can be 1 to 3650 weeks).<div class="note" id="hdfs_00044__en-us_topic_0000001792503806_note250102619369"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="hdfs_00044__en-us_topic_0000001792503806_p19502026133610">If <strong id="hdfs_00044__en-us_topic_0000001792503806_b12562195819124">Archive Storage Type</strong> is set to <span id="hdfs_00044__en-us_topic_0000001792503806_text290583517417"><strong>Tape Library</strong></span>, the retention period of archive copies cannot be specified, but is subject to the retention policy setting of the corresponding media set.</p>
+</div></div>
+</li></ul>
+</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><div class="p"><strong id="hdfs_00044__en-us_topic_0000001792503806_b1466519130620">Drivers</strong><div class="note" id="hdfs_00044__en-us_topic_0000001792503806_note754320443218"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="hdfs_00044__en-us_topic_0000001792503806_en-us_topic_0000001839143189_en-us_topic_0000001839143213_p8320153562113">This parameter is available only in 1.6.0 and later versions.</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><div class="p">This parameter (value range: <strong id="hdfs_00044__en-us_topic_0000001792503806_b4770966376">1</strong> to <strong id="hdfs_00044__en-us_topic_0000001792503806_b1657835153715">32</strong>) is displayed only when you select <span id="hdfs_00044__en-us_topic_0000001792503806_text4453948437"><strong>Tape Library</strong></span> for <strong id="hdfs_00044__en-us_topic_0000001792503806_b183012591975">Archive Storage Type</strong>.<div class="note" id="hdfs_00044__en-us_topic_0000001792503806_note765316318178"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="hdfs_00044__en-us_topic_0000001792503806_p06531331181715">The larger the number of drives, the more the tape library drives occupied by archive jobs or jobs that use archive copies for restoration, and the better the performance.</p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Rate Limiting Policies</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>Average maximum amount of data that can be transmitted per second in an archive job. If a tape library serves as the archive storage, rate limiting policy configuration is not supported.</p>
+<p>Select the created rate limiting policy.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Automatic Indexing</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>After this function is enabled, you can select one or more files in a copy for restoration and search for files, directories, or links in copies on the management page. If a tape library serves as the archive storage, archive copy indexing is not supported.</p>
+<p>This function cannot be disabled after being enabled.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="hdfs_00044__nas_s_0016_p0743109201911">Indexes occupy backup storage space. If the number of index files in the system exceeds 1 billion, perform operations by referring to "Failed to Create a Copy Index" in the <i><cite id="hdfs_00044__nas_s_0016_cite23814569190">OceanProtect <span id="hdfs_00044__nas_s_0016_en-us_topic_0000001792502994_ph187704762018">Appliance 1.5.0-1.6.0</span> Troubleshooting</cite></i>.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Network Acceleration</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>After this function is enabled, Bottleneck Bandwidth and Round-trip propagation time (BBR) can be used for network acceleration. You are advised to enable this function when the network latency is greater than or equal to 20 ms. If a tape library serves as the archive storage, network acceleration configuration is not supported.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span id="hdfs_00044__en-us_topic_0000001792503806_text4798135584718"><strong>Job Failure Alarm</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>After this function is enabled, an alarm is automatically sent if a job fails and is automatically cleared after successful execution.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Automatic Retry</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>After this function is enabled, the system automatically retries a failed archive job.</p>
+<p>The number of retries ranges from 1 to 3, and the waiting time ranges from 1 to 30 minutes. For example, if the number of retries is set to 3 and the wait time is set to 5 minutes, the system retries for three times at an interval of 5 minutes.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>During automatic retry, the system creates a new archive job.</p>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>Add</strong></span></b></span> to configure multiple archive policies.</span><p><p>A single copy can be archived to a maximum of four archive storage devices. Therefore, a maximum of four archive policies can be configured.</p>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li><li><span>Associate resources with an archive SLA to periodically archive copies.</span><p><ul><li>If the SLA policy has been associated with resources, the system protects the resources based on the SLA policy.</li><li>If the SLA is not associated with any resource, associate a resource for protection. For details, see <a href="hdfs_00020.html">Step 8: Performing Backup</a>.</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="hdfs_00040.html">Archiving HDFS Backup Copies</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

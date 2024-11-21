@@ -1,0 +1,56 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Obtaining the kubeconfig Configuration File">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00078_2.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="documenttype" content="usermanual">
+<meta name="prodname" content="csbs">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="kubernetes_CSI_00078_4">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Obtaining the kubeconfig Configuration File</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="kubernetes_CSI_00078_4"></a><a name="kubernetes_CSI_00078_4"></a>
+
+<h1 class="topictitle1">Obtaining the kubeconfig Configuration File</h1>
+<div><p>This section describes how to obtain the <strong>kubeconfig</strong> configuration file when you need to register a cluster in kubeconfig authentication mode.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to the Kubernetes cluster in the background.</span></li><li id="kubernetes_CSI_00078_4__li1722144620173"><span>Run the following command to create a service user with the specified name. The following steps use the created username <em id="kubernetes_CSI_00078_4__i857515111817">test</em> as an example.</span><p><pre class="screen" id="kubernetes_CSI_00078_4__screen774314917566">oc create serviceaccount<em id="kubernetes_CSI_00078_4__i15731183210564"> </em><em id="kubernetes_CSI_00078_4__i526717330560">Username</em></pre>
+</p></li><li id="kubernetes_CSI_00078_4__li2408173142114"><span>Run the following command to grant the <strong id="kubernetes_CSI_00078_4__b1952553315176">cluster-admin</strong> role to user <em id="kubernetes_CSI_00078_4__i996611815180">test</em>:</span><p><pre class="screen" id="kubernetes_CSI_00078_4__screen1445974610356">oc adm policy add-cluster-role-to-user cluster-admin -z <em id="kubernetes_CSI_00078_4__i166264116452">test</em></pre>
+</p></li><li><span>Run the following command to set the parameter of the token to be exported. In the following command, the value of <strong>duration</strong> indicates the period when the token takes effect, and 10 minutes is used as an example.</span><p><pre class="screen">export TOKEN=$(oc create token <em>test</em> --duration=<em>600s</em>)</pre>
+</p></li><li><span>Run the following command to export the <strong>kubeconfig</strong> configuration file. <strong>192.168.0.2:6443</strong> indicates the IP address and port number of the Kubernetes cluster, and <strong>/tmp/serviceaccount-kubeconfig</strong> indicates the export path of the <strong>kubeconfig</strong> configuration file. You can customize the export path.</span><p><pre class="screen">oc login --server=<em>192.168.0.2:6443</em> --token=$TOKEN --kubeconfig=<em>/tmp/serviceaccount-kubeconfig</em></pre>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="kubernetes_CSI_00078_2.html">Preparing for Backup (Applicable to OpenShift)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -1,3 +1,4 @@
+<div class="report-container">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="report-container">
   <ng-container *ngIf="isProtectObjectDetail; else elseTemplate">
     <div class="header protect-object-header">
       <div class="report-title" *ngIf="loaded">{{ protectObjectName }}</div>
@@ -326,10 +326,7 @@
 
 <ng-template #elseNoDataTemplate>
   <div class="no-data">
-    <i lv-icon="lv-icon-no-data"></i>
-    <div class="no-data-label">
-      {{'common_no_data_label' | i18n}}
-    </div>
+    <lv-empty></lv-empty>
   </div>
 </ng-template>
 
@@ -379,6 +376,17 @@
 <ng-template #subjectUserTpl>
   <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_subject_user_tip_label' | i18n}}" lvTooltipTheme="light"
     class="operation-help-icon" lvColorState='true'></i>
+</ng-template>
+
+<ng-template #fileTpl let-item>
+  <lv-group lvGutter='8px'>
+    <div lv-overflow>
+      <span>{{ item.fileName }}</span>
+    </div>
+    <span class="guide-recommend-label honeypot-min-tag" *ngIf="item.honeypotFile">
+      {{'explore_honeypot_file_label' | i18n}}
+    </span>
+  </lv-group>
 </ng-template>
 
 <ng-template #elseEmptyTemplate>

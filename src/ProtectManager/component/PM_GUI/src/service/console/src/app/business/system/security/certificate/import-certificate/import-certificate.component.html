@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,15 +12,14 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
     <lv-alert *ngIf="internalFlag" lvType="info" lvClosable="false" >
         {{ 'system_certificate_push_update_label' | i18n }}
       </lv-alert>
     <lv-form-item>
         <lv-form-label lvRequired>{{caCertificateFileLabel}}</lv-form-label>
         <lv-form-control>
-            <lv-upload lvAccept=".pem" lvShowUpload="false" (lvChange)="uploadCaChange($event)" [lvFilters]='filters1'>
-            </lv-upload>
+          <lv-upload  lvAccept='{{lvAcceptType}}' lvShowUpload="false" (lvChange)="uploadCaChange($event)" [lvFilters]='filters1'>
+          </lv-upload>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item *ngIf="internalFlag || communicationComponentFlag || redisComponentFlag">

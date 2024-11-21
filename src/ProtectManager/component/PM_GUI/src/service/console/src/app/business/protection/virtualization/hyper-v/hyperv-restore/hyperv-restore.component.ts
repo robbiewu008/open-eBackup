@@ -1,17 +1,22 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup
+} from '@angular/forms';
 import {
   AppService,
   BaseUtilService,
@@ -37,7 +42,8 @@ import {
   includes,
   isEmpty,
   isNumber,
-  map
+  map,
+  set
 } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
 
@@ -63,7 +69,7 @@ export class HypervRestoreComponent implements OnInit {
   pageSize = CommonConsts.PAGE_SIZE_SMALL;
   unitconst = CAPACITY_UNIT;
   dataMap = DataMap;
-
+  isHyperVCluster = false;
   showHostSelect = false;
   environmentOptions = [];
   hostOptions = [];
@@ -80,7 +86,9 @@ export class HypervRestoreComponent implements OnInit {
     ...this.baseUtilService.requiredErrorTip,
     invalidName: this.i18n.get('common_valid_name_label'),
     invalidSameName: this.i18n.get('common_duplicate_name_label'),
-    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [80])
+    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [80]),
+    invalidSpecialName: this.i18n.get('protection_invalid_nasshare_name_label'),
+    invalidPeriodName: this.i18n.get('protection_invalid_hyper_vm_name_label')
   };
 
   vmStorageErrorTip = {
@@ -101,14 +109,21 @@ export class HypervRestoreComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initData();
     this.initForm();
     this.getResourceProp();
     this.getDisk();
     this.getEnvironmentOptions();
   }
 
-  initForm() {
+  initData() {
     this.resourceProp = JSON.parse(this.rowCopy.resource_properties);
+    this.isHyperVCluster =
+      this.resourceProp.environment_sub_type ===
+      DataMap.Resource_Type.hyperVCluster.value;
+  }
+
+  initForm() {
     this.originLocation = this.resourceProp.path;
     this.restoreToNewLocationOnly =
       includes(
@@ -125,7 +140,8 @@ export class HypervRestoreComponent implements OnInit {
       name: new FormControl('', {
         validators: [
           this.baseUtilService.VALID.required(),
-          this.baseUtilService.VALID.maxLength(80)
+          this.baseUtilService.VALID.maxLength(80),
+          this.validSpecialName()
         ]
       }),
       environment: new FormControl(''),
@@ -134,7 +150,8 @@ export class HypervRestoreComponent implements OnInit {
       storage: new FormControl(DatastoreType.DIFFERENT),
       startupNetworkAdaptor: new FormControl(false),
       powerOn: new FormControl(true),
-      deleteOriginalVM: new FormControl(false)
+      deleteOriginalVM: new FormControl(false),
+      addToCluster: new FormControl(false)
     });
     this.newFormGroup = this.fb.group({
       // 这两个参数独立出来，长度超过时不会影响确认下发，但不能为空
@@ -151,11 +168,26 @@ export class HypervRestoreComponent implements OnInit {
       }
     });
   }
+  validSpecialName() {
+    return (control: AbstractControl): { [key: string]: { value: any } } => {
+      const regex = /[\\/:*?"<>|]/;
+      const regex2 = / *\.$/;
+      if (regex.test(control.value)) {
+        return { invalidSpecialName: { value: control.value } };
+      } else if (regex2.test(control.value)) {
+        return { invalidPeriodName: { value: control.value } };
+      }
+      return null;
+    };
+  }
 
   listenForm() {
     this.formGroup.get('restoreTo').valueChanges.subscribe(res => {
       this.formGroup.get('environment').setValue('');
       if (res === RestoreV2LocationType.ORIGIN) {
+        this.isHyperVCluster =
+          this.resourceProp.environment_sub_type ===
+          DataMap.Resource_Type.hyperVCluster.value;
         this.formGroup.get('environment').clearValidators();
         this.formGroup.get('host').clearValidators();
         this.formGroup.get('targetVm').clearValidators();
@@ -203,10 +235,12 @@ export class HypervRestoreComponent implements OnInit {
       defer(() => this.validDatastore());
     });
     this.formGroup.get('environment').valueChanges.subscribe(res => {
+      const selectedEnv = find(this.environmentOptions, { uuid: res });
       this.showHostSelect =
+        res && selectedEnv?.subType !== DataMap.Resource_Type.hyperVHost.value;
+      this.isHyperVCluster =
         res &&
-        find(this.environmentOptions, { uuid: res })?.subType !==
-          DataMap.Resource_Type.hyperVHost.value;
+        selectedEnv?.subType === DataMap.Resource_Type.hyperVCluster.value;
       if (this.showHostSelect) {
         this.formGroup
           .get('host')
@@ -567,6 +601,13 @@ export class HypervRestoreComponent implements OnInit {
         restoreLocation: this.getRestoreLocation()
       }
     };
+    if (this.isHyperVCluster) {
+      set(
+        params,
+        'extendInfo.addToCluster',
+        this.formGroup.value.addToCluster ? '1' : '0'
+      );
+    }
     if (this.formGroup.value.restoreTo === RestoreV2LocationType.ORIGIN) {
       assign(params.extendInfo, {
         deleteOriginVM: this.formGroup.value.deleteOriginalVM ? '1' : '0',

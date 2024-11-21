@@ -1,22 +1,22 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
 import { FileRestoreComponent } from 'app/business/protection/virtualization/vmware/vm/copy-data/file-restore/file-restore.component';
+import { FileSystemResponseList } from 'app/shared/api/models';
 import {
-  CopiesService,
-  FileLevelSearchManagementService,
+  CopyControllerService,
   ProtectedResourceApiService,
   RestoreFilesControllerService,
   RestoreManagerService
@@ -31,6 +31,7 @@ import {
   ResourceType,
   RestoreLocationType,
   RestoreType,
+  SYSTEM_TIME,
   VmFileReplaceStrategy
 } from 'app/shared/consts';
 import {
@@ -40,6 +41,7 @@ import {
   WarningMessageService
 } from 'app/shared/services';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
+import { extendNodeParams } from 'app/shared/utils';
 import {
   assign,
   cloneDeep,
@@ -58,7 +60,6 @@ import {
   reduce,
   reject,
   size,
-  trim,
   unionBy
 } from 'lodash';
 import { finalize } from 'rxjs/operators';
@@ -80,8 +81,6 @@ export class VmFileLevelRestoreComponent implements OnInit {
   originalFileData = [];
   originalSelection;
   selectionAssociate = true;
-  gn;
-  resourceType = [];
   restoreLocationType = RestoreLocationType;
   unitconst = CAPACITY_UNIT;
   dataMap = DataMap;
@@ -143,24 +142,36 @@ export class VmFileLevelRestoreComponent implements OnInit {
     private fb: FormBuilder,
     private modal: ModalRef,
     private i18n: I18NService,
-    private copiesApiService: CopiesService,
     private appUtilsService: AppUtilsService,
     private baseUtilService: BaseUtilService,
     private restoreService: RestoreManagerService,
     private restoreFilesControllerService: RestoreFilesControllerService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private fileLevelSearchRestApiService: FileLevelSearchManagementService,
     private warningMessageService: WarningMessageService,
-    private dataMapService: DataMapService
+    private dataMapService: DataMapService,
+    private copyControllerService: CopyControllerService
   ) {}
 
   ngOnInit() {
     this.initFooter();
     this.initFormGroup();
     this.getOriginalFileData();
-    this.getResourceType();
     this.getResource();
     this.getEnvironment();
+    this.afterModalClose();
+  }
+
+  afterModalClose() {
+    const extendClose = this.modal.getInstance().lvAfterClose;
+    this.modal.getInstance().lvAfterClose = () => {
+      extendClose.call(this);
+      this.copyControllerService
+        .CloseCopyGuestSystem({
+          copyId: this.rowCopy.uuid,
+          akOperationTips: false
+        })
+        .subscribe(() => {});
+    };
   }
 
   initFooter() {
@@ -168,9 +179,18 @@ export class VmFileLevelRestoreComponent implements OnInit {
   }
 
   getResourceIcon(node) {
-    if (this.childResType === DataMap.Resource_Type.cNwareVm.value) {
+    if (
+      includes(
+        [
+          DataMap.Resource_Type.cNwareVm.value,
+          DataMap.Resource_Type.nutanixVm.value
+        ],
+        this.childResType
+      )
+    ) {
       switch (node.subType) {
         case ResourceType.CNWARE:
+        case ResourceType.NUTANIX:
           return node.linkStatus ===
             DataMap.resource_LinkStatus_Special.normal.value
             ? 'aui-icon-vCenter'
@@ -178,8 +198,10 @@ export class VmFileLevelRestoreComponent implements OnInit {
         case DataMap.Resource_Type.cNwareHostPool.value:
           return 'aui-icon-host-pool';
         case DataMap.Resource_Type.cNwareCluster.value:
+        case DataMap.Resource_Type.nutanixCluster.value:
           return 'aui-icon-cluster';
         case DataMap.Resource_Type.cNwareHost.value:
+        case DataMap.Resource_Type.nutanixHost.value:
           return 'aui-icon-host';
         default:
           return 'aui-sla-vm';
@@ -248,7 +270,15 @@ export class VmFileLevelRestoreComponent implements OnInit {
                 })
               : [];
           }
-          if (this.childResType === DataMap.Resource_Type.cNwareVm.value) {
+          if (
+            includes(
+              [
+                DataMap.Resource_Type.cNwareVm.value,
+                DataMap.Resource_Type.nutanixVm.value
+              ],
+              this.childResType
+            )
+          ) {
             const cnwareIp =
               JSON.parse(this.resourceProperties?.extendInfo?.details || '{}')
                 .ip || '';
@@ -283,8 +313,8 @@ export class VmFileLevelRestoreComponent implements OnInit {
           this.vmIpNoData = isEmpty(this.vmIpOptions);
         })
       )
-      .subscribe(
-        res => {
+      .subscribe({
+        next: res => {
           this.resourceProperties = res;
           // HCS云服务软删除不能作为恢复目标
           if (
@@ -298,12 +328,12 @@ export class VmFileLevelRestoreComponent implements OnInit {
               .setValue(RestoreLocationType.NEW);
           }
         },
-        () => {
+        error: () => {
           this.resourceProperties = JSON.parse(
             this.rowCopy.resource_properties
           );
         }
-      );
+      });
   }
 
   getEnvironment() {
@@ -363,11 +393,19 @@ export class VmFileLevelRestoreComponent implements OnInit {
           });
         }
       );
-    } else if (this.childResType === DataMap.Resource_Type.cNwareVm.value) {
+    } else if (
+      includes(
+        [
+          DataMap.Resource_Type.cNwareVm.value,
+          DataMap.Resource_Type.nutanixVm.value
+        ],
+        this.childResType
+      )
+    ) {
       const extParams = {
         conditions: JSON.stringify({
-          subType: ResourceType.CNWARE,
-          type: ResourceType.CNWARE
+          subType: this.rowCopy?.resource_type,
+          type: this.rowCopy?.resource_type
         })
       };
       this.appUtilsService.getResourceByRecursion(
@@ -433,7 +471,8 @@ export class VmFileLevelRestoreComponent implements OnInit {
       includes(
         [
           DataMap.Resource_Type.cNwareVm.value,
-          DataMap.Resource_Type.hyperVVm.value
+          DataMap.Resource_Type.hyperVVm.value,
+          DataMap.Resource_Type.nutanixVm.value
         ],
         this.childResType
       )
@@ -458,6 +497,13 @@ export class VmFileLevelRestoreComponent implements OnInit {
             expanded: false
           });
         });
+
+        if (this.childResType === DataMap.Resource_Type.nutanixVm.value) {
+          this.vmTreeData = this.vmTreeData.filter(
+            item =>
+              !includes([DataMap.Resource_Type.nutanixVm.value], item.subType)
+          );
+        }
       }
     );
   }
@@ -465,6 +511,8 @@ export class VmFileLevelRestoreComponent implements OnInit {
   disableTreeData(item) {
     switch (item.subType) {
       case DataMap.Resource_Type.hyperVVm.value:
+        return false;
+      case DataMap.Resource_Type.nutanixVm.value:
         return false;
       default:
         return item.type !== ResourceType.VM;
@@ -697,6 +745,25 @@ export class VmFileLevelRestoreComponent implements OnInit {
                     ? null
                     : [],
                 isLeaf: item.subType === DataMap.Resource_Type.hyperVVm.value,
+                expanded: false
+              })
+            );
+          });
+        } else if (
+          this.childResType === DataMap.Resource_Type.nutanixVm.value
+        ) {
+          each(resource, item => {
+            event.children.push(
+              assign(item, {
+                label: item.name,
+                disabled:
+                  item.subType !== DataMap.Resource_Type.nutanixVm.value,
+                contentToggleIcon: this.getResourceIcon(item),
+                children:
+                  item.subType === DataMap.Resource_Type.nutanixVm.value
+                    ? null
+                    : [],
+                isLeaf: item.subType === DataMap.Resource_Type.nutanixVm.value,
                 expanded: false
               })
             );
@@ -946,7 +1013,15 @@ export class VmFileLevelRestoreComponent implements OnInit {
   vmValueChanged(formControlName) {
     this.formGroup.get(formControlName)?.valueChanges.subscribe(res => {
       let ips = '';
-      if (this.childResType === DataMap.Resource_Type.cNwareVm.value) {
+      if (
+        includes(
+          [
+            DataMap.Resource_Type.cNwareVm.value,
+            DataMap.Resource_Type.nutanixVm.value
+          ],
+          this.childResType
+        )
+      ) {
         ips = JSON.parse(res[0]?.extendInfo?.details || '{}')?.ip || '';
       } else if (this.childResType === DataMap.Resource_Type.hyperVVm.value) {
         ips = res[0]?.extendInfo?.ipList || [];
@@ -1150,34 +1225,6 @@ export class VmFileLevelRestoreComponent implements OnInit {
     }
   }
 
-  getResourceType() {
-    if (this.childResType === DataMap.Resource_Type.FusionCompute.value) {
-      this.resourceType = [FilterType.FusionCompute];
-    } else if (this.childResType === DataMap.Resource_Type.fusionOne.value) {
-      this.resourceType = [FilterType.FusionOneCompute];
-    } else if (this.childResType === DataMap.Resource_Type.HCSCloudHost.value) {
-      this.resourceType = [FilterType.HCSCloudHost];
-    } else if (
-      this.childResType === DataMap.Resource_Type.openStackCloudServer.value
-    ) {
-      this.resourceType = [FilterType.OpenstackCloudServer];
-    } else if (
-      this.childResType === DataMap.Resource_Type.APSCloudServer.value
-    ) {
-      this.resourceType = [FilterType.APSCloudServer];
-    } else if (this.childResType === DataMap.Resource_Type.cNwareVm.value) {
-      this.resourceType = [FilterType.CnwareVm];
-    } else if (this.childResType === DataMap.Resource_Type.hyperVVm.value) {
-      this.resourceType = [FilterType.HyperV];
-    } else {
-      this.resourceType = [
-        FilterType.ClusterComputeResource,
-        FilterType.HostSystem,
-        FilterType.VimVirtualMachine
-      ];
-    }
-  }
-
   getFilePath(paths) {
     if (isEmpty(paths)) {
       return [];
@@ -1208,176 +1255,82 @@ export class VmFileLevelRestoreComponent implements OnInit {
     );
   }
 
-  selectionChange() {
-    this.restorePath = this.getFilePath(this.originalSelection);
+  tableSelectionChange(selection) {
+    this.restorePath = this.getFilePath(selection);
     this.getOkDisabled();
   }
 
   getOriginalFileData() {
-    this.copiesApiService
-      .queryResourcesV1CopiesGet({
-        pageNo: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE,
-        conditions: JSON.stringify({
-          uuid: this.rowCopy.uuid
-        })
-      })
-      .subscribe(res => {
-        this.gn = !!size(res.items) ? first(res.items)['gn'] : '';
-        this.originalFileData = [
-          {
-            compareKey: '/',
-            nodeName: '',
-            children: [],
-            name: '/',
-            path: '/',
-            icon: 'aui-icon-directory'
-          }
-        ];
-      });
+    this.originalFileData = [
+      {
+        name: '',
+        nodeName: '',
+        children: [],
+        path: '/',
+        label: this.rowCopy?.resource_name,
+        absolutePath: '/',
+        contentToggleIcon: 'aui-icon-directory'
+      }
+    ];
   }
 
-  searchByKey() {
-    if (this.keyPopover) {
-      this.keyPopover.hide();
-    }
-    this.originalSelection = [];
-    this.restorePath = [];
-    this.getOkDisabled();
-    // 搜索之前保存之前的
-    if (isEmpty(this.cacheTreeData)) {
-      this.cacheTreeData = cloneDeep(this.originalFileData);
-    }
-    if (!trim(this.queryKey)) {
-      this.originalFileData = cloneDeep(this.cacheTreeData);
-      this.cacheTreeData = [];
-      this.searchByKeyFlag = false;
-      this.treeTotal = 0;
+  getCopySourceTree(node) {
+    const moreBtn = find(node.children, { isMoreBtn: true });
+    if (!!size(node.children) && !moreBtn) {
       return;
     }
-    this.originalFileData = [];
-    this.getResourceByKey();
-  }
-
-  getResourceByKey() {
-    const params = {
-      request: {
-        pageNo: this.pageIndex,
-        pageSize: this.pageSize,
-        gn:
-          DataMap.CopyData_generatedType.cloudArchival.value ===
-          this.rowCopy.generated_by
-            ? this.rowCopy.gn
-            : this.rowCopy.gn,
-        chainId: this.rowCopy.chain_id,
-        resourceId: this.rowCopy.resource_id,
-        resourceType: this.resourceType,
-        searchKey: this.queryKey
-      },
-      akOperationTips: false
-    };
-    if (!isEmpty(this.rowCopy.device_esn)) {
-      assign(params, { memberEsn: this.rowCopy.device_esn });
-    }
-    this.fileLevelSearchRestApiService.fileSearch(params).subscribe(res => {
-      each(res.items, item => {
-        assign(item, {
-          compareKey: `${item.path}${item.nodeName}`,
-          name: item.nodeName,
-          isLeaf: true,
-          children: null,
-          icon:
-            item.nodeType === NodeType.Folder
-              ? 'aui-icon-directory'
-              : 'aui-icon-file'
-        });
-      });
-      this.treeTotal = res.total;
-      this.originalFileData = [...res.items];
-      this.searchByKeyFlag = true;
-    });
-  }
-
-  pageChange(page) {
-    this.pageSize = page.pageSize;
-    this.pageIndex = page.pageIndex;
-    this.getResourceByKey();
-  }
-
-  getCopySourceTree(node, startPage?) {
-    if (!node.expanded || !!size(node.children)) {
-      return;
-    }
-    this.getCopySourceNode(node, startPage);
+    this.getCopySourceNode(node, moreBtn?.startPage);
   }
 
   getCopySourceNode(node, startPage?) {
     const params = {
-      request: {
-        pageNo: startPage || CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE * 10,
-        path:
-          node.path === '/'
-            ? `${node.path}${node.nodeName}`
-            : `${node.path}/${node.nodeName}`,
-        gn:
-          DataMap.CopyData_generatedType.cloudArchival.value ===
-          this.rowCopy.generated_by
-            ? this.rowCopy.gn
-            : this.rowCopy.gn,
-        chainId: this.rowCopy.chain_id,
-        resourceId: this.rowCopy.resource_id,
-        resourceType: this.resourceType
-      },
+      copyId: this.rowCopy.uuid,
+      pageNo: startPage || CommonConsts.PAGE_START,
+      pageSize: CommonConsts.MAX_PAGE_SIZE,
+      parentPath:
+        node.path === '/'
+          ? `${node.path}${node.nodeName}`
+          : `${node.path}/${node.nodeName}`,
       akOperationTips: false
     };
     if (!isEmpty(this.rowCopy.device_esn)) {
       assign(params, { memberEsn: this.rowCopy.device_esn });
     }
-    this.fileLevelSearchRestApiService.fileSearch(params).subscribe(res => {
+    this.copyControllerService.ListCopyCatalogs(params).subscribe(res => {
       this.updataChildren(res, node, true);
       this.originalFileData = [...this.originalFileData];
     });
   }
 
-  updataChildren(res, node, isCopySource?) {
-    each(res.items, item => {
-      assign(item, {
-        compareKey: `${item.path}${item.nodeName}`,
-        name: item.nodeName,
-        isLeaf: item.nodeType !== NodeType.Folder,
-        children: item.nodeType === NodeType.Folder ? [] : null,
-        icon:
-          item.nodeType === NodeType.Folder
-            ? 'aui-icon-directory'
-            : 'aui-icon-file'
-      });
+  updataChildren(res: FileSystemResponseList, node, isCopySource?) {
+    each(res.records, (item: any) => {
+      item = extendNodeParams(node, item);
     });
-
     if (isArray(node.children) && !isEmpty(node.children)) {
       node.children = [
         ...reject(node.children, n => {
           return n.isMoreBtn;
         }),
-        ...res.items
+        ...res.records
       ];
     } else {
-      node.children.push(...res.items);
+      node.children.push(...res.records);
     }
-    if (res.total > size(node.children)) {
+    if (res.totalCount > size(node.children)) {
       const moreClickNode = {
-        parent: node,
-        name: `${this.i18n.get('common_more_label')}...`,
+        label: `${this.i18n.get('common_more_label')}...`,
+        contentToggleIcon: '',
         isMoreBtn: true,
         hasChildren: false,
         isLeaf: true,
         children: null,
-        startPage: Math.floor(size(node.children) / 200)
+        parent: node,
+        startPage: Math.floor(size(node.children) / CommonConsts.MAX_PAGE_SIZE)
       };
       node.children = [...node.children, moreClickNode];
     }
     if (find(this.originalSelection, node) && isCopySource) {
-      this.originalSelection = [...this.originalSelection, ...res.items];
+      this.originalSelection = [...this.originalSelection, ...res.records];
     }
   }
 
@@ -1429,7 +1382,8 @@ export class VmFileLevelRestoreComponent implements OnInit {
           DataMap.Resource_Type.openStackCloudServer.value,
           DataMap.Resource_Type.APSCloudServer.value,
           DataMap.Resource_Type.cNwareVm.value,
-          DataMap.Resource_Type.hyperVVm.value
+          DataMap.Resource_Type.hyperVVm.value,
+          DataMap.Resource_Type.nutanixVm.value
         ],
         this.childResType
       )
@@ -1536,7 +1490,15 @@ export class VmFileLevelRestoreComponent implements OnInit {
           : vm?.extendInfo?.os_type || '',
       vmIp: this.formGroup.value.vmIp
     };
-    if (this.childResType === DataMap.Resource_Type.cNwareVm.value) {
+    if (
+      includes(
+        [
+          DataMap.Resource_Type.cNwareVm.value,
+          DataMap.Resource_Type.nutanixVm.value
+        ],
+        this.childResType
+      )
+    ) {
       const osType =
         this.formGroup.value.restoreLocation === RestoreLocationType.ORIGIN
           ? JSON.parse(this.resourceProperties?.extendInfo?.details || '{}')

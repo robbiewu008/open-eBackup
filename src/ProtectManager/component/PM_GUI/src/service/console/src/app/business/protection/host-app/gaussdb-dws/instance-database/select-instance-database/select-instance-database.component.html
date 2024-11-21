@@ -1,3 +1,4 @@
+<div class="tips" *ngIf="type === dataMap.Resource_Type.DWS_Table.value">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="tips" *ngIf="type === dataMap.Resource_Type.DWS_Table.value">
   <i
     style="display: inline-block; margin-right: 4px;vertical-align: super;"
     lv-icon="lv-icon-status-info"
@@ -31,7 +31,7 @@
   (dataChange)="dataChange($event)"
 >
 </aui-select-protect-objects>
-<lv-form [formGroup]="formGroup">
+<lv-form [formGroup]="formGroup" class="aui-gutter-column-md">
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'protection_backup_metadata_path_label' | i18n }}
@@ -45,7 +45,7 @@
         lvColorState="true"
       ></i>
     </lv-form-label>
-    <lv-form-control>
+    <lv-form-control [lvErrorTip]="pathErrorTip">
       <textarea
         rows="5"
         formControlName="path"

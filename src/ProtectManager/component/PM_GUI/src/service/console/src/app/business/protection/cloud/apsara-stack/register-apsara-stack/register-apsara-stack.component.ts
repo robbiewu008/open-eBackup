@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -83,12 +83,6 @@ export class RegisterApsaraStackComponent implements OnInit {
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip
   };
-  endpointErrorTip = {
-    ...this.baseUtilService.requiredErrorTip,
-    invalidName: this.i18n.get('protection_ali_endpoint_invalid_label'),
-    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [128]),
-    invalidInput: this.i18n.get('common_invalid_input_label')
-  };
   maxLengthErrorTip = {
     ...this.baseUtilService.requiredErrorTip,
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [
@@ -139,13 +133,6 @@ export class RegisterApsaraStackComponent implements OnInit {
           this.baseUtilService.VALID.name()
         ]
       }),
-      endpoint: new FormControl('', {
-        validators: [
-          this.baseUtilService.VALID.required(),
-          this.validEndpoint(),
-          this.baseUtilService.VALID.maxLength(128)
-        ]
-      }),
       ak: new FormControl('', {
         validators: [
           this.baseUtilService.VALID.required(),
@@ -161,9 +148,7 @@ export class RegisterApsaraStackComponent implements OnInit {
       organizationId: new FormControl('', {
         validators: [this.validId(), this.baseUtilService.VALID.required()]
       }),
-      regionId: new FormControl('', {
-        validators: [this.validId(), this.baseUtilService.VALID.required()]
-      }),
+      regionId: new FormControl(''),
       agent: new FormControl([], {
         validators: this.baseUtilService.VALID.required()
       }),
@@ -198,26 +183,6 @@ export class RegisterApsaraStackComponent implements OnInit {
       }
       if (!reg_domain.test(control.value)) {
         return { invalidNameCombination: { value: control.value } };
-      }
-      return null;
-    };
-  }
-
-  validEndpoint(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      if (isUndefined(this.formGroup) || isEmpty(control.value)) {
-        return null;
-      }
-
-      const reg_url = CommonConsts.REGEX.urlReg;
-      const reg_ipv4 = CommonConsts.REGEX.ipv4;
-      const reg_ipv6 = CommonConsts.REGEX.ipv6;
-      if (
-        !reg_url.test(control.value) &&
-        !reg_ipv4.test(control.value) &&
-        !reg_ipv6.test(control.value)
-      ) {
-        return { invalidName: { value: control.value } };
       }
       return null;
     };
@@ -329,11 +294,10 @@ export class RegisterApsaraStackComponent implements OnInit {
   }
 
   updateData() {
-    const { name, endpoint, extendInfo } = this.treeSelection[0];
+    const { name, extendInfo } = this.treeSelection[0];
     const { ak, organizationId, regionId, rescanIntervalInSec } = extendInfo;
     this.formGroup.patchValue({
       name,
-      endpoint,
       ak,
       rescanIntervalInSec: Number(rescanIntervalInSec) / 3600,
       organizationId,
@@ -499,9 +463,6 @@ export class RegisterApsaraStackComponent implements OnInit {
       name: this.formGroup.value.name,
       type: ResourceType.ApsaraStack,
       subType: DataMap.Resource_Type.ApsaraStack.value,
-      endpoint: this.isModify
-        ? this.treeSelection[0].endpoint
-        : this.formGroup.value.endpoint,
       auth: {
         authKey: this.formGroup.value.ak,
         authPwd: this.formGroup.value.sk,
@@ -512,7 +473,7 @@ export class RegisterApsaraStackComponent implements OnInit {
       extendInfo: {
         agents: this.formGroup.value.agent.join(';'),
         organizationId: this.formGroup.value.organizationId,
-        regionId: this.formGroup.value.regionId,
+        regionId: 'test',
         enableCert: this.enableCert ? '1' : '0',
         rescanIntervalInSec: this.formGroup.value.rescanIntervalInSec * 3600
       },
@@ -557,31 +518,31 @@ export class RegisterApsaraStackComponent implements OnInit {
             UpdateProtectedEnvironmentRequestBody: this.getParams(),
             envId: this.item.uuid
           })
-          .subscribe(
-            res => {
+          .subscribe({
+            next: res => {
               observer.next();
               observer.complete();
             },
-            error => {
+            error: error => {
               observer.error(error);
               observer.complete();
             }
-          );
+          });
       } else {
         this.protectedEnvironmentApiService
           .RegisterProtectedEnviroment({
             RegisterProtectedEnviromentRequestBody: params as any
           })
-          .subscribe(
-            res => {
+          .subscribe({
+            next: res => {
               observer.next();
               observer.complete();
             },
-            error => {
+            error: error => {
               observer.error(error);
               observer.complete();
             }
-          );
+          });
       }
     });
   }

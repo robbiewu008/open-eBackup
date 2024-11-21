@@ -1,3 +1,4 @@
+<lv-form [formGroup]='formGroup' lvLabelWidth="130px" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]='formGroup' lvLabelWidth="130px" class="formGroup">
     <div class="aui-gutter-column-lg">
         <h2>{{'explore_mount_target_label' | i18n}}</h2>
     </div>
@@ -26,7 +26,7 @@
         </lv-form-control>
     </lv-form-item>
 
-    <ng-container *ngIf="!isFileset && !!formGroup?.value.targetPos">
+    <ng-container *ngIf="!isFileset && !!formGroup?.value.targetPos && !isWindows">
         <lv-form-item>
             <lv-form-label>
                 {{ '' | i18n }}
@@ -74,12 +74,12 @@
 
     </ng-container>
 
-    <ng-container  *ngIf="isWindows">
+    <ng-container *ngIf="isWindows">
         <lv-form-item>
             <lv-form-label lvRequired>{{'common_cifs_shares_name_label' | i18n}}
             </lv-form-label>
             <lv-form-control [lvErrorTip]="nameErrorTip">
-                <input lv-input formControlName="name"/>
+                <input lv-input formControlName="name" />
             </lv-form-control>
         </lv-form-item>
         <lv-form-item>
@@ -145,10 +145,33 @@
                 </ng-container>
             </ng-template>
         </ng-container>
+        <ng-container *ngIf="!isFileset">
+            <div class="aui-gutter-column-md" style="margin-top:16px">
+                <h2>{{'protection_volume_select_live_mount_volume_label' | i18n}}</h2>
+            </div>
+            <lv-pro-table #volumeTable [config]="volumeTableConfig" [data]="volumeTableData"></lv-pro-table>
+        </ng-container>
     </ng-container>
-
-
-
+    <ng-template #targetPathHeaderTpl>
+        <i style="margin-left:4px" lv-icon="aui-icon-help"
+            lv-tooltip="{{'protection_volume_target_path_tip_label' | i18n}}" lvTooltipTheme="light"
+            lvColorState='true'></i>
+    </ng-template>
+    <ng-template #targetPathTpl let-item>
+        <lv-form [formGroup]="item.volumeFormGroup">
+            <lv-form-item>
+                <lv-form-control [lvErrorTip]="volumePathErrorTip">
+                    <input lv-input type="text" formControlName="path" [lv-tooltip]="getPathTips(item)"
+                        lvTooltipTrigger="focus" lvTooltipPosition="top" lvTooltipTheme="light" (ngModelChange)="volumePathChange($event)">
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form>
+    </ng-template>
+    <ng-template #capacityTpl let-item="$implicit">
+        <span>{{
+            item.size | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true
+            }}</span>
+    </ng-template>
 
     <div class="aui-gutter-column-xl"></div>
     <lv-collapse [lvMultiExpansion]="'false'" lvType="simple" class="live-mount-advanced-container">

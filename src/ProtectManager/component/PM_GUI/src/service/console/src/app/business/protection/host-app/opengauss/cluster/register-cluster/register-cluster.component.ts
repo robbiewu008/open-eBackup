@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -33,7 +33,16 @@ import {
 import { cacheGuideResource } from 'app/shared/consts/guide-config';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
-import { defer, each, filter, includes, isEmpty, map, trim } from 'lodash';
+import {
+  assign,
+  defer,
+  each,
+  filter,
+  includes,
+  isEmpty,
+  map,
+  trim
+} from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -70,6 +79,14 @@ export class RegisterClusterComponent implements OnInit {
     unsupportPathError: this.i18n.get(
       'protection_unsupport_fileset_linux_path_label'
     )
+  };
+  portErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 65535])
+  });
+  dcsUserErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    ...this.baseUtilService.lengthErrorTip,
+    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
   };
 
   constructor(
@@ -116,7 +133,11 @@ export class RegisterClusterComponent implements OnInit {
           this.baseUtilService.VALID.required(),
           this.baseUtilService.VALID.minLength(1)
         ]
-      })
+      }),
+      dcsAddress: new FormControl(''),
+      dcsPort: new FormControl(''),
+      dcsUser: new FormControl(''),
+      dcsPassword: new FormControl('')
     });
 
     if (!this.data) {
@@ -133,6 +154,43 @@ export class RegisterClusterComponent implements OnInit {
       this.proxyMultiple =
         res === DataMap.Deployment_Type.single.value ? 'single' : 'multiple';
       this.formGroup.get('agents').setValue([]);
+
+      if (res === DataMap.Deployment_Type.cmdb.value) {
+        this.formGroup
+          .get('dcsAddress')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.ipv4()
+          ]);
+        this.formGroup
+          .get('dcsPort')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.integer(),
+            this.baseUtilService.VALID.rangeValue(1, 65535)
+          ]);
+        this.formGroup
+          .get('dcsUser')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.maxLength(64)
+          ]);
+        this.formGroup
+          .get('dcsPassword')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.maxLength(64)
+          ]);
+      } else {
+        this.formGroup.get('dcsAddress').clearValidators();
+        this.formGroup.get('dcsPort').clearValidators();
+        this.formGroup.get('dcsUser').clearValidators();
+        this.formGroup.get('dcsPassword').clearValidators();
+      }
+      this.formGroup.get('dcsAddress').updateValueAndValidity();
+      this.formGroup.get('dcsPort').updateValueAndValidity();
+      this.formGroup.get('dcsUser').updateValueAndValidity();
+      this.formGroup.get('dcsPassword').updateValueAndValidity();
     });
   }
 
@@ -155,19 +213,26 @@ export class RegisterClusterComponent implements OnInit {
               ? map(res['dependencies']['agents'], 'uuid')[0]
               : map(res['dependencies']['agents'], 'uuid')
         };
+        if (res.extendInfo.deployType === DataMap.Deployment_Type.cmdb.value) {
+          assign(data, {
+            dcsAddress: res.extendInfo.dcsAddress,
+            dcsPort: res.extendInfo.dcsPort,
+            dcsUser: res.extendInfo.dcsUser
+          });
+        }
         this.proxyMultiple =
           res.extendInfo.deployType === DataMap.Deployment_Type.single.value
             ? 'single'
             : 'multiple';
         // 需要等select组件切换之后再塞值
         defer(() => {
-          this.formGroup.patchValue(data);
           this.listenForm();
+          this.formGroup.patchValue(data);
         });
       });
   }
   getParams() {
-    return {
+    const params = {
       name: this.formGroup.value.name,
       extendInfo: {
         deployType: this.formGroup.value.deployType,
@@ -192,6 +257,21 @@ export class RegisterClusterComponent implements OnInit {
         )
       }
     };
+    if (
+      this.formGroup.value.deployType === DataMap.Deployment_Type.cmdb.value
+    ) {
+      assign(params.auth, {
+        extendInfo: {
+          dcsPassword: this.formGroup.get('dcsPassword').value
+        }
+      });
+      assign(params.extendInfo, {
+        dcsAddress: this.formGroup.get('dcsAddress').value,
+        dcsPort: this.formGroup.get('dcsPort').value,
+        dcsUser: this.formGroup.get('dcsUser').value
+      });
+    }
+    return params;
   }
 
   validPath(): ValidatorFn {

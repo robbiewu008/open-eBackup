@@ -15,3 +15,38 @@
 .proxy-host-info-label {
   line-height: 20px;
 }
+
+.aui-select-right {
+  padding-right: 0;
+  width: 1.8rem !important;
+  .aui-inner-select {
+    width: 1rem;
+  }
+}
+
+:host ::ng-deep.aui-select-right > .lv-input-after::before {
+  margin-right: 0;
+}
+
+.radio-group {
+  width: 100%;
+  lv-radio {
+    display: flex;
+    align-items: center;
+  }
+}
+
+:host ::ng-deep.aui-inner-select > .lv-select-wrapper {
+  border: none;
+  padding: 0;
+}
+
+:host ::ng-deep lv-radio .lv-checkbase-container {
+  margin-top: 0;
+}
+
+.input-suffix {
+  display: flex;
+  align-items: center;
+  height: 32px;
+}

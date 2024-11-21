@@ -1,0 +1,97 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤6：添加复制集群">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="object-0018.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="object-0025">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤6：添加复制集群</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="object-0025"></a><a name="object-0025"></a>
+
+<h1 class="topictitle1">步骤6：添加复制集群</h1>
+<div><p>将目标集群添加至本端集群，建立主端设备和从端设备之间的逻辑连接，用于设备之间的数据传输。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><p id="object-0025__zh-cn_topic_0000001792344106_p27481329181712">已准备用于复制的目标集群。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="object-0025__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="object-0025__zh-cn_topic_0000001792344106_text195451245818">系统</span> &gt; <span id="object-0025__zh-cn_topic_0000001792344106_text1825116201482">基础设施</span> &gt; <span id="object-0025__zh-cn_topic_0000001792344106_text2324131633414">集群管理</span>”</span>。</span></li><li><span>在<span class="uicontrol" id="object-0025__zh-cn_topic_0000001792344106_uicontrol855335015454">“<span id="object-0025__zh-cn_topic_0000001792344106_text11821141684610">复制集群</span>”</span>页签，单击<span class="uicontrol" id="object-0025__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol1645154510534">“<span id="object-0025__zh-cn_topic_0000001792344106_text26407307349">添加</span>”</span>。</span></li><li><span>配置目标集群参数。</span><p><div class="p">相关参数说明如<a href="#object-0025__zh-cn_topic_0000001839187693_zh-cn_topic_0000001792344106_table13641194661910">表1</a>所示。
+<div class="tablenoborder"><a name="object-0025__zh-cn_topic_0000001839187693_zh-cn_topic_0000001792344106_table13641194661910"></a><a name="zh-cn_topic_0000001839187693_zh-cn_topic_0000001792344106_table13641194661910"></a><table cellpadding="4" cellspacing="0" summary="" id="object-0025__zh-cn_topic_0000001839187693_zh-cn_topic_0000001792344106_table13641194661910" frame="border" border="1" rules="all"><caption><b>表1 </b>目标集群参数说明</caption><colgroup><col style="width:34.949999999999996%"><col style="width:65.05%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="34.949999999999996%" id="mcps1.3.3.2.3.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="65.05%" id="mcps1.3.3.2.3.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p>自定义目标集群的名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p><span>角色</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p>固定为<span class="uicontrol">“<span>复制目标集群</span>”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p><span>IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><div class="p">输入目标集群任一控制器的管理、备份或复制IP。<ul><li>如果输入目标集群的管理IP，请确保本端与目标端的管理网络连通。</li><li>如果输入目标集群的备份网络IP，请确保本端与目标端的备份网络连通。</li><li>如果输入目标集群的复制网络IP，请确保本端与目标端的复制网络连通。</li></ul>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>管理IP即为登录目标集群管理界面的IP地址。</li><li>备份或复制网络IP请登录目标集群的管理界面，选择<span class="uicontrol">“<span>系统</span> &gt; <span>基础设施</span> &gt; <span>集群管理</span>”</span>，在“备份集群”页签单击集群名称，获取任一控制器的备份网络IP（数据备份引擎）或复制网络IP。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p><span>端口</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p>目标集群的端口。</p>
+<p>IP地址框输入管理IP地址时，默认端口为25081；IP地址框输入复制网络IP地址或备份网络IP地址时，默认端口为30068。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p><span>用户名</span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p><a href="Files-0025.html">步骤5：创建远端设备管理员（适用于1.5.0版本）</a>或<a href="zh-cn_topic_0000002010555368.html">步骤5：创建远端设备管理员（适用于1.6.0及后续版本）</a>中创建的用户及其密码。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p><span>密码</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="object-0018.html">复制对象存储副本</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

@@ -1,18 +1,24 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup
+} from '@angular/forms';
 import { MessageService, ModalRef, OptionItem } from '@iux/live';
 import { TargetClusterComponent } from 'app/business/system/infrastructure/cluster-management/target-cluster/target-cluster.component';
 import {
@@ -23,6 +29,7 @@ import {
   CookieService,
   DataMap,
   DataMapService,
+  DaysOfType,
   DmeServiceService,
   I18NService,
   MultiCluster,
@@ -56,10 +63,14 @@ import {
   flatMapDeep,
   get,
   includes,
+  intersection,
   isEmpty,
   isUndefined,
   map,
   size,
+  some,
+  toLower,
+  toNumber,
   toString,
   uniqBy
 } from 'lodash';
@@ -101,6 +112,7 @@ export class ReplicationPolicyComponent implements OnInit {
   externalSystems = [];
   sourceClusterIp;
   hcsReplicationClusterOptions = [];
+  allReplicationClusterOptions = [];
   vdcTenantOptions = [];
   projectOptions = [];
   dwsCrossDomain;
@@ -126,12 +138,13 @@ export class ReplicationPolicyComponent implements OnInit {
   intervalErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 23])
   });
-  retentionDurationErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
+  retentionDurationErrorTip = {
+    ...this.baseUtilService.rangeErrorTip,
     invalidRang: this.i18n.get('common_valid_rang_label', [
       1,
       this.maxRetentionDay
     ])
-  });
+  };
   startTimeErrorTip = assign({}, this.baseUtilService.requiredErrorTip);
   intervalUnit = this.dataMapService
     .toArray('Interval_Unit')
@@ -195,14 +208,20 @@ export class ReplicationPolicyComponent implements OnInit {
   });
 
   specifyUserOptionsMap = {};
+  tmpSpecifyUserInfo = {};
   isAuth = false;
   externalStorageMap = {};
   externalStorageUnitMap = {};
   externalStorageUnitMaintainMap = {}; // 用于保存筛选前的所有单元数据
   crossDomainStorageMap = new Map();
+  localStorageType; // 用于本地存储单元类型
+  _includes = includes;
+  isTargetMulti = false; // 用于判断对端是否为多集群
 
   generate_time_range_year = DataMap.Year_Time_Range.December.value;
   generate_time_range_week = DataMap.Days_Of_Week.mon.value;
+  wormData = 0; // 最大的worm时间
+  wormDataList = []; // 备份策略worm时间组
 
   constructor(
     public i18n: I18NService,
@@ -259,6 +278,7 @@ export class ReplicationPolicyComponent implements OnInit {
       this.getTargetZoneOps();
       this.getResourceOps();
     }
+    this.getMaxWormDuration();
   }
 
   initRest() {
@@ -323,6 +343,16 @@ export class ReplicationPolicyComponent implements OnInit {
             })
           });
         }
+        if (!isEmpty(this.tmpSpecifyUserInfo[external_system_id])) {
+          this.specifyUserOptionsMap[external_system_id] = uniqBy(
+            [
+              ...this.specifyUserOptionsMap[external_system_id],
+              ...this.tmpSpecifyUserInfo[external_system_id]
+            ],
+            'userId'
+          );
+          delete this.tmpSpecifyUserInfo[external_system_id];
+        }
       });
   }
 
@@ -351,7 +381,7 @@ export class ReplicationPolicyComponent implements OnInit {
     });
   }
 
-  parseProjectName(res) {
+  parseProjectName(res, isCrossCloud = false) {
     const regions = [];
     each(res.projects, item => {
       if (this.isHcsUser && !!this.sourceClusterIp) {
@@ -361,13 +391,28 @@ export class ReplicationPolicyComponent implements OnInit {
         });
       }
       each(item.regions, region => {
+        const tmpLabel = this.i18n.isEn
+          ? region.region_name.en_us
+          : region.region_name.zh_cn;
+
         if (find(regions, { region_id: region.region_id })) {
           find(regions, { region_id: region.region_id }).children.push(
-            assign(item, {
+            assign({}, item, {
               cluster_ip: get(region, 'op_ips', ''),
               isLeaf: true,
               label: item.name,
-              region_id: region.region_id
+              region_id: region.region_id,
+              key: `${tmpLabel}${item.name}`,
+              disabled: isCrossCloud
+                ? !find(
+                    this.allReplicationClusterOptions,
+                    val =>
+                      !!intersection(
+                        val.clusterIp.split(','),
+                        get(region, 'op_ips', '').split(',')
+                      ).length
+                  )
+                : false
             })
           );
         } else {
@@ -379,11 +424,22 @@ export class ReplicationPolicyComponent implements OnInit {
               ? region.region_name.en_us
               : region.region_name.zh_cn,
             children: [
-              assign(item, {
+              assign({}, item, {
                 cluster_ip: get(region, 'op_ips', ''),
                 isLeaf: true,
                 label: item.name,
-                region_id: region.region_id
+                region_id: region.region_id,
+                key: `${tmpLabel}${item.name}`,
+                disabled: isCrossCloud
+                  ? !find(
+                      this.allReplicationClusterOptions,
+                      val =>
+                        !!intersection(
+                          val.clusterIp.split(','),
+                          get(region, 'op_ips', '').split(',')
+                        ).length
+                    )
+                  : false
               })
             ]
           });
@@ -416,7 +472,36 @@ export class ReplicationPolicyComponent implements OnInit {
           includes([DataMap.Target_Cluster_Role.replication.value], item.role)
         );
         this.oldExternalSystems = clusters;
+        if (!!this.data) {
+          // 升级场景下，需要判断集群的username是不是跟传上来的username一样，就需要手动往用户里塞值
+          this.parseUpdatedUserName();
+        }
       });
+  }
+
+  private parseUpdatedUserName() {
+    const controls = this.getReplicationTeams().controls;
+    each(controls, item => {
+      const tmpCluster = find(this.externalSystems, {
+        clusterId: item.get('external_system_id').value
+      });
+      if (!!tmpCluster && item.get('userName').value === tmpCluster.username) {
+        const tmpUser = {
+          userId: item.get('specifyUser').value,
+          label: tmpCluster.username,
+          value: item.get('specifyUser').value,
+          isLeaf: true,
+          userName: tmpCluster.username
+        };
+        if (!isEmpty(this.specifyUserOptionsMap[tmpCluster.clusterId])) {
+          this.specifyUserOptionsMap[tmpCluster.clusterId].push(tmpUser);
+        } else {
+          assign(this.tmpSpecifyUserInfo, {
+            [tmpCluster.clusterId]: [tmpUser]
+          });
+        }
+      }
+    });
   }
 
   initDeviceOption() {
@@ -453,7 +538,14 @@ export class ReplicationPolicyComponent implements OnInit {
               tmpData?.storageType ||
                 DataMap.poolStorageDeviceType.OceanProtectX.value
             );
-          if (item.get('local_storage_type').value === 'BasicDisk') {
+          this.localStorageType =
+            tmpData?.storageType ||
+            DataMap.poolStorageDeviceType.OceanProtectX.value;
+          if (
+            ['BasicDisk', DataMap.poolStorageDeviceType.Server.value].includes(
+              item.get('local_storage_type').value
+            )
+          ) {
             // 本地存储单元为服务器类型不支持重删
             item.get('link_deduplication').setValue(false);
           }
@@ -466,15 +558,27 @@ export class ReplicationPolicyComponent implements OnInit {
     if (!this.isHcsUser) {
       return;
     }
-    this.clusterApiService
-      .getClustersInfoUsingGET({
-        startPage: 0,
-        pageSize: 200,
-        roleList: [DataMap.Target_Cluster_Role.primaryNode.value]
-      })
-      .subscribe(res => {
-        this.sourceClusterIp = first(res.records[0].clusterIp.split(','));
-      });
+    if (this.isDataBackup) {
+      this.clusterApiService
+        .getClustersInfoUsingGET({
+          startPage: 0,
+          pageSize: 200,
+          roleList: [DataMap.Target_Cluster_Role.primaryNode.value]
+        })
+        .subscribe(res => {
+          this.sourceClusterIp = first(res.records[0].clusterIp.split(','));
+        });
+    } else {
+      this.clusterApiService
+        .pageQueryPacificNodes({
+          startPage: 0,
+          pageSize: 200,
+          role: [toLower(DataMap.nodeRole.primaryNode.value)]
+        })
+        .subscribe(res => {
+          this.sourceClusterIp = res.records[0].manageIp;
+        });
+    }
   }
 
   getHcsReplicationCluster() {
@@ -496,6 +600,7 @@ export class ReplicationPolicyComponent implements OnInit {
           item['value'] = item.clusterId;
           return item;
         });
+        this.allReplicationClusterOptions = cloneDeep(clusters);
         clusters = filter(
           clusters,
           item => item['replicationClusterType'] === 1
@@ -564,14 +669,6 @@ export class ReplicationPolicyComponent implements OnInit {
       });
   }
 
-  // 单机场景，普通应用只能选存储单元；其他情况可以选单元和单元组。
-  backupStorageTypes() {
-    return !MultiCluster.isMulti &&
-      this.type !== DataMap.Resource_Type.GaussDB_DWS.value
-      ? this.backupStorageTypesWithoutGroup
-      : this.backupStorageTypesAll;
-  }
-
   getBackupStorageUnitNames() {
     let chosenUnit;
     if (
@@ -606,6 +703,7 @@ export class ReplicationPolicyComponent implements OnInit {
       // x系列只能指定本地存储单元
       this.externalStorageUnit = filter(this.externalStorageUnit, item => {
         return (
+          this.type === DataMap.Resource_Type.GaussDB_DWS.value ||
           this.appUtilsService.isDecouple ||
           item.generatedType === DataMap.backupStorageGeneratedType.local.value
         );
@@ -780,6 +878,33 @@ export class ReplicationPolicyComponent implements OnInit {
           .setValue(item.replication_storage_id || item.storage_id);
       }
       this.dealUnit(replicationTeam);
+      // 跨云需要回显远端存储类型，但是前面逻辑会清空，现在暂时在这里重新赋值
+      if (
+        replicationTeam.get('replicationMode').value ===
+        ReplicationModeType.CROSS_CLOUD
+      ) {
+        replicationTeam
+          .get('remote_storage_type')
+          .setValue(item.remote_storage_type);
+        replicationTeam
+          .get('replication_storage_type')
+          .setValue(item.replication_storage_type);
+      }
+      replicationTeam.get('duration_unit').valueChanges.subscribe(res => {
+        this.changeTimeUnits(replicationTeam, res, 'retention_duration');
+      });
+      if (!!item.storage_edit_disable) {
+        replicationTeam.get('disableNameIncluded').setValue(true);
+      }
+      replicationTeam.get('replication_target_type').updateValueAndValidity();
+      // 本地不是dws并且上次是单元组的时候可直接判断对端是多集群，是dws时本身也可以展示单元组则留到后续判断
+      replicationTeam
+        .get('isTargetMulti')
+        .setValue(
+          item?.replication_storage_type ===
+            DataMap.backupStorageTypeSla.group.value &&
+            this.type !== DataMap.Resource_Type.GaussDB_DWS.value
+        );
       this.getReplicationTeams().push(replicationTeam);
     });
 
@@ -878,21 +1003,11 @@ export class ReplicationPolicyComponent implements OnInit {
         DataMap.slaReplicationRule.all.value
       ),
       is_first_hcs: new FormControl(!!this.data),
-      hcs_project_option: new FormControl([], {
-        validators: [this.baseUtilService.VALID.required()]
-      }),
-      hcs_cluster_id: new FormControl('', {
-        validators: [this.baseUtilService.VALID.required()]
-      }),
-      tenant_name: new FormControl('', {
-        validators: [this.baseUtilService.VALID.required()]
-      }),
-      vdc_name: new FormControl('', {
-        validators: [this.baseUtilService.VALID.required()]
-      }),
-      vdc_password: new FormControl('', {
-        validators: [this.baseUtilService.VALID.required()]
-      }),
+      hcs_project_option: new FormControl([]),
+      hcs_cluster_id: new FormControl(''),
+      tenant_name: new FormControl(''),
+      vdc_name: new FormControl(''),
+      vdc_password: new FormControl(''),
       copy_type_year: new FormControl(true),
       generate_time_range_year: new FormControl(this.generate_time_range_year),
       retention_duration_year: new FormControl(''),
@@ -916,7 +1031,6 @@ export class ReplicationPolicyComponent implements OnInit {
       qos_id: new FormControl(''),
       link_deduplication: new FormControl(true),
       link_compression: new FormControl(true),
-      is_worm: new FormControl(false),
       alarm_after_failure: new FormControl(true),
       specifyUser: new FormControl('', {
         validators:
@@ -934,6 +1048,7 @@ export class ReplicationPolicyComponent implements OnInit {
         updateOn: 'change'
       }),
       disableOriginalStorage: new FormControl(false),
+      disableNameIncluded: new FormControl(false),
       cluster_esn: new FormControl('', {
         validators: this.isDmeUser
           ? [this.baseUtilService.VALID.required()]
@@ -943,22 +1058,9 @@ export class ReplicationPolicyComponent implements OnInit {
         validators: this.isDmeUser
           ? [this.baseUtilService.VALID.required()]
           : null
-      })
+      }),
+      isTargetMulti: new FormControl(false)
     });
-    if (!this.isHcsUser) {
-      // 非op服务化则不校验
-      const validList = [
-        'hcs_project_option',
-        'hcs_cluster_id',
-        'tenant_name',
-        'vdc_name',
-        'vdc_password'
-      ];
-      validList.forEach(item => {
-        replicationTeam.get(item).clearValidators();
-        replicationTeam.get(item).updateValueAndValidity();
-      });
-    }
     this.listenFormGroup(replicationTeam);
     return replicationTeam;
   }
@@ -984,7 +1086,9 @@ export class ReplicationPolicyComponent implements OnInit {
         param: params
       })
       .subscribe(res => {
-        item.get('hcs_project_option').setValue(this.parseProjectName(res));
+        item
+          .get('hcs_project_option')
+          .setValue(this.parseProjectName(res, true));
         // 修改时在测试后回显，如果获取数据中没有该数据则去除
         this.parseHcsModify(item);
       });
@@ -1034,13 +1138,26 @@ export class ReplicationPolicyComponent implements OnInit {
       clusterId: replicationForm.value.external_system_id
     };
     this.clusterApiService
-      .verifyUsernameAndPasswordUsingPost({
+      .verifyUsernamePasswordAndGetClusterInfoUsingPost({
         verifyUserDto: params,
         akOperationTips: false
       })
       .subscribe((res: any) => {
-        this.isAuth = res;
-        if (res) {
+        this.isAuth = res.verify;
+        if (isUndefined(res?.backupBaseClusterInfo)) {
+          replicationForm.get('isTargetMulti').setValue(false);
+        } else if (
+          !isUndefined(res?.backupBaseClusterInfo?.clusterEstablished)
+        ) {
+          replicationForm
+            .get('isTargetMulti')
+            .setValue(res?.backupBaseClusterInfo?.clusterEstablished);
+        } else {
+          replicationForm
+            .get('isTargetMulti')
+            .setValue(!isEmpty(res?.backupBaseClusterInfo?.roleType));
+        }
+        if (res.verify) {
           this.messageService.success(
             this.i18n.get('protection_user_verify_success_label')
           );
@@ -1062,14 +1179,29 @@ export class ReplicationPolicyComponent implements OnInit {
       });
   }
 
-  getStorageUnitOptions(replicationForm) {
+  getStorageUnitOptions(replicationForm: FormGroup) {
+    let tmpClusterId;
+    if (
+      replicationForm.value.replicationMode === ReplicationModeType.CROSS_CLOUD
+    ) {
+      tmpClusterId = find(
+        this.allReplicationClusterOptions,
+        item =>
+          !!intersection(
+            item.clusterIp.split(','),
+            replicationForm.value.external_system_id[0].cluster_ip.split(',')
+          ).length
+      ).clusterId;
+    } else {
+      tmpClusterId = replicationForm.value.external_system_id;
+    }
     this.storageUserAuthService
       .getRemoteStorageUserAuthRelationsByUserId({
         pageNo: CommonConsts.PAGE_START,
         pageSize: CommonConsts.PAGE_SIZE_MAX,
         userId: replicationForm.value.specifyUser,
         authType: 2,
-        clusterId: replicationForm.value.external_system_id
+        clusterId: tmpClusterId
       })
       .subscribe(res => {
         if (
@@ -1085,7 +1217,12 @@ export class ReplicationPolicyComponent implements OnInit {
             return assign(item, {
               label: item.storageName,
               value: item.storageId,
-              isLeaf: true
+              isLeaf: true,
+              storageType: get(
+                item,
+                'storageType',
+                DataMap.poolStorageDeviceType.OceanProtectX.value
+              )
             });
           });
           if (this.type !== DataMap.Resource_Type.GaussDB_DWS.value) {
@@ -1097,7 +1234,7 @@ export class ReplicationPolicyComponent implements OnInit {
           }
           if (
             this.type === DataMap.Resource_Type.GaussDB_DWS.value &&
-            !MultiCluster.isMulti
+            !replicationForm.value.isTargetMulti
           ) {
             this.externalStorageMap[
               `${replicationForm.value.external_system_id}+${replicationForm.value.specifyUser}`
@@ -1113,7 +1250,7 @@ export class ReplicationPolicyComponent implements OnInit {
         pageSize: CommonConsts.PAGE_SIZE_MAX,
         userId: replicationForm.value.specifyUser,
         authType: 1,
-        clusterId: replicationForm.value.external_system_id
+        clusterId: tmpClusterId
       })
       .subscribe(res => {
         if (
@@ -1130,19 +1267,34 @@ export class ReplicationPolicyComponent implements OnInit {
               ...item,
               label: item.storageName,
               value: item.storageId,
-              isLeaf: true
+              isLeaf: true,
+              storageType: get(
+                item,
+                'storageType',
+                DataMap.poolStorageDeviceType.OceanProtectX.value
+              )
             });
           }).filter(item => {
             return (
+              this.type === DataMap.Resource_Type.GaussDB_DWS.value ||
               this.appUtilsService.isDecouple ||
+              this.appUtilsService.isDistributed ||
               item.generatedType ===
                 DataMap.backupStorageGeneratedType.local.value
             );
           });
         }
+        // 跨云复制通过选择复制目标端直接去获取存储单元
+        if (
+          replicationForm.get('replicationMode').value ===
+          ReplicationModeType.CROSS_CLOUD
+        ) {
+          this.isAuth = true;
+        }
         this.externalStorageUnitMap = cloneDeep(
           this.externalStorageUnitMaintainMap
         );
+        replicationForm.get('remote_storage_type').updateValueAndValidity();
       });
   }
 
@@ -1165,6 +1317,12 @@ export class ReplicationPolicyComponent implements OnInit {
       ])
     });
 
+    replicationTeam.get('local_storage_type').setValue(this.localStorageType);
+    if (this.localStorageType === 'BasicDisk') {
+      // 本地存储单元为服务器类型不支持重删
+      replicationTeam.get('link_deduplication').setValue(false);
+    }
+
     this.listenFormGroup(replicationTeam);
     this.getReplicationTeams().push(replicationTeam);
     this.activeIndex = this.getReplicationTeams().controls.length - 1;
@@ -1181,6 +1339,19 @@ export class ReplicationPolicyComponent implements OnInit {
   }
 
   listenFormGroup(replicationTeam: FormGroup) {
+    replicationTeam
+      .get('retention_duration')
+      .setValidators([
+        this.validProTime(replicationTeam),
+        this.baseUtilService.VALID.required(),
+        this.baseUtilService.VALID.integer(),
+        this.baseUtilService.VALID.rangeValue(1, this.maxRetentionDay)
+      ]);
+    // 添加校验，如果是修改，立即触发
+    if (this.data && size(this.data)) {
+      replicationTeam.get('retention_duration').updateValueAndValidity();
+      replicationTeam.get('retention_duration').markAsTouched();
+    }
     replicationTeam.get('backupExecuteTrigger').valueChanges.subscribe(res => {
       if (res) {
         this.changeReplicationBackupExecute(replicationTeam);
@@ -1203,7 +1374,8 @@ export class ReplicationPolicyComponent implements OnInit {
         'userName',
         'replication_storage_type',
         'external_storage_id',
-        'replication_storage_id'
+        'replication_storage_id',
+        'remote_storage_type'
       ],
       item => {
         replicationTeam.get(item).valueChanges.subscribe(res => {
@@ -1313,14 +1485,17 @@ export class ReplicationPolicyComponent implements OnInit {
               'authPassword',
               'replication_storage_type',
               'external_storage_id',
-              'replication_storage_id'
+              'replication_storage_id',
+              'remote_storage_type'
             ];
       const hcsValidList = [
         'hcs_project_option',
         'hcs_cluster_id',
         'tenant_name',
         'vdc_name',
-        'vdc_password'
+        'vdc_password',
+        'remote_storage_type',
+        'replication_storage_id'
       ];
       if (res === ReplicationModeType.CROSS_CLOUD) {
         // 跨云的控件处理
@@ -1334,6 +1509,7 @@ export class ReplicationPolicyComponent implements OnInit {
       } else {
         hcsValidList.forEach(item => {
           replicationTeam.get(item).clearValidators();
+          replicationTeam.get(item).updateValueAndValidity();
         });
       }
       if (
@@ -1360,7 +1536,6 @@ export class ReplicationPolicyComponent implements OnInit {
     });
 
     replicationTeam.get('remote_storage_type').valueChanges.subscribe(res => {
-      replicationTeam.get('replication_storage_id').setValue('');
       const {
         replication_storage_type,
         external_system_id,
@@ -1378,6 +1553,17 @@ export class ReplicationPolicyComponent implements OnInit {
           storageUnitMaintainMap,
           item => item.storageType === res
         );
+        // 如果新的下拉框选项里不存在该单元就去掉,否则保留
+        if (
+          !some(
+            this.externalStorageUnitMap[storageKey],
+            item =>
+              replicationTeam.get('replication_storage_id').value ===
+              item.storageId
+          )
+        ) {
+          replicationTeam.get('replication_storage_id').setValue('');
+        }
       }
     });
 
@@ -1393,7 +1579,8 @@ export class ReplicationPolicyComponent implements OnInit {
           'userName',
           'replication_storage_type',
           'external_storage_id',
-          'replication_storage_id'
+          'replication_storage_id',
+          'remote_storage_type'
         ],
         item => {
           if (this.crossDomainStorageMap.has(res)) {
@@ -1420,6 +1607,17 @@ export class ReplicationPolicyComponent implements OnInit {
         !this.isDmeUser
       ) {
         this.getSpecifyUser(res);
+      }
+      if (
+        replicationTeam.value.replicationMode ===
+          ReplicationModeType.CROSS_CLOUD &&
+        !!res
+      ) {
+        if (isEmpty(res)) {
+          return;
+        }
+        replicationTeam.get('specifyUser').setValue(res[0].id);
+        this.getStorageUnitOptions(replicationTeam);
       }
     });
 
@@ -1573,6 +1771,99 @@ export class ReplicationPolicyComponent implements OnInit {
     formGroup.get('interval').updateValueAndValidity();
   }
 
+  getWormDuration(item) {
+    let params;
+    if (!isUndefined(item.worm_switch)) {
+      params = {
+        worm_validity_type: item.worm_switch ? item.worm_validity_type : 0,
+        retention: {
+          worm_retention_duration: item.worm_switch
+            ? item.worm_validity_type === 1
+              ? item.retention_duration
+              : item.worm_specified_retention_duration
+            : null,
+          worm_duration_unit: item.worm_switch
+            ? item.worm_validity_type === 1
+              ? item.duration_unit
+              : item.worm_specified_duration_unit
+            : null
+        }
+      };
+    } else {
+      params = {
+        worm_validity_type: item.worm_validity_type || 0,
+        retention: {
+          worm_retention_duration:
+            item.worm_specified_retention_duration || null,
+          worm_duration_unit: item.worm_specified_duration_unit || null
+        }
+      };
+    }
+    this.getSpecialBackupData(item, params);
+    return params;
+  }
+
+  getSpecialBackupData(item, params) {
+    if (
+      includes(
+        [DaysOfType.DaysOfYear, DaysOfType.DaysOfMonth, DaysOfType.DaysOfWeek],
+        item.trigger_action
+      )
+    ) {
+      params.retention.worm_retention_duration = item.worm_switch
+        ? item.worm_validity_type === 1
+          ? +item.specified_retention_duration
+          : item.worm_specified_retention_duration
+        : null;
+      params.retention.worm_duration_unit = item.worm_switch
+        ? item.worm_validity_type === 1
+          ? item.specified_duration_unit
+          : item.worm_specified_duration_unit
+        : null;
+    }
+  }
+
+  getMaxWormDuration() {
+    if (isEmpty(this.backupData)) {
+      return;
+    }
+    this.wormDataList = this.backupData.map(item => {
+      return this.getWormDuration(item);
+    });
+    this.wormDataList.map(item => {
+      if (item.worm_validity_type) {
+        let itemWormData = 0;
+        if (item.retention.worm_duration_unit === 'p') {
+          itemWormData = Infinity;
+        } else {
+          itemWormData =
+            item.retention.worm_retention_duration *
+            this.dataMap.unitTranslateMap[item.retention.worm_duration_unit];
+        }
+        if (itemWormData > this.wormData) {
+          this.wormData = itemWormData;
+        }
+      }
+    });
+  }
+
+  validProTime(formGroup) {
+    return (control: AbstractControl): { [key: string]: { value: any } } => {
+      const replicationDurationUnit = formGroup.get('duration_unit').value;
+      const replicationDurationData =
+        this.dataMap.unitTranslateMap[replicationDurationUnit] *
+        toNumber(formGroup.get('retention_duration').value);
+      if (this.wormData > replicationDurationData) {
+        return {
+          [this.i18n.get('common_retention_worm_label')]: {
+            value: control.value
+          }
+        };
+      }
+      return null;
+    };
+  }
+
   changeTimeUnits(formGroup, value, formControlName) {
     formGroup.get(formControlName).enable();
     if (value === DataMap.Interval_Unit.minute.value) {
@@ -1604,7 +1895,8 @@ export class ReplicationPolicyComponent implements OnInit {
           .setValidators([
             this.baseUtilService.VALID.required(),
             this.baseUtilService.VALID.integer(),
-            this.baseUtilService.VALID.rangeValue(1, this.maxRetentionDay)
+            this.baseUtilService.VALID.rangeValue(1, this.maxRetentionDay),
+            this.validProTime(formGroup)
           ]);
         this.retentionDurationErrorTip = assign(
           {},
@@ -1635,7 +1927,8 @@ export class ReplicationPolicyComponent implements OnInit {
           .setValidators([
             this.baseUtilService.VALID.required(),
             this.baseUtilService.VALID.integer(),
-            this.baseUtilService.VALID.rangeValue(1, this.maxRetentionWeek)
+            this.baseUtilService.VALID.rangeValue(1, this.maxRetentionWeek),
+            this.validProTime(formGroup)
           ]);
         this.retentionDurationErrorTip = assign(
           {},
@@ -1666,7 +1959,8 @@ export class ReplicationPolicyComponent implements OnInit {
           .setValidators([
             this.baseUtilService.VALID.required(),
             this.baseUtilService.VALID.integer(),
-            this.baseUtilService.VALID.rangeValue(1, this.maxRetentionMonth)
+            this.baseUtilService.VALID.rangeValue(1, this.maxRetentionMonth),
+            this.validProTime(formGroup)
           ]);
         this.retentionDurationErrorTip = assign(
           {},
@@ -1697,7 +1991,8 @@ export class ReplicationPolicyComponent implements OnInit {
           .setValidators([
             this.baseUtilService.VALID.required(),
             this.baseUtilService.VALID.integer(),
-            this.baseUtilService.VALID.rangeValue(1, this.maxRetentionYear)
+            this.baseUtilService.VALID.rangeValue(1, this.maxRetentionYear),
+            this.validProTime(formGroup)
           ]);
         this.retentionDurationErrorTip = assign(
           {},

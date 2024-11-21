@@ -1,3 +1,4 @@
+<lv-collapse [lvType]="'simple'">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,21 +12,20 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-collapse [lvType]="'simple'">
     <lv-collapse-panel [lvTitle]="'common_advanced_label'|i18n" lvExpanded>
         <lv-form [formGroup]="formGroup" [lvLabelColon]="isSlaDetail">
             <aui-specify-destination-location [formGroup]="formGroup" [data]="data" [isSlaDetail]="isSlaDetail"
-                [action]="action" [isRetry]="isRetry" [isUsed]="isUsed">
+                [action]="action" [isRetry]="isRetry" [isUsed]="isUsed" (isDisableQos)="storageTypeChange($event)">
             </aui-specify-destination-location>
-            <!-- 重删压缩 -->
+            <!-- 通用压缩 -->
             <lv-form-item *ngIf="appUtilsService.isDistributed">
-                <lv-form-label> {{ 'protection_deduption_label' | i18n }} </lv-form-label>
+                <lv-form-label> {{ 'protection_common_deduption_label' | i18n }} </lv-form-label>
                 <lv-form-control>
                     <ng-container *ngIf="!isSlaDetail">
                         <lv-switch formControlName="enable_deduption_compression"></lv-switch>
                     </ng-container>
                     <ng-container *ngIf="isSlaDetail">
-                        {{formGroup.value.enable_deduption_compression | textMap: 'Switch_Status'}}
+                        {{formGroup.value.enable_deduption_compression | textMap: 'Switch_Sla_Info_Status'}}
                     </ng-container>
                 </lv-form-control>
             </lv-form-item>
@@ -42,7 +42,7 @@
                         <lv-switch formControlName="alarm_over_time_window"></lv-switch>
                     </ng-container>
                     <ng-container *ngIf="isSlaDetail">
-                        {{formGroup.value.alarm_over_time_window | textMap: 'Switch_Status'}}
+                        {{formGroup.value.alarm_over_time_window | textMap: 'Switch_Sla_Info_Status'}}
                     </ng-container>
                 </lv-form-control>
             </lv-form-item>
@@ -59,7 +59,7 @@
                         <lv-switch formControlName="alarm_after_failure"></lv-switch>
                     </ng-container>
                     <ng-container *ngIf="isSlaDetail">
-                        {{formGroup.value.alarm_after_failure | textMap: 'Switch_Status'}}
+                        {{formGroup.value.alarm_after_failure | textMap: 'Switch_Sla_Info_Status'}}
                     </ng-container>
                 </lv-form-control>
             </lv-form-item>
@@ -108,7 +108,7 @@
                     <lv-form-label>{{'protection_auto_retry_label' | i18n}}</lv-form-label>
                     <lv-form-control>
                         <ng-container *ngIf="!formGroup.value.auto_retry">
-                            {{formGroup.value.auto_retry | textMap: 'Switch_Status'}}
+                            {{formGroup.value.auto_retry | textMap: 'Switch_Sla_Info_Status'}}
                         </ng-container>
                         <ng-container *ngIf="formGroup.value.auto_retry">
                             <ng-container *ngIf="i18n.isEn">

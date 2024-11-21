@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import {
   DataMap,
@@ -18,6 +18,7 @@ import {
   MODAL_COMMON,
   OpHcsServiceApiService,
   OperateItems,
+  WarningMessageService,
   getPermissionMenuItem
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -29,7 +30,15 @@ import {
 } from 'app/shared/components/pro-table';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
-import { assign, filter, first, isArray, isEmpty, values } from 'lodash';
+import {
+  assign,
+  filter,
+  first,
+  includes,
+  isArray,
+  isEmpty,
+  values
+} from 'lodash';
 import { StorResourceNodeComponent } from 'app/business/protection/cloud/huawei-stack/register-huawei-stack/store-resource-node/store-resource-node.component';
 
 @Component({
@@ -52,7 +61,7 @@ export class HcsStorageComponent implements OnInit, AfterViewInit {
     private i18n: I18NService,
     private dataMapService: DataMapService,
     private drawModalService: DrawModalService,
-    private virtualScroll: VirtualScrollService,
+    private warningMessageService: WarningMessageService,
     private opHcsServiceApiService: OpHcsServiceApiService
   ) {}
 
@@ -61,7 +70,6 @@ export class HcsStorageComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.virtualScroll.getScrollParam(220);
     this.initConfig();
   }
 
@@ -74,11 +82,17 @@ export class HcsStorageComponent implements OnInit, AfterViewInit {
         label: this.i18n.get('common_add_label'),
         onClick: () => this.add()
       },
-      delete: {
+      modify: {
         id: 'modify',
         permission: OperateItems.AddHcsStorage,
         label: this.i18n.get('common_modify_label'),
         onClick: ([data]) => this.add(data)
+      },
+      delete: {
+        id: 'delete',
+        permission: OperateItems.AddHcsStorage,
+        label: this.i18n.get('common_delete_label'),
+        onClick: ([data]) => this.delete(data)
       }
     };
     this.optsConfig = getPermissionMenuItem([opts.add]);
@@ -112,14 +126,15 @@ export class HcsStorageComponent implements OnInit, AfterViewInit {
               config: {
                 maxDisplayItems: 1,
                 items: getPermissionMenuItem(
-                  filter(values(opts), item => item.id === 'modify')
+                  filter(values(opts), item =>
+                    includes(['modify', 'delete'], item.id)
+                  )
                 )
               }
             }
           }
         ],
         scrollFixed: true,
-        scroll: this.virtualScroll.scrollParam,
         colDisplayControl: false,
         fetchData: (filter: Filters) => {
           this.getData(filter);
@@ -146,6 +161,55 @@ export class HcsStorageComponent implements OnInit, AfterViewInit {
       });
   }
 
+  modifyStorage(res, resolve, modifyData) {
+    const params = {
+      storageType: `${res.storageType}`,
+      ip: <string>first(res.ip),
+      ipList: isArray(res.ip) ? res.ip.join(',') : res.ip,
+      port: res.port,
+      username: res.username,
+      password: res.password,
+      enableCert: res.enableCert,
+      certification: res.certification,
+      revocationList: res.revocationList,
+      certName: res.certName,
+      certSize: res.certSize,
+      crlName: res.crlName,
+      crlSize: res.crlSize
+    };
+    if (Number(res.storageType) === 1) {
+      assign(params, {
+        vbsNodeInfo: res.isVbsNodeInfo,
+        vbsNodeUserName: res.vbsNodeUserName,
+        vbsNodeIp: res.vbsNodeIp,
+        vbsNodePort: res.vbsNodePort,
+        vbsNodePassword: res.vbsNodePassword
+      });
+    }
+    if (isEmpty(modifyData)) {
+      this.opHcsServiceApiService
+        .initStorageResources({ storageList: [params] })
+        .subscribe({
+          next: () => {
+            resolve(true);
+            this.dataTable?.fetchData();
+          },
+          error: () => resolve(false)
+        });
+    } else {
+      assign(params, { uuid: modifyData.uuid });
+      this.opHcsServiceApiService
+        .editStorageForHcs({ storage: params })
+        .subscribe({
+          next: () => {
+            resolve(true);
+            this.dataTable?.fetchData();
+          },
+          error: () => resolve(false)
+        });
+    }
+  }
+
   add(data?) {
     this.drawModalService.create(
       assign({}, MODAL_COMMON.generateDrawerOptions(), {
@@ -170,40 +234,41 @@ export class HcsStorageComponent implements OnInit, AfterViewInit {
                 storageType:
                   data.storageType === '1'
                     ? this.scaleoutLabel
-                    : this.centralizedLabel
+                    : this.centralizedLabel,
+                isVbsNodeInfo: data.vbsNodeInfo,
+                vbsNodeUserName: data.vbsNodeUserName,
+                vbsNodeIp: data.vbsNodeIp,
+                vbsNodePort: data.vbsNodePort
               }
             : null,
-          subType: DataMap.Resource_Type.HCS.value
+          subType: DataMap.Resource_Type.HCS.value,
+          isModifyHcsStorage: !isEmpty(data)
         },
         lvOk: modal => {
           return new Promise(resolve => {
             const content = modal.getContentComponent() as StorResourceNodeComponent;
-            content.onOK().subscribe(res => {
-              const params = {
-                storageType: `${res.storageType}`,
-                ip: <string>first(res.ip),
-                ipList: isArray(res.ip) ? res.ip.join(',') : res.ip,
-                port: res.port,
-                username: res.username,
-                password: res.password,
-                enableCert: res.enableCert,
-                certification: res.certification,
-                revocationList: res.revocationList,
-                certName: res.certName,
-                certSize: res.certSize,
-                crlName: res.crlName,
-                crlSize: res.crlSize
-              };
-              this.opHcsServiceApiService
-                .initStorageResources({ storageList: [params] })
-                .subscribe(
-                  () => resolve(true),
-                  () => resolve(false)
-                );
-            });
+            content
+              .onOK()
+              .subscribe(res => this.modifyStorage(res, resolve, data));
           });
         }
       })
     );
+  }
+
+  delete(data) {
+    if (isEmpty(data)) {
+      return;
+    }
+    this.warningMessageService.create({
+      content: this.i18n.get('protection_dorado_system_delete_label', [
+        data.ipList
+      ]),
+      onOK: () => {
+        this.opHcsServiceApiService
+          .deleteStorageForHcs({ uuid: data.uuid })
+          .subscribe(() => this.dataTable?.fetchData());
+      }
+    });
   }
 }

@@ -1,3 +1,4 @@
+<div class="vm-group">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="vm-group">
   <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
     <lv-form-item>
       <lv-form-label lvRequired>{{groupNameLabel}}</lv-form-label>
@@ -46,20 +46,9 @@
     <lv-form-item>
       <lv-form-label></lv-form-label>
       <lv-form-control>
-    <lv-transfer #transfer [lvHeaders]="[sourceOperateTpl, targetOperateTpl]" [lvSourceColumns]="sourceColumns"
+    <lv-transfer #transfer [lvSourceColumns]="sourceColumns"
       [lvSourceData]="sourceData" [lvSourceSelection]="sourceSelection" [lvTargetColumns]="targetColumns"
       (lvStateChange)="stateChange($event)" (lvSelectionChange)="change($event)" lvAsync="true" [lvTotal]="total" [lvItemSize]="20" lvDataKey="uuid"></lv-transfer>
-    <ng-template #sourceOperateTpl let-data let-selecetd="selection" let-paginator="paginator" let-panel="panel">
-      <lv-group lvGutter="8px" class="file-header">
-        <button lv-button lvType="link" (click)="selectAll(data, panel)"></button>
-      </lv-group>
-    </ng-template>
-
-    <ng-template #targetOperateTpl let-data let-paginator="paginator" let-panel="panel">
-      <lv-group lvGutter="8px" class="file-header">
-        <button lv-button lvType="link" (click)="clearAll(data, panel)">{{'protection_clear_all_label' | i18n}}</button>
-      </lv-group>
-    </ng-template>
   </lv-form-control>
 </lv-form-item>
   </div>

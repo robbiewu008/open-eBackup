@@ -1,3 +1,4 @@
+<lv-form class="formGroup aui-formGroup-v3">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form class="formGroup aui-formGroup-v3">
   <div class="aui-gutter-column-xl">
     <div class="formGroup-h1">{{'system_auth_info_label' | i18n}}</div>
     <lv-form-item *ngIf="isOceanProtect">
@@ -54,7 +54,7 @@
         {{ 'system_user_maxconnections_label' | i18n }}
       </lv-form-label>
       <lv-form-control>
-        {{data.sessionLimit | nil}}
+        {{data.sessionControl? data.sessionLimit : '--'}}
       </lv-form-control>
     </lv-form-item>
   </div>

@@ -1,3 +1,4 @@
+<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup">
     <lv-form-item>
         <lv-form-label lvRequired>{{'common_name_label' | i18n}}</lv-form-label>
         <lv-form-control [lvErrorTip]="nameErrorTip">

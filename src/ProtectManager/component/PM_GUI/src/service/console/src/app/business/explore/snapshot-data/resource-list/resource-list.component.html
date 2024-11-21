@@ -1,3 +1,4 @@
+<div class="ransomware-resource-table double-row-height">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="ransomware-resource-table double-row-height">
     <lv-datatable [lvData]="tableData" class="aui-table-group" [lvPaginator]="page" (lvSortChange)="sortChange($event)"
         lvSort #lvTable lvAsync lvMultiGroup>
         <colgroup>
@@ -179,7 +179,7 @@
 </ng-template>
 
 <ng-template #colHideTpl>
-    <lv-tree [lvData]="columns" [lvShowCheckbox]="true" [lvShowExpandedIcon]="false" lvSelectionMode="multiple"
+    <lv-tree [lvData]="columns" [lvShowCheckbox]="true" lvSelectionMode="multiple"
         [(lvSelection)]="columnSelection" (lvCheck)="columnCheck($event)"
         [lvScroll]="virtualScroll.scrollParam"></lv-tree>
 </ng-template>

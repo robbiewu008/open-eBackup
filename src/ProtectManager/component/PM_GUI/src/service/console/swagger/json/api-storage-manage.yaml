@@ -1,0 +1,851 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: storage-pool
+  - name: storage-unit
+  - name: storage-user-auth
+paths:
+  /v1/storage-pools:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - storage-pool
+      operationId: queryStoragePoolGET
+      parameters:
+        - name: name
+          in: query
+          required: false
+          description: 存储池名称
+          type: string
+        - name: deviceId
+          in: query
+          required: false
+          description: 存储设备id，不传则全查
+          type: string
+        - name: healthStatus
+          in: query
+          required: false
+          description: 可传多个，1：正常,2：故障,5：降级
+          type: string
+        - name: runningStatus
+          in: query
+          required: false
+          description: 可传多个，14：预拷贝,16：重构,27：在线,28：离线,32：正在均衡,53：初始化中,106：删除中
+          type: string
+        - name: pageNo
+          in: query
+          required: false
+          description: 页码
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          description: 每页数量
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/StoragePoolPageResponse'
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - storage-pool
+      summary: 修改存储池阈值
+      operationId: modifyPoolThresholdPUT
+      parameters:
+        - name: storagePoolThresholdRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/StoragePoolThresholdRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v1/storage-units:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - storage-unit
+      operationId: createBackupUnitPOST
+      parameters:
+        - name: createBackupUnitRequest
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/StorageUnitCreateRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+          headers:
+            id:
+              description: 备份存储单元id
+              type: string
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - storage-unit
+      summary: 查询备份存储单元列表
+      operationId: queryBackUnitGET
+      parameters:
+        - name: pageNo
+          in: query
+          required: true
+          description: 当前页
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          description: 页面大小
+          type: integer
+          format: int32
+        - name: id
+          in: query
+          required: false
+          description: 存储单元ID
+          type: string
+        - name: name
+          in: query
+          required: false
+          description: 存储单元名称
+          type: string
+        - name: deviceName
+          in: query
+          required: false
+          description: 存储设备名称
+          type: string
+        - name: deviceType
+          in: query
+          required: false
+          description: 存储设备类型
+          type: string
+        - name: poolName
+          in: query
+          required: false
+          description: 存储池名称
+          type: string
+        - name: healthStatusList
+          in: query
+          required: false
+          description: 存储健康状态
+          type: array
+          items:
+            type: integer
+            format: int32
+        - name: runningStatusList
+          in: query
+          required: false
+          description: 存储运行状态
+          type: array
+          items:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/StorageUnitPageResponse'
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+  /v1/storage-units/{id}:
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - storage-unit
+      operationId: deleteBackupUnitDELETE
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 备份存储单元id
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - storage-unit
+      operationId: modifyStorageUnitPUT
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: updateBackupUnitRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/StorageUnitUpdateRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v1/storage-user-auths/storages/{storageId}:
+    delete:
+      tags:
+        - storage-user-auth
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: deleteStorageUserAuthRelations
+      parameters:
+        - name: storageId
+          in: path
+          required: true
+          type: string
+          description: 存储单元或存储单元组ID
+        - name: storageUserAuthRelationRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/StorageUserAuthRelationDeleteRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+    get:
+      tags:
+        - storage-user-auth
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: getStorageUserAuthRelations
+      parameters:
+        - name: storageId
+          in: path
+          required: true
+          type: string
+        - name: authType
+          in: query
+          required: true
+          description: 授权类型 1：存储单元授权；2：存储单元组授权
+          type: integer
+          format: int32
+        - name: filteredAuthTypes
+          in: query
+          required: false
+          description: 根据授权状态筛选，授权类型 0：未授权；1：存储单元授权；2：存储单元组授权
+          type: array
+          items:
+            type: integer
+            format: int32
+        - name: userName
+          in: query
+          required: false
+          description: 根据用户名模糊筛选
+          type: string
+        - name: pageNo
+          in: query
+          required: false
+          description: 页数
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          description: 每页大小
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/StorageUserAuthRelationPageResponse'
+    post:
+      tags:
+        - storage-user-auth
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
+      operationId: addStorageUserAuthRelations
+      parameters:
+        - name: storageId
+          in: path
+          required: true
+          type: string
+          description: 存储单元或存储单元组ID
+        - name: storageUserAuthRelationRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/StorageUserAuthRelationRequest'
+          description: 请求体
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v1/storage-user-auths/users/{userId}:
+    get:
+      tags:
+        - storage-user-auth
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: getStorageUserAuthRelationsByUserId
+      parameters:
+        - name: authType
+          in: query
+          required: true
+          description: 授权类型 1：存储单元授权；2：存储单元组授权
+          type: integer
+          format: int32
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: 用户ID
+        - name: pageNo
+          in: query
+          required: false
+          description: 页数
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          description: 每页大小
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/StorageUserAuthRelationStoragePageResponse'
+  /v1/storage-user-auths/remote-users/{userId}:
+    get:
+      tags:
+        - storage-user-auth
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: getRemoteStorageUserAuthRelationsByUserId
+      parameters:
+        - name: authType
+          in: query
+          required: true
+          description: 授权类型 1：存储单元授权；2：存储单元组授权
+          type: integer
+          format: int32
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: 用户ID
+        - name: pageNo
+          in: query
+          required: false
+          description: 页数
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          description: 每页大小
+          type: integer
+          format: int32
+        - name: clusterId
+          in: query
+          required: false
+          description: 目标集群clusterId
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/StorageUserAuthRelationStoragePageResponse'
+  /v1/internal/storage-unit:
+    get:
+      x-dr-role: 'Y'
+      x-product: OceanProtect DataBackup
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - storage-unit
+      description: 分页查询存储单元内部接口
+      operationId: queryPageStorageUnits
+      parameters:
+        - name: pageNo
+          in: query
+          required: true
+          description: 页码
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          description: 每页条数
+          type: integer
+          format: int32
+        - name: name
+          in: query
+          required: false
+          description: 名称
+          type: string
+        - name: deviceName
+          in: query
+          required: false
+          description: 设备名称
+          type: string
+        - name: poolName
+          in: query
+          required: false
+          description: 存储池名称
+          type: string
+        - name: deviceType
+          in: query
+          required: false
+          description: 设备类型
+          type: string
+        - name: healthStatusList
+          in: query
+          required: false
+          description: 健康状态列表
+          type: array
+          items:
+            type: integer
+            format: int32
+        - name: runningStatusList
+          in: query
+          required: false
+          description: 运行状态列表
+          type: array
+          items:
+            type: integer
+            format: int32
+        - name: runningStatus
+          in: query
+          required: false
+          description: 运行状态
+          type: integer
+          format: int32
+        - name: isAutoAdded
+          in: query
+          required: false
+          description: 是否自动添加
+          type: boolean
+        - name: deviceId
+          in: query
+          required: false
+          description: 设备id
+          type: string
+        - name: id
+          in: query
+          required: false
+          description: id
+          type: string
+        - name: userId
+          in: query
+          required: false
+          description: 非系统管理员时需根据userId返回用户授权的存储单元列表
+          type: string
+        - name: unitIds
+          in: query
+          required: false
+          description: 数据库查询时筛选用户userId授权的存储单元列表
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+definitions:
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512
+  StorageUnitCreateRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 备份存储单元名称，修改时可传
+      deviceType:
+        type: string
+        description: 存储设备类型
+      deviceId:
+        type: string
+        description: 备份存储设备id
+      poolId:
+        type: string
+        description: 存储池id
+  StoragePool:
+    type: object
+    properties:
+      id:
+        type: string
+        description: 存储池id
+      name:
+        type: string
+        description: 名称
+      healthStatus:
+        type: string
+        description: 健康状态，1：正常,2：故障,5：降级
+      runningStatus:
+        type: string
+        description: 运行状态，14：预拷贝,16：重构,27：在线,28：离线,32：正在均衡,53：初始化中,106：删除中
+      totalCapacity:
+        type: string
+        description: 总容量
+      usedCapacity:
+        type: string
+        description: 已使用容量
+      threshold:
+        type: string
+        description: 容量阈值
+      poolId:
+        type: string
+        description: pooId
+      deviceId:
+        type: string
+        description: deviceId
+  StorageUnit:
+    type: object
+    properties:
+      id:
+        type: string
+        description: 存储单元ID
+      name:
+        type: string
+        description: 存储单元名称
+      deviceType:
+        type: string
+        description: 存储设备类型
+      poolName:
+        type: string
+        description: 存储池名称
+      totalCapacity:
+        type: string
+        description: 容量
+      usedCapacity:
+        type: string
+        description: 已使用容量
+      threshold:
+        type: string
+        description: 阈值
+      healthStatus:
+        type: string
+        description: 健康状态
+      runningStatus:
+        type: string
+        description: 运行状态
+      deviceName:
+        type: string
+        description: 存储设备名称
+      deviceId:
+        type: string
+        description: 存储设备ID
+      poolId:
+        type: string
+        description: 存储池ID
+      isAutoAdded:
+        type: boolean
+        description: 是否为自动添加
+      generatedType:
+        type: integer
+        format: int32
+        description: 是否本地，1非本地，2本地
+  StorageUnitPageResponse:
+    type: object
+    required:
+      - records
+      - totalCount
+    properties:
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/StorageUnit'
+      totalCount:
+        type: integer
+        format: int32
+  StorageUnitUpdateRequest:
+    type: object
+    required:
+      - name
+      - threshold
+    properties:
+      name:
+        type: string
+        description: 存储池名称
+      threshold:
+        type: string
+        description: 存储池容量阈值
+  StoragePoolPageResponse:
+    type: object
+    required:
+      - records
+      - totalCount
+    properties:
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/StoragePool'
+      totalCount:
+        type: integer
+        format: int32
+  StoragePoolThresholdRequest:
+    type: object
+    description: StoragePoolThresholdRequest
+    required:
+      - poolId
+      - deviceId
+      - threshold
+    properties:
+      poolId:
+        type: string
+        description: poolId
+      deviceId:
+        type: string
+        description: deviceId
+      threshold:
+        type: string
+        description: 容量阈值
+  StorageUserAuthRelationRequest:
+    type: object
+    properties:
+      authType:
+        type: integer
+        format: int32
+        description: 1：存储单元授权，2：存储单元组授权
+      userIds:
+        type: array
+        items:
+          type: string
+        description: 用户ID列表
+  StorageUserAuthRelationVo:
+    type: object
+    properties:
+      userId:
+        type: string
+        description: 用户ID
+      userName:
+        type: string
+        description: 用户名
+      authType:
+        type: integer
+        format: int32
+        description: 1：存储单元授权；2：存储单元组授权
+      authStatus:
+        type: boolean
+        description: 用户是否已授权
+  StorageUserAuthRelationDeleteRequest:
+    type: object
+    required:
+      - userIds
+    properties:
+      userIds:
+        type: array
+        items:
+          type: string
+        description: 用户ID列表
+  StorageUserAuthRelationQueryRequest:
+    type: object
+    required:
+      - authType
+    properties:
+      authType:
+        type: integer
+        format: int32
+        description: 授权类型 1：存储单元授权；2：存储单元组授权
+      authTypeFilterList:
+        type: array
+        items:
+          type: integer
+          format: int32
+        description: 根据授权状态筛选，授权类型 0：未授权；1：存储单元授权；2：存储单元组授权
+      userName:
+        type: string
+        description: 根据用户名模糊筛选
+  StorageUserAuthRelationPageResponse:
+    type: object
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/StorageUserAuthRelationVo'
+  StorageUserAuthRelationStorageVo:
+    type: object
+    properties:
+      storageId:
+        type: string
+        description: 存储单元（组）ID
+      storageName:
+        type: string
+        description: 存储单元（组）名称
+      authType:
+        type: integer
+        format: int32
+        description: 类型
+      hasEnableParallelStorage:
+        type: boolean
+        description: 是否开启并行存储。true 开启 false 关闭
+      generatedType:
+        type: integer
+        format: int32
+        description: 是否自动添加，1手动，2自动
+  StorageUserAuthRelationStoragePageResponse:
+    type: object
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/StorageUserAuthRelationStorageVo'
+        description: 记录列表

@@ -1,3 +1,4 @@
+<lv-form [lvLabelColon]="false" [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [lvLabelColon]="false" [formGroup]="formGroup" class="formGroup">
   <lv-form-item>
     <lv-form-label lvRequired>{{ 'common_name_label' | i18n }}</lv-form-label>
     <lv-form-control [lvErrorTip]="nameErrorTip">
@@ -20,7 +20,7 @@
   </lv-form-item>
   <lv-form-item>
     <lv-form-label lvRequired>
-      {{(resourceType === ResourceType.CNWARE ? 'common_ip_address_domain_label' : 'common_ip_address_label') | i18n}}
+      {{(includes([ResourceType.CNWARE, ResourceType.NUTANIX], resourceType) ? 'common_ip_address_domain_label' : 'common_ip_address_label') | i18n}}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="ipErrorTip">
       <input lv-input type="text" formControlName="ip" />
@@ -48,7 +48,7 @@
       <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"></aui-inupt-with-eye>
     </lv-form-control>
   </lv-form-item>
-  <lv-form-item *ngIf="resourceType === ResourceType.CNWARE">
+  <lv-form-item *ngIf="includes([ResourceType.CNWARE, ResourceType.NUTANIX], resourceType)">
     <lv-form-label lvRequired>
       {{ 'protection_proxy_host_label' | i18n }}
     </lv-form-label>
@@ -79,8 +79,7 @@
       <div *ngIf="!formGroup.value.cert">
         <i lv-icon="lv-icon-status-warning-info"></i>
         <span class="aui-text-label">
-          {{ (resourceType === ResourceType.CNWARE ? 'protection_register_cnware_cert_tips_label' :
-          'protection_register_vmware_cert_tips_label') | i18n }}
+          {{ certTipLabel }}
         </span>
       </div>
     </lv-form-control>
@@ -105,7 +104,7 @@
       </lv-form-control>
     </lv-form-item>
   </ng-container>
-  <lv-form-item *ngIf="resourceType !== ResourceType.CNWARE">
+  <lv-form-item *ngIf="!includes([ResourceType.CNWARE, ResourceType.NUTANIX], resourceType)">
     <lv-form-label>
       {{'protection_register_enable_tls_label' | i18n}}
       <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_register_enable_tls_help_label'| i18n}}"
@@ -122,7 +121,7 @@
     </lv-form-control>
   </lv-form-item>
   <!-- cnware过滤虚拟机 -->
-  <ng-container *ngIf="resourceType === ResourceType.CNWARE">
+  <ng-container *ngIf="includes([ResourceType.CNWARE, ResourceType.NUTANIX], resourceType)">
     <lv-form-item>
       <lv-form-label>
         {{'protection_vm_filter_label' | i18n}}
@@ -144,7 +143,7 @@
   </ng-container>
 </lv-form>
 
-<ng-container *ngIf="resourceType !== ResourceType.CNWARE">
+<ng-container *ngIf="!includes([ResourceType.CNWARE, ResourceType.NUTANIX], resourceType)">
   <div class="aui-gutter-column-xl"></div>
   <h2 class="dataStore-position">
     <lv-group [lvGutter]="'5px'">

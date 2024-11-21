@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -30,7 +30,15 @@ import {
   StorageUnitService
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { assign, cloneDeep, get, isEmpty, isUndefined } from 'lodash';
+import {
+  assign,
+  cloneDeep,
+  each,
+  get,
+  isEmpty,
+  isUndefined,
+  set
+} from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -50,6 +58,7 @@ export class CreateStorageUnitComponent implements OnInit {
   dataMap = DataMap;
   isDistributed = this.appUtilsService.isDistributed;
   isDecouple = this.appUtilsService.isDecouple;
+  deviceMap = {}; // 用于过滤已经使用过的
 
   constructor(
     private baseUtilService: BaseUtilService,
@@ -92,6 +101,7 @@ export class CreateStorageUnitComponent implements OnInit {
     this.isAutoAdded = this.isEdit && this.drawData.isAutoAdded;
     this.initForm();
     this.initOptionItems();
+    this.initUsedDevice();
   }
 
   validLength(min, max): ValidatorFn {
@@ -240,8 +250,46 @@ export class CreateStorageUnitComponent implements OnInit {
           );
         });
         this.devicePoolNameOptions = cloneDeep(newArr);
+        if (!isEmpty(this.deviceMap)) {
+          this.removeUsedPool();
+        }
       });
     });
+  }
+
+  initUsedDevice() {
+    // 获取已经使用的存储设备磁盘并从服务器的下拉列表中去除
+    this.appUtilsService.getResourceByRecursion(
+      {},
+      params => this.storageUnitService.queryBackUnitGET(params),
+      resource => {
+        each(resource, item => {
+          if (isEmpty(this.deviceMap[item.deviceId]?.poolIdList)) {
+            set(this.deviceMap, `${item.deviceId}`, {
+              poolIdList: [item.poolId]
+            });
+          } else {
+            this.deviceMap[item.deviceId].poolIdList.push(item.poolId);
+          }
+        });
+        if (!isEmpty(this.devicePoolNameOptions)) {
+          this.removeUsedPool();
+        }
+      }
+    );
+  }
+
+  private removeUsedPool() {
+    this.devicePoolNameOptions = this.devicePoolNameOptions.filter(
+      item =>
+        !(
+          !isEmpty(this.deviceMap[item.deviceId]) &&
+          this.deviceMap[item.deviceId].poolIdList.includes(item.poolId)
+        ) ||
+        (!!this.drawData &&
+          item.poolId === this.drawData.poolId &&
+          item.deviceId === this.drawData.deviceId)
+    );
   }
 
   saveUnitInfo(): Observable<void> {

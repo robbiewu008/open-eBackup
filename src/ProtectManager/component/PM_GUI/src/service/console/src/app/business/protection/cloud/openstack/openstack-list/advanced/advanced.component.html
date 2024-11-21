@@ -1,3 +1,4 @@
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
     <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
         <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
             <lv-form-item>
@@ -32,6 +32,17 @@
                             <span>{{ item.label }}</span>
                         </lv-group>
                     </ng-template>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 一致性备份 -->
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_same_backup_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_openstack_same_backup_label' | i18n }}"
+                        lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="open_consistent_snapshots"></lv-switch>
                 </lv-form-control>
             </lv-form-item>
             <ng-container *ngIf="resourceType === dataMap.Resource_Type.openStackProject.value">

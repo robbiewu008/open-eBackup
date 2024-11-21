@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -29,6 +29,7 @@ import {
   I18NService,
   MODAL_COMMON,
   OperateItems,
+  SYSTEM_TIME,
   SysbackupApiService,
   getPermissionMenuItem
 } from 'app/shared';
@@ -71,9 +72,20 @@ export class SystemBackupComponent implements OnInit, OnDestroy {
   backupStatus = DataMap.System_Backup_Status;
   groupCommon = GROUP_COMMON;
 
+  //策略启用状态
+  backupPolicySwitch = false;
+  loading = false;
+
   manualBackupBtnTip = this.i18n.get('system_manual_backup_tip_label');
   isCyberengine =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.cyberengine.value;
+  isCloudBackup = includes(
+    [
+      DataMap.Deploy_Type.cloudbackup.value,
+      DataMap.Deploy_Type.cloudbackup2.value
+    ],
+    this.i18n.get('deploy_type')
+  );
 
   columns = [
     {
@@ -176,6 +188,7 @@ export class SystemBackupComponent implements OnInit, OnDestroy {
           ? new Date(`2020/10/10 ${res.backupTime}:00`)
           : ''
       });
+      this.backupPolicySwitch = !isEmpty(res.scheduleId);
       this.cdr.detectChanges();
       this.validConnectDisabled = !res.backupTime;
     });
@@ -415,6 +428,55 @@ export class SystemBackupComponent implements OnInit, OnDestroy {
     this.sysbackupApiService
       .testSftpConnection({ request: {} })
       .subscribe(() => {});
+  }
+
+  updatePolicyStatus() {
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
+    if (!this.backupPolicySwitch) {
+      this.sysbackupApiService
+        .enablePolicyUsingPUT({
+          policyId: this.policyData?.id,
+          enable: true
+        })
+        .pipe(
+          finalize(() => {
+            this.loading = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe(() => this.getSysBackupVersion());
+    } else {
+      this.warningMessageService.create({
+        content: this.i18n.get('system_delete_backup_policy_warn_label'),
+        onOK: () => {
+          this.sysbackupApiService
+            .enablePolicyUsingPUT({
+              policyId: this.policyData?.id,
+              enable: false
+            })
+            .pipe(
+              finalize(() => {
+                this.loading = false;
+                this.cdr.detectChanges();
+              })
+            )
+            .subscribe(() => this.getSysBackupVersion());
+        },
+        onCancel: () => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        },
+        lvAfterClose: result => {
+          if (result && result.trigger === 'close') {
+            this.loading = false;
+            this.cdr.detectChanges();
+          }
+        }
+      });
+    }
   }
 
   restore(item) {

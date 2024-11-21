@@ -1,3 +1,4 @@
+<div *ngIf="rowCopy.status === dataMap.copydata_validStatus.invalid.value">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div *ngIf="rowCopy.status === dataMap.copydata_validStatus.invalid.value">
     <lv-alert lvType="warning" lvClosable="false">
         {{'protection_invalid_recovery_label' | i18n }}
     </lv-alert>
@@ -59,22 +59,36 @@
         </lv-form-control>
     </lv-form-item>
     <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
-        <lv-form-item>
-            <lv-form-label lvRequired>
-                {{'protection_volume_restore_target_label' | i18n}}
-            </lv-form-label>
-            <lv-form-control>
-                <lv-tree-select [lvTreeData]="serverTreeData" lvTreeSelectionMode="single"
-                    lvPlaceholder="{{(isDiskRestore ? 'common_select_vm_label' : 'protection_select_host_placeholder_label') | i18n}}"
-                    formControlName="targetServer" lvShowClear lvTreeShowLine lvTreeShowContentIcon
-                    (lvExpandedChange)="expandedChange($event)" lvShowFilter lvFilterKey="label"
-                    lvFilterMode="contains">
-                    <lv-treeselect-trigger>
-                        <span>{{ formGroup.value.targetServer[0]?.path }}</span>
-                    </lv-treeselect-trigger>
-                </lv-tree-select>
-            </lv-form-control>
-        </lv-form-item>
+        <ng-container *ngIf="rowCopy?.resource_type === dataMap.Resource_Type.cNware.value">
+            <lv-form-item>
+                <lv-form-label lvRequired>
+                    {{'protection_volume_restore_target_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-tree-select [lvTreeData]="serverTreeData" lvTreeSelectionMode="single"
+                        lvPlaceholder="{{(isDiskRestore ? 'common_select_vm_label' : 'protection_select_host_placeholder_label') | i18n}}"
+                        formControlName="targetServer" lvShowClear lvTreeShowLine lvTreeShowContentIcon
+                        (lvExpandedChange)="expandedChange($event)" lvShowFilter lvFilterKey="label" lvFilterMode="contains">
+                        <lv-treeselect-trigger>
+                            <span>{{ formGroup.value.targetServer[0]?.path }}</span>
+                        </lv-treeselect-trigger>
+                    </lv-tree-select>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+        <ng-container *ngIf="rowCopy?.resource_type === dataMap.Resource_Type.nutanix.value">
+            <lv-form-item>
+                <lv-form-label lvRequired>
+                    {{'protection_volume_restore_target_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select [lvOptions]="nutaniHostOptions" lvValueKey='value'
+                    formControlName="targetServer" lvShowClear lvMode="multiple"
+                    lvShowFilter lvFilterKey='label' lvFilterMode='contains'></lv-select>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+        
         <ng-container *ngIf="restoreType === restoreV2Type.InstanceRestore">
             <lv-form-item>
                 <lv-form-label lvRequired>
@@ -124,6 +138,29 @@
             </lv-form-label>
             <lv-form-control>
                 <lv-pro-table [config]="recoveryDiskTableConfig" [data]="recoveryDiskTableData"></lv-pro-table>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="!isDiskRestore">
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'common_network_location_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-pro-table [data]="networkTableData" [config]="networkTableConfig"></lv-pro-table>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_startup_network_adaptor_label' | i18n}}
+                <i lv-icon="aui-icon-help"
+                    lv-tooltip="{{'protection_cnware_restore_network_help_label' | i18n}}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control>
+                <lv-switch formControlName="openInterface"></lv-switch>
+                <div class="aui-text-help" *ngIf="formGroup.value.openInterface">
+                    {{'protection_startup_network_adaptor_warn_label' | i18n}}
+                </div>
             </lv-form-control>
         </lv-form-item>
     </ng-container>
@@ -184,29 +221,6 @@
                         </lv-switch>
                     </lv-form-control>
                 </lv-form-item>
-                <ng-container *ngIf="!isDiskRestore">
-                    <lv-form-item>
-                        <lv-form-label lvRequired>{{'common_network_location_label' | i18n}}</lv-form-label>
-                        <lv-form-control>
-                            <lv-pro-table [data]="networkTableData" [config]="networkTableConfig"></lv-pro-table>
-                        </lv-form-control>
-                    </lv-form-item>
-                    <lv-form-item>
-                        <lv-form-label>
-                            {{'protection_startup_network_adaptor_label' | i18n}}
-                            <i lv-icon="aui-icon-help"
-                                lv-tooltip="{{'protection_cnware_restore_network_help_label' | i18n}}"
-                                lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
-                                lvColorState='true'></i>
-                        </lv-form-label>
-                        <lv-form-control>
-                            <lv-switch formControlName="openInterface"></lv-switch>
-                            <div class="aui-text-help" *ngIf="formGroup.value.openInterface">
-                                {{'protection_startup_network_adaptor_warn_label' | i18n}}
-                            </div>
-                        </lv-form-control>
-                    </lv-form-item>
-                </ng-container>
             </lv-collapse-panel>
         </lv-collapse>
     </div>
@@ -271,6 +285,10 @@
         (ngModelChange)='portGroupChange()' lvValueKey='uuid' lvShowClear lvShowFilter lvFilterKey='label'
         lvFilterMode='contains'>
     </lv-select>
+</ng-template>
+
+<ng-template #targetIpTpl let-item>
+    <input lv-input type="text" [(ngModel)]="item.targetIp" />
 </ng-template>
 
 <ng-template #poolContentTpl let-item>

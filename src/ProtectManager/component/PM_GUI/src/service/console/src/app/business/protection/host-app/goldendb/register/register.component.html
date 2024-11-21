@@ -1,3 +1,4 @@
+<lv-form
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form
   [formGroup]="formGroup"
   class="formGroup aui-gutter-column-xxl"
   lvKeepRequiredWidth
@@ -54,6 +54,13 @@
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'protection_database_instance_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ 'protection_goldendb_instance_tips_label' | i18n }}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
     </lv-form-label>
     <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
       <lv-select
@@ -131,6 +138,33 @@
       [data]="dataTableData"
     ></lv-pro-table>
   </div>
+    <ng-template #customRequiredTHTpl let-item>
+        <span class="custom-required"></span>
+    </ng-template>
+    <ng-template #dataNodeProxyHostExtraTpl let-item>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select
+                    [formControl]="item.parentUuidControl"
+                    [lvOptions]="proxyOptions"
+                    lvValueKey="value"
+                    lvMode="single"
+                    lvShowFilter
+                    lvShowClear
+                    lvFilterKey="label"
+                    lvFilterMode="contains"
+            >
+            </lv-select>
+        </lv-form-control>
+    </ng-template>
+    <ng-template #dataNodeUserNameExtraTpl let-item>
+        <lv-form-control [lvErrorTip]="usernameErrorTip">
+            <input
+                lv-input
+                type="text"
+                [formControl]="item.osUserControl"
+            />
+        </lv-form-control>
+    </ng-template>
   <div class="aui-gutter-column-xl"></div>
   <lv-form-item>
     <lv-form-label>

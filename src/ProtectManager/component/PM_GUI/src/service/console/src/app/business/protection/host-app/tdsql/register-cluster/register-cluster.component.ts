@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -23,7 +23,17 @@ import {
 } from 'app/shared';
 import { TableConfig } from 'app/shared/components/pro-table';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { each, filter, find, get, isEmpty, map, uniqBy } from 'lodash';
+import {
+  cloneDeep,
+  compact,
+  each,
+  filter,
+  find,
+  get,
+  isEmpty,
+  map,
+  uniqBy
+} from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
 import { MultiCluster } from 'app/shared';
 import { cacheGuideResource } from 'app/shared/consts/guide-config';
@@ -38,9 +48,10 @@ export class RegisterClusterComponent implements OnInit {
   optsConfig;
   optItems = [];
   proxyOptions = [];
+  managerProxyOptions = [];
   dataMap = DataMap;
   _find = find;
-
+  repeatNodes = false;
   tableData = {
     data: [],
     total: 0
@@ -112,12 +123,56 @@ export class RegisterClusterComponent implements OnInit {
         ]
       }),
       manageNodes: this.fb.array([this.getManageNodesFormGroup()]),
-      schedulerNodes: this.fb.array([this.getSchedulerNodesFormGroup()])
+      schedulerNodes: this.fb.array([this.getSchedulerNodesFormGroup()]),
+      repeatNodes: new FormControl(0, {
+        validators: [this.baseUtilService.VALID.maxSize(0)]
+      })
     });
-
+    this.listenForm();
     if (this.rowData) {
       this.getDataDetail();
     }
+  }
+
+  listenForm() {
+    this.listenSchedulerNodes();
+    this.listenMangerNodes();
+  }
+
+  listenSchedulerNodes() {
+    this.formGroup.get('schedulerNodes').valueChanges.subscribe(res => {
+      if (isEmpty(res)) {
+        return;
+      }
+      const selectedProxy = compact(map(res, 'proxy'));
+      this.proxyOptions = map(this.proxyOptions, item => {
+        item.disabled = selectedProxy.includes(item.value);
+        return item;
+      });
+    });
+  }
+
+  listenMangerNodes() {
+    this.formGroup.get('manageNodes').valueChanges.subscribe(res => {
+      this.repeatNodes = false;
+      this.formGroup.get('repeatNodes').setValue(0);
+      if (isEmpty(res)) {
+        return;
+      }
+      const map = new Set();
+      const filterArr = res.filter(obj =>
+        Object.values(obj).every(item => !isEmpty(item))
+      );
+      for (const item of filterArr) {
+        const uniqKey = Object.values(item).join('-');
+        if (map.has(uniqKey)) {
+          this.repeatNodes = true;
+          this.formGroup.get('repeatNodes').setValue(1);
+          return;
+        }
+        map.add(uniqKey);
+      }
+    });
   }
 
   getManageNodesFormGroup(data?) {
@@ -243,7 +298,8 @@ export class RegisterClusterComponent implements OnInit {
             isLeaf: true
           });
         });
-        this.proxyOptions = hostArray;
+        this.proxyOptions = cloneDeep(hostArray);
+        this.managerProxyOptions = cloneDeep(hostArray);
       }
     );
   }

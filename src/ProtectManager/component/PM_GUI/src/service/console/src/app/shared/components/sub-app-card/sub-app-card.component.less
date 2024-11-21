@@ -17,12 +17,12 @@
 
 .min-warp {
   max-width: 160px;
-  color: #1a1a1a;
+  color: var(--live-angular-color-text-regular);
 }
 
 .max-warp {
   max-width: 300px;
-  color: #1a1a1a;
+  color: var(--live-angular-color-text-regular);
 }
 
 .count-label {
@@ -48,4 +48,40 @@
 
 .card-group {
   width: 100%;
+}
+
+.tab-popover-group {
+  justify-content: space-between;
+}
+
+.close-button {
+  border-radius: 4px;
+}
+
+.custom-box {
+  display: grid;
+  grid-template-columns: 240px auto auto;
+  grid-gap: 10px;
+}
+
+.custom-item {
+  width: 240px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  border: 1px solid var(--live-angular-color-border-regular);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.app-more-titile-group {
+  margin: 12px;
+}
+
+.app-more-label-warp {
+  max-width: 120px;
+}
+
+.app-more-count-warp {
+  max-width: 40px;
 }

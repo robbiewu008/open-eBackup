@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring a Single Table or Multiple Tables in an Oracle Database (Applicable to 1.6.0 and Later Versions)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="oracle_gud_0055.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="oracle_gud_0131">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring a Single Table or Multiple Tables in an Oracle Database (Applicable to 1.6.0 and Later Versions)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="oracle_gud_0131"></a><a name="oracle_gud_0131"></a>
+  <h1 class="topictitle1">Restoring a Single Table or Multiple Tables in an Oracle Database (Applicable to 1.6.0 and Later Versions)</h1>
+  <div>
+   <p>This section describes how to restore a single table or multiple tables in an Oracle database to their original locations or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <ul>
+     <li>GUIs may vary with versions.</li>
+     <li>Currently, only Oracle databases on Linux hosts support table-level restoration.</li>
+     <li>Table-level restoration restores only the data in tables. You need to reconfigure constraints on permissions and foreign keys of the tables after restoration.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p>ProtectAgent and other related software have been installed on the target host for restoration.</p>
+    <p>For details, see the ProtectAgent Installation Guide.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Check and configure the Open state of the Oracle database. For details, see <a href="oracle_gud_0016.html">Checking and Configuring the Open State of the Oracle Database</a>.</span></li>
+     <li><span>To check whether the target database is in archive mode. For details, see <a href="oracle_gud_0017.html">Checking and Configuring the Archive Mode of the Oracle Database</a>.</span></li>
+     <li><span>Check whether the target database is in read/write mode.</span><p></p>
+      <ol type="a">
+       <li>Log in to the Oracle database host. Assume that the Linux OS is used.<p>Use PuTTY to log in to the Oracle database host and run the <strong>su - oracle</strong> command to switch to user <strong>oracle</strong>.</p></li>
+       <li>Log in to the Oracle database instance.
+        <ul>
+         <li>If OS authentication is used, run the following commands:<pre class="screen">export ORACLE_SID<strong>=</strong><em>Database instance name</em>
+sqlplus / as sysdba</pre>
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <p>If the database uses OS authentication, go to the <em>ORACLE_HOME path</em><strong>\network\admin</strong> path to check the <strong>sqlnet.ora</strong> configuration file. If the file contains <strong>SQLNET.AUTHENTICATION_SERVICES= (ALL)</strong>, delete the content. Otherwise, the table-level restoration job will fail.</p>
+           </div>
+          </div></li>
+         <li>If database authentication is used, run the following commands:<pre class="screen">export ORACLE_SID<strong>=</strong><em>Database instance name</em>
+sqlplus</pre> <p>Enter the name of a user with the <strong>sysdba</strong> permissions as prompted:</p> <pre class="screen"><em>username </em>as sysdba</pre> <p>Enter the password as prompted.</p></li>
+        </ul></li>
+       <li>Run the following command to check whether the read/write mode is enabled:<pre class="screen">select OPEN_MODE from v$database;</pre> <p>If information similar to the following is displayed, the read/write mode has been enabled:</p> <pre class="screen">SQL&gt; select OPEN_MODE from v$database;
+<strong>OPEN_MODE</strong>
+--------------------
+READ WRITE</pre> <p>If the read/write mode is not enabled, run the following commands in sequence to enable it:</p> <pre class="screen">shutdown immediate;
+startup mount;
+alter database open read write;</pre>
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>The database is shut down when the database read/write mode is enabled. This operation may cause service interruption. Therefore, you need to take the service interruption time into account before performing this operation.</p>
+         </div>
+        </div></li>
+      </ol> <p></p></li>
+     <li><span>Check whether the initialization parameter <strong>COMPATIBLE</strong> in the destination database instance is set to <strong>12.</strong><em>x</em><strong>.</strong><em>x</em> or a later version.</span><p></p><pre class="screen">show parameter compatible;</pre> <p>If the version displayed in the command output is not 12 or later, run the following commands to change the version:</p> <pre class="screen">ALTER SYSTEM SET COMPATIBLE = '<em>Version number</em>' SCOPE = SPFILE;
+shutdown immediate;
+startup;</pre>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>Replace <em>Version number</em> in the command with 12 or a later version. It is recommended that the version number be the same as the database version.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Choose <span class="uicontrol" id="oracle_gud_0131__en-us_topic_0000001839142377_uicontrol1186171611461"><b><span id="oracle_gud_0131__en-us_topic_0000001839142377_text6186101615464"><strong>Explore</strong></span> &gt; <span id="oracle_gud_0131__en-us_topic_0000001839142377_text74373665812"><strong>Copy Data</strong></span> &gt; <span id="oracle_gud_0131__en-us_topic_0000001839142377_text12413710445"><strong>Databases</strong></span> &gt; <span id="oracle_gud_0131__en-us_topic_0000001839142377_text151861216124615"><strong>Oracle</strong></span></b></span>.</span></li>
+     <li><span>You can search for copies by database resource or copy. This section uses database resources as an example.</span><p></p><p>On the <span class="wintitle"><b><span><strong>Resources</strong></span></b></span> tab page, locate the database to be restored by database name and then click the name.</p> <p></p></li>
+     <li><span>Specify a copy for restoration.</span><p></p>
+      <ol type="a">
+       <li>On the <span><strong>By Date</strong></span> tab page, select a year, month, and day in sequence to search for copies.<p>If <span><img src="en-us_image_0000001839229166.png"></span> is displayed under a month or date, copies exist in the month or on the date.</p></li>
+       <li>Click <span><img src="en-us_image_0000002014401216.png"></span> on the right, in the row of the target copy, choose <span class="uicontrol"><b>More &gt; Table-Level Restoration</b></span>, and specify a copy for table-level restoration.<p></p></li>
+       <li>On the <strong>Table-Level Restoration</strong> page, select the tables to be restored to the original location or a new location.
+        <ol class="substepthirdol">
+         <li>If you select <span class="uicontrol"><b>New location</b></span>, you need to select the target host and database.</li>
+         <li>On the <strong>Available Tables</strong> tab page, select one or more tables to be restored. You can view the selected tables on the <strong>Selected Tables</strong> tab page.</li>
+         <li>In the row of the target table, set the parameters listed in <a href="#oracle_gud_0131__table192027327712">Table 1</a>. 
+          <div class="tablenoborder">
+           <a name="oracle_gud_0131__table192027327712"></a><a name="table192027327712"></a>
+           <table cellpadding="4" cellspacing="0" summary="" id="oracle_gud_0131__table192027327712" frame="border" border="1" rules="all">
+            <caption>
+             <b>Table 1 </b>Parameters of the restoration job
+            </caption>
+            <colgroup>
+             <col style="width:29.299999999999997%">
+             <col style="width:70.7%">
+            </colgroup>
+            <thead align="left">
+             <tr>
+              <th align="left" class="cellrowborder" valign="top" width="29.299999999999997%" id="mcps1.3.4.2.7.2.1.3.2.3.2.2.3.1.1"><p>Parameter</p></th>
+              <th align="left" class="cellrowborder" valign="top" width="70.7%" id="mcps1.3.4.2.7.2.1.3.2.3.2.2.3.1.2"><p>Description</p></th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="cellrowborder" valign="top" width="29.299999999999997%" headers="mcps1.3.4.2.7.2.1.3.2.3.2.2.3.1.1 "><p>Username After Restoration</p></td>
+              <td class="cellrowborder" valign="top" width="70.7%" headers="mcps1.3.4.2.7.2.1.3.2.3.2.2.3.1.2 "><p>Username of the target database to which the restored table belongs.</p> <p>By default, the value is the username of the database to which the table to be restored belongs.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="29.299999999999997%" headers="mcps1.3.4.2.7.2.1.3.2.3.2.2.3.1.1 "><p>Tablespace After Restoration</p></td>
+              <td class="cellrowborder" valign="top" width="70.7%" headers="mcps1.3.4.2.7.2.1.3.2.3.2.2.3.1.2 "><p>Tablespace of the target database to which the restored table belongs.</p> <p>By default, the value is the tablespace of the database to which the table to be restored belongs.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="29.299999999999997%" headers="mcps1.3.4.2.7.2.1.3.2.3.2.2.3.1.1 "><p>Table Name After Restoration</p></td>
+              <td class="cellrowborder" valign="top" width="70.7%" headers="mcps1.3.4.2.7.2.1.3.2.3.2.2.3.1.2 "><p>Name of the table after restoration.</p> <p>By default, the value is the name of the table to be restored.</p></td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <p>If the table to be restored belongs to a PDB, perform the following operations to modify the network configuration file of the Oracle software on the target host:</p>
+            <ol>
+             <li>Log in to the target Oracle database host.</li>
+             <li>Run the <strong>su - oracle</strong> command to switch to user <strong>oracle</strong> and open the <strong>tnsnames.ora</strong> configuration file.<pre class="screen">vi $ORACLE_HOME/network/admin/tnsnames.ora</pre></li>
+             <li>Add the following content to the original PDB and target PDB for each to-be-restored table. Replace <em>Original PDB name</em>, <em>Target PDB name</em>, and <em>IP address of the target database host</em> with the actual values.<p>Assume that you want to restore a table:</p>
+              <ul>
+               <li>If the values of <em>Original PDB name</em> and <em>Target PDB name</em> are different, add the following content:<pre class="screen"><em><strong>Original PDB name</strong></em>=
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = <strong><em>IP address of the target database host</em></strong>)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME =<strong> <em>Original PDB name</em></strong>)
+    )
+  )
+<em><strong>Target PDB name</strong></em>=
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = <strong><em>IP address of the target database host</em></strong>)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME =<strong> </strong><em><strong>Target PDB name</strong></em>)
+    )
+  )</pre></li>
+               <li>If the values of <em>Original PDB name</em> and <em>Target PDB name</em> are the same, add the following content:<pre class="screen"><em><strong>Original PDB name</strong></em>=
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = <strong><em>IP address of the target database host</em></strong>)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME =<strong> <em>Original PDB name</em></strong>)
+    )
+  )</pre></li>
+              </ul></li>
+            </ol>
+           </div>
+          </div></li>
+         <li>If a table with the same name exists in the target restoration location, enable <span class="uicontrol"><b>Delete Same-Name Table</b></span>. Otherwise, the restoration job will fail.
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <p>Log in to the target Oracle database host and run the following command in the database instance to check whether the target database has a table with the same name:</p>
+            <pre class="screen">select count(*) count from all_tables where owner = UPPER ('<em>Username</em>') and TABLE_NAME = UPPER('<em>Table name</em>');</pre>
+            <ul>
+             <li>If <strong>0</strong> is displayed in the command output, no table with the same name exists.</li>
+             <li>If the value is not <strong>0</strong>, a table with the same name exists.</li>
+            </ul>
+           </div>
+          </div></li>
+         <li>Set the advanced parameters for restoration.<p><a href="#oracle_gud_0131__table2019615469249">Table 2</a> describes the related parameters.</p>
+          <div class="tablenoborder">
+           <a name="oracle_gud_0131__table2019615469249"></a><a name="table2019615469249"></a>
+           <table cellpadding="4" cellspacing="0" summary="" id="oracle_gud_0131__table2019615469249" frame="border" border="1" rules="all">
+            <caption>
+             <b>Table 2 </b>Advanced parameters of a restoration job
+            </caption>
+            <colgroup>
+             <col style="width:32.86%">
+             <col style="width:67.14%">
+            </colgroup>
+            <thead align="left">
+             <tr>
+              <th align="left" class="cellrowborder" valign="top" width="32.86%" id="mcps1.3.4.2.7.2.1.3.2.5.2.2.3.1.1"><p>Parameter</p></th>
+              <th align="left" class="cellrowborder" valign="top" width="67.14%" id="mcps1.3.4.2.7.2.1.3.2.5.2.2.3.1.2"><p>Description</p></th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.1.3.2.5.2.2.3.1.1 "><p><span><strong>Channels</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.1.3.2.5.2.2.3.1.2 "><p>Controls the concurrency of restoration jobs. This parameter specifies the maximum number of connections between RMAN and database instances. If the host performance is average, you are advised to retain the default value. If the host performance is excellent, you can increase the number of channels to improve the concurrency and restoration efficiency. It is recommended that the number of channels be the same as the number of data files.</p> <p>Value range: <strong>1</strong> to <strong>254</strong>.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.1.3.2.5.2.2.3.1.1 "><p><span><strong>Execution Script</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.1.3.2.5.2.2.3.1.2 "><p>You can execute a user-defined script before restoration, upon restoration success, or upon restoration failure as required.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.1.3.2.5.2.2.3.1.1 "><p><span><strong>Script to Run Before Restoration</strong></span></p></td>
+              <td class="cellrowborder" rowspan="3" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.1.3.2.5.2.2.3.1.2 ">
+               <ul>
+                <li id="oracle_gud_0131__oracle_gud_0029_li1460341514374">If the Linux OS is used, enter the script name, which ends with <strong id="oracle_gud_0131__oracle_gud_0029_b9862201614336">.sh</strong>. Ensure that the script has been stored in the <span class="filepath" id="oracle_gud_0131__oracle_gud_0029_filepath184754516170"><b>DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty</b></span> directory in the ProtectAgent installation directory and the user (user <strong id="oracle_gud_0131__oracle_gud_0029_b7475556178">root</strong> by default) who has logged in to the database host is permitted to execute the script. If the user has no execution permission, run the following commands in sequence to grant the permission:<p id="oracle_gud_0131__oracle_gud_0029_p16108247123612"><strong id="oracle_gud_0131__oracle_gud_0029_b81136193713">chown root:root</strong> <em id="oracle_gud_0131__oracle_gud_0029_i16108134713615">Script name</em></p> <p id="oracle_gud_0131__oracle_gud_0029_p161081847163612"><strong id="oracle_gud_0131__oracle_gud_0029_b911119173711">chmod 500</strong><strong id="oracle_gud_0131__oracle_gud_0029_b87241853163611"> </strong><em id="oracle_gud_0131__oracle_gud_0029_i107241353203616">Script name</em></p></li>
+                <li id="oracle_gud_0131__oracle_gud_0029_li9864508377">If the Windows OS is used, enter the script name, which ends with <strong id="oracle_gud_0131__oracle_gud_0029_b5380181217343">.bat</strong>. Ensure that the script has been stored in the <span class="filepath" id="oracle_gud_0131__oracle_gud_0029_filepath189305917174"><b>DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty</b></span> directory in the ProtectAgent installation directory and the user (user <strong id="oracle_gud_0131__oracle_gud_0029_b09309915172">Administrator</strong> by default) who has logged in to the database host is permitted to execute the script. If the user has no execution permission, perform the following operations in sequence to grant the permission:<p id="oracle_gud_0131__oracle_gud_0029_p13417214119">Right-click the script and choose <strong id="oracle_gud_0131__oracle_gud_0029_b127151555124618">Properties</strong> &gt; <strong id="oracle_gud_0131__oracle_gud_0029_b06501857114610">Security</strong>. In the dialog box that is displayed, select the <strong id="oracle_gud_0131__oracle_gud_0029_b2683192618473">Administrator</strong> user and click <strong id="oracle_gud_0131__oracle_gud_0029_b1388103134712">Edit</strong> to change the permission.</p></li>
+               </ul>
+               <div class="note">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p>When <span class="uicontrol"><b><span><strong>Script to Run upon Restoration Success</strong></span></b></span> is configured, the status of the restoration job is displayed as <span class="uicontrol"><b><span><strong>Succeeded</strong></span></b></span> on the management page even if the script fails to be executed. Check whether the job details contain a message indicating that a post-processing script fails to be executed. If yes, modify the script in a timely manner.</p>
+                </div>
+               </div></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.1.3.2.5.2.2.3.1.1 "><p><span><strong>Script to Run upon Restoration Success</strong></span></p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.1.3.2.5.2.2.3.1.1 "><p><span><strong>Script to Run upon Restoration Failure</strong></span></p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.1.3.2.5.2.2.3.1.1 "><p><strong>Memory Resource</strong></p></td>
+              <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.1.3.2.5.2.2.3.1.2 "><p>Memory resource used for creating the auxiliary database instance when the restoration job is executed. You are advised to set this parameter to 70% of the remaining memory of the database host.</p> <p>The default value is <strong>1 GB</strong>.</p></td>
+             </tr>
+            </tbody>
+           </table>
+          </div></li>
+         <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <p>If the restoration job details contain information indicating that residual resources may exist for the restoration job, perform operations by referring to <a href="en-us_topic_0000002053451505.html">Residual Resources Exist for a Restoration Job</a>.</p>
+           </div>
+          </div></li>
+        </ol></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="oracle_gud_0055.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

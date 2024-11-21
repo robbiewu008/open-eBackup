@@ -1,0 +1,106 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Preparing for the Backup">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="kingbase-00005.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="dameng-00008_0">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Preparing for the Backup</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="dameng-00008_0"></a><a name="dameng-00008_0"></a>
+
+<h1 class="topictitle1">Preparing for the Backup</h1>
+<div id="body0000002030927093"><p id="dameng-00008_0__en-us_topic_0000001505943769_p1921575423910">Before the backup, prepare related information by following instructions in <a href="#dameng-00008_0__en-us_topic_0000001505943769_table10744125193920">Table 1</a>.</p>
+<div class="note" id="dameng-00008_0__note141813814318"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul id="dameng-00008_0__ul17447111517311"><li id="dameng-00008_0__li18475121815115"><span id="dameng-00008_0__ph1292522251311">Unless otherwise specified, this section uses Linux localhost.localdomain 2.6.32-431.el6.x86_64 and Kingbase V8.0 as an example. The operations may vary according to the operating system or database version.</span></li><li id="dameng-00008_0__li135951626152410"><span id="dameng-00008_0__ph11464204112511">If the Kingbase database is deployed in a cluster, you need to log in to all hosts where the cluster instances reside and perform the following operations unless otherwise specified.</span></li></ul>
+</div></div>
+
+<div class="tablenoborder"><a name="dameng-00008_0__en-us_topic_0000001505943769_table10744125193920"></a><a name="en-us_topic_0000001505943769_table10744125193920"></a><table cellpadding="4" cellspacing="0" summary="" id="dameng-00008_0__en-us_topic_0000001505943769_table10744125193920" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Preparing for the Backup</caption><colgroup><col style="width:26.97%"><col style="width:60%"><col style="width:13.03%"></colgroup><thead align="left"><tr id="dameng-00008_0__en-us_topic_0000001505943769_row17745751113919"><th align="left" class="cellrowborder" valign="top" width="26.970000000000006%" id="mcps1.3.3.2.4.1.1"><p id="dameng-00008_0__en-us_topic_0000001505943769_p07451351153920">Item</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="60.00000000000001%" id="mcps1.3.3.2.4.1.2"><p id="dameng-00008_0__en-us_topic_0000001505943769_p374585115396">How to Obtain</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="13.030000000000003%" id="mcps1.3.3.2.4.1.3"><p id="dameng-00008_0__en-us_topic_0000001505943769_p153691420200">To Be Used In</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="dameng-00008_0__en-us_topic_0000001505943769_row169941864113"><td class="cellrowborder" valign="top" width="26.970000000000006%" headers="mcps1.3.3.2.4.1.1 "><p id="dameng-00008_0__en-us_topic_0000001311214069_p1041419595410"><span id="dameng-00008_0__text11280184116112"><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="60.00000000000001%" headers="mcps1.3.3.2.4.1.2 "><div class="p" id="dameng-00008_0__p1481913395319">To query the database username, perform the following steps:<ol id="dameng-00008_0__ol775354125917"><li id="dameng-00008_0__li157541941594">Use PuTTY to log in to the host where the Kingbase database resides.</li><li id="dameng-00008_0__li20555010105919">Run the following command to query the Kingbase database installation username. The database port is set by the user during database registration. The default port number is <strong id="dameng-00008_0__b8981948182711">54321</strong>.<pre class="screen" id="dameng-00008_0__screen5866193918598">ss -ntlp | grep <em id="dameng-00008_0__i11990164305">Database port</em></pre>
+<p id="dameng-00008_0__p66160360216">The command output similar to the following is displayed, in which <strong id="dameng-00008_0__b2536678410">kingbase</strong> indicates the database username:</p>
+<pre class="screen" id="dameng-00008_0__screen2186355310">users:(("kingbase",25085,4))
+LISTEN     0      128                       *:54321                    *:*      users:(("kingbase",25085,3))</pre>
+</li></ol>
+</div>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="13.030000000000003%" headers="mcps1.3.3.2.4.1.3 "><p id="dameng-00008_0__en-us_topic_0000001505943769_p121306421565"><a href="kingbase-00009.html">Step 2: Registering the Database of a Single Kingbase Instance</a></p>
+<p id="dameng-00008_0__p1719579345"><a href="kingbase-00010.html">Step 3: Registering the Database of a Kingbase Cluster Instance</a></p>
+</td>
+</tr>
+<tr id="dameng-00008_0__row628184215619"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.1.1 "><p id="dameng-00008_0__p828144285614"><span id="dameng-00008_0__text96424529522"><strong>Database Installation Path</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.1.2 "><ol id="dameng-00008_0__ol88611169718"><li id="dameng-00008_0__li1451916133813">Use PuTTY to log in to the host where the Kingbase database resides.</li><li id="dameng-00008_0__li6507314189">Run the following command to check the installation path of the Kingbase database:<pre class="screen" id="dameng-00008_0__screen139621143894">ps -ef | grep kingbase</pre>
+<p id="dameng-00008_0__p1849543321414">The command output of a single-node instance is as follows.</p>
+<p id="dameng-00008_0__p1985310406144"><span><img id="dameng-00008_0__image1342033716220" src="en-us_image_0000001994349446.png"></span></p>
+<p id="dameng-00008_0__p180919711512">The command output of a cluster instance is as follows.</p>
+<p id="dameng-00008_0__p62584119519"><span><img id="dameng-00008_0__image183234417918" src="en-us_image_0000002031655989.png"></span></p>
+</li></ol>
+</td>
+</tr>
+<tr id="dameng-00008_0__row10214832195811"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.1.1 "><p id="dameng-00008_0__p1656825155318"><span id="dameng-00008_0__text9799162385313"><strong>Service Plane IP Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.1.2 "><ol id="dameng-00008_0__ol1045712015277"><li id="dameng-00008_0__li945782082719">Use PuTTY to log in to the host where the Kingbase database resides.</li><li id="dameng-00008_0__li1034854434210">Obtain the value of the <strong id="dameng-00008_0__b80133021718">listen_addresses</strong> field.<ol type="a" id="dameng-00008_0__ol64031321124310"><li id="dameng-00008_0__li186938417272">Run the following command to view the data directory of the Kingbase database:<pre class="screen" id="dameng-00008_0__screen9693241192716">ps -ef | grep kingbase</pre>
+<p id="dameng-00008_0__p1672364652817">The command output of a single-node instance is as follows.</p>
+<p id="dameng-00008_0__p4741252202818"><span><img id="dameng-00008_0__image131326141897" src="en-us_image_0000001994359018.png"></span></p>
+<p id="dameng-00008_0__p1094322210620">The command output of a cluster instance is as follows.</p>
+<p id="dameng-00008_0__p9301332962"><span><img id="dameng-00008_0__image195321924171314" src="en-us_image_0000002031577533.png"></span></p>
+</li><li id="dameng-00008_0__li208231050114313">Run the following command to go to the data directory of the Kingbase database:<pre class="screen" id="dameng-00008_0__screen28241504437">cd <em id="dameng-00008_0__i168071530104419">/opt/Kingbase/ES/V8/data</em></pre>
+</li><li id="dameng-00008_0__li5824105034317">Run the following command to open the <strong id="dameng-00008_0__b9113123213296">kingbase.conf</strong> file:<pre class="screen" id="dameng-00008_0__screen18241650114317">vim kingbase.conf</pre>
+</li><li id="dameng-00008_0__li11824350174310">Run the following command to search for the line where <strong id="dameng-00008_0__b5612124518174">listen_addresses</strong> is located:<pre class="screen" id="dameng-00008_0__screen182411507434">/listen_addresses</pre>
+<p id="dameng-00008_0__p19824850194318">The command output is as follows.</p>
+<p id="dameng-00008_0__p1982425014313"><span><img id="dameng-00008_0__image6824175016433" src="en-us_image_0000002031627657.png"></span></p>
+</li></ol>
+<div class="p" id="dameng-00008_0__p1762173214523"><div class="note" id="dameng-00008_0__note1094982216269"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="dameng-00008_0__ul220074214440"><li id="dameng-00008_0__li152010427447">If the value is <strong id="dameng-00008_0__b202551664182">*</strong>, use the IP address for logging in to the database background.</li><li id="dameng-00008_0__li1539171010458">If the value is an IP address, use any IP address in the value of <strong id="dameng-00008_0__b1925566182218">listen_addresses</strong> for a single-node system or the active node IP address in the value of <strong id="dameng-00008_0__b18434161517225">listen_addresses</strong> for a cluster.</li></ul>
+</div></div>
+</div>
+</li></ol>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="kingbase-00005.html">Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

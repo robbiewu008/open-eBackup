@@ -1,18 +1,18 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { OptionItem } from '@iux/live';
+import { MessageboxService, OptionItem } from '@iux/live';
 import { StorResourceNodeComponent } from 'app/business/protection/cloud/huawei-stack/register-huawei-stack/store-resource-node/store-resource-node.component';
 import {
   BaseUtilService,
@@ -61,6 +61,7 @@ import {
   omit,
   remove,
   size,
+  some,
   trim
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
@@ -141,7 +142,8 @@ export class RegisterComponent implements OnInit {
     private drawModalService: DrawModalService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
-    private clientManagerApiService: ClientManagerApiService
+    private clientManagerApiService: ClientManagerApiService,
+    private messageboxService: MessageboxService
   ) {}
 
   ngOnInit(): void {
@@ -503,8 +505,14 @@ export class RegisterComponent implements OnInit {
     const params = {
       type: this.rowData.subType,
       name: this.rowData.name,
-      host: this.rowData.environment?.uuid,
-      cluster: this.rowData.environment?.uuid,
+      host:
+        this.rowData.subType === DataMap.oracleType.single.value
+          ? this.rowData.environment?.uuid
+          : '',
+      cluster:
+        this.rowData.subType === DataMap.oracleType.cluster.value
+          ? this.rowData.environment?.uuid
+          : '',
       authMethod: this.rowData.auth?.authType,
       databaseInstallName: this.rowData.extendInfo?.installUsername,
       enableAsm: !isEmpty(this.rowData.auth?.extendInfo?.asmInfo),
@@ -909,6 +917,9 @@ export class RegisterComponent implements OnInit {
         storages: ''
       });
     }
+    params['invalidPwd'] = some(this.formGroup.value.children, item =>
+      isEmpty(item.password)
+    );
     return params;
   }
 
@@ -927,8 +938,18 @@ export class RegisterComponent implements OnInit {
   }
 
   onOK(): Observable<any> {
+    const params = this.getParams();
+    if (!!get(params, 'invalidPwd')) {
+      // 修改场景，存储资源的密码后端不会返回，所以需要手动去再输入一次。
+      this.messageboxService.info(
+        this.i18n.get(
+          'protection_oracle_register_storage_resource_password_empty_label'
+        )
+      );
+      return;
+    }
     return new Observable<any>((observer: Observer<any>) => {
-      const params = this.getParams();
+      delete params['invalidPwd'];
       if (this.rowData) {
         this.protectedResourceApiService
           .UpdateResource({

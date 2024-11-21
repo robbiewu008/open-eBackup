@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -140,6 +140,7 @@ export class HostRegisterComponent implements OnInit {
   autoSyncTip = this.i18n.get('common_auto_sync_host_name_tips_label');
 
   isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
+  hideSourceDuplication;
   isHcsEnvir =
     this.cookieService.get('serviceProduct') === CommonConsts.serviceProduct;
   tableConfig: TableConfig;
@@ -343,11 +344,7 @@ export class HostRegisterComponent implements OnInit {
           for (const key in item.addresses) {
             if (Object.prototype.hasOwnProperty.call(item.addresses, key)) {
               const floatingIp = find(item.addresses[key], addr => {
-                return (
-                  addr['OS-EXT-IPS:type'] === 'floating' &&
-                  (isUndefined(addr['network_tags']) ||
-                    includes(addr['network_tags'], 'overlay=true'))
-                );
+                return addr['OS-EXT-IPS:type'] === 'floating';
               });
               if (floatingIp) {
                 assign(item, {
@@ -449,6 +446,10 @@ export class HostRegisterComponent implements OnInit {
         validators: [this.validPath(), this.validLinuxPath()]
       })
     });
+    this.formGroup.addControl(
+      'isAutoSynchronizeHostName',
+      new FormControl(true)
+    );
     if (this.isHcsUser) {
       this.formGroup.addControl(
         'proxyType',
@@ -487,7 +488,8 @@ export class HostRegisterComponent implements OnInit {
               DataMap.OS_Type.Windows.value,
               DataMap.OS_Type.Linux.value,
               DataMap.OS_Type.Unix.value,
-              DataMap.OS_Type.solaris.value
+              DataMap.OS_Type.solaris.value,
+              DataMap.OS_Type.hpux.value
             ],
             item.value
           )
@@ -502,10 +504,6 @@ export class HostRegisterComponent implements OnInit {
       ) {
         this.osTypeOptions = this.osTypes.filter(item =>
           includes([DataMap.OS_Type.Linux.value], item.value)
-        );
-        this.formGroup.addControl(
-          'isAutoSynchronizeHostName',
-          new FormControl(true)
         );
       } else if (
         includes([DataMap.Proxy_Type_Options.sanclientAgent.value], res)
@@ -566,6 +564,10 @@ export class HostRegisterComponent implements OnInit {
       this.formGroup.get('installPath').setValue('');
     });
     this.formGroup.get('applications').valueChanges.subscribe(res => {
+      this.hideSourceDuplication = find(
+        res,
+        item => item?.value === DataMap.Resource_Type.ActiveDirectory.value
+      );
       if (isEmpty(res)) return;
       if (this.isHcsUser) return;
 
@@ -903,7 +905,9 @@ export class HostRegisterComponent implements OnInit {
         'isEnableDataturbo'
       ])
     );
-
+    params.isEnableDataturbo = this.hideSourceDuplication
+      ? false
+      : this.formGroup.get('isEnableDataturbo').value;
     let ipInfos = [];
     const windowsFlag =
       this.formGroup.value.osType === DataMap.OS_Type.Windows.value;
@@ -959,15 +963,10 @@ export class HostRegisterComponent implements OnInit {
         osType: DataMap.OS_Type.Others.value
       });
     }
-    if (
-      this.formGroup.value.type ===
-      DataMap.Proxy_Type_Options.remoteAgentVmware.value
-    ) {
-      assign(params, {
-        isAutoSynchronizeHostName: this.formGroup.value
-          .isAutoSynchronizeHostName
-      });
-    }
+    // 自动同步主机名
+    assign(params, {
+      isAutoSynchronizeHostName: this.formGroup.value.isAutoSynchronizeHostName
+    });
     if (
       includes(
         [

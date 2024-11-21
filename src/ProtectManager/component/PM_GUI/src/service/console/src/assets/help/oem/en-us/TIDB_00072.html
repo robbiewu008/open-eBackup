@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Function Overview">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="TIDB_00071.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="TIDB_00072">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Function Overview</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="TIDB_00072"></a><a name="TIDB_00072"></a>
+  <h1 class="topictitle1">Function Overview</h1>
+  <div>
+   <ul>
+    <li>Full backup: backs up all data of resources at the current time point.</li>
+    <li>Log backup: backs up TiDB cluster logs.</li>
+    <li>Copy verification: verifies the integrity of a copy after the backup is complete or before the copy is used for restoration.</li>
+    <li>Source deduplication: reduces the amount of data to be transmitted, but occupies more client resources. <span id="TIDB_00072__en-us_topic_0000001862053249_ph591051955919"></span></li>
+    <li>Transmission and storage encryption: adopts the AES256 encryption algorithm to encrypt backup data.</li>
+   </ul>
+   <div class="section">
+    <h4 class="sectiontitle">Replication</h4>
+    <ul id="TIDB_00072__en-us_topic_0000001862053249_ul1627759153116">
+     <li id="TIDB_00072__en-us_topic_0000001862053249_li816915753113">Backup copy replication: replicates backup copies from the source end to the target end. If a disaster occurs in the local data center, the replication copies can be used to restore service data.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Restoration</h4>
+    <ul id="TIDB_00072__en-us_topic_0000001862053249_ul691518483322">
+     <li id="TIDB_00072__en-us_topic_0000001862053249_li18600174653218">Copy-based restoration to the original or a new location: supports data restoration using backup copies and replication copies (data cannot be restored to the original location).</li>
+    </ul>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="TIDB_00071.html">Overview</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

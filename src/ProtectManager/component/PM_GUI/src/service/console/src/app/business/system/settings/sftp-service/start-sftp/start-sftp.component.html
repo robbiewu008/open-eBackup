@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,15 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{'system_sftp_target_storage_unit_label' | i18n}}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select [lvOptions]="storageUnitOptions" lvValueKey="value" formControlName="poolId" lvShowFilter lvFilterKey="label"
+        lvFilterMode="contains" [lvDisabled]="isModify"></lv-select>
+    </lv-form-control>
+</lv-form-item>
   <lv-form-item>
     <lv-form-label>
       {{ 'common_ip_address_type_label' | i18n }}
@@ -75,6 +84,19 @@
       />
     </lv-form-control>
   </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_gateway_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="gateway"
+        class="network-input"
+      />
+    </lv-form-control>
+  </lv-form-item>
 </lv-form>
 <!--  如果接口没有返回port 则需要用户手动选择  -->
 <h2 class="aui-gutter-column-md top">
@@ -106,12 +128,14 @@
       </lv-select>
     </lv-form-control>
   </lv-form-item>
-  <lv-form-item *ngIf="
+  <lv-form-item
+    *ngIf="
       !(
         formGroup.value.homePortType ===
           dataMap.initHomePortType.ethernet.value && !enableVlan
       )
-    ">
+    "
+  >
     <lv-form-label>
       {{ 'common_port_choice_label' | i18n }}
     </lv-form-label>
@@ -135,7 +159,10 @@
   </div>
   <div class="transfer" *ngIf="!formGroup.value.isReuse">
     <lv-transfer
-      [lvHeaders]="[sourceHeadTpl, targetHeadTpl]"
+      [lvTitles]="[
+        'system_select_port_label' | i18n,
+        'system_selected_port_label' | i18n
+      ]"
       [lvSourceColumns]="source.cols"
       [lvSourceData]="source.data"
       [lvSourceSelection]="source.selection"
@@ -148,10 +175,20 @@
   </div>
   <!-- 复用时使用新的表和变量 -->
   <div class="transfer" *ngIf="formGroup.value.isReuse">
-    <lv-transfer [lvHeaders]="[sourceHeadTpl, targetHeadTpl]" [lvSourceColumns]="oldSource.cols"
-      [lvSourceData]="oldSource.data" [lvSourceSelection]="oldSource.selection" [lvTargetColumns]="oldTarget.cols"
-      lvColDisplayControl="false" (lvSelectionChange)="oldSelectionChange($event)" [lvItemSize]="10"
-      lvDataKey="name"></lv-transfer>
+    <lv-transfer
+      [lvTitles]="[
+        'system_select_port_label' | i18n,
+        'system_selected_port_label' | i18n
+      ]"
+      [lvSourceColumns]="oldSource.cols"
+      [lvSourceData]="oldSource.data"
+      [lvSourceSelection]="oldSource.selection"
+      [lvTargetColumns]="oldTarget.cols"
+      lvColDisplayControl="false"
+      (lvSelectionChange)="oldSelectionChange($event)"
+      [lvItemSize]="10"
+      lvDataKey="name"
+    ></lv-transfer>
   </div>
   <ng-container *ngIf="enableVlan && !formGroup.value.isReuse">
     <lv-form-item>
@@ -163,19 +200,19 @@
       </lv-form-control>
     </lv-form-item>
   </ng-container>
+  <lv-group lvGutter="8px" class="aui-gutter-column-sm">
+    <h2>{{ 'system_route_config_label' | i18n }}</h2>
+    <lv-switch formControlName="enableRoute"></lv-switch>
+  </lv-group>
+  <aui-route-config
+    [isNetwork]="true"
+    [ipType]="formGroup.value.ipType"
+    (routeStatus)="routeStatusChange($event)"
+    [routeData]="routeData"
+    [gateway]="formGroup.get('gateway').value"
+    *ngIf="formGroup.get('enableRoute').value"
+  ></aui-route-config>
 
-  <ng-template #sourceHeadTpl>
-    <span>{{ 'system_select_port_label' | i18n }}</span>
-  </ng-template>
-
-  <ng-template #targetHeadTpl>
-    <lv-group class="selected-header">
-      <span>{{ 'system_selected_port_label' | i18n }}</span>
-      <span class="aui-link" (click)="clearSelected()">{{
-        'protection_clear_all_label' | i18n
-      }}</span>
-    </lv-group>
-  </ng-template>
   <lv-group lvGutter="8px" style="margin: 20px 0px 10px 0">
     <h2>{{ 'WORM' }}</h2>
     <lv-switch
@@ -328,5 +365,7 @@
 </ng-template>
 
 <ng-template #linkStatusTpl let-item>
-  <span lv-overflow>{{item.runningStatus | textMap: 'initRuningStatus'}}</span>
+  <span lv-overflow>{{
+    item.runningStatus | textMap: 'initRuningStatus'
+  }}</span>
 </ng-template>

@@ -1,0 +1,231 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤3：注册TDSQL数据库">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_009.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="tdsql_gud_011">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤3：注册TDSQL数据库</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="tdsql_gud_011"></a><a name="tdsql_gud_011"></a>
+
+<h1 class="topictitle1">步骤3：注册TDSQL数据库</h1>
+<div><p>当TDSQL数据库所在主机安装ProtectAgent后，<span>OceanProtect</span>会自动发现TDSQL数据库主机，您需要在管理界面上注册主机上的TDSQL集群和实例，以对其进行保护或将其作为恢复目标。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><ul><li><span>OceanProtect</span>支持备份TDSQL数据库非分布式和分布式实例。</li><li><span>本节操作如无特殊说明均以TDSQL 10.3.22.1版本为例进行，不同版本操作可能存在差异，请以实际为准。</span></li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><p>数据库的集群节点都必须注册，未注册的节点无法备份数据，在恢复场景下，会造成恢复时间点的用户数据不一致。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>请确保TDSQL集群所有的OSS节点、Scheduler节点以及TDSQL实例所有的数据节点所在主机均已安装ProtectAgent。</li><li>注册TDSQL实例前，请确保TDSQL集群已注册。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">注册集群</h4><ol><li><span>选择<span class="uicontrol" id="tdsql_gud_011__zh-cn_topic_0000001839142377_uicontrol123821426193719">“<span id="tdsql_gud_011__zh-cn_topic_0000001839142377_text3382726113718">保护</span> &gt; 数据库 &gt; TDSQL”</span>。</span></li><li><span>在TDSQL页面选择<span class="uicontrol">“<span>集群</span>”</span>页签。</span></li><li><span>单击<span class="uicontrol">“<span>注册</span>”</span>。</span></li><li><span>在<span class="uicontrol">“<span>注册</span>”</span>页面，自定义集群名称。</span></li><li><span>添加OSS管理节点。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>添加OSS管理节点前请确保TDSQL OSS节点所在的主机已注册。</p>
+</div></div>
+<ol type="a"><li>添加OSS管理节点，相关参数如<a href="#tdsql_gud_011__table175361515103710">表1</a>所示。
+<div class="tablenoborder"><a name="tdsql_gud_011__table175361515103710"></a><a name="table175361515103710"></a><table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_011__table175361515103710" frame="border" border="1" rules="all"><caption><b>表1 </b>OSS管理节点参数说明</caption><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.5.2.5.2.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.5.2.5.2.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.1 "><p><span>用户名</span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.2 "><p>请联系数据库厂商获取OSS接口鉴权用户名和密码。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.1 "><p><span>密码</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.1 "><p><span>代理主机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.2 "><p>选择待添加的OSS节点所在的主机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.1 "><p><span>业务IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.2 "><p><span style="color:#282B33;">请使用TDSQL赤兔管理台</span><span class="uicontrol" style="color:#282B33;" id="tdsql_gud_011__uicontrol8261152111504">“调度与管理系统 &gt; OSS-服务监控”</span><span style="color:#282B33;">界面中的Host地址</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.1 "><p><span>端口</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.2 "><p><span>OceanProtect</span>与OSS节点所在的主机的管理平面通信的端口号，可从赤兔管理台<span class="uicontrol">“调度与管理系统 &gt; OSS-服务监控”</span>界面中获取。</p>
+<p>默认端口号为8080。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>单击<span class="uicontrol">“新增”</span>，添加该集群所有OSS节点。</li></ol>
+</p></li><li><span>添加Scheduler节点。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>添加Scheduler节点前请确保TDSQL Scheduler节点所在的主机已注册。</p>
+</div></div>
+<ol type="a"><li>添加Scheduler节点，相关参数如<a href="#tdsql_gud_011__table618554112506">表2</a>所示。
+<div class="tablenoborder"><a name="tdsql_gud_011__table618554112506"></a><a name="table618554112506"></a><table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_011__table618554112506" frame="border" border="1" rules="all"><caption><b>表2 </b>Scheduler节点参数说明</caption><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.5.2.6.2.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.5.2.6.2.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.2.1.2.2.3.1.1 "><p><span>代理主机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.2.1.2.2.3.1.2 "><p>选择待添加的Scheduler节点所在的主机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.2.1.2.2.3.1.1 "><p><span>业务IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.2.1.2.2.3.1.2 "><p>请使用TDSQL赤兔管理台<span class="uicontrol">“调度与管理系统 &gt; Scheduler监控”</span>界面中的IP地址。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>单击<span class="uicontrol">“新增”</span>，添加该集群所有Scheduler节点。</li></ol>
+</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">注册非分布式实例</h4><ol><li><span>选择<span class="uicontrol" id="tdsql_gud_011__zh-cn_topic_0000001839142377_uicontrol123821426193719_1">“<span id="tdsql_gud_011__zh-cn_topic_0000001839142377_text3382726113718_1">保护</span> &gt; 数据库 &gt; TDSQL”</span>。</span></li><li id="tdsql_gud_011__zh-cn_topic_0000001311214069_li25181819389"><span>选择<span class="uicontrol" id="tdsql_gud_011__zh-cn_topic_0000001311214069_uicontrol47381735103817">“<span id="tdsql_gud_011__text1668605291117">非分布式实例</span>”</span>页签。</span></li><li><span>单击<span class="uicontrol">“<span>注册</span>”</span>。</span></li><li><span>在弹出的<span class="wintitle">“<span>注册</span>”</span>界面注册非分布式TDSQL实例，相关参数如<a href="#tdsql_gud_011__zh-cn_topic_0000001311214069_table241515964115">表3</a>所示。</span><p>
+<div class="tablenoborder"><a name="tdsql_gud_011__zh-cn_topic_0000001311214069_table241515964115"></a><a name="zh-cn_topic_0000001311214069_table241515964115"></a><table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_011__zh-cn_topic_0000001311214069_table241515964115" frame="border" border="1" rules="all"><caption><b>表3 </b>实例注册信息</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.6.2.4.2.1.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.6.2.4.2.1.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>自定义实例名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span>集群</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>选择要注册的实例所在集群。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p>SETID</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>待注册实例的实例ID。可以从赤兔管理台“实例管理”界面获取。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span>用户名</span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>输入<a href="tdsql_gud_010.html#tdsql_gud_010__li77041336572">1</a>创建的用户名和密码。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span>密码</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span>tdsqlsys_repl用户密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>请联系数据库厂商获取或者在数据库从节点后台执行<strong>select * from mysql.slave_master_info</strong><strong>;</strong>命令，获取回显中<span class="parmname">“User_password”</span>的值。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“<span>扫描数据节点</span>”</span>，系统自动获取该实例下的数据节点。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>您也可以在<span class="wintitle">“<span>数据节点</span>”</span>区域单击<span class="uicontrol">“<span>新增</span>”</span>，手动添加数据节点。</p>
+</div></div>
+</p></li><li><span>配置数据节点，相关参数如<a href="#tdsql_gud_011__table54551650193618">表4</a>所示。</span><p>
+<div class="tablenoborder"><a name="tdsql_gud_011__table54551650193618"></a><a name="table54551650193618"></a><table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_011__table54551650193618" frame="border" border="1" rules="all"><caption><b>表4 </b>配置数据节点</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.6.2.6.2.1.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.6.2.6.2.1.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span>主机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>数据节点所在主机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span>类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>数据节点类型。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span>参数文件路径</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>此节点参数文件路径。可通过登录实例所在的数据节点执行<strong>ps -ef | grep mysqld | grep </strong><em>实例端口</em>命令获取<span class="parmvalue">“defaults-file”</span>后的路径。</p>
+<div class="note" id="tdsql_gud_011__note195316305250"><span class="notetitle"> 说明： </span><div class="notebody"><p id="tdsql_gud_011__p0531123013256">命令中的<em id="tdsql_gud_011__i182744371259">实例端口</em>请根据赤兔管理台“实例管理”界面选择对应的实例后，进入“DB监控”界面获取到的实际值替换。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span>Socket文件路径</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>此节点Socket文件路径。可通过登录实例所在的数据节点执行<strong>ps -ef | grep mysqld | grep </strong><em>实例端口</em>命令获取<span class="parmvalue">“socket”</span>后的路径。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="tdsql_gud_011__tdsql_gud_011_p0531123013256">命令中的<em id="tdsql_gud_011__tdsql_gud_011_i182744371259">实例端口</em>请根据赤兔管理台“实例管理”界面选择对应的实例后，进入“DB监控”界面获取到的实际值替换。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span>代理主机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>选择备份代理主机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span>优先级</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>配置非分布式实例备份时的优先级。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">注册分布式实例</h4><ol><li><span>选择<span class="uicontrol" id="tdsql_gud_011__zh-cn_topic_0000001839142377_uicontrol123821426193719_2">“<span id="tdsql_gud_011__zh-cn_topic_0000001839142377_text3382726113718_2">保护</span> &gt; 数据库 &gt; TDSQL”</span>。</span></li><li><span>选择<span class="uicontrol">“<span>分布式实例</span>”</span>页签。</span></li><li><span>单击<span class="uicontrol">“<span>注册</span>”</span>。</span></li><li><span>在弹出的<span class="wintitle">“<span>注册</span>”</span>界面注册分布式TDSQL实例，相关参数如<a href="#tdsql_gud_011__table1326718391292">表5</a>所示。</span><p>
+<div class="tablenoborder"><a name="tdsql_gud_011__table1326718391292"></a><a name="table1326718391292"></a><table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_011__table1326718391292" frame="border" border="1" rules="all"><caption><b>表5 </b>实例注册信息</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.7.2.4.2.1.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.7.2.4.2.1.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.7.2.4.2.1.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.7.2.4.2.1.2.3.1.2 "><p>自定义实例名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.7.2.4.2.1.2.3.1.1 "><p><span>集群</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.7.2.4.2.1.2.3.1.2 "><p>选择要注册的实例所在集群。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.7.2.4.2.1.2.3.1.1 "><p>GroupID</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.7.2.4.2.1.2.3.1.2 "><p><span>请输入分布式TDSQL实例的GroupID</span>。可以从赤兔管理台“实例管理”界面获取。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“<span>扫描数据节点</span>”</span>，系统自动获取该实例下的数据节点。</span></li><li><span>为数据节点选择备份代理主机。</span></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="tdsql_gud_009.html">备份TDSQL数据库</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

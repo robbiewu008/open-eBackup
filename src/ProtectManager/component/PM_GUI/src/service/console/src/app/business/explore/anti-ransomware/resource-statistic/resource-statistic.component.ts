@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -44,10 +44,21 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ResourceDetailService } from 'app/shared/services/resource-detail.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
-import { assign, each, first, isEmpty, size, trim } from 'lodash';
+import {
+  assign,
+  each,
+  find,
+  first,
+  includes,
+  isEmpty,
+  reject,
+  size,
+  trim
+} from 'lodash';
 import { Subject, Subscription, timer } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { ResourceListComponent } from '../../copy-data/copy-resource-list/resource-list/resource-list.component';
@@ -106,6 +117,7 @@ export class ResourceStatisticComponent
   constructor(
     private i18n: I18NService,
     private cdr: ChangeDetectorRef,
+    private appUtilsService: AppUtilsService,
     private cookieService: CookieService,
     private dataMapService: DataMapService,
     private copiesApiService: CopiesService,
@@ -128,8 +140,32 @@ export class ResourceStatisticComponent
   }
 
   ngOnInit() {
+    this.initData();
     this.initConfig();
     this.getComponents();
+  }
+
+  initData() {
+    if (this.isHcsUser) {
+      this.appTypeOptions = reject(this.appTypeOptions, item =>
+        includes(
+          [DataMap.Detecting_Resource_Type.openstackServer.value],
+          item.value
+        )
+      );
+      this.resourceType = reject(this.resourceType, item =>
+        includes(
+          [DataMap.Detecting_Resource_Type.openstackServer.value],
+          item.value
+        )
+      );
+    }
+    const globalDetectType = this.appUtilsService.getCacheValue(
+      'jump-to-anti-ransomware'
+    );
+    this.detectType = isEmpty(globalDetectType)
+      ? []
+      : [find(this.detectionTypeOptions, { value: globalDetectType })];
   }
 
   onChange() {
@@ -437,7 +473,17 @@ export class ResourceStatisticComponent
           type: 'select',
           isMultiple: true,
           showCheckAll: true,
-          options: this.dataMapService.toArray('Detecting_Resource_Type')
+          options: this.dataMapService
+            .toArray('Detecting_Resource_Type')
+            .filter(item => {
+              if (this.isHcsUser) {
+                return !includes(
+                  [DataMap.Detecting_Resource_Type.openstackServer.value],
+                  item.value
+                );
+              }
+              return true;
+            })
         },
         cellRender: {
           type: 'status',

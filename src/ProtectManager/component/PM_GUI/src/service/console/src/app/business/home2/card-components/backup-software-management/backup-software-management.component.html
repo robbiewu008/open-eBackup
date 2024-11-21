@@ -1,0 +1,70 @@
+<div *ngIf="externalSystemList.length !==0 else emptyTpl" class="external-system-list">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+    <ng-container *ngFor="let item of externalSystemList;let i = index">
+        <div class="list-item-container">
+            <lv-group lvGutter="4px" [lvColumns]="['50%','auto']" class="item-top-container">
+                <lv-group lvDirection="vertical">
+                    <lv-group lvGutter="4px">
+                        <span lv-overflow class="system-name">
+                            {{item.name |nil}}
+                        <i lv-icon="lv-icon-link" class="lv-link-icon" (click)="jumpToDPA(item)"></i>
+                        </span>
+                    </lv-group>
+                    <lv-tag [ngModel]="item.tagLabel" [lvTagTemplate]="tagTpl"></lv-tag>
+                    <ng-template #tagTpl let-tagItem let-index=index>
+                        <aui-status *ngIf="index === 0" [value]="tagItem.label" type="resource_Host_LinkStatus"></aui-status>
+                        <span *ngIf="index===1">{{tagItem.label}}</span>
+                    </ng-template>
+                </lv-group>
+                <lv-group lvGutter="25px">
+                    <lv-group lvDirection="vertical" class="alarm-container">
+                        <div class="alarm-num">{{ item.alarmsCount|nil }}</div>
+                        <div class="alarm-text">{{ 'common_alarms_label'|i18n }}</div>
+                    </lv-group>
+                    <lv-group lvDirection="vertical" class="alarm-container">
+                        <div class="job-num">
+                            <span class="failed-job-color">{{item.failedJobs|nil}}</span><span>/{{item.totalJobs|nil}}</span>
+                        </div>
+                        <div class="alarm-text">{{ 'common_home_failed_jobs_label'|i18n }}/{{ 'common_home_all_jobs_label'|i18n }}</div>
+                    </lv-group>
+                </lv-group>
+            </lv-group>
+            <lv-group lvDirection="vertical" lvGutter="1px" class="item-bottom-container">
+                <div class="chart">
+                    <div
+                            class="used-chart"
+                            [ngStyle]="{'width':item.usedPercentage + '%'}"
+                            [ngClass]="{'normal-color':item.usedPercentage < 80,'warning-color':item.usedPercentage>=80}"
+                    ></div>
+                </div>
+                <div class="capacity-label">
+                    <div>
+                        <span class="percentage-text">{{ 'common_home_used_label'|i18n }} {{ item.usedPercentage + '%' }}</span>
+                        <span> {{item.usedSize | capacityCalculateLabel:'1.0-2':'B': false}} / {{item.totalSize |capacityCalculateLabel:'1.0-2':'B': false}}</span>
+                    </div>
+                    <span>{{ 'common_free_size_label'|i18n }} {{(item.totalSize-item.usedSize) | capacityCalculateLabel:'1.0-2':'B': false}}</span>
+                </div>
+            </lv-group>
+            <div class="gutter-line"></div>
+        </div>
+    </ng-container>
+</div>
+
+<ng-template #emptyTpl>
+    <div class="empty">
+        <lv-empty [lvDescription]="'common_home_no_data_label'|i18n"></lv-empty>
+    </div>
+</ng-template>
+

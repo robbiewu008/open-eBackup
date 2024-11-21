@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -172,6 +172,7 @@ export class SlaComponent implements OnInit, OnDestroy {
       return includes(
         [
           ApplicationType.Common,
+          ApplicationType.AntDB,
           ApplicationType.DB2,
           ApplicationType.Fileset,
           ApplicationType.Oracle,
@@ -218,7 +219,9 @@ export class SlaComponent implements OnInit, OnDestroy {
           ApplicationType.ApsaraStack,
           ApplicationType.HyperV,
           ApplicationType.ActiveDirectory,
-          ApplicationType.SapHana
+          ApplicationType.SapHana,
+          ApplicationType.Saponoracle,
+          ApplicationType.Nutanix
         ],
         item.value
       );
@@ -499,7 +502,9 @@ export class SlaComponent implements OnInit, OnDestroy {
             ApplicationType.HCSCloudHost,
             ApplicationType.FusionCompute,
             ApplicationType.FusionOne,
-            ApplicationType.TDSQL
+            ApplicationType.TDSQL,
+            ApplicationType.ApsaraStack,
+            ApplicationType.HyperV
           ],
           item.application
         )
@@ -518,7 +523,9 @@ export class SlaComponent implements OnInit, OnDestroy {
             ApplicationType.HCSCloudHost,
             ApplicationType.FusionCompute,
             ApplicationType.FusionOne,
-            ApplicationType.TDSQL
+            ApplicationType.TDSQL,
+            ApplicationType.ApsaraStack,
+            ApplicationType.HyperV
           ],
           item.application
         )
@@ -557,7 +564,14 @@ export class SlaComponent implements OnInit, OnDestroy {
   }
 
   createSla() {
-    this.slaService.create(() => this.getSlaList());
+    if (USER_GUIDE_CACHE_DATA.active && USER_GUIDE_CACHE_DATA.slaType) {
+      this.slaService.create(() => this.getSlaList(), {
+        application: USER_GUIDE_CACHE_DATA.slaType,
+        isOnlyGuide: true
+      });
+    } else {
+      this.slaService.create(() => this.getSlaList());
+    }
   }
 
   optCallBack: (data) => Array<MenuItem> = sla => {
@@ -633,6 +647,7 @@ export class SlaComponent implements OnInit, OnDestroy {
     this.actions = includes(event.value, PolicyAction.LOG)
       ? uniq(union(event.value, [PolicyAction.INCREMENT]))
       : event.value;
+
     this.getSlaList();
   };
 
@@ -708,7 +723,9 @@ export class SlaComponent implements OnInit, OnDestroy {
               ApplicationType.HCSCloudHost,
               ApplicationType.FusionCompute,
               ApplicationType.FusionOne,
-              ApplicationType.TDSQL
+              ApplicationType.TDSQL,
+              ApplicationType.ApsaraStack,
+              ApplicationType.HyperV
             ],
             item.application
           )

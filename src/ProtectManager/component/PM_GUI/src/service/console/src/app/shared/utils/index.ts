@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   assign,
   cloneDeep,
@@ -36,7 +36,8 @@ import {
 import {
   CommonConsts,
   Page_Size_Options,
-  Table_Size
+  Table_Size,
+  ThemeEnum
 } from '../consts/common.const';
 import { DataMap } from '../consts/data-map.config';
 import {
@@ -51,25 +52,12 @@ import {
 } from '../consts/permission.const';
 import { ApplicationType, RestoreFileType } from '../consts/protection.const';
 
-export const hcsSupportApplication = [
-  ApplicationType.Oracle,
-  ApplicationType.MySQL,
-  ApplicationType.SQLServer,
-  ApplicationType.PostgreSQL,
-  ApplicationType.MongoDB,
-  ApplicationType.Informix,
-  ApplicationType.GoldenDB,
-  ApplicationType.OpenGauss,
-  ApplicationType.Dameng,
-  ApplicationType.GaussDBForOpenGauss,
-  ApplicationType.Fileset,
+export const hcsNoSupportApplication = [
+  ApplicationType.LightCloudGaussDB,
   ApplicationType.KubernetesStatefulSet,
   ApplicationType.OpenStack,
-  ApplicationType.HCSCloudHost,
-  ApplicationType.NASFileSystem,
-  ApplicationType.NASShare,
-  ApplicationType.FusionCompute,
-  ApplicationType.Vmware
+  ApplicationType.LocalLun,
+  ApplicationType.LocalFileSystem
 ];
 
 export const hcsFilterUrl = [
@@ -80,6 +68,8 @@ export const hcsFilterUrl = [
 ];
 
 export const distributedFilterUrl = [
+  RouterUrl.ProtectionDoradoFileSystem,
+  RouterUrl.ExploreCopyDataFileSystem,
   RouterUrl.ExploreLiveMountFileSystem,
   RouterUrl.ExploreRansomwareDoradoFileSystem,
   RouterUrl.SftpService,
@@ -436,7 +426,11 @@ export function filterBackupType(item, resourceType, i18n) {
       intersection(
         [
           DataMap.Resource_Type.virtualMachine.value,
-          DataMap.Resource_Type.cNwareVm.value
+          DataMap.Resource_Type.cNwareVm.value,
+          DataMap.Resource_Type.APSCloudServer.value,
+          DataMap.Resource_Type.APSResourceSet.value,
+          DataMap.Resource_Type.APSZone.value,
+          DataMap.Resource_Type.nutanixVm.value
         ],
         resourceType
       )
@@ -587,7 +581,8 @@ export function filterBackupType(item, resourceType, i18n) {
           DataMap.Resource_Type.Dameng_singleNode.value,
           DataMap.Resource_Type.GaussDB_T.value,
           DataMap.Resource_Type.gaussdbTSingle.value,
-          DataMap.Resource_Type.oracle.value
+          DataMap.Resource_Type.oracle.value,
+          DataMap.Resource_Type.oraclePDB.value
         ],
         resourceType
       )
@@ -647,7 +642,6 @@ export function filterBackupType(item, resourceType, i18n) {
     !!size(
       intersection(
         [
-          DataMap.Resource_Type.lightCloudGaussdbInstance.value,
           DataMap.Resource_Type.KingBaseInstance.value,
           DataMap.Resource_Type.KingBaseClusterInstance.value
         ],
@@ -659,6 +653,22 @@ export function filterBackupType(item, resourceType, i18n) {
       [
         DataMap.CopyData_Backup_Type.full.value,
         DataMap.CopyData_Backup_Type.incremental.value,
+        DataMap.CopyData_Backup_Type.log.value
+      ],
+      item.value
+    );
+  } else if (
+    !!size(
+      intersection(
+        [DataMap.Resource_Type.lightCloudGaussdbInstance.value],
+        resourceType
+      )
+    )
+  ) {
+    return includes(
+      [
+        DataMap.CopyData_Backup_Type.full.value,
+        DataMap.CopyData_Backup_Type.diff.value,
         DataMap.CopyData_Backup_Type.log.value
       ],
       item.value
@@ -703,7 +713,15 @@ export function filterBackupType(item, resourceType, i18n) {
 
 export function filterGeneratedBy(item, resourceType) {
   if (
-    !!size(intersection([DataMap.Resource_Type.oracle.value], resourceType))
+    !!size(
+      intersection(
+        [
+          DataMap.Resource_Type.oracle.value,
+          DataMap.Resource_Type.oraclePDB.value
+        ],
+        resourceType
+      )
+    )
   ) {
     return [
       DataMap.CopyData_generatedType.backup.value,
@@ -731,7 +749,15 @@ export function filterGeneratedBy(item, resourceType) {
       DataMap.CopyData_generatedType.Imported.value
     ].includes(item.value);
   } else if (
-    !!size(intersection([DataMap.Resource_Type.cNwareVm.value], resourceType))
+    !!size(
+      intersection(
+        [
+          DataMap.Resource_Type.cNwareVm.value,
+          DataMap.Resource_Type.nutanixVm.value
+        ],
+        resourceType
+      )
+    )
   ) {
     return [
       DataMap.CopyData_generatedType.backup.value,
@@ -903,7 +929,15 @@ export function filterGeneratedBy(item, resourceType) {
 }
 
 export function filterJobType(item, resourceType) {
-  if (includes([DataMap.Resource_Type.oracle.value], resourceType)) {
+  if (
+    includes(
+      [
+        DataMap.Resource_Type.oracle.value,
+        DataMap.Resource_Type.oraclePDB.value
+      ],
+      resourceType
+    )
+  ) {
     return includes(
       [
         DataMap.Job_type.resource_protection.value,
@@ -1237,6 +1271,7 @@ export function isSlaResourceSubType(subType: string): boolean {
   return includes(
     [
       DataMap.Resource_Type.ActiveDirectory.value,
+      DataMap.Resource_Type.AntDB.value,
       DataMap.Resource_Type.fileset.value,
       DataMap.Resource_Type.oracle.value,
       DataMap.Resource_Type.oracleCluster.value,
@@ -1402,7 +1437,8 @@ export function hiddenHcsUserFileLevelRestore(data, isHcsUser) {
         DataMap.Resource_Type.fusionOne.value,
         DataMap.Resource_Type.HCSCloudHost.value,
         DataMap.Resource_Type.openStackCloudServer.value,
-        DataMap.Resource_Type.cNwareVm.value
+        DataMap.Resource_Type.cNwareVm.value,
+        DataMap.Resource_Type.nutanixVm.value
       ],
       data.resource_sub_type
     ) &&
@@ -1587,7 +1623,8 @@ export function disableValidCopyBtn(data, properties) {
         DataMap.Resource_Type.HCSCloudHost.value,
         DataMap.Resource_Type.openStackCloudServer.value,
         DataMap.Resource_Type.APSCloudServer.value,
-        DataMap.Resource_Type.cNwareVm.value
+        DataMap.Resource_Type.cNwareVm.value,
+        DataMap.Resource_Type.nutanixVm.value
       ],
       data.resource_sub_type
     )
@@ -1628,6 +1665,20 @@ export function filterApplication(item, appUtilsService) {
       item => item.appValue !== 'NasFileSystem'
     );
   }
+  // 服务化屏蔽应用
+  if (appUtilsService?.isHcsUser) {
+    applications = applications.filter(item => {
+      const apps = item.appValue.split(',');
+      return (
+        !includes(
+          apps,
+          DataMap.Resource_Type.lightCloudGaussdbInstance.value
+        ) &&
+        !includes(apps, DataMap.Resource_Type.openStackCloudServer.value) &&
+        !includes(apps, DataMap.Resource_Type.kubernetesClusterCommon.value)
+      );
+    });
+  }
 
   return applications;
 }
@@ -1650,7 +1701,7 @@ export function isJson(str: string): boolean {
 
 // 侦测报告非文件系统应用类型
 export function isNotFileSystem(appType): boolean {
-  return includes([2, 3, 7, 8, 9, 10, 12], appType);
+  return includes([0x02, 0x03, 0x07, 0x08, 0x09, 0x10, 0x12], appType);
 }
 
 // 获取资源的标签数据
@@ -1679,6 +1730,16 @@ export function extendParams(conditions, params) {
   return conditions;
 }
 
+export function getFileIcon(item) {
+  if (item.type === RestoreFileType.Directory) {
+    return 'aui-icon-directory';
+  }
+  if (item.type === RestoreFileType.Link) {
+    return 'aui-icon-link';
+  }
+  return 'aui-icon-file';
+}
+
 // 构造浏览节点
 export function extendNodeParams(node, item) {
   item.name = item.path;
@@ -1694,9 +1755,62 @@ export function extendNodeParams(node, item) {
       : `${item.path}/${item.nodeName}`;
   item.isLeaf = item.type !== RestoreFileType.Directory;
   item.children = item.type === RestoreFileType.Directory ? [] : null;
-  item.contentToggleIcon =
-    item.type === RestoreFileType.Directory
-      ? 'aui-icon-directory'
-      : 'aui-icon-file';
+  item.contentToggleIcon = getFileIcon(item);
   return item;
+}
+
+// sqlserver日志副本/差异副本的手动归档入口要屏蔽
+export function hideSqlserverArchive(data) {
+  return (
+    includes(
+      [
+        DataMap.Resource_Type.SQLServerDatabase.value,
+        DataMap.Resource_Type.SQLServerClusterInstance.value,
+        DataMap.Resource_Type.SQLServerInstance.value,
+        DataMap.Resource_Type.SQLServerGroup.value
+      ],
+      data?.resource_sub_type
+    ) &&
+    includes([DataMap.CopyData_Backup_Type.log.value], data?.source_copy_type)
+  );
+}
+
+// sqlserver日志副本保留策略设置入口要屏蔽
+export function hideSqlserverRetention(data) {
+  return (
+    includes(
+      [
+        DataMap.Resource_Type.SQLServerDatabase.value,
+        DataMap.Resource_Type.SQLServerClusterInstance.value,
+        DataMap.Resource_Type.SQLServerInstance.value,
+        DataMap.Resource_Type.SQLServerGroup.value
+      ],
+      data?.resource_sub_type
+    ) &&
+    includes([DataMap.CopyData_Backup_Type.log.value], data?.source_copy_type)
+  );
+}
+
+// 获取深浅模式
+export function getAppTheme(i18n): any {
+  if (
+    includes(
+      [
+        DataMap.Deploy_Type.cloudbackup.value,
+        DataMap.Deploy_Type.cloudbackup2.value,
+        DataMap.Deploy_Type.hyperdetect.value,
+        DataMap.Deploy_Type.cyberengine.value
+      ],
+      i18n.get('deploy_type')
+    )
+  ) {
+    return ThemeEnum.light;
+  }
+  const storageTheme = localStorage.getItem('app_theme');
+  if (storageTheme === ThemeEnum.auto) {
+    const prefers =
+      window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+    return prefers?.matches ? ThemeEnum.dark : ThemeEnum.light;
+  }
+  return storageTheme || ThemeEnum.light;
 }

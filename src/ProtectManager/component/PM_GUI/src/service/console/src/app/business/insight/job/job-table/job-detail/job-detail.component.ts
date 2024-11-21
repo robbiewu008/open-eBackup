@@ -1,18 +1,20 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageService } from '@iux/live';
 import {
   CookieService,
   DataMap,
@@ -26,6 +28,7 @@ import {
   RouterUrl,
   SchedulePolicy,
   SLA_BACKUP_NAME,
+  SYSTEM_TIME,
   TaskService
 } from 'app/shared';
 import {
@@ -54,7 +57,7 @@ import {
   union,
   values
 } from 'lodash';
-import { combineLatest, Subject, Subscription, timer } from 'rxjs';
+import { Subject, Subscription, timer } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { FeedbackResultComponent } from './feedback-result.component';
 import { JobEventComponent } from './job-event/job-event.component';
@@ -70,9 +73,8 @@ import { ReportResultComponent } from './report-result/report-result.component';
 export class JobDetailComponent implements OnInit, OnDestroy {
   time = ['1'];
   job;
-  sysTime;
   dataMap = DataMap;
-  timeZone = 'UTC+08:00';
+  timeZone = SYSTEM_TIME.timeZone;
   jobForms = {};
   extendObject: any = {};
   triggerPolicy: any = {};
@@ -218,9 +220,11 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     public globalService: GlobalService,
     private i18n: I18NService,
     private datePipe: DatePipe,
+    private clipboard: Clipboard,
     private cookieService: CookieService,
     private dataMapService: DataMapService,
     private jobApiService: JobAPIService,
+    private messageService: MessageService,
     private systemTimeService: SystemTimeService,
     private drawModalService: DrawModalService,
     private taskService: TaskService,
@@ -299,8 +303,8 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         slaId: sla.slaId,
         akDoException: false
       })
-      .subscribe(
-        res => {
+      .subscribe({
+        next: res => {
           if (!res) {
             this.jumpDisable = true;
             if (!isUndefined(this.jobStrategyComponent)) {
@@ -315,13 +319,13 @@ export class JobDetailComponent implements OnInit, OnDestroy {
             }
           }
         },
-        err => {
+        error: err => {
           this.jumpDisable = true;
           if (!isUndefined(this.jobStrategyComponent)) {
             this.jobStrategyComponent.isExist = false;
           }
         }
-      );
+      });
   }
 
   updateMountName() {
@@ -334,17 +338,17 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         policyId: mount.policyId,
         akDoException: false
       })
-      .subscribe(
-        res => {
+      .subscribe({
+        next: res => {
           if (res.name !== mount.name) {
             this.newName = res.name;
             this.infoUpdated = true;
           }
         },
-        error => {
+        error: error => {
           this.jumpDisable = true;
         }
-      );
+      });
   }
 
   getJob() {
@@ -354,30 +358,23 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     this.jobSubscription$ = timer(0, 5 * 1e3)
       .pipe(
         switchMap(index => {
-          return combineLatest([
-            this.systemTimeService.getSystemTime(!index),
-            this.jobApiService
-              .queryJobsUsingGET({
-                jobId: this.job?.jobId,
-                akLoading: !index
+          return this.jobApiService
+            .queryJobsUsingGET({
+              jobId: this.job?.jobId,
+              akLoading: !index
+            })
+            .pipe(
+              map(res => {
+                return first(res.records);
               })
-              .pipe(
-                map(res => {
-                  return first(res.records);
-                })
-              )
-          ]);
+            );
         }),
         takeUntil(this.jobDestroy$)
       )
       .subscribe(result => {
-        this.timeZone = result[0].displayName;
-        this.sysTime = new Date(
-          `${result[0].time.replace(/-/g, '/')} ${result[0].displayName}`
-        ).getTime();
         this.job = {
           ...cloneDeep(this.job),
-          ...result[1]
+          ...result
         };
         if (
           this.job.sourceSubType ===
@@ -508,7 +505,8 @@ export class JobDetailComponent implements OnInit, OnDestroy {
             DataMap.Resource_Type.fusionOne.value,
             DataMap.Resource_Type.HCSCloudHost.value,
             DataMap.Resource_Type.openStackCloudServer.value,
-            DataMap.Resource_Type.tdsqlInstance.value
+            DataMap.Resource_Type.tdsqlInstance.value,
+            DataMap.Resource_Type.hyperVVm.value
           ].includes(this.sourceSubType)
         ) {
           if (backupType === 'difference_increment') {
@@ -520,7 +518,10 @@ export class JobDetailComponent implements OnInit, OnDestroy {
             [
               DataMap.Resource_Type.virtualMachine.value,
               DataMap.Resource_Type.clusterComputeResource.value,
-              DataMap.Resource_Type.hostSystem.value
+              DataMap.Resource_Type.hostSystem.value,
+              DataMap.Resource_Type.APSCloudServer.value,
+              DataMap.Resource_Type.APSResourceSet.value,
+              DataMap.Resource_Type.APSZone.value
             ],
             this.sourceSubType
           ) &&
@@ -551,6 +552,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
 
         break;
       case 'durationTime':
+        const systemTime = this.appUtilsService.getCurrentSysTime();
         value = this.job.getDuration(
           includes(
             [
@@ -561,9 +563,9 @@ export class JobDetailComponent implements OnInit, OnDestroy {
             ],
             this.job.status
           )
-            ? this.sysTime - this.job.startTime < 0
+            ? systemTime - this.job.startTime < 0
               ? 0
-              : this.sysTime - this.job.startTime
+              : systemTime - this.job.startTime
             : this.job.endTime
             ? this.job.endTime - this.job.startTime
             : 0
@@ -795,6 +797,8 @@ export class JobDetailComponent implements OnInit, OnDestroy {
           ? ['sourceName', 'sourceSubType', 'sourceLocation', 'copyType']
           : keys;
         break;
+      case DataMap.Job_type.updateBackupServiceIp.value:
+        keys = ['sourceName', 'sourceSubType'];
       default:
         break;
     }
@@ -884,6 +888,13 @@ export class JobDetailComponent implements OnInit, OnDestroy {
           this.isLiveMount = false;
         });
       }
+    });
+  }
+
+  copyJobId(value) {
+    this.clipboard.copy(value);
+    this.messageService.success(this.i18n.get('common_copy_success_label'), {
+      lvShowCloseButton: true
     });
   }
 

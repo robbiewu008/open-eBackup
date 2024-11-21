@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -41,10 +41,12 @@ import {
   filter,
   find,
   first,
+  get,
   includes,
   isEmpty,
   isNumber,
   isString,
+  map,
   set,
   split,
   trim
@@ -72,7 +74,7 @@ export class InstanceRestoreComponent implements OnInit {
   options;
   locationLabel = this.i18n.get('common_location_label');
   disableOriginLocation = false;
-
+  instanceOptions = [];
   scriptErrorTip = {
     invalidName: this.i18n.get('common_script_error_label'),
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [8192])
@@ -104,6 +106,7 @@ export class InstanceRestoreComponent implements OnInit {
       position: new FormControl('', {
         validators: [this.baseUtilService.VALID.required()]
       }),
+      instance: new FormControl(''),
       path: new FormControl('', {
         validators: [
           this.validPath(),
@@ -122,6 +125,20 @@ export class InstanceRestoreComponent implements OnInit {
       this.formGroup.get('path').updateValueAndValidity();
     }
     this.formGroup.get('restoreTo').valueChanges.subscribe(res => {
+      this.instanceOptions = [];
+      if (
+        res === RestoreV2LocationType.NEW &&
+        this.rowCopy.resource_sub_type ===
+          DataMap.Resource_Type.SQLServerInstance.value &&
+        !this.isFileLevelRestore
+      ) {
+        this.formGroup
+          .get('instance')
+          .setValidators([this.baseUtilService.VALID.required()]);
+      } else {
+        this.formGroup.get('instance').clearValidators();
+      }
+      this.formGroup.get('instance').updateValueAndValidity();
       if (
         this.restoreType === RestoreType.FileRestore &&
         res === RestoreV2LocationType.NEW
@@ -144,6 +161,16 @@ export class InstanceRestoreComponent implements OnInit {
         }
       }
     });
+    this.formGroup.get('position').valueChanges.subscribe(res => {
+      this.formGroup.get('instance').setValue('');
+      if (
+        this.formGroup.value.restoreTo === RestoreV2LocationType.NEW &&
+        this.rowCopy.resource_sub_type ===
+          DataMap.Resource_Type.SQLServerInstance.value
+      )
+        this.getInstance();
+    });
+
     this.formGroup.valueChanges.subscribe(res => {
       this.disableOkBtn();
     });
@@ -214,6 +241,61 @@ export class InstanceRestoreComponent implements OnInit {
           }
         });
     }
+  }
+  formatInstance(recordsTemp, endpoint) {
+    this.instanceOptions = map(recordsTemp, item => {
+      return {
+        ...item,
+        key: item.uuid,
+        value: item.uuid,
+        label: item.name,
+        isLeaf: true
+      };
+    });
+    this.instanceOptions = filter(this.instanceOptions, item => {
+      return item.path === endpoint || item.environment.endpoint === endpoint;
+    });
+  }
+
+  getInstance(recordsTemp?: any[], startPage?: number) {
+    const endpoint = get(
+      find(this.options, item => item.uuid === this.formGroup.value.position),
+      'endpoint'
+    );
+    const conditions = {
+      subType: [
+        DataMap.Resource_Type.SQLServerInstance.value,
+        DataMap.Resource_Type.SQLServerClusterInstance.value
+      ],
+      environment: {
+        endpoint: [['~~'], endpoint]
+      }
+    };
+
+    const params = {
+      pageNo: startPage || CommonConsts.PAGE_START,
+      pageSize: CommonConsts.PAGE_SIZE,
+      conditions: JSON.stringify(conditions)
+    };
+
+    this.protectedResourceApiService.ListResources(params).subscribe(res => {
+      if (!recordsTemp) {
+        recordsTemp = [];
+      }
+      if (!isNumber(startPage)) {
+        startPage = CommonConsts.PAGE_START;
+      }
+      startPage++;
+      recordsTemp = [...recordsTemp, ...res.records];
+      if (
+        startPage === Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE) ||
+        res.totalCount === 0
+      ) {
+        this.formatInstance(recordsTemp, endpoint);
+        return;
+      }
+      this.getInstance(recordsTemp, startPage);
+    });
   }
 
   getClusters(recordsTemp?: any[], startPage?: number, labelParams?: any) {
@@ -299,12 +381,20 @@ export class InstanceRestoreComponent implements OnInit {
           }
         });
         if (this.formGroup.value.restoreTo === RestoreV2LocationType.NEW) {
-          this.options = filter(
-            hostArray,
-            item =>
-              this.resourceData.path !== item?.endpoint &&
-              this.resourceData.environment_endpoint !== item?.endpoint
-          );
+          if (
+            this.rowCopy.resource_sub_type ===
+              this.dataMap.Resource_Type.SQLServerInstance.value &&
+            !this.isFileLevelRestore
+          ) {
+            this.options = hostArray; // 单实例不存在时，恢复新位置，不做筛选可以选原来的主机
+          } else {
+            this.options = filter(
+              hostArray,
+              item =>
+                this.resourceData.path !== item?.endpoint &&
+                this.resourceData.environment_endpoint !== item?.endpoint
+            );
+          }
         } else {
           this.options = hostArray;
         }
@@ -379,6 +469,13 @@ export class InstanceRestoreComponent implements OnInit {
           : RestoreV2Type.FileRestore,
       targetLocation: this.formGroup.value.restoreTo
     };
+    if (
+      this.formGroup.value.restoreTo === RestoreV2LocationType.NEW &&
+      this.rowCopy.resource_sub_type ===
+        DataMap.Resource_Type.SQLServerInstance.value
+    ) {
+      set(params, 'targetObject', this.formGroup.value.instance);
+    }
     if (this.formGroup.value.restoreTo !== RestoreV2LocationType.ORIGIN) {
       assign(params, {
         extendInfo: {
@@ -429,8 +526,7 @@ export class InstanceRestoreComponent implements OnInit {
         DataMap.Resource_Status.notExist.value ||
       this.rowCopy?.generated_by ===
         DataMap.CopyData_generatedType.cascadedReplication.value;
-    this.isFileLevelRestore = this.restoreType === RestoreType.FileRestore;
-
+    this.isFileLevelRestore = this.restoreType === RestoreType.FileRestore; // 普通恢复时false 数据库级恢复true
     this.initForm();
     this.getResourceData();
     if (
@@ -444,6 +540,11 @@ export class InstanceRestoreComponent implements OnInit {
       // 是数据库级并且是集群的恢复
       this.isFileLevelAndClusterRestore = this.isFileLevelRestore;
       this.getClusters();
+    }
+    if (this.disableOriginLocation) {
+      this.formGroup.get('restoreTo').setValue(RestoreV2LocationType.NEW);
+    } else {
+      this.formGroup.get('restoreTo').setValue(RestoreV2LocationType.ORIGIN);
     }
   }
 }

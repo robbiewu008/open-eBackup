@@ -1,0 +1,127 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Registering Object Storage">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="object-0010.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="object-0011">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Registering Object Storage</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="object-0011"></a><a name="object-0011"></a>
+
+<h1 class="topictitle1">Step 1: Registering Object Storage</h1>
+<div><div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="object-0011__Files-0009_0_li6657174672715"><span>Log in to the OceanProtect WebUI by referring to <a href="object-0064.html">Logging In to the OceanProtect WebUI</a>.</span></li><li><span>Choose <span class="uicontrol" id="object-0011__en-us_topic_0000001839142377_uicontrol31735811411"><b><span id="object-0011__en-us_topic_0000001839142377_text4171858161413"><strong>Protection</strong></span> &gt; File Systems &gt; <span id="object-0011__en-us_topic_0000001839142377_text6353164213157"><strong>Object Storage</strong></span></b></span>.</span></li><li><span>Switch to the <strong>Object Storage</strong> tab page and click <strong>Register</strong>.</span></li><li><span>Configure the basic information and agent service of the object storage.</span><p><p><a href="#object-0011__Files-0009_0_en-us_topic_0000001172683312_table635115223177">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="object-0011__Files-0009_0_en-us_topic_0000001172683312_table635115223177"></a><a name="Files-0009_0_en-us_topic_0000001172683312_table635115223177"></a><table cellpadding="4" cellspacing="0" summary="" id="object-0011__Files-0009_0_en-us_topic_0000001172683312_table635115223177" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Object storage registration information</caption><colgroup><col style="width:23.189999999999998%"><col style="width:76.81%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="23.189999999999998%" id="mcps1.3.1.2.4.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="76.81%" id="mcps1.3.1.2.4.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><strong>Name</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>User-defined name of the object storage.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><span><strong>Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>Object storage type, which can be <strong>OceanStor Pacific</strong>, <strong>Huawei Cloud Stack OBS</strong>, or <strong>Alibaba Cloud OSS</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><span><strong>Endpoint</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>Access address of the object storage.</p>
+<p>Address format: domain name or service plane IP address of the object storage</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><span><strong>Protocol</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>Protocol used for data transmission between the <span>OceanProtect</span> and object storage.</p>
+<ul><li>If <strong>HTTPS</strong> is selected, import a valid certificate so that the <span>OceanProtect</span> can verify the object storage information. Obtain the certificate from the object storage administrator in advance.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>You need to import a certificate only when <strong>Type</strong> is set to <strong>OceanStor Pacific</strong>. To obtain a certificate, perform the following steps:</p>
+<ol type="a"><li>Log in to the OceanStor Pacific management page.</li><li>Choose <strong>Settings</strong> &gt; <strong>Certificate</strong> &gt; <strong>Certificate Management</strong>.</li><li>Click <strong>Object storage service security certificate</strong> to display the <strong>Certificate Details</strong> page.</li><li>Click the <strong>CA Certificate</strong> tab to view the CA certificate and ensure that the value of <strong>CN</strong> is <strong>RootCA</strong>.</li><li>Return to the <strong>Certificate</strong> page. Click the <strong>Built-In CA</strong> tab, select <strong>Service</strong>, and click <strong>Export CA Certificate</strong> to export the Service certificate.</li></ol>
+</div></div>
+</li><li>If <strong>HTTP</strong> is selected, the <span>OceanProtect</span> cannot verify the archive storage environment information, which poses security risks. You are advised to select <strong>HTTPS</strong> for security purposes.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><span><strong>Certificate</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>This parameter is displayed when HTTPS is used. Select an object storage certificate of the object storage type to verify the object storage environment information.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>You need to import a certificate only when <strong>Type</strong> is set to <strong>OceanStor Pacific</strong>.</li><li>When <strong>Type</strong> is set to <strong>Alibaba Cloud OSS</strong> and <strong>Protocol</strong> is set to <strong>HTTPS</strong>, certificate configuration is not supported. (Only unidirectional authentication is supported when HTTPS is used to access Alibaba Cloud object storage resources.)</li></ul>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><span><strong>AK</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>Access certificate for accessing the object storage.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><span><strong>SK</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>Security certificate for accessing the object storage.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>External agent host selected for the object storage. If this parameter is not specified, the built-in agent is used by default.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>Ensure that the maximum request body size allowed by the agent host is greater than 6 MB if the size of a single object to be backed up or restored does not exceed 58 GB, and greater than 5 GB if the size exceeds 58 GB.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><strong>Server URL</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>URL address of the agent host for connection between the <span>OceanProtect</span> and the production end. This parameter is displayed only when the agent host is enabled. Currently, only the HTTP protocol is supported.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><strong>Username</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>User of the agent host. This parameter is displayed only when the agent host is enabled.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><strong>Password</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>User password of the agent host. This parameter is displayed only when the agent host is enabled.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="object-0010.html">Backing Up Object Storage</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

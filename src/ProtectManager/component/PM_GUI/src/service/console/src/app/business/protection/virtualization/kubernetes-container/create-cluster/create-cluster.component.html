@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,15 +12,12 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup">
     <!-- 集群类型 -->
     <lv-form-item>
         <lv-form-label lvRequired>{{'protection_k8s_cluster_type_label' | i18n}}</lv-form-label>
         <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
-            <lv-select formControlName="clusterType"
-            [lvOptions]="clusterOptions"
-            lvValueKey="value"
-            lvShowCheckAll></lv-select>
+            <lv-select formControlName="clusterType" [lvOptions]="clusterOptions" lvValueKey="value"
+                lvShowCheckAll></lv-select>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item>
@@ -45,13 +43,21 @@
     </lv-form-item>
     <ng-container *ngIf="formGroup.value.type === dataMap.Cluster_Register_Mode.token.value">
         <lv-form-item>
-            <lv-form-label lvRequired>{{ 'common_ip_address_label' | i18n}}</lv-form-label>
+            <lv-form-label lvRequired>
+                {{ 'common_ip_address_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_kubernetes_ip_tip_label' | i18n}}"
+                    lvColorState='true' class="configform-constraint"></i>
+            </lv-form-label>
             <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
                 <input lv-input type="text" formControlName="ip" />
             </lv-form-control>
         </lv-form-item>
         <lv-form-item>
-            <lv-form-label lvRequired>{{ 'common_port_label' | i18n }}</lv-form-label>
+            <lv-form-label lvRequired>
+                {{ 'common_port_label' | i18n }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_kubernetes_ip_port_label' | i18n}}"
+                    lvColorState='true' class="configform-constraint"></i>
+            </lv-form-label>
             <lv-form-control [lvErrorTip]="portErrorTip">
                 <input lv-input lv-input type="text" formControlName="port" placeholder="1~65535" />
             </lv-form-control>

@@ -1,0 +1,89 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤2：开启归档模式">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="postgresql-0009.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="postgresql-0010_0">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤2：开启归档模式</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="postgresql-0010_0"></a><a name="postgresql-0010_0"></a>
+
+<h1 class="topictitle1">步骤2：开启归档模式</h1>
+<div><p>在执行数据库备份前必须开启归档模式，否则将会导致备份失败。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ul><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li45719353277"><strong id="postgresql-0010_0__zh-cn_topic_0000001607842332_b0571203562711">方式一：通过修改配置文件参数开启归档模式</strong><ol id="postgresql-0010_0__zh-cn_topic_0000001607842332_ol516055662416"><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li716035617240">使用PuTTY，登录PostgreSQL数据库主机。</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li14621131213268">创建存放归档日志（WAL日志）的路径，后续操作以/mnt/server/archivedir/路径为例。<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen156211512152614">mkdir -p<em id="postgresql-0010_0__zh-cn_topic_0000001607842332_i166211312132615"> /mnt/server/archivedir/</em></pre>
+</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li1281642882814">赋予数据库管理用户postgres读写权限。<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen481612814288">chmod 750 <em id="postgresql-0010_0__zh-cn_topic_0000001607842332_i138161428172810">/mnt/server/archivedir/</em>
+chown postgres:postgres <em id="postgresql-0010_0__zh-cn_topic_0000001607842332_i14816928182820">/mnt/server/archivedir/</em></pre>
+</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li1725354622819">执行<strong id="postgresql-0010_0__zh-cn_topic_0000001607842332_b1025313461280">su postgres</strong>切换数据库管理用户postgres。系统回显示例如下：<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen2025334619289">[root@pg_102_129 <font style="font-size:8pt" Face="Courier New" >~</font>]# su postgres
+[postgres@pg_102_129 root]$<em id="postgresql-0010_0__zh-cn_topic_0000001607842332_i1725424682812">  </em></pre>
+</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li055635710288">登录数据库管理用户postgres。<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen10556157132811">cd <em id="postgresql-0010_0__zh-cn_topic_0000001607842332_i1855613578285">/usr/local/pgsql/bin</em>
+./psql</pre>
+</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li149541783295">执行<strong id="postgresql-0010_0__zh-cn_topic_0000001607842332_b1895418112914">show config_file</strong><strong id="postgresql-0010_0__zh-cn_topic_0000001607842332_b1595414842918">;</strong>查询postgresql.conf文件所在路径。系统回显示例如下：<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen149544813295">postgres=# show config_file;
+              config_file
+---------------------------------------
+ /usr/local/pgsql/data/postgresql.conf
+(1 row)</pre>
+</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li17263199293">在键盘上按<span class="uicontrol" id="postgresql-0010_0__zh-cn_topic_0000001607842332_uicontrol173011037123011">“Ctrl+d”</span>退出数据库管理用户postgres，进入PostgreSQL数据库主机。</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li178718287297">进入postgresql.conf文件，这里以/usr/local/pgsql/data/postgresql.conf路径为例。<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen1178792816293">vi <em id="postgresql-0010_0__zh-cn_topic_0000001607842332_i3787828192916">/usr/local/pgsql/data/postgresql.conf</em></pre>
+</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li380174213292">找到并修改postgresql.conf文件中的wal_level 、archive_mode和archive_command参数，如下所示：<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen16801242122910">wal_level = replica                     # minimal, replica, or logical
+archive_mode = on               # enables archiving; off, on, or always
+archive_command = 'cp %p /home/postgres/archivedir/%f'          # command to use to archive a logfile segment</pre>
+<div class="note" id="postgresql-0010_0__zh-cn_topic_0000001607842332_note148113424299"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="postgresql-0010_0__zh-cn_topic_0000001607842332_ul158111424294"><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li681184215293">将wal_level设置为archive（PostgreSQL 9.6及以上版本设置为replica）。</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li198194232915">将archive_mode设置为on。</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li1881642122913">将archive_command设置为 'cp %p /mnt/server/archivedir/%f'，并确保归档日志的路径是单个路径。</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li981842182915">修改postgresql.conf文件时，请修改文件中已存在的字段值，禁止在文件中自行新增同样的字段，否则将会影响恢复任务。</li></ul>
+</div></div>
+</li></ol>
+</li></ul>
+<ul><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li125261454163017"><strong id="postgresql-0010_0__zh-cn_topic_0000001607842332_b520795215418">方式二：通过执行数据库命令开启归档模式</strong><ol id="postgresql-0010_0__zh-cn_topic_0000001607842332_ol1431724414327"><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li387595019325">使用PuTTY，登录PostgreSQL数据库主机。</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li11497105712322">创建存放归档日志（WAL日志）的路径，后续操作以/mnt/server/archivedir/路径为例。<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen2049712570326">mkdir -p /mnt/server/archivedir/</pre>
+</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li157953814338">赋予运行数据库的操作系统用户有读写权限。<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen11795158133313">chmod 750 /mnt/server/archivedir/
+chown postgres:postgres /mnt/server/archivedir/</pre>
+</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li296831915334">执行<strong id="postgresql-0010_0__zh-cn_topic_0000001607842332_b13968171911333">su postgres</strong>切换数据库管理用户postgres。系统回显示例如下：<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen7968719103320">[root@pg_102_129 <font style="font-size:8pt" Face="Courier New" >~</font>]# su postgres
+[postgres@pg_102_129 root]$<em id="postgresql-0010_0__zh-cn_topic_0000001607842332_i5968151915333">  </em></pre>
+</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li1141133713334">登录数据库管理用户postgres。<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen14412163743318">cd /usr/local/pgsql/bin
+./psql</pre>
+</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li1012154817339">执行<strong id="postgresql-0010_0__zh-cn_topic_0000001607842332_b1812144810335">show config_file</strong><strong id="postgresql-0010_0__zh-cn_topic_0000001607842332_b5121174816333">;</strong>查询postgresql.conf文件所在路径。系统回显示例如下：<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen14121134853313">postgres=# show config_file;
+              config_file
+---------------------------------------
+ /usr/local/pgsql/data/postgresql.conf
+(1 row)</pre>
+</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li945175818339">在PostgreSQL数据库主机，依次执行以下命令，开启数据库归档模式。<pre class="screen" id="postgresql-0010_0__zh-cn_topic_0000001607842332_screen1645125843316">alter system set wal_level= 'replica';
+alter system set archive_mode= 'on';
+alter system set archive_command ='cp %p /mnt/server/archivedir/%f'</pre>
+</li><li id="postgresql-0010_0__zh-cn_topic_0000001607842332_li587338113413">集群场景下请执行<strong id="postgresql-0010_0__zh-cn_topic_0000001607842332_b2873384342">/usr/local/pgpool/bin/pgpool -n &gt; /dev/null 2&gt;&amp;1 &amp;</strong>命令，重启pgpool服务。<p id="postgresql-0010_0__zh-cn_topic_0000001607842332_p387319813415">单机场景下请依次执行<strong id="postgresql-0010_0__zh-cn_topic_0000001607842332_b158732817349">/usr/local/pgsql/bin/pg_ctl -D</strong>和<strong id="postgresql-0010_0__zh-cn_topic_0000001607842332_b187319873416">/usr/local/pgsql/data -l logfile  restart</strong>命令，重启数据库。</p>
+</li></ol>
+</li></ul>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="postgresql-0009.html">备份PostgreSQL</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

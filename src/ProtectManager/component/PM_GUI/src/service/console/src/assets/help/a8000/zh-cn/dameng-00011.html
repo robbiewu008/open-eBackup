@@ -1,0 +1,66 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤2：开启数据库本地归档">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="dameng-00009.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="dameng-00011">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤2：开启数据库本地归档</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="dameng-00011"></a><a name="dameng-00011"></a>
+
+<h1 class="topictitle1">步骤2：开启数据库本地归档</h1>
+<div><p>Dameng在执行备份任务前，需要开启Dameng数据库本地归档，否则会导致备份失败。</p>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><ul><li id="dameng-00011__dameng-00010_dameng-00008_li18475121815115"><span id="dameng-00011__dameng-00010_dameng-00008_ph1292522251311">本节操作如无特殊说明均以Dameng 8版本为例进行，数据库版本不同操作可能存在差异，请以实际为准。</span></li><li id="dameng-00011__dameng-00010_dameng-00008_li135951626152410"><span id="dameng-00011__dameng-00010_dameng-00008_ph1879711368271">对于以集群方式部署的Dameng数据库，如无特殊说明，均需登录集群实例所在的所有主机执行以下操作。</span></li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>登录Dameng数据库主机。</span></li><li><span>执行以下命令查询dm.ini配置文件所在路径。</span><p><pre class="screen">ps -ef | grep dm.ini</pre>
+</p></li><li><span>进入配置文件所在路径，执行以下命令，打开并编辑配置文件。</span><p><pre class="screen">vim dm.ini</pre>
+</p></li><li><span>在配置文件的<strong>#configuration file</strong>区域，修改<strong>ARCH_INI</strong>配置项的值为1。</span><p><pre class="screen">ARCH_INI = 1</pre>
+</p></li><li><span>执行以下命令，查询dmarch.ini配置文件所在路径。</span><p><pre class="screen">find / -name dmarch.ini</pre>
+</p></li><li><span>进入配置文件所在路径，执行以下命令，打开并编辑配置文件。</span><p><pre class="screen">vim dmarch.ini</pre>
+</p></li><li><span>修改配置文件中的以下内容。</span><p><pre class="screen">[ARCHIVE_LOCAL1]
+ARCH_TYPE = LOCAL 
+ARCH_DEST = <em>归档文件路径</em>
+ARCH_FILE_SIZE = <em>128</em> 
+ARCH_SPACE_LIMIT = <em>0</em> </pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p><em>归档文件路径</em>请根据实际路径替换。</p>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="dameng-00009.html">备份Dameng</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

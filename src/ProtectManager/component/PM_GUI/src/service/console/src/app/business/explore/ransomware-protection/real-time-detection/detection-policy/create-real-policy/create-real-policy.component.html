@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
     <lv-form-item>
         <lv-form-label lvRequired>
             {{'common_name_label' | i18n}}
@@ -66,7 +66,7 @@
     </lv-form-item>
     <div>
         <div class="decoy-detection-tip aui-gutter-column-md">
-            <lv-group lvGutter='14px' class="tip-header">
+            <lv-group class="tip-header" [lvColumns]="['58px', 'auto', '16px']" lvRowGutter="14px">
                 <img src="assets/img/decoy-detection.svg">
                 <span class="aui-text-label">
                     {{'explore_decoy_detection_tips_label' | i18n}}

@@ -1,38 +1,35 @@
 var strHlStart = "<span style='color:black; background-color:yellow'>";
-var strHlEnd = '</span>';
+var strHlEnd = "</span>";
 
 function regexEncode(str) {
   if (str.length === 0) {
-    return '';
+    return "";
   }
-  var s = str.replace(/\\/g, '\\\\');
-  s = s.replace(/\./g, '\\.');
-  s = s.replace(/\^/g, '\\^');
-  s = s.replace(/\|/g, '\\|');
-  s = s.replace(/\$/g, '\\$');
-  s = s.replace(/\[/g, '\\[');
-  s = s.replace(/\?/g, '\\?');
-  s = s.replace(/\+/g, '\\+');
-  s = s.replace(/\*/g, '\\*');
-  s = s.replace(/\(/g, '\\(');
-  s = s.replace(/\)/g, '\\)');
+  var s = str.replace(/\\/g, "\\\\");
+  s = s.replace(/\./g, "\\.");
+  s = s.replace(/\^/g, "\\^");
+  s = s.replace(/\|/g, "\\|");
+  s = s.replace(/\$/g, "\\$");
+  s = s.replace(/\[/g, "\\[");
+  s = s.replace(/\?/g, "\\?");
+  s = s.replace(/\+/g, "\\+");
+  s = s.replace(/\*/g, "\\*");
+  s = s.replace(/\(/g, "\\(");
+  s = s.replace(/\)/g, "\\)");
   return s;
 }
 
 function htmlEncode(str) {
   if (str.length === 0) {
-    return '';
-  }
-  return str.replace(/[&<>]/g, function(match) {
-    switch (match) {
-      case '&':
-        return '&amp;';
-      case '<':
-        return '&lt;';
-      case '>':
-        return '&gt;';
+    return "";
+  };
+  return str.replace(/[&<>]/g,function(match){
+    switch(match){
+      case "&":return "&amp;";
+      case "<":return "&lt;";
+      case ">":return "&gt;";
       default:
-        break;
+        break
     }
   });
 }
@@ -43,20 +40,21 @@ function encode(str) {
 
 function htmlDecode(str) {
   if (str.length === 0) {
-    return '';
+    return "";
   }
-  return str.replace(/&\w+;/g, function(match) {
-    return { '&amp;': '&', '&lt;': '<', '&gt;': '>' }[match];
+  return str.replace(/&\w+;/g,function(match){
+    return {"&amp;":"&","&lt;":"<","&gt;":">"}[match];
   });
+
 }
 
 function replaceStr(matchStr) {
   var result;
-  var patternStart = '<(?:"[^"]*"|';
+  var patternStart = "<(?:\"[^\"]*\"|";
   var patternEnd = "'[^']*'|[^'\">])*>";
-  var pattern = new RegExp(patternStart + patternEnd, 'gi');
+  var pattern = new RegExp(patternStart + patternEnd, "gi");
   if (pattern.test(matchStr)) {
-    var matchStrWithoutTag = htmlDecode(matchStr.replace(pattern, ''));
+    var matchStrWithoutTag = htmlDecode(matchStr.replace(pattern, ""));
 
     // To know where the search starts in the matching string
     var beginIndex = matchStrWithoutTag.indexOf(keyWord);
@@ -73,7 +71,7 @@ function replaceStr(matchStr) {
     var slice;
     var decodeStr;
     for (var i = 0; i < split.length; i++) {
-      if (!split[i] || split[i] === '') {
+      if (!split[i] || split[i] === "") {
         resultArr.push(htmlTagArr[i]);
         continue;
       }
@@ -83,18 +81,11 @@ function replaceStr(matchStr) {
 
       // All strings that match keywords must be escaped in HTML format.
       if (i === 0) {
-        slice =
-          decodeStr.charAt(0) +
-          htmlEncode(decodeStr.slice(1, beginIndex)) +
-          strHlStart +
-          htmlEncode(decodeStr.slice(beginIndex)) +
-          strHlEnd;
+        slice = decodeStr.charAt(0) + htmlEncode(decodeStr.slice(1, beginIndex)) + strHlStart +
+          htmlEncode(decodeStr.slice(beginIndex)) + strHlEnd;
         lastLength = lastLength - (decodeStr.length - beginIndex);
       } else if (i === split.length - 1) {
-        slice =
-          strHlStart +
-          htmlEncode(decodeStr.slice(0, lastLength)) +
-          strHlEnd +
+        slice = strHlStart + htmlEncode(decodeStr.slice(0, lastLength)) + strHlEnd +
           htmlEncode(decodeStr.slice(lastLength, decodeStr.length - 1)) +
           decodeStr.charAt(decodeStr.length - 1);
       } else {
@@ -104,25 +95,18 @@ function replaceStr(matchStr) {
       resultArr.push(slice);
       resultArr.push(htmlTagArr[i]);
     }
-    result = resultArr.join('');
+    result = resultArr.join("");
   } else {
-    result = matchStr.replace(
-      new RegExp(encode(keyWord), 'gi'),
-      strHlStart +
-        matchStr.match(new RegExp(encode(keyWord), 'gi'))[0] +
-        strHlEnd
-    );
+    result = matchStr.replace(new RegExp(encode(keyWord), "gi"), strHlStart + matchStr.match(new RegExp(encode(keyWord), "gi"))[0] + strHlEnd);
   }
   return result;
 }
 
 // Deduplication
 function deduplicateArr(matchArr) {
-  return matchArr
-    ? matchArr.filter(function(item, index) {
-        return matchArr.indexOf(item, 0) === index;
-      })
-    : null;
+  return matchArr ? matchArr.filter(function (item, index) {
+    return matchArr.indexOf(item, 0) === index;
+  }) : null;
 }
 
 function highlightInnerHtml(matchArr, body) {
@@ -136,7 +120,7 @@ function highlightInnerHtml(matchArr, body) {
   for (var i = 0; i < matchArr.length; i++) {
     matchStr = matchArr[i];
     replace = replaceStr(matchStr);
-    replaceReg = new RegExp(regexEncode(matchStr), 'g');
+    replaceReg = new RegExp(regexEncode(matchStr), "g");
     innerHtml = innerHtml.replace(replaceReg, replace);
   }
   body.innerHTML = innerHtml;
@@ -150,15 +134,15 @@ function escapeCharacter(keyWordArr) {
 }
 
 function regexStrings(innerHtml) {
-  var htmlTagPattern = '(<("[^"]*"|\'[^\']*\'|[^\'">])*>)*';
-  var regexTag = '(([^><])*';
-  var regexEnd = '<){1}';
-  var keyWordArr = keyWord.split('');
+  var htmlTagPattern = "(<(\"[^\"]*\"|'[^']*'|[^'\">])*>)*";
+  var regexTag="(([^><])*";
+  var regexEnd="<){1}";
+  var keyWordArr = keyWord.split("");
 
   escapeCharacter(keyWordArr);
   var regex = keyWordArr.join(htmlTagPattern);
-  regex = '(>[^><]*){1}' + regex + regexTag + regexEnd;
-  var pattern = new RegExp(regex, 'gi');
+  regex = "(>[^><]*){1}" + regex + regexTag + regexEnd;
+  var pattern = new RegExp(regex, "gi");
   return innerHtml.match(pattern);
 }
 
@@ -175,3 +159,4 @@ function highlight(body) {
   matchArr = deduplicateArr(matchArr);
   highlightInnerHtml(matchArr, body);
 }
+

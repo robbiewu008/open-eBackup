@@ -1,3 +1,4 @@
+<div class="aui-header-2 alarm-dump-operation">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-header-2 alarm-dump-operation">
     <h2>
         {{'system_dump_sftp_label' | i18n}}
     </h2>
@@ -64,33 +64,35 @@
             <lv-form-item>
                 <lv-form-label lvRequired>{{'common_username_label' | i18n}}</lv-form-label>
                 <lv-form-control [lvErrorTip]='userNameErrorTip'>
-                    <input lv-input class="modify-form" formControlName="userName" />
+                    <input lv-input class="form-control-input" formControlName="userName" />
                 </lv-form-control>
             </lv-form-item>
             <lv-form-item>
                 <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
                 <lv-form-control [lvErrorTip]='passwordErrorTip'>
-                    <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false" (focus)="focusPwd()">
-                    </aui-inupt-with-eye>
+                    <div class="form-control-input">
+                        <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false" (focus)="focusPwd()">
+                        </aui-inupt-with-eye>
+                    </div>
                 </lv-form-control>
             </lv-form-item>
             <lv-form-item>
                 <lv-form-label lvRequired>{{'system_service_ip_label' | i18n}}</lv-form-label>
                 <lv-form-control [lvErrorTip]='ipErrorTip'>
-                    <input lv-input class="modify-form" formControlName="ipAddress"
+                    <input lv-input class="form-control-input" formControlName="ipAddress"
                         placeholder="{{'common_ip4_ipv6_placeholder_label' | i18n}}" />
                 </lv-form-control>
             </lv-form-item>
             <lv-form-item>
                 <lv-form-label lvRequired>{{'common_port_label' | i18n}}</lv-form-label>
                 <lv-form-control [lvErrorTip]='portErrorTip'>
-                    <input lv-input class="modify-form" formControlName="port" placeholder="1~65535" />
+                    <input lv-input class="form-control-input" formControlName="port" placeholder="1~65535" />
                 </lv-form-control>
             </lv-form-item>
             <lv-form-item>
                 <lv-form-label lvRequired>{{'system_file_save_path_label' | i18n}}</lv-form-label>
                 <lv-form-control [lvErrorTip]='pathErrorTip'>
-                    <input lv-input class="modify-form" formControlName="uploadPath"
+                    <input lv-input class="form-control-input" formControlName="uploadPath"
                         lv-tooltip="{{'common_valid_file_path_label' | i18n}}" />
                 </lv-form-control>
             </lv-form-item>

@@ -1,3 +1,4 @@
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
   <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="isExpanded">
     <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
       <lv-form-item>
@@ -44,6 +44,24 @@
           </ng-container>
         </lv-form-control>
       </lv-form-item>
+      <ng-container *ngIf="(!isDetail && formGroup.get('sameBackup').value) || (isDetail && protectData?.consistent_backup)">
+        <lv-form-item>
+          <lv-form-label>
+            {{'protection_snapshot_size_percent_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_snapshot_size_percent_tips_label' | i18n }}"
+            lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]='percentErrorTip'>
+            <ng-container  *ngIf="!isDetail">
+            <input lv-input type="text" formControlName="snapshot_size_percent" placeholder="1-100" style="width: 140px;" >
+            <span> %</span>
+            </ng-container>
+            <ng-container *ngIf="isDetail">
+              {{protectData?.snapshot_size_percent || 5}}%
+            </ng-container>
+          </lv-form-control>
+        </lv-form-item>
+      </ng-container>
       <lv-form-item>
         <lv-form-label>{{ 'protection_cross_file_system_backup_label' | i18n }}
           <ng-container *ngIf="osType !== dataMap.Fileset_Template_Os_Type.windows.value">

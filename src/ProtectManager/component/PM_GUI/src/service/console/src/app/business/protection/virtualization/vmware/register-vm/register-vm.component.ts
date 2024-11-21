@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -49,19 +49,20 @@ import { cacheGuideResource } from 'app/shared/consts/guide-config';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import {
+  toString as _toString,
   assign,
   cloneDeep,
   differenceBy,
   each,
   filter,
   first,
+  includes,
   isEmpty,
   isEqual,
   map,
   remove,
   size,
-  trim,
-  toString as _toString
+  trim
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -78,6 +79,7 @@ export class RegisterVmComponent implements OnInit {
   resourceType;
   item;
   DataMap = DataMap;
+  includes = includes;
   ResourceType = ResourceType;
   optItems = [];
   tableConfig: TableConfig;
@@ -99,6 +101,7 @@ export class RegisterVmComponent implements OnInit {
   certSize = '';
   crlName = '';
   crlSize = '';
+  certTipLabel = '';
 
   proxyOptions = [];
 
@@ -133,6 +136,14 @@ export class RegisterVmComponent implements OnInit {
     invalidInteger: this.i18n.get('common_valid_integer_label'),
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 72])
   };
+  certTipMap = {
+    [ResourceType.CNWARE]: this.i18n.get(
+      'protection_register_cnware_cert_tips_label'
+    ),
+    [ResourceType.NUTANIX]: this.i18n.get(
+      'protection_register_nutanix_cert_tips_label'
+    )
+  };
 
   @ViewChild('storageTypeTpl', { static: true }) storageTypeTpl: TemplateRef<
     any
@@ -153,6 +164,13 @@ export class RegisterVmComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    if (this.certTipMap[this.resourceType]) {
+      this.certTipLabel = this.certTipMap[this.resourceType];
+    } else {
+      this.certTipLabel = this.i18n.get(
+        'protection_register_vmware_cert_tips_label'
+      );
+    }
     this.isModifyEsxi =
       this.isModify &&
       this.treeSelection[0].rootNodeSubType ===
@@ -166,13 +184,15 @@ export class RegisterVmComponent implements OnInit {
   }
 
   getProxyOptions() {
-    if (this.resourceType !== ResourceType.CNWARE) {
+    if (
+      !includes([ResourceType.CNWARE, ResourceType.NUTANIX], this.resourceType)
+    ) {
       return;
     }
     const extParams = {
       conditions: JSON.stringify({
         type: 'Plugin',
-        subType: [`${ResourceType.CNWARE}Plugin`]
+        subType: [`${this.resourceType}Plugin`]
       })
     };
     this.appUtilsService.getResourceByRecursion(
@@ -325,7 +345,9 @@ export class RegisterVmComponent implements OnInit {
       children: new FormControl([])
     });
 
-    if (this.resourceType === ResourceType.CNWARE) {
+    if (
+      includes([ResourceType.CNWARE, ResourceType.NUTANIX], this.resourceType)
+    ) {
       this.formGroup
         .get('ip')
         .setValidators([
@@ -562,7 +584,12 @@ export class RegisterVmComponent implements OnInit {
               ?.setValue(res.scanInterval / 3600);
           }
 
-          if (this.resourceType === ResourceType.CNWARE) {
+          if (
+            includes(
+              [ResourceType.CNWARE, ResourceType.NUTANIX],
+              this.resourceType
+            )
+          ) {
             this.formGroup.get('userName').setValue(res.auth?.authKey);
             this.formGroup
               .get('agents')
@@ -762,7 +789,9 @@ export class RegisterVmComponent implements OnInit {
     e?.action === 'ready' && this._updateCrlModifyStatus();
   }
   getOriginInfo(startPage) {
-    if (this.resourceType === ResourceType.CNWARE) {
+    if (
+      includes([ResourceType.CNWARE, ResourceType.NUTANIX], this.resourceType)
+    ) {
       return;
     }
     this.environmentsService
@@ -909,8 +938,8 @@ export class RegisterVmComponent implements OnInit {
     }
     return {
       name: this.formGroup.value.name,
-      type: ResourceType.CNWARE,
-      subType: ResourceType.CNWARE,
+      type: this.resourceType,
+      subType: this.resourceType,
       endpoint: this.formGroup.value.ip || this.treeSelection[0]?.endpoint,
       port: +this.formGroup.value.port,
       auth: {
@@ -953,7 +982,9 @@ export class RegisterVmComponent implements OnInit {
 
   create(): Observable<void> {
     return new Observable<void>((observer: Observer<void>) => {
-      if (this.resourceType === ResourceType.CNWARE) {
+      if (
+        includes([ResourceType.CNWARE, ResourceType.NUTANIX], this.resourceType)
+      ) {
         this.protectedEnvironmentApiService
           .RegisterProtectedEnviroment({
             RegisterProtectedEnviromentRequestBody: this.getCnwareParams()
@@ -992,7 +1023,9 @@ export class RegisterVmComponent implements OnInit {
 
   modify(): Observable<void> {
     return new Observable<void>((observer: Observer<void>) => {
-      if (this.resourceType === ResourceType.CNWARE) {
+      if (
+        includes([ResourceType.CNWARE, ResourceType.NUTANIX], this.resourceType)
+      ) {
         this.protectedEnvironmentApiService
           .UpdateProtectedEnvironment({
             UpdateProtectedEnvironmentRequestBody: this.getCnwareParams(),

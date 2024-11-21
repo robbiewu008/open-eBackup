@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -33,6 +33,7 @@ import {
   ProtectedResourceApiService,
   RestoreApiV2Service
 } from 'app/shared/api/services';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { defer, isString, map, set, join, size, get, each } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -262,6 +263,7 @@ export class GaussdbRestoreComponent implements OnInit {
     private modal: ModalRef,
     public i18n: I18NService,
     private message: MessageService,
+    private appUtilsService: AppUtilsService,
     private baseUtilService: BaseUtilService,
     private restoreV2Service: RestoreApiV2Service,
     private protectedResourceApiService: ProtectedResourceApiService
@@ -274,6 +276,10 @@ export class GaussdbRestoreComponent implements OnInit {
     this.initForm();
     this.getOriginProject();
     this.getProjectOptions();
+  }
+
+  setSysTime(formItem) {
+    this.appUtilsService.setTimePickerCurrent(formItem);
   }
 
   getProjectOptions() {
@@ -469,6 +475,12 @@ export class GaussdbRestoreComponent implements OnInit {
 
     this.listenForm();
     this.modal.getInstance().lvOkDisabled = false;
+
+    // 默认增加2个azId
+    setTimeout(() => {
+      this.addRow();
+      this.addRow();
+    });
   }
 
   listenForm() {

@@ -1,0 +1,56 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Obtaining the CA Certificate of a Storage Device">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="nas_s_0011.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="nas_s_0012">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Obtaining the CA Certificate of a Storage Device</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="nas_s_0012"></a><a name="nas_s_0012"></a>
+
+<h1 class="topictitle1">Step 1: Obtaining the CA Certificate of a Storage Device</h1>
+<div id="body0000001103768052"><p id="nas_s_0012__p1733182219508">To ensure the security of interaction between the <span id="nas_s_0012__text1420811157135">OceanProtect</span> and a storage device, you can import the storage device certificate to the system. This operation is optional.</p>
+<p id="nas_s_0012__p19722164210475">Obtain the CA certificate of a storage device as follows:</p>
+<ul id="nas_s_0012__ul9722184217475"><li id="nas_s_0012__li9722042184720">Method 1: Obtain the certificate from the storage device administrator.</li><li id="nas_s_0012__li18722242154714">Method 2: Download the certificate of Huawei storage devices by yourself. For other storage devices, obtain the certificate from the storage device administrator. The following is the procedure for obtaining the CA certificate of a Huawei storage device (as an example).<ol id="nas_s_0012__ol1723642184711"><li id="nas_s_0012__li1644514484819">Enter the DeviceManager login address of a storage device whose certificate is to be obtained in the address box of a browser. The browser displays a message indicating that the login is insecure (Microsoft Edge displays a message indicating that the certificate is incorrect).<p id="nas_s_0012__p1410010574816"><a name="nas_s_0012__li1644514484819"></a><a name="li1644514484819"></a>The displayed information varies depending on the browser. The following uses Google Chrome 84 as an example.</p>
+</li><li id="nas_s_0012__li177235428473">Click <strong id="nas_s_0012__b1530875215322">Not secure</strong> on the left of the URL address box.<p id="nas_s_0012__p1472318425476"><span><img id="nas_s_0012__image3723164274715" src="en-us_image_0000001839159889.png"></span></p>
+</li><li id="nas_s_0012__li20723134211473">In the dialog box that is displayed, click <strong id="nas_s_0012__b9335125633212">Certificate</strong> and check whether the issuer is <strong id="nas_s_0012__b103355561322">Huawei IT Product CA</strong>.<p id="nas_s_0012__p872384214476"><span><img id="nas_s_0012__image07231342194718" src="en-us_image_0000001839239829.png"></span></p>
+</li><li id="nas_s_0012__li87231642174717"><a href="https://support.huawei.com/pki/pkidetail!loadCatagoryPkiData.action?type=PKI_TYPE-ROOT" target="_blank" rel="noopener noreferrer">Click here</a> to obtain the <strong id="nas_s_0012__b7531208333">Huawei Equipment Root CA.pem</strong> certificate.</li></ol>
+</li></ul>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="nas_s_0011.html">Backing Up a NAS File System</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

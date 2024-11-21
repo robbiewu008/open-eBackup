@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
     <div class="aui-header-1">
         <lv-group lvGutter="8px" class="drill-title-group">
             <h1>{{ 'explore_recovery_drill_label' | i18n }}</h1>
@@ -222,10 +222,10 @@
             </span>
             <span lv-overflow class="aui-text-label">
                 <ng-container *ngIf="_isEn">
-                    {{'protection_last_time_label' | i18n}}:{{item.startTime | date: 'yyyy-MM-dd HH:mm:ss' | nil}}
+                    {{'protection_last_time_label' | i18n}}:{{item.startTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil}}
                 </ng-container>
                 <ng-container *ngIf="!_isEn">
-                    {{'protection_last_time_label' | i18n}}：{{item.startTime | date: 'yyyy-MM-dd HH:mm:ss' | nil}}
+                    {{'protection_last_time_label' | i18n}}：{{item.startTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil}}
                 </ng-container>
             </span>
         </lv-group>
@@ -237,14 +237,13 @@
 </ng-template>
 
 <ng-template #recentJobStartTimeTpl let-item>
-    <span lv-overflow>{{item.nextExecuteTime | date: 'yyyy-MM-dd HH:mm:ss' | nil}}</span>
+    <span lv-overflow>{{item.nextExecuteTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil}}</span>
 </ng-template>
 
 
 <ng-template #elseNoDataTemplate>
     <div class="no-data">
-        <i lv-icon="lv-icon-no-data"></i>
-        <div class="no-data-label">{{'common_no_data_label' | i18n}}</div>
+        <lv-empty></lv-empty>
     </div>
 </ng-template>
 

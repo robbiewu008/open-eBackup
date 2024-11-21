@@ -1,3 +1,4 @@
+<lv-tree [lvData]='tableData' #lvTree [lvShowCheckbox]="!isSummary" lvSelectedByCheckbox lvSelectionMode='multiple'
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,16 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-tree [lvData]='tableData' #lvTree [lvShowCheckbox]="!isSummary" lvSelectedByCheckbox lvSelectionMode='multiple'
     [(lvSelection)]='tableSelection' (lvSelectionChange)="selectionChange()" (lvExpandedChange)="expandedChange($event)"
-    lvShowContentIcon lvShowLine lvAsync lvVirtualScroll lvCompareWith="name">
+    lvShowContentIcon lvShowLine lvAsync lvVirtualScroll lvCompareWith="name" [lvNodeTemplate]='nodeTpl' >
 </lv-tree>
+<ng-template #nodeTpl let-item>
+    <div style="width: 300px;" lv-overflow>
+            <span *ngIf="!item.isMoreBtn">
+                <i lv-icon="{{item.contentToggleIcon}}"></i>
+                {{item.label}}
+            </span>
+    </div>
+    <span class="aui-link" *ngIf="!!item.isMoreBtn"
+          (click)="getResource(item?.parent,item.startPage)">{{item.label}}</span>
+</ng-template>

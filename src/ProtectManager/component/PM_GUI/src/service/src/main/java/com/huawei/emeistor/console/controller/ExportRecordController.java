@@ -21,6 +21,7 @@ import com.huawei.emeistor.console.contant.ErrorResponse;
 import com.huawei.emeistor.console.exterattack.ExterAttack;
 import com.huawei.emeistor.console.util.ExceptionUtil;
 import com.huawei.emeistor.console.util.RequestUtil;
+import com.huawei.emeistor.console.util.VerifyUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,6 +51,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -132,10 +134,14 @@ public class ExportRecordController extends AdvBaseController {
             restTemplate.execute(super.normalizeForString(url), HttpMethod.GET, generateRequestCallback(),
                     clientHttpResponse -> {
                 try (OutputStream os = response.getOutputStream(); InputStream in = clientHttpResponse.getBody()) {
-                    response.setContentType("application/x-download");
+                    response.setContentType("application/octet-stream");
                     response.setCharacterEncoding("UTF-8");
                     response.setHeader("Pragma", "no-cache");
                     response.setHeader("Cache-Control", "no-store, must-revalidate");
+                    List<String> contentLengthHeader = clientHttpResponse.getHeaders().get("Content-Length");
+                    if (!VerifyUtil.isEmpty(contentLengthHeader)) {
+                        response.setHeader("Content-Length", contentLengthHeader.get(0));
+                    }
                     StreamUtils.copy(in, os);
                 }
                 return null;

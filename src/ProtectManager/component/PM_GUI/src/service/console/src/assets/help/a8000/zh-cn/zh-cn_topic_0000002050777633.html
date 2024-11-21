@@ -1,0 +1,63 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="开启一致性备份后，逻辑卷空间不足无法创建快照，备份任务转为非一致性备份（Linux OS）">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002050777633">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>开启一致性备份后，逻辑卷空间不足无法创建快照，备份任务转为非一致性备份（Linux OS）</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002050777633"></a><a name="ZH-CN_TOPIC_0000002050777633"></a>
+
+<h1 class="topictitle1">开启一致性备份后，逻辑卷空间不足无法创建快照，备份任务转为非一致性备份（Linux OS）</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>备份任务中提示：逻辑卷组（<em>逻辑卷组名称</em>）空间不足，无法创建快照，此卷组的备份转为非一致性备份。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>一致性备份仅支持LVM卷。通过对备份文件集所选路径所属的LVM卷创建快照，基于此快照卷进行备份，以达成一致性备份。对LVM卷创建快照需确保LVM卷所属卷组的剩余空间大于备份所属LVM卷空间的5%，否则创建快照失败，备份任务转为非一致性备份。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li><span>使用PuTTY以root用户登录文件集数据保护代理主机。</span><p><p>本节以suse15sp2操作系统为例，其他版本操作系统命令可能存在差异</p>
+</p></li><li id="ZH-CN_TOPIC_0000002050777633__li2498143745813"><a name="ZH-CN_TOPIC_0000002050777633__li2498143745813"></a><a name="li2498143745813"></a><span>执行如下命令查看逻辑卷组剩余空间。</span><p><pre class="screen">vgs</pre>
+<div class="p">回显类似如下，备份任务报错信息会提示空间不足的逻辑卷组名称。以该回显为例，如逻辑卷组名称为“system”，其对应的逻辑卷组剩余空间为1.9g。<pre class="screen">suse15sp2:<font style="font-size:8pt" Face="Courier New" >~</font> # vgs
+  VG     #PV #LV #SN Attr   VSize  VFree
+  system   1   9   2 wz--n- 99.51g 1.90g</pre>
+</div>
+</p></li><li><span>执行如下命令查询保护路径对应的磁盘空间大小。</span><p><pre class="screen">df -h</pre>
+<div class="p">回显类似如下，备份时要求逻辑卷组的剩余空间需要大于保护路径所在磁盘空间的5%。以该回显为例，如保护路径为根目录“/”<em>，</em>其对应的磁盘空间为49g<em>，</em>磁盘空间的5%是2.45g，<a href="#ZH-CN_TOPIC_0000002050777633__li2498143745813">2</a>查询到的逻辑卷组剩余空间为1.90g，则无法创建快照，此卷组的备份转为非一致性备份。<pre class="screen">suse15sp2:<font style="font-size:8pt" Face="Courier New" >~</font> # df -h
+Filesystem                       Size  Used Avail Use% Mounted on
+devtmpfs                         7.7G  8.0K  7.7G   1% /dev
+tmpfs                            7.7G     0  7.7G   0% /dev/shm
+tmpfs                            7.7G  754M  7.0G  10% /run
+tmpfs                            7.7G     0  7.7G   0% /sys/fs/cgroup
+/dev/mapper/system-root           49G  9.2G  9.4G  50% /
+/dev/mapper/system-home           20G   24G   24G  50% /home</pre>
+</div>
+</p></li><li><span>逻辑卷组空间不足，建议对逻辑卷组进行扩容。</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">建议与总结</h4><p>无</p>
+</div>
+<div class="section"><h4 class="sectiontitle">参考信息</h4><p>无。</p>
+</div>
+<p></p>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

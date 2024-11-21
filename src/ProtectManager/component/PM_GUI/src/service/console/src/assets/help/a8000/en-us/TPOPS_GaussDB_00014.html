@@ -1,0 +1,62 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Obtaining the Address and Port of the Management Plane">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="TPOPS_GaussDB_00010.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="TPOPS_GaussDB_00014">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Obtaining the Address and Port of the Management Plane</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="TPOPS_GaussDB_00014"></a><a name="TPOPS_GaussDB_00014"></a>
+
+<h1 class="topictitle1">Step 1: Obtaining the Address and Port of the Management Plane</h1>
+<div><p>Before GaussDB is registered with the <span>OceanProtect</span>, you need to obtain the management plane IP address and port which are used by TPOPS to provide services for external systems. You can obtain the management plane IP address and port by performing the following steps.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ul><li><strong>If OLTP OPS is used as the management platform, perform the following steps:</strong></li></ul>
+<ol><li><span>Log in to the node where the TPOPS server is installed as user <strong>root</strong>.</span></li><li><span>Run the following commands in sequence to switch to account <strong>dmuser</strong> and go to the software package directory:</span><p><pre class="screen">su - dmuser;
+cd ~/dmpackage</pre>
+</p></li><li><span>Run the following command to check the management plane address and port:</span><p><pre class="screen">cat install-default.conf | grep "webui.listen"</pre>
+<p>The following is an example of the command output (the value of <strong>webui.listen.ip</strong> indicates the management plane address, and the value of <strong>webui.listen.port</strong> indicates the management plane port):</p>
+<p><span><img src="en-us_image_0000001792346094.png"></span></p>
+</p></li></ol>
+<p></p>
+<ul><li><strong>If the cloud database GaussDB management platform is used, perform the following steps:</strong></li></ul>
+<ol><li><span>Log in to the background page of any node of the cloud database GaussDB management platform.</span></li><li id="TPOPS_GaussDB_00014__li617145614412"><a name="TPOPS_GaussDB_00014__li617145614412"></a><a name="li617145614412"></a><span>Run the <strong>docker ps</strong> command to query the image name with the <strong>gaussdb-open-api</strong> prefix and record the value of <strong>CONTAINER ID</strong>.</span><p><p><span><img src="en-us_image_0000001948202973.png"></span></p>
+</p></li><li><span>Run the following command with <em>CONTAINER_ID</em> set to the parameter value recorded in <a href="#TPOPS_GaussDB_00014__li617145614412">2</a>:</span><p><pre class="screen">docker exec -it <em>CONTAINER_ID</em> /bin/bash</pre>
+</p></li><li><span>Run the <strong>cd /opt/cloud/GaussDB-open-api/conf cat server.xml | grep "port"</strong> command to check the management plane address and port, as shown in the following figure.</span><p><p><span><img src="en-us_image_0000001918405924.png"></span></p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="TPOPS_GaussDB_00010.html">Backing Up GaussDB Instances</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

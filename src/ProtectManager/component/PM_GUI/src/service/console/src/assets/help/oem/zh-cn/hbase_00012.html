@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤1：注册HBase集群">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="hbase_00011.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="hbase_00012">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤1：注册HBase集群</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="hbase_00012"></a><a name="hbase_00012"></a>
+  <h1 class="topictitle1">步骤1：注册HBase集群</h1>
+  <div>
+   <p>执行HBase备份集备份恢复前，需要将HBase集群注册至<span>本产品</span>。</p>
+   <div class="section" id="hbase_00012__zh-cn_topic_0000001249935107_section10758914153313">
+    <a name="hbase_00012__zh-cn_topic_0000001249935107_section10758914153313"></a><a name="zh-cn_topic_0000001249935107_section10758914153313"></a>
+    <h4 class="sectiontitle">前提条件</h4>
+    <p>已获取HBase集群中的<span class="filepath">“hbase-site.xml”</span>、<span class="filepath">“hdfs-site.xml”</span>以及<span class="filepath">“core-site.xml”</span>文件，获取方法可参考以下步骤：</p>
+    <ul>
+     <li>大数据平台为CDH（Cloudera's Distribution including Apache Hadoop）<p>本节以<span style="color:#1C2429;">Cloudera Express 6.3.1</span>版本为例说明，不同版本的操作可能存在差异，可查看CDH产品文档进行操作。</p>
+      <ol>
+       <li>使用浏览器，登录<span style="color:#1C2429;">Cloudera</span> Manager。</li>
+       <li>选择<span class="uicontrol">“集群 &gt; HBase”</span>。</li>
+       <li>单击HBase右侧的<span class="uicontrol">“操作 &gt; 下载客户端配置”</span>。</li>
+       <li>在下载得到的压缩包中获取<span class="filepath">“hbase-site.xml”</span>、<span class="filepath">“hdfs-site.xml”</span>以及<span class="filepath">“core-site.xml”</span>文件。</li>
+      </ol></li>
+     <li>大数据平台为FusionInsight。<p>本节以<span style="color:#1C2429;">FusionInsight 6.5.1</span>版本为例说明，不同版本的操作可能存在差异，可查看FusionInsight产品文档进行操作。</p>
+      <ol>
+       <li>使用浏览器，登录FusionInsight Manager。</li>
+       <li>选择<span class="uicontrol">“集群 &gt; HBase”</span>。</li>
+       <li>在页面右上方选择<span class="uicontrol">“更多 &gt; 下载客户端”</span>。</li>
+       <li>在下载得到的压缩包中获取<span class="filepath">“hbase-site.xml”</span>、<span class="filepath">“hdfs-site.xml”</span>以及<span class="filepath">“core-site.xml”</span>文件。</li>
+      </ol></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="hbase_00012__zh-cn_topic_0000001839142377_uicontrol11199173515394">“<span id="hbase_00012__zh-cn_topic_0000001839142377_text7199935143919">保护</span> &gt; 大数据 &gt; HBase”</span>。</span></li>
+     <li><span>在<span class="uicontrol">“<span>集群</span>”</span>页面，单击<span class="uicontrol">“<span>注册</span>”</span>，注册HBase集群。</span><p></p><p>HBase集群注册信息如<a href="#hbase_00012__zh-cn_topic_0000001249935107_table164432003147">表1</a>所示。</p>
+      <div class="tablenoborder">
+       <a name="hbase_00012__zh-cn_topic_0000001249935107_table164432003147"></a><a name="zh-cn_topic_0000001249935107_table164432003147"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="hbase_00012__zh-cn_topic_0000001249935107_table164432003147" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>HBase集群注册信息
+        </caption>
+        <colgroup>
+         <col style="width:25.03%">
+         <col style="width:74.97%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="25.03%" id="mcps1.3.3.2.2.2.2.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.97%" id="mcps1.3.3.2.2.2.2.2.3.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span>名称</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>自定义HBase集群名称。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p>hbase-site.xml</p></td>
+          <td class="cellrowborder" rowspan="3" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>将<a href="#hbase_00012__zh-cn_topic_0000001249935107_section10758914153313">前提条件</a>中已获取到的<span class="filepath">“hbase-site.xml”</span>、<span class="filepath">“hdfs-site.xml”</span>以及<span class="filepath">“core-site.xml”</span>文件上传至<span>本产品</span>。</p> <p>该文件用于配置HBase集群的相关信息，如集群地址、端口等。</p>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <ul>
+              <li>大数据集群仅支持配置IPv4地址，不支持IPv6地址。请您注意检查配置文件中的配置是否正确。</li>
+              <li>上传至<span>本产品</span>的配置文件信息必须与大数据集群上的配置文件信息一致，请勿在本地对其配置信息进行修改。</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p>hdfs-site.xml</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p>core-site.xml</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span>认证模式</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>配置HBase集群与<span>本产品</span>通信的认证模式。该配置项根据HBase集群开启的认证模式配置。</p>
+           <ul>
+            <li><span>Simple认证</span>：当HBase集群未开启Kerberos认证时，选择该认证模式。该认证模式采用用户名进行认证，安全性较差。</li>
+            <li><span>Kerberos认证</span>：当HBase集群已启用Kerberos认证时，选择该认证模式。HBase集群与<span>本产品</span>之间采用Kerberos协议进行身份认证。</li>
+           </ul>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p>星环大数据（TDH）场景，仅支持使用Kerberos认证模式中的keytab文件认证方式。</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span>用户名</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>当<span class="uicontrol">“<span>认证模式</span>”</span>选择<span class="uicontrol">“<span>Simple认证</span>”</span>时，才需要配置该参数。</p> <p>输入的用户必须具有受保护资源的读写权限。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span>Kerberos</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>当<span class="uicontrol">“<span>认证模式</span>”</span>选择<span class="uicontrol">“<span>Kerberos认证</span>”</span>时，才需要配置该参数。</p> <p>选择已创建的Kerberos认证。首次注册HBase集群时，请单击<span class="uicontrol">“<span>创建</span>”</span>，配置Kerberos认证参数。具体参数说明如<a href="#hbase_00012__zh-cn_topic_0000001249935107_table93413354118">表2</a>。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span>代理主机</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>选择执行数据保护的代理主机。</p>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p>不允许将同一台代理主机分配给多个配置了不同Kerberos认证的大数据集群或不同认证模式的大数据集群，否则会导致备份/恢复任务失败。</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p>分裂表备份</p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p><span style="color:#282B33;">对于1.6.0及以后版本，存在该功能。开启该功能后，HBase数据库备份时，将备份由副本恢复到原集群新位置生成的HBase表；跨集群恢复时，将跳过恢复该表。</span></p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p>配置Kerberos认证参数，相关参数说明如<a href="#hbase_00012__zh-cn_topic_0000001249935107_table93413354118">表2</a>。</p>
+      <div class="tablenoborder">
+       <a name="hbase_00012__zh-cn_topic_0000001249935107_table93413354118"></a><a name="zh-cn_topic_0000001249935107_table93413354118"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="hbase_00012__zh-cn_topic_0000001249935107_table93413354118" frame="border" border="1" rules="all">
+        <caption>
+         <b>表2 </b>Kerberos认证参数说明
+        </caption>
+        <colgroup>
+         <col style="width:23.24%">
+         <col style="width:76.75999999999999%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="23.24%" id="mcps1.3.3.2.2.2.4.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="76.75999999999999%" id="mcps1.3.3.2.2.2.4.2.3.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span>名称</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>自定义Kerberos认证名称。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span>主体名</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>Kerberos认证的主体名。</p>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p>配置为Kerberos服务器上已配置的主体名，并且该主体名需要对要访问的资源具备读写权限。</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span>配置方式</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 ">
+           <div class="p">
+            Kerberos认证方式，与Kerberos服务器的配置保持一致。Kerberos支持以下两种认证方式：
+            <ul>
+             <li><span>密码</span>：通过主体名+密码完成身份认证。</li>
+             <li><span>Keytab文件</span>：通过主体+keytab文件完成身份认证。
+              <div class="note">
+               <span class="notetitle"> 说明： </span>
+               <div class="notebody">
+                <p>当大数据平台为MRS时，由于MRS部分版本的问题，使用密码认证可能会导致Hive集群注册失败。因此，推荐使用keytab文件认证方式。</p>
+               </div>
+              </div></li>
+            </ul>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span>配置文件</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>Kerberos认证过程中使用的<span class="filepath">“.conf”</span>配置文件（如：krb5.conf）。请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000001839187981.png"></span>上传至<span>本产品</span>。</p>
+           <div class="p">
+            由于Kerberos自身的问题，当配置文件中存在<span class="uicontrol">“renew_lifetime”</span>参数时，需将其注释，否则可能导致注册失败。如：
+            <pre class="screen">#renew_lifetime = 7d</pre>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span>密码</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>当<span class="uicontrol">“<span>配置方式</span>”</span>选择<span class="uicontrol">“<span>密码</span>”</span>时，才需要配置该参数。</p> <p>配置为<span class="uicontrol">“<span>主体名</span>”</span>的密码。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span>确认密码</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>确认<span class="uicontrol">“<span>主体名</span>”</span>的密码。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span>Keytab文件</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>当<span class="uicontrol">“<span>配置方式</span>”</span>选择<span class="uicontrol">“<span>Keytab文件</span>”</span>时，才需要配置该参数。Kerberos认证过程中使用的<span class="filepath">“.keytab”</span>文件（如：krb5.keytab）。</p> <p>请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000001792548620.png"></span>上传至<span>本产品</span>。</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="hbase_00011.html">备份HBase备份集</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

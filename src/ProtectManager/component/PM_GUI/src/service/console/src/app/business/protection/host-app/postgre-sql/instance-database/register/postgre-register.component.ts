@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -60,6 +60,7 @@ import {
   uniq
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { PostgreAddHostComponent } from './add-host/postgre-add-host.component';
 import {
   USER_GUIDE_CACHE_DATA,
@@ -190,27 +191,35 @@ export class PostgreRegisterComponent implements OnInit {
                 children: res['dependencies']['children']
               };
         this.formGroup.patchValue(data);
-        if (
-          res.subType === DataMap.Resource_Type.PostgreSQLClusterInstance.value
-        ) {
-          data?.children.filter(item => {
-            assign(item, {
-              hostName: item.dependencies?.agents[0]?.name,
-              ip: item.dependencies?.agents[0]?.endpoint,
-              port: item.extendInfo?.instancePort,
-              business_ip: item.extendInfo?.serviceIp,
-              client: item.extendInfo?.clientPath,
-              pgpoolClientPath: item.extendInfo?.pgpoolClientPath
-            });
-          });
-          setTimeout(() => {
-            this.tableData = {
-              data: data?.children,
-              total: size(data?.children)
-            };
-          }, 500);
-        }
+        this.updateTableData(res, data);
       });
+  }
+
+  private updateTableData(res, data) {
+    if (res.subType === DataMap.Resource_Type.PostgreSQLClusterInstance.value) {
+      data?.children.filter(item => {
+        assign(item, {
+          hostName: item.dependencies?.agents[0]?.name,
+          ip: item.dependencies?.agents[0]?.endpoint,
+          port: item.extendInfo?.instancePort,
+          business_ip: item.extendInfo?.serviceIp,
+          client: item.extendInfo?.clientPath,
+          pgpoolClientPath: item.extendInfo?.pgpoolClientPath
+        });
+      });
+      setTimeout(() => {
+        if (
+          this.item?.extendInfo?.installDeployType ===
+          DataMap.PostgreSqlDeployType.CLup.value
+        ) {
+          return;
+        }
+        this.tableData = {
+          data: data?.children,
+          total: size(data?.children)
+        };
+      }, 1000);
+    }
   }
 
   initForm() {
@@ -345,6 +354,9 @@ export class PostgreRegisterComponent implements OnInit {
         res.extendInfo?.installDeployType ===
         DataMap.PostgreSqlDeployType.CLup.value
       ) {
+        this.chosenClusterType = res.extendInfo.installDeployType;
+        this.tableConfig.table.columns = [this.cols[0], this.extraCols[0]];
+        this.formGroup.get('children').clearValidators();
         this.tableData = {
           data: map(res['dependencies']['agents'], item => ({
             hostName: item?.name,
@@ -352,6 +364,7 @@ export class PostgreRegisterComponent implements OnInit {
           })),
           total: this.hostNum
         };
+        this.dataTable.reinit();
       }
       this.clusterInfo = res;
     });
@@ -373,55 +386,62 @@ export class PostgreRegisterComponent implements OnInit {
       this.formGroup.get('databaseStreamPassword').updateValueAndValidity();
     });
 
-    this.formGroup.get('cluster').valueChanges.subscribe(res => {
-      this.getProxyOptions(res);
-      const chosenType = find(this.clusterOptions, { uuid: res })?.extendInfo
-        ?.installDeployType;
-      this.chosenClusterType = chosenType;
-      if (chosenType === DataMap.PostgreSqlDeployType.CLup.value) {
-        this.tableConfig.table.columns = [this.cols[0], this.extraCols[0]];
-        this.formGroup.get('children').clearValidators();
-      } else {
-        this.tableConfig.table.columns = this.cols;
-        this.formGroup
-          .get('children')
-          .setValidators([this.baseUtilService.VALID.minLength(1)]);
-      }
-      this.formGroup.get('children').updateValueAndValidity();
-      // 没有相应字段时默认为pgpool
-      this.isPgpool =
-        !chosenType || chosenType === DataMap.PostgreSqlDeployType.Pgpool.value;
-      if (this.formGroup.value.type === DataMap.Instance_Type.cluster.value) {
-        if (this.isPgpool) {
-          this.formGroup
-            .get('port')
-            .setValidators([
-              this.baseUtilService.VALID.required(),
-              this.baseUtilService.VALID.integer(),
-              this.baseUtilService.VALID.rangeValue(1, 65535)
-            ]);
-          this.formGroup.get('port').setValue('9999');
-        } else {
-          this.formGroup.get('port').clearValidators();
-          this.formGroup.get('port').setValue('5432');
+    this.formGroup
+      .get('cluster')
+      .valueChanges.pipe(distinctUntilChanged())
+      .subscribe(res => {
+        this.getProxyOptions(res);
+        let chosenType = find(this.clusterOptions, { uuid: res })?.extendInfo
+          ?.installDeployType;
+        if (!!this.item) {
+          chosenType = this.item.extendInfo?.installDeployType;
         }
-      }
-      if (this.dataTable) {
-        find(this.cols, { key: 'pgpoolClientPath' }).name = this.isPgpool
-          ? this.i18n.get('common_pg_pool_path_label')
-          : this.i18n.get('common_patroni_path_label');
-        this.dataTable.reinit();
-      }
-      // 防止修改时patchValue引起children置空
-      if (!size(this.formGroup.value.children) || this.item) {
-        return;
-      }
-      this.formGroup.get('children').setValue([]);
-      this.tableData = {
-        data: [],
-        total: 0
-      };
-    });
+        this.chosenClusterType = chosenType;
+        if (chosenType === DataMap.PostgreSqlDeployType.CLup.value) {
+          this.tableConfig.table.columns = [this.cols[0], this.extraCols[0]];
+          this.formGroup.get('children').clearValidators();
+        } else {
+          this.tableConfig.table.columns = this.cols;
+          this.formGroup
+            .get('children')
+            .setValidators([this.baseUtilService.VALID.minLength(1)]);
+        }
+        this.formGroup.get('children').updateValueAndValidity();
+        // 没有相应字段时默认为pgpool
+        this.isPgpool =
+          !chosenType ||
+          chosenType === DataMap.PostgreSqlDeployType.Pgpool.value;
+        if (this.formGroup.value.type === DataMap.Instance_Type.cluster.value) {
+          if (this.isPgpool) {
+            this.formGroup
+              .get('port')
+              .setValidators([
+                this.baseUtilService.VALID.required(),
+                this.baseUtilService.VALID.integer(),
+                this.baseUtilService.VALID.rangeValue(1, 65535)
+              ]);
+            this.formGroup.get('port').setValue('9999');
+          } else {
+            this.formGroup.get('port').clearValidators();
+            this.formGroup.get('port').setValue('5432');
+          }
+        }
+        if (this.dataTable) {
+          find(this.cols, { key: 'pgpoolClientPath' }).name = this.isPgpool
+            ? this.i18n.get('common_pg_pool_path_label')
+            : this.i18n.get('common_patroni_path_label');
+          this.dataTable.reinit();
+        }
+        // 防止修改时patchValue引起children置空
+        if (!size(this.formGroup.value.children) || this.item) {
+          return;
+        }
+        this.formGroup.get('children').setValue([]);
+        this.tableData = {
+          data: [],
+          total: 0
+        };
+      });
 
     this.formGroup.get('userName').valueChanges.subscribe(res => {
       if (!this.formGroup.value.userName) {
@@ -843,27 +863,47 @@ export class PostgreRegisterComponent implements OnInit {
       set(
         params,
         'dependencies.children',
-        map(this.clusterInfo.dependencies.agents, item => ({
-          parentUuid: '',
-          name: null,
-          type: ResourceType.DATABASE,
-          subType: DataMap.Resource_Type.PostgreSQLInstance.value,
-          extendInfo: {
-            hostId: item.uuid,
-            osUsername: this.formGroup.value.userName,
-            isTopInstance: InstanceType.NotTopinstance
-          },
-          dependencies: {
-            agents: [{ uuid: item.uuid }]
-          },
-          auth: {
-            ...this.extendsAuth,
+        map(this.clusterInfo.dependencies.agents, item => {
+          const params = {
+            parentUuid: '',
+            name: null,
+            type: ResourceType.DATABASE,
+            subType: DataMap.Resource_Type.PostgreSQLInstance.value,
             extendInfo: {
-              dbStreamRepUser: this.formGroup.value.databaseStreamUserName,
-              dbStreamRepPwd: this.formGroup.value.databaseStreamPassword
+              hostId: item.uuid,
+              osUsername: this.formGroup.value.userName,
+              isTopInstance: InstanceType.NotTopinstance
+            },
+            dependencies: {
+              agents: [{ uuid: item.uuid }]
+            },
+            auth: {
+              ...this.extendsAuth,
+              extendInfo: {
+                dbStreamRepUser: this.formGroup.value.databaseStreamUserName,
+                dbStreamRepPwd: this.formGroup.value.databaseStreamPassword
+              }
             }
+          };
+          if (!!this.item) {
+            const targetAgent = find(
+              this.formGroup.value.children,
+              child => child.extendInfo.hostId === item.uuid
+            );
+            set(
+              params,
+              'extendInfo.instancePort',
+              targetAgent['extendInfo']?.instancePort
+            );
+            set(
+              params,
+              'extendInfo.serviceIp',
+              targetAgent['extendInfo']?.serviceIp
+            );
+            set(params, 'uuid', targetAgent.uuid);
           }
-        }))
+          return params;
+        })
       );
       set(
         params,

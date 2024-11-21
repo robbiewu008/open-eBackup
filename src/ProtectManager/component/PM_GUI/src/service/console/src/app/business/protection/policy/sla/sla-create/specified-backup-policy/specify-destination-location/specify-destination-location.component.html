@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" *ngIf="showDestination" class="aui-gutter-column-md">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,9 +12,8 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" *ngIf="showDestination" class="aui-gutter-column-md">
     <lv-form-item>
-        <lv-form-label [lvRequired]="!isSlaDetail">
+        <lv-form-label [lvRequired]="!isSlaDetail && !(!formGroup.get('storage_id').value && !!this.isUsed)">
             {{'specify_the_destination_location_label' | i18n}}
         </lv-form-label>
         <lv-form-control>
@@ -60,17 +60,17 @@
                 <ng-container *ngIf="!isSlaDetail">
                     <lv-group lvGutter="6px">
                         <lv-select [lvOptions]='backupStorageTypes' formControlName="storage_type" lvValueKey='value'
-                            [lvDisabled]="isUsed" lvShowClear class="select-width"></lv-select>
+                            lvShowClear class="select-width"></lv-select>
                         <lv-select
                             *ngIf="formGroup.value.storage_type === 'storage_unit_group'  && formGroup.value.storage_type !== 'none'"
                             [lvOptions]="backupStorageUnitGroupNames" formControlName="storage_id" lvValueKey="value"
                             lvShowFilter lvFilterKey='label' lvFilterMode='contains' lvShowClear
-                            [lvDisabled]="isUsed" class="select-width"></lv-select>
+                            class="select-width"></lv-select>
                         <lv-select
                             *ngIf="formGroup.value.storage_type === 'storage_unit'  && formGroup.value.storage_type !== 'none'"
                             [lvOptions]="backupStorageUnitNames" formControlName="storage_id" lvValueKey="value"
                             lvShowFilter lvFilterKey='label' lvFilterMode='contains' lvShowClear
-                            [lvDisabled]="isUsed" class="select-width"></lv-select>
+                            class="select-width"></lv-select>
                     </lv-group>
                 </ng-container>
             </div>

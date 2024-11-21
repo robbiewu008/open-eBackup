@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Registering a GaussDB (DWS) Cluster">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="DWS_00010.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="DWS_00014">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Registering a GaussDB (DWS) Cluster</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="DWS_00014"></a><a name="DWS_00014"></a>
+  <h1 class="topictitle1">Step 1: Registering a GaussDB (DWS) Cluster</h1>
+  <div>
+   <p>Before GaussDB (DWS) backup and restoration, register the GaussDB (DWS) cluster with the <span>product</span>.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>ProtectAgent has been installed. If ProtectAgent is installed on the production host and an independent physical server, you also need to install RoachClient. For details, see "Installing roach_client (Applicable to GaussDB (DWS))" in the <i><cite>ProtectAgent Installation Guide</cite></i>.</li>
+     <li>Before registering the resource for the first time, you have modified configuration files of GaussDB (DWS) nodes where ProtectAgent has been installed as required. For details, see <a href="DWS_00083.html">Modifying the GaussDB (DWS) Configuration File</a>.</li>
+     <li>If ProtectAgent is deployed on the production host, you need to add environment variables before the first backup. For details, see <a href="DWS_00092_a1.html">Precautions for Deploying ProtectAgent on Production Hosts (Applicable to 1.6.0 and Later Versions)</a>.</li>
+     <li>Ports required for backup and restoration jobs have been enabled. For details, see the <a href="https://support.huawei.com/enterprise/en/doc/EDOC1100385843" target="_blank" rel="noopener noreferrer">Communication Matrix</a>.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>After the GaussDB (DWS) cluster is registered successfully, the cluster name cannot be changed because the name uniquely identifies the cluster. Exercise caution when setting the cluster name.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li id="DWS_00014__en-us_topic_0000001346641964_en-us_topic_0000001249935107_li0198134611381"><span>Choose <span class="uicontrol" id="DWS_00014__en-us_topic_0000001839142377_uicontrol865195012392"><b><span id="DWS_00014__en-us_topic_0000001839142377_text4651950123919"><strong>Protection</strong></span> &gt; Big Data &gt; GaussDB (DWS)</b></span>.</span></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> page, click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register a GaussDB (DWS) cluster.</span><p></p>
+      <div class="p">
+       <a href="#DWS_00014__en-us_topic_0000001346641964_table196232217593">Table 1</a> describes the related parameters. 
+       <div class="tablenoborder">
+        <a name="DWS_00014__en-us_topic_0000001346641964_table196232217593"></a><a name="en-us_topic_0000001346641964_table196232217593"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="DWS_00014__en-us_topic_0000001346641964_table196232217593" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>Registering a GaussDB (DWS) Cluster
+         </caption>
+         <colgroup>
+          <col style="width:25.03%">
+          <col style="width:74.97%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="25.03%" id="mcps1.3.4.2.2.2.1.2.2.3.1.1"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="74.97%" id="mcps1.3.4.2.2.2.1.2.2.3.1.2"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Customize the GaussDB (DWS) cluster name.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Username</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Name of the system user for running the GaussDB (DWS) cluster.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Environment Variable File Path</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Path of the environment variable configuration file of the cluster user.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Nodes</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Select at least one GaussDB (DWS) node that has CN instances and has ProtectAgent installed.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Select agent hosts where RoachClient is installed. For a GaussDB (DWS) cluster whose kernel version is GaussDB A 8.0.0, you do not need to select agent hosts.</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+       <div class="note">
+        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <p>Agent hosts that have been added to other GaussDB (DWS) clusters cannot be added.</p>
+        </div>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li>
+    </ol>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="DWS_00010.html">Backing Up GaussDB (DWS)</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

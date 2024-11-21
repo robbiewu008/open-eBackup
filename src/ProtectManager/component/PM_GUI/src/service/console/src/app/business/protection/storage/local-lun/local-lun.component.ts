@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -20,16 +20,16 @@ import { MessageService } from '@iux/live';
 import {
   CommonConsts,
   CookieService,
-  DATE_PICKER_MODE,
   DataMap,
   DataMapService,
-  I18NService,
-  OperateItems,
-  ProtectResourceAction,
-  ProtectedResourceApiService,
+  DATE_PICKER_MODE,
   extendSlaInfo,
   getPermissionMenuItem,
-  getTableOptsItems
+  getTableOptsItems,
+  I18NService,
+  OperateItems,
+  ProtectedResourceApiService,
+  ProtectResourceAction
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
 import {
@@ -50,7 +50,7 @@ import {
   cloneDeep,
   each,
   filter as _filter,
-  first,
+  find,
   includes,
   isEmpty,
   isUndefined,
@@ -76,6 +76,8 @@ export class LocalLunComponent {
   optsConfig;
   selectionData = [];
   optItems = [];
+
+  currentDetailUuid: string;
 
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
   @ViewChild('slaComplianceExtraTpl', { static: true })
@@ -198,15 +200,6 @@ export class LocalLunComponent {
               this.selectionData = [];
               this.dataTable.setSelections([]);
               this.dataTable.fetchData();
-              if (
-                includes(
-                  mapValues(this.drawModalService.modals, 'key'),
-                  'detail-modal'
-                ) &&
-                size(data) === 1
-              ) {
-                this.getResourceDetail(first(data));
-              }
             });
         }
       },
@@ -234,15 +227,6 @@ export class LocalLunComponent {
               this.selectionData = [];
               this.dataTable.setSelections([]);
               this.dataTable.fetchData();
-              if (
-                includes(
-                  mapValues(this.drawModalService.modals, 'key'),
-                  'detail-modal'
-                ) &&
-                size(data) === 1
-              ) {
-                this.getResourceDetail(first(data));
-              }
             });
         }
       },
@@ -387,6 +371,7 @@ export class LocalLunComponent {
     ];
 
     this.tableConfig = {
+      filterTags: true,
       table: {
         autoPolling: CommonConsts.TIME_INTERVAL,
         compareWith: 'uuid',
@@ -469,6 +454,18 @@ export class LocalLunComponent {
           total: res.totalCount,
           data: res.records
         };
+        if (
+          !args?.isAutoPolling &&
+          includes(
+            mapValues(this.drawModalService.modals, 'key'),
+            'detail-modal'
+          ) &&
+          find(res.records, { uuid: this.currentDetailUuid })
+        ) {
+          this.getResourceDetail(
+            find(res.records, { uuid: this.currentDetailUuid })
+          );
+        }
         this.cdr.detectChanges();
       });
   }
@@ -500,6 +497,7 @@ export class LocalLunComponent {
   }
 
   getResourceDetail(params) {
+    this.currentDetailUuid = params.uuid;
     this.protectedResourceApiService
       .ShowResource({
         resourceId: params.uuid
@@ -545,7 +543,7 @@ export class LocalLunComponent {
       });
   }
 
-  protect(datas, action: ProtectResourceAction, header?: string, refreshData?) {
+  protect(datas, action: ProtectResourceAction) {
     const data = size(datas) > 1 ? datas : datas[0];
     this.protectService.openProtectModal(datas[0].sub_type, action, {
       width: 780,
@@ -554,8 +552,7 @@ export class LocalLunComponent {
         this.selectionData = [];
         this.dataTable.setSelections([]);
         this.dataTable.fetchData();
-      },
-      restoreWidth: params => this.getResourceDetail(params)
+      }
     });
   }
 

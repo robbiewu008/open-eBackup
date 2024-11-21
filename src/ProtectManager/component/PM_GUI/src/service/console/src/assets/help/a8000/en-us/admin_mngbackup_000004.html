@@ -1,0 +1,60 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Importing a Management Data Backup">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="admin_mngbackup_000000.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="admin_mngbackup_000004">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Importing a Management Data Backup</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="admin_mngbackup_000004"></a><a name="admin_mngbackup_000004"></a>
+
+<h1 class="topictitle1">Importing a Management Data Backup</h1>
+<div><p id="admin_mngbackup_000004__en-us_topic_0000001792345754_p6874516161213">This section describes how to import an original management data backup stored in a local directory into the system for overwriting system management data.</p>
+<div class="section" id="admin_mngbackup_000004__en-us_topic_0000001792345754_section1864174471216"><h4 class="sectiontitle">Precautions</h4><ul id="admin_mngbackup_000004__en-us_topic_0000001792345754_ul04291658192416"><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li17429185816240">The size of the imported backup data cannot exceed 4 GB.</li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li155953232518">When restoring the management data backup, do not enable the SFTP service. Enable the service only after the restoration is complete.</li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li3890185818262">Do not perform operations related to data restoration when the SFTP service is being enabled. Perform these operations only after the service is enabled.</li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li1230315315307">Management data generated before the SFTP service is enabled cannot be imported.</li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li13786134416562">After the management data backup is imported, the system automatically performs a restoration job. For details about the impact, see <a href="admin_mngbackup_000005.html#admin_mngbackup_000005__en-us_topic_0000001792345650_section8499191127">Precautions</a>.</li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li15967194510234">Management data can be imported when the <span id="admin_mngbackup_000004__en-us_topic_0000001792345754_text357517341717">OceanProtect</span> is running properly.</li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li3653194481218">In 1.6.0 and later versions, management data can be imported after the <span id="admin_mngbackup_000004__en-us_topic_0000001792345754_text1185444114142">OceanProtect</span> is redeployed.</li></ul>
+</div>
+<div class="section" id="admin_mngbackup_000004__en-us_topic_0000001792345754_section1636356804"><h4 class="sectiontitle">Procedure</h4><ol id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0219008867_ol463515012542"><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0219008867_li171816336243"><span>Choose <span class="menucascade" id="admin_mngbackup_000004__en-us_topic_0000001792345754_menucascade7376716768313"><b><span class="uicontrol" id="admin_mngbackup_000004__en-us_topic_0000001792345754_uicontrol20391709648313"><span id="admin_mngbackup_000004__en-us_topic_0000001792345754_text17256934738313"><strong>System</strong></span></span></b> &gt; <b><span class="uicontrol" id="admin_mngbackup_000004__en-us_topic_0000001792345754_uicontrol739477838313"><span id="admin_mngbackup_000004__en-us_topic_0000001792345754_text2729236318313"><strong>Settings</strong></span></span></b></span>.</span></li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0219008867_li7710556162219"><span>In the navigation tree, click <span class="wintitle" id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0219008867_wintitle95551042112317"><b><span id="admin_mngbackup_000004__en-us_topic_0000001792345754_text1146744818810"><strong>Management Data Backup</strong></span></b></span>.</span></li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li12607758203511"><span>Click <span id="admin_mngbackup_000004__en-us_topic_0000001792345754_text103397140138"><strong>Import Backup</strong></span>.</span></li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li163064315401"><span>Select a file, enter the data encryption password, and click <strong id="admin_mngbackup_000004__en-us_topic_0000001792345754_b1641753533611"><span id="admin_mngbackup_000004__en-us_topic_0000001792345754_text9301043164015"><strong>OK</strong></span></strong>.</span><p><p id="admin_mngbackup_000004__en-us_topic_0000001792345754_p811011220463">In the displayed dialog box as shown in the following figure, confirm the information and click <span class="uicontrol" id="admin_mngbackup_000004__en-us_topic_0000001792345754_uicontrol74493409915"><b>OK</b></span>.</p>
+<p id="admin_mngbackup_000004__en-us_topic_0000001792345754_p2982164416407"><span><img id="admin_mngbackup_000004__en-us_topic_0000001792345754_image03722046114010" src="en-us_image_0000001792346010.png"></span></p>
+</p></li></ol>
+</div>
+<div class="section" id="admin_mngbackup_000004__en-us_topic_0000001792345754_section1983011408442"><h4 class="sectiontitle">Related Operations</h4><p id="admin_mngbackup_000004__en-us_topic_0000001792345754_p511920442449">After <span id="admin_mngbackup_000004__en-us_topic_0000001792345754_text15101224191110">OceanProtect</span> reinstallation, the original management data backup file can be imported.</p>
+<ol id="admin_mngbackup_000004__en-us_topic_0000001792345754_ol180710711470"><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li58075710473"><span>Choose <span class="menucascade" id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_menucascade7376716768313"><b><span class="uicontrol" id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_uicontrol20391709648313"><span id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_text17256934738313"><strong>System</strong></span></span></b> &gt; <b><span class="uicontrol" id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_uicontrol739477838313"><span id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_text2729236318313"><strong>Settings</strong></span></span></b></span>.</span></li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li10807978470"><span>In the navigation tree, click <span class="wintitle" id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_en-us_topic_0219008867_wintitle95551042112317"><b><span id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_text1146744818810"><strong>Management Data Backup</strong></span></b></span>.</span></li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li13808570471"><span>Click <span id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_text103397140138"><strong>Import Backup</strong></span>.</span></li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li280816714476"><span>Select a file, enter the data encryption password, and click <strong id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_b1641753533611"><span id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_text9301043164015"><strong>OK</strong></span></strong>.</span><p><p id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_p811011220463">In the displayed dialog box as shown in the following figure, confirm the information and click <span class="uicontrol" id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_uicontrol74493409915"><b>OK</b></span>.</p>
+<p id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_p2982164416407"><span><img id="admin_mngbackup_000004__en-us_topic_0000001792345754_en-us_topic_0000001792345754_image03722046114010" src="en-us_image_0000001792346010.png"></span></p>
+</p></li><li id="admin_mngbackup_000004__en-us_topic_0000001792345754_li1698721644711"><span>In the displayed dialog box as shown in the following figure, confirm the information and click <span class="uicontrol" id="admin_mngbackup_000004__en-us_topic_0000001792345754_uicontrol16458272476"><b>Continue to Import</b></span>.</span><p><p id="admin_mngbackup_000004__en-us_topic_0000001792345754_p4202132732616"><span><img id="admin_mngbackup_000004__en-us_topic_0000001792345754_image97961042122617" src="en-us_image_0000001792505734.png"></span></p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="admin_mngbackup_000000.html">Managing System Data Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

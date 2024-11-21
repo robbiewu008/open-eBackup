@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'common_name_label' | i18n }}
@@ -22,9 +22,7 @@
         type="text"
         formControlName="name"
         [placeholder]="
-          i18n.get('common_please_enter_label', [
-            i18n.get('protection_instance_name_label')
-          ])
+          i18n.get('protection_instance_name_placeholder_label')
         "
       />
     </lv-form-control>
@@ -39,9 +37,7 @@
         type="text"
         formControlName="instanceId"
         [placeholder]="
-          i18n.get('common_please_enter_label', [
-            i18n.get('protection_instance_id_label')
-          ])
+          i18n.get('protection_instance_id_placeholder_label')
         "
       />
     </lv-form-control>
@@ -89,11 +85,7 @@
         type="text"
         formControlName="userName"
         autocomplete="new-password"
-        [placeholder]="
-          i18n.get('common_please_enter_label', [
-            i18n.get('protection_system_database_user_name_label')
-          ])
-        "
+        [placeholder]="this.i18n.get('protection_system_database_user_name_placeholder_label')"
       />
     </lv-form-control>
   </lv-form-item>
@@ -107,9 +99,7 @@
       <aui-inupt-with-eye
         formControlName="password"
         [placeholder]="
-          i18n.get('common_please_enter_label', [
-            i18n.get('protection_system_database_password_label')
-          ])
+          i18n.get('protection_system_database_password_placeholder_label')
         "
       ></aui-inupt-with-eye>
     </lv-form-control>
@@ -126,9 +116,7 @@
         type="text"
         formControlName="port"
         [placeholder]="
-          i18n.get('common_please_enter_label', [
-            i18n.get('protection_system_database_port_label')
-          ])
+          i18n.get('protection_system_database_port_placeholder_label')
         "
       />
     </lv-form-control>
@@ -153,6 +141,8 @@
   <lv-form-item>
     <lv-form-label>
       {{ 'common_log_backup_label' | i18n }}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_saphana_log_backup_tips_label' | i18n}}" lvTooltipTheme="light"
+           class="configform-constraint" lvColorState='true'></i>
     </lv-form-label>
     <lv-form-control>
       <lv-switch formControlName="logBackup"></lv-switch>
@@ -167,7 +157,7 @@
             {{ 'portection_logbackup_time_interval_label' | i18n }}
           </lv-form-label>
             <lv-form-control [lvErrorTip]="portErrorTip">
-          <lv-group lvGutter="8px" [lvColumns]="['auto', '80px']">
+          <lv-group lvGutter="8px" [lvColumns]="['auto', '120px']">
               <input lv-input type="text" formControlName="logBackupInterval" />
               <lv-select
                 formControlName="logBackupUnit"

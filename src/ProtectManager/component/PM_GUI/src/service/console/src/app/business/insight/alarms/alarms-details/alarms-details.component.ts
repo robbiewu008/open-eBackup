@@ -1,27 +1,37 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { MessageService } from '@iux/live';
+import { DetectionReportComponent } from 'app/business/explore/anti-ransomware/resource-statistic/detection-repicas-list/detection-report/detection-report.component';
 import {
   CommonConsts,
   CopiesDetectReportService,
   CopiesService,
   DataMap,
-  ProtectedResourceApiService
+  MODAL_COMMON,
+  ProtectedResourceApiService,
+  SanConfigManagementService,
+  SYSTEM_TIME
 } from 'app/shared';
 import { ExportFilesService } from 'app/shared/components/export-files/export-files.component';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
+import { CopyActionService } from 'app/shared/services/copy-action.service';
+import { DataMapService } from 'app/shared/services/data-map.service';
+import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { I18NService } from 'app/shared/services/i18n.service';
 import {
+  assign,
   eq,
   find,
   first,
@@ -31,10 +41,6 @@ import {
   last,
   remove
 } from 'lodash';
-import { DataMapService } from 'app/shared/services/data-map.service';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { MessageService } from '@iux/live';
-import { CopyActionService } from 'app/shared/services/copy-action.service';
 
 @Component({
   selector: 'alarms-details',
@@ -69,7 +75,8 @@ export class AlarmsDetailsComponent implements OnInit {
     private copiesApiService: CopiesService,
     private copyActionService: CopyActionService,
     private copiesDetectReportService: CopiesDetectReportService,
-    private protectedResourceApiService: ProtectedResourceApiService
+    private protectedResourceApiService: ProtectedResourceApiService,
+    private drawModalService: DrawModalService
   ) {}
 
   id = this.i18n.get('insight_alarm_id_label');
@@ -241,6 +248,26 @@ export class AlarmsDetailsComponent implements OnInit {
       });
   }
 
+  viewSanReport() {
+    this.drawModalService.openDetailModal(
+      assign({}, MODAL_COMMON.generateDrawerOptions(), {
+        lvModalKey: 'detection-copy-report',
+        lvHeader: this.i18n.get('explore_detection_report_label'),
+        lvWidth: MODAL_COMMON.normalWidth,
+        lvContent: DetectionReportComponent,
+        lvComponentParams: {
+          entity: this.data?.entity
+        },
+        lvFooter: [
+          {
+            label: this.i18n.get('common_close_label'),
+            onClick: modal => modal.close()
+          }
+        ]
+      })
+    );
+  }
+
   private getSuggestion() {
     if (!this.isAlarm || this.isCyberEngine || this.isV1Alarm) {
       return !isEmpty(this.data.advice) && 'null' !== this.data.advice
@@ -269,10 +296,17 @@ export class AlarmsDetailsComponent implements OnInit {
   }
 
   private getAlarmTimeStr(timestamp, isSeconds = true) {
-    if (this.isCyberEngine || this.isV1Alarm) {
+    if (this.isCyberEngine) {
       return this.data?.alarmTimeStr;
     }
+    if (this.isV1Alarm) {
+      return this.data?.firstTimeStr;
+    }
     if (isSeconds) timestamp = timestamp * 1000;
-    return this.datePipe.transform(timestamp, 'yyyy-MM-dd HH:mm:ss');
+    return this.datePipe.transform(
+      timestamp,
+      'yyyy-MM-dd HH:mm:ss',
+      SYSTEM_TIME.timeZone
+    );
   }
 }

@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Enabling the SFTP Service">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="admin_sftp_000000.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="admin_sftp_000001">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Enabling the SFTP Service</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="admin_sftp_000001"></a><a name="admin_sftp_000001"></a>
+  <h1 class="topictitle1">Enabling the SFTP Service</h1>
+  <div>
+   <p id="admin_sftp_000001__en-us_topic_0000001792505334_p4418105261114">You can enable the SFTP service on the <span id="admin_sftp_000001__en-us_topic_0000001792505334_text25931917127">product</span> to provide storage space for the SFTP client.</p>
+   <div class="section" id="admin_sftp_000001__en-us_topic_0000001792505334_section1561716324299">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul id="admin_sftp_000001__en-us_topic_0000001792505334_ul11543817344">
+     <li id="admin_sftp_000001__en-us_topic_0000001792505334_li65153815349">For the newly deployed <span id="admin_sftp_000001__en-us_topic_0000001792505334_text14698182942311">product</span>, port P3 on IOM 0 of all controllers is connected to the SFTP client network to enable the SFTP service.</li>
+     <li id="admin_sftp_000001__en-us_topic_0000001792505334_li10549163511411">If the <span id="admin_sftp_000001__en-us_topic_0000001792505334_text18264433142315">product</span> version is upgraded from 1.3.0 or an earlier version, port P3 on IOM 1 of all controllers is connected to the SFTP client network to enable the SFTP service.</li>
+    </ul>
+   </div>
+   <div class="section" id="admin_sftp_000001__en-us_topic_0000001792505334_section794011366419">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001123352597_ol61721291281">
+     <li id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001123352597_li31809451213"><span>On the menu bar, choose <span class="menucascade" id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001123352597_menucascade1518044511114"><b><span class="uicontrol" id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001123352597_uicontrol3181184514118"><span id="admin_sftp_000001__en-us_topic_0000001792505334_text22026533810"><strong>System</strong></span></span></b> &gt; <b><span class="uicontrol" id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001123352597_uicontrol1718164513119"><span id="admin_sftp_000001__en-us_topic_0000001792505334_text7900316919"><strong>Settings</strong></span></span></b></span>.</span></li>
+     <li id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001123352597_li1696145399"><span>In the navigation tree, click <span class="uicontrol" id="admin_sftp_000001__en-us_topic_0000001792505334_uicontrol153110351319"><b><span id="admin_sftp_000001__en-us_topic_0000001792505334_text167011418512"><strong>SFTP Service</strong></span></b></span>.</span></li>
+     <li id="admin_sftp_000001__en-us_topic_0000001792505334_li1225141815444"><span>On the <span class="uicontrol" id="admin_sftp_000001__en-us_topic_0000001792505334_uicontrol3917164914314"><b><span id="admin_sftp_000001__en-us_topic_0000001792505334_text1019153914620"><strong>SFTP Service</strong></span></b></span> tab page, click <span><img id="admin_sftp_000001__en-us_topic_0000001792505334_image1798515141986" src="en-us_image_0000001839224885.png"></span> on the right to enable the SFTP service.</span></li>
+     <li id="admin_sftp_000001__en-us_topic_0000001792505334_li14156134418525"><span>A dialog box is displayed. If the SFTP service is enabled for the first time, you need to enter the IP address.</span><p></p>
+      <ul id="admin_sftp_000001__en-us_topic_0000001792505334_ul614944735214">
+       <li id="admin_sftp_000001__en-us_topic_0000001792505334_li12393154810529">If you set the IP address type to IPv4 during initial configuration of the <span id="admin_sftp_000001__en-us_topic_0000001792505334_text181869771210">product</span>, see <a href="#admin_sftp_000001__en-us_topic_0000001792505334_table671135219250">Table 1</a>. 
+        <div class="tablenoborder">
+         <a name="admin_sftp_000001__en-us_topic_0000001792505334_table671135219250"></a><a name="en-us_topic_0000001792505334_table671135219250"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="admin_sftp_000001__en-us_topic_0000001792505334_table671135219250" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>Parameters in the IPv4 scenario
+          </caption>
+          <colgroup>
+           <col style="width:16.82%">
+           <col style="width:16.89%">
+           <col style="width:66.29%">
+          </colgroup>
+          <thead align="left">
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row871185212253">
+            <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.4.2.1.1.3.2.4.1.1"><p id="admin_sftp_000001__en-us_topic_0000001792505334_p8711145292515">Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.4.2.1.1.3.2.4.1.2"><p id="admin_sftp_000001__en-us_topic_0000001792505334_p1171112528256">Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row2071155212518">
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p15711175215251"><span id="admin_sftp_000001__en-us_topic_0000001792505334_text198271533191616"><strong>IPv4 Address</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p37115523251">IP address of the SFTP service.</p> <p id="admin_sftp_000001__en-us_topic_0000001792505334_p209611624195811">The IP address and <span id="admin_sftp_000001__en-us_topic_0000001792505334_text197174296580"><strong>Subnet Mask</strong></span> are used by the SFTP client to connect to the SFTP server of the <span id="admin_sftp_000001__en-us_topic_0000001792505334_text5961102415812">product</span>. Ensure that the IP address can communicate with the SFTP client and does not conflict with IP addresses in the network segment of the SFTP client.</p></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row08691454132619">
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p0869165452610"><span id="admin_sftp_000001__en-us_topic_0000001792505334_text15460740161619"><strong>Subnet Mask</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p8869185417265">Subnet mask of the IPv4 address.</p></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row12816351115610">
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p981615155612"><span id="admin_sftp_000001__en-us_topic_0000001792505334_text136798135572"><strong>Port</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p1881619515566">In the new deployment scenario, select the IOM 0.P3 port. In the upgrade scenario, select the IOM 1.P3 port.</p></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row106437395597">
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p1260984265918"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b14353194915">WORM</strong></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p14897150558">When the SFTP service is enabled for the first time, a file system (fixed name: <strong id="admin_sftp_000001__en-us_topic_0000001792505334_b1873725914508">SFTP_FS_e1f0b07c7ad24daaaceba47cda8b4e66</strong>) is created on the local storage. You can enable WORM and directly set the file system as a WORM file system. WORM is disabled by default. If the file system already exists on the local storage, no new file system will be created.</p>
+             <div class="note" id="admin_sftp_000001__en-us_topic_0000001792505334_note1686153110160">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p id="admin_sftp_000001__en-us_topic_0000001792505334_p26861931181612">After <strong id="admin_sftp_000001__en-us_topic_0000001792505334_b18335633886">WORM</strong> is enabled, if you need to modify the configuration of the WORM file system <strong id="admin_sftp_000001__en-us_topic_0000001792505334_b163111410277">SFTP_FS_e1f0b07c7ad24daaaceba47cda8b4e66</strong>, log in to the local storage to modify it.</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row91505291514">
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p16332135017458"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b1369813425514">Mode</strong></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p28741024871">This parameter is displayed after <strong id="admin_sftp_000001__en-us_topic_0000001792505334_b61231811525">WORM</strong> is enabled.</p>
+             <ul id="admin_sftp_000001__en-us_topic_0000001792505334_ul7325515145118">
+              <li id="admin_sftp_000001__en-us_topic_0000001792505334_li7325161519515"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b652413236534">Compliance</strong><p id="admin_sftp_000001__en-us_topic_0000001792505334_p1338234265119">For files within the protection period, super administrators, common administrators, and common users cannot modify or delete the files. For files whose protection period expires, super administrators, common administrators, and common users cannot modify the files but can delete them.</p></li>
+              <li id="admin_sftp_000001__en-us_topic_0000001792505334_li19325161545112"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b1567483014538">Enterprise</strong><p id="admin_sftp_000001__en-us_topic_0000001792505334_p4166948105114">For files within the protection period, common administrators and users cannot modify or delete the files, but privileged users can delete them. For files whose protection period expires, super administrators, common administrators, and common users cannot modify the files but can delete them.</p></li>
+             </ul></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row1056011350117">
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p143321550124510"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b6681856175415">Protection Period</strong></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p1440714181812">This parameter is displayed after <strong id="admin_sftp_000001__en-us_topic_0000001792505334_b109321202554">WORM</strong> is enabled.</p> <p id="admin_sftp_000001__en-us_topic_0000001792505334_p151318309459">Set file protection time period. The value ranges from 0 to 70 years.</p></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row178485371119">
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p6332155014457"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b1522063918556">Automatic Lockout</strong></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p092821985">This parameter is displayed after <strong id="admin_sftp_000001__en-us_topic_0000001792505334_b17733151918526">WORM</strong> is enabled.</p> <p id="admin_sftp_000001__en-us_topic_0000001792505334_p6165153319459">After this function is enabled, a file automatically enters the locked state if not being modified within <strong id="admin_sftp_000001__en-us_topic_0000001792505334_b1163602316562">Lockout Wait Time</strong> (hours). The file in the locked state is protected. You can only read the file, but cannot modify, rename, or delete it.</p></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row12778639913">
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p6332950194512"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b673410545611">Lockout Wait Time</strong></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p96811625880">This parameter is displayed after <strong id="admin_sftp_000001__en-us_topic_0000001792505334_b12743121919523">WORM</strong> is enabled.</p> <p id="admin_sftp_000001__en-us_topic_0000001792505334_p18888204455613">If a file is not modified within the lockout wait time, it automatically enters the locked state. A locked file can only be read, but cannot be modified or deleted. Value range: 1 minute to 10 years.</p></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row1648215411515">
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p633375034517"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b52741317565">Automatic Deletion</strong></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.1.3.2.4.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p15256102818815">This parameter is displayed after <strong id="admin_sftp_000001__en-us_topic_0000001792505334_b17441519205217">WORM</strong> is enabled.</p> <p id="admin_sftp_000001__en-us_topic_0000001792505334_p95976369457">After this function is enabled, the system automatically deletes files whose protection period expires.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li id="admin_sftp_000001__en-us_topic_0000001792505334_li1114918476529">If you set the IP address type to IPv6 during initial configuration of <span id="admin_sftp_000001__en-us_topic_0000001792505334_text10722378122">product</span>, see <a href="#admin_sftp_000001__en-us_topic_0000001792505334_table98131738122719">Table 2</a>. 
+        <div class="tablenoborder">
+         <a name="admin_sftp_000001__en-us_topic_0000001792505334_table98131738122719"></a><a name="en-us_topic_0000001792505334_table98131738122719"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="admin_sftp_000001__en-us_topic_0000001792505334_table98131738122719" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 2 </b>Parameters in the IPv6 scenario
+          </caption>
+          <colgroup>
+           <col style="width:27.060000000000002%">
+           <col style="width:72.94%">
+          </colgroup>
+          <thead align="left">
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row1481313812719">
+            <th align="left" class="cellrowborder" valign="top" width="27.060000000000002%" id="mcps1.3.3.2.4.2.1.2.3.2.3.1.1"><p id="admin_sftp_000001__en-us_topic_0000001792505334_p1081319387279">Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="72.94%" id="mcps1.3.3.2.4.2.1.2.3.2.3.1.2"><p id="admin_sftp_000001__en-us_topic_0000001792505334_p6813838122710">Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row12813193816275">
+            <td class="cellrowborder" valign="top" width="27.060000000000002%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p881313802715"><span id="admin_sftp_000001__en-us_topic_0000001792505334_text113491747141616"><strong>IPv6 Address</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="72.94%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p18813103822720">IP address of the SFTP service.</p> <p id="admin_sftp_000001__en-us_topic_0000001792505334_p1610916482574">The IP address and prefix length are used by the SFTP client to connect to the SFTP server of the <span id="admin_sftp_000001__en-us_topic_0000001792505334_text81097489576">product</span>. Ensure that the IP address can communicate with the SFTP client and does not conflict with IP addresses in the network segment of the SFTP client.</p></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row178131538112711">
+            <td class="cellrowborder" valign="top" width="27.060000000000002%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p11813193882716"><span id="admin_sftp_000001__en-us_topic_0000001792505334_text16728135361613"><strong>Prefix Length</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="72.94%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p13813163817273">Prefix length of the IPv6 address.</p></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row711103711573">
+            <td class="cellrowborder" valign="top" width="27.060000000000002%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p1648714085712"><span id="admin_sftp_000001__en-us_topic_0000001792505334_text8487144011576"><strong>Port</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="72.94%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p12487840195714">In the new deployment scenario, select the IOM 0.P3 port. In the upgrade scenario, select the IOM 1.P3 port.</p></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row7972104319165">
+            <td class="cellrowborder" valign="top" width="27.060000000000002%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p139691766170"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b141633114912">WORM</strong></p></td>
+            <td class="cellrowborder" valign="top" width="72.94%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p189695619178">When the SFTP service is enabled for the first time, a file system (fixed name: <strong id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_b1873725914508">SFTP_FS_e1f0b07c7ad24daaaceba47cda8b4e66</strong>) is created on the local storage. You can enable WORM and directly set the file system as a WORM file system. WORM is disabled by default. If the file system already exists on the local storage, no new file system will be created.</p>
+             <div class="note" id="admin_sftp_000001__en-us_topic_0000001792505334_note78581244201616">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_p26861931181612">After <strong id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_b18335633886">WORM</strong> is enabled, if you need to modify the configuration of the WORM file system <strong id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_b163111410277">SFTP_FS_e1f0b07c7ad24daaaceba47cda8b4e66</strong>, log in to the local storage to modify it.</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row197254321619">
+            <td class="cellrowborder" valign="top" width="27.060000000000002%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p1996906101715"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b10645243115113">Mode</strong></p></td>
+            <td class="cellrowborder" valign="top" width="72.94%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p3969563176">This parameter is displayed after <strong id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_b61231811525">WORM</strong> is enabled.</p>
+             <ul id="admin_sftp_000001__en-us_topic_0000001792505334_ul29695616171">
+              <li id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_li7325161519515"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_b652413236534">Compliance</strong><p id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_p1338234265119">For files within the protection period, super administrators, common administrators, and common users cannot modify or delete the files. For files whose protection period expires, super administrators, common administrators, and common users cannot modify the files but can delete them.</p></li>
+              <li id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_li19325161545112"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_b1567483014538">Enterprise</strong><p id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_p4166948105114">For files within the protection period, common administrators and users cannot modify or delete the files, but privileged users can delete them. For files whose protection period expires, super administrators, common administrators, and common users cannot modify the files but can delete them.</p></li>
+             </ul></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row297224311611">
+            <td class="cellrowborder" valign="top" width="27.060000000000002%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p896918613175"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b430712571545">Protection Period</strong></p></td>
+            <td class="cellrowborder" valign="top" width="72.94%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p139694617179">This parameter is displayed after <strong id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_b109321202554">WORM</strong> is enabled.</p> <p id="admin_sftp_000001__en-us_topic_0000001792505334_p1969766176">Set file protection time period. The value ranges from 0 to 70 years.</p></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row185361850191612">
+            <td class="cellrowborder" valign="top" width="27.060000000000002%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p179694616173"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b17744132418311">Automatic Lockout</strong></p></td>
+            <td class="cellrowborder" valign="top" width="72.94%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p296926171714">This parameter is displayed after <strong id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_b17733151918526">WORM</strong> is enabled.</p> <p id="admin_sftp_000001__en-us_topic_0000001792505334_p39692062174">After this function is enabled, a file automatically enters the locked state if not being modified within <strong id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_b1163602316562">Lockout Wait Time</strong> (hours). The file in the locked state is protected. You can only read the file, but cannot modify, rename, or delete it.</p></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row1853611508162">
+            <td class="cellrowborder" valign="top" width="27.060000000000002%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p7969146121719"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b96921475618">Lockout Wait Time</strong></p></td>
+            <td class="cellrowborder" valign="top" width="72.94%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p1296915615175">This parameter is displayed after <strong id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_b12743121919523">WORM</strong> is enabled.</p> <p id="admin_sftp_000001__en-us_topic_0000001792505334_p129691668172">If a file is not modified within the lockout wait time, it automatically enters the locked state. A locked file can only be read, but cannot be modified or deleted. Value range: 1 minute to 10 years.</p></td>
+           </tr>
+           <tr id="admin_sftp_000001__en-us_topic_0000001792505334_row15536175091613">
+            <td class="cellrowborder" valign="top" width="27.060000000000002%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.1 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p996976141720"><strong id="admin_sftp_000001__en-us_topic_0000001792505334_b194751612175615">Automatic Deletion</strong></p></td>
+            <td class="cellrowborder" valign="top" width="72.94%" headers="mcps1.3.3.2.4.2.1.2.3.2.3.1.2 "><p id="admin_sftp_000001__en-us_topic_0000001792505334_p1197017619174">This parameter is displayed after <strong id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001792505334_b17441519205217">WORM</strong> is enabled.</p> <p id="admin_sftp_000001__en-us_topic_0000001792505334_p69704611178">After this function is enabled, the system automatically deletes files whose protection period expires.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ul>
+      <div class="notice" id="admin_sftp_000001__en-us_topic_0000001792505334_note121085719254">
+       <span class="noticetitle"><img src="public_sys-resources/notice_3.0-en-us.png"> </span>
+       <div class="noticebody">
+        <p id="admin_sftp_000001__en-us_topic_0000001792505334_p9723155917564">When the SFTP service is enabled for the first time, a container network plane named <span class="uicontrol" id="admin_sftp_000001__en-us_topic_0000001792505334_uicontrol149154351297"><b>sftpNetPlane</b></span> is automatically created. The start and end IP addresses of the IP address segment of the network plane are the IPv4 address or IPv6 address entered when the SFTP service is enabled. You can modify the SFTP network plane. For details, see <a href="en-us_topic_0000001839224681.html">Modifying the SFTP Network</a>.</p>
+       </div>
+      </div> <p></p></li>
+     <li id="admin_sftp_000001__en-us_topic_0000001792505334_li19616114245712"><span>Click <span class="uicontrol" id="admin_sftp_000001__en-us_topic_0000001792505334_uicontrol8880124945718"><b><span id="admin_sftp_000001__en-us_topic_0000001792505334_text74413017173"><strong>OK</strong></span></b></span>.</span></li>
+    </ol>
+   </div>
+   <div class="section" id="admin_sftp_000001__en-us_topic_0000001792505334_en-us_topic_0000001123352597_en-us_topic_0171822298_section9223236">
+    <h4 class="sectiontitle">Follow-up Procedure</h4>
+    <p id="admin_sftp_000001__en-us_topic_0000001792505334_p194801138181317">On the <span class="uicontrol" id="admin_sftp_000001__en-us_topic_0000001792505334_uicontrol11732114981317"><b><span id="admin_sftp_000001__en-us_topic_0000001792505334_text273212497132"><strong>SFTP Service</strong></span></b></span> tab page, click <span><img id="admin_sftp_000001__en-us_topic_0000001792505334_image4996162320373" src="en-us_image_0000001839144945.png"></span> on the right. In the dialog box that is displayed, click <span class="uicontrol" id="admin_sftp_000001__en-us_topic_0000001792505334_uicontrol110122110159"><b><span id="admin_sftp_000001__en-us_topic_0000001792505334_text61062118159"><strong>OK</strong></span></b></span> to disable the SFTP service.</p>
+    <div class="note" id="admin_sftp_000001__en-us_topic_0000001792505334_note16857511164">
+     <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+     <div class="notebody">
+      <p id="admin_sftp_000001__en-us_topic_0000001792505334_p1068585111166">Before disabling the SFTP service, ensure that no SFTP user uses the SFTP service to transfer files and that all SFTP users do not need to use the SFTP service.</p>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="admin_sftp_000000.html">Managing the SFTP Service (Applicable to 1.5.0)</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

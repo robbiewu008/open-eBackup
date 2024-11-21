@@ -1,15 +1,16 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -25,33 +26,39 @@ import {
   DataMapService,
   I18NService,
   RouterUrl,
+  SYSTEM_TIME,
   ScheduleReportService
 } from 'app/shared';
 import { BaseReportParam } from 'app/shared/api/models/base-report-param';
 import { TaskRequestParam } from 'app/shared/api/models/task-request-param';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
   defer,
   each,
   filter,
   find,
+  flatMap,
   get,
   includes,
   intersection,
   isEmpty,
   isUndefined,
   map,
+  reject,
   set,
   size,
   some,
-  toString
+  toString,
+  uniqueId
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
   selector: 'aui-create-subscription',
   templateUrl: './create-subscription.component.html',
-  styleUrls: ['./create-subscription.component.less']
+  styleUrls: ['./create-subscription.component.less'],
+  providers: [DatePipe]
 })
 export class CreateSubscriptionComponent implements OnInit {
   readonly ONE_DAY = 1000 * 60 * 60 * 24;
@@ -129,10 +136,14 @@ export class CreateSubscriptionComponent implements OnInit {
     this.MIN_DAY,
     this.MAX_DAY
   ]);
+  isDecouple =
+    this.i18n.get('deploy_type') === DataMap.Deploy_Type.decouple.value; // e1000
 
   constructor(
     private fb: FormBuilder,
     public i18n: I18NService,
+    private datePipe: DatePipe,
+    private appUtilsService: AppUtilsService,
     public dataMapService: DataMapService,
     public baseUtilService: BaseUtilService,
     private clusterApiService: ClustersApiService,
@@ -140,11 +151,32 @@ export class CreateSubscriptionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initReportList();
     this.initForm();
     this.listenForm();
     this.updateForm();
-    this.getClusterOptions();
+    if (!this.appUtilsService.isDecouple) {
+      this.getClusterOptions();
+    }
     this.updateMonthDays();
+  }
+
+  setSysTime(formItem) {
+    this.appUtilsService.setTimePickerCurrent(formItem);
+  }
+
+  initReportList() {
+    if (this.appUtilsService.isDecouple) {
+      this.reportTypeOptions = reject(this.reportTypeOptions, item =>
+        includes(
+          [
+            DataMap.Report_Type.storageSpace.value,
+            DataMap.Report_Type.tapeUsed.value
+          ],
+          item.value
+        )
+      );
+    }
   }
 
   ngAfterViewInit() {
@@ -234,6 +266,12 @@ export class CreateSubscriptionComponent implements OnInit {
       }),
       createTime: new FormControl('') // 订阅创建时间，值为点击确认时的时间
     });
+    if (this.isDecouple) {
+      this.formGroup.get('cluster').disable();
+      this.formGroup
+        .get('type')
+        .setValue([DataMap.Report_Type.resourceUsed.value]); // 改初始值，否则掉校验
+    }
     this.formGroup.get('daysOfWeek').disable();
     this.formGroup.get('daysOfMonths').disable();
     this.formGroup.get('daysOfMonth').disable();
@@ -252,7 +290,13 @@ export class CreateSubscriptionComponent implements OnInit {
       isSendEmail: this.data.isSend,
       emails: this.data.emails,
       intervalUnit: this.data.intervalUnit,
-      firstExecTime: new Date(this.data.execTime)
+      firstExecTime: new Date(
+        this.datePipe.transform(
+          this.data.execTime,
+          'yyyy-MM-dd HH:mm:ss',
+          SYSTEM_TIME.timeZone
+        )
+      )
     };
     if (this.data.recentDays) {
       set(params, 'customPeriod', this.data.recentDays);
@@ -304,6 +348,7 @@ export class CreateSubscriptionComponent implements OnInit {
 
     this.formGroup.get('period').valueChanges.subscribe(res => {
       this.formGroup.get('frequency').setValue('');
+      this.formGroup.get('frequency').markAsTouched();
       this.getFrequencyOptions(res);
     });
 
@@ -334,14 +379,64 @@ export class CreateSubscriptionComponent implements OnInit {
     this.formGroup.get('type').valueChanges.subscribe(res => {
       this.showScopeAndFrequency =
         intersection(this.showScopeAndFrequencyList, res).length > 0;
+      this.disabledExternalCluster(res);
       this.changeScopeAndFrequencyStatus(this.showScopeAndFrequency);
     });
   }
 
+  private disabledExternalCluster(res) {
+    const isTapeUsed = res.includes(DataMap.Report_Type.tapeUsed.value);
+    // 选中的类型有磁带时，需要禁用外部集群
+    this.clusterOptions.forEach(item => {
+      if (
+        isTapeUsed &&
+        item.cluster.clusterId !== DataMap.Cluster_Type.local.value
+      ) {
+        item.disabled = true;
+        item.children.forEach(node => (node.disabled = true));
+      } else {
+        item.disabled = item.children.some(
+          node => node.status !== DataMap.Cluster_Status.online.value
+        );
+        item.children.forEach(
+          node =>
+            (node.disabled =
+              node.status !== DataMap.Cluster_Status.online.value)
+        );
+      }
+    });
+    // 需要区分选了父节点和选了子节点两种情况
+    this.formGroup
+      .get('cluster')
+      .setValue(
+        reject(this.formGroup.get('cluster').value, item =>
+          item?.parent
+            ? item.parent.cluster.clusterId !== DataMap.Cluster_Type.local.value
+            : item.cluster.clusterId !== DataMap.Cluster_Type.local.value
+        )
+      );
+  }
+
   private changeScopeAndFrequencyStatus(enable: boolean) {
-    this.formGroup.get('period')[enable ? 'enable' : 'disable']();
-    this.formGroup.get('customPeriod')[enable ? 'enable' : 'disable']();
-    this.formGroup.get('frequency')[enable ? 'enable' : 'disable']();
+    this.formGroup
+      .get('period')
+      [enable ? 'enable' : 'disable']({ emitEvent: false });
+    this.formGroup
+      .get('customPeriod')
+      [enable ? 'enable' : 'disable']({ emitEvent: false });
+    this.formGroup
+      .get('frequency')
+      [enable ? 'enable' : 'disable']({ emitEvent: false });
+    if (this.showScopeAndFrequency) {
+      if (
+        this.formGroup.get('period').value !==
+        DataMap.Report_Generated_Period.custom.value
+      ) {
+        this.getFrequencyOptions(this.formGroup.get('period').value);
+      } else {
+        this.getFrequencyOptions(this.formGroup.get('customPeriod').value);
+      }
+    }
   }
 
   updateMonthDays() {
@@ -420,9 +515,11 @@ export class CreateSubscriptionComponent implements OnInit {
             return node.status !== DataMap.Cluster_Status.online.value;
           }),
           isLeaf: false,
+          uniqueId: uniqueId(),
           children: map(get(item, 'nodes', []), node => {
             return {
               ...node,
+              uniqueId: uniqueId(),
               key: node.remoteEsn,
               value: node.remoteEsn,
               label: node.clusterName,
@@ -434,16 +531,39 @@ export class CreateSubscriptionComponent implements OnInit {
       });
       this.clusterOptions = clusterArray;
       if (this.data) {
-        const targetNode = find(clusterArray, {
-          key: this.data.reportDataSources[0].esnList[0]
-        });
-        if (!!targetNode) {
-          this.formGroup.get('cluster').setValue([targetNode]);
-        }
+        this.echoClusterData(clusterArray);
       }
       return;
     });
   }
+
+  private echoClusterData = (clusterArray: any[]) => {
+    this.formGroup.get('type').setValue(this.data.type);
+    let selectedEsnList = [];
+    each(clusterArray, item => {
+      const target = find(this.data.reportDataSources, {
+        clusterId: item.cluster.clusterId
+      });
+      if (!!target) {
+        selectedEsnList.push(...target.esnList);
+      }
+    });
+    const displayNodes = flatMap(clusterArray, item => {
+      const target = this.data.reportDataSources.find(
+        source => source.clusterId === item.cluster.clusterId
+      );
+      if (target) {
+        // 如果所有的children都被选中了，则直接把整个item选中
+        // 其余情况都是把对应的children放进去，注意修改时如果节点离线不需要勾选
+        const children = item.children.filter(
+          child => selectedEsnList.includes(child.remoteEsn) && !child.disabled
+        );
+        return children.length === item.children.length ? [item] : children;
+      }
+      return [];
+    });
+    this.formGroup.get('cluster').setValue(displayNodes);
+  };
 
   getParams(): TaskRequestParam {
     const formValue = this.formGroup.value;
@@ -462,9 +582,11 @@ export class CreateSubscriptionComponent implements OnInit {
     const params: TaskRequestParam = {
       policyName: reportParam.name,
       policyType: 'PERIOD',
-      execTime: new Date(this.formGroup.get('firstExecTime').value).getTime(),
+      execTime: this.appUtilsService.toSystemTimeLong(
+        this.formGroup.get('firstExecTime').value
+      ),
       intervalUnit: formValue.intervalUnit,
-      createTime: new Date().getTime(),
+      createTime: this.appUtilsService.toSystemTimeLong(new Date()),
       reportParam: reportParam
     };
     if (this.data) {
@@ -513,6 +635,11 @@ export class CreateSubscriptionComponent implements OnInit {
     });
 
     set(reportParam, 'reportDataSources', reportClusterList);
+
+    if (this.isDecouple) {
+      // 不需要填写数据源的时候，发送空值
+      set(reportParam, 'reportDataSources', []);
+    }
 
     if (this.showScopeAndFrequency) {
       set(reportParam, 'timeRange', this.formGroup.value.period);

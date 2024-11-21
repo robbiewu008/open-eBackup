@@ -16,13 +16,14 @@ import com.huawei.emeistor.console.bean.CiphertextVo;
 import com.huawei.emeistor.console.bean.PlaintextVo;
 import com.huawei.emeistor.console.contant.CommonErrorCode;
 import com.huawei.emeistor.console.exception.LegoCheckedException;
+import com.huawei.emeistor.console.service.EncryptorRestApi;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -43,17 +44,15 @@ public class EncryptorRestClient {
      */
     private static final String V1_SECRET = "/v1/secret/redis";
 
-    private static final String V1_KMC = "/v1/kms";
-
-    private static final String ENCRYPT = "/encrypt";
-
-    private static final String DECRYPT = "/decrypt";
-
-    @Value("${api.gateway.endpoint}")
+    @Value("${pm-system-base.url}")
     private String url;
 
     @Autowired
-    private RestTemplate restTemplate;
+    @Qualifier("baseRestTemplate")
+    private RestTemplate kmsRestTemplate;
+
+    @Autowired
+    private EncryptorRestApi encryptorRestApi;
 
     /**
      * 从System_base获取secret中Redis登陆密码
@@ -63,7 +62,7 @@ public class EncryptorRestClient {
     public String getRedisAuthFromSecret() {
         String redisAuth = "";
         try {
-            redisAuth = restTemplate.getForObject(NormalizerUtil.normalizeForString(url + V1_SECRET), String.class);
+            redisAuth = kmsRestTemplate.getForObject(NormalizerUtil.normalizeForString(url + V1_SECRET), String.class);
         } catch (RestClientException error) {
             log.error("get redis auth info from base rest error: ", error);
         }
@@ -82,12 +81,10 @@ public class EncryptorRestClient {
         }
         PlaintextVo plaintextVo = new PlaintextVo();
         plaintextVo.setPlaintext(ciphertextVo);
-        HttpEntity<PlaintextVo> httpEntity = new HttpEntity<>(plaintextVo);
-        String requestUrl = NormalizerUtil.normalizeForString(url + V1_KMC + ENCRYPT);
         int retryCount = 0;
         while (retryCount < MAX_RETRY_COUNT) {
             try {
-                return restTemplate.postForEntity(requestUrl, httpEntity, CiphertextVo.class, plaintextVo).getBody();
+                return encryptorRestApi.encrypt(plaintextVo);
             } catch (HttpServerErrorException | HttpClientErrorException e) {
                 log.error("Encrypt failed, retry count: {}.", retryCount, ExceptionUtil.getErrorMessage(e));
                 retryCount++;
@@ -109,12 +106,10 @@ public class EncryptorRestClient {
         }
         CiphertextVo ciphertextVo = new CiphertextVo();
         ciphertextVo.setCiphertext(ciphertext);
-        HttpEntity<CiphertextVo> httpEntity = new HttpEntity<>(ciphertextVo);
-        String requestUrl = NormalizerUtil.normalizeForString(url + V1_KMC + DECRYPT);
         int retryCount = 0;
         while (retryCount < MAX_RETRY_COUNT) {
             try {
-                return restTemplate.postForEntity(requestUrl, httpEntity, PlaintextVo.class, ciphertextVo).getBody();
+                return encryptorRestApi.decrypt(ciphertextVo);
             } catch (HttpServerErrorException | HttpClientErrorException e) {
                 log.error("Decrypt failed, retry count: {}.", retryCount, ExceptionUtil.getErrorMessage(e));
                 retryCount++;

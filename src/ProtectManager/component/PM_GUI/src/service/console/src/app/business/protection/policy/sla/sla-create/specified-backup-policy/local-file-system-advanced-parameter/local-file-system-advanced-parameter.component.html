@@ -1,3 +1,4 @@
+<lv-collapse [lvType]="'simple'">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-collapse [lvType]="'simple'">
     <lv-collapse-panel [lvTitle]="'common_advanced_label'|i18n" [lvExpanded]="false">
         <lv-form [formGroup]="formGroup" [lvLabelColon]="isSlaDetail">
             <ng-container *ngIf="!isHyperdetect">
@@ -40,7 +40,7 @@
                     </lv-form-label>
                     <lv-form-control>
                         <ng-container *ngIf="isSlaDetail">
-                            {{formGroup.value.auto_index | textMap: 'Switch_Status'}}
+                            {{formGroup.value.auto_index | textMap: 'Switch_Sla_Info_Status'}}
                         </ng-container>
                         <ng-container *ngIf="!isSlaDetail">
                             <lv-switch formControlName="auto_index"
@@ -55,7 +55,7 @@
                     </lv-form-label>
                     <lv-form-control>
                         <ng-container *ngIf="isSlaDetail">
-                            {{formGroup.value.open_aggregation | textMap: 'Switch_Status'}}
+                            {{formGroup.value.open_aggregation | textMap: 'Switch_Sla_Info_Status'}}
                         </ng-container>
                         <ng-container *ngIf="!isSlaDetail">
                             <lv-switch formControlName="open_aggregation"></lv-switch>
@@ -68,7 +68,7 @@
                     </lv-form-label>
                     <lv-form-control>
                         <ng-container *ngIf="isSlaDetail">
-                            {{formGroup.value.network_acceleration | textMap: 'Switch_Status'}}
+                            {{formGroup.value.network_acceleration | textMap: 'Switch_Sla_Info_Status'}}
                         </ng-container>
                         <ng-container *ngIf="!isSlaDetail">
                             <lv-switch formControlName="network_acceleration"></lv-switch>
@@ -120,7 +120,7 @@
                         <lv-form-label>{{'protection_auto_retry_label' | i18n}}</lv-form-label>
                         <lv-form-control>
                             <ng-container *ngIf="!formGroup.value.auto_retry">
-                                {{formGroup.value.auto_retry | textMap: 'Switch_Status'}}
+                                {{formGroup.value.auto_retry | textMap: 'Switch_Sla_Info_Status'}}
                             </ng-container>
                             <ng-container *ngIf="formGroup.value.auto_retry">
                                 <ng-container *ngIf="i18n.isEn">
@@ -171,7 +171,7 @@
                         <lv-form-label>{{'protection_synthetic_full_copy_period_label' | i18n}}</lv-form-label>
                         <lv-form-control>
                             <ng-container *ngIf="!formGroup.value.is_synthetic_full_copy_period">
-                                {{formGroup.value.is_synthetic_full_copy_period | textMap: 'Switch_Status'}}
+                                {{formGroup.value.is_synthetic_full_copy_period | textMap: 'Switch_Sla_Info_Status'}}
                             </ng-container>
                             <ng-container *ngIf="formGroup.value.is_synthetic_full_copy_period">
                                 {{'common_backup_label' | i18n:
@@ -201,7 +201,7 @@
                     <lv-form-item>
                         <lv-form-label>{{'protection_lock_no_anti_data_label' | i18n}}</lv-form-label>
                         <lv-form-control>
-                            {{formGroup.value.is_security_snap | textMap: 'Switch_Status'}}
+                            {{formGroup.value.is_security_snap | textMap: 'Switch_Sla_Info_Status'}}
                         </lv-form-control>
                     </lv-form-item>
                 </ng-container>
@@ -250,7 +250,7 @@
                         <lv-form-label>{{'protection_auto_retry_label' | i18n}}</lv-form-label>
                         <lv-form-control>
                             <ng-container *ngIf="!formGroup.value.auto_retry">
-                                {{formGroup.value.auto_retry | textMap: 'Switch_Status'}}
+                                {{formGroup.value.auto_retry | textMap: 'Switch_Sla_Info_Status'}}
                             </ng-container>
                             <ng-container *ngIf="formGroup.value.auto_retry">
                                 <ng-container *ngIf="i18n.isEn">

@@ -1,3 +1,4 @@
+<ng-container *ngIf="subResourceType === dataMap.Resource_Type.NASShare.value">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<ng-container *ngIf="subResourceType === dataMap.Resource_Type.NASShare.value">
     <lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
         <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="true">
             <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
@@ -182,18 +182,18 @@
                         </lv-radio-group>
                     </lv-form-control>
                 </lv-form-item>
+                <!-- 热数据备份 -->
                 <lv-form-item>
                     <lv-form-label>
                         {{'protection_backup_hot_data_label' | i18n}}
                     </lv-form-label>
                     <lv-form-control>
-                        <lv-switch formControlName="enableHotData">
+                        <lv-switch formControlName="enableHotData" [lvDisabled]="formGroup.value.enableColdData">
                         </lv-switch>
                         <lv-group class="hot-data-tip" [lvColumns]='["16px", "auto"]' lvRowGutter="4px"
                             *ngIf="formGroup.value.enableHotData">
                             <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
-                            <span>
-                                {{'protection_backup_hot_data_open_label' | i18n}}
+                            <span [innerHTML]="'protection_backup_hot_data_open_label' | i18n">
                             </span>
                         </lv-group>
                     </lv-form-control>
@@ -210,9 +210,38 @@
                         </ng-template>
                     </lv-form-control>
                 </lv-form-item>
+                <!-- 冷数据备份 -->
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_backup_cold_data_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="enableColdData" [lvDisabled]="formGroup.value.enableHotData">
+                        </lv-switch>
+                        <lv-group class="hot-data-tip" [lvColumns]='["16px", "auto"]' lvRowGutter="4px"
+                            *ngIf="formGroup.value.enableColdData">
+                            <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+                            <span [innerHTML]="'protection_backup_cold_data_open_label' | i18n">
+                            </span>
+                        </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item *ngIf="formGroup.value.enableColdData">
+                    <lv-form-label></lv-form-label>
+                    <lv-form-control [lvErrorTip]="hotDataErrorTip">
+                        <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right retention-interval">
+                            <input lv-input formControlName="coldData" />
+                        </lv-input-group>
+                        <ng-template #unitTpl>
+                            <lv-select [lvOptions]="unitOptions" formControlName="coldUnit" class="interval-unit"
+                                lvValueKey="value"></lv-select>
+                        </ng-template>
+                    </lv-form-control>
+                </lv-form-item>
             </lv-form>
             <!-- 防勒索副本设置参数 -->
-                <aui-copy-limit-advanced-parameter [formGroup]="formGroup" [data]="resourceData"></aui-copy-limit-advanced-parameter>
+            <aui-copy-limit-advanced-parameter [formGroup]="formGroup"
+                [data]="resourceData"></aui-copy-limit-advanced-parameter>
             <!-- 修改索引设置 -->
             <aui-update-index [formGroup]="formGroup" [extParams]="extParams"></aui-update-index>
         </lv-collapse-panel>
@@ -220,12 +249,14 @@
 </ng-container>
 <ng-container
     *ngIf="includes([dataMap.Resource_Type.NASFileSystem.value, dataMap.Resource_Type.ndmp.value],subResourceType)">
-    <h2>{{'protection_share_label' | i18n}}</h2>
-    <p class="aui-text-help aui-gutter-column-md">
-        {{'protection_select_share_protocol_tips_label' | i18n}}
-    </p>
+    <ng-container *ngIf="includes([dataMap.Resource_Type.NASFileSystem.value],subResourceType)">
+        <h2>{{'protection_share_label' | i18n}}</h2>
+        <p class="aui-text-help aui-gutter-column-md">
+            {{'protection_select_share_protocol_tips_label' | i18n}}
+        </p>
+    </ng-container>
     <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
-        <lv-form-item>
+        <lv-form-item *ngIf="includes([dataMap.Resource_Type.NASFileSystem.value],subResourceType)">
             <lv-form-label lvRequired>
                 {{'explore_share_protocol_label' | i18n}}
             </lv-form-label>
@@ -242,41 +273,54 @@
         </lv-form-item>
         <ng-container *ngIf="exterAgent">
             <lv-form-item>
-                <lv-form-label lvRequired>
+                <lv-form-label [lvRequired]="!isDetail">
                     {{'protection_proxy_host_label' | i18n}}
                 </lv-form-label>
                 <lv-form-control>
-                    <lv-select [lvOptions]="hostOptions" formControlName="proxyHost" lvValueKey='value' lvShowFilter
-                        lvShowCheckAll lvFilterKey='label' lvFilterMode='contains' lvMode="multiple">
-                    </lv-select>
-                    <div *ngIf="isAgentExternal" class="agentTip">
-                        <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
-                        <span class="text-middle">
-                            {{'protection_nas_filesystem_protection_tips_label' | i18n:[externalAgentLists.join(',')]}}
-                        </span>
-                    </div>
+                    <ng-container *ngIf="isDetail; else elseTemplate">
+                        {{protectDataHosts | nil}}
+                    </ng-container>
+                    <ng-template #elseTemplate>
+                        <aui-agent-select [lvOptions]="hostOptions" formControlName="proxyHost" lvValueKey="value"
+                            lvMode="multiple">
+                        </aui-agent-select>
+                        <div *ngIf="isAgentExternal" class="agentTip">
+                            <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                            <span class="text-middle">
+                                {{'protection_nas_filesystem_protection_tips_label' |
+                                i18n:[externalAgentLists.join(',')]}}
+                            </span>
+                        </div>
+                    </ng-template>
                 </lv-form-control>
             </lv-form-item>
         </ng-container>
         <!-- NDMP过滤目录/文件 -->
-        <ng-container *ngIf="subResourceType === dataMap.Resource_Type.ndmp.value">
+        <ng-container *ngIf="subResourceType === dataMap.Resource_Type.ndmp.value && !isStorageUnity">
             <lv-form-item>
                 <lv-form-label>
                     {{'protection_ndmp_protect_filters_label' | i18n}}
                     <i lv-icon="aui-icon-help" [lv-tooltip]="filterHelpTpl" lvTooltipTheme="light"
-                        class="configform-constraint" lvColorState="true"></i>
+                        class="configform-constraint" lvColorState="true" *ngIf="!isDetail"></i>
                 </lv-form-label>
                 <lv-form-control [lvErrorTip]="filterErrorTip">
-                    <textarea formControlName='filterFile' rows='3' lv-input
-                        placeholder="{{'protection_ndmp_protect_filters_placeholder_label' | i18n}}"></textarea>
+                    <ng-container *ngIf="isDetail; else elsePathTemplate">
+                        {{protectDataPath | nil}}
+                    </ng-container>
+                    <ng-template #elsePathTemplate>
+                        <textarea formControlName='filterFile' rows='3' lv-input
+                            placeholder="{{'protection_ndmp_protect_filters_placeholder_label' | i18n}}"></textarea>
+                    </ng-template>
                 </lv-form-control>
             </lv-form-item>
         </ng-container>
     </lv-form>
     <!-- 防勒索副本设置参数 -->
-        <aui-copy-limit-advanced-parameter [formGroup]="formGroup" [data]="resourceData"></aui-copy-limit-advanced-parameter>
+    <aui-copy-limit-advanced-parameter [formGroup]="formGroup" [data]="resourceData"
+        [isDetail]="isDetail" [protectData]="protectData"></aui-copy-limit-advanced-parameter>
     <!-- 修改索引设置 -->
-    <aui-update-index [formGroup]="formGroup" [extParams]="extParams"></aui-update-index>
+    <aui-update-index [formGroup]="formGroup" [extParams]="extParams" [isDetail]="isDetail"
+        [protectData]="protectData"></aui-update-index>
 </ng-container>
 
 <ng-template #titleTpl>

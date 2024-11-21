@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-formGroup-v3">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup aui-formGroup-v3">
   <div class="aui-gutter-column-l">
     <div class="formGroup-h1">{{'common_basic_info_label' | i18n}}</div>
     <div>
@@ -32,7 +32,10 @@
       </lv-form-control>
     </lv-form-item>
   </div>
-  <div class="formGroup-h1">{{'system_select_permissions_label' | i18n}}</div>
+  <div class="formGroup-h1">
+    {{'system_select_permissions_label' | i18n}}
+    <a [href]="helpUrl" target="_blank" lv-link [lvIcon]="true">{{'common_help_word_label' | i18n}}</a>
+  </div>
   <lv-form-item class="form-item-block">
     <lv-form-control>
       <lv-checkbox-group formControlName="authList" style="display: block;">

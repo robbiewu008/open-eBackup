@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="配置DNS服务">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="nas_s_0099_0">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>配置DNS服务</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="nas_s_0099_0"></a><a name="nas_s_0099_0"></a>
+  <h1 class="topictitle1">配置DNS服务</h1>
+  <div>
+   <p>通过配置<span>本产品</span>与DNS服务器连接后，<span>本产品</span>可解析和访问外部域名地址。</p>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>DNS服务器已配置完成，并且运行正常。</li>
+     <li><span>本产品</span>与DNS服务器之间TCP/UDP协议53端口打开。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <ul>
+     <li>DNS服务器用于解析和访问外部域名地址。</li>
+     <li>如果需要配置备用DNS服务器，请保持主备DNS服务器间域名配置一致。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择“设置 &gt; 基本信息 &gt; DNS服务”。</span></li>
+     <li><span>单击“管理平面DNS”区域右上角“修改”，设置管理平面DNS服务。</span></li>
+     <li><span>设置“主DNS IP地址”。</span><p></p>
+      <ol type="a">
+       <li><strong>可选: </strong>设置“备DNS IP地址 1”。</li>
+       <li><strong>可选: </strong>设置“备DNS IP地址 2”。请先配置备DNS IP地址 1，再配置备DNS IP地址 2。</li>
+       <li><strong>可选: </strong>测试DNS服务器与存储系统连通性。
+        <ul>
+         <li>对于所设置的每个DNS IP地址，可通过单击其对应的“测试”，来验证该DNS IP地址的可用性。</li>
+         <li>对于所设置的所有DNS IP地址，可通过单击“测试所有”，来验证存储系统与DNS服务器间的网络连通性。</li>
+        </ul></li>
+       <li>单击“保存”。</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

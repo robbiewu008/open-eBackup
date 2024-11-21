@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Preparing for the Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="TPOPS_GaussDB_00006.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="TPOPS_GaussDB_00009">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Preparing for the Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="TPOPS_GaussDB_00009"></a><a name="TPOPS_GaussDB_00009"></a>
+  <h1 class="topictitle1">Preparing for the Backup</h1>
+  <div>
+   <p>Before the backup, prepare information such as certificates, accounts, and IP addresses by referring to <a href="#TPOPS_GaussDB_00009__en-us_topic_0000001514140621_table10744125193920">Table 1</a>.</p>
+   <div class="note">
+    <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+    <div class="notebody">
+     <p>OLTP OPS (TPOPS) is a web-based database monitoring tool that can perform security monitoring and O&amp;M operations on GaussDB instances.</p>
+    </div>
+   </div>
+   <div class="tablenoborder">
+    <a name="TPOPS_GaussDB_00009__en-us_topic_0000001514140621_table10744125193920"></a><a name="en-us_topic_0000001514140621_table10744125193920"></a>
+    <table cellpadding="4" cellspacing="0" summary="" id="TPOPS_GaussDB_00009__en-us_topic_0000001514140621_table10744125193920" frame="border" border="1" rules="all">
+     <caption>
+      <b>Table 1 </b>Preparing for the backup
+     </caption>
+     <colgroup>
+      <col style="width:17.34%">
+      <col style="width:12.75%">
+      <col style="width:53.56999999999999%">
+      <col style="width:16.34%">
+     </colgroup>
+     <thead align="left">
+      <tr>
+       <th align="left" class="cellrowborder" valign="top" width="17.34%" id="mcps1.3.3.2.5.1.1"><p>Item</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="12.75%" id="mcps1.3.3.2.5.1.2"><p>Mandatory or Not</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="53.56999999999999%" id="mcps1.3.3.2.5.1.3"><p>How to Obtain</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="16.34%" id="mcps1.3.3.2.5.1.4"><p>To Be Used In</p></th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td class="cellrowborder" valign="top" width="17.34%" headers="mcps1.3.3.2.5.1.1 "><p>Management IP address of the TPOPS server node</p></td>
+       <td class="cellrowborder" valign="top" width="12.75%" headers="mcps1.3.3.2.5.1.2 "><p>Yes</p></td>
+       <td class="cellrowborder" valign="top" width="53.56999999999999%" headers="mcps1.3.3.2.5.1.3 "><p>Management IP address of the node where the TPOPS server is installed. Contact the TPOPS administrator to obtain it.</p>
+        <div class="note">
+         <span class="notetitle"> NOTE: </span>
+         <div class="notebody">
+          <p>If TPOPS is deployed in HA mode,obtain the management IP address of the active node.</p>
+         </div>
+        </div></td>
+       <td class="cellrowborder" rowspan="2" valign="top" width="16.34%" headers="mcps1.3.3.2.5.1.4 "><p><a href="TPOPS_GaussDB_00014.html">Step 1: Obtaining the Address and Port of the Management Plane</a></p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>Username and password</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>Yes</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>Username and password for logging in to the TPOPS server node. Contact the TPOPS administrator to obtain them.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="17.34%" headers="mcps1.3.3.2.5.1.1 "><p>Management plane IP address of GaussDB</p></td>
+       <td class="cellrowborder" valign="top" width="12.75%" headers="mcps1.3.3.2.5.1.2 "><p>Yes</p></td>
+       <td class="cellrowborder" valign="top" width="53.56999999999999%" headers="mcps1.3.3.2.5.1.3 "><p>Address used by OLTP OPS (TPOPS for short) or the cloud database GaussDB (supported in 1.6.0 and later versions) to provide services externally. For details, see <a href="TPOPS_GaussDB_00014.html">Step 1: Obtaining the Address and Port of the Management Plane</a>.</p></td>
+       <td class="cellrowborder" rowspan="3" valign="top" width="16.34%" headers="mcps1.3.3.2.5.1.4 "><p><a href="TPOPS_GaussDB_00015.html">Step 3: Registering the GaussDB Project</a></p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>Username and password</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>Yes</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>Super administrator account and password of TPOPS or the cloud database GaussDB (supported in 1.6.0 and later versions). Used to log in to TPOPS with the highest permission. The account name of the super administrator is <strong>admin</strong>, and the password is set during the TPOPS server installation.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>Certificate</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>No</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>The certificate is required only when XBSA SSL certificate management needs to be enabled. For details about how to generate and configure a certificate, see "Configuring Certificate Files for Mutual SSL Authentication" in the <em>ProtectAgent Installation Guide</em>.</p></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="TPOPS_GaussDB_00006.html">Backup</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

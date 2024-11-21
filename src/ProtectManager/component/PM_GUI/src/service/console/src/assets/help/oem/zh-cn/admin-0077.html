@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="管理Windows ADFS配置（适用于1.6.0及后续版本）">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="helpcenter_000110.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="admin-0077">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>管理Windows ADFS配置（适用于1.6.0及后续版本）</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="admin-0077"></a><a name="admin-0077"></a>
+  <h1 class="topictitle1">管理Windows ADFS配置（适用于1.6.0及后续版本）</h1>
+  <div>
+   <p id="admin-0077__zh-cn_topic_0000001888626984_p1428416391405"><span id="admin-0077__zh-cn_topic_0000001888626984_text5812258201217">本产品</span>支持使用ADFS登录的方式登录OceanProtect管理界面。</p>
+   <div class="section" id="admin-0077__zh-cn_topic_0000001888626984_section1357741818336">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul id="admin-0077__zh-cn_topic_0000001888626984_ul68911710111117">
+     <li id="admin-0077__zh-cn_topic_0000001888626984_li1231372011118">已配置DNS服务，具体操作请参考<a href="zh-cn_topic_0000001923246549.html#ZH-CN_TOPIC_0000001923246549">配置DNS服务</a>。</li>
+     <li id="admin-0077__zh-cn_topic_0000001888626984_li7891101071111">已登录配置了ADFS服务器的Windows主机，获取配置Windows ADFS所需的相关参数，如<a href="#admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table961764631715">表1</a>所示。</li>
+    </ul>
+   </div>
+   <div class="section" id="admin-0077__zh-cn_topic_0000001888626984_section18373320463">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001092505479_ol1038139939">
+     <li id="admin-0077__zh-cn_topic_0000001888626984_li0198134611381"><span>选择<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol9143133018394">“<span id="admin-0077__zh-cn_topic_0000001888626984_text34321217571">系统</span> &gt; 安全 &gt; Windows ADFS配置”</span>。</span></li>
+     <li id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li34791134111616"><span>单击Windows ADFS配置右侧<span><img id="admin-0077__zh-cn_topic_0000001888626984_image8107103513484" src="zh-cn_image_0000001934583557.png"></span>按钮，开启“Windows ADFS配置”。</span><p></p>
+      <div class="note" id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_note1779573312412">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p16795733152413">当“Windows ADFS配置”已开启时，单击右上角“修改”进行设置。</p>
+       </div>
+      </div> <p></p></li>
+     <li id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li0911154591617"><span>设置Windows ADFS配置参数，相关参数说明如<a href="#admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table961764631715">表1</a>所示。</span><p></p>
+      <div class="tablenoborder">
+       <a name="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table961764631715"></a><a name="zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table961764631715"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table961764631715" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>Windows ADFS配置参数
+        </caption>
+        <colgroup>
+         <col style="width:19.950000000000003%">
+         <col style="width:47.61%">
+         <col style="width:32.440000000000005%">
+        </colgroup>
+        <thead align="left">
+         <tr id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1661844612172">
+          <th align="left" class="cellrowborder" valign="top" width="19.950000000000003%" id="mcps1.3.3.2.3.2.1.2.4.1.1"><p id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p66181646101717">参数名称</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="47.61%" id="mcps1.3.3.2.3.2.1.2.4.1.2"><p id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p4618194611715">参数说明</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="32.440000000000005%" id="mcps1.3.3.2.3.2.1.2.4.1.3"><p id="admin-0077__zh-cn_topic_0000001888626984_p17620111814012">参数获取</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1961874641715">
+          <td class="cellrowborder" valign="top" width="19.950000000000003%" headers="mcps1.3.3.2.3.2.1.2.4.1.1 "><p id="admin-0077__zh-cn_topic_0000001888626984_p15838928511">提供商</p></td>
+          <td class="cellrowborder" valign="top" width="47.61%" headers="mcps1.3.3.2.3.2.1.2.4.1.2 "><p id="admin-0077__zh-cn_topic_0000001888626984_p328471162010">提供商名称，默认填写且不可修改。</p></td>
+          <td class="cellrowborder" valign="top" width="32.440000000000005%" headers="mcps1.3.3.2.3.2.1.2.4.1.3 "><p id="admin-0077__zh-cn_topic_0000001888626984_p46202188016">默认参数</p></td>
+         </tr>
+         <tr id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1861864610171">
+          <td class="cellrowborder" valign="top" width="19.950000000000003%" headers="mcps1.3.3.2.3.2.1.2.4.1.1 "><p id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p13618446121713">名称</p></td>
+          <td class="cellrowborder" valign="top" width="47.61%" headers="mcps1.3.3.2.3.2.1.2.4.1.2 "><p id="admin-0077__zh-cn_topic_0000001888626984_p146191233145215">自定义Windows ADFS配置名称。</p></td>
+          <td class="cellrowborder" valign="top" width="32.440000000000005%" headers="mcps1.3.3.2.3.2.1.2.4.1.3 "><p id="admin-0077__zh-cn_topic_0000001888626984_p162017185020">自定义</p></td>
+         </tr>
+         <tr id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row166751053183710">
+          <td class="cellrowborder" valign="top" width="19.950000000000003%" headers="mcps1.3.3.2.3.2.1.2.4.1.1 "><p id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p367635343717">提供商URL</p></td>
+          <td class="cellrowborder" valign="top" width="47.61%" headers="mcps1.3.3.2.3.2.1.2.4.1.2 "><p id="admin-0077__zh-cn_topic_0000001888626984_p0691133915523">配置ADFS服务后生成的ADFS登录页面地址。</p></td>
+          <td class="cellrowborder" valign="top" width="32.440000000000005%" headers="mcps1.3.3.2.3.2.1.2.4.1.3 "><p id="admin-0077__zh-cn_topic_0000001888626984_p96208181303">提供商的URL格式为https://<em id="admin-0077__zh-cn_topic_0000001888626984_i124830571597">ADFS域名</em>/adfs/ls/IdPInitiatedSignonPage.htm</p> <p id="admin-0077__zh-cn_topic_0000001888626984_p89301516191015">在ADFS的生产主机上获取ADFS域名和ADFS的Local地址。</p>
+           <ol type="a" id="admin-0077__zh-cn_topic_0000001888626984_ol13440010131218">
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li20440201014123">启动Server Manager工具。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li819917173127">在Server Manager界面上选择<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol77021214161311">“Local Server”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li487871910138">在PROPERTIES界面上查看对应的<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol649113761717">“computer name”</span>、<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol536164517176">“domain”</span>和<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol14519164919177">“Ethernet0”</span>的值。ADFS域名为<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol996407184">“Computer name”</span>.<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol278414343190">“domain”</span>，ADFS的Local地址为<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol13827161612014">“Ethernet0”</span>。</li>
+           </ol> <p id="admin-0077__zh-cn_topic_0000001888626984_p08129577429">在本地登录的OceanProtect的PC上配置hosts文件，如果本地PC能访问提供商的URL就无需配置。</p>
+           <ol type="a" id="admin-0077__zh-cn_topic_0000001888626984_ol177224612111">
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li97729462112">进入目录<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol173491148144013">“C:\Windows\System32\drivers\etc”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li177244691110">打开<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol819815511425">“hosts”</span>文件。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li1677211462117">在文件中配置以下内容后保存。<pre class="screen" id="admin-0077__zh-cn_topic_0000001888626984_screen12583120145212"><em id="admin-0077__zh-cn_topic_0000001888626984_i183805595413">ADFS的Local地址</em> <em id="admin-0077__zh-cn_topic_0000001888626984_i131718223228">ADFS域名</em></pre></li>
+           </ol> <p id="admin-0077__zh-cn_topic_0000001888626984_p8164957155616">在本地登录的OceanProtect的PC上访问ADFS服务器供应商URL，如果能正常访问无需进行以下配置。</p>
+           <ol type="a" id="admin-0077__zh-cn_topic_0000001888626984_ol2067055410113">
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li126701154131112">打开本地PC的<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol1612012512106">“设置”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li1567045411110">选择<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol15103175713109">“网络和Internet”</span>&gt;<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol16722153212117">“代理”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li1661618213534">如果<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol14725736115516">“使用代理服务器”</span>的状态为<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol5974040145515">“开”</span>，需要设置代理；状态为<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol142841024219">“关”</span>，则不执行<a href="#admin-0077__zh-cn_topic_0000001888626984_li156701654171116">4</a>和<a href="#admin-0077__zh-cn_topic_0000001888626984_li86701254201113">5</a>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li156701654171116"><a name="admin-0077__zh-cn_topic_0000001888626984_li156701654171116"></a><a name="zh-cn_topic_0000001888626984_li156701654171116"></a>在<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol17362143191212">“手动设置代理”</span>区域中添加以下内容，域名间用英文分号分隔开。<pre class="screen" id="admin-0077__zh-cn_topic_0000001888626984_screen102221884243"><em id="admin-0077__zh-cn_topic_0000001888626984_i1822212811249">ADFS域名</em></pre></li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li86701254201113"><a name="admin-0077__zh-cn_topic_0000001888626984_li86701254201113"></a><a name="zh-cn_topic_0000001888626984_li86701254201113"></a>单击<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol677961911413">“保存”</span>。</li>
+           </ol></td>
+         </tr>
+         <tr id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row10478105516377">
+          <td class="cellrowborder" valign="top" width="19.950000000000003%" headers="mcps1.3.3.2.3.2.1.2.4.1.1 "><p id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p114787555375">回调URL</p></td>
+          <td class="cellrowborder" valign="top" width="47.61%" headers="mcps1.3.3.2.3.2.1.2.4.1.2 "><p id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p1047895513716">用于供应商认证后通过回调此地址登录<span id="admin-0077__zh-cn_topic_0000001888626984_text1067061672512">本产品</span>。</p></td>
+          <td class="cellrowborder" valign="top" width="32.440000000000005%" headers="mcps1.3.3.2.3.2.1.2.4.1.3 "><p id="admin-0077__zh-cn_topic_0000001888626984_p186204184019">默认参数</p> <p id="admin-0077__zh-cn_topic_0000001888626984_p514417413387">在ADFS的生产主机上配置<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol18306204511387">“回调URL”</span>。</p>
+           <ol type="a" id="admin-0077__zh-cn_topic_0000001888626984_ol17986449173616">
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li198674973613">启动Server Manager工具。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li59862499366">单击菜单<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol9211516163910">“Tools”</span>&gt;<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol5556953162718">“AD FS Management”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li18986849123618">在"AD FS"界面上，单击<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol17921947289">“AD FS”</span>&gt;<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol6224141812281">“Application Groups”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li09861349133615">在<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol932013292289">“Application Groups”</span>区域中双击对应的应用组进入应用组的属性界面。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li4986194914368">在<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol75121340112810">“Applications”</span>区域中选择对应服务器应用程序，单击"Edit"。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li179861849183614">在<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol151613391946">“Server application Properties”</span>的对话框中将<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol182733347178">“回调URL”</span>输入到<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol18282115519284">“Redirect URI”</span>，点击"Add"，单击"OK"。</li>
+           </ol></td>
+         </tr>
+         <tr id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row965094819242">
+          <td class="cellrowborder" valign="top" width="19.950000000000003%" headers="mcps1.3.3.2.3.2.1.2.4.1.1 "><p id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p8650134892418">客户端ID</p></td>
+          <td class="cellrowborder" valign="top" width="47.61%" headers="mcps1.3.3.2.3.2.1.2.4.1.2 "><p id="admin-0077__zh-cn_topic_0000001888626984_p14620045135212">ADFS中生成的客户端ID。</p></td>
+          <td class="cellrowborder" valign="top" width="32.440000000000005%" headers="mcps1.3.3.2.3.2.1.2.4.1.3 "><p id="admin-0077__zh-cn_topic_0000001888626984_p255592172112">在ADFS的生产主机上查询客户端ID。</p>
+           <ol type="a" id="admin-0077__zh-cn_topic_0000001888626984_ol175663252114">
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li6565025217">启动Server Manager工具。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li25651629214">单击菜单<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol493615811291">“Tools”</span>&gt;<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol13112191815299">“AD FS Management”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li45657216219">在"AD FS"界面上，单击<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol206488393299">“AD FS”</span>&gt;<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol1591711296295">“Application Groups”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li1551512543810">在<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol14515172520383">“Application Groups”</span>区域中双击对应的应用组进入应用组的属性界面。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li1851552512389">在<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol7515125193817">“Applications”</span>区域中选择对应服务器应用程序，单击"Edit"。在<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol202471231642">“Server application Properties”</span>的对话框中<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol8989310115814">“Client Id”</span>的值 为客户端ID。</li>
+           </ol></td>
+         </tr>
+         <tr id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1469861914256">
+          <td class="cellrowborder" valign="top" width="19.950000000000003%" headers="mcps1.3.3.2.3.2.1.2.4.1.1 "><p id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p106191046181718">客户端密钥</p></td>
+          <td class="cellrowborder" valign="top" width="47.61%" headers="mcps1.3.3.2.3.2.1.2.4.1.2 "><p id="admin-0077__zh-cn_topic_0000001888626984_p72611948175217">ADFS中生成的客户端密钥。</p></td>
+          <td class="cellrowborder" valign="top" width="32.440000000000005%" headers="mcps1.3.3.2.3.2.1.2.4.1.3 "><p id="admin-0077__zh-cn_topic_0000001888626984_p262014181103">联系ADFS服务器管理员获取。</p>
+           <div class="note" id="admin-0077__zh-cn_topic_0000001888626984_note14310247191215">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p id="admin-0077__zh-cn_topic_0000001888626984_p177931722194812">请妥善保管添加应用组时设置的客户端密钥，Windows ADFS配置时需要使用到该客户端密钥。</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1408171722514">
+          <td class="cellrowborder" valign="top" width="19.950000000000003%" headers="mcps1.3.3.2.3.2.1.2.4.1.1 "><p id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p16619154651710">CA证书</p></td>
+          <td class="cellrowborder" valign="top" width="47.61%" headers="mcps1.3.3.2.3.2.1.2.4.1.2 "><p id="admin-0077__zh-cn_topic_0000001888626984_zh-cn_topic_0000001263133368_zh-cn_topic_0267359411_p798683914475">单击<span><img id="admin-0077__zh-cn_topic_0000001888626984_image161065159592" src="zh-cn_image_0000001999856450.png"></span>，选择需要添加的证书对应的CA证书。</p></td>
+          <td class="cellrowborder" valign="top" width="32.440000000000005%" headers="mcps1.3.3.2.3.2.1.2.4.1.3 "><p id="admin-0077__zh-cn_topic_0000001888626984_p5623973225">在ADFS的生产主机上下载CA证书。</p>
+           <ol type="a" id="admin-0077__zh-cn_topic_0000001888626984_ol146341271221">
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li2063457182210">在键盘上按<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_oracle_gud_0016_uicontrol11819941114510">“Win+R”</span>，打开运行窗口。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li76341572225">输入<span class="parmvalue" id="admin-0077__zh-cn_topic_0000001888626984_parmvalue2634137192217">“mmc”</span>，单击<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol13263132873019">“OK”</span>，进入<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol10908036133012">“Console1”</span>控制台界面。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li166341578225">选择<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol65544491302">“File”</span>&gt;<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol1130819546307">“Open”</span>，打开证书文件。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li6634176222">选择<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol188531019163112">“Console Root”</span>&gt;<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol56261127183115">“Certificates(Local Computer)”</span>&gt;<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol12661173253111">“Personal”</span>&gt;<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol11591113710317">“Certificates”</span>，找到对应的CA证书，证书为<em id="admin-0077__zh-cn_topic_0000001888626984_i5536321343">xx</em>-<em id="admin-0077__zh-cn_topic_0000001888626984_i1235718703417">xx</em>-CA。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li12594215346">双击CA证书，在Certificate界面选择<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol1291845193611">“Details”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li575113712362">选择<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol561518286395">“Copy to File...”</span>&gt;<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol192013345395">“Next”</span>，在Certificate Export Wizard界面上选择<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol5267910164110">“No,do not export the private key”</span>，单击<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol1691813994119">“Next”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li17393846104119">选择<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol442734224313">“Base-64 encoded X.509(.CER)”</span>，单击<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol5925152518440">“Next”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li14943427104415">单击<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol1196114174450">“Browse...”</span>，选择下载的本地路径，并输入文件名，单击<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol5992131211497">“保存”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li89582037371">选择<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol1786019301385">“Next”</span>&gt;<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol1671637083">“Finish”</span>。</li>
+            <li id="admin-0077__zh-cn_topic_0000001888626984_li952691834912">在本地保存的路径下找到CA文件并修改证书的后缀为<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol3464318514">“.pem”</span>。
+             <div class="note" id="admin-0077__zh-cn_topic_0000001888626984_note291184012512">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <p id="admin-0077__zh-cn_topic_0000001888626984_p09114400519">修改Windows的文件后缀需要关闭<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol13781162431117">“隐藏已知文件类型的扩展名”</span>。</p>
+              </div>
+             </div></li>
+           </ol></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li id="admin-0077__zh-cn_topic_0000001888626984_li1442017383359"><span>单击“测试”，测试Windows ADFS配置与<span id="admin-0077__zh-cn_topic_0000001888626984_text14129149103610">本产品</span>的连通性。</span></li>
+     <li id="admin-0077__zh-cn_topic_0000001888626984_li435683015518"><span>单击<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol17299737195512">“保存”</span>。</span><p></p>
+      <div class="note" id="admin-0077__zh-cn_topic_0000001888626984_note12512124951610">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="admin-0077__zh-cn_topic_0000001888626984_p1051294941618">在使用Windows ADFS登录前，需创建与ADFS服务器上同名的ADFS用户（用户名@<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol78922920199">“domain”</span>）用于后续登录，参见<a href="admin-0057.html#admin-0057">创建用户</a>。</p>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="helpcenter_000110.html">系统</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

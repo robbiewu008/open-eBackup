@@ -1,0 +1,182 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Managing MongoDB Copies">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="mongodb-0055.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="mongodb-0057">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Managing MongoDB Copies</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="mongodb-0057"></a><a name="mongodb-0057"></a>
+
+<h1 class="topictitle1">Managing MongoDB Copies</h1>
+<div><p>This section describes the operations that you can perform on copy data on the <span>OceanProtect</span>.</p>
+<p>You need to log in to the management page and choose <span class="uicontrol"><b><span id="mongodb-0057__en-us_topic_0000001839142377_text732145416391"><strong>Explore</strong></span> &gt; <span id="mongodb-0057__en-us_topic_0000001839142377_text1932135423913"><strong>Copy Data</strong></span> &gt; <span id="mongodb-0057__en-us_topic_0000001839142377_text12694336586"><strong>Big Data</strong></span> &gt; MongoDB</b></span> to go to the MongoDB copy page.</p>
+<ul><li>Click <span class="uicontrol"><b>Resources</b></span> to perform operations by resource. Operations on this page are performed on replication copies of the current resource. Perform the following operations in the cluster where the replication copies reside.<p><a href="#mongodb-0057__table14710939161317">Table 1</a> describes the related operations.</p>
+
+<div class="tablenoborder"><a name="mongodb-0057__table14710939161317"></a><a name="table14710939161317"></a><table cellpadding="4" cellspacing="0" summary="" id="mongodb-0057__table14710939161317" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Operations related to replication copies</caption><colgroup><col style="width:21.32%"><col style="width:47.339999999999996%"><col style="width:31.34%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="21.32%" id="mcps1.3.3.1.3.2.4.1.1"><p>Operation</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="47.339999999999996%" id="mcps1.3.3.1.3.2.4.1.2"><p>Description</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="31.34%" id="mcps1.3.3.1.3.2.4.1.3"><p>Navigation Path</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>Creating protection for replication copies</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to periodically replicate or archive replication copies.</p>
+<p><strong>Note</strong></p>
+<p>If no replication copy is generated for the selected resource, you cannot associate an SLA with the resource for protection.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>In the row of the target resource, choose <span class="uicontrol"><b><span>More</span> &gt; <span>Protect</span></b></span>, and associate a replication SLA or an archive SLA to replicate or archive the replication copy.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>Modifying the SLA associated with replication copies</p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to modify the SLA associated with replication copies.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>In the row of the target resource, choose <span class="uicontrol"><b><span>More</span> &gt; <span>Modify Protection</span></b></span> to associate a new SLA with the replication copy.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>Removing protection for replication copies</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to remove the protection plan if the replication copies no longer need to be protected. After removal, the system cannot protect these replication copies.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>In the row of the target resource, choose <span class="uicontrol"><b><span>More</span> &gt; <span>Remove Protection</span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>Activating protection for replication copies</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to activate the protection plan for replication copies. After the protection plan is activated, the system protects replication copies based on the protection plan.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span>More</span> &gt; <span>Activate Protection</span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>Disabling protection for replication copies</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to disable the protection plan if the replication copies no longer require periodic protection. After the protection plan is disabled, the system does not execute automatic protection jobs of these replication copies.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span>More</span> &gt; <span>Disable Protection</span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>Performing manual replication for replication copies</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to replicate a replication copy immediately.</p>
+<p><strong>Note</strong></p>
+<p>Before performing this operation, ensure that a replication copy-based SLA has been created for the current resource and the SLA is a replication SLA.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span>More</span> &gt; <span>Manually Replicate</span></b></span>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Click <strong>Copy</strong> to perform operations by copy.<p><a href="#mongodb-0057__en-us_topic_0000001263933990_en-us_topic_0000001090712911_table51069596392">Table 2</a> describes the related operations.</p>
+
+<div class="tablenoborder"><a name="mongodb-0057__en-us_topic_0000001263933990_en-us_topic_0000001090712911_table51069596392"></a><a name="en-us_topic_0000001263933990_en-us_topic_0000001090712911_table51069596392"></a><table cellpadding="4" cellspacing="0" summary="" id="mongodb-0057__en-us_topic_0000001263933990_en-us_topic_0000001090712911_table51069596392" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Operations related to MongoDB copies</caption><colgroup><col style="width:21.3%"><col style="width:47.3%"><col style="width:31.4%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="21.3%" id="mcps1.3.3.2.3.2.4.1.1"><p>Operation</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="47.3%" id="mcps1.3.3.2.3.2.4.1.2"><p>Description</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="31.4%" id="mcps1.3.3.2.3.2.4.1.3"><p>Navigation Path</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.3.2.4.1.1 "><div class="p">Performing manual archiving<div class="note" id="mongodb-0057__en-us_topic_0000001839143185_note1993101364115"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="mongodb-0057__en-us_topic_0000001839143185_en-us_topic_0000001792344090_p1816719214566">Only 1.6.0 and later versions support this function.</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.3.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to manually archive copies to the archive storage.</p>
+<p><strong>Note</strong></p>
+<p>Only full backup copies, forever incremental (synthetic full) backup copies, and their corresponding replication copies can be manually archived.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.3.2.4.1.3 "><p>In the row of the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; Manual Archive</b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.3.2.4.1.1 "><p>Modifying a copy retention policy</p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.3.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to modify the retention period of a copy.</p>
+<p><strong>Note</strong></p>
+<ul><li>The modified copy retention period is calculated once the modification takes effect.</li><li>When you change the retention period of a full copy, the retention period of the full copy cannot be shorter than that of the incremental copy generated when the incremental backup is performed based on the full copy.</li></ul>
+</td>
+<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.3.2.4.1.3 "><p>In the row of the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; Modify Retention Policy</b></span>.</p>
+<p>You can set the retention period to be forever or to <em>xx</em> days, <em>xx</em> weeks, <em>xx</em> months, or <em>xx</em> years.</p>
+<p></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.3.2.4.1.1 "><p>Deleting a copy</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.3.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to delete a copy to free up storage space if it is not required or becomes invalid.</p>
+<p><strong>Note</strong></p>
+<ul><li>If a resource has multiple full copies, the latest full copy cannot be deleted.</li><li>If a resource has multiple copies and only one full backup copy, the full backup copy can be deleted.</li><li>If a resource has multiple copies and only one full replication copy, the full replication copy cannot be deleted.</li><li>If a full copy is deleted, the system automatically deletes the incremental copies that depend on the full copy.</li></ul>
+</td>
+<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.3.2.4.1.3 "><p>In the row of the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Delete</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.3.2.4.1.1 "><p>Executing reverse replication or cascaded replication on replication copies</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.3.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to replicate a replication copy to the source end for data restoration or replicate a replication copy to another cluster for geographic redundancy.</p>
+<p><strong>Note</strong></p>
+<p>When reverse replication is performed, the copy with the same name at the source end will be overwritten.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.3.2.4.1.3 "><div class="p">In the row of the target replication copy, choose <strong id="mongodb-0057__en-us_topic_0000001839143185_b27822552514">More</strong> &gt; <span id="mongodb-0057__en-us_topic_0000001839143185_text191285272345"><strong>Replicate</strong></span>. Configure copy replication parameters.<ol id="mongodb-0057__en-us_topic_0000001839143185_ol15113142311175"><li id="mongodb-0057__en-us_topic_0000001839143185_li0113202310179">Select <span class="uicontrol" id="mongodb-0057__en-us_topic_0000001839143185_uicontrol1611634014176"><b>Replication Target Cluster</b></span>.<ul id="mongodb-0057__en-us_topic_0000001839143185_ul2991182216"><li id="mongodb-0057__en-us_topic_0000001839143185_li3998812219">If <span class="uicontrol" id="mongodb-0057__en-us_topic_0000001839143185_uicontrol630794164212"><b>Replication Target Cluster</b></span> is the source cluster, reverse replication is performed.</li><li id="mongodb-0057__en-us_topic_0000001839143185_li1419217379216">If <span class="uicontrol" id="mongodb-0057__en-us_topic_0000001839143185_uicontrol118058437428"><b>Replication Target Cluster</b></span> is another cluster, cascaded replication is performed.</li></ul>
+</li><li id="mongodb-0057__en-us_topic_0000001839143185_li8112182510382">For 1.6.0 and later versions: Select <strong id="mongodb-0057__en-us_topic_0000001839143185_b643413469142">Replication Target User</strong>.</li><li id="mongodb-0057__en-us_topic_0000001839143185_li83719248152">For 1.6.0 and later versions: Enter the password of the replication target user and click <strong id="mongodb-0057__en-us_topic_0000001839143185_b666072914152">Authenticate</strong>.</li><li id="mongodb-0057__en-us_topic_0000001839143185_li222198163919">Set <strong id="mongodb-0057__en-us_topic_0000001839143185_b8526141221619">Specify Target Location</strong> for replication.</li><li id="mongodb-0057__en-us_topic_0000001839143185_li1564916443171">Set the copy retention period.</li><li id="mongodb-0057__en-us_topic_0000001839143185_li6696135771714">Enable or disable deduplication and compression.<p id="mongodb-0057__en-us_topic_0000001839143185_p325810594214"><a name="mongodb-0057__en-us_topic_0000001839143185_li6696135771714"></a><a name="en-us_topic_0000001839143185_li6696135771714"></a>You are advised to enable these functions to improve replication efficiency.</p>
+</li><li id="mongodb-0057__en-us_topic_0000001839143185_li3458142216186">Enable or disable the job failure alarm function.</li></ol>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.3.2.3.2.4.1.1 mcps1.3.3.2.3.2.4.1.2 mcps1.3.3.2.3.2.4.1.3 "><p>Note: The configuration for restoring a database is not described in this section because it is similar with <a href="mongodb-0046.html">Restoring MongoDB</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ul>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="mongodb-0055.html">Copies</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

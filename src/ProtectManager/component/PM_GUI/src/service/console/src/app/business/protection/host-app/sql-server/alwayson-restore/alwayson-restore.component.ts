@@ -1,20 +1,27 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidatorFn
+} from '@angular/forms';
 import { MessageService, ModalRef } from '@iux/live';
 import {
   BaseUtilService,
+  ClientManagerApiService,
   CommonConsts,
   DataMap,
   extendParams,
@@ -22,7 +29,8 @@ import {
   OverWriteOption,
   RestoreType,
   RestoreV2LocationType,
-  RestoreV2Type
+  RestoreV2Type,
+  Scene
 } from 'app/shared';
 import {
   ProtectedResourceApiService,
@@ -36,11 +44,14 @@ import {
   first,
   get,
   includes,
+  isArray,
   isEmpty,
   isNumber,
   isString,
   map,
-  set
+  set,
+  split,
+  trim
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -69,12 +80,17 @@ export class SQLServerAlwaysOnComponent implements OnInit {
   isClusterInstance = false;
   originalLocation;
   disableOriginLocation = false;
-
+  pathErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    pathError: this.i18n.get('common_path_error_label'),
+    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [2048])
+  };
   scriptErrorTip = {
     invalidName: this.i18n.get('common_script_error_label'),
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [8192])
   };
-
+  isSupport = true;
+  instancesList = [];
   constructor(
     public i18n: I18NService,
     private appUtilsService: AppUtilsService,
@@ -83,7 +99,8 @@ export class SQLServerAlwaysOnComponent implements OnInit {
     public baseUtilService: BaseUtilService,
     private restoreV2Service: RestoreApiV2Service,
     private messageService: MessageService,
-    private protectedResourceApiService: ProtectedResourceApiService
+    private protectedResourceApiService: ProtectedResourceApiService,
+    private clientManagerApiService: ClientManagerApiService
   ) {}
 
   initForm() {
@@ -94,7 +111,8 @@ export class SQLServerAlwaysOnComponent implements OnInit {
       }),
       instance: new FormControl(this.rowCopy.resource_id, {
         validators: [this.baseUtilService.VALID.required()]
-      })
+      }),
+      path: new FormControl('')
     });
 
     this.watch();
@@ -108,10 +126,12 @@ export class SQLServerAlwaysOnComponent implements OnInit {
   watch() {
     this.formGroup.get('restoreTo').valueChanges.subscribe(res => {
       this.instanceOptions = [];
+      this.isSupport = true;
       if (res === RestoreV2LocationType.ORIGIN) {
         this.formGroup.get('host').setValue(this.resourceData.environment_uuid);
         this.formGroup.get('host').disable();
         this.formGroup.get('instance').disable();
+        this.formGroup.get('path').disable();
         this.location = this.i18n.get('common_location_label');
         if (this.restoreType === RestoreType.FileRestore) {
           this.getClusters();
@@ -120,6 +140,7 @@ export class SQLServerAlwaysOnComponent implements OnInit {
         this.formGroup.get('host').setValue('');
         this.formGroup.get('host').enable();
         this.formGroup.get('instance').enable();
+        this.formGroup.get('path').enable();
         this.location = this.i18n.get('explore_target_host_cluster_label');
         if (this.restoreType === RestoreType.FileRestore) {
           this.getHosts();
@@ -236,7 +257,10 @@ export class SQLServerAlwaysOnComponent implements OnInit {
     }
 
     const endpoint = get(
-      find(this.options, item => item.uuid === this.formGroup.value.host),
+      find(
+        this.options,
+        item => item.uuid === this.formGroup.get('host').value
+      ),
       'endpoint'
     );
     const conditions =
@@ -333,12 +357,25 @@ export class SQLServerAlwaysOnComponent implements OnInit {
             isLeaf: true
           };
         });
+        if (
+          this.formGroup.get('restoreTo').value === this.restoreLocationType.NEW
+        ) {
+          if (!isEmpty(this.instanceOptions)) {
+            this.isSupportFunc(
+              this.instanceOptions[0].environment.endpoint.split(',')
+            );
+          }
+        } else {
+          this.formGroup.get('path').clearValidators();
+          this.formGroup.get('path').updateValueAndValidity();
+        }
         this.formGroup
           .get('instance')
           .setValue(get(first(this.instanceOptions), 'key'));
         return;
       }
       this.getInstance(recordsTemp, startPage);
+      this.instancesList = recordsTemp;
     });
   }
 
@@ -395,6 +432,9 @@ export class SQLServerAlwaysOnComponent implements OnInit {
 
     if (this.formGroup.value.restoreTo === RestoreV2LocationType.NEW) {
       set(params, 'targetObject', this.formGroup.value.instance);
+      if (!this.isSupport) {
+        set(params, 'extendInfo.newDatabasePath', this.formGroup.value.path);
+      }
     }
 
     if (this.formGroup.value.restoreTo === RestoreV2LocationType.ORIGIN) {
@@ -412,6 +452,69 @@ export class SQLServerAlwaysOnComponent implements OnInit {
     return params;
   }
 
+  isSupportFunc(agent) {
+    const params = {
+      hostUuidsAndIps: isArray(agent) ? agent : [agent],
+      applicationType: 'SQLServer',
+      scene: Scene.Restore,
+      buttonNames: ['newDatabasePath']
+    };
+    this.clientManagerApiService
+      .queryAgentApplicationUsingPOST({
+        AgentCheckSupportParam: params,
+        akOperationTips: false
+      })
+      .subscribe(res => {
+        this.isSupport = res?.newDatabasePath;
+        if (res?.newDatabasePath) {
+          this.formGroup.get('path').clearValidators();
+        } else {
+          this.formGroup
+            .get('path')
+            .setValidators([
+              this.baseUtilService.VALID.required(),
+              this.validPath()
+            ]);
+        }
+        this.formGroup.get('path').updateValueAndValidity();
+      });
+  }
+
+  validPath(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (!trim(control.value)) {
+        return { required: { value: control.value } };
+      }
+
+      if (!CommonConsts.REGEX.windowsPath.test(control.value)) {
+        return { pathError: { value: control.value } };
+      }
+
+      const path = split(control.value, '\\');
+
+      if (find(path, item => !trim(item))) {
+        return { pathError: { value: control.value } };
+      }
+
+      if (!/[a-zA-Z]:/.test(first(path))) {
+        return { pathError: { value: control.value } };
+      }
+
+      path.shift();
+      let vaild = true;
+      each(path, item => {
+        if (!/[\w\u4e00-\u9fa5\s]+/.test(item)) {
+          vaild = false;
+        }
+      });
+
+      if (!vaild) {
+        return { pathError: { value: control.value } };
+      }
+
+      return null;
+    };
+  }
   restore(): Observable<void> {
     return new Observable<void>((observer: Observer<void>) => {
       this.restoreV2Service

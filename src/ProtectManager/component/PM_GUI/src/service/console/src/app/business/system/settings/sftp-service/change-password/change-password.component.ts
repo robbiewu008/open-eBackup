@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -20,11 +20,11 @@ import {
 } from '@angular/forms';
 import {
   BaseUtilService,
-  SFTP_USERNAME_BLACKLIST,
-  SftpManagerApiService
+  SftpManagerApiService,
+  SFTP_USERNAME_BLACKLIST
 } from 'app/shared';
 import { I18NService } from 'app/shared/services/i18n.service';
-import { isUndefined, assign, isEmpty } from 'lodash';
+import { isEmpty, isUndefined } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -43,9 +43,7 @@ export class ChangePasswordComponent implements OnInit {
   nameRepeatVal = 3;
 
   pwdComplexTipLabel = this.i18n.get('system_sftp_pwdtip_label');
-  originalPasswordErrorTip = assign({}, this.baseUtilService.pwdErrorTip, {
-    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
-  });
+
   constructor(
     public fb: FormBuilder,
     public i18n: I18NService,
@@ -63,14 +61,10 @@ export class ChangePasswordComponent implements OnInit {
       this.baseUtilService.VALID.required(),
       this.validSftpPwd(),
       this.validUserNamePwd(),
-      this.validPwdAndOldpwd(),
       this.validConfirmPwdIsSame()
     ]);
     this.formGroup.controls['confirmPassword'].setValidators([
       this.baseUtilService.VALID.required(),
-      this.validSftpPwd(),
-      this.validUserNamePwd(),
-      this.validPwdAndOldpwd(),
       this.validNewPwdIsSame()
     ]);
     this.formGroup.controls['newPassword'].updateValueAndValidity();
@@ -244,19 +238,6 @@ export class ChangePasswordComponent implements OnInit {
       return null;
     };
   }
-  validPwdAndOldpwd(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      if (isUndefined(this.formGroup)) {
-        return null;
-      }
-
-      const originalPwd = this.formGroup.value.originalPassword;
-      if (originalPwd === control.value) {
-        return { sameHistoryPwd: { value: control.value } };
-      }
-      return null;
-    };
-  }
 
   validConfirmPwdIsSame(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
@@ -301,13 +282,6 @@ export class ChangePasswordComponent implements OnInit {
 
   initData() {
     this.formGroup = this.fb.group({
-      originalPassword: new FormControl('', {
-        validators: [
-          this.baseUtilService.VALID.required(),
-          this.baseUtilService.VALID.maxLength(64)
-        ],
-        updateOn: 'change'
-      }),
       newPassword: new FormControl('', {
         validators: [
           this.baseUtilService.VALID.required(),
@@ -332,32 +306,6 @@ export class ChangePasswordComponent implements OnInit {
         updateOn: 'change'
       })
     });
-    this.formGroup.get('originalPassword').valueChanges.subscribe(res => {
-      if (
-        res !== this.formGroup.value.newPassword &&
-        !!this.formGroup.value.newPassword
-      ) {
-        this.formGroup.get('newPassword').setErrors(null);
-      }
-      if (
-        res === this.formGroup.value.newPassword &&
-        !!this.formGroup.value.newPassword
-      ) {
-        this.formGroup.get('newPassword').updateValueAndValidity();
-      }
-      if (
-        res !== this.formGroup.value.confirmPassword &&
-        !!this.formGroup.value.confirmPassword
-      ) {
-        this.formGroup.get('confirmPassword').setErrors(null);
-      }
-      if (
-        res === this.formGroup.value.confirmPassword &&
-        !!this.formGroup.value.confirmPassword
-      ) {
-        this.formGroup.get('confirmPassword').updateValueAndValidity();
-      }
-    });
   }
 
   onOK(): Observable<void> {
@@ -367,8 +315,7 @@ export class ChangePasswordComponent implements OnInit {
       }
       const sftpModifyPasswordRequest = {
         id: this.user.id,
-        newPassword: this.formGroup.value.newPassword,
-        password: this.formGroup.value.originalPassword
+        newPassword: this.formGroup.value.newPassword
       };
       this.sftpManagerApiService
         .changePasswordUsingPOST({

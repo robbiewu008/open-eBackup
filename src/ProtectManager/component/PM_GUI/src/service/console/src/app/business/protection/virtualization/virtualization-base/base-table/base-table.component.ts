@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   Component,
@@ -44,6 +44,7 @@ import {
   ProtectedResourceApiService,
   ProtectResourceAction,
   RoleOperationMap,
+  SetTagType,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -58,10 +59,12 @@ import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ProtectService } from 'app/shared/services/protect.service';
 import { ResourceDetailService } from 'app/shared/services/resource-detail.service';
+import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
 import { SlaService } from 'app/shared/services/sla.service';
 import { TakeManualBackupService } from 'app/shared/services/take-manual-backup.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
+  map as _map,
   assign,
   cloneDeep,
   each,
@@ -70,18 +73,18 @@ import {
   includes,
   isEmpty,
   isUndefined,
-  map as _map,
   mapValues,
   reject,
   remove,
   size,
-  trim,
-  some
+  some,
+  tail,
+  trim
 } from 'lodash';
 import { combineLatest, Observable } from 'rxjs';
 import { SummaryComponent } from '../../cnware/summary/summary.component';
 import { CreateGroupComponent } from '../../virtualization-group/create-group/create-group.component';
-import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
+import { SummaryComponent as nutanixSummaryComponent } from '../../nutanix/summary/summary.component';
 
 @Component({
   selector: 'aui-vir-base-table',
@@ -95,7 +98,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() extParams;
   @Input() isSummary;
   @Output() updateTable = new EventEmitter();
-
+  dataMap = DataMap;
   maxDisplayItems = 2;
   tableConfig: TableConfig;
   tableData: TableData;
@@ -119,6 +122,8 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
   rhvVersionTpl: TemplateRef<any>;
   @ViewChild('resourceTagTpl', { static: true })
   resourceTagTpl: TemplateRef<any>;
+  @ViewChild('nutanixStatusTpl', { static: true })
+  nutanixStatusTpl: TemplateRef<any>;
 
   constructor(
     private i18n: I18NService,
@@ -166,34 +171,6 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
 
   getOptsConfig(opts) {
     switch (this.subType) {
-      case DataMap.Resource_Type.cNwareVm.value:
-      case DataMap.Resource_Type.cNwareHost.value:
-      case DataMap.Resource_Type.cNwareCluster.value:
-      case DataMap.Resource_Type.APSResourceSet.value:
-      case DataMap.Resource_Type.APSCloudServer.value:
-      case DataMap.Resource_Type.APSZone.value:
-      case DataMap.Resource_Type.hyperVHost.value:
-      case DataMap.Resource_Type.hyperVVm.value:
-        this.optsConfig = getPermissionMenuItem(
-          filter(opts, item => {
-            if (item.id === 'manualBackup') {
-              delete item.divide;
-            }
-            return includes(
-              [
-                'protect',
-                'removeProtection',
-                'activeProtection',
-                'deactiveProtection',
-                'manualBackup',
-                'addTag',
-                'removeTag'
-              ],
-              item.id
-            );
-          })
-        );
-        break;
       case DataMap.Resource_Type.vmGroup.value:
         this.optsConfig = getPermissionMenuItem(
           filter(opts, item => {
@@ -227,6 +204,25 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         );
         break;
       default:
+        this.optsConfig = getPermissionMenuItem(
+          filter(opts, item => {
+            if (item.id === 'manualBackup') {
+              delete item.divide;
+            }
+            return includes(
+              [
+                'protect',
+                'removeProtection',
+                'activeProtection',
+                'deactiveProtection',
+                'manualBackup',
+                'addTag',
+                'removeTag'
+              ],
+              item.id
+            );
+          })
+        );
         break;
     }
   }
@@ -240,6 +236,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         );
         break;
       case DataMap.Resource_Type.cNwareVm.value:
+      case DataMap.Resource_Type.nutanixVm.value:
       case DataMap.Resource_Type.APSCloudServer.value:
       case DataMap.Resource_Type.hyperVVm.value:
         this.optItems = getPermissionMenuItem(
@@ -263,6 +260,8 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         break;
       case DataMap.Resource_Type.cNwareHost.value:
       case DataMap.Resource_Type.cNwareCluster.value:
+      case DataMap.Resource_Type.nutanixHost.value:
+      case DataMap.Resource_Type.nutanixCluster.value:
       case DataMap.Resource_Type.APSResourceSet.value:
       case DataMap.Resource_Type.APSZone.value:
       case DataMap.Resource_Type.hyperVHost.value:
@@ -325,6 +324,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
     ];
     switch (this.subType) {
       case DataMap.Resource_Type.cNwareCluster.value:
+      case DataMap.Resource_Type.nutanixCluster.value:
         return [
           cols.uuid,
           cols.name,
@@ -335,6 +335,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
           cols.operation
         ];
       case DataMap.Resource_Type.cNwareHost.value:
+      case DataMap.Resource_Type.nutanixHost.value:
         return [
           cols.uuid,
           cols.name,
@@ -346,6 +347,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
           cols.operation
         ];
       case DataMap.Resource_Type.cNwareVm.value:
+      case DataMap.Resource_Type.nutanixVm.value:
         return [
           cols.uuid,
           cols.name,
@@ -428,6 +430,10 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data ? data : this.selectionData,
+      type:
+        this.subType === DataMap.Resource_Type.vmGroup.value
+          ? SetTagType.ResourceGroup
+          : SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable?.setSelections([]);
@@ -440,6 +446,10 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data ? data : this.selectionData,
+      type:
+        this.subType === DataMap.Resource_Type.vmGroup.value
+          ? SetTagType.ResourceGroup
+          : SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable?.setSelections([]);
@@ -500,6 +510,41 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
             options: this.dataMapService.toArray('resource_LinkStatus_Special')
           }
         };
+      case DataMap.Resource_Type.nutanixHost.value:
+        return {
+          cellRender: this.nutanixStatusTpl,
+          filter: {
+            type: 'select',
+            isMultiple: true,
+            showCheckAll: true,
+            options: this.dataMapService
+              .toArray('nutanixHostStatus')
+              .filter(item => {
+                return [
+                  DataMap.nutanixHostStatus.normal.value,
+                  DataMap.nutanixHostStatus.new.value
+                ].includes(item.value);
+              })
+          }
+        };
+      case DataMap.Resource_Type.nutanixVm.value:
+        return {
+          cellRender: this.nutanixStatusTpl,
+          filter: {
+            type: 'select',
+            isMultiple: true,
+            showCheckAll: true,
+            options: this.dataMapService
+              .toArray('nutanixVmStatus')
+              .filter(item => {
+                return [
+                  DataMap.nutanixVmStatus.on.value,
+                  DataMap.nutanixVmStatus.off.value,
+                  DataMap.nutanixVmStatus.unknown.value
+                ].includes(item.value);
+              })
+          }
+        };
       default:
         return {};
     }
@@ -537,7 +582,8 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
                     DataMap.Protection_Status.creating.value &&
                   val.protection_status !==
                     DataMap.Protection_Status.protected.value &&
-                  hasProtectPermission(val)
+                  hasProtectPermission(val) &&
+                  this.isProtectable(val)
                 );
               })
             ) !== size(data) ||
@@ -553,6 +599,15 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
             (this.subType === DataMap.Resource_Type.vmGroup.value &&
               !data[0].resourceCount)
           );
+        },
+        disabledTipsCheck: data => {
+          return size(
+            filter(data, val => {
+              return this.isProtectable(val);
+            })
+          ) !== size(data)
+            ? this.i18n.get('protection_nutanixvm_protect_tip_label')
+            : '';
         },
         onClick: data => this.protect(data, ProtectResourceAction.Create)
       },
@@ -815,7 +870,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_add_tag_label'),
         onClick: data => this.addTag(data)
@@ -827,7 +882,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_remove_tag_label'),
         onClick: data => this.removeTag(data)
@@ -1040,6 +1095,16 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
     };
   }
 
+  isProtectable(val) {
+    if (
+      this.subType !== DataMap.Resource_Type.nutanixVm.value ||
+      val.extendInfo?.protectable === 'true'
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   clearTable() {
     this.tableData = {
       data: [],
@@ -1095,7 +1160,9 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         [
           DataMap.Resource_Type.cNwareCluster.value,
           DataMap.Resource_Type.cNwareHost.value,
-          DataMap.Resource_Type.cNwareHostPool.value
+          DataMap.Resource_Type.cNwareHostPool.value,
+          DataMap.Resource_Type.nutanixCluster.value,
+          DataMap.Resource_Type.nutanixHost.value
         ],
         this.treeSelection?.subType
       ) &&
@@ -1149,6 +1216,8 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
       case DataMap.Resource_Type.cNwareCluster.value:
       case DataMap.Resource_Type.cNwareHost.value:
       case DataMap.Resource_Type.cNwareVm.value:
+      case DataMap.Resource_Type.nutanixCluster.value:
+      case DataMap.Resource_Type.nutanixHost.value:
         assign(item, JSON.parse(item.extendInfo?.details));
         break;
       case DataMap.Resource_Type.APSCloudServer.value:
@@ -1160,6 +1229,10 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         assign(item, {
           status: item?.linkStatus ?? '0'
         });
+        break;
+      case DataMap.Resource_Type.nutanixVm.value:
+        assign(item, JSON.parse(item.extendInfo?.details));
+        assign(item, { remark: item.description });
         break;
       default:
         break;
@@ -1223,6 +1296,47 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
           }
         });
         delete conditionsTemp.labelList;
+      }
+      if (conditionsTemp.status) {
+        if (
+          includes(
+            conditionsTemp.status,
+            DataMap.nutanixHostStatus.new.value
+          ) &&
+          this.subType === DataMap.Resource_Type.nutanixHost.value
+        ) {
+          assign(conditionsTemp, {
+            status: [
+              ['in'],
+              ...tail(conditionsTemp.status),
+              DataMap.nutanixHostStatus.notDetachable.value,
+              DataMap.nutanixHostStatus.detachable.value
+            ]
+          });
+        }
+        if (
+          includes(
+            conditionsTemp.status,
+            DataMap.nutanixVmStatus.unknown.value
+          ) &&
+          this.subType === DataMap.Resource_Type.nutanixVm.value
+        ) {
+          assign(conditionsTemp, {
+            status: [
+              ['in'],
+              ...tail(conditionsTemp.status),
+              DataMap.nutanixVmStatus.paused.value,
+              DataMap.nutanixVmStatus.poweringOn.value,
+              DataMap.nutanixVmStatus.shuttingDown.value,
+              DataMap.nutanixVmStatus.poweringOff.value,
+              DataMap.nutanixVmStatus.suspending.value,
+              DataMap.nutanixVmStatus.suspended.value,
+              DataMap.nutanixVmStatus.resuming.value,
+              DataMap.nutanixVmStatus.resetting.value,
+              DataMap.nutanixVmStatus.mirgrating.value
+            ]
+          });
+        }
       }
       assign(defaultConditions, conditionsTemp);
     }
@@ -1294,7 +1408,9 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
       includes(
         [
           DataMap.Resource_Type.cNwareHost.value,
-          DataMap.Resource_Type.cNwareCluster.value
+          DataMap.Resource_Type.cNwareCluster.value,
+          DataMap.Resource_Type.nutanixHost.value,
+          DataMap.Resource_Type.nutanixCluster.value
         ],
         this.subType
       )
@@ -1304,7 +1420,15 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         lvModalKey: 'cnware-detail-modal',
         lvOkDisabled: true,
         lvHeader: data.name,
-        lvContent: SummaryComponent,
+        lvContent: includes(
+          [
+            DataMap.Resource_Type.nutanixHost.value,
+            DataMap.Resource_Type.nutanixCluster.value
+          ],
+          this.subType
+        )
+          ? nutanixSummaryComponent
+          : SummaryComponent,
         lvComponentParams: {
           item: {
             ...data,

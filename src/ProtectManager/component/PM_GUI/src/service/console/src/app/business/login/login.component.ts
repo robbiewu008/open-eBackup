@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -71,6 +71,7 @@ import { Observable, Observer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { MessageService } from '@iux/live';
 import { SendDynamicCodeRequest } from 'app/shared/api/models';
+import { DatePipe } from '@angular/common';
 
 type ILastLoginInfo = Pick<
   LoginResponseBody,
@@ -80,7 +81,8 @@ type ILastLoginInfo = Pick<
 @Component({
   selector: 'aui-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.less']
+  styleUrls: ['./login.component.less'],
+  providers: [DatePipe]
 })
 export class LoginComponent implements OnInit, OnDestroy {
   resetPwdParams;
@@ -172,15 +174,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   // 登录错误信息
   loginErrorMsg: string;
 
-  showCopyRight = !includes(
-    [DataMap.Deploy_Type.openOem.value, DataMap.Deploy_Type.openServer.value],
-    this.i18n.get('deploy_type')
-  );
-
   constructor(
     public router: Router,
     public fb: FormBuilder,
     public i18n: I18NService,
+    public datePipe: DatePipe,
     public whitebox: WhiteboxService,
     private cookieService: CookieService,
     private baseUtilService: BaseUtilService,
@@ -818,9 +816,18 @@ export class LoginComponent implements OnInit, OnDestroy {
                 find(currentTimeZones, ['value', lastLoginInfo.lastLoginZone]),
                 'label'
               );
+            const timeZone = !isEmpty(lastLoginZone)
+              ? lastLoginZone.split(' ')[0]
+              : '';
             const lastLoginTimeContent = isNil(lastLoginZone)
               ? lastLoginInfo.lastLoginTime
-              : lastLoginInfo.lastLoginTime + ' ' + lastLoginZone;
+              : this.datePipe.transform(
+                  lastLoginInfo.lastLoginTime,
+                  'yyyy-MM-dd HH:mm:ss',
+                  timeZone
+                ) +
+                ' ' +
+                lastLoginZone;
             let loginInfoContent = `${this.i18n.get(
               'common_last_login_time_label'
             )}: ${lastLoginTimeContent}\n${this.i18n.get(
@@ -843,7 +850,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           loginInfoContent += `\n${res?.userDefNodes}`;
         }
         if (!!res?.isEnableLoginNotes) {
-          this.popLogInfoComponent(loginInfoContent);
+          this.popLogInfoComponent(loginInfoContent, 15 * 1e3);
         }
       });
     } else {
@@ -851,12 +858,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  popLogInfoComponent(loginInfoContent: string) {
+  popLogInfoComponent(loginInfoContent: string, lvDuration = 5 * 1e3) {
     this.message.info(loginInfoContent, {
       lvMessageKey: 'lastLoginInfoMsg',
       lvPosition: 'topRight',
       lvShowCloseButton: true,
-      lvMaxWidth: '400px'
+      lvMaxWidth: '400px',
+      lvDuration
     });
   }
 

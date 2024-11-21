@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Injectable } from '@angular/core';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -32,20 +32,21 @@ import {
 } from 'lodash';
 import { Observable } from 'rxjs';
 import { map as _map } from 'rxjs/operators';
-import { ProtectedResourceApiService } from '../api/services';
+import { ProtectedResourceApiService, SystemApiService } from '../api/services';
 import {
   ApplicationType,
   ClusterEnvironment,
   CommonConsts,
   DataMap,
+  HelpUrlCode,
   ResourceSetType,
   ResourceType,
   RESOURCE_CATALOGS,
   RetentionType,
   RouterUrl,
   SoftwareType,
-  TRIGGER_TYPE,
-  HelpUrlCode
+  SYSTEM_TIME,
+  TRIGGER_TYPE
 } from '../consts';
 import { CookieService } from './cookie.service';
 import { DataMapService } from './data-map.service';
@@ -58,7 +59,7 @@ import { ResourceCatalogsService } from './resource-catalogs.service';
 export class AppUtilsService {
   // 临时缓存数据
   cacheObject: { [key: string]: any } = {};
-
+  isDmeUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
   isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
   isDistributed =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.e6000.value;
@@ -84,11 +85,17 @@ export class AppUtilsService {
     this.i18n.get('deploy_type')
   );
 
+  // 巴石油修改页面版本号
+  isModifyVersion =
+    this.isDataBackup ||
+    this.i18n.get('deploy_type') === DataMap.Deploy_Type.hyperdetect.value;
+
   constructor(
     private router: Router,
     private i18n: I18NService,
     private cookieService: CookieService,
     private dataMapService: DataMapService,
+    private systemApiService: SystemApiService,
     private resourceCatalogsService: ResourceCatalogsService,
     private protectedResourceApiService: ProtectedResourceApiService
   ) {}
@@ -113,6 +120,23 @@ export class AppUtilsService {
     const items = this.resourceCatalogsService.parseCatalogs(RESOURCE_CATALOGS);
     const resource = {
       database: [
+        {
+          id: 'antdb',
+          slaId: ApplicationType.AntDB,
+          key: [
+            DataMap.Resource_Type.AntDBInstance.value,
+            DataMap.Resource_Type.AntDBClusterInstance.value
+          ],
+          hide: !includes(items, ApplicationType.AntDB),
+          label: this.i18n.get('protection_antdb_label'),
+          prefix: 'A',
+          color: '#01618B',
+          protected_count: 0,
+          count: 0,
+          protectionUrl: RouterUrl.ProtectionDatabaseAntDB,
+          copyUrl: RouterUrl.ExploreCopyDataAntDB,
+          resourceSetType: ResourceSetType.AntDB
+        },
         {
           id: 'oralce',
           slaId: ApplicationType.Oracle,
@@ -308,7 +332,7 @@ export class AppUtilsService {
             DataMap.Resource_Type.OpenGauss_instance.value
           ],
           hide: !includes(items, ApplicationType.OpenGauss),
-          label: this.i18n.get('openGauss'),
+          label: this.i18n.get('common_opengauss_label'),
           prefix: 'O',
           color: '#2081C4',
           protected_count: 0,
@@ -465,7 +489,7 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.KingBaseInstance.value
             }
           ],
-          resourceSetType: ResourceSetType.Kingbase
+          resourceSetType: ResourceSetType.KingBase
         },
         {
           id: 'dameng',
@@ -766,6 +790,12 @@ export class AppUtilsService {
             DataMap.Resource_Type.hostSystem.value,
             DataMap.Resource_Type.clusterComputeResource.value
           ],
+          resourceSetKey: [
+            DataMap.Resource_Type.virtualMachine.value,
+            DataMap.Resource_Type.hostSystem.value,
+            DataMap.Resource_Type.clusterComputeResource.value,
+            ResourceSetType.RESOURCE_GROUP
+          ],
           hide: !includes(items, ApplicationType.Vmware),
           label: this.i18n.get('VMware'),
           prefix: 'V',
@@ -786,6 +816,12 @@ export class AppUtilsService {
             DataMap.Resource_Type.cNwareCluster.value,
             DataMap.Resource_Type.cNwareHost.value,
             DataMap.Resource_Type.cNwareVm.value
+          ],
+          resourceSetKey: [
+            DataMap.Resource_Type.cNwareCluster.value,
+            DataMap.Resource_Type.cNwareHost.value,
+            DataMap.Resource_Type.cNwareVm.value,
+            ResourceSetType.RESOURCE_GROUP
           ],
           hide: !includes(items, ApplicationType.CNware),
           label: this.i18n.get('common_cnware_label'),
@@ -823,6 +859,12 @@ export class AppUtilsService {
             DataMap.Resource_Type.hyperVCluster.value,
             DataMap.Resource_Type.hyperVVm.value
           ],
+          resourceSetKey: [
+            DataMap.Resource_Type.hyperVHost.value,
+            DataMap.Resource_Type.hyperVCluster.value,
+            DataMap.Resource_Type.hyperVVm.value,
+            ResourceSetType.RESOURCE_GROUP
+          ],
           hide: !includes(items, ApplicationType.HyperV),
           label: this.i18n.get('common_hyperv_label'),
           prefix: 'H',
@@ -838,6 +880,7 @@ export class AppUtilsService {
           id: 'fusionone',
           slaId: ApplicationType.FusionOne,
           key: DataMap.Resource_Type.fusionOne.value,
+          resourceSetKey: [DataMap.Resource_Type.fusionOne.value],
           hide: !includes(items, ApplicationType.FusionOne),
           label: this.i18n.get('protection_fusionone_label'),
           prefix: 'F',
@@ -848,6 +891,32 @@ export class AppUtilsService {
           copyUrl: RouterUrl.ExploreCopyDataFusionOne,
           resType: ApplicationType.FusionOne,
           resourceSetType: ResourceSetType.FusionOne
+        },
+        {
+          id: 'nutanix',
+          slaId: ApplicationType.Nutanix,
+          key: [
+            DataMap.Resource_Type.nutanixCluster.value,
+            DataMap.Resource_Type.nutanixHost.value,
+            DataMap.Resource_Type.nutanixVm.value
+          ],
+          resourceSetKey: [
+            DataMap.Resource_Type.nutanixCluster.value,
+            DataMap.Resource_Type.nutanixHost.value,
+            DataMap.Resource_Type.nutanixVm.value,
+            ResourceSetType.RESOURCE_GROUP
+          ],
+          hide: !includes(items, ApplicationType.Nutanix),
+          label: this.i18n.get('common_nutanix_label'),
+          prefix: 'N',
+          color: '#316CE6',
+          protected_count: 0,
+          count: 0,
+          protectionUrl: RouterUrl.ProtectionVirtualizationNutanix,
+          copyUrl: RouterUrl.ExploreCopyDataNutanix,
+          antiUrl: RouterUrl.ExploreAntiApplicationNutanix,
+          resType: ResourceType.NUTANIX,
+          resourceSetType: ResourceSetType.Nutanix
         }
       ],
       container: [
@@ -924,6 +993,12 @@ export class AppUtilsService {
             DataMap.Resource_Type.HCSProject.value,
             DataMap.Resource_Type.HCSCloudHost.value
           ],
+          resourceSetKey: [
+            DataMap.Resource_Type.HCSTenant.value,
+            DataMap.Resource_Type.HCSProject.value,
+            DataMap.Resource_Type.HCSCloudHost.value,
+            ResourceSetType.RESOURCE_GROUP
+          ],
           hide: !includes(items, ApplicationType.HCSCloudHost),
           label: this.i18n.get('common_cloud_label'),
           prefix: 'H',
@@ -941,6 +1016,12 @@ export class AppUtilsService {
           key: [
             DataMap.Resource_Type.openStackProject.value,
             DataMap.Resource_Type.openStackCloudServer.value
+          ],
+          resourceSetKey: [
+            ResourceType.OpenStackDomain,
+            DataMap.Resource_Type.openStackProject.value,
+            DataMap.Resource_Type.openStackCloudServer.value,
+            ResourceSetType.RESOURCE_GROUP
           ],
           hide: !includes(items, ApplicationType.OpenStack),
           label: this.i18n.get('common_open_stack_label'),
@@ -985,6 +1066,12 @@ export class AppUtilsService {
             DataMap.Resource_Type.APSZone.value,
             DataMap.Resource_Type.APSResourceSet.value
           ],
+          resourceSetKey: [
+            DataMap.Resource_Type.APSCloudServer.value,
+            DataMap.Resource_Type.APSZone.value,
+            DataMap.Resource_Type.APSResourceSet.value,
+            ResourceSetType.RESOURCE_GROUP
+          ],
           hide: !includes(items, ApplicationType.ApsaraStack),
           label: this.i18n.get('protection_ali_cloud_label'),
           prefix: 'A',
@@ -993,21 +1080,19 @@ export class AppUtilsService {
           count: 0,
           protectionUrl: RouterUrl.ProtectionApsaraStack,
           copyUrl: RouterUrl.ExploreCopyDataApsaraStack,
-          resourceSetType: ResourceSetType.ApsaraStack
+          resourceSetType: ResourceSetType.ApsaraStack,
+          resType: ApplicationType.ApsaraStack
         }
       ],
       fileService: [
         {
           id: 'nasfilesystem',
           slaId: ApplicationType.NASFileSystem,
-          key: this.isDistributed
-            ? [DataMap.Resource_Type.ndmp.value]
-            : [
-                DataMap.Resource_Type.NASFileSystem.value,
-                DataMap.Resource_Type.ndmp.value
-              ],
+          key: DataMap.Resource_Type.NASFileSystem.value,
           hide:
-            this.isDecouple || !includes(items, ApplicationType.NASFileSystem),
+            this.isDistributed ||
+            this.isDecouple ||
+            !includes(items, ApplicationType.NASFileSystem),
           label: this.i18n.get('common_nas_file_systems_label'),
           prefix: 'N',
           color: '#EBAA44',
@@ -1036,6 +1121,31 @@ export class AppUtilsService {
           antiUrl: RouterUrl.ExploreAntiApplicationNasShared,
           resType: DataMap.Resource_Type.NASShare.value,
           resourceSetType: ResourceSetType.NasShare
+        },
+        {
+          id: 'ndmp',
+          slaId: ApplicationType.Ndmp,
+          key: DataMap.Resource_Type.ndmp.value,
+          hide: !includes(items, ApplicationType.Ndmp),
+          label: this.i18n.get('protection_ndmp_protocol_label'),
+          prefix: 'N',
+          color: '#EBAA44',
+          protected_count: 0,
+          count: 0,
+          protectionUrl: RouterUrl.ProtectionNdmp,
+          copyUrl: RouterUrl.ExploreCopyDataNdmp,
+          resType: DataMap.Resource_Type.ndmp.value,
+          tabs: [
+            {
+              label: this.i18n.get('common_file_systems_label'), //修改名称需要注意同步修改资源集那里
+              resType: DataMap.Resource_Type.ndmp.value
+            },
+            {
+              label: this.i18n.get('common_file_directory_label'),
+              resType: DataMap.Resource_Type.ndmp.value
+            }
+          ],
+          resourceSetType: ResourceSetType.Ndmp
         },
         {
           id: 'commonShare',
@@ -1189,15 +1299,30 @@ export class AppUtilsService {
           copyUrl: RouterUrl.ExploreCopyDataSapHana,
           tabs: [
             {
-              label: this.i18n.get('common_database_label'),
-              resType: DataMap.Resource_Type.saphanaDatabase.value
-            },
-            {
               label: this.i18n.get('protection_database_instance_label'),
               resType: DataMap.Resource_Type.saphanaInstance.value
+            },
+            {
+              label: this.i18n.get('common_database_label'),
+              resType: DataMap.Resource_Type.saphanaDatabase.value
             }
           ],
           resourceSetType: ResourceSetType.SAP_HANA
+        },
+        {
+          id: 'Saponoracle',
+          slaId: ApplicationType.Saponoracle,
+          key: [DataMap.Resource_Type.saponoracleDatabase.value],
+          hide: !includes(items, ApplicationType.Saponoracle),
+          label: this.i18n.get('common_sap_on_oracle_label'),
+          prefix: 'S',
+          color: '#006DB8',
+          protected_count: 0,
+          count: 0,
+          protectionUrl: RouterUrl.ProtectionHostAppSaponoracle,
+          copyUrl: RouterUrl.ExploreCopyDataSaponoracle,
+          resType: DataMap.Resource_Type.saponoracleDatabase.value,
+          resourceSetType: ResourceSetType.SAP_ON_ORACLE
         }
       ],
       bareMetal: [
@@ -1518,12 +1643,16 @@ export class AppUtilsService {
     const type = this.router.url.split('/')[2] || '';
     // 去除字符串中的'-'
     const newType = type.replace(/-/g, '');
-    const url = this.i18n.isEn
-      ? `/console/assets/help/a8000/en-us/index.html#en-us_topic_${HelpUrlCode[newType]}.html`
-      : `/console/assets/help/a8000/zh-cn/index.html#zh-cn_topic_${HelpUrlCode[newType]}.html`;
-    const herf: string = first(window.location.href.split('#'));
-    const targetUrl = herf.replace('/console/', url);
-    return targetUrl;
+
+    const baseUrl = this.i18n.isEn
+      ? `/console/assets/help/a8000/en-us/index.html#${HelpUrlCode.en[newType]}.html`
+      : `/console/assets/help/a8000/zh-cn/index.html#${HelpUrlCode.zh[newType]}.html`;
+
+    if (this.isHcsUser || this.isDmeUser) {
+      const herf: string = first(window.location.href.split('#'));
+      return herf.replace('/console/', baseUrl);
+    }
+    return `${location.origin}${baseUrl}`;
   }
 
   /**
@@ -1573,19 +1702,19 @@ export class AppUtilsService {
 
   getCopyType(appType, software): string {
     if (includes([SoftwareType.CV, SoftwareType.NBU], software)) {
-      if (includes([2, 7], appType)) {
+      if (includes([0x02, 0x07], appType)) {
         return this.i18n.get('common_vmware_label');
-      } else if (includes([3, 10, 12], appType)) {
+      } else if (includes([0x03, 0x10, 0x12], appType)) {
         return this.i18n.get('common_oracle_label');
-      } else if (includes([8, 9], appType)) {
+      } else if (includes([0x08, 0x09], appType)) {
         return this.i18n.get('MySQL');
       } else {
         return this.i18n.get('common_file_system_label');
       }
     } else {
-      if (includes([1, 4, 5, 6, 11], appType)) {
+      if (includes([0x01, 0x04, 0x05, 0x06], appType)) {
         return this.i18n.get('common_file_system_label');
-      } else if (includes([2, 7], appType)) {
+      } else if (includes([0x02, 0x07], appType)) {
         return this.i18n.get('common_vmware_label');
       } else {
         return this.i18n.get('explore_detection_copy_type_label');
@@ -1606,5 +1735,165 @@ export class AppUtilsService {
     setTimeout(() => {
       URL.revokeObjectURL(a.href);
     }, 1e4);
+  }
+
+  strToArrayBuffer(str) {
+    const buffer = new ArrayBuffer(str.length);
+    const viewArray = new Uint8Array(buffer);
+    const len = str?.length > 0 ? str.length : 0;
+    let i = 0;
+    while (i < len) {
+      viewArray[i] = str.charCodeAt(i);
+      i++;
+    }
+    return buffer;
+  }
+
+  /**
+   * 生成对应的arrayBuffer
+   * @param pem 公钥key
+   * @returns
+   */
+
+  pemToBuffer(pem) {
+    const headerStr = `-----BEGIN PUBLIC KEY-----`;
+    const footerStr = `-----END PUBLIC KEY-----`;
+    const isStrValid = pem.includes(headerStr) && pem.includes(footerStr);
+    if (!isStrValid) {
+      throw new Error('invalid pem key string');
+    }
+    let headerLen = headerStr.length;
+    if (pem[headerLen] === '\n') {
+      headerLen++;
+    }
+    let footerLen = footerStr.length;
+    if (pem[pem.length - footerStr.length] === '\n') {
+      footerLen++;
+    }
+    if (pem[pem.length - 1] === '\n') {
+      footerLen++;
+    }
+    const base64Contents = pem.substring(headerLen, pem.length - footerLen);
+    const pemStr = window.atob(base64Contents);
+    return this.strToArrayBuffer(pemStr);
+  }
+
+  /**
+   * 导入密钥，生成CryptoKey对象
+   * @param pem 公钥
+   */
+  async importRsaPublicKey(pem, hash) {
+    const pemBuffer = this.pemToBuffer(pem);
+    return await window.crypto.subtle.importKey(
+      'spki',
+      pemBuffer,
+      {
+        name: 'RSA-OAEP',
+        hash
+      },
+      true,
+      ['encrypt']
+    );
+  }
+
+  utf8ToB64(str) {
+    return unescape(encodeURIComponent(str));
+  }
+
+  arrayBufferToB64(buffer) {
+    return window.btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
+  }
+
+  strToUint8Array(str) {
+    const arr = [];
+    const len = str?.length > 0 ? str.length : 0;
+    let i = 0;
+    while (i < len) {
+      arr.push(str.charCodeAt(i));
+      i++;
+    }
+    return new Uint8Array(arr);
+  }
+
+  /**
+   *
+   * @param srcStr 要加密的参数
+   * @param publicKey 加密公钥
+   * @returns
+   */
+  async rsaEncrypt(srcStr, publicKey) {
+    const encodedStr = this.strToUint8Array(srcStr);
+    return await crypto.subtle.encrypt(
+      {
+        name: 'RSA-OAEP'
+      },
+      publicKey,
+      encodedStr
+    );
+  }
+
+  /**
+   * 获取系统时间
+   */
+  getSystemTimeLong(akLoading = false): Observable<any> {
+    return this.systemApiService
+      .getSystemTimeUsingGET({
+        akDoException: false,
+        akLoading
+      })
+      .pipe(
+        _map(res => {
+          return new Date(res.time).getTime();
+        })
+      );
+  }
+
+  /**
+   * 客户端时间的时间戳转为服务端时间的时间戳
+   */
+
+  toSystemTimeLong(timeString): number {
+    // 客户端时间偏移量（小时）
+    const clientTimeZoneOffset = new Date().getTimezoneOffset() / 60;
+    return (
+      new Date(timeString).getTime() -
+      (clientTimeZoneOffset + SYSTEM_TIME.offset) * 3600 * 1e3
+    );
+  }
+
+  /**
+   * 此刻设置系统时间
+   * @param formControl 需要赋值的表单控件
+   */
+  setTimePickerCurrent(formControl: any) {
+    this.systemApiService
+      .getSystemTimeUsingGET({
+        akDoException: false
+      })
+      .subscribe(res => {
+        const sysDate = new Date(res.time);
+        formControl?.setValue(sysDate);
+      });
+  }
+
+  /**
+   *
+   * @returns 系统此刻时间，非精确
+   */
+  getCurrentSysTime(): number {
+    const querySysTimeLong = this.toSystemTimeLong(SYSTEM_TIME.sysTime);
+    const intervalTimeFromQuery =
+      new Date().getTime() - SYSTEM_TIME.userSystemTime;
+    return querySysTimeLong + intervalTimeFromQuery;
+  }
+
+  downloadUseAElement(url: string, fileName: string) {
+    const a = document.createElement('a');
+    a.href = `${location.protocol}//${location.host}/console/rest${url}`;
+    a.setAttribute('target', '_blank');
+    document.body.appendChild(a);
+    a.download = fileName;
+    a.click();
+    document.body.removeChild(a);
   }
 }

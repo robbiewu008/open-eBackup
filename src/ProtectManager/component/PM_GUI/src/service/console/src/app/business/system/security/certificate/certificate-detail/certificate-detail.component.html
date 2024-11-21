@@ -1,3 +1,4 @@
+<lv-form [lvLabelColon]="false" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [lvLabelColon]="false" class="formGroup">
   <lv-form-item>
     <lv-form-label>{{ componentLabel }}</lv-form-label>
     <lv-form-control>
@@ -124,10 +124,7 @@
 >
   <ng-container *ngIf="data.length === 0">
     <div class="performance-no-data">
-      <i lv-icon="aui-icon-no-data"></i>
-      <div class="no-data-label">
-        {{ 'common_no_data_label' | i18n }}
-      </div>
+      <lv-empty></lv-empty>
       <button
         *ngIf="isRevocationList"
         class="import-btn"
@@ -250,10 +247,7 @@
 <ng-template #revocationTpl let-data="tabData">
   <ng-container *ngIf="data.length === 0">
     <div class="performance-no-data">
-      <i lv-icon="aui-icon-no-data"></i>
-      <div class="no-data-label">
-        {{ 'common_no_data_label' | i18n }}
-      </div>
+      <lv-empty></lv-empty>
       <button
         class="import-btn"
         lv-button

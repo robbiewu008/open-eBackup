@@ -1,3 +1,4 @@
+<lv-group lvGutter="20px" class="aui-gutter-column-lg">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-group lvGutter="20px" class="aui-gutter-column-lg">
     <span class="aui-text-label">
         {{'protection_selected_copy_label' | i18n}}
     </span>
@@ -30,99 +30,8 @@
     </div>
 </ng-container>
 <ng-template #elseTemplate>
-    <h3 class="aui-gutter-column-md">
-        {{'protection_selected_restore_file_label' | i18n}}
-    </h3>
-    <div class="file-tree fileset-list-tree vm-file-level-tree-table">
-        <lv-treetable #lvTreeTable1 [lvData]="originalFileData" lvSelectionMode="multiple"
-            [(lvSelection)]="originalSelection" [lvScroll]="{ y: '480px' }" (lvSelectionChange)="selectionChange()"
-            [lvSelectionAssociate]="selectionAssociate" [lvPaginator]="page" lvCompareWith="compareKey">
-            <thead>
-                <tr>
-                    <th lvShowCheckbox lvCellKey="name">
-                        {{ 'common_name_label' | i18n }}
-                        <i lv-icon="lv-icon-search" [lvColorState]="true" [ngClass]="{ active: !!queryKey }" lv-popover
-                            [lvPopoverContent]="keyFilterTpl" lvPopoverPosition="bottom" lvPopoverTrigger="click"
-                            #keyPopover="lvPopover"></i>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <ng-container
-                    *ngTemplateOutlet="bodyContentTpl; context: { $implicit: lvTreeTable1.renderData, level: 0 }">
-                </ng-container>
-
-                <ng-template #bodyContentTpl let-data let-level="level">
-                    <ng-container *ngFor="let item of data">
-                        <ng-container *ngTemplateOutlet="contentTpl; context: { $implicit: item, level: level }">
-                        </ng-container>
-                    </ng-container>
-                </ng-template>
-
-                <ng-template #contentTpl let-item let-level="level">
-                    <tr>
-                        <td [lvShowCheckbox]="!item.isMoreBtn" [lvShowExpanded]="item.children?.length"
-                            [(lvExpanded)]="item.expanded" [lvRowData]="item"
-                            (lvExpandedChange)="getCopySourceTree(item)" [lvDisabled]="item.disabled"
-                            [lvPaddingLeft]="item.isMoreBtn ? level * 24 + 32 + 'px' : level * 24 + 'px'">
-                            <ng-container *ngIf="searchByKeyFlag; else elsePathTemplate">
-                                <div style="width: 650px;">
-                                    <lv-group [lvColumns]="['auto', '130px']" lvGutter="8px" class="tree-group">
-                                        <div lv-overflow class="file-container" *ngIf="item.nodeName">
-                                            <lv-group lvGutter='8px'>
-                                                <i lv-icon="{{ item.icon }}" [lvColorState]="true"></i>
-                                                <span lv-overflow>{{item.nodeName}}</span>
-                                            </lv-group>
-                                            <p class="aui-text-desc" lv-overflow>{{item.path}}</p>
-                                        </div>
-                                        <div class="file-info-container"
-                                            *ngIf="item.nodeType !== nodeType.Folder && item.nodeName !== ''">
-                                            <p>
-                                                {{item.nodeSize | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true}}
-                                            </p>
-                                            <p class="aui-text-desc">{{ item.modifyTime }}</p>
-                                        </div>
-                                    </lv-group>
-                                </div>
-                            </ng-container>
-                            <ng-template #elsePathTemplate>
-                                <div style="width: 456px;">
-                                    <span *ngIf="!item.isMoreBtn">
-                                        <lv-group [lvColumns]="['auto', '130px']" lvGutter="8px" class="tree-group">
-                                            <div lv-overflow class="file-container">
-                                                <i lv-icon="{{ item.icon }}" [lvColorState]="true"></i>
-                                                {{ item.name }}
-                                            </div>
-                                            <div class="file-info-container"
-                                                *ngIf="item.nodeType !== nodeType.Folder && item.nodeName !== ''">
-                                                <p>
-                                                    {{item.nodeSize | capacityCalculateLabel:
-                                                    '1.1-3':unitconst.BYTE:true}}
-                                                </p>
-                                                <p class="aui-text-desc">{{ item.modifyTime }}</p>
-                                            </div>
-                                        </lv-group>
-                                    </span>
-                                    <span *ngIf="item.isMoreBtn" class="aui-link"
-                                        (click)="getCopySourceNode(item.parent, item.startPage)">
-                                        {{ item.name }}
-                                    </span>
-                                </div>
-                            </ng-template>
-                        </td>
-                    </tr>
-                    <ng-container *ngIf="item.expanded && item.children?.length">
-                        <ng-container
-                            *ngTemplateOutlet="bodyContentTpl;context: { $implicit: item.children, level: level + 1 }">
-                        </ng-container>
-                    </ng-container>
-                </ng-template>
-            </tbody>
-        </lv-treetable>
-        <lv-paginator #page *ngIf="searchByKeyFlag && treeTotal > pageSize" [lvPageSize]="pageSize"
-            [lvTotal]="treeTotal" [lvPageIndex]="pageIndex" (lvPageChange)="pageChange($event)"
-            lvMode="simple"></lv-paginator>
-    </div>
+    <aui-file-tree [copy]="rowCopy" [treeData]="originalFileData" (tableSelectionChange)="tableSelectionChange($event)"
+        (treeExpandedChange)="getCopySourceTree($event)"></aui-file-tree>
 </ng-template>
 
 <!-- 恢复配置 -->
@@ -334,7 +243,8 @@
                     <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"></aui-inupt-with-eye>
                 </lv-form-control>
             </lv-form-item>
-            <lv-form-item *ngIf="[dataMap.Resource_Type.openStackCloudServer.value,dataMap.Resource_Type.hyperVVm.value].includes(childResType)">
+            <lv-form-item
+                *ngIf="[dataMap.Resource_Type.openStackCloudServer.value,dataMap.Resource_Type.hyperVVm.value].includes(childResType)">
                 <lv-form-label lvRequired>
                     {{'protection_os_type_label' | i18n}}
                 </lv-form-label>
@@ -390,8 +300,4 @@
             </button>
         </lv-group>
     </div>
-</ng-template>
-
-<ng-template #keyFilterTpl>
-    <lv-search [(ngModel)]="queryKey" (lvSearch)="searchByKey()" [lvFocus]="true"></lv-search>
 </ng-template>

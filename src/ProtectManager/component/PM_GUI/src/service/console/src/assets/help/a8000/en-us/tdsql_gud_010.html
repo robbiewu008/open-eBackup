@@ -1,0 +1,68 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Enabling the TDSQL Database Permission (Applicable to Non-distributed Instances)">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_009.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="tdsql_gud_010">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Enabling the TDSQL Database Permission (Applicable to Non-distributed Instances)</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="tdsql_gud_010"></a><a name="tdsql_gud_010"></a>
+
+<h1 class="topictitle1">Step 1: Enabling the TDSQL Database Permission (Applicable to Non-distributed Instances)</h1>
+<div><p>Before backing up a non-distributed TDSQL instance, you need to enable the permission of the corresponding version. Otherwise, the backup or restoration will fail. In other scenarios, skip this section.</p>
+<div class="section" id="tdsql_gud_010__section821323817381"><h4 class="sectiontitle">Context</h4><p id="tdsql_gud_010__p9667843103811"><span id="tdsql_gud_010__ph1292522251311">Unless otherwise specified, the operations in this section use TDSQL 10.3.22.1 as an example. The operations may vary depending on the version.</span></p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="tdsql_gud_010__li77041336572"><a name="tdsql_gud_010__li77041336572"></a><a name="li77041336572"></a><span>Log in to the TDSQL CHITU management console, select an instance in <strong>Instance management</strong>, choose <strong>Database management</strong> &gt; <strong>User Management</strong>, and click <strong>Create User</strong> to create a user for backup.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>You do not need to select any permission when creating a user.</p>
+</div></div>
+</p></li><li><span>Log in to the active database instance node as user <strong>root</strong>.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>To obtain the IP address of the active node, select an instance on the <strong>Instance management</strong> page of the TDSQL CHITU management console, and go to the <strong>DB monitoring</strong> page.</p>
+</div></div>
+</p></li><li><span>Run the following command to log in to the TDSQL database as an administrator (for example, <strong>tdsqlsys_agent</strong>):</span><p><pre class="screen">/data/tdsql_run/<em>Active node port number</em>/mysql-server<strong>-</strong><em>Database version</em>/bin/mysql --user='<em>Administrator username</em>' --password='<em>Administrator password</em>' -S<strong> </strong><em>socket file path</em></pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><div class="p">Replace the <em>Active node port number</em>, <em>Database version</em>, <em>Administrator username</em>, <em>Administrator password</em>, and <em>socket file path</em> in the command with the actual ones.<ul><li>To obtain the <em>Active node port number</em>, select an instance on the <strong>Instance management</strong> page of the TDSQL CHITU management console, and go to the <strong>DB monitoring</strong> page.</li><li>To obtain the <em>Database version</em>, choose <strong>System Management</strong> &gt; <strong>Version management</strong> on the TDSQL CHITU management console and obtain the value before the first hyphen in the current version of <strong>DB-Mysql</strong>.<p>For example, if the current version is <strong>8.0.24-v24-txsql-2.0.1-V2.0R751D003-20221125</strong>, replace the <em>Database version</em> in the command with <strong>8.0.24</strong>.</p>
+</li><li>Contact the database administrator to obtain the <em>Administrator username</em> and <em>Administrator password</em>.</li><li>To obtain the <em>socket file path</em>, run the <strong>cat /data/tdsql_run/</strong><em>Active node port number</em><strong>/mysql-server-</strong><em>Database version</em><strong>/etc/my_</strong><em>Active node port number</em><strong>.cnf | grep sock</strong> command.</li></ul>
+</div>
+</div></div>
+<p>Example:</p>
+<pre class="screen">/data/tdsql_run/4004/mysql-server-8.0.24/bin/mysql --user='tdsqlsys_agent' --password='123456' -S /data1/tdengine/data/4004/prod/mysql.sock</pre>
+</p></li><li><span>Log in to the primary node and run the following commands to enable the permission of the corresponding version for the user.</span><p><ul><li>If MySQL 8.0.24 is used, run the following command:<pre class="screen">GRANT BACKUP_ADMIN, PROCESS, RELOAD, SELECT, LOCK TABLES, SUPER ON *.* TO '<em>Username created in <a href="#tdsql_gud_010__li77041336572">1</a></em>'@'%';</pre>
+</li><li>If MariaDB 10.1.9 is used, run the following command:<pre class="screen">GRANT SELECT, RELOAD, PROCESS, SUPER, LOCK TABLES ON *.* TO '<em>Username created in <a href="#tdsql_gud_010__li77041336572">1</a></em>'@'%';</pre>
+</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="tdsql_gud_009.html">Backing Up TDSQL Databases</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

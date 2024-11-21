@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'common_name_label' | i18n }}
@@ -45,7 +45,7 @@
         <lv-radio-group formControlName="triggerCycle" [lvGroupName]="'typeGroup'">
           <lv-group [lvGutter]="'24px'">
             <lv-radio [lvValue]="dataMap.timeType.day.value">
-              {{ 'common_by_day_label' | i18n }}
+              {{ 'common_by_day_upper_label' | i18n }}
             </lv-radio>
             <lv-radio [lvValue]="dataMap.timeType.week.value">
               {{ 'common_by_week_label' | i18n }}

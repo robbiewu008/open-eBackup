@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -17,6 +17,7 @@ import {
   ClientManagerApiService,
   CommonConsts,
   DataMap,
+  DataMapService,
   GlobalService,
   I18NService,
   PolicyAction,
@@ -31,15 +32,17 @@ import {
   includes,
   isArray,
   isEmpty,
+  isNil,
   map,
   some,
+  toNumber,
   trim
 } from 'lodash';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
-  selector: 'aui-advanced-parameter',
+  selector: 'aui-oracle-advanced-parameter',
   templateUrl: './advanced-parameter.component.html',
   styleUrls: ['./advanced-parameter.component.less']
 })
@@ -64,6 +67,7 @@ export class AdvancedParameterComponent implements OnInit {
   hostOptions = [];
   newHostOptions = [];
   originalHostOptions = [];
+  dateUnitOptions = this.dataMapService.toArray('deleteArchiveLogDuringUnit');
   unsupportedLabel = this.i18n.get(
     'protection_oracle_snapshot_storage_diff_label'
   );
@@ -78,15 +82,28 @@ export class AdvancedParameterComponent implements OnInit {
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 8]),
     invalidInteger: this.i18n.get('common_valid_integer_label')
   };
+  storageUsageErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    invalidRang: this.i18n.get('common_valid_rang_label', [0, 100]),
+    invalidInteger: this.i18n.get('common_valid_integer_label')
+  };
+  deleteBeforeTimeErrorTip = {
+    ...this.baseUtilService.rangeErrorTip,
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 999])
+  };
+  deleteArchiveLogDisplayLabel = this.i18n.get(
+    'protection_delete_all_archived_log_label'
+  );
   constructor(
     private fb: FormBuilder,
-    private i18n: I18NService,
+    public i18n: I18NService,
     public baseUtilService: BaseUtilService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private clientManagerApiService: ClientManagerApiService,
     private appUtilsService: AppUtilsService,
     private globalService: GlobalService,
-    private infoMessageService: InfoMessageService
+    private infoMessageService: InfoMessageService,
+    private dataMapService: DataMapService
   ) {}
 
   ngOnInit() {
@@ -202,7 +219,7 @@ export class AdvancedParameterComponent implements OnInit {
       // 查询完sla后select-sla会发送更新消息，然后这里就能取到所有的slaList
       if (res) {
         this.unsupportStorage = some(
-          this.resourceData.slaObject.policy_list,
+          this.resourceData?.slaObject?.policy_list,
           item => item.action === PolicyAction.DIFFERENCE
         );
       }
@@ -230,6 +247,17 @@ export class AdvancedParameterComponent implements OnInit {
       delete_archived_log: new FormControl(
         extParameters.delete_archived_log ?? false
       ),
+      delete_archived_log_group: new FormControl(0),
+      custom_delete_log_time: new FormControl(1, {
+        validators: [
+          this.baseUtilService.VALID.rangeValue(1, 999),
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.required()
+        ]
+      }),
+      custom_delete_log_time_unit: new FormControl(
+        this.dateUnitOptions[0].value
+      ),
       proxyHost: new FormControl(
         !isEmpty(extParameters?.agents) ? extParameters?.agents.split(';') : []
       ),
@@ -239,9 +267,33 @@ export class AdvancedParameterComponent implements OnInit {
       storage_snapshot_flag: new FormControl(
         extParameters?.storage_snapshot_flag || false
       ),
-      concurrency: new FormControl(3)
+      concurrency: new FormControl(3),
+      max_storage_usage_ratio: new FormControl(80)
     });
     this.listenForm();
+    if (
+      !isNil(extParameters?.delete_before_time) &&
+      extParameters.delete_before_time !== '0'
+    ) {
+      // 有值且不为零说明是开启了自定义删除时间
+      this.formGroup.get('delete_archived_log_group').setValue(1); // radio 跳到自定义选项
+      this.formGroup
+        .get('custom_delete_log_time')
+        .setValue(extParameters.delete_before_time); // 填充自定义
+      this.formGroup
+        .get('custom_delete_log_time_unit')
+        .setValue(extParameters.delete_before_time_unit);
+      this.deleteArchiveLogDisplayLabel = this.i18n.get(
+        'protection_delete_archived_log_after_log_backup_display_label',
+        [
+          this.formGroup.get('custom_delete_log_time').value,
+          this.dataMapService.getLabel(
+            'deleteArchiveLogDuringUnit',
+            this.formGroup.get('custom_delete_log_time_unit').value
+          )
+        ]
+      );
+    }
     // 存储快照开启时使用的是内置外置代理主机
     this.hostOptions = extParameters?.storage_snapshot_flag
       ? [...this.newHostOptions]
@@ -252,8 +304,12 @@ export class AdvancedParameterComponent implements OnInit {
         proxyHost: !isEmpty(extParameters?.snapshot_agents)
           ? extParameters?.snapshot_agents.split(';')
           : [],
-        concurrency: Number(extParameters.concurrent_requests || '3')
+        concurrency: toNumber(extParameters.concurrent_requests || '3'),
+        max_storage_usage_ratio: toNumber(
+          extParameters?.max_storage_usage_ratio || '80'
+        )
       });
+      this.afterStorageSnapshotFlagChange(true);
       this.proxyTipsLabel = this.i18n.get(
         'protection_snapshot_backup_tips_label'
       );
@@ -274,6 +330,17 @@ export class AdvancedParameterComponent implements OnInit {
       .valueChanges.pipe(distinctUntilChanged())
       .subscribe(res => {
         this.beforeStorageFlagChange(res);
+      });
+    this.formGroup
+      .get('delete_archived_log_group')
+      .valueChanges.subscribe(res => {
+        if (!res) {
+          this.formGroup.get('custom_delete_log_time').disable();
+          this.formGroup.get('custom_delete_log_time_unit').disable();
+        } else {
+          this.formGroup.get('custom_delete_log_time').enable();
+          this.formGroup.get('custom_delete_log_time_unit').enable();
+        }
       });
     this.formGroup.statusChanges.subscribe(res => {
       this.valid$.next(this.formGroup.valid);
@@ -325,6 +392,10 @@ export class AdvancedParameterComponent implements OnInit {
       : proxyControl.clearValidators();
     proxyControl.updateValueAndValidity();
     // 开启存储快照需要填并发数
+    this.afterStorageSnapshotFlagChange(res);
+  }
+
+  private afterStorageSnapshotFlagChange(res) {
     if (res) {
       this.formGroup
         .get('concurrency')
@@ -332,10 +403,19 @@ export class AdvancedParameterComponent implements OnInit {
           this.baseUtilService.VALID.integer(),
           this.baseUtilService.VALID.rangeValue(1, 8)
         ]);
+      this.formGroup
+        .get('max_storage_usage_ratio')
+        .setValidators([
+          this.baseUtilService.VALID.required(),
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(0, 100)
+        ]);
     } else {
-      this.formGroup.clearValidators();
+      this.formGroup.get('max_storage_usage_ratio').clearValidators();
+      this.formGroup.get('concurrency').clearValidators();
     }
     this.formGroup.get('concurrency').updateValueAndValidity();
+    this.formGroup.get('max_storage_usage_ratio').updateValueAndValidity();
   }
 
   initData(data: any, resourceType: string) {
@@ -369,6 +449,21 @@ export class AdvancedParameterComponent implements OnInit {
       delete_archived_log: this.formGroup.value.delete_archived_log,
       storage_snapshot_flag: this.formGroup.value.storage_snapshot_flag
     };
+    if (agentParams.delete_archived_log) {
+      if (this.formGroup.get('delete_archived_log_group').value) {
+        assign(agentParams, {
+          delete_before_time_unit: this.formGroup.value
+            .custom_delete_log_time_unit,
+          delete_before_time: this.formGroup.value.custom_delete_log_time
+        });
+      } else {
+        assign(agentParams, {
+          delete_before_time_unit:
+            DataMap.deleteArchiveLogDuringUnit.hour.value,
+          delete_before_time: '0'
+        });
+      }
+    }
     // 开启快照备份后原来的agents改为snapshot_agents agents字段传null
     if (this.formGroup.value.storage_snapshot_flag) {
       assign(agentParams, {
@@ -379,7 +474,10 @@ export class AdvancedParameterComponent implements OnInit {
             })
             .join(';') || null,
         agents: null,
-        concurrent_requests: String(this.formGroup.value.concurrency)
+        concurrent_requests: String(this.formGroup.value.concurrency),
+        max_storage_usage_ratio: String(
+          this.formGroup.value.max_storage_usage_ratio
+        )
       });
     }
     return assign(resourceData, {

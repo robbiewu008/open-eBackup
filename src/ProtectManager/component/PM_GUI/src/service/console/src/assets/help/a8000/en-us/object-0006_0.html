@@ -1,0 +1,86 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Mounting Object Storage to the ProtectAgent Host">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="Files-0005_0.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="object-0006_0">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Mounting Object Storage to the ProtectAgent Host</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="object-0006_0"></a><a name="object-0006_0"></a>
+
+<h1 class="topictitle1">Mounting Object Storage to the ProtectAgent Host</h1>
+<div><p>Before object storage backup, mount the object storage to the data protection agent host by referring to this section. The mounted object storage can be used as a common file system. You can perform backup and recovery on the management page.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>ProtectAgent has been installed. For details, see "Installing ProtectAgent and Related Software" in the <i><cite>OceanProtect <span id="object-0006_0__en-us_topic_0000001792502994_ph19170214112011">Appliance 1.5.0-1.6.0</span> ProtectAgent Installation Guide</cite></i>.</li><li>You have obtained the AK and SK of the object storage.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><p>Currently, only the S3-compatible object storage is supported. For details about the OS versions supported by the S3 protocol, visit <a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">Compatibility Query</a>.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to the agent host as user <strong>root</strong>.</span></li><li><span>Download S3fs and install it on the data protection agent host.</span><p><ol type="a"><li>Run the following commands in sequence to download the S3fs-fuse source code.<pre class="screen">cd /root</pre>
+<pre class="screen">git clone https://github.com/s3fs-fuse/s3fs-fuse.git</pre>
+<p>If the following information is displayed, the source code is successfully downloaded.</p>
+<pre class="screen">Resolving deletas:100% (2203/2203)... done
+Checking connectivity... done</pre>
+</li><li>Run the following command to decompress the package.<pre class="screen">unzip s3fs-fuse-master.zip</pre>
+</li><li>Run the following commands in sequence to install S3fs.<pre class="screen">cd /root/s3fs-fuse/</pre>
+<pre class="screen">./autogen.sh</pre>
+<pre class="screen">./configure</pre>
+<pre class="screen">make</pre>
+<pre class="screen">makeinstall</pre>
+</li><li>Run the following command to check whether the installation is successful.<pre class="screen">s3fs</pre>
+<p>If the following information is displayed, the installation is successful.</p>
+<pre class="screen">s3fs: missing BUCKET argument.
+Usage: s3fs BUCKET:[PATH] MOUNTPOINT [OPTION]...</pre>
+</li></ol>
+</p></li><li><span>Mount the S3 bucket.</span><p><ol type="a"><li id="object-0006_0__en-us_topic_0000001801653198_li940312373418"><a name="object-0006_0__en-us_topic_0000001801653198_li940312373418"></a><a name="en-us_topic_0000001801653198_li940312373418"></a>Go to the <strong>/home</strong> directory and run the following commands in sequence to create the <strong>passwd-s3fs</strong> file for storing the AK and SK. The file format must be <strong>AK:SK</strong>.<pre class="screen">mkdir s3</pre>
+<pre class="screen">cd /home/s3</pre>
+<pre class="screen">touch passwd-s3fs</pre>
+<pre class="screen">vi passwd-s3fs</pre>
+<p>Example of <span class="uicontrol"><b>passwd-s3fs</b></span> file content:</p>
+<pre class="screen">D3F00C9CE4FC2FC5FFD1:vssChPXeU8hiZ7OTo2vvcSpbigEAAAF85Pwvxa7b</pre>
+</li><li>Run the following command to change the <span class="uicontrol"><b>passwd-s3fs</b></span> file permission.<pre class="screen">chmod 600 passwd-s3fs</pre>
+</li><li>Run the following command to mount the S3 bucket locally. In the command, specify the name of the S3 bucket to be mounted and the mount path. The AK and SK key file path is the absolute path of the <span class="uicontrol"><b>passwd-s3fs</b></span> file created in <a href="#object-0006_0__en-us_topic_0000001801653198_li940312373418">1</a>.<pre class="screen">s3fs <em>S3 bucket name</em> <em>Local mount path</em> -o passwd_file=<em>AKSK key file path</em> -o url=<em>S3 endpoint</em> -o uid=1002,gid=1002 -o use_path_request_style</pre>
+<p>Example:</p>
+<pre class="screen">s3fs test-2t /home/s3mount -o passwd_file=/home/s3/passwd-s3fs -o url=http://192.168.99.182 -o uid=1002,gid=1002 -o use_path_request_style</pre>
+</li><li>Run the <strong>mount</strong> command. If the following information is displayed, the mounting is successful.<pre class="screen">s3fs on /home/s3mount type fuse.s3fs (rw,nosuid,nodev,relatime,use_id=0,group_id=0)</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>If the ProtectAgent host is restarted, the mounted object storage will be unmounted. Before performing subsequent operations, check the mounting status of the object storage.</li><li>After mounting is complete and backup and restoration for the object storage are performed, you can run the <strong>umount</strong> command to cancel mounting.</li></ul>
+</div></div>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="Files-0005_0.html">Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

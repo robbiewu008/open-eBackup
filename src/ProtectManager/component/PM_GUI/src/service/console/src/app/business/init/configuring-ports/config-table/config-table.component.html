@@ -1,3 +1,4 @@
+<div
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div
   class="aui-gutter-column-md"
   *ngIf="(!isModify || (isModify && modifying)) && !isLLD"
 >
@@ -27,25 +27,9 @@
           data.controllerName
         )
       "
-      [disabled]="data.controllerData.length === 20"
+      [disabled]="data.controllerData.length >= 72"
     >
       {{ 'common_create_port_label' | i18n }}
-    </button>
-    <button
-      lv-button
-      lvType="default"
-      lv-tooltip="{{ 'common_reuse_dm_port_tip_label' | i18n }}"
-      (click)="
-        operationCallBack(
-          'reuse',
-          data.controllerData,
-          null,
-          data.controllerName
-        )
-      "
-      *ngIf="isModify"
-    >
-      {{ 'common_reuse_dm_port_label' | i18n }}
     </button>
   </lv-group>
 </div>
@@ -74,28 +58,27 @@
           lvFilterCheckAll
           [attr.width]="col.width"
         >
-          <span lv-overflow *ngIf="col.key !== 'ip'">{{ col.label }}</span>
-          <span lv-overflow *ngIf="col.key === 'ip'">
+          <span lv-overflow *ngIf="!['ip', 'dmExists'].includes(col.key)">{{
+            col.label
+          }}</span>
+          <span lv-overflow *ngIf="col.key === 'dmExists'">
             {{ col.label }}
             <i
-              lv-icon="lv-icon-search"
-              [lvColorState]="true"
-              lv-popover
-              [lvPopoverContent]="ipTpl"
-              lvPopoverTheme="light"
-              lvPopoverPosition="bottom"
-              lvPopoverTrigger="click"
-              #ipPopover="lvPopover"
-              [ngClass]="{ active: !!data.isSearch }"
+              lv-icon="aui-icon-help"
+              lv-tooltip="{{ 'common_dm_exist_tip_label' | i18n }}"
+              lvTooltipTheme="light"
+              lvTooltipPosition="top"
+              class="configform-constraint"
+              lvColorState="true"
             ></i>
           </span>
-          <ng-template #ipTpl>
-            <lv-search
-              [(ngModel)]="ip"
-              (lvSearch)="searchByIp($event, data)"
-              [lvFocus]="true"
-            ></lv-search>
-          </ng-template>
+          <span lv-overflow *ngIf="col.key === 'ip'">
+            {{ col.label }}
+            <aui-custom-table-search
+              (search)="searchByIp($event, data)"
+              [filterTitle]="ip"
+            ></aui-custom-table-search>
+          </span>
         </th>
       </ng-container>
       <th width="20px" style="padding: 0;">
@@ -126,7 +109,7 @@
           <td>
             <ng-container [ngSwitch]="col.key">
               <ng-container *ngSwitchCase="'id'">
-                {{ item.id | nil }}
+                <span lv-overflow>{{ item.id | nil }}</span>
               </ng-container>
               <ng-container *ngSwitchCase="'name'">
                 <input
@@ -143,6 +126,9 @@
               </ng-container>
               <ng-container *ngSwitchCase="'role'">
                 {{ item.role | textMap: 'initRoleTable' }}
+              </ng-container>
+              <ng-container *ngSwitchCase="'dmExists'">
+                {{ item.dmExists | textMap: 'initLogicPortExistStatus' }}
               </ng-container>
               <ng-container *ngSwitchCase="'portType'">
                 <span lv-overflow>{{
@@ -174,7 +160,7 @@
                     [ngClass]="{
                       'aui-link': !item?.modifyDisabled,
                       'aui-link-disabled': !!item?.modifyDisabled,
-                      'disabled': !!item?.modifyDisabled
+                      disabled: !!item?.modifyDisabled
                     }"
                     (click)="
                       operationCallBack(

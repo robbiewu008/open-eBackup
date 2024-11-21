@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="配置数据库备份与恢复账户">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="exchange_0017.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="exchange_0021">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>配置数据库备份与恢复账户</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="exchange_0021"></a><a name="exchange_0021"></a>
+  <h1 class="topictitle1">配置数据库备份与恢复账户</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>新建一个数据库备份恢复账户，并为该用户创建一个可用邮箱，创建完成后该账户会自动成为域用户的新账户。</span><p></p>
+      <ul>
+       <li>Exchange 2010：登录Exchange代理端主机，打开Exchange管理控制台，展开“收件⼈配置”，右键单击“邮箱”，选择“新建邮箱”，根据提示创建⼀个新的Exchange邮箱，用户名如“OceanProtectUser”。</li>
+       <li>Exchange 2013/2016/2019：登录Exchange Web管理中心，在收件⼈界⾯单击新建邮箱,根据提示创建⼀个新的Exchange邮箱，用户名如“OceanProtectUser”。</li>
+      </ul> <p></p></li>
+     <li><span>将新创建的用户添加为域管理员的成员。</span><p></p><p>在所属域控制器上，打开“Active Directory 用户和计算机”，双击刚创建的账⼾，选择“隶属于”选项卡，单击“添加”，并将此用户添加到域管理员组“Domain Admins”，单击“确定”。</p> <p></p></li>
+     <li><span>在Exchange代理主机属性中为此用户提供凭据，创建新角色组，设置该用户为该角色组成员。</span><p></p>
+      <ol type="a">
+       <li>打开“Exchange Management Shell”并执行如下命令创建一个名为OceanProtectRoles的角色组。<pre class="screen">New-RoleGroup -Name OceanProtectRoles -Roles @("Database Copies", "Databases", "Exchange Servers", "Monitoring", "Mail Recipient Creation", "Mail Recipients", "Recipient Policies")</pre> <p>参数解释：</p>
+        <ul>
+         <li>DatabaseCopies: 使管理员能够管理各个服务器上的数据库副本。</li>
+        </ul>
+        <ul>
+         <li><span>Databases: 使管理员能够在各个服务器上创建，管理，装载和卸载邮箱和公用文件夹数据库。</span></li>
+         <li>Exchange Servers: 使管理员能够在各个服务器上管理Exchange服务器配置。</li>
+         <li>Monitoring: 使管理员能够监视组织中的Exchange服务和组件的可⽤性。除管理员外，与此⻆⾊类型关联的⻆⾊还可以与监视应⽤程序使⽤的服务账户一起使用，以收集有关Exchange服务器状态的信息。</li>
+         <li>Mail Recipient Creation: 使管理员能够在组织中创建邮箱，邮件用户，邮件联系人，通讯组和动态通讯组。</li>
+         <li>Mail Recipients: 使管理员能够管理组织中的现有邮箱，邮件用户，邮件联系人，通讯组和动态通讯组。</li>
+         <li>Recipient Policies: 使管理员能够在组织中管理收件人策略，例如配置策略。</li>
+        </ul></li>
+       <li>添加组成员：将“OceanProtectUser”用户添加到 OceanProtectRoles 角色组。<pre class="screen">Add-RoleGroupMember -Identity OceanProtectRoles -Member OceanProtectUser</pre></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="exchange_0017.html">备份前准备</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

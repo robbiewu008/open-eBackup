@@ -1,3 +1,4 @@
+<lv-form class="formGroup lv-form-label-required" [formGroup]="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,21 +12,12 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form class="formGroup lv-form-label-required" [formGroup]="formGroup">
   <lv-form-item>
     <lv-form-label>
       {{ 'common_name_label' | i18n }}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="nameErrorTip">
       <input lv-input type="text" formControlName="name" />
-    </lv-form-control>
-  </lv-form-item>
-  <lv-form-item>
-    <lv-form-label>
-      {{ 'protection_management_control_endpoint_label' | i18n }}
-    </lv-form-label>
-    <lv-form-control [lvErrorTip]="endpointErrorTip">
-      <input lv-input type="text" formControlName="endpoint" />
     </lv-form-control>
   </lv-form-item>
   <lv-form-item>
@@ -54,14 +46,6 @@
     </lv-form-label>
     <lv-form-control [lvErrorTip]="idErrorTip">
       <input lv-input type="text" formControlName="organizationId" />
-    </lv-form-control>
-  </lv-form-item>
-  <lv-form-item>
-    <lv-form-label>
-      {{ 'protection_region_id_label' | i18n }}
-    </lv-form-label>
-    <lv-form-control [lvErrorTip]="idErrorTip">
-      <input lv-input type="text" formControlName="regionId" />
     </lv-form-control>
   </lv-form-item>
   <lv-form-item>

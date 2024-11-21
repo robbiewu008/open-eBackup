@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="(Optional) Creating Backup Storage Unit Groups">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="HA00014.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="documenttype" content="usermanual">
+  <meta name="prodname" content="csbs">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="HA00021">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>(Optional) Creating Backup Storage Unit Groups</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="HA00021"></a><a name="HA00021"></a>
+  <h1 class="topictitle1">(Optional) Creating Backup Storage Unit Groups</h1>
+  <div>
+   <p>A backup storage unit is used to manually set the storage location of backup copies during backup. If you want to automatically switch the storage location of backup copies or automatically set the storage location of replication copies during replication, perform operations in this section to create a backup storage unit group.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>When creating a backup storage unit group, ensure that at least two normal backup storage units exist and select at least one backup storage unit of the local cluster.</li>
+     <li>If you want to use the backup storage unit of an external device to create a backup storage unit group, you must enable <span class="uicontrol"><b>Parallel Data Storage</b></span> when creating the backup storage unit group.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <ul>
+     <li>When creating a backup storage unit group, you cannot select storage units of the same backup storage device.</li>
+     <li>When a backup storage unit group is created or modified, only GaussDB (DWS) supports parallel data storage. During SLA creation, you cannot select this backup storage unit group as the copy storage location for applications that do not support parallel data storage.</li>
+     <li>In the LAN-free scenario, the storage policy does not take effect.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="menucascade" id="HA00021__ha00019_menucascade31053579148"><b><span class="uicontrol" id="HA00021__ha00019_uicontrol41059577142"><span id="HA00021__ha00019_text1054020121612"><strong>System</strong></span></span></b> &gt; <b><span class="uicontrol" id="HA00021__ha00019_uicontrol154661958121418"><span id="HA00021__ha00019_text8757278167"><strong>Infrastructure</strong></span></span></b> &gt; <b><span class="uicontrol" id="HA00021__ha00019_uicontrol54471544151"><span id="HA00021__ha00019_text1631251418164"><strong>Cluster Management</strong></span></span></b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Backup Storage Unit Groups</strong></span></b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> to create a backup storage unit group. <a href="#HA00021__table11753170204411">Table 1</a> describes the related parameters.</span><p></p>
+      <div class="tablenoborder">
+       <a name="HA00021__table11753170204411"></a><a name="table11753170204411"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="HA00021__table11753170204411" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Parameters for creating a backup storage unit group
+        </caption>
+        <colgroup>
+         <col style="width:28.910000000000004%">
+         <col style="width:71.09%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="28.910000000000004%" id="mcps1.3.4.2.3.2.1.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="71.09%" id="mcps1.3.4.2.3.2.1.2.3.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="28.910000000000004%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.09%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p>Name of the backup storage unit group, which can be customized.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="28.910000000000004%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p><span><strong>Description</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.09%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p>Enter the description of the backup storage unit group.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="28.910000000000004%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p><span><strong>Parallel Data Storage</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.09%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p>This function is disabled by default. If this function is enabled, copy data is stored on all backup storage units. Otherwise, copy data is stored on the backup storage unit corresponding to the job execution node.</p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <ul>
+              <li>If you need to back up GaussDB (DWS) and use an external backup storage unit, enable <strong>Parallel Data Storage</strong>. Only GaussDB (DWS) supports parallel data storage. During SLA creation, you cannot select this backup storage unit group as the copy storage location for unsupported applications.</li>
+              <li>After parallel data storage is enabled, you need to select at least one backup storage unit that belongs to the local cluster.</li>
+              <li>After the <span class="uicontrol"><b><span><strong>Parallel Data Storage</strong></span></b></span> function is disabled, only nodes in the backup cluster can be selected.</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="28.910000000000004%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p><span><strong>Fault Timeout Period</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.09%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p>Time required for the system to wait for a faulty standby node or member node to restore if a job is distributed to the node. If the node is not restored within the fault timeout period, the system switches to another node to execute the job. The default fault timeout period is 15 minutes. The value ranges from 1 to 120 minutes.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>Select all backup storage units in the <span class="uicontrol"><b><span><strong>Available Backup Storage Unit</strong></span></b></span> list and set the alarm threshold (80% by default) in the <span class="uicontrol"><b><span><strong>Selected Backup Storage Unit</strong></span></b></span> list.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Next</strong></span></b></span>.</span></li>
+     <li><span>Confirm the storage policy. Two storage policies are supported: <span class="uicontrol"><b><span><strong>Reduction Ratio First</strong></span></b></span> and <span class="uicontrol"><b><span><strong>Intelligent Balancing</strong></span></b></span>. Select an option based on the site requirements.</span><p></p>
+      <ul>
+       <li><span><strong>Reduction Ratio First</strong></span>: This mode preferentially ensures the data reduction ratio and preferentially uses the storage unit used during the first backup. If the node or ProtectAgent network is faulty, the storage unit is switched based on the policy algorithm.</li>
+       <li><span><strong>Intelligent Balancing</strong></span>: During each full backup backup, the system automatically selects the optimal storage unit using the algorithm based on the capacity and job load of the storage cluster.</li>
+      </ul> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="HA00014.html">Configuring Cluster HA</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

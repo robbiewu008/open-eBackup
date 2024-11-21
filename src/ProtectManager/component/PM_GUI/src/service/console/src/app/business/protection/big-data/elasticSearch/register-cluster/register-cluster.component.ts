@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   Input,
@@ -55,6 +55,7 @@ import {
   includes,
   isEmpty,
   isFunction,
+  isNil,
   isNumber,
   isUndefined,
   last,
@@ -243,7 +244,9 @@ export class RegisterClusterComponent implements OnInit {
         serverLink: this.data.extendInfo?.ElasticSearchAddress,
         loginMode: this.data.auth.authType,
         kerberosId: this.data.extendInfo?.kerberosId,
-        username: this.data.auth.authKey.split('@')[0],
+        username: isNil(this.data.auth.authKey)
+          ? this.data.auth.authKey
+          : this.data.auth.authKey.split('@')[0],
         agents: this.data.extendInfo?.agents.split(';'),
         pathUser: this.data.extendInfo?.ElasticSearchUser,
         pathAttr: this.data.extendInfo?.ElasticSearchGroup,

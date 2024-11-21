@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 5: Registering the VMware Virtualization Environment">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0015_0.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="vmware_gud_0024_0">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 5: Registering the VMware Virtualization Environment</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="vmware_gud_0024_0"></a><a name="vmware_gud_0024_0"></a>
+  <h1 class="topictitle1">Step 5: Registering the VMware Virtualization Environment</h1>
+  <div>
+   <p>Before performing VMware backup, you must register the VMware virtualization environment with the <span>product</span>.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>vCenter Servers or ESXi hosts can be registered when you register the VMware virtualization environment with the <span>product</span>. If there are multiple independent ESXi hosts, you need to register them one by one.</p>
+    <p>After registering the VMware virtualization environment, you can view information about vCenter Servers, ESXi hosts, or VMs on the management page and protect or restore them.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="vmware_gud_0024_0__en-us_topic_0000001839142377_uicontrol1738217261378"><b><span id="vmware_gud_0024_0__en-us_topic_0000001839142377_text738292620372"><strong>Protection</strong></span> &gt; Virtualization &gt; VMware</b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b>Register</b></span>, and register the VMware virtualization platform.</span><p></p>
+      <div class="p">
+       <a href="#vmware_gud_0024_0__table613227155112">Table 1</a> lists the VMware registration information. 
+       <div class="tablenoborder">
+        <a name="vmware_gud_0024_0__table613227155112"></a><a name="table613227155112"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0024_0__table613227155112" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>VMware registration information
+         </caption>
+         <colgroup>
+          <col style="width:25.6%">
+          <col style="width:74.4%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="25.6%" id="mcps1.3.3.2.2.2.1.2.2.3.1.1"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="74.4%" id="mcps1.3.3.2.2.2.1.2.2.3.1.2"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>User-defined virtualization platform name.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>IP Address</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 ">
+            <ul>
+             <li>If the ESXi host is managed by a vCenter Server, enter the management IP address of the vCenter Server.</li>
+             <li>If the ESXi host is not managed by a vCenter Server, enter the management IP address of the ESXi host.</li>
+            </ul></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Port</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Port number used by the <span>product</span> to communicate with the management plane of the vCenter Server or ESXi host.</p> <p>The default port number is <strong>443</strong>.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Username</strong></span></p></td>
+           <td class="cellrowborder" rowspan="2" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 ">
+            <ul>
+             <li>When a vCenter Server is registered, enter the username and password for logging in to the VMware vSphere Web Client.<p>For details about minimum permission requirements, see <a href="vmware_gud_0093_0.html">Minimum Permissions for Users Performing VMware Virtualization Environment Registration</a>.</p></li>
+             <li>When an ESXi host is registered, enter the username and password for logging in to the ESXi host.</li>
+            </ul></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Resource Scan Interval</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Interval for the system to automatically scan resources</p> <p>After the frequency is set, the system automatically scans the VMware virtualization environment based on the frequency and updates the changed VM to the <span>product</span>.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Certificate verification</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>This function is enabled by default. When you register a VMware protected environment, the system verifies the information about the accessed devices. After this function is disabled, security risks may exist in the communication between the system and VMware. Exercise caution when performing this operation.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Certificate</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>After <span class="uicontrol"><b><span><strong>Certificate verification</strong></span></b></span> is enabled, import the certificate obtained in <a href="vmware_gud_0023.html">Step 4: Obtaining the VMware Certificate</a>.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Revocation List</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>The CRL is issued by the certificate authority. After the CRL is imported, the system checks whether the client certificate has been revoked. If the certificate has been revoked, cluster registration fails.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Secure TLS Versions and Algorithms</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>This function is disabled by default and TLS 1.3 is used by default. After this function is enabled, communication parties negotiate with each other to determine the protocol to be used.</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>For 1.6.0 and later versions: If storage-layer backup is required, perform this step to add storage resources. Otherwise, skip this step.</span><p></p>
+      <ol type="a">
+       <li>In the <span><strong>Storage Resources</strong></span> area, click <span class="uicontrol"><b><span><strong>Add</strong></span></b></span>.</li>
+       <li>Configure parameters as required. <a href="#vmware_gud_0024_0__table20829151954610">Table 2</a> describes the parameters. 
+        <div class="tablenoborder">
+         <a name="vmware_gud_0024_0__table20829151954610"></a><a name="table20829151954610"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0024_0__table20829151954610" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 2 </b>Parameters for adding storage resources
+          </caption>
+          <colgroup>
+           <col style="width:25.629999999999995%">
+           <col style="width:74.37%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.3.2.3.2.1.2.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.3.2.3.2.1.2.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span><strong>Type</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>Type of a storage resource. The value can be <strong>OceanStor Dorado 6.</strong><em>x</em> or <strong>NetApp ONTAP</strong>.</p>
+             <div class="note">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p>Only 1.6.0 and later versions support <strong>NetApp ONTAP</strong>.</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span><strong>Management IP Address</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>Management IP address of the storage device.</p> <p>You can click <strong>Add</strong> to enter multiple management IP addresses of the storage device. If a management IP address cannot be accessed, the system automatically switches to another accessible management IP address.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span><strong>Port</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>Port number for communication between the <span>product</span> and the management plane of the storage device.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span><strong>Username</strong></span></p></td>
+            <td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>Username and password of the storage device. The user role must be an administrator or a super administrator.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span><strong>Certificate verification</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>This function is enabled by default. Certificate verification is performed when a storage device is added, ensuring the security of interactions between the <span>product</span> and storage device. After this function is disabled, security risks may exist in the communication between the system and the storage device. Exercise caution when performing this operation.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span><strong>Certificate</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>To-be-imported CA certificate of the storage device. For details about how to obtain the CA certificate of a storage device, see "Step 1: Obtaining the CA Certificate of a Storage Device" in the Data Backup Feature Guide (for NAS Files).</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span><strong>Revocation List</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>The CRL is issued by the certificate authority. After the CRL is imported, the system checks whether the client certificate has been revoked. If the certificate has been revoked, storage device registration fails.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ol> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span><p></p><p>After the registration is successful, information about the registered VMware virtualization environment is displayed on the left of the page. You can view vCenter Servers or ESXi hosts and their VM lists.</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="vmware_gud_0015_0.html">Backing Up a VMware VM</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
     <lv-tabs formArrayName="archiveTeams" [lvTabBarExtraContent]="extraTpl" [(lvActiveIndex)]="activeIndex"
         [lvType]="'underline'" [lvClosable]="true" (lvTabRemove)="removeArchiveTeam($event)"
         (lvActiveIndexChange)="policyIndexChange($event)">
@@ -128,7 +128,8 @@
                     </lv-form-label>
                     <lv-form-control [lvErrorTip]="intervalErrorTip">
                         <lv-group lvGutter='4px'>
-                            <span>{{'protection_every_label' | i18n}}</span>
+                            <span *ngIf="!i18n.isEn">{{'protection_every_label' | i18n}}</span>
+                            <span *ngIf="i18n.isEn">{{'protection_archive_interval_label' | i18n}}</span>
                             <lv-input-group [lvAddAfter]="archiveUnitTpl"
                                 class="input-group-select-right archive-frequency-input">
                                 <input lv-input formControlName="interval"
@@ -139,7 +140,7 @@
                                     class="unit-inner-select" lvValueKey="value"
                                     (ngModelChange)="changeTimeUnits(item, $event, 'interval')"></lv-select>
                             </ng-template>
-                            <span>{{'protection_archive_one_label' | i18n}}</span>
+                            <span *ngIf="!i18n.isEn">{{'protection_archive_one_label' | i18n}}</span>
                         </lv-group>
                     </lv-form-control>
                 </lv-form-item>
@@ -211,7 +212,7 @@
                             </lv-input-group>
                             <ng-template #unitTpl>
                                 <lv-select [lvOptions]="retentionDurationUnit" formControlName="duration_unit"
-                                    class="unit-inner-select" lvValueKey="value"
+                                    class="unit-inner-select" [ngClass]="{'unit-inner-select-en':i18n.isEn}" lvValueKey="value"
                                     (ngModelChange)="changeTimeUnits(item, $event, 'retention_duration')"></lv-select>
                             </ng-template>
                         </lv-form-control>
@@ -236,7 +237,7 @@
                                 <lv-group>
                                     <lv-select [lvOptions]="yearTimeRangeOptions"
                                         formControlName="generate_time_range_year" lvValueKey="value"
-                                        class="backup-time-unit-text">
+                                        [ngClass]="{'backup-time-unit-text': !i18n.isEn,'backup-time-unit-text-en':i18n.isEn}">
                                     </lv-select>
                                 </lv-group>
                                 <ng-container
@@ -277,7 +278,7 @@
                                 <lv-group>
                                     <lv-select [lvOptions]="monthTimeRangeOptions"
                                         formControlName="generate_time_range_month" lvValueKey="value"
-                                        class="backup-time-unit-text">
+                                        [ngClass]="{'backup-time-unit-text': !i18n.isEn,'backup-time-unit-text-en':i18n.isEn}">
                                     </lv-select>
                                 </lv-group>
                                 <ng-container
@@ -318,7 +319,7 @@
                                 <lv-group>
                                     <lv-select [lvOptions]="weekTimeRangeOptions"
                                         formControlName="generate_time_range_week" lvValueKey="value"
-                                        class="backup-time-unit-text">
+                                        [ngClass]="{'backup-time-unit-text': !i18n.isEn,'backup-time-unit-text-en':i18n.isEn}">
                                     </lv-select>
                                 </lv-group>
                                 <ng-container
@@ -376,8 +377,8 @@
                 </lv-form-control>
             </lv-form-item>
             <lv-form-item
-                *ngIf="(autoIndexForObs && item.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value)
-                || (autoIndexForTape && item.get('protocol').value === dataMap.Archival_Protocol.tapeLibrary.value)">
+                *ngIf="((autoIndexForObs && item.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value)
+                || (autoIndexForTape && item.get('protocol').value === dataMap.Archival_Protocol.tapeLibrary.value)) && false">
                 <lv-form-label>
                     {{'protection_auto_indexing_label' | i18n}}
                     <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_auto_index_archive_tip_label' | i18n}}"
@@ -405,6 +406,14 @@
                 <lv-form-control>
                     <lv-switch formControlName="network_access">
                     </lv-switch>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item *ngIf="archiveLogCopy">
+                <lv-form-label>
+                    {{'protection_archive_log_copy_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="log_archive"></lv-switch>
                 </lv-form-control>
             </lv-form-item>
             <lv-form-item>

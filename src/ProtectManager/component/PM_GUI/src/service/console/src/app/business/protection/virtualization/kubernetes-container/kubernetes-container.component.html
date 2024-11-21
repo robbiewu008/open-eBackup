@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
     <div class="aui-block aui-paginator-container">
         <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
             <lv-tab lvTitle="{{'protection_cluster_label' | i18n}}" lvId="cluster">
@@ -19,7 +19,7 @@
                     <aui-kubernetes-cluster [subType]="clusterSubType"></aui-kubernetes-cluster>
                 </ng-template>
             </lv-tab>
-            <lv-tab lvTitle="{{'protection_name_space_label' | i18n}}" lvId="namespace">
+            <lv-tab [lvTitle]="namespaceTitleTpl" lvId="namespace">
                 <ng-template lv-tab-lazy>
                     <aui-base-template [resourceSubType]="namespaceSubType" [extraConfig]="namespaceExtraConfig"
                         [columns]="namespaceColumns">
@@ -37,7 +37,18 @@
     </div>
 </div>
 
+<ng-template #namespaceTitleTpl>
+    <span>
+        {{'protection_name_space_label' | i18n}}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_kubernetes_namespace_tip_label' | i18n}}"
+            lvColorState='true' class="tab-tip"></i>
+    </span>
+</ng-template>
+
 <ng-template #titleTpl>
-    <span lv-tooltip="{{'protection_kubernetes_dataset_tip_label' | i18n}}">{{'protection_kubernetes_dataset_label' |
-        i18n}}</span>
+    <span>
+        {{'protection_kubernetes_dataset_label' | i18n}}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_kubernetes_dataset_tip_label' | i18n}}" lvColorState='true'
+            class="tab-tip"></i>
+    </span>
 </ng-template>

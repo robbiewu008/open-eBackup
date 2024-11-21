@@ -1,3 +1,4 @@
+<lv-form class="info-form">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form class="info-form">
     <h2 class="aui-gutter-column-md">{{ 'common_basic_info_label' | i18n }}</h2>
     <lv-form-column lvWidth="25%">
         <lv-form-item *ngFor="let item of leftItems1">
@@ -97,10 +97,7 @@
 
 <ng-template #noDataTpl>
     <div class="library-no-data">
-        <i lv-icon="lv-icon-no-data"></i>
-        <div class="no-data-label">
-            {{'common_no_data_label'|i18n}}
-        </div>
+        <lv-empty></lv-empty>
     </div>
 </ng-template>
 

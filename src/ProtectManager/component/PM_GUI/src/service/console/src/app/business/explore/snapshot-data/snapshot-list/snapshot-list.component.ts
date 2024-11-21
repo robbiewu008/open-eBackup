@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -39,6 +39,7 @@ import {
   MODAL_COMMON,
   OperateItems,
   SnapshotRetenTion,
+  SYSTEM_TIME,
   WarningMessageService
 } from 'app/shared';
 import { ProtectedResourcePageListResponse } from 'app/shared/api/models';
@@ -475,8 +476,9 @@ export class SnapshotListComponent implements OnInit, OnDestroy {
               find(
                 row,
                 item =>
-                  item.is_security_snapshot &&
-                  item.retention_type === SnapshotRetenTion.permanent
+                  (item.is_security_snapshot &&
+                    item.retention_type === SnapshotRetenTion.permanent) ||
+                  item.status === DataMap.snapshotCopyStatus.deleting.value
               )
             ) ||
               !size(row))

@@ -9,7 +9,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 30092
       x-auth-required: 'Y'
@@ -67,7 +67,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -129,7 +129,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -185,7 +185,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -246,7 +246,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -287,7 +287,7 @@ paths:
     delete:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -340,7 +340,7 @@ paths:
     post:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -380,7 +380,7 @@ paths:
     post:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -430,7 +430,7 @@ paths:
     delete:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
@@ -469,7 +469,7 @@ paths:
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       produces:
         - application/json
       responses:
@@ -480,7 +480,7 @@ paths:
   /v1/copies:
     get:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30092
@@ -643,6 +643,40 @@ paths:
         - copies
       operationId: update_copy_retention_v1_copies_copy_id_action_update_retention_cyber_post
       summary: 更新快照保留策略-安全一体机
+  /v1/copies/{copy_id}/action/update-worm-setting:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - copies
+      summary: 修改WORM副本设置
+      operationId: update_worm_setting_v1_copies_copy_id_action_update_worm_setting_post
+      parameters:
+        - name: copy_id
+          in: path
+          required: true
+          type: string
+          description: 副本id
+        - name: worm_setting
+          in: body
+          required: true
+          description: 副本id
+          schema:
+            $ref: '#/definitions/CopyWormRetentionSettingSchema'
+      responses:
+        '200':
+          description: 修改WORM副本设置成功
+          schema:
+            type: string
 definitions:
   BasePage_CopyResourceSummarySchema_:
     properties:
@@ -1554,4 +1588,26 @@ definitions:
       uninspectedRepicas:
         type: string
         description: 未检测副本数量
+  CopyWormRetentionSettingSchema:
+    type: object
+    required:
+      - convert_worm_switch
+      - worm_validity_type
+      - retention_duration
+      - duration_unit
+    properties:
+      convert_worm_switch:
+        type: boolean
+        description: 是否转换worm副本
+      worm_validity_type:
+        type: integer
+        format: int32
+        description: WORM有效保留类型
+      retention_duration:
+        type: integer
+        format: int32
+        description: 副本保留周期
+      duration_unit:
+        type: string
+        description: 副本保留周期单位
 x-components: {}

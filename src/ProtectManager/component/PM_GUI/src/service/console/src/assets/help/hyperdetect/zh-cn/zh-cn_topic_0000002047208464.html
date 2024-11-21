@@ -1,0 +1,56 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="替换NTP证书">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002083405977.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="防勒索 帮助中心-Dorado V700R001C00">
+<meta name="DC.Publisher" content="20241119">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002047208464">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>替换NTP证书</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002047208464"></a><a name="ZH-CN_TOPIC_0000002047208464"></a>
+
+<h1 class="topictitle1">替换NTP证书</h1>
+<div id="body8662426"><p id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_p9956954154818">存储设备与NTP服务器通信的场景，存储设备作为客户端，NTP服务器作为服务端（NTP同步时钟源）。此场景中，CA证书必须导入，客户端证书不支持导入。</p>
+<div class="section" id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_section584273114416"><h4 class="sectiontitle">背景信息</h4><p id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_p1380515321140">NTP场景不存在默认CA证书和证书吊销列表，不支持证书吊销列表。</p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_section74111513194117"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_ol43351216154113"><li id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_li10176355174117"><span>从NTP服务器上获取证书至维护终端。</span><p><ol type="a" id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_ol2663295"><li id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_li23969655">在维护终端侧按“Win+R”组合键。<p class="litext" id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_p14400305"><a name="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_li23969655"></a><a name="zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_li23969655"></a>系统弹出的“运行”对话框。</p>
+</li><li id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_li62493887">输入“\\NTP服务器地址”并单击“确定”。<p class="litext" id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_p25574072"><a name="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_li62493887"></a><a name="zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_li62493887"></a>维护终端尝试远程访问NTP服务器。</p>
+</li><li id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_li28840063">输入登录NTP服务器的“用户名”及“密码”并单击“确定”后进入共享目录。</li><li id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_li58233980">进入“ntp_config”文件夹，选择含有“ntpkey_cert”字段的NTP证书文件并按“Ctrl+C”组合键进行复制。</li><li id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_li54343776">回到维护终端桌面，按“Ctrl+V”组合键拷贝NTP证书文件至维护终端。</li><li id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_li19331940">选择NTP证书文件，单击右键，在弹出的快捷菜单中选择“重命名”，为该文件添加.crt文件后缀并按“Enter”确认。</li></ol>
+</p></li><li id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_li1233541619416"><span>通过DeviceManager界面将证书导入到存储设备。</span><p><p id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_p16733118125011">具体操作可参考<a href="zh-cn_topic_0000001456809124.html#ZH-CN_TOPIC_0000001456809124__li775722792914">3</a>。其中，勾选<span class="uicontrol" id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_uicontrol11612830134717">“管理平面域认证证书”</span>改为勾选<span class="uicontrol" id="ZH-CN_TOPIC_0000002047208464__zh-cn_topic_0000001928455585_zh-cn_topic_0000001506026085_zh-cn_topic_0000001506049977_uicontrol20647132615393">“NTP证书”</span>。</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000002083405977.html">替换存储设备证书</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

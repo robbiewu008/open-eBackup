@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -48,6 +48,8 @@ export class ApsAdvanceParameterComponent implements OnInit {
   dataMap = DataMap;
   @ViewChild(ProtectFilterComponent, { static: false })
   ProtectFilterComponent: ProtectFilterComponent;
+
+  extParams;
 
   constructor(
     private appUtilsService: AppUtilsService,
@@ -156,6 +158,7 @@ export class ApsAdvanceParameterComponent implements OnInit {
         DataMap.slaApplicationFilterType.new.value
       ]
     });
+    this.extParams = extParameters;
     this.formGroup.patchValue(extParameters);
     setTimeout(() => {
       this.valid$.next(this.formGroup.valid);
@@ -194,6 +197,23 @@ export class ApsAdvanceParameterComponent implements OnInit {
         overwrite: this.formGroup.value.slaOverwrite,
         binding_policy: this.formGroup.value.slaPolicy
       });
+    }
+
+    if (this.resourceType === DataMap.Resource_Type.APSCloudServer.value) {
+      each(
+        [
+          'backup_res_auto_index',
+          'archive_res_auto_index',
+          'enable_security_archive'
+        ],
+        key => {
+          if (this.formGroup.get(key)) {
+            assign(ext_parameters, {
+              [key]: this.formGroup.get(key).value
+            });
+          }
+        }
+      );
     }
 
     return {

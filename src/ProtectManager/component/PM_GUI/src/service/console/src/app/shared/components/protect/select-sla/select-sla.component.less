@@ -2,7 +2,7 @@
   width: 416px;
   height: 100px;
   position: relative;
-  border: 1px solid #ccc;
+  border: 1px solid var(--live-angular-color-border-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,8 +14,8 @@
 }
 
 .card.select {
-  border-color: #6c92fa;
-  background: #eef7fd;
+  border-color: var(--live-angular-color-primary-active);
+  background: var(--live-angular-color-background-active);
 }
 
 .card .check-box {
@@ -36,7 +36,7 @@
   position: absolute;
   left: 10%;
   font-size: 16px !important;
-  color: #282b33 !important;
+  color: var(--live-angular-color-text-regular) !important;
   font-weight: bold !important;
 
   .sla-icon {
@@ -64,7 +64,7 @@
   }
 
   .span {
-    color: #282b33;
+    color: var(--live-angular-color-text-regular);
   }
 }
 
@@ -114,7 +114,7 @@
 }
 
 .sla-name:hover {
-  color: #5b7ede;
+  color: var(--live-angular-color-primary-hover);
   text-decoration: underline;
 }
 
@@ -124,7 +124,7 @@
 
   .title {
     font-size: 20px;
-    color: #282b33;
+    color: var(--live-angular-color-text-regular);
     font-weight: bold;
     padding-bottom: 10px;
     border-bottom: 1px dashed #d4d9e6;
@@ -143,7 +143,7 @@
     width: 100%;
 
     :nth-child(odd) {
-      color: #282b33;
+      color: var(--live-angular-color-text-regular);
     }
 
     :nth-child(even) {
@@ -160,7 +160,7 @@
     border-right: 1px dashed #d4d9e6;
 
     :nth-child(odd) {
-      color: #282b33;
+      color: var(--live-angular-color-text-regular);
     }
 
     :nth-child(even) {
@@ -177,7 +177,7 @@
     padding-left: 16px;
 
     > :first-child {
-      color: #282b33;
+      color: var(--live-angular-color-text-regular);
     }
 
     > :nth-child(2) {
@@ -201,11 +201,11 @@
 }
 
 .sla-disabled {
-  color: #e6ebf5;
+  color: var(--live-angular-color-primary-disabled);
 }
 
 .user-define-disabled {
-  background: #e6ebf5 !important;
+  background: var(--live-angular-color-background-disabled) !important;
 }
 
 .mgt-8 {

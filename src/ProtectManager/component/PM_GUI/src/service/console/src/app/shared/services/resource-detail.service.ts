@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Injectable } from '@angular/core';
 import { JobResourceComponent } from 'app/business/insight/job/job-resource/job-resource.component';
 import { SummaryComponent as ActiveDirectorySummaryComponent } from 'app/business/protection/application/active-directory/summary/summary.component';
@@ -71,6 +71,7 @@ import { SummaryComponent as OpenGauss_instanceSummaryComponent } from 'app/busi
 import { AdvancedParameterComponent as OracleAdvancedParameterComponent } from 'app/business/protection/host-app/oracle/database-list/advanced-parameter/advanced-parameter.component';
 import { CopyDataComponent as OracleCopyDataComponent } from 'app/business/protection/host-app/oracle/database-list/copy-data/copy-data.component';
 import { SummaryComponent as OracleSummaryComponent } from 'app/business/protection/host-app/oracle/database-list/summary/summary.component';
+import { PdbSetSummaryComponent } from 'app/business/protection/host-app/oracle/pdb-set-list/pdb-set-summary/pdb-set-summary.component';
 import { PostgreCopyDataComponent } from 'app/business/protection/host-app/postgre-sql/instance-database/copy-data/postgre-copy-data.component';
 import { PostgreSummaryComponent } from 'app/business/protection/host-app/postgre-sql/instance-database/summary/postgre-summary.component';
 import { RedisCopyDataComponent } from 'app/business/protection/host-app/redis/copy-data/redis-copy-data.component';
@@ -92,6 +93,7 @@ import { SummaryComponent as NasSharedSummaryComponent } from 'app/business/prot
 import { SummaryComponent as ObjectSetSummaryComponent } from 'app/business/protection/storage/object/object-service/summary/summary.component';
 import { CopyDataComponent as CnwareCopyDataComponent } from 'app/business/protection/virtualization/cnware/copy-data/copy-data.component';
 import { SummaryComponent as CnwareSummaryComponent } from 'app/business/protection/virtualization/cnware/summary/summary.component';
+import { SummaryComponent as NutanixSummaryComponent } from 'app/business/protection/virtualization/nutanix/summary/summary.component';
 import { FusionComputeCopyDataComponent } from 'app/business/protection/virtualization/fusion-compute/fusion-list/copy-data/fusion-compute-copy-data.component';
 import { FusionClusterSummaryComponent } from 'app/business/protection/virtualization/fusion-compute/fusion-list/fusion-cluster-summary/fusion-cluster-summary.component';
 import { FusionHostSummaryComponent } from 'app/business/protection/virtualization/fusion-compute/fusion-list/fusion-host-summary/fusion-host-summary.component';
@@ -104,6 +106,7 @@ import { CopyDataComponent as StateFulSetCopyDataComponent } from 'app/business/
 import { GroupSummaryComponent } from 'app/business/protection/virtualization/virtualization-group/group-summary/group-summary.component';
 import { CopyDataComponent as VmwareCopyDataComponent } from 'app/business/protection/virtualization/vmware/vm/copy-data/copy-data.component';
 import { SummaryComponent as VmwareSummaryComponent } from 'app/business/protection/virtualization/vmware/vm/summary/summary.component';
+import { AdvancedParameterComponent as NasAdvancedParameterComponent } from 'app/business/protection/storage/nas-shared/advanced-parameter/advanced-parameter.component';
 import { DataMap, MODAL_COMMON } from 'app/shared/consts';
 import { GlobalService, I18NService } from 'app/shared/services';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
@@ -119,6 +122,8 @@ import {
 import { DetailModalComponent } from '../components/detail-modal/detail-modal.component';
 import { LinkStatusComponent } from '../components/link-status/link-status.component';
 import { CopyDataComponent as LunCopyDataComponent } from 'app/business/protection/storage/local-lun/copy-data/copy-data.component';
+import { NutanixCopyDataComponent } from 'app/business/protection/virtualization/nutanix/nutanix-copy-data/nutanix-copy-data.component';
+import { ProtectionAdvancedComponent } from 'app/business/protection/virtualization/virtualization-base/protection-advanced/protection-advanced.component';
 
 const JOBS_CONFIG = [
   {
@@ -725,6 +730,22 @@ const DETAIL_CONFIG = {
       ...JOBS_CONFIG
     ]
   },
+  [DataMap.Resource_Type.oraclePDB.value]: {
+    lvWidth: MODAL_COMMON.xLargeModal,
+    tabs: [
+      {
+        title: 'common_summary_label',
+        activeId: 'summary',
+        component: PdbSetSummaryComponent
+      },
+      {
+        title: 'common_copy_data_label',
+        activeId: 'copydata',
+        component: DamengCopyDataComponent
+      },
+      ...JOBS_CONFIG
+    ]
+  },
   [DataMap.Resource_Type.virtualMachine.value]: {
     lvWidth: MODAL_COMMON.xLargeModal,
     tabs: [
@@ -879,21 +900,10 @@ const DETAIL_CONFIG = {
         activeId: 'copydata',
         component: NasSharedCopyDataComponent
       },
-      ...JOBS_CONFIG
-    ]
-  },
-  [DataMap.Resource_Type.ndmp.value]: {
-    lvWidth: MODAL_COMMON.xLargeModal,
-    tabs: [
       {
-        title: 'common_summary_label',
-        activeId: 'summary',
-        component: NasSharedSummaryComponent
-      },
-      {
-        title: 'common_copy_data_label',
-        activeId: 'copydata',
-        component: NasSharedCopyDataComponent
+        title: 'protection_fileset_protection_detail_label',
+        activeId: 'protectionDetails',
+        component: NasAdvancedParameterComponent
       },
       ...JOBS_CONFIG
     ]
@@ -1169,6 +1179,57 @@ const DETAIL_CONFIG = {
         title: 'common_copy_data_label',
         activeId: 'copydata',
         component: MysqlCopyDataComponent
+      },
+      ...JOBS_CONFIG
+    ]
+  },
+
+  [DataMap.Resource_Type.AntDB.value]: {
+    lvWidth: MODAL_COMMON.xLargeWidth,
+    tabs: [
+      {
+        title: 'common_summary_label',
+        activeId: 'summary',
+        component: PostgreSummaryComponent
+      },
+      {
+        title: 'common_copy_data_label',
+        activeId: 'copydata',
+        component: PostgreCopyDataComponent
+      },
+      ...JOBS_CONFIG
+    ]
+  },
+
+  [DataMap.Resource_Type.AntDBInstance.value]: {
+    lvWidth: MODAL_COMMON.xLargeWidth,
+    tabs: [
+      {
+        title: 'common_summary_label',
+        activeId: 'summary',
+        component: PostgreSummaryComponent
+      },
+      {
+        title: 'common_copy_data_label',
+        activeId: 'copydata',
+        component: PostgreCopyDataComponent
+      },
+      ...JOBS_CONFIG
+    ]
+  },
+
+  [DataMap.Resource_Type.AntDBClusterInstance.value]: {
+    lvWidth: MODAL_COMMON.xLargeWidth,
+    tabs: [
+      {
+        title: 'common_summary_label',
+        activeId: 'summary',
+        component: PostgreSummaryComponent
+      },
+      {
+        title: 'common_copy_data_label',
+        activeId: 'copydata',
+        component: PostgreCopyDataComponent
       },
       ...JOBS_CONFIG
     ]
@@ -1716,6 +1777,22 @@ const DETAIL_CONFIG = {
       ...JOBS_CONFIG
     ]
   },
+  [DataMap.Resource_Type.nutanixVm.value]: {
+    lvWidth: MODAL_COMMON.xLargeModal,
+    tabs: [
+      {
+        title: 'common_summary_label',
+        activeId: 'summary',
+        component: NutanixSummaryComponent
+      },
+      {
+        title: 'common_copy_data_label',
+        activeId: 'copydata',
+        component: NutanixCopyDataComponent
+      },
+      ...JOBS_CONFIG
+    ]
+  },
   [DataMap.Resource_Type.hyperVCluster.value]: {
     lvWidth: MODAL_COMMON.xLargeModal,
     tabs: [
@@ -1799,6 +1876,22 @@ const DETAIL_CONFIG = {
       },
       ...JOBS_CONFIG
     ]
+  },
+  [DataMap.Resource_Type.saponoracleDatabase.value]: {
+    lvWidth: MODAL_COMMON.xLargeModal,
+    tabs: [
+      {
+        title: 'common_summary_label',
+        activeId: 'summary',
+        component: GaussdbForOpengaussSummaryComponent
+      },
+      {
+        title: 'common_copy_data_label',
+        activeId: 'copydata',
+        component: CopyDataComponent
+      },
+      ...JOBS_CONFIG
+    ]
   }
 };
 
@@ -1840,7 +1933,12 @@ export class ResourceDetailService {
         }
       });
     }
-    if (type === DataMap.Resource_Type.fileset.value) {
+    if (
+      includes(
+        [DataMap.Resource_Type.fileset.value, DataMap.Resource_Type.ndmp.value],
+        type
+      )
+    ) {
       if (
         option.data.protectionStatus !==
         DataMap.Protection_Status.protected.value

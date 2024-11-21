@@ -743,6 +743,10 @@ definitions:
       report:
         type: string
         description: 防勒索检测报告
+      infected_file_detect_duration:
+        type: integer
+        format: int32
+        description: 可疑文件检测持续时间（s）
     required:
       - copy_id
       - timestamp
@@ -750,6 +754,7 @@ definitions:
       - detection_duration
       - detection_time
       - report
+      - infected_file_detect_duration
   CopyAntiRansomwar:
     description: 副本防勒索详细信息
     required:

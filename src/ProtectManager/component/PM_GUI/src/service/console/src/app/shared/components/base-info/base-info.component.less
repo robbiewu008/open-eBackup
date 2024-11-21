@@ -21,7 +21,7 @@
 
 .sunmary-container-time {
   width: 25% !important;
-  border-right: 1px solid #d4d9e6;
+  border-right: 1px solid var(--live-angular-color-divider-regular);
 }
 
 .sunmary-container-time-vmgroup {
@@ -30,18 +30,18 @@
 
 .sunmary-container {
   width: 25% !important;
-  border-right: 1px solid #d4d9e6;
+  border-right: 1px solid var(--live-angular-color-divider-regular);
 }
 
 .sunmary-container-tidb {
   width: 25% !important;
   height: 200px !important;
-  border-right: 1px solid #d4d9e6;
+  border-right: 1px solid var(--live-angular-color-divider-regular);
 }
 
 .sunmary-container-time-tidb {
   width: 25% !important;
-  border-right: 1px solid #d4d9e6;
+  border-right: 1px solid var(--live-angular-color-divider-regular);
 }
 
 .sunmary-container-copy {
@@ -49,10 +49,14 @@
 }
 
 .name-overflow {
-  max-width: 198px;
+  max-width: 100%;
 }
 
 .sla-overflow,
 .time-overflow {
   max-width: 180px;
+}
+
+.sunmary-info {
+  width: calc(100% - 80px);
 }

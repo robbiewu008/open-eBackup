@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -90,9 +90,15 @@ export class BackupClusterComponent implements OnInit, OnDestroy {
   progressBarColor = [[0, '#6C92FA']];
 
   addMemberNodeLabel = this.i18n.get('common_create_label');
-  primaryNodeLabel = this.i18n.get('system_backup_cluster_primary_node_label');
-  memberNodeLabel = this.i18n.get('system_backup_cluster_member_node_label');
-  standbyNodeLabel = this.i18n.get('system_backup_cluster_standby_node_label');
+  primaryNodeLabel = this.i18n.get(
+    'system_backup_cluster_primary_node_low_label'
+  );
+  memberNodeLabel = this.i18n.get(
+    'system_backup_cluster_member_node_low_label'
+  );
+  standbyNodeLabel = this.i18n.get(
+    'system_backup_cluster_standby_node_low_label'
+  );
   closeLabel = this.i18n.get('common_close_label');
 
   CLUSTER_TYPE = this.dataMapService.getConfig('Cluster_Type');

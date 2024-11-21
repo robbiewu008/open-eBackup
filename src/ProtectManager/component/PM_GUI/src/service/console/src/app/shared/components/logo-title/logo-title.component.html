@@ -1,3 +1,4 @@
+<span class="logo_title_container">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,9 +12,9 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<span class="logo_title_container">
-  <div class="logo" [ngClass]="{ whitebox_logo: isWhitebox, default_logo: !isWhitebox, black_logo: colorDark }"></div>
-  <span [ngClass]="{'title_content_menu': isMenu, 'title_content': !isMenu, 'color-dark': colorDark}">
+  <div class="logo" [ngStyle]="initLogoImage()"></div>
+  <span
+    [ngClass]="{'title_content_menu': isMenu, 'title_content': !isMenu && !tinySizeFont, 'title_content_tiny': tinySizeFont, 'color_dark': isResetPwd, 'color_light': cyberDarkHeader}">
     {{ title }}
   </span>
 </span>

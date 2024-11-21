@@ -1,3 +1,4 @@
+<lv-form [lvLabelColon]="false">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [lvLabelColon]="false">
   <lv-form-item>
     <lv-form-label>{{ severityLabel }}</lv-form-label>
     <lv-form-control>
@@ -26,7 +26,7 @@
           item.key !== 'suggestions' &&
           !(
             item.key === 'desc' &&
-            ['0x5F025D0004','0x5F025A0004'].includes(data.alarmId)
+            ['0x5F025D0004','0x5F025A0004','0x5F025D0015'].includes(data.alarmId)
           )
         " class="detail-inner-value" [innerHTML]="item.value">
       </div>
@@ -37,6 +37,15 @@
         <p [innerHTML]="item.value"></p>
         <span class="aui-link" (click)="downloadReport()" *ngIf="isAlarm">
           {{ 'insight_view_report_label' | i18n }}
+        </span>
+      </div>
+      <div *ngIf="
+          item.key === 'desc' &&
+          ['0x5F025D0015'].includes(data.alarmId)
+        ">
+        <p [innerHTML]="item.value"></p>
+        <span class="aui-link" (click)="viewSanReport()">
+          {{ 'insight_view_san_report_label' | i18n }}
         </span>
       </div>
       <div *ngIf="isCyberEngine && item.key === 'desc' && data.alarmId === '0x5F025A0004'">

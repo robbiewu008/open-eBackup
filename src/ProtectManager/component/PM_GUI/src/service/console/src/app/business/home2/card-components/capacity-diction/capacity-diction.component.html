@@ -1,3 +1,4 @@
+<div class="capacity-diction">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="capacity-diction">
   <div class="header">
     <div
       [class]="{
@@ -20,7 +20,7 @@
       }"
     >
       <span class="symbol">{{ capacityDictionChart.reachTo80Symbol }}</span
-      >{{ capacityDictionChart.reachTo80
+      >&nbsp;{{ capacityDictionChart.reachTo80
       }}<span class="text">
         {{ 'common_home_to_label' | i18n
         }}<span class="warning"> 80%</span></span
@@ -33,7 +33,7 @@
       }"
     >
       <span class="symbol">{{ capacityDictionChart.reachTo100Symbol }}</span
-      >{{ capacityDictionChart.reachTo100
+      >&nbsp;{{ capacityDictionChart.reachTo100
       }}<span class="text">
         {{ 'common_home_to_label' | i18n
         }}<span class="danger"> 100%</span></span

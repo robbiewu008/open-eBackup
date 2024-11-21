@@ -1,3 +1,4 @@
+<div class="copy-data-list">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="copy-data-list">
   <lv-datatable
     [lvData]="tableData"
     (lvSortChange)="sortChange($event)"
@@ -100,6 +100,22 @@
                     ></i>
                   </div>
                 </div>
+                <div
+                  lvCustom
+                  *ngIf="col.key === 'worm_expiration_time'"
+                  class="resource-sla-help"
+                >
+                  <i
+                    lv-icon="aui-icon-help"
+                    lv-tooltip="{{
+                        'common_worm_expiration_time_tips_label' | i18n
+                      }}"
+                    lvTooltipTheme="light"
+                    lvTooltipPosition="top"
+                    lvColorState="true"
+                    class="index-icon"
+                  ></i>
+                </div>
                 <div lvCustom *ngIf="col.key === 'uuid'">
                   <aui-custom-table-search
                     (search)="searchByCopyUuid($event)"
@@ -149,7 +165,10 @@
                   ></aui-custom-table-search>
                 </div>
                 <div lvCustom *ngIf="col.key === 'labelList'">
-                  <aui-custom-table-search (search)="searchByLabel($event)" [filterTitle]="col.label"></aui-custom-table-search>
+                  <aui-custom-table-search
+                    (search)="searchByLabel($event)"
+                    [filterTitle]="col.label"
+                  ></aui-custom-table-search>
                 </div>
               </th>
             </ng-container>
@@ -239,7 +258,12 @@
                                 dataMap.Resource_Type.kubernetesNamespaceCommon
                                   .value,
                                 dataMap.Resource_Type.kubernetesDatasetCommon
-                                  .value
+                                  .value,
+                                dataMap.Resource_Type.fusionOne.value,
+                                dataMap.Resource_Type.APSCloudServer.value,
+                                dataMap.Resource_Type.APSResourceSet.value,
+                                dataMap.Resource_Type.APSZone.value,
+                                dataMap.Resource_Type.hyperVVm.value
                               ].includes(item.resource_sub_type);
                             else normalType
                           "
@@ -267,6 +291,11 @@
                             | textMap: 'isBusinessOptions'
                         }}
                       </ng-container>
+                      <ng-container *ngSwitchCase="'can_table_restore'">
+                        {{
+                          item?.can_table_restore | textMap: 'isBusinessOptions'
+                        }}
+                      </ng-container>
                       <ng-container *ngSwitchCase="'worm_status'">
                         <i
                           [lv-tooltip]="getWormLabel(item) | i18n"
@@ -277,6 +306,14 @@
                           style="width:20px;height:20px"
                         ></i>
                       </ng-container>
+                      <ng-contianer *ngSwitchCase="'worm_expiration_time'">
+                        {{
+                          item.worm_expiration_time
+                            ? (item.worm_expiration_time
+                              | date: 'yyyy-MM-dd HH:mm:ss':timeZone)
+                            : '--'
+                        }}
+                      </ng-contianer>
                       <ng-container *ngSwitchCase="'isSanClient'">
                         {{
                           (item.properties
@@ -288,8 +325,13 @@
                       <ng-container *ngSwitchCase="'system_backup_flag'">
                         {{
                           (item.resource_properties
-                            ? _parse(item.resource_properties).ext_parameters
-                                .system_backup_flag
+                            ? childResourceType.includes(
+                                dataMap.Resource_Type.fileset.value
+                              )
+                              ? _parse(item.resource_properties).extendInfo
+                                  ?.is_OS_backup === 'true' || false
+                              : _parse(item.resource_properties).ext_parameters
+                                  .system_backup_flag
                             : ''
                           ) | textMap: 'copyDataVolume'
                         }}
@@ -325,9 +367,11 @@
                         }}
                       </ng-container>
                       <ng-container *ngSwitchCase="'resource_set_type'">
-                         <span lv-overflow>
-                            {{item.resource_sub_type | textMap: 'Job_Target_Type'}}
-                         </span>
+                        <span lv-overflow>
+                          {{
+                            item.resource_sub_type | textMap: 'Job_Target_Type'
+                          }}
+                        </span>
                       </ng-container>
                       <ng-container *ngSwitchCase="'resource_name'">
                         <span
@@ -516,13 +560,37 @@
                         </span>
                       </ng-container>
                       <ng-container *ngSwitchCase="'labelList'">
-                        <ng-container *ngIf="item?.labelList?.length; else emptyTpl">
-                            <lv-tag [ngModel]="item?.showLabelList" [lv-tooltip]="TagTpl"></lv-tag>
-                            <ng-template #TagTpl>
-                                <lv-tag [ngModel]="item?.hoverLabelList"></lv-tag>
-                            </ng-template>
+                        <ng-container
+                          *ngIf="item?.labelList?.length; else emptyTpl"
+                        >
+                          <lv-tag
+                            [ngModel]="item?.showLabelList"
+                            [lv-tooltip]="TagTpl"
+                          ></lv-tag>
+                          <ng-template #TagTpl>
+                            <lv-tag [ngModel]="item?.hoverLabelList"></lv-tag>
+                          </ng-template>
                         </ng-container>
-                    </ng-container>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'expiration_time'">
+                        <ng-container
+                          *ngIf="
+                            item.retention_type === 1;
+                            else elseExpirationTemplate
+                          "
+                        >
+                          --
+                        </ng-container>
+                        <ng-template #elseExpirationTemplate>
+                          <div>
+                            {{
+                              item.expiration_time
+                                | date: 'yyyy-MM-dd HH:mm:ss'
+                                | nil
+                            }}
+                          </div>
+                        </ng-template>
+                      </ng-container>
                       <ng-container *ngSwitchDefault>
                         <span lv-overflow>
                           {{ item[col.key] | nil }}
@@ -564,15 +632,14 @@
   <lv-tree
     [lvData]="columns"
     [lvShowCheckbox]="true"
-    [lvShowExpandedIcon]="false"
     lvSelectionMode="multiple"
     [(lvSelection)]="columnSelection"
     (lvCheck)="columnCheck($event)"
-    [lvScroll]="virtualScroll.scrollParam"
+    style="overflow: auto;"
+    [ngStyle]="{ 'max-height': virtualScroll.scrollParam?.y }"
   ></lv-tree>
 </ng-template>
 
 <ng-template #emptyTpl>
   --
 </ng-template>
-

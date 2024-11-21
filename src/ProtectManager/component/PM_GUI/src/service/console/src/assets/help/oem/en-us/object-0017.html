@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 7: Performing Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="object-0010.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="object-0017">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 7: Performing Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="object-0017"></a><a name="object-0017"></a>
+  <h1 class="topictitle1">Step 7: Performing Backup</h1>
+  <div>
+   <p>Before performing backup, you need to associate the resources to be protected with a specified SLA policy. The system protects the resources based on the SLA policy and periodically performs backup jobs based on the SLA policy. You can perform a backup job immediately through manual backup.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <ul>
+     <li>During a manual backup, the parameters (except <span class="uicontrol"><b><span><strong>Automatic Retry</strong></span></b></span>) defined in the SLA are applied to the manual backup job.</li>
+     <li>The retention period of copies generated during the manual backup is defined in the SLA.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="object-0017__en-us_topic_0000001839142377_uicontrol31735811411"><b><span id="object-0017__en-us_topic_0000001839142377_text4171858161413"><strong>Protection</strong></span> &gt; File Systems &gt; <span id="object-0017__en-us_topic_0000001839142377_text6353164213157"><strong>Object Storage</strong></span></b></span>.</span></li>
+     <li><span>Click the <strong>Object Set</strong> tab, select the object set to be protected, and click <span class="uicontrol"><b><span><strong>Protect</strong></span></b></span>.</span><p></p><p>You can choose multiple object sets for batch protection.</p> <p></p></li>
+     <li><span>Select an SLA. </span><p></p><p id="object-0017__en-us_topic_0000001607841256_p33248794210">You can also click <span class="uicontrol" id="object-0017__en-us_topic_0000001607841256_uicontrol197631711131711"><b><span id="object-0017__en-us_topic_0000001607841256_text16757131110174"><strong>Create</strong></span></b></span> to create an SLA.</p> <p></p></li>
+     <li><span>Configure advanced parameters for object set protection.</span><p></p>
+      <div class="p">
+       <a href="#object-0017__Files-0015_0_table354613271506">Table 1</a> describes the related parameters. 
+       <div class="tablenoborder">
+        <a name="object-0017__Files-0015_0_table354613271506"></a><a name="Files-0015_0_table354613271506"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="object-0017__Files-0015_0_table354613271506" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>Advanced parameters for object set protection
+         </caption>
+         <colgroup>
+          <col style="width:19.75%">
+          <col style="width:80.25%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="19.75%" id="mcps1.3.3.2.4.2.1.2.2.3.1.1"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="80.25%" id="mcps1.3.3.2.4.2.1.2.2.3.1.2"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><strong>ACL Backup</strong></p></td>
+           <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>This function is disabled by default. After this function is enabled, the ACL attributes of buckets and objects are backed up, but the object scanning speed is reduced.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><strong>Backup Resume</strong></p>
+            <div class="note">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p>This parameter is available only in 1.6.0 and later versions.</p>
+             </div>
+            </div></td>
+           <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>This function is disabled by default. After this function is enabled, if a backup job is performed after the last backup fails, the backup job starts the backup from where the last backup failed.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><strong>Incremental Scan Based on Bucket Logs</strong></p></td>
+           <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>To enable this function for a bucket to be backed up, ensure that:</p>
+            <ul>
+             <li>The bucket log function has been enabled and bucket log related configurations have been performed for this bucket.</li>
+             <li>The user used for backup has the read permission on the bucket for storing the logs related to this bucket.</li>
+            </ul>
+            <div class="note">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p>This parameter is displayed only when the object storage type is Huawei Cloud Stack object storage.</p>
+             </div>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span><strong>Small File Aggregation</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>After this function is enabled, small files in directories at the same layer are aggregated into large files to improve backup efficiency.</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>. </span><p></p><p>If the current system time is later than the start time of the first backup set in the SLA, you can choose to perform the backup immediately or wait for the next scheduling based on the backup policy set in the SLA after the backup SLA is associated with the resource.</p> <p></p></li>
+     <li><span>Perform manual backup.</span><p></p><p>You can manually perform a backup job to back up data immediately.</p>
+      <ol type="a">
+       <li>Click the <strong>Object Set</strong> tab. In the row that contains the object set to be backed up, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Manual Backup</strong></span></b></span>.
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>You can select multiple resources to perform manual backup in batches. Select multiple resources and choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Manual Backup</strong></span></b></span> in the upper left corner of the page.</p>
+         </div>
+        </div></li>
+       <li>Set the name of the copy generated during manual backup.<p>If this parameter is left unspecified, the system sets the name to <strong>backup_</strong><em>Timestamp</em> by default.</p></li>
+       <li>Select a protection policy, which can be <strong>Full Backup</strong>, <strong>Incremental Backup</strong>, or <strong>Forever Incremental (Synthetic Full) Backup</strong>.
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p><strong>Forever Incremental (Synthetic Full) Backup</strong> is displayed only when <span><span><strong>Set as Forever Incremental (Synthetic Full) Backup</strong></span> is selected during incremental backup policy creation</span>.</p>
+         </div>
+        </div></li>
+       <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="object-0010.html">Backing Up Object Storage</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

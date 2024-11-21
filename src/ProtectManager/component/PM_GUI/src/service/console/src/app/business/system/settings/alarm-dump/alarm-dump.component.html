@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
   <div class="aui-header-1">
     <lv-group lvGutter='8px'>
       <h1>{{alarmDumpLabel}}</h1>
@@ -50,7 +50,7 @@
             <lv-form-label lvRequired>{{dumpedTimeLabel}}</lv-form-label>
             <lv-form-control [lvErrorTip]='requiredErrorTip'>
               <lv-time-picker formControlName="transferStartTime" class="form-control-input" lvShowClear='false'
-                lvPlaceholder="HH:mm:ss">
+                lvPlaceholder="HH:mm:ss" [lvFooter]="timePickerFooterTpl">
               </lv-time-picker>
             </lv-form-control>
           </lv-form-item>
@@ -153,3 +153,9 @@
       (lvPageChange)="pageChange($event)" [lvPageSizeOptions]='sizeOptions' [hidden]="!totalCount"></lv-paginator>
   </div>
 </div>
+
+<ng-template #timePickerFooterTpl>
+  <button lv-button lvType="link" class="time-picker-current" (click)="setSysTime()">
+    {{'common_current_time_label' | i18n}}
+  </button>
+</ng-template>

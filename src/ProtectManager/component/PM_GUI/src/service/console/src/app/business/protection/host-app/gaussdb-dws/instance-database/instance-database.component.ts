@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -45,6 +45,7 @@ import {
   ProtectResourceAction,
   ProtectResourceCategory,
   RoleOperationMap,
+  SetTagType,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -55,10 +56,12 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ProtectService } from 'app/shared/services/protect.service';
 import { ResourceDetailService } from 'app/shared/services/resource-detail.service';
+import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
 import { SlaService } from 'app/shared/services/sla.service';
 import { TakeManualBackupService } from 'app/shared/services/take-manual-backup.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
@@ -97,8 +100,6 @@ import { RegisterClusterComponent as RegisterSQLServerClusterComponent } from '.
 import { RegisterInstanceComponent } from '../../sql-server/register-instance/register-instance.component';
 import { CreateSchemaComponent } from './create-schema/create-schema.component';
 import { RegisterClusterComponent as RegisterDWSClusterComponent } from './register-cluster/register-cluster.component';
-import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
-import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
 
 @Component({
   selector: 'aui-instance-database',
@@ -121,6 +122,8 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
 
   groupCommon = GROUP_COMMON;
 
+  currentDetailUuid: string;
+
   @Input() subType;
   @Input() activeIndex;
   @Input() tableCols;
@@ -132,6 +135,8 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
   typeTpl: TemplateRef<any>;
   @ViewChild('resourceTagTpl', { static: true })
   resourceTagTpl: TemplateRef<any>;
+  @ViewChild('allowRestoreTpl', { static: true })
+  allowRestoreTpl: TemplateRef<any>;
 
   constructor(
     private i18n: I18NService,
@@ -532,7 +537,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_add_tag_label'),
         onClick: data => this.addTag(data)
@@ -544,7 +549,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_remove_tag_label'),
         onClick: data => this.removeTag(data)
@@ -925,12 +930,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
       },
       {
         key: 'nodeIpAddress',
-        name: includes(
-          [DataMap.Resource_Type.goldendbInstance.value],
-          this.activeIndex
-        )
-          ? this.i18n.get('protection_manage_node_ip_address_label')
-          : this.i18n.get('protection_node_ip_address_label')
+        name: this.i18n.get('protection_node_ip_address_label')
       },
       {
         key: 'version',
@@ -990,6 +990,10 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
       {
         key: 'isAllowRestore',
         name: this.i18n.get('protection_is_allow_restore_label'),
+        thExtra:
+          this.activeIndex === DataMap.Resource_Type.DWS_Cluster.value
+            ? this.allowRestoreTpl
+            : null,
         filter: {
           type: 'select',
           isMultiple: true,
@@ -1143,6 +1147,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data ? data : this.selectionData,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable.setSelections([]);
@@ -1155,6 +1160,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data ? data : this.selectionData,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable.setSelections([]);
@@ -1178,6 +1184,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
   }
 
   getDetail(data) {
+    this.currentDetailUuid = data.uuid;
     this.detailService.openDetailModal(this.activeIndex, {
       data: {
         ...data,
@@ -1221,7 +1228,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
         this.registerGoldendbCluster(item);
         break;
       case DataMap.Resource_Type.goldendbInstance.value:
-        this.registerGoldendbInstance(item);
+        this.registerGoldenDBInstance(item);
         break;
       case DataMap.Resource_Type.gaussdbForOpengaussProject.value:
         this.registerGaussdbForOpengauss(item);
@@ -1268,32 +1275,11 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
             content.onOK().subscribe({
               next: res => {
                 resolve(true);
-                if (
-                  !isEmpty(item) &&
-                  includes(
-                    mapValues(this.drawModalService.modals, 'key'),
-                    'detail-modal'
-                  )
-                ) {
-                  this.getResourceDetail(item);
-                } else {
-                  this.dataTable.fetchData();
-                }
+                this.dataTable?.fetchData();
               },
               error: () => resolve(false)
             });
           });
-        },
-        lvCancel: () => {
-          if (
-            !isEmpty(item) &&
-            includes(
-              mapValues(this.drawModalService.modals, 'key'),
-              'detail-modal'
-            )
-          ) {
-            this.getResourceDetail(item);
-          }
         }
       })
     );
@@ -1334,32 +1320,11 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
             content.onOK().subscribe({
               next: res => {
                 resolve(true);
-                if (
-                  !isEmpty(item) &&
-                  includes(
-                    mapValues(this.drawModalService.modals, 'key'),
-                    'detail-modal'
-                  )
-                ) {
-                  this.getResourceDetail(item);
-                } else {
-                  this.dataTable.fetchData();
-                }
+                this.dataTable?.fetchData();
               },
               error: () => resolve(false)
             });
           });
-        },
-        lvCancel: modal => {
-          if (
-            !isEmpty(item) &&
-            includes(
-              mapValues(this.drawModalService.modals, 'key'),
-              'detail-modal'
-            )
-          ) {
-            this.getResourceDetail(item);
-          }
         }
       })
     );
@@ -1394,38 +1359,17 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
             content.onOK().subscribe({
               next: res => {
                 resolve(true);
-                if (
-                  !isEmpty(item) &&
-                  includes(
-                    mapValues(this.drawModalService.modals, 'key'),
-                    'detail-modal'
-                  )
-                ) {
-                  this.getResourceDetail(item);
-                } else {
-                  this.dataTable.fetchData();
-                }
+                this.dataTable?.fetchData();
               },
               error: () => resolve(false)
             });
           });
-        },
-        lvCancel: modal => {
-          if (
-            !isEmpty(item) &&
-            includes(
-              mapValues(this.drawModalService.modals, 'key'),
-              'detail-modal'
-            )
-          ) {
-            this.getResourceDetail(item);
-          }
         }
       })
     );
   }
 
-  registerGoldendbInstance(item) {
+  registerGoldenDBInstance(item) {
     this.drawModalService.create(
       assign({}, MODAL_COMMON.generateDrawerOptions(), {
         lvModalKey: 'reigster-goldendb-cluster',
@@ -1441,23 +1385,27 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
         lvAfterOpen: modal => {
           const content = modal.getContentComponent() as RegisterGoldendbComponent;
           const modalIns = modal.getInstance();
-          const combined: any = combineLatest(
+          const combined: any = combineLatest([
             content.formGroup.statusChanges,
-            content.valid$
-          );
+            content.valid$,
+            content.validNode$
+          ]);
           combined.subscribe(latestValues => {
-            const [formGroupStatus, validFile] = latestValues;
+            const [formGroupStatus, validFile, validNode] = latestValues;
 
             if (!!content.rowData) {
-              modalIns.lvOkDisabled = formGroupStatus !== 'VALID';
+              modalIns.lvOkDisabled = formGroupStatus !== 'VALID' || !validNode;
             } else {
               modalIns.lvOkDisabled = !(
-                formGroupStatus === 'VALID' && validFile
+                formGroupStatus === 'VALID' &&
+                validFile &&
+                validNode
               );
             }
           });
           content.valid$.next(false);
           content.formGroup.updateValueAndValidity();
+          content.validNode$.next(false);
         },
         lvOk: modal => {
           return new Promise(resolve => {
@@ -1465,32 +1413,11 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
             content.onOK().subscribe({
               next: res => {
                 resolve(true);
-                if (
-                  !isEmpty(item) &&
-                  includes(
-                    mapValues(this.drawModalService.modals, 'key'),
-                    'detail-modal'
-                  )
-                ) {
-                  this.getResourceDetail(item);
-                } else {
-                  this.dataTable.fetchData();
-                }
+                this.dataTable?.fetchData();
               },
               error: () => resolve(false)
             });
           });
-        },
-        lvCancel: modal => {
-          if (
-            !isEmpty(item) &&
-            includes(
-              mapValues(this.drawModalService.modals, 'key'),
-              'detail-modal'
-            )
-          ) {
-            this.getResourceDetail(item);
-          }
         }
       })
     );
@@ -1525,32 +1452,11 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
             content.onOK().subscribe({
               next: res => {
                 resolve(true);
-                if (
-                  !isEmpty(item) &&
-                  includes(
-                    mapValues(this.drawModalService.modals, 'key'),
-                    'detail-modal'
-                  )
-                ) {
-                  this.getResourceDetail(item);
-                } else {
-                  this.dataTable.fetchData();
-                }
+                this.dataTable?.fetchData();
               },
               error: () => resolve(false)
             });
           });
-        },
-        lvCancel: modal => {
-          if (
-            !isEmpty(item) &&
-            includes(
-              mapValues(this.drawModalService.modals, 'key'),
-              'detail-modal'
-            )
-          ) {
-            this.getResourceDetail(item);
-          }
         }
       })
     );
@@ -1585,32 +1491,11 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
             content.onOK().subscribe({
               next: res => {
                 resolve(true);
-                if (
-                  !isEmpty(item) &&
-                  includes(
-                    mapValues(this.drawModalService.modals, 'key'),
-                    'detail-modal'
-                  )
-                ) {
-                  this.getResourceDetail(item);
-                } else {
-                  this.dataTable.fetchData();
-                }
+                this.dataTable?.fetchData();
               },
               error: () => resolve(false)
             });
           });
-        },
-        lvCancel: modal => {
-          if (
-            !isEmpty(item) &&
-            includes(
-              mapValues(this.drawModalService.modals, 'key'),
-              'detail-modal'
-            )
-          ) {
-            this.getResourceDetail(item);
-          }
         }
       })
     );
@@ -1648,33 +1533,11 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
             content.onOK().subscribe({
               next: res => {
                 resolve(true);
-                if (
-                  !isEmpty(item) &&
-                  includes(
-                    mapValues(this.drawModalService.modals, 'key'),
-                    'detail-modal'
-                  )
-                ) {
-                  this.getResourceDetail(item);
-                } else {
-                  this.dataTable.fetchData();
-                }
+                this.dataTable?.fetchData();
               },
               error: () => resolve(false)
             });
           });
-        },
-        lvCancel: modal => {
-          const content = modal.getContentComponent() as CreateTablesetComponent;
-          if (
-            !isEmpty(item) &&
-            includes(
-              mapValues(this.drawModalService.modals, 'key'),
-              'detail-modal'
-            )
-          ) {
-            this.getResourceDetail(item);
-          }
         }
       })
     );
@@ -1709,32 +1572,11 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
             content.onOK().subscribe({
               next: res => {
                 resolve(true);
-                if (
-                  !isEmpty(item) &&
-                  includes(
-                    mapValues(this.drawModalService.modals, 'key'),
-                    'detail-modal'
-                  )
-                ) {
-                  this.getResourceDetail(item);
-                } else {
-                  this.dataTable.fetchData();
-                }
+                this.dataTable?.fetchData();
               },
               error: () => resolve(false)
             });
           });
-        },
-        lvCancel: modal => {
-          if (
-            !isEmpty(item) &&
-            includes(
-              mapValues(this.drawModalService.modals, 'key'),
-              'detail-modal'
-            )
-          ) {
-            this.getResourceDetail(item);
-          }
         }
       })
     );
@@ -1772,33 +1614,11 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
             content.onOK().subscribe({
               next: res => {
                 resolve(true);
-                if (
-                  !isEmpty(item) &&
-                  includes(
-                    mapValues(this.drawModalService.modals, 'key'),
-                    'detail-modal'
-                  )
-                ) {
-                  this.getResourceDetail(item);
-                } else {
-                  this.dataTable.fetchData();
-                }
+                this.dataTable?.fetchData();
               },
               error: () => resolve(false)
             });
           });
-        },
-        lvCancel: modal => {
-          const content = modal.getContentComponent() as RegisterSQLServerClusterComponent;
-          if (
-            !isEmpty(item) &&
-            includes(
-              mapValues(this.drawModalService.modals, 'key'),
-              'detail-modal'
-            )
-          ) {
-            this.getResourceDetail(item);
-          }
         }
       })
     );
@@ -1837,33 +1657,11 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
             content.onOK().subscribe({
               next: res => {
                 resolve(true);
-                if (
-                  !isEmpty(item) &&
-                  includes(
-                    mapValues(this.drawModalService.modals, 'key'),
-                    'detail-modal'
-                  )
-                ) {
-                  this.getResourceDetail(item);
-                } else {
-                  this.dataTable.fetchData();
-                }
+                this.dataTable?.fetchData();
               },
               error: () => resolve(false)
             });
           });
-        },
-        lvCancel: modal => {
-          const content = modal.getContentComponent() as CreateSchemaComponent;
-          if (
-            !isEmpty(item) &&
-            includes(
-              mapValues(this.drawModalService.modals, 'key'),
-              'detail-modal'
-            )
-          ) {
-            this.getResourceDetail(item);
-          }
         }
       })
     );
@@ -1934,7 +1732,10 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
   deleteRes(data) {
     if (size(data) === 1) {
       this.warningMessageService.create({
-        content: this.i18n.get('protection_nas_share_delete_label'),
+        content:
+          data[0].subType === DataMap.Resource_Type.SQLServerInstance.value
+            ? this.i18n.get('protection_sqlserver_instance_delete_label')
+            : this.i18n.get('protection_nas_share_delete_label'),
         onOK: () => {
           this.protectedResourceApiService
             .DeleteResource({
@@ -2188,6 +1989,18 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
           total: res.totalCount,
           data: res.records
         };
+        if (
+          !args?.isAutoPolling &&
+          includes(
+            mapValues(this.drawModalService.modals, 'key'),
+            'detail-modal'
+          ) &&
+          find(res.records, { uuid: this.currentDetailUuid })
+        ) {
+          this.getResourceDetail(
+            find(res.records, { uuid: this.currentDetailUuid })
+          );
+        }
         this.cdr.detectChanges();
       });
   }
@@ -2304,6 +2117,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
   }
 
   getResourceDetail(res) {
+    this.currentDetailUuid = res.uuid;
     this.protectedResourceApiService
       .ShowResource({ resourceId: res.uuid })
       .subscribe(item => {
@@ -2386,8 +2200,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
           this.selectionData = [];
           this.dataTable.setSelections([]);
           return this.dataTable.fetchData();
-        },
-        restoreWidth: params => this.getResourceDetail(params)
+        }
       }
     );
   }

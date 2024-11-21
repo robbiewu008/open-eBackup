@@ -1,3 +1,4 @@
+<div class="top-failed-tasks-sla-protection-policy">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="top-failed-tasks-sla-protection-policy">
   <lv-datatable #lvTable [lvData]="data">
     <thead>
       <tr>
@@ -25,7 +25,7 @@
           <div class="first-box">
             <div lvOverflow>{{ data.slaName }}</div>
             <div *ngIf="i === 0" class="top">
-              TOP1
+              Top 1
             </div>
           </div>
         </td>

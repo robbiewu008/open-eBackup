@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
@@ -39,6 +39,9 @@ export class CreateRoleFormComponent implements OnInit {
     ...this.baseUtilService.requiredErrorTip,
     invalidName: this.i18n.get('common_storage_pool_name_invalid_label')
   };
+  helpUrl = this.i18n.isEn
+    ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002059543622.html'
+    : '/console/assets/help/a8000/zh-cn/index.html#zh-cn_topic_0000002059543622.html';
 
   constructor(
     public i18n: I18NService,
@@ -90,7 +93,7 @@ export class CreateRoleFormComponent implements OnInit {
     if (this.i18n.get('deploy_type') === DataMap.Deploy_Type.x3000.value) {
       const tmpSecurity = find(this.permissionTable, { value: 'DataSecurity' });
       tmpSecurity.children.pop();
-      tmpSecurity.children[1].label = this.i18n.get('common_worm_policy_label');
+      tmpSecurity.children[1].label = this.i18n.get('system_manage_worm_label');
     }
   }
 

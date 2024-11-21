@@ -1,0 +1,86 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Creating the SAML SSO Configuration">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="helpcenter000136.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="helpcenter000137">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Creating the SAML SSO Configuration</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="helpcenter000137"></a><a name="helpcenter000137"></a>
+
+<h1 class="topictitle1">Creating the SAML SSO Configuration</h1>
+<div><p id="helpcenter000137__en-us_topic_0000001839224713_p8060118">This section describes how to create the SAML SSO configuration.</p>
+<div class="section" id="helpcenter000137__en-us_topic_0000001839224713_section1098393720564"><h4 class="sectiontitle">Context</h4><p id="helpcenter000137__en-us_topic_0000001839224713_p5965174725610">SAML SSO consists of an identity provider (IdP) and a service provider (SP).</p>
+<ul id="helpcenter000137__en-us_topic_0000001839224713_ul1796554735616"><li id="helpcenter000137__en-us_topic_0000001839224713_li59653471565">Identity provider: A system that collects and stores user identity information, such as usernames and passwords, and authenticates users during login.</li><li id="helpcenter000137__en-us_topic_0000001839224713_li99651647175611">Service provider: A system that establishes a trust relationship with the identity provider and uses the user information provided by the identity provider to provide services for users.</li></ul>
+<p id="helpcenter000137__en-us_topic_0000001839224713_p17965447175618">When the <span id="helpcenter000137__en-us_topic_0000001839224713_text987554916126">OceanProtect</span> is connected to <span id="helpcenter000137__en-us_topic_0000001839224713_ph9486950161917">eDME</span> as the backup server, <span id="helpcenter000137__en-us_topic_0000001839224713_ph3941195117196">eDME</span> is the identity provider (IdP) and the <span id="helpcenter000137__en-us_topic_0000001839224713_text1445181816137">OceanProtect</span> is the service provider (SP).</p>
+</div>
+<div class="section" id="helpcenter000137__en-us_topic_0000001839224713_section91366248576"><h4 class="sectiontitle">Prerequisites</h4><p id="helpcenter000137__en-us_topic_0000001839224713_p19638120123819">Before connecting to <span id="helpcenter000137__en-us_topic_0000001839224713_ph1628117539199">eDME</span>, obtain the metadata of the <span id="helpcenter000137__en-us_topic_0000001839224713_ph206341054121911">eDME</span> O&amp;M plane and operation plane to ensure that the <span id="helpcenter000137__en-us_topic_0000001839224713_text10674521129">OceanProtect</span> can be accessed from <span id="helpcenter000137__en-us_topic_0000001839224713_ph27316154410">eDME</span> and the quotas and functions of the <span id="helpcenter000137__en-us_topic_0000001839224713_text3578135210128">OceanProtect</span> can be used. For details about how to import metadata, see "O&amp;M Management" &gt; "Configuring SAML SSO" and "Operation Management" &gt; "Configuring SAML SSO" in the <a href="https://support.huawei.com/enterprise/en/data-management-and-operation/dme-data-pid-251349964" target="_blank" rel="noopener noreferrer">eDME 22.1.0 User Guide</a>.</p>
+</div>
+<div class="section" id="helpcenter000137__en-us_topic_0000001839224713_section123821939124416"><h4 class="sectiontitle">Procedure</h4><ol id="helpcenter000137__en-us_topic_0000001839224713_en-us_topic_0000001092505479_ol1038139939"><li id="helpcenter000137__en-us_topic_0000001839224713_li0198134611381"><span>Choose <span class="uicontrol" id="helpcenter000137__en-us_topic_0000001839224713_uicontrol9143133018394"><b><span id="helpcenter000137__en-us_topic_0000001839224713_text34321217571"><strong>System</strong></span> &gt; <span id="helpcenter000137__en-us_topic_0000001839224713_text392034819336"><strong>Security</strong></span> &gt; <span id="helpcenter000137__en-us_topic_0000001839224713_text2641527153311"><strong>SAML SSO Configuration</strong></span></b></span>.</span></li><li id="helpcenter000137__en-us_topic_0000001839224713_li1614652834513"><span>Click <span class="uicontrol" id="helpcenter000137__en-us_topic_0000001839224713_uicontrol141071321185313"><b>Create</b></span>.</span></li><li id="helpcenter000137__en-us_topic_0000001839224713_li329310128457"><span>Enter the <span class="uicontrol" id="helpcenter000137__en-us_topic_0000001839224713_uicontrol2035941713130"><b><span id="helpcenter000137__en-us_topic_0000001839224713_text19335113283412"><strong>SAML SSO Configuration</strong></span></b></span> information. <a href="helpcenter000137.html#helpcenter000137">Creating the SAML SSO Configuration</a> describes the parameters.</span><p>
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" id="helpcenter000137__en-us_topic_0000001839224713_table726304710456" frame="border" border="1" rules="all"><caption><b>Table 1 </b><span class="uicontrol" id="helpcenter000137__en-us_topic_0000001839224713_uicontrol1579616181133"><b><span id="helpcenter000137__en-us_topic_0000001839224713_text13261235133413"><strong>SAML SSO Configuration</strong></span></b></span> parameter description</caption><colgroup><col style="width:22.71%"><col style="width:77.29%"></colgroup><thead align="left"><tr id="helpcenter000137__en-us_topic_0000001839224713_row192639478458"><th align="left" class="cellrowborder" valign="top" width="22.71%" id="mcps1.3.4.2.3.2.1.2.3.1.1"><p id="helpcenter000137__en-us_topic_0000001839224713_p1926317476451">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="77.29%" id="mcps1.3.4.2.3.2.1.2.3.1.2"><p id="helpcenter000137__en-us_topic_0000001839224713_p1426324764514">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="helpcenter000137__en-us_topic_0000001839224713_row42631647184511"><td class="cellrowborder" valign="top" width="22.71%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="helpcenter000137__en-us_topic_0000001839224713_p6263144715450">Name</p>
+</td>
+<td class="cellrowborder" valign="top" width="77.29%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="helpcenter000137__en-us_topic_0000001839224713_p1926364764510">Name of the SAML SSO configuration to be created.</p>
+</td>
+</tr>
+<tr id="helpcenter000137__en-us_topic_0000001839224713_row02631647104517"><td class="cellrowborder" valign="top" width="22.71%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="helpcenter000137__en-us_topic_0000001839224713_p17263184712458">Protocol</p>
+</td>
+<td class="cellrowborder" valign="top" width="77.29%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="helpcenter000137__en-us_topic_0000001839224713_p2263134716454">Protocol configured for SAML SSO. The default value is <span class="uicontrol" id="helpcenter000137__en-us_topic_0000001839224713_uicontrol119848426467"><b>SAML2.0</b></span>.</p>
+</td>
+</tr>
+<tr id="helpcenter000137__en-us_topic_0000001839224713_row10263144718459"><td class="cellrowborder" valign="top" width="22.71%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="helpcenter000137__en-us_topic_0000001839224713_p626424724515">Description</p>
+</td>
+<td class="cellrowborder" valign="top" width="77.29%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="helpcenter000137__en-us_topic_0000001839224713_p126414724518">Description of the SAML SSO configuration.</p>
+</td>
+</tr>
+<tr id="helpcenter000137__en-us_topic_0000001839224713_row0264124734516"><td class="cellrowborder" valign="top" width="22.71%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="helpcenter000137__en-us_topic_0000001839224713_p11264154744517">Metadata File</p>
+</td>
+<td class="cellrowborder" valign="top" width="77.29%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="helpcenter000137__en-us_topic_0000001839224713_p4264747134510">Metadata file exported from the <span id="helpcenter000137__en-us_topic_0000001839224713_ph1144583161616">eDME</span> (IdP).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="helpcenter000137__en-us_topic_0000001839224713_li9759916176"><span>Click <span class="uicontrol" id="helpcenter000137__en-us_topic_0000001839224713_uicontrol1881105713319"><b>OK</b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="helpcenter000136.html">Managing the SAML SSO Configuration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

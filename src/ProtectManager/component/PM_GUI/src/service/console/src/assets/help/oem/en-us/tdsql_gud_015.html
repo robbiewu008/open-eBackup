@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 7: Performing Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="tdsql_gud_009.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="tdsql_gud_015">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 7: Performing Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="tdsql_gud_015"></a><a name="tdsql_gud_015"></a>
+  <h1 class="topictitle1">Step 7: Performing Backup</h1>
+  <div>
+   <p>Before performing backup, you need to associate the resources to be protected with a specified SLA policy. The system protects the resources based on the SLA policy and periodically performs backup jobs based on the SLA policy. You can perform a backup job immediately through manual backup. For 1.6.0 and later: Multiple instances in the same TDSQL cluster can be backed up or restored at the same time.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p id="tdsql_gud_015__tdsql_gud_010_p9667843103811"><span id="tdsql_gud_015__tdsql_gud_010_ph1292522251311">Unless otherwise specified, the operations in this section use TDSQL 10.3.22.1 as an example. The operations may vary depending on the version.</span></p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <ul>
+     <li>The following DDL operations cannot be performed during the backup of TDSQL distributed instances: CREATE, DROP, ALTER, and TRUNCATE.</li>
+     <li>To back up TDSQL distributed instances, do not use the <span class="filepath"><b>/tdsqlbackup</b></span> directory as the mount path.</li>
+     <li>If the data of TDSQL distributed instances does not change and no log file is generated, log backup will fail.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>The TDSQL database has been installed in the <span class="filepath"><b>/data/tdsql_run</b></span> directory.</li>
+     <li><span>The NTP service has been enabled for the cluster and the clock source configurations are the same.</span></li>
+     <li>On the <strong>Instance management</strong> page of the TDSQL CHITU management console, select an instance and choose <strong>Backup &amp; Recovery</strong> &gt; <strong>Backup settings</strong>. Set <span class="parmname"><b>Number of days to save binlog and cold standby</b></span> of the instance to be backed up to the maximum value.</li>
+     <li><span id="tdsql_gud_015__ph1111737722">The database vendor does not support the backup of distributed instances whose DR mode is 1+0 active/standby, or distributed instances does not have the cold standby node. Therefore, ensure that the cold standby node has been selected for the TDSQL distributed instance to be backed up before the backup.</span> For details, see <a href="en-us_topic_0000002061122832.html">Configuring the Cold Standby Node</a>.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="tdsql_gud_015__en-us_topic_0000001839142377_uicontrol123821426193719"><b><span id="tdsql_gud_015__en-us_topic_0000001839142377_text3382726113718"><strong>Protection</strong></span> &gt; Databases &gt; TDSQL</b></span>.</span></li>
+     <li><span>On the <span class="wintitle"><b><span><strong>Non-distributed Instances</strong></span></b></span> or <span class="wintitle"><b><span><strong>Distributed Instances</strong></span></b></span> tab page, select the instance to be protected and click <span class="uicontrol"><b><span><strong>Protect</strong></span></b></span>.</span><p></p><p>You can also select multiple instances for batch protection.</p> <p></p></li>
+     <li><span>Select an SLA.</span><p></p><p>You can also click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> to create an SLA.</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul>
+         <li>TDSQL distributed instances do not support <span><strong>Forever Incremental (Synthetic Full) Backup</strong></span>. Therefore, you cannot select an SLA whose protection policy contains <span><strong>Forever Incremental (Synthetic Full) Backup</strong></span> for protection.</li>
+         <li><span>If a WORM policy has been configured for the resource to be protected, select an SLA without a WORM policy to create protection to avoid WORM policy conflicts.</span></li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li><span>For 1.6.0 and later versions: Configure advanced parameters by referring to <a href="#tdsql_gud_015__table1322314598279">Table 1</a>.</span><p></p>
+      <div class="tablenoborder">
+       <a name="tdsql_gud_015__table1322314598279"></a><a name="table1322314598279"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_015__table1322314598279" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Parameters
+        </caption>
+        <colgroup>
+         <col style="width:37.37%">
+         <col style="width:62.629999999999995%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="37.37%" id="mcps1.3.5.2.4.2.1.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="62.629999999999995%" id="mcps1.3.5.2.4.2.1.2.3.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="37.37%" headers="mcps1.3.5.2.4.2.1.2.3.1.1 "><p><strong>Delete Archived Logs Immediately After Backup</strong></p></td>
+          <td class="cellrowborder" valign="top" width="62.629999999999995%" headers="mcps1.3.5.2.4.2.1.2.3.1.2 ">
+           <div class="p">
+            After this function is enabled, archive logs in the production environment are automatically deleted after log backup is complete.
+            <div class="note">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p>This parameter is displayed only when non-distributed instances are protected.</p>
+             </div>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="37.37%" headers="mcps1.3.5.2.4.2.1.2.3.1.1 "><p>zkmeta Backup</p></td>
+          <td class="cellrowborder" valign="top" width="62.629999999999995%" headers="mcps1.3.5.2.4.2.1.2.3.1.2 "><p>To restore databases across clusters, enable this function and ensure that the automatic zkmeta backup function is enabled. For details, see <a href="tdsql_gud_080.html">Step 2: Enabling the Automatic zkmeta Backup Function (Applicable to Distributed Instances)</a>.</p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p>This parameter is displayed only when protecting distributed instances.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="37.37%" headers="mcps1.3.5.2.4.2.1.2.3.1.1 ">
+           <div class="p">
+            <strong id="tdsql_gud_015__fc_gud_0019_0_b030154420307">Secure archive</strong>
+            <div class="note" id="tdsql_gud_015__fc_gud_0019_0_note2052965314120">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p id="tdsql_gud_015__fc_gud_0019_0_en-us_topic_0000001792344090_p1816719214566">Only 1.6.0 and later versions support this function.</p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="62.629999999999995%" headers="mcps1.3.5.2.4.2.1.2.3.1.2 ">
+           <div class="p">
+            This parameter is displayed when the selected SLA contains archive policies. If this option is selected, only backup copies that are detected to be uninfected during ransomware detection are archived.
+            <div class="note" id="tdsql_gud_015__fc_gud_0019_0_note1550211211513">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p id="tdsql_gud_015__fc_gud_0019_0_p10502162125111">You need to click <strong id="tdsql_gud_015__fc_gud_0019_0_b810018188319">Configure</strong> to set the ransomware protection policy for the resource to be protected if the following conditions are met: <strong id="tdsql_gud_015__fc_gud_0019_0_b17329127414">Archive Time</strong> is not set to <strong id="tdsql_gud_015__fc_gud_0019_0_b938619243">Immediately after successful backup</strong> or <strong id="tdsql_gud_015__fc_gud_0019_0_b84761821247">Archive Policy</strong> is not set to <strong id="tdsql_gud_015__fc_gud_0019_0_b0492172712416">Only the latest copy</strong> in the SLA archive policy, and the ransomware protection policy is not set. For details, see "Creating Ransomware Protection and WORM Policies" in the <i><cite id="tdsql_gud_015__fc_gud_0019_0_cite15733201398">OceanProtect <span id="tdsql_gud_015__fc_gud_0019_0_en-us_topic_0000001792502994_ph662613174472">Appliance 1.5.0-1.6.0</span> Data Backup Feature Guide (Ransomware Protection for Copies)</cite></i>.</p>
+             </div>
+            </div>
+           </div></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol" id="tdsql_gud_015__en-us_topic_0000001792503842_uicontrol196538515235"><b>OK</b></span>. </span><p></p><p id="tdsql_gud_015__en-us_topic_0000001792503842_p25041111535">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p> <p></p></li>
+     <li><strong>Optional: </strong><span>Perform manual backup.</span><p></p>
+      <div class="p">
+       If you want to execute a backup job immediately, perform manual backup through the following operations. Otherwise, skip this step.
+       <ol type="a">
+        <li>In the row of the target resource, choose <strong id="tdsql_gud_015__en-us_topic_0000001964713008_b146814226353">More</strong> &gt; <span id="tdsql_gud_015__en-us_topic_0000001964713008_text18439122416533"><strong>Manual Backup</strong></span>.
+         <div class="note" id="tdsql_gud_015__en-us_topic_0000001964713008_note1527151103">
+          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <p id="tdsql_gud_015__en-us_topic_0000001964713008_en-us_topic_0000001607531736_p870125314544">You can select multiple resources to perform manual backup in batches. Select multiple protected resources and choose <strong id="tdsql_gud_015__en-us_topic_0000001964713008_b1657653183519">More</strong> &gt; <span id="tdsql_gud_015__en-us_topic_0000001964713008_text122852865419"><strong>Manual Backup</strong></span> in the upper left corner of the resource list.</p>
+          </div>
+         </div></li>
+        <li>Set the name of the copy generated during manual backup.<p id="tdsql_gud_015__en-us_topic_0000001964713008_p444210492470">If this parameter is left unspecified, the system sets the copy name to <strong id="tdsql_gud_015__en-us_topic_0000001964713008_b17709174711816">backup_</strong><em id="tdsql_gud_015__en-us_topic_0000001964713008_i1371044717814">Timestamp</em> by default.</p></li>
+        <li>Select a protection policy, which can be <span><strong>Full backup</strong></span>, <span><strong>Forever Incremental (Synthetic Full) Backup</strong></span>, or <span><strong>Log Backup</strong></span>.
+         <div class="note">
+          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <ul>
+            <li>TDSQL distributed instances do not support <span><strong>Forever Incremental (Synthetic Full) Backup</strong></span>.</li>
+            <li><span>For 1.6.0 and later versions: If the selected protection policy is different from that configured in the associated SLA, the WORM configuration does not take effect.</span></li>
+           </ul>
+          </div>
+         </div></li>
+        <li>Click <span class="uicontrol" id="tdsql_gud_015__en-us_topic_0000001964713008_uicontrol1662615410817"><b><span id="tdsql_gud_015__en-us_topic_0000001964713008_text13625854687"><strong>OK</strong></span></b></span>.</li>
+       </ol>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="tdsql_gud_009.html">Backing Up TDSQL Databases</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

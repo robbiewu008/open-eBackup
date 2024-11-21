@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Configuring the DNS Service">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="nas_s_0099_0">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Configuring the DNS Service</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="nas_s_0099_0"></a><a name="nas_s_0099_0"></a>
+  <h1 class="topictitle1">Configuring the DNS Service</h1>
+  <div>
+   <p>After connecting the <span>product</span> to the DNS server, external domain names can be resolved and accessed.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>The DNS server has been configured and is running properly.</li>
+     <li>TCP/UDP port 53 between the <span>product</span> and DNS server is enabled.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <ul>
+     <li>A DNS server is used to resolve and access external domain names.</li>
+     <li>If you want to configure a standby DNS server, keep the domain names of the active and standby servers consistent.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <strong>Settings</strong> &gt; <strong>Basic Information</strong> &gt; <strong>DNS Service</strong>.</span></li>
+     <li><span>Click <strong>Modify</strong> in the upper right corner of the <strong>Management DNS</strong> area to configure the DNS service for the management plane.</span></li>
+     <li><span>Set <strong>Active DNS IP Address</strong>.</span><p></p>
+      <ol type="a">
+       <li>(Optional) Set <strong>Standby DNS IP Address 1</strong>.</li>
+       <li>(Optional) Set <strong>Standby DNS IP Address 2</strong>. Set <strong>Standby DNS IP Address 1</strong> first and then <strong>Standby DNS IP Address 2</strong>.</li>
+       <li>(Optional) Test the connectivity between the DNS server and the storage system.
+        <ul>
+         <li>You can click <strong>Test</strong> next to a DNS IP address to test its availability.</li>
+         <li>You can click <strong>Test All</strong> to test the connectivity between the DNS server and storage system.</li>
+        </ul></li>
+       <li>Click <strong>Save</strong>.</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

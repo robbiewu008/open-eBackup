@@ -5,7 +5,6 @@
 
   .capacity-alarm-threshold {
     font-size: 0.16rem;
-    color: #282b33;
     font-weight: 600;
     line-height: 1.5;
     position: relative;
@@ -37,7 +36,7 @@
 .group {
   height: 520px;
   padding: 16px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--live-angular-color-border-secondary);
   margin-bottom: 24px;
 }
 
@@ -55,7 +54,7 @@
   width: 200px;
   height: 100%;
   .library-select > ul > li > div {
-    border-left: 0.03rem solid #e6ebf5;
+    border-left: 0.03rem solid var(--live-angular-color-divider-regular);
   }
 }
 
@@ -66,7 +65,7 @@
 
 .slip {
   height: 100%;
-  border-right: 2px solid #e6ebf5;
+  border-right: 2px solid var(--live-angular-color-divider-regular);
 }
 
 .info-container {
@@ -90,13 +89,13 @@
 }
 
 .tape-no-data {
-  padding-bottom: 48px;
+  padding: 24px 0;
   text-align: center;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--live-angular-color-border-secondary);
   margin-bottom: 24px;
 }
 
 .tape-no-data i {
-  width: 240px;
-  height: 240px;
+  width: 72px;
+  height: 72px;
 }

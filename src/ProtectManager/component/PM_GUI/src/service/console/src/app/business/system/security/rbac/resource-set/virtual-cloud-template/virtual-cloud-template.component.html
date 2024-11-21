@@ -1,3 +1,4 @@
+<lv-group class="group">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,14 +12,14 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-group class="group">
     <lv-group class="left">
-        <div class="tree-container">
+        <div class="tree-container resourceset-tree-container">
             <ng-container *ngIf="treeData.length;else noDataTpl">
-                <lv-tree lvCompareWith="uuid" [lvData]='treeData' [(lvSelection)]="treeSelection"
-                    lvSelectionMode='single' [lvBeforeSelected]="beforeSelected" (lvCheck)="nodeCheck($event)"
-                    lvShowContentIcon (lvExpandedChange)="expandedChange($event)" [lvNodeTemplate]='nodeTpl'
-                    [lvScroll]='virtualScroll.scrollParamMap["cnware-tree"]' lvVirtualScroll lvShowLine>
+                <lv-tree lvCompareWith="uuid" [lvData]='treeData' [(lvSelection)]="treeSelection" lvShowContentIcon
+                    (lvExpandedChange)="expandedChange($event)" [lvNodeTemplate]='nodeTpl' [lvScroll]="{y:'468px'}"
+                    lvVirtualScroll lvShowLine lvSelectionMode='multiple' [lvNodeTemplate]='nodeTpl'
+                    [lvShowCheckbox]="!isDetail" lvSelectedByCheckbox (lvSelectionChange)="treeSelectionChange($event)"
+                    lvSelectionAssociate="false">
                 </lv-tree>
             </ng-container>
         </div>
@@ -28,10 +29,11 @@
             <ng-container *ngFor="let tab of tabs">
                 <lv-tab *ngIf="!tab.hidden" lvTitle='{{tab.label}}({{tab.resourceTotal || 0}})' [lvId]="tab.id">
                     <aui-base-table-template [subType]="tab.subType" [subUnitType]="tab?.subUnitType"
-                        [treeSelection]="treeSelection[0]" [ID]="tab.id" [appType]="appType"
-                        [allSelectionMap]="allSelectionMap" [extParams]="extParams"
+                        [treeNodeChecked]="treeNodeChecked" [treeSelection]="treeSelection" [ID]="tab.id"
+                        [appType]="appType" [allSelectionMap]="allSelectionMap" [extParams]="extParams"
                         (updateTable)="updateProjectTotal($event, tab)" (baseSelectChange)="selectChange($event)"
-                        [data]="data" [isDetail]="isDetail" [allSelect]="allSelect" [showSelect]="showSelect">
+                        (resourceGroupChange)="groupChange($event)" [data]="data" [isDetail]="isDetail"
+                        [allSelect]="allSelect" [showSelect]="showSelect">
                     </aui-base-table-template>
                 </lv-tab>
             </ng-container>
@@ -41,13 +43,12 @@
 
 <ng-template #noDataTpl>
     <div class="tree-no-data">
-        <i lv-icon="lv-icon-no-data"></i>
-        <div class="no-data-label">{{'protection_vm_tree_no_data_label'|i18n}}</div>
+        <lv-empty lvDescription="{{'protection_vm_tree_no_data_label'|i18n}}"></lv-empty>
     </div>
 </ng-template>
 
 <ng-template #nodeTpl let-item>
-    <lv-group class="tree-node-container">
+    <lv-group class="tree-node-container" [ngClass]="{'node-checked':item.checked}" (click)="treeNodeCheck(item)">
         <lv-group lvGutter="8px">
             <i [lv-icon]="item.contentToggleIcon"></i>
             <span lv-overflow [ngClass]="{'node-label': isFc || isVmware}"

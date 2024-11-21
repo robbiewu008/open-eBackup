@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -43,14 +43,13 @@ import {
   filter,
   find,
   includes,
+  isNil,
   isNumber,
   isUndefined,
   map,
   reject,
   set,
-  size,
-  union,
-  remove
+  size
 } from 'lodash';
 
 @Component({
@@ -182,7 +181,7 @@ export class GeneralArchivalPolicyComponent implements OnInit {
 
   autoIndexForObs = false; // 对象存储下支持自动索引的应用
   autoIndexForTape = false; // 磁带库下支持自动索引的应用
-
+  archiveLogCopy = false; // 归档日志副本
   constructor(
     private fb: FormBuilder,
     public i18n: I18NService,
@@ -217,18 +216,17 @@ export class GeneralArchivalPolicyComponent implements OnInit {
         ApplicationType.NASShare,
         ApplicationType.HDFS,
         ApplicationType.ImportCopy,
-        ApplicationType.Fileset,
-        ApplicationType.Ndmp
+        ApplicationType.Fileset
       ],
       this.application
     );
+    this.archiveLogCopy = includes([ApplicationType.TDSQL], this.application);
     this.autoIndexForTape = includes(
       [
         ApplicationType.NASFileSystem,
         ApplicationType.NASShare,
         ApplicationType.Fileset,
-        ApplicationType.ObjectStorage,
-        ApplicationType.Ndmp
+        ApplicationType.ObjectStorage
       ],
       this.application
     );
@@ -379,9 +377,10 @@ export class GeneralArchivalPolicyComponent implements OnInit {
       }),
       duration_unit: new FormControl(DataMap.Interval_Unit.day.value),
       driverCount: new FormControl(1),
-      auto_index: new FormControl(true),
+      auto_index: new FormControl(false),
       network_access: new FormControl(true),
       alarm_after_failure: new FormControl(true),
+      log_archive: new FormControl(false),
       auto_retry: new FormControl(true),
       auto_retry_times: new FormControl(3, {
         validators: [
@@ -782,6 +781,9 @@ export class GeneralArchivalPolicyComponent implements OnInit {
       const archiveTeam = cloneDeep(this.archiveTeam);
       this.listenFormGroup(archiveTeam);
       archiveTeam.patchValue(item);
+      if (isNil(item?.driverCount)) {
+        archiveTeam.get('driverCount').setValue(1);
+      }
       if (item.storage_list) {
         const arr = [];
         const mediaArr = [];

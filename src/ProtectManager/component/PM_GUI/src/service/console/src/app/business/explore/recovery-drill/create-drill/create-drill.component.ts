@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -18,7 +18,7 @@ import {
   FormGroup
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DatatableComponent, MessageService } from '@iux/live';
+import { MessageService, OptionItem } from '@iux/live';
 import {
   ApiService,
   BaseUtilService,
@@ -63,7 +63,6 @@ import { AddScriptComponent } from './add-script/add-script.component';
 import { DatePipe } from '@angular/common';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { SystemTimeService } from 'app/shared/services/system-time.service';
-import { Observable, Observer } from 'rxjs';
 
 @Component({
   selector: 'aui-create-drill',
@@ -112,6 +111,12 @@ export class CreateDrillComponent implements OnInit {
     .toArray('recoveryDrillUnit')
     .filter(item => {
       return (item.isLeaf = true);
+    });
+  mountTypeOptions: OptionItem[] = this.dataMapService
+    .toArray('recoveryDrillType')
+    .map(item => {
+      item.isLeaf = true;
+      return item;
     });
 
   maxHour = 23;
@@ -206,7 +211,8 @@ export class CreateDrillComponent implements OnInit {
     };
     if (this.isSupportMount(item.resourceType)) {
       assign(resource, {
-        mountConfig: item.mountConfig ?? true
+        mountConfig: item.mountConfig ?? true,
+        mountType: item.type ?? DataMap.recoveryDrillType.liveMount.value
       });
     }
     // 演练参数回显
@@ -527,6 +533,23 @@ export class CreateDrillComponent implements OnInit {
     );
   }
 
+  isUseLivemountType(item): boolean {
+    // 不支持及时挂载的应用
+    if (!this.isSupportMount(item.subType)) {
+      return false;
+    }
+    if (this.formGroup.value.type === DataMap.drillType.period.value) {
+      return item.mountType === DataMap.recoveryDrillType.liveMount.value;
+    }
+    // 日志副本不能使用及时挂载演练
+    return !(
+      item.copyConfig &&
+      item.copyOptions &&
+      find(item.copyOptions, { value: item.copyConfig })?.source_copy_type ===
+        DataMap.CopyData_Backup_Type.log.value
+    );
+  }
+
   getResourceType(resource): string {
     return this.appUtilsService.getResourceType(resource.subType);
   }
@@ -586,6 +609,7 @@ export class CreateDrillComponent implements OnInit {
           each(existData, item => {
             if (this.isSupportMount(item.subType)) {
               assign(item, {
+                mountType: DataMap.recoveryDrillType.liveMount.value,
                 mountConfig: true
               });
             }
@@ -646,9 +670,11 @@ export class CreateDrillComponent implements OnInit {
         ? find(item.copyOptions, { value: item.copyConfig })
         : first(item.copyOptions) || {
             uuid: '',
+            resource_name: item.name,
             resource_id: item.uuid,
             resource_sub_type: item.subType,
-            resource_properties: JSON.stringify(item)
+            resource_properties: JSON.stringify(item),
+            properties: JSON.stringify({})
           };
     if (!isEmpty(item.recoveryConfig)) {
       assign(copy, {
@@ -656,7 +682,7 @@ export class CreateDrillComponent implements OnInit {
       });
     }
 
-    if (this.isSupportMount(item.subType)) {
+    if (this.isUseLivemountType(item)) {
       this.manualMountService.create(
         {
           item: copy,
@@ -712,7 +738,7 @@ export class CreateDrillComponent implements OnInit {
   hasNoDestoryMount(): boolean {
     return some(
       this.configTableData,
-      item => this.isSupportMount(item.subType) && !item.mountConfig
+      item => this.isUseLivemountType(item) && !item.mountConfig
     );
   }
 
@@ -782,11 +808,12 @@ export class CreateDrillComponent implements OnInit {
             source_copy_type: [
               DataMap.CopyData_Backup_Type.full.value,
               DataMap.CopyData_Backup_Type.incremental.value,
-              DataMap.CopyData_Backup_Type.log.value
+              DataMap.CopyData_Backup_Type.log.value,
+              DataMap.CopyData_Backup_Type.diff.value,
+              DataMap.CopyData_Backup_Type.permanent.value
             ],
             status: [
               DataMap.copydata_validStatus.normal.value,
-              DataMap.copydata_validStatus.restoring.value,
               DataMap.copydata_validStatus.mounting.value,
               DataMap.copydata_validStatus.unmounting.value,
               DataMap.copydata_validStatus.mounted.value
@@ -813,6 +840,11 @@ export class CreateDrillComponent implements OnInit {
   }
 
   copyChange(item) {
+    assign(item, { recoveryConfig: null });
+    this.disableNextBtn();
+  }
+
+  mountTypeChange(item) {
     assign(item, { recoveryConfig: null });
     this.disableNextBtn();
   }
@@ -866,7 +898,7 @@ export class CreateDrillComponent implements OnInit {
     }
     const resources = [];
     each(this.configTableData, item => {
-      if (this.isSupportMount(item.subType)) {
+      if (this.isUseLivemountType(item)) {
         assign(item.recoveryConfig?.parameters, {
           preScript: item.scriptConfig?.preScript || '',
           postScript: item.scriptConfig?.postScript || '',
@@ -908,13 +940,13 @@ export class CreateDrillComponent implements OnInit {
           this.formGroup.value.type === DataMap.drillType.single.value
             ? item.copyConfig
             : '',
-        shouldDestroy: this.isSupportMount(item.subType)
-          ? item.mountConfig
-          : false,
+        shouldDestroy: this.isUseLivemountType(item) ? item.mountConfig : false,
         sourceId: item.uuid,
         sourceName: item.name,
         sourceSubType: item.subType,
-        type: this.isSupportMount(item.subType) ? 'live_mount' : 'RESTORE',
+        type: this.isUseLivemountType(item)
+          ? DataMap.recoveryDrillType.liveMount.value
+          : DataMap.recoveryDrillType.restore.value,
         subTaskParam: JSON.stringify(item.recoveryConfig),
         location: item.path,
         targetLocation: item.recoveryTargetLocation

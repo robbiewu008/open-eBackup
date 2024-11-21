@@ -1,4 +1,17 @@
 
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
@@ -7,16 +20,16 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="How Should I Add a Source Deduplication User to sudoers?">
+<meta name="DC.Title" content="How Should I Add a Source Deduplication User to sudoers? (Applicable to the Linux OS)">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792390228">
 <meta name="DC.Language" content="en-us">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>How Should I Add a Source Deduplication User to sudoers?</title>
+<title>How Should I Add a Source Deduplication User to sudoers? (Applicable to the Linux OS)</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001792390228"></a><a name="EN-US_TOPIC_0000001792390228"></a>
 
-<h1 class="topictitle1">How Should I Add a Source Deduplication User to <strong id="en-us_topic_0000001608686382_b122172319386">sudoers</strong>?</h1>
+<h1 class="topictitle1">How Should I Add a Source Deduplication User to <strong id="en-us_topic_0000001608686382_b122172319386">sudoers</strong>? (Applicable to the Linux OS)</h1>
 <div><p id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_p183483913313">If ProtectAgent is installed in automatic push mode, <span class="uicontrol" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_uicontrol109791574319"><b>User Type</b></span> is <span class="uicontrol" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_uicontrol139797571032"><b>Super administrator</b></span>, and source deduplication is required, perform operations in this section to add the source deduplication user to <strong id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_b198498455467">sudoers</strong> before initial backup.</p>
 <div class="section" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_section175941115163111"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_ol122521212317"><li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li12252102115312"><span>Log in to the agent host as user <strong id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_b12911736114214">root</strong>.</span></li><li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li1296882714311"><span>Run the following command to search for the directory of the <strong id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_b141561101361">sudoers</strong> configuration file:</span><p><pre class="screen" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_screen2925152217527">whereis sudoers</pre>
 </p></li><li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li1967213198527"><span>Run the following command to change the permission on the <strong id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_b1921113912368">sudoers</strong> configuration file.</span><p><pre class="screen" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_screen2141552105214">chmod u+w /etc/sudoers</pre>

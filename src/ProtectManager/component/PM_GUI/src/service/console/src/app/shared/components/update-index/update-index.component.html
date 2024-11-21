@@ -1,3 +1,4 @@
+<ng-container *ngIf="isDetail; else elseTemplate">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<ng-container *ngIf="isDetail; else elseTemplate">
     <lv-form>
         <lv-form-item *ngIf="_isBoolean(protectData?.backup_res_auto_index)">
             <lv-form-label>{{'protection_backup_index_label' | i18n}}</lv-form-label>
@@ -25,32 +25,76 @@
                 {{protectData?.archive_res_auto_index | textMap: 'Switch_Status'}}
             </lv-form-control>
         </lv-form-item>
+        <lv-form-item *ngIf="_isBoolean(protectData?.tape_archive_auto_index)">
+            <lv-form-label>{{'protection_tape_archive_index_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                {{protectData?.tape_archive_auto_index | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
     </lv-form>
 </ng-container>
 <ng-template #elseTemplate>
     <div class="update-index-container" *ngIf="initSla && !isHcsUser && (hasBackup || hasArchive)">
-        <lv-alert lvType="warning" lvClosable="false">
+        <lv-alert lvType="warning" lvClosable="false" *ngIf="false">
             <h2 class="lv-alert-title">
                 {{'protection_modify_index_warn_label' | i18n}}
             </h2>
         </lv-alert>
         <lv-form [formGroup]="formGroup">
             <lv-form-item *ngIf="hasBackup">
-                <lv-form-label></lv-form-label>
+                <lv-form-label>
+                    {{'protection_backup_index_label' | i18n}}
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="getAutoIndexTip() " lvTooltipTheme="light"
+                        class="configform-constraint" lvColorState='true'></i>
+                </lv-form-label>
                 <lv-form-control>
-                    <lv-group lvGutter='8px'>
-                        <lv-switch formControlName="backup_res_auto_index"></lv-switch>
-                        <span>{{'protection_backup_index_label' | i18n}}</span>
-                    </lv-group>
+                    <lv-switch formControlName="backup_res_auto_index"></lv-switch>
+                    <div *ngIf="formGroup.value.backup_res_auto_index">
+                        <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                        <span>
+                            {{'protection_sla_index_enable_label' | i18n}}
+                        </span>
+                    </div>
                 </lv-form-control>
             </lv-form-item>
-            <lv-form-item *ngIf="hasArchive">
-                <lv-form-label></lv-form-label>
+            <lv-form-item *ngIf="hasArchiveForObs">
+                <lv-form-label>
+                    {{'protection_archive_index_label' | i18n}}
+                    <i lv-icon="aui-icon-help"
+                        lv-tooltip="{{'protection_advanced_auto_index_archive_tip_label' | i18n}}"
+                        lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+                </lv-form-label>
                 <lv-form-control>
-                    <lv-group lvGutter='8px'>
-                        <lv-switch formControlName="archive_res_auto_index"></lv-switch>
-                        <span>{{'protection_archive_index_label' | i18n}}</span>
-                    </lv-group>
+                    <lv-switch formControlName="archive_res_auto_index"></lv-switch>
+                    <div *ngIf="formGroup.value.archive_res_auto_index">
+                        <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                        <span>
+                            {{'protection_sla_index_enable_label' | i18n}}
+                        </span>
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item *ngIf="hasArchiveForTape">
+                <lv-form-label>
+                    {{'protection_tape_archive_index_label' | i18n}}
+                    <i lv-icon="aui-icon-help"
+                        lv-tooltip="{{'protection_advanced_auto_index_tape_archive_tip_label' | i18n}}"
+                        lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="tape_archive_auto_index"></lv-switch>
+                    <div *ngIf="formGroup.value.tape_archive_auto_index">
+                        <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                        <span>
+                            {{'protection_sla_index_enable_label' | i18n}}
+                        </span>
+                    </div>
+                    <div *ngIf="!formGroup.value.tape_archive_auto_index">
+                        <i lv-icon="lv-icon-status-warning-info" lvColorState='true' class="type-icon"></i>
+                        <span>
+                            {{'protection_sla_index_disable_label' | i18n}}
+                        </span>
+                    </div>
                 </lv-form-control>
             </lv-form-item>
         </lv-form>

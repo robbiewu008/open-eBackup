@@ -1,3 +1,4 @@
+<lv-collapse lvType="simple" class="panel-cluster">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-collapse lvType="simple" class="panel-cluster">
   <lv-collapse-panel [lvTitle]="titleTpl" lvExpanded="true">
     <div>
       <lv-group [lvGutter]="'10px'">
@@ -209,7 +209,12 @@
 </ng-template>
 <ng-template #titleTpl>
   <lv-group>
-    <span class="custom-title">{{'system_local_cluster_node_label' | i18n}}({{total}})</span>
+    <ng-container *ngIf="i18n.isEn; else elseTemplate">
+      <span class="custom-title">{{'system_local_cluster_node_label' | i18n}} ({{total}})</span>
+    </ng-container>
+    <ng-template #elseTemplate>
+      <span class="custom-title">{{'system_local_cluster_node_label' | i18n}}({{total}})</span>
+    </ng-template>
     <i lv-icon="aui-icon-help" lv-tooltip="{{'system_local_cluster_node_tip_label' | i18n}}" lvTooltipTheme="light"
       class="cluster-help" lvColorState='true'></i>
   </lv-group>

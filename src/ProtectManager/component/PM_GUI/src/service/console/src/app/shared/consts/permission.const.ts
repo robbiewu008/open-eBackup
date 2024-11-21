@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { find, includes, isEmpty, isUndefined, map } from 'lodash';
 
 // 用户角色
@@ -71,6 +71,7 @@ export const RoleOperationMap = {
   deleteCopy: 'deleteCopy', // 副本删除
   originalRestore: 'originalRestore', // 原位置恢复
   report: 'report', // 报表
+  reportSub: 'scheduleReport', // 报表订阅
   liveMountPolicy: 'liveMountPolicy', // 挂载更新策略
   copyDelete: 'copyDelete', // 副本删除
   copyIndex: 'copyIndex' // 副本索引
@@ -158,6 +159,16 @@ export function hasSpeedLimitPermission(item): boolean {
 // 是否具有报表权限
 export function hasReportPermission(item): boolean {
   return hasPermission(item, RoleOperationMap.report);
+}
+
+// 是否具有报表订阅权限
+export function hasReportSubscriptionPermission(item): boolean {
+  return hasPermission(item, RoleOperationMap.reportSub);
+}
+
+// 归档权限
+export function hasArchivePermission(item): boolean {
+  return hasPermission(item, RoleOperationMap.archive);
 }
 
 // 挂载策略
@@ -253,11 +264,11 @@ export const PermissionTable = [
       },
       {
         value: '11',
-        label: 'explore_recovery_drill_label'
+        label: 'explore_recovery_drill_singular_label'
       },
       {
         value: '17',
-        label: 'common_delete_copy_label'
+        label: 'common_delete_copy_lower_label'
       },
       {
         value: '18',
@@ -265,7 +276,7 @@ export const PermissionTable = [
       },
       {
         value: '13',
-        label: 'common_live_mount_label',
+        label: 'explore_copy_limit_live_mount_label',
         tooltip: 'system_live_mount_tip_label'
       },
       {
@@ -285,22 +296,26 @@ export const PermissionTable = [
       },
       {
         value: '14',
-        label: 'common_anti_policy_label'
+        label: 'common_anti_policy_lower_label'
       },
       {
         value: '15',
-        label: 'common_data_desensitization_label'
+        label: 'common_data_desensitization_lower_label'
       }
     ]
   },
   {
     value: 'Report',
-    label: 'common_report_label',
+    label: 'common_report_singular_label',
     expanded: true,
     children: [
       {
         value: '16',
-        label: 'common_report_label'
+        label: 'common_report_singular_label'
+      },
+      {
+        value: '20',
+        label: 'system_report_sub_label'
       }
     ]
   }
@@ -330,6 +345,7 @@ export enum RouterUrl {
   ProtectionHostAppHostRegister = '/protection/register-host',
   ProtectionHostAppFilesetTemplate = '/protection/file-service/fileset-template',
   ProtectionHostAppVolume = '/protection/file-service/volume',
+  ProtectionDatabaseAntDB = '/protection/database/ant-db',
   ProtectionHostAppOracle = '/protection/database/oracle',
   ProtectionHostAppGaussDBT = '/protection/database/gaussdb-t',
   ProtectionHostAppGaussDBDWS = '/protection/big-data/gaussdb-dws',
@@ -350,6 +366,7 @@ export enum RouterUrl {
   ProtectionDameng = '/protection/dameng',
   ProtectionHostAppMongoDB = '/protection/big-data/mongodb',
   ProtectionHostAppSapHana = '/protection/application/sap-hana',
+  ProtectionHostAppSaponoracle = '/protection/application/sap-on-oracle',
   ProtectionHostAppExchange = '/protection/application/exchange',
   ProtectionHostGeneralDatabase = '/protection/database/general-database',
   ProtectionGbase = '/protection/database/gbase',
@@ -357,12 +374,14 @@ export enum RouterUrl {
   ProtectionHostAppTidb = '/protection/database/tidb',
   ProtectionVirtualizationVmware = '/protection/virtualization/vmware',
   ProtectionVirtualizationCnware = '/protection/virtualization/cnware',
+  ProtectionVirtualizationNutanix = '/protection/virtualization/nutanix',
   ProtectionVirtualizationFusionCompute = '/protection/virtualization/fusion-compute',
   ProtectionVirtualizationFusionOne = '/protection/virtualization/fusion-one',
   ProtectionVirtualizationFusionsphere = '/protection/virtualization/fusionsphere',
   ProtectionVirtualizationHyperV = '/protection/virtualization/hyper-v',
   ProtectionVirtualizationH3cCas = '/protection/virtualization/h3c-cas',
-  ProtectionCloudHuaweiStack = '/protection/cloud/huawei-stack',
+  ProtectionHcsCloudHuaweiStack = '/protection/cloud/huawei-stack',
+  ProtectionCloudHuaweiStack = '/protection/cloud/huawei-cloud-stack',
   ProtectionVirtualizationKubernetes = '/protection/container/kubernetes',
   ProtectionVirtualizationKubernetesContainer = '/protection/container/kubernetes-container',
   ProtectionCloudOpenstack = '/protection/cloud/openstack',
@@ -379,6 +398,7 @@ export enum RouterUrl {
   ProtectionLocalFileSystem = '/protection/storage/local-file-system',
   ProtectionLocalResource = '/protection/storage/local-resource',
   ProtectionNasShared = '/protection/file-service/nas-shared',
+  ProtectionNdmp = '/protection/file-service/ndmp',
   ProtectionCommonShare = '/protection/file-service/common-share',
   ProtectionLimitRatePolicy = '/protection/policy/limit-rate-policy',
   ProtectionSla = '/protection/policy/sla',
@@ -408,6 +428,7 @@ export enum RouterUrl {
   ExploreCopyDataHost = '/explore/copy-data/host',
   ExploreCopyDataFileset = '/explore/copy-data/file-service/fileset',
   ExploreCopyDataVolume = '/explore/copy-data/file-service/volume',
+  ExploreCopyDataAntDB = '/explore/copy-data/database/ant-db',
   ExploreCopyDataOracle = '/explore/copy-data/database/oracle',
   ExploreCopyDataGaussDBT = '/explore/copy-data/database/gaussdb-t',
   ExploreCopyDataGaussDBDWS = '/explore/copy-data/big-data/gaussdb-dws',
@@ -426,6 +447,7 @@ export enum RouterUrl {
   ExploreCopyDataDatabaseExchange = '/explore/copy-data/application/exchange',
   ExploreCopyDataVMware = '/explore/copy-data/virtualization/vmware',
   ExploreCopyDataCNware = '/explore/copy-data/virtualization/cnware',
+  ExploreCopyDataNutanix = '/explore/copy-data/virtualization/nutanix',
   ExploreCopyDataOceanBase = '/explore/copy-data/database/ocean-base',
   ExploreCopyDataTDSQL = '/explore/copy-data/database/tdsql',
   ExploreCopyDataTiDB = '/explore/copy-data/database/tidb',
@@ -448,6 +470,7 @@ export enum RouterUrl {
   ExploreCopyDataFileSystem = '/explore/copy-data/file-service/dorado-file-system',
   ExploreCopyLocalFileSystem = '/explore/copy-data/local-file-system',
   ExploreCopyDataNasShared = '/explore/copy-data/file-service/nas-shared',
+  ExploreCopyDataNdmp = '/explore/copy-data/file-service/ndmp',
   ExploreCopyDataCommonShare = '/explore/copy-data/file-service/common-share',
   ExploreCopyDataKubernetes = '/explore/copy-data/container/kubernetes',
   ExploreCopyDataHdfs = '/explore/copy-data/big-data/hdfs',
@@ -456,6 +479,7 @@ export enum RouterUrl {
   ExploreCopyDataElasticsearch = '/explore/copy-data/big-data/elasticsearch',
   ExploreCopyDataKubernetesContainer = '/explore/copy-data/container/kubernetes-container',
   ExploreCopyDataSapHana = '/explore/copy-data/application/sap-hana',
+  ExploreCopyDataSaponoracle = '/explore/copy-data/application/saponoracle',
   ExploreLiveMount = '/explore/live-mounts',
   ExploreLiveMountOracle = '/explore/live-mounts/oracle',
   ExploreLiveMountFileset = '/explore/live-mounts/fileset',
@@ -484,6 +508,7 @@ export enum RouterUrl {
   ExploreAntiApplication = '/explore/anti-ransomware/application',
   ExploreAntiApplicationVmware = '/explore/anti-ransomware/application/vmware',
   ExploreAntiApplicationCnware = '/explore/anti-ransomware/application/cnware',
+  ExploreAntiApplicationNutanix = '/explore/anti-ransomware/application/nutanix',
   ExploreAntiApplicationDoradoFileSystem = '/explore/anti-ransomware/application/dorado-file-system',
   ExploreAntiApplicationNasShared = '/explore/anti-ransomware/application/nas-shared',
   ExploreAntiApplicationFileset = '/explore/anti-ransomware/application/fileset',
@@ -833,7 +858,8 @@ export enum OperateItems {
   EditTag, // 编辑标签名称
   DeleteTag, // 删除标签名称
   AddTag, //添加标签
-  RemoveTag // 移除标签
+  RemoveTag, // 移除标签
+  WormSet // worm设置
 }
 
 /**
@@ -863,6 +889,7 @@ export const URL_PERMISSION = {
     RouterUrl.ProtectionHostAppHostRegister,
     RouterUrl.ProtectionHostAppFilesetTemplate,
     RouterUrl.ProtectionHostAppVolume,
+    RouterUrl.ProtectionDatabaseAntDB,
     RouterUrl.ProtectionHostAppOracle,
     RouterUrl.ProtectionHostAppGaussDBT,
     RouterUrl.ProtectionHostAppGaussDBDWS,
@@ -879,10 +906,12 @@ export const URL_PERMISSION = {
     RouterUrl.ProtectionDameng,
     RouterUrl.ProtectionHostAppMongoDB,
     RouterUrl.ProtectionHostAppSapHana,
+    RouterUrl.ProtectionHostAppSaponoracle,
     RouterUrl.ProtectionHostAppExchange,
     RouterUrl.ProtectionGbase,
     RouterUrl.ProtectionVirtualizationVmware,
     RouterUrl.ProtectionVirtualizationCnware,
+    RouterUrl.ProtectionVirtualizationNutanix,
     RouterUrl.ProtectionVirtualizationFusionCompute,
     RouterUrl.ProtectionVirtualizationFusionOne,
     RouterUrl.ProtectionVirtualizationFusionsphere,
@@ -891,6 +920,7 @@ export const URL_PERMISSION = {
     RouterUrl.ProtectionVirtualizationKubernetes,
     RouterUrl.ProtectionVirtualizationKubernetesContainer,
     RouterUrl.ProtectionCloudHuaweiStack,
+    RouterUrl.ProtectionHcsCloudHuaweiStack,
     RouterUrl.ProtectionCloudOpenstack,
     RouterUrl.ProtectionApsaraStack,
     RouterUrl.ProtectionBigDataHdfs,
@@ -901,6 +931,7 @@ export const URL_PERMISSION = {
     RouterUrl.ProtectionDoradoFileSystem,
     RouterUrl.ProtectionLocalFileSystem,
     RouterUrl.ProtectionNasShared,
+    RouterUrl.ProtectionNdmp,
     RouterUrl.ProtectionObject,
     RouterUrl.ProtectionCommonShare,
     RouterUrl.ProtectionLimitRatePolicy,
@@ -929,6 +960,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreCopyDataHost,
     RouterUrl.ExploreCopyDataFileset,
     RouterUrl.ExploreCopyDataVolume,
+    RouterUrl.ExploreCopyDataAntDB,
     RouterUrl.ExploreCopyDataOracle,
     RouterUrl.ExploreCopyDataGaussDBT,
     RouterUrl.ExploreCopyDataGaussDBDWS,
@@ -949,6 +981,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreCopyDataDatabaseExchange,
     RouterUrl.ExploreCopyDataVMware,
     RouterUrl.ExploreCopyDataCNware,
+    RouterUrl.ExploreCopyDataNutanix,
     RouterUrl.ExploreCopyDataKubernetes,
     RouterUrl.ExploreCopyDataKubernetesContainer,
     RouterUrl.ExploreCopyDataHyperv,
@@ -968,6 +1001,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreCopyDataDeviceInfo,
     RouterUrl.ExploreCopyDataFileSystem,
     RouterUrl.ExploreCopyDataNasShared,
+    RouterUrl.ExploreCopyDataNdmp,
     RouterUrl.ExploreCopyDataObject,
     RouterUrl.ExploreCopyDataCommonShare,
     RouterUrl.ExploreCopyDataHdfs,
@@ -976,6 +1010,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreCopyDataHive,
     RouterUrl.ExploreCopyDataElasticsearch,
     RouterUrl.ExploreCopyDataSapHana,
+    RouterUrl.ExploreCopyDataSaponoracle,
     RouterUrl.ExploreLiveMount,
     RouterUrl.ExplorePolicyAntiPolicySetting,
     RouterUrl.ExplorePolicyAirgap,
@@ -1044,6 +1079,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreAntiApplication,
     RouterUrl.ExploreAntiApplicationVmware,
     RouterUrl.ExploreAntiApplicationCnware,
+    RouterUrl.ExploreAntiApplicationNutanix,
     RouterUrl.ExploreAntiApplicationDoradoFileSystem,
     RouterUrl.ExploreAntiApplicationNasShared,
     RouterUrl.ExploreAntiApplicationFileset,
@@ -1085,6 +1121,7 @@ export const URL_PERMISSION = {
     RouterUrl.ProtectionHostAppHostRegister,
     RouterUrl.ProtectionHostAppFilesetTemplate,
     RouterUrl.ProtectionHostAppVolume,
+    RouterUrl.ProtectionDatabaseAntDB,
     RouterUrl.ProtectionHostAppOracle,
     RouterUrl.ProtectionHostAppGaussDBT,
     RouterUrl.ProtectionHostAppGaussDBDWS,
@@ -1101,10 +1138,12 @@ export const URL_PERMISSION = {
     RouterUrl.ProtectionOpenGauss,
     RouterUrl.ProtectionDameng,
     RouterUrl.ProtectionHostAppSapHana,
+    RouterUrl.ProtectionHostAppSaponoracle,
     RouterUrl.ProtectionHostAppExchange,
     RouterUrl.ProtectionGbase,
     RouterUrl.ProtectionVirtualizationVmware,
     RouterUrl.ProtectionVirtualizationCnware,
+    RouterUrl.ProtectionVirtualizationNutanix,
     RouterUrl.ProtectionVirtualizationFusionCompute,
     RouterUrl.ProtectionVirtualizationFusionOne,
     RouterUrl.ProtectionVirtualizationFusionsphere,
@@ -1113,6 +1152,7 @@ export const URL_PERMISSION = {
     RouterUrl.ProtectionVirtualizationKubernetes,
     RouterUrl.ProtectionVirtualizationKubernetesContainer,
     RouterUrl.ProtectionCloudHuaweiStack,
+    RouterUrl.ProtectionHcsCloudHuaweiStack,
     RouterUrl.ProtectionCloudOpenstack,
     RouterUrl.ProtectionApsaraStack,
     RouterUrl.ProtectionBigDataHdfs,
@@ -1123,6 +1163,7 @@ export const URL_PERMISSION = {
     RouterUrl.ProtectionDoradoFileSystem,
     RouterUrl.ProtectionLocalFileSystem,
     RouterUrl.ProtectionNasShared,
+    RouterUrl.ProtectionNdmp,
     RouterUrl.ProtectionObject,
     RouterUrl.ProtectionCommonShare,
     RouterUrl.ProtectionLimitRatePolicy,
@@ -1151,6 +1192,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreCopyDataHost,
     RouterUrl.ExploreCopyDataFileset,
     RouterUrl.ExploreCopyDataVolume,
+    RouterUrl.ExploreCopyDataAntDB,
     RouterUrl.ExploreCopyDataOracle,
     RouterUrl.ExploreCopyDataGaussDBT,
     RouterUrl.ExploreCopyDataGaussDBDWS,
@@ -1171,6 +1213,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExportCopyDataDameng,
     RouterUrl.ExploreCopyDataVMware,
     RouterUrl.ExploreCopyDataCNware,
+    RouterUrl.ExploreCopyDataNutanix,
     RouterUrl.ExploreCopyDataKubernetes,
     RouterUrl.ExploreCopyDataKubernetesContainer,
     RouterUrl.ExploreCopyDataHyperv,
@@ -1190,6 +1233,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreCopyDataDeviceInfo,
     RouterUrl.ExploreCopyDataFileSystem,
     RouterUrl.ExploreCopyDataNasShared,
+    RouterUrl.ExploreCopyDataNdmp,
     RouterUrl.ExploreCopyDataObject,
     RouterUrl.ExploreCopyDataCommonShare,
     RouterUrl.ExploreCopyDataHdfs,
@@ -1198,6 +1242,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreCopyDataHive,
     RouterUrl.ExploreCopyDataElasticsearch,
     RouterUrl.ExploreCopyDataSapHana,
+    RouterUrl.ExploreCopyDataSaponoracle,
     RouterUrl.ExploreLiveMount,
     RouterUrl.ExploreLiveMountOracle,
     RouterUrl.ExploreLiveMountFileset,
@@ -1228,6 +1273,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreAntiApplication,
     RouterUrl.ExploreAntiApplicationVmware,
     RouterUrl.ExploreAntiApplicationCnware,
+    RouterUrl.ExploreAntiApplicationNutanix,
     RouterUrl.ExploreAntiApplicationDoradoFileSystem,
     RouterUrl.ExploreAntiApplicationNasShared,
     RouterUrl.ExploreAntiApplicationFileset,
@@ -1286,6 +1332,7 @@ export const URL_PERMISSION = {
     RouterUrl.ProtectionHostAppHostRegister,
     RouterUrl.ProtectionHostAppFilesetTemplate,
     RouterUrl.ProtectionHostAppVolume,
+    RouterUrl.ProtectionDatabaseAntDB,
     RouterUrl.ProtectionHostAppOracle,
     RouterUrl.ProtectionHostAppGaussDBT,
     RouterUrl.ProtectionHostAppGaussDBDWS,
@@ -1302,10 +1349,12 @@ export const URL_PERMISSION = {
     RouterUrl.ProtectionDameng,
     RouterUrl.ProtectionHostAppMongoDB,
     RouterUrl.ProtectionHostAppSapHana,
+    RouterUrl.ProtectionHostAppSaponoracle,
     RouterUrl.ProtectionHostAppExchange,
     RouterUrl.ProtectionGbase,
     RouterUrl.ProtectionVirtualizationVmware,
     RouterUrl.ProtectionVirtualizationCnware,
+    RouterUrl.ProtectionVirtualizationNutanix,
     RouterUrl.ProtectionVirtualizationFusionCompute,
     RouterUrl.ProtectionVirtualizationFusionOne,
     RouterUrl.ProtectionVirtualizationFusionsphere,
@@ -1314,6 +1363,7 @@ export const URL_PERMISSION = {
     RouterUrl.ProtectionVirtualizationKubernetes,
     RouterUrl.ProtectionVirtualizationKubernetesContainer,
     RouterUrl.ProtectionCloudHuaweiStack,
+    RouterUrl.ProtectionHcsCloudHuaweiStack,
     RouterUrl.ProtectionCloudOpenstack,
     RouterUrl.ProtectionApsaraStack,
     RouterUrl.ProtectionBigDataHdfs,
@@ -1324,6 +1374,7 @@ export const URL_PERMISSION = {
     RouterUrl.ProtectionDoradoFileSystem,
     RouterUrl.ProtectionLocalFileSystem,
     RouterUrl.ProtectionNasShared,
+    RouterUrl.ProtectionNdmp,
     RouterUrl.ProtectionObject,
     RouterUrl.ProtectionCommonShare,
     RouterUrl.ProtectionLimitRatePolicy,
@@ -1352,6 +1403,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreCopyDataHost,
     RouterUrl.ExploreCopyDataFileset,
     RouterUrl.ExploreCopyDataVolume,
+    RouterUrl.ExploreCopyDataAntDB,
     RouterUrl.ExploreCopyDataOracle,
     RouterUrl.ExploreCopyDataGaussDBT,
     RouterUrl.ExploreCopyDataGaussDBDWS,
@@ -1372,6 +1424,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreCopyDataDatabaseExchange,
     RouterUrl.ExploreCopyDataVMware,
     RouterUrl.ExploreCopyDataCNware,
+    RouterUrl.ExploreCopyDataNutanix,
     RouterUrl.ExploreCopyDataKubernetes,
     RouterUrl.ExploreCopyDataKubernetesContainer,
     RouterUrl.ExploreCopyDataHyperv,
@@ -1390,6 +1443,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreCopyDataDeviceInfo,
     RouterUrl.ExploreCopyDataFileSystem,
     RouterUrl.ExploreCopyDataNasShared,
+    RouterUrl.ExploreCopyDataNdmp,
     RouterUrl.ExploreCopyDataObject,
     RouterUrl.ExploreCopyDataCommonShare,
     RouterUrl.ExploreCopyDataHdfs,
@@ -1397,6 +1451,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreCopyDataHive,
     RouterUrl.ExploreCopyDataElasticsearch,
     RouterUrl.ExploreCopyDataSapHana,
+    RouterUrl.ExploreCopyDataSaponoracle,
     RouterUrl.ExplorePolicyAntiPolicySetting,
     RouterUrl.ExplorePolicyAirgap,
     RouterUrl.ExploreRansomwareOverview,
@@ -1468,6 +1523,7 @@ export const URL_PERMISSION = {
     RouterUrl.ExploreAntiApplication,
     RouterUrl.ExploreAntiApplicationVmware,
     RouterUrl.ExploreAntiApplicationCnware,
+    RouterUrl.ExploreAntiApplicationNutanix,
     RouterUrl.ExploreAntiApplicationDoradoFileSystem,
     RouterUrl.ExploreAntiApplicationNasShared,
     RouterUrl.ExploreAntiApplicationFileset,
@@ -2069,7 +2125,8 @@ export const OPERATE_PERMISSION = {
     OperateItems.EditTag,
     OperateItems.DeleteTag,
     OperateItems.AddTag,
-    OperateItems.RemoveTag
+    OperateItems.RemoveTag,
+    OperateItems.WormSet
   ],
   // 数据保护管理员
   [RoleType.DataProtectionAdmin]: [
@@ -2245,7 +2302,8 @@ export const OPERATE_PERMISSION = {
     OperateItems.EditTag,
     OperateItems.DeleteTag,
     OperateItems.AddTag,
-    OperateItems.RemoveTag
+    OperateItems.RemoveTag,
+    OperateItems.WormSet
   ],
   // 审计员
   [RoleType.Auditor]: [

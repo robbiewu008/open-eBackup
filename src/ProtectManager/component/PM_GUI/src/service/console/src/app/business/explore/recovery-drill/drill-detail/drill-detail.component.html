@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
     <div class="aui-header-1">
         <lv-group lvGutter="8px">
             <i lv-icon="aui-widget-datepicker-previous" [lvColorState]="true" (click)="gotoRecoveryDrill()"></i>
@@ -27,7 +27,7 @@
                     <aui-status [value]="drillPlan?.status" type="drillStatus"></aui-status>
                     <lv-group class="base-form" lvGutter='40px'>
                         <lv-group lvDirection='vertical' lvGutter='4px'>
-                            <span class="small-font">{{'explore_drill_type_label' | i18n}}</span>
+                            <span class="small-font">{{'explore_drill_plan_type_label' | i18n}}</span>
                             <span>{{drillPlan?.type | textMap:'drillType'}}</span>
                         </lv-group>
                         <lv-group lvDirection='vertical' lvGutter='4px'>
@@ -113,12 +113,12 @@
 
 <ng-template #startTimeTpl let-item>
     <span lv-overflow class="aui-link" (click)="executeDetail(item)">
-        {{item.startTime | date: 'yyyy-MM-dd HH:mm:ss' | nil}}
+        {{item.startTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil}}
     </span>
 </ng-template>
 
 <ng-template #endTimeTpl let-item>
-    <span lv-overflow>{{item.endTime | date: 'yyyy-MM-dd HH:mm:ss' | nil}}</span>
+    <span lv-overflow>{{item.endTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil}}</span>
 </ng-template>
 
 <ng-template #resourceType let-item>
@@ -127,12 +127,12 @@
 
 <ng-template #drillTypeTpl let-item>
     <span lv-overflow>
-        {{(item.type === 'live_mount' ? 'common_live_mount_label' : 'common_restore_label') | i18n}}
+        {{item.type | textMap:'recoveryDrillType'}}
     </span>
 </ng-template>
 
 <ng-template #destroyTpl let-item>
-    <ng-container *ngIf="item.type === 'live_mount'; else elseTemplate">
+    <ng-container *ngIf="item.type === dataMap.recoveryDrillType.liveMount.value; else elseTemplate">
         <span lv-overflow>{{item.shouldDestroy | textMap:'drillMountConfig'}}</span>
     </ng-container>
 </ng-template>

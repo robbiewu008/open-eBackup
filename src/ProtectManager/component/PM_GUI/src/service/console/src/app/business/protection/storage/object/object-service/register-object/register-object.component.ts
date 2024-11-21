@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MessageService, ModalRef } from '@iux/live';
@@ -169,65 +169,47 @@ export class RegisterObjectComponent implements OnInit {
     );
   }
 
-  getBucket(res, recordsTemp?, startPage?) {
+  getBucket(id) {
     const params: any = {
-      pageNo: this.pageIndex,
-      pageSize: this.pageSize * 10,
-      envId: res
+      envId: id
     };
 
     this.protectedEnvironmentApiService
       .ListEnvironmentResource(params)
       .subscribe(res => {
-        if (!recordsTemp) {
-          recordsTemp = [];
-        }
-        if (!isNumber(startPage)) {
-          startPage = CommonConsts.PAGE_START;
-        }
-        startPage++;
-        recordsTemp = [...recordsTemp, ...res.records];
-        if (
-          startPage ===
-            Math.ceil(res.totalCount / (CommonConsts.PAGE_SIZE * 10)) ||
-          res.totalCount === 0
-        ) {
-          const bucketArray = [];
-          each(recordsTemp, item => {
-            bucketArray.push({
-              name: item.name
-            });
+        const bucketArray = [];
+        each(res.records, item => {
+          bucketArray.push({
+            name: item.name
           });
-          this.tableData = bucketArray;
-          this.tempTableData = this.tableData;
-          this.totalTable = size(this.tableData);
-          if (this.rowData) {
-            const modified = JSON.parse(this.rowData.extendInfo.bucketList);
-            each(this.tableData, item => {
-              const exist = find(modified, val => val.name === item.name);
-              if (exist) {
-                this.selectionTable.push(item);
-                if (exist.prefix) {
-                  this.filters.push({
-                    name: item.name,
-                    data: exist.prefix
-                  });
-                }
+        });
+        this.tableData = bucketArray;
+        this.tempTableData = this.tableData;
+        this.totalTable = size(this.tableData);
+        if (this.rowData) {
+          const modified = JSON.parse(this.rowData.extendInfo.bucketList);
+          each(this.tableData, item => {
+            const exist = find(modified, val => val.name === item.name);
+            if (exist) {
+              this.selectionTable.push(item);
+              if (exist.prefix) {
+                this.filters.push({
+                  name: item.name,
+                  data: exist.prefix
+                });
               }
-            });
-            this.selectionTable = [...this.selectionTable];
-            this.selectedTableData = [...this.selectionTable];
-            each(this.selectedTableData, item => {
-              if (find(this.filters, val => val.name === item.name)) {
-                item['chosen'] = true;
-              }
-            });
-            this.formGroup.get('object').setValue(this.selectedTableData);
-          }
-          this.cdr.detectChanges();
-          return;
+            }
+          });
+          this.selectionTable = [...this.selectionTable];
+          this.selectedTableData = [...this.selectionTable];
+          each(this.selectedTableData, item => {
+            if (find(this.filters, val => val.name === item.name)) {
+              item['chosen'] = true;
+            }
+          });
+          this.formGroup.get('object').setValue(this.selectedTableData);
         }
-        this.getBucket(res, recordsTemp, startPage);
+        this.cdr.detectChanges();
       });
   }
 

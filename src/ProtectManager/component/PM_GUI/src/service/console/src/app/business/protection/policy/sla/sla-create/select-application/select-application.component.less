@@ -14,7 +14,7 @@
   }
 
   img.checked {
-    box-shadow: 0 0 8px #2673e5;
+    box-shadow: 0 0 8px var(--live-angular-color-primary-active);
   }
 }
 
@@ -26,7 +26,7 @@
   }
 
   img.checked {
-    box-shadow: 0 0 8px #2673e5;
+    box-shadow: 0 0 8px var(--live-angular-color-primary-active);
   }
 }
 
@@ -38,7 +38,8 @@
 .card {
   width: 272px;
   height: 72px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--live-angular-color-border-regular);
+  background: var(--live-angular-color-container-background);
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -46,13 +47,26 @@
   border-radius: 8px;
 }
 
+.common-card {
+  width: 128px;
+  height: 52px;
+  border: 1px solid var(--live-angular-color-border-regular);
+  background: var(--live-angular-color-container-background);
+  border-radius: 8px;
+}
+
+.labelWidth {
+  max-width: 140px;
+}
+
 .detect-card {
   border-radius: unset !important;
 }
 
-.card.select {
-  box-shadow: 0 0 2px #2673e5;
-  border: 1px solid #2673e5;
+.card.select,
+.common-card.select {
+  box-shadow: 0 0 2px var(--live-angular-color-primary-active);
+  border: 1px solid var(--live-angular-color-primary-active);
 }
 
 .card .resource-type-icon {
@@ -61,8 +75,14 @@
 }
 
 .card h2 {
-  color: #282b33;
   font-size: 14px;
+}
+
+.common-card h2 {
+  color: var(--live-angular-color-primary);
+  font-size: 14px;
+  line-height: 52px;
+  text-align: center;
 }
 
 .space {

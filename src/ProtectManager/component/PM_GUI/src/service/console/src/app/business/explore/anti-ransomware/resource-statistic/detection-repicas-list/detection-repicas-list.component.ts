@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   AfterViewInit,
@@ -73,6 +73,7 @@ import {
   isUndefined,
   map,
   reject,
+  remove,
   size
 } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
@@ -247,8 +248,7 @@ export class DetectionRepicasListComponent implements OnInit, AfterViewInit {
         .toArray('copydata_validStatus', [
           DataMap.copydata_validStatus.normal.value,
           DataMap.copydata_validStatus.invalid.value,
-          DataMap.copydata_validStatus.deleting.value,
-          DataMap.copydata_validStatus.restoring.value
+          DataMap.copydata_validStatus.deleting.value
         ])
         .filter(item => {
           return !includes(
@@ -343,15 +343,22 @@ export class DetectionRepicasListComponent implements OnInit, AfterViewInit {
         },
         permission: OperateItems.RestoreCopy,
         onClick: data => {
+          let resourceName;
+          if (data[0].resource_sub_type === 'LUN') {
+            resourceName = this.i18n.get('protection_local_lun_label');
+          } else {
+            resourceName = this.dataMapService.getLabel(
+              'Detecting_Resource_Type',
+              data[0].resource_sub_type
+            );
+          }
+
           if (
             data[0].anti_status === DataMap.Detection_Copy_Status.infected.value
           ) {
             this.warningMessageService.create({
               content: this.i18n.get('explore_infected_operation_label', [
-                this.dataMapService.getLabel(
-                  'Detecting_Resource_Type',
-                  data[0].resource_sub_type
-                ),
+                resourceName,
                 this.datePipe.transform(
                   data[0].display_timestamp,
                   'yyyy-MM-dd HH:mm:ss'
@@ -618,6 +625,16 @@ export class DetectionRepicasListComponent implements OnInit, AfterViewInit {
     ];
     const cols: TableCols[] = [
       {
+        key: 'uuid',
+        name: this.i18n.get('ID'),
+        filter: {
+          type: 'search',
+          filterMode: 'contains'
+        },
+        hidden:
+          this.i18n.get('deploy_type') !== DataMap.Deploy_Type.hyperdetect.value
+      },
+      {
         key: 'display_timestamp',
         name:
           this.i18n.get('deploy_type') !== DataMap.Deploy_Type.hyperdetect.value
@@ -659,7 +676,7 @@ export class DetectionRepicasListComponent implements OnInit, AfterViewInit {
       {
         key: 'anti_status',
         name: this.i18n.get('operation_target_detection_status_label'),
-        width: 118,
+        width: this.action === DetectionCopyAction.View ? 118 : null,
         filter: {
           type: 'select',
           isMultiple: true,
@@ -698,7 +715,7 @@ export class DetectionRepicasListComponent implements OnInit, AfterViewInit {
     ];
 
     if (this.action !== DetectionCopyAction.View) {
-      cols.splice(5, 1);
+      remove(cols, { key: 'detection_time' });
     }
 
     this.tableConfig = {
@@ -759,14 +776,6 @@ export class DetectionRepicasListComponent implements OnInit, AfterViewInit {
     if (this.action === DetectionCopyAction.View && !this.isDataBackup) {
       delete this.tableConfig.table.rows;
       delete this.tableConfig.table.selectionChange;
-    }
-    if (
-      this.i18n.get('deploy_type') === DataMap.Deploy_Type.hyperdetect.value
-    ) {
-      this.tableConfig.table.columns.unshift({
-        key: 'uuid',
-        name: this.i18n.get('protection_id_label')
-      });
     }
   }
 

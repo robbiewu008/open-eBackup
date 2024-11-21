@@ -1,16 +1,24 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
   BaseUtilService,
@@ -28,10 +36,11 @@ import { assign, each, map } from 'lodash';
   templateUrl: './route-config.component.html',
   styleUrls: ['./route-config.component.less']
 })
-export class RouteConfigComponent implements OnInit {
+export class RouteConfigComponent implements OnInit, OnChanges {
   @Input() isNetwork = false;
   @Input() ipType;
   @Input() routeData;
+  @Input() gateway;
   @Output() routeStatus = new EventEmitter<any>();
   data;
   componentData;
@@ -64,12 +73,26 @@ export class RouteConfigComponent implements OnInit {
     private warningMessageService: WarningMessageService
   ) {}
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (!!changes.gateway.previousValue && !changes.gateway.currentValue) {
+      this.routeOptions = this.dataMapService.toArray('initRouteType');
+    }
+
+    if (!!changes.gateway.currentValue) {
+      this.disableDefaultRoute();
+    }
+  }
+
   ngOnInit(): void {
     if (!this.isNetwork) {
       this.getRoute();
       this.initConfig();
     } else {
-      this.isIpv4 = this.ipType === '0';
+      // sftp和网络平面用的类型不同
+      this.isIpv4 = this.ipType === '0' || this.ipType === 'IPV4';
+      if (!!this.gateway) {
+        this.disableDefaultRoute();
+      }
     }
     this.initForm();
   }
@@ -77,17 +100,21 @@ export class RouteConfigComponent implements OnInit {
   initConfig() {
     this.isIpv4 = this.data.ipType === DataMap.IP_Type.ipv4.value;
     if (!!this.data?.gateWay) {
-      this.routeOptions = this.routeOptions.map(item => {
-        return {
-          ...item,
-          disabled: item.value === DataMap.initRouteType.default.value
-        };
-      });
+      this.disableDefaultRoute();
     }
   }
 
+  disableDefaultRoute() {
+    this.routeOptions = this.routeOptions.map(item => {
+      return {
+        ...item,
+        disabled: item.value === DataMap.initRouteType.default.value
+      };
+    });
+  }
+
   initRoute() {
-    if (!!this.routeData.length) {
+    if (!!this.routeData?.length) {
       each(this.routeData, item => {
         const routeItem = this.getTargetRouteFormGroup() as FormGroup;
         routeItem.patchValue({
@@ -108,6 +135,7 @@ export class RouteConfigComponent implements OnInit {
         });
         (this.formGroup.get('targetRoute') as FormArray).push(routeItem);
       });
+      this.routeStatus.emit(this.targetRoute);
     }
   }
 
@@ -149,7 +177,7 @@ export class RouteConfigComponent implements OnInit {
   getTargetRouteFormGroup() {
     return this.fb.group({
       type: new FormControl(
-        !!this.data?.gateWay
+        !!this.data?.gateWay || !!this.gateway
           ? DataMap.initRouteType.client.value
           : DataMap.initRouteType.default.value,
         {

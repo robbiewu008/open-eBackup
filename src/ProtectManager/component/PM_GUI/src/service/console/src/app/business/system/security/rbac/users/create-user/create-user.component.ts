@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -25,7 +25,7 @@ import {
 } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { OptionItem } from '@iux/live';
+import { MessageboxService, OptionItem } from '@iux/live';
 import {
   ApiService,
   BaseUtilService,
@@ -67,6 +67,7 @@ import {
   upperCase
 } from 'lodash';
 import { AddRoleComponent } from './add-role/add-role.component';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'aui-create-user',
@@ -88,6 +89,12 @@ export class CreateUserComponent implements OnInit {
   selectionData = [];
   resourceSetMap = new Map();
   roleList = [];
+  specialDefaultRoleIdList = [
+    DefaultRoles.rdAdmin.roleId,
+    DefaultRoles.drAdmin.roleId,
+    DefaultRoles.audit.roleId,
+    DefaultRoles.sysAdmin.roleId
+  ];
 
   formGroup;
   rolesOptsConfig: ProButton[];
@@ -124,7 +131,11 @@ export class CreateUserComponent implements OnInit {
     .filter(
       item =>
         !includes(
-          [DataMap.loginUserType.saml.value, DataMap.loginUserType.hcs.value],
+          [
+            DataMap.loginUserType.saml.value,
+            DataMap.loginUserType.hcs.value,
+            DataMap.loginUserType.dme.value
+          ],
           item.value
         )
     );
@@ -159,6 +170,9 @@ export class CreateUserComponent implements OnInit {
   );
 
   dynamicCodeHelp;
+  openStorageGroupTip;
+
+  @ViewChild('dpAdminTipTpl', { static: true }) dpAdminTipTpl;
 
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
 
@@ -173,6 +187,7 @@ export class CreateUserComponent implements OnInit {
     public apiService: ApiService,
     public baseUtilService: BaseUtilService,
     public cookieService: CookieService,
+    private messageBox: MessageboxService,
     private securityApiService: SecurityApiService,
     private sanitizer: DomSanitizer,
     private dataMapService: DataMapService,
@@ -182,6 +197,19 @@ export class CreateUserComponent implements OnInit {
     this.dynamicCodeHelp = this.sanitizer.bypassSecurityTrustHtml(
       i18n.get('system_open_email_config_label')
     );
+    this.openStorageGroupTip = this.sanitizer.bypassSecurityTrustHtml(
+      i18n.get('system_open_storage_group_tip_label')
+    );
+  }
+
+  openStorageGroupLink() {
+    const openStorageGroup = document.querySelector('#open-storage-group');
+    if (!openStorageGroup) {
+      return;
+    }
+    openStorageGroup.addEventListener('click', () => {
+      this.router.navigateByUrl('/system/infrastructure/nas-backup-storage');
+    });
   }
 
   openEmailLink() {
@@ -257,7 +285,7 @@ export class CreateUserComponent implements OnInit {
 
   private getResourceData() {
     this.resourceSetService
-      .QueryResourceSetByUserId({
+      .queryResourceSetByUserId({
         userId: this.data.userId
       })
       .subscribe((res: any) => {
@@ -613,19 +641,47 @@ export class CreateUserComponent implements OnInit {
   }
 
   getSecuritPolicy() {
-    this.securityApiService.getUsingGET1({}).subscribe(res => {
-      this.passLenVal = res.passLenVal;
-      this.passComplexVal = res.passComplexVal;
-      this.pwdComplexTipLabel = this.i18n.get('common_pwdtip_label', [
-        this.passLenVal,
-        64,
-        this.passComplexVal === 2
-          ? this.i18n.get('common_pwd_complex_label')
-          : '',
-        2,
-        this.i18n.get('common_pwdtip_five_six_label')
-      ]);
-    });
+    this.securityApiService
+      .getUsingGET1({})
+      .pipe(
+        finalize(() => {
+          this.formGroup
+            .get('userPassword')
+            .setValidators([
+              this.baseUtilService.VALID.password(
+                this.passLenVal,
+                this.passComplexVal,
+                this.maxLenVal
+              ),
+              this.validUserNamePwd(),
+              this.validConfirmPwdIsSame()
+            ]);
+          this.formGroup
+            .get('confirmPassword')
+            .setValidators([
+              this.baseUtilService.VALID.password(
+                this.passLenVal,
+                this.passComplexVal,
+                this.maxLenVal
+              ),
+              this.validUserNamePwd(),
+              this.validUserPasswordIsSame()
+            ]);
+        })
+      )
+      .subscribe(res => {
+        this.passLenVal = res.passLenVal;
+        this.passComplexVal = res.passComplexVal;
+        this.pwdComplexTipLabel = this.i18n.get('common_pwdtip_label', [
+          this.passLenVal,
+          64,
+          this.passComplexVal === 2
+            ? this.i18n.get('common_pwd_complex_label')
+            : '',
+          2,
+          this.i18n.get('common_pwdtip_five_six_label')
+        ]);
+      });
   }
 
   validUserNamePwd(): ValidatorFn {
@@ -825,9 +881,25 @@ export class CreateUserComponent implements OnInit {
           user: userParams
         })
         .subscribe(() => {
+          this.dpAdminTipBox(
+            !this.specialDefaultRoleIdList.includes(
+              this.formGroup.get('roleId').value
+            )
+          );
           this.openPage.emit();
         });
     }
+  }
+
+  dpAdminTipBox(isDPAdmin) {
+    // 数据保护管理员或自定义用户需要展示弹窗
+    if (!isDPAdmin) {
+      return;
+    }
+    this.messageBox.info({
+      lvContent: this.dpAdminTipTpl
+    });
+    defer(() => this.openStorageGroupLink());
   }
 
   back() {

@@ -1,0 +1,115 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring an NDMP NAS File System">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="nas_s_0056_0.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="nas_s_0059_0">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring an NDMP NAS File System</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="nas_s_0059_0"></a><a name="nas_s_0059_0"></a>
+
+<h1 class="topictitle1">Restoring an NDMP NAS File System</h1>
+<div><p>This section describes how to restore an NDMP NAS file system that has been backed up to its original location or a new location.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>The <span>OceanProtect</span> supports restoration to the original location or a new location using backup copies.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li id="nas_s_0059_0__li558413141988">To restore an NDMP NAS file system to a new location, a storage device residing at the new location needs to be added to the <span id="nas_s_0059_0__text1511818204144">OceanProtect</span>. For details about how to add a storage device, see <a href="nas_s_0013_0.html">Step 1: Adding a Storage Device</a>.</li><li>Before the restoration, ensure that the remaining space of the target location is larger than that of the NDMP NAS file system to be restored. If the space is insufficient, expand the capacity of the target location or release sufficient space to complete the restoration.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>If the target location does not have sufficient space for restoration, the NDMP NAS restoration job is partially successful and the failed files cannot be restored. The restoration event contains messages similar to the following:</p>
+<p>RESTORE: Warning: We recommend that 13547742 inodes and 6991617042 kbytes of disk space   be available on the target volume in order to restore this dump.        You have 8348418 inodes and 271447472 kbytes of disk space on volume ndmp_shu8t.</p>
+<p>RESTORE: Warning: This restore will proceed, but may fail when it runs out of inodes and/or disk space on this volume.</p>
+</div></div>
+</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><p>If you change the name of a protected NDMP NAS file system in the <span>OceanProtect</span> at the production end and scan for resources again, the <span>OceanProtect</span> identifies the file system as a new resource and does not inherit the backup policy and backup copy of the original file system. If a file system with a new name needs to be backed up, you need to configure protection again.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="nas_s_0059_0__li0198134611381"><span>Choose <span class="uicontrol" id="nas_s_0059_0__en-us_topic_0000001839142377_uicontrol209301891893"><b><span id="nas_s_0059_0__en-us_topic_0000001839142377_text09301392911"><strong>Explore</strong></span> &gt; <span id="nas_s_0059_0__en-us_topic_0000001839142377_text149305915920"><strong>Copy Data</strong></span> &gt; File Systems &gt; <span id="nas_s_0059_0__en-us_topic_0000001839142377_text189301391992"><strong>NAS File Systems</strong></span></b></span></span></li><li id="nas_s_0059_0__li87691438131514"><span>Copies can be searched by NDMP NAS file system resource or copy. This section uses the NDMP NAS file system resource as an example.</span><p><p id="nas_s_0059_0__p142551140161511">On the <span id="nas_s_0059_0__text6827103218214"><strong>Resources</strong></span> tab page, locate the NDMP NAS file system to be restored by file system name and click the name.</p>
+</p></li><li id="nas_s_0059_0__li02165214225"><span>On the <span class="uicontrol" id="nas_s_0059_0__uicontrol1812414562220"><b><span id="nas_s_0059_0__text18993182162710"><strong>Copy Data</strong></span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p><p id="nas_s_0059_0__p9918150182310">If <span><img id="nas_s_0059_0__image886000161711" src="en-us_image_0000001937668641.png"></span> is displayed below a month or day, a copy is generated in the month or day.</p>
+</p></li><li><span>In the row where the copy resides, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Restore</strong></span></b></span>.</span></li><li><span>Restore an NDMP NAS file system to its original location or a new location.</span><p><ul><li>Restore data to the original location.<p><a href="#nas_s_0059_0__table1452025982813">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="nas_s_0059_0__table1452025982813"></a><a name="table1452025982813"></a><table cellpadding="4" cellspacing="0" summary="" id="nas_s_0059_0__table1452025982813" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for restoring data to the original location</caption><colgroup><col style="width:13.569999999999999%"><col style="width:86.42999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.5.2.5.2.1.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.5.2.5.2.1.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.1.2.2.3.1.1 "><p><span><strong>Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.1.2.2.3.1.2 "><p>Location of a file system, which cannot be modified.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Restore data to a new location.<p><a href="#nas_s_0059_0__table1248313820599">Table 2</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="nas_s_0059_0__table1248313820599"></a><a name="table1248313820599"></a><table cellpadding="4" cellspacing="0" summary="" id="nas_s_0059_0__table1248313820599" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Parameters for restoring data to a new location</caption><colgroup><col style="width:13.569999999999999%"><col style="width:86.42999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.5.2.5.2.1.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.5.2.5.2.1.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p><span><strong>Storage Device</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p>Select the storage device that resides at a new location.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p><span><strong>File Systems</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p>Select the file system to be restored.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p><span><strong>FQDN/IP</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p>FQDN name or service IP address for accessing a NAS share.</p>
+<p>The FQDN format is <em id="nas_s_0059_0__nas_s_0024_i49311011216">Name of the storage device where a NAS share resides</em><strong id="nas_s_0059_0__nas_s_0024_b204885331765">.</strong><em id="nas_s_0059_0__nas_s_0024_i958914467218">Name of the domain to which the storage device is added</em>. For example, if the name of the storage device where a NAS share resides is <em id="nas_s_0059_0__nas_s_0024_i1299311513208">Huawei.Storage</em> and the name of the domain to which the storage device is added is <em id="nas_s_0059_0__nas_s_0024_i2993851132016">huawei.com</em>, the FQDN is <em id="nas_s_0059_0__nas_s_0024_i1899345112011">Huawei.Storage.huawei.com</em>.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>If you need to enter an FQDN, configure the DNS service on the management page of the <span>OceanProtect</span> so that the <span>OceanProtect</span> can access external domain names. For details about how to configure the DNS service, see <a href="nas_s_0099_0.html">Configuring the DNS Service</a>.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p><span><strong>Replace existing files</strong></span>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ul>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="nas_s_0056_0.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

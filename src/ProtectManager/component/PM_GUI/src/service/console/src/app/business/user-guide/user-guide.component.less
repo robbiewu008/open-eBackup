@@ -1,7 +1,12 @@
+.user-guide-slider {
+  height: 100%;
+  background: var(--live-angular-color-container-background);
+}
+
 .guide-container {
   width: 100%;
   height: 100%;
-  background: url('assets/img/guide-bg.png') no-repeat;
+  background: var(--custom-user-guide-bg);
   background-size: cover;
   padding: 24px 20px;
   box-sizing: border-box;
@@ -67,7 +72,7 @@
 .guide-aui-link {
   &:hover,
   &:active {
-    color: #1664d9;
+    color: var(--live-angular-color-primary-active);
     text-decoration: none;
     cursor: pointer;
   }
@@ -90,13 +95,13 @@
 }
 
 .app-group {
-  border: 1px solid rgb(230, 230, 230);
+  border: 1px solid var(--live-angular-color-border-secondary);
   border-radius: 8px;
   cursor: pointer;
 }
 
 .active-status {
-  border: 1px solid #1664d9;
+  border: 1px solid var(--live-angular-color-primary-active);
 }
 
 .guide-btn-container {
@@ -120,11 +125,11 @@
   text-align: center;
   font-size: 16px;
   line-height: 32px;
-  color: #ffffff;
+  color: var(--live-angular-color-text-white);
 }
 
 .guide-label {
-  color: #b8becc;
+  color: var(--live-angular-color-text-regular);
   font-size: 12px;
   font-weight: 400;
   line-height: 12px;
@@ -135,8 +140,8 @@
   width: 368px;
   border-radius: 8px;
   box-sizing: border-box;
-  border: 1px solid rgb(242, 242, 242);
-  background: rgb(255, 255, 255);
+  border: 1px solid var(--live-angular-color-border-regular);
+  background: var(--live-angular-color-container-background);
 }
 
 .step-bar-title {
@@ -152,9 +157,9 @@
 .step-index {
   width: 20px;
   height: 20px;
-  background: rgb(38, 115, 229);
+  background: var(--live-angular-color-primary-active);
   border-radius: 20px;
-  color: rgb(255, 255, 255);
+  color: var(--live-angular-color-text-white);
   font-size: 16px;
   font-weight: 700;
   line-height: 20px;
@@ -167,7 +172,7 @@
 }
 
 .bar-dash-line {
-  border-top: 1px solid rgb(179, 179, 179);
+  border-top: 1px solid var(--live-angular-color-border-secondary);
   opacity: 0.1;
   height: 0;
   margin-top: 14px;
@@ -186,7 +191,7 @@
 }
 
 .step-desc {
-  color: rgb(77, 77, 77);
+  color: var(--live-angular-color-text-hint);
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
@@ -204,6 +209,14 @@
   width: 174px;
 }
 
+.ui-card-zh {
+  height: 240px;
+}
+
+.ui-card-en {
+  height: 270px;
+}
+
 .ui-card p {
   word-break: break-all;
   font-size: 12px;
@@ -217,17 +230,16 @@
 
 .close-guide-content {
   margin-top: 16px;
-  padding: 16px 16px 0 16px;
+  padding: 16px;
   width: 368px;
-  height: 136px;
   box-sizing: border-box;
-  border: 1px solid rgb(38, 115, 229);
+  border: 1px solid var(--live-angular-color-primary-active);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--live-angular-color-container-background);
 }
 
 .close-guide-title {
-  color: rgb(26, 26, 26);
+  color: var(--live-angular-color-text-regular);
   font-size: 14px;
   font-weight: 600;
   line-height: 22px;

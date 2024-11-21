@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -41,8 +41,10 @@ import {
 import {
   LogManagerApiService,
   SftpManagerApiService,
+  StorageUnitService,
   SystemApiService
 } from 'app/shared/api/services';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
@@ -56,11 +58,14 @@ import {
   includes,
   isEmpty,
   isNil,
+  isUndefined,
   map,
   nth,
+  set,
   some
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
+import { RouteConfigComponent } from '../../config-network/route-config/route-config.component';
 
 @Component({
   selector: 'aui-start-sftp',
@@ -98,6 +103,10 @@ export class StartSftpComponent implements OnInit {
   ethPort = [];
   oldPort = []; // 用于临时存储上次的端口
   lastSelectPort = [];
+  enableRoute = false;
+  routeGroupData = [];
+  routeData = [];
+  isGatewayDisabled = false;
   isX9000 = includes(
     [DataMap.Deploy_Type.x9000.value],
     this.i18n.get('deploy_type')
@@ -107,6 +116,7 @@ export class StartSftpComponent implements OnInit {
   enableVlan = false;
   tips = this.i18n.get('system_pod_rule_tip_label');
   modeOptions = this.dataMapService.toArray('wormComplianceMode');
+  storageUnitOptions = [];
   IntervalUnitOptions = this.dataMapService
     .toArray('sftpProtectionTimeUnit')
     .reverse()
@@ -150,6 +160,8 @@ export class StartSftpComponent implements OnInit {
   };
 
   @ViewChild('linkStatusTpl', { static: true }) linkStatusTpl: TemplateRef<any>;
+  @ViewChild(RouteConfigComponent, { static: false })
+  routConfigComponent: RouteConfigComponent;
 
   constructor(
     private modal: ModalRef,
@@ -161,10 +173,12 @@ export class StartSftpComponent implements OnInit {
     public dataMapService: DataMapService,
     public messageService: MessageService,
     public baseUtilService: BaseUtilService,
+    public appUtilsService: AppUtilsService,
     public drawModalService: DrawModalService,
     public virtualScroll: VirtualScrollService,
     public systemApiService: SystemApiService,
     public batchOperateService: BatchOperateService,
+    public storageUnitService: StorageUnitService,
     public sftpManagerApiService: SftpManagerApiService,
     public warningMessageService: WarningMessageService,
     public capacityCalculateLabel: CapacityCalculateLabel
@@ -173,10 +187,14 @@ export class StartSftpComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.getControl();
+    this.getStorageUnit();
     this.initColumns();
   }
 
   updateData() {
+    if (this.isModify && isEmpty(this.data?.poolId)) {
+      this.data.poolId = '0';
+    }
     this.formGroup.patchValue(this.data);
     this.wormGroup.patchValue(this.data);
     if (!this.data.isWormExist) {
@@ -205,15 +223,22 @@ export class StartSftpComponent implements OnInit {
         this.formGroup.get('vlanID').setValue(this.data.vlan.tags.join(','));
       }
     }
+    this.routeData = this.data.portRoutes;
+    if (!!this.data?.portRoutes?.length) {
+      this.formGroup.get('enableRoute').setValue(true);
+    }
     defer(() => this.updatePort());
 
     this.formGroup.statusChanges.subscribe(result => {
       this.modal.getInstance().lvOkDisabled =
-        result === 'INVALID' || this.wormGroup.invalid || !this.validPort();
+        result === 'INVALID' ||
+        this.wormGroup.invalid ||
+        !this.validPort() ||
+        this.validRoute();
     });
     this.wormGroup.statusChanges.subscribe(result => {
       this.modal.getInstance().lvOkDisabled =
-        result === 'INVALID' || !this.validPort();
+        result === 'INVALID' || !this.validPort() || this.validRoute();
     });
   }
 
@@ -237,8 +262,15 @@ export class StartSftpComponent implements OnInit {
       ipType: new FormControl('IPV4'),
       ip: new FormControl(''),
       mask: new FormControl(''),
+      gateway: new FormControl('', {
+        validators: [this.baseUtilService.VALID.ipv4()]
+      }),
+      poolId: new FormControl('', {
+        validators: this.baseUtilService.VALID.required()
+      }),
       homePortType: new FormControl('1'),
       vlanID: new FormControl(''),
+      enableRoute: new FormControl(false),
       isWormEnable: new FormControl(false),
       isReuse: new FormControl(false)
     });
@@ -278,6 +310,9 @@ export class StartSftpComponent implements OnInit {
             this.baseUtilService.VALID.required(),
             this.baseUtilService.VALID.name(CommonConsts.REGEX.mask)
           ]);
+        this.formGroup
+          .get('gateway')
+          .setValidators(this.baseUtilService.VALID.ipv4());
       } else {
         this.formGroup
           .get('ip')
@@ -292,9 +327,13 @@ export class StartSftpComponent implements OnInit {
             this.baseUtilService.VALID.integer(),
             this.baseUtilService.VALID.rangeValue(1, 128)
           ]);
+        this.formGroup
+          .get('gateway')
+          .setValidators(this.baseUtilService.VALID._ipv6());
       }
       this.formGroup.get('ip').updateValueAndValidity();
       this.formGroup.get('mask').updateValueAndValidity();
+      this.formGroup.get('gateway').updateValueAndValidity();
     });
 
     this.formGroup.get('homePortType').valueChanges.subscribe(res => {
@@ -374,6 +413,10 @@ export class StartSftpComponent implements OnInit {
       this.oldTargetData = [];
     });
 
+    this.formGroup.get('enableRoute').valueChanges.subscribe(res => {
+      this.formGroup.updateValueAndValidity();
+    });
+
     this.wormGroup.get('defProtectTimeUnit').valueChanges.subscribe(res => {
       defer(() =>
         this.wormGroup.get('wormDefProtectPeriod').updateValueAndValidity()
@@ -442,6 +485,32 @@ export class StartSftpComponent implements OnInit {
         );
       }
     });
+  }
+
+  getStorageUnit() {
+    this.appUtilsService.getResourceByRecursion(
+      null,
+      params => this.storageUnitService.queryBackUnitGET(params),
+      resource => {
+        const unitArray = [];
+        each(resource, item => {
+          if (
+            item.generatedType ===
+              DataMap.backupStorageGeneratedType.local.value &&
+            item.deviceType ===
+              DataMap.poolStorageDeviceType.OceanProtectX.value
+          ) {
+            unitArray.push({
+              ...item,
+              value: item.poolId,
+              label: item.name,
+              isLeaf: true
+            });
+          }
+        });
+        this.storageUnitOptions = unitArray;
+      }
+    );
   }
 
   tipChange() {
@@ -765,14 +834,9 @@ export class StartSftpComponent implements OnInit {
     });
   }
 
-  clearSelected() {
-    this.source.selection = [];
-    this.targetData = [];
-    this.formGroup.updateValueAndValidity();
-  }
-
   selectionChange(e) {
-    this.targetData = e.selection;
+    this.source.selection = e?.selection;
+    this.targetData = e?.selection;
     this.formGroup.updateValueAndValidity();
   }
 
@@ -809,6 +873,29 @@ export class StartSftpComponent implements OnInit {
     }
     defer(() => this.tipChange());
     this.formGroup.get('vlanID').updateValueAndValidity();
+  }
+
+  routeStatusChange(e) {
+    this.routeGroupData = e;
+    this.modal.getInstance().lvOkDisabled = some(e, item => item.invalid);
+    if (
+      find(
+        e,
+        item => item.get('type').value === DataMap.initRouteType.default.value
+      )
+    ) {
+      this.formGroup.get('gateway').disable();
+      this.formGroup.get('gateway').setValue('');
+    } else {
+      this.formGroup.get('gateway').enable();
+    }
+  }
+
+  validRoute() {
+    if (!this.formGroup.get('enableRoute').value) {
+      return false;
+    }
+    return some(this.routeGroupData, item => item.invalid);
   }
 
   validPort() {
@@ -854,6 +941,9 @@ export class StartSftpComponent implements OnInit {
   }
 
   getParams() {
+    const portData = !isUndefined(this.routConfigComponent)
+      ? this.routConfigComponent.getTargetParams()
+      : [];
     const params: any = {
       SftpSwitchRequest: {
         status: 1,
@@ -871,6 +961,7 @@ export class StartSftpComponent implements OnInit {
       memberEsn: this.activeNode || ''
     };
     delete params.SftpSwitchRequest.vlanID;
+    delete params.SftpSwitchRequest.enableRoute;
     if (this.enableVlan) {
       params.SftpSwitchRequest.homePortType =
         DataMap.initHomePortType.vlan.value;
@@ -880,6 +971,9 @@ export class StartSftpComponent implements OnInit {
           ? []
           : [this.formGroup.value.vlanID]
       };
+    }
+    if (!!portData.length) {
+      set(params, 'SftpSwitchRequest.portRoutes', portData);
     }
     return params;
   }

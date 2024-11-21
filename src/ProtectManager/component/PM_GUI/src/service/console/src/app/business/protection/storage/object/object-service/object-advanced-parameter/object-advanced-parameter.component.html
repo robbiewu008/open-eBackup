@@ -1,3 +1,4 @@
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
   <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
     <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
       <!-- 当前版本暂不支持多节点并行备份功能 -->
@@ -38,6 +38,15 @@
         </lv-form-label>
         <lv-form-control>
           <lv-switch formControlName="isBackupAcl"></lv-switch>
+          <lv-group *ngIf="formGroup.get('isBackupAcl').value">
+            <span>
+              <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon">
+              </i>
+              <span class="text-middle">
+                {{'explore_acl_backup_tip_label' |i18n}}
+              </span>
+            </span>
+          </lv-group>
         </lv-form-control>
       </lv-form-item>
       <lv-form-item  *ngIf="isHCS">

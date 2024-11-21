@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'common_name_label' | i18n }}
@@ -22,14 +22,7 @@
   </lv-form-item>
   <lv-form-item>
     <lv-form-label lvRequired>
-      {{ 'protection_manage_side_address_label' | i18n }}
-      <i
-        lv-icon="aui-icon-help"
-        lv-tooltip="{{ '' | i18n }}"
-        lvTooltipTheme="light"
-        class="configform-constraint"
-        lvColorState="true"
-      ></i>
+      {{ 'protection_manage_side_url_label' | i18n }}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
       <input lv-input type="text" formControlName="address" />
@@ -37,14 +30,7 @@
   </lv-form-item>
   <lv-form-item>
     <lv-form-label lvRequired>
-      {{ 'protection_business_side_address_label' | i18n }}
-      <i
-        lv-icon="aui-icon-help"
-        lv-tooltip="{{ '' | i18n }}"
-        lvTooltipTheme="light"
-        class="configform-constraint"
-        lvColorState="true"
-      ></i>
+      {{ 'protection_business_side_url_label' | i18n }}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
       <input lv-input type="text" formControlName="businessAddress" />

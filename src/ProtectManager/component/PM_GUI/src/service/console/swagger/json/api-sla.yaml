@@ -71,7 +71,7 @@ paths:
               auto_retry: true
               auto_retry_times: 3
               auto_retry_wait_minutes: 5
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,HyperDetect
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -183,7 +183,7 @@ paths:
       x-order: 0
     get:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -282,6 +282,13 @@ paths:
           description: 资源集ID
           type: string
           pattern: ^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$;
+        - name: isGetAssociatedCount
+          in: query
+          required: false
+          description: 是否获取关联资源数量
+          type: boolean
+          default: true
+          allowEmptyValue: true
       responses:
         '200':
           description: ''
@@ -306,7 +313,7 @@ paths:
       x-order: 1
     put:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,HyperDetect
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -359,7 +366,7 @@ paths:
       x-order: 2
     delete:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,HyperDetect
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -414,7 +421,7 @@ paths:
   /v1/slas/{slaId}:
     get:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -464,7 +471,7 @@ paths:
       x-order: 5
     delete:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,HyperDetect
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -871,7 +878,7 @@ paths:
   /v1/slas/active/{slaId}:
     post:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect E6000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -921,7 +928,7 @@ paths:
   /v1/slas/deactive/{slaId}:
     post:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000
+      x-product: OceanProtect E6000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081

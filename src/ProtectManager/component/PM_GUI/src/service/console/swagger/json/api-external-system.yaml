@@ -268,29 +268,26 @@ paths:
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'N'
-      x-public-api: 'N'
+      x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
         - external-system
-      summary: 监控备份软件状态
-      description: 监控备份软件状态
-      operationId: GetExternalSystemStatus
+      summary: 查询外部系统信息
+      description: 查询外部系统信息
+      operationId: getAllStatus
       parameters:
         - name: limitTime
           in: query
           required: false
-          description: 1d,1w,1m 不填返回所有
-          type: string
-        - name: X-Auth-Token
-          in: header
-          required: false
-          description: Access token
+          description: '1d：一天， 1w：一周, 1m: 一月，不填：所有时间'
           type: string
       responses:
         '200':
-          description: ''
+          description: 外部系统信息
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/definitions/ExternalSystemStatus'
 definitions:
   AddExternalSystem:
     description: externalSystem
@@ -481,3 +478,34 @@ definitions:
               description: location
         description: 记录
         type: array
+  ExternalSystemStatus:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 外部系统名称
+      status:
+        type: integer
+        format: int32
+        description: 外部系统状态
+      totalSize:
+        type: string
+        description: 总容量
+      alarmsCount:
+        type: integer
+        format: int32
+        description: 告警数
+      usedSize:
+        type: string
+        description: 已用容量
+      failedJobs:
+        type: integer
+        format: int32
+        description: 失败任务数
+      totalJobs:
+        type: integer
+        format: int32
+        description: 总任务数
+      type:
+        type: string
+        description: 外部系统类型

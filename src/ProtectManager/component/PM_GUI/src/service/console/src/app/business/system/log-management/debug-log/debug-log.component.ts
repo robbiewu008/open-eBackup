@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   OnDestroy,
@@ -88,6 +88,7 @@ export class DebugLogComponent implements OnInit, OnDestroy {
   isHyperdetect =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.hyperdetect.value;
   headerLabel = this.i18n.get('system_export_log_label');
+  descLabel = this.i18n.get('system_export_only_log_desc_label');
 
   isOceanProtect = !includes(
     [
@@ -110,7 +111,15 @@ export class DebugLogComponent implements OnInit, OnDestroy {
       : this.time.getMonth() + 1;
   date =
     this.time.getDate() < 10 ? `0${this.time.getDate()}` : this.time.getDate();
+  nameErrorTip = {
+    ...this.baseUtilService.nameErrorTip,
+    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [251])
+  };
 
+  customTimeRangeErrorTip = {
+    ...this.baseUtilService.rangeErrorTip,
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 10000])
+  };
   constructor(
     private fb: FormBuilder,
     private i18n: I18NService,
@@ -129,6 +138,9 @@ export class DebugLogComponent implements OnInit, OnDestroy {
     this.headerLabel = this.appUtilsService.isDecouple
       ? this.i18n.get('system_export_export_info_label')
       : this.i18n.get('system_export_log_label');
+    this.descLabel = this.appUtilsService.isDistributed
+      ? this.i18n.get('system_export_log_desc_label')
+      : this.i18n.get('system_export_only_log_desc_label');
     this.initForm();
     this.getDebugLog();
     this.getNodeNames();
@@ -165,16 +177,41 @@ export class DebugLogComponent implements OnInit, OnDestroy {
       componentName: new FormControl([], {
         validators: [this.baseUtilService.VALID.minLength(1)]
       }),
+      customTimeRange: new FormControl(
+        {
+          value: 1,
+          disabled: true
+        },
+        {
+          validators: [
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.integer(),
+            this.baseUtilService.VALID.rangeValue(1, 10000)
+          ]
+        }
+      ),
       timeRange: new FormControl(null, {
         validators: [this.baseUtilService.VALID.required()]
       }), // 接口默认不下发timeRange，此时等价于恢复全部日志
       logName: new FormControl(
-        `Logfile_${this.year}${this.month}${this.date}_${now()}`
+        `Logfile_${this.year}${this.month}${this.date}_${now()}`,
+        {
+          validators: [
+            this.baseUtilService.VALID.name(
+              this.i18n.isEn
+                ? CommonConsts.REGEX.dataBaseName
+                : CommonConsts.REGEX.nameCombination,
+              true,
+              'invalidNameCombination'
+            ),
+            this.baseUtilService.VALID.maxLength(251)
+          ]
+        }
       )
     });
 
-    this.lisenType();
-
+    this.listenType();
+    this.listenExportRange();
     this.exportLogFormGroup
       .get('nodeName')
       .valueChanges.subscribe(nodeNames => {
@@ -196,7 +233,7 @@ export class DebugLogComponent implements OnInit, OnDestroy {
       });
   }
 
-  lisenType() {
+  listenType() {
     this.exportLogFormGroup.get('type').valueChanges.subscribe(res => {
       const validName = [
         this.baseUtilService.VALID.name(
@@ -240,6 +277,16 @@ export class DebugLogComponent implements OnInit, OnDestroy {
       this.exportLogFormGroup.get('timeRange').updateValueAndValidity();
       this.exportLogFormGroup.get('logName').updateValueAndValidity();
       this.exportLogFormGroup.get('configName').updateValueAndValidity();
+    });
+  }
+
+  listenExportRange() {
+    this.exportLogFormGroup.get('timeRange').valueChanges.subscribe(res => {
+      if (res === DataMap.exportLogRange.customRange.value) {
+        this.exportLogFormGroup.get('customTimeRange').enable();
+      } else {
+        this.exportLogFormGroup.get('customTimeRange').disable();
+      }
     });
   }
 
@@ -297,6 +344,9 @@ export class DebugLogComponent implements OnInit, OnDestroy {
   }
 
   export(exportParams?) {
+    const isCustom =
+      this.exportLogFormGroup.get('timeRange').value ===
+      DataMap.exportLogRange.customRange.value;
     if (
       includes(
         this.exportLogFormGroup.value.type,
@@ -308,7 +358,9 @@ export class DebugLogComponent implements OnInit, OnDestroy {
           params: {
             nodeName: this.exportLogFormGroup.get('nodeName').value,
             componentName: this.exportLogFormGroup.get('componentName').value,
-            timeRange: this.exportLogFormGroup.get('timeRange').value
+            timeRange: isCustom
+              ? +this.exportLogFormGroup.get('customTimeRange').value
+              : DataMap.exportLogRange.all.value
           },
           type: DataMap.Export_Query_Type.log.value,
           name: this.exportLogFormGroup.get('logName').value

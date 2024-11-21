@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { FILE_FORMAT } from './system.const';
 //  通用常量
 export const CommonConsts = {
@@ -94,12 +94,13 @@ export const CommonConsts = {
     sftpNameBegin: /^[a-zA-Z_]/,
     sftpNameCombination: /^[a-zA-Z_0-9]+$/,
     clusterName: /^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\.\w-]{3,31}$/,
+    targetClusterName: /^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\.\w-]{3,255}$/,
     storagePoolName: /^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\.\w-]{3,63}$/,
     description: /^[\u4e00-\u9fa5\w-\.]*$/,
     backupName: /^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]{3,31}$/,
     nameWithAllowedDots: /^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\.\w-]*$/,
     contextEngineId: /^[0-9A-F]+$/,
-    windowsPath: /^[a-zA-Z]:(\\[\w\u4e00-\u9fa5\s]+)+/,
+    windowsPath: /^[a-zA-Z]:(\\[^\\/<>|:*?"]*)+$/,
     linuxPath: /^\/+.*$/,
     unixPath: /^(\/[^\/\\|\;\&\$\<\>\`\'\{\}\(\)\,\[\]\~\*\?\!\s]{1,2048})+$|^\/$/,
     linuxScript: /^.+[\.]{1}(sh){1}$/,
@@ -237,15 +238,36 @@ export const JobColorConsts = {
 };
 
 export const HelpUrlCode = {
-  host: '0000001839224445',
-  database: '0000001918630660',
-  bigdata: '0000001948269721',
-  virtualization: '0000001918470736',
-  container: '0000001918630668',
-  cloud: '0000001948269725',
-  application: '0000001918470740',
-  fileservice: '0000001918630672',
-  baremetal: '0000001873679157'
+  zh: {
+    host: 'helpcenter_000008',
+    database: 'zh-cn_topic_0000001918630660',
+    bigdata: 'zh-cn_topic_0000001948269721',
+    virtualization: 'zh-cn_topic_0000001918470736',
+    container: 'zh-cn_topic_0000001918630668',
+    cloud: 'zh-cn_topic_0000001948269725',
+    application: 'zh-cn_topic_0000001918470740',
+    fileservice: 'zh-cn_topic_0000001918630672',
+    baremetal: 'zh-cn_topic_0000001873679157'
+  },
+  en: {
+    host: 'helpcenter000008',
+    database: 'en-us_topic_0000001918630660',
+    bigdata: 'en-us_topic_0000001948269721',
+    virtualization: 'en-us_topic_0000001918470736',
+    container: 'en-us_topic_0000001918630668',
+    cloud: 'en-us_topic_0000001948269725',
+    application: 'en-us_topic_0000001918470740',
+    fileservice: 'en-us_topic_0000001918630672',
+    baremetal: 'en-us_topic_0000001873679157'
+  }
+};
+
+// 设置标签的类型
+export const SetTagType = {
+  Resource: 'RESOURCE',
+  ResourceGroup: 'RESOURCE_GROUP',
+  Sla: 'SLA',
+  Agent: 'AGENT'
 };
 
 // 容量单位
@@ -489,7 +511,8 @@ export enum WormStatusEnum {
   UNSET = 1,
   SETTING = 2,
   SET_SUCCESS = 3,
-  SET_FAILED = 4
+  SET_FAILED = 4,
+  EXPIRATION = 5
 }
 
 export enum GenerationType {
@@ -615,3 +638,23 @@ export const dataBackupX3000Map = {
   '0x206403440003.alarm.desc': 'common_create_worm_policy_desc_label',
   '0x206403440003.alarm.desc.detail': 'common_create_worm_policy_desc_label'
 };
+
+export const CUSTOM_VERSION = {
+  version: ''
+};
+
+export const SYSTEM_TIME = {
+  hasLoad: false,
+  timeZone: 'UTC+08:00',
+  offset: 0,
+  sysTime: '',
+  userSystemTime: 0
+};
+
+export enum ThemeEnum {
+  light = 'light',
+  dark = 'dark',
+  auto = 'auto'
+}
+
+export const THEME_TRIGGER_ACTION = 'theme_trigger_action';

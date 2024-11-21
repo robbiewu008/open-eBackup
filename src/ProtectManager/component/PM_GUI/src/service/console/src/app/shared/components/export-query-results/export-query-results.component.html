@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
   <div class="aui-header-1">
     <lv-group lvGutter="8px">
       <h1>{{ 'common_export_query_label' | i18n }}</h1>
@@ -51,9 +51,8 @@
                 *ngIf="!col.hidden" lvFilterCheckAll>
                 {{ col.label }}
                 <div lvCustom *ngIf="col.key === 'fileName'">
-                  <i #fileNamePopover="lvPopover" lv-icon="lv-icon-search" [lvColorState]="true"
-                    [ngClass]="{ active: !!fileName }" lv-popover [lvPopoverContent]="fileNameFilterTpl"
-                    lvPopoverTheme="light" lvPopoverPosition="bottom" lvPopoverTrigger="click"></i>
+                  <aui-custom-table-search (search)="searchByName($event)"
+                    [filterTitle]="fileName"></aui-custom-table-search>
                 </div>
               </th>
             </ng-container>
@@ -130,10 +129,6 @@
     </div>
   </div>
 </div>
-
-<ng-template #fileNameFilterTpl>
-  <lv-search [(ngModel)]="fileName" (lvSearch)="searchByName($event)" [lvFocus]="true"></lv-search>
-</ng-template>
 
 <ng-template #sizeTpl let-item>
   <span lv-overflow>

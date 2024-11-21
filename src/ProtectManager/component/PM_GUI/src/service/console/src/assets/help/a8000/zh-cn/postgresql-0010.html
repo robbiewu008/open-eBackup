@@ -1,0 +1,74 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤1：开启归档模式（仅适用于磐维CMDB）">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="opengauss-0010.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="postgresql-0010">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤1：开启归档模式（仅适用于磐维CMDB）</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="postgresql-0010"></a><a name="postgresql-0010"></a>
+
+<h1 class="topictitle1">步骤1：开启归档模式（仅适用于磐维CMDB）</h1>
+<div><p>在执行磐维<span style="color:#666666;">CMDB数据库</span>备份前必须开启归档模式，否则将会导致备份失败。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>使用PuTTY，登录磐维CMDB数据库主机。</span></li><li><span>执行以下命令切换至数据库安装用户，以用户名<strong>omm</strong>为例。</span><p><pre class="screen">su - omm</pre>
+</p></li><li><span>执行以下命令，创建存放归档日志（WAL日志）的路径，后续操作以<span class="filepath">“/database/panweidb/archive/”</span>路径为例。</span><p><pre class="screen">mkdir -p /database/panweidb/archive/</pre>
+</p></li><li><span>登录数据库管理员用户。</span><p><ol type="a"><li>查询数据库端口号，在数据库主机执行以下命令，进入postgresql.conf文件，以<span class="filepath">“/database/panweidb/data/postgresql.conf”</span>路径为例。<pre class="screen">vi /database/panweidb/data/postgresql.conf</pre>
+<p>回显示例如下，port所在行显示查询的端口号，以端口号<strong>17700</strong>为例。</p>
+<p><span><img src="zh-cn_image_0000002029367544.png"></span></p>
+</li><li>执行以下命令，登录数据库管理员用户<strong>postgres</strong>。</li></ol>
+<pre class="screen">gsql -d postgres -p <em>17700</em></pre>
+</p></li><li><span>执行<strong>show config_file</strong><strong>;</strong>查询postgresql.conf文件所在路径。</span><p><div class="p">回显示例如下：<pre class="screen">postgres=# show config_file;
+              config_file
+---------------------------------------
+/database/panweidb/data/postgresql.conf
+(1 row)</pre>
+</div>
+</p></li><li><span>在数据库主机执行以下命令，进入postgresql.conf文件，这里以<span class="filepath">“/database/panweidb/data/postgresql.conf”</span>路径为例。</span><p><pre class="screen">vi /database/panweidb/data/postgresql.conf</pre>
+</p></li><li><span>修改postgresql.conf文件中的wal_level、archive_mode和archive_command参数，如下所示：</span><p><pre class="screen">wal_level = hot_standby                 # minimal, archive, hot_standby or logical
+archive_mode = on               # enables archiving; off, on, or always
+archive_command = 'cp %p /database/panweidb/archive/%f'          # command to use to archive a logfile segment</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>将wal_level设置为archive, hot_standby 或 logical三个参数中的任意一个即可。</li><li>将archive_mode设置为on。</li><li>将archive_command设置为 'cp %p /mnt/server/archivedir/%f'。</li><li>修改postgresql.conf文件时，请修改文件中已存在的字段值，请勿在文件中自行新增同样的字段，否则将会影响恢复任务。</li><li>开启归档模式时需在数据库的所有主备节点上配置归档日志路径，且归档日志路径相同。</li></ul>
+</div></div>
+</p></li><li><span>执行以下命令，重启数据库。</span><p><pre class="screen">pw_ctl restart -D /database/panweidb/data</pre>
+<div class="notice"><span class="noticetitle"><img src="public_sys-resources/notice_3.0-zh-cn.png"> </span><div class="noticebody"><p>数据库重启期间数据库业务会中断，请谨慎操作。</p>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="opengauss-0010.html">备份openGauss/磐维CMDB</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

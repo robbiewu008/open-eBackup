@@ -1,0 +1,142 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring Files on a Hyper-V VM">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="vmware_gud_0055.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="vmware_gud_0060">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring Files on a Hyper-V VM</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="vmware_gud_0060"></a><a name="vmware_gud_0060"></a>
+
+<h1 class="topictitle1">Restoring Files on a Hyper-V VM</h1>
+<div><p>This section describes how to restore files on a VM by using the file-level restoration function.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><ul><li>The <span>OceanProtect</span> supports file-level restoration using backup copies and replication copies. Note that data cannot be restored to the original location when a replication copy is used.</li><li>The types of Linux file systems that can be restored are ext2/ext3/ext4 and XFS. The types of Windows file systems that can be restored are NTFS, FAT, and FAT32.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>The IP address of the backup network plane has been configured for the VM to which files are to be restored.</li><li>If the target VM runs the Windows OS, ensure that ports <strong>445</strong> and <strong>138</strong> have been enabled on the target VM. If the target VM runs the Linux OS, ensure that port <strong>22</strong> has been enabled on the target VM.</li><li>If the target VM runs on the Windows OS, ensure that the CIFS service has been enabled on the VM. For details, see the <a href="https://docs.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3" target="_blank" rel="noopener noreferrer">Microsoft official website</a>.</li><li>If the target VM runs on a non-Windows OS, ensure that rsync has been installed and started on the target VM.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="vmware_gud_0060__en-us_topic_0000001839142377_uicontrol66667531188"><b><span id="vmware_gud_0060__en-us_topic_0000001839142377_text86661453985"><strong>Explore</strong></span> &gt; <span id="vmware_gud_0060__en-us_topic_0000001839142377_text26661531582"><strong>Copy Data</strong></span> &gt; <span id="vmware_gud_0060__en-us_topic_0000001839142377_text56671153582"><strong>Virtualization</strong></span> &gt; Hyper-V</b></span>.</span></li></ol><ol start="2"><li><span>You can search for a copy by VM or copy. This section uses a VM as an example.</span><p><p>Click <strong>Resources</strong> to switch to the corresponding page, search for the VM to be restored by name, and click the VM name.</p>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> and select the year, month, and day in sequence to find the copy.</span><p><p>If <span><img src="en-us_image_0000001936102901.png"></span> is displayed below a month or day, a copy is generated in the month or on the day.</p>
+</p></li><li><span>In the row of the target copy, click <span class="uicontrol"><b><span><strong>More</strong></span> &gt; Manually Create Index</b></span>. After the task is successfully executed, perform the following steps.</span></li><li><span>In the row of the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; File-level Restoration</b></span>.</span></li><li><span>On the displayed page, select the files to be restored.</span></li><li><span>Select the files to be restored and configure restoration parameters.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>If the copy does not contain OS data, no index can be created for the copy. Therefore, the copy cannot be used for file-level restoration.</li><li>Reverse replication copies and archive copies do not support indexes.</li><li>Copies in the <span><strong>Not indexed</strong></span> state support file-level restoration. <span>If no index is created for a copy, browsing a directory with more than 2 million files may fail due to timeout. You are advised to manually create an index.</span></li><li>During Linux VM backup, the mount point information that is not written into the <strong>/etc/fstab</strong> file is stored in the memory. The <span>OceanProtect</span> does not back up the information. Therefore, no index is generated for the files at the mount point, and file-level restoration is not supported. To generate indexes for new file systems and support file-level restoration, write the mount point information of the new file systems to the <strong>/etc/fstab</strong> file.</li><li>If the name of a folder or file contains garbled characters, file-level restoration is not supported. Do not select folders or files of this type. Otherwise, the restoration job fails.</li><li>Linked files do not support file-level restoration.</li><li>If the target VM runs the Windows OS and only the SMBv1 service is enabled, the time of the restored file is the current VM time.</li></ul>
+</div></div>
+<ul><li>Select <strong>Original Location</strong> to restore data to, that is, restore data to the original directory of the original VM.<div class="p"><a href="#vmware_gud_0060__table9960822181311">Table 1</a> describes the related parameters.
+<div class="tablenoborder"><a name="vmware_gud_0060__table9960822181311"></a><a name="table9960822181311"></a><table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0060__table9960822181311" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for restoring data to the original location</caption><colgroup><col style="width:29.9%"><col style="width:70.1%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.9%" id="mcps1.3.4.3.6.2.2.1.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70.1%" id="mcps1.3.4.3.6.2.2.1.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.3.6.2.2.1.2.2.2.3.1.1 "><p><span><strong>VM IP Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.3.6.2.2.1.2.2.2.3.1.2 "><div class="p" id="vmware_gud_0060__p49594222135">Select the configured backup network IP address.<div class="note" id="vmware_gud_0060__note13959142281314"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="vmware_gud_0060__ul184254158477"><li id="vmware_gud_0060__li1671194110445">The Hyper-V manager must detect the IP address of the corresponding VM in advance.</li><li id="vmware_gud_0060__li13425121554713">Before performing file-level restoration, you need to configure a backup network IP address for the VM. During file-level restoration, the system uses this IP address to connect to the target VM.</li><li id="vmware_gud_0060__li1130711714475">If the VM IP address is not in the list, exit the current page. Then, choose <span class="uicontrol" id="vmware_gud_0060__uicontrol61481615124114"><b><span id="vmware_gud_0060__en-us_topic_0000001839142377_text2782025144215"><strong>Protection</strong></span> &gt; Virtualization &gt; Hyper-V</b></span> and rescan the virtualization environment.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.3.6.2.2.1.2.2.2.3.1.1 "><p><span><strong>VM Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="70.1%" headers="mcps1.3.4.3.6.2.2.1.2.2.2.3.1.2 "><div class="p" id="vmware_gud_0060__p196016226135">During file-level restoration, the target VM needs to verify the login credential of the <span id="vmware_gud_0060__vmware_gud_0060_0_text426913561378">OceanProtect</span>. Enter a username and its password for logging in to the target VM.<ul id="vmware_gud_0060__vmware_gud_0060_0_ul119609220135"><li id="vmware_gud_0060__vmware_gud_0060_0_li796017225136">Windows OS: The default user name is <strong id="vmware_gud_0060__vmware_gud_0060_0_b1579523971220">Administrator</strong>.</li><li id="vmware_gud_0060__vmware_gud_0060_0_li1496012225130">Linux OS: The default user name is <strong id="vmware_gud_0060__vmware_gud_0060_0_b29741052111218">root</strong>.</li></ul>
+<div class="note" id="vmware_gud_0060__vmware_gud_0060_0_note10319381535"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="vmware_gud_0060__vmware_gud_0060_0_ul871974405518"><li id="vmware_gud_0060__vmware_gud_0060_0_li8719444175514">The login user must have the read and write permissions on the directory to which data is to be restored on the target VM.</li><li id="vmware_gud_0060__vmware_gud_0060_0_li231424655513">After the restoration, the access permission on the file is the same as that of the login user.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.3.6.2.2.1.2.2.2.3.1.1 "><p><span><strong>VM Password</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.3.6.2.2.1.2.2.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.3.6.2.2.1.2.2.2.3.1.2 "><div class="p" id="vmware_gud_0060__p78773497306">If a file with the same name exists in the restoration path, you can choose to replace or skip the existing file.<ul id="vmware_gud_0060__ul138776497307"><li id="vmware_gud_0060__li1087714914306"><span id="vmware_gud_0060__text2877849173018"><strong>Replace existing files</strong></span></li><li id="vmware_gud_0060__li1287717497308"><span id="vmware_gud_0060__text148771149123013"><strong>Skip existing files</strong></span>: Files with the same names are skipped and are not replaced.</li><li id="vmware_gud_0060__li68771149143011"><span id="vmware_gud_0060__text5877184993017"><strong>Only replace the files older than the restoration file</strong></span><div class="note" id="vmware_gud_0060__note98771049113012"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="vmware_gud_0060__p15877144918305">If the access to the file with the same name on the target VM is denied, the file fails to be restored during file replacement.</p>
+</div></div>
+</li></ul>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li><li>Select a new location to restore data to, that is, restore data to a specified VM.<p><a href="#vmware_gud_0060__table14691181871520">Table 2</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="vmware_gud_0060__table14691181871520"></a><a name="table14691181871520"></a><table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0060__table14691181871520" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Parameters for restoring data to a new location</caption><colgroup><col style="width:22.75%"><col style="width:77.25%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="22.75%" id="mcps1.3.4.3.6.2.2.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="77.25%" id="mcps1.3.4.3.6.2.2.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.1 "><p><strong>Target Compute Location</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.2 "><div class="p">Select the target compute resource to be restored.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>If the specified VM runs on a Windows OS, the directory to which data is restored is the same as the original directory of the file. If the VM does not have the corresponding drive letter, restoration will fail. For example, if the file path is <strong>D:\a</strong>, the <strong>a</strong> directory is created on drive <strong>D</strong> of the specified VM before file restoration is performed. If drive <strong>D</strong> does not exist on the specified VM, restoration will fail.</li><li>If the specified VM runs on a Linux OS, the directory to which data is restored is the same as the original directory of the file. During restoration, the corresponding directory is created on the specified VM before file restoration is performed</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.1 "><p><span><strong>VM IP Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.2 "><div class="p">Select the configured backup network IP address.<div class="note" id="vmware_gud_0060__vmware_gud_0060_note13959142281314"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="vmware_gud_0060__vmware_gud_0060_ul184254158477"><li id="vmware_gud_0060__vmware_gud_0060_li1671194110445">The Hyper-V manager must detect the IP address of the corresponding VM in advance.</li><li id="vmware_gud_0060__vmware_gud_0060_li13425121554713">Before performing file-level restoration, you need to configure a backup network IP address for the VM. During file-level restoration, the system uses this IP address to connect to the target VM.</li><li id="vmware_gud_0060__vmware_gud_0060_li1130711714475">If the VM IP address is not in the list, exit the current page. Then, choose <span class="uicontrol" id="vmware_gud_0060__vmware_gud_0060_uicontrol61481615124114"><b><span id="vmware_gud_0060__vmware_gud_0060_en-us_topic_0000001839142377_text2782025144215"><strong>Protection</strong></span> &gt; Virtualization &gt; Hyper-V</b></span> and rescan the virtualization environment.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.1 "><p><span><strong>VM Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="77.25%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.2 "><div class="p">During file-level restoration, the target VM needs to verify the login credential of the <span id="vmware_gud_0060__vmware_gud_0060_vmware_gud_0060_0_text426913561378">OceanProtect</span>. Enter a username and its password for logging in to the target VM.<ul id="vmware_gud_0060__vmware_gud_0060_vmware_gud_0060_0_ul119609220135"><li id="vmware_gud_0060__vmware_gud_0060_vmware_gud_0060_0_li796017225136">Windows OS: The default user name is <strong id="vmware_gud_0060__vmware_gud_0060_vmware_gud_0060_0_b1579523971220">Administrator</strong>.</li><li id="vmware_gud_0060__vmware_gud_0060_vmware_gud_0060_0_li1496012225130">Linux OS: The default user name is <strong id="vmware_gud_0060__vmware_gud_0060_vmware_gud_0060_0_b29741052111218">root</strong>.</li></ul>
+<div class="note" id="vmware_gud_0060__vmware_gud_0060_vmware_gud_0060_0_note10319381535"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="vmware_gud_0060__vmware_gud_0060_vmware_gud_0060_0_ul871974405518"><li id="vmware_gud_0060__vmware_gud_0060_vmware_gud_0060_0_li8719444175514">The login user must have the read and write permissions on the directory to which data is to be restored on the target VM.</li><li id="vmware_gud_0060__vmware_gud_0060_vmware_gud_0060_0_li231424655513">After the restoration, the access permission on the file is the same as that of the login user.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.1 "><p><span><strong>VM Password</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.2 "><div class="p">If a file with the same name exists in the restoration path, you can choose to replace or skip the existing file.<ul id="vmware_gud_0060__vmware_gud_0060_ul138776497307"><li id="vmware_gud_0060__vmware_gud_0060_li1087714914306"><span id="vmware_gud_0060__vmware_gud_0060_text2877849173018"><strong>Replace existing files</strong></span></li><li id="vmware_gud_0060__vmware_gud_0060_li1287717497308"><span id="vmware_gud_0060__vmware_gud_0060_text148771149123013"><strong>Skip existing files</strong></span>: Files with the same names are skipped and are not replaced.</li><li id="vmware_gud_0060__vmware_gud_0060_li68771149143011"><span id="vmware_gud_0060__vmware_gud_0060_text5877184993017"><strong>Only replace the files older than the restoration file</strong></span><div class="note" id="vmware_gud_0060__vmware_gud_0060_note98771049113012"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="vmware_gud_0060__vmware_gud_0060_p15877144918305">If the access to the file with the same name on the target VM is denied, the file fails to be restored during file replacement.</p>
+</div></div>
+</li></ul>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ul>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>Test</strong></span></b></span> and ensure that the target VM to be restored is properly connected to the <span>OceanProtect</span>.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="vmware_gud_0055.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

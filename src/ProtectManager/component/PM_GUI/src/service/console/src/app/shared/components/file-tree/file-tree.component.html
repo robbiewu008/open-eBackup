@@ -1,3 +1,4 @@
+<p class="aui-gutter-column-sm">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,19 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<p class="aui-gutter-column-sm">{{title}}</p>
+    {{title}}
+    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_file_level_tip_label' | i18n}}" lvTooltipTheme="light"
+        lvTooltipPosition="right" lvColorState='true'></i>
+</p>
+<lv-alert lvType="info" *ngIf="selectedTotal > 1000">
+    {{'protection_file_level_max_file_label' | i18n}}
+</lv-alert>
+<lv-alert lvType="info" *ngIf="searchMax">
+    {{'protection_file_level_max_search_label' | i18n}}
+</lv-alert>
+<lv-alert lvType="info" *ngIf="showIndexTip">
+    {{'protection_no_index_tip_label' | i18n}}
+</lv-alert>
 <div class="tree-table-container">
     <div class="header-tab">
         <lv-radio-group [(ngModel)]="pathView" [lvGroupName]="'path'" (ngModelChange)="tabChange()">
@@ -52,7 +65,8 @@
         <div class="tree-container">
             <lv-tree #tree lvCompareWith="absolutePath" [lvData]="treeData" (lvExpandedChange)="expandedChange($event)"
                 lvSelectionMode="single" [(lvSelection)]="selectionTree" (lvCheck)="pathNodeCheck($event)"
-                [lvBeforeSelected]="beforeSelected" lvShowContentIcon [lvNodeTemplate]='nodeTpl'></lv-tree>
+                [lvBeforeSelected]="beforeSelected" lvShowContentIcon [lvNodeTemplate]='nodeTpl'
+                style="width: auto;"></lv-tree>
             <ng-template #nodeTpl let-item>
                 <div style="width: 160px;" lv-overflow>
                     <span *ngIf="!item.isMoreBtn">
@@ -83,7 +97,8 @@
 </ng-template>
 
 <ng-template #sizeTpl let-item>
-    <span lv-overflow>
+    <!-- 文件夹或者链接文件不展示大小 -->
+    <span lv-overflow *ngIf="!_includes([restoreFileType.Directory, restoreFileType.Link], item.type)">
         {{item.size | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true}}
     </span>
 </ng-template>

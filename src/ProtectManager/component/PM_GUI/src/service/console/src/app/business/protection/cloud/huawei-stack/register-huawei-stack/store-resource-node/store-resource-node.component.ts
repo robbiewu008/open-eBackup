@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -50,6 +50,7 @@ export class StorResourceNodeComponent implements OnInit {
   formGroup: FormGroup;
   data;
   subType;
+  isModifyHcsStorage;
   dataMap = DataMap;
   fcCertFilters = [];
   selectFcSiteFile = '';
@@ -208,7 +209,7 @@ export class StorResourceNodeComponent implements OnInit {
   }
 
   validReatIp() {
-    const ips = this.formGroup.value.ips;
+    const ips = this.formGroup.get('ips')?.value;
     const allIps = [];
     const repeatIps = [];
     each(ips, ip => {
@@ -282,6 +283,10 @@ export class StorResourceNodeComponent implements OnInit {
     this.formGroup
       .get('ips')
       .setValue(isArray(this.data.ip) ? this.data.ip : this.data.ip.split(','));
+    // 修改HCS存储
+    if (this.isModifyHcsStorage) {
+      this.formGroup.get('ips').disable();
+    }
     defer(() => {
       if (!isNil(this.data.enableCert)) {
         this.formGroup.get('cert').setValue(this.data.enableCert == '1');
@@ -494,13 +499,15 @@ export class StorResourceNodeComponent implements OnInit {
       if (isEmpty(this.data)) {
         existItem = this.tableData?.data.find(
           item =>
-            _toString(item.ip) === _toString(this.formGroup.value.ips) &&
+            _toString(item.ip) ===
+              _toString(this.formGroup.get('ips')?.value) &&
             item.port === +this.formGroup.value.port
         );
       } else {
         existItem = this.tableData?.data.find(
           item =>
-            _toString(item.ip) === _toString(this.formGroup.value.ips) &&
+            _toString(item.ip) ===
+              _toString(this.formGroup.get('ips')?.value) &&
             item.port === +this.formGroup.value.port &&
             !(
               _toString(item.ip) === _toString(this.data.ip) &&
@@ -522,7 +529,7 @@ export class StorResourceNodeComponent implements OnInit {
         username: this.formGroup.value.username,
         password: this.formGroup.value.password,
         port: +this.formGroup.value.port,
-        ip: this.formGroup.value.ips,
+        ip: this.formGroup.get('ips')?.value,
         enableCert: String(+this.formGroup.value.cert),
         certification: this.selectFcSiteFile,
         revocationList: this.selectRevocationList,
@@ -541,7 +548,7 @@ export class StorResourceNodeComponent implements OnInit {
         assign(this.data, {
           transport_protocol: this.formGroup.value.transport_protocol,
           device_type: this.formGroup.value.deviceType,
-          ipList: this.formGroup.value.ips.join(',')
+          ipList: this.formGroup.get('ips')?.value.join(',')
         });
         delete this.data.ip;
       }

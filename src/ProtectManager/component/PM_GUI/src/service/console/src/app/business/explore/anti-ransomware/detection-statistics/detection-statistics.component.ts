@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
@@ -59,28 +59,29 @@ export class DetectionStatisticsComponent implements OnInit {
       .getVstoreDetectConfigsSummary({})
       .subscribe(res => {
         this.enableBlockCount =
-          res.fileExtensionFilterConfigSummary.enabledCount;
+          res?.fileExtensionFilterConfigSummary?.enabledCount;
         this.disableBlockCount =
-          res.fileExtensionFilterConfigSummary.disabledCount;
+          res?.fileExtensionFilterConfigSummary?.disabledCount;
         this.fileTotalCount = this.enableBlockCount + this.disableBlockCount;
 
-        this.enableDetectionCount = res.ioDetectConfigSummary.enabledCount;
-        this.disableDetectionCount = res.ioDetectConfigSummary.disabledCount;
+        this.enableDetectionCount = res?.ioDetectConfigSummary?.enabledCount;
+        this.disableDetectionCount = res?.ioDetectConfigSummary?.disabledCount;
         this.dectionTotalCount =
           this.enableDetectionCount + this.disableDetectionCount;
-        this.enableSnapshotCount = res.copyDetectConfigSummary.enabledCount;
-        this.disableSnapshotCount = res.copyDetectConfigSummary.disabledCount;
+        this.enableSnapshotCount = res?.copyDetectConfigSummary?.enabledCount;
+        this.disableSnapshotCount = res?.copyDetectConfigSummary?.disabledCount;
         this.snapshotTotalCount =
           this.enableSnapshotCount + this.disableSnapshotCount;
 
-        this.sanIoEnableCount = res.sanIoDetectConfigSummary.enabledCount;
-        this.sanCopyEnableCount = res.sanCopyDetectConfigSummary.enabledCount;
+        this.sanIoEnableCount =
+          res?.sanIoDetectConfigSummary?.enabledCount || 0;
+        this.sanCopyEnableCount = res?.sanCopyDetectConfigSummary?.enabledCount;
         this.sanIoTotalCount =
-          res.sanIoDetectConfigSummary.enabledCount +
-          res.sanIoDetectConfigSummary.disabledCount;
+          res?.sanIoDetectConfigSummary?.enabledCount +
+          res?.sanIoDetectConfigSummary?.disabledCount;
         this.sanCopyTotalCount =
-          res.sanCopyDetectConfigSummary.enabledCount +
-          res.sanCopyDetectConfigSummary.disabledCount;
+          res?.sanCopyDetectConfigSummary?.enabledCount +
+          res?.sanCopyDetectConfigSummary?.disabledCount;
       });
   }
 }

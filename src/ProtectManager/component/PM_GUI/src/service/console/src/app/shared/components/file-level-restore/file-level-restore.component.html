@@ -1,3 +1,4 @@
+<div class="tip-container" *ngIf="!rowCopy.isSearchRestore">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="tip-container" *ngIf="!rowCopy.isSearchRestore">
   {{ fileLevelRestoreTips }}
 </div>
 <div class="restore-tree">
@@ -35,16 +35,16 @@
             (ngModelChange)='getSchema($event)' #lvSelect>
           </lv-select>
         </lv-group>
-        <lv-group lvGutter="10px" class="padding-10" [lvColumns]="['auto', '480px']"
-        *ngIf="[
+        <lv-group lvGutter="10px" class="padding-10" [lvColumns]="['auto', '480px']" *ngIf="[
                 dataMap.Resource_Type.OceanBaseCluster.value
               ].includes(rowCopy.resource_sub_type)">
-        <span class="aui-text-label">{{
-          'common_single_tenant_label' | i18n
-          }}</span>
-        <lv-select [lvOptions]='tenantOptions' [(ngModel)]='tenant' (ngModelChange)="getSchema('/'+ tenant.label)" #lvSelectTenant>
-        </lv-select>
-      </lv-group>
+          <span class="aui-text-label">{{
+            'common_single_tenant_label' | i18n
+            }}</span>
+          <lv-select [lvOptions]='tenantOptions' [(ngModel)]='tenant' (ngModelChange)="getSchema('/'+ tenant.label)"
+            #lvSelectTenant>
+          </lv-select>
+        </lv-group>
         <ng-container *ngIf="isDameng">
           <ng-container *ngTemplateOutlet="dameng"> </ng-container>
         </ng-container>
@@ -59,7 +59,12 @@
                 dataMap.Resource_Type.Hive.value,
                 dataMap.Resource_Type.Elasticsearch.value
               ].includes(rowCopy.resource_type) ||
-              [ dataMap.Resource_Type.ClickHouse.value ].includes(rowCopy.resource_sub_type)
+              [
+              dataMap.Resource_Type.ClickHouse.value,
+              dataMap.Resource_Type.SQLServerGroup.value,
+              dataMap.Resource_Type.SQLServerInstance.value,
+              dataMap.Resource_Type.SQLServerClusterInstance.value
+               ].includes(rowCopy.resource_sub_type)
             ) || total <= 200 &&
             selectedLength > 0
           ">
@@ -73,7 +78,8 @@
       </div>
       <div class="arrow-container"></div>
       <div class="file-level-restore-tree hcs-restore-list-tree">
-        <div style="height: 52px;" *ngIf="rowCopy.resource_sub_type === dataMap.Resource_Type.DWS_Cluster.value || isOceanBase"></div>
+        <div style="height: 52px;"
+          *ngIf="rowCopy.resource_sub_type === dataMap.Resource_Type.DWS_Cluster.value || isOceanBase"></div>
         <ng-container *ngIf="i18n.language === language.CN">
           <lv-group lvGutter="10px" class="padding-10" [lvColumns]="['auto', '250px', '100px']" *ngIf="!isOceanBase">
             <span class="aui-text-label">{{
@@ -86,10 +92,11 @@
             </button>
           </lv-group>
           <lv-group lvGutter="10px" class="padding-10" *ngIf="isOceanBase">
-            <span class="aui-text-label">{{
+            <span class="aui-text-label text-wrap">{{
               'protection_restore_target_label' | i18n
               }}</span>
-            <lv-select [lvOptions]='clusterOptions' [(ngModel)]='cluster' #lvSelectCluster (ngModelChange)='getTargetResourcePoolOptions(cluster.value)'>
+            <lv-select [lvOptions]='clusterOptions' [(ngModel)]='cluster' #lvSelectCluster
+              (ngModelChange)='getTargetResourcePoolOptions(cluster.value)'>
             </lv-select>
           </lv-group>
         </ng-container>
@@ -98,18 +105,18 @@
             <span class="aui-text-label">{{
               'protection_restore_target_label' | i18n
               }}</span>
-            <input [ngModel]="inputTarget" lv-input class="restore-target-input" [disabled]='isDameng' placeholder="{{selectTips}}"
-              readOnly lv-overflow />
+            <input [ngModel]="inputTarget" lv-input class="restore-target-input" [disabled]='isDameng'
+              placeholder="{{selectTips}}" readOnly lv-overflow />
             <button (click)="selectRecoveryTarget()" lv-button [disabled]='isDameng'>
               {{ 'common_new_select_label' | i18n }}
             </button>
           </lv-group>
           <lv-group lvGutter="10px" class="padding-10" *ngIf="isOceanBase">
-            <span class="aui-text-label">{{
+            <span class="aui-text-label text-wrap">{{
               'protection_restore_target_label' | i18n
               }}</span>
-            <lv-select [lvOptions]='clusterOptions' [(ngModel)]='cluster' (ngModelChange)='getTargetResourcePoolOptions(cluster.value)'
-              #lvSelectCluster>
+            <lv-select [lvOptions]='clusterOptions' [(ngModel)]='cluster'
+              (ngModelChange)='getTargetResourcePoolOptions(cluster.value)' #lvSelectCluster>
             </lv-select>
           </lv-group>
         </ng-container>
@@ -165,8 +172,8 @@
 
 <ng-template #allFileTreeData>
   <lv-treetable #lvTreeTable1 [lvData]="originalFileData" lvSelectionMode="multiple" [(lvSelection)]="originalSelection"
-    [lvScroll]="{ y: '644px' }" (lvSelectionChange)="selectionChange()"
-    [lvSelectionAssociate]="selectionAssociate" [lvPaginator]="page" [lvCompareWith]="_get(dataSearchKey,rowCopy.resource_sub_type,null)">
+    [lvScroll]="{ y: '684px' }" (lvSelectionChange)="selectionChange()" [lvSelectionAssociate]="selectionAssociate"
+    [lvPaginator]="page" [lvCompareWith]="getDataCompareWithKey(rowCopy.resource_sub_type)">
     <!--  如果不传compareWith字段，默认比较地址，page点击分页后会导致已选择数据回显异常  -->
     <thead>
       <tr>
@@ -178,9 +185,9 @@
               dataMap.Resource_Type.DWS_Table.value
             ].includes(childResType)" lvCellKey="name">
           {{ 'common_name_label' | i18n }}
-          <i lv-icon="lv-icon-search" [lvColorState]="true" lv-popover [lvPopoverContent]="searchTpl" lvPopoverTheme="light"
-            lvPopoverPosition="bottom" lvPopoverTrigger="click" #searchPopover="lvPopover" [ngClass]="{active: !!name?.length}"
-            *ngIf="[
+          <i lv-icon="lv-icon-search" [lvColorState]="true" lv-popover [lvPopoverContent]="searchTpl"
+            lvPopoverTheme="light" lvPopoverPosition="bottom" lvPopoverTrigger="click" #searchPopover="lvPopover"
+            [ngClass]="{active: !!name?.length}" *ngIf="[
                       dataMap.Resource_Type.DWS_Cluster.value,
                       dataMap.Resource_Type.DWS_Database.value,
                       dataMap.Resource_Type.DWS_Schema.value,
@@ -248,6 +255,24 @@
       </ng-template>
     </tbody>
   </lv-treetable>
+    <lv-paginator #page *ngIf="
+    (
+      [
+        dataMap.Resource_Type.Hive.value,
+        dataMap.Resource_Type.Elasticsearch.value
+      ].includes(rowCopy.resource_type) ||
+      [
+        dataMap.Resource_Type.ClickHouse.value,
+        dataMap.Resource_Type.SQLServerGroup.value,
+        dataMap.Resource_Type.SQLServerClusterInstance.value,
+        dataMap.Resource_Type.SQLServerInstance.value
+      ].includes(rowCopy.resource_sub_type)
+    )
+    &&
+    total > 200
+    " [lvTotal]="total" [lvMode]="'simple'" [lvPageSize]="200" [lvShowPageSizeOptions]="false" [lvShowSelected]="true"
+                  [lvSelected]="originalSelection.length" (lvPageChange)="turnPage($event)"></lv-paginator>
+
 </ng-template>
 
 <ng-template #dameng>
@@ -272,7 +297,7 @@
 </ng-template>
 
 <ng-template #selectedFileTreeData>
-  <lv-treetable #lvTreeTable2 [lvData]="selectFileData" lvVirtualScroll [lvScroll]="{ y: '644px' }"
+  <lv-treetable #lvTreeTable2 [lvData]="selectFileData" lvVirtualScroll [lvScroll]="{ y: '684px' }"
     lvVirtualMinBuffer="96px" [lvVirtualTrackBy]="trackByIndex">
     <thead>
       <tr>
@@ -457,52 +482,34 @@
 
 <ng-template #oceanBaseTargetLocation>
   <lv-datatable [lvData]='[{}]' #lvTreeTable3>
-      <thead>
+    <thead>
+      <tr>
+        <th>
+          {{ 'protection_new_tenant_label' | i18n }}
+          <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_oceanbase_restore_tenant_tips_label' | i18n}}"
+            lvTooltipTheme="light" lvColorState="true"></i>
+        </th>
+        <th>
+          {{ 'protection_vm_resource_pool_label' | i18n}}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container>
         <tr>
-          <th>
-            {{ 'protection_new_tenant_label' | i18n }}
-            <i
-              lv-icon="aui-icon-help"
-              lv-tooltip="{{'protection_oceanbase_restore_tenant_tips_label' | i18n}}"
-              lvTooltipTheme="light"
-              lvColorState="true"
-            ></i>
-          </th>
-          <th>
-            {{ 'protection_vm_resource_pool_label' | i18n}}
-          </th>
+          <td>
+            <input lv-input type="text" [(ngModel)]="targetName" [ngClass]="{'valid-tenant': showTenantError}"
+              (ngModelChange)="disabledOkbtn($event)" style="width: 2.3rem;" />
+          </td>
+          <td>
+            <lv-select [lvOptions]="targetResourcePoolOptions" [(ngModel)]="resourcePool"
+              (ngModelChange)="disabledOkbtn()" style="width: 2.5rem;"> </lv-select>
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        <ng-container >
-          <tr>
-            <td>
-              <input lv-input type="text" [(ngModel)]="targetName" [ngClass]="{'valid-tenant': showTenantError}" (ngModelChange)="disabledOkbtn($event)" style="width: 2.3rem;"/>
-            </td>
-            <td>
-              <lv-select [lvOptions]="targetResourcePoolOptions" [(ngModel)]="resourcePool" (ngModelChange)="disabledOkbtn()" style="width: 2.5rem;"> </lv-select>
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </lv-datatable>
+      </ng-container>
+    </tbody>
+  </lv-datatable>
 </ng-template>
-
-<lv-paginator #page *ngIf="
-    (
-      [
-        dataMap.Resource_Type.Hive.value,
-        dataMap.Resource_Type.Elasticsearch.value
-      ].includes(rowCopy.resource_type) ||
-      [
-        dataMap.Resource_Type.ClickHouse.value
-      ].includes(rowCopy.resource_sub_type)
-    )
-    &&
-    total > 200
-    " [lvTotal]="total" [lvMode]="'simple'" [lvPageSize]="200" [lvShowPageSizeOptions]="false"
-  style="z-index: 2;width: 50%;position: relative;bottom: 36px;left: 6px;" [lvShowSelected]="true"
-  [lvSelected]="originalSelection.length" (lvPageChange)="turnPage($event)"></lv-paginator>
 
 <ng-template #dateTpl let-item>
   <lv-group class='aui-date'>
@@ -515,6 +522,5 @@
 </ng-template>
 
 <ng-template #searchTpl>
-  <lv-search [(ngModel)]="name" (lvSearch)="searchSource($event)" [lvFocus]="true"
-      style="width: 200px;"></lv-search>
+  <lv-search [(ngModel)]="name" (lvSearch)="searchSource($event)" [lvFocus]="true" style="width: 200px;"></lv-search>
 </ng-template>

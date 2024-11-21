@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup">
   <lv-form-item *ngIf="!isDrill">
     <lv-form-label>
       {{ 'protection_restore_to_label' | i18n }}
@@ -72,4 +72,24 @@
       </div>
     </lv-form-control>
   </lv-form-item>
+    <div class="mgt-16"></div>
+    <lv-collapse [lvMultiExpansion]="false" lvType="simple">
+        <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="true">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_parallel_process_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="parallelNumberErrorTip">
+                    <input type="text" formControlName="parallel_process" lv-input
+                           [placeholder]="parallelNumberPlaceHolder" />
+                </lv-form-control>
+            </lv-form-item>
+        </lv-collapse-panel>
+    </lv-collapse>
 </lv-form>
+
+<ng-template #titleTpl>
+    <lv-group lvGutter='8px'>
+        <span class="aui-h3">{{'common_advanced_label'|i18n}}</span>
+    </lv-group>
+</ng-template>

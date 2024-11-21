@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -55,6 +55,10 @@ export class AdvancedParameterComponent implements OnInit {
   channelsErrorTip = {
     ...this.baseUtilService.rangeErrorTip,
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 40])
+  };
+  percentErrorTip = {
+    ...this.baseUtilService.rangeErrorTip,
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 100])
   };
   osType;
   dataMap = DataMap;
@@ -133,6 +137,13 @@ export class AdvancedParameterComponent implements OnInit {
         ]
       }),
       sameBackup: new FormControl(true),
+      snapshot_size_percent: new FormControl(5, {
+        validators: [
+          this.baseUtilService.VALID.required(),
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(1, 100)
+        ]
+      }),
       crossFileBackup: new FormControl(true),
       nfsBackup: new FormControl(true),
       continueBackup: new FormControl(true),
@@ -193,6 +204,21 @@ export class AdvancedParameterComponent implements OnInit {
           this.formGroup.get('fileSize').value >=
             this.formGroup.get('maxFileSize').value
       );
+    });
+
+    this.formGroup.get('sameBackup').valueChanges.subscribe(res => {
+      if (res) {
+        this.formGroup
+          .get('snapshot_size_percent')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.integer(),
+            this.baseUtilService.VALID.rangeValue(1, 100)
+          ]);
+      } else {
+        this.formGroup.get('snapshot_size_percent').clearValidators();
+      }
+      this.formGroup.get('snapshot_size_percent').updateValueAndValidity();
     });
 
     this.formGroup.get('smallFile').valueChanges.subscribe(res => {
@@ -265,6 +291,7 @@ export class AdvancedParameterComponent implements OnInit {
       this.formGroup.patchValue({
         channels: extParameters.channels || 1,
         sameBackup: extParameters.consistent_backup,
+        snapshot_size_percent: extParameters?.snapshot_size_percent || 5,
         crossFileBackup: extParameters.cross_file_system,
         nfsBackup: isWindows
           ? extParameters.backup_smb
@@ -322,6 +349,14 @@ export class AdvancedParameterComponent implements OnInit {
       small_file_aggregation: this.formGroup.get('smallFile').value
     };
 
+    if (this.formGroup.get('sameBackup').value) {
+      assign(params, {
+        snapshot_size_percent: toNumber(
+          this.formGroup.get('snapshot_size_percent').value
+        )
+      });
+    }
+
     if (this.osType === DataMap.Fileset_Template_Os_Type.windows.value) {
       set(params, 'backup_smb', this.formGroup.get('nfsBackup').value);
     } else {
@@ -368,6 +403,7 @@ export class AdvancedParameterComponent implements OnInit {
       [
         'backup_res_auto_index',
         'archive_res_auto_index',
+        'tape_archive_auto_index',
         'enable_security_archive'
       ],
       key => {

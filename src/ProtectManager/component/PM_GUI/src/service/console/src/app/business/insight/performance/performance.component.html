@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
     <div class="aui-header-1 header-container" pmpermission pmOperation='ChangePerformanceStatus'>
         <lv-group lvGutter='8px' *ngIf="!isDataBackupOrDecouple">
             <h1>{{performanceMonitorLabel}}</h1>
@@ -61,7 +61,8 @@
         </div>
         <div class="right-container">
             <div class="performance-tab" *ngIf="showMonitor || !hasRemoveHistoryData">
-                <lv-tabs (lvActiveIndexChange)="reloadView()" *ngIf="!isCloudbackup">
+                <lv-tabs (lvActiveIndexChange)="lvTabChange($event)" *ngIf="!isCloudbackup"
+                    [(lvActiveIndex)]="capacityTabId">
                     <lv-tab
                         lvTitle="{{(isDataBackupOrDecouple ? 'insight_performance_backup_restore_label' : 'common_backup_label') | i18n}}"
                         [lvId]="'backup'">
@@ -71,7 +72,8 @@
                         </div>
                         <ng-container *ngTemplateOutlet="backupTemplate"> </ng-container>
                     </lv-tab>
-                    <lv-tab lvTitle="{{'common_replicate_label' | i18n}}" [lvId]="'copy'">
+                    <lv-tab lvTitle="{{'common_replicate_label' | i18n}}" [lvId]="'copy'"
+                        *ngIf="!storagePoolHiddenChart">
                         <ng-container *ngTemplateOutlet="operationTemplate"> </ng-container>
                         <ng-container *ngTemplateOutlet="copyTemplate"> </ng-container>
                     </lv-tab>
@@ -82,10 +84,10 @@
                 </div>
             </div>
             <div class="performance-no-data aui-block" *ngIf="!showMonitor && hasRemoveHistoryData">
-                <i lv-icon="aui-icon-no-data"></i>
-                <div class="no-data-label">{{'common_open_performance_link_label' | i18n}}</div>
-                <button *ngIf="isDataBackupOrDecouple" class="btn" (click)="switchMonitor()">{{'common_open_label'
-                    |i18n}}</button>
+                <lv-empty [lvDescription]="'common_open_performance_link_label' | i18n"></lv-empty>
+                <button *ngIf="isDataBackupOrDecouple" lv-button lvType="primary" class="btn" (click)="switchMonitor()">
+                    {{'common_open_label'|i18n}}
+                </button>
             </div>
 
             <!--右上角切换标签-->
@@ -94,10 +96,12 @@
                     <lv-group lvGutter='16px' class="operation-group">
                         <!--切换按设备与按存储池-->
                         <lv-radio-group [(ngModel)]="deviceOrStoragePoolModel"
-                            (ngModelChange)="deviceOrStoragePoolModelChange()" [hidden]="appUtilsService.isDistributed">
+                            (ngModelChange)="deviceOrStoragePoolModelChange($event)"
+                            [hidden]="appUtilsService.isDistributed">
                             <lv-group>
                                 <lv-radio [lvViewType]="'button'" [lvValue]="'device'">{{device}}</lv-radio>
-                                <lv-radio [lvViewType]="'button'" [lvValue]="'storagePool'">{{storagePool}}</lv-radio>
+                                <lv-radio [lvViewType]="'button'" [lvValue]="'storagePool'"
+                                    *ngIf="capacityTabId === 'backup'">{{storagePool}}</lv-radio>
                             </lv-group>
                         </lv-radio-group>
 
@@ -133,8 +137,7 @@
                             <div id="latency-chart" my-auto-fit-layout></div>
                         </div>
                         <div class="performance-no-data" *ngIf="!showLatency">
-                            <i lv-icon="aui-icon-no-data"></i>
-                            <div class="no-data-label">{{noData}}</div>
+                            <lv-empty></lv-empty>
                         </div>
                     </div>
                     <div class="chart-card">
@@ -145,8 +148,7 @@
                             <div id="iops-chart" my-auto-fit-layout></div>
                         </div>
                         <div class="performance-no-data" *ngIf="!showIops">
-                            <i lv-icon="aui-icon-no-data"></i>
-                            <div class="no-data-label">{{noData}}</div>
+                            <lv-empty></lv-empty>
                         </div>
                     </div>
                     <div class="chart-card">
@@ -157,8 +159,7 @@
                             <div id="bindwidth-chart" my-auto-fit-layout></div>
                         </div>
                         <div class="performance-no-data" *ngIf="!showBindwidth">
-                            <i lv-icon="aui-icon-no-data"></i>
-                            <div class="no-data-label">{{noData}}</div>
+                            <lv-empty></lv-empty>
                         </div>
                     </div>
                 </ng-template>
@@ -169,8 +170,7 @@
                             <div id="copy-latency-chart" my-auto-fit-layout></div>
                         </div>
                         <div class="performance-no-data" *ngIf="!showCopyLatency">
-                            <i lv-icon="aui-icon-no-data"></i>
-                            <div class="no-data-label">{{noData}}</div>
+                            <lv-empty></lv-empty>
                         </div>
                     </div>
                     <div class="chart-card">
@@ -179,21 +179,19 @@
                             <div id="copy-iops-chart" my-auto-fit-layout></div>
                         </div>
                         <div class="performance-no-data" *ngIf="!showCopyIops">
-                            <i lv-icon="aui-icon-no-data"></i>
-                            <div class="no-data-label">{{noData}}</div>
+                            <lv-empty></lv-empty>
                         </div>
                     </div>
-                    <div class="chart-card">
+                    <div class="chart-card" [hidden]="storagePoolHiddenChart">
                         <h3>{{'insight_copy_bindwidth_label' | i18n}}</h3>
                         <div class="chart-container" *ngIf="showCopyBindwidth">
                             <div id="copy-bindwidth-chart" my-auto-fit-layout></div>
                         </div>
                         <div class="performance-no-data" *ngIf="!showCopyBindwidth">
-                            <i lv-icon="aui-icon-no-data"></i>
-                            <div class="no-data-label">{{noData}}</div>
+                            <lv-empty></lv-empty>
                         </div>
                     </div>
-                    <div class="chart-card">
+                    <div class="chart-card" [hidden]="storagePoolHiddenChart">
                         <lv-group>
                             <h3>{{'insight_copy_get_bindwidth_label' | i18n}}</h3>
                             <i lv-icon="aui-icon-help" class="bindwidth-help"
@@ -203,8 +201,7 @@
                             <div id="copy-nas-bindwidth-chart" my-auto-fit-layout></div>
                         </div>
                         <div class="performance-no-data" *ngIf="!showNasBindwidth">
-                            <i lv-icon="aui-icon-no-data"></i>
-                            <div class="no-data-label">{{noData}}</div>
+                            <lv-empty></lv-empty>
                         </div>
                     </div>
                 </ng-template>
@@ -216,8 +213,7 @@
                                 <div id="cfs-latency-chart-distributed" my-auto-fit-layout></div>
                             </div>
                             <div class="performance-no-data" *ngIf="!showCfsLatency">
-                                <i lv-icon="aui-icon-no-data"></i>
-                                <div class="no-data-label">{{noData}}</div>
+                                <lv-empty></lv-empty>
                             </div>
                         </div>
                         <div class="chart-card">
@@ -226,8 +222,7 @@
                                 <div id="nfs-latency-chart-distributed" my-auto-fit-layout></div>
                             </div>
                             <div class="performance-no-data" *ngIf="!showNfsLatency">
-                                <i lv-icon="aui-icon-no-data"></i>
-                                <div class="no-data-label">{{noData}}</div>
+                                <lv-empty></lv-empty>
                             </div>
                         </div>
                         <div class="chart-card">
@@ -236,8 +231,7 @@
                                 <div id="object-service-latency-chart-distributed" my-auto-fit-layout></div>
                             </div>
                             <div class="performance-no-data" *ngIf="!showObjectServiceLatency">
-                                <i lv-icon="aui-icon-no-data"></i>
-                                <div class="no-data-label">{{noData}}</div>
+                                <lv-empty></lv-empty>
                             </div>
                         </div>
                     </ng-template>

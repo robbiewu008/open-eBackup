@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
     <lv-form-item *ngIf="!isDrill">
         <lv-form-label>
             {{ 'protection_restore_to_label' | i18n }}
@@ -90,7 +90,7 @@
                             <input lv-input formControlName="newName" style="width: 380px;" />
                         </lv-form-control>
                     </lv-form-item>
-                    <div style="width: 75%;margin-left: 20%" *ngIf="formGroup?.get('newName').status === 'VALID'">
+                    <div *ngIf="formGroup?.get('newName').status === 'VALID'">
                         <i style="display: inline-block; margin-right: 4px;" lv-icon="lv-icon-status-info"
                             lvColorState="true" class="type-icon"></i>
                         <span class="form-tips">

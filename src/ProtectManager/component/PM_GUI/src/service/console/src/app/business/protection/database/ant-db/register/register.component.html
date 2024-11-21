@@ -1,0 +1,175 @@
+<lv-form [formGroup]="formGroup" class="formGroup lv-form-label-required">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+    <lv-form-item>
+        <lv-form-label>
+            {{'common_type_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="type" [lvGroupName]="'typeGroup'" [lvDisabled]='rowData'>
+                <lv-group [lvGutter]="'24px'">
+                    <lv-radio [lvValue]="dataMap.Instance_Type.single.value">
+                        {{'protection_single_instance_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="dataMap.Instance_Type.cluster.value">
+                        {{'protection_cluster_instance_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+
+    <lv-form-item>
+        <lv-form-label>
+            {{'common_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input type="text" formControlName="name" />
+        </lv-form-control>
+    </lv-form-item>
+
+    <ng-container *ngIf="formGroup.value.type === dataMap.Instance_Type.single.value">
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_host_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                <aui-agent-select
+                    [lvOptions]="hostOptions"
+                    formControlName="agents"
+                    lvValueKey="value"
+                    [lvDisabled]="!!rowData"
+                    [isSimple]="true"
+                    lvShowClear
+                ></aui-agent-select>
+            </lv-form-control>
+        </lv-form-item>
+
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_username_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'common_input_operate_database_username_label' | i18n}}"
+                   lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="usernameErrorTip">
+                <input lv-input type="text" formControlName="userName" autocomplete="new-password" />
+            </lv-form-control>
+        </lv-form-item>
+
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_database_client_path_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]='pathErrorTip'>
+                <input lv-input type="text" formControlName="client" />
+            </lv-form-control>
+        </lv-form-item>
+
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_dataplane_ip_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+                <input lv-input type="text" formControlName="business_ip" />
+            </lv-form-control>
+        </lv-form-item>
+
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_database_port_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="portErrorTip">
+                <input lv-input type="text" formControlName="port" placeholder='1~65535' />
+            </lv-form-control>
+        </lv-form-item>
+
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_database_user_name_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="dataBaseErrorTip">
+                <input lv-input type="text" formControlName="database_username" autocomplete="new-password" />
+            </lv-form-control>
+        </lv-form-item>
+
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_database_password_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="passwordErrorTip">
+                <aui-inupt-with-eye formControlName="database_password"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <ng-container *ngIf="formGroup.value.type === dataMap.Instance_Type.cluster.value">
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_username_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'common_input_operate_database_username_label' | i18n}}"
+                   lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="usernameErrorTip">
+                <input lv-input type="text" formControlName="userName" autocomplete="new-password" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_database_user_name_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="dataBaseErrorTip">
+                <input lv-input type="text" formControlName="database_username" autocomplete="new-password" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_database_password_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="passwordErrorTip">
+                <aui-inupt-with-eye formControlName="database_password"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_database_stream_copy_user_name_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="dataBaseErrorTip">
+                <input lv-input type="text" formControlName="databaseStreamUserName" autocomplete="new-password" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_database_stream_copy_pass_word_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="passwordErrorTip">
+                <aui-inupt-with-eye formControlName="databaseStreamPassword"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>
+<ng-container *ngIf="formGroup.value.type === dataMap.Instance_Type.cluster.value">
+    <lv-form class="form-position">
+        <lv-form-item>
+            <lv-form-label>
+                {{'system_servers_label' | i18n}}
+            </lv-form-label>
+        </lv-form-item>
+    </lv-form>
+    <div class="aui-operation">
+        <lv-pro-button-group [config]="optItems"></lv-pro-button-group>
+    </div>
+    <div class="algin-table">
+        <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+    </div>
+</ng-container>

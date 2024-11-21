@@ -1,4 +1,17 @@
 
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
@@ -12,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001783221934.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="00-OceanCyber 300 1.2.0 联机帮助">
-<meta name="DC.Publisher" content="20240629">
+<meta name="brand" content="00-OceanCyber 300 1.1.0 联机帮助">
+<meta name="DC.Publisher" content="20241029">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001829899765">
 <meta name="DC.Language" content="zh-cn">
@@ -27,7 +40,7 @@
 <div class="section" id="ZH-CN_TOPIC_0000001829899765__zh-cn_topic_0189660025_zh-cn_topic_0171822616_section57886244"><h4 class="sectiontitle">前提条件</h4><p class="msonormal" id="ZH-CN_TOPIC_0000001829899765__zh-cn_topic_0189660025_zh-cn_topic_0171822616_p25390687">添加存储设备的型号和版本说明请参见<a href="https://info.support.huawei.com/storage/comp/#/oceancyber" target="_blank" rel="noopener noreferrer">OceanCyber兼容性查询工具</a>。</p>
 <ul id="ZH-CN_TOPIC_0000001829899765__zh-cn_topic_0189660025_zh-cn_topic_0171822616_ul5285116"><li id="ZH-CN_TOPIC_0000001829899765__zh-cn_topic_0189660025_zh-cn_topic_0171822616_li47566045">待发现的存储设备运行正常。</li><li id="ZH-CN_TOPIC_0000001829899765__li226013816115">待发现的存储设备的网络连通。</li><li id="ZH-CN_TOPIC_0000001829899765__li245522716117">当添加的存储设备的侦测类型为“<span id="ZH-CN_TOPIC_0000001829899765__text5934163616494">安全一体机侦测</span>”，请确保待添加存储的IP链路所在的远端设备状态正常。从而保证对发现存储及其对端存储发送告警抑制（不会因为关闭复制端口而发送告警）指令成功。</li><li id="ZH-CN_TOPIC_0000001829899765__li6614176132715">当添加的存储设备的侦测类型为“<span id="ZH-CN_TOPIC_0000001829899765__text025833954919">安全一体机侦测</span>”，请确保已在存储设备开启了NFSv3服务。</li></ul>
 </div>
-<div class="section" id="ZH-CN_TOPIC_0000001829899765__section43453223498"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000001829899765__ol1438326105114"><li id="ZH-CN_TOPIC_0000001829899765__li1238311616516"><span>在上方导航栏选择“<span id="ZH-CN_TOPIC_0000001829899765__text1321125142315">数据安全</span> &gt; <span id="ZH-CN_TOPIC_0000001829899765__text61625166246">存储设备</span>”。</span></li><li id="ZH-CN_TOPIC_0000001829899765__li1438311605118"><span>在存储设备页面中，单击“<span id="ZH-CN_TOPIC_0000001829899765__text71384333243">添加设备</span>”。</span></li><li id="ZH-CN_TOPIC_0000001829899765__li511663815219"><span>选择侦测类型以及设备类型。</span><p><div class="p" id="ZH-CN_TOPIC_0000001829899765__p58021685174">侦测类型分为“<span id="ZH-CN_TOPIC_0000001829899765__text62909179257">安全一体机侦测</span>”和“<span id="ZH-CN_TOPIC_0000001829899765__text1293153592516">设备内侦测</span>”。<ul id="ZH-CN_TOPIC_0000001829899765__ul1735564471611"><li id="ZH-CN_TOPIC_0000001829899765__li13951884181">安全一体机侦测：安全一体机为第三方设备提供侦测能力，支持对OceanProtect 1.3.0及以上版本的存储设备、OceanStor Pacific 8.1.5及以上版本的存储设备、OceanStor Dorado 6.1.6及以上版本和OceanStor 6.1.6及以上版本的<span style="color:#666666;">NAS文件系统</span>存储设备进行侦测。</li><li id="ZH-CN_TOPIC_0000001829899765__li209527810185">设备内侦测：设备自行执行侦测，安全一体机提供侦测情况监控能力，支持对OceanProtect 1.3.0及以上版本的存储设备、OceanStor Dorado 6.1.5及以上版本和OceanStor 6.1.5及以上版本的<span style="color:#666666;">NAS文件系统</span>存储设备进行侦测。</li></ul>
+<div class="section" id="ZH-CN_TOPIC_0000001829899765__section43453223498"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000001829899765__ol1438326105114"><li id="ZH-CN_TOPIC_0000001829899765__li1238311616516"><span>在导航栏选择“<span id="ZH-CN_TOPIC_0000001829899765__text61625166246">存储设备</span>”。</span></li><li id="ZH-CN_TOPIC_0000001829899765__li1438311605118"><span>在存储设备页面中，单击“<span id="ZH-CN_TOPIC_0000001829899765__text71384333243">添加设备</span>”。</span></li><li id="ZH-CN_TOPIC_0000001829899765__li511663815219"><span>选择侦测类型以及设备类型。</span><p><div class="p" id="ZH-CN_TOPIC_0000001829899765__p58021685174">侦测类型分为“<span id="ZH-CN_TOPIC_0000001829899765__text62909179257">安全一体机侦测</span>”和“<span id="ZH-CN_TOPIC_0000001829899765__text1293153592516">设备内侦测</span>”。<ul id="ZH-CN_TOPIC_0000001829899765__ul1735564471611"><li id="ZH-CN_TOPIC_0000001829899765__li13951884181">安全一体机侦测：安全一体机为第三方设备提供侦测能力，支持对OceanProtect 1.3.0及以上版本的存储设备、OceanStor Pacific 8.1.5及以上版本的存储设备、OceanStor Dorado 6.1.6及以上版本和OceanStor 6.1.6及以上版本的<span style="color:#666666;">NAS文件系统</span>存储设备进行侦测。</li><li id="ZH-CN_TOPIC_0000001829899765__li209527810185">设备内侦测：设备自行执行侦测，安全一体机提供侦测情况监控能力，支持对OceanProtect 1.3.0及以上版本的存储设备、OceanStor Dorado 6.1.5及以上版本和OceanStor 6.1.5及以上版本的<span style="color:#666666;">NAS文件系统</span>存储设备进行侦测。</li></ul>
 </div>
 </p></li><li id="ZH-CN_TOPIC_0000001829899765__li133831169513"><span>添加需要设置的存储设备参数，参数说明如<a href="#ZH-CN_TOPIC_0000001829899765__zh-cn_topic_0204825049_zh-cn_topic_0171822616_as_add_device_tab01">表 添加存储设备参数说明</a>所示。</span><p>
 <div class="tablenoborder"><a name="ZH-CN_TOPIC_0000001829899765__zh-cn_topic_0204825049_zh-cn_topic_0171822616_as_add_device_tab01"></a><a name="zh-cn_topic_0204825049_zh-cn_topic_0171822616_as_add_device_tab01"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001829899765__zh-cn_topic_0204825049_zh-cn_topic_0171822616_as_add_device_tab01" frame="border" border="1" rules="all"><caption><b>表1 </b>添加存储设备参数说明</caption><colgroup><col style="width:12.75%"><col style="width:35.36%"><col style="width:51.9%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000001829899765__zh-cn_topic_0204825049_zh-cn_topic_0171822616_row7745481"><th align="left" class="cellrowborder" valign="top" width="12.748725127487251%" id="mcps1.3.3.2.4.2.1.2.4.1.1"><p id="ZH-CN_TOPIC_0000001829899765__zh-cn_topic_0204825049_zh-cn_topic_0171822616_p23404201">参数</p>

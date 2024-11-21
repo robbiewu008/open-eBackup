@@ -1583,6 +1583,34 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/PutSanDetectSwitchResponse'
+  /v1/anti/ransomware/san-io-detect/report:
+    get:
+      x-dr-role: 'N'
+      x-product: HyperDetect
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - San Config Management
+      summary: san获取事中检测报告
+      operationId: getSanIoReport
+      parameters:
+        - name: entity
+          in: query
+          required: true
+          description: 告警id
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SanIoReport'
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -2477,3 +2505,22 @@ definitions:
         type: integer
         format: int64
         description: 未开启检测的lun的数量
+  SanIoReport:
+    type: object
+    properties:
+      records:
+        properties:
+          report:
+            type: string
+            example: '{"en-us":"Real-time monitoring and analysis of LUN access show that real-time I/Os have the following characteristics:\r\n(1)Read I/O ratio:49.595%\r\n(2)Write I/O Ratio:50.405%\r\n(3)Write Logical Block Address Ratio:45.585%\r\nBy detecting and analyzing data in a large number of write logic blocks,\r\nthe suspected infection characteristics are as follows:\r\nAdd write data:320MB\r\nWriting a large amount of high-entropy data：320MB\r\nPercentage of instantaneously written high-entropy data：100%\r\nFor details about the implementation principles of detection algorithms, see《HyperDetect Feature Guide for SAN》。","zh-cn":"通过对LUN访问情况实时监控分析，其实时IO读写特征如下：\r\n(1)读IO比例：49.595%\r\n(2)写IO比例：50.405%\r\n(3)写逻辑块地址比例：45.585%\r\n通过对大量写逻辑块中数据检测分析，疑似感染特征如下：\r\n新增写入数据：320MB\r\n写入大量高熵数据：320MB\r\n瞬时写入高熵数据比例：100%\r\n如需要了解更多检测算法实现原理，请参考《HyperDetect特性指南(块业务)》。"}'
+      totalCount:
+        type: integer
+        format: int32
+        example: 0
+      errorCode:
+        type: integer
+        format: int32
+        example: 0
+      errorMessage:
+        type: string
+        example: OK

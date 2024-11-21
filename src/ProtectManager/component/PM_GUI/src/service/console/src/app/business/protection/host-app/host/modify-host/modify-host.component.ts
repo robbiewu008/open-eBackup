@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { assign } from 'lodash';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -82,30 +82,28 @@ export class ModifyHostComponent implements OnInit {
         name: this.formGroup.getRawValue().name,
         extendInfo: {}
       };
-      if (this.data.sub_type === DataMap.Host_Proxy_Type.VMBackupAgent.value) {
-        assign(params, {
-          extendInfo: {
-            is_auto_synchronize_host_name: String(
-              this.formGroup.value.isAutoSynchronizeHostName
-            )
-          }
-        });
-      }
+      assign(params, {
+        extendInfo: {
+          is_auto_synchronize_host_name: String(
+            this.formGroup.value.isAutoSynchronizeHostName
+          )
+        }
+      });
       this.protectedResourceApiService
         .UpdateResource({
           resourceId: this.data.uuid,
           UpdateResourceRequestBody: params
         })
-        .subscribe(
-          res => {
+        .subscribe({
+          next: res => {
             observer.next();
             observer.complete();
           },
-          error => {
+          error: error => {
             observer.error(error);
             observer.complete();
           }
-        );
+        });
     });
   }
 }

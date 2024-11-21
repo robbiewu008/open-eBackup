@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   Component,
@@ -30,7 +30,8 @@ import {
   ResourceType,
   RestoreFileType,
   RestoreLocationType,
-  RestoreV2LocationType
+  RestoreV2LocationType,
+  SYSTEM_TIME
 } from 'app/shared/consts';
 import {
   CookieService,
@@ -51,7 +52,8 @@ import {
   map,
   remove,
   set,
-  size
+  size,
+  some
 } from 'lodash';
 import {
   ProTableComponent,
@@ -126,9 +128,8 @@ export class HCSRestoreComponent
   initDeployType() {
     const resourceProperties = JSON.parse(this.rowCopy.resource_properties);
     this.isHcsUser =
-      this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE &&
       resourceProperties.environment_sub_type ===
-        DataMap.Job_Target_Type.hcsEnvOp.value;
+      DataMap.Job_Target_Type.hcsEnvOp.value;
   }
 
   ngAfterViewInit() {
@@ -374,10 +375,16 @@ export class HCSRestoreComponent
       }
     });
 
-    this.setValid(diskId);
+    this.setValid();
   }
-
-  setValid(selectedDisk?) {
+  /*
+   * 1、加密盘只能选择恢复到自己
+   * 2、非加密盘可以恢复到自己 或 其他的非加密盘
+   * 3、升级上来的副本 不存在加密字段，所以可以随便选择
+   * '1':代表加密
+   * ''或'0'代表未加密
+   * */
+  setValid() {
     let inValidFlag = false;
     if (!this.selectData.data.length) {
       this.disk$.next(false);
@@ -388,56 +395,47 @@ export class HCSRestoreComponent
         inValidFlag = true;
         break;
       }
-
-      const encrypted = item.systemEncrypted === '1';
-
-      if (item.systemEncrypted.isNil) {
+      // 老副本不存在该字段 不用判断
+      if (isNil(item.systemEncrypted)) {
         continue;
       }
 
-      if (
-        !encrypted &&
-        item.targetDiskOptions.some(
-          targetDisk =>
-            !isEmpty(selectedDisk) &&
-            selectedDisk.include(targetDisk.id) &&
-            targetDisk.systemEncrypted === '1'
-        )
-      ) {
-        this.messageService.error(
-          this.i18n.get('common_select_not_encrypted_hcs_disk_label'),
-          {
-            lvMessageKey: 'hcs_disk_restore',
-            lvShowCloseButton: true
-          }
-        );
-        inValidFlag = true;
-        break;
+      // '1'加密 其余都是非加密
+      const encrypted = item.systemEncrypted === '1';
+
+      if (encrypted) {
+        // 加密盘只能选择恢复到自己 所以多选的都无需判断
+        // 加密盘这里只允许一个目标，some是考虑后续拓展
+        inValidFlag =
+          item.targetDisk.length > 1 ||
+          some(item.targetDisk, itemDiskId => {
+            const disk = find(item.originDiskOptions, { id: itemDiskId });
+            return (
+              disk.id !== item.id ||
+              disk.systemEncrypted !== '1' ||
+              disk.cipher !== item.cipher ||
+              disk.systemCmkId !== item.systemCmkId
+            );
+          });
+      } else {
+        // 升级的副本也走这
+        // 非加密盘除了加密盘之外，都能选
+        inValidFlag = some(item.targetDisk, itemDiskId => {
+          const disk = find(item.originDiskOptions, { id: itemDiskId });
+          return disk.systemEncrypted === '1';
+        });
       }
 
-      if (
-        encrypted &&
-        item.targetDiskOptions.some(
-          targetDisk =>
-            !isEmpty(selectedDisk) &&
-            selectedDisk.includes(targetDisk.id) &&
-            (targetDisk.id !== item.id ||
-              targetDisk.systemEncrypted !== '1' ||
-              targetDisk.cipher !== item.cipher ||
-              targetDisk.systemCmkId !== item.systemCmkId)
-        )
-      ) {
-        this.messageService.error(
-          this.i18n.get('common_select_encrypted_hcs_disk_label'),
-          {
-            lvMessageKey: 'hcs_disk_restore',
-            lvShowCloseButton: true
-          }
-        );
-        inValidFlag = true;
+      if (inValidFlag) {
+        const errorStr = encrypted
+          ? 'common_select_encrypted_hcs_disk_label'
+          : 'common_select_not_encrypted_hcs_disk_label';
+        this.messageService.error(this.i18n.get(errorStr), {
+          lvMessageKey: 'hcs_disk_restore',
+          lvShowCloseButton: true
+        });
         break;
       }
-
       if (item?.size < 0) {
         this.messageService.error(
           this.i18n.get('common_select_hcs_disk_label'),
@@ -613,7 +611,9 @@ export class HCSRestoreComponent
       if (isReset || isNil(item.targetDisk)) {
         const params = {
           ...item,
-          targetDisk: [item.id]
+          targetDisk: find(item.targetDiskOptions, { id: item.id })
+            ? [item.id]
+            : [] // 磁盘选择互斥，所以塞值的时候要注意目标options是否存在该id
         };
         return params;
       }
@@ -623,6 +623,8 @@ export class HCSRestoreComponent
       data,
       total: size(data)
     });
+    // 手动触发一次磁盘变更，便于过滤掉已选盘
+    each(this.selectData?.data, item => this.diskChange(null, item));
     this.setValid();
   }
 }

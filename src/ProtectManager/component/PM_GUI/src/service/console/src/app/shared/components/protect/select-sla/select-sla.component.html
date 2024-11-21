@@ -1,3 +1,4 @@
+<div class="aui-gutter-column-xl">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-gutter-column-xl">
   <div class="aui-gutter-column-sm aui-h3" *ngIf="!filesetTemplate">
     <ng-container *ngIf="isCyberEngine; else elseTitelTemplate">
       {{(isRealDetection ? 'explore_real_detection_policy_label' : 'explore_intelligent_detection_policy_label') |
@@ -21,6 +21,11 @@
       {{'protection_select_sla_label' | i18n}}
     </ng-template>
   </div>
+  <ng-container *ngIf="!isCyber">
+    <lv-alert lvType="error" *ngIf="isWormData && isWormSLA">
+      <p class="lv-alert-title">{{'common_worm_protection_alarm_label'|i18n}}</p>
+    </lv-alert>
+  </ng-container>
   <div class="aui-operation">
     <lv-group>
       <button lv-button (click)="createSla()" [disabled]="disableSLA">
@@ -103,8 +108,7 @@
       </div>
     </div>
     <div *ngIf="slaList.length === 0" class="sla-no-data aui-block">
-      <i lv-icon="lv-icon-no-data"></i>
-      <div class="no-data-label">{{'common_no_data_label' | i18n}}</div>
+      <lv-empty></lv-empty>
     </div>
   </ng-container>
 
@@ -238,7 +242,7 @@
                       <sla-type [name]="item.name"></sla-type>
                       <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
                         {{'protection_guide_new_resource_label' | i18n}}
-                      </span>
+                      </span> <lv-tag [(ngModel)]='wormTag' lvMaxWidth="300" *ngIf="!!item?.isWormSLAList"></lv-tag>
                     </lv-group>
                   </ng-template>
                 </span>
@@ -304,6 +308,7 @@
           <div>{{slaCardData.backup_mode}}</div>
           <div>{{'common_associated_resource_label' | i18n}}</div>
           <div>{{slaCardData.resource_count | nil}}</div>
+          <lv-tag *ngIf="slaCardData.isWormSLAList" [(ngModel)]='wormTag' lvMaxWidth="300"></lv-tag>
         </div>
       </div>
     </ng-template>

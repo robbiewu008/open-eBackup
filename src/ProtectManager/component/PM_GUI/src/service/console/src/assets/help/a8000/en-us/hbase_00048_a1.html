@@ -1,0 +1,101 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring HBase Backup Sets">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="hbase_00044.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="hbase_00048_a1">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring HBase Backup Sets</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hbase_00048_a1"></a><a name="hbase_00048_a1"></a>
+
+<h1 class="topictitle1">Restoring HBase Backup Sets</h1>
+<div><p>This section describes how to restore an HBase backup set that has been backed up to the original or a new location.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>Backup copies, replication copies, archive copies, or imported copies can be used for restoration. Restoration to the original location or a new location is supported. Note that restoration to the original location using a replication copy is not supported, and restoration to the original location is not supported after a replication copy is archived.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="hbase_00048_a1__hbase_00043_en-us_topic_0000001839142377_uicontrol161751858496"><b><span id="hbase_00048_a1__hbase_00043_en-us_topic_0000001839142377_text3175185114918"><strong>Explore</strong></span> &gt; <span id="hbase_00048_a1__hbase_00043_en-us_topic_0000001839142377_text1117515124916"><strong>Copy Data</strong></span> &gt; <span id="hbase_00048_a1__hbase_00043_en-us_topic_0000001839142377_text58221719218"><strong>Big Data</strong></span> &gt; HBase</b></span>.</span></li><li><span>You can search for copies by resource or copy. This section describes how to search for copies by resource.</span><p><p>On the <strong>Resources</strong> tab page, locate the backup set to be restored based on the backup set name and click the backup set name.</p>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> and select the year, month, and day in sequence to locate the copy.</span><p><p>If <span><img src="en-us_image_0000001839187997.png"></span> is displayed below a month or day, a copy is generated in that month or day.</p>
+</p></li><li><span>Restore data to a specified point in time or using a specific copy.</span><p><div class="p">You can restore data to a specified point in time or using a specific copy.<ol type="a"><li>Restoring data to a specified point in time or using a specific copy<ul><li>Restoring data using a specific copy<p><span><img class="eddx" src="en-us_image_0000001792388908.png"></span></p>
+</li><li>Restoring data to a specified point in time<p><span><img class="eddx" src="en-us_image_0000001839267961.png"></span></p>
+<p>Data can be restored to a specific point in time in the blue part on the timeline. <span><img src="en-us_image_0000001839267957.png"></span> indicates that a full backup copy or forever incremental (synthetic full) copy exists at this point in time. If you want to perform point-in-time restoration, ensure that a non-log backup copy exists at or before the point in time to which you want to restore data and that logs have been backed up after the point in time.</p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul id="hbase_00048_a1__oracle_gud_0058_ul75802612312"><li id="hbase_00048_a1__oracle_gud_0058_li1497342618234">For 1.5.0, a maximum of 100 copies can be displayed on the timeline. You can click <span><img id="hbase_00048_a1__oracle_gud_0058_image173544102299" src="en-us_image_0000001886153709.png"></span> to view all copies.</li><li id="hbase_00048_a1__oracle_gud_0058_li95818264231">During point-in-time recovery, the information about the copy used for restoration cannot be obtained on the management page. Therefore, users cannot view the copy information of the restoration job on pages of the restoration job and related events.</li></ul>
+</div></div>
+</li></ul>
+</li><li>Restoring the HBase backup set to the original or a new location<div class="p"><a href="#hbase_00048_a1__table194961441141219">Table 1</a> describes the related parameters.
+<div class="tablenoborder"><a name="hbase_00048_a1__table194961441141219"></a><a name="table194961441141219"></a><table cellpadding="4" cellspacing="0" summary="" id="hbase_00048_a1__table194961441141219" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Restoring HBase namespaces or tables</caption><colgroup><col style="width:32.019999999999996%"><col style="width:67.97999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.3.2.4.2.1.1.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.3.2.4.2.1.1.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.3.2.4.2.1.1.2.1.2.2.3.1.1 "><p><span><strong>Restore To</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.3.2.4.2.1.1.2.1.2.2.3.1.2 "><p>Selects either <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> or <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.3.2.4.2.1.1.2.1.2.2.3.1.1 "><p><span><strong>Target Cluster</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.3.2.4.2.1.1.2.1.2.2.3.1.2 "><p>If you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for <strong>Restore To</strong>, choose the target HBase cluster for restoration.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.3.2.4.2.1.1.2.1.2.2.3.1.1 "><p><span><strong>Namespace</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.3.2.4.2.1.1.2.1.2.2.3.1.2 "><p>If you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for <strong>Restore To</strong>, choose the target namespace for restoration.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.3.2.4.2.1.1.2.1.2.2.3.1.1 "><p><span><strong>Please select</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.3.2.4.2.1.1.2.1.2.2.3.1.2 "><p>If a table exists in the restoration path, replace or skip the existing table.</p>
+<ul><li><span><strong>Ignore the existing table</strong></span>: Tables with the same names are skipped and are not replaced.</li><li><span><strong>Replace the existing table</strong></span></li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.3.2.4.2.1.1.2.1.2.2.3.1.1 "><p><span><strong>Temporary Directory</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.3.2.4.2.1.1.2.1.2.2.3.1.2 "><p>Stores log files generated during restoration. This parameter needs to be set only when <span class="uicontrol"><b><span><strong>Log Backup</strong></span></b></span> is used for restoration. Ensure that the directory exists in the HBase cluster with sufficient space.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li><li>Click <span class="uicontrol"><b>OK</b></span>.</li></ol>
+</div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="hbase_00044.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

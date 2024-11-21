@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,8 +12,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup">
-  <lv-form-item>
+  <lv-form-item *ngIf="!isDrill">
     <lv-form-label lvRequired>
       {{ 'protection_restore_to_label' | i18n }}
     </lv-form-label>
@@ -47,6 +47,7 @@
   <ng-container
     *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW"
   >
+  <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'target'"></aui-select-tag>
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ 'protection_target_instance_label' | i18n }}

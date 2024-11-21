@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   Input,
@@ -30,9 +30,11 @@ import {
 import {
   BaseUtilService,
   CommonConsts,
+  GlobalService,
   I18NService,
   LabelApiService,
-  RouterUrl
+  RouterUrl,
+  SearchResource
 } from 'app/shared';
 import { assign, each, isEmpty, isUndefined, size, unionBy } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
@@ -57,6 +59,7 @@ export class AddResourceTagComponent implements OnInit, OnDestroy {
   popFormGroup: FormGroup;
   @Input() isAdd;
   @Input() rowDatas;
+  @Input() type;
 
   @ViewChild('transfer') transfer: TransferComponent;
   @ViewChild('headerTpl', { static: true })
@@ -68,7 +71,8 @@ export class AddResourceTagComponent implements OnInit, OnDestroy {
     public fb: FormBuilder,
     private router: Router,
     private labelApiService: LabelApiService,
-    public baseUtilService: BaseUtilService
+    public baseUtilService: BaseUtilService,
+    private globalService: GlobalService
   ) {}
 
   ngOnDestroy() {
@@ -94,6 +98,7 @@ export class AddResourceTagComponent implements OnInit, OnDestroy {
         }
       });
       this.sourceData = arr;
+      this.total = size(arr);
     }
     this.modal && this.modal.setProperty({ lvHeader: this.headerTpl });
 
@@ -187,7 +192,19 @@ export class AddResourceTagComponent implements OnInit, OnDestroy {
           name: this.popFormGroup.value.tagName
         }
       })
-      .subscribe(() => this.initData(null, true));
+      .subscribe(() => {
+        this.initData(null, true);
+        this.emitSearchStore();
+      });
+  }
+
+  emitSearchStore() {
+    if (this.router.url === '/search') {
+      this.globalService.emitStore({
+        action: 'labelResearch',
+        state: ''
+      });
+    }
   }
 
   getParams() {
@@ -195,7 +212,7 @@ export class AddResourceTagComponent implements OnInit, OnDestroy {
       labelIdList: this.sourceSelection.map(item => item.uuid),
       resourceObject: {
         resourceObjectIdList: this.rowDatas.map(item => item.uuid),
-        type: ''
+        type: this?.type || ''
       }
     };
     return params;

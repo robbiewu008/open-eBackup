@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -30,7 +30,6 @@ import {
   RestoreType,
   RestoreV2LocationType,
   RestoreV2Type,
-  RoleType,
   VmFileReplaceStrategy
 } from 'app/shared';
 import {
@@ -51,7 +50,6 @@ import {
   isEmpty,
   isNumber,
   isString,
-  isUndefined,
   last,
   map,
   reject,
@@ -59,7 +57,8 @@ import {
   set,
   size,
   split,
-  startsWith
+  startsWith,
+  toNumber
 } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
 
@@ -82,9 +81,13 @@ export class FilesetRestoreComponent implements OnInit {
   originalHost;
   newHost;
   osType;
+  dataMap = DataMap;
+  RestoreType = RestoreType;
   isWindows;
   isVolume;
+  isOsBackup = false; // 用于判断副本是否使用操作系统备份
   authHosts = [];
+  tapeCopy = false;
   isDataProtectionAdmin = isRBACDPAdmin(this.cookieService.role);
   scriptPlaceholder = this.i18n.get('common_script_linux_placeholder_label');
   scriptTips = this.i18n.get('protection_fileset_restore_advance_params_label');
@@ -92,6 +95,10 @@ export class FilesetRestoreComponent implements OnInit {
   scriptErrorTip = {
     invalidName: this.i18n.get('common_script_error_label'),
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [8192])
+  };
+  channelsErrorTip = {
+    ...this.baseUtilService.rangeErrorTip,
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 40])
   };
   isIncremental: boolean;
   constructor(
@@ -106,6 +113,11 @@ export class FilesetRestoreComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // 判断副本是否是磁带归档，且已开启索引
+    this.tapeCopy =
+      this.rowCopy?.generated_by ===
+        DataMap.CopyData_generatedType.tapeArchival.value &&
+      this.rowCopy?.indexed === DataMap.CopyData_fileIndex.indexed.value;
     this.isVolume =
       this.rowCopy.resource_sub_type === DataMap.Resource_Type.volume.value;
     this.disableOriginLocation =
@@ -117,6 +129,11 @@ export class FilesetRestoreComponent implements OnInit {
     this.osType = JSON.parse(this.rowCopy.resource_properties)[
       'environment_os_type'
     ];
+    this.isOsBackup =
+      this.osType === DataMap.Fileset_Template_Os_Type.linux.value &&
+      !this.isVolume &&
+      JSON.parse(this.rowCopy.resource_properties)?.extendInfo?.is_OS_backup ===
+        'true';
     this.isWindows =
       this.osType === DataMap.Fileset_Template_Os_Type.windows.value;
     this.initForm();
@@ -154,6 +171,7 @@ export class FilesetRestoreComponent implements OnInit {
 
     this.formGroup = this.fb.group({
       restoreLocation: new FormControl(RestoreV2LocationType.ORIGIN),
+      isDirectRecovery: new FormControl(this.tapeCopy),
       originLocation: new FormControl({
         value: resource?.environment_name,
         disabled: true
@@ -174,6 +192,12 @@ export class FilesetRestoreComponent implements OnInit {
         validators: this.baseUtilService.VALID.required()
       }),
       incrementalRestore: new FormControl(false),
+      channels: new FormControl(1, {
+        validators: [
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(1, 40)
+        ]
+      }),
       preScript: new FormControl('', {
         validators: [
           this.validPath(),
@@ -218,7 +242,9 @@ export class FilesetRestoreComponent implements OnInit {
                 false
               )
         ]
-      })
+      }),
+      is_OS_restore: new FormControl(false),
+      reboot_system_after_restore: new FormControl(false)
     });
 
     this.listenForm();
@@ -298,6 +324,20 @@ export class FilesetRestoreComponent implements OnInit {
 
       this.metadataPathData = [selectHost];
       this.hostUuid = selectHost?.environment?.uuid;
+    });
+
+    this.formGroup.get('is_OS_restore').valueChanges.subscribe(res => {
+      if (!res) {
+        this.formGroup.get('reboot_system_after_restore').setValue(false);
+        if (
+          this.formGroup.get('restoreLocation').value ===
+          RestoreV2LocationType.NEW
+        ) {
+          this.formGroup.get('metadataPath').enable();
+        }
+      } else {
+        this.formGroup.get('metadataPath').disable();
+      }
     });
   }
 
@@ -458,7 +498,12 @@ export class FilesetRestoreComponent implements OnInit {
       filters: [],
       agents: [],
       extendInfo: {
-        restoreOption: this.formGroup.value.overwriteType
+        restoreOption: this.formGroup.value.overwriteType,
+        channels: toNumber(this.formGroup.value.channels),
+        is_OS_restore: this.formGroup.get('is_OS_restore').value,
+        reboot_system_after_restore: this.formGroup.get(
+          'reboot_system_after_restore'
+        ).value
       },
       scripts: {
         preScript: this.formGroup.value.preScript,
@@ -483,6 +528,12 @@ export class FilesetRestoreComponent implements OnInit {
           ? tempPath.extendInfo.path
           : this.getNullPath()
       );
+    }
+    if (this.tapeCopy && this.formGroup.get('isDirectRecovery')?.value) {
+      assign(params, {
+        restoreType: RestoreV2Type.FileRestore,
+        subObjects: ['/']
+      });
     }
     return params;
   }

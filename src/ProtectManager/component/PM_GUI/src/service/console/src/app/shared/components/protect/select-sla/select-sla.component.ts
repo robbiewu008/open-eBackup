@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import {
@@ -17,7 +17,7 @@ import {
   MessageboxService,
   MessageService
 } from '@iux/live';
-import { compareVersion } from 'app/shared';
+import { AntiRansomwarePolicyApiService, compareVersion } from 'app/shared';
 import { IODETECTPOLICYService, SlaApiService } from 'app/shared/api/services';
 import {
   ApplicationType,
@@ -139,6 +139,7 @@ export class SelectSlaComponent implements OnInit {
     private messageService: MessageService,
     private appUtilsService: AppUtilsService,
     private ioDetectPolicyService: IODETECTPOLICYService,
+    private antiRansomwarePolicyApiService: AntiRansomwarePolicyApiService,
     private globalService: GlobalService
   ) {}
 
@@ -158,6 +159,15 @@ export class SelectSlaComponent implements OnInit {
   persistentLabel = this.i18n.get('common_persistent_label');
   isCyberEngine =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.cyberengine.value;
+  isCyber = includes(
+    [
+      DataMap.Deploy_Type.cyberengine.value,
+      DataMap.Deploy_Type.cloudbackup2.value,
+      DataMap.Deploy_Type.hyperdetect.value,
+      DataMap.Deploy_Type.cloudbackup.value
+    ],
+    this.i18n.get('deploy_type')
+  );
   cyberCols: any[] = [
     {
       key: 'name',
@@ -192,6 +202,9 @@ export class SelectSlaComponent implements OnInit {
   sortKey;
   sortDirection;
   honeypotDetectStatus;
+  wormTag = [{ label: 'WORM' }];
+  isWormSLA = false;
+  isWormData = false;
 
   ngOnInit() {
     this.disableSLA =
@@ -329,6 +342,13 @@ export class SelectSlaComponent implements OnInit {
           if (find(res.items, { uuid: createSla })) {
             this.slaChange(createSla);
           }
+          this.slaList.forEach(
+            item =>
+              (item.isWormSLAList = some(
+                item.policy_list,
+                policy => policy?.worm_validity_type >= 1
+              ))
+          );
         });
     }
   }
@@ -410,6 +430,16 @@ export class SelectSlaComponent implements OnInit {
           }
           this.slaDatas = res.items;
           this.total = res.total;
+          // 要判断部署形态
+          if (!this.isCyber) {
+            this.slaDatas.forEach(item => {
+              assign(item, {
+                isWormSLAList: item.policy_list?.some(
+                  e => e?.worm_validity_type >= 1
+                )
+              });
+            });
+          }
           if (find(res.items, { uuid: createSla })) {
             this.selectionRow(createSla);
           }
@@ -479,7 +509,8 @@ export class SelectSlaComponent implements OnInit {
               ApplicationType.FusionOne,
               ApplicationType.OpenStack,
               ApplicationType.ApsaraStack,
-              ApplicationType.TDSQL
+              ApplicationType.TDSQL,
+              ApplicationType.HyperV
             ],
             item.application
           )
@@ -510,7 +541,21 @@ export class SelectSlaComponent implements OnInit {
     return res;
   }
 
+  getDataWormStatus(data) {
+    const resourceParams = {
+      resourceIds: _map(isArray(data) ? data : [data], 'uuid')
+    };
+    this.antiRansomwarePolicyApiService
+      .ShowAntiRansomwarePolicies(resourceParams)
+      .subscribe(res => {
+        this.isWormData = !!find(res.records, item => item.schedule.setWorm);
+      });
+  }
+
   initData(data: any, _?, action?: ProtectResourceAction) {
+    if (!this.isCyber) {
+      this.getDataWormStatus(data);
+    }
     this.resourceData = isArray(data) ? data[0] : data;
     this.subResourceType =
       this.resourceData.sub_type || this.resourceData.sourceSubType;
@@ -578,6 +623,17 @@ export class SelectSlaComponent implements OnInit {
       this.applications = [ApplicationType.Common, ApplicationType.CNware];
     } else if (
       includes(
+        [
+          DataMap.Resource_Type.nutanixCluster.value,
+          DataMap.Resource_Type.nutanixHost.value,
+          DataMap.Resource_Type.nutanixVm.value
+        ],
+        this.subResourceType
+      )
+    ) {
+      this.applications = [ApplicationType.Common, ApplicationType.Nutanix];
+    } else if (
+      includes(
         [DataMap.Resource_Type.ActiveDirectory.value],
         this.subResourceType
       )
@@ -631,7 +687,6 @@ export class SelectSlaComponent implements OnInit {
       )
     ) {
       this.applications = [
-        ApplicationType.Common,
         DataMap.Resource_Type.lightCloudGaussdbInstance.value
       ];
     } else if (
@@ -659,10 +714,7 @@ export class SelectSlaComponent implements OnInit {
         this.subResourceType
       )
     ) {
-      this.applications = [
-        ApplicationType.Common,
-        DataMap.Resource_Type.GaussDB_DWS.value
-      ];
+      this.applications = [DataMap.Resource_Type.GaussDB_DWS.value];
     } else if (
       includes(
         [
@@ -734,6 +786,16 @@ export class SelectSlaComponent implements OnInit {
       )
     ) {
       this.applications = [DataMap.Resource_Type.PostgreSQL.value];
+    } else if (
+      includes(
+        [
+          DataMap.Resource_Type.AntDBInstance.value,
+          DataMap.Resource_Type.AntDBClusterInstance.value
+        ],
+        this.subResourceType
+      )
+    ) {
+      this.applications = [DataMap.Resource_Type.AntDB.value];
     } else if (
       includes(
         [
@@ -862,7 +924,8 @@ export class SelectSlaComponent implements OnInit {
       includes(
         [
           DataMap.Resource_Type.oracle.value,
-          DataMap.Resource_Type.oracleCluster.value
+          DataMap.Resource_Type.oracleCluster.value,
+          DataMap.Resource_Type.oraclePDB.value
         ],
         this.subResourceType
       )
@@ -946,10 +1009,14 @@ export class SelectSlaComponent implements OnInit {
         this.subResourceType
       )
     ) {
-      this.applications = [
-        ApplicationType.Common,
-        DataMap.Resource_Type.saphanaDatabase.value
-      ];
+      this.applications = [DataMap.Resource_Type.saphanaDatabase.value];
+    } else if (
+      includes(
+        [DataMap.Resource_Type.saponoracleDatabase.value],
+        this.subResourceType
+      )
+    ) {
+      this.applications = [ApplicationType.Saponoracle];
     } else {
       this.applications = _map(
         applicationTypes.filter(
@@ -1045,6 +1112,13 @@ export class SelectSlaComponent implements OnInit {
       return;
     }
 
+    const tmpSla = this.slaList.find(item => item.uuid === sla_id);
+    this.isWormSLA =
+      !this.isCyber &&
+      !!(
+        tmpSla && tmpSla.policy_list.find(item => item.worm_validity_type >= 1)
+      );
+
     if (this.beforeChange(sla_id)) {
       this.messageBox.confirm({
         lvOkType: 'primary',
@@ -1127,6 +1201,15 @@ export class SelectSlaComponent implements OnInit {
   }
 
   selectionRow(sla_id, notManualClick?) {
+    const tmpSla = this.slaDatas.find(item => item.uuid === sla_id);
+    this.isWormSLA =
+      !this.isCyber &&
+      !!(
+        (
+          tmpSla &&
+          tmpSla.policy_list.find(item => item.worm_validity_type >= 1)
+        ) // item.worm_validity_type取值是null 0 1 2
+      );
     if (!this.vaildBackupPolicy(sla_id)) {
       assign(this.resourceData, {
         sla_id,
@@ -1231,242 +1314,78 @@ export class SelectSlaComponent implements OnInit {
         this.viewChange(this.selectedSlaView, res.uuid);
       },
       {
-        application: includes(
-          [DataMap.Resource_Type.msHostSystem.value],
-          this.subResourceType
-        )
-          ? DataMap.Resource_Type.msVirtualMachine.value
-          : includes(
-              [
-                DataMap.Resource_Type.hostSystem.value,
-                DataMap.Resource_Type.clusterComputeResource.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.virtualMachine.value
-          : includes(
-              [
-                DataMap.Resource_Type.cNwareCluster.value,
-                DataMap.Resource_Type.cNwareHost.value,
-                DataMap.Resource_Type.cNwareVm.value
-              ],
-              this.subResourceType
-            )
-          ? ApplicationType.CNware
-          : includes(
-              [
-                DataMap.Resource_Type.MySQLClusterInstance.value,
-                DataMap.Resource_Type.MySQLInstance.value,
-                DataMap.Resource_Type.MySQLDatabase.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.MySQL.value
-          : includes(
-              [
-                DataMap.Resource_Type.Dameng_cluster.value,
-                DataMap.Resource_Type.Dameng_singleNode.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.Dameng.value
-          : includes(
-              [
-                DataMap.Resource_Type.OpenGauss_database.value,
-                DataMap.Resource_Type.OpenGauss_instance.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.OpenGauss.value
-          : includes(
-              [
-                DataMap.Resource_Type.SQLServerClusterInstance.value,
-                DataMap.Resource_Type.SQLServerInstance.value,
-                DataMap.Resource_Type.SQLServerCluster.value,
-                DataMap.Resource_Type.SQLServerGroup.value,
-                DataMap.Resource_Type.SQLServerDatabase.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.SQLServer.value
-          : includes(
-              [
-                DataMap.Resource_Type.DWS_Cluster.value,
-                DataMap.Resource_Type.DWS_Database.value,
-                DataMap.Resource_Type.DWS_Schema.value,
-                DataMap.Resource_Type.DWS_Table.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.GaussDB_DWS.value
-          : includes(
-              [
-                DataMap.Resource_Type.KubernetesNamespace.value,
-                DataMap.Resource_Type.KubernetesStatefulset.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.KubernetesStatefulset.value
-          : includes(
-              [
-                DataMap.Resource_Type.kubernetesNamespaceCommon.value,
-                DataMap.Resource_Type.kubernetesDatasetCommon.value
-              ],
-              this.subResourceType
-            )
-          ? ApplicationType.KubernetesDatasetCommon
-          : includes(
-              [
-                DataMap.Resource_Type.HCSProject.value,
-                DataMap.Resource_Type.HCSCloudHost.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.HCSCloudHost.value
-          : includes(
-              [
-                DataMap.Resource_Type.PostgreSQLInstance.value,
-                DataMap.Resource_Type.PostgreSQLClusterInstance.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.PostgreSQL.value
-          : includes(
-              [
-                DataMap.Resource_Type.KingBaseInstance.value,
-                DataMap.Resource_Type.KingBaseClusterInstance.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.KingBase.value
-          : includes(
-              [
-                DataMap.Resource_Type.ClickHouse.value,
-                DataMap.Resource_Type.ClickHouseCluster.value,
-                DataMap.Resource_Type.ClickHouseDatabase.value,
-                DataMap.Resource_Type.ClickHouseTableset.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.ClickHouse.value
-          : includes(
-              [
-                DataMap.Resource_Type.dbTwoDatabase.value,
-                DataMap.Resource_Type.dbTwoTableSet.value
-              ],
-              this.subResourceType
-            )
-          ? ApplicationType.DB2
-          : includes(
-              [DataMap.Resource_Type.goldendbInstance.value],
-              this.subResourceType
-            )
-          ? ApplicationType.GoldenDB
-          : includes(
-              [
-                DataMap.Resource_Type.openStackCloudServer.value,
-                DataMap.Resource_Type.openStackProject.value
-              ],
-              this.subResourceType
-            )
-          ? ApplicationType.OpenStack
-          : includes(
-              [
-                DataMap.Resource_Type.oracle.value,
-                DataMap.Resource_Type.oracleCluster.value
-              ],
-              this.subResourceType
-            )
-          ? ApplicationType.Oracle
-          : includes(
-              [
-                DataMap.Resource_Type.MongodbClusterInstance.value,
-                DataMap.Resource_Type.MongodbSingleInstance.value
-              ],
-              this.subResourceType
-            )
-          ? ApplicationType.MongoDB
-          : includes(
-              [
-                DataMap.Resource_Type.informixInstance.value,
-                DataMap.Resource_Type.informixClusterInstance.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.informixService.value
-          : includes(
-              [
-                DataMap.Resource_Type.GaussDB_T.value,
-                DataMap.Resource_Type.gaussdbTSingle.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.GaussDB_T.value
-          : includes(
-              [
-                DataMap.Resource_Type.OceanBaseCluster.value,
-                DataMap.Resource_Type.OceanBaseTenant.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.OceanBaseCluster.value
-          : includes(
-              [
-                DataMap.Resource_Type.tidbCluster.value,
-                DataMap.Resource_Type.tidbDatabase.value,
-                DataMap.Resource_Type.tidbTable.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.tidb.value
-          : includes(
-              [
-                DataMap.Resource_Type.tdsqlDistributedInstance.value,
-                DataMap.Resource_Type.tdsqlInstance.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.tdsqlInstance.value
-          : includes(
-              [DataMap.Resource_Type.ObjectSet.value],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.ObjectSet.value
-          : includes(
-              [
-                DataMap.Resource_Type.ExchangeDataBase.value,
-                DataMap.Resource_Type.ExchangeEmail.value,
-                DataMap.Resource_Type.ExchangeGroup.value,
-                DataMap.Resource_Type.ExchangeSingle.value,
-                DataMap.Resource_Type.Exchange.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.ExchangeDataBase.value
-          : includes(
-              [
-                DataMap.Resource_Type.APSCloudServer.value,
-                DataMap.Resource_Type.APSZone.value,
-                DataMap.Resource_Type.APSResourceSet.value
-              ],
-              this.subResourceType
-            )
-          ? DataMap.Resource_Type.ApsaraStack.value
-          : includes(
-              [
-                DataMap.Resource_Type.hyperVHost.value,
-                DataMap.Resource_Type.hyperVVm.value
-              ],
-              this.subResourceType
-            )
-          ? ApplicationType.HyperV
-          : includes([DataMap.Resource_Type.ndmp.value], this.subResourceType)
-          ? ApplicationType.Ndmp
-          : this.subResourceType
+        application: this.getApplicationType()
       }
     );
   }
 
+  getApplicationType() {
+    let applicationType = this.subResourceType;
+    if (
+      includes([DataMap.Resource_Type.msHostSystem.value], this.subResourceType)
+    ) {
+      applicationType = DataMap.Resource_Type.msVirtualMachine.value;
+    } else if (
+      includes(
+        [
+          DataMap.Resource_Type.hostSystem.value,
+          DataMap.Resource_Type.clusterComputeResource.value
+        ],
+        this.subResourceType
+      )
+    ) {
+      applicationType = DataMap.Resource_Type.virtualMachine.value;
+    } else if (
+      includes(
+        [
+          DataMap.Resource_Type.DWS_Cluster.value,
+          DataMap.Resource_Type.DWS_Database.value,
+          DataMap.Resource_Type.DWS_Schema.value,
+          DataMap.Resource_Type.DWS_Table.value
+        ],
+        this.subResourceType
+      )
+    ) {
+      applicationType = DataMap.Resource_Type.GaussDB_DWS.value;
+    } else if (
+      includes(
+        [
+          DataMap.Resource_Type.ClickHouse.value,
+          DataMap.Resource_Type.ClickHouseCluster.value,
+          DataMap.Resource_Type.ClickHouseDatabase.value,
+          DataMap.Resource_Type.ClickHouseTableset.value
+        ],
+        this.subResourceType
+      )
+    ) {
+      applicationType = DataMap.Resource_Type.ClickHouse.value;
+    } else if (
+      includes(
+        [
+          DataMap.Resource_Type.ExchangeDataBase.value,
+          DataMap.Resource_Type.ExchangeEmail.value,
+          DataMap.Resource_Type.ExchangeGroup.value,
+          DataMap.Resource_Type.ExchangeSingle.value,
+          DataMap.Resource_Type.Exchange.value
+        ],
+        this.subResourceType
+      )
+    ) {
+      applicationType = DataMap.Resource_Type.ExchangeDataBase.value;
+    } else {
+      const resource = this.appUtilsService.findResourceTypeByKey('slaId');
+      each(resource, (key: any[] | string, slaId) => {
+        if (
+          (isArray(key) && key.includes(this.subResourceType)) ||
+          key === this.subResourceType
+        ) {
+          applicationType = slaId;
+          return false; // 找到后跳出each循环
+        }
+      });
+    }
+    return applicationType;
+  }
   onOK() {
     return this.resourceData;
   }

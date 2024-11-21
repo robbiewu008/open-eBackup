@@ -1,3 +1,4 @@
+<lv-alert *ngIf="isTDSQL" lvType="info" [lvClosable]="false">{{'protection_tdsql_livemount_tips_label'|i18n}}</lv-alert>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -33,13 +34,13 @@
                             </lv-select>
                         </lv-form-control>
                         <lv-form-control>
-                            <div style="width: 150px;" lv-overflow>
+                            <div style="width: 200px;" lv-overflow>
                                 {{targetIpLabel}} {{item.value.ip | nil}}
                             </div>
                         </lv-form-control>
                         <lv-form-control
                             *ngIf="!componentData.childResourceType || componentData?.childResourceType[0] !== dataMap.Resource_Type.tdsqlInstance.value">
-                            <div style="width: 150px;" lv-overflow>
+                            <div style="width: 200px;" lv-overflow>
                                 {{versionLabel}} {{item.value.version | nil}}
                             </div>
                         </lv-form-control>
@@ -85,7 +86,7 @@
       </lv-form-item>
       <lv-form-item>
         <lv-form-label></lv-form-label>
-        <lv-form-control [lvErrorTip]="instanceInputErrorTip">
+        <lv-form-control>
         <lv-datatable
             lvFake
             formArrayName="instance_array"
@@ -110,7 +111,7 @@
         <ng-container *ngFor="let inst_item of item.get('instance_array').controls; let j = index;" [formGroupName]="j">
             <tr>
             <td>
-                <lv-form-control class="migrate-host-container">
+                <lv-form-control class="migrate-host-container" [lvErrorTip]="instanceInputErrorTip">
                     <lv-select
                         [lvOptions]="item.value.options"
                         formControlName="origin_inst"
@@ -147,7 +148,7 @@
     </span>
   </div>
     <lv-form-item
-        *ngIf="!(componentData.childResourceType && dataMap.Resource_Type.tdsqlInstance.value.includes(componentData.childResourceType[0]))">
+        *ngIf="!(componentData.childResourceType && dataMap.Resource_Type.tdsqlInstance.value.includes(componentData.childResourceType[0]) || isOracle && (!!componentData?.rowCopy?.storage_snapshot_flag || !!componentData?.selectionCopy?.storage_snapshot_flag))">
         <lv-form-label>{{'explore_start_database_label' | i18n}}</lv-form-label>
         <lv-form-control>
             <lv-switch formControlName='power_on'

@@ -1,0 +1,63 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="After Consistent Backup Is Enabled, Snapshots Cannot Be Created Due to Insufficient Logical Volume Space, and the Backup Job Is Converted to Non-consistent Backup (for Linux OS)">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002050777633">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>After Consistent Backup Is Enabled, Snapshots Cannot Be Created Due to Insufficient Logical Volume Space, and the Backup Job Is Converted to Non-consistent Backup (for Linux OS)</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002050777633"></a><a name="EN-US_TOPIC_0000002050777633"></a>
+
+<h1 class="topictitle1">After Consistent Backup Is Enabled, Snapshots Cannot Be Created Due to Insufficient Logical Volume Space, and the Backup Job Is Converted to Non-consistent Backup (for Linux OS)</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>In a backup job, a message is displayed, indicating that the space of the logical volume group (<em>Logical volume group name</em>) is insufficient and therefore, no snapshot can be created and backup of the volume group is converted to non-consistent backup.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Causes</h4><p>Consistent backup supports only LVM volumes. You can create a snapshot for the LVM volume to which the path selected for the backup fileset belongs and back up data based on the snapshot volume to achieve consistent backup. When creating a snapshot for an LVM volume, ensure that the remaining space of the volume group to which the LVM volume belongs is greater than 5% of the space of the LVM volume where the backup is performed. Otherwise, the snapshot fails to be created and the backup job is converted to a non-consistent backup job.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Troubleshooting</h4><ol><li><span>Log in to the fileset data protection agent host as user <strong>root</strong> using PuTTY.</span><p><p>This section uses the SUSE 15 SP2 OS as an example. The commands for other OSs may vary.</p>
+</p></li><li id="EN-US_TOPIC_0000002050777633__li2498143745813"><a name="EN-US_TOPIC_0000002050777633__li2498143745813"></a><a name="li2498143745813"></a><span>Run the following command to check the remaining space of the logical volume group:</span><p><pre class="screen">vgs</pre>
+<div class="p">Information similar to the following is displayed. The error message of the backup job displays the name of the logical volume group with insufficient space. In this example, the logical volume group name is <strong>system</strong>, and the remaining space of the logical volume group is 1.9 GB.<pre class="screen">suse15sp2:~ # vgs
+  VG     #PV #LV #SN Attr   VSize  VFree
+  system   1   9   2 wz--n- 99.51g 1.90g</pre>
+</div>
+</p></li><li><span>Run the following command to query the disk space corresponding to the protection path:</span><p><pre class="screen">df -h</pre>
+<div class="p">Information similar to the following is displayed. During the backup, the remaining space of the logical volume group must be greater than 5% of the disk space where the protection path is located. Use the command output as an example. If the protection path is the root directory <em>/</em>, the corresponding disk space is 49 GB, the 5% disk space is 2.45 GB, and the remaining space of the logical volume group queried in <a href="#EN-US_TOPIC_0000002050777633__li2498143745813">2</a> is 1.90 GB. In this case, snapshots cannot be created, and backup of the volume group is converted to non-consistent backup.<pre class="screen">suse15sp2:~ # df -h
+Filesystem                       Size  Used Avail Use% Mounted on
+devtmpfs                         7.7G  8.0K  7.7G   1% /dev
+tmpfs                            7.7G     0  7.7G   0% /dev/shm
+tmpfs                            7.7G  754M  7.0G  10% /run
+tmpfs                            7.7G     0  7.7G   0% /sys/fs/cgroup
+/dev/mapper/system-root           49G  9.2G  9.4G  50% /
+/dev/mapper/system-home           20G   24G   24G  50% /home</pre>
+</div>
+</p></li><li><span>The space of the logical volume group is insufficient. You are advised to expand the capacity of the logical volume group.</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Suggestions</h4><p>None.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Reference</h4><p>None.</p>
+</div>
+<p></p>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

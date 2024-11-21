@@ -1,0 +1,38 @@
+.pdb-header {
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+.customer-transfer {
+  width: 8.12rem;
+  height: 60vh;
+}
+.transfer-checkbox-content {
+  width: 100%;
+}
+.transfer-checkbox-item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 0.08rem;
+  border-bottom: 0.01rem solid #f2f2f2;
+}
+.transfer-checkbox-target-item {
+  justify-content: space-between;
+}
+.transfer-checkbox-item:hover {
+  background-color: #f7f7f7;
+}
+.transfer-checkbox-item-remove {
+  flex-shrink: 0;
+  margin-left: 0.08rem;
+  cursor: pointer;
+}
+:host
+  ::ng-deep
+  .lv-transfer-default
+  .lv-transfer-panel-body
+  .transfer-checkbox-item {
+  height: 0.4rem;
+}

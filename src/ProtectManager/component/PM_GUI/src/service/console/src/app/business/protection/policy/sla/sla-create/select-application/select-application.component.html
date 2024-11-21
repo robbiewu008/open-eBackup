@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
     <ng-container *ngIf="!cookieService.isCloudBackup">
         <lv-radio-group formControlName="type" [lvGroupName]="'applicationTypeGroup'" class="application-type-group"
             [ngClass]="{'mgb-specified': formGroup.value.type === applicationTypeView.Specified}">
@@ -32,14 +32,9 @@
             <lv-group lvDirection="vertical">
                 <lv-radio-group #allGroup formControlName="all">
                     <lv-radio [lvViewType]="'custom'" [lvValue]="applicationType.Common">
-                        <img [src]="allGroup.isChecked(applicationType.Common) ?
-                        language === 'zh-cn' ?
-                        'assets/img/all_resource_zh-cn_logo_checked.png' :
-                        'assets/img/all_resource_en-us_logo_checked.png' :
-                        language === 'zh-cn' ?
-                        'assets/img/all_resource_zh-cn_logo.png' :
-                        'assets/img/all_resource_en-us_logo.png'" [ngClass]="{'normal': !allGroup.isChecked(applicationType.Common),
-                            'checked':allGroup.isChecked(applicationType.Common)}">
+                        <div class="common-card" [ngClass]="{'select':allGroup.isChecked(applicationType.Common)}">
+                            <h2>{{'common_sla_all_resource_label' | i18n}}</h2>
+                        </div>
                     </lv-radio>
                 </lv-radio-group>
                 <div *ngIf="!appUtilsService.isDistributed && !appUtilsService.isDecouple"
@@ -65,7 +60,7 @@
                                     <div class="app-logo-container" [style.backgroundColor]="icon.color">
                                         {{icon.prefix}}
                                     </div>
-                                    <h2>{{icon.label | i18n}}</h2>
+                                    <h2 [ngClass]="{'labelWidth': showAppGuide(icon)}">{{icon.label | i18n}}</h2>
                                     <span class="guide-recommend-label recommend-width" *ngIf="showAppGuide(icon)">
                                         {{'protection_guide_recommended_label' | i18n}}
                                     </span>
@@ -110,7 +105,7 @@
                                     <div class="app-logo-container" [style.backgroundColor]="icon.color">
                                         {{icon.prefix}}
                                     </div>
-                                    <h2>{{icon.label | i18n}}</h2>
+                                    <h2 [ngClass]="{'labelWidth': showAppGuide(icon)}">{{icon.label | i18n}}</h2>
                                     <span class="guide-recommend-label recommend-width" *ngIf="showAppGuide(icon)">
                                         {{'protection_guide_recommended_label' | i18n}}
                                     </span>
@@ -217,7 +212,7 @@
                                         <div class="app-logo-container" [style.backgroundColor]="icon.color">
                                             {{icon.prefix}}
                                         </div>
-                                        <h2>{{icon.label | i18n}}</h2>
+                                        <h2 [ngClass]="{'labelWidth': showAppGuide(icon)}">{{icon.label | i18n}}</h2>
                                         <span class="guide-recommend-label recommend-width" *ngIf="showAppGuide(icon)">
                                             {{'protection_guide_recommended_label' | i18n}}
                                         </span>

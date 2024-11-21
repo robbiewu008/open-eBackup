@@ -1,22 +1,27 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnInit
 } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  ValidatorFn
+} from '@angular/forms';
 import {
   BaseUtilService,
   DataMap,
@@ -28,13 +33,14 @@ import {
 import {
   assign,
   each,
-  isEmpty,
-  size,
   first,
   get,
   has,
   isArray,
-  set
+  isEmpty,
+  isUndefined,
+  set,
+  size
 } from 'lodash';
 import { Subject } from 'rxjs';
 import { map as _map } from 'rxjs/operators';
@@ -80,6 +86,10 @@ export class SelectInstanceDatabaseComponent implements OnInit {
     }
   ];
   dataMap = DataMap;
+  pathErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    invalidInput: this.i18n.get('protection_dws_metadata_path_error_tip_label')
+  };
 
   constructor(
     private i18n: I18NService,
@@ -97,7 +107,7 @@ export class SelectInstanceDatabaseComponent implements OnInit {
   initForm() {
     this.formGroup = this.fb.group({
       path: new FormControl('', {
-        validators: [this.baseUtilService.VALID.required()]
+        validators: [this.baseUtilService.VALID.required(), this.validPath()]
       }),
       backup: new FormControl(DataMap.Backup_Type.GDS.value)
     });
@@ -129,6 +139,21 @@ export class SelectInstanceDatabaseComponent implements OnInit {
     this.formGroup.statusChanges.subscribe(res => {
       this.dataChange(this.selectionData);
     });
+  }
+
+  validPath(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (isUndefined(this.formGroup) || isEmpty(control.value)) {
+        return null;
+      }
+
+      const reg_path = /[|;&$><`'\"!+\n]/;
+
+      if (reg_path.test(control.value)) {
+        return { invalidInput: { value: control.value } };
+      }
+      return null;
+    };
   }
 
   updateTable(filters) {

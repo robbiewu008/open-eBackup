@@ -1,3 +1,4 @@
+<div [ngClass]="{'aui-gutter-column-md': !isOpenStack}" [innerHTML]="'protection_upgradeable_proxy_desc_label'|i18n">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div [ngClass]="{'aui-gutter-column-md': !isOpenStack}" [innerHTML]="'protection_upgradeable_proxy_desc_label'|i18n">
 </div>
 <div *ngIf="isOpenStack" class="aui-gutter-column-md" [innerHTML]="'protection_update_openstack_tips_label'|i18n"></div>
 

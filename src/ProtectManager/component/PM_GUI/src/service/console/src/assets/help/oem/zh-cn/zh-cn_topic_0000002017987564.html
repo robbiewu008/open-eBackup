@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="同一个NDMP Server多个并行任务部分失败">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="nas_s_0097_0.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002017987564">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>同一个NDMP Server多个并行任务部分失败</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000002017987564"></a><a name="ZH-CN_TOPIC_0000002017987564"></a>
+  <h1 class="topictitle1">同一个NDMP Server多个并行任务部分失败</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>同一个NDMP Server下同时并行多个文件系统的备份任务，部分备份任务执行失败。</p>
+    <div class="fignone">
+     <span class="figcap"><b>图1 </b>备份任务</span><br><span><img src="zh-cn_image_0000002018901578.png"></span>
+    </div>
+    <p></p>
+    <div class="fignone">
+     <span class="figcap"><b>图2 </b>失败任务</span><br><span><img src="zh-cn_image_0000002018901854.png"></span>
+    </div>
+    <p></p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>不同的存储厂商NDMP服务支持并行的备份任务上限不同，可能触发了存储厂商的流控限制。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li><span>根据各存储厂商流控阈值调整并行备份任务数。以OceanStor Dorado为例，可通过<a href="http://storageinfo.rnd.huawei.com/spec/#/home" target="_blank" rel="noopener noreferrer">规格查询</a>工具获取具体型号的流控阈值。</span></li>
+     <li><span>选择<span class="uicontrol">“保护 &gt; 文件系统 &gt; 存储设备”</span>。</span></li>
+     <li><span>在设备所在行右侧选择<span class="uicontrol">“更多 &gt; 修改”</span>。</span></li>
+     <li><span>修改<span class="uicontrol">“并发任务数”</span>不大于对应厂商提供的流控阈值。</span></li>
+     <li><span>单击<span class="uicontrol">“确定”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="nas_s_0097_0.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -38,6 +38,7 @@ import {
   ResourceSetApiService,
   ResourceSetType,
   RoleOperationMap,
+  SYSTEM_TIME,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -109,6 +110,8 @@ export class ReportsListComponent implements OnInit, AfterViewInit {
   buttonLabel = this.i18n.get('system_resourceset_all_select_label');
 
   groupCommon = GROUP_COMMON;
+
+  timeZone = SYSTEM_TIME.timeZone;
 
   @Input() activeIndex;
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
@@ -408,9 +411,14 @@ export class ReportsListComponent implements OnInit, AfterViewInit {
       );
     });
     if (this.appUtilsService.isDecouple) {
-      options = reject(
-        options,
-        item => item.value === DataMap.Report_Type.storageSpace.value
+      options = reject(options, item =>
+        includes(
+          [
+            DataMap.Report_Type.storageSpace.value,
+            DataMap.Report_Type.tapeUsed.value
+          ],
+          item.value
+        )
       );
     }
     return options;
@@ -761,7 +769,7 @@ export class ReportsListComponent implements OnInit, AfterViewInit {
       scopeModule: ResourceSetType.Report,
       type: ResourceSetType.Report
     };
-    this.resourceSetService.QueryResourceObjectIdList(params).subscribe(res => {
+    this.resourceSetService.queryResourceObjectIdList(params).subscribe(res => {
       set(this.allSelectionMap, ResourceSetType.Report, {
         data: _map(res, item => {
           return { uuid: item };

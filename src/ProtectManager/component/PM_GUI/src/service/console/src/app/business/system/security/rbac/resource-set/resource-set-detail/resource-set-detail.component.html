@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
     <div class="aui-header-1">
         <lv-group lvGutter="8px">
             <i lv-icon="aui-widget-datepicker-previous" [lvColorState]="true" (click)="goBack()"></i>
@@ -86,8 +86,17 @@
                                 </ng-container>
                                 <ng-container *ngSwitchCase="resourceSetType.Report">
                                     <lv-tab lvTitle="{{item.label}} ({{item.num}})">
-                                        <aui-reports-list [allSelectionMap]="allSelectionMap" [data]="[data]"
-                                            [isDetail]="true" [isResourceSet]="true"></aui-reports-list>
+                                        <lv-tabs lvType="underline">
+                                            <lv-tab [lvTitle]="'common_report_label'|i18n">
+                                                <aui-reports-list [allSelectionMap]="allSelectionMap" [data]="[data]"
+                                                    [isDetail]="true" [isResourceSet]="true"></aui-reports-list>
+                                            </lv-tab>
+                                            <lv-tab [lvTitle]="'insight_report_subscription_label'|i18n">
+                                                <aui-reports-subscription [allSelectionMap]="allSelectionMap"
+                                                    [data]="[data]" [isDetail]="true"
+                                                    [isResourceSet]="true"></aui-reports-subscription>
+                                            </lv-tab>
+                                        </lv-tabs>
                                     </lv-tab>
                                 </ng-container>
                                 <ng-container *ngSwitchCase="'copy'">
@@ -108,10 +117,10 @@
                                                             <lv-tab lvTitle="{{tab.label}}">
                                                                 <aui-normal-resourceset-template
                                                                     [resourceType]="tab.resType" [subName]="app.label"
-                                                                    [isDetail]="true"
+                                                                    [tableLabel]="tab.label" [isDetail]="true"
                                                                     [allSelectionMap]="allSelectionMap"
-                                                                    [appType]="app.resourceSetType"
-                                                                    [data]="[data]"></aui-normal-resourceset-template>
+                                                                    [appType]="app.resourceSetType" [data]="[data]"
+                                                                    (onNumChange)="specialNumChange($event)"></aui-normal-resourceset-template>
                                                             </lv-tab>
                                                         </ng-container>
                                                     </lv-tabs>
@@ -120,8 +129,8 @@
                                                         <aui-normal-resourceset-template [resourceType]="app.resType"
                                                             [subName]="app.label" [isDetail]="true"
                                                             [allSelectionMap]="allSelectionMap"
-                                                            [appType]="app.resourceSetType"
-                                                            [data]="[data]" (onNumChange)="nasNumChange($event)"></aui-normal-resourceset-template>
+                                                            [appType]="app.resourceSetType" [data]="[data]"
+                                                            (onNumChange)="nasNumChange($event)"></aui-normal-resourceset-template>
                                                     </ng-container>
                                                     <!-- 虚拟化和云平台的应用模板 -->
                                                     <ng-container *ngIf="virtualCloudApp.includes(app.slaId)">
@@ -141,9 +150,7 @@
                     </lv-tabs>
                     <ng-container *ngIf="isNoData">
                         <div class="no-data">
-                            <i lv-icon="lv-icon-no-data"></i>
-                            <div class="no-data-label" [innerHTML]="noDataTip">
-                            </div>
+                            <lv-empty [lvDescription]="emptyTpl"></lv-empty>
                         </div>
                     </ng-container>
                 </div>
@@ -154,3 +161,7 @@
         </lv-tabs>
     </div>
 </div>
+
+<ng-template #emptyTpl>
+    <span [innerHTML]="noDataTip"></span>
+</ng-template>

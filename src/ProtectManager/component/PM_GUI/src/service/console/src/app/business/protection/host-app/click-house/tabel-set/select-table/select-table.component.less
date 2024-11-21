@@ -1,6 +1,6 @@
 .disk-all-table,
 .disk-selected-table {
-  border: 1px solid #b8becc;
+  border: 1px solid var(--live-angular-color-border-regular);
   height: 650px;
   position: relative;
   .table-paginator {
@@ -13,23 +13,14 @@
   padding-left: 20px !important;
   padding-top: 39px !important;
 }
-.table-num-nav {
-  display: inline-block;
-  min-width: 40px;
-  background: #6c92fa;
-  text-align: center;
-  border-radius: 12px;
-  color: #ffffff;
-}
 
 .total-disk {
   height: 40px;
   display: flex;
   align-items: center;
   padding: 0 23px;
-  background-color: #f0f3fa;
+  background-color: var(--live-angular-color-header-background);
   font-size: 12px;
-  color: #282b33;
   line-height: 12px;
 }
 
@@ -38,10 +29,9 @@
   display: flex;
   align-items: center;
   padding: 0 23px;
-  background-color: #f0f3fa;
+  background-color: var(--live-angular-color-header-background);
   justify-content: space-between;
   font-size: 12px;
-  color: #282b33;
   line-height: 12px;
 
   .delete-all {

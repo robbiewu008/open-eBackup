@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -176,11 +176,15 @@ export class InstanceRegisterComponent implements OnInit {
     const url =
       this.formGroup.get('verifyScript').value === 'gbase8a'
         ? `/console/assets/help/a8000/${
-            this.i18n.isEn ? 'en-us/index.html#en-us' : 'zh-cn/index.html#zh-cn'
-          }_topic_0000001839142185.html`
+            this.i18n.isEn
+              ? 'en-us/index.html#GBase_8a_00012.html'
+              : 'zh-cn/index.html#GBase_8a_00011.html'
+          }`
         : `/console/assets/help/a8000/${
-            this.i18n.isEn ? 'en-us/index.html#en-us' : 'zh-cn/index.html#zh-cn'
-          }_topic_0000001839188557.html`;
+            this.i18n.isEn
+              ? 'en-us/index.html#SAP_HANA_0013.html'
+              : 'zh-cn/index.html#SAP_HANA_00013.html'
+          }`;
     this.appUtilsService.openSpecialHelp(url);
   }
 

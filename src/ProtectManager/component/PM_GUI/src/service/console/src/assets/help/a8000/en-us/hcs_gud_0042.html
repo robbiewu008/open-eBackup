@@ -1,0 +1,155 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Creating an Archive SLA for Backup Copies">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="hcs_gud_0038.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="hcs_gud_0042">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Creating an Archive SLA for Backup Copies</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hcs_gud_0042"></a><a name="hcs_gud_0042"></a>
+
+<h1 class="topictitle1">Step 2: Creating an Archive SLA for Backup Copies</h1>
+<div><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p1751984013365">If you need to archive the generated backup copies, configure the archive SLA by referring to this section.</p>
+<div class="section" id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_section15371826121012"><h4 class="sectiontitle">Prerequisites</h4><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p36192023182517">An SLA with a backup policy has been created. For details about how to create a backup SLA, refer to <a href="hcs_gud_0018.html">Step 6: Creating a Backup SLA</a>.</p>
+</div>
+<div class="section" id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_section32344304103"><h4 class="sectiontitle">Procedure</h4><ol id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_ol112221128161219"><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li149381918143112"><span>Choose <span class="uicontrol" id="hcs_gud_0042__en-us_topic_0000001792503806_uicontrol9143133018394"><b><span id="hcs_gud_0042__en-us_topic_0000001792503806_text1093174963311"><strong>Protection</strong></span> &gt; <span id="hcs_gud_0042__en-us_topic_0000001792503806_text18596203494212"><strong>Protection Policies</strong></span> &gt; <span id="hcs_gud_0042__en-us_topic_0000001792503806_text16431530122616"><strong>SLAs</strong></span></b></span>.</span></li><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li649983114125"><span>Locate the SLA for which you want to create an archive policy and choose <span class="uicontrol" id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_uicontrol577717611320"><b><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text19646163524813"><strong>More</strong></span> &gt; <span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text068935811482"><strong>Modify</strong></span></b></span>.</span><p><p id="hcs_gud_0042__en-us_topic_0000001792503806_p1816920251869">The preset SLAs cannot be modified.</p>
+</p></li><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li158166713135"><span>Click the <span class="uicontrol" id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_uicontrol12308113618612"><b><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text95301130194917"><strong>Archive Policy</strong></span></b></span> icon.</span></li><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li3425152010144"><span>Configure the archive policy information.</span><p><p id="hcs_gud_0042__en-us_topic_0000001792503806_p158181314277">Click <span class="uicontrol" id="hcs_gud_0042__en-us_topic_0000001792503806_uicontrol13380151314273"><b><span id="hcs_gud_0042__en-us_topic_0000001792503806_text83806133272"><strong>Add</strong></span></b></span> on the right of the page to create multiple archive policies. A maximum of four archive policies can be created, and data can be archived to a maximum of four archive storage devices.</p>
+<p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p10717113412144"><a href="#hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_table13531347181416">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_table13531347181416"></a><a name="en-us_topic_0000001792503806_en-us_topic_0000001091370109_table13531347181416"></a><table cellpadding="4" cellspacing="0" summary="" id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_table13531347181416" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Archive parameters</caption><colgroup><col style="width:30.5%"><col style="width:69.5%"></colgroup><thead align="left"><tr id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_row454154719143"><th align="left" class="cellrowborder" valign="top" width="30.5%" id="mcps1.3.3.2.4.2.3.2.3.1.1"><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p195417471142">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="69.5%" id="mcps1.3.3.2.4.2.3.2.3.1.2"><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p16546474149">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_row15464741419"><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_en-us_topic_0000001091370109_p8541947201411"><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text656595514505"><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p5547472149">The system has set a default name for the archive policy. You can also customize a name for the archive policy.</p>
+</td>
+</tr>
+<tr id="hcs_gud_0042__en-us_topic_0000001792503806_row128511619111320"><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_p46912381144"><span id="hcs_gud_0042__en-us_topic_0000001792503806_text1555164115417"><strong>Archive Storage Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_p985181941310">Available options include <span class="uicontrol" id="hcs_gud_0042__en-us_topic_0000001792503806_uicontrol99809551136"><b><span id="hcs_gud_0042__en-us_topic_0000001792503806_text4910101212524"><strong>Object Storage</strong></span></b></span> and <span class="uicontrol" id="hcs_gud_0042__en-us_topic_0000001792503806_uicontrol165016581136"><b><span id="hcs_gud_0042__en-us_topic_0000001792503806_text16229521135217"><strong>Tape Library</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_row954164711418"><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_en-us_topic_0000001091370109_p854134701418"><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text157818825116"><strong>Archive Storage</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><ul id="hcs_gud_0042__en-us_topic_0000001792503806_ul1778774504316"><li id="hcs_gud_0042__en-us_topic_0000001792503806_li078744584316">If <strong id="hcs_gud_0042__en-us_topic_0000001792503806_b8815104222620">Archive Storage Type</strong> is set to <span class="uicontrol" id="hcs_gud_0042__en-us_topic_0000001792503806_uicontrol816164574110"><b><span id="hcs_gud_0042__en-us_topic_0000001792503806_text1616174511413"><strong>Object Storage</strong></span></b></span>, select added object storage. You can also click <span class="uicontrol" id="hcs_gud_0042__en-us_topic_0000001792503806_uicontrol1971818559393"><b><span id="hcs_gud_0042__en-us_topic_0000001792503806_text1719105510393"><strong>Add</strong></span></b></span> to add object storage.</li><li id="hcs_gud_0042__en-us_topic_0000001792503806_li113522047134319">If <strong id="hcs_gud_0042__en-us_topic_0000001792503806_b260579152118">Archive Storage Type</strong> is set to <span class="uicontrol" id="hcs_gud_0042__en-us_topic_0000001792503806_uicontrol17606792212"><b><span id="hcs_gud_0042__en-us_topic_0000001792503806_text1860610912219"><strong>Tape Library</strong></span></b></span>, select a node.</li></ul>
+</td>
+</tr>
+<tr id="hcs_gud_0042__en-us_topic_0000001792503806_row74860474911"><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_p150343116521"><span id="hcs_gud_0042__en-us_topic_0000001792503806_text55110119106"><strong>Media Set</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_p82319243111">If <strong id="hcs_gud_0042__en-us_topic_0000001792503806_b1143191282119">Archive Storage Type</strong> is set to <span class="uicontrol" id="hcs_gud_0042__en-us_topic_0000001792503806_uicontrol444612202118"><b><span id="hcs_gud_0042__en-us_topic_0000001792503806_text154441219218"><strong>Tape Library</strong></span></b></span>, select a media set. You can also click <span class="uicontrol" id="hcs_gud_0042__en-us_topic_0000001792503806_uicontrol0231114132117"><b><span id="hcs_gud_0042__en-us_topic_0000001792503806_text92304147216"><strong>Add</strong></span></b></span> to create a media set.</p>
+</td>
+</tr>
+<tr id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_row1054647161412"><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_en-us_topic_0000001091370109_p115416471142"><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text5712235511"><strong>Archive Time</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><div class="p" id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p62061044182717">Set the archive time.<ul id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_ul11585193322717"><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li1658511331279"><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text33261345125613"><strong>Periodically</strong></span><ul id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_ul153241065304"><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li1432415673017"><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text1074293265412"><strong>Interval</strong></span>: Data is archived every <em id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_i112396233511">xx</em> minutes, hours, days, or weeks.</li><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li56045402102"><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text2913113216124"><strong>First Run At</strong></span>: specifies the time when the archive job is executed for the first time.<p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p3220183916251">If the start time is earlier than the current device time, the archive job is executed immediately after a protection plan is created.</p>
+</li></ul>
+</li><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li69436364277"><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text1782714127237"><strong>Immediately after successful backup</strong></span><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p1743104912615">An archive job is executed immediately after a backup job is complete.</p>
+</li><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li098123982716"><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text23431557195710"><strong>Specified time after copy generation</strong></span><p id="hcs_gud_0042__en-us_topic_0000001792503806_p17973133185018"><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text990755171712"><strong>Time</strong></span>: An archive job is executed <em id="hcs_gud_0042__en-us_topic_0000001792503806_i6644122915249">xx</em> days after a copy is generated. The value ranges from 1 to 365 days.</p>
+</li></ul>
+</div>
+</td>
+</tr>
+<tr id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_row354174720149"><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_p5412125294019"><strong id="hcs_gud_0042__en-us_topic_0000001792503806_b111601939165710">Archive &amp; Retention Rules</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p1898531744316">Select the backup copy that you need to archive and set the retention period of the backup copy.</p>
+<div class="note" id="hcs_gud_0042__en-us_topic_0000001792503806_note20680608161"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="hcs_gud_0042__en-us_topic_0000001792503806_ul6217428463"><li id="hcs_gud_0042__en-us_topic_0000001792503806_li2851103119619">If <strong id="hcs_gud_0042__en-us_topic_0000001792503806_b9844658975">Archive Storage Type</strong> is set to <span id="hcs_gud_0042__en-us_topic_0000001792503806_text138515311362"><strong>Tape Library</strong></span>, only archive rules can be configured. The retention rule is subject to the retention policy of the tape.</li><li id="hcs_gud_0042__en-us_topic_0000001792503806_li32171828360">If multiple options are selected, copies on any date specified by these options are archived, and the obtained archive copies are retained for the longest period specified in these options.</li></ul>
+</div></div>
+<ul id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_ul6461175912421"><li id="hcs_gud_0042__en-us_topic_0000001792503806_li2085311499432"><span id="hcs_gud_0042__en-us_topic_0000001792503806_text193951264318"><strong>Archive specified copies</strong></span>: An archive policy can be specified and the copy retention period can be set. Archive policies are described as follows:<ul id="hcs_gud_0042__en-us_topic_0000001792503806_ul1193014332306"><li id="hcs_gud_0042__en-us_topic_0000001792503806_li393063317305"><span id="hcs_gud_0042__en-us_topic_0000001792503806_text1792918330303"><strong>Only the latest copy</strong></span><p id="hcs_gud_0042__en-us_topic_0000001792503806_p893019338306">In each archive job, only the copy generated by the last backup job is archived.</p>
+</li><li id="hcs_gud_0042__en-us_topic_0000001792503806_li10930203320309"><span id="hcs_gud_0042__en-us_topic_0000001792503806_text17168339174311"><strong>All unarchived copies</strong></span><p id="hcs_gud_0042__en-us_topic_0000001792503806_p8930123320308">All copies that have not been archived are archived each time.</p>
+</li></ul>
+</li><li id="hcs_gud_0042__en-us_topic_0000001792503806_li169914211296"><span id="hcs_gud_0042__en-us_topic_0000001792503806_text876845119220"><strong>Archive on the specified date</strong></span>: Specify the date and set the copy retention period. You can select multiple of the following options:<ul id="hcs_gud_0042__en-us_topic_0000001792503806_ul15411165794010"><li id="hcs_gud_0042__en-us_topic_0000001792503806_li241110576407">Select the backup copies generated in month <em id="hcs_gud_0042__en-us_topic_0000001792503806_i136341131132817">x</em> of each year for archiving. The archive copies are retained for <em id="hcs_gud_0042__en-us_topic_0000001792503806_i18634193132810">x</em> years (the retention period can be 1 to 70 years).</li><li id="hcs_gud_0042__en-us_topic_0000001792503806_li156079239417">Select the first or last backup copy of each month for archiving. The archive copies are retained for <em id="hcs_gud_0042__en-us_topic_0000001792503806_i15614163412816">x</em> months (the retention period can be 1 to 840 months).</li><li id="hcs_gud_0042__en-us_topic_0000001792503806_li7824743184118">Select the backup copies generated on a specified day of each week for archiving. The archive copies are retained for <em id="hcs_gud_0042__en-us_topic_0000001792503806_i99971161311">x</em> weeks (the retention period can be 1 to 3650 weeks).<div class="note" id="hcs_gud_0042__en-us_topic_0000001792503806_note250102619369"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="hcs_gud_0042__en-us_topic_0000001792503806_p19502026133610">If <strong id="hcs_gud_0042__en-us_topic_0000001792503806_b12562195819124">Archive Storage Type</strong> is set to <span id="hcs_gud_0042__en-us_topic_0000001792503806_text290583517417"><strong>Tape Library</strong></span>, the retention period of archive copies cannot be specified, but is subject to the retention policy setting of the corresponding media set.</p>
+</div></div>
+</li></ul>
+</li></ul>
+</td>
+</tr>
+<tr id="hcs_gud_0042__en-us_topic_0000001792503806_row19347543112"><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><div class="p" id="hcs_gud_0042__en-us_topic_0000001792503806_p1734814431914"><strong id="hcs_gud_0042__en-us_topic_0000001792503806_b1466519130620">Drivers</strong><div class="note" id="hcs_gud_0042__en-us_topic_0000001792503806_note754320443218"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001839143189_en-us_topic_0000001839143213_p8320153562113">This parameter is available only in 1.6.0 and later versions.</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><div class="p" id="hcs_gud_0042__en-us_topic_0000001792503806_p6348194316115">This parameter (value range: <strong id="hcs_gud_0042__en-us_topic_0000001792503806_b4770966376">1</strong> to <strong id="hcs_gud_0042__en-us_topic_0000001792503806_b1657835153715">32</strong>) is displayed only when you select <span id="hcs_gud_0042__en-us_topic_0000001792503806_text4453948437"><strong>Tape Library</strong></span> for <strong id="hcs_gud_0042__en-us_topic_0000001792503806_b183012591975">Archive Storage Type</strong>.<div class="note" id="hcs_gud_0042__en-us_topic_0000001792503806_note765316318178"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="hcs_gud_0042__en-us_topic_0000001792503806_p06531331181715">The larger the number of drives, the more the tape library drives occupied by archive jobs or jobs that use archive copies for restoration, and the better the performance.</p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_row3177164591512"><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p1177184511159"><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text2049612209454"><strong>Rate Limiting Policies</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_en-us_topic_0000001091370109_p7177174513150">Average maximum amount of data that can be transmitted per second in an archive job. If a tape library serves as the archive storage, rate limiting policy configuration is not supported.</p>
+<p id="hcs_gud_0042__en-us_topic_0000001792503806_p208941559135816">Select the created rate limiting policy. For details about how to create a rate limiting policy, see <a href="hcs_gud_0017.html#hcs_gud_0017">(Optional) Step 5: Creating a Rate Limiting Policy</a>.</p>
+</td>
+</tr>
+<tr id="hcs_gud_0042__en-us_topic_0000001792503806_row13967143131712"><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><div class="p" id="hcs_gud_0042__en-us_topic_0000001792503806_p214118033317"><span id="hcs_gud_0042__en-us_topic_0000001792503806_text278121420338"><strong>Automatic Indexing</strong></span><div class="note" id="hcs_gud_0042__en-us_topic_0000001792503806_note1175910385420"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="hcs_gud_0042__en-us_topic_0000001792503806_p18759163818421">This parameter is available only in 1.5.0.</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_p11982132411331">For filesets, NAS file systems, and NAS shares, this parameter is displayed when <strong id="hcs_gud_0042__en-us_topic_0000001792503806_b10162193065316">Archive Storage Type</strong> is set to <span id="hcs_gud_0042__en-us_topic_0000001792503806_text161621330185311"><strong>Object Storage</strong></span>. This parameter is not displayed for other applications.</p>
+<p id="hcs_gud_0042__en-us_topic_0000001792503806_p1779334512258">This function cannot be disabled after it is enabled. The system automatically creates file indexes for copies. After indexes are created, one or more files can be restored.</p>
+<div class="note" id="hcs_gud_0042__en-us_topic_0000001792503806_note837512204199"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="hcs_gud_0042__en-us_topic_0000001792503806_p12377820191912">Indexes occupy backup storage space. If the number of index files in the system exceeds 1 billion, perform operations by referring to "Failed to Create a Copy Index" in the <i><cite id="hcs_gud_0042__en-us_topic_0000001792503806_cite195527518542">OceanProtect <span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001792502994_ph187704762018">Appliance 1.5.0-1.6.0</span> Troubleshooting</cite></i>.</p>
+</div></div>
+</td>
+</tr>
+<tr id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_row233175161513"><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p933125112154"><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text1953715545610"><strong>Network Acceleration</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p1233115191516">After this function is enabled, Bottleneck Bandwidth and Round-trip propagation time (BBR) network acceleration can be used. You are advised to enable this function when the network latency is greater than or equal to 20 ms. If a tape library serves as the archive storage, network acceleration configuration is not supported.</p>
+</td>
+</tr>
+<tr id="hcs_gud_0042__en-us_topic_0000001792503806_row19556327121117"><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_p113408251083"><span id="hcs_gud_0042__en-us_topic_0000001792503806_text4798135584718"><strong>Job Failure Alarm</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_p7601371993">After this function is enabled, an alarm is automatically sent if a job fails and is automatically cleared after successful execution.</p>
+</td>
+</tr>
+<tr id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_row1465725717157"><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p186571573154"><span id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text734741715561"><strong>Automatic Retry</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p459941714116">After this function is enabled, the system automatically retries if a periodic archive job fails.</p>
+<p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p74117561920">The number of retries ranges from 1 to 3, and the waiting time ranges from 1 to 30 minutes. For example, if the number of retries is set to 3 and the wait time is set to 5 minutes, the system retries for a total of three times at an interval of 5 minutes.</p>
+<div class="note" id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_note8686631815"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_p14686173218">During automatic retry, the system creates an archive job.</p>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li355323013140"><span>Click <span class="uicontrol" id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001839143213_en-us_topic_0000001092505481_uicontrol13919162932"><b>OK</b></span> and confirm as prompted.</span></li><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li585617920201"><span>Associate an archive SLA with resources to periodically archive copies.</span><p><ul id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_ul7677171614357"><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li1167721615358">If an SLA policy has been associated with resources, the system protects the resources based on the SLA policy.</li><li id="hcs_gud_0042__en-us_topic_0000001792503806_en-us_topic_0000001091370109_li1778718152365">If the SLA policy is not associated with any resource, associate a resource with the SLA policy for protection. For details, see <a href="hcs_gud_0019.html">Step 7: Performing Backup</a>.</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="hcs_gud_0038.html">Archiving Huawei Cloud Stack Backup Copies</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

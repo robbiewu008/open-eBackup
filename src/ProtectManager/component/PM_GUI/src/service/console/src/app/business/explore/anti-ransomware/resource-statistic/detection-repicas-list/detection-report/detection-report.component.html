@@ -1,3 +1,4 @@
+<div class="aui-block report-detection-result">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,12 +12,11 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-block report-detection-result">
     <i [lv-icon]="detectionIcon"></i>
     <div class="no-data-label">
         <h1 class="aui-gutter-column-sm">{{detectionResultLabel}}</h1>
     </div>
-    <div class="no-data-label">
+    <div class="no-data-label" *ngIf="!entity">
         <p class="aui-text-help-sm aui-gutter-column-lg" *ngIf="!isEn">
             {{copyDataLabel}}{{'common_copy_data_label' | i18n }}{{detectionResultLabel}}
         </p>
@@ -25,7 +25,7 @@
         </p>
     </div>
 </div>
-<div class="report-title">
+<div class="report-title" *ngIf="!entity">
     <div class="title-block">
         <ng-container *ngIf="isCyberEngine; else elseTemplate">
             <h2 class="aui-gutter-column-md">{{ filesystemName }}</h2>
@@ -45,12 +45,18 @@
         <ng-template #elseTemplate>
             <h2 class="aui-gutter-column-md">{{ 'common_detail_label' | i18n }}</h2>
             <p class="aui-text-help-sm aui-gutter-column-lg" *ngIf="!isEn">
-                {{lastTestLabel}}{{DurationLabel}}{{timeUnitLabel}}
+                {{lastTestLabel}}
+                <br>
+                {{DurationLabel}}{{timeUnitLabel}}
+                <br>
+                <span *ngIf="isInfected && !ishiddenDeploy">{{fileDurationLabel}}{{fileTimeUnitLabel}}</span>
             </p>
             <p class="aui-text-help-sm aui-gutter-column-lg" *ngIf="isEn">
                 {{lastTestLabel}}
                 <br>
                 {{DurationLabel}}{{timeUnitLabel}}
+                <br>
+                <span *ngIf="isInfected && !ishiddenDeploy">{{fileDurationLabel}}{{fileTimeUnitLabel}}</span>
             </p>
         </ng-template>
         <div class="dashed-line setting-dashed-line"></div>
@@ -62,8 +68,7 @@
     </ng-container>
     <ng-container *ngIf="_isEmpty(reportLabel)">
         <div class="report-no-data aui-block">
-            <i lv-icon="aui-icon-no-data"></i>
-            <div class="no-data-label">{{'common_no_data_label' | i18n}}</div>
+            <lv-empty></lv-empty>
         </div>
     </ng-container>
 </div>

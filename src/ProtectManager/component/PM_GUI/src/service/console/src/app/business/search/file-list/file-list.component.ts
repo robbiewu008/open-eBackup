@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -44,6 +44,7 @@ import {
   FilterType,
   GlobalService,
   I18NService,
+  JobAPIService,
   MODAL_COMMON,
   NodeType,
   Page_Size_Options,
@@ -54,6 +55,7 @@ import {
   RestoreManagerService as RestoreServiceApi,
   RestoreType,
   SearchRange,
+  SYSTEM_TIME,
   Table_Size,
   VirtualResourceService,
   WarningMessageService
@@ -117,6 +119,7 @@ export class FileListComponent implements OnInit, OnDestroy {
   pageSize = CommonConsts.PAGE_SIZE_OPTIONS[1];
   total = CommonConsts.PAGE_TOTAL;
   sizeOptions = CommonConsts.PAGE_SIZE_OPTIONS;
+  timeZone = SYSTEM_TIME.timeZone;
 
   vmListComponent: VmListComponent;
   doradoFileSystemComponent: DoradoFileSystemComponent;
@@ -202,7 +205,8 @@ export class FileListComponent implements OnInit, OnDestroy {
     private copyControllerService: CopyControllerService,
     private exportFilesService: ExportFilesService,
     public appUtilsService: AppUtilsService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private jobApiService?: JobAPIService
   ) {}
 
   ngOnDestroy() {
@@ -213,12 +217,6 @@ export class FileListComponent implements OnInit, OnDestroy {
     this.getColumns();
     this.getStore();
     this.getComponent();
-    this.virtualScroll.getScrollParam(
-      400,
-      Page_Size_Options.Three,
-      Table_Size.Default,
-      'search-file-table'
-    );
   }
 
   getFiles() {
@@ -327,7 +325,8 @@ export class FileListComponent implements OnInit, OnDestroy {
                       get(
                         JSON.parse(first(result.records).properties || '{}'),
                         'isAggregation'
-                      ) === 'true'
+                      ) === 'true',
+                    resourceName: first(result.records).resourceName
                   });
                 } else {
                   assign(item, {
@@ -1180,8 +1179,10 @@ export class FileListComponent implements OnInit, OnDestroy {
       this.i18n,
       this.cdr,
       this.slaService,
+      this.jobApiService,
       this.dataMapService,
       this.protectService,
+      this.messageboxService,
       this.messageService,
       this.registerService,
       this.drawModalService,

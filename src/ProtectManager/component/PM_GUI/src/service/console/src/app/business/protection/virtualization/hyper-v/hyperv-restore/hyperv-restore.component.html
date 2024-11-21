@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
     <lv-form-item>
         <lv-form-label>
             {{'protection_restore_to_label' | i18n}}
@@ -238,6 +238,14 @@
                         </lv-form-control>
                     </lv-form-item>
                 </ng-container>
+                <lv-form-item *ngIf="!rowCopy.diskRestore && isHyperVCluster">
+                    <lv-form-label>
+                        {{'protection_add_to_cluster_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="addToCluster"></lv-switch>
+                    </lv-form-control>
+                </lv-form-item>
             </lv-collapse-panel>
         </lv-collapse>
     </div>

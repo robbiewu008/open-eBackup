@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
   <lv-form-item *ngIf="!isDrill">
     <lv-form-label>
       {{ 'protection_restore_to_label' | i18n }}
@@ -53,7 +53,12 @@
     </lv-form-item>
   </ng-container>
   <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
-    <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'host'" [isAgentTag]="true"></aui-select-tag>
+    <aui-select-tag
+      [formGroup]="formGroup"
+      (updateTable)="updateTable($event)"
+      [targetKey]="'host'"
+      [isAgentTag]="true"
+    ></aui-select-tag>
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ location }}
@@ -89,6 +94,23 @@
         </lv-select>
       </lv-form-control>
     </lv-form-item>
+    <ng-container *ngIf="!isSupport">
+      <lv-form-item>
+        <lv-form-label lvRequired>
+          {{ 'common_destination_path_label' | i18n }}
+          <i
+            lv-icon="aui-icon-help"
+            lv-tooltip="{{ 'protection_target_path_tips_label' | i18n }}"
+            lvTooltipTheme="light"
+            class="configform-constraint"
+            lvColorState="true"
+          ></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="pathErrorTip">
+          <input lv-input type="text" formControlName="path" />
+        </lv-form-control>
+      </lv-form-item>
+    </ng-container>
   </ng-container>
   <lv-form-item>
     <lv-form-label>
@@ -120,10 +142,7 @@
         <input lv-input formControlName="newName" style="width: 380px;" />
       </lv-form-control>
     </lv-form-item>
-    <div
-      style="width: 75%;margin-left: 20%"
-      *ngIf="formGroup?.get('newName').status === 'VALID'"
-    >
+    <div *ngIf="formGroup?.get('newName').status === 'VALID'">
       <i
         style="display: inline-block; margin-right: 4px;"
         lv-icon="lv-icon-status-info"
@@ -217,9 +236,7 @@
 
 <ng-template #titleTpl>
   <lv-group lvGutter="2px">
-    <span class="aui-h3">{{
-      'common_advanced_label' | i18n
-    }}</span>
+    <span class="aui-h3">{{ 'common_advanced_label' | i18n }}</span>
     <i
       lv-icon="aui-icon-help"
       lvTooltipTheme="light"
