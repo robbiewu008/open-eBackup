@@ -98,7 +98,6 @@ metadata:
 spec:
   selector:
     app: protectengine
-  type: NodePort
   ports:
     - port: 30066
       name: dme-archive
