@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   Component,
@@ -37,7 +37,12 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
-import { CAPACITY_UNIT, DataMap, WormStatusEnum } from 'app/shared/consts';
+import {
+  CAPACITY_UNIT,
+  DataMap,
+  SYSTEM_TIME,
+  WormStatusEnum
+} from 'app/shared/consts';
 import {
   CookieService,
   DataMapService,
@@ -563,7 +568,7 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
     const deployType = this.i18n.get('deploy_type');
     if (['d3', 'd4', 'cloudbackup'].includes(deployType)) {
       this.formItems[1] = this.formItems[1].filter(
-        item => item.key !== 'worm_status'
+        item => !['worm_status', 'worm_expiration_time'].includes(item.key)
       );
     }
   }
@@ -1134,7 +1139,8 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
         fineGrainedData: item
           ? this.getVmFilePath(item, true)
           : this.getVmFilePath(this.treeTableSelection),
-        fileRestore: true
+        fileRestore: true,
+        closeDetailFn: () => this.modal.close()
       });
     } else {
       params.copyData = assign({}, this.data, {
@@ -1197,7 +1203,8 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
         }
         this.copyControllerService
           .CloseCopyGuestSystem({
-            copyId: this.data.uuid
+            copyId: this.data.uuid,
+            akOperationTips: false
           })
           .subscribe(() => {});
       };

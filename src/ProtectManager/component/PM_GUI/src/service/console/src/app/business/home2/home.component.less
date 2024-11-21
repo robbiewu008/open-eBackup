@@ -1,16 +1,16 @@
 ::ng-deep .jumpable:hover {
   cursor: pointer;
   .navigator {
-    color: #3388ff !important;
+    color: var(--live-angular-color-primary-hover) !important;
   }
 }
 ::ng-deep .navigator:hover {
-  color: #3388ff !important;
+  color: var(--live-angular-color-primary-hover) !important;
   cursor: pointer;
 }
 
 .aui-fullpage {
-  background-color: #0b0c0e;
+  background-color: var(--live-angular-color-page-background);
 }
 .home {
   width: 100%;
@@ -19,30 +19,29 @@
   grid-auto-rows: 320px;
   gap: 16px 16px;
   box-sizing: border-box;
-  color: #e6e6e6;
+  color: var(--live-angular-color-text-regular);
 
   .header-slot {
     display: flex;
     align-items: center;
     gap: 8px;
     .cascader-label {
-      color: #eaeaea;
       font-size: 14px;
       display: flex;
       align-items: center;
     }
     .cascader-label:hover {
-      color: #3388ff;
+      color: var(--live-angular-color-primary-hover);
     }
     .link {
       font-size: 14px;
       cursor: pointer;
-      color: #3388ff;
+      color: var(--live-angular-color-primary-hover);
     }
   }
 
   .card {
-    border: 1px solid black;
+    border: 1px solid var(--live-angular-color-card-border);
     display: flex;
     justify-content: center;
     align-items: center;

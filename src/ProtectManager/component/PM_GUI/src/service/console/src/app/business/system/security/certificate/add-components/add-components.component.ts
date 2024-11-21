@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -60,38 +60,31 @@ export class AddComponentsComponent implements OnInit {
     .toArray('Component_Type')
     .filter((v: OptionItem) => {
       v.isLeaf = true;
-      return (
-        !(
-          this.i18n.get('deploy_type') === DataMap.Deploy_Type.e6000.value &&
-          v.value === DataMap.Component_Type.a8000.value
-        ) &&
-        (!this.cookieService.isCloudBackup
-          ? this.i18n.get('deploy_type') ===
-            DataMap.Deploy_Type.cyberengine.value
-            ? includes(
-                [
-                  DataMap.Component_Type.email.value,
-                  DataMap.Component_Type.externalStorage.value,
-                  DataMap.Component_Type.syslog.value,
-                  DataMap.Component_Type.ldap.value
-                ],
-                v.value
-              )
-            : !includes(
-                [
-                  DataMap.Component_Type.internal.value,
-                  DataMap.Component_Type.vmware.value,
-                  DataMap.Component_Type.communicationComponent.value,
-                  DataMap.Component_Type.redisComponent.value,
-                  DataMap.Component_Type.other.value,
-                  DataMap.Component_Type.protectAgent.value,
-                  DataMap.Component_Type.ha.value,
-                  DataMap.Component_Type.adfs.value
-                ],
-                v.value
-              )
-          : v.value === DataMap.Component_Type.s3.value)
-      );
+      return !this.cookieService.isCloudBackup
+        ? this.i18n.get('deploy_type') === DataMap.Deploy_Type.cyberengine.value
+          ? includes(
+              [
+                DataMap.Component_Type.email.value,
+                DataMap.Component_Type.externalStorage.value,
+                DataMap.Component_Type.syslog.value,
+                DataMap.Component_Type.ldap.value
+              ],
+              v.value
+            )
+          : !includes(
+              [
+                DataMap.Component_Type.internal.value,
+                DataMap.Component_Type.vmware.value,
+                DataMap.Component_Type.communicationComponent.value,
+                DataMap.Component_Type.redisComponent.value,
+                DataMap.Component_Type.other.value,
+                DataMap.Component_Type.protectAgent.value,
+                DataMap.Component_Type.ha.value,
+                DataMap.Component_Type.adfs.value
+              ],
+              v.value
+            )
+        : v.value === DataMap.Component_Type.s3.value;
     });
   constructor(
     public i18n: I18NService,

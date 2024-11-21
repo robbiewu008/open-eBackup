@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -81,7 +81,7 @@ export class CertificateComponent implements OnInit {
   componentTypeLabel = this.i18n.get('common_type_label');
   certificateStatusLabel = this.i18n.get('common_certificate_status_label');
   expirationTimeLabel = this.i18n.get('common_expriration_time_label');
-  operationLabel = this.i18n.get('common_operation_label');
+  operationLabel = this.i18n.get('common_more_label');
   clientNameLabel = this.i18n.get('system_client_name_label');
   areaLabel = this.i18n.get('system_area_label');
   descriptionLabel = this.i18n.get('common_desc_label');
@@ -284,11 +284,11 @@ export class CertificateComponent implements OnInit {
             data.type === DataMap.Component_Type.communicationComponent.value ||
             data.type === DataMap.Component_Type.redisComponent.value
           ) {
-            const combined: any = combineLatest(
+            const combined: any = combineLatest([
               content.formGroup.statusChanges,
               content.validCertificate$,
               content.valid$
-            );
+            ]);
             combined.subscribe(latestValues => {
               const [formGroupStatus, validCertificate, valid] = latestValues;
               modalIns.lvOkDisabled =
@@ -299,33 +299,24 @@ export class CertificateComponent implements OnInit {
           }
 
           if (this.cookieService.isCloudBackup) {
-            const combined: any = combineLatest(
+            const combined: any = combineLatest([
               content.formGroup.statusChanges,
               content.validCertificate$,
-              content.valid$,
-              content.validDhparam$
-            );
+              content.valid$
+            ]);
             combined.subscribe(latestValues => {
-              const [
-                formGroupStatus,
-                validCertificate,
-                valid,
-                validDhparam
-              ] = latestValues;
+              const [formGroupStatus, validCertificate, valid] = latestValues;
               modalIns.lvOkDisabled =
-                !validCertificate ||
-                !valid ||
-                !validDhparam ||
-                formGroupStatus !== 'VALID';
+                !validCertificate || !valid || formGroupStatus !== 'VALID';
             });
           } else {
             if (data.type === DataMap.Component_Type.protectAgent.value) {
-              const combined: any = combineLatest(
+              const combined: any = combineLatest([
                 content.formGroup.statusChanges,
                 content.validCertificate$,
                 content.valid$,
                 content.privateKey$
-              );
+              ]);
               combined.subscribe(latestValues => {
                 const [
                   formGroupStatus,
@@ -340,11 +331,11 @@ export class CertificateComponent implements OnInit {
                   formGroupStatus !== 'VALID';
               });
             } else {
-              const combined: any = combineLatest(
+              const combined: any = combineLatest([
                 content.formGroup.statusChanges,
                 content.validCertificate$,
                 content.valid$
-              );
+              ]);
               combined.subscribe(latestValues => {
                 const [formGroupStatus, validCertificate, valid] = latestValues;
                 modalIns.lvOkDisabled =

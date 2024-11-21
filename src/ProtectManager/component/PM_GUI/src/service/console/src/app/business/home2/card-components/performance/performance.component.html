@@ -1,3 +1,4 @@
+<div class="performance">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,10 +12,9 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="performance">
   <div class="num">
     {{ performanceTimeChart.readAvg }}
-    <span class="text">{{ performanceTimeChart.unit }} {{ 'common_home_average_total_bandwidth_label' | i18n }}</span>
+    <span class="text">{{ performanceTimeChart.readAvgLabel }} {{ 'common_home_average_total_bandwidth_label' | i18n }}</span>
   </div>
 
   <div class="chart-tooltip" *ngIf="!performanceTimeChart.isNoData">

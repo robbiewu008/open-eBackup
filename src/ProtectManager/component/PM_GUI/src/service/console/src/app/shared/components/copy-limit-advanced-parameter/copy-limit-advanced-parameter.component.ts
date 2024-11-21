@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
@@ -20,7 +20,7 @@ import {
   I18NService
 } from 'app/shared';
 import { DataMap, PolicyType, RouterUrl } from 'app/shared/consts';
-import { find } from 'lodash';
+import { find, isBoolean } from 'lodash';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -33,10 +33,13 @@ export class CopyLimitAdvancedParameterComponent implements OnInit, OnDestroy {
   @Input() formGroup: FormGroup;
   @Input() hasArchive = false; // 复制副本判断sla有没有归档策略
   @Input() slaData; // 复制副本判断sla归档策略配置
+  @Input() isDetail; //是否是详情
+  @Input() protectData;
   hasWorm = false;
   wormName;
   needWorm = false;
   securityTip = this.i18n.get('explore_security_archive_cycle_label');
+  _isBoolean = isBoolean;
 
   destroy$ = new Subject();
 
@@ -49,6 +52,9 @@ export class CopyLimitAdvancedParameterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    if (this.isDetail) {
+      return;
+    }
     this.initForm();
     this.getWormStatus();
     this.getState();

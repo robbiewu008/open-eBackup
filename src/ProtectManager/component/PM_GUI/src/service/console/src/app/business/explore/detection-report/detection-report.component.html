@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,8 +12,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
-  <div class="overview-tag">
+  <div class="overview-tag aui-gutter-column-md">
     <lv-group [lvColumns]="['122px', 'auto']" lvRowGutter="24px" class="group-mgr">
       <div class="report-brand"></div>
       <lv-group lvGutter="8px" lvDirection="vertical">
@@ -48,7 +48,7 @@
   </div>
   <div class="aui-block aui-paginator-container">
     <div class="aui-operation">
-      <lv-group lvGutter="8px">
+      <lv-group lvGutter="16px">
         <button lv-button lvType="primary" (click)="addReported()" pmpermission pmOperation="AddReport">
           {{ 'common_add_label' | i18n }}
         </button>
@@ -58,7 +58,7 @@
         </button>
       </lv-group>
       <lv-group lvGutter="8px">
-        <lv-group lvGutter="8px">
+        <lv-group lvGutter="16px">
           <lv-search #searchCmpt [lvFocus]="true" (lvSearch)="search($event)"
             lvPlaceHolder="{{ 'common_file_system_report_label' | i18n }}">
           </lv-search>
@@ -79,10 +79,7 @@
     </ng-container>
     <ng-template #elseTemplate>
       <div class="no-data">
-        <i lv-icon="lv-icon-no-data"></i>
-        <div class="no-data-label">
-          {{'common_no_data_label'|i18n}}
-        </div>
+        <lv-empty></lv-empty>
       </div>
     </ng-template>
   </div>

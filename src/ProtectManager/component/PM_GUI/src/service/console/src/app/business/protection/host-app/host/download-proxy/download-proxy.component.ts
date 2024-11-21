@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -91,6 +91,9 @@ export class DownloadProxyComponent implements OnInit {
   osTypes = this.dataMapService.toArray('OS_Type').filter(v => {
     return (v.isLeaf = true);
   });
+  packageTypeOps = this.dataMapService.toArray('packageType').filter(v => {
+    return (v.isLeaf = true);
+  });
   isMultiStandbyNode =
     MultiCluster.roleType === DataMap.nodeRole.backupNode.value;
   pwdValidTip = this.i18n.get('common_private_key_pwdtip_label', [8, 16, 2]);
@@ -150,6 +153,7 @@ export class DownloadProxyComponent implements OnInit {
       proxyType: new FormControl(''),
       applications: new FormControl([]),
       osType: new FormControl(''),
+      packageType: new FormControl(DataMap.packageType.zip.value),
       isShared: new FormControl('false')
     });
 
@@ -170,7 +174,8 @@ export class DownloadProxyComponent implements OnInit {
               DataMap.OS_Type.Windows.value,
               DataMap.OS_Type.Linux.value,
               DataMap.OS_Type.Unix.value,
-              DataMap.OS_Type.solaris.value
+              DataMap.OS_Type.solaris.value,
+              DataMap.OS_Type.hpux.value
             ],
             item.value
           )
@@ -211,6 +216,7 @@ export class DownloadProxyComponent implements OnInit {
       ) {
         this.queryApplicationList(res);
       }
+      this.formGroup.get('packageType').setValue(DataMap.packageType.zip.value);
     });
 
     this.formGroup.get('backupProxyFile').valueChanges.subscribe(res => {
@@ -435,6 +441,7 @@ export class DownloadProxyComponent implements OnInit {
       type: this.formGroup.value.proxyType,
       privateKey: this.formGroup.value.privateKeyPwd,
       osType: this.formGroup.value.osType,
+      compressedPackageType: this.formGroup.value.packageType,
       isShared: this.formGroup.value.isShared
     };
     this.messageService.info(
@@ -464,7 +471,10 @@ export class DownloadProxyComponent implements OnInit {
       .subscribe(
         res => {
           const bf = new Blob([res.body as any], {
-            type: 'application/zip'
+            type:
+              this.formGroup.value.packageType === DataMap.packageType.zip.value
+                ? 'application/zip'
+                : 'application/x-tar'
           });
           const fileName = res.headers
             .get('content-disposition')

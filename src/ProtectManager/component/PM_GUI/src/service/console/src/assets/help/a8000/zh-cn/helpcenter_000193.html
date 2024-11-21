@@ -1,0 +1,171 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="管理SNMP Trap通知">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="helpcenter_000110.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="helpcenter_000193">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>管理SNMP Trap通知</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="helpcenter_000193"></a><a name="helpcenter_000193"></a>
+
+<h1 class="topictitle1">管理SNMP Trap通知</h1>
+<div><p class="msonormal" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p1319601185115">通过配置SNMP，用户可以查询、设置<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text1314614416111">OceanProtect</span>信息，或接收<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text1846015100135">OceanProtect</span>的告警信息。<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text6188647121114">OceanProtect</span>支持SNMPv2c和SNMPv3两种协议，这里介绍不同协议下的SNMP配置方法。</p>
+<div class="section" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_section11242162043420"><h4 class="sectiontitle">背景信息</h4><p class="msonormal" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p12370152617344">Trap是用来标志某事件发生的一种SNMP（Simple Network Management Protocol）消息类型。如果通过SNMP的方式通知告警信息，需要设置Trap服务器地址。通过设置Trap服务器地址，<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text4918347111113">OceanProtect</span>的告警信息将被发送到Trap指定的第三方网管工具。</p>
+</div>
+<div class="section" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_section1615164218346"><h4 class="sectiontitle">注意事项</h4><p class="msonormal" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p12994613510">第三方网管工具的配置需要满足以下要求：</p>
+<ul id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_ul29926133517"><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_li159915683515">如果使用SNMPv2c协议，使用的团体字必须与<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text13691348141112">OceanProtect</span>中配置的保持一致。</li><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_li499967356">如果使用SNMPv3协议，对应的SNMPv3协议的用户名、授权认证协议和数据加密协议必须与<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text3226154919116">OceanProtect</span>配置的保持一致。</li></ul>
+</div>
+<div class="section" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_section186829444316"><h4 class="sectiontitle">前提条件</h4><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p1946955419312">系统管理员已登录管理界面。</p>
+</div>
+<div class="section" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_section9197320152616"><h4 class="sectiontitle">操作步骤</h4><ol id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_ol868620083011"><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_li31809451213"><span>在菜单栏上，选择<span class="menucascade" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_menucascade1518044511114">“<span class="uicontrol" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_uicontrol3181184514118"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_text18317115719713">系统</span></span> &gt; <span class="uicontrol" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_uicontrol1718164513119"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_text216318378518">设置</span></span>”</span>。</span></li><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_li1696145399"><span>在导航栏中，单击“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text53952118413">SNMP Trap</span>”。</span></li><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_li13504124114563"><span>在<span class="uicontrol" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_uicontrol882519457200">“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text99606615514">Trap参数配置</span>”</span>区域，配置SNMPv2c协议或SNMPv3协议相关参数。</span><p><div class="notice" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_note1773261124713"><span class="noticetitle"><img src="public_sys-resources/notice_3.0-zh-cn.png"> </span><div class="noticebody"><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p17732517473">使用SNMPv2c协议将存在安全风险，建议您使用安全的SNMPv3协议。</p>
+</div></div>
+<ul id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_ul922591311112"><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_li1422541320110">配置SNMPv3协议参数<ol type="a" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_ol2515101616271"><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_li242694411426">单击“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_text5329112918811">修改</span>”。</li><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_li1693853912473">设置<span class="parmname" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_parmname175021727194816">“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text575314251859">协议版本</span>”</span>为<span class="parmvalue" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_parmvalue14249231194817">“SNMPv3”</span>。<div class="note" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_note65203238550"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p25201123185512">当第三方网管的SNMP需要配置引擎ID时，您可以单击<span class="uicontrol" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_uicontrol6524145145713">“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text1354023320518">协议版本</span>”</span>右侧的<span class="uicontrol" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_uicontrol117541911165713">“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text1979614121719">查看SNMP V3 Engine ID</span>”</span>，根据页面显示的控制器SNMP V3 Engine ID进行配置。</p>
+</div></div>
+</li><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_li5515616162715">设置SNMPv3协议参数，相关参数说明如<a href="#helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_table13515151615273">表1</a>所示。
+<div class="tablenoborder"><a name="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_table13515151615273"></a><a name="zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_table13515151615273"></a><table cellpadding="4" cellspacing="0" summary="" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_table13515151615273" frame="border" border="1" rules="all"><caption><b>表1 </b>参数说明</caption><colgroup><col style="width:21.04%"><col style="width:78.96%"></colgroup><thead align="left"><tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_row1550618164275"><th align="left" class="cellrowborder" valign="top" width="21.04%" id="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.1"><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p750617160277">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="78.96%" id="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.2"><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p650691617271">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_row85078160278"><td class="cellrowborder" valign="top" width="21.04%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p105061516182719"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_text1956613404208">用户名</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.96%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p250651613270">用户的名称。</p>
+<p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p9506171672719">长度范围为1~64。</p>
+</td>
+</tr>
+<tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_row450861612712"><td class="cellrowborder" valign="top" width="21.04%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p1050751642715"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_text377125112203">授权认证协议</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.96%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p147556359410">用户的授权认证算法，包括<span class="uicontrol" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_uicontrol27341629101113">“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text1673615173248">无</span>”</span>、“HMAC_MD5”、“HMAC_SHA1”和“HMAC_SHA2”。</p>
+<p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p1650761612716">默认值为：HMAC_SHA2。</p>
+<div class="note" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_note10507131672714"><span class="notetitle"> 说明： </span><div class="notebody"><p class="NotesTextinTable" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p1450761602710">HMAC_SHA算法的安全性高于HMAC_MD5，建议您采用更安全的HMAC_SHA2算法。</p>
+</div></div>
+</td>
+</tr>
+<tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_row8509141611275"><td class="cellrowborder" valign="top" width="21.04%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p09561572013"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_text16710203622415">授权认证密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.96%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p145081416192715">用户的授权认证密码。</p>
+</td>
+</tr>
+<tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_row5509016102717"><td class="cellrowborder" valign="top" width="21.04%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p13509191612276"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_text10819184218240">确认授权认证密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.96%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p45091163273">确认用户的授权认证密码。</p>
+</td>
+</tr>
+<tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_row351001692719"><td class="cellrowborder" valign="top" width="21.04%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p165094162271"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_text27710504245">数据加密协议</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.96%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p12509151616271">用户的加密协议，包括“无”、“DES”和“AES”。</p>
+<p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p632602070">默认值为：AES。</p>
+<div class="note" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_note750941612715"><span class="notetitle"> 说明： </span><div class="notebody"><p class="NotesTextinTable" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p15098160279">加密算法的安全性能排序：AES&gt;DES，建议您采用更安全的AES加密算法。</p>
+</div></div>
+</td>
+</tr>
+<tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_row55141816132720"><td class="cellrowborder" valign="top" width="21.04%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p05101716172712"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_text145081222152515">数据加密密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.96%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p3511201613277">用户使用数据加密的密码。</p>
+<div class="note" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_note13432106204820"><span class="notetitle"> 说明： </span><div class="notebody"><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p1843219634818"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_text94253012256">数据加密密码</span>和<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text91888394251">授权认证密码</span>不允许相同。</p>
+</div></div>
+</td>
+</tr>
+<tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_row6514101662711"><td class="cellrowborder" valign="top" width="21.04%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p10514171652717"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_text8123112610257">确认数据加密密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.96%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p1151471618274">确认用户使用数据加密的密码。</p>
+</td>
+</tr>
+<tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_row135231908612"><td class="cellrowborder" valign="top" width="21.04%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p9523201064"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_text9156548182515">环境名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.96%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p105231503616">环境引擎名称。</p>
+</td>
+</tr>
+<tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_row65231008615"><td class="cellrowborder" valign="top" width="21.04%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p14523904617"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_text10875135513259">环境引擎ID</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.96%" headers="mcps1.3.5.2.3.2.2.1.1.3.2.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p20962155851513">代表一个SNMP引擎的管理性唯一标识符，和环境名称一起使用，确定一个唯一地标识一个SNMP实体的环境。</p>
+<p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p796225814154">只有发送端的环境和接收端的环境完全匹配才对SNMP消息包进行处理，否则SNMP消息包被丢弃。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_li2515151617274">单击“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_text1541746292">保存</span>”。</li></ol>
+</li><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_li16225101320114">配置SNMPv2c协议参数<ol type="a" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_ol78108137410"><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_li1972885284018">单击“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_text1876318171093">修改</span>”。</li><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_li3623182519509">设置<span class="parmname" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_parmname186231825115012">“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text1647131952611">协议版本</span>”</span>为<span class="parmvalue" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_parmvalue2062392515508">“SNMPv2c”</span>。</li><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_li31732191644">设置团体字，相关参数说明参见<a href="#helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_table155033194144">表2</a>。
+<div class="tablenoborder"><a name="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_table155033194144"></a><a name="zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_table155033194144"></a><table cellpadding="4" cellspacing="0" summary="" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_table155033194144" frame="border" border="1" rules="all"><caption><b>表2 </b>团体字修改参数说明</caption><colgroup><col style="width:33.29%"><col style="width:66.71000000000001%"></colgroup><thead align="left"><tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_row104929198141"><th align="left" class="cellrowborder" valign="top" width="33.29%" id="mcps1.3.5.2.3.2.2.2.1.3.2.2.3.1.1"><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p154911319191419">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="66.71000000000001%" id="mcps1.3.5.2.3.2.2.2.1.3.2.2.3.1.2"><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p164915192143">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_row164931819121418"><td class="cellrowborder" valign="top" width="33.29%" headers="mcps1.3.5.2.3.2.2.2.1.3.2.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p3492019121418"><span id="helpcenter_000193__zh-cn_topic_0000001839224705_text1429713319265">团体字</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="66.71000000000001%" headers="mcps1.3.5.2.3.2.2.2.1.3.2.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_p118419572236">有读权限和写权限的团体名称。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_li183559502483">单击“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_text86516021014">保存</span>”。</li></ol>
+</li></ul>
+</p></li><li id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_li1269210143019"><span>在“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text198237012711">Trap服务器</span>”区域，单击“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text6316143092715">添加</span>”，配置Trap服务器，相关参数说明参见<a href="#helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_table18404111116216">表3</a>。</span><p>
+<div class="tablenoborder"><a name="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_table18404111116216"></a><a name="zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_table18404111116216"></a><table cellpadding="4" cellspacing="0" summary="" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_table18404111116216" frame="border" border="1" rules="all"><caption><b>表3 </b>配置Trap服务器参数说明</caption><colgroup><col style="width:18.52%"><col style="width:81.47999999999999%"></colgroup><thead align="left"><tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_row1440419111129"><th align="left" class="cellrowborder" valign="top" width="18.52%" id="mcps1.3.5.2.4.2.1.2.3.1.1"><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p1840411115216">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="81.47999999999999%" id="mcps1.3.5.2.4.2.1.2.3.1.2"><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p14404511922">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_row154043113210"><td class="cellrowborder" valign="top" width="18.52%" headers="mcps1.3.5.2.4.2.1.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p64041711124">IP地址</p>
+</td>
+<td class="cellrowborder" valign="top" width="81.47999999999999%" headers="mcps1.3.5.2.4.2.1.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p44041511824">目前只支持IPv4类型的IP地址。</p>
+</td>
+</tr>
+<tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_row6404121114210"><td class="cellrowborder" valign="top" width="18.52%" headers="mcps1.3.5.2.4.2.1.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p1440415116214">端口</p>
+</td>
+<td class="cellrowborder" valign="top" width="81.47999999999999%" headers="mcps1.3.5.2.4.2.1.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p134041114220">Trap服务器侦听Trap消息的端口。</p>
+</td>
+</tr>
+<tr id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_row1840431114215"><td class="cellrowborder" valign="top" width="18.52%" headers="mcps1.3.5.2.4.2.1.2.3.1.1 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p94045111021">描述</p>
+</td>
+<td class="cellrowborder" valign="top" width="81.47999999999999%" headers="mcps1.3.5.2.4.2.1.2.3.1.2 "><p id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_p94047111226">Trap服务器描述信息。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li></ol>
+</div>
+<div class="section" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_section19455621153113"><h4 class="sectiontitle">后续处理</h4><p class="msonormal" id="helpcenter_000193__zh-cn_topic_0000001839224705_zh-cn_topic_0000001348750433_zh-cn_topic_0000001310893213_zh-cn_topic_0000001123437765_zh-cn_topic_0171822298_p55205482">在“<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text3922202172817">Trap服务器</span>”区域，您可以查看<span id="helpcenter_000193__zh-cn_topic_0000001839224705_text859325152810">Trap服务器</span>信息，同时可以删除或修改某个Trap IP地址。</p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="helpcenter_000110.html">系统</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

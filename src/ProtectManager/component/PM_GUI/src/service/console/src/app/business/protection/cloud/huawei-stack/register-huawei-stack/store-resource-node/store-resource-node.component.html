@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup">
   <div
     class="aui-gutter-column-md"
     *ngIf="
@@ -27,39 +27,38 @@
   >
     <lv-form-item>
       <lv-form-label>{{ 'common_type_label' | i18n }}</lv-form-label>
-      <lv-radio-group
-        formControlName="storageType"
-        [ngStyle]="{
-          'margin-left': i18n.language === 'zh-cn' ? '40px' : '125px'
-        }"
-      >
-        <lv-group [lvGutter]="'48px'">
-          <lv-radio [lvValue]="value1">{{
-            'common_san_storage_label' | i18n
-          }}</lv-radio>
-          <lv-radio [lvValue]="value2">{{
-            'protection_database_type_block_storage_label' | i18n
-          }}</lv-radio>
-        </lv-group>
-      </lv-radio-group>
+      <lv-form-control>
+        <lv-radio-group formControlName="storageType">
+          <lv-group [lvGutter]="'48px'">
+            <lv-radio [lvValue]="value1" [lvDisabled]="isModifyHcsStorage">{{
+              'common_san_storage_label' | i18n
+            }}</lv-radio>
+            <lv-radio [lvValue]="value2" [lvDisabled]="isModifyHcsStorage">{{
+              'protection_database_type_block_storage_label' | i18n
+            }}</lv-radio>
+          </lv-group>
+        </lv-radio-group>
+      </lv-form-control>
     </lv-form-item>
   </div>
 
   <!-- vmware netApp存储 -->
   <lv-form-item *ngIf="subType === dataMap.Resource_Type.vmware.value">
     <lv-form-label>{{ 'common_type_label' | i18n }}</lv-form-label>
-    <lv-radio-group formControlName="storageType">
-      <lv-group [lvGutter]="'48px'" class="mgt-8">
-        <lv-radio
-          [lvValue]="dataMap.Device_Storage_Type.OceanStorDorado_6_1_3.value"
-        >
-          {{ dataMap.Device_Storage_Type.OceanStorDorado_6_1_3.label | i18n }}
-        </lv-radio>
-        <lv-radio [lvValue]="dataMap.Device_Storage_Type.NetApp.value">
-          {{ dataMap.Device_Storage_Type.NetApp.label | i18n }}
-        </lv-radio>
-      </lv-group>
-    </lv-radio-group>
+    <lv-form-control>
+      <lv-radio-group formControlName="storageType">
+        <lv-group [lvGutter]="'48px'" class="mgt-8">
+          <lv-radio
+            [lvValue]="dataMap.Device_Storage_Type.OceanStorDorado_6_1_3.value"
+          >
+            {{ dataMap.Device_Storage_Type.OceanStorDorado_6_1_3.label | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="dataMap.Device_Storage_Type.NetApp.value">
+            {{ dataMap.Device_Storage_Type.NetApp.label | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
   </lv-form-item>
 
   <lv-form-item *ngIf="isOracle">
@@ -98,7 +97,13 @@
           >
             <lv-group [lvColumns]="['auto', '25px']">
               <input lv-input type="text" [formControlName]="i" />
-              <div class="aui-link" *ngIf="ipArr.length > 1">
+              <div
+                [ngClass]="{
+                  'aui-link': !isModifyHcsStorage,
+                  'aui-link-disabled': isModifyHcsStorage
+                }"
+                *ngIf="ipArr.length > 1"
+              >
                 <i
                   lv-icon="lv-icon-remove"
                   lvColorState="true"
@@ -114,7 +119,12 @@
         <i lv-icon="lv-icon-status-failed" class="error-icon"></i>
         {{ repeatTips }}
       </div>
-      <div class="aui-link">
+      <div
+        [ngClass]="{
+          'aui-link': !isModifyHcsStorage,
+          'aui-link-disabled': isModifyHcsStorage
+        }"
+      >
         <span (click)="addIp()">
           <i lv-icon="aui-icon-create" class="add-ip-icon"></i>
           {{ 'common_add_label' | i18n }}

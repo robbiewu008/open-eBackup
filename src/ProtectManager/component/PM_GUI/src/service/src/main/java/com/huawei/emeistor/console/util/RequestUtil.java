@@ -97,6 +97,9 @@ public final class RequestUtil {
         if (!StringUtils.isEmpty(request.getHeader(ConfigConstant.DME_AZ))) {
             header.add(ConfigConstant.DME_AZ, request.getHeader(ConfigConstant.DME_AZ));
         }
+        if (!StringUtils.isEmpty(request.getHeader(ConfigConstant.DME_PROJECT_ID))) {
+            header.add(ConfigConstant.DME_PROJECT_ID, request.getHeader(ConfigConstant.DME_PROJECT_ID));
+        }
         header.add(ConfigConstant.REQUEST_ID, NormalizerUtil.normalizeForString(requestId));
         header.add(ConfigConstant.REQUEST_IP, NormalizerUtil.normalizeForString(requestIp));
         String clusterType = request.getHeader(ConfigConstant.CLUSTER_TYPE) == null

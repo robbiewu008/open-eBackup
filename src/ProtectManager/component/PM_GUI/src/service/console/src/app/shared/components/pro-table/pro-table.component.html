@@ -1,3 +1,4 @@
+<!-- 过滤条件展示区 -->
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<!-- 过滤条件展示区 -->
 <div *ngIf="initConfig.filterTags" class="lv-pro-table-filter">
   <lv-tag
     [ngModel]="filterTags"
@@ -121,7 +121,7 @@
               <div lvCustom>
                 <!-- 表头的搜索和日期选择过滤 -->
                 <ng-container *ngIf="col.filter && col.filter.type === 'search'">
-                  <aui-custom-table-search (search)="_doSearch($event, col)" [filterTitle]="col.name"></aui-custom-table-search>
+                  <aui-custom-table-search (search)="_doSearch($event, col)" [value]="_getfilterValue(col)" [filterTitle]="col.name"></aui-custom-table-search>
                 </ng-container>
                 <ng-container *ngIf="col.filter && col.filter.type === 'date'">
                   <lv-pro-filter-date

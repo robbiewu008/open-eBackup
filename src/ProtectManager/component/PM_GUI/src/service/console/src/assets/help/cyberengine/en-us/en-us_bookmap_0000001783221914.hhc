@@ -33,6 +33,8 @@
 </LI>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Associating a File Name Extension Filtering Rule with a File System"><param name="Local" value="en-us_topic_0000001829899749.html"><param name="ImageNumber" value="9"></OBJECT>
 </LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Updating a File Name Extension Filtering Rule"><param name="Local" value="en-us_topic_0000002085819285.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Scanning for File Systems"><param name="Local" value="en-us_topic_0000001829899793.html"><param name="ImageNumber" value="9"></OBJECT>
 </LI>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Enabling File Interception"><param name="Local" value="en-us_topic_0000001783220050.html"><param name="ImageNumber" value="9"></OBJECT>
@@ -219,7 +221,11 @@
 </LI>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Configuring the iBMC Time"><param name="Local" value="en-us_topic_0000001832329248.html"><param name="ImageNumber" value="9"></OBJECT>
 </LI>
-<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Alarm Notification"><param name="Local" value="en-us_topic_0000001879127977.html"><param name="ImageNumber" value="9"></OBJECT>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Alarm Notification"><param name="Local" value="en-us_topic_0000001879127977.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Sender Settings"><param name="Local" value="en-us_topic_0000002077228765.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Syslog Notification"><param name="Local" value="en-us_topic_0000002077110145.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
 </LI></UL>
 </LI></UL>
 </body>

@@ -1,3 +1,4 @@
+<lv-form [lvLabelColon]="false" class="resource-summary">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [lvLabelColon]="false" class="resource-summary">
   <lv-form-column style="height:160px" *ngFor="let column of formItems; index as i" [ngClass]="{
       'sunmary-container-time': i === 2 && ![resourceType.tidbDatabase.value,resourceType.vmGroup.value].includes(sourceType),
       'sunmary-container-time-tidb': i === 2 && isTidbDatabase,
@@ -81,6 +81,7 @@
             i === 0 &&
             [
               resourceType.oracle.value,
+              resourceType.oraclePDB.value,
               resourceType.MySQL.value,
               resourceType.MySQLDatabase.value,
               resourceType.DB2.value,
@@ -128,6 +129,8 @@
               resourceType.MySQLClusterInstance.value,
               resourceType.MySQLInstance.value,
               resourceType.goldendbInstance.value,
+              resourceType.AntDBInstance.value,
+              resourceType.AntDBClusterInstance.value,
               resourceType.PostgreSQLInstance.value,
               resourceType.PostgreSQLClusterInstance.value,
               resourceType.KingBaseInstance.value,
@@ -151,6 +154,7 @@
             i === 0 && [resourceType.virtualMachine.value,
              resourceType.fusionComputeVirtualMachine.value,
              resourceType.cNwareVm.value,
+             resourceType.nutanixVm.value,
              resourceType.hyperVVm.value
              ].includes(sourceType)
           "></i>
@@ -193,7 +197,9 @@
       </div>
       <div class="sunmary-info">
         <lv-form-item *ngFor="let item of column">
-          <lv-form-label>{{item.label}}</lv-form-label>
+          <lv-form-label>
+            <span lv-overflow class="name-overflow">{{item.label}}</span>
+          </lv-form-label>
           <lv-form-control>
             <span lv-overflow lvTooltipTheme="light" class="name-overflow" *ngIf="
                 'link_status' !== item.key &&
@@ -222,7 +228,7 @@
                 resourceType.goldendbInstance.value,
                 resourceType.DWS_Cluster.value,
                 resourceType.commonShare.value
-              ].includes(sourceType)">
+              ].includes(sourceType)" class="name-overflow">
               {{ item.content | nil }}
             </span>
             <span *ngIf="
@@ -236,7 +242,7 @@
                 resourceType.SQLServerGroup.value,
                 resourceType.SQLServerInstance.value,
                 resourceType.MySQLDatabase.value
-              ].includes(sourceType)">
+              ].includes(sourceType)" lv-overflow class="name-overflow">
               <ng-container *ngIf="
                   [
                     resourceType.oracle.value,
@@ -244,6 +250,8 @@
                     resourceType.SQLServer.value,
                     resourceType.ClickHouseDatabase.value,
                     resourceType.ClickHouseTableset.value,
+                    resourceType.AntDBClusterInstance.value,
+                    resourceType.AntDBInstance.value,
                     resourceType.PostgreSQLClusterInstance.value,
                     resourceType.PostgreSQLInstance.value,
                     resourceType.KingBaseClusterInstance.value,
@@ -281,7 +289,8 @@
                   resourceType.ActiveDirectory.value,
                   resourceType.ExchangeSingle.value,
                   resourceType.ExchangeGroup.value,
-                  resourceType.saphanaDatabase.value
+                  resourceType.saphanaDatabase.value,
+                  resourceType.saponoracleDatabase.value
                 ].includes(sourceType)">
                 <aui-status [value]="item.content" type="resource_LinkStatus_Special"></aui-status>
               </ng-container>
@@ -325,6 +334,8 @@
                     resourceType.ClickHouseTableset.value,
                     resourceType.Redis.value,
                     resourceType.CloudHost.value,
+                    resourceType.AntDBInstance.value,
+                    resourceType.AntDBClusterInstance.value,
                     resourceType.PostgreSQLClusterInstance.value,
                     resourceType.PostgreSQLInstance.value,
                     resourceType.KingBaseClusterInstance.value,
@@ -346,11 +357,13 @@
                     resourceType.tidbTable.value,
                     resourceType.commonShare.value,
                     resourceType.cNwareVm.value,
+                    resourceType.nutanixVm.value,
                     resourceType.ApsaraStack.value,
                     resourceType.ExchangeGroup.value,
                     resourceType.ExchangeSingle.value,
                     resourceType.hyperVVm.value,
-                    resourceType.saphanaDatabase.value
+                    resourceType.saphanaDatabase.value,
+                    resourceType.saponoracleDatabase.value
                   ].includes(sourceType)
                 ">
                 <ng-container [ngSwitch]="sourceType">
@@ -393,10 +406,10 @@
                 </ng-container>
               </ng-container>
             </span>
-            <span *ngIf="'protect_activation' === item.key">
+            <span *ngIf="'protect_activation' === item.key" lv-overflow class="name-overflow">
               <aui-status [value]="item.content" type="Protection_Status"></aui-status>
             </span>
-            <span *ngIf="'sla_policy' === item.key">
+            <span *ngIf="'sla_policy' === item.key" lv-overflow class="name-overflow">
               <ng-container *ngIf="item.content; else slaTemplate">
                 <span lv-overflow lvTooltipTheme="light" class="sla-overflow">
                   <sla-type [name]="item.content"></sla-type>
@@ -406,7 +419,7 @@
                 --
               </ng-template>
             </span>
-            <span *ngIf="'sla_compliance' === item.key">
+            <span *ngIf="'sla_compliance' === item.key" lv-overflow class="name-overflow">
               <ng-container *ngIf="item.content || item.content === false; else emptyTpl">
                 <aui-status [value]="item.content" type="Sla_Compliance"></aui-status>
               </ng-container>

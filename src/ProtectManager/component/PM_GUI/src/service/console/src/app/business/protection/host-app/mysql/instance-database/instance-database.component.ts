@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -43,6 +43,7 @@ import {
   ProtectedResourceApiService,
   ProtectResourceAction,
   RoleOperationMap,
+  SetTagType,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -77,7 +78,8 @@ import {
   size,
   some,
   trim,
-  values
+  values,
+  find
 } from 'lodash';
 import { map } from 'rxjs/operators';
 import { RegisterComponent } from './register/register.component';
@@ -100,7 +102,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
   dataMap = DataMap;
 
   groupCommon = GROUP_COMMON;
-
+  curDetailUuid = '';
   @Input() activeIndex;
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
   @ViewChild('slaComplianceExtraTpl', { static: true })
@@ -320,7 +322,18 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
               _filter(data, val => {
                 return !isEmpty(val.sla_id) && hasBackupPermission(val);
               })
-            ) !== size(data) || !size(data)
+            ) !== size(data) ||
+            !size(data) ||
+            ([
+              DataMap.Resource_Type.MySQLInstance.value,
+              DataMap.Resource_Type.MySQLClusterInstance.value
+            ].includes(data[0]?.subType || data[0]?.sub_type) &&
+              some(
+                data,
+                item =>
+                  item.extendInfo?.linkStatus !==
+                  DataMap.resource_LinkStatus_Special.normal.value
+              ))
           );
         },
         permission: OperateItems.ManualBackup,
@@ -430,7 +443,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_add_tag_label'),
         onClick: data => this.addTag(data)
@@ -442,7 +455,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_remove_tag_label'),
         onClick: data => this.removeTag(data)
@@ -685,6 +698,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data ? data : this.selectionData,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable?.setSelections([]);
@@ -697,6 +711,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data ? data : this.selectionData,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable?.setSelections([]);
@@ -773,33 +788,14 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
             content.onOK().subscribe({
               next: res => {
                 resolve(true);
-                if (
-                  !isEmpty(item) &&
-                  includes(
-                    mapValues(this.drawModalService.modals, 'key'),
-                    'detail-modal'
-                  )
-                ) {
-                  this.getResourceDetail(content.item);
-                } else {
-                  this.dataTable.fetchData();
-                }
+                this.dataTable.fetchData();
               },
               error: () => resolve(false)
             });
           });
         },
         lvCancel: modal => {
-          const content = modal.getContentComponent() as RegisterComponent;
-          if (
-            !isEmpty(item) &&
-            includes(
-              mapValues(this.drawModalService.modals, 'key'),
-              'detail-modal'
-            )
-          ) {
-            this.getResourceDetail(content.item);
-          }
+          this.dataTable.fetchData();
         }
       })
     );
@@ -952,11 +948,24 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
           total: res.totalCount,
           data: res.records
         };
+        if (
+          !args?.isAutoPolling &&
+          includes(
+            mapValues(this.drawModalService.modals, 'key'),
+            'detail-modal'
+          ) &&
+          find(res.records, { uuid: this.curDetailUuid })
+        ) {
+          this.getResourceDetail(
+            find(res.records, { uuid: this.curDetailUuid })
+          );
+        }
         this.cdr.detectChanges();
       });
   }
 
   getResourceDetail(res) {
+    this.curDetailUuid = res?.uuid;
     this.protectedResourceApiService
       .ListResources({
         pageNo: CommonConsts.PAGE_START,
@@ -1028,8 +1037,7 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
           this.selectionData = [];
           this.dataTable.setSelections([]);
           this.dataTable.fetchData();
-        },
-        restoreWidth: params => this.getResourceDetail(params)
+        }
       }
     );
   }

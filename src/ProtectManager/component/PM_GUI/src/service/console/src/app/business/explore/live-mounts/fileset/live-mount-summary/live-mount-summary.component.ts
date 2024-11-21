@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import {
@@ -29,10 +29,12 @@ import {
 } from 'app/shared';
 import {
   assign,
+  cloneDeep,
   each,
   first,
   get,
   includes,
+  isArray,
   isEmpty,
   isUndefined,
   map as _map,
@@ -249,7 +251,9 @@ export class LiveMountSummaryComponent implements OnInit {
         )['environment_os_type'] === DataMap.Os_Type.windows.value)
     ) {
       const info = this.componentData.selectionMount?.driveInfo;
-      windowsPath = info.split('&')[0];
+      if (!isEmpty(info)) {
+        windowsPath = info.split('&')[0];
+      }
     }
 
     const selectionResource = {
@@ -484,6 +488,20 @@ export class LiveMountSummaryComponent implements OnInit {
           })
         }
       ]);
+      if (
+        includes(
+          this.componentData.childResourceType,
+          DataMap.Resource_Type.volume.value
+        )
+      ) {
+        let tmpPath = [];
+        tmpPath = this.getVolumePath(tmpPath);
+        selectionMount.children.push({
+          key: 'volumePath',
+          label: this.i18n.get('system_volume_path_label'),
+          value: tmpPath
+        });
+      }
     }
     selectionMount.children = selectionMount.children.concat([
       {
@@ -522,6 +540,23 @@ export class LiveMountSummaryComponent implements OnInit {
       });
     }
     return selectionMount;
+  }
+
+  private getVolumePath(tmpPath: any[]) {
+    if (!this.componentData?.requestParams) {
+      let tmpDetail = JSON.parse(
+        this.componentData?.liveMountData?.file_system_share_info || '{}'
+      );
+      if (!isEmpty(tmpDetail) && isArray(tmpDetail)) {
+        tmpPath = tmpDetail[0]?.advanceParams?.livemount_detail;
+      }
+    } else {
+      tmpPath = cloneDeep(
+        this.componentData.requestParams.file_system_share_info_list[0]
+          .advanceParams.livemount_detail
+      );
+    }
+    return tmpPath;
   }
 
   getResource() {

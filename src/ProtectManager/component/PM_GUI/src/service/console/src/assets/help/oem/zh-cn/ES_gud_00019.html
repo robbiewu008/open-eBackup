@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤8：执行备份">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="ES_gud_00011.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ES_gud_00019">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤8：执行备份</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ES_gud_00019"></a><a name="ES_gud_00019"></a>
+  <h1 class="topictitle1">步骤8：执行备份</h1>
+  <div>
+   <p>执行备份前将需要保护的资源关联到指定SLA策略，系统将对这些资源按照SLA策略进行保护，并根据SLA策略周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <ul>
+     <li>手动备份产生的副本保留时长按照SLA中定义的保留时长进行保留。<p>如果手动备份时选择的保护策略未在SLA中定义，则产生的备份副本保留时长为永久保留。如SLA中未定义增量备份，而手动备份时选择的是增量备份，则本次手动增量备份产生的副本保留时长为永久保留。</p></li>
+     <li>如果SLA中定义了复制策略或归档策略，则执行手动备份时，系统会按照SLA的定义执行一次复制或归档。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="ES_gud_00019__zh-cn_topic_0000001657018901_zh-cn_topic_0000001666345505_uicontrol9263121219407">“<span id="ES_gud_00019__zh-cn_topic_0000001657018901_zh-cn_topic_0000001666345505_text162635121401">保护</span> &gt; 大数据 &gt; Elasticsearch”</span>。</span></li>
+     <li><span>选择<span class="uicontrol">“<span>备份集</span>”</span>页签后，勾选需要保护的备份集，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p></p><p>您也可以勾选多个备份集进行批量保护。</p> <p></p></li>
+     <li><span>选择SLA。</span><p></p>
+      <div class="p" id="ES_gud_00019__zh-cn_topic_0000001964713008_p16181740836">
+       您也可以单击<span class="uicontrol" id="ES_gud_00019__zh-cn_topic_0000001964713008_uicontrol744210206420">“<span id="ES_gud_00019__zh-cn_topic_0000001964713008_text1873812341015">创建</span>”</span>，创建新的SLA。
+       <div class="note" id="ES_gud_00019__zh-cn_topic_0000001964713008_note25947145710">
+        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <p id="ES_gud_00019__zh-cn_topic_0000001964713008_p125947145711"><span id="ES_gud_00019__zh-cn_topic_0000001964713008_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
+        </div>
+       </div>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol" id="ES_gud_00019__zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p></p><p id="ES_gud_00019__zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于该SLA首次备份的开始时间，则关联备份SLA后可以选择在当前立即执行备份或者根据SLA中设置的备份策略等待下次调度。</p> <p></p></li>
+     <li><strong>可选：</strong><span>执行手动备份。</span><p></p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
+      <ol type="a">
+       <li>在需要备份的备份集所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="ES_gud_00019__zh-cn_topic_0000001607531736_p870125314544">支持选择多个资源批量进行手动备份。勾选多个资源，在页面左上角选择<span class="uicontrol" id="ES_gud_00019__zh-cn_topic_0000001607531736_uicontrol14182155715711">“<span id="ES_gud_00019__zh-cn_topic_0000001607531736_text662114113158">更多</span> &gt; <span id="ES_gud_00019__zh-cn_topic_0000001607531736_text1068159191519">手动备份</span>”</span>。</p>
+         </div>
+        </div></li>
+       <li>设置手动备份产生的副本名称。<p>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p></li>
+       <li>选择保护策略：<span>全量备份</span>、<span>永久增量（合成全量）备份</span>。
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p><span id="ES_gud_00019__zh-cn_topic_0000001964713008_ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
+         </div>
+        </div></li>
+       <li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="ES_gud_00011.html">备份Elasticsearch集群</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

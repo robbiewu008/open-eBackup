@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -121,26 +121,26 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
 
   configHelpHover() {
     const url1 = this.i18n.isEn
-      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000001839260265.html'
-      : '/console/assets/help/a8000/zh-cn/index.html#zh-cn_topic_0000001839260265.html';
+      ? '/console/assets/help/a8000/en-us/index.html#kubernetes_CSI_00065.html'
+      : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00065.html';
 
     const url2 = this.i18n.isEn
-      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000001917330525.html'
-      : '/console/assets/help/a8000/zh-cn/index.html#zh-cn_topic_0000001917330525.html';
+      ? '/console/assets/help/a8000/en-us/index.html#kubernetes_CSI_00078.html'
+      : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00078.html';
     this.appUtilsService.openSpecialHelp([url1, url2]);
   }
 
   tagHelpHover() {
     const url = this.i18n.isEn
-      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000001940484365.html'
-      : '/console/assets/help/a8000/zh-cn/index.html#zh-cn_topic_0000001940484365.html';
+      ? '/console/assets/help/a8000/en-us/index.html#kubernetes_CSI_00078_3.html'
+      : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00078_3.html';
     this.appUtilsService.openSpecialHelp(url);
   }
 
   tokenHelpHover() {
     const url = this.i18n.isEn
-      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000001839180449.html'
-      : '/console/assets/help/a8000/zh-cn/index.html#zh-cn_topic_0000001839180449.html';
+      ? '/console/assets/help/a8000/en-us/index.html#kubernetes_CSI_00077.html'
+      : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00077.html';
     this.appUtilsService.openSpecialHelp(url);
   }
 

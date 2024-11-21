@@ -1,17 +1,19 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { CommonModule } from '@angular/common';
 import { Injectable, NgModule } from '@angular/core';
+import { LiveMountOptionsComponent as CnwareLiveMountOptionsComponent } from 'app/business/explore/live-mounts/cnware/live-mount-options/live-mount-options.component';
+import { LiveMountOptionsModule as CnwareLiveMountOptionsModule } from 'app/business/explore/live-mounts/cnware/live-mount-options/live-mount-options.module';
 import { LiveMountOptionsComponent as FilesetLiveMountOptionsComponent } from 'app/business/explore/live-mounts/fileset/live-mount-options/live-mount-options.component';
 import { LiveMountOptionsModule as FilesetLiveMountOptionsModule } from 'app/business/explore/live-mounts/fileset/live-mount-options/live-mount-options.module';
 import { LiveMountOptionsComponent as NasSharedLiveMountOptionsComponent } from 'app/business/explore/live-mounts/nas-shared/live-mount-options/live-mount-options.component';
@@ -20,8 +22,6 @@ import { LiveMountOptionsComponent as OracleLiveMountOptionsComponent } from 'ap
 import { LiveMountOptionsModule as OracleLiveMountOptionsModule } from 'app/business/explore/live-mounts/oracle/live-mount-options/live-mount-options.module';
 import { LiveMountOptionsComponent as VMwareLiveMountOptionsComponent } from 'app/business/explore/live-mounts/vmware/live-mount-options/live-mount-options.component';
 import { LiveMountOptionsModule as VMwareLiveMountOptionsModule } from 'app/business/explore/live-mounts/vmware/live-mount-options/live-mount-options.module';
-import { LiveMountOptionsComponent as CnwareLiveMountOptionsComponent } from 'app/business/explore/live-mounts/cnware/live-mount-options/live-mount-options.component';
-import { LiveMountOptionsModule as CnwareLiveMountOptionsModule } from 'app/business/explore/live-mounts/cnware/live-mount-options/live-mount-options.module';
 import { assign, first, includes, isFunction } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -63,9 +63,18 @@ export class ManualMountService {
       const liveMountComponent = this.getLiveMountComponent(param.item);
       this.drawModalService.create({
         ...MODAL_COMMON.generateDrawerOptions(),
-        lvHeader: this.i18n.get('common_live_mount_uppercase_label'),
+        lvHeader: this.i18n.get('common_live_mount_label'),
         lvContent: liveMountComponent,
-        lvWidth: MODAL_COMMON.largeWidth,
+        lvWidth: includes(
+          [
+            DataMap.Resource_Type.MySQLInstance.value,
+            DataMap.Resource_Type.MySQLDatabase.value,
+            DataMap.Resource_Type.MySQLClusterInstance.value
+          ],
+          param.item.resource_sub_type
+        )
+          ? MODAL_COMMON.xLargeWidth
+          : MODAL_COMMON.largeWidth,
         lvComponentParams: { ...liveMountParams, isDrill: isFunction(drillCb) },
         lvOkDisabled: true,
         lvAfterOpen: modal => {
@@ -206,7 +215,13 @@ export class ManualMountService {
     }
     const modalIns = modal.getInstance();
     if (
-      includes([DataMap.Resource_Type.cNwareVm.value], item.resource_sub_type)
+      includes(
+        [DataMap.Resource_Type.cNwareVm.value],
+        item.resource_sub_type
+      ) ||
+      (includes([DataMap.Resource_Type.volume.value], item.resource_sub_type) &&
+        JSON.parse(item.resource_properties || '{}')?.environment_os_type ===
+          DataMap.Os_Type.windows.value)
     ) {
       component.valid$.subscribe(res => {
         modalIns.lvOkDisabled = !res;

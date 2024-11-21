@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -39,6 +39,7 @@ import {
   ResourceOperationType,
   RoleOperationAuth,
   RoleOperationMap,
+  SetTagType,
   WarningMessageService,
   extendSlaInfo,
   getLabelList,
@@ -72,6 +73,7 @@ import {
   isUndefined,
   mapValues,
   size,
+  some,
   toString,
   trim
 } from 'lodash';
@@ -339,14 +341,18 @@ export class DatabaseListComponent implements OnInit, OnDestroy {
       {
         id: 'addTag',
         permission: OperateItems.AddTag,
-        disabled: !size(this.selection),
+        disabled:
+          !size(this.selection) ||
+          some(this.selection, v => !hasResourcePermission(v)),
         label: this.i18n.get('common_add_tag_label'),
         onClick: () => this.addTag(this.selection)
       },
       {
         id: 'removeTag',
         permission: OperateItems.RemoveTag,
-        disabled: !size(this.selection),
+        disabled:
+          !size(this.selection) ||
+          some(this.selection, v => !hasResourcePermission(v)),
         label: this.i18n.get('common_remove_tag_label'),
         onClick: () => this.removeTag(this.selection)
       }
@@ -358,6 +364,7 @@ export class DatabaseListComponent implements OnInit, OnDestroy {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selection = [];
         this.getDatabase();
@@ -369,6 +376,7 @@ export class DatabaseListComponent implements OnInit, OnDestroy {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selection = [];
         this.getDatabase();
@@ -744,9 +752,13 @@ export class DatabaseListComponent implements OnInit, OnDestroy {
             })
           ) !== size(this.selection);
       } else if (item.id === 'addTag') {
-        item.disabled = !size(this.selection);
+        item.disabled =
+          !size(this.selection) ||
+          some(this.selection, v => !hasResourcePermission(v));
       } else if (item.id === 'removeTag') {
-        item.disabled = !size(this.selection);
+        item.disabled =
+          !size(this.selection) ||
+          some(this.selection, v => !hasResourcePermission(v));
       }
     });
     if (!size(this.selection)) {
@@ -959,13 +971,14 @@ export class DatabaseListComponent implements OnInit, OnDestroy {
       {
         id: 'addTag',
         permission: OperateItems.AddTag,
+        disabled: !hasResourcePermission(data),
         label: this.i18n.get('common_add_tag_label'),
         onClick: () => this.addTag([data])
       },
       {
         id: 'removeTag',
         permission: OperateItems.RemoveTag,
-        disabled: !size(data.labelList),
+        disabled: !hasResourcePermission(data),
         label: this.i18n.get('common_remove_tag_label'),
         onClick: () => this.removeTag([data])
       }

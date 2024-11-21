@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   Component,
@@ -19,7 +19,6 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { ProButton } from 'app/shared/components/pro-button/interface';
 import {
   CookieService,
   DataMapService,
@@ -30,14 +29,15 @@ import {
   RoleType,
   WarningMessageService
 } from 'app/shared';
-import { DrawModalService } from 'app/shared/services/draw-modal.service';
-import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
+import { ProButton } from 'app/shared/components/pro-button/interface';
 import {
   Filters,
   ProTableComponent,
   TableCols,
   TableData
 } from 'app/shared/components/pro-table';
+import { DrawModalService } from 'app/shared/services/draw-modal.service';
+import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import { assign, isEmpty, map } from 'lodash';
 
 @Component({
@@ -103,7 +103,7 @@ export class RolesComponent implements OnInit, AfterViewInit {
         label: this.i18n.get('common_modify_label'),
         permission: OperateItems.SysadminOnly,
         onClick: rowData => {
-          this.create(rowData[0], true);
+          this.create(rowData[0], true, false);
         },
         disableCheck: rowData => rowData[0].is_default
       },
@@ -112,7 +112,7 @@ export class RolesComponent implements OnInit, AfterViewInit {
         label: this.i18n.get('common_clone_label'),
         permission: OperateItems.SysadminOnly,
         onClick: rowData => {
-          this.create(rowData[0], false);
+          this.create(rowData[0], false, true);
         }
       },
       {
@@ -154,7 +154,7 @@ export class RolesComponent implements OnInit, AfterViewInit {
         cellRender: {
           type: 'operation',
           config: {
-            maxDisplayItems: 3,
+            maxDisplayItems: 2,
             items: getPermissionMenuItem(itemOpts, this.cookieService.role)
           }
         }
@@ -179,19 +179,22 @@ export class RolesComponent implements OnInit, AfterViewInit {
     };
   }
 
-  create(rowData?, isModify?) {
+  create(rowData?, isModify?, isClone?) {
     this.openPage.emit({
       name: 'createRole',
       data: {
         rowData: rowData,
-        isModify: isModify ?? false
+        isModify: isModify ?? false,
+        isClone: isClone ?? false
       }
     });
   }
 
   delete(datas: any[]) {
     this.warningMessageService.create({
-      content: this.i18n.get('protection_nas_share_delete_label'),
+      content: this.i18n.get('system_delete_role_tip_label', [
+        datas.map(item => item.roleName).join(',')
+      ]),
       onOK: () => {
         this.roleApiService
           .deleteRole({
@@ -256,6 +259,9 @@ export class RolesComponent implements OnInit, AfterViewInit {
           'defaultRoleDescription',
           item['roleDescription']
         );
+      } else {
+        // 升级场景会有自动创造的角色，使用词条做描述
+        item.roleDescription = this.i18n.get(item.roleDescription);
       }
       return assign(item, { disabled: !!item.userNum || item['is_default'] });
     });

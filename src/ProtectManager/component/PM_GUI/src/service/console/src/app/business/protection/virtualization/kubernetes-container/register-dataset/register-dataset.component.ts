@@ -1,16 +1,16 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, OnInit } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
 import {
@@ -21,7 +21,16 @@ import {
   ProtectedResourceApiService
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { assign, each, find, isEmpty, map, reject, uniqueId } from 'lodash';
+import {
+  assign,
+  each,
+  find,
+  first,
+  isEmpty,
+  map,
+  reject,
+  uniqueId
+} from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -41,6 +50,8 @@ export class RegisterDatasetComponent implements OnInit {
   excludeLabels = [];
   prefixExKey = 'prefixExKey';
   prefixExValue = 'prefixExValue';
+
+  helpUrl: string;
 
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip,
@@ -64,6 +75,8 @@ export class RegisterDatasetComponent implements OnInit {
     invalidName: this.i18n.get('protection_labels_value_valid_label')
   };
 
+  @ViewChild('headerTpl', { static: true }) headerTpl: TemplateRef<any>;
+
   constructor(
     private modal: ModalRef,
     private fb: FormBuilder,
@@ -74,9 +87,25 @@ export class RegisterDatasetComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initModalHeader();
     this.initForm();
     this.getNamespace();
     this.updateForm();
+  }
+
+  initModalHeader() {
+    this.modal.setProperty({ lvHeader: this.headerTpl });
+  }
+
+  openHelp() {
+    const lang = this.i18n.isEn ? 'en-us' : 'zh-cn';
+    const targetUrl = `/console/assets/help/a8000/${lang}/index.html#kubernetes_CSI_00012.html`;
+    if (this.AppUtilsService.isHcsUser) {
+      const herf: string = first(window.location.href.split('#'));
+      window.open(herf.replace('/console/', targetUrl), '_blank');
+    } else {
+      window.open(targetUrl, '_blank');
+    }
   }
 
   addIncludeLabels(key?: string, value?: string) {

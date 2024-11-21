@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
   CAPACITY_UNIT,
@@ -19,7 +19,8 @@ import {
   LANGUAGE,
   MODAL_COMMON,
   RestoreApiV2Service,
-  RestoreV2LocationType
+  RestoreV2LocationType,
+  SYSTEM_TIME
 } from 'app/shared';
 import {
   ProTableComponent,
@@ -204,7 +205,7 @@ export class DiskRestoreComponent implements OnInit {
                   this.targetDisksOptions,
                   value =>
                     value[this.compareWithKey()] === item.targetDisk ||
-                    this.fiterDisk(value)
+                    this.fiterDisk(value, item)
                 )
               });
             });
@@ -283,7 +284,7 @@ export class DiskRestoreComponent implements OnInit {
               assign(item, {
                 targetDiskOptions: filter(
                   cloneDeep(this.targetDisksOptions),
-                  val => this.fiterDisk(val)
+                  val => this.fiterDisk(val, item)
                 )
               });
             });
@@ -294,8 +295,12 @@ export class DiskRestoreComponent implements OnInit {
     );
   }
 
-  fiterDisk(value) {
-    return !includes(this.cacheSelectedDisk, value[this.compareWithKey()]);
+  fiterDisk(value, item) {
+    if (
+      Number(value?.extendInfo?.Capacity) >= Number(item?.extendInfo?.Capacity)
+    ) {
+      return !includes(this.cacheSelectedDisk, value[this.compareWithKey()]);
+    }
   }
 
   setVaild() {
@@ -318,7 +323,7 @@ export class DiskRestoreComponent implements OnInit {
         this.targetDisksOptions,
         value =>
           value[this.compareWithKey()] === item.targetDisk ||
-          this.fiterDisk(value)
+          this.fiterDisk(value, item)
       );
     });
     this.setVaild();

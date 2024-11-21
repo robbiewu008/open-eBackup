@@ -1,31 +1,34 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, Input, OnInit } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import {
+  Component,
+  Input,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MessageService, UploadFile } from '@iux/live';
+import { MessageService, SelectComponent, UploadFile } from '@iux/live';
 import {
   BaseUtilService,
   CommonConsts,
   DataMap,
   DataMapService,
-  getPermissionMenuItem,
   I18NService,
-  MODAL_COMMON,
   ProtectedEnvironmentApiService,
   ProtectedResourceApiService,
   ResourceType
 } from 'app/shared';
-import { ProButton } from 'app/shared/components/pro-button/interface';
 import { TableCols, TableConfig } from 'app/shared/components/pro-table';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
@@ -35,23 +38,20 @@ import {
   each,
   filter,
   find,
-  findIndex,
-  first,
   get,
   includes,
+  isArray,
   isEmpty,
-  isEqual,
   isNumber,
+  isObject,
   map,
-  reject,
-  remove,
+  mapKeys,
   set,
   size,
+  some,
   uniq
 } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
-import { AddHostComponent } from './add-host/add-host.component';
-import { ConfigNodeComponent } from './config-node/config-node.component';
 import {
   USER_GUIDE_CACHE_DATA,
   cacheGuideResource
@@ -92,7 +92,7 @@ export class RegisterComponent implements OnInit {
   dataMap = DataMap;
   formGroup: FormGroup;
   valid$ = new Subject<boolean>();
-
+  validNode$ = new Subject<boolean>();
   commonErrorTip = {
     ...this.baseUtilService.requiredErrorTip,
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [32])
@@ -102,7 +102,19 @@ export class RegisterComponent implements OnInit {
     ...this.commonErrorTip
   };
 
+  usernameErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    ...this.baseUtilService.lengthErrorTip,
+    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [32])
+  };
+
   @Input() rowData;
+  @ViewChild('dataNodeProxyHostExtraTpl', { static: true })
+  dataNodeProxyHostExtraTpl: TemplateRef<any>;
+  @ViewChild('dataNodeUserNameExtraTpl', { static: true })
+  dataNodeUserNameExtraTpl: TemplateRef<any>;
+  @ViewChild('customRequiredTHTpl', { static: true })
+  customRequiredTHTpl: TemplateRef<any>;
   constructor(
     public baseUtilService: BaseUtilService,
     private appUtilsService: AppUtilsService,
@@ -230,11 +242,27 @@ export class RegisterComponent implements OnInit {
     }
   }
 
+  setValid() {
+    this.validNode$.next(
+      !(
+        some(
+          this.gtmTableData.data,
+          item => isEmpty(item.parentUuid) || isEmpty(item.osUser)
+        ) ||
+        some(
+          this.dataTableData.data,
+          item => isEmpty(item.parentUuid) || isEmpty(item.osUser)
+        )
+      )
+    );
+  }
+
   initDataConfig() {
     const cols: TableCols[] = [
       {
         key: 'name',
         name: this.i18n.get('protection_data_node_label'),
+        width: 120,
         filter: {
           type: 'search',
           filterMode: 'contains'
@@ -243,38 +271,24 @@ export class RegisterComponent implements OnInit {
       {
         key: 'group',
         name: this.i18n.get('protection_goldendb_part_label'),
+        width: 130,
         filter: {
           type: 'search',
           filterMode: 'contains'
         }
       },
       {
-        key: 'parentName',
-        name: this.i18n.get('protection_proxy_host_label')
+        key: 'dataNodeParentName',
+        name: this.i18n.get('protection_proxy_host_label'),
+        width: 270,
+        thExtra: this.customRequiredTHTpl,
+        cellRender: this.dataNodeProxyHostExtraTpl
       },
       {
-        key: 'osUser',
-        name: this.i18n.get('common_username_label')
-      },
-      {
-        key: 'operation',
-        width: 130,
-        name: this.i18n.get('common_operation_label'),
-        cellRender: {
-          type: 'operation',
-          config: {
-            maxDisplayItems: 1,
-            items: [
-              {
-                id: 'config',
-                label: this.i18n.get('common_config_label'),
-                onClick: data => {
-                  this.configDataNode(data);
-                }
-              }
-            ]
-          }
-        }
+        key: 'dataNodeOsUser',
+        name: this.i18n.get('common_username_label'),
+        thExtra: this.customRequiredTHTpl,
+        cellRender: this.dataNodeUserNameExtraTpl
       }
     ];
 
@@ -283,11 +297,10 @@ export class RegisterComponent implements OnInit {
         async: false,
         size: 'small',
         columns: cols,
-        compareWith: 'uuid',
-        autoPolling: CommonConsts.TIME_INTERVAL_RESOURCE,
+        compareWith: 'id',
         colDisplayControl: false,
         trackByFn: (index, item) => {
-          return item.uuid;
+          return item.id;
         }
       },
       pagination: {
@@ -303,38 +316,23 @@ export class RegisterComponent implements OnInit {
       {
         key: 'gtmId',
         name: 'GTMID',
+        width: 100,
         filter: {
           type: 'search',
           filterMode: 'contains'
         }
       },
       {
-        key: 'parentName',
-        name: this.i18n.get('protection_proxy_host_label')
+        key: 'dataNodeParentName',
+        name: this.i18n.get('protection_proxy_host_label'),
+        thExtra: this.customRequiredTHTpl,
+        cellRender: this.dataNodeProxyHostExtraTpl
       },
       {
-        key: 'osUser',
-        name: this.i18n.get('common_username_label')
-      },
-      {
-        key: 'operation',
-        width: 130,
-        name: this.i18n.get('common_operation_label'),
-        cellRender: {
-          type: 'operation',
-          config: {
-            maxDisplayItems: 1,
-            items: [
-              {
-                id: 'edit',
-                label: this.i18n.get('common_config_label'),
-                onClick: data => {
-                  this.addGTMNode(data);
-                }
-              }
-            ]
-          }
-        }
+        key: 'dataNodeOsUser',
+        name: this.i18n.get('common_username_label'),
+        thExtra: this.customRequiredTHTpl,
+        cellRender: this.dataNodeUserNameExtraTpl
       }
     ];
 
@@ -343,11 +341,10 @@ export class RegisterComponent implements OnInit {
         async: false,
         size: 'small',
         columns: cols,
-        compareWith: 'parentUuid',
-        autoPolling: CommonConsts.TIME_INTERVAL_RESOURCE,
+        compareWith: 'gtmId',
         colDisplayControl: false,
         trackByFn: (index, item) => {
-          return item.parentUuid;
+          return item.gtmId;
         }
       },
       pagination: {
@@ -538,12 +535,11 @@ export class RegisterComponent implements OnInit {
         });
       });
     }
-
+    this.createFormControl(tableData);
     this.dataTableData = {
       data: tableData,
       total: size(tableData)
     };
-
     this.getGTMNode();
   }
 
@@ -568,93 +564,74 @@ export class RegisterComponent implements OnInit {
         }
       });
     }
-
+    this.createFormControl(tableData, DataMap.goldendbNodeType.gtmNode.value);
     this.gtmTableData = {
       data: tableData,
       total: size(tableData)
     };
+    if (!!this.rowData) {
+      this.setValid();
+    }
   }
 
-  configDataNode(data) {
-    this.drawModalService.create(
-      assign({}, MODAL_COMMON.generateDrawerOptions(), {
-        lvModalKey: 'config-node',
-        lvWidth: MODAL_COMMON.normalWidth,
-        lvHeader: this.i18n.get('common_config_label'),
-        lvContent: ConfigNodeComponent,
-        lvComponentParams: {
-          options: this.proxyOptions,
-          children: this.formGroup.value.dataNode,
-          rowData: first(data)
-        },
-        lvOkDisabled: true,
-        lvAfterOpen: modal => {
-          const content = modal.getContentComponent() as ConfigNodeComponent;
-          const modalIns = modal.getInstance();
-
-          modalIns.lvOkDisabled = content.formGroup.status === 'INVALID';
-          content.formGroup.statusChanges.subscribe(res => {
-            modalIns.lvOkDisabled = res === 'INVALID';
-          });
-        },
-        lvOk: modal => {
-          return new Promise(resolve => {
-            const content = modal.getContentComponent() as ConfigNodeComponent;
-            content.onOK().subscribe({
-              next: res => {
-                this.dataTableData = {
-                  data: this.dataTableData.data,
-                  total: this.dataTableData.total
-                };
-                resolve(true);
-              }
-            });
-          });
-        }
-      })
-    );
+  createFormControl(data, nodeType?) {
+    each(data, item => {
+      if (nodeType) {
+        set(item, 'nodeType', nodeType);
+      }
+      assign(item, {
+        parentUuidControl: new FormControl(item?.parentUuid || '', {
+          validators: [this.baseUtilService.VALID.required()]
+        }),
+        osUserControl: new FormControl(item?.osUser || '', {
+          validators: [
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.maxLength(32)
+          ]
+        })
+      });
+      item.parentUuidControl.valueChanges.subscribe(res => {
+        const host = find(this.proxyOptions, { uuid: res });
+        item.parentUuid = res || null;
+        item.parentName = host ? `${host.name}(${host.endpoint})` : null;
+        this.setValid();
+      });
+      item.osUserControl.valueChanges.subscribe(res => {
+        item.osUser = res;
+        this.setValid();
+      });
+    });
   }
 
-  addGTMNode(data?) {
-    this.drawModalService.create(
-      assign({}, MODAL_COMMON.generateDrawerOptions(), {
-        lvModalKey: 'add-host',
-        lvWidth: MODAL_COMMON.normalWidth,
-        lvHeader: !!data
-          ? this.i18n.get('common_modify_label')
-          : this.i18n.get('common_add_label'),
-        lvContent: AddHostComponent,
-        lvComponentParams: {
-          options: this.proxyOptions,
-          children: this.formGroup.value.gtmNode,
-          rowData: first(data)
-        },
-        lvOkDisabled: true,
-        lvAfterOpen: modal => {
-          const content = modal.getContentComponent() as AddHostComponent;
-          const modalIns = modal.getInstance();
+  // 定义一个函数来递归地删除指定的属性
+  cloneExcludeFormControls(obj, hash = new WeakMap()) {
+    if (obj == null) return obj;
+    if (hash.has(obj)) return hash.get(obj);
+    const cloneObj = {};
+    hash.set(obj, cloneObj);
+    each(obj, (value, key) => {
+      if (
+        (key === 'gtm' || key === 'group' || key === 'mysqlNodes') &&
+        isArray(value)
+      ) {
+        cloneObj[key] = this.cloneArrayExcludeFormControls(value, hash);
+      } else if (!(value instanceof FormControl)) {
+        cloneObj[key] = value;
+      }
+    });
+    return cloneObj;
+  }
 
-          modalIns.lvOkDisabled = content.formGroup.status === 'INVALID';
-          content.formGroup.statusChanges.subscribe(res => {
-            modalIns.lvOkDisabled = res === 'INVALID';
-          });
-        },
-        lvOk: modal => {
-          return new Promise(resolve => {
-            const content = modal.getContentComponent() as AddHostComponent;
-            content.onOK().subscribe({
-              next: res => {
-                this.gtmTableData = {
-                  data: this.gtmTableData.data,
-                  total: this.gtmTableData.total
-                };
-                resolve(true);
-              }
-            });
-          });
-        }
-      })
-    );
+  cloneArrayExcludeFormControls(arr: any[], hash = new WeakMap()) {
+    const cloneArr = [];
+    each(arr, element => {
+      if (isObject(element) && !(element instanceof FormControl)) {
+        cloneArr.push(this.cloneExcludeFormControls(element, hash));
+      } else {
+        cloneArr.push(element);
+      }
+    });
+    return cloneArr;
   }
 
   getParams() {
@@ -666,9 +643,7 @@ export class RegisterComponent implements OnInit {
       get(this.dataDetail, 'dependencies.agents'),
       item => !find(agents, val => val === item.uuid)
     );
-
-    const clusterInfo = cloneDeep(this.instances);
-
+    const clusterInfo = this.cloneExcludeFormControls(this.instances);
     return {
       name: this.formGroup.value.name,
       type: ResourceType.DATABASE,

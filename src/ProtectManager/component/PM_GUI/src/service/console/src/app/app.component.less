@@ -39,14 +39,6 @@
   cursor: pointer;
 }
 
-.aui-inner-search {
-  background: #000;
-}
-
-:host ::ng-deep .aui-inner-search .lv-input {
-  color: #fff;
-}
-
 .aui-menu-container {
   height: 64px;
   display: inline-flex;
@@ -54,7 +46,7 @@
 }
 
 .running-task-icon {
-  background: url('assets/img/task_running.gif') no-repeat;
+  background: url('assets/img/task_running_gray_gif.gif') no-repeat;
   height: 24px;
   width: 24px;
   margin-top: 6px;
@@ -63,7 +55,7 @@
 }
 
 .task-icon {
-  background: url('assets/img/task.svg') no-repeat;
+  background: url('assets/img/task_closed.svg') no-repeat;
   height: 24px;
   width: 24px;
   margin-top: 6px;
@@ -78,23 +70,6 @@
   background-position: -5px;
 }
 
-.top-help-container {
-  width: 150px;
-}
-
-.top-help-container tr {
-  cursor: pointer;
-  color: #6b707c;
-
-  :hover {
-    color: #fafbff;
-  }
-}
-
-.top-help-container td:first-child {
-  vertical-align: top;
-}
-
 .top-task-container {
   width: 380px;
 }
@@ -105,22 +80,6 @@
 
 .top-task-container td:first-child {
   vertical-align: top;
-}
-
-.top-task-name {
-  width: 280px;
-  color: #fafbff;
-  margin-left: 5px;
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.top-task-status {
-  width: 280px;
-  color: #9ea4b3;
-  font-size: 12px;
-  margin-left: 5px;
-  margin-bottom: 10px;
 }
 
 .top-task-header-title {
@@ -257,26 +216,32 @@
 }
 
 .no-data {
-  width: 100%;
   padding: 32px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+
+  .lv-group-column {
+    align-items: center !important;
+  }
 }
 
-.help-menu-container .help-menu-section {
-  padding: 0 0.15rem;
+.no-data-image {
+  width: 64px;
+  height: 72px;
 }
 
 .help-menu-container .help-menu-section .n-help-link,
 .help-menu-container .help-menu-section n-help-link {
   display: block;
   padding: 0.05rem 0;
-  color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
 }
 
 .help-menu-container .help-menu-section .n-help-link:hover,
 .help-menu-container .help-menu-section n-help-link:hover {
-  color: #fff;
+  color: var(--live-angular-color-primary-hover);
 }
 
 .n-help-link .help-wrapper {
@@ -315,10 +280,11 @@ span.source-conainer {
 }
 
 .clusters-container {
-  color: #6c7280;
+  color: var(--live-angular-color-text-hint);
   font-size: 16px;
   cursor: pointer;
   margin-left: 4px;
+  max-width: 150px;
 }
 
 ::ng-deep lv-layout.lv-layout-cross > lv-sider.aui-sider > div {
@@ -449,20 +415,10 @@ span.source-conainer {
   border-radius: 0;
 }
 
-.menu-label {
-  color: #4d4d4d;
-}
-
-.global-search-collapsed {
-  cursor: pointer;
-  position: absolute;
-  left: calc(50% - 63px);
-}
-
 .global-search {
   cursor: pointer;
   position: absolute;
-  left: calc(50% - 191px);
+  left: calc(50% - 160px - 109px);
 }
 
 .hide-guide-bg {
@@ -478,4 +434,29 @@ span.source-conainer {
 
 .collapsed-container {
   line-height: 36px;
+}
+
+.cyber-home-header ::ng-deep {
+  div:first-child {
+    background-color: #1c1f24 !important;
+  }
+}
+
+.card-theme {
+  width: 56px;
+  height: 40px;
+}
+
+.theme-change-title {
+  font-size: 12px;
+  color: var(--live-angular-color-text-secondary);
+}
+
+.theme-group {
+  margin-top: 0.24rem;
+  align-items: center;
+}
+
+.menu-label {
+  color: var(--live-angular-color-text-hint);
 }

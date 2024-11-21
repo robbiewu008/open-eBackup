@@ -1,3 +1,4 @@
+<div *ngIf="!rowItem.isModify" class="user-tips aui-text-help">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,8 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<h2>{{'common_user_label' | i18n}}</h2>
-<div *ngIf="!rowItem.isModify" class="user-tips aui-text-help">
     {{'system_add_auth_tips_label' | i18n}}
 </div>
 <div *ngIf="rowItem.isModify" class="user-tips aui-text-help">

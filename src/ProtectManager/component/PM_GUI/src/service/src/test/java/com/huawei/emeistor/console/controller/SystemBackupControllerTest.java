@@ -19,6 +19,7 @@ import static org.mockito.Mockito.verify;
 
 import com.huawei.emeistor.console.bean.Token;
 import com.huawei.emeistor.console.contant.ConfigConstant;
+import com.huawei.emeistor.console.controller.request.UploadSystemBackupRequest;
 import com.huawei.emeistor.console.exception.LegoCheckedException;
 import com.huawei.emeistor.console.service.impl.SecurityPolicyServiceImpl;
 import com.huawei.emeistor.console.service.impl.SessionServiceImpl;
@@ -27,8 +28,8 @@ import com.huawei.emeistor.console.util.RequestUtil;
 import com.huawei.emeistor.console.util.SHA256Encryptor;
 import com.huawei.emeistor.console.util.TimeoutUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -100,7 +101,12 @@ public class SystemBackupControllerTest {
             .thenReturn(responseEntity);
         PowerMockito.when(restTemplate.postForEntity(anyString(), any(), eq(Object.class)))
             .thenReturn(responseObjectEntity);
-        systemBackupController.uploadBackup(servletRequest, servletResponse, multipartFile, "",true);
+        UploadSystemBackupRequest request = new UploadSystemBackupRequest();
+        request.setFile(multipartFile);
+        request.setPassword("");
+        request.setNeedSignVerify(true);
+        request.setSuperDmPwd(StringUtils.EMPTY);
+        systemBackupController.uploadBackup(servletRequest, servletResponse, request);
         verify(restTemplate).postForEntity(anyString(), any(), eq(Object.class));
     }
 
@@ -125,7 +131,13 @@ public class SystemBackupControllerTest {
             .thenReturn(responseEntity);
         PowerMockito.when(restTemplate.postForEntity(anyString(), any(), eq(Object.class)))
             .thenReturn(responseObjectEntity);
-        systemBackupController.uploadBackup(servletRequest, servletResponse, file, "",true);
+        UploadSystemBackupRequest request = new UploadSystemBackupRequest();
+        request.setFile(file);
+        request.setPassword("");
+        request.setNeedSignVerify(true);
+        request.setSuperDmPwd(StringUtils.EMPTY);
+        systemBackupController.uploadBackup(servletRequest, servletResponse, request);
+        systemBackupController.uploadBackup(servletRequest, servletResponse, request);
     }
 
     /**

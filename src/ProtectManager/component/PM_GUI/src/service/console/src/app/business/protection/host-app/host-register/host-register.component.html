@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
     <div class="aui-header-1">
         <lv-group lvGutter="8px">
             <i lv-icon="aui-widget-datepicker-previous" [lvColorState]="true" (click)="gotoHost()"></i>
@@ -131,7 +131,9 @@
                         <lv-radio-group formControlName="ipType" [lvGroupName]="'ipTypeGroup'">
                             <lv-group [lvGutter]="'24px'">
                                 <lv-radio lvValue="IPV4"> IPv4 </lv-radio>
-                                <lv-radio lvValue="IPV6"> IPv6 </lv-radio>
+                                <ng-container *ngIf="!appUtilsService.isDecouple">
+                                    <lv-radio lvValue="IPV6"> IPv6 </lv-radio>
+                                </ng-container>
                             </lv-group>
                         </lv-radio-group>
                     </lv-form-control>
@@ -147,7 +149,7 @@
                     </lv-form-control>
                 </lv-form-item>
                 <!-- 是否开启源端重删 -->
-                <lv-form-item *ngIf="!appUtilsService.isDistributed">
+                <lv-form-item *ngIf="!appUtilsService.isDistributed && !hideSourceDuplication">
                     <lv-form-label>
                         {{'protection_sla_source_deduplication_label' | i18n}}
                     </lv-form-label>
@@ -349,17 +351,15 @@
                             <input lv-input type="text" formControlName="installPath" class="register-control" />
                         </lv-form-control>
                     </lv-form-item>
-                    <ng-container *ngIf="formGroup.value.type === dataMap.Proxy_Type_Options.remoteAgentVmware.value">
-                        <lv-form-item>
-                            <lv-form-label>{{'common_auto_sync_host_name_label' | i18n}}
-                                <i lv-icon="aui-icon-help" [lv-tooltip]="autoSyncTipTpl" lvTooltipTheme="light"
-                                    lvTooltipPosition="right" class="configform-constraint" lvColorState="true"></i>
-                            </lv-form-label>
-                            <lv-form-control>
-                                <lv-switch formControlName="isAutoSynchronizeHostName"></lv-switch>
-                            </lv-form-control>
-                        </lv-form-item>
-                    </ng-container>
+                    <lv-form-item>
+                        <lv-form-label>{{'common_auto_sync_host_name_label' | i18n}}
+                            <i lv-icon="aui-icon-help" [lv-tooltip]="autoSyncTipTpl" lvTooltipTheme="light"
+                                lvTooltipPosition="right" class="configform-constraint" lvColorState="true"></i>
+                        </lv-form-label>
+                        <lv-form-control>
+                            <lv-switch formControlName="isAutoSynchronizeHostName"></lv-switch>
+                        </lv-form-control>
+                    </lv-form-item>
                 </ng-container>
             </lv-form>
         </div>
@@ -466,7 +466,7 @@
     <span class="error-text">{{'common_required_label' | i18n}}</span>
 </ng-template>
 
-<!--LiveUI的lv-alert组件在form-control图标样式会错位，所以这里手动写一次-->
+<!--live-angularUI的lv-alert组件在form-control图标样式会错位，所以这里手动写一次-->
 <ng-template #sourceDeduplicationIconTpl>
     <span class="special-icon-container">
         <i lv-icon="lv-icon-status-warning-info"></i>

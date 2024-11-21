@@ -1,0 +1,109 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复卷副本中的单个或多个文件">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="volume_0042.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="volume_0046">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复卷副本中的单个或多个文件</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="volume_0046"></a><a name="volume_0046"></a>
+
+<h1 class="topictitle1">恢复卷副本中的单个或多个文件</h1>
+<div><p>如果您希望快速恢复副本中的一个或多个文件，可以通过执行文件级恢复实现。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="volume_0046__zh-cn_topic_0000001839142377_uicontrol2728131538">“<span id="volume_0046__zh-cn_topic_0000001839142377_text27283316312">数据利用</span> &gt; <span id="volume_0046__zh-cn_topic_0000001839142377_text157282318317">副本数据</span> &gt; 文件系统 &gt; <span id="volume_0046__zh-cn_topic_0000001839142377_text9637150538">卷</span>”</span>。</span></li><li><span>您可以以卷资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据资源名称查找到需要恢复的资源，并单击资源名称。</p>
+</p></li><li><span>单击<span class="uicontrol">“<span>副本数据</span>”</span>，依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000001844511158.png"></span>，即表示该月、该天存在副本。</p>
+</p></li><li><span>选择已创建索引的副本，单击“<span>更多</span> &gt; <span>文件级恢复</span>”。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>链接文件不支持文件级恢复。</p>
+</div></div>
+</p></li><li><span>在副本数据中选择单个或多个文件或目录后选择恢复目标位置。</span></li><li><span>配置恢复卷参数。</span><p><p>相关参数说明如<a href="#volume_0046__Files-0044_table93951625101715">表1</a>所示。</p>
+
+<div class="tablenoborder"><a name="volume_0046__Files-0044_table93951625101715"></a><a name="Files-0044_table93951625101715"></a><table cellpadding="4" cellspacing="0" summary="" id="volume_0046__Files-0044_table93951625101715" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复卷参数说明</caption><colgroup><col style="width:23.09%"><col style="width:76.91%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="23.09%" id="mcps1.3.3.2.6.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="76.91%" id="mcps1.3.3.2.6.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p><span>恢复至</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>卷的恢复位置。</p>
+<ul><li><span>原位置</span>：恢复至原机原位置。</li><li><span>新位置</span>：恢复至新位置，需要指定恢复的目标主机及路径。</li></ul>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>文件级恢复仅支持恢复至新位置。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p><span>目标主机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>选择恢复的目标主机。</p>
+<p>可通过搜索主机名称或主机IP地址选择相应主机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p><span>目标路径</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>选择恢复的目标路径。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p><span>覆盖规则</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。</p>
+<ul><li><span>直接替换已经存在的文件</span></li><li><span>忽略已存在的文件</span>，即跳过这些同名文件不替换。</li><li><span>只替换比恢复文件更旧的文件</span>，即保存目标位置上较新的同名文件不替换。</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p><span>恢复前执行脚本</span></p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>您可以根据实际需求，在备份任务执行前、执行成功后、执行失败后，执行自定义脚本。</p>
+<p>请将执行脚本放在DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty目录下，例如：/opt/DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty/执行脚本的相对路径。</p>
+<p><span style="color:#282B33;">可根据实际情况，在恢复任务执行前、或恢复任务执行成功后、或恢复任务执行失败后，执行用户自定义的脚本，脚本类型为sh。并将脚本放置在DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty目录下。</span></p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>当配置了“恢复成功执行脚本”时，即使该脚本执行失败，OceanProtect上也会显示恢复任务的状态为“成功”。请您留意任务详情中是否有后置脚本执行失败的相关提示，如有请及时修正脚本。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p><span>恢复成功执行脚本</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p><span>恢复失败执行脚本</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="volume_0042.html">恢复</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

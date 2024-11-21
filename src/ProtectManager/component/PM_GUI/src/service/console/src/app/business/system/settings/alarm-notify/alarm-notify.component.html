@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
   <div class="aui-header-1">
     <lv-group lvGutter="8px">
       <h1>{{ notifyLabel }}</h1>
@@ -109,18 +109,7 @@
             />
           </lv-form-control>
         </lv-form-item>
-        <lv-form-item>
-          <lv-form-label lvRequired>{{ smtpPortLabel }}</lv-form-label>
-          <lv-form-control [lvErrorTip]="rangeErrorTip">
-            <input
-              lv-input
-              type="text"
-              formControlName="port"
-              placeholder="1~65535"
-              class="form-control-input"
-            />
-          </lv-form-control>
-        </lv-form-item>
+
         <lv-form-item>
           <lv-form-label lvRequired>{{ senderEmailLabel }}</lv-form-label>
           <lv-form-control [lvErrorTip]="emailErrorTip">
@@ -158,11 +147,8 @@
               (ngModelChange)="encryptionMethodChange($event)"
               class="form-control-input"
             ></lv-select>
-            <div>
-              <i lv-icon="lv-icon-status-info" class="icon-info"></i>
-              <span class="encription-tip aui-text-help-sm">
-                {{ encriptionTipLabel }}
-              </span>
+            <div class="aui-paginator-wrap">
+              <lv-alert lvType="info" lvClosable="false">{{ encriptionTipLabel }}</lv-alert>
             </div>
           </lv-form-control>
         </lv-form-item>
@@ -175,6 +161,18 @@
               lv-input
               type="text"
               formControlName="sslSmtpPort"
+              placeholder="1~65535"
+              class="form-control-input"
+            />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="(sendeForm.value['protocol'] != 1)">
+          <lv-form-label lvRequired>{{ smtpPortLabel }}</lv-form-label>
+          <lv-form-control [lvErrorTip]="rangeErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="port"
               placeholder="1~65535"
               class="form-control-input"
             />

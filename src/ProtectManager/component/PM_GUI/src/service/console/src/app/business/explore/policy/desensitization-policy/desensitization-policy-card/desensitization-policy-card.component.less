@@ -1,32 +1,44 @@
 .policy-card {
-  width: 360px;
-  height: 200px;
-  border: 1px solid #d4d9e6;
-  padding: 32px 32px;
+  height: 260px;
+  padding: 24px 0;
+
   .policy-name {
     max-width: 170px;
   }
+
   .card-operation {
-    border-bottom: 1px dashed #d4d9e6;
+    border-bottom: 1px dashed var(--live-angular-color-divider-secondary);
     padding-bottom: 16px;
     margin-bottom: 1px;
   }
+
   .objects-container {
     flex: 0.85;
   }
+
   .desc-container {
     flex: 2;
     padding: 14px 0 0 0;
   }
+
   .dashed-container {
-    border-left: 1px dashed #d4d9e6;
+    border-left: 1px dashed var(--live-angular-color-divider-secondary);
     padding-left: 20px;
   }
+
   .description {
     height: 55px;
     margin-top: 6px;
     overflow: hidden;
-    color: #b8becc;
+    color: var(--live-angular-color-text-regular);
     font-size: 0.12rem;
   }
+}
+
+.list-width {
+  width: 425px;
+}
+
+.modal-width {
+  width: 360px;
 }

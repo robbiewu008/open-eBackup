@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,23 +12,33 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup">
   <lv-form-item>
     <lv-form-label>{{
       'explore_volume_chosen_copy_label' | i18n
       }}</lv-form-label>
     <lv-form-control>
-      <span class="old-group">{{
+      <span>{{
         rowCopy.generated_time | date: 'yyyy-MM-dd HH:mm:ss'
         }}</span>
     </lv-form-control>
   </lv-form-item>
-  <lv-form-item>
+  <lv-form-item *ngIf="isWindows">
+    <lv-form-label lvRequired>
+      {{'common_restore_type_label' | i18n}}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-form-control>
+        <lv-select class="fileset-control" [lvOptions]="restorationType" lvValueKey="value"
+          formControlName="restorationType"></lv-select>
+      </lv-form-control>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="!isWindows">
     <lv-form-label>
       {{ 'explore_volume_bare_metal_restore_label' | i18n }}
     </lv-form-label>
     <lv-form-control>
-      <lv-radio-group formControlName="enable_bare_metal_restore" class="old-group">
+      <lv-radio-group formControlName="enable_bare_metal_restore">
         <lv-group lvGutter="16px">
           <lv-radio [lvValue]="true" [lvDisabled]="!isSystemBackup">{{ 'common_open_label' | i18n }}</lv-radio>
           <lv-radio [lvValue]="false">{{
@@ -35,8 +46,7 @@
             }}</lv-radio>
         </lv-group>
       </lv-radio-group>
-      <lv-group [lvColumns]="['16px', 'auto']" lvRowGutter="4px" *ngIf="formGroup.value.enable_bare_metal_restore"
-        class="info-tip">
+      <lv-group [lvColumns]="['16px', 'auto']" lvRowGutter="4px" *ngIf="formGroup.value.enable_bare_metal_restore">
         <i lv-icon="lv-icon-status-info" lvColorState="true" class="type-icon"></i>
         <span>{{ 'explore_volume_bare_metal_tip_label' | i18n }}</span>
       </lv-group>
@@ -82,7 +92,9 @@
         <lv-group lvGutter="8px" lvDirection="vertical" class="radio-content">
           <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
             <lv-group [lvGutter]="'20px'">
-              <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="disableOriginLocation || hasSystemVolume" [lv-tooltip]="
+              <lv-radio [lvValue]="restoreLocationType.ORIGIN"
+                [lvDisabled]="disableOriginLocation || hasSystemVolume || formGroup.get('restorationType').value === dataMap.windowsVolumeBackupType.bareMetal.value"
+                [lv-tooltip]="
                 disableOriginLocation && !formGroup.value.enable_bare_metal_restore
                   ? ('protection_cloud_origin_restore_disabled_label' | i18n)
                   : ''
@@ -132,13 +144,13 @@
             <lv-form-label>
               {{ 'protection_restore_pre_script_label' | i18n }}
               <i lv-icon="aui-icon-help" lvTooltipTheme="light" lv-tooltip="{{
-                  'common_script_oracle_linux_help_label' | i18n
+                  scriptTip
                 }}" class="configform-constraint" lvColorState="true">
               </i>
             </lv-form-label>
             <lv-form-control [lvErrorTip]="scriptErrorTip">
               <input formControlName="preScript" lv-input placeholder="{{
-                  'common_script_linux_placeholder_label' | i18n
+                  scriptPlaceHolder
                 }}" />
             </lv-form-control>
           </lv-form-item>
@@ -146,13 +158,13 @@
             <lv-form-label>
               {{ 'protection_restore_post_script_label' | i18n }}
               <i lv-icon="aui-icon-help" lvTooltipTheme="light" lv-tooltip="{{
-                  'common_script_oracle_linux_help_label' | i18n
+                  scriptTip
                 }}" class="configform-constraint" lvColorState="true">
               </i>
             </lv-form-label>
             <lv-form-control [lvErrorTip]="scriptErrorTip">
               <input formControlName="postScript" lv-input placeholder="{{
-                  'common_script_linux_placeholder_label' | i18n
+                  scriptPlaceHolder
                 }}" />
             </lv-form-control>
           </lv-form-item>
@@ -160,13 +172,13 @@
             <lv-form-label>
               {{ 'protection_restore_fail_script_label' | i18n }}
               <i lv-icon="aui-icon-help" lvTooltipTheme="light" lv-tooltip="{{
-                  'common_script_oracle_linux_help_label' | i18n
+                  scriptTip
                 }}" class="configform-constraint" lvColorState="true">
               </i>
             </lv-form-label>
             <lv-form-control [lvErrorTip]="scriptErrorTip">
               <input formControlName="executeScript" lv-input placeholder="{{
-                  'common_script_linux_placeholder_label' | i18n
+                  scriptPlaceHolder
                 }}" />
             </lv-form-control>
           </lv-form-item>
@@ -182,7 +194,7 @@
       'common_advanced_label' | i18n
       }}</span>
     <i lv-icon="aui-icon-help" lvTooltipTheme="light" lv-tooltip="{{
-        'protection_fileset_restore_advance_params_label' | i18n
+        (isWindows ?'protection_fileset_windows_restore_advance_params_label' :'protection_fileset_restore_advance_params_label') | i18n
       }}" lvColorState="true">
     </i>
   </lv-group>
@@ -210,7 +222,7 @@
           <td *ngIf="formGroup.value.restoreTo === newLocation">
             <lv-select [lvOptions]="item.volumeOptions" lvValueKey="key" lvFilterKey="label" lvFilterMode="contains"
               lvShowFilter lvShowClear [lvDisabled]="!formGroup.value.host" [(ngModel)]="item.volume"
-              (ngModelChange)="volumeChange($event)">
+              (ngModelChange)="volumeChange($event)" [lvContentTemplate]="volumeTemplate">
             </lv-select>
           </td>
           <td *ngIf="formGroup.value.restoreTo === originalLocation">
@@ -225,4 +237,13 @@
   <span>{{
     item.size | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true
     }}</span>
+</ng-template>
+
+<ng-template #volumeTemplate let-item>
+  <lv-group class="volume-select">
+    <span lv-overflow style="max-width: 200px;">{{item.label}}</span>
+    <span class="aui-text-desc">{{
+      item.size | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true
+      }}</span>
+  </lv-group>
 </ng-template>

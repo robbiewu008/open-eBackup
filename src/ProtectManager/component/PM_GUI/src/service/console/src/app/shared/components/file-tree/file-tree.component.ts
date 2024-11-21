@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   ElementRef,
@@ -42,7 +42,7 @@ import {
   trim
 } from 'lodash';
 import { CopyControllerService } from 'app/shared/api/services';
-import { CAPACITY_UNIT } from 'app/shared/consts';
+import { CAPACITY_UNIT, DataMap, RestoreFileType } from 'app/shared/consts';
 import { extendNodeParams } from 'app/shared';
 
 @Component({
@@ -58,12 +58,14 @@ export class FileTreeComponent implements OnInit {
 
   title = this.i18n.get('explore_object_need_restore_label');
   unitconst = CAPACITY_UNIT;
+  restoreFileType = RestoreFileType;
+  _includes = includes;
 
   pathView = 'all';
   total = 0;
   selectedTotal = 0;
 
-  filePathItems: MenuItem[];
+  filePathItems: MenuItem[] = [];
 
   selectionTree = [];
   tableData: TableData;
@@ -77,6 +79,14 @@ export class FileTreeComponent implements OnInit {
   currentPath: string;
   // 搜索关键字
   searcKey: string;
+  // 搜索是否超过1000条
+  searchMax = false;
+
+  hideItems = [];
+  maxBreadNum = 5;
+
+  // 索引失败和未索引提示
+  showIndexTip = false;
 
   @ViewChild('input', { static: false }) pathInput: ElementRef<
     HTMLIFrameElement
@@ -101,6 +111,13 @@ export class FileTreeComponent implements OnInit {
     setTimeout(() => {
       this.pathNodeCheck({ node: this.selectionTree[0] });
     });
+    this.showIndexTip = includes(
+      [
+        DataMap.CopyData_fileIndex.unIndexed.value,
+        DataMap.CopyData_fileIndex.deletedFailed.value
+      ],
+      this.copy?.indexed
+    );
   }
 
   getFilePathItems(node) {
@@ -118,17 +135,43 @@ export class FileTreeComponent implements OnInit {
         onClick: event => this.toTargetPath(event, node, item)
       });
     });
-    this.currentPath = map(breadcrumbItems, 'label').join('/');
     this.filePathItems = [...breadcrumbItems];
+    if (this.filePathItems?.length > this.maxBreadNum) {
+      const hideItem = this.filePathItems.splice(
+        this.maxBreadNum - 2,
+        this.filePathItems.length - this.maxBreadNum + 1
+      );
+      this.hideItems = [...hideItem];
+      this.filePathItems.splice(this.maxBreadNum - 2, 0, {
+        id: 'more_bread',
+        label: '...',
+        items: this.hideItems
+      });
+    } else {
+      this.hideItems = [];
+    }
+    this.filePathItems = [...this.filePathItems];
+    this.currentPath = map(breadcrumbItems, 'label').join('/');
+  }
+
+  // 如果父节点选了，子节点选中自动忽略
+  mergeSelection() {
+    let mergePaths = [];
+    let parentPaths = map(this.selectionTableData, 'absolutePath');
+    mergePaths = reject(this.selectionTableData, item => {
+      return includes(parentPaths, item.path);
+    });
+    return mergePaths;
   }
 
   setSelection() {
-    this.selectedTotal = size(this.selectionTableData);
+    const mergePaths = this.mergeSelection();
+    this.selectedTotal = size(mergePaths);
     this.selectTableData = {
-      data: this.selectionTableData,
+      data: mergePaths,
       total: this.selectedTotal
     };
-    this.tableSelectionChange.emit(cloneDeep(this.selectionTableData));
+    this.tableSelectionChange.emit(cloneDeep(mergePaths));
   }
 
   tabChange() {
@@ -370,8 +413,12 @@ export class FileTreeComponent implements OnInit {
       };
       this.copyControllerService
         .ListCopyCatalogsByName(params)
-        .subscribe(res => this.updateTable(res, node));
+        .subscribe(res => {
+          this.searchMax = res.totalCount >= 1000;
+          this.updateTable(res, node);
+        });
     } else {
+      this.searchMax = false;
       const params = {
         copyId: this.copy.uuid,
         pageNo: filters.paginator.pageIndex,

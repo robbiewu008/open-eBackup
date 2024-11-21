@@ -1,3 +1,4 @@
+<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup create-fileset">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup create-fileset">
     <lv-form-item>
         <lv-form-label lvRequired>{{'common_name_label' | i18n}}</lv-form-label>
         <lv-form-control class="select" [lvErrorTip]="filesetNameErrorTip">
@@ -39,6 +39,16 @@
             </lv-form-control>
         </lv-form-item>
     </ng-container>
+    <ng-container *ngIf="sub_type === dataMap.Resource_Type.fileset.value && osType === dataMap.Os_Type.linux.value">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_volume_advanced_backup_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-switch formControlName="is_OS_backup"></lv-switch>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
     <ng-container *ngIf="sub_type === 'HDFS'">
         <lv-form-item>
             <lv-form-label lvRequired>
@@ -53,7 +63,9 @@
         </lv-form-item>
     </ng-container>
     <lv-form-item>
-        <lv-form-label lvRequired>{{'protection_select_file_label' | i18n}}</lv-form-label>
+        <lv-form-label
+            [lvRequired]="!formGroup.get('is_OS_backup').value">{{'protection_select_file_label'
+            | i18n}}</lv-form-label>
         <lv-form-control class="control-container">
             <lv-group lvGutter='4px'>
                 <div class="tree-container">

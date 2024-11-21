@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -24,7 +24,17 @@ import {
   RetentionType
 } from 'app/shared';
 import { SlaValidatorService } from 'app/shared/services/sla-validator.service';
-import { each, filter, includes, map, set, size, uniq, uniqBy } from 'lodash';
+import {
+  assign,
+  each,
+  filter,
+  includes,
+  map,
+  set,
+  size,
+  uniq,
+  uniqBy
+} from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -187,7 +197,6 @@ export class SpecifiedArchivalPolicyComponent implements OnInit {
         storage_id: item.storage_id,
         archiving_scope: item.archiving_scope,
         network_access: item.network_access,
-        driverCount: +item.driverCount,
         auto_retry: item.auto_retry,
         auto_retry_times: +item.auto_retry_times,
         archive_target_type: +item.archive_target_type,
@@ -294,6 +303,13 @@ export class SpecifiedArchivalPolicyComponent implements OnInit {
       set(params, 'ext_parameters.storage_list', [
         { esn: item.esn, storage_id: item.mediaSet }
       ]);
+      assign(params.ext_parameters, {
+        driverCount: +item.driverCount
+      });
+    }
+
+    if (includes([this.applicationType.TDSQL], this.applicationData)) {
+      set(params, 'ext_parameters.log_archive', item?.log_archive || false);
     }
 
     if (

@@ -1,3 +1,4 @@
+<div [ngClass]="{ visible: activeStep === 1, hidden: activeStep !== 1 }">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div [ngClass]="{ visible: activeStep === 1, hidden: activeStep !== 1 }">
   <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
     <lv-form-item>
       <lv-form-label lvRequired="true">{{
@@ -105,6 +105,8 @@
 
   <div *ngIf="!formGroup.value.hasEnableParallelStorage || appUtilsService.isDecouple">
   <lv-transfer
+  [lvTitles]="['system_selectable_cluster_label' | i18n , 'system_selected_cluster_label' | i18n]"
+  [lvOperateTemplate]="[sourceOperateTpl, targetOperateTpl]"
   [lvSourceData]="sourceData"
   [lvTargetData]="targetData"
   [lvRenders]="[render, render]"
@@ -116,6 +118,8 @@
     <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab" (lvActiveIndexChange)="tabChange($event)">
       <lv-tab lvTitle="{{'system_local_cluster_label' | i18n}}" lvId="localCluster">
         <lv-transfer
+        [lvTitles]="['system_selectable_cluster_label' | i18n , 'system_selected_cluster_label' | i18n]"
+        [lvOperateTemplate]="[sourceOperateTpl, targetOperateTpl]"
         [lvSourceData]="localSourceData"
         [lvTargetData]="localTargetData"
         [lvRenders]="[render, render]"
@@ -124,6 +128,8 @@
       </lv-tab>
       <lv-tab lvTitle="{{'system_non_local_cluster_label' | i18n}}" lvId="nonLocalCluster">
         <lv-transfer
+        [lvTitles]="['system_selectable_cluster_label' | i18n , 'system_selected_cluster_label' | i18n]"
+        [lvOperateTemplate]="[sourceOperateTpl, targetOperateTpl]"
         [lvSourceData]="nonLocalSourceData"
         [lvTargetData]="nonLocalTargetData"
         [lvRenders]="[render, render]"
@@ -134,24 +140,17 @@
   </div>
 </div>
 
+<ng-template #sourceOperateTpl let-data let-selecetd="selection" let-paginator="paginator" let-panel="panel">
+  
+</ng-template>
+
+<ng-template #targetOperateTpl let-data let-paginator="paginator" let-panel="panel">
+  <lv-group lvGutter="8px">
+    <button lv-button lvType="link" (click)="removeAll(data, panel)">{{'common_delete_all_label' | i18n}}</button>
+  </lv-group>
+</ng-template>
+
 <ng-template #render let-data let-belong="belong">
-  <div>
-    <div *ngIf="belong === 'source'" class="table-title">
-      {{ 'system_selectable_cluster_label' | i18n }}
-    </div>
-    <div *ngIf="belong === 'target'" class="target table-title">
-      <lv-group lvGutter="243px" class="target-group">
-        <lv-group>
-          {{ 'system_selected_cluster_label' | i18n }}
-        </lv-group>
-        <lv-group>
-          <button lv-button lvType="link" (click)="removeAll($event)">
-            {{ 'protection_clear_all_label' | i18n }}
-          </button>
-        </lv-group>
-      </lv-group>
-    </div>
-  </div>
   <lv-datatable
     #lvTable
     [lvData]="data"
@@ -191,7 +190,6 @@
             lvShowCheckbox
             [lvRowData]="item"
             [lvDisabled]="item.disabled"
-            (lvCheckChange)="checkChange($event, item)"
             style="width:60px"
           ></td>
           <td width="25%">{{ item.name }}</td>

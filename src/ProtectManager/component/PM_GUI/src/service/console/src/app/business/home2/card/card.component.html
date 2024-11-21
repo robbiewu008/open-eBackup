@@ -1,3 +1,4 @@
+<lv-loading [lvLoading]="cardInfo.loading" class="loading">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-loading [lvLoading]="cardInfo.loading" class="loading">
   <div
     [class]="{
       card: true,
@@ -19,15 +19,15 @@
     }"
   >
     <div class="card-header">
-      <div class="title">
-        {{ cardInfo.title | i18n }}
-        <div class="icon" *ngIf="cardInfo.slaTooltip">
-          <aui-sla-compliance-tooltip></aui-sla-compliance-tooltip>
-        </div>
-        <span class="subTitle">
-          {{ cardInfo.subtitle | i18n }}
+      <div class="title" [ngClass]="{'en-title-width':i18n.isEn}">
+        <div lv-overflow class="main-title">
+            {{ cardInfo.title | i18n }}
+        <span class="subTitle">{{ cardInfo.subtitle | i18n }}</span>
+        <span class="icon" *ngIf="cardInfo.slaTooltip">
+            <aui-sla-compliance-tooltip></aui-sla-compliance-tooltip>
         </span>
-        <div class="select-box">
+        </div>
+        <div class="select-box" lv-overflow>
           <ng-content select="[header]"></ng-content>
         </div>
       </div>

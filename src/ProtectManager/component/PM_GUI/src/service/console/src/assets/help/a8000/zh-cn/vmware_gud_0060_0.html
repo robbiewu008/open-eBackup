@@ -1,0 +1,142 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复Hyper-V虚拟机中的文件">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="vmware_gud_0055_0.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="vmware_gud_0060_0">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复Hyper-V虚拟机中的文件</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="vmware_gud_0060_0"></a><a name="vmware_gud_0060_0"></a>
+
+<h1 class="topictitle1">恢复Hyper-V虚拟机中的文件</h1>
+<div><p>当需要恢复虚拟机中的某些文件时，可以通过文件级恢复功能实现。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><ul><li><span>OceanProtect</span>支持使用备份副本、复制副本（不支持恢复至原位置）进行文件级恢复。</li><li>支持恢复的<span style="color:#282B33;">Linux文件系统类型为ext 2/3/4、XFS</span>。支持恢复的<span style="color:#282B33;">Windows文件系统类型为NTFS、FAT、FAT32</span>。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>已为待恢复到的目标虚拟机配置备份网络平面IP地址。</li><li>当目标虚拟机为Windows OS时，请确保目标虚拟机已开启445和138端口。当目标虚拟机为Linux OS时，请确保目标虚拟机已开启22端口。</li><li>当目标虚拟机为Windows OS时，请确保目标虚拟机已开启CIFS服务，具体操作请参考<a href="https://docs.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3" target="_blank" rel="noopener noreferrer">Microsoft官方网站</a>。</li><li>当目标虚拟机为非Windows OS时，请确保目标虚拟机已安装并开启rsync。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="vmware_gud_0060_0__zh-cn_topic_0000001839142377_uicontrol66667531188">“<span id="vmware_gud_0060_0__zh-cn_topic_0000001839142377_text86661453985">数据利用</span> &gt; <span id="vmware_gud_0060_0__zh-cn_topic_0000001839142377_text26661531582">副本数据</span> &gt; <span id="vmware_gud_0060_0__zh-cn_topic_0000001839142377_text56671153582">虚拟化</span> &gt; Hyper-V”</span>。</span></li></ol><ol start="2"><li><span>支持以虚拟机维度或以副本维度查找副本，本节以虚拟机维度为例进行说明。</span><p><p>在“资源”页签，根据虚拟机名称查找到需要恢复的虚拟机，并单击虚拟机名称。</p>
+</p></li><li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000001936102901.png"></span>，即表示该月、该天存在副本。</p>
+</p></li><li><span>在副本所在行，单击<span class="uicontrol">“<span>更多</span> &gt; 手动创建索引”</span>。任务执行成功后，执行后续步骤。</span></li><li><span>在副本所在行，单击<span class="uicontrol">“<span>更多</span> &gt; 文件级恢复”</span>。</span></li><li><span>在弹出的界面中选择需要恢复的文件。</span></li><li><span>勾选要恢复的文件后，设置恢复配置参数信息。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>如果副本中没有OS，则不能为其建立索引，因此该副本无法进行文件级恢复。</li><li>反向复制副本和归档副本不支持索引。</li><li>“<span>未索引</span>”的副本也支持文件级恢复。<span>当副本未建立索引，浏览文件数量超过200万的目录可能会超时失败，建议先手动创建索引。</span></li><li>备份Linux虚拟机时，未写入/etc/fstab文件的挂载点信息存储在内存中，<span>OceanProtect</span>不会备份该内容。因此，不会对该挂载点的文件生成索引，也不支持文件级恢复。如需对新增的文件系统生成索引并支持文件级恢复，请将新增的文件系统挂载点信息写入/etc/fstab。</li><li>当文件夹或文件名称存在乱码时，不支持文件级恢复。请勿勾选该类型的文件夹或文件，否则恢复失败。</li><li>链接文件不支持文件级恢复。</li><li>当目标虚拟机为Windows OS时，且仅开启了SMBv1服务，文件恢复后的时间为虚拟机的当前时间。</li></ul>
+</div></div>
+<ul><li>选择恢复至原位置，即恢复至原虚拟机的原目录。<div class="p">相关参数说明如<a href="#vmware_gud_0060_0__table9960822181311">表1</a>所示。
+<div class="tablenoborder"><a name="vmware_gud_0060_0__table9960822181311"></a><a name="table9960822181311"></a><table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0060_0__table9960822181311" frame="border" border="1" rules="all"><caption><b>表1 </b>原位置恢复参数说明</caption><colgroup><col style="width:29.9%"><col style="width:70.1%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.9%" id="mcps1.3.4.3.6.2.2.1.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70.1%" id="mcps1.3.4.3.6.2.2.1.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.3.6.2.2.1.1.2.2.3.1.1 "><p><span>虚拟机IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.3.6.2.2.1.1.2.2.3.1.2 "><div class="p" id="vmware_gud_0060_0__p49594222135">选择已配置的备份网络IP地址。<div class="note" id="vmware_gud_0060_0__note13959142281314"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="vmware_gud_0060_0__ul184254158477"><li id="vmware_gud_0060_0__li1671194110445">Hyper-V管理器需提前检测到对应虚拟机的IP地址。</li><li id="vmware_gud_0060_0__li13425121554713">执行文件级别的恢复前，需要事先为虚拟机配置备份网络IP地址。文件级恢复过程中，系统会使用该地址连接目标虚拟机进行恢复。</li><li id="vmware_gud_0060_0__li1130711714475">如果虚拟机IP地址未在列表内，请退出当前页面，在<span class="uicontrol" id="vmware_gud_0060_0__uicontrol61481615124114">“<span id="vmware_gud_0060_0__zh-cn_topic_0000001839142377_text2782025144215">保护</span> &gt; 虚拟化 &gt; Hyper-V”</span>  页面重新扫描虚拟化环境。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.3.6.2.2.1.1.2.2.3.1.1 "><p><span>虚拟机用户名</span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="70.1%" headers="mcps1.3.4.3.6.2.2.1.1.2.2.3.1.2 "><div class="p" id="vmware_gud_0060_0__p196016226135">文件级恢复时，目标虚拟机需要验证<span id="vmware_gud_0060_0__vmware_gud_0060_text426913561378">OceanProtect</span>的登录凭据，输入目标虚拟机的登录用户名及密码。<ul id="vmware_gud_0060_0__vmware_gud_0060_ul119609220135"><li id="vmware_gud_0060_0__vmware_gud_0060_li796017225136">Windows OS：默认用户名为<strong id="vmware_gud_0060_0__vmware_gud_0060_b2960522131311">Administrator</strong>。</li><li id="vmware_gud_0060_0__vmware_gud_0060_li1496012225130">Linux OS：默认用户名为<strong id="vmware_gud_0060_0__vmware_gud_0060_b1096019222138">root</strong>。</li></ul>
+<div class="note" id="vmware_gud_0060_0__vmware_gud_0060_note10319381535"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="vmware_gud_0060_0__vmware_gud_0060_ul871974405518"><li id="vmware_gud_0060_0__vmware_gud_0060_li8719444175514">该登录用户需要有目标虚拟机待恢复目录的读写权限。</li><li id="vmware_gud_0060_0__vmware_gud_0060_li231424655513">恢复后该文件的访问权限与该登录用户一致。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.3.6.2.2.1.1.2.2.3.1.1 "><p><span>虚拟机密码</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.3.6.2.2.1.1.2.2.3.1.1 "><p><span>覆盖规则</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.3.6.2.2.1.1.2.2.3.1.2 "><div class="p" id="vmware_gud_0060_0__p78773497306">当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。<ul id="vmware_gud_0060_0__ul138776497307"><li id="vmware_gud_0060_0__li1087714914306"><span id="vmware_gud_0060_0__text2877849173018">直接替换已经存在的文件</span></li><li id="vmware_gud_0060_0__li1287717497308"><span id="vmware_gud_0060_0__text148771149123013">忽略已存在的文件</span>，即跳过这些同名文件不替换。</li><li id="vmware_gud_0060_0__li68771149143011"><span id="vmware_gud_0060_0__text5877184993017">只替换比恢复文件更旧的文件</span><div class="note" id="vmware_gud_0060_0__note98771049113012"><span class="notetitle"> 说明： </span><div class="notebody"><p id="vmware_gud_0060_0__p15877144918305">如果目标虚拟机的同名文件拒绝访问，则在替换文件进行恢复时会恢复失败。</p>
+</div></div>
+</li></ul>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li><li>选择恢复至新位置，即恢复至指定虚拟机。<p>相关参数说明如<a href="#vmware_gud_0060_0__table14691181871520">表2</a>所示。</p>
+
+<div class="tablenoborder"><a name="vmware_gud_0060_0__table14691181871520"></a><a name="table14691181871520"></a><table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0060_0__table14691181871520" frame="border" border="1" rules="all"><caption><b>表2 </b>新位置恢复参数说明</caption><colgroup><col style="width:22.75%"><col style="width:77.25%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="22.75%" id="mcps1.3.4.3.6.2.2.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="77.25%" id="mcps1.3.4.3.6.2.2.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.1 "><p><span style="color:#4D4D4D;">目标计算位置</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.2 "><div class="p">选择恢复到的目标计算资源。<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>指定虚拟机为Windows OS时，恢复到的目录与文件的源目录一致，如果虚拟机中不存在相应的盘符，则恢复失败。如：文件所在路径为<strong>D:\a</strong>，则在指定虚拟机的D盘下新建<strong>a</strong>目录，再进行文件恢复，如果指定虚拟机不存在<strong>D</strong>盘，则恢复失败。</li><li>指定虚拟机为Linux OS时，恢复到的目录与文件的源目录一致，恢复时在指定虚拟机中新建相应的目录，再进行文件恢复。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.1 "><p><span>虚拟机IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.2 "><div class="p">选择已配置的备份网络IP地址。<div class="note" id="vmware_gud_0060_0__vmware_gud_0060_0_note13959142281314"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="vmware_gud_0060_0__vmware_gud_0060_0_ul184254158477"><li id="vmware_gud_0060_0__vmware_gud_0060_0_li1671194110445">Hyper-V管理器需提前检测到对应虚拟机的IP地址。</li><li id="vmware_gud_0060_0__vmware_gud_0060_0_li13425121554713">执行文件级别的恢复前，需要事先为虚拟机配置备份网络IP地址。文件级恢复过程中，系统会使用该地址连接目标虚拟机进行恢复。</li><li id="vmware_gud_0060_0__vmware_gud_0060_0_li1130711714475">如果虚拟机IP地址未在列表内，请退出当前页面，在<span class="uicontrol" id="vmware_gud_0060_0__vmware_gud_0060_0_uicontrol61481615124114">“<span id="vmware_gud_0060_0__vmware_gud_0060_0_zh-cn_topic_0000001839142377_text2782025144215">保护</span> &gt; 虚拟化 &gt; Hyper-V”</span>  页面重新扫描虚拟化环境。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.1 "><p><span>虚拟机用户名</span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="77.25%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.2 "><div class="p">文件级恢复时，目标虚拟机需要验证<span id="vmware_gud_0060_0__vmware_gud_0060_0_vmware_gud_0060_text426913561378">OceanProtect</span>的登录凭据，输入目标虚拟机的登录用户名及密码。<ul id="vmware_gud_0060_0__vmware_gud_0060_0_vmware_gud_0060_ul119609220135"><li id="vmware_gud_0060_0__vmware_gud_0060_0_vmware_gud_0060_li796017225136">Windows OS：默认用户名为<strong id="vmware_gud_0060_0__vmware_gud_0060_0_vmware_gud_0060_b2960522131311">Administrator</strong>。</li><li id="vmware_gud_0060_0__vmware_gud_0060_0_vmware_gud_0060_li1496012225130">Linux OS：默认用户名为<strong id="vmware_gud_0060_0__vmware_gud_0060_0_vmware_gud_0060_b1096019222138">root</strong>。</li></ul>
+<div class="note" id="vmware_gud_0060_0__vmware_gud_0060_0_vmware_gud_0060_note10319381535"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="vmware_gud_0060_0__vmware_gud_0060_0_vmware_gud_0060_ul871974405518"><li id="vmware_gud_0060_0__vmware_gud_0060_0_vmware_gud_0060_li8719444175514">该登录用户需要有目标虚拟机待恢复目录的读写权限。</li><li id="vmware_gud_0060_0__vmware_gud_0060_0_vmware_gud_0060_li231424655513">恢复后该文件的访问权限与该登录用户一致。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.1 "><p><span>虚拟机密码</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.1 "><p><span>覆盖规则</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.3.6.2.2.2.2.2.3.1.2 "><div class="p">当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。<ul id="vmware_gud_0060_0__vmware_gud_0060_0_ul138776497307"><li id="vmware_gud_0060_0__vmware_gud_0060_0_li1087714914306"><span id="vmware_gud_0060_0__vmware_gud_0060_0_text2877849173018">直接替换已经存在的文件</span></li><li id="vmware_gud_0060_0__vmware_gud_0060_0_li1287717497308"><span id="vmware_gud_0060_0__vmware_gud_0060_0_text148771149123013">忽略已存在的文件</span>，即跳过这些同名文件不替换。</li><li id="vmware_gud_0060_0__vmware_gud_0060_0_li68771149143011"><span id="vmware_gud_0060_0__vmware_gud_0060_0_text5877184993017">只替换比恢复文件更旧的文件</span><div class="note" id="vmware_gud_0060_0__vmware_gud_0060_0_note98771049113012"><span class="notetitle"> 说明： </span><div class="notebody"><p id="vmware_gud_0060_0__vmware_gud_0060_0_p15877144918305">如果目标虚拟机的同名文件拒绝访问，则在替换文件进行恢复时会恢复失败。</p>
+</div></div>
+</li></ul>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ul>
+</p></li><li><span>单击<span class="uicontrol">“<span>测试</span>”</span>，确保待<span style="color:#3C4458;">恢复的目标虚拟机与</span><span style="color:#3C4458;">OceanProtect</span>网络连接正常。</span></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="vmware_gud_0055_0.html">恢复</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

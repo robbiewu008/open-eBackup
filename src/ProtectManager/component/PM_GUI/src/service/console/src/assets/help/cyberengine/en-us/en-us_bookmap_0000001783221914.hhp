@@ -7,7 +7,7 @@ Display compile progress=No
 Binary Index=No
 Language=0x0409 English (United States)
 Default topic=en-us_topic_0000001783062250.html
-Title= 00-OceanCyber 300 1.2.0 Online Help 
+Title= 00-OceanCyber 300 1.1.0 Online Help 
 
 [WINDOWS]
 hwwindow=,"en-us_bookmap_0000001783221914.hhc","","en-us_topic_0000001783062250.html","en-us_topic_0000001783062250.html",,,,,0x62520,200,0x300E,[50,10,550,470],0xB0000,,,,,,0
@@ -27,6 +27,7 @@ en-us_topic_0000001867860069.html
 en-us_topic_0000001783060330.html
 en-us_topic_0000001783060402.html
 en-us_topic_0000001829899749.html
+en-us_topic_0000002085819285.html
 en-us_topic_0000001829899793.html
 en-us_topic_0000001783220050.html
 en-us_topic_0000001810100230.html
@@ -95,6 +96,7 @@ en-us_topic_0000001832328596.html
 en-us_topic_0000001879247741.html
 en-us_topic_0000001832488412.html
 en-us_topic_0000001879127949.html
+en-us_topic_0000002056035626.html
 en-us_topic_0000001829819529.html
 en-us_topic_0000001832328600.html
 en-us_topic_0000001829819537.html
@@ -122,6 +124,8 @@ en-us_topic_0000001879247769.html
 en-us_topic_0000001832488444.html
 en-us_topic_0000001832329248.html
 en-us_topic_0000001879127977.html
+en-us_topic_0000002077228765.html
+en-us_topic_0000002077110145.html
 public_sys-resources/caution_3.0-en-us.png
 public_sys-resources/danger_3.0-en-us.png
 public_sys-resources/note_3.0-en-us.png

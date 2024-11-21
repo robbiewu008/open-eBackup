@@ -1,0 +1,107 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤4：执行备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="exchange_0024.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="exchange_0028">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤4：执行备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="exchange_0028"></a><a name="exchange_0028"></a>
+
+<h1 class="topictitle1">步骤4：执行备份</h1>
+<div><p>执行备份前将需要保护的资源关联到指定SLA策略，系统将对这些资源按照SLA策略进行保护，并根据SLA策略周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><p>全量备份失败后，如果下一次备份是增量备份，由于增量备份依赖上一次成功的全量备份副本，该增量备份将自动转换为全量备份。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><p id="exchange_0028__exchange_0036_p17201613205718">执行备份前，请确保Exchange Server服务和相关的依赖服务正常运行。对应服务可参考<a href="https://learn.microsoft.com/zh-cn/exchange/plan-and-deploy/deployment-ref/services-overview" target="_blank" rel="noopener noreferrer">Exchange服务器上的Exchange服务概述</a>。</p>
+<ul id="exchange_0028__exchange_0036_ul13695144991014"><li id="exchange_0028__exchange_0036_li42661234120">执行备份前，请确保<span id="exchange_0028__exchange_0036_text18641740161213">OceanProtect</span>时间与客户端时间保持一致，否则可能导致日志恢复后数据丢失。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><ul><li>手动备份时，SLA中定义的参数（<span class="uicontrol">“<span>失败后自动重试</span>”</span>除外），如<span class="uicontrol">“<span>限速策略</span>”</span>会应用到手动备份任务中。</li><li>手动备份产生的副本保留时长按照SLA中的定义进行保留。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="exchange_0028__zh-cn_topic_0000001839142377_uicontrol26447265316">“<span id="exchange_0028__zh-cn_topic_0000001839142377_text8644926538">保护</span> &gt; <span id="exchange_0028__zh-cn_topic_0000001839142377_text1310114196546">应用</span> &gt; <span id="exchange_0028__zh-cn_topic_0000001839142377_text2114145125312">Exchange</span>”</span>。</span></li><li><span>在<span class="uicontrol">“单机/可用性组”</span>或<span class="uicontrol">“<span>数据库</span>”</span>页签，选择需要保护的单机、可用性组或数据库资源，选择“<span>更多</span>”，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p><p>您也可以勾选多个资源进行批量保护。</p>
+</p></li><li><span>选择SLA。</span><p><p>您也可以单击<span class="uicontrol">“<span>创建</span>”</span>，创建新的SLA。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="exchange_0028__zh-cn_topic_0000001964713008_p125947145711"><span id="exchange_0028__zh-cn_topic_0000001964713008_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
+</div></div>
+</p></li><li><span>配置Exchange单机、可用性组或数据库备份高级参数。</span><p><div class="p">相关参数说明如<a href="#exchange_0028__zh-cn_topic_0000001506038733_table354613271506">表1</a>所示。
+<div class="tablenoborder"><a name="exchange_0028__zh-cn_topic_0000001506038733_table354613271506"></a><a name="zh-cn_topic_0000001506038733_table354613271506"></a><table cellpadding="4" cellspacing="0" summary="" id="exchange_0028__zh-cn_topic_0000001506038733_table354613271506" frame="border" border="1" rules="all"><caption><b>表1 </b>Exchange单机/可用性组或数据库备份高级参数说明</caption><colgroup><col style="width:19.75%"><col style="width:80.25%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="19.75%" id="mcps1.3.5.2.4.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="80.25%" id="mcps1.3.5.2.4.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p>执行VSS副本一致性校验</p>
+</td>
+<td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>开启后，将对备份的每个数据库文件验证其完整性，以保证备份数据的正确性。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p>可用性组备份</p>
+</td>
+<td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>仅当对可用性组或可用性组的数据库添加或修改保护时，可以设置可用性组备份参数。</p>
+<ul><li>备份主动数据库副本</li><li>备份被动数据库副本</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span>备份前执行脚本</span></p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="80.25%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>仅对单机或单机的数据库添加保护时，可以设置“<span>备份前执行脚本</span>”、“<span>备份成功执行脚本</span>”和“<span>备份失败执行脚本</span>”，当备份任务事件中出现“开始执行前置任务”提示后，配置的脚本会在对应场景下执行。</p>
+<p><span>请输入脚本名称，脚本名称以</span><strong>.bat</strong><span>结尾。确保脚本已存放在数据库主机安装目录下的</span><span class="filepath">“DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty”</span><span>目录中，且登录数据库主机的用户（默认为</span><strong>Administrator</strong><span>）对该脚本有可执行权限。如果无执行权限请依次执行以下操作授权：</span></p>
+<p>选择该脚本，单击鼠标右键，选择“属性 &gt; 安全”，在弹出的对话框中选择<strong>Administrator</strong>用户，单击“编辑”更改权限。</p>
+<p>支持的脚本类型为<span class="uicontrol">“.bat”</span>。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li><span>当配置了</span><span class="uicontrol">“<span>备份成功执行脚本</span>”</span><span>时，即使该脚本执行失败，管理界面上也会显示备份任务的状态为</span><span class="uicontrol">“<span>成功</span>”</span><span>。请您留意任务详情中是否有后置脚本执行失败的相关提示，如有请及时修正脚本。</span></li><li>可根据实际情况，在备份任务执行前、或恢复任务执行成功后、或备份任务执行失败后，执行用户自定义的脚本，脚本类型为bat。若将脚本放置在DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty目录下，则只需填写脚本名称，若将脚本放置在其他目录下，则需要填写脚本绝对路径。</li></ul>
+</div></div>
+<p></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span>备份成功执行脚本</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span>备份失败执行脚本</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li></ol><ol start="5"><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span><p><p>如果当前系统时间已晚于该SLA首次备份的开始时间，则关联备份SLA后可以选择在当前立即执行备份或者根据SLA中设置的备份策略等待下次调度。</p>
+</p></li><li><strong>可选：</strong><span>执行手动备份。</span><p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
+<ol type="a"><li>在需要备份的单机/可用性组或数据库所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>，支持多个资源同时进行手动备份。</li><li>选择保护策略：<span>全量备份</span>、<span>永久增量（合成全量）备份</span>或<span>日志备份</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="exchange_0028__zh-cn_topic_0000001964713008_p13522118194919"><span id="exchange_0028__zh-cn_topic_0000001964713008_ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
+</div></div>
+</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="exchange_0024.html">备份Exchange单机/可用性组或数据库</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

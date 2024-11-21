@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   AfterViewInit,
@@ -32,7 +32,6 @@ import { ClusterRestoreComponent as DWSClusterRestoreComponent } from 'app/busin
 import { DatabaseRestoreComponent as DWSDatabaseRestoreComponent } from 'app/business/protection/host-app/gaussdb-dws/restore-database/restore-database.component';
 import { TableRestoreComponent as DWSTableRestoreComponent } from 'app/business/protection/host-app/gaussdb-dws/restore-table/restore-table.component';
 import { OceanBaseRestoreComponent } from 'app/business/protection/host-app/ocean-base/ocean-base-restore/ocean-base-restore.component';
-import { OracleRestoreComponent } from 'app/business/protection/host-app/oracle/database-list/copy-data/today/oracle-restore/oracle-restore.component';
 import { SQLServerAlwaysOnComponent as SQLServerGroupRestoreComponent } from 'app/business/protection/host-app/sql-server/alwayson-restore/alwayson-restore.component';
 import { InstanceRestoreComponent as SQLServerInstanceRestoreComponent } from 'app/business/protection/host-app/sql-server/instance-restore/instance-restore.component';
 import { SQLServerRestoreComponent as SQLServerDatabaseRestoreComponent } from 'app/business/protection/host-app/sql-server/sql-server-restore/sql-server-restore.component';
@@ -57,7 +56,8 @@ import {
   RestoreFileType,
   RestoreLocationType,
   RestoreV2LocationType,
-  RestoreV2Type
+  RestoreV2Type,
+  SYSTEM_TIME
 } from 'app/shared/consts';
 import { I18NService } from 'app/shared/services';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
@@ -134,6 +134,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
   restoreLocationType = RestoreLocationType;
   dataMap = DataMap;
   language = LANGUAGE;
+  timeZone = SYSTEM_TIME.timeZone;
   originalFileData = [];
   originalSelection = [];
   total = 0;
@@ -177,12 +178,6 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
     this.i18n.get('deploy_type')
   );
 
-  // compareWith字段，根据应用按需返回
-  dataSearchKey = {
-    [DataMap.Resource_Type.ElasticsearchBackupSet.value]: 'name',
-    [DataMap.Resource_Type.tidbCluster.value]: 'rootPath',
-    [DataMap.Resource_Type.tidbDatabase.value]: 'rootPath'
-  };
   rowCopyResPro;
   @ViewChild('searchPopover', { static: false }) searchPopover;
 
@@ -263,6 +258,21 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
       includes([DataMap.Resource_Type.DWS_Cluster.value], this.childResType)
     ) {
       this.getDatabaseOptions();
+    }
+  }
+
+  getDataCompareWithKey(resource_sub_type) {
+    switch (resource_sub_type) {
+      case DataMap.Resource_Type.ElasticsearchBackupSet.value:
+      case DataMap.Resource_Type.SQLServerGroup.value:
+      case DataMap.Resource_Type.SQLServerInstance.value:
+      case DataMap.Resource_Type.SQLServerClusterInstance.value:
+        return 'name';
+      case DataMap.Resource_Type.tidbCluster.value:
+      case DataMap.Resource_Type.tidbDatabase.value:
+        return 'rootPath';
+      default:
+        return null;
     }
   }
 
@@ -588,7 +598,10 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
           DataMap.Resource_Type.DWS_Table.value,
           DataMap.Resource_Type.ClickHouse.value,
           DataMap.Resource_Type.tidbCluster.value,
-          DataMap.Resource_Type.tidbDatabase.value
+          DataMap.Resource_Type.tidbDatabase.value,
+          DataMap.Resource_Type.SQLServerInstance.value,
+          DataMap.Resource_Type.SQLServerClusterInstance.value,
+          DataMap.Resource_Type.SQLServerGroup.value
         ],
         this.rowCopy.resource_sub_type
       )
@@ -1025,20 +1038,6 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
   }
 
   getTargetTree() {
-    if (
-      includes(
-        [
-          DataMap.Resource_Type.oracle.value,
-          DataMap.Resource_Type.oracleCluster.value
-        ],
-        this.rowCopy.resource_sub_type
-      )
-    ) {
-      this.inputTarget = this.targetParams.name;
-      this.disabledOkbtn();
-      this.cdr.detectChanges();
-      return;
-    }
     if (
       includes(
         [
@@ -1494,7 +1493,8 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
         item.modifyTime =
           this.datePipe.transform(
             toNumber(item.modifyTime) * 1000,
-            'yyyy-MM-dd HH:mm:ss'
+            'yyyy-MM-dd HH:mm:ss',
+            this.timeZone
           ) || item.modifyTime;
       }
     });
@@ -1556,19 +1556,6 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
 
   getExpandedTreeData(node, startPage?, isAddInput?) {
     if (!node.expanded || !!size(node.children)) {
-      return;
-    }
-    if (
-      includes(
-        [
-          DataMap.Resource_Type.oracle.value,
-          DataMap.Resource_Type.oracleCluster.value
-        ],
-        this.rowCopy.resource_sub_type
-      )
-    ) {
-      // oracle右边表格展示的是左边选中的内容，所以不需要走getNodeData逻辑
-      this.getCopySourceNode(node, startPage);
       return;
     }
     this.getNodeData(node, startPage, isAddInput);
@@ -1775,18 +1762,6 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
       );
     }
 
-    if (
-      includes(
-        [
-          DataMap.Resource_Type.oracle.value,
-          DataMap.Resource_Type.oracleCluster.value
-        ],
-        this.rowCopy.resource_sub_type
-      )
-    ) {
-      this.selectFileData = [...this.originalSelection];
-    }
-
     this.disabledOkbtn();
 
     if (
@@ -1889,10 +1864,6 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
         break;
       case DataMap.Resource_Type.ObjectSet.value:
         recoveryComponent = ObjectRestoreComponent;
-        break;
-      case DataMap.Resource_Type.oracle.value:
-      case DataMap.Resource_Type.oracleCluster.value:
-        recoveryComponent = OracleRestoreComponent;
         break;
       default:
         recoveryComponent = LocalFileSystemRestoreComponent;
@@ -2173,19 +2144,6 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
         : !size(this.originalSelection) ||
           size(this.originalSelection) > 256 ||
           !this.mountedSelection;
-    } else if (
-      includes(
-        [
-          DataMap.Resource_Type.oracle.value,
-          DataMap.Resource_Type.oracleCluster.value
-        ],
-        this.rowCopy.resource_sub_type
-      )
-    ) {
-      this.modal.getInstance().lvOkDisabled =
-        !size(this.originalSelection) ||
-        size(this.originalSelection) > 256 ||
-        isEmpty(this.inputTarget);
     } else {
       this.modal.getInstance().lvOkDisabled = this.rowCopy.isSearchRestore
         ? !this.mountedSelection
@@ -2469,21 +2427,25 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
             ''
           );
         }
-        this.restoreV2Service
-          .CreateRestoreTask({
-            CreateRestoreTaskRequestBody: params,
-            memberEsn: memberEsn
-          })
-          .subscribe({
-            next: res => {
-              observer.next();
-              observer.complete();
-            },
-            error: err => {
-              observer.error(err);
-              observer.complete();
-            }
-          });
+        if (
+          (includes(
+            [
+              DataMap.Resource_Type.HDFSFileset.value,
+              DataMap.Resource_Type.HBaseBackupSet.value
+            ],
+            this.childResType
+          ) &&
+            this.targetParams.restoreTo === RestoreV2LocationType.NEW) ||
+          (includes(
+            [DataMap.Resource_Type.HiveBackupSet.value],
+            this.childResType
+          ) &&
+            this.targetParams.restoreLocation === RestoreV2LocationType.NEW)
+        ) {
+          this.beforeRestoreShowTips(params, memberEsn, observer);
+        } else {
+          this.createFileLevelRestoreTask(params, memberEsn, observer);
+        }
       }
       if (this.childResType === DataMap.Resource_Type.ClickHouse.value) {
         const resource = this.rowCopyResPro;
@@ -2604,51 +2566,74 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
             }
           });
       }
-      if (
-        includes(
-          [
-            DataMap.Resource_Type.oracle.value,
-            DataMap.Resource_Type.oracleCluster.value
-          ],
-          this.childResType
-        )
-      ) {
-        // 下发恢复类型需要确实是normalRestore还是FLR
-        params.restoreType = 'normalRestore';
-        const tmpArr = [];
-        each(this.originalSelection, item => {
-          // 后端的extendInfo有问题
-          const extendInfoStr = isEmpty(item.extendInfo)
-            ? '{}'
-            : item.extendInfo;
-          const extendInfoObj = isString(extendInfoStr)
-            ? JSON.parse(extendInfoStr)
-            : {};
-          if (item.type === RestoreFileType.File) {
-            tmpArr.push({
-              user_name: get(extendInfoObj, 'user_name', ''),
-              table_name: item.name,
-              pdb_name: get(extendInfoObj, 'pdb_name', '')
-            });
+    });
+  }
+
+  private beforeRestoreShowTips(
+    params,
+    memberEsn: string,
+    observer: Observer<void>
+  ) {
+    let nameSpace = this.targetParams?.namespace || '';
+    let tips = isEmpty(nameSpace)
+      ? this.i18n.get('protection_hbase_restore_no_backup_task_tips_label')
+      : this.i18n.get(
+          'protection_hbase_restore_target_namespace_no_backup_task_tips_label',
+          [nameSpace.startsWith('/') ? nameSpace.substring(1) : nameSpace]
+        );
+    this.drawModalService.create({
+      ...MODAL_COMMON.generateDrawerOptions(),
+      lvModalKey: 'file-level-restore-tips-info',
+      ...{
+        lvType: 'dialog',
+        lvDialogIcon: 'lv-icon-popup-danger-48',
+        lvHeader: this.i18n.get(
+          'protection_hbase_restore_no_backup_task_header_label'
+        ),
+        lvContent: tips,
+        lvWidth: 500,
+        lvOkType: 'primary',
+        lvCancelType: 'default',
+        lvOkDisabled: false,
+        lvFocusButtonId: 'cancel',
+        lvCloseButtonDisplay: true,
+        lvOk: () => {
+          this.createFileLevelRestoreTask(params, memberEsn, observer);
+        },
+        lvCancel: () => {
+          observer.error(null);
+          observer.complete();
+        },
+        lvAfterClose: result => {
+          if (result && result.trigger === 'close') {
+            observer.error(null);
+            observer.complete();
           }
-        });
-        assign(params.extendInfo, {
-          tables: JSON.stringify(tmpArr)
-        });
-        this.restoreV2Service
-          .CreateRestoreTask({ CreateRestoreTaskRequestBody: params })
-          .subscribe({
-            next: res => {
-              observer.next();
-              observer.complete();
-            },
-            error: err => {
-              observer.error(err);
-              observer.complete();
-            }
-          });
+        }
       }
     });
+  }
+
+  private createFileLevelRestoreTask(
+    params,
+    memberEsn: string,
+    observer: Observer<void>
+  ) {
+    this.restoreV2Service
+      .CreateRestoreTask({
+        CreateRestoreTaskRequestBody: params,
+        memberEsn: memberEsn
+      })
+      .subscribe({
+        next: res => {
+          observer.next();
+          observer.complete();
+        },
+        error: err => {
+          observer.error(err);
+          observer.complete();
+        }
+      });
   }
 
   trackByIndex(index) {

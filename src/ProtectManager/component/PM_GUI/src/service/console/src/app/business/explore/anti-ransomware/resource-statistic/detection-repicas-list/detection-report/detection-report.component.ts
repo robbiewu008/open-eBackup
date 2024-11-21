@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import {
@@ -20,7 +20,9 @@ import {
   DataMap,
   DataMapService,
   I18NService,
-  NASAbnormalFilesService
+  NASAbnormalFilesService,
+  SanConfigManagementService,
+  SYSTEM_TIME
 } from 'app/shared';
 import {
   Filters,
@@ -33,11 +35,14 @@ import { TimeTransformService } from 'app/shared/services/time-transform.service
 import {
   assign,
   find,
+  get,
   includes,
   isEmpty,
+  isNil,
   isString,
   isUndefined,
-  now
+  now,
+  set
 } from 'lodash';
 
 @Component({
@@ -49,14 +54,21 @@ import {
 export class DetectionReportComponent implements OnInit, AfterViewInit {
   copyId;
   resourceType;
+  entity; //实时勒索检测报告--告警详情页跳过来的
   dataMap = DataMap;
   rowData: any;
   reportLabel = '';
   _isEmpty = isEmpty;
   lastTestLabel = this.i18n.get('explore_last_test_label', [], true);
   DurationLabel = this.i18n.get('explore_detection_duration_label', [], true);
+  fileDurationLabel = this.i18n.get(
+    'explore_file_detection_duration_label',
+    [],
+    true
+  );
   detectionIcon = '';
   timeUnitLabel = '';
+  fileTimeUnitLabel = '';
   detectingTime = '--';
   copyDataLabel = '--';
   detectionResultLabel = '';
@@ -65,6 +77,16 @@ export class DetectionReportComponent implements OnInit, AfterViewInit {
   filesystemName: string;
   columnItems = [];
   isEn = this.i18n.isEn;
+  isInfected = false;
+  ishiddenDeploy = includes(
+    [
+      DataMap.Deploy_Type.cloudbackup2.value,
+      DataMap.Deploy_Type.cloudbackup.value,
+      DataMap.Deploy_Type.hyperdetect.value,
+      DataMap.Deploy_Type.cyberengine.value
+    ],
+    this.i18n.get('deploy_type')
+  );
 
   hideAbnormalFile = includes(
     [
@@ -83,12 +105,13 @@ export class DetectionReportComponent implements OnInit, AfterViewInit {
     private i18n: I18NService,
     private datePipe: DatePipe,
     private dataMapService: DataMapService,
-    private appUtilsService: AppUtilsService,
+    public appUtilsService: AppUtilsService,
     private capacityCalculateLabel: CapacityCalculateLabel,
     private copiesDetectReportService: CopiesDetectReportService,
     private timeTransformServicve: TimeTransformService,
     private nasAbnormalFilesService: NASAbnormalFilesService,
-    private abnormalFileService: AbnormalFileService
+    private abnormalFileService: AbnormalFileService,
+    private sanConfigManagementService: SanConfigManagementService
   ) {}
 
   ngAfterViewInit(): void {
@@ -96,8 +119,12 @@ export class DetectionReportComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.initTableConfig();
-    this.initData();
+    if (this.entity) {
+      this.getSanIoReport();
+    } else {
+      this.initTableConfig();
+      this.initData();
+    }
   }
 
   initCyberData(res) {
@@ -142,7 +169,7 @@ export class DetectionReportComponent implements OnInit, AfterViewInit {
         this.copyDataLabel = `"${this.getFormatDate(res.timestamp)}"`;
         this.lastTestLabel = `${this.lastTestLabel}${this.getFormatDate(
           res.detection_time
-        )}${this.i18n.language === 'zh-cn' ? '；' : ';'}`;
+        )}`;
         this.detectionResultLabel = `${
           isUndefined(result)
             ? '--'
@@ -163,6 +190,12 @@ export class DetectionReportComponent implements OnInit, AfterViewInit {
         }
         this.timeUnitLabel = this.timeTransformServicve.transformTime(
           res.detection_duration
+        );
+        this.isInfected =
+          result.value === DataMap.Detection_Copy_Status.infected.value &&
+          !isNil(res?.infected_file_detect_duration);
+        this.fileTimeUnitLabel = this.timeTransformServicve.transformTime(
+          res?.infected_file_detect_duration
         );
         this.initCyberData(res);
       });
@@ -253,6 +286,17 @@ export class DetectionReportComponent implements OnInit, AfterViewInit {
           type: 'text/csv'
         });
         this.appUtilsService.downloadFile(fileName, bf);
+      });
+  }
+
+  getSanIoReport() {
+    this.detectionIcon = 'aui-icon-detection-infected';
+    this.detectionResultLabel = this.i18n.get('explore_infected_label');
+    this.sanConfigManagementService
+      .getSanIoReport({ entity: this.entity })
+      .subscribe(res => {
+        const report = JSON.parse(get(res?.records, 'report', '{}'));
+        this.reportLabel = report[this.i18n.language] || '';
       });
   }
 }

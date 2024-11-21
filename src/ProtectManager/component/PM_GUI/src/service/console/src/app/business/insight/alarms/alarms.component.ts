@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -24,64 +24,67 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   DatatableComponent,
-  PaginatorComponent,
-  MessageService
+  MessageService,
+  PaginatorComponent
 } from '@iux/live';
 import {
   AlarmAndEventApiService,
   ApiMultiClustersService,
   CookieService,
-  GlobalService
+  GlobalService,
+  getAppTheme
 } from 'app/shared';
+import { AlarmVO } from 'app/shared/api/models';
 import {
   ALARM_EVENT_EVENT_STATUS,
   ALARM_EVENT_EVENT_TYPE,
   ALARM_EVENT_TYPE,
+  ALARM_NAVIGATE_STATUS,
   CommonConsts,
   DataMap,
+  LANGUAGE,
   MODAL_COMMON,
-  ALARM_NAVIGATE_STATUS,
-  LANGUAGE
+  SYSTEM_TIME,
+  ThemeEnum
 } from 'app/shared/consts';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { I18NService } from 'app/shared/services/i18n.service';
+import { RememberColumnsService } from 'app/shared/services/remember-columns.service';
+import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
   assign,
+  capitalize,
   cloneDeep,
+  defer,
+  each,
+  eq,
+  filter,
+  find,
+  first,
+  get,
+  includes,
+  isEmpty,
+  isNil,
+  isNumber,
+  isString,
   map,
   now,
-  trim,
-  find,
-  each,
-  isEmpty,
-  isNumber,
   reject,
-  includes,
+  remove,
+  set,
   size,
-  first,
-  isNil,
-  get,
+  split,
   toLower,
   toString,
-  remove,
-  eq,
-  set,
-  isString,
-  capitalize,
-  split,
-  filter,
-  defer
+  trim
 } from 'lodash';
 import { Subject, Subscription, timer } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { DataMapService } from './../../../shared/services/data-map.service';
 import { AlarmsClearComponent } from './alarms-clear/alarms-clear.component';
 import { AlarmsDetailsComponent } from './alarms-details/alarms-details.component';
-import { RememberColumnsService } from 'app/shared/services/remember-columns.service';
-import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
-import { AlarmVO } from 'app/shared/api/models';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Pipe({ name: 'selectionEnable' })
 export class SelectionPipe implements PipeTransform {
@@ -115,6 +118,7 @@ export class AlarmsComponent implements OnInit, OnDestroy {
   alarmsSections: Array<any> = [];
 
   apiFilters = [];
+  eventFilters = [];
 
   clusterMenus = [];
   nodeName = '';
@@ -176,10 +180,11 @@ export class AlarmsComponent implements OnInit, OnDestroy {
   eventColumnStatus = this.rememberColumnsService.getColumnsStatus(
     'event_table'
   );
-  alarmHelp = this.i18n.get('protetion_alarm_help_label');
 
   useStaticSourceType =
     this.appUtilsService.isDecouple || this.appUtilsService.isDistributed;
+  isHyperDetect =
+    this.i18n.get('deploy_type') === DataMap.Deploy_Type.hyperdetect.value;
 
   constructor(
     public alarmApiService: AlarmAndEventApiService,
@@ -223,6 +228,10 @@ export class AlarmsComponent implements OnInit, OnDestroy {
     this.isCyberEngine || this.isDecouple || this.appUtilsService.isDistributed;
   deviceNameMap = [];
   isX3000 = this.i18n.get('deploy_type') === DataMap.Deploy_Type.x3000.value;
+  isDistributed = this.appUtilsService.isDistributed;
+  alarmHelp = this.isDistributed
+    ? this.i18n.get('protetion_e6000_alarm_help_label')
+    : this.i18n.get('protetion_alarm_help_label');
   isDataBackup = includes(
     [
       DataMap.Deploy_Type.x3000.value,
@@ -256,6 +265,7 @@ export class AlarmsComponent implements OnInit, OnDestroy {
       .getState('getAlarmDetail')
       .subscribe(() => {
         this.activeIndex = ALARM_EVENT_TYPE.ALARM;
+        this.jumpToAlarmAndOpenDetail();
       });
     this.alarmApiService
       .findObjectsPageUsingGET({
@@ -282,10 +292,26 @@ export class AlarmsComponent implements OnInit, OnDestroy {
     });
   }
 
+  private jumpToAlarmAndOpenDetail() {
+    if (!isEmpty(ALARM_NAVIGATE_STATUS.sequence)) {
+      const selectedAlarm = this.alarmsData.find(
+        item => item.sequence.toString() === ALARM_NAVIGATE_STATUS.sequence
+      );
+      if (selectedAlarm) {
+        this.alarmsTable.clearSelection();
+        if (selectedAlarm.sourceType !== 'operation_target_ibmc_label') {
+          this.alarmsTable.toggleSelection(selectedAlarm);
+        }
+        this.openDetailModal(selectedAlarm);
+      }
+      ALARM_NAVIGATE_STATUS.sequence = '';
+    }
+  }
+
   alarmHelpHover() {
     const url = this.i18n.isEn
-      ? '/console/assets/help/a8000/en-us/en-us_topic_0000001839224321.html'
-      : '/console/assets/help/a8000/zh-cn/zh-cn_topic_0000001839224321.html';
+      ? '/console/assets/help/a8000/en-us/index.html#admin_email_save_000000.html'
+      : '/console/assets/help/a8000/zh-cn/index.html#helpcenter_000192.html';
     this.appUtilsService.openSpecialHelp(url);
   }
 
@@ -553,6 +579,11 @@ export class AlarmsComponent implements OnInit, OnDestroy {
         key: 'archive',
         value: 'archive',
         label: this.i18n.get('operation_target_archive_label')
+      },
+      {
+        key: 'backupStorageUnitGroup',
+        value: 'backup_storage_unit_group',
+        label: this.i18n.get('operation_target_backup_storage_unit_group_label')
       }
     ];
     return this.cookieService.isCloudBackup
@@ -782,6 +813,7 @@ export class AlarmsComponent implements OnInit, OnDestroy {
       }
       this.refreshAlarms();
     } else {
+      this.clearAllEventTag();
       this.columns = this.eventCols;
       if (this.timeSub1$) {
         this.timeSub1$.unsubscribe();
@@ -865,10 +897,14 @@ export class AlarmsComponent implements OnInit, OnDestroy {
     }
     if (this.dateMap.begin && this.dateMap.end && !this.isV1AlarmQuery) {
       params.startTime = parseInt(
-        (new Date(this.dateMap.begin).getTime() / 1000).toFixed(0)
+        (
+          this.appUtilsService.toSystemTimeLong(this.dateMap.begin) / 1000
+        ).toFixed(0)
       );
       params.endTime = parseInt(
-        (new Date(this.dateMap.end).getTime() / 1000).toFixed(0)
+        (
+          this.appUtilsService.toSystemTimeLong(this.dateMap.end) / 1000
+        ).toFixed(0)
       );
     }
 
@@ -933,19 +969,7 @@ export class AlarmsComponent implements OnInit, OnDestroy {
           val.objType = this.getObjType(val.objType);
           return val;
         });
-        if (!isEmpty(ALARM_NAVIGATE_STATUS.sequence)) {
-          const selectedAlarm = this.alarmsData.find(
-            item => item.sequence.toString() === ALARM_NAVIGATE_STATUS.sequence
-          );
-          if (selectedAlarm) {
-            this.alarmsTable.clearSelection();
-            if (selectedAlarm.sourceType !== 'operation_target_ibmc_label') {
-              this.alarmsTable.toggleSelection(selectedAlarm);
-            }
-            this.openDetailModal(selectedAlarm);
-          }
-          ALARM_NAVIGATE_STATUS.sequence = '';
-        }
+        this.jumpToAlarmAndOpenDetail();
         this.cdr.detectChanges();
         this.isV1AlarmQuery
           ? this.getAnalogCyberAlarms()
@@ -955,7 +979,11 @@ export class AlarmsComponent implements OnInit, OnDestroy {
 
   private getAlarmTimeStr(timestamp, isSeconds = true) {
     if (isSeconds) timestamp = timestamp * 1000;
-    return this.datePipe.transform(timestamp, 'yyyy-MM-dd HH:mm:ss');
+    return this.datePipe.transform(
+      timestamp,
+      'yyyy-MM-dd HH:mm:ss',
+      SYSTEM_TIME.timeZone
+    );
   }
 
   getAnalogAlarms() {
@@ -1032,6 +1060,19 @@ export class AlarmsComponent implements OnInit, OnDestroy {
       this.alarmStartPage = CommonConsts.PAGE_START;
       this.refreshAlarms();
     } else {
+      let tmpFilter = find(this.eventFilters, { key: 'alarmId' });
+      if (tmpFilter) {
+        assign(tmpFilter, {
+          key: 'alarmId',
+          value: this.queryAlarmId
+        });
+      } else {
+        this.eventFilters.push({
+          key: 'alarmId',
+          value: this.queryAlarmId
+        });
+      }
+      this.eventFilters = [...this.eventFilters];
       this.eventStartPage = CommonConsts.PAGE_START;
       this.refreshEvent();
     }
@@ -1052,6 +1093,19 @@ export class AlarmsComponent implements OnInit, OnDestroy {
       !this.isV1AlarmQuery && this._updateFiltersTag('alarmTimeStr', e);
       this.refreshAlarms();
     } else {
+      let tmpFilter = find(this.eventFilters, { key: 'alarmTimeStr' });
+      if (tmpFilter) {
+        assign(tmpFilter, {
+          key: 'alarmTimeStr',
+          value: e
+        });
+      } else {
+        this.eventFilters.push({
+          key: 'alarmTimeStr',
+          value: e
+        });
+      }
+      this.eventFilters = [...this.eventFilters];
       this.eventStartPage = CommonConsts.PAGE_START;
       this.refreshEvent();
     }
@@ -1455,7 +1509,12 @@ export class AlarmsComponent implements OnInit, OnDestroy {
     if (key === 'alarmTimeStr') {
       if (first(value) == null) return null;
       result = value
-        .map(item => this.getAlarmTimeStr(new Date(item).getTime(), false))
+        .map(item =>
+          this.getAlarmTimeStr(
+            this.appUtilsService.toSystemTimeLong(item),
+            false
+          )
+        )
         .join(' ~ ');
     }
     return result;
@@ -1483,6 +1542,41 @@ export class AlarmsComponent implements OnInit, OnDestroy {
     });
   }
 
+  clearEventTag(e) {
+    if (e.key === 'alarmId') {
+      this.queryAlarmId = '';
+    } else if (e.key === 'alarmTimeStr') {
+      this._clearTimeTag();
+    } else {
+      this.eventColFilterMap[e.key] = [];
+      let tmpCol = find(this.eventCols, { key: e.key });
+      each(tmpCol.filterMap, item => {
+        item.selected = false;
+      });
+      tmpCol.filterMap = [...tmpCol.filterMap];
+    }
+    this.eventFilters = this.eventFilters.filter(item => item.key !== e.key);
+    this.eventFilters = [...this.eventFilters];
+    this.eventStartPage = CommonConsts.PAGE_START;
+    this.refreshEvent();
+  }
+
+  clearAllEventTag() {
+    this.eventColFilterMap = {};
+    each(this.eventCols, item => {
+      if (!!item?.filterMap) {
+        each(item?.filterMap, val => {
+          val.selected = false;
+        });
+        item.filterMap = [...item.filterMap];
+      }
+    });
+    this.eventFilters = [];
+    this.queryAlarmId = '';
+    this._clearTimeTag();
+    this.refreshEvent();
+  }
+
   updateEventFilter() {
     const filterMap = this.eventFiltersMap;
     if (
@@ -1501,6 +1595,17 @@ export class AlarmsComponent implements OnInit, OnDestroy {
   }
 
   eventFilterChange = e => {
+    let hasKey = false;
+    each(this.eventFilters, item => {
+      if (item.key === e.key) {
+        assign(item, e);
+        hasKey = true;
+      }
+    });
+    if (!hasKey) {
+      this.eventFilters.push(e);
+    }
+    this.eventFilters = [...this.eventFilters];
     this.eventColFilterMap[e.key] = e.value;
     this.eventStartPage = CommonConsts.PAGE_START;
     this.refreshEvent();
@@ -1566,4 +1671,8 @@ export class AlarmsComponent implements OnInit, OnDestroy {
   trackById = (_, item) => {
     return item.sequence;
   };
+
+  isThemeLight(): boolean {
+    return getAppTheme(this.i18n) === ThemeEnum.light;
+  }
 }

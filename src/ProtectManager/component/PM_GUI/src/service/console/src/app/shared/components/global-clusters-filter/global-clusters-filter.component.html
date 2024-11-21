@@ -1,3 +1,4 @@
+<div class='clusters-container'>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class='clusters-container'>
     <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
 </div>
 
@@ -22,7 +22,7 @@
             <i [lv-icon]="item.icon" [lvColorState]="true"></i>
         </ng-container>
         <span
-            [ngClass]="{'cluster': item.clusterId, 'category': !item.clusterId, 'aui-link-disabled': item.status === 28, 'actived':currentCluster?.clusterName === item.clusterName }"
+            [ngClass]="{'cluster': item.clusterId, 'category': !item.clusterId, 'aui-link-disabled': item.status === 28, 'actived':currentCluster?.clusterName === item.clusterName, 'cluster-link':item.clusterId && item.status !== 28 }"
             (click)="reload(item)" lv-overflow>
             {{item.clusterName}}
         </span>

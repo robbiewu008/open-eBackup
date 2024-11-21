@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="查看TiDB副本信息">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="TiDB_00054.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="TiDB_00055">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>查看TiDB副本信息</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="TiDB_00055"></a><a name="TiDB_00055"></a>
+  <h1 class="topictitle1">查看TiDB副本信息</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="TiDB_00055__tidb_00040_zh-cn_topic_0000001839142377_uicontrol548619473589">“<span id="TiDB_00055__tidb_00040_zh-cn_topic_0000001839142377_text44861447115812">数据利用</span> &gt; <span id="TiDB_00055__tidb_00040_zh-cn_topic_0000001839142377_text2048614765813">副本数据</span> &gt; <span id="TiDB_00055__tidb_00040_zh-cn_topic_0000001839142377_text163101122194918">数据库</span> &gt; TiDB”</span>。</span></li>
+     <li><span>选择副本浏览方式浏览副本信息。</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>复制副本仅支持在复制到的目标集群查看。</p>
+       </div>
+      </div>
+      <ul>
+       <li>选择<span class="uicontrol">“<span>资源</span>”</span>页签：以TiDB备份资源维度查看备份资源副本信息。当TiDB集群中表损坏或丢失，您需要恢复TiDB表时，建议从该入口进入查找相应时间点副本。<p>参数说明如<a href="#TiDB_00055__table20406195873110">表1</a>所示。</p>
+        <div class="tablenoborder">
+         <a name="TiDB_00055__table20406195873110"></a><a name="table20406195873110"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="TiDB_00055__table20406195873110" frame="border" border="1" rules="all">
+          <caption>
+           <b>表1 </b>副本参数说明
+          </caption>
+          <colgroup>
+           <col style="width:7.5200000000000005%">
+           <col style="width:24.84%">
+           <col style="width:67.64%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.1.2.2.2.2.1.3.2.4.1.1"><p>参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" id="mcps1.3.1.2.2.2.2.1.3.2.4.1.2"><p>说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" rowspan="4" valign="top" width="7.5200000000000005%" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p><span>资源</span></p></td>
+            <td class="cellrowborder" valign="top" width="24.84%" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p><span>名称</span></p></td>
+            <td class="cellrowborder" valign="top" width="67.64%" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.2 "><p>备份资源名称。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p>类型</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p>备份资源类型。</p>
+             <ul>
+              <li><span style="color:#282B33;">TiDB集群</span>。</li>
+              <li><span style="color:#282B33;">TiDB数据库</span>。</li>
+              <li><span style="color:#282B33;">TiDB表集</span>。</li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p><span>位置</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p>受保护的TiDB集群节点名称。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p><span>状态</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p>备份资源是否仍存在于当前集群。</p>
+             <ul>
+              <li>是，则<span>状态</span>为<span>存在</span>。</li>
+              <li>否，则<span>状态</span>为<span>不存在</span>。</li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" rowspan="3" valign="top" width="7.5200000000000005%" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p><span>副本</span></p></td>
+            <td class="cellrowborder" valign="top" width="24.84%" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p><span>数量</span></p></td>
+            <td class="cellrowborder" valign="top" width="67.64%" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.2 "><p>基于该备份资源产生的所有副本数量。其中，复制副本数量仅在目标集群显示。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p><span>复制副本SLA</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p>复制副本关联的归档SLA。</p> <p>如果已为该资源产生的复制副本配置归档SLA，则此处显示SLA名称。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p><span>复制副本保护状态</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 ">
+             <div class="p">
+              复制副本当前是否被保护。
+              <ul id="TiDB_00055__zh-cn_topic_0000001792503826_ul161172118317">
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li11611621173118"><span id="TiDB_00055__zh-cn_topic_0000001792503826_text16611162123119">未保护</span>：复制副本未关联SLA，或者复制副本已关联SLA但已禁用保护。</li>
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li761111211312"><span id="TiDB_00055__zh-cn_topic_0000001792503826_text161192116317">已保护</span>：复制副本已关联SLA，且已激活保护。</li>
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li2088261163715"><span id="TiDB_00055__zh-cn_topic_0000001792503826_text12602914182118">创建中</span>：复制副本已关联SLA，正在创建保护。仅1.5.0及之前版本存在该状态。</li>
+              </ul>
+             </div></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>选择<span class="uicontrol">“副本”</span>页签：以TiDB备份资源的副本维度查看所有副本信息。当需要基于某个指定的副本进行恢复时，建议从该入口进入查找相应副本。<p>参数说明如<a href="#TiDB_00055__zh-cn_topic_0000001142182746_table1390718405171">表2</a>所示。</p>
+        <div class="tablenoborder">
+         <a name="TiDB_00055__zh-cn_topic_0000001142182746_table1390718405171"></a><a name="zh-cn_topic_0000001142182746_table1390718405171"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="TiDB_00055__zh-cn_topic_0000001142182746_table1390718405171" frame="border" border="1" rules="all">
+          <caption>
+           <b>表2 </b>副本参数说明
+          </caption>
+          <colgroup>
+           <col style="width:7.109999999999999%">
+           <col style="width:19.139999999999997%">
+           <col style="width:73.75%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.1.2.2.2.2.2.3.2.4.1.1"><p>参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" id="mcps1.3.1.2.2.2.2.2.3.2.4.1.2"><p>说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" rowspan="9" valign="top" width="7.109999999999999%" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span>副本</span></p> <p></p></td>
+            <td class="cellrowborder" valign="top" width="19.139999999999997%" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span>备份时间</span></p></td>
+            <td class="cellrowborder" valign="top" width="73.75%" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.2 "><p>备份副本的生成时间。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span>副本时间</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>副本生成的时间。</p> <p>单击<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol574610553452">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text330323112353">副本时间</span>”</span>，可以查看副本过期时间等信息，过期时间显示<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol1830729185017">“--”</span>表示副本永久保留。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span>状态</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 ">
+             <div class="p">
+              副本的状态。
+              <ul id="TiDB_00055__zh-cn_topic_0000001792503826_ul465416347216">
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li1171923612110"><span id="TiDB_00055__zh-cn_topic_0000001792503826_text115750346176">正常</span>：副本可用。</li>
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li6520237152112">无效：副本无效。</li>
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li15384133802118"><span id="TiDB_00055__zh-cn_topic_0000001792503826_text23364428186">删除中</span>：副本处于正在删除过程中。</li>
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li875512537417"><span id="TiDB_00055__zh-cn_topic_0000001792503826_text11749005192">恢复中</span>：副本处于恢复过程中。</li>
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li16555142220324"><span id="TiDB_00055__zh-cn_topic_0000001792503826_text166661656203220">删除失败</span>：副本删除失败。</li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span>位置</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>副本所在的位置。</p>
+             <ul>
+              <li id="TiDB_00055__zh-cn_topic_0000001792503826_li18158830181812">对于1.5.0版本，当副本的<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol62681417105816">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text1836720425583">生成方式</span>”</span>为<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol1290644910582">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text104141920175915">备份</span>”</span>、<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol18347931195912">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text1347085435917">复制</span>”</span>、<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol331112516211">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text138114231936">级联复制</span>”</span>、<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol119361459832">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text136013196412">反向复制</span>”</span>时，副本存储在本地集群，此处显示为<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol2015813303185">“Local”</span>。</li>
+              <li id="TiDB_00055__zh-cn_topic_0000001792503826_li123471448182018">对于1.6.0及后续版本，当副本的<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol42507122115">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text16256772112">生成方式</span>”</span>为<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol025178216">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text1925167162117">备份</span>”</span>、<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol19261571215">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text132697182117">复制</span>”</span>、<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol1226147142113">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text15261078218">级联复制</span>”</span>、<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol192607132111">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text226177102110">反向复制</span>”</span>时，副本存储在对应的备份存储单元，此处显示为对应备份存储单元的名称。</li>
+              <li id="TiDB_00055__zh-cn_topic_0000001792503826_li1473912420172">当副本的<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol20454181902">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text945418114019">生成方式</span>”</span>为<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol1943016186013">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text2035114288014">对象存储归档</span>”</span>或<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol123221341402">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text98939521909">导入</span>”</span>时，副本存储在对象存储的桶上，此处显示为桶名称。</li>
+              <li id="TiDB_00055__zh-cn_topic_0000001792503826_li154391755171713">当副本的<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol12512936015">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text651210311015">生成方式</span>”</span>为<span class="uicontrol" id="TiDB_00055__zh-cn_topic_0000001792503826_uicontrol58800591007">“<span id="TiDB_00055__zh-cn_topic_0000001792503826_text128561869115">磁带归档</span>”</span>时，副本存储在磁带库，此处显示介质集名称。</li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span>生成方式</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 ">
+             <div class="p">
+              副本的生成方式。
+              <ul>
+               <li><span id="TiDB_00055__zh-cn_topic_0000001792503826_text9418524142014">备份</span>：由备份任务产生的副本。</li>
+               <li><span id="TiDB_00055__zh-cn_topic_0000001792503826_text1541813249203">复制</span>：由复制任务产生的副本。</li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span>副本类型</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>生成副本的备份类型。</p> <p>包括：全量、日志。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 ">
+             <div class="p">
+              过期时间
+              <div class="note" id="TiDB_00055__fc_gud_0058_zh-cn_topic_0000001792503826_note130943715514">
+               <span class="notetitle"> 说明： </span>
+               <div class="notebody">
+                <p id="TiDB_00055__fc_gud_0058_zh-cn_topic_0000001792503826_zh-cn_topic_0000001656771385_p108956094911">仅1.5.0SPC26及后续版本存在此参数。</p>
+               </div>
+              </div>
+             </div></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>副本的过期时间。如果副本为永久有效，则显示为“--”。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span id="TiDB_00055__zh-cn_topic_0000001792503826_text68691158124911">WORM</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 ">
+             <div class="p">
+              副本是否已设置为WORM副本。
+              <ul id="TiDB_00055__zh-cn_topic_0000001792503826_ul75853135118">
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li458531175118"><span><img id="TiDB_00055__zh-cn_topic_0000001792503826_image18812012104311" src="zh-cn_image_0000001792344150.png"></span>：未设置。副本未设置为WORM副本，即副本为普通副本。</li>
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li994353785116"><span><img id="TiDB_00055__zh-cn_topic_0000001792503826_image05089185413" src="zh-cn_image_0000001792344146.png"></span>：已设置。副本已设置为WORM副本，WORM副本不支持删除和缩短保留时间。</li>
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li373211419517"><span><img id="TiDB_00055__zh-cn_topic_0000001792503826_image155001184515" src="zh-cn_image_0000001839143265.png"></span>：设置中。副本正在设置为WORM副本。处于该状态的副本不支持删除和修改保留时间。</li>
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li444514572513"><span><img id="TiDB_00055__zh-cn_topic_0000001792503826_image17671746527" src="zh-cn_image_0000001839223221.png"></span>：设置失败。副本设置为WORM副本失败。设置失败的副本不支持删除和缩短保留时间。</li>
+               <li id="TiDB_00055__zh-cn_topic_0000001792503826_li216064774817"><span><img id="TiDB_00055__zh-cn_topic_0000001792503826_image9564104794819" src="zh-cn_image_0000002090948029.png"></span>：已过期。仅1.60及后续版本存在此状态，WORM副本已过有效期。处于该状态的副本支持删除。</li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 ">
+             <div class="p">
+              WORM过期时间
+              <div class="note" id="TiDB_00055__zh-cn_topic_0000001792503826_note866011102212">
+               <span class="notetitle"> 说明： </span>
+               <div class="notebody">
+                <p id="TiDB_00055__zh-cn_topic_0000001792503826_zh-cn_topic_0000001792344110_p630385412417">仅1.6.0及后续版本存在此参数。</p>
+               </div>
+              </div>
+             </div></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>当副本为WORM副本时，则显示WORM过期的具体时间。否则，显示为“--”。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" rowspan="5" valign="top" width="7.109999999999999%" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span>资源</span></p> <p></p></td>
+            <td class="cellrowborder" valign="top" width="19.139999999999997%" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span>名称</span></p></td>
+            <td class="cellrowborder" valign="top" width="73.75%" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.2 "><p>备份资源的名称。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>类型</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>副本所在的备份资源类型。</p>
+             <ul>
+              <li>TiDB集群</li>
+              <li>TiDB数据库</li>
+              <li>TiDB表集</li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span>位置</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>受保护的TiDB集群节点名称。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span>状态</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>备份资源是否仍存在于当前集群。</p>
+             <ul>
+              <li>是，则<span>状态</span>为<span>存在</span>。</li>
+              <li>否，则<span>状态</span>为<span>不存在</span>。</li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 ">
+             <div class="p">
+              标签
+              <div class="note" id="TiDB_00055__zh-cn_topic_0000001792503826_note1246801219248">
+               <span class="notetitle"> 说明： </span>
+               <div class="notebody">
+                <p id="TiDB_00055__zh-cn_topic_0000001792503826_zh-cn_topic_0000001792344110_p630385412417_1">仅1.6.0及后续版本存在此参数。</p>
+               </div>
+              </div>
+             </div></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>当资源已添加标签时，则此处显示标签名称。否则，显示“--”。</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="TiDB_00054.html">副本</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

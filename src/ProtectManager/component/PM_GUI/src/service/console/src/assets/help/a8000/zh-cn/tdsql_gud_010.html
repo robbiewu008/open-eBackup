@@ -1,0 +1,68 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤1：开启TDSQL数据库权限（适用于非分布式实例）">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_009.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="tdsql_gud_010">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤1：开启TDSQL数据库权限（适用于非分布式实例）</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="tdsql_gud_010"></a><a name="tdsql_gud_010"></a>
+
+<h1 class="topictitle1">步骤1：开启TDSQL数据库权限（适用于非分布式实例）</h1>
+<div><p>TDSQL在执行非分布式实例备份任务前，需开启对应版本权限，否则会导致备份或恢复失败。其他场景请跳过本章节。</p>
+<div class="section" id="tdsql_gud_010__section821323817381"><h4 class="sectiontitle">背景信息</h4><p id="tdsql_gud_010__p9667843103811"><span id="tdsql_gud_010__ph1292522251311">本节操作如无特殊说明均以TDSQL 10.3.22.1版本为例进行，不同版本操作可能存在差异，请以实际为准。</span></p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="tdsql_gud_010__li77041336572"><a name="tdsql_gud_010__li77041336572"></a><a name="li77041336572"></a><span>登录赤兔管理台界面，在“实例管理”中选择实例，并进入“数据库管理 &gt; 用户管理 &gt; 创建用户”界面，创建供备份时使用的用户。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>创建用户时无需勾选任何权限。</p>
+</div></div>
+</p></li><li><span>使用<strong>root</strong>用户登录数据库实例主节点。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>主节点IP可在赤兔管理台“实例管理”中选择实例，进入“DB监控”界面获取。</p>
+</div></div>
+</p></li><li><span>执行以下命令，使用管理员用户（例如：<strong>tdsqlsys_agent</strong>），登录TDSQL数据库。</span><p><pre class="screen">/data/tdsql_run/<em>主节点</em><em>端口号</em>/mysql-server<strong>-</strong><em>数据库版本</em>/bin/mysql --user='<em>管理员用户名</em>' --password='<em>管理员用户的密码</em>' -S<strong> </strong><em>socket文件路径</em></pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><div class="p">命令中的<em>主节点端口号</em>、<em>数据库版本、管理员</em><em>用户名</em>、<em>管理员</em><em>用户名</em><em>的</em><em>密码</em>、<em>socket文件路径</em>请根据实际替换。<ul><li><em>主节点端口号</em>可在赤兔管理台“实例管理”中选择实例，进入“DB监控”界面获取。</li><li><em>数据库版本</em>可在赤兔管理台“系统管理 &gt; 版本管理”界面获取“DB-Mysql”的当前版本第一个短横线前的值。<p>例如获取到的当前版本为<strong>8.0.24-v24-txsql-2.0.1-V2.0R751D003-20221125</strong>，则命令中的<em>数据库版本</em>则替换为<strong>8.0.24</strong>。</p>
+</li><li><em>管理员</em><em>用户名</em>、<em>管理员</em><em>用户名</em><em>的</em><em>密码</em>请联系数据库管理员获取。</li><li><em>socket文件路径</em>可执行<strong>cat /data/tdsql_run/</strong><em>主节点端口号</em><strong>/mysql-server-</strong><em>数据库版本</em><strong>/etc/my_</strong><em>主节点端口号</em><strong>.cnf | grep sock</strong>命令查询。</li></ul>
+</div>
+</div></div>
+<p>示例：</p>
+<pre class="screen">/data/tdsql_run/4004/mysql-server-8.0.24/bin/mysql --user='tdsqlsys_agent' --password='123456' -S /data1/tdengine/data/4004/prod/mysql.sock</pre>
+</p></li><li><span>登录到主节点，执行以下命令为用户开启相应版本权限。</span><p><ul><li>如果配套MySQL 8.0.24版本，请执行以下命令：<pre class="screen">GRANT BACKUP_ADMIN, PROCESS, RELOAD, SELECT, LOCK TABLES, SUPER ON *.* TO '<em><a href="#tdsql_gud_010__li77041336572">1</a>中创建的用户名</em>'@'%';</pre>
+</li><li>如果配套MariaDB 10.1.9版本，请执行以下命令：<pre class="screen">GRANT SELECT, RELOAD, PROCESS, SUPER, LOCK TABLES ON *.* TO '<em><a href="#tdsql_gud_010__li77041336572">1</a>中创建的用户名</em>'@'%';</pre>
+</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="tdsql_gud_009.html">备份TDSQL数据库</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

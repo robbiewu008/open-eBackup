@@ -1,3 +1,4 @@
+<div [ngClass]="{
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div [ngClass]="{
     'container-visible2': activeIndex !== 3,
     'container-hidden': activeIndex === 3}">
   <div class="aui-header-5">
@@ -133,7 +133,7 @@
           <lv-form-label lvRequired>
             {{ 'common_username_label' | i18n }}
             <i lv-icon="aui-icon-help"
-              lv-tooltip="{{'common_storage_username_desc_label'| i18n: [baseUtilService.getProductName()]}}"
+              lv-tooltip="{{'common_storage_username_e6000_desc_label'| i18n: [baseUtilService.getProductName()]}}"
               lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
           </lv-form-label>
           <lv-form-control [lvErrorTip]="nameErrorTip">

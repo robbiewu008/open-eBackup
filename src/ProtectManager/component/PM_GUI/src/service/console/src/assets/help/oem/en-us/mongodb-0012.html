@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Registering a MongoDB Instance">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="mongodb-0011.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="mongodb-0012">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Registering a MongoDB Instance</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="mongodb-0012"></a><a name="mongodb-0012"></a>
+  <h1 class="topictitle1">Step 1: Registering a MongoDB Instance</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p>Before registering a MongoDB instance, ensure that ProtectAgent has been installed on each node in the instance.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span></span></li>
+     <li><span>Choose <span class="uicontrol" id="mongodb-0012__en-us_topic_0000001839142377_uicontrol9332164373910"><b><span id="mongodb-0012__en-us_topic_0000001839142377_text11332943123919"><strong>Protection</strong></span> &gt; Big Data &gt; MongoDB</b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register the MongoDB instance.</span></li>
+     <li><span>Select an instance type in the <strong>Register</strong> dialog box.</span><p></p>
+      <ul>
+       <li>Single instance
+        <ol type="a">
+         <li>Configure the database instance and its authentication information.<p><a href="#mongodb-0012__en-us_topic_0000001311214069_table241515964115">Table 1</a> describes the related parameters.</p>
+          <div class="tablenoborder">
+           <a name="mongodb-0012__en-us_topic_0000001311214069_table241515964115"></a><a name="en-us_topic_0000001311214069_table241515964115"></a>
+           <table cellpadding="4" cellspacing="0" summary="" id="mongodb-0012__en-us_topic_0000001311214069_table241515964115" frame="border" border="1" rules="all">
+            <caption>
+             <b>Table 1 </b>Registration information of a single MongoDB instance
+            </caption>
+            <colgroup>
+             <col style="width:25.629999999999995%">
+             <col style="width:74.37%">
+            </colgroup>
+            <thead align="left">
+             <tr>
+              <th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.1"><p>Parameter</p></th>
+              <th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.2"><p>Description</p></th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.2 "><p>Instance name.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.1 "><p><span><strong>Hosts</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.2 "><p>Select the database host to be registered.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.1 "><p><span><strong>Port</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.2 "><p>Port number of a MongoDB instance. The default value is <strong>27101</strong>.</p> <p>The following takes MongoDB 4.4 as an example to describe how to query the port number:</p>
+               <ol id="mongodb-0012__ol1995818474123">
+                <li id="mongodb-0012__li3958134711120">Log in to the host where the MongoDB instance is located.</li>
+                <li id="mongodb-0012__li9710361385">Run the following command to query the directory where the configuration file is stored.<pre class="screen" id="mongodb-0012__screen14205122183714">whereis mongodb.conf</pre></li>
+                <li id="mongodb-0012__li416512351393">Run the <strong id="mongodb-0012__b1539211522368">cd</strong> command to go to the directory where the configuration file is stored.
+                 <div class="p" id="mongodb-0012__p168731640123910">
+                  For example:
+                  <pre class="screen" id="mongodb-0012__screen1383295712371">cd /opt/install/mongodb-linux-x86_64-rhel70-4.4.20/bin</pre>
+                 </div></li>
+                <li id="mongodb-0012__li11958144715125">Run the following command to check the value of <strong id="mongodb-0012__b1575611318376">port</strong>:<pre class="screen" id="mongodb-0012__screen1487425333911">cat mongodb.conf</pre></li>
+               </ol></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.1 "><p><span><strong>Authentication Method</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.2 "><p>The instance authentication mode can be <strong>OS authentication</strong> or <strong>Database authentication</strong>.</p>
+               <ul>
+                <li><strong>OS authentication</strong>: authentication based on the OS.</li>
+                <li><strong>Database authentication</strong>: authentication through the database administrator username and password.
+                 <div class="note" id="mongodb-0012__note54212327530">
+                  <span class="notetitle"> NOTE: </span>
+                  <div class="notebody">
+                   <p id="mongodb-0012__p2042133245315"><strong id="mongodb-0012__b10633147115211">OS authentication</strong> has security risks. You are advised to select <strong id="mongodb-0012__b1275105514529">Database authentication</strong>.</p>
+                  </div>
+                 </div></li>
+               </ul> <p>Query the instance authentication method and determine an authentication method based on the query result.</p> <p>The following takes MongoDB 4.4 as an example to describe how to query the instance authentication method:</p>
+               <ol id="mongodb-0012__ol754021012185">
+                <li id="mongodb-0012__li1933651181810">Log in to the host where the MongoDB instance is located.</li>
+                <li id="mongodb-0012__li43361411201811">Run the following command to query the directory where the configuration file is stored.<pre class="screen" id="mongodb-0012__screen13643194174210">whereis mongodb.conf</pre></li>
+                <li id="mongodb-0012__li14336111151810">Run the <strong id="mongodb-0012__b19336171131810">cd</strong> command to go to the directory where the configuration file is stored.
+                 <div class="p" id="mongodb-0012__p102435573425">
+                  For example:
+                  <pre class="screen" id="mongodb-0012__screen18567102854219">cd /opt/install/mongodb-linux-x86_64-rhel70-4.4.20/bin</pre>
+                 </div></li>
+                <li id="mongodb-0012__li14011375597"><a name="mongodb-0012__li14011375597"></a><a name="li14011375597"></a>Run the following command to check the value of <strong id="mongodb-0012__b1332343620396">auth</strong> in the configuration file:<pre class="screen" id="mongodb-0012__screen5880540114513">cat mongodb.conf</pre> <p id="mongodb-0012__p19703447174514">The command output is as follows:</p> <pre class="screen" id="mongodb-0012__screen710181324510">[root@localhost bin]# cat mongodb.conf
+port=27101
+dapath=/opt/mongodb/single/data
+logpath=/opt/mongodb/single/log/single.log
+logappend=true
+journal=false
+fork-true
+bind_ip=0.0.0.0
+wiredTigerCacheSizeGB=1
+keyFile=/opt/mongodb/keyfile
+auth=true</pre></li>
+                <li id="mongodb-0012__li29891373451"><a name="mongodb-0012__li29891373451"></a><a name="li29891373451"></a>Run the following command to check the configuration file used by the MongoDB database: If the command output contains <strong id="mongodb-0012__b1555603514013">mongodb.conf</strong>, the configuration file used for starting the MongoDB database is <strong id="mongodb-0012__b4943164717408">mongodb.conf</strong>.<pre class="screen" id="mongodb-0012__screen1268612119483">ps -ef | grep mongodb.conf</pre></li>
+                <li id="mongodb-0012__li59681418114815">If the value of <strong id="mongodb-0012__b653489155513">auth</strong> in <a href="#mongodb-0012__li14011375597">4</a> is <strong id="mongodb-0012__b10474101418555">true</strong> and the command output in <a href="#mongodb-0012__li29891373451">5</a> contains <strong id="mongodb-0012__b25761822135517">mongodb.conf</strong>, database authentication is used. Otherwise, OS authentication is used.</li>
+               </ol></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.1 "><p><span><strong>Database Username</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.2 "><p>Name of the database administrator. This parameter is displayed only when the authentication mode is set to <strong>Database authentication</strong>.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.1 "><p><span><strong>Database Password</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.2 "><p>Password of the database administrator. This parameter is displayed only when the authentication mode is set to <strong>Database authentication</strong>.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.1 "><p><span><strong>Database Installation Directory</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.2 "><p>Set this parameter to the directory where the <strong>mongo</strong>, <strong>mongod</strong>, or <strong>mongos</strong> file is located. If this parameter is not specified, the directory configured in the global variable is used by default.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.1 "><p><span><strong>Database Tool Installation Directory</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.2 "><p>Set this parameter to the directory where the <strong>mongodump</strong> or <strong>mongorestore</strong> tool is located. If this parameter is not specified, the tool directory configured in the global variable is used by default.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.1 "><p>Log backup</p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.1.1.1.2.2.3.1.2 "><p>To back up logs of a single instance, you need to configure a replica set on a single node to enable oplog. For details, see <a href="en-us_topic_0000002015810301.html">Configuring a Replica Set on a Single Node to Enable Oplog</a>.</p></td>
+             </tr>
+            </tbody>
+           </table>
+          </div></li>
+         <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
+        </ol></li>
+       <li>Cluster instance
+        <ol type="a">
+         <li>Customize the instance name and select an instance type (<strong>Replica set</strong> or <strong>Sharded</strong>).</li>
+         <li>(Optional) Configure the data installation directory or the database tool installation directory in batches. After the configuration is complete, you can configure the database installation directory or database tool installation directory for all added nodes.</li>
+         <li>Add nodes of the cluster instance. To add multiple nodes, click <strong>Add</strong>. In the displayed dialog box, add all nodes of the cluster instance.<p><a href="#mongodb-0012__table935220207402">Table 2</a> describes the related parameters.</p>
+          <div class="tablenoborder">
+           <a name="mongodb-0012__table935220207402"></a><a name="table935220207402"></a>
+           <table cellpadding="4" cellspacing="0" summary="" id="mongodb-0012__table935220207402" frame="border" border="1" rules="all">
+            <caption>
+             <b>Table 2 </b>Node information of a MongoDB cluster instance
+            </caption>
+            <colgroup>
+             <col style="width:25.629999999999995%">
+             <col style="width:74.37%">
+            </colgroup>
+            <thead align="left">
+             <tr>
+              <th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.1"><p>Parameter</p></th>
+              <th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.2"><p>Description</p></th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.1 "><p><span><strong>Hosts</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.2 "><p>Select the database host to be registered.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.1 "><p><span><strong>Port</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.2 "><p>Port number of a MongoDB instance. The default value is <strong>27101</strong>.</p> <p>The following takes MongoDB 4.4 as an example to describe how to query the port number:</p>
+               <ol>
+                <li id="mongodb-0012__mongodb-0012_li3958134711120">Log in to the host where the MongoDB instance is located.</li>
+                <li id="mongodb-0012__mongodb-0012_li9710361385">Run the following command to query the directory where the configuration file is stored.<pre class="screen" id="mongodb-0012__mongodb-0012_screen14205122183714">whereis mongodb.conf</pre></li>
+                <li id="mongodb-0012__mongodb-0012_li416512351393">Run the <strong id="mongodb-0012__mongodb-0012_b1539211522368">cd</strong> command to go to the directory where the configuration file is stored.
+                 <div class="p" id="mongodb-0012__mongodb-0012_p168731640123910">
+                  For example:
+                  <pre class="screen" id="mongodb-0012__mongodb-0012_screen1383295712371">cd /opt/install/mongodb-linux-x86_64-rhel70-4.4.20/bin</pre>
+                 </div></li>
+                <li id="mongodb-0012__mongodb-0012_li11958144715125">Run the following command to check the value of <strong id="mongodb-0012__mongodb-0012_b1575611318376">port</strong>:<pre class="screen" id="mongodb-0012__mongodb-0012_screen1487425333911">cat mongodb.conf</pre></li>
+               </ol></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.1 "><p><span><strong>Authentication Method</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.2 "><p>The instance authentication mode can be <strong>OS authentication</strong> or <strong>Database authentication</strong>.</p>
+               <ul>
+                <li><strong>OS authentication</strong>: authentication based on the OS.</li>
+                <li><strong>Database authentication</strong>: authentication through the database administrator username and password.
+                 <div class="note">
+                  <span class="notetitle"> NOTE: </span>
+                  <div class="notebody">
+                   <p id="mongodb-0012__mongodb-0012_p2042133245315"><strong id="mongodb-0012__mongodb-0012_b10633147115211">OS authentication</strong> has security risks. You are advised to select <strong id="mongodb-0012__mongodb-0012_b1275105514529">Database authentication</strong>.</p>
+                  </div>
+                 </div></li>
+               </ul> <p>Query the instance authentication method and determine an authentication method based on the query result.</p> <p>The following takes MongoDB 4.4 as an example to describe how to query the instance authentication method:</p>
+               <ol>
+                <li id="mongodb-0012__mongodb-0012_li1933651181810">Log in to the host where the MongoDB instance is located.</li>
+                <li id="mongodb-0012__mongodb-0012_li43361411201811">Run the following command to query the directory where the configuration file is stored.<pre class="screen" id="mongodb-0012__mongodb-0012_screen13643194174210">whereis mongodb.conf</pre></li>
+                <li id="mongodb-0012__mongodb-0012_li14336111151810">Run the <strong id="mongodb-0012__mongodb-0012_b19336171131810">cd</strong> command to go to the directory where the configuration file is stored.
+                 <div class="p" id="mongodb-0012__mongodb-0012_p102435573425">
+                  For example:
+                  <pre class="screen" id="mongodb-0012__mongodb-0012_screen18567102854219">cd /opt/install/mongodb-linux-x86_64-rhel70-4.4.20/bin</pre>
+                 </div></li>
+                <li id="mongodb-0012__mongodb-0012_li14011375597"><a name="mongodb-0012__mongodb-0012_li14011375597"></a><a name="mongodb-0012_li14011375597"></a>Run the following command to check the value of <strong id="mongodb-0012__mongodb-0012_b1332343620396">auth</strong> in the configuration file:<pre class="screen" id="mongodb-0012__mongodb-0012_screen5880540114513">cat mongodb.conf</pre> <p id="mongodb-0012__mongodb-0012_p19703447174514">The command output is as follows:</p> <pre class="screen" id="mongodb-0012__mongodb-0012_screen710181324510">[root@localhost bin]# cat mongodb.conf
+port=27101
+dapath=/opt/mongodb/single/data
+logpath=/opt/mongodb/single/log/single.log
+logappend=true
+journal=false
+fork-true
+bind_ip=0.0.0.0
+wiredTigerCacheSizeGB=1
+keyFile=/opt/mongodb/keyfile
+auth=true</pre></li>
+                <li id="mongodb-0012__mongodb-0012_li29891373451"><a name="mongodb-0012__mongodb-0012_li29891373451"></a><a name="mongodb-0012_li29891373451"></a>Run the following command to check the configuration file used by the MongoDB database: If the command output contains <strong id="mongodb-0012__mongodb-0012_b1555603514013">mongodb.conf</strong>, the configuration file used for starting the MongoDB database is <strong id="mongodb-0012__mongodb-0012_b4943164717408">mongodb.conf</strong>.<pre class="screen" id="mongodb-0012__mongodb-0012_screen1268612119483">ps -ef | grep mongodb.conf</pre></li>
+                <li id="mongodb-0012__mongodb-0012_li59681418114815">If the value of <strong id="mongodb-0012__mongodb-0012_b653489155513">auth</strong> in <a href="#mongodb-0012__mongodb-0012_li14011375597">4</a> is <strong id="mongodb-0012__mongodb-0012_b10474101418555">true</strong> and the command output in <a href="#mongodb-0012__mongodb-0012_li29891373451">5</a> contains <strong id="mongodb-0012__mongodb-0012_b25761822135517">mongodb.conf</strong>, database authentication is used. Otherwise, OS authentication is used.</li>
+               </ol></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.1 "><p><span><strong>Database Username</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.2 "><p>Name of the database administrator. This parameter is displayed only when the authentication mode is set to <strong>Database authentication</strong>.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.1 "><p><span><strong>Database Password</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.2 "><p>Password of the database administrator. This parameter is displayed only when the authentication mode is set to <strong>Database authentication</strong>.</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.1 "><p><span><strong>Database Installation Directory</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.2 "><p>Set this parameter to the directory where the <strong>mongo</strong>, <strong>mongod</strong>, or <strong>mongos</strong> file is located. If this parameter is not specified, the directory configured in the global variable is used by default.</p>
+               <div class="note">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p>You can click <span class="uicontrol"><b>Batch Configure Database Installation Directory</b></span> to configure the database installation directory for all nodes in batches.</p>
+                </div>
+               </div></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.1 "><p><span><strong>Database Tool Installation Directory</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.1.2.1.3.3.2.3.1.2 "><p>Set this parameter to the directory where the <strong>mongodump</strong> or <strong>mongorestore</strong> tool is located. If this parameter is not specified, the tool directory configured in the global variable is used by default.</p>
+               <div class="note">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p>You can click <span class="uicontrol"><b>Batch Configure Database Tool Installation Directory</b></span> to configure the installation directory of the database tool for all nodes in batches.</p>
+                </div>
+               </div></td>
+             </tr>
+            </tbody>
+           </table>
+          </div></li>
+         <li>Click <span class="uicontrol"><b>Add</b></span> under <strong>Nodes</strong> to add all nodes of the cluster instance.</li>
+         <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
+        </ol></li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="mongodb-0011.html">Backing Up MongoDB Databases</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

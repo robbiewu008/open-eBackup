@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -43,8 +43,7 @@ import {
   nth,
   set,
   some,
-  trim,
-  uniq
+  trim
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
@@ -335,6 +334,8 @@ export class AddNetworkComponent implements OnInit {
     });
     this.formGroup.get('homePortType').valueChanges.subscribe(res => {
       if (res === DataMap.initHomePortType.ethernet.value) {
+        // 从绑定切到以太把共享置false
+        this.formGroup.get('shareBondPort').setValue(false);
         if (!this.enableVlan) {
           // 从绑定切到以太如果没有开vlan则不展示复用
           this.formGroup.get('reuse').setValue(false);
@@ -469,13 +470,9 @@ export class AddNetworkComponent implements OnInit {
           ? this.i18n.get('system_pod_bonding_rule_tip_label')
           : this.i18n.get('system_pod_add_network_bonding_rule_tip_label');
     } else {
-      if (this.enableVlan) {
-        this.tips = this.i18n.get('system_pod_bonding_rule_tip_label');
-      } else {
-        this.tips = shareBondPort
-          ? this.i18n.get('system_pod_rule_tip_label')
-          : this.i18n.get('system_pod_bonding_rule_tip_label');
-      }
+      this.tips = shareBondPort
+        ? this.i18n.get('system_pod_rule_tip_label')
+        : this.i18n.get('system_pod_bonding_rule_tip_label');
     }
   }
 
@@ -510,11 +507,7 @@ export class AddNetworkComponent implements OnInit {
       }
 
       let idGroup = control.value.split(',');
-      if (idGroup.length < 2) {
-        return { invalidInput: { value: control.value } };
-      }
-      let uniqGroup = uniq(idGroup);
-      if (uniqGroup.length !== idGroup.length) {
+      if (idGroup.length < 1) {
         return { invalidInput: { value: control.value } };
       }
       if (
@@ -738,6 +731,17 @@ export class AddNetworkComponent implements OnInit {
   routeStatusChange(e) {
     this.routeGroupData = e;
     this.modal.getInstance().lvOkDisabled = some(e, item => item.invalid);
+    if (
+      find(
+        e,
+        item => item.get('type').value === DataMap.initRouteType.default.value
+      )
+    ) {
+      this.formGroup.get('gateway').disable();
+      this.formGroup.get('gateway').setValue('');
+    } else {
+      this.formGroup.get('gateway').enable();
+    }
   }
 
   validRoute() {
@@ -818,10 +822,7 @@ export class AddNetworkComponent implements OnInit {
         return onlinePort.length < 2 || tmpData.length < 4;
       }
     } else {
-      if (this.enableVlan) {
-        // 开vlan后如果复用两类口都需要选两个已连接的
-        return onlinePort.length < 2;
-      } else if (shareBondPort) {
+      if (shareBondPort) {
         return onlinePort.length < 1;
       } else {
         return onlinePort.length < 2;
@@ -829,18 +830,14 @@ export class AddNetworkComponent implements OnInit {
     }
   }
 
-  clearSelected() {
-    this.source.selection = [];
-    this.targetData = [];
-    this.disableBtn();
-  }
-
   selectionChange(e) {
+    this.source.selection = e.selection;
     this.targetData = e.selection;
     this.disableBtn();
   }
 
   oldSelectionChange(e) {
+    this.oldSource.selection = e.selection;
     this.oldTargetData = e.selection;
     this.disableBtn();
   }

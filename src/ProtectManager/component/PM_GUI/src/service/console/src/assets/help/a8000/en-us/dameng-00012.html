@@ -1,0 +1,56 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Enabling the DmAPService">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="dameng-00011.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="dameng-00012">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Enabling the DmAPService</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="dameng-00012"></a><a name="dameng-00012"></a>
+
+<h1 class="topictitle1">Step 1: Enabling the DmAPService</h1>
+<div><p>Before performing backup and restoration jobs for Dameng, DmAPService must be enabled. Otherwise, backup and restoration operations cannot be performed.</p>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><ul id="dameng-00012__ul1749801716447"><li id="dameng-00012__en-us_topic_0000002012732625_li18475121815115"><span id="dameng-00012__en-us_topic_0000002012732625_ph158001916133217">Unless otherwise specified, the operations in this section use Dameng 8 as an example. The operations may vary according to the database version.</span></li><li id="dameng-00012__en-us_topic_0000002012732625_li135951626152410"><span id="dameng-00012__en-us_topic_0000002012732625_ph1496613312326">If the Dameng database is deployed in a cluster, you need to log in to all hosts where the cluster instances reside and perform the following operations unless otherwise specified.</span></li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to the Dameng database host.</span></li><li><span>Run the following command to check whether the DmAPService service is enabled:</span><p><pre class="screen">systemctl status DmAPService</pre>
+<ul><li>If the value of <span class="parmname"><b>Active</b></span> is <span class="parmvalue"><b>active(running)</b></span>, the DmAPService service has been enabled.</li><li>If the value of <span class="parmname"><b>Active</b></span> is <span class="parmvalue"><b>inactive(dead)</b></span>, the DmAPService service is disabled. Run the <strong>systemctl start DmAPService</strong> command to enable the DmAPService service.</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="dameng-00011.html">Backing Up Dameng</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

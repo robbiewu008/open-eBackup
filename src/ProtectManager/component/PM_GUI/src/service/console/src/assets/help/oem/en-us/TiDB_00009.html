@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Registering a TiDB Cluster">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="TiDB_00008.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="TiDB_00009">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Registering a TiDB Cluster</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="TiDB_00009"></a><a name="TiDB_00009"></a>
+  <h1 class="topictitle1">Step 1: Registering a TiDB Cluster</h1>
+  <div>
+   <p>Before backup and restoration of a TiDB backup resource, register the TiDB cluster with the <span>product</span>.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p>The cluster status is normal.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>Ensure that the TiUP components br and ctl corresponding to the TiDB cluster versions have been installed. Otherwise, the backup will fail.</p>
+    <div class="note">
+     <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+     <div class="notebody">
+      <ol>
+       <li>Log in to the TiUP control machine as user <strong>root</strong>.</li>
+       <li>Run the <strong>tiup cluster list</strong> command to query the version of the TiDB cluster deployed on the control machine.</li>
+       <li>Run the <strong>which tiup</strong> command to query the TiUP installation path, for example, <strong>/root/.tiup/bin/tiup</strong>.</li>
+       <li>Run the <strong>cd </strong><em>/root/.tiup</em>/<strong>components</strong> command to check the versions of the br and ctl components.<p>If the corresponding component versions are not found, run the <strong>tiup install br</strong> or <strong>tiup install ctl</strong> command to install the corresponding component.</p></li>
+      </ol>
+     </div>
+    </div>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li id="TiDB_00009__en-us_topic_0000001249935107_li0198134611381"><span>Choose <span class="uicontrol" id="TiDB_00009__en-us_topic_0000001839142377_uicontrol538217262370"><b><span id="TiDB_00009__en-us_topic_0000001839142377_text1938272620379"><strong>Protection</strong></span> &gt; Databases &gt; TiDB</b></span>.</span></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> page, click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register a TiDB cluster.</span><p></p>
+      <ol type="a">
+       <li>Under <span><strong>Name</strong></span>, enter the user-defined TiDB cluster name.</li>
+       <li>On the <span><strong>Add TiUP Node</strong></span> tab page, configure TiUP node information. Multiple TiUP nodes can be deployed in a TiDB cluster. <a href="#TiDB_00009__table1125089123913">Table 1</a> describes the parameters for adding a TiUP node to the TiDB cluster. 
+        <div class="tablenoborder">
+         <a name="TiDB_00009__table1125089123913"></a><a name="table1125089123913"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="TiDB_00009__table1125089123913" width="90%" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>Adding TiUP node information to the TiDB cluster
+          </caption>
+          <colgroup>
+           <col style="width:16.45%">
+           <col style="width:83.55%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="16.45%" id="mcps1.3.4.2.2.2.1.2.3.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="83.55%" id="mcps1.3.4.2.2.2.1.2.3.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="16.45%" headers="mcps1.3.4.2.2.2.1.2.3.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="83.55%" headers="mcps1.3.4.2.2.2.1.2.3.2.3.1.2 "><p>Host that has been registered with the <span>product</span>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="16.45%" headers="mcps1.3.4.2.2.2.1.2.3.2.3.1.1 "><p><span><strong>TiUP installation path</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="83.55%" headers="mcps1.3.4.2.2.2.1.2.3.2.3.1.2 "><p>Installation path of the TiUP node in the TiDB cluster database.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>Click <strong>Next</strong> and select a cluster.</li>
+       <li>Click <strong>Next</strong> and add a node. <a href="#TiDB_00009__table3237154494313">Table 2</a> describes the parameters for adding a node. 
+        <div class="tablenoborder">
+         <a name="TiDB_00009__table3237154494313"></a><a name="table3237154494313"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="TiDB_00009__table3237154494313" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 2 </b>Adding node to the TiDB cluster
+          </caption>
+          <colgroup>
+           <col style="width:16.97%">
+           <col style="width:83.03%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="16.97%" id="mcps1.3.4.2.2.2.1.4.3.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="83.03%" id="mcps1.3.4.2.2.2.1.4.3.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="16.97%" headers="mcps1.3.4.2.2.2.1.4.3.2.3.1.1 "><p><span><strong>TiDB cluster username</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="83.03%" headers="mcps1.3.4.2.2.2.1.4.3.2.3.1.2 "><p>Username of the TiDB cluster administrator.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="16.97%" headers="mcps1.3.4.2.2.2.1.4.3.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="83.03%" headers="mcps1.3.4.2.2.2.1.4.3.2.3.1.2 "><p>Password of the TiDB cluster administrator.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="16.97%" headers="mcps1.3.4.2.2.2.1.4.3.2.3.1.1 "><p><span><strong>Log backup path</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="83.03%" headers="mcps1.3.4.2.2.2.1.4.3.2.3.1.2 "><p>Log backup path of the TiDB cluster.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>Select a host for each node in the TiDB cluster and click <span class="uicontrol"><b>Finish</b></span>.</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="TiDB_00008.html">Backing Up TiDB Backup Resources</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

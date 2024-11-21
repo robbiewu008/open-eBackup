@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MessageService, OptionItem } from '@iux/live';
@@ -38,8 +38,10 @@ import {
   assign,
   filter,
   find,
+  includes,
   isEmpty,
   isNumber,
+  isUndefined,
   map,
   toString as _toString
 } from 'lodash';
@@ -70,9 +72,26 @@ export class CopyDuplicateComponent implements OnInit {
   isHcsCrossCloud = false;
   slaProperties;
   vdcTenantOptions = [];
+  isTargetMulti = false; // 用于判断对端是否为多集群
+  isDataBackup = includes(
+    [
+      DataMap.Deploy_Type.a8000.value,
+      DataMap.Deploy_Type.x3000.value,
+      DataMap.Deploy_Type.x6000.value,
+      DataMap.Deploy_Type.x8000.value,
+      DataMap.Deploy_Type.x9000.value
+    ],
+    this.i18n.get('deploy_type')
+  );
+  repUnitMap = {
+    d: 25550,
+    w: 3650,
+    MO: 840,
+    y: 70
+  };
 
   retentionDurationErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
-    invalidRang: this.i18n.get('common_valid_rang_label', [1, 365])
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 25550])
   });
 
   retentionDurations = this.dataMapService
@@ -130,7 +149,7 @@ export class CopyDuplicateComponent implements OnInit {
         validators: [
           this.baseUtilService.VALID.required(),
           this.baseUtilService.VALID.integer(),
-          this.baseUtilService.VALID.rangeValue(1, 365)
+          this.baseUtilService.VALID.rangeValue(1, 25550)
         ]
       }),
       duration_unit: new FormControl(DataMap.Interval_Unit.day.value),
@@ -177,7 +196,7 @@ export class CopyDuplicateComponent implements OnInit {
       if (!isEmpty(this.rowItem.storage_id)) {
         this.getRepository(res);
       }
-      if (this.isHcsUser) {
+      if (this.isHcsUser && !this.isHcsCrossCloud) {
         return;
       }
       this.formGroup.get('specifyUser').setValue('');
@@ -188,7 +207,7 @@ export class CopyDuplicateComponent implements OnInit {
       this.getSpecifyUser(res);
     });
 
-    if (!this.isHcsUser) {
+    if (!this.isHcsUser || this.isHcsCrossCloud) {
       this.formGroup
         .get('replication_storage_type')
         .valueChanges.subscribe(res => {
@@ -253,13 +272,18 @@ export class CopyDuplicateComponent implements OnInit {
       clusterId: this.formGroup.value.external_system_id
     };
     this.clusterApiService
-      .verifyUsernameAndPasswordUsingPost({
+      .verifyUsernamePasswordAndGetClusterInfoUsingPost({
         verifyUserDto: params,
         akOperationTips: false
       })
       .subscribe((res: any) => {
-        this.isAuth = res;
-        if (res) {
+        this.isAuth = res.verify;
+        if (!isUndefined(res?.backupBaseClusterInfo?.clusterEstablished)) {
+          this.isTargetMulti = res?.backupBaseClusterInfo?.clusterEstablished;
+        } else {
+          this.isTargetMulti = !isEmpty(res?.backupBaseClusterInfo?.roleType);
+        }
+        if (res.verify) {
           this.messageService.success(
             this.i18n.get('protection_user_verify_success_label')
           );
@@ -358,7 +382,7 @@ export class CopyDuplicateComponent implements OnInit {
 
   // 单机场景，普通应用只能选存储单元；其他情况可以选单元和单元组。
   backupStorageTypes() {
-    return !MultiCluster.isMulti && !this.isDwsCopy
+    return !this.isTargetMulti && !this.isDwsCopy
       ? this.backupStorageTypesWithoutGroup
       : this.backupStorageTypesAll;
   }
@@ -367,16 +391,10 @@ export class CopyDuplicateComponent implements OnInit {
     this.formGroup.get('retention_duration').enable();
     switch (value) {
       case DataMap.Interval_Unit.day.value:
-        this.setRetentionDurationValidators(365);
-        break;
       case DataMap.Interval_Unit.week.value:
-        this.setRetentionDurationValidators(54);
-        break;
       case DataMap.Interval_Unit.month.value:
-        this.setRetentionDurationValidators(24);
-        break;
       case DataMap.Interval_Unit.year.value:
-        this.setRetentionDurationValidators(10);
+        this.setRetentionDurationValidators(this.repUnitMap[value]);
         break;
       case DataMap.Interval_Unit.persistent.value:
         this.formGroup.get('retention_duration').disable();
@@ -506,8 +524,11 @@ export class CopyDuplicateComponent implements OnInit {
         assign(params, {
           user_id: this.slaProperties.user_id
         });
-        delete params.storage_id;
+      } else if (this.isHcsUser) {
+        // 服务化跨域不需要下发这几个参数否则会报错
+        delete params.user_id;
         delete params.username;
+        delete params.storage_id;
         delete params.password;
       }
       this.drawModalService.create({

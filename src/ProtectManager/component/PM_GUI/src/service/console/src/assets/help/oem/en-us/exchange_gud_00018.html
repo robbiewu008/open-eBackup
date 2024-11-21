@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Configuring a Database Backup and Restoration Account">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="exchange_gud_00014.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="exchange_gud_00018">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Configuring a Database Backup and Restoration Account</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="exchange_gud_00018"></a><a name="exchange_gud_00018"></a>
+  <h1 class="topictitle1">Configuring a Database Backup and Restoration Account</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Create a database backup and recovery account, as well as create an available mailbox. After the account is created, it automatically becomes the new account of the domain user.</span><p></p>
+      <ul>
+       <li>Exchange 2010: Log in to the Exchange agent host, open the Exchange Management Console, expand <strong>Recipient Configuration</strong>, right-click <strong>Mailbox</strong>, choose <strong>New Mailbox</strong> from the shortcut menu, and create an Exchange mailbox as prompted. For example, the username can be <strong>OceanProtectUser</strong>.</li>
+       <li>Exchange 2013/2016/2019: Log in to <strong>Exchange admin center</strong>, click <strong>Mailboxes</strong> on the <strong>Recipients</strong> page, and create an Exchange mailbox as prompted. For example, the username can be <strong>OceanProtectUser</strong>.</li>
+      </ul> <p></p></li>
+     <li><span>Add the newly created user as a member of the domain administrator.</span><p></p><p>On the domain controller, open <strong>Active Directory Users and Computers</strong>, double-click the created account, click the <strong>Member Of</strong> tab and <strong>Add</strong>, add the user to <strong>Domain Admins</strong>, and click <strong>OK</strong>.</p> <p></p></li>
+     <li><span>Provide credentials for this user in the Exchange agent host properties, create a role group, and set the user as a member of the role group.</span><p></p>
+      <ol type="a">
+       <li>Open <strong>Exchange Management Shell</strong> and run the following command to create a role group named <strong>OceanProtectRoles</strong>:<pre class="screen">New-RoleGroup -Name OceanProtectRoles -Roles @("Database Copies", "Databases", "Exchange Servers", "Monitoring", "Mail Recipient Creation", "Mail Recipients", "Recipient Policies")</pre> <p>Parameters:</p>
+        <ul>
+         <li><strong>DatabaseCopies</strong>: enables administrators to manage database copies on each server.</li>
+        </ul>
+        <ul>
+         <li><span><strong>Databases</strong>: enables administrators to create, manage, mount, and unmount mailboxes and public folder databases on each server.</span></li>
+         <li><strong>Exchange Servers</strong>: enables administrators to manage Exchange Server configurations on each server.</li>
+         <li><strong>Monitoring</strong>: enables administrators to monitor the availability of Exchange services and components in an organization. In addition to administrators, other roles associated with administrators, together with the service account that monitors applications, can collect information about the status of the Exchange Server.</li>
+         <li><strong>Mail Recipient Creation</strong>: enables administrators to create mailboxes, mail users, mail contacts, communication groups, and dynamic communication groups in an organization.</li>
+         <li><strong>Mail Recipients</strong>: enables administrators to manage existing mailboxes, mail users, mail contacts, communication groups, and dynamic communication groups in an organization.</li>
+         <li><strong>Recipient Policies</strong>: enables administrators to manage recipient policies in an organization, for example, configuration policies.</li>
+        </ul></li>
+       <li>Add the <strong>OceanProtectUser</strong> user to the <strong>OceanProtectRoles</strong> role group.<pre class="screen">Add-RoleGroupMember -Identity OceanProtectRoles -Member OceanProtectUser</pre></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="exchange_gud_00014.html">Preparations for Backup</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

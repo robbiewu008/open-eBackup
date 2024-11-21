@@ -1,3 +1,4 @@
+<div class="aui-operation">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-operation">
   <lv-group>
     <lv-pro-button-group
       [config]="optsConfig"
@@ -63,6 +63,11 @@
           <lv-tag [ngModel]="item?.hoverLabelList"></lv-tag>
       </ng-template>
   </ng-container>
+</ng-template>
+
+<ng-template #allowRestoreTpl>
+  <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_is_allow_restore_tip_label' | i18n}}"
+  lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
 </ng-template>
 
 <ng-template #emptyTpl>

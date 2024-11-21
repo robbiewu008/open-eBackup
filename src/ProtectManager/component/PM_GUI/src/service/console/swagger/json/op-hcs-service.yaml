@@ -264,12 +264,15 @@ paths:
           description: 开始页
           type: integer
           format: int32
+          minimum: 0
         - name: limit
           in: query
           required: true
           description: 每页的数量
           type: integer
           format: int32
+          maximum: 1000
+          minimum: 0
         - name: clusterId
           in: query
           required: true
@@ -281,6 +284,64 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/VdcResponse'
+  /v2/resources/hcs/storage/{uuid}:
+    delete:
+      tags:
+        - op-hcs-service-api
+      summary: 删除HCS存储资源。
+      x-dr-role: 'N'
+      x-product: OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 删除HCS存储资源。
+      operationId: deleteStorageForHcs
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ''
+          examples:
+            application/json: ''
+  /v2/resources/hcs/storage:
+    put:
+      tags:
+        - op-hcs-service-api
+      summary: 修改HCS存储资源。
+      x-dr-role: 'N'
+      x-product: OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 修改HCS存储资源。
+      operationId: editStorageForHcs
+      parameters:
+        - name: storage
+          in: body
+          required: false
+          description: 存储资源
+          schema:
+            $ref: '#/definitions/Storage'
+      responses:
+        '200':
+          description: ''
+          examples:
+            application/json: ''
 definitions:
   HcsUserRegionName:
     type: object
@@ -411,6 +472,9 @@ definitions:
         minLength: 0
         maxLength: 128
         description: 默认为空
+      uuid:
+        type: string
+        description: 存储资源ID
   ResponseBodyForAz:
     type: object
     description: 可用分区信息

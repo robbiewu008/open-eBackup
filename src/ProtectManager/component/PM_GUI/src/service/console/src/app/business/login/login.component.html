@@ -1,3 +1,4 @@
+<div class="login-container" [ngClass]="{'default_bg':!whitebox.isWhitebox,'whitebox_bg':whitebox.isWhitebox}">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,9 +12,8 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="login-container" [ngClass]="{'default_bg':!whitebox.isWhitebox,'whitebox_bg':whitebox.isWhitebox}">
   <div class="login-top">
-    <aui-logo-title class="logo"></aui-logo-title>
+    <aui-logo-title class="logo" [isWhiteColor]="true"></aui-logo-title>
     <div class="language" (click)="toggleLanguage()">{{ languageLabel }}</div>
   </div>
   <div class="login-content" *ngIf="!isModifyPasswd">
@@ -157,7 +157,7 @@
     </lv-group>
   </div>
 
-  <div class="main_footer" *ngIf="showCopyRight">{{ copyRightLabel }}</div>
+  <div class="main_footer">{{ copyRightLabel }}</div>
 </div>
 
 <ng-template #pwdComplexTipTpl>

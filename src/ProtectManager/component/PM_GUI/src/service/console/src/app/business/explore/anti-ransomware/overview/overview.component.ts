@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   ElementRef,
@@ -21,9 +21,12 @@ import {
   CommonConsts,
   CookieService,
   CopiesDetectReportService,
-  DataMap,
   DataMapService,
-  I18NService
+  GlobalService,
+  I18NService,
+  THEME_TRIGGER_ACTION,
+  ThemeEnum,
+  getAppTheme
 } from 'app/shared';
 import { SystemTimeService } from 'app/shared/services/system-time.service';
 import * as echarts from 'echarts';
@@ -90,6 +93,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   constructor(
     public el: ElementRef,
     public i18n: I18NService,
+    private globalService: GlobalService,
     public systemTimeService: SystemTimeService,
     private cookieService: CookieService,
     private dataMapService: DataMapService,
@@ -107,6 +111,26 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.getDetectionData();
     this.getEndTime();
     this.selectedTime = this.detectionTimeRangeOption[0].value;
+    this.globalService
+      .getState(THEME_TRIGGER_ACTION)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (isEmpty(this.chartOption)) {
+          return;
+        }
+        this.chartOption.xAxis.axisLabel.color = this.getLabelColor();
+        this.chartOption.yAxis.axisLabel.color = this.getLabelColor();
+        this.chartOption.legend.textStyle.color = this.getLabelColor();
+        this.detectionDataChart.setOption(this.chartOption);
+      });
+  }
+
+  isThemeLight(): boolean {
+    return getAppTheme(this.i18n) === ThemeEnum.light;
+  }
+
+  getLabelColor() {
+    return this.isThemeLight() ? '#4D4D4D' : '#B3B3B3';
   }
 
   onChange() {
@@ -244,14 +268,18 @@ export class OverviewComponent implements OnInit, OnDestroy {
           label: {
             backgroundColor: '#6a7985'
           }
-        }
+        },
+        confine: true
       },
       legend: {
         data: [
           this.i18n.get('explore_infected_label'),
           this.i18n.get('common_status_exception_label'),
           this.i18n.get('explore_uninfected_label')
-        ]
+        ],
+        textStyle: {
+          color: this.getLabelColor()
+        }
       },
       grid: {
         left: '20px',
@@ -264,18 +292,20 @@ export class OverviewComponent implements OnInit, OnDestroy {
         type: 'time',
         scale: true,
         axisLabel: {
+          color: this.getLabelColor(),
           formatter: value => {
             return echarts.format.formatTime('yyyy-MM-dd', value);
           }
         },
         boundaryGap: ['2%', '2%']
       },
-      yAxis: [
-        {
-          type: 'value',
-          minInterval: 1
+      yAxis: {
+        type: 'value',
+        minInterval: 1,
+        axisLabel: {
+          color: this.getLabelColor()
         }
-      ],
+      },
       series: [
         {
           name: this.i18n.get('explore_infected_label'),

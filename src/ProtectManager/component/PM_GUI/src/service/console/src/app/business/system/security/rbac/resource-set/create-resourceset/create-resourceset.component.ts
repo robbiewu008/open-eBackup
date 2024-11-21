@@ -1,16 +1,16 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, OnInit } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -40,7 +40,8 @@ import {
   intersection,
   isEmpty,
   map,
-  some
+  some,
+  uniq
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -61,6 +62,7 @@ export class CreateResourcesetComponent implements OnInit {
 
   lastSelection = [];
   allSelectionMap: any = {};
+  modifyResourceGroupList = []; // 用于存放修改时修改了的资源组
   deviceOptions = this.dataMapService.toArray('Device_Storage_Type');
 
   nameErrorTip = {
@@ -77,6 +79,7 @@ export class CreateResourcesetComponent implements OnInit {
     public baseUtilService: BaseUtilService,
     private fb: FormBuilder,
     private i18n: I18NService,
+    private cdr: ChangeDetectorRef,
     private dataMapService: DataMapService,
     private appUtilsService: AppUtilsService,
     private resourceSetService: ResourceSetApiService
@@ -84,10 +87,7 @@ export class CreateResourcesetComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.initApplication();
-    if (this.data) {
-      this.getResource();
-    }
+    this.initAvailableApplication();
   }
 
   initForm() {
@@ -125,8 +125,7 @@ export class CreateResourcesetComponent implements OnInit {
     };
   }
 
-  initApplication() {
-    // 生成囊括所有应用的集合
+  initAvailableApplication() {
     const allApp = this.appUtilsService.getApplicationConfig();
     allApp.fileService.unshift({
       id: 'storage-device',
@@ -148,7 +147,8 @@ export class CreateResourcesetComponent implements OnInit {
       { label: this.i18n.get('common_bigdata_label'), apps: allApp.bigData },
       {
         label: this.i18n.get('common_virtualization_label'),
-        apps: allApp.virtualization
+        apps: allApp.virtualization,
+        key: 'virtualization'
       },
       {
         label: this.i18n.get('common_container_label'),
@@ -163,15 +163,15 @@ export class CreateResourcesetComponent implements OnInit {
         apps: allApp.application
       },
       {
-        label: this.i18n.get('common_file_system_label'),
+        label: this.i18n.get('common_file_systems_label'),
         apps: allApp.fileService
       },
       {
-        label: this.i18n.get('protection_client_label'),
+        label: this.i18n.get('protection_clients_label'),
         type: ResourceSetType.Agent
       },
       {
-        label: this.i18n.get('SLA'),
+        label: this.i18n.get('common_sla_label'),
         type: ResourceSetType.SLA
       },
       {
@@ -198,23 +198,49 @@ export class CreateResourcesetComponent implements OnInit {
         type: ResourceSetType.Report
       }
     ];
+    this.resourceSetService.queryAvailableScopeModule({}).subscribe(res => {
+      this.initApplication(uniq(res.filter(item => !!item)), appTypes);
+    });
+  }
 
-    if (this.appUtilsService.isDistributed) {
-      appTypes = appTypes.filter(
-        item =>
-          !includes([ResourceSetType.AirGap, ResourceSetType.Worm], item.type)
+  initApplication(appList, appTypes) {
+    // 生成当前已接入的资源列表集合
+
+    appTypes = appTypes.filter((item: any) => {
+      if (item?.apps) {
+        item.apps = item.apps?.filter(
+          app =>
+            appList.includes(app?.resourceSetType) ||
+            (appList.includes(ResourceSetType.FilesetTemplate) &&
+              app?.resourceSetType === ResourceSetType.Fileset)
+        );
+      }
+
+      return (
+        (appList.includes(item?.type) ||
+          (appList.includes(ResourceSetType.ReportSubscription) &&
+            item.type === ResourceSetType.Report) ||
+          !!item.apps?.length) &&
+        !(
+          this.appUtilsService.isDistributed &&
+          includes([ResourceSetType.AirGap, ResourceSetType.Worm], item.type)
+        )
       );
-    }
+    });
 
     for (const appType of appTypes) {
       this.applicationList.push(appType);
+    }
+
+    if (this.data) {
+      this.getResource();
     }
   }
 
   getResource() {
     // 用于修改时标识上次的已选择
     this.resourceSetService
-      .QueryResourceSetTypeCount({
+      .queryResourceSetTypeCount({
         resourceSetId: this.data[0].uuid
       })
       .subscribe(res => {
@@ -226,8 +252,9 @@ export class CreateResourcesetComponent implements OnInit {
           if (ResourceSetType.StorageEquipment === item.scopeModule) {
             return some(this.deviceOptions, { value: item.resourceSubType })
               ? item.scopeModule
-              : item.resourceSubType ===
-                DataMap.Resource_Type.NASFileSystem.value
+              : [DataMap.Resource_Type.NASFileSystem.value].includes(
+                  item.resourceSubType
+                )
               ? ResourceSetType.NasFileSystem
               : ResourceSetType.NasShare;
           }
@@ -288,20 +315,17 @@ export class CreateResourcesetComponent implements OnInit {
   getSelected(type) {
     if (type === ResourceSetType.Fileset) {
       // 文件集由于文件集模板使用不同的资源集类型所以得单独处理
-      return (
-        (!!intersection(this.lastSelection, [
-          ResourceSetType.Fileset,
-          ResourceSetType.FilesetTemplate
-        ]).length &&
-          !(type in this.allSelectionMap) &&
-          !(ResourceSetType.FilesetTemplate in this.allSelectionMap)) ||
-        ((type in this.allSelectionMap ||
-          ResourceSetType.FilesetTemplate in this.allSelectionMap) &&
-          (!isEmpty(this.allSelectionMap[type]?.data) ||
-            !isEmpty(
-              this.allSelectionMap[ResourceSetType.FilesetTemplate]?.data
-            ) ||
-            !!this.allSelectionMap[type].isAllSelected))
+      return this.parseSpecialSelected(
+        type,
+        ResourceSetType.Fileset,
+        ResourceSetType.FilesetTemplate
+      );
+    }
+    if (type === ResourceSetType.Report) {
+      return this.parseSpecialSelected(
+        type,
+        ResourceSetType.Report,
+        ResourceSetType.ReportSubscription
       );
     }
     return (
@@ -310,6 +334,19 @@ export class CreateResourcesetComponent implements OnInit {
         (!isEmpty(this.allSelectionMap[type]?.data) ||
           !!this.allSelectionMap[type].isAllSelected)) ||
       this.getResourceGroupChange(type)
+    );
+  }
+
+  parseSpecialSelected(type, mainType, otherType) {
+    return (
+      (!!intersection(this.lastSelection, [mainType, otherType]).length &&
+        !(type in this.allSelectionMap) &&
+        !(otherType in this.allSelectionMap)) ||
+      ((type in this.allSelectionMap || otherType in this.allSelectionMap) &&
+        (!isEmpty(this.allSelectionMap[type]?.data) ||
+          !isEmpty(this.allSelectionMap[otherType]?.data) ||
+          !!this.allSelectionMap[mainType]?.isAllSelected ||
+          !!this.allSelectionMap[otherType]?.isAllSelected))
     );
   }
 
@@ -339,6 +376,12 @@ export class CreateResourcesetComponent implements OnInit {
     defer(() => this.selectChange());
   }
 
+  resourceGroupChange(e) {
+    if (!this.modifyResourceGroupList.includes(e)) {
+      this.modifyResourceGroupList.push(e);
+    }
+  }
+
   getParams() {
     const params = {
       name: this.formGroup.value.name,
@@ -352,6 +395,7 @@ export class CreateResourcesetComponent implements OnInit {
     }
 
     let resourceSetRelationList = [];
+    let allSelectList = [];
     if (isEmpty(this.allSelectionMap)) {
       return params;
     }
@@ -367,6 +411,7 @@ export class CreateResourcesetComponent implements OnInit {
           ResourceSetType.Worm,
           ResourceSetType.AirGap,
           ResourceSetType.Report,
+          ResourceSetType.ReportSubscription,
           ResourceSetType.RESOURCE_GROUP
         ],
         key
@@ -408,6 +453,7 @@ export class CreateResourcesetComponent implements OnInit {
             isAllSelected: this.allSelectionMap[key]?.isAllSelected,
             resourceIdList: []
           });
+          allSelectList.push(key);
         }
         const targetRelation = resourceSetRelationList.find(
           item => item.type === type
@@ -424,10 +470,51 @@ export class CreateResourcesetComponent implements OnInit {
     }
 
     if (!isEmpty(resourceSetRelationList)) {
+      // 如果资源全选了，要帮资源组全选
+      this.allSelectResourceGroup(resourceSetRelationList, allSelectList);
+
       assign(params, { resourceSetRelationList: resourceSetRelationList });
     }
 
     return params;
+  }
+
+  private allSelectResourceGroup(
+    resourceSetRelationList: any[],
+    allSelectList: any[]
+  ) {
+    let tmpResourceGroupList: any = find(resourceSetRelationList, {
+      type: ResourceSetType.RESOURCE_GROUP
+    });
+    if (!tmpResourceGroupList) {
+      tmpResourceGroupList = map(allSelectList, item => {
+        return {
+          scopeModule: item,
+          resourceIdList: [],
+          isAllSelected: true
+        };
+      });
+      resourceSetRelationList.unshift({
+        type: ResourceSetType.RESOURCE_GROUP,
+        resourceDtoList: tmpResourceGroupList
+      });
+    } else {
+      each(allSelectList, item => {
+        const tmpResourceGroup = find(tmpResourceGroupList.resourceDtoList, {
+          scopeModule: item
+        });
+        if (!!tmpResourceGroup) {
+          tmpResourceGroup.resourceIdList = [];
+          tmpResourceGroup.isAllSelected = true;
+        } else {
+          tmpResourceGroupList.resourceDtoList.push({
+            scopeModule: item,
+            resourceIdList: [],
+            isAllSelected: true
+          });
+        }
+      });
+    }
   }
 
   configResourceGroupData(
@@ -450,6 +537,15 @@ export class CreateResourcesetComponent implements OnInit {
         });
       }
     });
+    // 如果进入修改时有这个应用的资源组，而再次下发时没有了，则表明要清理该资源的资源组
+    each(this.modifyResourceGroupList, item => {
+      if (!find(tmpResourceDtoList, { scopeModule: item })) {
+        tmpResourceDtoList.push({
+          scopeModule: item,
+          resourceIdList: []
+        });
+      }
+    });
     resourceSetRelationList.push({
       type,
       resourceDtoList: tmpResourceDtoList
@@ -460,7 +556,7 @@ export class CreateResourcesetComponent implements OnInit {
     return new Observable<void>((observer: Observer<void>) => {
       if (!!this.data) {
         this.resourceSetService
-          .ModifyResourceSet({
+          .modifyResourceSet({
             ResourceSetRequest: this.getParams()
           })
           .subscribe({
@@ -475,7 +571,7 @@ export class CreateResourcesetComponent implements OnInit {
           });
       } else {
         this.resourceSetService
-          .CreateResourceSet({
+          .createResourceSet({
             ResourceSetRequest: this.getParams()
           })
           .subscribe({

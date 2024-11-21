@@ -1,3 +1,4 @@
+<lv-form [formGroup]='formGroup' class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]='formGroup' class="formGroup">
     <div>
         <lv-form-item>
             <lv-form-label>{{'protection_incremental_mode_label' | i18n}}
@@ -140,7 +140,8 @@
                         <lv-group lvGutter='8px'>
                             <div lv-overflow>
                                 <span>
-                                    {{ item.environment?.name + ' ( ' + item.environment?.endpoint + ' )' }}
+                                    {{ item.environment?.name + ' ( ' + (item.environment?.extendInfo?.subNetFixedIp ||
+                                    item.environment?.endpoint) + ' )' }}
                                 </span>
                             </div>
                             <span class="guide-recommend-label" *ngIf="showHostGuideNew(item)">

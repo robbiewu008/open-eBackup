@@ -1,24 +1,26 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, Input } from '@angular/core';
 import { CookieService, I18NService, ALARM_NAVIGATE_STATUS } from 'app/shared';
+import { PageListResponseAlarmVO } from 'app/shared/api/models/page-list-response-alarm-vo';
 import {
   AlarmAndEventApiService,
   ApiMultiClustersService
 } from 'app/shared/api/services';
-import { AlarmColorConsts } from 'app/shared/consts';
+import { AlarmColorConsts, SYSTEM_TIME } from 'app/shared/consts';
 import { DataMap, RouterUrl } from 'app/shared';
 import { Router } from '@angular/router';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { assign } from 'lodash';
 
 @Component({
@@ -38,13 +40,22 @@ export class AlarmComponent implements OnInit {
   alarmConsts = AlarmColorConsts;
   isMultiCluster = true;
   alarmSeverityType = DataMap.Alarm_Severity_Type;
+  isCyberEngine =
+    this.i18n.get('deploy_type') === DataMap.Deploy_Type.cyberengine.value;
+  isDecouple =
+    this.i18n.get('deploy_type') === DataMap.Deploy_Type.decouple.value;
+  isV1AlarmQuery =
+    this.isCyberEngine || this.isDecouple || this.appUtilsService.isDistributed;
   now = new Date();
+
+  timeZone = SYSTEM_TIME.timeZone;
 
   constructor(
     public i18n: I18NService,
     public cookieService: CookieService,
     public apiService: AlarmAndEventApiService,
     public router: Router,
+    private appUtilsService: AppUtilsService,
     private multiClustersServiceApi: ApiMultiClustersService
   ) {}
 
@@ -99,23 +110,60 @@ export class AlarmComponent implements OnInit {
 
   getList() {
     return new Promise(resolve => {
-      this.apiService
-        .findPageUsingGET(
-          assign({
-            startIndex: 0,
-            pageSize: 4,
-            pageNo: 0,
-            isVisible: true,
-            akLoading: false,
-            akDoException: false,
-            shouldAllNodes: true,
-            language: this.i18n.language === 'zh-cn' ? 'ZH' : 'EN'
-          })
-        )
-        .subscribe(res => {
-          this.alarmList = res.records;
-          resolve(true);
-        });
+      if (this.isV1AlarmQuery) {
+        this.getV1Alarms(resolve);
+      } else {
+        this.getV2Alarms(resolve);
+      }
+    });
+  }
+
+  private getV1Alarms(resolve) {
+    this.apiService
+      .getAlarmListUsingGET({
+        pageNum: 0,
+        pageSize: 5, // 接口有限制必须要size大于等于5
+        language: this.i18n.language === 'zh-cn' ? 'zh' : 'en',
+        akLoading: false,
+        severities: [
+          DataMap.Alarm_Severity_Type.warning.value,
+          DataMap.Alarm_Severity_Type.major.value,
+          DataMap.Alarm_Severity_Type.critical.value
+        ]
+      })
+      .subscribe(res => {
+        resolve(true);
+        this.formatAlarmsRecords(res);
+      });
+  }
+
+  private getV2Alarms(resolve) {
+    this.apiService
+      .findPageUsingGET(
+        assign({
+          startIndex: 0,
+          pageSize: 4,
+          pageNo: 0,
+          isVisible: true,
+          akLoading: false,
+          akDoException: false,
+          shouldAllNodes: true,
+          language: this.i18n.language === 'zh-cn' ? 'ZH' : 'EN'
+        })
+      )
+      .subscribe(res => {
+        this.alarmList = res.records;
+        resolve(true);
+      });
+  }
+
+  formatAlarmsRecords(res: PageListResponseAlarmVO) {
+    this.alarmList = res.records.slice(0, 4).map(item => {
+      return {
+        ...item,
+        alarmTime: new Date(item.alarmTimeStr).getTime() / 1e3,
+        detail: item.desc
+      };
     });
   }
 

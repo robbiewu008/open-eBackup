@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring Active Directory Objects in the Scenario with a Single Domain Controller">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="activedirectory_00041.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="activedirectory_00045">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring Active Directory Objects in the Scenario with a Single Domain Controller</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="activedirectory_00045"></a><a name="activedirectory_00045"></a>
+  <h1 class="topictitle1">Restoring Active Directory Objects in the Scenario with a Single Domain Controller</h1>
+  <div>
+   <p>This section describes how to perform object-level restoration for Active Directory to restore Active Directory objects (including user accounts, computer accounts, and more) to the original location in the scenario with a single domain controller.</p>
+   <p>Backup copies can be used for restoration. Data can be restored to the original location.</p>
+   <div class="section" id="activedirectory_00045__section13258102544115">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul id="activedirectory_00045__ul155946913719">
+     <li id="activedirectory_00045__li178221624154012">Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li>
+     <li id="activedirectory_00045__li16688125151511">Before restoration, ensure that <strong id="activedirectory_00045__b14640161103013">Backup Data</strong> is <strong id="activedirectory_00045__b1531981423012">System state + Object</strong> for the copy to be used for restoration.</li>
+     <li id="activedirectory_00045__li17523102517320">Active Directory object-level restoration applies to scenarios where objects, including users, user groups, and organizational units (OUs), or their attributes are deleted by mistake.</li>
+     <li id="activedirectory_00045__li16356195914216">Before restoration, ensure that the Active Directory Recycle Bin has been enabled.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="activedirectory_00045__en-us_topic_0000001839142377_uicontrol193721239145518"><b>Protection &gt; Applications &gt; Active Directory</b></span>.</span></li>
+     <li><span>You can search for copies by Active Directory resource or copy. This section describes how to search for copies by resource.</span><p></p><p>Locate the resource based on the name of the resource where the object to be restored resides and click the resource name.</p> <p></p></li>
+     <li><span>Click the <strong>Copy Data</strong> tab.</span></li>
+     <li><span>Select the year, month, and day in sequence to find the copy.</span><p></p><p>If <span><img src="en-us_image_0000001798292766.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p> <p></p></li>
+     <li><span>In the row of the copy to be used for restoration, choose <span><strong>More</strong></span> &gt; <strong>Object-Level Restoration</strong> to configure restoration parameters.</span><p></p>
+      <div class="p">
+       <a href="#activedirectory_00045__table194961441141219">Table 1</a> describes the related parameters. 
+       <div class="tablenoborder">
+        <a name="activedirectory_00045__table194961441141219"></a><a name="table194961441141219"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="activedirectory_00045__table194961441141219" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>Parameters for restoring an Active Directory object
+         </caption>
+         <colgroup>
+          <col style="width:19.97%">
+          <col style="width:80.03%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="19.97%" id="mcps1.3.4.2.5.2.1.2.2.3.1.1"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="80.03%" id="mcps1.3.4.2.5.2.1.2.2.3.1.2"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.4.2.5.2.1.2.2.3.1.1 "><p><span><strong>Restore To</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.4.2.5.2.1.2.2.3.1.2 "><p>Select <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span>.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.4.2.5.2.1.2.2.3.1.1 "><p><span><strong>Location</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.4.2.5.2.1.2.2.3.1.2 "><p>By default, the restoration location is displayed.</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p>In the <strong>Select Object</strong> area, you can select the desired object directly or select it by entering the object name in the search box.</p> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="activedirectory_00041.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

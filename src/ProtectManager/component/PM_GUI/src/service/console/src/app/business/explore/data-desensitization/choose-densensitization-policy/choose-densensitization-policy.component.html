@@ -1,3 +1,4 @@
+<h3 class="modal-table">{{'explore_choose_policy_label' | i18n}}</h3>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<h3 class="modal-table">{{'explore_choose_policy_label' | i18n}}</h3>
 <div class="aui-operation">
     <lv-group lvGutter="8px">
         <button lv-button lvType="primary" (click)="create()" pmpermission pmOperation='CreateDesensitizationPolicy'>
@@ -44,10 +44,9 @@
             <lv-group [lvColumns]='["auto", "auto"]' lvRowGutter="10px" lvColumnGutter="15px">
                 <ng-container *ngFor="let data of policyData">
                     <lv-radio [lvViewType]="'custom'" [lvValue]="data.id">
-                        <div [ngClass]="{'policy-select': group.isChecked(data.id)}">
-                            <aui-desensitization-policy-card [showOptItems]="false" [cardItem]="data">
-                            </aui-desensitization-policy-card>
-                        </div>
+                        <aui-desensitization-policy-card [showOptItems]="false" [cardItem]="data"
+                            [isChecked]="group.isChecked(data.id)">
+                        </aui-desensitization-policy-card>
                     </lv-radio>
                 </ng-container>
             </lv-group>

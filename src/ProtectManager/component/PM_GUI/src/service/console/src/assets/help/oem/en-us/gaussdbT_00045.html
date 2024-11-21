@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring the GaussDB T Database">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="gaussdbT_00042.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="gaussdbT_00045">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring the GaussDB T Database</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="gaussdbT_00045"></a><a name="gaussdbT_00045"></a>
+  <h1 class="topictitle1">Restoring the GaussDB T Database</h1>
+  <div>
+   <p>This section describes how to use a copy to restore a database that has been backed up to the original or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p>The database service status is <strong>Online</strong>, <strong>Degraded</strong>, or <strong>Unavailable</strong> and the status of the node where the database service resides is <strong>Online</strong>.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precaution</h4>
+    <p>Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="gaussdbT_00045__gaussdbt_00041_en-us_topic_0000001839142377_uicontrol137901542165417"><b><span id="gaussdbT_00045__gaussdbt_00041_en-us_topic_0000001839142377_text4790154220547"><strong>Explore</strong></span> &gt; <span id="gaussdbT_00045__gaussdbt_00041_en-us_topic_0000001839142377_text15790114235419"><strong>Copy Data</strong></span> &gt; <span id="gaussdbT_00045__gaussdbt_00041_en-us_topic_0000001839142377_text9626515124917"><strong>Databases</strong></span> &gt; <span id="gaussdbT_00045__gaussdbt_00041_en-us_topic_0000001839142377_text193013119308"><strong>GaussDB T</strong></span></b></span>.</span></li>
+     <li><span>Search for copies by resource or copy. This section describes how to search for copies by resource.</span><p></p><p>On the <span><strong>Resources</strong></span> tab page, locate the database to be restored based on the database name and then click the database name.</p> <p></p></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p></p><p>If <span><img src="en-us_image_0000001839188113.png"></span> is displayed below a month or day, a copy was generated in that month or on that day.</p> <p></p></li>
+     <li><span>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Restore</strong></span></b></span> in the row where the copy is located.</span><p></p>
+      <ul>
+       <li>Restore the database instance to the original location.</li>
+       <li>Restore the database instance to a new location.<p><a href="#gaussdbT_00045__en-us_topic_0000001263936798_table93951625101715">Table 1</a> describes the related parameters.</p>
+        <div class="tablenoborder">
+         <a name="gaussdbT_00045__en-us_topic_0000001263936798_table93951625101715"></a><a name="en-us_topic_0000001263936798_table93951625101715"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="gaussdbT_00045__en-us_topic_0000001263936798_table93951625101715" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>Restoring the GaussDB T database instance to a new location
+          </caption>
+          <colgroup>
+           <col style="width:32.53%">
+           <col style="width:67.47%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.4.2.4.2.1.2.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.4.2.4.2.1.2.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.1 "><p>Target location</p></td>
+            <td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.2 "><p>Target location to which data is restored.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div>
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>During the restoration, the system disables the database service of the target location.</p>
+         </div>
+        </div></li>
+      </ul> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="gaussdbT_00042.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

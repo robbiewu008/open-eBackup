@@ -1,3 +1,4 @@
+<div class="aui-gutter-column-md">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,14 +12,13 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-gutter-column-md">
     <span class="aui-text-help-sm">
         {{'system_import_license_desc_label' | i18n}}
     </span>
 </div>
 <lv-form class="formGroup">
     <lv-form-item>
-        <lv-form-label>{{ 'common_cyber_engine_soft_capacity_label' | i18n }}</lv-form-label>
+        <lv-form-label>{{ (isCyberEngine ? 'common_cyber_engine_soft_capacity_label' : 'common_op_engine_soft_capacity_label') | i18n }}</lv-form-label>
         <lv-form-control>
             <lv-upload lvAccept=".dat" lvShowUpload="false" [lvFilters]="cyberFilters"
                 (lvChange)="cyberFilesChange($event)"></lv-upload>

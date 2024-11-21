@@ -1,0 +1,83 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="无法登录OceanCyber管理界面">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002060029394">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>无法登录OceanCyber管理界面</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002060029394"></a><a name="ZH-CN_TOPIC_0000002060029394"></a>
+
+<h1 class="topictitle1">无法登录OceanCyber管理界面</h1>
+<div id="body8662426"><div class="section" id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_section10268141192018"><h4 class="sectiontitle">现象描述</h4><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p166510582199">无法登录OceanCyber管理界面</p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_section4561171715205"><h4 class="sectiontitle">可能原因</h4><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p421812221200">系统管理数据损坏或丢失，例如系统配置、数据库数据、内部证书等文件，导致protectmanager-system-base容器异常，管理界面无法登录。</p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_section18896173120209"><h4 class="sectiontitle">处理步骤</h4><ol id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_ol1847145932119"><li id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_li647175942116"><span>以<strong id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_b930019518313">kadmin</strong>用户登录后台，切换到<strong id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_b11955346133112">root</strong>用户。</span></li><li id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_li18949141282214"><span>执行如下命令，进行管理数据备份恢复操作。</span><p><ul id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_ul19594922112217"><li id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_li35941922172216">本地系统管理数据恢复<pre class="screen" id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_screen8654316228">sh /opt/k8s/chart/install_script/sysbackup_recovery.sh</pre>
+<p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p572112545226">该命令获取本地管理数据备份列表进行恢复。</p>
+</li><li id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_li8173161042315">远程系统管理数据恢复<pre class="screen" id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_screen19668171413230">sh /opt/k8s/chart/install_script/sysbackup_recovery.sh <em id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_i198971535142113">sftp_user</em> <em id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_i4738258182112">sftp_host</em> <em id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_i166896242212">sftp_path</em> <em id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_i1090611782216">sftp_filename</em></pre>
+<p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p1347819152216">该命令获取远程SFTP服务器中的备份进行恢复。</p>
+
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_table1999613274225" frame="border" border="1" rules="all"><caption><b>表1 </b>远程系统管理数据恢复参数说明</caption><colgroup><col style="width:21.47%"><col style="width:78.53%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_row1399692716222"><th align="left" class="cellrowborder" valign="top" width="21.47%" id="mcps1.3.3.2.2.2.1.2.3.2.3.1.1"><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p1399622742211"><strong id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_b71775852312">参数</strong></p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="78.53%" id="mcps1.3.3.2.2.2.1.2.3.2.3.1.2"><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p1299672752213"><strong id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_b2192181018234">说明</strong></p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_row599622716222"><td class="cellrowborder" valign="top" width="21.47%" headers="mcps1.3.3.2.2.2.1.2.3.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p8996122712212">sftp_user</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.53%" headers="mcps1.3.3.2.2.2.1.2.3.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p9996127132218">必选参数，sftp服务器用户名。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_row18996327152210"><td class="cellrowborder" valign="top" width="21.47%" headers="mcps1.3.3.2.2.2.1.2.3.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p109961127132212">sftp_host</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.53%" headers="mcps1.3.3.2.2.2.1.2.3.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p899611277221">必选参数，sftp服务器主机IP地址。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_row99961271220"><td class="cellrowborder" valign="top" width="21.47%" headers="mcps1.3.3.2.2.2.1.2.3.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p29961327142219">sftp_path</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.53%" headers="mcps1.3.3.2.2.2.1.2.3.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p79968271220">可选参数，sftp服务器所在路径，缺省值默认为/var/sysbackup。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_row19996192742213"><td class="cellrowborder" valign="top" width="21.47%" headers="mcps1.3.3.2.2.2.1.2.3.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p29961527102212">sftp_filename</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.53%" headers="mcps1.3.3.2.2.2.1.2.3.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p8996027112211">可选参数，sftp服务器文件名，缺省值默认为sftp服务器所在路径下所有文件按时间排序最新的文件名。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ul>
+</p></li><li id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_li35724752212"><span>待脚本执行成功后，执行如下命令，查看命名空间下名为“protectmanager-system-base-0”的POD，并等待其第三列READY字段为“2/2”。</span><p><pre class="screen" id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_screen338083815241">kubectl get pod -A -owide</pre>
+</p></li><li id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_li776613307249"><span>重新登录OceanCyber管理界面，验证是否可以正常登录。</span><p><ul id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_ul13860171052511"><li id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_li28605103253">是，处理完毕。</li><li id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_li1186112104253">否，重装环境或保持故障环境并联系技术支持工程师进行处理。</li></ul>
+</p></li></ol>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_section168204432010"><h4 class="sectiontitle">建议与总结</h4><ol id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_ol1965312519257"><li id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_li66541025132513">建议执行脚本前，确认基础设施POD状态无异常。</li><li id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_li12654132514257">建议执行脚本前，确认备份包为当前环境（非重装、非其他环境）的备份包。</li><li id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_li76541325192513">建议执行脚本前，确认备份包版本与当前环境版本一致。</li></ol>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_section1339205212206"><h4 class="sectiontitle">参考信息</h4><p id="ZH-CN_TOPIC_0000002060029394__zh-cn_topic_0000001783223962_p9181359172013">无。</p>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

@@ -1,0 +1,83 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤4：下载并导入证书">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="exchange_0040.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="exchange_0045">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤4：下载并导入证书</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="exchange_0045"></a><a name="exchange_0045"></a>
+
+<h1 class="topictitle1">步骤4：下载并导入证书</h1>
+<div><p id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p3314585811">使用远程复制功能前，请先在远程复制的主端集群导入从端集群的CA证书，否则系统将无法验证其所访问设备的信息，安全性存在风险。</p>
+<div class="section" id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section17774134611364"><a name="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section17774134611364"></a><a name="zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section17774134611364"></a><h4 class="sectiontitle">在从端集群下载证书</h4><ol id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_ol11979102814374"><li id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li1597932883716"><span>登录远程复制从端集群的<span id="exchange_0045__zh-cn_topic_0000001792503794_text20981175294311">OceanProtect</span>管理界面。</span></li><li id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li10897959114110"><span>选择<span class="uicontrol" id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_text113848306235"><span id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text8949174614917">系统</span></span> &gt; <span id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_text484521122916"><span id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text2943115917492">安全</span></span> &gt; <span id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text823315459535">证书</span>”</span>。</span></li><li id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li791619610427"><span>在<span class="uicontrol" id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol1514113235454">“<span id="exchange_0045__zh-cn_topic_0000001792503794_text5580124432715">类型</span>”</span>为<span class="uicontrol" id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol7482102811457">“<span id="exchange_0045__zh-cn_topic_0000001792503794_text1886519544273">服务端证书</span>”</span>的行，单击<span class="uicontrol" id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol41349391483">“<span id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text14725505213">更多</span> &gt; <span id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text17920199185314">下载CA证书</span>”</span>。</span><p><p id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p184648437483">下载CA证书，并妥善保存。</p>
+</p></li></ol>
+</div>
+<div class="section" id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section0846167203710"><h4 class="sectiontitle">在主端集群导入证书</h4><ol id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_ol191881157546"><li id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li918818505418"><span>登录远程复制主端集群的<span id="exchange_0045__zh-cn_topic_0000001792503794_text5894195154417">OceanProtect</span>管理界面。</span></li><li id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li5188859549"><span>选择<span class="uicontrol" id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol4188155105413">“<span id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text18188175115412"><span id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text151885525410">系统</span></span> &gt; <span id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text151880535411"><span id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text518818514547">安全</span></span> &gt; <span id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text31881452546">证书</span>”</span>。</span></li><li id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li8602191845419"><span>单击<span class="uicontrol" id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol754082417548">“添加外部证书”</span>，配置外部证书信息。</span><p><p id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p6842196195513">相关参数说明如<a href="#exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_table146451017195515">表1</a>所示。</p>
+
+<div class="tablenoborder"><a name="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_table146451017195515"></a><a name="zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_table146451017195515"></a><table cellpadding="4" cellspacing="0" summary="" id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_table146451017195515" frame="border" border="1" rules="all"><caption><b>表1 </b>外部证书参数说明</caption><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead align="left"><tr id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_row9645117195517"><th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.3.2.2.2.3.1.1"><p id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p764691705516">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.3.2.2.2.3.1.2"><p id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p156461317125516">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_row1764681714553"><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p1664631795513"><span id="exchange_0045__zh-cn_topic_0000001792503794_text727963297">名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p4646151720551">自定义证书名称。</p>
+</td>
+</tr>
+<tr id="exchange_0045__zh-cn_topic_0000001792503794_row2056614550311"><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p1954581110245"><span id="exchange_0045__zh-cn_topic_0000001792503794_text17970152316297">类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p1854516112242">选择<span class="uicontrol" id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol3429191832618">“<span id="exchange_0045__zh-cn_topic_0000001792503794_text1971105810395">备份集群/多域集群/复制集群</span>”</span>。</p>
+</td>
+</tr>
+<tr id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_row48663202555"><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p8867202065516"><span id="exchange_0045__zh-cn_topic_0000001792503794_text8265143919291">CA证书</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p38671320165517">单击<span><img id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_image185391451568" src="zh-cn_image_0000001792344114.png"></span>，导入<a href="#exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section17774134611364">在目标集群下载的证书</a>。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li19188559547"><span>单击<span class="uicontrol" id="exchange_0045__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol13370659125718">“确定”</span>。</span><p><div class="note" id="exchange_0045__zh-cn_topic_0000001792503794_note1311013186169"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="exchange_0045__zh-cn_topic_0000001792503794_p1315615274261">导入证书过程中，如果系统报错提示证书已存在，则说明主端集群已存在与从端集群相同的CA证书。该情况下，您无需导入证书，直接执行后续步骤。</p>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="exchange_0040.html">复制Exchange数据库副本</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

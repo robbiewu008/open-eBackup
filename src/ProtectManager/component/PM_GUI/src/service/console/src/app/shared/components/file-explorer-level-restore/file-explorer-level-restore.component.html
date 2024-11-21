@@ -1,3 +1,4 @@
+<div class="aui-gutter-column-md">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-gutter-column-md">
     <h2>{{'protection_basic_config_label' | i18n}}</h2>
 </div>
 
@@ -39,6 +39,9 @@
 
 <div class="content" *ngIf="!isSearchRestore">
     <h2>{{'explore_object_need_restore_label' | i18n}}</h2>
+    <lv-alert *ngIf="incrementFileEmptyTips" lvType="info" [lvClosable]="false" class="list-view-mgt">
+        {{'protection_restore_object_set_incremental_empty_file_tip_label'|i18n}}
+    </lv-alert>
     <ng-container *ngTemplateOutlet="selectTableTpl">
     </ng-container>
 </div>
@@ -46,8 +49,8 @@
 <ng-template #selectTableTpl>
     <lv-group class="upper-group bread-limit">
         <lv-breadcrumb [lvItems]="items" [lvSeparator]="'/'" class="bread"></lv-breadcrumb>
-        <lv-search class="search-width" [(ngModel)]="name" (lvSearch)="searchObjectName($event)"
-            [lvFocus]="true" [lvPlaceHolder]="'explore_object_file_level_search_tip_label' | i18n"></lv-search>
+        <lv-search class="search-width" [(ngModel)]="name" (lvSearch)="searchObjectName($event)" [lvFocus]="true"
+            [lvPlaceHolder]="'explore_object_file_level_search_tip_label' | i18n"></lv-search>
     </lv-group>
     <lv-datatable [lvData]="currentFileData" #lvTable [lvScroll]="{ y: '420px' }" lvSize="small"
         lvCompareWith="rootPath" lvSelectionMode="multiple" [lvSelection]="selectionData" [lvPaginator]="pageA"

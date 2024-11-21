@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Querying Elasticsearch Information">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="ES_gud_00063_a1.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ES_gud_00065">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Querying Elasticsearch Information</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ES_gud_00065"></a><a name="ES_gud_00065"></a>
+  <h1 class="topictitle1">Querying Elasticsearch Information</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="ES_gud_00065__es_gud_00015_en-us_topic_0000001839142377_uicontrol9263121219407"><b><span id="ES_gud_00065__es_gud_00015_en-us_topic_0000001839142377_text162635121401"><strong>Protection</strong></span> &gt; Big Data &gt; Elasticsearch</b></span>.</span></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab page, query the Elasticsearch cluster information.</span><p></p>
+      <ol type="a">
+       <li>This page displays information about registered Elasticsearch clusters.<p><a href="#ES_gud_00065__table14170211115420">Table 1</a> describes related parameters.</p>
+        <div class="tablenoborder">
+         <a name="ES_gud_00065__table14170211115420"></a><a name="table14170211115420"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="ES_gud_00065__table14170211115420" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>Elasticsearch cluster information
+          </caption>
+          <colgroup>
+           <col style="width:19.189999999999998%">
+           <col style="width:80.81%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="19.189999999999998%" id="mcps1.3.1.2.2.2.1.1.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="80.81%" id="mcps1.3.1.2.2.2.1.1.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.2 "><p>Elasticsearch cluster name.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.1 "><p><span><strong>Status</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.2 ">
+             <div class="p">
+              Status of the Elasticsearch cluster.
+              <ul>
+               <li><span><strong>Online</strong></span>: If the connection between the agent host and the Elasticsearch cluster is normal, <span class="uicontrol"><b><span><strong>Status</strong></span></b></span> is <span class="uicontrol"><b><span><strong>Online</strong></span></b></span>.</li>
+               <li><span><strong>Offline</strong></span>: If the connection between the agent host and the Elasticsearch cluster is abnormal, <span class="uicontrol"><b><span><strong>Status</strong></span></b></span> is <span class="uicontrol"><b><span><strong>Offline</strong></span></b></span>.</li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.1 "><p><span><strong>Client Address</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.2 "><p>Address used to connect the <span>product</span> to Elasticsearch.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.1 "><p><span><strong>Authentication Mode</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.2 "><p>Authentication mode for communication between the Elasticsearch cluster and the <span>product</span>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.1 ">
+             <div class="p">
+              <strong id="ES_gud_00065__en-us_topic_0000001792344110_b827118125517">Tag</strong>
+              <div class="note" id="ES_gud_00065__en-us_topic_0000001792344110_note1330311543247">
+               <span class="notetitle"> NOTE: </span>
+               <div class="notebody">
+                <p id="ES_gud_00065__en-us_topic_0000001792344110_p630385412417">This parameter is available only in 1.6.0 and later versions.</p>
+               </div>
+              </div>
+             </div></td>
+            <td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.2 "><p>If a tag has been added for the resource, the tag name is displayed. Otherwise, <strong id="ES_gud_00065__en-us_topic_0000001792344110_b1959642011219">--</strong> is displayed.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>Click the cluster name to view its basic information and backup set information.</li>
+      </ol> <p></p></li>
+     <li><span>On the <span class="uicontrol"><b>Backup Sets</b></span> tab page, query the Elasticsearch backup set information.</span><p></p>
+      <ol type="a">
+       <li>This page displays the details about the backup sets.<p><a href="#ES_gud_00065__table5610162112314">Table 2</a> describes related parameters.</p>
+        <div class="tablenoborder">
+         <a name="ES_gud_00065__table5610162112314"></a><a name="table5610162112314"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="ES_gud_00065__table5610162112314" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 2 </b>Backup set parameters
+          </caption>
+          <colgroup>
+           <col style="width:25.55%">
+           <col style="width:74.45%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="25.55%" id="mcps1.3.1.2.3.2.1.1.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="74.45%" id="mcps1.3.1.2.3.2.1.1.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><p>Name of a backup set.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 "><p><span><strong>Owning Cluster</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><p>Name of the protected Elasticsearch cluster.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 "><p><span><strong>SLAs</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><p>If an SLA has been associated with the backup set, the SLA name is displayed. Otherwise, <span class="uicontrol"><b>--</b></span> is displayed.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 "><p><span><strong>SLA Compliance</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 ">
+             <div class="p">
+              Whether a backup job is successfully executed based on the backup frequency or backup window set in the SLA.
+              <ul id="ES_gud_00065__en-us_topic_0000001792344110_en-us_topic_0000001792344094_ul1823814519293">
+               <li id="ES_gud_00065__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919"><strong id="ES_gud_00065__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b1092516394564">Met</strong>: If the backup time of a backup job (except for the first full backup) meets the backup time window or backup frequency requirements and the backup job is executed successfully, SLA compliance is met.</li>
+               <li id="ES_gud_00065__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912"><strong id="ES_gud_00065__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b541520442564">Missed</strong>: If the backup time does not meet the backup time window or backup frequency requirements, for example, if the backup frequency set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup frequency or backup window.</li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 "><p><span><span><strong>Protection Status</strong></span></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><p>Indicates whether the backup set is protected.</p>
+             <ul>
+              <li><span><strong>Unprotected</strong></span>: The backup set is not associated with an SLA, or the backup set is associated with an SLA but protection is disabled.</li>
+              <li><span><strong>Protected</strong></span>: The backup set is associated with an SLA and protection is enabled.</li>
+              <li><span><strong>Creating</strong></span>: The backup set is associated with an SLA and protection is being created.</li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 ">
+             <div class="p">
+              <span id="ES_gud_00065__en-us_topic_0000001792344110_text1045121611529"><strong>Owner</strong></span>
+              <div class="note" id="ES_gud_00065__en-us_topic_0000001792344110_note6159153035311">
+               <span class="notetitle"> NOTE: </span>
+               <div class="notebody">
+                <p id="ES_gud_00065__en-us_topic_0000001792344110_p815914301534">This parameter is available only in 1.5.0.</p>
+               </div>
+              </div>
+             </div></td>
+            <td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><p>Data protection administrator of the cluster.</p> <p>If a data protection administrator is authorized for the cluster, the name of the data protection administrator is displayed. If no authorization is performed, <strong>--</strong> is displayed.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ol>
+      <ol type="a" start="2">
+       <li>Click the name and check the overview, copy information, and related jobs. 
+        <ul id="ES_gud_00065__en-us_topic_0000001792344110_ul865415431221">
+         <li id="ES_gud_00065__en-us_topic_0000001792344110_li165311431228">Overview<p id="ES_gud_00065__en-us_topic_0000001792344110_p18940145516325"><a name="ES_gud_00065__en-us_topic_0000001792344110_li165311431228"></a><a name="en-us_topic_0000001792344110_li165311431228"></a>Display the SLA information, job execution time, and total number of copies.</p></li>
+         <li id="ES_gud_00065__en-us_topic_0000001792344110_li15654174342214">Copy data<p id="ES_gud_00065__en-us_topic_0000001792344110_p565454392218"><a name="ES_gud_00065__en-us_topic_0000001792344110_li15654174342214"></a><a name="en-us_topic_0000001792344110_li15654174342214"></a>You can search for copies by year, month, and day.</p> <p id="ES_gud_00065__en-us_topic_0000001792344110_p6521122942916">If <span><img id="ES_gud_00065__en-us_topic_0000001792344110_image7611125417346" src="en-us_image_0000001792344154.png"></span> is displayed below the time, a copy exists at the time.</p></li>
+         <li id="ES_gud_00065__en-us_topic_0000001792344110_li0654134382213">Related jobs<p id="ES_gud_00065__en-us_topic_0000001792344110_p1747754963312"><a name="ES_gud_00065__en-us_topic_0000001792344110_li0654134382213"></a><a name="en-us_topic_0000001792344110_li0654134382213"></a>Displays backup and restoration jobs.</p></li>
+        </ul></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="ES_gud_00063_a1.html">Elasticsearch Cluster Environment</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

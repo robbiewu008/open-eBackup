@@ -16,7 +16,7 @@ paths:
       tags:
         - resource-set-api
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -28,7 +28,7 @@ paths:
       x-sysadmin-role: 'Y'
       summary: 根据资源集id查询数量和类型关系
       description: 根据资源集id查询数量和类型关系
-      operationId: QueryResourceSetTypeCount
+      operationId: queryResourceSetTypeCount
       parameters:
         - name: resourceSetId
           in: path
@@ -43,12 +43,13 @@ paths:
             type: array
             items:
               $ref: '#/definitions/ResourceSetTypeCountVo'
+      x-order: 0
   /v1/resource-set:
     post:
       tags:
         - resource-set-api
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -60,7 +61,7 @@ paths:
       x-sysadmin-role: 'Y'
       summary: 创建资源集
       description: 创建资源集
-      operationId: CreateResourceSet
+      operationId: createResourceSet
       parameters:
         - name: ResourceSetRequest
           in: body
@@ -72,11 +73,12 @@ paths:
           description: OK
           schema:
             type: string
+      x-order: 1
     put:
       tags:
         - resource-set-api
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -88,7 +90,7 @@ paths:
       x-sysadmin-role: 'Y'
       summary: 修改资源集
       description: 修改资源集
-      operationId: ModifyResourceSet
+      operationId: modifyResourceSet
       parameters:
         - name: ResourceSetRequest
           in: body
@@ -100,11 +102,12 @@ paths:
           description: OK
           schema:
             type: string
+      x-order: 2
     get:
       tags:
         - resource-set-api
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -116,7 +119,7 @@ paths:
       x-sysadmin-role: 'Y'
       summary: 查询资源集列表
       description: 查询资源集列表
-      operationId: QueryResourceSet
+      operationId: queryResourceSet
       parameters:
         - name: conditions
           in: query
@@ -146,13 +149,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/PageListResponse_reource_set'
+      x-order: 3
     delete:
       tags:
         - resource-set-api
       summary: 批量删除资源集
       description: 批量删除资源集
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -162,7 +166,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      operationId: BatchDeleteResourceSetId
+      operationId: batchDeleteResourceSetId
       parameters:
         - name: resourceSetDeleteRequest
           in: body
@@ -175,12 +179,13 @@ paths:
           description: ''
           schema:
             type: string
+      x-order: 7
   /v1/resource-set/query-by-user/{userId}:
     get:
       tags:
         - resource-set-api
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -192,7 +197,7 @@ paths:
       x-sysadmin-role: 'Y'
       summary: 根据传入的userId查找对应资源集
       description: 根据传入的userId查找对应资源集
-      operationId: QueryResourceSetByUserId
+      operationId: queryResourceSetByUserId
       parameters:
         - name: userId
           in: path
@@ -207,6 +212,7 @@ paths:
             type: array
             items:
               $ref: '#/definitions/ResourceSetRoleResponse'
+      x-order: 4
   /v1/resource-set/query-related-user-role/{resourceSetId}:
     get:
       tags:
@@ -214,7 +220,7 @@ paths:
       summary: 根据资源集查询对应的用户和角色
       description: 根据资源集查询对应的用户和角色
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -224,7 +230,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      operationId: QueryRelatedUserRoleByResourceSetId
+      operationId: queryRelatedUserRoleByResourceSetId
       parameters:
         - name: resourceSetId
           in: path
@@ -238,12 +244,13 @@ paths:
             type: array
             items:
               $ref: '#/definitions/ResourceSetRelatedUserRoleResponse'
+      x-order: 5
   /v1/resource-set/query-resource-object:
     get:
       tags:
         - resource-set-api
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -255,23 +262,28 @@ paths:
       x-sysadmin-role: 'Y'
       summary: 根据资源集id和资源列表查询对应列表
       description: 根据资源集id和资源列表查询对应列表
-      operationId: QueryResourceObjectIdList
+      operationId: queryResourceObjectIdList
       parameters:
         - name: resourceSetId
           in: query
+          required: false
+          description: 资源集id
           type: string
-          required: true
-          description: 资源集Id
         - name: scopeModule
           in: query
+          required: false
+          description: 所属模块
           type: string
-          required: true
-          description: 应用类型
         - name: type
           in: query
+          required: false
+          description: 资源类型
           type: string
-          required: true
-          description: 资源组/资源
+        - name: isNameExist
+          in: query
+          required: false
+          description: 是否存在名字
+          type: boolean
       responses:
         '200':
           description: 资源对象id列表
@@ -279,6 +291,33 @@ paths:
             type: array
             items:
               type: string
+      x-order: 6
+  /v1/resource-set/query-available-scope-module:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - resource-set-api
+      summary: 在创建资源集时只显示有子类型的资源，过滤掉没有子类型的资源，能更明显的显示每个所属模块。
+      description: 在创建资源集时只显示有子类型的资源，过滤掉没有子类型的资源，能更明显的显示每个所属模块。
+      operationId: queryAvailableScopeModule
+      responses:
+        '200':
+          description: 获取资源集可用的所属模块
+          schema:
+            type: array
+            items:
+              type: string
+      x-order: 8
 definitions:
   ResourceSetTypeCountVo:
     type: object
@@ -335,9 +374,6 @@ definitions:
       scopeModule:
         description: 资源类型枚举
         $ref: '#/definitions/ResourceSetScopeModuleEnum'
-      isAllSelected:
-        description: 资源全选标识
-        type: boolean
   ResourceSetTypeEnum:
     type: object
     properties:
@@ -386,7 +422,7 @@ definitions:
       FusionCompute:
         type: string
         description: FUSION_COMPUTE
-      Hyper_V:
+      HyperV:
         type: string
         description: HYPER_V
       Kubernetes_CSI:
@@ -401,7 +437,7 @@ definitions:
       HCSStack:
         type: string
         description: HCSSTACK
-      HCSStack_GaussDB:
+      HCSGaussDB:
         type: string
         description: HCSSTACK_GAUSSDB
       ApsaraStack:
@@ -467,10 +503,10 @@ definitions:
       Oracle:
         type: string
         description: ORACLE
-      PostgrepSQL:
+      PostgreSQL:
         type: string
         description: POSTGREP_SQL
-      SQL_Server:
+      SQLServer:
         type: string
         description: SQL_SERVER
       TDSQL:
@@ -479,7 +515,7 @@ definitions:
       TiDB:
         type: string
         description: TIDB
-      openGauss:
+      OpenGauss:
         type: string
         description: OPENGAUSS
       GeneralDb:
@@ -524,6 +560,14 @@ definitions:
       type:
         type: string
         description: 类型
+      Gbase:
+        type: string
+      REDHAT:
+        type: string
+      GaussDBT:
+        type: string
+      AgentLess:
+        type: string
   PageListResponse_reource_set:
     type: object
     properties:
@@ -635,9 +679,11 @@ definitions:
         type: string
         description: 资源集id
         pattern: ^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$
-      scopeModule:
-        type: string
-        description: 待查找的资源对象所属模块
+      resourceSetRelationList:
+        type: array
+        items:
+          type: string
+        description: 待查找的资源对象id列表
   ErrorRsp:
     description: 失败时返回的错误对象
     required:

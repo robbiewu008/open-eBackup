@@ -1,3 +1,4 @@
+<lv-tabs lvType="card" *ngIf="isTask && (backupTeams.length || archiveTeams.length || replicationTeams.length)">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-tabs lvType="card" *ngIf="isTask && (backupTeams.length || archiveTeams.length || replicationTeams.length)">
     <ng-container *ngIf="backupTeams.length">
         <lv-tab [lvTitle]="'common_backup_policy_label' | i18n">
             <ng-container *ngTemplateOutlet="backupTeamsTpl"></ng-container>
@@ -103,7 +103,7 @@
                         </lv-form-control>
                     </lv-form-item>
                     <lv-form-item
-                        *ngIf="sla.application !== dataMap.Application_Type.HBaseBackupSet.value || item.action !== policyAction.LOG">
+                        *ngIf="![dataMap.Application_Type.HBaseBackupSet.value,dataMap.Application_Type.SQLServer.value].includes(sla.application) || item.action !== policyAction.LOG">
                         <lv-form-label>{{'protection_copies_retention_label' | i18n}}</lv-form-label>
                         <lv-form-control>
                             <ng-container *ngIf="i18n.isEn">
@@ -245,6 +245,33 @@
                             {{item.is_reserved_latest_snapshot | textMap: 'Switch_Status'}}
                         </lv-form-control>
                     </lv-form-item>
+                </ng-container>
+                <ng-container *ngIf="isOceanProtect&&sla.application!==appType.CommonShare">
+                    <lv-form-item>
+                        <lv-form-label>
+                            {{'WORM' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control>
+                            {{item?.worm_validity_type>=1 | textMap: 'Switch_Sla_Info_Status'}}
+                        </lv-form-control>
+                    </lv-form-item>
+                    <ng-container *ngIf="item?.worm_validity_type>=1">
+                        <lv-form-item>
+                            <lv-form-label>
+                                {{'common_worm_validity_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control>
+                                <span *ngIf="item?.worm_validity_type === 1">
+                                    {{'common_worm_same_validity_label' | i18n}}
+                                </span>
+                                <span *ngIf="item?.worm_validity_type === 2">
+                                    {{item.worm_specified_retention_duration}} {{item.worm_specified_duration_unit |
+                                    textMap:
+                                    'Interval_Unit'}}
+                                </span>
+                            </lv-form-control>
+                        </lv-form-item>
+                    </ng-container>
                 </ng-container>
             </div>
         </ng-container>
@@ -454,12 +481,11 @@
                         {{'protection_archive_drive_num_label' | i18n}}
                     </lv-form-label>
                     <lv-form-control>
-                        {{item.driverCount}}
+                        {{item.driverCount || '1'}}
                     </lv-form-control>
                 </lv-form-item>
-                <lv-form-item
-                    *ngIf="(autoIndexForObs && item.protocol === archivalProtocol.objectStorage.value) 
-                    || (autoIndexForTape && item.protocol === archivalProtocol.tapeLibrary.value)">
+                <lv-form-item *ngIf="((autoIndexForObs && item.protocol === archivalProtocol.objectStorage.value)
+                    || (autoIndexForTape && item.protocol === archivalProtocol.tapeLibrary.value)) && false">
                     <lv-form-label>
                         {{'protection_auto_indexing_label' | i18n}}
                     </lv-form-label>
@@ -471,6 +497,12 @@
                     <lv-form-label>{{'protection_network_access_label' | i18n}}</lv-form-label>
                     <lv-form-control>
                         {{item.network_access | textMap: 'Switch_Status'}}
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item *ngIf="archiveLogCopy">
+                    <lv-form-label>{{'protection_archive_log_copy_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        {{!!item?.log_archive | textMap: 'Switch_Status'}}
                     </lv-form-control>
                 </lv-form-item>
                 <lv-form-item>
@@ -632,7 +664,7 @@
                     </lv-form-control>
                 </lv-form-item>
                 <!-- 指定目标位置-->
-                <lv-form-item *ngIf="isDataBackup && item.replication_target_mode !== replicationModeType.CROSS_CLOUD">
+                <lv-form-item *ngIf="isDataBackup || item.replication_target_mode === replicationModeType.CROSS_CLOUD">
                     <lv-form-label>
                         {{'specify_the_destination_location_label' | i18n}}
                     </lv-form-label>
@@ -716,7 +748,7 @@
                 <lv-form-item>
                     <lv-form-label>{{dataMap.slaReplicationRule.specify.label | i18n}}</lv-form-label>
                     <lv-form-control>
-                        <lv-group lvDirection='vertical' lvGutter="8px">
+                        <lv-group lvDirection='vertical' lvGutter="8px" *ngIf="!i18n.isEn">
                             <lv-group *ngIf="item.copy_type_year">
                                 {{'protection_choose_every_year_label' | i18n}}{{item.generate_time_range_year |
                                 textMap:
@@ -734,6 +766,27 @@
                                 {{'protection_choose_every_week_label' | i18n}}{{item.generate_time_range_week |
                                 textMap:
                                 'Days_Of_Week'}}{{'protection_copy_retention_label'|i18n}}{{item.retention_duration_week}}{{'common_weeks_label'
+                                | i18n}}
+                            </lv-group>
+                        </lv-group>
+                        <lv-group lvDirection='vertical' lvGutter="8px" *ngIf="i18n.isEn">
+                            <lv-group *ngIf="item.copy_type_year">
+                                {{'protection_choose_every_year_label' | i18n}} {{item.generate_time_range_year |
+                                textMap:
+                                'Year_Time_Range'}} {{'protection_copy_retention_label'|i18n}} {{item.retention_duration_year}} {{'common_years_label'
+                                | i18n}}
+                            </lv-group>
+                            <lv-group *ngIf="item.copy_type_month">
+                                {{'protection_choose_every_month_label' | i18n}} {{item.generate_time_range_month
+                                |
+                                textMap:
+                                'Month_Time_Range'}} {{'protection_copy_retention_label'|i18n}} {{item.retention_duration_month}} {{'common_months_label'
+                                | i18n}}
+                            </lv-group>
+                            <lv-group *ngIf="item.copy_type_week">
+                                {{'protection_choose_every_week_label' | i18n}} {{item.generate_time_range_week |
+                                textMap:
+                                'Days_Of_Week'}} {{'protection_copy_retention_label'|i18n}} {{item.retention_duration_week}} {{'common_weeks_label'
                                 | i18n}}
                             </lv-group>
                         </lv-group>
@@ -761,25 +814,27 @@
                 </lv-form-item>
             </ng-container>
             <lv-form-item *ngIf="item.local_storage_type !== 'BasicDisk'">
-                <lv-form-label>{{'protection_data_redelete_label' | i18n}}</lv-form-label>
+                <lv-form-label>{{
+                    (isDataBackup
+                    ? 'protection_link_redelete_label'
+                    : 'protection_data_redelete_label'
+                    ) | i18n
+                    }}</lv-form-label>
                 <lv-form-control>
                     {{item.link_deduplication | textMap: 'Switch_Status'}}
                 </lv-form-control>
             </lv-form-item>
             <lv-form-item>
-                <lv-form-label>{{'system_data_compression_label' | i18n}}</lv-form-label>
+                <lv-form-label>{{
+                    (isDataBackup
+                    ? 'system_link_compression_label'
+                    : 'system_data_compression_label'
+                    ) | i18n
+                    }}</lv-form-label>
                 <lv-form-control>
                     {{item.link_compression | textMap: 'Switch_Status'}}
                 </lv-form-control>
             </lv-form-item>
-            <ng-container *ngIf="![appType.GaussDBDWS, appType.CommonShare].includes(sla.application)">
-                <lv-form-item>
-                    <lv-form-label>{{'explore_anti_tampering_setting_label' | i18n}}</lv-form-label>
-                    <lv-form-control>
-                        {{item.is_worm | textMap: 'Switch_Status'}}
-                    </lv-form-control>
-                </lv-form-item>
-            </ng-container>
             <lv-form-item>
                 <lv-form-label>{{'protection_job_failed_alarm_label' | i18n}}</lv-form-label>
                 <lv-form-control>

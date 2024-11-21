@@ -1,0 +1,67 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤6：执行备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="DB2-00007.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="DB2-00013">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤6：执行备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="DB2-00013"></a><a name="DB2-00013"></a>
+
+<h1 class="topictitle1">步骤6：执行备份</h1>
+<div><p>执行备份前将需要保护的资源关联到指定SLA策略，系统将对这些资源按照SLA策略进行保护，并根据SLA策略周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><ul><li>手动备份产生的副本保留时长按照SLA中的定义进行保留。<p>如果手动备份时选择的保护策略未在SLA中定义，则产生的备份副本保留时长为永久保留。如SLA中未定义增量备份，而手动备份时选择的是增量备份，则本次手动增量备份产生的副本保留时长为永久保留。</p>
+</li><li>如果SLA中定义了复制策略或归档策略，则执行手动备份时，系统会按照SLA的定义执行一次复制或归档。</li><li>手动备份时，SLA中定义的参数（<span class="uicontrol">“<span>失败后自动重试</span>”</span>除外），如<span class="uicontrol">“<span>限速策略</span>”</span>会应用到手动备份任务中。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="DB2-00013__zh-cn_topic_0000001839142377_uicontrol21435597359">“<span id="DB2-00013__zh-cn_topic_0000001839142377_text4379114911434">保护</span> &gt; 数据库 &gt; DB2”</span>。</span></li></ol><ol start="2"><li><span>选择<span class="uicontrol">“<span>数据库</span>”</span>、<span class="uicontrol">“表空间集”</span>页签。</span></li><li><span>在需要保护的数据库或表空间集所在行，单击<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"><span>保护</span></span>”</span>。</span><p><p>您也可以勾选多个数据库或表空间集进行批量保护。</p>
+</p></li><li><span>选择SLA。</span><p><div class="p" id="DB2-00013__zh-cn_topic_0000001964713008_p16181740836">您也可以单击<span class="uicontrol" id="DB2-00013__zh-cn_topic_0000001964713008_uicontrol744210206420">“<span id="DB2-00013__zh-cn_topic_0000001964713008_text1873812341015">创建</span>”</span>，创建新的SLA。<div class="note" id="DB2-00013__zh-cn_topic_0000001964713008_note25947145710"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="DB2-00013__zh-cn_topic_0000001964713008_p125947145711"><span id="DB2-00013__zh-cn_topic_0000001964713008_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
+</div></div>
+</div>
+</p></li><li><span>单击<span class="uicontrol" id="DB2-00013__zh-cn_topic_0000001792503842_uicontrol471113581111">“确定”</span>。</span><p><p id="DB2-00013__zh-cn_topic_0000001792503842_p25041111535">如果当前系统时间已晚于该SLA首次备份的开始时间，则关联备份SLA后可以选择在当前立即执行备份或者根据SLA中设置的备份策略等待下次调度。</p>
+</p></li></ol><ol start="6"><li><strong>可选：</strong><span>执行手动备份。</span><p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
+<ol type="a"><li>在需要备份的数据库或表空间集所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。</li><li>设置手动备份产生的副本名称。<p>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
+</li><li>选择保护策略：<span>全量备份</span>、<span>增量备份</span>、<span>差异备份</span>或<span>日志备份</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="DB2-00013__zh-cn_topic_0000001964713008_p13522118194919"><span id="DB2-00013__zh-cn_topic_0000001964713008_ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
+</div></div>
+</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="DB2-00013__zh-cn_topic_0000001607531736_p870125314544">支持选择多个资源批量进行手动备份。勾选多个资源，在页面左上角选择<span class="uicontrol" id="DB2-00013__zh-cn_topic_0000001607531736_uicontrol14182155715711">“<span id="DB2-00013__zh-cn_topic_0000001607531736_text662114113158">更多</span> &gt; <span id="DB2-00013__zh-cn_topic_0000001607531736_text1068159191519">手动备份</span>”</span>。</p>
+</div></div>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="DB2-00007.html">备份DB2数据库/DB2表空间集</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

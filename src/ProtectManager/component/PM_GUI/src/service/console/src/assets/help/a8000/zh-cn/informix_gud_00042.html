@@ -1,0 +1,74 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="查看设备ESN">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="informix_gud_00040.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="informix_gud_00042">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>查看设备ESN</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="informix_gud_00042"></a><a name="informix_gud_00042"></a>
+
+<h1 class="topictitle1">查看设备ESN</h1>
+<div><p id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_a536d505159d14653bf4ad0b5627ae30e">ESN（Equipment Serial Number）是用来唯一标识设备的字符串。在申请License、设备报修和配置eService服务等场景需要提供ESN序列号。</p>
+<div class="section" id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_s2555edec853e443bb5ac128104e2e2df"><h4 class="sectiontitle">背景信息</h4><ul id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_u6522035d1afd425f84f39abe81b9c814"><li id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_l66ba75fb308643d6b30f472e64cc6ab2">支持通过控制框信息牌、<span id="informix_gud_00042__zh-cn_topic_0000001792505326_text12363155412409">OceanProtect</span>管理界面或CLI界面查询<span id="informix_gud_00042__zh-cn_topic_0000001792505326_text168447971315">OceanProtect</span>ESN序列号。</li><li id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_zh-cn_topic_0153321585_li14975122111">对于包含2个及以上控制框的多控系统，该系统的ESN序列号为控制框0的ESN序列号。通过任意控制框的管理网口登录管理界面、CLI界面查询的多控系统，ESN序列号均为控制框0的ESN序列号。建议优先选择<span id="informix_gud_00042__zh-cn_topic_0000001792505326_text380365612409">OceanProtect</span>管理界面或CLI界面查询设备ESN序列号。如需通过信息牌查询，请参考扩控时使用的系统组网图确认控制框0的摆放位置后，查看控制框0的信息牌上的ESN序列号。</li></ul>
+</div>
+<div class="section" id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_s9f96c43f7110492788d0c18afc169845"><h4 class="sectiontitle">通过信息牌查询</h4><p id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_ac84053e6414d41ffb7913e645d65847d">正视控制框时，信息牌位于框体右侧，将信息牌从框体轻轻拉出即可查询设备信息，信息牌位置<a href="#informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_ff302a5bcbba14b30a07136e9b91d5dba">图1</a>所示。</p>
+<div class="fignone" id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_ff302a5bcbba14b30a07136e9b91d5dba"><a name="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_ff302a5bcbba14b30a07136e9b91d5dba"></a><a name="zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_ff302a5bcbba14b30a07136e9b91d5dba"></a><span class="figcap"><b>图1 </b>2U控制框信息牌位置</span><br><span><img id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_image10699186153512" src="zh-cn_image_0000001792505654.png"></span></div>
+</div>
+<div class="section" id="informix_gud_00042__zh-cn_topic_0000001792505326_section168091911318"><h4 class="sectiontitle">登录管理界面查询</h4><ol id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_o623d109b5eee4c7da408bac80bf9520c"><li id="informix_gud_00042__zh-cn_topic_0000001607531760_zh-cn_topic_0000001311295305_zh-cn_topic_0000001149078659_li929117916361"><span>选择<span class="uicontrol" id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0000001839223165_zh-cn_topic_0000001839143213_zh-cn_topic_0000001311295305_zh-cn_topic_0000001149078659_uicontrol1098185683619">“<span id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0000001839223165_zh-cn_topic_0000001839143213_text157651936143415">系统</span> &gt; <span id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0000001839223165_zh-cn_topic_0000001839143213_text49601653123416">基础设施</span> &gt; <span id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0000001839223165_zh-cn_topic_0000001839143213_text112401684352">集群管理</span>”</span>。</span></li><li id="informix_gud_00042__li19932939164117"><span>在<span class="uicontrol" id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0000001839223165_zh-cn_topic_0000001839143213_uicontrol13691645105219">“<span id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0000001839223165_zh-cn_topic_0000001839143213_text1763193125313">备份集群</span>”</span>页签的<span class="uicontrol" id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0000001839223165_zh-cn_topic_0000001839143213_uicontrol1050641575312">“<span id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0000001839223165_zh-cn_topic_0000001839143213_text133861121163513">本地集群节点</span>”</span>区域，单击节点名称。</span></li><li id="informix_gud_00042__zh-cn_topic_0000001792505326_li1115217015589"><span>在弹出的<span class="uicontrol" id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0000001656571657_zh-cn_topic_0000001607531760_uicontrol1144724616332">“<span id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0000001656571657_zh-cn_topic_0000001607531760_text51761646203516">节点详情</span>”</span>对话框中的“<span id="informix_gud_00042__zh-cn_topic_0000001792505326_text1760185102512">基本信息</span>”区域查看“<span id="informix_gud_00042__zh-cn_topic_0000001792505326_text9492932173513">ESN</span>”，即系统当前的ESN信息，如<a href="#informix_gud_00042__zh-cn_topic_0000001792505326_fig25062781412">图2</a>所示。</span><p><div class="fignone" id="informix_gud_00042__zh-cn_topic_0000001792505326_fig25062781412"><a name="informix_gud_00042__zh-cn_topic_0000001792505326_fig25062781412"></a><a name="zh-cn_topic_0000001792505326_fig25062781412"></a><span class="figcap"><b>图2 </b>系统基本信息</span><br><span><img id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0000001792505494_image9336161282517" src="zh-cn_image_0000001955526849.png"></span></div>
+</p></li></ol>
+</div>
+<div class="section" id="informix_gud_00042__zh-cn_topic_0000001792505326_section1980119121319"><h4 class="sectiontitle">登录CLI界面查询</h4><ol id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_zh-cn_topic_0153321585_ol649308255"><li id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_zh-cn_topic_0153321585_li748308251"><span>使用PuTTY，以<strong id="informix_gud_00042__zh-cn_topic_0000001792505326_b57601442144712">admin</strong>账户登录CLI。</span></li><li id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_l3aebbc9bd89d4fb5900a9eae024d489e"><span>执行<strong id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_a1e99e1a76d1b43b28ad7b2d3bf858fe2"><b><span class="cmdname" id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_c8c09cfe7f27b4a21bf61af3886664f9b">show system general</span></b></strong>命令，回显中<span class="parmname" id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232571_p1927f01da090465ca5014baca1ed78d6">“SN”</span>字段即为ESN序列号。</span><p><pre class="screen" id="informix_gud_00042__zh-cn_topic_0000001792505326_zh-cn_topic_0223232608_screen61973473">admin:/&gt;show system general
+
+  System Name         : Huawei.Storage               
+  Health Status       : Normal                       
+  Running Status      : Normal                       
+  Total Capacity      : 996.471TB                    
+  SN                  : 2102354PBA13D9988001         
+  Location            :                              
+  Product Model       : OceanProtect X8000           
+  Product Version     : <em id="informix_gud_00042__zh-cn_topic_0000001792505326_i1020211102384">XXXX</em>                     
+  High Water Level(%) : 80                           
+  Low Water Level(%)  : 20                           
+  WWN                 : 210030fbb8c80ded             
+  Time                : 2022-06-17/10:06:16 UTC+08:00 
+  Patch Version       :                              
+  Description         :</pre>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="informix_gud_00040.html">查看系统信息（E系列备份一体机不支持）</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

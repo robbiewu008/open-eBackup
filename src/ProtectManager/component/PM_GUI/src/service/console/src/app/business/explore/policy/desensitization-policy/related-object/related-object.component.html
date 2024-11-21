@@ -1,3 +1,4 @@
+<lv-datatable [lvData]='dbData' lvSize="small" #lvTable lvAsync>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-datatable [lvData]='dbData' lvSize="small" #lvTable lvAsync>
     <thead>
         <tr>
             <th lvCellKey='db_name'>{{'common_name_label' | i18n}}</th>

@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 5: Registering a NAS Share (Applicable to Storage Devices Except OceanStor V5/OceanStor Pacific/NetApp ONTAP)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="nas_s_0020.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="nas_s_0024">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 5: Registering a NAS Share (Applicable to Storage Devices Except OceanStor V5/OceanStor Pacific/NetApp ONTAP)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="nas_s_0024"></a><a name="nas_s_0024"></a>
+  <h1 class="topictitle1">Step 5: Registering a NAS Share (Applicable to Storage Devices Except OceanStor V5/OceanStor Pacific/NetApp ONTAP)</h1>
+  <div>
+   <p>If the storage device where the NAS shares to be protected reside is not OceanStor V5, OceanStor Pacific, or NetApp ONTAP, or only one NAS share needs to be protected, you can manually register the NAS share with the <span>product</span>.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="nas_s_0024__en-us_topic_0000001839142377_uicontrol79081114124111"><b><span id="nas_s_0024__en-us_topic_0000001839142377_text99081414144119"><strong>Protection</strong></span> &gt; File Systems &gt; NAS Shares</b></span>.</span><p></p>
+      <div class="note" id="nas_s_0024__en-us_topic_0000001839142377_note397892312184">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="nas_s_0024__en-us_topic_0000001839142377_p5978112341818">For 1.5.0, choose <span class="uicontrol" id="nas_s_0024__en-us_topic_0000001839142377_uicontrol129783237180"><b><span id="nas_s_0024__en-us_topic_0000001839142377_text10978172391818"><strong>Protection</strong></span> &gt; File Services &gt; NAS Shares</b></span>.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register a NAS share.</span><p></p>
+      <div class="p">
+       <a href="#nas_s_0024__table1929515516558">Table 1</a> describes the NAS share registration information. 
+       <div class="tablenoborder">
+        <a name="nas_s_0024__table1929515516558"></a><a name="table1929515516558"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="nas_s_0024__table1929515516558" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>NAS share registration information
+         </caption>
+         <colgroup>
+          <col style="width:25.629999999999995%">
+          <col style="width:74.37%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.2.2.2.2.1.2.2.3.1.1"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.2.2.2.2.1.2.2.3.1.2"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p><span><strong>FQDN/IP</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.2 "><p id="nas_s_0024__p10295125555515">FQDN name or service IP address for accessing a NAS share.</p> <p id="nas_s_0024__p1278513189326">The FQDN format is <em id="nas_s_0024__i49311011216">Name of the storage device where a NAS share resides</em><strong id="nas_s_0024__b204885331765">.</strong><em id="nas_s_0024__i958914467218">Name of the domain to which the storage device is added</em>. For example, if the name of the storage device where a NAS share resides is <em id="nas_s_0024__i1299311513208">Huawei.Storage</em> and the name of the domain to which the storage device is added is <em id="nas_s_0024__i2993851132016">huawei.com</em>, the FQDN is <em id="nas_s_0024__i1899345112011">Huawei.Storage.huawei.com</em>.</p>
+            <div class="note" id="nas_s_0024__note93324353618">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p id="nas_s_0024__p53320310365">If the FQDN is required, configure the DNS service on the device management page of the <span id="nas_s_0024__text9722133614203">product</span> so that the <span id="nas_s_0024__text87224362209">product</span> can access external domain names. For details about how to configure the DNS service, see <a href="nas_s_0099.html">Configuring the DNS Service</a>.</p>
+             </div>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p><span><strong>Share Name</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.2 "><p>Name of a NAS share</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p><span><strong>Share Protocol</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.2 "><p><span><strong>NFS</strong></span> or CIFS</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p><span><strong>Authentication Mode</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.2 "><p>Authentication mode of the CIFS protocol, which can be <span><strong>NTLM Authentication</strong></span> or <span><strong>Kerberos Authentication</strong></span>.</p> <p>In the <span><strong>NTLM Authentication</strong></span> mode, enter <span><strong>Domain Name</strong></span>, and <span><strong>Username</strong></span> and <span><strong>Password</strong></span> for accessing the NAS share.</p> <p>In <span><strong>Kerberos Authentication</strong></span> mode, select Kerberos authentication information. If a NAS share is registered for the first time, click <span><strong>Create</strong></span> and configure Kerberos authentication information. <a href="#nas_s_0024__table93413354118">Table 2</a> describes the related parameters.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p><span><strong>Use the protocol encryption mode to connect to the share</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.2 "><p>Select this option when <span class="uicontrol"><b>Protocol encryption</b></span> is enabled for a NAS share to be protected.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.2 "><p>Select the agent host for executing the backup job.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p><span><strong>Filter Rule</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.2 "><p>Set filtering rules to filter files and directories to be backed up.</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p>Configure Kerberos authentication parameters. For details about related parameters, see <a href="#nas_s_0024__table93413354118">Table 2</a>.</p>
+      <div class="tablenoborder">
+       <a name="nas_s_0024__table93413354118"></a><a name="table93413354118"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="nas_s_0024__table93413354118" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 2 </b>Kerberos authentication parameters
+        </caption>
+        <colgroup>
+         <col style="width:35%">
+         <col style="width:65%">
+        </colgroup>
+        <thead align="left">
+         <tr id="nas_s_0024__hdfs_00015_row434173521115">
+          <th align="left" class="cellrowborder" valign="top" width="35%" id="mcps1.3.2.2.2.2.3.2.3.1.1"><p id="nas_s_0024__hdfs_00015_p1134143591114">Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="65%" id="mcps1.3.2.2.2.2.3.2.3.1.2"><p id="nas_s_0024__hdfs_00015_p1334163541111">Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="nas_s_0024__hdfs_00015_row123412358116">
+          <td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.2.2.2.2.3.2.3.1.1 "><p id="nas_s_0024__hdfs_00015_p434935141114"><span id="nas_s_0024__hdfs_00015_text116228195434"><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.2.2.2.2.3.2.3.1.2 "><p id="nas_s_0024__hdfs_00015_p334173518110">User-defined Kerberos authentication name.</p></td>
+         </tr>
+         <tr id="nas_s_0024__hdfs_00015_row83417352118">
+          <td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.2.2.2.2.3.2.3.1.1 "><p id="nas_s_0024__hdfs_00015_p143513352112"><span id="nas_s_0024__hdfs_00015_text13420328134312"><strong>Principal Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.2.2.2.2.3.2.3.1.2 "><p id="nas_s_0024__hdfs_00015_p16354357116">Principal name of Kerberos authentication.</p>
+           <div class="note" id="nas_s_0024__hdfs_00015_note1997805374919">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <ul id="nas_s_0024__hdfs_00015_ul53571451001">
+              <li id="nas_s_0024__hdfs_00015_li133577516015">Set this parameter to the principal name configured on the Kerberos server, and the principal name must have read and write permissions on the resources to be accessed.</li>
+              <li id="nas_s_0024__hdfs_00015_li17687183713589">If you need to restore HDFS ACL information during HDFS file restoration, the registered principal name must have HDFS super user permissions. Here are some examples:
+               <ul id="nas_s_0024__hdfs_00015_ul10684153715580">
+                <li id="nas_s_0024__hdfs_00015_li176852373586">If the big data platform is FusionInsight or CDH, you can add the principal name to the supergroup on the big data platform so that the principal name has HDFS super user permissions.</li>
+                <li id="nas_s_0024__hdfs_00015_li986445365918">If the big data platform is TDH, you can add the admin role to the principal name on the big data platform so that the principal name has HDFS super user permissions.</li>
+               </ul></li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="nas_s_0024__hdfs_00015_row143514356116">
+          <td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.2.2.2.2.3.2.3.1.1 "><p id="nas_s_0024__hdfs_00015_p0352355118"><span id="nas_s_0024__hdfs_00015_text872344194318"><strong>Configuration Mode</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.2.2.2.2.3.2.3.1.2 ">
+           <div class="p" id="nas_s_0024__hdfs_00015_p14335165565315">
+            Kerberos authentication mode, which must be the same as that configured on the Kerberos server. Two authentication modes are available:
+            <ul id="nas_s_0024__hdfs_00015_ul79681635144315">
+             <li id="nas_s_0024__hdfs_00015_li1996820353434"><span id="nas_s_0024__hdfs_00015_text54429228440"><strong>Password</strong></span>: Use the principal name and password for identity authentication.</li>
+             <li id="nas_s_0024__hdfs_00015_li20858113704310"><span id="nas_s_0024__hdfs_00015_text126523418216"><strong>Keytab File</strong></span>: Use the principal and keytab file for identity authentication.</li>
+            </ul>
+           </div></td>
+         </tr>
+         <tr id="nas_s_0024__hdfs_00015_row183523512112">
+          <td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.2.2.2.2.3.2.3.1.1 "><p id="nas_s_0024__hdfs_00015_p15351835151118"><span id="nas_s_0024__hdfs_00015_text114821547144418"><strong>Config File</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.2.2.2.2.3.2.3.1.2 "><p id="nas_s_0024__hdfs_00015_p1958995015013"><span class="filepath" id="nas_s_0024__hdfs_00015_filepath077924020372"><b>.conf</b></span> configuration file (for example, <strong id="nas_s_0024__hdfs_00015_b17792404379">krb5.conf</strong>) used during Kerberos authentication. Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img id="nas_s_0024__hdfs_00015_image958945045017" src="en-us_image_0000001792397360.png"></span> to upload it to the management page.</p>
+           <div class="p" id="nas_s_0024__hdfs_00015_p335113531110">
+            Due to problems in Kerberos, if <span class="uicontrol" id="nas_s_0024__hdfs_00015_uicontrol1462119340419"><b>renew_lifetime</b></span> exists in the configuration file, comment it out. Otherwise, the registration may fail. For example:
+            <pre class="screen" id="nas_s_0024__hdfs_00015_screen43313539415">#renew_lifetime = 7d</pre>
+           </div></td>
+         </tr>
+         <tr id="nas_s_0024__hdfs_00015_row12351358112">
+          <td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.2.2.2.2.3.2.3.1.1 "><p id="nas_s_0024__hdfs_00015_p53510353119"><span id="nas_s_0024__hdfs_00015_text132368547446"><strong>Password</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.2.2.2.2.3.2.3.1.2 "><p id="nas_s_0024__hdfs_00015_p63573513114">This parameter is mandatory only when <span class="uicontrol" id="nas_s_0024__hdfs_00015_uicontrol10967144612199"><b><span id="nas_s_0024__hdfs_00015_text155548915452"><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol" id="nas_s_0024__hdfs_00015_uicontrol478945111911"><b><span id="nas_s_0024__hdfs_00015_text953102164617"><strong>Password</strong></span></b></span>.</p> <p id="nas_s_0024__hdfs_00015_p1477085011175">Set this parameter to the password of <span class="uicontrol" id="nas_s_0024__hdfs_00015_uicontrol763018714189"><b><span id="nas_s_0024__hdfs_00015_text1997411411465"><strong>Principal Name</strong></span></b></span>.</p></td>
+         </tr>
+         <tr id="nas_s_0024__hdfs_00015_row5425131213143">
+          <td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.2.2.2.2.3.2.3.1.1 "><p id="nas_s_0024__hdfs_00015_p164257122145"><span id="nas_s_0024__hdfs_00015_text1522326164613"><strong>Confirm Password</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.2.2.2.2.3.2.3.1.2 "><p id="nas_s_0024__hdfs_00015_p1042541281412">Confirm the password of <span class="uicontrol" id="nas_s_0024__hdfs_00015_uicontrol9284162064619"><b><span id="nas_s_0024__hdfs_00015_text14284102010469"><strong>Principal Name</strong></span></b></span>.</p></td>
+         </tr>
+         <tr id="nas_s_0024__hdfs_00015_row1728863716141">
+          <td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.2.2.2.2.3.2.3.1.1 "><p id="nas_s_0024__hdfs_00015_p112881037171415"><span id="nas_s_0024__hdfs_00015_text19503531104618"><strong>Keytab File</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.2.2.2.2.3.2.3.1.2 "><p id="nas_s_0024__hdfs_00015_p374615219184"><span class="filepath" id="nas_s_0024__hdfs_00015_filepath19934532131518"><b>.keytab</b></span> file used during Kerberos authentication (for example, <strong id="nas_s_0024__hdfs_00015_b41921269182">krb5.keytab</strong>). This parameter is mandatory only when <span class="uicontrol" id="nas_s_0024__hdfs_00015_uicontrol6701435124612"><b><span id="nas_s_0024__hdfs_00015_text1170193513465"><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol" id="nas_s_0024__hdfs_00015_uicontrol67464241815"><b><span id="nas_s_0024__hdfs_00015_text8150194415468"><strong>Keytab File</strong></span></b></span>.</p> <p id="nas_s_0024__hdfs_00015_p1836535991910">Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img id="nas_s_0024__hdfs_00015_image2782840141712" src="en-us_image_0000001792557096.png"></span> to upload it to the management page.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span><p></p><p>When the registration is successful, information about the registered NAS share is displayed on the <span class="uicontrol"><b><span><strong>NAS Shares</strong></span></b></span> page.</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="nas_s_0020.html">Backing Up a NAS Share</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

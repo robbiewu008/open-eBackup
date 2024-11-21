@@ -1,0 +1,164 @@
+<p class="aui-text-help-sm aui-gutter-column-md">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+    {{'protection_oracle_restore_title_label' | i18n:[this.rowCopy?.name, oldVersion]}}
+</p>
+<lv-form [formGroup]="formGroup" class="formGroup" [lvLabelColon]='false'>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'protection_restore_to_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreTo">
+                <lv-group [lvGutter]="'24px'">
+                    <lv-radio [lv-tooltip]="restoreToNewLocationOnly ? ('protection_origin_restore_disabled_label'| i18n):''"
+                              [lvDisabled]="restoreToNewLocationOnly" [lvValue]="restoreV2LocationType.ORIGIN">
+                        {{'common_restore_to_origin_location_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreV2LocationType.NEW" [lvDisabled]="disableNewLocation">
+                        {{'common_restore_to_new_location_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+
+    <!--原位置-->
+    <ng-container *ngIf="formGroup.get('restoreTo').value === restoreV2LocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_location_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <input lv-input type="text" formControlName="originLocation" [readOnly]="true" class="lv-input-disabled" [ngClass]="{'error-input':formGroup.get('originLocation').invalid}"/>
+                <ng-container *ngIf="formGroup.get('originLocation').invalid">
+                    <div class="lv-form-control-error-default">
+                        <span>{{'protection_target_host_restore_offline_db_label'|i18n:[rowCopy?.resource_name]}}</span>
+                    </div>
+                </ng-container>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <!--新位置目标数据库-->
+    <ng-container *ngIf="formGroup.get('restoreTo').value === restoreV2LocationType.NEW">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_target_to_database_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <aui-agent-select
+                        formControlName="database" [lvOptions]="databaseOptions" lvValueKey="key" [isAgent]="false" [isSimple]="true">
+                </aui-agent-select>
+            </lv-form-control>
+        </lv-form-item>
+
+        <lv-alert lvType="info" class="mg-8" [lvClosable]="false">
+            {{'protection_pdb_restore_path_tips_label'|i18n}}
+        </lv-alert>
+
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_destination_path_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]='destinationPathErrorTip'>
+                <input type="text" lv-input formControlName="destinationPath">
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <lv-form-item>
+        <lv-form-label></lv-form-label>
+        <lv-form-control>
+            <lv-checkbox [lvValue]="'true'" formControlName="isOverwrite">
+                <lv-group lvDirection="vertical">
+                    <span>{{ 'protection_delete_same_pdb_label'|i18n }}</span>
+                    <span class="inner-tips">
+            {{ 'protection_delete_same_name_pdb_tips_label'|i18n }}
+          </span>
+                </lv-group>
+            </lv-checkbox>
+        </lv-form-control>
+    </lv-form-item>
+
+    <div class="collapse-header mgt-24">
+        <lv-collapse [lvMultiExpansion]="false" lvType="simple">
+            <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="true">
+                <lv-form-item>
+                    <lv-form-label>{{ 'protection_channel_number_label' | i18n }}</lv-form-label>
+                    <lv-form-control>
+                        <lv-group lvGutter='8px' class="channel-container">
+                            <lv-switch formControlName='numberOfChannelOpen'></lv-switch>
+                            <ng-container *ngIf="formGroup.get('numberOfChannelOpen').value">
+                                <lv-form-control [lvErrorTip]='numberOfChannelRangeErrorTip'>
+                                    <input lv-input formControlName="numberOfChannels" type="text" placeholder="1~254"/>
+                                </lv-form-control>
+                            </ng-container>
+                        </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>{{'explore_start_database_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName='power_on'>
+                        </lv-switch>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_script_label' | i18n}}
+                        <i lv-icon="aui-icon-help" lvTooltipTheme="light" class="mgl-4"
+                           lv-tooltip="{{ 'protection_recovery_advance_params_desc2_label' | i18n }}" lvColorState='true'>
+                        </i>
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName='scriptOpen'></lv-switch>
+                        <ng-container *ngIf="formGroup.get('scriptOpen').value">
+                            <ng-container *ngFor="let item of scriptArr">
+                                <lv-form-item>
+                                    <lv-form-label>
+                                        {{ item.label }}
+                                        <ng-template [ngTemplateOutlet]="scriptTipTpl"></ng-template>
+                                    </lv-form-label>
+                                    <lv-form-control [lvErrorTip]='scriptErrorTip'>
+                                        <lv-group>
+                                            <input lv-input type='text' [formControlName]='item.key'
+                                                   placeholder="{{isWindows ? i18n.get('common_script_windows_placeholder_label') : i18n.get('common_script_linux_placeholder_label')}}"/>
+                                        </lv-group>
+                                    </lv-form-control>
+                                </lv-form-item>
+                            </ng-container>
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+                <ng-container
+                        *ngIf="restoreV2LocationType.NEW === formGroup.get('restoreTo').value">
+                    <aui-database-config [formGroup]="formGroup" [rowCopy]="rowCopy"></aui-database-config>
+                </ng-container>
+            </lv-collapse-panel>
+        </lv-collapse>
+    </div>
+</lv-form>
+
+<ng-template #titleTpl>
+    <lv-group lvGutter='8px'>
+        <span class="aui-h3">{{'common_advanced_label'|i18n}}</span>
+    </lv-group>
+</ng-template>
+
+<ng-template #scriptTipTpl>
+    <i lv-icon="aui-icon-help"
+       lv-tooltip="{{isWindows ? i18n.get('common_script_agent_windows_position_label') : i18n.get('common_script_agent_position_label')}}"
+       lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+</ng-template>

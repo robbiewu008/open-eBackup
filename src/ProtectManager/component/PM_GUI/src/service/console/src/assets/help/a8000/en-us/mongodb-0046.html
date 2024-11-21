@@ -1,0 +1,98 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring MongoDB">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="mongodb-0043.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="mongodb-0046">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring MongoDB</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="mongodb-0046"></a><a name="mongodb-0046"></a>
+
+<h1 class="topictitle1">Restoring MongoDB</h1>
+<div><p>This section describes how to restore a backed-up MongoDB instance to the original location or a new location.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li><li>Before the restoration, ensure that the instance in the target location has been stopped. Otherwise, the restoration will fail. The following uses MongoDB 4.4 as an example to describe how to stop an instance:<ol><li>Log in to the host where the MongoDB instance is located.</li><li>Run the <strong>use admin</strong> command to switch to the MongoDB database administrator user.</li><li>Run the <strong>db.shutdownServer()</strong> command to stop the MongoDB instance.</li></ol>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>For a MongoDB cluster instance, perform the preceding operations on the primary and secondary nodes in sequence to stop the instance.</p>
+</div></div>
+</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="mongodb-0046__en-us_topic_0000001839142377_uicontrol3329549395"><b><span id="mongodb-0046__en-us_topic_0000001839142377_text732145416391"><strong>Explore</strong></span> &gt; <span id="mongodb-0046__en-us_topic_0000001839142377_text1932135423913"><strong>Copy Data</strong></span> &gt; <span id="mongodb-0046__en-us_topic_0000001839142377_text12694336586"><strong>Big Data</strong></span> &gt; MongoDB</b></span>.</span></li><li><span>Search for copies by MongoDB resource or copy. This section describes how to search for copies by resource.</span><p><p>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> tab page, locate the resource to be restored by resource name and click the resource name.</p>
+</p></li><li><span>Select the resource for copy-based restoration.</span></li><li><span>Specify a copy or a point in time for restoration.</span><p><ul><li>Restoration using a specified copy<ol type="a"><li>Select the year, month, and day in sequence to find the copy.<p>If <span><img src="en-us_image_0000002016318709.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p>
+</li><li>Click <span><img src="en-us_image_0000002016199189.png"></span> to go to the <strong>Copy Data</strong> page.</li><li>On the <strong>Copy Data</strong> page, click <span><img src="en-us_image_0000001979838952.png"></span> and choose <span class="menucascade"><b><span class="uicontrol"><span><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Restore</strong></span></span></b></span> in the row where the desired copy is located.</li></ol>
+</li><li>Restoration to a specified time point<ol type="a"><li>Select the year, month, and day in sequence to find the copy.<p>If <span><img src="en-us_image_0000001979679240.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p>
+</li><li>Click <span><img src="en-us_image_0000002016318717.png"></span> to go to the <strong>Copy Data</strong> page.</li><li>On the <strong>Copy Data</strong> page, click <span><img src="en-us_image_0000002016199193.png"></span>. In the blue part on the timeline, select a copy and choose <span class="menucascade"><b><span class="uicontrol"><span><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Restore</strong></span></span></b></span>.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>For 1.5.0, a maximum of 100 copies can be displayed on the timeline. You can click <span><img src="en-us_image_0000001984477544.png"></span> to view all copies.</li><li>During point-in-time restoration, the information about the copy used for restoration cannot be obtained on the management page. Therefore, users cannot view the copy information of the restoration job on pages of the restoration job and related events.</li><li>A single instance with log backup enabled can be restored to any point in time.</li></ul>
+</div></div>
+</li></ol>
+</li></ul>
+</p></li><li><span>Restore the MongoDB instance to the original or a new location.</span><p><p><a href="#mongodb-0046__en-us_topic_0000001263614142_table93951625101715">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="mongodb-0046__en-us_topic_0000001263614142_table93951625101715"></a><a name="en-us_topic_0000001263614142_table93951625101715"></a><table cellpadding="4" cellspacing="0" summary="" id="mongodb-0046__en-us_topic_0000001263614142_table93951625101715" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for restoring a MongoDB instance</caption><colgroup><col style="width:32.53%"><col style="width:67.47%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.3.2.5.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.3.2.5.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Restore To</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>Select either <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> or <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>When the copy of a single instance that supports log backup is restored to a single instance that does not support log backup, the single instance that does not support log backup still does not support single-instance log backup.</li><li>When the copy of a single instance that does not support log backup is restored to a single instance that supports log backup, the single instance that supports log backup still supports single-instance log backup.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>If you select <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span>, the target location is displayed by default.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Target Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>If you select <span><strong>New location</strong></span>, select the target location for the restoration.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>User for Instance Start</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>If this parameter is not specified, the owning user of the <strong>dbpath</strong> directory in the MongoDB directory is used for start by default.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="mongodb-0043.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

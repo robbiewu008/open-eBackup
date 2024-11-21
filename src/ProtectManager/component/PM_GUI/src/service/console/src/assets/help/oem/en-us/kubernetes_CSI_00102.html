@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Uploading and Updating the Kubernetes Image Package">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_000092.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="kubernetes_CSI_00102">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Uploading and Updating the Kubernetes Image Package</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="kubernetes_CSI_00102"></a><a name="kubernetes_CSI_00102"></a>
+  <h1 class="topictitle1">Uploading and Updating the Kubernetes Image Package</h1>
+  <div>
+   <p>Before performing backup or restoration, you need to upload the Kubernetes installation package to the image repository. During backup and restoration, you need to use images to deploy the backup pod in the production environment for data migration during the running of backup and restoration jobs. Therefore, you need to upload the Kubernetes installation package to the image repository to deploy the backup pod.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p>Before uploading the Kubernetes installation package, query the version and patch number on the , and download the <em>XXX</em><strong>_K8s_BackupImage.tgz</strong> installation package based on the queried version and patch number. Decompress the installation package to obtain the <strong>k8s_backup_image_x86.tar</strong> or <strong>k8s_backup_image_arm64.tar</strong> compressed package of the corresponding product architecture. You can obtain the Kubernetes installation package by using the following methods:</p>
+    <ul>
+     <li>For enterprise users: <a href="https://support.huawei.com/enterprise/en/flash-storage/oceanprotect-databackup-pid-258115661/software/" target="_blank" rel="noopener noreferrer">Click here</a>.</li>
+     <li>For carrier users: <a href="https://support.huawei.com/carrier/navi?coltype=software#col=software&amp;path=PBI1-21430725/PBI1-251363742/PBI1-250389226/PBI1-251366310/PBI1-258115661" target="_blank" rel="noopener noreferrer">Click here</a>.
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>You can query the version and patch number in the following way:</p>
+        <ol>
+         <li>Click <span><img src="en-us_image_0000002090106933.png"></span> in the upper right corner and choose <span><strong>About</strong></span>.</li>
+         <li>In the dialog box that is displayed, the version and patch number are displayed in the line where <span><strong>Version</strong></span> is located.</li>
+        </ol>
+       </div>
+      </div></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>The tenant of each Cloud Container Engine (CCE) cluster that needs to use the backup or restoration function needs to perform the following steps to upload and update the image package.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Log in to ManageOne Operation Portal.</span></li>
+     <li><span>Choose <span class="uicontrol"><b>Service List &gt; Cloud Container Engine &gt; SoftWare Repository for Container</b></span> to go to the <strong>Dashboard</strong> page of the image repository.</span></li>
+     <li><span>Upload an image by following steps 1 and 2 in the <strong>Getting Started</strong> area on the <span class="uicontrol"><b>Overview</b></span> page.</span></li>
+     <li><span>After the image package is uploaded, click <span class="uicontrol"><b>My Images</b></span> and select the name of the uploaded compressed image package to go to the corresponding details page.</span></li>
+     <li id="kubernetes_CSI_00102__li4890151815206"><a name="kubernetes_CSI_00102__li4890151815206"></a><a name="li4890151815206"></a><span>Locate the row that contains the <strong>latest</strong> image version, click <span class="uicontrol"><b>containerd Command</b></span>, and copy the command for downloading the image.</span></li>
+     <li><span>Click <span class="uicontrol"><b>Edit</b></span> in the upper right corner of the page to set <span class="uicontrol"><b>Type</b></span> to <span class="uicontrol"><b>Public</b></span>.</span></li>
+     <li id="kubernetes_CSI_00102__li17365195215269"><a name="kubernetes_CSI_00102__li17365195215269"></a><a name="li17365195215269"></a><span>Log in to each node in the Kubernetes cluster and run the <strong>crictl images</strong> command to view the local image information. If the command output contains information, record the value of <strong>IMAGE ID</strong> corresponding to the image whose <strong>TAG</strong> value is <strong>latest</strong>. If the command output is empty, you do not need to record any information.</span><p></p><p><span><img src="en-us_image_0000001792381708.png"></span></p> <p></p></li>
+     <li><span>Run the image download command copied in <a href="#kubernetes_CSI_00102__li4890151815206">5</a> on all nodes that you have logged in to.</span></li>
+     <li><span>After the image download command is successfully executed, run the <strong>crictl images</strong> command again to view the local image information. If <strong>IMAGE ID</strong> of the image whose <strong>TAG</strong> value is <strong>latest</strong> is different from the image ID queried in <a href="#kubernetes_CSI_00102__li17365195215269">7</a>, the local image is successfully updated. If the command output in <a href="#kubernetes_CSI_00102__li17365195215269">7</a> is empty, an image whose <strong>TAG</strong> value is <strong>latest</strong> is added to the local image information, indicating that the image is successfully downloaded.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="kubernetes_CSI_000092.html">Preparing for Backup (Applicable to CCE)</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

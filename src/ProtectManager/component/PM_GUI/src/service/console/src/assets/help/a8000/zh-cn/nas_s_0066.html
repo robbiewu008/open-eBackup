@@ -1,0 +1,170 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="即时挂载NAS文件系统">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="nas_s_0066">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>即时挂载NAS文件系统</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="nas_s_0066"></a><a name="nas_s_0066"></a>
+
+<h1 class="topictitle1">即时挂载NAS文件系统</h1>
+<div><p>当需要将NAS文件系统的副本挂载给目标客户端以快速使用时，可参考本节配置即时挂载。</p>
+<div class="section" id="nas_s_0066__section2085213010239"><h4 class="sectiontitle">背景信息</h4><ul id="nas_s_0066__ul147910567512"><li id="nas_s_0066__li19707011103218"><span class="uicontrol" id="nas_s_0066__uicontrol1265863119342">“挂载层级”</span>代表当前备份副本挂载的层级，副本<span class="uicontrol" id="nas_s_0066__uicontrol18145122119307">“挂载层级”</span>的初始值为1。</li><li id="nas_s_0066__li888222519329">当选择<span class="uicontrol" id="nas_s_0066__uicontrol69991637153412">“挂载层级”</span>为2的副本进行挂载时，需要根据共享路径以及共享IP手动挂载至目标客户端，具体操作请参见<a href="nas_s_0108.html">手动挂载NAS文件系统或NAS共享</a>。</li><li id="nas_s_0066__li127865918467">支持使用备份副本、复制副本进行即时挂载。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="nas_s_0066__zh-cn_topic_0000001839142377_uicontrol916319276489">“<span id="nas_s_0066__zh-cn_topic_0000001839142377_text1016315279483">数据利用</span> &gt; <span id="nas_s_0066__zh-cn_topic_0000001839142377_text6163122724816">即时挂载</span> &gt; <span id="nas_s_0066__zh-cn_topic_0000001839142377_text16896192718403">NAS文件系统</span>”</span>。</span></li><li id="nas_s_0066__li19268104183219"><span>单击<span class="uicontrol" id="nas_s_0066__uicontrol84017217520">“<span id="nas_s_0066__text1670816112216">创建</span>”</span>。</span></li><li><span>在<span class="uicontrol">“<span>选择资源</span>”</span>页签，选择要挂载的副本对应的源文件系统，单击<span class="uicontrol">“<span>下一步</span>”</span>。</span></li><li id="nas_s_0066__li18161008334"><span>在<span class="uicontrol" id="nas_s_0066__uicontrol3329357651">“<span id="nas_s_0066__text33298579515">选择副本</span>”</span>页签，选择要挂载的副本，单击<span class="uicontrol" id="nas_s_0066__uicontrol3890932596">“<span id="nas_s_0066__text889093220913">下一步</span>”</span>。</span><p><p id="nas_s_0066__p191441659204112">创建即时挂载的副本必须是<span class="uicontrol" id="nas_s_0066__uicontrol1584841912513">“<span id="nas_s_0066__text10369637192511">正常</span>”</span>状态。</p>
+</p></li><li id="nas_s_0066__li14333597332"><span>在<span class="uicontrol" id="nas_s_0066__uicontrol8951503336">“<span id="nas_s_0066__text159570103313">挂载选项</span>”</span>页签，配置挂载参数，单击<span class="uicontrol" id="nas_s_0066__uicontrol015073516915">“<span id="nas_s_0066__text1415010354910">下一步</span>”</span>。</span><p><ol type="a" id="nas_s_0066__ol99770103312"><li id="nas_s_0066__li1897140203316">配置即时挂载基本参数和高级参数。<div class="p" id="nas_s_0066__p1096180103318"><a name="nas_s_0066__li1897140203316"></a><a name="li1897140203316"></a>相关参数说明如<a href="#nas_s_0066__table89615043315">表1</a>和<a href="#nas_s_0066__table4872165714509">表2</a>所示。<div class="note" id="nas_s_0066__note1795606331"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="nas_s_0066__ul69520163319"><li id="nas_s_0066__li8951207331">带宽与IOPS可以任意配置一个或者两个都配置，如果是带宽型业务，建议只配置带宽，如果是IOPS型业务，建议只配置IOPS，如果不确定或者有时是带宽型、有时是IOPS型，则建议两个都配置，此时流量控制以小的一个为准。</li><li id="nas_s_0066__li129517043311">标准IOPS(8KB)与真实IO模型的换算关系可以通过界面上的换算表查看。</li><li id="nas_s_0066__li2027466144713">通过限制挂载副本的最大流量，以保证备份、恢复任务的性能；设置挂载副本的下限保障，以保证挂载副本的最低性能。</li></ul>
+</div></div>
+
+<div class="tablenoborder"><a name="nas_s_0066__table89615043315"></a><a name="table89615043315"></a><table cellpadding="4" cellspacing="0" summary="" id="nas_s_0066__table89615043315" frame="border" border="1" rules="all"><caption><b>表1 </b>即时挂载基本参数说明</caption><colgroup><col style="width:16.439999999999998%"><col style="width:20.75%"><col style="width:62.81%"></colgroup><thead align="left"><tr id="nas_s_0066__row2095140183312"><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1"><p id="nas_s_0066__p5951007337">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.2"><p id="nas_s_0066__p129580193310">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="nas_s_0066__row187197124910"><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="nas_s_0066__p675725818232"><span id="nas_s_0066__text10898114912720">文件系统名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.2 "><p id="nas_s_0066__p18258120132220">挂载后的文件系统名称。</p>
+<p id="nas_s_0066__p1775418582233">默认的名称前缀为mount_。</p>
+</td>
+</tr>
+<tr id="nas_s_0066__row1323136134919"><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="nas_s_0066__p1401338152614"><span id="nas_s_0066__text12352114652611">共享协议</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.2 "><p id="nas_s_0066__p674685813234">NFS或者CIFS。</p>
+<p id="nas_s_0066__p497911015212">您可以同时设置NFS共享和CIFS共享。</p>
+</td>
+</tr>
+<tr id="nas_s_0066__row1620716414917"><td class="cellrowborder" rowspan="2" valign="top" width="16.439999999999998%" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="nas_s_0066__p15809142154820">NFS</p>
+</td>
+<td class="cellrowborder" valign="top" width="20.75%" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="nas_s_0066__p10303174614247"><span id="nas_s_0066__text355033017227">共享路径</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="62.81%" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.2 "><p id="nas_s_0066__p91182035132319">访问文件系统的共享路径，该路径名称与文件系统名称相同，不可修改。</p>
+<p id="nas_s_0066__p9465834103015">请确认备份资源支持NFS共享协议，否则挂载时将不包含NFS文件权限信息。</p>
+</td>
+</tr>
+<tr id="nas_s_0066__row45761098516"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="nas_s_0066__p29861355142418">共享<span id="nas_s_0066__text1372627112810">客户端</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><div class="p" id="nas_s_0066__p75836231289">访问文件系统的客户端信息。<ul id="nas_s_0066__ul10853114216166"><li id="nas_s_0066__li141781311161"><span style="color:#282B33;">支持输入共享客户端IP地址、共享客户端IP地址段或使用“*”表示全部共享客户端IP地址。</span></li><li id="nas_s_0066__li717813151615"><span style="color:#282B33;">IP地址支持IPv4、IPv6地址或者两者的混合IP地址。</span></li><li id="nas_s_0066__li2178531151612"><span style="color:#282B33;">您可以同时输入多个IP地址或IP地址段，以英文分号、空格或回车键隔开。示例：192.168.0.10;192.168.0.0/24;*。</span></li></ul>
+</div>
+</td>
+</tr>
+<tr id="nas_s_0066__row55719408316"><td class="cellrowborder" rowspan="3" valign="top" width="16.439999999999998%" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="nas_s_0066__p1540845794614">CIFS</p>
+<p id="nas_s_0066__p96609782220"></p>
+</td>
+<td class="cellrowborder" valign="top" width="20.75%" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="nas_s_0066__p7737185193217"><span id="nas_s_0066__text573715563211">共享名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="62.81%" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.2 "><p id="nas_s_0066__p53284218538">访问文件系统的共享名称。</p>
+<p id="nas_s_0066__p1508191143516">默认共享名称为mount_<em id="nas_s_0066__i20344017161715">时间戳</em>，您可以修改。</p>
+<p id="nas_s_0066__p1811116591216"><span style="color:#282B33;">请确认备份资源支持CIFS共享协议，否则挂载时将不包含CIFS文件权限信息。</span></p>
+</td>
+</tr>
+<tr id="nas_s_0066__row1957204043111"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="nas_s_0066__p1157294043118"><span id="nas_s_0066__text5328824173218">类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="nas_s_0066__p11481041133414">访问CIFS共享的用户类型。</p>
+<ul id="nas_s_0066__ul183616552810"><li id="nas_s_0066__nas_s_0100_li115301547103614"><span id="nas_s_0066__nas_s_0100_text11836124163210">Everyone</span></li><li id="nas_s_0066__nas_s_0100_li1853094715369"><span id="nas_s_0066__nas_s_0100_text12625493210">Windows本地认证用户</span></li><li id="nas_s_0066__nas_s_0100_li58994343227"><span id="nas_s_0066__nas_s_0100_text1018841611228">Windows本地认证用户组</span></li></ul>
+</td>
+</tr>
+<tr id="nas_s_0066__row16660157182210"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="nas_s_0066__p34401812193314"><span id="nas_s_0066__text15227123423313">用户</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="nas_s_0066__p55721440183113">访问CIFS共享的用户名。</p>
+<p id="nas_s_0066__p1441181810353">当“<span id="nas_s_0066__nas_s_0100_text66251842152215">类型</span>”为“<span id="nas_s_0066__nas_s_0100_text1862524232215">Windows本地认证用户</span>”或“<span id="nas_s_0066__nas_s_0100_text462474214224">Windows本地认证用户组</span>”时，需要配置该参数。</p>
+<div class="p" id="nas_s_0066__p7841427394">如果您需要的用户/用户组不存在，请进入DeviceManager界面创建。<ol id="nas_s_0066__nas_s_0100_ol3481161415218"><li id="nas_s_0066__nas_s_0100_li14811714182117">在其他浏览器页面登录DeviceManager界面。</li></ol>
+</div>
+<ul id="nas_s_0066__ul18859115917267"><li id="nas_s_0066__nas_s_0100_li1134104615181">对于X系列备份一体机，请执行以下操作：<ol id="nas_s_0066__nas_s_0100_ol6503987191"><li id="nas_s_0066__nas_s_0100_li1512122844010">在其他浏览器页面登录管理界面。</li><li id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001607531760_zh-cn_topic_0000001311295305_zh-cn_topic_0000001149078659_li929117916361">选择<span class="uicontrol" id="nas_s_0066__nas_s_0100_uicontrol412493718453">“<span id="nas_s_0066__nas_s_0100_text0124193718451">系统</span> &gt; <span id="nas_s_0066__nas_s_0100_text4124537194514">基础设施</span> &gt; <span id="nas_s_0066__nas_s_0100_text181243379452">集群管理</span>”</span>。</li><li id="nas_s_0066__nas_s_0100_li19932939164117">在<span class="uicontrol" id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001839143213_uicontrol13691645105219">“<span id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001839143213_text1763193125313">备份集群</span>”</span>页签的<span class="uicontrol" id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001839143213_uicontrol1050641575312">“<span id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001839143213_text133861121163513">本地集群节点</span>”</span>区域，单击节点名称。</li><li id="nas_s_0066__nas_s_0100_li1115217015589">在弹出的<span class="uicontrol" id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001839143213_uicontrol1144724616332">“<span id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001839143213_text51761646203516">节点详情</span>”</span>对话框中，单击<span class="uicontrol" id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001839143213_uicontrol1544714611335">“<span id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001839143213_text1624910583612">打开设备管理</span>”</span>，进入DeviceManager。</li><li id="nas_s_0066__nas_s_0100_li56039149190">在导航栏选择“服务 &gt; 文件服务 &gt; 认证用户 &gt; Windows用户”，在“本地认证用户”或“本地认证用户组”页签中创建用户或用户组。</li></ol>
+</li><li id="nas_s_0066__nas_s_0100_li68631120181919">对于E系列备份一体机，请执行以下操作：<ol id="nas_s_0066__nas_s_0100_ol208679501196"><li id="nas_s_0066__nas_s_0100_li1652318822016">在其他浏览器页面登录管理界面。</li><li id="nas_s_0066__nas_s_0100_li1552378102016">选择<span class="uicontrol" id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001839143213_zh-cn_topic_0000001311295305_zh-cn_topic_0000001149078659_uicontrol1098185683619">“<span id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001839143213_text157651936143415">系统</span> &gt; <span id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001839143213_text49601653123416">基础设施</span> &gt; <span id="nas_s_0066__nas_s_0100_zh-cn_topic_0000001839143213_text112401684352">集群管理</span>”</span>。</li><li id="nas_s_0066__nas_s_0100_li03297010153">在<span class="uicontrol" id="nas_s_0066__nas_s_0100_uicontrol1532915016152">“<span id="nas_s_0066__nas_s_0100_text15392104617147">集群管理</span>”</span>界面，单击<span class="uicontrol" id="nas_s_0066__nas_s_0100_uicontrol4329160141511">“查看集群详情”</span>。</li><li id="nas_s_0066__nas_s_0100_li15329190151517">在弹出的<span class="uicontrol" id="nas_s_0066__nas_s_0100_uicontrol163291606152">“集群详情”</span>界面，单击<span class="uicontrol" id="nas_s_0066__nas_s_0100_uicontrol432914071512">“<span id="nas_s_0066__nas_s_0100_text5329901159">打开设备管理</span>”</span>，进入DeviceManager。</li><li id="nas_s_0066__nas_s_0100_li1452418852013">在导航栏选择“资源 &gt; 访问 &gt; 认证用户 &gt; Windows用户”，在“本地认证用户”或“本地认证用户组”页签中创建用户或用户组。</li></ol>
+</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p id="nas_s_0066__p1432613576503">即时挂载高级参数说明如<a href="#nas_s_0066__table4872165714509">表2</a>所示。</p>
+
+<div class="tablenoborder"><a name="nas_s_0066__table4872165714509"></a><a name="table4872165714509"></a><table cellpadding="4" cellspacing="0" summary="" id="nas_s_0066__table4872165714509" frame="border" border="1" rules="all"><caption><b>表2 </b>即时挂载高级参数说明</caption><colgroup><col style="width:16.439999999999998%"><col style="width:20.75%"><col style="width:62.81%"></colgroup><thead align="left"><tr id="nas_s_0066__row787245785012"><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.5.2.1.1.3.2.4.1.1"><p id="nas_s_0066__p1787235717507">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.5.2.1.1.3.2.4.1.2"><p id="nas_s_0066__p13872125712504">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="nas_s_0066__row787311575503"><td class="cellrowborder" rowspan="3" valign="top" width="16.439999999999998%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p1087385713509"><span id="nas_s_0066__text88738571506">带宽（MB/s）</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="20.75%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p11873105712500"><span id="nas_s_0066__text128731557145011">Min</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="62.81%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.2 "><p id="nas_s_0066__p17874185785013">即时挂载副本的最小带宽。</p>
+</td>
+</tr>
+<tr id="nas_s_0066__row78741057185015"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p14874057145013"><span id="nas_s_0066__text687465755012">Max</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p687414575501">即时挂载副本的最大带宽。</p>
+</td>
+</tr>
+<tr id="nas_s_0066__row9874105755017"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p1487415719504"><span id="nas_s_0066__text887445715504">Burst</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p48749571502">即时挂载副本的最大突发带宽，<span id="nas_s_0066__text14874857185015">Burst</span>的取值必须大于Max。</p>
+<p id="nas_s_0066__p6874115711505">当设置<span id="nas_s_0066__text287455755018">Max</span>的值后，才支持设置<span id="nas_s_0066__text198741157135020">Burst</span>。</p>
+</td>
+</tr>
+<tr id="nas_s_0066__row1487411576504"><td class="cellrowborder" rowspan="3" valign="top" width="16.439999999999998%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p17874457165011"><span id="nas_s_0066__text14874135710505">标准IOPS（8KB）</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="20.75%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p187419572504"><span id="nas_s_0066__text38741457105012">Min</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="62.81%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.2 "><p id="nas_s_0066__p48741357195018">即时挂载副本平均每秒标准I/O的最小请求个数。</p>
+</td>
+</tr>
+<tr id="nas_s_0066__row15874145712504"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p11874185755013"><span id="nas_s_0066__text15874757205017">Max</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p17874155715507">即时挂载副本平均每秒标准I/O的最大请求个数。</p>
+</td>
+</tr>
+<tr id="nas_s_0066__row4874165755014"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p14874125719507"><span id="nas_s_0066__text287475765012">Burst</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p4874857185015">即时挂载副本的最大突发IOPS，<span id="nas_s_0066__text187415718500">Burst</span>的取值必须大于Max。</p>
+<p id="nas_s_0066__p58742574504">当设置<span id="nas_s_0066__text48742571506">Max</span>的值后，才支持设置<span id="nas_s_0066__text887405718501">Burst</span>。</p>
+</td>
+</tr>
+<tr id="nas_s_0066__row16874175714503"><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p1787419575501"><span id="nas_s_0066__text16874155775017">最大Burst时间(秒)</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.2 "><p id="nas_s_0066__p1587415795019">当设置了带宽或标准IOPS的<span id="nas_s_0066__text287415714509">Burst</span>参数，才需要设置该参数。表示突发带宽或突发IOPS的最大持续时间。</p>
+</td>
+</tr>
+<tr id="nas_s_0066__row10874155719503"><td class="cellrowborder" valign="top" width="16.439999999999998%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p8874557155018"><span id="nas_s_0066__text7874105735015">标准化时延（8KB）</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="20.75%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="nas_s_0066__p148741257155014"><span id="nas_s_0066__text1387465765020">Max</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="62.81%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.2 "><p id="nas_s_0066__p787465715019">在本地阵列的最大时延。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li id="nas_s_0066__li1497110143316">单击<span class="uicontrol" id="nas_s_0066__uicontrol1556140102318">“<span id="nas_s_0066__text85561740102316">下一步</span>”</span>。</li></ol>
+</p></li><li id="nas_s_0066__li176771615123318"><span>预览挂载参数，确认无误后，单击<span class="uicontrol" id="nas_s_0066__uicontrol193397923310">“<span id="nas_s_0066__text418014210248">完成</span>”</span>。</span><p><div class="note" id="nas_s_0066__note1821020234309"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="nas_s_0066__p15210102319306">副本生成后立即用该副本执行即时挂载，可能会由于副本仍处于初始化状态而导致挂载任务失败，请3分钟后重试。</p>
+</div></div>
+</p></li><li><span>当您需要访问即时挂载副本时，在“<span>即时挂载</span> &gt; <span>NAS文件系统</span>”页面，单击待访问的即时挂载副本右侧的“<span>更多</span> &gt; <span>查看</span>”，获取访问即时挂载副本的共享路径、共享客户端、共享IP、共享名称、用户名等信息。</span></li></ol>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

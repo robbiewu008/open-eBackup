@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 8: (Optional) Creating a Reverse Replication/Cascaded Replication SLA">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="nas_s_0035_0.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="nas_s_0044_0">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 8: (Optional) Creating a Reverse Replication/Cascaded Replication SLA</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="nas_s_0044_0"></a><a name="nas_s_0044_0"></a>
+  <h1 class="topictitle1">Step 8: (Optional) Creating a Reverse Replication/Cascaded Replication SLA</h1>
+  <div>
+   <p>If you need to configure reverse replication (replicating replication copies to the source end) or cascaded replication (replicating replication copies from the target end to another cluster), configure the replication policy SLA by referring to this section. Otherwise, skip this step.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Log in to the management page of the cluster where the replication copies reside.</span><p></p><p>You can view and perform operations on replication copies only on the target cluster.</p> <p></p></li>
+     <li><span>Choose <span class="uicontrol" id="nas_s_0044_0__en-us_topic_0000001839142377_uicontrol8111821122820"><b><span id="nas_s_0044_0__en-us_topic_0000001839142377_text71111921162814"><strong>Protection</strong></span> &gt; Protection Policies &gt; SLAs</b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span>.</span></li>
+     <li><span>Enter an SLA name.</span></li>
+     <li><span>Select an application type for the SLA to be created.</span><p></p>
+      <ol type="a">
+       <li>Click the <span class="uicontrol"><b><span><strong>Applications</strong></span></b></span> icon.</li>
+       <li>Choose <span class="uicontrol"><b><span><strong>Specific to application</strong></span> &gt; <span><strong>Replicated Copy</strong></span></b></span>.</li>
+       <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
+      </ol> <p></p></li>
+     <li><span>Click the <span class="uicontrol"><b><span><strong>Replication Policy</strong></span></b></span> icon.</span></li>
+     <li><span>Configure the replication policy information.</span><p></p><p>Click <span class="uicontrol"><b></b></span> on the right of the page to create a maximum of four replication policies.</p> <p><a href="#nas_s_0044_0__en-us_topic_0000001839223157_en-us_topic_0000001092505481_table201991821175612">Table 1</a> describes the related parameters.</p>
+      <div class="tablenoborder">
+       <a name="nas_s_0044_0__en-us_topic_0000001839223157_en-us_topic_0000001092505481_table201991821175612"></a><a name="en-us_topic_0000001839223157_en-us_topic_0000001092505481_table201991821175612"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="nas_s_0044_0__en-us_topic_0000001839223157_en-us_topic_0000001092505481_table201991821175612" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Replication policy parameters
+        </caption>
+        <colgroup>
+         <col style="width:20.29%">
+         <col style="width:79.71000000000001%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="20.29%" id="mcps1.3.2.2.7.2.3.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="79.71000000000001%" id="mcps1.3.2.2.7.2.3.2.3.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>Replication policy name, which can be customized.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">&nbsp;&nbsp;</td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>Only cross-domain replication, that is, replication between clusters, is supported.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">&nbsp;&nbsp;</td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>Target cluster to which data is replicated.</p> <p>Select the target cluster, or click <span class="uicontrol"><b><span><strong>Add</strong></span></b></span> to add a new cluster.</p>
+           <ul>
+            <li>If <span class="uicontrol"><b>Replication Target Cluster</b></span> is the source cluster of the replication copies, reverse replication is performed.</li>
+            <li>If <span class="uicontrol"><b>Replication Target Cluster</b></span> is another cluster, cascaded replication is performed.</li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><strong>Replication Target User</strong></p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p>This parameter is available only in 1.6.0 and later versions.</p>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>Select the system administrator or data protection administrator of the target end for replication.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><strong>Password</strong></p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="nas_s_0044_0__en-us_topic_0000001839223157_en-us_topic_0000001839223157_p8320153562113">This parameter is available only in 1.6.0 and later versions.</p>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>Enter the password of the system administrator or data protection administrator of the target end for replication. After entering the password, click <span class="uicontrol" id="nas_s_0044_0__en-us_topic_0000001839143213_uicontrol171601242183913"><b>Authenticate</b></span> to verify the password.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><strong>Specify Target Location</strong></p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 ">
+           <div class="p">
+            The replication target location can be a backup storage unit or a backup storage unit group. If a backup storage unit group is selected, the system selects a backup storage unit from the backup storage unit group as the replication target location when a backup copy is replicated for the first time. In subsequent replication, the backup storage unit used for the first replication is preferentially selected.
+            <div class="note" id="nas_s_0044_0__en-us_topic_0000001839143213_note119618230211">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <ul id="nas_s_0044_0__en-us_topic_0000001839143213_ul19974205194214">
+               <li id="nas_s_0044_0__en-us_topic_0000001839143213_li117129544426">For version 1.5.0, this parameter is available only when <strong id="nas_s_0044_0__en-us_topic_0000001839143213_b34101252204619">Replication Mode</strong> is set to <span class="uicontrol" id="nas_s_0044_0__en-us_topic_0000001839143213_uicontrol341015214615"><b>Intra-domain</b></span>.</li>
+               <li id="nas_s_0044_0__en-us_topic_0000001839143213_li199748517429">A backup storage unit that has been specified as the target location for a backup policy cannot be used as the target location for a replication policy.</li>
+              </ul>
+             </div>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">&nbsp;&nbsp;</td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>Replication is performed every <em>xx</em> minutes, hours, days, or weeks.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><strong>Replication and Retention Rules</strong></p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>Select the replication copy that you need to replicate and set the retention period of the copy.</p> <p>Once the retention period expires, the system automatically deletes the expired copies. The retention period must be longer than the replication interval.</p>
+           <ul>
+            <li>: Specify the time when the replication copy starts to be replicated and set the copy retention period.</li>
+            <li>: Specify the date and set the copy retention period. Only full and incremental backup copies on a specified date can be replicated. You can select multiple options at the same time:
+             <ul>
+              <li>Select the full replication copies generated in month <em>x</em> of each year for replication. The replication copies are retained for <em>x</em> years (the retention period can be 1 to 70 years).</li>
+              <li>Select the first or last full replication copy of each month for replication. The replication copies are retained for <em>x</em> months (the retention period can be 1 to 840 months).</li>
+              <li>Select the full replication copies generated on a specified day of each week for replication. The replication copies are retained for <em>x</em> weeks (the retention period can be 1 to 3650 weeks).</li>
+             </ul>
+             <div class="note">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <ul>
+                <li>For applications that do not support incremental backup, only full replication copies on a specified date can be replicated.</li>
+                <li>If multiple options are selected, copies on any date specified by these options are replicated, and the copies are retained for the longest period specified in these options.</li>
+               </ul>
+              </div>
+             </div></li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">&nbsp;&nbsp;</td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>Start time of the first replication job.</p>
+           <div class="p">
+            If <span><strong>First Run At</strong></span> is later than the current time, data replication starts based on <span><strong>First Run At</strong></span>. If <span><strong>First Run At</strong></span> is earlier than the current time, data is replicated when the next replication period arrives.
+            <div class="note">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p>Ensure that the device time of the agent host, local cluster, and target cluster is consistent.</p>
+             </div>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><span><strong>Limit Rate Policy</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>Average maximum amount of data that can be transmitted per second in a replication job.</p> <p>Select the created rate limiting policy. For details about how to create a rate limiting policy, see <a href="en-us_topic_0000001839143197.html">(Optional) Creating a Rate Limiting Policy</a>.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">
+           <div class="p">
+            <strong id="nas_s_0044_0__en-us_topic_0000001839143213_b477664753718">Link Deduplication</strong>
+            <div class="note" id="nas_s_0044_0__en-us_topic_0000001839143213_note43214486811">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p id="nas_s_0044_0__en-us_topic_0000001839143213_p9322048780">In 1.5.0, the parameter name is <span id="nas_s_0044_0__en-us_topic_0000001839143213_text16858755171112"><strong>Data Deduplication</strong></span>.</p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 ">
+           <div class="p">
+            After this function is enabled, the system deduplicates data copies during remote replication to improve replication efficiency. You are advised to enable data deduplication.
+            <div class="note" id="nas_s_0044_0__en-us_topic_0000001839143213_note19674741123810">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <ul id="nas_s_0044_0__en-us_topic_0000001839143213_ul1096989193510">
+               <li id="nas_s_0044_0__en-us_topic_0000001839143213_li18970109163510">Ensure that target deduplication has been enabled for the backup policy. Otherwise, data deduplication does not take effect.</li>
+               <li id="nas_s_0044_0__en-us_topic_0000001839143213_li768532112351">For 1.6.0 and later versions: This parameter is available only when <strong id="nas_s_0044_0__en-us_topic_0000001839143213_b1158765918226">Local Storage Type</strong> is set to <strong id="nas_s_0044_0__en-us_topic_0000001839143213_b1326513210236">OceanProtect</strong> or <strong id="nas_s_0044_0__en-us_topic_0000001839143213_b1611725132314">OceanStor Pacific</strong>.</li>
+              </ul>
+             </div>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">
+           <div class="p">
+            <strong id="nas_s_0044_0__en-us_topic_0000001839143213_b98264501378">Link Compression</strong>
+            <div class="note" id="nas_s_0044_0__en-us_topic_0000001839143213_note98175196112">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p id="nas_s_0044_0__en-us_topic_0000001839143213_p188181119191119">In 1.5.0, the parameter name is <span id="nas_s_0044_0__en-us_topic_0000001839143213_text7585914124"><strong>Data Compression</strong></span>.</p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>After this function is enabled, the system compresses data copies during remote replication to improve replication efficiency. You are advised to enable data compression.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">
+           <div class="p">
+            <span id="nas_s_0044_0__en-us_topic_0000001839143213_text19670113775616"><strong>WORM Setting</strong></span>
+            <div class="note" id="nas_s_0044_0__en-us_topic_0000001839143213_note9935149115617">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p id="nas_s_0044_0__en-us_topic_0000001839143213_en-us_topic_0000001792503806_p18759163818421">This parameter is available only in 1.5.0.</p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>After this function is enabled, generated copies are WORM copies. WORM copies cannot be deleted, and their retention periods cannot be shortened.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">&nbsp;&nbsp;</td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>After this function is enabled, an alarm is automatically sent if a job fails and is automatically cleared after successful execution.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+     <li><span>Associate the resource with a created SLA and perform reverse replication or cascaded replication on the replication copies.</span><p></p>
+      <ol type="a">
+       <li>Choose <span class="uicontrol"><b><span><strong>Explore</strong></span> &gt; <span><strong>Copy Data</strong></span></b></span> and select the corresponding application type.</li>
+       <li>Locate the row that contains the resource for which reverse replication or cascaded replication will be performed, and choose <span class="uicontrol"><b>More &gt; Protect</b></span>.</li>
+       <li>Select a created SLA.</li>
+       <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="nas_s_0035_0.html">Replicating an NDMP NAS File System</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

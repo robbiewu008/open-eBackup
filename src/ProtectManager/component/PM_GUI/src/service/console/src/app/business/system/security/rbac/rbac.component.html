@@ -1,3 +1,4 @@
+<div class="aui-fullpage" *ngIf="!subComponent">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage" *ngIf="!subComponent">
   <div class="aui-header-1">
     <h1>{{'system_rbac_label' | i18n}}</h1>
   </div>
@@ -28,7 +28,7 @@
           <aui-roles (openPage)="openPage($event)"></aui-roles>
         </ng-template>
       </lv-tab>
-      <lv-tab lv-tab-lazy lvTitle="{{'common_resource_set_label' | i18n}}" lvId="resourceSet" *ngIf="!isDPAdmin">
+      <lv-tab lv-tab-lazy lvTitle="{{'common_resource_sets_label' | i18n}}" lvId="resourceSet" *ngIf="!isDPAdmin">
         <ng-template lv-tab-lazy>
           <aui-resource-set (openPage)="openPage($event)"></aui-resource-set>
         </ng-template>

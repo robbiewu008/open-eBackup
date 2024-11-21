@@ -1,3 +1,4 @@
+<div class="aui-operation">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,13 +12,12 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-operation">
     <lv-group>
         <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData">
         </lv-pro-button-group>
     </lv-group>
     <lv-group lvGutter="8px">
-        <lv-group lvGutter="8px">
+        <lv-group lvGutter="16px">
             <lv-search [lvFocus]="true" [(ngModel)]="name" (lvSearch)="search($event)"
                 lvPlaceHolder="{{'common_search_type_label'|i18n:['']}}">
             </lv-search>

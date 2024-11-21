@@ -33,6 +33,8 @@
 </LI>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="文件扩展名过滤规则关联文件系统"><param name="Local" value="zh-cn_topic_0000001829899749.html"><param name="ImageNumber" value="9"></OBJECT>
 </LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="更新文件扩展名过滤规则"><param name="Local" value="zh-cn_topic_0000002085819285.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="扫描文件系统"><param name="Local" value="zh-cn_topic_0000001829899793.html"><param name="ImageNumber" value="9"></OBJECT>
 </LI>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="开启文件拦截"><param name="Local" value="zh-cn_topic_0000001783220050.html"><param name="ImageNumber" value="9"></OBJECT>
@@ -219,7 +221,11 @@
 </LI>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="配置iBMC时间"><param name="Local" value="zh-cn_topic_0000001832329248.html"><param name="ImageNumber" value="9"></OBJECT>
 </LI>
-<LI><OBJECT type="text/sitemap"><param name="Name" value="管理告警通知"><param name="Local" value="zh-cn_topic_0000001879127977.html"><param name="ImageNumber" value="9"></OBJECT>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理告警通知"><param name="Local" value="zh-cn_topic_0000001879127977.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="发件设置"><param name="Local" value="zh-cn_topic_0000002077228765.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Syslog通知"><param name="Local" value="zh-cn_topic_0000002077110145.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
 </LI></UL>
 </LI></UL>
 </body>

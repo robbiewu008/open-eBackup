@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   EventEmitter,
@@ -364,6 +364,7 @@ export class LiveMountOptionsComponent implements OnInit {
   // 标签搜索
   filterChange(e, index, item) {
     item.get('host_id').setValue('');
+    item.get('ip')?.setValue('');
     if (this.isMySQL) {
       this.getMysqlInstanceOptions(null, null, index, {
         labelCondition: { labelEnvironmentList: e }
@@ -1203,7 +1204,7 @@ export class LiveMountOptionsComponent implements OnInit {
     extendParams(conditions, labelParams);
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE,
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
       conditions: JSON.stringify(conditions)
     };
     this.protectedResourceApiService.ListResources(params).subscribe(res => {
@@ -1216,7 +1217,7 @@ export class LiveMountOptionsComponent implements OnInit {
       startPage++;
       recordsTemp = [...recordsTemp, ...res.records];
       if (
-        startPage === Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE) ||
+        startPage === Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE_MAX) ||
         res.totalCount === 0
       ) {
         const hostArray = [];
@@ -1267,7 +1268,7 @@ export class LiveMountOptionsComponent implements OnInit {
     extendParams(conditions, labelParams);
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE,
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
       conditions: JSON.stringify(conditions)
     };
     this.protectedResourceApiService.ListResources(params).subscribe(res => {
@@ -1280,7 +1281,7 @@ export class LiveMountOptionsComponent implements OnInit {
       startPage++;
       recordsTemp = [...recordsTemp, ...res.records];
       if (
-        startPage === Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE) ||
+        startPage === Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE_MAX) ||
         res.totalCount === 0
       ) {
         each(recordsTemp, item => {
@@ -1306,7 +1307,7 @@ export class LiveMountOptionsComponent implements OnInit {
     extendParams(conditions, labelParams);
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE,
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
       conditions: JSON.stringify(conditions)
     };
     this.protectedResourceApiService.ListResources(params).subscribe(res => {
@@ -1319,7 +1320,7 @@ export class LiveMountOptionsComponent implements OnInit {
       startPage++;
       recordsTemp = [...recordsTemp, ...res.records];
       if (
-        startPage === Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE) ||
+        startPage === Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE_MAX) ||
         res.totalCount === 0
       ) {
         const optionsArray = [];
@@ -1399,7 +1400,7 @@ export class LiveMountOptionsComponent implements OnInit {
 
     this.protectedResourceApiService
       .ListResources({
-        pageSize: CommonConsts.PAGE_SIZE,
+        pageSize: CommonConsts.PAGE_SIZE_MAX,
         pageNo: startPage || 0,
         conditions: JSON.stringify(conditions)
       })
@@ -1413,7 +1414,8 @@ export class LiveMountOptionsComponent implements OnInit {
         startPage++;
         recordsTemp = [...recordsTemp, ...res.records];
         if (
-          startPage === Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE) ||
+          startPage ===
+            Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE_MAX) ||
           res.totalCount === 0
         ) {
           recordsTemp = uniqBy(recordsTemp, 'rootUuid');
@@ -1951,6 +1953,13 @@ export class LiveMountOptionsComponent implements OnInit {
         failPostScript: this.formGroup.value.failed_script || '',
         bctStatus: this.formGroup.value.bctStatus ? 'true' : 'false'
       });
+      if (
+        !!this.componentData?.selectionCopy?.storage_snapshot_flag ||
+        !!this.componentData?.rowCopy?.storage_snapshot_flag
+      ) {
+        // 存储快照副本不需要启动数据库选项
+        parameters['isStartDB'] = 0;
+      }
       delete parameters['pre_script'];
       delete parameters['post_script'];
       delete parameters['failed_script'];

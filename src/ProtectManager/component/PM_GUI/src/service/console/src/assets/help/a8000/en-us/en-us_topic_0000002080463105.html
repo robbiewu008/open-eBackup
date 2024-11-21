@@ -1,0 +1,83 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring the System State of Active Directory in the Scenario with Primary and Backup Domain Controllers">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="activedirectory_00041.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002080463105">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring the System State of Active Directory in the Scenario with Primary and Backup Domain Controllers</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002080463105"></a><a name="EN-US_TOPIC_0000002080463105"></a>
+
+<h1 class="topictitle1">Restoring the System State of Active Directory in the Scenario with Primary and Backup Domain Controllers</h1>
+<div><p>This section describes how to restore the system state of Active Directory to the original location using an Active Directory copy that has been backed up in the scenario with primary and secondary domain controllers.</p>
+<p>Backup copies, replication copies (only reverse replication copies can be used for restoration to the original location), and archive copies can be used for restoration. Data can be restored to the original location.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li><li>Before restoring the system state, ensure that the Active Directory domain controller has entered the DSRM..</li><li>Before the Windows server is restarted and enters the DSRM, run the <strong>repadmin /showreps</strong> command to check the replication status between the primary and secondary domain controllers. If <strong>successful</strong> is displayed in the command output, log in to the primary domain controller and run the following command to cancel the replication relationship between the primary and secondary domain controllers:<pre class="screen">repadmin /options &lt;MASTER_FULL_COMPUTER_NAME&gt; +DISABLE_INBOUND_REPL</pre>
+</li><li>Active Directory system state restoration applies to scenarios where the Active Directory domain controller cannot be started, the Active Directory database is damaged, or the registry or system file is damaged.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><ul><li>A backup must be performed between two restoration operations. Ensure that the updated backup copy is used for restoration.</li><li>After the restoration, the operations of creating, modifying, or deleting objects on a domain controller are synchronized to other domain controllers.</li><li>After the restoration, data cannot be synchronized from the primary domain controller to the secondary domain controller immediately due to the time difference in data replication between the primary and secondary domain controllers.</li><li>When restoring the system state, do not shut down the domain controller or disconnect it from the network. After the system state is restored, the domain controller automatically restarts and enters the normal mode.</li><li>After the domain controllers enter the normal mode, run the following commands on the primary domain controller to establish the replication relationship between the primary and secondary domain controllers:<pre class="screen">repadmin /options &lt;MASTER_FULL_COMPUTER_NAME&gt; -DISABLE_INBOUND_REPL</pre>
+</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><p></p>
+<ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002080463105__en-us_topic_0000001839142377_uicontrol193721239145518"><b>Protection &gt; Applications &gt; Active Directory</b></span>.</span></li><li><span>You can search for copies by Active Directory resource or copy. This section describes how to search for copies by resource.</span><p><p id="EN-US_TOPIC_0000002080463105__activedirectory_00044_en-us_topic_0000001397321757_p624620403810">Locate the resource to be restored by resource name and click the resource name.</p>
+</p></li><li><span>Click the <strong id="EN-US_TOPIC_0000002080463105__activedirectory_00044_b59261548204418">Copy Data</strong> tab.</span></li><li><span>Select the year, month, and day in sequence to find the copy.</span><p><p id="EN-US_TOPIC_0000002080463105__activedirectory_00044_p9918150182310">If <span><img id="EN-US_TOPIC_0000002080463105__activedirectory_00044_image669318410309" src="en-us_image_0000001798060860.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p>
+</p></li><li><span>Restore data using a specified copy.</span><p><p id="EN-US_TOPIC_0000002080463105__activedirectory_00044_p7323194318125"><a href="#EN-US_TOPIC_0000002080463105__activedirectory_00044_table194961441141219">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002080463105__activedirectory_00044_table194961441141219"></a><a name="activedirectory_00044_table194961441141219"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002080463105__activedirectory_00044_table194961441141219" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Active Directory restoration parameters</caption><colgroup><col style="width:19.97%"><col style="width:80.03%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002080463105__activedirectory_00044_row849615417124"><th align="left" class="cellrowborder" valign="top" width="19.97%" id="mcps1.3.5.3.5.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002080463105__activedirectory_00044_p3496134113127">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="80.03%" id="mcps1.3.5.3.5.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002080463105__activedirectory_00044_p184961241131217">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002080463105__activedirectory_00044_row84968417127"><td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.5.3.5.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002080463105__activedirectory_00044_p124963413125"><span id="EN-US_TOPIC_0000002080463105__activedirectory_00044_text136400224309"><strong>Restore To</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.5.3.5.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002080463105__activedirectory_00044_p16496164110123">Select <span class="uicontrol" id="EN-US_TOPIC_0000002080463105__activedirectory_00044_uicontrol84961241181211"><b><span id="EN-US_TOPIC_0000002080463105__activedirectory_00044_text19159183316300"><strong>Original location</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002080463105__activedirectory_00044_row349644119122"><td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.5.3.5.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002080463105__activedirectory_00044_p249664112126"><span id="EN-US_TOPIC_0000002080463105__activedirectory_00044_text820182793118"><strong>Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.5.3.5.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002080463105__activedirectory_00044_p16496184121216">By default, the restoration location is displayed.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="activedirectory_00041.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

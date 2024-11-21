@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -29,7 +29,8 @@ import {
   DatatableComponent,
   MessageService,
   ModalRef,
-  OptionItem
+  OptionItem,
+  TransferTableComponent
 } from '@iux/live';
 import {
   BaseUtilService,
@@ -344,7 +345,6 @@ export class CreateDistributedNasComponent implements OnInit {
         } else {
           this.selection = [...this.targetData];
         }
-        this.selection.forEach(item => this.checkChange(true, item));
 
         this.cdr.detectChanges();
       });
@@ -458,10 +458,7 @@ export class CreateDistributedNasComponent implements OnInit {
               item.deviceType === 'BasicDisk')
         );
         this.selection = [];
-        this.targetData = [];
-        each(this.sourceData, item => {
-          item.disabled = false;
-        });
+        this.changeTransferData(this.selection);
       });
     } else {
       this.formGroup.get('deviceType').clearValidators();
@@ -509,13 +506,23 @@ export class CreateDistributedNasComponent implements OnInit {
   }
 
   selectionChange(selection) {
+    this.selection = selection;
     this.changeTransferData(selection);
   }
 
-  removeAll() {
+  removeAll(data, panel: TransferTableComponent) {
     this.selection = [];
+    const currentData =
+      this.formGroup.value.hasEnableParallelStorage &&
+      !this.appUtilsService.isDecouple
+        ? [...this.localSourceData, ...this.nonLocalSourceData]
+        : this.sourceData;
+    each(currentData, item => {
+      item.disabled = false;
+    });
     this.changeTransferData(this.selection);
   }
+
   changeTransferData(selectedData) {
     if (
       this.formGroup.value.hasEnableParallelStorage &&
@@ -539,25 +546,12 @@ export class CreateDistributedNasComponent implements OnInit {
     }
   }
 
-  checkChange(event, checkItem) {
-    const currentData =
-      this.formGroup.value.hasEnableParallelStorage &&
-      !this.appUtilsService.isDecouple
-        ? [...this.localSourceData, ...this.nonLocalSourceData]
-        : this.sourceData;
-    each(currentData, item => {
-      if (item.deviceId === checkItem.deviceId && item.id !== checkItem.id) {
-        item.disabled = !!event;
-      }
-    });
-  }
-
   getParms() {
     const content = this.SetStoragePolicyComponent;
     const hasEnable = this.formGroup.get('hasEnableParallelStorage').value;
     let clusterIdList = [];
     if (!hasEnable) {
-      clusterIdList = map(content.tableData, (item, index) => {
+      clusterIdList = map(this.selection, (item, index) => {
         if (content.timeForm.value.storageStrategyType !== 4) {
           return {
             unitId: item.id,
@@ -572,8 +566,7 @@ export class CreateDistributedNasComponent implements OnInit {
         }
       });
     } else {
-      const data = [...this.localTargetData];
-      clusterIdList = map(data, item => {
+      clusterIdList = map(this.selection, item => {
         return {
           unitId: item.id,
           availableCapacityRatio: item.threshold

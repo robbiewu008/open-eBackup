@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
     <div class="aui-header-1">
         <lv-group lvGutter='8px'>
             <ng-container *ngIf="!cookieService.isCloudBackup">
@@ -144,7 +144,7 @@
                             </lv-group>
                         </td>
                         <td width='300px'>
-                            <div class='percent-bar' *ngIf="item.cloudType !== 4; else elseTemplate">
+                            <div class='percent-bar' *ngIf="!includes([dataMap.Storage_Cloud_Platform.aws.value,dataMap.Storage_Cloud_Platform.azure.value],item.cloudType); else elseTemplate">
                                 <lv-progress [lvValue]="item.sizePercent" [lvSize]="'small'"
                                     [lvColors]='item.progressBarColor' [lvLabel]="progressLabelTpl"
                                     [lvExtra]="progressExtraTpl" lvDecimals="3"></lv-progress>

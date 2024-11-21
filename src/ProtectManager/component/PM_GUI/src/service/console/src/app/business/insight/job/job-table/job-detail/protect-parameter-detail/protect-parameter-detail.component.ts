@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationType, DataMap } from 'app/shared';
 import { ProtectedResourceApiService } from 'app/shared/api/services';
@@ -36,8 +36,11 @@ export class ProtectParameterDetailComponent implements OnInit {
   osType; // 用于文件级操作系统判断
   isObjectShowBucket = false; // 用于对象存储桶日志是否展示
   isConcurrent = false; // 用于并发数展示
+  shareMode; // 用于nas共享判断协议
   extendInfo;
   resourceSubTypeAppMap = this.appUtilsService.findResourceTypeByKey('slaId');
+  isIndex = false;
+  isDetail = true;
 
   constructor(
     private appUtilsService: AppUtilsService,
@@ -62,6 +65,22 @@ export class ProtectParameterDetailComponent implements OnInit {
       ApplicationType.OpenStack,
       ApplicationType.ApsaraStack,
       ApplicationType.NASFileSystem
+    ].includes(this.application);
+    this.isIndex = [
+      ApplicationType.Vmware,
+      ApplicationType.CNware,
+      ApplicationType.FusionCompute,
+      ApplicationType.FusionOne,
+      ApplicationType.HCSCloudHost,
+      ApplicationType.OpenStack,
+      ApplicationType.ApsaraStack,
+      ApplicationType.NASFileSystem,
+      ApplicationType.Ndmp,
+      ApplicationType.NASShare,
+      ApplicationType.ObjectStorage,
+      ApplicationType.Fileset,
+      ApplicationType.Volume,
+      ApplicationType.HDFS
     ].includes(this.application);
     if (
       (this.job.sourceSubType === ApplicationType.Oracle &&
@@ -109,6 +128,10 @@ export class ProtectParameterDetailComponent implements OnInit {
 
     if (this.application === ApplicationType.Fileset) {
       this.osType = this.extendInfo?.jobConfig?.osType;
+    }
+
+    if (this.application === ApplicationType.NASShare) {
+      this.shareMode = this.extendInfo?.jobConfig?.shareMode;
     }
 
     if (this.application === ApplicationType.ObjectStorage) {

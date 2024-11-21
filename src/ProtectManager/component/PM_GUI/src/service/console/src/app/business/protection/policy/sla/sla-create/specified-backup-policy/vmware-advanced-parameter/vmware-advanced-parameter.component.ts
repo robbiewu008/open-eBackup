@@ -1,16 +1,16 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, Input, OnInit } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
 import {
@@ -42,7 +42,7 @@ export class VmwareAdvancedParameterComponent implements OnInit {
   @Input() data: any;
   @Input() formGroup: FormGroup;
   @Input() isUsed: boolean;
-
+  @Output() isDisableBasicDiskWorm = new EventEmitter<any>();
   capacityThresholdErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
     invalidRang: this.i18n.get('common_valid_rang_label', [0, 100])
   });
@@ -59,7 +59,7 @@ export class VmwareAdvancedParameterComponent implements OnInit {
 
   isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
   isRetry = true;
-  isDisableQos = false; // 如果选择了本地盘的存储单元就禁止限速策略
+  isDisableBasicDisk = false; // 如果选择了本地盘的存储单元就禁止的功能，目前有限速策略、目标端重删、源端重删
 
   constructor(
     public baseUtilService: BaseUtilService,
@@ -224,7 +224,8 @@ export class VmwareAdvancedParameterComponent implements OnInit {
   }
 
   storageTypeChange(e) {
-    this.isDisableQos = e;
+    this.isDisableBasicDisk = e;
+    this.isDisableBasicDiskWorm.emit(e);
   }
 
   getQosNames() {

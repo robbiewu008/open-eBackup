@@ -1,3 +1,4 @@
+<lv-group class="copy-data tableInLvGroup" lvDirection="vertical" [lvGutter]="groupOptions.columnGutter">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-group class="copy-data tableInLvGroup" lvDirection="vertical" [lvGutter]="groupOptions.columnGutter">
   <ng-container
     *ngIf="[resourceResourceType.virtualMachine.value, resourceResourceType.HDFSFileset.value, resourceResourceType.FusionCompute.value, resourceResourceType.HCSCloudHost.value,resourceResourceType.hyperVVm.value].includes(resType) && !isHcsUser">
     <lv-search (lvSearch)="searchChange($event)" lvPlaceHolder="{{'common_file_directory_keyword_label'|i18n}}">
@@ -96,9 +96,12 @@
         *ngIf="(![
           resourceResourceType.generalDatabase.value,
           resourceResourceType.oracle.value,
+          resourceResourceType.oraclePDB.value,
           resourceResourceType.GaussDB_T.value,
           resourceResourceType.gaussdbTSingle.value,
           resourceResourceType.MySQL.value,
+          resourceResourceType.AntDBInstance.value,
+          resourceResourceType.AntDBClusterInstance.value,
           resourceResourceType.PostgreSQLInstance.value,
           resourceResourceType.PostgreSQLClusterInstance.value,
           resourceResourceType.KingBaseInstance.value,
@@ -124,7 +127,8 @@
           resourceResourceType.ExchangeGroup.value,
           resourceResourceType.goldendbInstance.value,
           resourceResourceType.saphanaDatabase.value,
-          resourceResourceType.MongodbSingleInstance.value
+          resourceResourceType.MongodbSingleInstance.value,
+          resourceResourceType.saponoracleDatabase.value
           ].includes(resType) || (rowData.subType === resourceResourceType.MySQLClusterInstance.value && rowData.extendInfo?.clusterType === dataMap.Mysql_Cluster_Type.eapp.value))&& !isOpenGaussPanweiDB">
         <ng-container *ngIf="isCyberEngine; else elseTemplate">
           <aui-cyber-snapshot-data [id]="id" [rowData]="rowData" [currentDate]="copyDataInDayView">
@@ -140,9 +144,12 @@
         *ngIf="[
           resourceResourceType.generalDatabase.value,
           resourceResourceType.oracle.value,
+          resourceResourceType.oraclePDB.value,
           resourceResourceType.GaussDB_T.value,
           resourceResourceType.gaussdbTSingle.value,
           resourceResourceType.MySQL.value,
+          resourceResourceType.AntDBInstance.value,
+          resourceResourceType.AntDBClusterInstance.value,
           resourceResourceType.PostgreSQLInstance.value,
           resourceResourceType.PostgreSQLClusterInstance.value,
           resourceResourceType.KingBaseInstance.value,
@@ -168,7 +175,8 @@
           resourceResourceType.ExchangeGroup.value,
           resourceResourceType.goldendbInstance.value,
           resourceResourceType.saphanaDatabase.value,
-          resourceResourceType.MongodbSingleInstance.value
+          resourceResourceType.MongodbSingleInstance.value,
+          resourceResourceType.saponoracleDatabase.value
           ].includes(resType) && !(rowData.subType === resourceResourceType.MySQLClusterInstance.value && rowData.extendInfo?.clusterType ===  dataMap.Mysql_Cluster_Type.eapp.value) || isOpenGaussPanweiDB">
         <aui-copy-data-dbtoday [id]="id" [rowData]="rowData" [currentDate]="copyDataInDayView" [resType]="resType">
         </aui-copy-data-dbtoday>

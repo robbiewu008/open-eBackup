@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup sla-policy" [lvLabelColon]="false">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup sla-policy" [lvLabelColon]="false">
     <lv-form-item>
         <lv-form-label>{{'common_retention_policy_label' | i18n}}</lv-form-label>
         <lv-form-control>
@@ -30,14 +30,14 @@
     <lv-form-item *ngIf="formGroup.value.retention_type === 2">
         <lv-form-label lvRequired>
             {{'common_retention_label' | i18n}}
-            <i *ngIf="!isCyberEngine" lv-icon="aui-icon-help"
-                lv-tooltip="{{'protection_retention_policy_desc_label' | i18n}}" lvTooltipTheme="light"
-                class="configform-constraint" lvColorState='true'></i>
+            <i *ngIf="!isCyberEngine" lv-icon="aui-icon-help" lv-tooltip="{{'protection_retention_policy_desc_label' | i18n}}
+{{helpTipsLabel}}" lvTooltipTheme="light" class="configform-constraint" lvColorState='true'>
+            </i>
         </lv-form-label>
         <lv-form-control [lvErrorTip]="retentionDurationErrorTip">
             <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right">
                 <input lv-input formControlName="retention_duration"
-                    placeholder="{{formGroup.value.duration_unit=='d'?'1~365':formGroup.value.duration_unit=='w'?'1~54':formGroup.value.duration_unit=='MO'?'1~24':'1~10'}}" />
+                    placeholder="1~{{isArchiveOrRep ? repOrArchiveUnitMap[formGroup.value.duration_unit]:backupUnitMap[formGroup.value.duration_unit]}}" />
             </lv-input-group>
             <ng-template #unitTpl>
                 <lv-select [lvOptions]="retentionDurations" formControlName="duration_unit" class="unit-inner-select"

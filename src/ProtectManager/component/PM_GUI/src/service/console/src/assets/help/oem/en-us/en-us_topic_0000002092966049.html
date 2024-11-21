@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Starting the Windows OS in WinPE Mode and Then Configuring an IP Address">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002092966049">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Starting the Windows OS in WinPE Mode and Then Configuring an IP Address</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002092966049"></a><a name="EN-US_TOPIC_0000002092966049"></a>
+  <h1 class="topictitle1">Starting the Windows OS in WinPE Mode and Then Configuring an IP Address</h1>
+  <div>
+   <p>If the target host for bare metal restoration runs Windows, start the target host in WinPE mode and configure an IP address for the target host to communicate with this product.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p class="msonormal">The target host has been shut down.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li id="EN-US_TOPIC_0000002092966049__li101449241407"><a name="EN-US_TOPIC_0000002092966049__li101449241407"></a><a name="li101449241407"></a><span>Upload image file <strong>OP_Win10XPE_v3.iso</strong> to the VMware ESXi virtual platform.</span><p></p>
+      <ol type="a">
+       <li>Log in to the VMware ESXi virtual platform.</li>
+       <li>Choose <strong>Storage</strong> &gt; <strong>Datastores</strong> &gt; <strong>Datastore browser</strong>.</li>
+       <li>Click the name of the datastore with sufficient capacity.</li>
+       <li>Select a directory and click <span class="uicontrol"><b>Upload</b></span> to upload the image file to the directory.</li>
+      </ol> <p></p></li>
+     <li><span>Mount image file <strong>OP_Win10XPE_v3.iso</strong> to the target host.</span><p></p>
+      <ol type="a">
+       <li>Click <span class="uicontrol"><b>Virtual Machines</b></span> and select the target host.</li>
+       <li>On the target host tab page, choose <strong>Hardware Configuration</strong> &gt; <strong>CD/DVD drive 1</strong> &gt; <strong>Select disc image</strong>.</li>
+       <li>Select image file <strong>OP_Win10XPE_v3.iso</strong> uploaded in <a href="#EN-US_TOPIC_0000002092966049__li101449241407">1</a>.</li>
+      </ol> <p></p></li>
+     <li><span>Set the boot options of the target host.</span><p></p>
+      <ol type="a">
+       <li>Click <span class="uicontrol"><b>Virtual Machines</b></span> and select the target host.</li>
+       <li>On the top of the target host, choose <strong>Actions</strong> &gt; <strong>Edit settings</strong> &gt; <strong>VM Options</strong> &gt; <strong>Boot Options</strong>.</li>
+       <li>Set boot options:
+        <ul>
+         <li>EFI: Select <strong>Force EFI setup</strong>.</li>
+         <li>BIOS: Select <strong>Force BIOS setup</strong>.</li>
+        </ul></li>
+      </ol> <p></p></li>
+     <li><span>Restart the VM.</span><p></p>
+      <ol type="a">
+       <li>Click <span class="uicontrol"><b>Virtual Machines</b></span> and select the target host.</li>
+       <li>Click <span class="uicontrol"><b>Power On</b></span> in the upper part of the target host tab page.</li>
+       <li>Choose <strong>Console</strong> &gt; <strong>Open browser console</strong>.</li>
+       <li>Set the boot mode on the boot screen:
+        <ul>
+         <li>EFI: Select <span class="uicontrol"><b>EFI UMware Virtual SATA CDROM Drive (0.0)</b></span> and press <span class="uicontrol"><b>Enter</b></span>.</li>
+         <li>BIOS: Choose <strong>Boot</strong> &gt; <strong>CD-ROM Drive</strong>, move <span class="uicontrol"><b>CD-ROM Drive</b></span> to the top, press <span class="uicontrol"><b>F10</b></span> to save the settings and exit, and click <span class="uicontrol"><b>OK</b></span>.
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <p>After the bare metal restoration for Windows is complete, you need to restore the BIOS boot sequence of the target host.</p>
+           </div>
+          </div></li>
+        </ul></li>
+      </ol> <p></p></li>
+     <li><span>After the target host is started, configure an IP address for the target host to communicate with this product.</span></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

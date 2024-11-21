@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -111,6 +111,12 @@ export class CreateArchiveStorageComponent implements OnInit {
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 65535])
   });
   rangeValueLabel = this.i18n.get('1-1099511627776');
+  bucketNameErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    spaceErrorTip: this.i18n.get('common_valid_space_label'),
+    invalidMinLength: this.i18n.get('common_valid_length_rang_label', [3, 63]),
+    invalidMaxLength: this.i18n.get('common_valid_length_rang_label', [3, 63])
+  };
 
   constructor(
     public i18n: I18NService,
@@ -153,9 +159,7 @@ export class CreateArchiveStorageComponent implements OnInit {
       useHttps: new FormControl('', {
         validators: [this.baseUtilService.VALID.required()]
       }),
-      certId: new FormControl('', {
-        validators: [this.baseUtilService.VALID.required()]
-      }),
+      certId: new FormControl(''),
       bucketName: new FormControl('', {
         validators: [
           this.baseUtilService.VALID.required(),
@@ -220,7 +224,7 @@ export class CreateArchiveStorageComponent implements OnInit {
         );
       if (res === DataMap.Storage_Cloud_Platform.azure.value) {
         if (
-          this.formGroup.value.connectType ===
+          this.formGroup.get('connectType').value ===
           DataMap.azureLinkMode.connection.value
         ) {
           this.formGroup.get('certId').clearValidators();
@@ -262,7 +266,22 @@ export class CreateArchiveStorageComponent implements OnInit {
           this.formGroup.get('proxyUserName').clearValidators();
           this.formGroup.get('proxyUserPwd').clearValidators();
         }
+        this.formGroup
+          .get('bucketName')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.minLength(3),
+            this.baseUtilService.VALID.maxLength(63),
+            this.validSpace()
+          ]);
       } else {
+        this.formGroup
+          .get('bucketName')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.maxLength(256),
+            this.validSpace()
+          ]);
         this.formGroup.get('port').clearValidators();
         this.formGroup
           .get('endpoint')
@@ -311,6 +330,8 @@ export class CreateArchiveStorageComponent implements OnInit {
           this.formGroup.get('proxyUserPwd').clearValidators();
         }
       }
+      this.formGroup.get('bucketName').updateValueAndValidity();
+      this.formGroup.get('certId').updateValueAndValidity();
       this.formGroup.get('port').updateValueAndValidity();
       this.formGroup.get('endpoint').updateValueAndValidity();
       this.formGroup.get('useHttps').updateValueAndValidity();
@@ -360,7 +381,11 @@ export class CreateArchiveStorageComponent implements OnInit {
     });
 
     this.formGroup.get('useHttps').valueChanges.subscribe(res => {
-      if (res === '1') {
+      if (
+        res === '1' &&
+        this.formGroup.get('connectType').value ===
+          DataMap.azureLinkMode.standard.value
+      ) {
         this.formGroup
           .get('certId')
           .setValidators([this.baseUtilService.VALID.required()]);
@@ -432,12 +457,6 @@ export class CreateArchiveStorageComponent implements OnInit {
       if (!this.data.alarmEnable) {
         this.formGroup.get('alarmThreshold').setValue('');
       }
-      if (
-        this.data.cloudType === DataMap.Storage_Cloud_Platform.azure.value &&
-        this.data.connectType === DataMap.azureLinkMode.connection.value
-      ) {
-        this.formGroup.get('sk').setValue(this.data.noSensitiveSk);
-      }
       // 不可编辑项
       this.formGroup.get('storageName').disable();
       this.formGroup.get('endpoint').disable();
@@ -474,9 +493,21 @@ export class CreateArchiveStorageComponent implements OnInit {
   create(): Observable<void> {
     return new Observable<void>((observer: Observer<void>) => {
       const params = cloneDeep(omit(this.formGroup.getRawValue(), ['']));
-      assign(params, {
-        useHttps: params.useHttps === '1'
-      });
+      if (
+        this.formGroup.get('cloudType').value ===
+          DataMap.Storage_Cloud_Platform.azure.value &&
+        this.formGroup.get('connectType').value ===
+          DataMap.azureLinkMode.connection.value
+      ) {
+        assign(params, {
+          useHttps: false
+        });
+      } else {
+        assign(params, {
+          useHttps: params.useHttps === '1'
+        });
+      }
+
       this.dealParams(params);
       this.storageApiService
         .createStorageUsingPOST1({ request: params as any })

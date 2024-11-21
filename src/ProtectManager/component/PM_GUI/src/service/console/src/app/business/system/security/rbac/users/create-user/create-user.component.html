@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
   <div class="aui-header-1">
     <lv-group lvGutter="8px" class="back-icon" (click)="back()">
       <i lv-icon="aui-widget-datepicker-previous" [lvColorState]="true"></i>
@@ -137,7 +137,7 @@
               </lv-form-item>
             </div>
             <!-- 用户最大连接数 -->
-            <div *ngIf="formGroup.value.roleId !== 6">
+            <div *ngIf="formGroup.value.roleId !== '6'">
               <lv-form-item class="form-item-s">
                 <lv-form-label>{{ 'system_user_maxconnections_label' | i18n }}
                 </lv-form-label>
@@ -160,7 +160,7 @@
               </lv-form-item>
             </div>
             <!-- 密码永不过期 -->
-            <div *ngIf="formGroup.value.roleId === 7">
+            <div *ngIf="formGroup.value.roleId === '7'">
               <lv-form-item>
                 <lv-form-label>{{ 'system_password_no_time_limit_label' | i18n }}
                 </lv-form-label>
@@ -205,4 +205,8 @@
 
 <ng-template #pwdComplexTipTpl>
   <span [innerHTML]="pwdComplexTipLabel"></span>
+</ng-template>
+
+<ng-template #dpAdminTipTpl>
+  <p class="aui-text-help-sm" [innerHTML]="openStorageGroupTip"></p>
 </ng-template>

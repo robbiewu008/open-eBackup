@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Pod Configuration in the Production Environment for Application-Consistent Backup (openGauss as the Containerized Application)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00062.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="kubernetes_CSI_00068">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Pod Configuration in the Production Environment for Application-Consistent Backup (openGauss as the Containerized Application)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="kubernetes_CSI_00068"></a><a name="kubernetes_CSI_00068"></a>
+  <h1 class="topictitle1">Pod Configuration in the Production Environment for Application-Consistent Backup (openGauss as the Containerized Application)</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Script Example</h4>
+    <p>The following is an example of the openGauss pre-hook command script. The pod annotation of the post-hook command is not configured by default. <strong>/usr/local/opengauss/bin</strong> indicates the openGauss installation location and <strong>/usr/local/opengauss/lib</strong> indicates the openGauss <strong>lib</strong> directory location. Enter the location based on the site requirements.</p>
+    <pre class="screen">su - omm -c 'export PATH=<em>/usr/local/opengauss/bin</em>:$PATH &amp;&amp; export LD_LIBRARY_PATH=<em>/usr/local/opengauss/lib</em>:$LD_LIBRARY_PATH  &amp;&amp; gsql -c "checkpoint;"'</pre>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Upload the script to any persistent directory of the container and add permissions to the script file on the container page.</span><p></p>
+      <div class="p">
+       Run the following command on any Kubernetes node where the kubectl tool has been configured to access the container page (In this step and subsequent steps, the pod name <em>opengauss-deployment-0000-a1</em> and the namespace name <em>ns-og</em> are used as examples. Enter the actual variables).
+       <pre class="screen">kubectl exec -it <em>opengauss-deployment-0000-a1</em> -n <em>ns-og</em>  -- bash</pre>
+      </div> <p>Run the following command to add permissions to the script (In this step and subsequent steps, the script location <em>/root/checkpoint.sh</em> is used as an example. Enter the script location based on the site requirements).</p> <pre class="screen">chmod +x /root/checkpoint.sh</pre> <p></p></li>
+     <li><span>Add a pod label by referring to <a href="kubernetes_CSI_00066.html">Pod Configuration in the Production Environment for Application-Consistent Backup (General)</a>. The following is a command example.</span><p></p><pre class="screen">kubectl label pod <em>opengauss-deployment-0000-a1</em><em> </em>-n <em>ns-og</em> hook.dataprotect.backup.io/switch='on'</pre> <p></p></li>
+     <li><span>Run the following command to add a pod annotation (The container where the pre-hook command is executed is the first container by default. For details about how to set the pre-hook command for other containers, see <a href="kubernetes_CSI_00066.html">Pod Configuration in the Production Environment for Application-Consistent Backup (General)</a>).</span><p></p><pre class="screen">kubectl annotate pod <em>opengauss-deployment-0000-a1</em> -n <em>ns-og</em> pre.hook.dataprotect.backup.io/command='["/bin/sh", "-c","/root/checkpoint.sh"]' --overwrite</pre> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="kubernetes_CSI_00062.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

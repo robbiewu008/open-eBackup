@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { CommonConsts, DataMap, DataMapService, I18NService } from 'app/shared';
 import { FsFileExtensionFilterManagementService } from 'app/shared/api/services/fs-file-extension-filter-management.service';
@@ -54,13 +54,8 @@ export class FileExtensionDetailComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.virtualScroll.getScrollParam(260);
     this.initConfig();
     this.getAssociated();
-    window.addEventListener('resize', () => {
-      this.virtualScroll.getScrollParam(260);
-      this.dataTable.setTableScroll(this.virtualScroll.scrollParam);
-    });
   }
 
   initConfig() {
@@ -131,7 +126,6 @@ export class FileExtensionDetailComponent implements OnInit, AfterViewInit {
           }
         ],
         colDisplayControl: false,
-        scroll: this.virtualScroll.scrollParam,
         rows: this.updateOperation
           ? {
               selectionMode: 'multiple',

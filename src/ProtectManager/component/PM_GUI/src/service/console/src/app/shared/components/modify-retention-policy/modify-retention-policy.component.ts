@@ -1,22 +1,27 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup
+} from '@angular/forms';
 import { ModalRef, OptionItem } from '@iux/live';
 import { BaseUtilService, DataMap } from 'app/shared';
 import { CopiesService } from 'app/shared/api/services/copies.service';
 import { DataMapService, I18NService } from 'app/shared/services';
-import { assign } from 'lodash';
+import { assign, toNumber } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -27,9 +32,14 @@ import { Observable, Observer } from 'rxjs';
 export class ModifyRetentionPolicyComponent implements OnInit {
   data;
   formGroup: FormGroup;
-  retentionDurationErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
-    invalidRang: this.i18n.get('common_valid_rang_label', [1, 365])
-  });
+  retentionDurationErrorTip = assign(
+    {},
+    this.baseUtilService.rangeErrorTip,
+    {
+      invalidRang: this.i18n.get('common_valid_rang_label', [1, 365])
+    },
+    { invalidTime: this.i18n.get('common_retention_worm_label') }
+  );
   retentionDurations = this.dataMapService
     .toArray('Interval_Unit')
     .filter((v: OptionItem) => {
@@ -40,18 +50,56 @@ export class ModifyRetentionPolicyComponent implements OnInit {
     });
   isCyberEngine =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.cyberengine.value;
+  helpTipsLabel = this.i18n.get('common_retention_worm_label');
+  // 保留70年
+  repOrArchiveUnitMap = {
+    d: 25550,
+    w: 3650,
+    MO: 840,
+    y: 70
+  };
+  backupUnitMap = {
+    d: 365,
+    w: 54,
+    MO: 24,
+    y: 10
+  };
+  isArchiveOrRep = false;
 
   constructor(
     public fb: FormBuilder,
-    private i18n: I18NService,
+    public i18n: I18NService,
     private modal: ModalRef,
-    private dataMapService: DataMapService,
+    public dataMapService: DataMapService,
     private baseUtilService: BaseUtilService,
     private copiesApiService: CopiesService
   ) {}
 
   ngOnInit() {
+    this.isArchiveOrRep = [
+      DataMap.CopyData_generatedType.cloudArchival.value,
+      DataMap.CopyData_generatedType.tapeArchival.value,
+      DataMap.CopyData_generatedType.replicate.value,
+      DataMap.CopyData_generatedType.reverseReplication.value,
+      DataMap.CopyData_generatedType.cascadedReplication.value
+    ].includes(this.data.generated_by);
     this.initForm();
+    if (this.data.worm_retention_duration) {
+      this.helpTipsLabel =
+        this.helpTipsLabel + '(' + `${this.data.worm_retention_duration}`;
+      if (this.i18n.isEn) {
+        this.helpTipsLabel = this.helpTipsLabel + '(' + ' ';
+      }
+      if (this.data.worm_duration_unit) {
+        this.helpTipsLabel =
+          this.helpTipsLabel +
+          this.dataMapService.getLabel(
+            'Interval_Unit',
+            this.data.worm_duration_unit
+          ) +
+          ')';
+      }
+    }
   }
 
   initForm() {
@@ -90,59 +138,41 @@ export class ModifyRetentionPolicyComponent implements OnInit {
   }
 
   changeTimeUnits(value) {
-    if (value === DataMap.Interval_Unit.day.value) {
-      this.formGroup
-        .get('retention_duration')
-        .setValidators([
-          this.baseUtilService.VALID.required(),
-          this.baseUtilService.VALID.integer(),
-          this.baseUtilService.VALID.rangeValue(1, 365)
-        ]);
-      const errorTip = assign({}, this.baseUtilService.rangeErrorTip, {
-        invalidRang: this.i18n.get('common_valid_rang_label', [1, 365])
-      });
-      this.retentionDurationErrorTip = errorTip;
-    } else if (value === DataMap.Interval_Unit.week.value) {
-      this.formGroup
-        .get('retention_duration')
-        .setValidators([
-          this.baseUtilService.VALID.required(),
-          this.baseUtilService.VALID.integer(),
-          this.baseUtilService.VALID.rangeValue(1, 54)
-        ]);
-      const errorTip = assign({}, this.baseUtilService.rangeErrorTip, {
-        invalidRang: this.i18n.get('common_valid_rang_label', [1, 54])
-      });
-      this.retentionDurationErrorTip = errorTip;
-    } else if (value === DataMap.Interval_Unit.month.value) {
-      this.formGroup
-        .get('retention_duration')
-        .setValidators([
-          this.baseUtilService.VALID.required(),
-          this.baseUtilService.VALID.integer(),
-          this.baseUtilService.VALID.rangeValue(1, 24)
-        ]);
-      const errorTip = assign({}, this.baseUtilService.rangeErrorTip, {
-        invalidRang: this.i18n.get('common_valid_rang_label', [1, 24])
-      });
-      this.retentionDurationErrorTip = errorTip;
-    } else if (value === DataMap.Interval_Unit.year.value) {
-      this.formGroup
-        .get('retention_duration')
-        .setValidators([
-          this.baseUtilService.VALID.required(),
-          this.baseUtilService.VALID.integer(),
-          this.baseUtilService.VALID.rangeValue(1, 10)
-        ]);
-      const errorTip = assign({}, this.baseUtilService.rangeErrorTip, {
-        invalidRang: this.i18n.get('common_valid_rang_label', [1, 10])
-      });
-      this.retentionDurationErrorTip = errorTip;
-    }
+    const tmpMap = this.isArchiveOrRep
+      ? this.repOrArchiveUnitMap
+      : this.backupUnitMap;
+    const genValidators = [
+      this.baseUtilService.VALID.required(),
+      this.baseUtilService.VALID.integer(),
+      this.baseUtilService.VALID.rangeValue(1, tmpMap[value]),
+      this.validproTime()
+    ];
+    const genErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
+      invalidRang: this.i18n.get('common_valid_rang_label', [1, tmpMap[value]]),
+      invalidTime: this.i18n.get('common_retention_worm_label')
+    });
+    this.formGroup.get('retention_duration').setValidators(genValidators);
+    this.retentionDurationErrorTip = genErrorTip;
     this.formGroup.get('retention_duration').markAsTouched();
     this.formGroup.get('retention_duration').updateValueAndValidity();
   }
 
+  // 修改保留策略时校验是否大于worm日期
+  validproTime() {
+    return (control: AbstractControl): { invalidTime: { value: any } } => {
+      const copyDurationUnit = this.formGroup.get('duration_unit').value;
+      const wormSetUnit = this.data.worm_duration_unit;
+      const copyDate =
+        DataMap.unitTranslateMap[copyDurationUnit] * control.value;
+      const wormDate =
+        DataMap.unitTranslateMap[wormSetUnit] *
+        toNumber(this.data.worm_retention_duration);
+      if (copyDate < wormDate) {
+        return { invalidTime: { value: control.value } };
+      }
+      return null;
+    };
+  }
   getParams() {
     const body = {
       ...this.formGroup.value,

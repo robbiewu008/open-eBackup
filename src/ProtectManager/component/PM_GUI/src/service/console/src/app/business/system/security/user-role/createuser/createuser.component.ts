@@ -1,16 +1,16 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { AfterViewInit, Component, OnInit, Renderer2 } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -23,35 +23,35 @@ import { Router } from '@angular/router';
 import { OptionItem } from '@iux/live';
 import {
   BaseUtilService,
-  CookieService,
-  I18NService,
-  UserRoleType,
-  UserRoleI18nMap,
   CommonConsts,
+  CookieService,
+  DataMap,
   DataMapService,
-  DataMap
+  I18NService,
+  UserRoleI18nMap,
+  UserRoleType
 } from 'app/shared';
 import {
   RoleApiService,
-  UsersApiService,
-  SecurityApiService
+  SecurityApiService,
+  UsersApiService
 } from 'app/shared/api/services';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
-  extend,
-  forEach,
-  isUndefined,
-  filter,
-  trim,
-  upperCase,
-  includes,
-  defer,
   cloneDeep,
+  defer,
+  extend,
+  filter,
+  first,
+  forEach,
+  includes,
+  isUndefined,
   last,
-  first
+  trim,
+  upperCase
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'cdm-createuser',
@@ -93,7 +93,11 @@ export class CreateuserComponent implements OnInit {
     .filter(
       item =>
         !includes(
-          [DataMap.loginUserType.saml.value, DataMap.loginUserType.hcs.value],
+          [
+            DataMap.loginUserType.saml.value,
+            DataMap.loginUserType.hcs.value,
+            DataMap.loginUserType.dme.value
+          ],
           item.value
         )
     );
@@ -651,6 +655,9 @@ export class CreateuserComponent implements OnInit {
       });
       if (!user.sessionControl) {
         delete user.sessionLimit;
+      }
+      if (!this.isOceanProtect) {
+        delete user.resourceSetAuthorizationSets;
       }
       if (!this.isOceanProtect && !this.isCyberengine) {
         delete user.userType;

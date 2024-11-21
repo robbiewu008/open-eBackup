@@ -1,30 +1,29 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { OptionItem } from '@iux/live';
 import {
-  ApplicationType,
   BaseUtilService,
   ClustersApiService,
-  CommonConsts,
   DataMap,
+  I18NService,
   ProtectedCopyObjectApiService,
   QosService,
   SlaApiService
 } from 'app/shared';
 import { SlaParseService } from 'app/shared/services/sla-parse.service';
-import { assign, defer, each, find, isNumber, map } from 'lodash';
+import { assign, defer, find, includes } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -41,8 +40,19 @@ export class ManualCopyComponent implements OnInit {
   qosNames = [];
 
   find = find;
+  isDataBackup = includes(
+    [
+      DataMap.Deploy_Type.a8000.value,
+      DataMap.Deploy_Type.x3000.value,
+      DataMap.Deploy_Type.x6000.value,
+      DataMap.Deploy_Type.x8000.value,
+      DataMap.Deploy_Type.x9000.value
+    ],
+    this.i18n.get('deploy_type')
+  );
 
   constructor(
+    public i18n: I18NService,
     private fb: FormBuilder,
     private qosServiceApi: QosService,
     private slaApiService: SlaApiService,

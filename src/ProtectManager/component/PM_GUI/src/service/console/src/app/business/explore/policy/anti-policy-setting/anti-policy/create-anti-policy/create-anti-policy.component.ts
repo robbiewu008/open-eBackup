@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   ChangeDetectorRef,
@@ -52,6 +52,7 @@ import {
   defer,
   each,
   find,
+  get,
   includes,
   isEmpty,
   isNil,
@@ -71,6 +72,7 @@ interface ExcludeItem {
  */
 export const EXCLUDE_RESOURCE_TYPES: ExcludeItem[] = [
   DataMap.Job_Target_Type.local,
+  DataMap.Job_Target_Type.adfs,
   DataMap.Job_Target_Type.ldap,
   DataMap.Job_Target_Type.ldapGroup,
   DataMap.Job_Target_Type.saml,
@@ -80,6 +82,7 @@ export const EXCLUDE_RESOURCE_TYPES: ExcludeItem[] = [
   DataMap.Job_Target_Type.DWSBackupAgent,
   DataMap.Job_Target_Type.UBackupAgent,
   DataMap.Job_Target_Type.SBackupAgent,
+  DataMap.Job_Target_Type.agent,
   DataMap.Job_Target_Type.SQLServerCluster,
   DataMap.Job_Target_Type.VMware,
   DataMap.Job_Target_Type.VMwarevCenterServer,
@@ -90,6 +93,8 @@ export const EXCLUDE_RESOURCE_TYPES: ExcludeItem[] = [
   DataMap.Job_Target_Type.ImportCopy,
   DataMap.Job_Target_Type.LocalFileSystem,
   DataMap.Job_Target_Type.LocalLun,
+  DataMap.Job_Target_Type.DoradoV7,
+  DataMap.Job_Target_Type.OceanStorDoradoV7,
   DataMap.Job_Target_Type.OceanStorDorado_6_1_3,
   DataMap.Job_Target_Type.OceanStor_6_1_3,
   DataMap.Job_Target_Type.OceanStor_v5,
@@ -99,9 +104,6 @@ export const EXCLUDE_RESOURCE_TYPES: ExcludeItem[] = [
   DataMap.Job_Target_Type.HCSContainer,
   DataMap.Job_Target_Type.FusionComputePlatform,
   DataMap.Job_Target_Type.HCSTenant,
-  DataMap.Job_Target_Type.dwsCluster,
-  DataMap.Job_Target_Type.dwsSchema,
-  DataMap.Job_Target_Type.dwsTable,
   DataMap.Job_Target_Type.MySQLCluster,
   DataMap.Job_Target_Type.kubernetesNamespace,
   DataMap.Job_Target_Type.kubernetesClusterCommon,
@@ -136,7 +138,10 @@ export const EXCLUDE_RESOURCE_TYPES: ExcludeItem[] = [
   DataMap.Job_Target_Type.saphanaInstance,
   DataMap.Job_Target_Type.ApsaraStack,
   DataMap.Job_Target_Type.APSResourceSet,
-  DataMap.Job_Target_Type.APSZone
+  DataMap.Job_Target_Type.APSZone,
+  DataMap.Job_Target_Type.nutanix,
+  DataMap.Job_Target_Type.nutanixCluster,
+  DataMap.Job_Target_Type.nutanixHost
 ];
 
 /**
@@ -152,7 +157,8 @@ const ANTI_RESOURCE_TYPES = [
   DataMap.Resource_Type.fusionOne,
   DataMap.Resource_Type.HCSCloudHost,
   DataMap.Resource_Type.openStackCloudServer,
-  DataMap.Resource_Type.hyperVVm
+  DataMap.Resource_Type.hyperVVm,
+  DataMap.Resource_Type.nutanixVm
 ];
 
 @Component({
@@ -173,6 +179,7 @@ export class CreateAntiPolicyComponent implements OnInit {
   selectedTableConfig: TableConfig;
   formGroup: FormGroup;
   resourceTypes = [];
+  allResourceTypes = [];
   antiTamperingSettingOptions = [];
   antiTamperingSetting;
   antiPolicySwitchDisabled = false;
@@ -181,7 +188,7 @@ export class CreateAntiPolicyComponent implements OnInit {
   intervalUnit: OptionItem[];
   language = this.i18n.language;
   resourceChangeTimer;
-  resourceCheckFaild: boolean;
+  isDisableRansomware = false;
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip
   };
@@ -197,6 +204,13 @@ export class CreateAntiPolicyComponent implements OnInit {
   isX3000 = this.i18n.get('deploy_type') === DataMap.Deploy_Type.x3000.value;
 
   isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
+
+  antiRansomwareTip = this.i18n.get('explore_antiransomware_switch_tip_label', [
+    this.dataMapService
+      .toArray('Detecting_Resource_Type')
+      .map(item => this.i18n.get(item.label))
+      .join('、')
+  ]);
 
   @ViewChild('resourceTable', { static: false })
   resourceTable: ProTableComponent;
@@ -250,7 +264,6 @@ export class CreateAntiPolicyComponent implements OnInit {
     if (isNil(this.data)) {
       return;
     }
-
     this.selectedResources = this.data.selectedResources;
     this.formGroup.patchValue(this.data);
     if (!this.data.schedule) {
@@ -302,6 +315,14 @@ export class CreateAntiPolicyComponent implements OnInit {
         ) {
           EXCLUDE_RESOURCE_TYPES.push(DataMap.Job_Target_Type.NASFileSystem);
         }
+        if (this.isHcsUser) {
+          EXCLUDE_RESOURCE_TYPES.push(
+            DataMap.Job_Target_Type.OpenStackCloudServer,
+            DataMap.Job_Target_Type.kubernetesDatasetCommon,
+            DataMap.Job_Target_Type.kubernetesNamespaceCommon,
+            DataMap.Job_Target_Type.lightCloudGaussdbInstance
+          );
+        }
         return (
           (v.isLeaf = true) &&
           !includes(
@@ -317,6 +338,7 @@ export class CreateAntiPolicyComponent implements OnInit {
           return { ...item, value: 'FusionComputeCluster' };
         return item;
       });
+    this.allResourceTypes = cloneDeep(this.resourceTypes);
   }
 
   initForm() {
@@ -390,8 +412,14 @@ export class CreateAntiPolicyComponent implements OnInit {
     });
 
     this.formGroup.get('resourceSubType').valueChanges.subscribe(res => {
-      const _res = this._checkPolicyOnResouceChange(res);
-      this.resourceCheckFaild = !_res;
+      if (!res) {
+        return;
+      }
+
+      this.isDisableRansomware = !includes(
+        ANTI_RESOURCE_TYPES.map(i => i.value),
+        res
+      );
 
       if (!size(this.selectedResources)) {
         defer(() => {
@@ -465,6 +493,16 @@ export class CreateAntiPolicyComponent implements OnInit {
     });
 
     this.formGroup.get('needDetect').valueChanges.subscribe(val => {
+      if (val) {
+        this.resourceTypes = this.allResourceTypes.filter(item =>
+          includes(
+            ANTI_RESOURCE_TYPES.map(resource => resource.value),
+            item.value
+          )
+        );
+      } else {
+        this.resourceTypes = cloneDeep(this.allResourceTypes);
+      }
       defer(() => {
         this.antiTamperingSettingOptions[0].disabled = val;
         this.antiTamperingSettingOptions[1].disabled = !val;
@@ -472,8 +510,6 @@ export class CreateAntiPolicyComponent implements OnInit {
         this.formGroup
           .get('schedulePolicy')
           .setValue(DataMap.Scheduling_Plan.immediately.value);
-        const _res = this._checkResourceOnPolicyChange(val);
-        this.resourceCheckFaild = !_res;
       });
     });
 
@@ -536,56 +572,6 @@ export class CreateAntiPolicyComponent implements OnInit {
     }
   }
 
-  /**
-   * 当资源类型选择变化时检查防勒索/防篡改策略
-   * @param {Array<string>} changes - 资源类型变化
-   * @returns {Boolean}
-   */
-  private _checkPolicyOnResouceChange(value: string): boolean {
-    const needDetect = this.formGroup.get('needDetect').value;
-    const isNotInAntiResource = !includes(
-      ANTI_RESOURCE_TYPES.map(item => item.value),
-      value
-    );
-    if (needDetect && isNotInAntiResource) {
-      this.messageService.error(
-        this.i18n.get('explore_anti_worm_policy_error_label', [
-          this._getResourceLabel(value)
-        ])
-      );
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * 当防勒索策略变化时检查选中资源
-   * @param {Boolean} value - 防勒索策略开、关 状态
-   * @returns {Boolean}
-   */
-  private _checkResourceOnPolicyChange(value: boolean): boolean {
-    const resourceType = this.formGroup.get('resourceSubType').value;
-    if (
-      !!value &&
-      !includes(
-        ANTI_RESOURCE_TYPES.map(i => i.value),
-        resourceType
-      )
-    ) {
-      !isEmpty(resourceType) &&
-        this.messageService.error(
-          this.i18n.get('explore_anti_worm_policy_error_label', [
-            this._getResourceLabel(resourceType)
-          ])
-        );
-      return false;
-    }
-    return true;
-  }
-
-  private _getResourceLabel(value: string): string {
-    return this.resourceTypes.find(i => i.value === value)?.label;
-  }
   initOptions() {
     this.intervalUnit = this.dataMapService
       .toArray('Interval_Unit')
@@ -804,7 +790,12 @@ export class CreateAntiPolicyComponent implements OnInit {
                     resourceName: item.name,
                     resourceLocation: item.path,
                     resourceSubType: item.subType,
-                    sla_name: item?.sla_name
+                    sla_name: item?.sla_name,
+                    worm_switch: get(
+                      item,
+                      'protectedObject.extParameters.worm_switch',
+                      false
+                    )
                   };
                   each(data.records, policy => {
                     const resource = find(policy.selectedResources, {
@@ -817,9 +808,10 @@ export class CreateAntiPolicyComponent implements OnInit {
                   return antiResource;
                 })
                 .filter(item =>
-                  isEmpty(item?.policyName) ||
-                  (!isEmpty(this.data) &&
-                    this.data?.policyName === item?.policyName)
+                  (isEmpty(item?.policyName) ||
+                    (!isEmpty(this.data) &&
+                      this.data?.policyName === item?.policyName)) &&
+                  !item.worm_switch
                     ? item
                     : assign(item, { disabled: true })
                 ),

@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Using Cluster HA">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792345234.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="documenttype" content="usermanual">
+  <meta name="prodname" content="csbs">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="HA00022">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Using Cluster HA</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="HA00022"></a><a name="HA00022"></a>
+  <h1 class="topictitle1">Using Cluster HA</h1>
+  <div>
+   <p>After the cluster HA feature is configured, copies can be stored on the backup storage unit corresponding to the member node. You can also monitor the status of the standby node or the member node on the active node. For example, you can monitor the alarms, performance, and jobs of the member node on the active node, or generate reports by member node.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Backup</h4>
+    <p>After the cluster HA feature is configured, you can specify the target location of backup copies in the SLA during resource backup.</p>
+    <ul>
+     <li>If you select a backup storage unit, copies are stored to the storage unit. If the capacity of the storage unit is insufficient, the backup job will fail.</li>
+     <li>If you select a backup storage unit group, the system automatically selects a backup target storage unit based on the storage policy of the storage unit group.</li>
+     <li>If you do not specify the backup target location, the system automatically selects a backup target storage unit through intelligent balancing.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Replication</h4>
+    <p>Two replication modes are supported: <span><strong>Cross-domain</strong></span> and <span><strong>Intra-domain</strong></span>. After the cluster HA feature is configured, you can select a backup storage unit group for intra-domain replication to implement automatic switchover of the target location of replication copies.</p>
+    <ul>
+     <li>Cross-domain replication: Select a replication target cluster. The copy will be replicated from the local cluster to the target cluster.</li>
+     <li>Intra-domain replication: Select a storage unit group. When a backup copy is replicated for the first time, the system selects a node from the replication target end as the replication target location. In subsequent replication, the backup storage unit used for the first replication is preferentially selected.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Monitoring Alarms of Member Nodes</h4>
+    <p>Choose <span class="menucascade"><b><span class="uicontrol"><span><strong>Insight</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Alarms and Events</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Alarms</strong></span></span></b></span>. On the displayed page, select a node and view the alarm information.</p>
+    <p><span><img src="en-us_image_0000001839222241.png"></span></p>
+    <p></p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Monitoring the Performance of Member Nodes</h4>
+    <p>Choose <span class="menucascade"><b><span class="uicontrol"><span><strong>Insight</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Performance</strong></span></span></b></span>. On the displayed page, select a node and view the performance information.</p>
+    <p><span><img src="en-us_image_0000001839222209.png"></span></p>
+    <p></p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Monitoring the Jobs of Member Nodes</h4>
+    <p>Choose <span class="menucascade"><b><span class="uicontrol"><span><strong>Insight</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Jobs</strong></span></span></b></span>, click <span><img src="en-us_image_0000001839142321.png"></span> on the right of the displayed page, select <span class="uicontrol"><b>Nodes</b></span> to view the jobs of the active node and member nodes.</p>
+    <p><span><img src="en-us_image_0000001792502938.png"></span></p>
+    <p></p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Generating a Report by Member Node</h4>
+    <p>Choose <span class="menucascade"><b><span class="uicontrol"><span><strong>Insight</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Reports</strong></span></span></b></span>. On the displayed page, create a global report or create a report by member node.</p>
+    <p><span><img src="en-us_image_0000001839222161.png"></span></p>
+    <p></p>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001792345234.html">Cluster High Availability</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

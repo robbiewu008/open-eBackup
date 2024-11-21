@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -104,6 +104,9 @@ import {
       .table-email-label {
         max-width: 80%;
       }
+      .lv-alert {
+        margin-bottom: 0px !important;
+      }
     `
   ]
 })
@@ -191,7 +194,7 @@ export class AlarmNotifyComponent implements OnInit {
 
   passwordErrorTip = assign({}, this.baseUtilService.requiredErrorTip, {
     asterisk: this.i18n.get('common_invalid_asterisk_label'),
-    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [32])
+    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
   });
 
   emailAddressError = assign(
@@ -212,7 +215,7 @@ export class AlarmNotifyComponent implements OnInit {
     {},
     this.baseUtilService.requiredErrorTip,
     {
-      invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [254])
+      invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [255])
     },
     {
       invalidName: this.i18n.get('system_error_email_label')
@@ -223,7 +226,7 @@ export class AlarmNotifyComponent implements OnInit {
     {},
     this.baseUtilService.requiredErrorTip,
     {
-      invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [254])
+      invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [255])
     },
     {
       invalidName: this.i18n.get('system_error_email_label')
@@ -231,7 +234,7 @@ export class AlarmNotifyComponent implements OnInit {
   );
 
   userNameErrorTip = assign({}, this.baseUtilService.requiredErrorTip, {
-    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [32])
+    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
   });
 
   descErrorTip = assign({}, this.baseUtilService.lengthErrorTip, {
@@ -498,14 +501,14 @@ export class AlarmNotifyComponent implements OnInit {
         emailFrom: new FormControl(this.maskEmail(data.emailFrom) || '', {
           validators: [
             this.baseUtilService.VALID.name(CommonConsts.REGEX.email),
-            this.baseUtilService.VALID.maxLength(254)
+            this.baseUtilService.VALID.maxLength(255)
           ],
           updateOn: 'change'
         }),
         testEmail: new FormControl(this.maskEmail(data.testEmail) || '', {
           validators: [
             this.baseUtilService.VALID.name(CommonConsts.REGEX.email),
-            this.baseUtilService.VALID.maxLength(254)
+            this.baseUtilService.VALID.maxLength(255)
           ],
           updateOn: 'change'
         }),
@@ -529,7 +532,7 @@ export class AlarmNotifyComponent implements OnInit {
           {
             validators: [
               this.baseUtilService.VALID.required(),
-              this.baseUtilService.VALID.maxLength(32)
+              this.baseUtilService.VALID.maxLength(64)
             ],
             updateOn: 'change'
           }
@@ -542,7 +545,7 @@ export class AlarmNotifyComponent implements OnInit {
           {
             validators: [
               this.baseUtilService.VALID.required(),
-              this.baseUtilService.VALID.maxLength(32)
+              this.baseUtilService.VALID.maxLength(64)
             ],
             updateOn: 'change'
           }
@@ -570,6 +573,10 @@ export class AlarmNotifyComponent implements OnInit {
           }
         )
       });
+      this.sendeForm.valueChanges.subscribe(res => {
+        // 如果测试通过一次后，只要再次修改表单的值就要重新测试才行
+        this.hasTested = this.hasTested && false;
+      });
       this.isModifySender = true;
       this.encryptionMethodChange(protocol);
     });
@@ -584,7 +591,7 @@ export class AlarmNotifyComponent implements OnInit {
         .setValidators([
           this.baseUtilService.VALID.required(),
           this.asterisk(),
-          this.baseUtilService.VALID.maxLength(32)
+          this.baseUtilService.VALID.maxLength(64)
         ]);
     } else {
       this.sendeForm.get('password').disable();
@@ -635,12 +642,6 @@ export class AlarmNotifyComponent implements OnInit {
     if (this.sendeForm.value.testEmail) {
       assign(params, {
         testEmail: this.originalTestEmail
-      });
-    }
-    if (!this.sendeForm.value.validateEnable) {
-      assign(params, {
-        userName: '',
-        password: ''
       });
     }
     this.emailApiService

@@ -117,7 +117,7 @@
   "insight_job_copytime_label": "副本时间",
   "insight_job_mountname_label": "挂载更新策略",
   "insight_job_copyrange_label": "副本选择范围",
-  "insight_job_retentionpolicy_label": "更新执行计划",
+  "insight_job_retentionpolicy_label": "策略执行计划",
   "insight_job_retentiontime_label": "保留时间",
   "insight_job_exercisename_label": "演练计划名称",
   "insight_job_exerciseperiod_label": "演练周期",
@@ -160,11 +160,13 @@
   "insight_report_fail_label": "生成失败",
   "insight_report_delete_label": "您将要执行删除报表的操作，删除后无法恢复。<br>建议：执行该操作前，请确认选择的报表是否正确。",
   "insight_delete_report_label": "您将要执行删除报告的操作，删除后无法恢复。<br>建议：执行该操作前，请确认选择的报告是否正确。",
+  "insight_delete_report_subscription_label": "您将要执行删除报表的订阅操作，删除后无法恢复。<br>建议：执行操作前，请确认选择的订阅是否正确。",
   "insight_report_email_placeholder_label": "请输入邮箱地址。最多支持输入5个邮箱地址，用英文逗号隔开。",
   "insight_report_email_max_size_tips_label": "最多支持输入5个邮箱地址。",
   "insight_report_download_tips_label": "系统最大支持同时下载20个报表。",
   "insight_report_send_tips_label": "系统最大支持同时发送20个报表。",
   "insight_report_delete_tips_label": "系统最大支持同时删除100个报表。",
+  "insight_report_subscription_delete_tips_label": "系统最大支持同时删除100个订阅信息。",
   "insight_report_pre_task_time_label": "最近报表生成时间",
   "insight_report_next_task_time_label": "下次报表生成时间",
   "insight_report_fist_task_time_label": "首次报表生成时间",
@@ -211,5 +213,6 @@
   "insight_job_advance_protect_params_label": "高级保护设置",
   "insight_job_sla_name_updated_label": "名称已更新",
   "insight_job_sla_trigger_label": "自动触发",
-  "insight_job_manual_trigger_label": "手动触发"
+  "insight_job_manual_trigger_label": "手动触发",
+  "insight_view_san_report_label": "查看检测报告"
 }

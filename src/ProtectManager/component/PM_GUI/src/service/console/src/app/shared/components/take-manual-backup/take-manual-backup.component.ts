@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -35,7 +35,11 @@ import {
   HCSHostInNormalStatus,
   Scene
 } from 'app/shared/consts';
-import { BaseUtilService, I18NService } from 'app/shared/services';
+import {
+  BaseUtilService,
+  I18NService,
+  WarningMessageService
+} from 'app/shared/services';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import {
   assign,
@@ -138,7 +142,9 @@ export class TakeManualBackupComponent implements OnInit {
     [DataMap.Resource_Type.openStackProject.value]: this.specialActionConfig,
     [DataMap.Resource_Type.openStackCloudServer.value]: this
       .specialActionConfig,
-    [DataMap.Resource_Type.cNwareVm.value]: this.specialActionConfig
+    [DataMap.Resource_Type.cNwareVm.value]: this.specialActionConfig,
+    [DataMap.Resource_Type.hyperVVm.value]: this.specialActionConfig,
+    [DataMap.Resource_Type.nutanixVm.value]: this.specialActionConfig
   };
   actions = {
     ...this.specialActions,
@@ -217,6 +223,24 @@ export class TakeManualBackupComponent implements OnInit {
       }
     ],
     [DataMap.Resource_Type.oracleCluster.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
+      },
+      {
+        id: PolicyAction.INCREMENT,
+        label: this.i18n.get('common_incremental_backup_label')
+      },
+      {
+        id: PolicyAction.DIFFERENCE,
+        label: this.i18n.get('common_diff_backup_label')
+      },
+      {
+        id: PolicyAction.LOG,
+        label: this.i18n.get('common_log_backup_label')
+      }
+    ],
+    [DataMap.Resource_Type.oraclePDB.value]: [
       {
         id: PolicyAction.FULL,
         label: this.i18n.get('common_full_backup_label')
@@ -490,6 +514,26 @@ export class TakeManualBackupComponent implements OnInit {
         label: this.i18n.get('common_log_backup_label')
       }
     ],
+    [DataMap.Resource_Type.AntDBInstance.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
+      },
+      {
+        id: PolicyAction.LOG,
+        label: this.i18n.get('common_log_backup_label')
+      }
+    ],
+    [DataMap.Resource_Type.AntDBClusterInstance.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
+      },
+      {
+        id: PolicyAction.LOG,
+        label: this.i18n.get('common_log_backup_label')
+      }
+    ],
     [DataMap.Resource_Type.PostgreSQLInstance.value]: [
       {
         id: PolicyAction.FULL,
@@ -558,8 +602,8 @@ export class TakeManualBackupComponent implements OnInit {
         label: this.i18n.get('common_full_backup_label')
       },
       {
-        id: PolicyAction.INCREMENT,
-        label: this.i18n.get('common_incremental_backup_label')
+        id: PolicyAction.DIFFERENCE,
+        label: this.i18n.get('common_diff_backup_label')
       },
       {
         id: PolicyAction.LOG,
@@ -824,12 +868,44 @@ export class TakeManualBackupComponent implements OnInit {
         label: this.i18n.get('common_full_backup_label')
       },
       {
-        id: PolicyAction.INCREMENT,
-        label: this.i18n.get('common_incremental_backup_label')
+        id: PolicyAction.LOG,
+        label: this.i18n.get('common_log_backup_label')
+      }
+    ],
+    [DataMap.Resource_Type.APSCloudServer.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
       },
       {
-        id: PolicyAction.DIFFERENCE,
-        label: this.i18n.get('common_diff_backup_label')
+        id: PolicyAction.INCREMENT,
+        label: this.i18n.get('common_permanent_backup_label')
+      }
+    ],
+    [DataMap.Resource_Type.APSResourceSet.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
+      },
+      {
+        id: PolicyAction.INCREMENT,
+        label: this.i18n.get('common_permanent_backup_label')
+      }
+    ],
+    [DataMap.Resource_Type.APSZone.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
+      },
+      {
+        id: PolicyAction.INCREMENT,
+        label: this.i18n.get('common_permanent_backup_label')
+      }
+    ],
+    [DataMap.Resource_Type.saponoracleDatabase.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
       },
       {
         id: PolicyAction.LOG,
@@ -854,7 +930,8 @@ export class TakeManualBackupComponent implements OnInit {
     private projectedObjectApiService: ProjectedObjectApiService,
     private batchOperateService: BatchOperateService,
     private messageService: MessageService,
-    private clientManagerApiService: ClientManagerApiService
+    private clientManagerApiService: ClientManagerApiService,
+    public warningMessageService: WarningMessageService
   ) {}
 
   ngOnInit() {
@@ -1101,7 +1178,15 @@ export class TakeManualBackupComponent implements OnInit {
     }
     this.items.map(e => {
       if (!e.tips) {
-        return assign(e, { tips: this.tipMap[e.id] });
+        return assign(e, {
+          tips:
+            includes(
+              [DataMap.Resource_Type.ObjectSet.value],
+              this.params.resource_type
+            ) && e.id === PolicyAction.INCREMENT
+              ? this.i18n.get('protection_object_sla_incremental_tip_label')
+              : this.tipMap[e.id]
+        });
       }
     });
   }
@@ -1177,32 +1262,65 @@ export class TakeManualBackupComponent implements OnInit {
           resourceId: this.params.resource_id,
           body
         };
-        this.projectedObjectApiService
-          .manualBackupV1ProtectedObjectsResourceIdActionBackupPost(params)
-          .subscribe({
-            next: () => {
-              observer.next();
-              observer.complete();
+        if (
+          this.params.resource_type ===
+          DataMap.Resource_Type.ActiveDirectory.value
+        ) {
+          this.warningMessageService.create({
+            content: this.i18n.get('protection_ad_manual_backup_tip_label'),
+            onOK: () => {
+              this.dealBackup(observer, params);
             },
-            error: err => {
-              observer.error(err);
+            onCancel: () => {
+              observer.error(null);
               observer.complete();
             }
           });
+        } else {
+          this.dealBackup(observer, params);
+        }
       } else {
-        this.batchOperateService.selfGetResults(
-          item => {
-            return this.asyncAction(item);
-          },
-          this.params,
-          () => {
-            observer.next();
-            observer.complete();
-          },
-          '',
-          false,
-          this.concurrentNumber
-        );
+        if (
+          this.params.resource_type ===
+          DataMap.Resource_Type.ActiveDirectory.value
+        ) {
+          this.warningMessageService.create({
+            content: this.i18n.get('protection_ad_manual_backup_tip_label'),
+            onOK: () => {
+              this.batchOperateService.selfGetResults(
+                item => {
+                  return this.asyncAction(item);
+                },
+                this.params,
+                () => {
+                  observer.next();
+                  observer.complete();
+                },
+                '',
+                false,
+                this.concurrentNumber
+              );
+            },
+            onCancel: () => {
+              observer.error(null);
+              observer.complete();
+            }
+          });
+        } else {
+          this.batchOperateService.selfGetResults(
+            item => {
+              return this.asyncAction(item);
+            },
+            this.params,
+            () => {
+              observer.next();
+              observer.complete();
+            },
+            '',
+            false,
+            this.concurrentNumber
+          );
+        }
       }
     });
   }
@@ -1233,19 +1351,23 @@ export class TakeManualBackupComponent implements OnInit {
         akOperationTips: false,
         akDoException: false
       };
-      this.projectedObjectApiService
-        .manualBackupV1ProtectedObjectsResourceIdActionBackupPost(params)
-        .subscribe({
-          next: () => {
-            observer.next();
-            observer.complete();
-          },
-          error: err => {
-            observer.error(err);
-            observer.complete();
-          }
-        });
+      this.dealBackup(observer, params);
     });
+  }
+
+  dealBackup(observer, params) {
+    this.projectedObjectApiService
+      .manualBackupV1ProtectedObjectsResourceIdActionBackupPost(params)
+      .subscribe({
+        next: () => {
+          observer.next();
+          observer.complete();
+        },
+        error: err => {
+          observer.error(err);
+          observer.complete();
+        }
+      });
   }
 
   private getGeneralDbSupportBackupType() {

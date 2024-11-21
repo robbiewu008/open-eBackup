@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
   <div class="aui-header-1">
     <lv-group lvGutter="8px">
       <h1>{{ 'common_log_management_label' | i18n }}</h1>
@@ -63,7 +63,7 @@
         </lv-form-control>
       </lv-form-item>
       <lv-form-item  *ngIf="(includes(exportLogFormGroup.value.type, dataMap.Export_Query_Type.log.value) || includes(exportLogFormGroup.value.type, dataMap.Export_Query_Type.config.value))">
-        <lv-form-label lvRequired>{{ 'system_servers_label' | i18n }}</lv-form-label>
+        <lv-form-label lvRequired>{{ 'protection_node_label' | i18n }}</lv-form-label>
         <lv-form-control>
           <lv-select
             formControlName="clusterNodeName"
@@ -106,9 +106,25 @@
             </lv-select>
           </lv-form-control>
         </lv-form-item>
+          <ng-container *ngIf="exportLogFormGroup.get('timeRange').value === dataMap.exportLogRange.customRange.value">
+              <lv-form-item>
+                  <lv-form-label></lv-form-label>
+                  <lv-form-control [lvErrorTip]="customTimeRangeErrorTip">
+                      <lv-group lvGutter="4px">
+                          <span class="text-no-wrap">{{'common_last_label'|i18n}}</span>
+                          <lv-input-group [lvAddAfter]="daysTpl">
+                              <input lv-input type='text' formControlName='customTimeRange'>
+                          </lv-input-group>
+                      </lv-group>
+                      <ng-template #daysTpl>
+                          <div class="select-right-suffix">{{'common_days_label'|i18n}}</div>
+                      </ng-template>
+                  </lv-form-control>
+              </lv-form-item>
+          </ng-container>
         <lv-form-item>
           <lv-form-label lvRequired>{{'system_log_file_name_label' | i18n}}</lv-form-label>
-          <lv-form-control>
+          <lv-form-control [lvErrorTip]="nameErrorTip">
             <input lv-input type='text' formControlName='logName'>
           </lv-form-control>
         </lv-form-item>
@@ -116,7 +132,7 @@
       <ng-container *ngIf="includes(exportLogFormGroup.value.type, dataMap.Export_Query_Type.config.value)">
         <lv-form-item>
           <lv-form-label lvRequired>{{'system_config_file_name_label' | i18n}}</lv-form-label>
-          <lv-form-control>
+          <lv-form-control [lvErrorTip]="nameErrorTip">
             <input lv-input type='text' formControlName='configName'>
           </lv-form-control>
         </lv-form-item>

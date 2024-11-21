@@ -1,0 +1,149 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Registering a Huawei Cloud Stack GaussDB Project">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="hcs_gaussdb_00010.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="hcs_gaussdb_00011">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Registering a Huawei Cloud Stack GaussDB Project</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hcs_gaussdb_00011"></a><a name="hcs_gaussdb_00011"></a>
+
+<h1 class="topictitle1">Step 1: Registering a Huawei Cloud Stack GaussDB Project</h1>
+<div><p>Before Huawei Cloud Stack GaussDB backup and restoration, you must register Huawei Cloud Stack GaussDB with the <span>OceanProtect</span>.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>Identity and Access Management (IAM) provides permission management for secure access to user's cloud services and resources.</p>
+<p>An account is created upon user's successful registration with Huawei Cloud, is the entity that owns, uses, and pays for resources, has full control over these resources, and can access all cloud services of Huawei Cloud. An IAM user is created by an account to use cloud services. Each IAM user has its own identity credential (password and access key) and uses resources based on assigned permissions.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>You have registered with Huawei Cloud and created an IAM user on Huawei Cloud. This user is used to connect Huawei Cloud Stack GaussDB to the <span>OceanProtect</span>. For details about how to create an IAM user, see <a href="https://support.huaweicloud.com/intl/en-us/qs-iam/iam_01_0030.html" target="_blank" rel="noopener noreferrer">Create User Groups and Assign Permissions</a> and <a href="https://support.huaweicloud.com/intl/en-us/qs-iam/iam_01_0031.html" target="_blank" rel="noopener noreferrer">Create IAM Users and Log In</a>.</li><li>A private line has been established for the Huawei Cloud Stack GaussDB project and the agent host. For details, contact technical support engineers of the service provider.</li><li>If you need to enable <span><strong>XBSA SSL Certificate Management</strong></span>, ensure that the SSL certificate has been obtained during ProtectAgent installation. For details, see "Configuring Certificate Files for Mutual SSL Authentication" in the <i><cite>OceanProtect <span id="hcs_gaussdb_00011__en-us_topic_0000001792502994_ph19170214112011">Appliance 1.5.0-1.6.0</span> ProtectAgent Installation Guide</cite></i></li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="hcs_gaussdb_00011__li6843163813710"><span>Choose <span class="uicontrol" id="hcs_gaussdb_00011__en-us_topic_0000001839142377_uicontrol665811131217"><b><span id="hcs_gaussdb_00011__en-us_topic_0000001839142377_text565810111123"><strong>Protection</strong></span> &gt; Cloud Platforms &gt; Huawei Cloud Stack GaussDB</b></span>.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register Huawei Cloud Stack GaussDB.</span><p><div class="p"><a href="#hcs_gaussdb_00011__table613227155112">Table 1</a> describes Huawei Cloud Stack GaussDB registration information.
+<div class="tablenoborder"><a name="hcs_gaussdb_00011__table613227155112"></a><a name="table613227155112"></a><table cellpadding="4" cellspacing="0" summary="" id="hcs_gaussdb_00011__table613227155112" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Huawei Cloud Stack GaussDB registration information</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.4.2.2.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.4.2.2.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>User-defined name of Huawei Cloud Stack GaussDB.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><strong>Management Plane URL</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>To obtain the management plane URL, perform the following steps:</p>
+<ol type="a"><li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li46368592592">On the <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b196061931165210">Basic_Parameters</strong> sheet of <em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i17607193145216">xxx_export_all_EN</em> exported by the Huawei Cloud Stack deployment tool, search for <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b1760733175213">region_id</strong> and <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b1607123175216">external_global_domain_name</strong> to obtain their values.</li><li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li47458218418">On the <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b1688143035816">Portal</strong> sheet of the <em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i1088143025813">xxx_export_all_EN</em> file exported by the Huawei Cloud Stack deployment tool, obtain the URL, username, and password for logging in to Service OM.</li><li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li1271015264128">On Service OM, click <span class="uicontrol" id="hcs_gaussdb_00011__hcs_gaussdb_00009_uicontrol10814143213589"><b>VM</b></span>.</li><li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li765750134">Obtain any IP address of DBS-GaussCore on the VM page.</li><li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li817462116114">Log in to the target host using the IP address through PuTTY.</li><li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li101145231168">Run the <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b73707396584">ping iam-apigateway-proxy.<em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i4370163910589">{region_id}</em>.<em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i8370339145819">{external_global_domain_name}</em></strong> command to obtain the management plane IP address.<p id="hcs_gaussdb_00011__hcs_gaussdb_00009_p347164816811"><span><img id="hcs_gaussdb_00011__hcs_gaussdb_00009_image17735649582" src="en-us_image_0000002079691417.png"></span></p>
+</li><li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li146299220115">Check the IAM version.<ol id="hcs_gaussdb_00011__hcs_gaussdb_00009_ol172551635101111"><li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li6256203571110">On the <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b163201742125811">Portal</strong> sheet of the <em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i9320942175816">xxx_export_all_EN</em> file exported by the Huawei Cloud Stack deployment tool, obtain the COP website, and the username and password for logging in to COP.</li><li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li13321935125">Choose <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b874334318583">CloudCMDB</strong> &gt; <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b12743114311584">Service Mgmt</strong>, and search for <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b187431143195810">IAM</strong> in the service tree. If IAM exists, IAM 2.0 is used. If IAM does not exist, IAM 1.0 is used.</li></ol>
+</li><li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li93781141171016">Obtain the management plane address.<ul id="hcs_gaussdb_00011__hcs_gaussdb_00009_ul14644195216187"><li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li1864455211816">IAM 1.0: <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b10516338135219">https://</strong><em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i205171338145212">XX.XX.XX.XX</em><strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b7517163855210">:26335</strong> indicates the management plane address.</li><li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li14233193181920">IAM 2.0: <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b17637640135213">https://</strong><em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i963716401527">XX.XX.XX.XX</em><strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b8637184025218">:443</strong> indicates the management plane address.</li></ul>
+</li></ol>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><strong>Service Plane URL</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>On the <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b20107115017584">Tool_generated_IP_Params</strong> sheet of the <em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i1310705055818">xxx_export_all_EN</em> file exported by the Huawei Cloud Stack deployment tool, search for <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b18107350105815">AGW-LB-Float-IP</strong> to obtain the corresponding parameter value <em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i111071450145820">XX.XX.XX.XX</em>. <strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b20597194218523">https://</strong><em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i195972042105218">XX.XX.XX.XX</em> indicates the service plane address.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>IAM Username</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>IAM username created by the user on Huawei Cloud. To obtain the username:</p>
+<ol type="a"><li>Log in to ManageOne Operation Portal and choose <strong>Organization</strong> &gt; <strong>Resource Spaces</strong>.</li><li>Search for the corresponding resource set based on the resource set ID obtained in <a href="hcs_gaussdb_00009.html">Preparing for the Backup</a>. <strong>VDC</strong> specifies the name of the account to which the IAM user belongs.</li><li>Click <strong>Users</strong>. The user management page is displayed. Search for a user based on the value of <strong>VDC</strong> and select a user to obtain the username.</li></ol>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>IAM User Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Password of the IAM user created on Huawei Cloud. Use the IAM user password created in <a href="hcs_gaussdb_00009.html">Preparing for the Backup</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><strong>Owning Account of IAM User</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Name of the account to which the IAM user belongs. To obtain the name:</p>
+<ol type="a"><li>Log in to ManageOne Operation Portal and choose <strong>Organization</strong> &gt; <strong>Resource Spaces</strong>.</li><li>Search for the corresponding resource set based on the resource set ID obtained in <a href="hcs_gaussdb_00009.html">Preparing for the Backup</a>. <strong>VDC</strong> specifies the name of the account to which the IAM user belongs.</li></ol>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Resource Set Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Name of a resource set of a tenant. Obtain the value from the VDC administrator.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Resource Set ID</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>ID of a resource set of a tenant. Obtain the value from the VDC administrator.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Agent host registered with the <span>OceanProtect</span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>XBSA Configuration Path</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Path to the <strong>xbsa.conf</strong> file configured during backUpAgent installation. You can obtain the path by referring to the XBSA configuration path in <a href="hcs_gaussdb_00009.html#hcs_gaussdb_00009__en-us_topic_0000001514140621_table10744125193920">Table 1</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>XBSA SSL Certificate Management</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>This function is enabled by default. After this function is enabled, the certificate of Huawei Cloud Stack GaussDB will be verified during registration to ensure security of interactions between the <span>OceanProtect</span> and external devices. After this function is disabled, security risks may exist in the communication between the system and the cloud platform. Exercise caution when performing this operation.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Root Certificate</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Root certificate file with the file name extension <strong>.pem</strong>. For details about how to obtain the file, see the preparation item <strong>Certificate</strong> in <a href="hcs_gaussdb_00009.html#hcs_gaussdb_00009__en-us_topic_0000001514140621_table10744125193920">Table 1</a>. This parameter is mandatory only when <span class="uicontrol"><b><span><strong>XBSA SSL Certificate Management</strong></span></b></span> is selected.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>User Certificate</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Client user certificate file with the file name extension <strong>.crt</strong>. For details about how to obtain the file, see the preparation item <strong>Certificate</strong> in <a href="hcs_gaussdb_00009.html#hcs_gaussdb_00009__en-us_topic_0000001514140621_table10744125193920">Table 1</a>. This parameter is mandatory only when <span class="uicontrol"><b><span><strong>XBSA SSL Certificate Management</strong></span></b></span> is selected.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>User Private Key</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Client user private key file with the file name extension <strong>.key</strong>. For details about how to obtain the file, see the preparation item <strong>Certificate</strong> in <a href="hcs_gaussdb_00009.html#hcs_gaussdb_00009__en-us_topic_0000001514140621_table10744125193920">Table 1</a>. This parameter is mandatory only when <span class="uicontrol"><b><span><strong>XBSA SSL Certificate Management</strong></span></b></span> is selected.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Private Key Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Client private key password character string set when the certificate file is created. This parameter is mandatory only when <span class="uicontrol"><b><span><strong>XBSA SSL Certificate Management</strong></span></b></span> is selected.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="hcs_gaussdb_00010.html">Backing Up Huawei Cloud Stack GaussDB Instances</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

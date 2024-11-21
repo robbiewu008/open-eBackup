@@ -1,3 +1,4 @@
+<div class="aui-operation" *ngIf="activeIndex !== jobOriginType.HANDLED">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-operation" *ngIf="activeIndex !== jobOriginType.HANDLED">
   <lv-group>
     <ng-container *ngIf="!hideExeJobBtn()">
       <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData">
@@ -34,7 +34,7 @@
     <lv-group lvGutter='8px'>
       <span>{{ 'common_sla_label' | i18n: []:true }}</span>
       <lv-select [lvOptions]='slaNameOps' [(ngModel)]="slaNameData" (ngModelChange)='changeSlaName($event)'
-        lvMode='multiple' lvShowFilter lvShowCheckAll lvMaxTagCount="3" lvFilterKey='label' lvFilterMode='contains'
+        lvMode='multiple' lvShowFilter lvMaxTagCount="3" lvFilterKey='label' lvFilterMode='contains'
         lvShowClear style="width: 260px;" [lvVirtualScroll]="slaNameOps?.length > 10">
       </lv-select>
     </lv-group>
@@ -145,7 +145,8 @@
 </ng-template>
 
 <ng-template #markStatusTpl let-item>
-  <aui-status [value]="item?.markStatus" type="markStatus"
-    [ngClass]="{'aui-link': item?.markStatus === dataMap.markStatus.retried.value}"
-    (click)="retriedJobDetail(item)"></aui-status>
+  <span lv-overflow [ngClass]="{'aui-link': item?.markStatus === dataMap.markStatus.retried.value}"
+    (click)="retriedJobDetail(item)">
+    {{item?.markStatus | textMap:'markStatus'}}
+  </span>
 </ng-template>

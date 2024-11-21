@@ -1,0 +1,103 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring the GaussDB (DWS)">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="DWS_00045.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="DWS_00048">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring the GaussDB (DWS)</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="DWS_00048"></a><a name="DWS_00048"></a>
+
+<h1 class="topictitle1">Restoring the GaussDB (DWS)</h1>
+<div><p>This section describes how to restore GaussDB (DWS) that has been backed up to the original or a new location.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>Backup copies, reverse replication copies, cascaded replication copies, archive copies, and replication copies can be used for restoration. GaussDB (DWS) can be restored to the original location or a new location. Replication copies and their archive copies, cascaded replication copies and their archive copies cannot be used for restoration of the GaussDB (DWS) to the original location</p>
+<p>If the backup copy and archive copy coexist, use the backup copy first for restoration.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li><li>Before table-level restoration to a new schema, ensure that the schema has been created in the database corresponding to GaussDB (DWS). Otherwise, the restoration fails.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="DWS_00048__en-us_topic_0000001397321757_li10796132225712"><span>Choose <span class="uicontrol" id="DWS_00048__en-us_topic_0000001839142377_uicontrol879104212548"><b><span id="DWS_00048__en-us_topic_0000001839142377_text1079164214547"><strong>Explore</strong></span> &gt; <span id="DWS_00048__en-us_topic_0000001839142377_text1679164255414"><strong>Copy Data</strong></span> &gt; <span id="DWS_00048__en-us_topic_0000001839142377_text364514912581"><strong>Big Data</strong></span> &gt; <span id="DWS_00048__en-us_topic_0000001839142377_text1416113393018"><strong>GaussDB(DWS)</strong></span></b></span>.</span></li><li><span>You can search for copies by GaussDB (DWS) resource or copy. This section uses resources as an example.</span><p><p>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> tab page, locate the resource to be restored by resource name and click the name.</p>
+</p></li><li><span>Select the year, month, and day in sequence to find the copy.</span><p><p>If <span><img src="en-us_image_0000001792503022.png"></span> is displayed below a month or day, a copy is generated in that month or day.</p>
+</p></li><li><span>Restore data using a specific copy.</span><p><ol type="a"><li>Common restoration<ol class="substepthirdol"><li>In the row where the copy to be restored resides, choose <span class="menucascade"><b><span class="uicontrol"><span><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Restore</strong></span></span></b></span>.</li><li>Restore the GaussDB (DWS) to the original location or a new location.<div class="p"><a href="#DWS_00048__en-us_topic_0000001397321757_table13681910173115">Table 1</a> describes the related parameters.
+<div class="tablenoborder"><a name="DWS_00048__en-us_topic_0000001397321757_table13681910173115"></a><a name="en-us_topic_0000001397321757_table13681910173115"></a><table cellpadding="4" cellspacing="0" summary="" id="DWS_00048__en-us_topic_0000001397321757_table13681910173115" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Restoring the GaussDB (DWS)</caption><colgroup><col style="width:32.019999999999996%"><col style="width:67.97999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.4.2.4.2.1.1.1.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.4.2.4.2.1.1.1.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.1.1.2.1.2.2.3.1.1 "><p><span><strong>Restore To</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.1.1.2.1.2.2.3.1.2 "><p>Selects either <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> or <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.1.1.2.1.2.2.3.1.1 "><p><span><strong>Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.1.1.2.1.2.2.3.1.2 "><p>If you select <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> for the <strong>Restore To</strong> parameter, the original location is displayed.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.1.1.2.1.2.2.3.1.1 "><p><span><strong>Target Cluster</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.1.1.2.1.2.2.3.1.2 "><div class="p">If you choose to restore the GaussDB (DWS) to <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>, you must choose the target cluster to be restored. Ensure that the installation configuration file named <strong>mppdb-install-config.xml</strong> of the target cluster has been replicated to the <strong>/opt/huawei/</strong> directory on each node in the target cluster and that the database user has the read permission. Otherwise, the restoration will fail. Note that if the installation configuration file is not named <strong>mppdb-install-config.xml</strong>, rename it.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>If the database user does not have the read permission on the configuration file, log in to each node in the target cluster as user <strong>root</strong> and run the following command:</p>
+<pre class="screen">sudo g+r /opt/huawei/mppdb-install-config.xml</pre>
+</div></div>
+</div>
+<p></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.1.1.2.1.2.2.3.1.1 "><p><span><strong>Databases</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.1.1.2.1.2.2.3.1.2 "><p>When <strong>Restore To</strong> is set to <span><strong>New location</strong></span> for restoration using table set copies, you need to select the target database for restoration.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li><li id="DWS_00048__en-us_topic_0000001397321757_li16368161015313">Confirm the following information click <span class="uicontrol" id="DWS_00048__en-us_topic_0000001397321757_uicontrol133687102317"><b><span id="DWS_00048__text17911926194011"><strong>OK</strong></span></b></span>.<p id="DWS_00048__p1731973311331"><span><img id="DWS_00048__image1754010205337" src="en-us_image_0000002092808253.png"></span></p>
+<p id="DWS_00048__p194516481369"></p>
+</li></ol>
+</li><li>Table-level restoration<ol class="substepthirdol"><li>In the row where the copy used to perform table-level restoration resides, choose <span class="menucascade"><b><span class="uicontrol"><span><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Table-level Restoration</strong></span></span></b></span>.</li><li>In <span class="uicontrol"><b><span><strong>Selected Copy</strong></span></b></span>, select the tables to be restored.</li><li>Select the target location for restoration. <a href="#DWS_00048__en-us_topic_0000001397321757_table13681910173115">Table 1</a> describes the related parameters.</li><li>Select the database to be restored to the target location.</li><li>Confirm the following information click <span class="uicontrol" id="DWS_00048__dws_00048_en-us_topic_0000001397321757_uicontrol133687102317"><b><span id="DWS_00048__dws_00048_text17911926194011"><strong>OK</strong></span></b></span>.<p id="DWS_00048__dws_00048_p1731973311331"><span><img id="DWS_00048__dws_00048_image1754010205337" src="en-us_image_0000002092808253.png"></span></p>
+<p id="DWS_00048__dws_00048_p194516481369"></p>
+</li></ol>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>For table-level GDS-based restoration, the number of GDSs started on the target end must be greater than or equal to the number of GDSs started on the source end during backup.</li><li>For 1.6.0 and later versions: Table-level restoration to a new location is supported.</li></ul>
+</div></div>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="DWS_00045.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

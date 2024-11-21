@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -372,6 +372,7 @@ export class VmRestoreComponent implements OnInit {
       powerOn: [true],
       startupNetworkAdaptor: [false],
       isForceNBDSsl: new FormControl(true),
+      isStartupSnapGen: new FormControl(true),
       proxyHost: new FormControl([])
     });
 
@@ -871,6 +872,7 @@ export class VmRestoreComponent implements OnInit {
     if (this.restoreType === RestoreType.CommonRestore) {
       assign(extParameters, {
         isForceNBDSsl: this.formGroup.value.isForceNBDSsl,
+        isStartupSnapGen: this.formGroup.value.isStartupSnapGen,
         host_list: JSON.stringify(
           map(this.formGroup.value.proxyHost, item => {
             const host = find(this.proxyHostOptions, { value: item });
@@ -954,16 +956,16 @@ export class VmRestoreComponent implements OnInit {
       };
       this.restoreService
         .createRestoreV1RestoresPost({ body: params })
-        .subscribe(
-          res => {
+        .subscribe({
+          next: res => {
             observer.next();
             observer.complete();
           },
-          err => {
+          error: err => {
             observer.error(err);
             observer.complete();
           }
-        );
+        });
     });
   }
 }

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   HttpEvent,
   HttpHandler,
@@ -40,6 +40,7 @@ export class PermissionInterceptor implements HttpInterceptor {
     '/console/rest/v2/resource/group',
     '/console/rest/v1/slas',
     '/console/rest/v1/report',
+    '/console/rest/v1/report-policies',
     '/console/rest/v1/anti-ransomware/airgap/policies',
     '/console/rest/v1/livemount-policies',
     '/console/rest/v1/copies',
@@ -52,7 +53,10 @@ export class PermissionInterceptor implements HttpInterceptor {
     '/console/rest/v1/anti-ransomware/policies'
   ];
 
-  usePolicyIdUrl = ['/console/rest/v1/livemount-policies'];
+  usePolicyIdUrl = [
+    '/console/rest/v1/livemount-policies',
+    '/console/rest/v1/report-policies'
+  ];
 
   useResourceIdUrl = ['/console/rest/v1/anti-ransomware/infected-copy/config'];
 
@@ -80,6 +84,21 @@ export class PermissionInterceptor implements HttpInterceptor {
     return 'uuid';
   }
 
+  private isResourceSetRequest(req) {
+    const tmpMap = req.params.map;
+    if (tmpMap.has('resourceSetId') || tmpMap.has('resource_set_id')) {
+      return false;
+    }
+    const tmpCondition = tmpMap.get('conditions');
+    if (!!tmpCondition) {
+      const conditions = JSON.parse(tmpCondition[0]);
+      if ('resourceSetId' in conditions || 'resource_set_id' in conditions) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   // 资源接口拦截器，查询资源对应的权限
   private _getResourcePermission(
     event,
@@ -104,6 +123,7 @@ export class PermissionInterceptor implements HttpInterceptor {
         supportRoleAuth &&
         event instanceof HttpResponse &&
         includes(this.RESOURCE_URL, req.url) &&
+        this.isResourceSetRequest(req) &&
         !isEmpty(resources)
       ) {
         this.roleAuthApiService

@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
   <div class="aui-header-1">
     <lv-group lvGutter='8px'>
       <h2>{{'common_sla_label'|i18n}}</h2>
@@ -92,6 +92,7 @@
             <th lvCellKey='replication_count' *ngIf="!cookieService.isCloudBackup && !isHcsUser">
               <span lv-overflow>{{'protection_replication_target_counts_label'|i18n}}</span>
             </th>
+            <th *ngIf="!isOtherDeployType && !isHcsUser">{{'protection_sla_created_by_label'|i18n}}</th>
             <th *ngIf="isOtherDeployType">{{'common_owned_user_label' | i18n}}</th>
             <th width="144px" lvCellKey='opt'>{{'common_operation_label'|i18n}}</th>
           </tr>
@@ -103,7 +104,7 @@
               </td>
               <td>
                 <lv-group lvGutter='8px'>
-                  <div lv-overflow>
+                  <div lv-overflow [lvContentTpl]="item?.name">
                     <span class="aui-link" id='outerClosable' (click)="getSlaDetail(item)">
                       <sla-type [name]="item.name"></sla-type>
                     </span>
@@ -143,7 +144,7 @@
               <td *ngIf="!cookieService.isCloudBackup && !isHcsUser">
                 {{item.replication_count | nil}}
               </td>
-              <td *ngIf="isOtherDeployType">
+              <td *ngIf="!isHcsUser">
                 <span lv-overflow>{{item.user_name | nil}}</span>
               </td>
               <td>

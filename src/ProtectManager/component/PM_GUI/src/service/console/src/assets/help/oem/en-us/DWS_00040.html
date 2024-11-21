@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Creating a Media Set (When the Archive Storage Is a Tape Library)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="DWS_00038.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="DWS_00040">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Creating a Media Set (When the Archive Storage Is a Tape Library)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="DWS_00040"></a><a name="DWS_00040"></a>
+  <h1 class="topictitle1">Creating a Media Set (When the Archive Storage Is a Tape Library)</h1>
+  <div>
+   <p id="DWS_00040__en-us_topic_0000001839143173_p52126361762">This section describes how to create a media set when a tape library is used as the archive storage. If the archive storage is not a tape library, skip this section.</p>
+   <div class="section" id="DWS_00040__en-us_topic_0000001839143173_section64578218528">
+    <h4 class="sectiontitle">Context</h4>
+    <ul id="DWS_00040__en-us_topic_0000001839143173_ul20158183415546">
+     <li id="DWS_00040__en-us_topic_0000001839143173_li12775337145414">A media set is created based on tapes and is a tape storage pool for storing archive data. Therefore, ensure that a tape library has been scanned and updated to the <span id="DWS_00040__en-us_topic_0000001839143173_text18376218116">product</span> before creating a media set.</li>
+     <li id="DWS_00040__en-us_topic_0000001839143173_li104011181308">The system automatically scans tape libraries every 10 minutes. When detecting that a tape library is connected to the <span id="DWS_00040__en-us_topic_0000001839143173_text1834982214116">product</span>, the system automatically updates the tape library to the <span id="DWS_00040__en-us_topic_0000001839143173_text1679762213115">product</span>.<p id="DWS_00040__en-us_topic_0000001839143173_p22934181108">If a tape library is not updated to the <span id="DWS_00040__en-us_topic_0000001839143173_text102942231211">product</span>, you can manually scan the tape library. For details, see "Scanning Tape Libraries" in the <em id="DWS_00040__en-us_topic_0000001839143173_i15905167181518">Administrator Guide</em>.</p></li>
+    </ul>
+   </div>
+   <div class="section" id="DWS_00040__en-us_topic_0000001839143173_section24210211414">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p id="DWS_00040__en-us_topic_0000001839143173_p166439914143">Ensure that <strong id="DWS_00040__en-us_topic_0000001839143173_b665611604613">Access Status</strong> is <strong id="DWS_00040__en-us_topic_0000001839143173_b19173720184610">Accessible</strong> for all tapes in the tape library. You can view the value of <strong id="DWS_00040__en-us_topic_0000001839143173_b4949185913509">Access Status</strong> on the tape management page.</p>
+   </div>
+   <div class="section" id="DWS_00040__en-us_topic_0000001839143173_section8876201915305">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_ol16741124252118">
+     <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li79299103444"><span>Choose <span class="uicontrol" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_en-us_topic_0000001839144717_en-us_topic_0000001091431193_uicontrol123381932135316"><b><span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_en-us_topic_0000001839144717_text3591711162920"><strong>System</strong></span> &gt; <span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_en-us_topic_0000001839144717_text134875310309"><strong>Infrastructure</strong></span> &gt; <span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_en-us_topic_0000001839144717_text78169323429"><strong>Archive Storage Library</strong></span></b></span>.</span></li>
+     <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li3233732194510"><span>On the <span class="uicontrol" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_uicontrol17681657155019"><b><span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_text17165161385110"><strong>Tape</strong></span></b></span> tab page, select a node and click <span class="uicontrol" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_uicontrol94863210528"><b><span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_text716846185211"><strong>Media Set</strong></span></b></span>.</span></li>
+     <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li3878513121018"><span>Click <span class="uicontrol" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_uicontrol2120184217482"><b><span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_text171191142194813"><strong>Create</strong></span></b></span>.</span></li>
+     <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li821082311014"><span>Enter basic information in the displayed dialog box.</span><p></p>
+      <ol type="a" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_ol197571878143">
+       <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li67571175143">Specify a name for the medium set.</li>
+       <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li5344115992215">Select the driver block size. The value can be 64 KB, 128 KB, or 256 KB. Data is written to tapes block by block. Data is written to tapes in a media set based on the set block size.
+        <div class="note" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_note5905143444614">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p816211409472">You are advised to select the driver block size based on the file size.</p>
+          <ul id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_ul593113415471">
+           <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li1668012442475">For large files, select a large driver block size to ensure read and write efficiency.</li>
+           <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li293164111479">For small files, select a small drive block size to make full use of tape space.</li>
+          </ul>
+         </div>
+        </div></li>
+       <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li6417127182319">Determine whether to enable <strong id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_b8403153273718">Data Compression</strong>.
+        <ul id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_ul9806153473116">
+         <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li18806534143120"><strong id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_b1462012012373">Enable</strong>: indicates to enable the hardware compression function of the tape library to reduce the required tape capacity while improving the write speed.</li>
+         <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li205989400317"><strong id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_b10905141553811">Disable</strong>: indicates to disable the hardware compression function of the tape library.</li>
+        </ul></li>
+      </ol> <p></p></li>
+     <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li572619291102"><span>Select tapes.</span><p></p>
+      <ol type="a" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_ol9767151591519">
+       <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li10767191519153">Select the controller to which the tapes belong.</li>
+       <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li1068113221153">Select tapes.<p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p9396047111710"><a name="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li1068113221153"></a><a name="en-us_topic_0000001839143173_en-us_topic_0000001839224677_li1068113221153"></a>In the tape library list on the left, select a tape library and select tapes in the tape library on the right.</p>
+        <div class="note" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_note42406912010">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <ul id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_ul15940152412208">
+           <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li69401124162010">Tapes in multiple tape libraries can be added. Tapes across controllers cannot be added.</li>
+           <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li622341419310">Tapes that have been added to other media sets cannot be added to the media set.</li>
+           <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li1090495541515">The tape must be in the tape library and its <span class="uicontrol" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_uicontrol664242251811"><b><span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_text82042310911"><strong>Write Status</strong></span></b></span> cannot be <span class="uicontrol" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_uicontrol125171917181716"><b><span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_text2016814914"><strong>Error</strong></span></b></span> or <span class="uicontrol" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_uicontrol537512021712"><b><span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_text1067117302919"><strong>Unknown</strong></span></b></span>.</li>
+           <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li1282382553915">If <strong id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_en-us_topic_0000001607383002_b954117342493">Location</strong> of a tape to be selected is displayed as <strong id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_en-us_topic_0000001607383002_b1563413434495">Driver</strong> for a long time, the tape is not identified, or the value of <strong id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_en-us_topic_0000001607383002_b673785924917">Number of Drives</strong> is different from the actual number, the tape may be locked on the driver. In this case, manually unload the tape by referring to the tape device operation guide. After the tape is unlocked from the driver, perform <strong id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_en-us_topic_0000001607383002_b10833136185419">Scan Tape Library</strong> again.</li>
+          </ul>
+         </div>
+        </div></li>
+      </ol> <p></p></li>
+     <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li13229183551020"><span>Determine whether to enable the alarm of insufficient available tapes.</span><p></p>
+      <ul id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_ul247996151913">
+       <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li1747915691918">Enable the alarm. In this case, you need to set the threshold of tapes. If the number of empty tapes and expired tapes that can be overwritten is smaller than the threshold, an alarm is generated. To clear the alarm, you can insert empty tapes or mark tapes as empty.
+        <div class="note" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_note2252142318213">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <ul id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_ul11252192352115">
+           <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li19943535191610">If data compression is enabled, the maximum amount of data that can be stored on a tape is unknown. For example, if the nominal capacity of a tape is 50 GB, the tape may actually be able to store 60 GB, 80 GB, or 100 GB. Therefore, alarms cannot be generated based on the tape capacity, but can be generated only based on the number of empty tapes.</li>
+           <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li136157489214">The alarm threshold cannot exceed the total number of selected tapes.</li>
+          </ul>
+         </div>
+        </div></li>
+       <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li112311528132112">Disable the alarm. After the alarm for insufficient available tapes is disabled, the number of available tapes becomes unknown. You are advised to enable this alarm.</li>
+      </ul> <p></p></li>
+     <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li54306598294"><span>Select a tape retention policy.</span><p></p><p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p1289133300"></p>
+      <div class="p" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p52923102303">
+       <a href="#DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_table6292131043013">Table 1</a> describes the parameters related to the tape retention policy. 
+       <div class="tablenoborder">
+        <a name="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_table6292131043013"></a><a name="en-us_topic_0000001839143173_en-us_topic_0000001839224677_table6292131043013"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_table6292131043013" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>Parameters related to the tape retention policy
+         </caption>
+         <colgroup>
+          <col style="width:26.33%">
+          <col style="width:73.67%">
+         </colgroup>
+         <thead align="left">
+          <tr id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_row429212106306">
+           <th align="left" class="cellrowborder" valign="top" width="26.33%" id="mcps1.3.4.2.7.2.2.2.2.3.1.1"><p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p14292181015308">Retention Policy</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="73.67%" id="mcps1.3.4.2.7.2.2.2.2.3.1.2"><p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p729251019302">Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_row32927102303">
+           <td class="cellrowborder" valign="top" width="26.33%" headers="mcps1.3.4.2.7.2.2.2.2.3.1.1 "><p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p152921410203019"><span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_text4601640696"><strong>No Data Protection (Overwrite Tape as Needed)</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="73.67%" headers="mcps1.3.4.2.7.2.2.2.2.3.1.2 "><p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p1329214109306">Data in the tape is not protected. When new data is written into the tape, the original data is overwritten.</p> <p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p122151545115915">To select this retention policy, ensure that there are at least two tapes in the current media set.</p></td>
+          </tr>
+          <tr id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_row1729213103305">
+           <td class="cellrowborder" valign="top" width="26.33%" headers="mcps1.3.4.2.7.2.2.2.2.3.1.1 "><p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p2292141093017"><span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_text89981449896"><strong>Permanent Data Retention</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="73.67%" headers="mcps1.3.4.2.7.2.2.2.2.3.1.2 "><p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p1329241003015">Data in the tape is permanently retained.</p></td>
+          </tr>
+          <tr id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_row17292151011302">
+           <td class="cellrowborder" valign="top" width="26.33%" headers="mcps1.3.4.2.7.2.2.2.2.3.1.1 "><p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p182921510103014"><span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_text181111455196"><strong>Temporary Data Protection</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="73.67%" headers="mcps1.3.4.2.7.2.2.2.2.3.1.2 "><p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p529241033012">Data in the tape is protected for a specified period, which can be <em id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_i118371219132820">xx</em> days, months, or years.</p> <p id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_p8292410153017">For example, if the period for temporary data protection is set to 10 days, the tape is marked as empty after 10 days since the last data is written into the tape. Then, the tape can be overwritten.</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_li2882165851013"><span>Click <span class="uicontrol" id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_uicontrol118738193116"><b><span id="DWS_00040__en-us_topic_0000001839143173_en-us_topic_0000001839224677_text4873916317"><strong>OK</strong></span></b></span>. After a media set is created, the system updates the status and capacity information of the media set every hour. Before the system updates data, the status and capacity of a media set may be inconsistent with the actual situation.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="DWS_00038.html">Step 1: Adding Archive Storage</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

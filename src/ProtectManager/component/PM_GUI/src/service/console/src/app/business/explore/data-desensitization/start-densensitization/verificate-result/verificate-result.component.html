@@ -1,3 +1,4 @@
+<ng-container *ngIf="!!tableData.length">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<ng-container *ngIf="!!tableData.length">
     <lv-datatable [lvData]='tableData' #lvTable [lvPaginator]='page' lvSize="small">
         <thead>
             <tr>
@@ -38,7 +38,6 @@
 </ng-container>
 <ng-container *ngIf="!tableData.length">
     <div class="verificate-no-data aui-block">
-        <i lv-icon="aui-icon-no-data"></i>
-        <div class="no-data-label">{{'common_no_data_label' | i18n}}</div>
+        <lv-empty></lv-empty>
     </div>
 </ng-container>

@@ -34,8 +34,8 @@
   "get_way_init_system_label": "gateway",
   "route_information_init_system_label": "route",
   "mtu_init_system_label": "MTU",
-  "exchange_active_copy_label": "主动数据库",
-  "exchange_passive_copy_label": "被动数据库",
+  "exchange_active_copy_label": "active database",
+  "exchange_passive_copy_label": "passive database",
   "backup_network_config_label": "backup network plane",
   "controller_label": "controller",
   "network_info_label": "network information",
@@ -56,5 +56,6 @@
   "e6000_manager_ip_init_by_lld_system_label": "Management IP address",
   "e6000_network_type_init_by_lld_system_label": "Service Network Type",
   "e6000_ip_address_init_by_lld_system_label": "IP Address/Mask",
-  "e6000_ifacename_init_by_lld_system_label": "Port Name"
+  "e6000_ifacename_init_by_lld_system_label": "Port Name",
+  "unlimited_quota": "Unlimited quota"
 }

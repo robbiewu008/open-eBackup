@@ -16,6 +16,7 @@ import com.huawei.emeistor.console.bean.SessionInfo;
 import com.huawei.emeistor.console.contant.ConfigConstant;
 import com.huawei.emeistor.console.util.RequestUtil;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,6 +61,8 @@ public class CsrfWebFilterTest {
     public void set_up() {
         ReflectionTestUtils.setField(csrfWebFilter, "requestUtil", requestUtil);
         ReflectionTestUtils.setField(csrfWebFilter, "csrfIgnorePaths", Collections.singletonList("/v1/ignored"));
+        ReflectionTestUtils.setField(csrfWebFilter, "downloadPath",
+            Collections.singletonList("/console/rest/v1/export-files/[0-9a-zA-Z-]+/action/download"));
     }
 
     @Test
@@ -115,5 +118,32 @@ public class CsrfWebFilterTest {
         sessionInfo.setCsrfToken("testNotEqualsToken");
         PowerMockito.when(requestUtil.getSessionInfo()).thenReturn(sessionInfo);
         csrfWebFilter.doFilterInternal(request, response, filterChain);
+    }
+
+    @Test
+    public void test_download_ignore_csrf_token_success() throws ServletException{
+        PowerMockito.when(request.getRequestURI())
+            .thenReturn("/console/rest/v1/export-files/b3e56948-98f3-4ac4-8d49-ac91a8426e2b/action/download");
+        PowerMockito.when(request.getMethod()).thenReturn("GET");
+        csrfWebFilter.initFilterBean();
+        Assert.assertTrue(csrfWebFilter.isAllowedDownloadPath(request.getRequestURI(), request.getMethod()));
+    }
+
+    @Test
+    public void test_download_ignore_csrf_token_with_no_get_method() throws ServletException{
+        PowerMockito.when(request.getRequestURI())
+            .thenReturn("/console/rest/v1/export-files/b3e56948-98f3-4ac4-8d49-ac91a8426e2b/action/download");
+        PowerMockito.when(request.getMethod()).thenReturn("POST");
+        csrfWebFilter.initFilterBean();
+        Assert.assertFalse(csrfWebFilter.isAllowedDownloadPath(request.getRequestURI(), request.getMethod()));
+    }
+
+    @Test
+    public void test_download_ignore_csrf_token_with_no_download_path() throws ServletException{
+        PowerMockito.when(request.getRequestURI())
+            .thenReturn("/console/rest/v1/export-files/action/download");
+        PowerMockito.when(request.getMethod()).thenReturn("GET");
+        csrfWebFilter.initFilterBean();
+        Assert.assertFalse(csrfWebFilter.isAllowedDownloadPath(request.getRequestURI(), request.getMethod()));
     }
 }

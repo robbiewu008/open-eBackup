@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   Input,
@@ -56,7 +56,9 @@ import {
   isString,
   set,
   size,
-  startsWith
+  some,
+  startsWith,
+  toNumber
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -89,13 +91,19 @@ export class VolumeRestoreComponent implements OnInit {
   newLocation = RestoreV2LocationType.NEW;
   isSystemBackup = false;
   hasSystemVolume = false;
+  isWindows = false; // 判断是否为windows
+  scriptTip = this.i18n.get('common_script_oracle_linux_help_label');
 
   readonly PAGESIZE = CommonConsts.PAGE_SIZE * 10;
+
+  restorationType = this.dataMapService.toArray('windowsVolumeBackupType');
 
   scriptErrorTip = {
     invalidName: this.i18n.get('common_script_error_label'),
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [8192])
   };
+
+  scriptPlaceHolder = this.i18n.get('common_script_linux_placeholder_label');
 
   // 不能直接使用的挂载点的卷
   forbiddenPath = [
@@ -139,17 +147,45 @@ export class VolumeRestoreComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.getResourceData();
+    this.isWindows =
+      this.resourceData?.environment_os_type === DataMap.Os_Type.windows.value;
+    if (this.isWindows) {
+      this.scriptPlaceHolder = this.i18n.get(
+        'common_script_windows_placeholder_label'
+      );
+      this.scriptTip = this.i18n.get(
+        'common_script_sqlserver_windows_help_label'
+      );
+      if (
+        Number(this.resourceData?.extendInfo?.system_backup_type) ===
+        DataMap.windowsVolumeBackupType.volume.value
+      ) {
+        this.restorationType = filter(this.restorationType, {
+          value: DataMap.windowsVolumeBackupType.volume.value
+        });
+      }
+    }
     this.disableOriginLocation =
       this.rowCopy?.resource_status === DataMap.Resource_Status.notExist.value;
-    const params = JSON.parse(this.rowCopy.resource_properties);
+    const params = this.resourceData;
     this.isSystemBackup = params.ext_parameters.system_backup_flag;
-    this.getResourceData();
+
     this.initForm();
     this.initTable();
     this.getHosts();
   }
 
   initForm() {
+    const scriptValidator = [
+      this.baseUtilService.VALID.maxLength(8192),
+      this.baseUtilService.VALID.name(
+        this.isWindows
+          ? CommonConsts.REGEX.windowsScript
+          : CommonConsts.REGEX.linuxScript,
+        false
+      )
+    ];
     this.formGroup = this.fb.group({
       restoreTo: new FormControl(RestoreV2LocationType.ORIGIN),
       originalHost: new FormControl({
@@ -170,23 +206,19 @@ export class VolumeRestoreComponent implements OnInit {
       enable_bare_metal_restore: new FormControl(false),
       restore_non_system_volume: new FormControl(false),
       reboot_system_after_restore: new FormControl(false),
+      restorationType: new FormControl('', {
+        validators: this.isWindows
+          ? [this.baseUtilService.VALID.required()]
+          : null
+      }),
       preScript: new FormControl('', {
-        validators: [
-          this.baseUtilService.VALID.maxLength(8192),
-          this.baseUtilService.VALID.name(CommonConsts.REGEX.linuxScript, false)
-        ]
+        validators: scriptValidator
       }),
       postScript: new FormControl('', {
-        validators: [
-          this.baseUtilService.VALID.maxLength(8192),
-          this.baseUtilService.VALID.name(CommonConsts.REGEX.linuxScript, false)
-        ]
+        validators: scriptValidator
       }),
       executeScript: new FormControl('', {
-        validators: [
-          this.baseUtilService.VALID.maxLength(8192),
-          this.baseUtilService.VALID.name(CommonConsts.REGEX.linuxScript, false)
-        ]
+        validators: scriptValidator
       })
     });
 
@@ -233,7 +265,7 @@ export class VolumeRestoreComponent implements OnInit {
           this.disableOriginLocation =
             this.rowCopy?.resource_status ===
             DataMap.Resource_Status.notExist.value;
-          if (!this.disableOriginLocation) {
+          if (!this.disableOriginLocation && !this.hasSystemVolume) {
             this.formGroup
               .get('restoreTo')
               .setValue(RestoreV2LocationType.ORIGIN);
@@ -249,6 +281,16 @@ export class VolumeRestoreComponent implements OnInit {
         };
         defer(() => this.disableOkBtn());
       });
+
+    this.formGroup.get('restorationType').valueChanges.subscribe(res => {
+      if (
+        res === DataMap.windowsVolumeBackupType.bareMetal.value &&
+        this.formGroup.get('restoreTo').value !== RestoreV2LocationType.NEW
+      ) {
+        this.formGroup.get('restoreTo').setValue(RestoreV2LocationType.NEW);
+      }
+      this.volumeChange();
+    });
   }
 
   initTable() {
@@ -272,12 +314,18 @@ export class VolumeRestoreComponent implements OnInit {
             filter: {
               type: 'select',
               options: this.dataMapService.toArray('volumeType')
-            }
+            },
+            hidden: this.isWindows
           },
           {
             key: 'size',
             name: this.i18n.get('common_size_label'),
             cellRender: this.capacityTpl
+          },
+          {
+            key: 'fileSystem',
+            name: this.i18n.get('protection_file_system_type_label'),
+            hidden: !this.isWindows
           }
         ],
         rows: {
@@ -290,26 +338,29 @@ export class VolumeRestoreComponent implements OnInit {
         selectionChange: data => {
           this.hasSystemVolume = false;
           this.selectionPort = data;
-          each(data, item => {
-            let tmp = item.mountPoint.split(',');
-            each(tmp, volume => {
-              if (
-                find(this.systemVolumeList, val => {
-                  return startsWith(volume, val) || volume === '/';
-                })
-              ) {
-                this.hasSystemVolume = true;
+          if (!this.isWindows) {
+            each(data, item => {
+              let tmp = item.mountPoint.split(',');
+              each(tmp, volume => {
                 if (
-                  this.formGroup.value.restoreTo ===
-                  RestoreV2LocationType.ORIGIN
+                  find(this.systemVolumeList, val => {
+                    return startsWith(volume, val) || volume === '/';
+                  })
                 ) {
-                  this.formGroup
-                    .get('restoreTo')
-                    .setValue(RestoreV2LocationType.NEW);
+                  this.hasSystemVolume = true;
+                  if (
+                    this.formGroup.value.restoreTo ===
+                    RestoreV2LocationType.ORIGIN
+                  ) {
+                    this.formGroup
+                      .get('restoreTo')
+                      .setValue(RestoreV2LocationType.NEW);
+                  }
                 }
-              }
+              });
             });
-          });
+          }
+
           if (!!this.targetData.length) {
             this.targetData = filter(this.targetData, item => {
               return find(this.selectionPort, tmp => tmp.name === item.name);
@@ -322,7 +373,15 @@ export class VolumeRestoreComponent implements OnInit {
                 name: tmp.name,
                 path: tmp.name,
                 volumeOptions: filter(this.volumeOptions, item => {
-                  return item.size >= tmp.size;
+                  return (
+                    toNumber(item.size ?? 0) >= tmp.size &&
+                    !(
+                      this.isWindows &&
+                      this.formGroup.get('restorationType').value ===
+                        DataMap.windowsVolumeBackupType.volume.value &&
+                      item.volumeType !== '3'
+                    )
+                  );
                 })
               });
             }
@@ -339,35 +398,11 @@ export class VolumeRestoreComponent implements OnInit {
         showTotal: true
       }
     };
-    const volumeArray = JSON.parse(this.rowCopy.properties).volumeInfoSet;
-    each(volumeArray, item => {
-      let tmp = item.mountPoint.split(',');
-      if (!tmp) {
-        item.type = false;
-      }
-      each(tmp, volume => {
-        assign(item, {
-          type: !!find(this.systemVolumeList, val => {
-            return startsWith(volume, val) || volume === '/';
-          })
-        });
-      });
-      this.displayData.push({
-        ...item,
-        name: item.volumePath
-      });
-    });
-    this.tableData = {
-      data: this.displayData,
-      total: size(this.displayData)
-    };
-  }
+    const properties = JSON.parse(this.rowCopy.properties);
 
-  search(e) {
-    this.displayData = [];
-    const volumeArray = JSON.parse(this.rowCopy.properties).volumeInfoSet;
+    const volumeArray = properties.volumeInfoSet;
     each(volumeArray, item => {
-      if (item.volumePath.toLowerCase().indexOf(e.toLowerCase()) !== -1) {
+      if (!this.isWindows) {
         let tmp = item.mountPoint.split(',');
         if (!tmp) {
           item.type = false;
@@ -379,10 +414,52 @@ export class VolumeRestoreComponent implements OnInit {
             })
           });
         });
-        this.displayData.push({
-          ...item,
-          name: item.volumePath
-        });
+      } else {
+        item.fileSystem = item.mountType;
+      }
+      this.displayData.push({
+        ...item,
+        name: this.isWindows ? item.mountPoint : item.volumePath
+      });
+    });
+    this.tableData = {
+      data: this.displayData,
+      total: size(this.displayData)
+    };
+  }
+
+  search(e) {
+    this.displayData = [];
+    const properties = JSON.parse(this.rowCopy.properties);
+
+    const volumeArray = properties.volumeInfoSet;
+    each(volumeArray, item => {
+      if (!this.isWindows) {
+        if (item.volumePath.toLowerCase().indexOf(e.toLowerCase()) !== -1) {
+          let tmp = item.mountPoint.split(',');
+          if (!tmp) {
+            item.type = false;
+          }
+          each(tmp, volume => {
+            assign(item, {
+              type: !!find(this.systemVolumeList, val => {
+                return startsWith(volume, val) || volume === '/';
+              })
+            });
+          });
+          this.displayData.push({
+            ...item,
+            name: this.isWindows ? item.name : item.volumePath
+          });
+        }
+      } else {
+        if (item.mountPoint.toLowerCase().indexOf(e.toLowerCase()) !== -1) {
+          this.displayData.push({
+            ...item,
+            name: item.mountPoint,
+            fileSystem: item.mountType
+          });
+        }
       }
     });
     this.tableData = {
@@ -423,7 +500,8 @@ export class VolumeRestoreComponent implements OnInit {
           each(recordsTemp, item => {
             if (
               item.environment?.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
+                DataMap.resource_LinkStatus_Special.normal.value &&
+              item.environment?.osType === this.resourceData.environment_os_type
             ) {
               hostArr.push({
                 key: item.environment.uuid,
@@ -477,34 +555,26 @@ export class VolumeRestoreComponent implements OnInit {
           res.totalCount === 0
         ) {
           const tableData = [];
+
           each(recordsTemp, item => {
-            let tmp = item.extendInfo.volumeMountPoints.split(',');
-            const diff = !!intersection(this.forbiddenPath, tmp).length;
-            let redFlag = false;
-            each(tmp, volume => {
-              if (
-                find(this.systemVolumeList, val => {
-                  return startsWith(volume, val);
+            if (!this.isWindows) {
+              this.parseLinuxVolume(item, tableData);
+            } else if (
+              this.isWindows &&
+              item.extendInfo?.fileSystem === 'NTFS'
+            ) {
+              tableData.push(
+                assign(item, {
+                  key: get(item, 'extendInfo.volumeName'),
+                  size: get(item, 'extendInfo.totalSize'),
+                  value: get(item, 'extendInfo.volumeName'),
+                  label: get(item, 'extendInfo.displayName'),
+                  fileSystem: get(item, 'extendInfo.fileSystem'),
+                  volumeType: get(item, 'extendInfo.volumeType'),
+                  volumeName: get(item, 'extendInfo.volumeName'),
+                  isLeaf: true
                 })
-              ) {
-                redFlag = true;
-              }
-            });
-            if (!diff && !redFlag) {
-              tableData.push({
-                ...item,
-                key: get(item, 'extendInfo.path'),
-                value: get(item, 'extendInfo.path'),
-                label: get(item, 'extendInfo.path'),
-                size: get(item, 'extendInfo.size'),
-                volume: get(item, 'extendInfo.path'),
-                volumeMountPoints: get(
-                  item,
-                  'extendInfo.volumeMountPoints',
-                  '[]'
-                ),
-                isLeaf: true
-              });
+              );
             }
           });
           this.volumeOptions = cloneDeep(tableData);
@@ -515,31 +585,58 @@ export class VolumeRestoreComponent implements OnInit {
       });
   }
 
+  private parseLinuxVolume(item: any, tableData: any[]) {
+    let tmp = item.extendInfo.volumeMountPoints.split(',');
+    const diff = !!intersection(this.forbiddenPath, tmp).length;
+    let redFlag = false;
+    each(tmp, volume => {
+      if (
+        find(this.systemVolumeList, val => {
+          return startsWith(volume, val);
+        })
+      ) {
+        redFlag = true;
+      }
+    });
+    if (!diff && !redFlag) {
+      tableData.push({
+        ...item,
+        key: get(item, 'extendInfo.path'),
+        value: get(item, 'extendInfo.path'),
+        label: get(item, 'extendInfo.path'),
+        size: get(item, 'extendInfo.size'),
+        volume: get(item, 'extendInfo.path'),
+        volumeMountPoints: get(item, 'extendInfo.volumeMountPoints', '[]'),
+        isLeaf: true
+      });
+    }
+  }
+
   getParams() {
     let targetInfo = [];
     if (this.formGroup.value.enable_bare_metal_restore) {
       const volumeArray = JSON.parse(this.rowCopy.properties).volumeInfoSet;
       each(volumeArray, item => {
         targetInfo.push({
-          volumeId: item.uuid,
-          dataDstPath: item.volumePath
+          volumeId: item?.uuid,
+          dataDstPath: this.isWindows ? item.name : item.volumePath
         });
       });
     } else {
       if (this.formGroup.value.restoreTo === RestoreV2LocationType.NEW) {
-        each(this.targetData, item => {
-          targetInfo.push({
-            volumeId: item.uuid,
-            dataDstPath: item.volume
-          });
-        });
+        targetInfo = this.targetData.map(item => ({
+          dataDstPath: item.volume,
+          ...(this.isWindows
+            ? { volumeName: item.volumeName }
+            : { volumeId: item.uuid })
+        }));
       } else {
-        each(this.selectionPort, item => {
-          targetInfo.push({
-            volumeId: item.uuid,
-            dataDstPath: item.name
-          });
-        });
+        targetInfo = this.selectionPort.map(item => ({
+          dataDstPath: this.isWindows ? item.volumeName : item.name,
+          ...(this.isWindows
+            ? { volumeName: item.volumeName }
+            : { volumeId: item.uuid })
+        }));
       }
     }
 
@@ -572,9 +669,7 @@ export class VolumeRestoreComponent implements OnInit {
         failPostScript: this.formGroup.value.executeScript
       },
       extendInfo: {
-        restoreInfoSet: JSON.stringify(targetInfo),
-        enable_bare_metal_restore: this.formGroup.value
-          .enable_bare_metal_restore
+        restoreInfoSet: JSON.stringify(targetInfo)
       }
     };
     if (this.formGroup.value.enable_bare_metal_restore) {
@@ -587,6 +682,19 @@ export class VolumeRestoreComponent implements OnInit {
         params,
         'extendInfo.reboot_system_after_restore',
         this.formGroup.value.reboot_system_after_restore
+      );
+    }
+    if (this.isWindows) {
+      set(
+        params,
+        'extendInfo.win_volume_restore_type',
+        this.formGroup.value.restorationType
+      );
+    } else {
+      set(
+        params,
+        'extendInfo.enable_bare_metal_restore',
+        this.formGroup.value.enable_bare_metal_restore
       );
     }
     return params;
@@ -657,8 +765,20 @@ export class VolumeRestoreComponent implements OnInit {
     });
     each(this.targetData, item => {
       item.volumeOptions = this.volumeOptions.filter(tmp => {
-        return tmp.size >= item.size;
+        return (
+          toNumber(tmp.size ?? 0) >= item.size &&
+          !(
+            this.isWindows &&
+            this.formGroup.get('restorationType').value ===
+              DataMap.windowsVolumeBackupType.volume.value &&
+            tmp.volumeType !== '3'
+          )
+        );
       });
+      // 若因为裸机和卷的切换导致原本可选的没了，就需要更新
+      if (!some(item.volumeOptions, { value: item.volume })) {
+        item.volume = '';
+      }
     });
     let unchosen = filter(this.targetData, item => {
       return !item.volume;
@@ -677,12 +797,10 @@ export class VolumeRestoreComponent implements OnInit {
       if (this.formGroup.value.restoreTo === RestoreV2LocationType.ORIGIN) {
         this.modal.getInstance().lvOkDisabled =
           this.formGroup.invalid || !this.selectionPort.length;
-      } else if (!this.formGroup.invalid) {
-        if (!this.selectionPort.length) {
-          this.modal.getInstance().lvOkDisabled = true;
-        } else {
-          this.volumeChange();
-        }
+      } else {
+        this.modal.getInstance().lvOkDisabled =
+          this.formGroup.invalid || !this.selectionPort.length;
+        this.volumeChange();
       }
     }
   }

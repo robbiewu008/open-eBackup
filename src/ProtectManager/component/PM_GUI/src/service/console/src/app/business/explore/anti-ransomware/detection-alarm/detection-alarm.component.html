@@ -1,3 +1,4 @@
+<h2 class='aui-gutter-column-md'>{{ 'explore_real_time_detection_alarm_label' | i18n }}</h2>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,12 +12,10 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<h2 class='aui-gutter-column-md'>{{ 'explore_real_time_detection_alarm_label' | i18n }}</h2>
 <div class="aui-paginator-container">
     <ng-container *ngIf="!total">
         <div class="alarm-no-data">
-            <i lv-icon="aui-icon-no-data"></i>
-            <div class="no-data-label">{{'common_no_data_label' | i18n}}</div>
+            <lv-empty></lv-empty>
         </div>
     </ng-container>
     <ng-container *ngIf="!!total">
@@ -38,12 +37,12 @@
                                     </span>
                                 </span>
                             </div>
-                            <lv-group lvGutter="12px" style="margin-left: 40px;">
+                            <lv-group lvGutter="12px" style="margin-left: 40px;" lvDirection="vertical">
                                 <span *ngIf="item?.alarmCount" class='aui-link detail-label' lv-overflow (click)="getDetail(item)">
                                  {{item.alarmCount}}
                                  {{ 'explore_count_system_alarm_label' |i18n }}
                              </span>
-                             <span *ngIf="item?.sanAlarmCount" class='aui-link detail-label' lv-overflow (click)="getDetail(item)">
+                             <span *ngIf="item?.sanAlarmCount" class='aui-link detail-label' lv-overflow (click)="getDetail(item, true)">
                                  {{item?.sanAlarmCount}}
                                  {{ 'explore_san_count_system_alarm_label' |i18n }}
                              </span> 

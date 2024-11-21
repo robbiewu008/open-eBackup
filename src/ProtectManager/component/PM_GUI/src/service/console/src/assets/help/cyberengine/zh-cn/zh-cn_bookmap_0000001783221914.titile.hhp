@@ -7,7 +7,7 @@ Display compile progress=No
 Binary Index=No
 Language=0x0804 Chinese (CHINA)
 Default topic=zh-cn_topic_0000001783062250.html
-Title= 00-OceanCyber 300 1.2.0 联机帮助
+Title= 00-OceanCyber 300 1.1.0 联机帮助
 
 [WINDOWS]
 hwwindow=,"zh-cn_bookmap_0000001783221914.hhc","","zh-cn_topic_0000001783062250.html","zh-cn_topic_0000001783062250.html",,,,,0x62520,200,0x300E,[50,10,550,470],0xB0000,,,,,,0
@@ -27,6 +27,7 @@ zh-cn_topic_0000001867860069.html
 zh-cn_topic_0000001783060330.html
 zh-cn_topic_0000001783060402.html
 zh-cn_topic_0000001829899749.html
+zh-cn_topic_0000002085819285.html
 zh-cn_topic_0000001829899793.html
 zh-cn_topic_0000001783220050.html
 zh-cn_topic_0000001810100230.html
@@ -95,6 +96,7 @@ zh-cn_topic_0000001832328596.html
 zh-cn_topic_0000001879247741.html
 zh-cn_topic_0000001832488412.html
 zh-cn_topic_0000001879127949.html
+zh-cn_topic_0000002056035626.html
 zh-cn_topic_0000001829819529.html
 zh-cn_topic_0000001832328600.html
 zh-cn_topic_0000001829819537.html
@@ -117,24 +119,27 @@ zh-cn_topic_0000001832328620.html
 zh-cn_topic_0000001879247765.html
 zh-cn_topic_0000001832488436.html
 zh-cn_topic_0000001879127973.html
+zh-cn_topic_0000002060029394.html
 zh-cn_topic_0000001832328628.html
 zh-cn_topic_0000001879247769.html
 zh-cn_topic_0000001832488444.html
 zh-cn_topic_0000001832329248.html
 zh-cn_topic_0000001879127977.html
-public_sys-resources/icon-warning.gif
-public_sys-resources/note_3.0-zh-cn.png
-public_sys-resources/icon-arrowdn.gif
-public_sys-resources/icon-note.gif
-public_sys-resources/icon-caution.gif
-public_sys-resources/icon-notice.gif
-public_sys-resources/icon-danger.gif
-public_sys-resources/icon-huawei.gif
-public_sys-resources/deltaend.gif
+zh-cn_topic_0000002077228765.html
+zh-cn_topic_0000002077110145.html
 public_sys-resources/icon-tip.gif
-public_sys-resources/danger_3.0-zh-cn.png
-public_sys-resources/caution_3.0-zh-cn.png
-public_sys-resources/notice_3.0-zh-cn.png
+public_sys-resources/icon-arrowdn.gif
 public_sys-resources/delta.gif
+public_sys-resources/notice_3.0-zh-cn.png
+public_sys-resources/icon-danger.gif
 public_sys-resources/warning_3.0-zh-cn.png
 public_sys-resources/icon-arrowrt.gif
+public_sys-resources/deltaend.gif
+public_sys-resources/icon-note.gif
+public_sys-resources/icon-caution.gif
+public_sys-resources/caution_3.0-zh-cn.png
+public_sys-resources/icon-huawei.gif
+public_sys-resources/icon-warning.gif
+public_sys-resources/danger_3.0-zh-cn.png
+public_sys-resources/icon-notice.gif
+public_sys-resources/note_3.0-zh-cn.png

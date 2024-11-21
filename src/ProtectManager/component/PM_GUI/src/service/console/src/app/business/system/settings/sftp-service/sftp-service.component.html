@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
   <div class="aui-header-1 header-container">
     <lv-group lvGutter="8px">
       <h1>{{ 'system_sftp_label' | i18n }}</h1>
@@ -80,11 +80,9 @@
           </span>
         </div>
         <div class="dashed-line aui-gutter-column-lg"></div>
-        <div class="header-container">
+        <div class="header-container aui-gutter-column-md">
           <lv-group lvGutter="8px">
             <h3>{{ 'system_sftp_label' | i18n }}</h3>
-          </lv-group>
-          <div class="switch-container">
             <lv-switch
               [ngModel]="sftpSwitch"
               [lvControl]="true"
@@ -95,7 +93,7 @@
               pmOperation="OpenSFTPService"
             >
             </lv-switch>
-          </div>
+          </lv-group>
         </div>
         <ng-container *ngTemplateOutlet="openContentTpl"></ng-container>
         <ng-container *ngTemplateOutlet="closeContentTpl"></ng-container>
@@ -111,8 +109,7 @@
 
 <ng-template #noDataTpl>
   <div class="node-no-data">
-    <i lv-icon="lv-icon-no-data"></i>
-    <div class="no-data-label">{{ 'common_no_data_label' | i18n }}</div>
+    <lv-empty></lv-empty>
   </div>
 </ng-template>
 

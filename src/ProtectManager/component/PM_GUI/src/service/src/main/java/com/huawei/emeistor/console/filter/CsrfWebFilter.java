@@ -14,6 +14,7 @@ package com.huawei.emeistor.console.filter;
 
 import com.huawei.emeistor.console.bean.SessionInfo;
 import com.huawei.emeistor.console.contant.ConfigConstant;
+import com.huawei.emeistor.console.util.EncryptorRestClient;
 import com.huawei.emeistor.console.util.RequestUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +22,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -43,8 +47,22 @@ public class CsrfWebFilter extends OncePerRequestFilter {
     @Value("#{'${security.csrf.ignore.path}'.split(',')}")
     private List<String> csrfIgnorePaths;
 
+    @Value("#{'${security.csrf.download.ignore}'.split(',')}")
+    private List<String> downloadPaths;
+
+    private List<Pattern> downloadPathsPattern;
+
     @Autowired
     private RequestUtil requestUtil;
+
+    @Autowired
+    private EncryptorRestClient encryptorRestClient;
+
+    @Override
+    protected void initFilterBean() throws ServletException {
+        super.initFilterBean();
+        downloadPathsPattern = downloadPaths.stream().map(Pattern::compile).collect(Collectors.toList());
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -55,10 +73,19 @@ public class CsrfWebFilter extends OncePerRequestFilter {
             return;
         }
 
+        // 日志下载切换到标准的浏览器下载是无法携带自定义header的，和安全蓝军确认过，GET请求不需要强制带csrf token，因此这里配置白名单
+        if (isAllowedDownloadPath(request.getRequestURI(), request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 校验CSRF TOKEN
         String headerToken = request.getHeader(ConfigConstant.HEADER_NAME);
         String token = loadTokenFromCookie(request);
         SessionInfo sessionInfo = requestUtil.getSessionInfo();
+        // csrfToken是缓存中获取，需要解密
+        String decryptCsrfToken = encryptorRestClient.decrypt(sessionInfo.getCsrfToken()).getPlaintext();
+        sessionInfo.setCsrfToken(decryptCsrfToken);
         if (!isaMatchCsrfToken(headerToken, token, sessionInfo)) {
             log.error("Csrf token check failed! url: {}", request.getRequestURI());
             response.setStatus(HttpStatus.FOUND.value());
@@ -97,5 +124,19 @@ public class CsrfWebFilter extends OncePerRequestFilter {
         }
 
         return cookie.getValue();
+    }
+
+    /**
+     * 判断是否下载日志/文件类的白名单请求，通过正则的方式匹配url，以及请求方法
+     *
+     * @param uri 请求的uri
+     * @param method 请求方法
+     * @return 是否属于下载的白名单
+     */
+    protected boolean isAllowedDownloadPath(String uri, String method) {
+        if (!HttpMethod.GET.name().equals(method)) {
+            return false;
+        }
+        return downloadPathsPattern.stream().anyMatch(pattern -> pattern.matcher(uri).matches());
     }
 }

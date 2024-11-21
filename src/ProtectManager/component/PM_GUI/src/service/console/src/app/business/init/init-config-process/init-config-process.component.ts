@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   EventEmitter,
@@ -33,7 +33,9 @@ import {
   I18NService,
   LogManagerApiService,
   MODAL_COMMON,
-  SystemApiService
+  SystemApiService,
+  getAppTheme,
+  ThemeEnum
 } from 'app/shared';
 import { ExportFilesService } from 'app/shared/components/export-files/export-files.component';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
@@ -221,5 +223,21 @@ export class InitConfigProcessComponent implements OnInit, OnDestroy {
 
   modifyReset() {
     this.onResetChange.emit('modifyFail');
+  }
+
+  isLight() {
+    return getAppTheme(this.i18n) === ThemeEnum.light;
+  }
+
+  getInitLoadingImg(): string {
+    return this.isLight()
+      ? 'assets/img/init_loading.gif'
+      : 'assets/img/init_loading_dark.gif';
+  }
+
+  getInitFailedImg(): string {
+    return this.isLight()
+      ? 'assets/img/init_failed.png'
+      : 'assets/img/init_failed_dark.png';
   }
 }

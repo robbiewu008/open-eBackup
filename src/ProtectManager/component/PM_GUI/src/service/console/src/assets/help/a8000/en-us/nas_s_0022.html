@@ -1,0 +1,103 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Adding a Storage Device (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="nas_s_0020.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="nas_s_0022">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Adding a Storage Device (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="nas_s_0022"></a><a name="nas_s_0022"></a>
+
+<h1 class="topictitle1">Step 2: Adding a Storage Device (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)</h1>
+<div><p>This section describes how to add a storage device if you want the <span>OceanProtect</span> to automatically scan file systems on the storage device before performing NAS share backup and restoration. Otherwise, skip this section.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>The <span>OceanProtect</span> can protect a NAS share on the following storage devices:</p>
+<ul id="nas_s_0022__ul476381131215"><li id="nas_s_0022__li15575172132717">OceanStor V5</li><li id="nas_s_0022__li632419162715">OceanStor Pacific</li><li id="nas_s_0022__li207631011131214">NetApp ONTAP</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><p>If the storage device is NetApp ONTAP, ensure that the configuration of <span class="uicontrol"><b>management interfaces</b></span> is completed on the NetApp ONTAP management page. Otherwise, the storage device fails to be added.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="nas_s_0022__nas_s_0013_en-us_topic_0000001839142377_uicontrol14672036027"><b><span id="nas_s_0022__nas_s_0013_en-us_topic_0000001839142377_text19671936024"><strong>Protection</strong></span> &gt; File Systems &gt; Storage Devices</b></span>.</span><p><div class="note" id="nas_s_0022__nas_s_0013_en-us_topic_0000001839142377_note172851315173"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="nas_s_0022__nas_s_0013_en-us_topic_0000001839142377_p77283132179">For 1.5.0, choose <span class="uicontrol" id="nas_s_0022__nas_s_0013_en-us_topic_0000001839142377_uicontrol13191103461714"><b><span id="nas_s_0022__nas_s_0013_en-us_topic_0000001839142377_text121911134171715"><strong>Protection</strong></span> &gt; File Services &gt; Storage Device</b></span>.</p>
+</div></div>
+</p></li><li><span>Click <span class="uicontrol" id="nas_s_0022__nas_s_0013_uicontrol264533912494"><b><span id="nas_s_0022__nas_s_0013_text6739926144512"><strong>Add Device</strong></span></b></span> to add a storage device.</span></li><li><span>Select a device type.</span><p><ul><li id="nas_s_0022__nas_s_0022_li15575172132717">OceanStor V5</li><li id="nas_s_0022__nas_s_0022_li632419162715">OceanStor Pacific</li><li id="nas_s_0022__nas_s_0022_li207631011131214">NetApp ONTAP</li></ul>
+</p></li><li><span>Configure parameters as required. <a href="#nas_s_0022__table20829151954610">Table 1</a> describes the related parameters.</span><p>
+<div class="tablenoborder"><a name="nas_s_0022__table20829151954610"></a><a name="table20829151954610"></a><table cellpadding="4" cellspacing="0" summary="" id="nas_s_0022__table20829151954610" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for registering a device</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.4.2.4.2.1.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.4.2.4.2.1.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p><span><strong>Device Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p>Name of a user-defined device.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p><span><strong>IP Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p>Management IP address of the storage device.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p><span><strong>Port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p>Number of the port for communication between the <span>OceanProtect</span> and the management plane of the storage device.</p>
+<p>For NetApp ONTAP storage devices, the default port number is <strong>443</strong>. For other types of storage devices, the default port number is <strong>8088</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p>Username and password of a storage device administrator. Ensure that the RESTful login mode is available for the user and the password has been initialized.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="nas_s_0022__nas_s_0013_p1722194714299">Use an administrator account. Otherwise, resources on the device may fail to be backed up.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p><span><strong>Password</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p><span><strong>Certificate verification</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p>Enabled by default. Import the storage device certificate obtained in <a href="nas_s_0012.html">Step 1: Obtaining the CA Certificate of a Storage Device</a> to ensure the security of interactions between the <span id="nas_s_0022__nas_s_0013_text1420811157135">OceanProtect</span> and storage device. After this function is disabled, security risks may exist in the communication between the system and the storage device. Exercise caution when performing this operation.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span><p><p>When a device is registered successfully, information about the registered storage device is displayed on the <span class="uicontrol"><b><span><strong>Storage Device</strong></span></b></span> page.</p>
+<p>The <span>OceanProtect</span> automatically scans NAS shares in the storage device and displays them on the <span class="uicontrol"><b><span id="nas_s_0022__en-us_topic_0000001839142377_text99081414144119"><strong>Protection</strong></span> &gt; File Systems &gt; NAS Shares</b></span> page. For 1.5.0, they are displayed on the <span class="uicontrol"><b><span id="nas_s_0022__en-us_topic_0000001839142377_text51105144188"><strong>Protection</strong></span> &gt; File Services &gt; NAS File Systems</b></span> page. If authentication information is required for accessing a NAS share, configure authentication information for the NAS share on the <span>OceanProtect</span>. For details, see <a href="nas_s_0023.html">Step 3: Configuring NAS Share Information (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)</a>.</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="nas_s_0020.html">Backing Up a NAS Share</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -1,3 +1,4 @@
+<lv-form class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form class="formGroup">
     <ng-container *ngFor='let item of info'>
         <lv-form-item>
             <div class="aui-gutter-column-lg">
@@ -78,6 +78,27 @@
                                         <ng-container *ngFor="let item of lvTable.renderData;">
                                             <tr>
                                                 <td>{{item.ip}}</td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </lv-datatable>
+                                <lv-paginator #page [hidden]="child.value?.length < 10" lvMode="simple"
+                                    lvShowPageSizeOptions="false">
+                                </lv-paginator>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'volumePath'">
+                                <lv-datatable [lvData]="child.value" [lvPaginator]="page" #lvTable lvResize>
+                                    <thead>
+                                        <tr>
+                                            <th>{{'common_name_label' | i18n}}</th>
+                                            <th>{{'protection_volume_live_mount_path_label' | i18n}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let item of lvTable.renderData;">
+                                            <tr>
+                                                <td>{{item.name}}</td>
+                                                <td>{{item.dst_path |nil}}</td>
                                             </tr>
                                         </ng-container>
                                     </tbody>

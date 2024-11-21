@@ -1,4 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -142,7 +155,7 @@
            <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
            <div class="notebody">
             <ul id="EN-US_TOPIC_0000001792526934__en-us_topic_0000001311093369_ul2568183912262">
-             <li id="EN-US_TOPIC_0000001792526934__li10617949153020">In the non-multi-cluster scenario, if the certificate type is <strong id="EN-US_TOPIC_0000001792526934__b101618332403">Server Certificate</strong> or <strong id="EN-US_TOPIC_0000001792526934__b43161037204011">ProtectAgent Certificate</strong>, importing the certificate is to push the updated certificate to the ProtectAgent hosts in batches.</li>
+             <li id="EN-US_TOPIC_0000001792526934__li10617949153020">If the certificate to be imported is a server certificate or ProtectAgent certificate, the system will push the CA certificate to all member nodes after the certificate is imported.</li>
              <li id="EN-US_TOPIC_0000001792526934__en-us_topic_0000001311093369_li15681939152612">In the remote replication scenario, after replacing the server certificate of the source or target end, you need to use the certificate issued by the same CA certificate to replace the server certificate of the other end. Otherwise, remote replication will fail.</li>
              <li id="EN-US_TOPIC_0000001792526934__en-us_topic_0000001311093369_li75697397266">If ProtectAgent has been installed and the new server certificate and client certificate are not issued by the same CA certificate, when you update the server certificate, you need to replace the client certificate after the server certificate is updated. For details, see <a href="en-us_topic_0000001792367190.html">Replacing the SSL Certificate of ProtectAgent on the Client (Non-Windows OS)</a>.</li>
              <li id="EN-US_TOPIC_0000001792526934__li14512092518">Only certificates whose signature algorithm is SHA-256, SHA-384, or SHA-512 can be imported.</li>

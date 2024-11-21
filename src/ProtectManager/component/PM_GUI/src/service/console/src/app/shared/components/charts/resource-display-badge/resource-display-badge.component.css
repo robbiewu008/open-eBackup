@@ -17,6 +17,7 @@
 .badage-container {
   margin-top: 96px;
   white-space: nowrap;
+  justify-content: space-between;
 }
 
 .label-container:nth-child(2) {

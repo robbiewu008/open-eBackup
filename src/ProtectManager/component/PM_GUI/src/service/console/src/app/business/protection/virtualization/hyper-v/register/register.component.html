@@ -1,3 +1,4 @@
+<lv-form [lvLabelColon]="false" [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [lvLabelColon]="false" [formGroup]="formGroup" class="formGroup">
     <lv-form-item>
         <lv-form-label lvRequired>{{ 'common_type_label' | i18n }}</lv-form-label>
         <lv-form-control>
@@ -30,9 +30,17 @@
             {{ 'protection_proxy_host_label' | i18n }}
         </lv-form-label>
         <lv-form-control>
-            <lv-select [lvOptions]="proxyOptions" formControlName="agents" lvValueKey="value" lvShowFilter
+          <ng-container *ngIf="formGroup.value.type !== dataMap.Resource_Type.hyperVCluster.value">
+            <lv-select [lvOptions]="proxyOptions" formControlName="agent" lvValueKey="value" lvShowFilter
                 lvShowCheckAll lvFilterKey="label" lvFilterMode="contains" [lvContentTemplate]='contentTpl'>
             </lv-select>
+          </ng-container>
+          <ng-container *ngIf="formGroup.value.type === dataMap.Resource_Type.hyperVCluster.value">
+            <lv-select [lvOptions]='proxyOptions' formControlName='agents' lvValueKey='value' lvMode='multiple'
+                       lvShowFilter lvShowCheckAll lvFilterKey='label' lvFilterMode='contains'
+                       [lvContentTemplate]="contentTpl">
+            </lv-select>
+          </ng-container>
             <ng-template #contentTpl let-item>
                 <lv-group lvGutter='4px'>
                     <i lv-icon="{{ item.linkStatus === '1' ? 'aui-host-online' : 'aui-host-offline'}}"></i>

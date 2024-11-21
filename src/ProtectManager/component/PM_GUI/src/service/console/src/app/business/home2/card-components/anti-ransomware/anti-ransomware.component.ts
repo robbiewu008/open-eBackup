@@ -1,27 +1,29 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, OnDestroy, OnInit, Input } from '@angular/core';
-import { find } from 'lodash';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import {
-  CopiesDetectReportService,
-  CommonConsts,
-  DataMap,
-  CookieService,
   AntiRansomwarePolicyApiService,
+  CommonConsts,
+  CookieService,
+  CopiesDetectReportService,
+  DataMap,
+  DataMapService,
   RouterUrl
 } from 'app/shared';
-import { Subject, Subscription, timer } from 'rxjs';
-import { Router } from '@angular/router';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
+import { each } from 'lodash';
+import { forkJoin, Subject, Subscription, timer } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
 interface Resources {
@@ -46,18 +48,19 @@ export class AntiRansomwareComponent implements OnInit, OnDestroy {
       return 3;
     } else if (this.infectedCount !== 0) {
       return 2;
-    } else if (this.abnormalCount !== 0) {
-      return 1;
     } else if (this.detectingCount !== 0) {
       return 4;
     } else {
       return 0;
     }
   }
-
+  DataMap = DataMap;
   RouterUrl = RouterUrl;
   queryTime = Date.now();
   totalCount = 0;
+  resourceType = this.dataMapService
+    .toArray('Detecting_Resource_Type')
+    .map(item => item.value);
   antiRansomwareType = Object.values(DataMap.antiRansomwareType);
   infectedCounts = [];
   uninfectedCounts = [];
@@ -65,11 +68,11 @@ export class AntiRansomwareComponent implements OnInit, OnDestroy {
   detectingCounts = [];
   uninspectedCounts = [];
   abnormalCounts = [];
+  detectResourceCount = 0;
   infectedCount = 0;
   uninfectedCount = 0;
   preparingCount = 0;
   detectingCount = 0;
-  abnormalCount = 0;
   uninspectedCount = 0;
   completeFlag = false;
   timeSub$: Subscription;
@@ -78,7 +81,9 @@ export class AntiRansomwareComponent implements OnInit, OnDestroy {
 
   constructor(
     public router: Router,
+    private appUtilsService: AppUtilsService,
     private cookieService: CookieService,
+    private dataMapService: DataMapService,
     private copiesDetectReportService: CopiesDetectReportService,
     private antiRansomwarePolicyApiService: AntiRansomwarePolicyApiService
   ) {}
@@ -104,33 +109,36 @@ export class AntiRansomwareComponent implements OnInit, OnDestroy {
       const params = {
         pageNo: CommonConsts.PAGE_START,
         pageSize: CommonConsts.PAGE_SIZE,
-        resourceSubType: [
-          DataMap.Detecting_Resource_Type.virtualMachine.value,
-          DataMap.Detecting_Resource_Type.cNwareVm.value,
-          DataMap.Detecting_Resource_Type.nasFileSystem.value,
-          DataMap.Detecting_Resource_Type.nasShare.value,
-          DataMap.Detecting_Resource_Type.fileset.value
-        ]
+        akLoading: false,
+        resourceSubType: this.resourceType
       };
       if (this.timeSub$) {
         this.timeSub$.unsubscribe();
       }
-      this.timeSub$ = timer(0, CommonConsts.TIME_INTERVAL)
+      this.timeSub$ = timer(0, CommonConsts.TIME_INTERVAL_RESOURCE)
         .pipe(
           switchMap(index => {
-            return this.copiesDetectReportService.ShowDetectionSummary({
-              ...params,
-              akLoading: false
+            const statsObservable = this.copiesDetectReportService.ShowDetectionStatistics(
+              { ...params, resourceSubType: this.resourceType.join(',') }
+            );
+            const summaryObservable = this.copiesDetectReportService.ShowDetectionSummary(
+              { ...params }
+            );
+            return forkJoin({
+              resourceSummary: statsObservable,
+              detectionSummary: summaryObservable
             });
           }),
           takeUntil(this.destroy$)
         )
         .subscribe(
           res => {
-            this.handleDetectionData(res);
+            this.detectResourceCount = res.resourceSummary.total;
+            this.handleDetectionData(res.detectionSummary);
             resolve(true);
           },
           () => {
+            this.detectResourceCount = 0;
             this.resetDetectionData();
             this.completeFlag = true;
             resolve(true);
@@ -150,7 +158,6 @@ export class AntiRansomwareComponent implements OnInit, OnDestroy {
     this.uninfectedCount = 0; //未感染数
     this.preparingCount = 0; //准备中数
     this.detectingCount = 0; //检测中数量
-    this.abnormalCount = 0; //异常数
     this.uninspectedCount = 0; //未检测数
   }
 
@@ -158,31 +165,7 @@ export class AntiRansomwareComponent implements OnInit, OnDestroy {
     this.resetDetectionData();
     this.queryTime = Date.now();
     this.completeFlag = false;
-    this.initCountData(
-      find(res, {
-        resource_sub_type: DataMap.Detecting_Resource_Type.virtualMachine.value
-      })
-    );
-    this.initCountData(
-      find(res, {
-        resource_sub_type: DataMap.Detecting_Resource_Type.cNwareVm.value
-      })
-    );
-    this.initCountData(
-      find(res, {
-        resource_sub_type: DataMap.Detecting_Resource_Type.nasFileSystem.value
-      })
-    );
-    this.initCountData(
-      find(res, {
-        resource_sub_type: DataMap.Detecting_Resource_Type.nasShare.value
-      })
-    );
-    this.initCountData(
-      find(res, {
-        resource_sub_type: DataMap.Detecting_Resource_Type.fileset.value
-      })
-    );
+    each(res, item => this.initCountData(item));
     this.completeFlag = true;
   }
 
@@ -210,14 +193,14 @@ export class AntiRansomwareComponent implements OnInit, OnDestroy {
     this.preparingCount += data ? data.prepare_copy_num : 0;
     this.detectingCount += data ? data.detecting_copy_num : 0;
     this.uninspectedCount += data ? data.uninspected_copy_num : 0;
-    this.abnormalCount += data ? data.abnormal_copy_num : 0;
   }
 
   getTotalCount() {
     return new Promise(resolve => {
       const params = {
         pageNo: 1,
-        pageSize: 1
+        pageSize: 1,
+        akLoading: false
       };
 
       this.antiRansomwarePolicyApiService
@@ -229,9 +212,10 @@ export class AntiRansomwareComponent implements OnInit, OnDestroy {
     });
   }
 
-  navigate(params = {}, path = RouterUrl.ExploreAntiRansomware) {
-    this.router.navigate([path], {
-      queryParams: params
-    });
+  navigate(params = null, path = RouterUrl.ExploreAntiRansomware) {
+    if (params) {
+      this.appUtilsService.setCacheValue('jump-to-anti-ransomware', params);
+    }
+    this.router.navigate([path]);
   }
 }

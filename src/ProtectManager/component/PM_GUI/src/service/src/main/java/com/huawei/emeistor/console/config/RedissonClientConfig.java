@@ -26,7 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.Codec;
 import org.redisson.codec.FstCodec;
+import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.BaseConfig;
 import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.Config;
@@ -101,6 +103,45 @@ public class RedissonClientConfig {
 
     @Autowired
     private DataSourceConfigService dataSourceConfigService;
+
+    /**
+     * 获取使用json编码的redissonClient
+     *
+     * @return RedissonClient RedissonClient
+     * @throws InterruptedException URL转换异常
+     * @throws MalformedURLException 中断异常
+     */
+    public RedissonClient redissonClientJsonCodec() throws InterruptedException, MalformedURLException {
+        return redissonClient(new JsonJacksonCodec());
+    }
+
+    private RedissonClient redissonClient(Codec codec) throws InterruptedException, MalformedURLException {
+        String password;
+        do {
+            password = encryptorRestClient.getRedisAuthFromSecret();
+            if (VerifyUtil.isEmpty(password)) {
+                log.error("NA. with redis auth info.");
+                Thread.sleep(SLEEP_TIME); // 死循环中降低CPU占用
+            }
+        } while (VerifyUtil.isEmpty(password));
+        Config config = new Config();
+        config.setCodec(codec);
+        if (isCluster()) {
+            ClusterServersConfig serverConfig = config.useClusterServers();
+            serverConfig.setNodeAddresses(
+                serverNodes.stream().map(this::convertServerAddress).collect(Collectors.toList()));
+            serverConfig.setMasterConnectionPoolSize(100);
+            serverConfig.setMasterConnectionMinimumIdleSize(50);
+            setCommonConfig(serverConfig, password);
+        } else {
+            SingleServerConfig serverConfig = config.useSingleServer();
+            serverConfig.setAddress(convertServerAddress(serverAddress));
+            serverConfig.setConnectionPoolSize(100);
+            serverConfig.setConnectionMinimumIdleSize(50);
+            setCommonConfig(serverConfig, password);
+        }
+        return Redisson.create(config);
+    }
 
     /**
      * 注册 RedissonClient

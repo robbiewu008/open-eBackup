@@ -1,0 +1,65 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Obtaining the Certificate Value During Token Authentication (for CCE)">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00062.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="documenttype" content="usermanual">
+<meta name="prodname" content="csbs">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="kubernetes_CSI_00079">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Obtaining the Certificate Value During Token Authentication (for CCE)</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="kubernetes_CSI_00079"></a><a name="kubernetes_CSI_00079"></a>
+
+<h1 class="topictitle1">Obtaining the Certificate Value During Token Authentication (for CCE)</h1>
+<div><div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Use PuTTY to log in to the Kubernetes cluster management node whose configuration file is to be obtained.</span></li><li><span>Run the <strong id="kubernetes_CSI_00079__en-us_topic_0000001779829653_b1112132302918">kubectl cluster-info</strong> command to query the current cluster control plane.</span><p><p id="kubernetes_CSI_00079__en-us_topic_0000001779829653_p1750172941910"><span><img id="kubernetes_CSI_00079__en-us_topic_0000001779829653_image2167195018217" src="en-us_image_0000001736110414.png"></span></p>
+</p></li><li><span>Log in to ManageOne Operation Portal.</span></li><li><span>Before querying the <strong id="kubernetes_CSI_00079__en-us_topic_0000001779829653_b1610215468017">kubeconfig</strong> configuration file, check whether the control plane of the current cluster is connected through the address of the application scenario. Use PuTTY to log in to the Kubernetes cluster management node whose configuration file is to be obtained.</span></li><li><span>Query the connection information to check whether the current cluster control plane is connected through the address of the user's application scenario.</span><p><p id="kubernetes_CSI_00079__en-us_topic_0000001779829653_p310122204213"><span><img id="kubernetes_CSI_00079__en-us_topic_0000001779829653_image4633442114210" src="en-us_image_0000001782965817.png"></span></p>
+<div class="p" id="kubernetes_CSI_00079__en-us_topic_0000001779829653_p13310351144516"><ul id="kubernetes_CSI_00079__en-us_topic_0000001779829653_ul8525628162613"><li id="kubernetes_CSI_00079__en-us_topic_0000001779829653_li18525928112618">If no (for example, the cluster control plane uses a private IP address for connection, while a public network address is used for the user scenario), you need to switch the kubectl access mode based on the application scenario. The procedure is as follows.<ol type="a" id="kubernetes_CSI_00079__en-us_topic_0000001779829653_ol1642539123216"><li id="kubernetes_CSI_00079__en-us_topic_0000001779829653_li064233953213">Log in to the Kubernetes cluster management node and switch the kubectl access mode based on the application scenario.<ul id="kubernetes_CSI_00079__en-us_topic_0000001779829653_ul15101113373313"><li id="kubernetes_CSI_00079__en-us_topic_0000001779829653_li910193333318">For intra-VPC access, run the following command:<pre class="screen" id="kubernetes_CSI_00079__en-us_topic_0000001779829653_screen206203453343">kubectl config use-context internal </pre>
+</li><li id="kubernetes_CSI_00079__en-us_topic_0000001779829653_li5958171893413">For Internet access, run the following command:<pre class="screen" id="kubernetes_CSI_00079__en-us_topic_0000001779829653_screen99707576352">kubectl config use-context external </pre>
+<div class="p" id="kubernetes_CSI_00079__en-us_topic_0000001779829653_p696983320377">Run the following command if two-way authentication is required for Internet access:<pre class="screen" id="kubernetes_CSI_00079__en-us_topic_0000001779829653_screen11851359153720">kubectl config use-context externalTLSVerify </pre>
+</div>
+</li></ul>
+</li><li id="kubernetes_CSI_00079__en-us_topic_0000001779829653_li8389621183313">After the setting is complete, run the <strong id="kubernetes_CSI_00079__en-us_topic_0000001779829653_b20119801395">kubectl cluster-info</strong> command again to query the cluster information and ensure that the access mode is successfully switched.</li></ol>
+</li><li id="kubernetes_CSI_00079__en-us_topic_0000001779829653_li18848195304">If yes, go to the next step.</li></ul>
+</div>
+</p></li><li><span>Run the following command to query the configuration file information. In the command output, the parameter value of <strong>certificate-authority-data</strong> in the <strong>cluster</strong> field is the certificate value.</span><p><pre class="screen">kubectl config view --minify --flatten</pre>
+<p><span><img src="en-us_image_0000001792381604.png"></span></p>
+</p></li></ol>
+<p></p>
+<p></p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="kubernetes_CSI_00062.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

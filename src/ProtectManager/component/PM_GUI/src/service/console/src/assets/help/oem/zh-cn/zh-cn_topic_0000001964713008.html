@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="执行备份">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001964713008">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>执行备份</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001964713008"></a><a name="ZH-CN_TOPIC_0000001964713008"></a>
+  <h1 class="topictitle1">执行备份</h1>
+  <div>
+   <p id="ZH-CN_TOPIC_0000001964713008__p14427140104917">执行备份前将需要保护的资源关联到指定SLA策略，系统将对这些资源按照SLA策略进行保护，并根据SLA策略周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <ul>
+     <li id="ZH-CN_TOPIC_0000001964713008__li336125611415">如果SLA定义了复制策略或归档策略，则执行手动备份时，系统会按照SLA的定义执行一次复制或归档。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p>XX</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li id="ZH-CN_TOPIC_0000001964713008__li173515381130"><span>选择SLA。</span><p></p>
+      <div class="p" id="ZH-CN_TOPIC_0000001964713008__p16181740836">
+       您也可以单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001964713008__uicontrol744210206420">“<span id="ZH-CN_TOPIC_0000001964713008__text1873812341015">创建</span>”</span>，创建新的SLA。
+       <div class="note" id="ZH-CN_TOPIC_0000001964713008__note25947145710">
+        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <p id="ZH-CN_TOPIC_0000001964713008__p125947145711"><span id="ZH-CN_TOPIC_0000001964713008__ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
+        </div>
+       </div>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“确定”</span>。</span><p></p><p>如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p> <p></p></li>
+     <li id="ZH-CN_TOPIC_0000001964713008__li647231474515"><strong>可选：</strong><span>执行手动备份。</span><p></p>
+      <div class="p" id="ZH-CN_TOPIC_0000001964713008__p11899115114511">
+       当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。
+       <ol type="a" id="ZH-CN_TOPIC_0000001964713008__ol1888313571212">
+        <li id="ZH-CN_TOPIC_0000001964713008__li6449836144510">在需要备份的资源所在行单击“更多 &gt; <span id="ZH-CN_TOPIC_0000001964713008__text18439122416533">手动备份</span>”。
+         <div class="note" id="ZH-CN_TOPIC_0000001964713008__note1527151103">
+          <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <p id="ZH-CN_TOPIC_0000001964713008__zh-cn_topic_0000001607531736_p870125314544">支持选择多个资源批量进行手动备份。勾选多个已保护的资源，在资源列表左上角选择“更多 &gt; <span id="ZH-CN_TOPIC_0000001964713008__text122852865419">手动备份</span>”。</p>
+          </div>
+         </div></li>
+        <li id="ZH-CN_TOPIC_0000001964713008__li5644125184512">设置手动备份产生的副本名称。<p id="ZH-CN_TOPIC_0000001964713008__p444210492470"><a name="ZH-CN_TOPIC_0000001964713008__li5644125184512"></a><a name="li5644125184512"></a>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p></li>
+        <li id="ZH-CN_TOPIC_0000001964713008__li9911344144518">选择保护策略：<span id="ZH-CN_TOPIC_0000001964713008__text66431546113916">全量备份</span>或<span id="ZH-CN_TOPIC_0000001964713008__text1343410023420">永久增量（合成全量）备份</span>。
+         <div class="note" id="ZH-CN_TOPIC_0000001964713008__note1552298154910">
+          <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <p id="ZH-CN_TOPIC_0000001964713008__p13522118194919"><span id="ZH-CN_TOPIC_0000001964713008__ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
+          </div>
+         </div></li>
+        <li id="ZH-CN_TOPIC_0000001964713008__li2637101024612">单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001964713008__uicontrol37271318124613">“<span id="ZH-CN_TOPIC_0000001964713008__text6821948112410">确定</span>”</span>。</li>
+       </ol>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

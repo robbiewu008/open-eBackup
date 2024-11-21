@@ -1,3 +1,4 @@
+<lv-layout lvDirection="row" *ngIf="!isCyberEngine; else cyberEngineHome">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,26 +12,17 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-layout lvDirection="row" *ngIf="!isCyberEngine; else cyberEngineHome">
   <lv-content>
     <div class="aui-overview">
-      <ul>
-        <li>
-          <aui-job-chart></aui-job-chart>
-        </li>
-        <li>
-          <aui-resource-display-badge></aui-resource-display-badge>
-        </li>
-        <li>
-          <aui-alarm-chart></aui-alarm-chart>
-        </li>
-      </ul>
+      <lv-group lvRowGutter='90' [lvColumns]="['32%', '27%','29%']" class="home-group-container">
+        <aui-job-chart></aui-job-chart>
+        <aui-resource-display-badge></aui-resource-display-badge>
+        <aui-alarm-chart></aui-alarm-chart>
+      </lv-group>
     </div>
     <div class="aui-page">
-      <div
-        class="aui-block aui-stack aui-gutter-column-md"
-        [ngClass]="{ 'home-block-container': !cookieService.isCloudBackup, 'no-performance-container': isSamlAdmin }"
-      >
+      <div class="aui-block aui-stack aui-gutter-column-md"
+        [ngClass]="{ 'home-block-container': !cookieService.isCloudBackup, 'no-performance-container': isSamlAdmin }">
         <ng-container *ngIf="!cookieService.isCloudBackup">
           <div class="system-capacity" *ngIf="isSamlAdmin">
             <aui-backup-capacity-chart></aui-backup-capacity-chart>
@@ -79,7 +71,7 @@
   <ng-container *ngIf="!isHyperdetect; else hyperdetectPerformanceView">
     <div *ngIf="enableMonitor">
       <lv-group [lvColumns]="['650px', 'auto']" *ngIf="!appUtilsService.isDistributed">
-        <div class="capacity-forecast" >
+        <div class="capacity-forecast">
           <aui-capacity-forecast-chart [curNode]="curNode"></aui-capacity-forecast-chart>
         </div>
         <div class="system-performance-chart">
@@ -91,12 +83,7 @@
       </div>
     </div>
     <div class="system-forecast-no-data" *ngIf="!enableMonitor">
-      <i lv-icon="aui-icon-no-data"></i>
-      <div class="no-data-label">
-        <a class="aui-link" [routerLink]="['/insight/performance']">
-          {{ 'common_open_forecast_link_label' | i18n }}
-        </a>
-      </div>
+      <lv-empty [lvDescription]="performanceEmptyTpl"></lv-empty>
     </div>
   </ng-container>
 
@@ -108,4 +95,10 @@
 
 <ng-template #cyberEngineHome>
   <aui-cyber-engine-home></aui-cyber-engine-home>
+</ng-template>
+
+<ng-template #performanceEmptyTpl>
+  <a class="aui-link" [routerLink]="['/insight/performance']">
+    {{ 'common_open_forecast_link_label' | i18n }}
+  </a>
 </ng-template>

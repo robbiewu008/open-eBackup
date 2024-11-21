@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup">
     <lv-form-item>
         <lv-form-label lvRequired>
             {{'protection_archive_storage_type_label' | i18n}}
@@ -28,7 +28,7 @@
         <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
             <lv-group [lvColumns]='["auto", "100px"]' lvRowGutter="12px">
                 <lv-select [lvOptions]="s3StorageNames" lvShowFilter lvFilterKey='label' lvFilterMode='contains'
-                    lvVirtualScroll formControlName="storage_id" lvValueKey='value'>
+                    lvVirtualScroll formControlName="storage_id" lvValueKey='value' lvMode="multiple" lvShowCheckAll>
                 </lv-select>
                 <button lv-button (click)="addStorage(formGroup.get('protocol').value)" class="backup-time-unit-text">
                     {{'common_add_label'|i18n}}
@@ -55,7 +55,7 @@
         <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
             <lv-group [lvColumns]='["auto", "100px"]' lvRowGutter="12px">
                 <lv-select [lvOptions]="mediaSetOptions[formGroup.get('node_id').value]" formControlName="mediaSet"
-                    lvValueKey='value' [lvContentTemplate]="tapeTpl">
+                    lvValueKey='value' [lvContentTemplate]="tapeTpl" lvMode="multiple" lvShowCheckAll>
                 </lv-select>
                 <ng-template #tapeTpl let-item>
                     <lv-group lvGutter="4px" lvDirection="vertical">
@@ -70,12 +70,6 @@
                     {{'common_add_label'|i18n}}
                 </button>
             </lv-group>
-            <div *ngIf="!!formGroup.value.mediaSet" class="retentionTip">
-                <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
-                <span>
-                    {{getMediaRetentionTip(mediaSetOptions[formGroup.get('node_id').value],formGroup.value.mediaSet)}}
-                </span>
-            </div>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item *ngIf="formGroup.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value">
@@ -89,13 +83,12 @@
             </lv-input-group>
             <ng-template #unitTpl>
                 <lv-select [lvOptions]="retentionDurationUnit" formControlName="duration_unit" class="unit-inner-select"
-                    lvValueKey="value"
-                    (ngModelChange)="changeTimeUnits($event, 'retention_duration')"></lv-select>
+                    lvValueKey="value" (ngModelChange)="changeTimeUnits($event, 'retention_duration')"></lv-select>
             </ng-template>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item
-        *ngIf="[applicationType.NASFileSystem,applicationType.NASShare,applicationType.HDFS,applicationType.ImportCopy,applicationType.Fileset].includes(application)">
+        *ngIf="[applicationType.NASFileSystem,applicationType.NASShare,applicationType.HDFS,applicationType.ImportCopy,applicationType.Fileset].includes(application) && formGroup.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value">
         <lv-form-label>
             {{'protection_auto_indexing_label' | i18n}}
             <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_auto_index_archive_tip_label' | i18n}}"
@@ -137,6 +130,15 @@
         <lv-form-control>
             <lv-switch formControlName="network_access">
             </lv-switch>
+        </lv-form-control>
+    </lv-form-item>
+    <!-- 驱动数量 -->
+    <lv-form-item *ngIf="formGroup.get('protocol').value === dataMap.Archival_Protocol.tapeLibrary.value">
+        <lv-form-label lvRequired>
+            {{'protection_archive_drive_num_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="driverCountErrorTip">
+            <input lv-input formControlName="driver_count" type="text" />
         </lv-form-control>
     </lv-form-item>
 </lv-form>

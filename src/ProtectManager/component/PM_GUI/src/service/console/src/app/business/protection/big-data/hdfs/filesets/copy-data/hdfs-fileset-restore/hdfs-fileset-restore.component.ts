@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { ModalRef } from '@iux/live';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -23,8 +23,10 @@ import {
   RestoreApiV2Service,
   RestoreV2LocationType,
   ProtectedEnvironmentApiService,
-  I18NService
+  I18NService,
+  MODAL_COMMON
 } from 'app/shared';
+import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import {
   each,
   isNumber,
@@ -74,7 +76,13 @@ export class HdfsFilesetRestoreComponent implements OnInit {
   filesetNameErrorTip = {
     ...this.baseUtilService.requiredErrorTip
   };
-
+  capacityThresholdToolTip = this.i18n.get(
+    'protection_bigdata_capacity_threshold_tip_label'
+  );
+  capacityThresholdErrorTip = {
+    ...this.baseUtilService.rangeErrorTip,
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 100])
+  };
   constructor(
     private fb: FormBuilder,
     private modal: ModalRef,
@@ -82,6 +90,7 @@ export class HdfsFilesetRestoreComponent implements OnInit {
     public dataMapService: DataMapService,
     private restoreV2Service: RestoreApiV2Service,
     public baseUtilService: BaseUtilService,
+    private drawModalService: DrawModalService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService
   ) {}
@@ -105,7 +114,13 @@ export class HdfsFilesetRestoreComponent implements OnInit {
       restoreTo: new FormControl(this.restoreLocationType.ORIGIN),
       location: new FormControl(this.resourceProp?.environment_uuid),
       new_fileset_name: new FormControl(''),
-      originalType: new FormControl(this.filesetReplaceOptions.Skip)
+      originalType: new FormControl(this.filesetReplaceOptions.Skip),
+      available_capacity_threshold: new FormControl(20, {
+        validators: [
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(1, 100)
+        ]
+      })
     });
 
     this.listenFormGroup();
@@ -412,6 +427,41 @@ export class HdfsFilesetRestoreComponent implements OnInit {
     };
   }
 
+  private showTips(params, observer: Observer<void>) {
+    let tips = this.i18n.get(
+      'protection_hbase_restore_no_backup_task_tips_label'
+    );
+    this.drawModalService.create({
+      ...MODAL_COMMON.generateDrawerOptions(),
+      lvModalKey: 'hdfs-restore-tips-info',
+      ...{
+        lvType: 'dialog',
+        lvDialogIcon: 'lv-icon-popup-danger-48',
+        lvHeader: this.i18n.get(
+          'protection_hbase_restore_no_backup_task_header_label'
+        ),
+        lvContent: tips,
+        lvWidth: 500,
+        lvOkType: 'primary',
+        lvCancelType: 'default',
+        lvOkDisabled: false,
+        lvFocusButtonId: 'cancel',
+        lvCloseButtonDisplay: true,
+        lvOk: () => this.preRestoreTask(params, observer),
+        lvCancel: () => {
+          observer.error(null);
+          observer.complete();
+        },
+        lvAfterClose: result => {
+          if (result && result.trigger === 'close') {
+            observer.error(null);
+            observer.complete();
+          }
+        }
+      }
+    });
+  }
+
   getTargetPath() {
     const targetObj =
       find(this.hostOptions, {
@@ -435,30 +485,40 @@ export class HdfsFilesetRestoreComponent implements OnInit {
         targetLocation: this.formGroup.value.restoreTo,
         targetEnv: this.formGroup.value.location,
         extendInfo: {
-          restoreOption: this.formGroup.value.originalType
+          restoreOption: this.formGroup.value.originalType,
+          available_capacity_threshold: Number(
+            this.formGroup.value.available_capacity_threshold
+          )
         }
       } as any;
-
-      this.restoreV2Service
-        .CreateRestoreTask({
-          CreateRestoreTaskRequestBody:
-            params.targetLocation === this.restoreLocationType.ORIGIN
-              ? params
-              : {
-                  ...params,
-                  targetObject: toString(this.getPath(this.fileSelection))
-                }
-        })
-        .subscribe(
-          res => {
-            observer.next();
-            observer.complete();
-          },
-          err => {
-            observer.error(err);
-            observer.complete();
-          }
-        );
+      if (this.formGroup.value.restoreTo === RestoreV2LocationType.NEW) {
+        this.showTips(params, observer);
+      } else {
+        this.preRestoreTask(params, observer);
+      }
     });
+  }
+
+  private preRestoreTask(params, observer: Observer<void>) {
+    this.restoreV2Service
+      .CreateRestoreTask({
+        CreateRestoreTaskRequestBody:
+          params.targetLocation === this.restoreLocationType.ORIGIN
+            ? params
+            : {
+                ...params,
+                targetObject: toString(this.getPath(this.fileSelection))
+              }
+      })
+      .subscribe(
+        res => {
+          observer.next();
+          observer.complete();
+        },
+        err => {
+          observer.error(err);
+          observer.complete();
+        }
+      );
   }
 }

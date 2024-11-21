@@ -5,7 +5,6 @@
     justify-content: center;
     align-items: center;
     display: inline-flex;
-    color: #000;
     padding: 0 5px 0 8px;
   }
 
@@ -77,7 +76,7 @@
 }
 
 .time-policy-container {
-  border: 1px solid #e6e6e6;
+  border: 1px solid var(--live-angular-color-card-border);
   border-radius: 4px;
 }
 
@@ -91,7 +90,7 @@
 }
 
 .unit-inner-select {
-  width: 72px;
+  max-width: 1.3rem;
 }
 
 ::ng-deep.unit-inner-select > .lv-select-wrapper {
@@ -102,5 +101,5 @@
 .trigger-action-container {
   height: 32px;
   line-height: 32px;
-  background-color: #f7f7f7;
+  background-color: var(--live-angular-color-header-background);
 }

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -39,7 +39,6 @@ import { RememberColumnsService } from 'app/shared/services/remember-columns.ser
 import { assign, cloneDeep, each, filter, find, includes, size } from 'lodash';
 import { combineLatest } from 'rxjs';
 import { CreatLogicPortComponent } from '../creat-logic-port/creat-logic-port.component';
-import { ReusePortComponent } from '../reuse-port/reuse-port.component';
 
 @Component({
   selector: 'aui-manual-config-port',
@@ -163,6 +162,13 @@ export class ManualConfigPortComponent implements OnInit {
         isShow: false,
         width: 134
       });
+      this.columns.splice(3, 0, {
+        label: this.i18n.get('common_dm_exist_label'),
+        key: 'dmExists',
+        isShow: true,
+        filter: true,
+        filterMap: this.dataMapService.toArray('initLogicPortExistStatus')
+      });
       this.columns.pop();
     }
   }
@@ -217,7 +223,10 @@ export class ManualConfigPortComponent implements OnInit {
             this.orginalNetworkType = this.networkType;
           }
           each(this.controllers, control => {
-            if (control.controllerName === item.homeControllerId) {
+            if (
+              control.controllerName ===
+              (item?.homeControllerId ?? item.currentControllerId)
+            ) {
               control.controllerData.push(item);
             }
             control.controllerData = [...control.controllerData];
@@ -425,38 +434,6 @@ export class ManualConfigPortComponent implements OnInit {
     );
   }
 
-  reusePort(type) {
-    this.drawModalService.create(
-      assign({}, MODAL_COMMON.generateDrawerOptions(), {
-        lvModalKey: 'reusePort',
-        lvWidth: MODAL_COMMON.normalWidth + 100,
-        lvHeader: this.i18n.get('common_reuse_dm_port_label'),
-        lvContent: ReusePortComponent,
-        lvOkDisabled: true,
-        lvComponentParams: {
-          controlType: type,
-          memberEsn: this.memberEsn,
-          portData: this.dmLogicData,
-          data: this.rawData
-        },
-        lvOk: modal => {
-          return new Promise(resolve => {
-            const content = modal.getContentComponent() as ReusePortComponent;
-            content.onOk().subscribe({
-              next: res => {
-                resolve(true);
-                this.getData();
-              },
-              error: () => {
-                resolve(false);
-              }
-            });
-          });
-        }
-      })
-    );
-  }
-
   tableStatusChange(e) {
     // 根据表格传回操作类型执行操作
     if (e.action === 'create') {
@@ -467,8 +444,6 @@ export class ManualConfigPortComponent implements OnInit {
       this.routeConfig(e.item);
     } else if (e.action === 'delete') {
       this.deletePort(e.data, e.item, e.name);
-    } else if (e.action === 'reuse') {
-      this.reusePort(e.name);
     }
   }
 

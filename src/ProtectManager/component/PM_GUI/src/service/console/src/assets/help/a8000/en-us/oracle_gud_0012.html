@@ -1,0 +1,190 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Preparations for Backup">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="oracle_gud_0008.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="oracle_gud_0012">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Preparations for Backup</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="oracle_gud_0012"></a><a name="oracle_gud_0012"></a>
+
+<h1 class="topictitle1">Preparations for Backup</h1>
+<div><p>Before backing up Oracle databases, prepare related information by following instructions in <a href="#oracle_gud_0012__en-us_topic_0000001455091930_table10744125193920">Table 1</a>. The following information will be used in <a href="oracle_gud_0023.html">Step 4: Registering a Database</a>.</p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>Ensure that the Oracle database is in the Open state before performing related query operations. For details about how to query the Oracle database status, see <a href="oracle_gud_0015.html">Step 1: Checking and Configuring the Database Environment</a>.</li><li><span>Unless otherwise specified, the operations in this section use Oracle 19 as an example. The operations may vary according to the Oracle version.</span></li><li><span>If the Oracle database is deployed in a cluster, you need to log in to all hosts in the cluster and perform the following operations unless otherwise specified.</span></li></ul>
+</div></div>
+
+<div class="tablenoborder"><a name="oracle_gud_0012__en-us_topic_0000001455091930_table10744125193920"></a><a name="en-us_topic_0000001455091930_table10744125193920"></a><table cellpadding="4" cellspacing="0" summary="" id="oracle_gud_0012__en-us_topic_0000001455091930_table10744125193920" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Preparations for backup</caption><colgroup><col style="width:19%"><col style="width:17%"><col style="width:48%"><col style="width:16%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="19%" id="mcps1.3.3.2.5.1.1"><p>Item</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="17%" id="mcps1.3.3.2.5.1.2"><p>Mandatory or Not (Y/N)</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="48%" id="mcps1.3.3.2.5.1.3"><p>How to Obtain</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="16%" id="mcps1.3.3.2.5.1.4"><p>To Be Used In</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="19%" headers="mcps1.3.3.2.5.1.1 "><p>Name</p>
+</td>
+<td class="cellrowborder" valign="top" width="17%" headers="mcps1.3.3.2.5.1.2 "><p>Y</p>
+</td>
+<td class="cellrowborder" valign="top" width="48%" headers="mcps1.3.3.2.5.1.3 "><p>Name of the database to be protected.</p>
+<div class="p">The name must be the same as the database name in the production environment. Generally, the value of <strong>name</strong> is the same as that of <strong>db_unique_name</strong>. If they are different, set the database name to <strong>db_unique_name</strong>. You can run the following SQL statement to view the values of <strong>name</strong> and <strong>db_unique_name</strong>:<pre class="screen">select name,db_unique_name FROM v$database;</pre>
+</div>
+</td>
+<td class="cellrowborder" rowspan="11" valign="top" width="16%" headers="mcps1.3.3.2.5.1.4 "><p><a href="oracle_gud_0023.html">Step 4: Registering a Database</a></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>Host</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>Y</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>Name or IP address of the host where the Oracle database is located. If the Oracle database is deployed in a cluster, obtain the names or IP addresses of all hosts where the Oracle database is deployed.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>Database Authentication Method (applicable to Linux)</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>Y</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>Database authentication mode. To query the authentication mode, perform the following steps:</p>
+<ol><li>Use PuTTY to log in to the Oracle database host.</li><li>Run the following command to switch to the database installation user, for example, user <strong>oracle</strong>:<pre class="screen">su - oracle</pre>
+</li><li>Run the following command to query the database authentication mode:<pre class="screen">cat $ORACLE_HOME/network/admin/sqlnet.ora</pre>
+<ul id="oracle_gud_0012__ul1281144762818"><li id="oracle_gud_0012__li1181793163115">If the <strong id="oracle_gud_0012__b12679145516543">sqlnet.ora</strong> file does not exist, the OS authentication mode is used.</li><li id="oracle_gud_0012__li5252161217474">If the <strong id="oracle_gud_0012__b1011211161818">sqlnet.ora</strong> file exists and contains the <strong id="oracle_gud_0012__b71126114187">SQLNET.AUTHENTICATION_SERVICES= (ALL)</strong> or <strong id="oracle_gud_0012__b81127111185">SQLNET.AUTHENTICATION_SERVICES= (NTS)</strong> record, <strong id="oracle_gud_0012__b71121712189">OS authentication</strong> is selected.</li><li id="oracle_gud_0012__li728111476285">If the <strong id="oracle_gud_0012__b2919102914577">sqlnet.ora</strong> file exists and contains the <strong id="oracle_gud_0012__b13816183424614">SQLNET.AUTHENTICATION_SERVICES= (None)</strong> record, <strong id="oracle_gud_0012__b1542794744712">Database authentication</strong> is selected.</li></ul>
+</li></ol>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>If the host where the database to be backed up resides is the secondary end of the Oracle ADG cluster, this parameter must be set to <strong>Database authentication</strong>.</li><li>If multiple agent hosts are specified to perform backup jobs, the database authentication mode must be used for databases.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>Database Authentication Method (applicable to Windows)</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>Y</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>Database authentication mode. To query the authentication mode, perform the following steps:</p>
+<ol><li id="oracle_gud_0012__li133281524514">Log in to the Oracle database host as the system administrator.</li><li>Press <span class="uicontrol" id="oracle_gud_0012__oracle_gud_0016_uicontrol11819941114510"><b>Win+R</b></span> to open the <strong id="oracle_gud_0012__oracle_gud_0016_b1015191219408">Run</strong> window.</li><li>Enter <span class="parmvalue"><b>regedit</b></span> to open the registry and obtain the path corresponding to <span class="parmname"><b>ORACLE_HOME</b></span> from <strong>HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE\KEY_OraDB</strong><em>12Home</em>.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>In the path, <strong>KEY_OraDB</strong><em>12Home</em> is only an example. Replace it based on actual conditions.</p>
+</div></div>
+</li><li>Go to <em>Path corresponding to ORACLE_HOME</em><strong>\network\admin</strong> and check the database authentication mode.<ul><li id="oracle_gud_0012__oracle_gud_0012_li1181793163115">If the <strong id="oracle_gud_0012__oracle_gud_0012_b12679145516543">sqlnet.ora</strong> file does not exist, the OS authentication mode is used.</li><li id="oracle_gud_0012__oracle_gud_0012_li5252161217474">If the <strong id="oracle_gud_0012__oracle_gud_0012_b1011211161818">sqlnet.ora</strong> file exists and contains the <strong id="oracle_gud_0012__oracle_gud_0012_b71126114187">SQLNET.AUTHENTICATION_SERVICES= (ALL)</strong> or <strong id="oracle_gud_0012__oracle_gud_0012_b81127111185">SQLNET.AUTHENTICATION_SERVICES= (NTS)</strong> record, <strong id="oracle_gud_0012__oracle_gud_0012_b71121712189">OS authentication</strong> is selected.</li><li id="oracle_gud_0012__oracle_gud_0012_li728111476285">If the <strong id="oracle_gud_0012__oracle_gud_0012_b2919102914577">sqlnet.ora</strong> file exists and contains the <strong id="oracle_gud_0012__oracle_gud_0012_b13816183424614">SQLNET.AUTHENTICATION_SERVICES= (None)</strong> record, <strong id="oracle_gud_0012__oracle_gud_0012_b1542794744712">Database authentication</strong> is selected.</li></ul>
+</li></ol>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>If multiple agent hosts are specified to perform backup jobs, the database authentication mode must be used for databases.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>Database Username and Database Password</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>N</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>If <strong>Database Authentication Method</strong> is set to <strong>Database authentication</strong>, you need to configure the database username and password of the user with the <strong>sysdba</strong> permissions.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>Database Installation Username (applicable to the Linux OS)</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>Y</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>User for database installation, for example, <strong>oracle</strong>.</p>
+<p>The user can log in to the database host and run the following command for query.</p>
+<pre class="screen">ps -ef  | grep pmon</pre>
+<p>The command output similar to the following is displayed. The user in the row where <em>xxx</em><strong>_pmon_hwdb</strong> is located is the user for database installation.</p>
+<p><span><img src="en-us_image_0000001909814804.png"></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>Database Installation Username (applicable to the Windows OS)</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>Y</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>User who installs the database. The <strong id="oracle_gud_0012__en-us_topic_0000001656680997_b196811087138">oracle</strong> user is used as an example in the subsequent operations.</p>
+<p>You can log in to the database host to query the username by performing the following operations:</p>
+<ol><li>Log in to the Oracle database host as the system administrator.</li><li>Press <span class="uicontrol" id="oracle_gud_0012__en-us_topic_0000001656760969_uicontrol11819941114510"><b>Win+R</b></span> to open the <strong id="oracle_gud_0012__en-us_topic_0000001656760969_b1015191219408">Run</strong> window.</li><li>Enter <span class="parmvalue"><b>regedit</b></span> to open the registry.</li><li>Obtain the value of <span class="parmname"><b>ORACLE_GROUP_NAME</b></span> in the <strong>HKEY_LOCAL_MACHINE\SOFTWARE\Oracle\KEY_OraDB</strong><em>19Home</em><em>1</em> path.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p><em>19Home</em><em>1</em> in the path is only an example. Replace it with the actual one.</p>
+</div></div>
+<p>The value of <span class="parmname"><b>ORACLE_GROUP_NAME</b></span> is similar to the following, in which <strong>Oracle</strong> indicates the user who installs the database:</p>
+<p>The value of <span class="parmname"><b>ORACLE_SID</b></span> is the database instance name.</p>
+<p><span><img src="en-us_image_0000002035794917.png"></span></p>
+</li></ol>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>Installation Username</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>N</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>Name of the user for ASM installation. The <strong>grid</strong> user is used as an example in subsequent operations.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="oracle_gud_0012__en-us_topic_0000001656680997_p1836318172815">In the cluster scenario, log in to any Oracle database host and perform the following operations:</p>
+</div></div>
+<p>You can log in to the Oracle database host as the user and run the following command to query the ASM installation username:</p>
+<pre class="screen">ps -ef | grep pmon</pre>
+<p>The command output similar to the following is displayed. The user in the row where <em>xxx</em><strong>_pmon_+ASM</strong> is located is the ASM installation user.</p>
+<p><span><img src="en-us_image_0000001999754012.png"></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>ASM Authentication (applicable to Linux)</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>N</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>If the database uses ASM, you need to obtain the ASM authentication information.</p>
+<ol><li>Run the following SQL statement to check whether the database uses the ASM:<pre class="screen">select name from v$datafile;</pre>
+<p>If the ASM directory is displayed in the command output, for example, <strong>+DATA/DB/DATAFILE/system.264.113035</strong>, the ASM is used.</p>
+</li><li>If the ASM is used, check the ASM authentication mode of the database. The procedure is as follows:<ol type="a"><li>Use PuTTY to log in to the database host.</li><li>Run the following command to switch to the ASM installation user, for example, <strong>grid</strong>.<pre class="screen">su - grid</pre>
+</li><li>Run the following command to go to the <span class="filepath"><b>/admin</b></span> directory:<pre class="screen">cd $ORACLE_HOME/network/admin</pre>
+</li><li>Check whether the <span class="filepath"><b>sqlnet.ora</b></span> file exists in the directory.</li></ol>
+<ul><li id="oracle_gud_0012__oracle_gud_0012_li1181793163115_1">If the <strong id="oracle_gud_0012__oracle_gud_0012_b12679145516543_1">sqlnet.ora</strong> file does not exist, the OS authentication mode is used.</li><li id="oracle_gud_0012__oracle_gud_0012_li5252161217474_1">If the <strong id="oracle_gud_0012__oracle_gud_0012_b1011211161818_1">sqlnet.ora</strong> file exists and contains the <strong id="oracle_gud_0012__oracle_gud_0012_b71126114187_1">SQLNET.AUTHENTICATION_SERVICES= (ALL)</strong> or <strong id="oracle_gud_0012__oracle_gud_0012_b81127111185_1">SQLNET.AUTHENTICATION_SERVICES= (NTS)</strong> record, <strong id="oracle_gud_0012__oracle_gud_0012_b71121712189_1">OS authentication</strong> is selected.</li><li id="oracle_gud_0012__oracle_gud_0012_li728111476285_1">If the <strong id="oracle_gud_0012__oracle_gud_0012_b2919102914577_1">sqlnet.ora</strong> file exists and contains the <strong id="oracle_gud_0012__oracle_gud_0012_b13816183424614_1">SQLNET.AUTHENTICATION_SERVICES= (None)</strong> record, <strong id="oracle_gud_0012__oracle_gud_0012_b1542794744712_1">Database authentication</strong> is selected.</li></ul>
+</li></ol>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>ASM Authentication (applicable to Windows)</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>N</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>If the database uses ASM, you need to obtain the ASM authentication information.</p>
+<ol><li>Run the following SQL statement to check whether the database uses the ASM:<pre class="screen">select name from v$datafile;</pre>
+<p>If the ASM directory is displayed in the command output, for example, <strong>+DATA/DB/DATAFILE/system.264.113035</strong>, the ASM is used.</p>
+</li><li>If the ASM is used, check the ASM authentication mode of the database. The procedure is as follows:<ol type="a"><li>Log in to the Oracle database host as the system administrator.</li><li>Press <span class="uicontrol" id="oracle_gud_0012__oracle_gud_0016_uicontrol11819941114510_1"><b>Win+R</b></span> to open the <strong id="oracle_gud_0012__oracle_gud_0016_b1015191219408_1">Run</strong> window.</li><li>Enter <span class="parmvalue"><b>regedit</b></span> to open the registry and obtain the path corresponding to <span class="parmname"><b>ORACLE_HOME</b></span> from <strong>HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE\KEY_OraGl</strong><em>12Home</em>.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>In the path, <strong>KEY_OraGl</strong><em>12Home</em> is only an example. Replace it based on actual conditions.</p>
+</div></div>
+</li><li>Go to <em>Path corresponding to ORACLE_HOME</em><strong>\network\admin</strong> and check the database authentication mode.</li></ol>
+<ul><li id="oracle_gud_0012__oracle_gud_0012_li1181793163115_2">If the <strong id="oracle_gud_0012__oracle_gud_0012_b12679145516543_2">sqlnet.ora</strong> file does not exist, the OS authentication mode is used.</li><li id="oracle_gud_0012__oracle_gud_0012_li5252161217474_2">If the <strong id="oracle_gud_0012__oracle_gud_0012_b1011211161818_2">sqlnet.ora</strong> file exists and contains the <strong id="oracle_gud_0012__oracle_gud_0012_b71126114187_2">SQLNET.AUTHENTICATION_SERVICES= (ALL)</strong> or <strong id="oracle_gud_0012__oracle_gud_0012_b81127111185_2">SQLNET.AUTHENTICATION_SERVICES= (NTS)</strong> record, <strong id="oracle_gud_0012__oracle_gud_0012_b71121712189_2">OS authentication</strong> is selected.</li><li id="oracle_gud_0012__oracle_gud_0012_li728111476285_2">If the <strong id="oracle_gud_0012__oracle_gud_0012_b2919102914577_2">sqlnet.ora</strong> file exists and contains the <strong id="oracle_gud_0012__oracle_gud_0012_b13816183424614_2">SQLNET.AUTHENTICATION_SERVICES= (None)</strong> record, <strong id="oracle_gud_0012__oracle_gud_0012_b1542794744712_2">Database authentication</strong> is selected.</li></ul>
+</li></ol>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>ASM Username and ASM Password</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>N</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>If ASM authentication is used, you need to obtain the ASM username and password of the user with the <strong>sysdba</strong> permissions.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="oracle_gud_0008.html">Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

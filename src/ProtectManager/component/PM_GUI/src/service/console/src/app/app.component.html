@@ -1,3 +1,4 @@
+<lv-layout lvDirection="row" class="page-layout">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-layout lvDirection="row" class="page-layout">
   <lv-sider class="aui-sider" lvWidth="256px" lvCollapsedWidth="0px" [(lvCollapsed)]="collapsed"
     *ngIf="!isLogin && cookieService.isInited && !isHcsUser && !isDmeUser">
     <ng-container *ngTemplateOutlet="titleTpl">
@@ -24,84 +24,103 @@
   </lv-sider>
   <lv-layout lvMinWidth="1110px" style="overflow: auto;" [ngClass]="{'collapsed-main': collapsed}">
     <lv-header *ngIf="!isLogin && !isReportDetail && !isErrorPage && !isHcsUser && !isDmeUser" lvFixed="true"
-      class="aui-header-icon">
-      <div class="aui-header-log" *ngIf="collapsed">
-        <div (click)="collapsed = false" style="margin-right: 8px;cursor: pointer;margin-top: 5px;">
-          <svg width=" 24px" height=" 24px" fill="#6c7280" viewBox="0 0 24 24" version="1.1"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M3,4 L21,4 C21.5522847,4 22,4.44771525 22,5 C22,5.55228475 21.5522847,6 21,6 L3,6 C2.44771525,6 2,5.55228475 2,5 C2,4.44771525 2.44771525,4 3,4 Z M3,18 L17,18 C17.5522847,18 18,18.4477153 18,19 C18,19.5522847 17.5522847,20 17,20 L3,20 C2.44771525,20 2,19.5522847 2,19 C2,18.4477153 2.44771525,18 3,18 Z M3,11 L14,11 C14.5522847,11 15,11.4477153 15,12 C15,12.5522847 14.5522847,13 14,13 L3,13 C2.44771525,13 2,12.5522847 2,12 C2,11.4477153 2.44771525,11 3,11 Z">
-            </path>
-          </svg>
+      class="aui-header-icon" [ngClass]="{'cyber-home-header':cyberDarkHeader}">
+        <div class="aui-header-log" *ngIf="collapsed">
+          <div (click)="collapsed = false" style="margin-right: 8px;cursor: pointer;margin-top: 5px;">
+            <svg width=" 24px" height=" 24px" fill="#6c7280" viewBox="0 0 24 24" version="1.1"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M3,4 L21,4 C21.5522847,4 22,4.44771525 22,5 C22,5.55228475 21.5522847,6 21,6 L3,6 C2.44771525,6 2,5.55228475 2,5 C2,4.44771525 2.44771525,4 3,4 Z M3,18 L17,18 C17.5522847,18 18,18.4477153 18,19 C18,19.5522847 17.5522847,20 17,20 L3,20 C2.44771525,20 2,19.5522847 2,19 C2,18.4477153 2.44771525,18 3,18 Z M3,11 L14,11 C14.5522847,11 15,11.4477153 15,12 C15,12.5522847 14.5522847,13 14,13 L3,13 C2.44771525,13 2,12.5522847 2,12 C2,11.4477153 2.44771525,11 3,11 Z">
+              </path>
+            </svg>
+          </div>
+          <div class="collapsed-container">
+            <aui-logo-title [tinySizeFont]="true" [cyberDarkHeader]="cyberDarkHeader"></aui-logo-title>
+          </div>
         </div>
-        <div class="collapsed-container">
-          <aui-logo-title [isMenu]="true" [colorDark]="colorDark"></aui-logo-title>
+        <!-- 初始化logo -->
+        <div class="aui-header-log collapsed-container" *ngIf="!cookieService.isInited">
+          <aui-logo-title [tinySizeFont]="true"></aui-logo-title>
         </div>
-      </div>
-      <!-- 初始化logo -->
-      <div class="aui-header-log" *ngIf="!cookieService.isInited">
-        <aui-logo-title [isMenu]="true"></aui-logo-title>
-      </div>
-      <lv-group *ngIf="!collapsed">
-        <i class="aui-collapsed-logo" style="width: 0px;"></i>
-      </lv-group>
+        <lv-group *ngIf="!collapsed">
+          <i class="aui-collapsed-logo" style="width: 0px;"></i>
+        </lv-group>
+        <!-- 全局检索 -->
+        <lv-group lvGutter='4px'
+          *ngIf="cookieService.isInited && !isHyperdetect && !isCyberEngine && router.url !== '/search'"
+          (click)="toggleSearch()" class="global-search">
+          <i lv-icon="aui-menu-search-dark" [lvColorState]="true"></i>
+          <span class="search-label">{{'common_search_copy_resource_label' | i18n}}</span>
+        </lv-group>
+        <div class="aui-header-operation">
+          <ng-container *ngIf="cookieService.isInited">
+            <!-- 备份向导 -->
+            <span class="aui-gutter-row-md" lv-tooltip="{{'protection_guide_title_label' | i18n}}"
+              (click)="toggleGuide()" *ngIf="needGuideProduct" lv-popover [lvPopoverClosable]="false"
+              [lvPopoverContent]="guideContent" lvPopoverPosition="bottomRight" lvPopoverTrigger="customize"
+              [(lvPopoverVisible)]="guideTipShow">
+              <i lv-icon="aui-guide-small"></i>
+            </span>
+            <!-- 集群 -->
+            <lv-group *ngIf="!cookieService.isCloudBackup && !isCyberEngine && !appUtilsService.isDecouple"
+              class="aui-gutter-row-md" lv-popover [lvPopoverContent]="clustersPopTemplate" [lvPopoverTrigger]="'click'"
+              lvPopoverBlockPageScroll="true" lvPopoverMaskTransparent="true" lvPopoverPosition="bottomLeft"
+              lvPopoverClassName="customer-cluster">
+              <i lv-icon="aui-cluster-topo-dark"></i>
+              <span class="clusters-container menu-label" lv-overflow>
+                {{ currentCluster.clusterName }}
+              </span>
+              <i #lvDropdownTrigger lv-icon="aui-triangle-down" style="cursor: pointer;"></i>
+            </lv-group>
+            <!-- 告警 -->
+            <span class="aui-gutter-row-md top-task" [lv-badge]="criticalAlarmCount" #alarmPopover="lvPopover"
+              lv-popover [lvBadgeVisible]="alarmBadgeVisible" [lvPopoverTrigger]="'click'"
+              [lvPopoverPosition]="'bottom'" [lvPopoverHeader]="alarmHeaderTpl" [lvPopoverContent]="alarmContentTpl"
+              [lvPopoverFooter]="alarmFooterTpl" [lvPopoverClassName]="taskPopoverClass" (click)="refreshRecentAlarms()"
+              [lvBadgeMaxValue]="99">
+              <i lv-icon="aui-icon-new-alarms-dark" class="aui-icon-large"></i>
+            </span>
+            <!-- 任务 -->
+            <span class="aui-gutter-row-md top-task" #taskPopover="lvPopover" lv-popover [lvPopoverTrigger]="'click'"
+              [lvPopoverPosition]="'bottom'" [lvPopoverHeader]="taskHeaderTpl" [lvPopoverContent]="taskContentTpl"
+              [lvPopoverFooter]="taskFooterTpl" [lvPopoverClassName]="taskPopoverClass" (click)="jobIndexChange(latest)"
+              (lvPopoverExternalTrigger)="taskExternalTrigger()">
+              <span [ngClass]="{'running-task-icon': !!runningTaskCount, 'task-icon': !runningTaskCount}"></span>
+            </span>
+          </ng-container>
+          <!-- 语言 -->
+          <span class="aui-toggle-language menu-label aui-gutter-row-md" (click)="toggleLanguage()">
+            <i lv-icon="aui-icon-language-dark"></i>
+            {{ language }}
+          </span>
+          <!-- 用户 -->
+          <lv-group lvGutter='4px' class="aui-gutter-row-md">
+            <i lv-icon="aui-accout-dark" class="aui-icon-large"></i>
+            <span class="user-about" lv-popover [lvPopoverTrigger]="'click'" [lvPopoverPosition]="'bottomRight'"
+              [lvPopoverContent]="userContentTpl" [lvPopoverClassName]="taskPopoverClass" lvTooltipPosition="bottom">
+              <div class="user-name menu-label" lv-overflow>{{ userName }}</div>
+            </span>
+          </lv-group>
+          <!-- 帮助 -->
+          <span class="top-help" lv-popover [lvPopoverTrigger]="'click'" [lvPopoverPosition]="'bottom'"
+            [lvPopoverHeader]="helpHeaderTpl" [lvPopoverContent]="helpContentTpl"
+            [lvPopoverClassName]="taskPopoverClass" lvTooltipPosition="bottom">
+            <i lv-icon="aui-icon-menu-help-dark" class="aui-icon-large"></i>
+          </span>
+        </div>
+
+    </lv-header>
+    
+    <!-- DME用户的header -->
+    <lv-header *ngIf="!isLogin && !isReportDetail && !isErrorPage && !isHcsUser && isDmeUser" lvFixed="true"
+      class="aui-header-icon" [ngClass]="{'cyber-home-header':cyberDarkHeader}">
       <!-- 全局检索 -->
       <lv-group lvGutter='4px'
         *ngIf="cookieService.isInited && !isHyperdetect && !isCyberEngine && router.url !== '/search'"
         (click)="toggleSearch()" [ngClass]="{'global-search': !collapsed, 'global-search-collapsed': collapsed}">
-        <i lv-icon="aui-menu-search" [lvColorState]="true"></i>
-        <span class="aui-text-label">{{'common_search_copy_resource_label' | i18n}}</span>
+        <i lv-icon="aui-menu-search-dark" [lvColorState]="true"></i>
+        <span class="search-label">{{'common_search_copy_resource_label' | i18n}}</span>
       </lv-group>
-      <div class="aui-header-operation">
-        <ng-container *ngIf="cookieService.isInited">
-          <!-- 备份向导 -->
-          <span class="aui-gutter-row-md" lv-tooltip="{{'protection_guide_title_label' | i18n}}" (click)="toggleGuide()"
-            *ngIf="needGuideProduct" lv-popover [lvPopoverClosable]="false" [lvPopoverContent]="guideContent"
-            lvPopoverPosition="bottomRight" lvPopoverTrigger="customize" [(lvPopoverVisible)]="guideTipShow">
-            <i lv-icon="aui-guide-small"></i>
-          </span>
-          <lv-group *ngIf="!cookieService.isCloudBackup && !isCyberEngine" class="aui-gutter-row-md">
-            <i lv-icon="aui-cluster-topo"></i>
-            <span class="clusters-container menu-label" lv-popover [lvPopoverContent]="clustersPopTemplate"
-              [lvPopoverTrigger]="'click'" lvPopoverTheme="dark" lvPopoverBlockPageScroll="true"
-              lvPopoverBackdrop="true" lvPopoverMaskTransparent="true" lvPopoverPosition="bottomLeft"
-              lvPopoverClassName="customer-cluster">
-              {{ currentCluster.clusterName }}
-              <i #lvDropdownTrigger lv-icon="lv-icon-triangle-down"></i>
-            </span>
-          </lv-group>
-          <span class="aui-gutter-row-md top-task" [lv-badge]="criticalAlarmCount" #alarmPopover="lvPopover" lv-popover
-            [lvBadgeVisible]="alarmBadgeVisible" [lvPopoverTrigger]="'click'" [lvPopoverPosition]="'bottom'"
-            [lvPopoverHeader]="alarmHeaderTpl" [lvPopoverContent]="alarmContentTpl" [lvPopoverFooter]="alarmFooterTpl"
-            lvPopoverClassName="taskPopoverClass" lvPopoverShowArrow="false" (click)="refreshRecentAlarms()"
-            [lvBadgeMaxValue]="99">
-            <i lv-icon="aui-icon-new-alarms" class="aui-icon-large"></i>
-          </span>
-          <span class="aui-gutter-row-md top-task" #taskPopover="lvPopover" lv-popover [lvPopoverTrigger]="'click'"
-            [lvPopoverPosition]="'bottom'" [lvPopoverHeader]="taskHeaderTpl" [lvPopoverContent]="taskContentTpl"
-            [lvPopoverFooter]="taskFooterTpl" lvPopoverClassName="taskPopoverClass" lvPopoverShowArrow="false"
-            (click)="jobIndexChange(latest)" (lvPopoverExternalTrigger)="taskExternalTrigger()">
-            <span [ngClass]="{'running-task-icon': !!runningTaskCount, 'task-icon': !runningTaskCount}"></span>
-          </span>
-        </ng-container>
-        <span class="aui-toggle-language menu-label aui-gutter-row-md" (click)="toggleLanguage()">
-          <i lv-icon="aui-language"></i>
-          {{ language }}
-        </span>
-
-        <lv-group lvGutter='4px' class="aui-gutter-row-md">
-          <i lv-icon="aui-accout" class="aui-icon-large"></i>
-          <span lv-dropdown [lvDropdownMenus]="optMenus" [lvDropdownTrigger]="'click'"
-            lvDropdownPanelClass="user-dropdown" [lvDropdownPosition]="'bottomCenter'">
-            <div class="user-name menu-label" lv-overflow>{{ userName }}</div>
-          </span>
-        </lv-group>
-        <span class="top-help" lv-popover [lvPopoverTrigger]="'click'" [lvPopoverPosition]="'bottom'"
-          [lvPopoverHeader]="helpHeaderTpl" [lvPopoverContent]="helpContentTpl" lvPopoverClassName="taskPopoverClass"
-          lvPopoverShowArrow="false" lvTooltipPosition="bottom">
-          <i lv-icon="aui-icon-menu-help" class="aui-icon-large"></i>
-        </span>
-      </div>
     </lv-header>
     <lv-content>
       <router-outlet></router-outlet>
@@ -115,9 +134,12 @@
 <!-- 预加载智能助手背景图 -->
 <div class="hide-guide-bg"></div>
 
+<!-- 换肤 -->
+<lv-config-provider [lvTheme]="appTheme"></lv-config-provider>
+
 <ng-template #titleTpl>
   <div *ngIf="cookieService.isInited" class="aui-menu-header">
-    <aui-logo-title [isMenu]="true"></aui-logo-title>
+    <aui-logo-title [isMenu]="true" [isWhiteColor]="true"></aui-logo-title>
     <i lv-icon="aui-icon-menu-unfold" lvColorState="true" (click)="collapsed = true"></i>
   </div>
 </ng-template>
@@ -194,18 +216,27 @@
                     _includes(
                       [
                         jobStatus.initialization.value,
-                        jobStatus.pending.value,
                         jobStatus.running.value,
                         jobStatus.aborting.value,
-                        jobStatus.dispatching.value,
-                        jobStatus.redispatch.value
                       ],
                       task.status
                     )
                   " [lv-tooltip]="
                     dataMapService.getLabel('Job_status', task.status)
                   " lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
-              </lv-group>
+                <i *ngIf="
+                  _includes(
+                      [
+                      jobStatus.pending.value,
+                      jobStatus.dispatching.value,
+                      jobStatus.redispatch.value
+                      ],
+                      task.status
+                    )" [lv-tooltip]="
+                      dataMapService.getLabel('Job_status', task.status)"                              
+                  lv-icon="aui-icon-job-status-pending">
+                </i>
+                </lv-group>
               <lv-group lvDirection="vertical">
                 <span class="task-type-container">
                   <ng-container *ngIf="
@@ -238,7 +269,7 @@
 
     <ng-container *ngIf="!taskData.length">
       <div class="no-data">
-        {{ noDataLabel }}
+        <lv-empty></lv-empty>
       </div>
     </ng-container>
   </lv-loading>
@@ -284,7 +315,7 @@
                 </span>
                 <span class="alarm-time">
                   {{ isCyberEngine || isV1Alarm ? alarm.alarmTimeStr : (alarm.alarmTime * 1000 | date: 'yyyy-MM-dd
-                  HH:mm:ss') }}
+                  HH:mm:ss': timeZone) }}
                 </span>
                 <span class="alarm-link">></span>
               </div>
@@ -297,7 +328,7 @@
 
   <ng-container *ngIf="!alarmData.length">
     <div class="no-data">
-      {{ noDataLabel }}
+      <lv-empty></lv-empty>
     </div>
   </ng-container>
 </ng-template>
@@ -311,6 +342,46 @@
   </div>
 </ng-template>
 
+<ng-template #userContentTpl>
+  <div class="help-menu-container">
+    <div class="theme-change-title aui-gutter-column-sm" *ngIf="supportChangeTheme">
+      {{'common_account_manage_label' | i18n}}
+    </div>
+    <section class="help-menu-section" [ngClass]="{'aui-gutter-column-sm': supportChangeTheme}">
+      <div class="n-help-link" (click)="modifyPwd()">
+        <div class="help-wrapper">
+          <span>{{ 'common_update_password_label' | i18n }}</span>
+        </div>
+      </div>
+      <div class="n-help-link" (click)="logout()">
+        <div class="help-wrapper">
+          <span>{{ 'common_logout_label' | i18n }}</span>
+        </div>
+      </div>
+    </section>
+    <!-- 当前仅OP支持换肤 -->
+    <ng-container *ngIf="supportChangeTheme">
+      <div class="theme-change-title aui-gutter-column-sm">
+        {{'common_theme_change_label' | i18n}}
+      </div>
+      <lv-radio-group #group [(ngModel)]="themeKey" [lvGroupName]="'themeGroup'" (ngModelChange)="themeChange()">
+        <lv-group [lvGutter]="'16px'" lvWrap="true">
+          <ng-container *ngFor="let item of themeTypes">
+            <lv-radio [lvViewType]="'custom'" [lvValue]="item.value">
+              <lv-card class="ui-card" lvType="border" [lvChecked]="group.isChecked(item.value)">
+                <lv-group lvDirection='vertical' lvGutter="4" class="theme-group">
+                  <i lv-icon="{{item.icon}}" class="card-theme"></i>
+                  <span>{{item.label}}</span>
+                </lv-group>
+              </lv-card>
+            </lv-radio>
+          </ng-container>
+        </lv-group>
+      </lv-radio-group>
+    </ng-container>
+  </div>
+</ng-template>
+
 <ng-template #helpHeaderTpl>
   <div class="top-task-header-title help-label">
     <div class="aui-number-4">{{ 'common_help_label' | i18n }}</div>
@@ -321,7 +392,7 @@
 <ng-template #helpContentTpl>
   <div class="help-menu-container">
     <section class="help-menu-section">
-      <div class="n-help-link" (click)="openHelp()" *ngIf="!isOpenVersion">
+      <div class="n-help-link" (click)="openHelp()">
         <div class="help-wrapper">
           <span>{{ 'common_online_help_label' | i18n }}</span>
         </div>
@@ -337,7 +408,7 @@
 
 <ng-template #aboutHeaderTpl>
   <div class="about-header">
-    <aui-logo-title class="about-title"></aui-logo-title>
+    <aui-logo-title class="about-title" [isWhiteColor]="true"></aui-logo-title>
     <i lv-icon="lv-icon-close" class="close-icon" (click)="closeAbout()"></i>
   </div>
 </ng-template>
@@ -345,7 +416,7 @@
 <ng-template #aboutContentTpl>
   <div class="about-content">
     <p class="about-version">{{ versionLabel }}</p>
-    <p class="about-address" *ngIf="!isOpenVersion">
+    <p class="about-address">
       <span [innerHTML]="websiteLabel"></span>
     </p>
     <p class="about-warning">{{ warningLabel }}</p>
@@ -353,7 +424,7 @@
 </ng-template>
 
 <ng-template #aboutFooterTpl>
-  <div class="about-footer" *ngIf="!isOpenVersion">
+  <div class="about-footer">
     <p>{{ copyRightLabel }}</p>
   </div>
 </ng-template>

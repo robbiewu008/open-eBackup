@@ -1,4 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -18,14 +31,14 @@
    <p>You need to install the ProtectAgent software on agent hosts. ProtectAgent functions as the agent between the <span id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_text1368810101119">product</span> and protected resources to back up and restore data. This section describes how to log in to the background of the agent host and install ProtectAgent on it.</p>
    <div class="section">
     <h4 class="sectiontitle">Prerequisites</h4>
-    <p>The language for installing ProtectAgent, OceanProtect, and the agent host OS must be the same. Otherwise, information may be displayed in multiple languages or as garbled characters on ProtectAgent or OceanProtect. In this case, reinstall ProtectAgent and OceanProtect with the same language or change the OS language.</p>
+    <p>The language for installing ProtectAgent, the <span>product</span>, and the agent host OS must be the same. Otherwise, information may be displayed in multiple languages or as garbled characters on ProtectAgent or the <span>product</span>. In this case, reinstall ProtectAgent and the <span>product</span> with the same language or change the OS language.</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
      <li><span>Download the ProtectAgent software package.</span><p></p>
       <ol type="a">
-       <li>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839142377_uicontrol08941439165212"><b><span id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839142377_text22651956143811"><strong>Protection</strong></span> &gt; Clients</b></span>.</li>
+       <li>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839142377_uicontrol08941439165212"><b><span id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839142377_text22651956143811"><strong>Protection</strong></span> &gt; Clients &gt; Clients</b></span>.</li>
        <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_li16856140134313"><a name="EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_li16856140134313"></a><a name="en-us_topic_0000001143474500_li16856140134313"></a>Click <span class="uicontrol"><b><span><span><strong>ProtectAgent Package Management</strong></span></span></b></span> and set related parameters.<p><a href="#EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_table9849105916553">Table 1</a> describes the parameters.</p>
         <div class="tablenoborder">
          <a name="EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_table9849105916553"></a><a name="en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_table9849105916553"></a>
@@ -109,22 +122,55 @@ Your choice:</pre></li>
              <li>When the following information is displayed, enter the private key password set in <a href="#EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_li16856140134313">1.b</a>:<pre class="screen">Please enter the private key password set on ProtectManager, you still have 3 chances:
 Enter password:</pre></li>
              <li>When the following information is displayed, set the password of user <strong>rdadmin</strong>:<pre class="screen">Add User rdadmin Enter password:</pre></li>
-             <li>(For 1.6.0 and later versions) When the following information is displayed on, determine whether to enable source deduplication.<pre class="screen">Whether enable dataturbo service:(y|n):
-Your choice:</pre> <p>If you enter <span class="parmvalue"><b>y</b></span>, source deduplication is enabled. Ensure that the free memory of the agent host is greater than 2 GB. The system will automatically install the OceanStor DataTurbo client. For details about the OSs that support source deduplication, refer to <a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">Compatibility Query Tool</a>.</p> <p>If you enter <span class="parmvalue"><b>n</b></span>, source deduplication is disabled. You can also manually install the OceanStor DataTurbo client after ProtectAgent is installed. For details, see <a href="en-us_topic_0000001936780456.html">Installing the OceanStor DataTurbo Client (Applicable to 1.6.0 and Later Versions)</a>.</p>
+             <li>(For 1.5.0SPC19 and later versions) When the following information is displayed, determine whether to enable source deduplication:<pre class="screen">Whether enable dataturbo service:(y|n):
+Your choice:</pre> <p>If you enter <span class="parmvalue"><b>y</b></span>, source deduplication is enabled. Ensure that the free memory of the agent host is greater than 2 GB. The system will automatically install the OceanStor DataTurbo client. For details about the OSs that support source deduplication, refer to <a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect Compatibility Query</a>.</p> <p>If you enter <span class="parmvalue"><b>n</b></span>, source deduplication is disabled. You can also manually install the OceanStor DataTurbo client after ProtectAgent is installed. For details, see <a href="en-us_topic_0000001936780456.html">How Do I Install the OceanStor DataTurbo Client?</a>.</p>
               <div class="note">
                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
                <div class="notebody">
-                <p id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001936780456_p1942121419116">After source deduplication is enabled, add the source deduplication user to <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001936780456_b13787183405016">sudoers</strong> before the first backup. For details, see <a href="en-us_topic_0000001792390228.html">How Should I Add a Source Deduplication User to sudoers?</a>.</p>
+                <p><span>after source deduplication is enabled, add the SID (S-1-5-18) of user <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001936780456_b360104212442">system</strong> to the <span class="filepath" id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001936780456_filepath8365201855911"><b>...\oceanstor\dataturbo\conf \whitelist</b></span> whitelist and run the <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001936780456_en-us_topic_0000001607704830_b16198172917816">sc stop dataturbo</strong> and <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001936780456_b1516780194917">sc start dataturbo</strong> commands in sequence to restart the DataTurbo service.</span></p>
+               </div>
+              </div></li>
+             <li>(For 1.5.0SPC19 and later versions) When the following information is displayed, determine whether to use an EIP based on the actual requirements:
+              <div class="p">
+               If EIPs are mapped to VPC IP addresses, enter an EIP. If internal public IP addresses are mapped to VPC IP addresses, enter an internal public IP address.
+               <pre class="screen">Check where the host is an EIP node:(y|n), default(n)
+Your choice:</pre>
+               <div class="note">
+                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189313_p77591542474"><span id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189313_ph135421074018">If ProtectAgent has been installed, the system is upgraded to 1.5.0SPC19 or later, and an EIP or internal public network IP address that is mapped to a VPC IP address is used, you need to <a href="en-us_topic_0000001847935170.html">uninstall ProtectAgent</a>, and then perform the operations in this section to install ProtectAgent of 1.5.0SPC19 or a later version.</span></p>
+                </div>
                </div>
               </div></li>
             </ol> <p>If the following command output is displayed, ProtectAgent is installed successfully:</p> <pre class="screen">The DataBackup ProtectAgent has been installed successfully.</pre></li>
           </ol></li>
         </ol></li>
       </ol> <p></p></li>
-     <li><span>After ProtectAgent is installed on the host, OceanProtect automatically discovers the host. Perform the following steps to check the result. </span><p></p>
+     <li><span>After ProtectAgent is installed on the host, the <span>product</span> management page automatically discovers the host. Perform the following steps to check the result. </span><p></p>
       <ol type="a">
-       <li>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839142377_uicontrol08941439165212_1"><b><span id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839142377_text22651956143811_1"><strong>Protection</strong></span> &gt; Clients</b></span>.</li>
-       <li>Check whether the host where ProtectAgent has been installed is available on OceanProtect.</li>
+       <li>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839142377_uicontrol08941439165212_1"><b><span id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839142377_text22651956143811_1"><strong>Protection</strong></span> &gt; Clients &gt; Clients</b></span>.</li>
+       <li>Check whether the host where ProtectAgent has been installed is displayed on the <span id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_text1857815461628">product</span> management page.
+        <div class="p" id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_en-us_topic_0000001187942849_p19934115894410">
+         If the agent host where ProtectAgent has been installed is not displayed on the OceanProtect WebUI, contact the system administrator to authorize resources to the user.
+         <ul id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_ul11315151683118">
+          <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li7489102073110">For 1.5.0, perform the following operations:
+           <ol class="substepthirdol" id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_ol52668371313">
+            <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_en-us_topic_0000001187942849_li13303622114615">On the <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b16209195173810">Clients</strong> page, locate the row that contains the host and choose <span class="uicontrol" id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_en-us_topic_0000001187942849_uicontrol183035225468"><b><span id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_en-us_topic_0000001187942849_text18303422124612"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_en-us_topic_0000001187942849_text330392284615"><strong>Authorize Resource</strong></span></b></span>.</li>
+            <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li12823859173115">Authorize the host to the corresponding user.</li>
+           </ol></li>
+          <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li1431512169316">Perform the following operations for 1.6.0 and later versions:
+           <ol class="substepthirdol" id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_ol156361033313">
+            <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li2850165311349">Choose <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b74891625182811">System</strong> &gt; <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b1348910252283">Security</strong> &gt; <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b11490122512812">RBAC</strong>.</li>
+            <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li17341115143513">On the <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b2506323194018">Users</strong> tab page, locate the row that contains the target user, and click <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b1181144011404">Modify</strong>.</li>
+            <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li1660463123511">On the <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b923343292813">Modify User</strong> page, click <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b2233932182817">Next</strong>.</li>
+            <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li5421154015356">Click <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b10361184514117">Create Resource Set</strong>.</li>
+            <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li1749893713610"><a name="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li1749893713610"></a><a name="en-us_topic_0000001839189365_li1749893713610"></a>Set <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b19771754174110">Resource Set Name</strong>. On the <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b197356894611">Client</strong> tab page, select the corresponding agent host.</li>
+            <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li43218366416">Click <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b4589103652819">OK</strong>.</li>
+            <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li11991352174115">Select the resource set created in <a href="#EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li1749893713610">4.b.v</a> and click <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b83754204910">Next</strong>.</li>
+            <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_li11197205624116">Click <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_b958010437288">Finish</strong>.</li>
+           </ol></li>
+         </ul>
+        </div></li>
       </ol> <p></p></li>
     </ol>
     <ol start="5">

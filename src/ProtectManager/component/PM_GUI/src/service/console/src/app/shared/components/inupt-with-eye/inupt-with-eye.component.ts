@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   EventEmitter,
@@ -19,6 +19,9 @@ import {
   Output
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ThemeEnum } from 'app/shared/consts';
+import { I18NService } from 'app/shared/services';
+import { getAppTheme } from 'app/shared/utils';
 
 const CUSTOM_NG_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
@@ -52,7 +55,7 @@ export class InuptWithEyeComponent implements OnInit, ControlValueAccessor {
   onChange: (value: string) => void = () => null;
   onTouched: () => void = () => null;
 
-  constructor() {}
+  constructor(private i18n: I18NService) {}
 
   ngOnInit() {
     this.cachePasteAllowed = this.pasteAllowed;
@@ -103,5 +106,17 @@ export class InuptWithEyeComponent implements OnInit, ControlValueAccessor {
 
   copy() {
     return false;
+  }
+
+  getInputEye(): string {
+    if (this.coverPwd) {
+      return getAppTheme(this.i18n) === ThemeEnum.light
+        ? 'aui-icon-eye-hide-light'
+        : 'aui-icon-eye-hide-dark';
+    } else {
+      return getAppTheme(this.i18n) === ThemeEnum.light
+        ? 'aui-icon-eye-view-light'
+        : 'aui-icon-eye-view-dark';
+    }
   }
 }

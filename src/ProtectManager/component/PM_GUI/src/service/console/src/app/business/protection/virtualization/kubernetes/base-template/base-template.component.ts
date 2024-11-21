@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   Component,
@@ -39,6 +39,7 @@ import {
   ProtectedResourceApiService,
   ProtectResourceAction,
   ResourceType,
+  SetTagType,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -361,7 +362,7 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
         id: 'addTag',
         permission: OperateItems.AddTag,
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_add_tag_label'),
         onClick: data => this.addTag(data)
@@ -370,7 +371,7 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
         id: 'removeTag',
         permission: OperateItems.RemoveTag,
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_remove_tag_label'),
         onClick: data => this.removeTag(data)
@@ -633,6 +634,7 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable.setSelections([]);
@@ -645,6 +647,7 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable.setSelections([]);
@@ -797,7 +800,8 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
             status:
               item.extendInfo?.status ||
               JSON.parse(item.extendInfo?.host || '{}')?.status,
-            isWorkspace: item.extendInfo?.isWorkspace || '0'
+            isWorkspace: item.extendInfo?.isWorkspace || '0',
+            computerName: item.extendInfo?.computerName
           });
         }
       });

@@ -1,0 +1,142 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 4: Creating a Backup SLA">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="activedirectory_00010.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="activedirectory_00013">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 4: Creating a Backup SLA</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="activedirectory_00013"></a><a name="activedirectory_00013"></a>
+
+<h1 class="topictitle1">Step 4: Creating a Backup SLA</h1>
+<div><p>Customize an SLA to protect resources based on your requirements. </p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="activedirectory_00013__en-us_topic_0000001839142377_uicontrol8111821122820"><b><span id="activedirectory_00013__en-us_topic_0000001839142377_text71111921162814"><strong>Protection</strong></span> &gt; Protection Policies &gt; SLAs</b></span>.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span>.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="activedirectory_00013__en-us_topic_0000001964713008_p125947145711"><span id="activedirectory_00013__en-us_topic_0000001964713008_ph1413818422327">If a WORM policy has been configured for the resource to be protected, select an SLA without a WORM policy to create protection to avoid WORM policy conflicts.</span></p>
+</div></div>
+</p></li><li><span>Customize an SLA name.</span></li><li><span>Select an application type for the SLA to be created.</span><p><ol type="a"><li>Click the <span class="uicontrol"><b>Applications</b></span> icon.</li><li>Click the <span class="uicontrol"><b>Specific to application</b></span> tab.</li><li>Click <span class="uicontrol"><b>Active Directory</b></span>.</li><li>Click <span class="uicontrol"><b>OK</b></span>.</li></ol>
+</p></li><li><span>Configure a backup policy.</span><p><ol type="a"><li>Click the <span class="uicontrol"><b><span><strong>Backup Policy</strong></span></b></span> icon.</li><li>Set basic parameters for the backup policy.<p><a href="#activedirectory_00013__en-us_topic_0000001296227512_en-us_topic_0000001264095230_table2663151516335">Table 1</a> describes the related parameters.</p>
+<div class="p">Set the backup frequency, copy retention period, and backup time window based on service requirements to ensure that data can be backed up in a timely manner. The recommended settings are as follows:<ul><li>The backup duration must be shorter than the backup period. For example, if the backup period is 5 hours, the backup duration must be shorter than 5 hours.</li><li>The copy retention period must be longer than the backup period.</li></ul>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>At least one backup policy must be created. To add another backup policy, click <span><img src="en-us_image_0000002019349564.png"></span> on the right of the page.</li><li>A maximum of four backup policies can be added for each backup type.</li></ul>
+</div></div>
+</div>
+
+<div class="tablenoborder"><a name="activedirectory_00013__en-us_topic_0000001296227512_en-us_topic_0000001264095230_table2663151516335"></a><a name="en-us_topic_0000001296227512_en-us_topic_0000001264095230_table2663151516335"></a><table cellpadding="4" cellspacing="0" summary="" id="activedirectory_00013__en-us_topic_0000001296227512_en-us_topic_0000001264095230_table2663151516335" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Basic parameters of a backup policy</caption><colgroup><col style="width:11.899999999999999%"><col style="width:15.25%"><col style="width:72.85000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.5.2.1.2.3.2.4.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.5.2.1.2.3.2.4.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" rowspan="2" valign="top" width="11.899999999999999%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span><strong>Full backup</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="15.25%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.2 "><p>Name of a backup policy.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p>-</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><div class="p">Configure the backup interval, copy retention period, and backup time window for full backup.<ul id="activedirectory_00013__en-us_topic_0000001839143189_ul06281446133611"><li id="activedirectory_00013__en-us_topic_0000001839143189_li5628184619364">Configure the backup interval and copy retention period for full backup.<ul id="activedirectory_00013__en-us_topic_0000001839143189_ul3912541183319"><li id="activedirectory_00013__en-us_topic_0000001839143189_li1491311419338"><span id="activedirectory_00013__en-us_topic_0000001839143189_text881714512382"><strong>By Year</strong></span><p id="activedirectory_00013__en-us_topic_0000001839143189_p7913141173316">Configure the job to be executed once every year on <em id="activedirectory_00013__en-us_topic_0000001839143189_i8695125961819">xx</em> (month) <em id="activedirectory_00013__en-us_topic_0000001839143189_i8695205941811">xx</em> (day). Configure copies to be retained for <em id="activedirectory_00013__en-us_topic_0000001839143189_i269613594180">xx</em> days, weeks, months, years, or permanently.</p>
+<p id="activedirectory_00013__en-us_topic_0000001839143189_p52204181864">If the date does not exist in the year, no copy is generated.</p>
+</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li18913134153311"><span id="activedirectory_00013__en-us_topic_0000001839143189_text9120524389"><strong>By Month</strong></span><p id="activedirectory_00013__en-us_topic_0000001839143189_p19131141133318">Configure the job to be executed on <em id="activedirectory_00013__en-us_topic_0000001839143189_i3137640154710">xx</em> (day) (multiple days can be selected) or the last day of each month. Configure copies to be retained for <em id="activedirectory_00013__en-us_topic_0000001839143189_i20137114020478">xx</em> days, weeks, months, years, or permanently.</p>
+<p id="activedirectory_00013__en-us_topic_0000001839143189_p131866516465">If the backup job is set to be performed on the <em id="activedirectory_00013__en-us_topic_0000001839143189_i638819152110">xx</em>th day of each month, no copy is generated when the date does not exist in the current month.</p>
+</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li79137410332"><span id="activedirectory_00013__en-us_topic_0000001839143189_text107501579380"><strong>By Week</strong></span><p id="activedirectory_00013__en-us_topic_0000001839143189_p091313410338">Configure the job to be executed every Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, or Sunday (you can select multiple options). Configure copies to be retained for <em id="activedirectory_00013__en-us_topic_0000001839143189_i10839155815217">xx</em> days, weeks, months, years, or permanently.</p>
+</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li18498191724615"><span id="activedirectory_00013__en-us_topic_0000001839143189_text199032391683"><strong>By Day</strong></span><p id="activedirectory_00013__en-us_topic_0000001839143189_p46219385469">Configure the job to be executed every <em id="activedirectory_00013__en-us_topic_0000001839143189_i563934782212">xx</em> days starting from <em id="activedirectory_00013__en-us_topic_0000001839143189_i11639154719227">xx</em> (year) <em id="activedirectory_00013__en-us_topic_0000001839143189_i14640194713225">xx</em> (month) <em id="activedirectory_00013__en-us_topic_0000001839143189_i176406479225">xx</em> (day). Configure copies to be retained for <em id="activedirectory_00013__en-us_topic_0000001839143189_i1164014713226">xx</em> days, weeks, months, years, or permanently.</p>
+</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li426962116468"><span id="activedirectory_00013__en-us_topic_0000001839143189_text14231841203315"><strong>By Hour</strong></span><p id="activedirectory_00013__en-us_topic_0000001839143189_p6350614134914">Configure the job to be executed every <em id="activedirectory_00013__en-us_topic_0000001839143189_i3449105714464">xx</em> hours starting from <em id="activedirectory_00013__en-us_topic_0000001839143189_i1644985754613">xx</em> (year) <em id="activedirectory_00013__en-us_topic_0000001839143189_i1044916576462">xx</em> (month) <em id="activedirectory_00013__en-us_topic_0000001839143189_i15449257134618">xx</em> (day). Configure copies to be retained for <em id="activedirectory_00013__en-us_topic_0000001839143189_i64501457104615">xx</em> days, weeks, months, years, or permanently.</p>
+</li></ul>
+</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li1881682412376">Set the time period for performing full backup. The full backup job will not be scheduled beyond the time range.<div class="note" id="activedirectory_00013__en-us_topic_0000001839143189_note3335182113214"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="activedirectory_00013__en-us_topic_0000001839143189_ul64461851101420"><li id="activedirectory_00013__en-us_topic_0000001839143189_li037445621410">If the end time is earlier than or the same as the start time, the end time is actually the end time of the next day.</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li4446145117142">If the backup job is not completed within the specified time window, the system does not stop the backup job, but reports an event.</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li4684315367">Once the retention period expires, the system automatically deletes the expired copies.</li></ul>
+</div></div>
+</li></ul>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ol><ol type="a" start="3"><li>To generate WORM copies, enable the WORM function and set the WORM validity period. Otherwise, skip this step.<div class="p">For <strong id="activedirectory_00013__en-us_topic_0000001839143189_b15358729184918">WORM Validity Period</strong>, you can select <strong id="activedirectory_00013__en-us_topic_0000001839143189_b469832194914">Same as the copy retention period</strong> or <strong id="activedirectory_00013__en-us_topic_0000001839143189_b4820353104917">Custom validity period</strong>.<div class="note" id="activedirectory_00013__en-us_topic_0000001839143189_note8945151620502"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul id="activedirectory_00013__en-us_topic_0000001839143189_ul2550728175518"><li id="activedirectory_00013__en-us_topic_0000001839143189_li103014415565">WORM copies cannot be deleted or their validity periods cannot be shortened.</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li9171132315916">The custom WORM validity period cannot be longer than the copy retention period.</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li976612319580">A WORM copy cannot be changed to a non-WORM copy within its validity period.</li></ul>
+</div></div>
+</div>
+</li><li>Set advanced parameters for the backup policy.<div class="p"><a href="#activedirectory_00013__en-us_topic_0000001296227512_en-us_topic_0000001264095230_table1970194542811">Table 2</a> describes the related parameters.
+<div class="tablenoborder"><a name="activedirectory_00013__en-us_topic_0000001296227512_en-us_topic_0000001264095230_table1970194542811"></a><a name="en-us_topic_0000001296227512_en-us_topic_0000001264095230_table1970194542811"></a><table cellpadding="4" cellspacing="0" summary="" id="activedirectory_00013__en-us_topic_0000001296227512_en-us_topic_0000001264095230_table1970194542811" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Advanced parameters of Active Directory backup</caption><colgroup><col style="width:23.369999999999997%"><col style="width:76.63%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="23.369999999999997%" id="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="76.63%" id="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><div class="p"><strong id="activedirectory_00013__en-us_topic_0000001839143189_b203081655125718">Specify Target Location</strong><div class="note" id="activedirectory_00013__en-us_topic_0000001839143189_note81807159571"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="activedirectory_00013__en-us_topic_0000001839143189_p5180415155714">This parameter is supported only by the X series backup appliances.</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="76.63%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><div class="p">Specify the target storage location of backup copies.<ul id="activedirectory_00013__en-us_topic_0000001839143189_ul3832679403"><li id="activedirectory_00013__en-us_topic_0000001839143189_li178323718400">Backup storage unit: corresponds to a backup cluster node. After a backup storage unit is selected, copies are stored to the storage unit. If the capacity of the storage unit is insufficient, the backup job will fail.</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li31700914016">Backup storage unit group: is a collection of backup storage units. After a backup storage unit group is selected, the system automatically selects a target backup storage unit based on the storage policy of the storage unit group.</li></ul>
+<div class="note" id="activedirectory_00013__en-us_topic_0000001839143189_note06533915171"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="activedirectory_00013__en-us_topic_0000001839143189_ul2261104811172"><li id="activedirectory_00013__en-us_topic_0000001839143189_li182618487176">For 1.5.0, this parameter is displayed only when you have deployed the cluster HA feature. You can leave the target location unspecified. If you do not specify the target location, the system automatically selects the target storage unit through intelligent balancing.</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li1025484315189">For 1.6.0 and later versions, you must specify the target location.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><span><strong>Rate Limiting Policies</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.63%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>Average maximum amount of data that can be transmitted per second by a backup job.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><span><strong>Job Failure Alarm</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.63%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>After this function is enabled, an alarm is sent when a job fails. The alarm is automatically cleared when the next job is successful.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><span><strong>Automatic Retry</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.63%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>After this function is enabled, the system automatically retries a failed job based on the number of retries and time preset.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li><li>Click <span class="uicontrol"><b>OK</b></span>.</li></ol>
+</p></li><li><span>(Optional) Configure an archive policy.</span><p><p>The built-in storage space of the <span>OceanProtect</span> is limited. If you need to retain copy data for a long time, you are advised to archive the copy data to external storage.</p>
+<p>You can configure an archive policy by clicking the <span class="uicontrol"><b><span><strong>Archive Policy</strong></span></b></span> icon or by modifying the SLA.</p>
+<p>For details about how to configure an archive policy, see <a href="activedirectory_00030.html">Archiving</a>.</p>
+</p></li><li><span>(Optional) Configure a replication policy.</span><p><p>The <span>OceanProtect</span> allows you to replicate local data to a remote data center. If a disaster occurs, data copies in the remote data center can be used to restore production data and services can be taken over.</p>
+<p>You can configure a replication policy by clicking the <span class="uicontrol"><b><span><strong>Replication Policy</strong></span></b></span> icon or by modifying the SLA.</p>
+<p>For details about how to configure a replication policy, see <a href="activedirectory_00028.html">Step 7: Creating a Replication SLA</a>.</p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="activedirectory_00013__en-us_topic_0000001839143189_p187474161610">For 1.6.0 and later versions:</p>
+<ul id="activedirectory_00013__en-us_topic_0000001839143189_ul1078182475012"><li id="activedirectory_00013__en-us_topic_0000001839143189_li83901215999">The WORM validity period of the backup policy in the SLA must be shorter than the copy retention period in the replication policy.</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li878324105017">If WORM is not configured at the local end but configured at the target end, the WORM validity period is the same as the replication copy retention period.</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li07815248507">If WORM is configured at the local end but not at the target end, the WORM validity period of replication copies is the same as that of WORM copies at the local end. The retention period of replication copies is greater than or equal to the WORM validity period of backup copies at the local end.</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li1278624195020">If WORM is configured at both the local and target ends and WORM is configured by resource in the WORM configuration of <strong id="activedirectory_00013__en-us_topic_0000001839143189_b78231650163717">Data Security</strong> at the target end, all replication copies will have WORM enabled, and the WORM validity period is the same as the retention period of replication copies.</li><li id="activedirectory_00013__en-us_topic_0000001839143189_li127819245503">At the local end, if you configure backup copies to be retained permanently and set <strong id="activedirectory_00013__en-us_topic_0000001839143189_b19962154916464">WORM Validity Period</strong> to <strong id="activedirectory_00013__en-us_topic_0000001839143189_b127309324716">Same as the copy retention period</strong>, the WORM validity period is permanent. After a backup copy is generated, if you modify the SLA policy (by adding a replication policy and setting <strong id="activedirectory_00013__en-us_topic_0000001839143189_b115122018172413">Replication and Retention Rules</strong> to <strong id="activedirectory_00013__en-us_topic_0000001839143189_b9172163882417">Replicate all copies</strong>), the WORM validity period at the target end is the same as the retention period of replication copies.</li></ul>
+</div></div>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="activedirectory_00010.html">Backing Up Active Directory</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

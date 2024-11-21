@@ -1,3 +1,4 @@
+<div class="list-container">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="list-container">
   <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
 </div>
 
@@ -38,4 +38,12 @@
       *ngIf="item.environment?.subType !== dataMap.Device_Storage_Type.Other.value">
       {{item.environment?.endpoint | nil}}
   </p>
+</ng-template>
+
+<ng-template #databaseTypeTpl let-item>
+  <span lv-overflow>{{ item.sapHanaDbType | textMap:'saphanaDatabaseType' }}</span>
+</ng-template>
+
+<ng-template #sapHanaDbDeployType let-item>
+  <span lv-overflow> {{item.sapHanaDbDeployType | textMap:'saphanaDatabaseDeployType'}}</span>
 </ng-template>

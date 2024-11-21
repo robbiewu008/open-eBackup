@@ -1,0 +1,57 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Configuring a Replica Set on a Single Node to Enable Oplog">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002015810301">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Configuring a Replica Set on a Single Node to Enable Oplog</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002015810301"></a><a name="EN-US_TOPIC_0000002015810301"></a>
+
+<h1 class="topictitle1">Configuring a Replica Set on a Single Node to Enable Oplog</h1>
+<div><div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to the host where the MongoDB instance is located.</span></li><li id="EN-US_TOPIC_0000002015810301__li122752027152315"><a name="EN-US_TOPIC_0000002015810301__li122752027152315"></a><a name="li122752027152315"></a><span>Run the following command to log in to the MongoDB database:</span><p><pre class="screen"><strong>mongo --port </strong><em>Database port</em></pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Run the <strong>cat /</strong><em>Database installation directory</em><strong>/single/mongod.conf</strong> command to obtain the database port number.</p>
+</div></div>
+</p></li><li id="EN-US_TOPIC_0000002015810301__li1227562712313"><a name="EN-US_TOPIC_0000002015810301__li1227562712313"></a><a name="li1227562712313"></a><span>Run the <strong>use local</strong> command to switch to user <strong>local</strong>. Run the following command to query the table information of the MongoDB database.</span><p><p>If the output contains <strong>oplog.rs</strong>, oplog has been enabled. No further action is required. Otherwise, go to the next step to enable oplog.</p>
+<pre class="screen"><strong>show table</strong></pre>
+<p>Information similar to the following is displayed:</p>
+<pre class="screen">oplog.rs
+replset.election
+replset.minvalid
+replset.oplogTruncateAfterPoint
+startup_log
+system.replset
+system.rollback.id</pre>
+</p></li><li><span>Return to the host where the MongoDB instance is located.</span></li><li><span>Run the following command to open the instance configuration file and configure the database instance. Add <strong>replSet=</strong><em>single_node_repl_name</em> (custom single-node replica set name) to the configuration file.</span><p><pre class="screen"><strong>vi /</strong><strong>Database installation directory</strong><strong>/single/mongod.conf</strong></pre>
+</p></li><li><span>Run the following command to restart the MongoDB database:</span><p><pre class="screen"><strong>systemctl restart mongod</strong></pre>
+</p></li><li><span>Run the following command to initialize the database:</span><p><pre class="screen"><strong>rs.initiate({_id: "</strong><em>Replica set name</em><strong>", members: [{_id:0,host:"</strong><em>Server IP address</em><strong>:</strong><em>MongoDB port number</em><strong>"}]]})</strong></pre>
+<div class="p">For example:<pre class="screen"><strong>rs.initiate({ _id: "single", members: [{_id:0,host:"192.168.144.249:27017"}]})</strong></pre>
+</div>
+</p></li><li><span>Perform <a href="#EN-US_TOPIC_0000002015810301__li122752027152315">2</a> to <a href="#EN-US_TOPIC_0000002015810301__li1227562712313">3</a> to check whether oplog is enabled by configuring a replica set on a single node.</span></li></ol>
+</div>
+<p></p>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   Component,
@@ -26,7 +26,8 @@ import {
   CookieService,
   GlobalService,
   I18NService,
-  LANGUAGE
+  LANGUAGE,
+  SYSTEM_TIME
 } from 'app/shared';
 import * as echarts from 'echarts';
 import {
@@ -119,10 +120,15 @@ export class CapacityForecastChartComponent implements OnInit, OnChanges {
       totalCap.push(obj.totalCapacity);
       usedCap.push(obj.usedCapacity);
       percentage.push(obj.percentage * 100);
-      const key = this.datePipe.transform(obj.timestamp, 'yyyy-MM');
+      const key = this.datePipe.transform(
+        obj.timestamp,
+        'yyyy-MM',
+        SYSTEM_TIME.timeZone
+      );
       const value = this.datePipe.transform(
         obj.timestamp,
-        'yyyy-MM-dd HH:mm:ss'
+        'yyyy-MM-dd HH:mm:ss',
+        SYSTEM_TIME.timeZone
       );
       if (isEmpty(timeObj[key])) {
         timeObj[key] = [value];
@@ -229,8 +235,11 @@ export class CapacityForecastChartComponent implements OnInit, OnChanges {
           const usedText = this.i18n.get('common_used_capcity_label', [], true);
           const capacityObj: any = find(this.forecastDatas, (d: any) => {
             return (
-              this.datePipe.transform(d.timestamp, 'yyyy-MM-dd HH:mm:ss') ===
-              params[0].axisValue
+              this.datePipe.transform(
+                d.timestamp,
+                'yyyy-MM-dd HH:mm:ss',
+                SYSTEM_TIME.timeZone
+              ) === params[0].axisValue
             );
           });
 

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -27,7 +27,8 @@ import {
   I18NService,
   JobAPIService,
   MODAL_COMMON,
-  CommonConsts
+  CommonConsts,
+  SYSTEM_TIME
 } from 'app/shared';
 import {
   Filters,
@@ -60,6 +61,7 @@ export class JobEventComponent implements OnInit, AfterViewInit {
   tableConfig: TableConfig;
   tableData: TableData;
   jobLogLevel = DataMap.Job_Log_Level;
+  extTimeZone = SYSTEM_TIME.timeZone;
 
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
   @ViewChild('logInfoTpl', { static: true }) logInfoTpl: TemplateRef<any>;

@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="恢复Hyper-V虚拟机磁盘">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0055_0.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="vmware_gud_0059_0">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>恢复Hyper-V虚拟机磁盘</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="vmware_gud_0059_0"></a><a name="vmware_gud_0059_0"></a>
+  <h1 class="topictitle1">恢复Hyper-V虚拟机磁盘</h1>
+  <div>
+   <p>当需要对已备份的虚拟机指定磁盘恢复时，可以参考本节恢复虚拟机的磁盘至原虚拟机或新虚拟机。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <p><span>本产品</span>支持使用备份副本、复制副本（不支持恢复至原虚拟机）进行磁盘恢复，支持恢复至原虚拟机或新虚拟机。</p>
+    <ul>
+     <li>恢复磁盘至原虚拟机<p>恢复磁盘至原虚拟机时，如果原虚拟机对应槽位存在磁盘，该磁盘会被替换。</p></li>
+     <li>恢复磁盘至新虚拟机<p>恢复磁盘到新虚拟机时，如果指定的新虚拟机对应槽位存在磁盘，该磁盘会被替换。</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>恢复磁盘至虚拟机时，目标虚拟机中需存在磁盘，否则无法选中。</p>
+       </div>
+      </div></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="vmware_gud_0059_0__zh-cn_topic_0000001839142377_uicontrol66667531188">“<span id="vmware_gud_0059_0__zh-cn_topic_0000001839142377_text86661453985">数据利用</span> &gt; <span id="vmware_gud_0059_0__zh-cn_topic_0000001839142377_text26661531582">副本数据</span> &gt; <span id="vmware_gud_0059_0__zh-cn_topic_0000001839142377_text56671153582">虚拟化</span> &gt; Hyper-V”</span>。</span></li>
+     <li><span>支持以虚拟机维度或以副本维度查找副本，本节以虚拟机维度为例进行说明。</span><p></p><p>在“资源”页签，根据虚拟机名称查找到需要恢复的虚拟机，并单击虚拟机名称。</p> <p></p></li>
+     <li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000001894143420.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>在副本所在的行，单击<span class="uicontrol">“<span>更多</span> &gt; 磁盘恢复”</span>。</span></li>
+     <li><span>勾选要恢复的磁盘，单击<span class="uicontrol">“选择”</span>。</span></li>
+     <li><span>恢复虚拟机磁盘到原虚拟机或新虚拟机。</span><p></p>
+      <ul>
+       <li>恢复虚拟机磁盘到原虚拟机。
+        <ol type="a">
+         <li>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>。</li>
+         <li>选择恢复后是否自动开机。</li>
+         <li>选择恢复后是否删除原虚拟机。</li>
+        </ol></li>
+       <li>恢复虚拟机磁盘到新虚拟机。
+        <ol type="a">
+         <li>选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>。</li>
+         <li>设置恢复虚拟机到新位置的位置信息。
+          <div class="p">
+           相关参数说明如<a href="#vmware_gud_0059_0__table330165812189">表1</a>所示。 
+           <div class="tablenoborder">
+            <a name="vmware_gud_0059_0__table330165812189"></a><a name="table330165812189"></a>
+            <table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0059_0__table330165812189" frame="border" border="1" rules="all">
+             <caption>
+              <b>表1 </b>新虚拟机信息
+             </caption>
+             <colgroup>
+              <col style="width:29.87%">
+              <col style="width:70.13000000000001%">
+             </colgroup>
+             <thead align="left">
+              <tr>
+               <th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.3.2.6.2.1.2.1.2.1.2.2.3.1.1"><p>参数</p></th>
+               <th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.3.2.6.2.1.2.1.2.1.2.2.3.1.2"><p>说明</p></th>
+              </tr>
+             </thead>
+             <tbody>
+              <tr>
+               <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.3.2.6.2.1.2.1.2.1.2.2.3.1.1 "><p><span>计算位置</span></p></td>
+               <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.3.2.6.2.1.2.1.2.1.2.2.3.1.2 "><p>选择备份磁盘恢复到的虚拟机。</p>
+                <div class="note">
+                 <span class="notetitle"> 说明： </span>
+                 <div class="notebody">
+                  <p>目标虚拟机与源虚拟机的操作系统类型必须相同，如：同是Windows OS或同是Linux OS。</p>
+                 </div>
+                </div></td>
+              </tr>
+              <tr>
+               <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.3.2.6.2.1.2.1.2.1.2.2.3.1.1 "><p>目标虚拟化</p></td>
+               <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.3.2.6.2.1.2.1.2.1.2.2.3.1.2 "><p>为备份磁盘选择恢复到Hyper-V服务器的路径。</p></td>
+              </tr>
+             </tbody>
+            </table>
+           </div>
+          </div></li>
+         <li>选择恢复后是否自动开机。</li>
+        </ol></li>
+      </ul> <p></p></li>
+     <li><span>单击<span class="uicontrol" id="vmware_gud_0059_0__vmware_gud_0058_0_uicontrol1224533122916">“确定”</span>。</span></li>
+     <li><span>选择目标数据存储对应的磁盘。</span></li>
+     <li><span>单击<span class="uicontrol">“确定”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="vmware_gud_0055_0.html">恢复</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

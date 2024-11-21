@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -203,14 +203,9 @@ export class ResourceSetComponent implements OnInit, AfterViewInit {
       assign(params, { orders: filters.orders });
     }
 
-    this.resourceSetService.QueryResourceSet(params).subscribe(res => {
+    this.resourceSetService.queryResourceSet(params).subscribe(res => {
       res.records = map(res.records, item => {
         set(item, 'disabled', item.isDefault);
-        if (item.isDefault && item.isPublic) {
-          item.description = this.i18n.get(
-            'system_default_public_resource_set_label'
-          );
-        }
         return item;
       });
       this.tableData = {
@@ -276,7 +271,7 @@ export class ResourceSetComponent implements OnInit, AfterViewInit {
       ]),
       onOK: () => {
         this.resourceSetService
-          .BatchDeleteResourceSetId({
+          .batchDeleteResourceSetId({
             resourceSetDeleteRequest: params
           })
           .subscribe(res => {

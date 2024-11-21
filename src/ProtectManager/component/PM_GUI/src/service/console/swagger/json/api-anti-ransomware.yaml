@@ -17,7 +17,7 @@ paths:
   /v1/anti-ransomware/policies:
     get:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
@@ -161,7 +161,7 @@ paths:
           description: Not Found
     post:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
@@ -204,7 +204,7 @@ paths:
   /v1/anti-ransomware/policies/{id}:
     put:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
@@ -257,7 +257,7 @@ paths:
           description: Not Found
     delete:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
@@ -364,6 +364,34 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/CopySchema'
+  /v1/anti-ransomware/{resource_id}/is-exist-worm-policy:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anti-ransomware-policy-api
+      summary: 根据资源id查询worm开关是否开启
+      operationId: isExistWormPolicy
+      parameters:
+        - name: resource_id
+          in: path
+          required: true
+          type: string
+          description: 资源id
+      responses:
+        '200':
+          description: 返回worm开发的状态
+          schema:
+            type: boolean
 securityDefinitions:
   Authorization:
     type: apiKey

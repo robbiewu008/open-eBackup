@@ -1,3 +1,4 @@
+<div
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div
   class="aui-operation refresh-icon"
   *ngIf="
     resType !== resourceType.oracle.value &&
@@ -27,6 +27,8 @@
       resourceType.gaussdbTSingle.value,
       resourceType.Dameng_singleNode.value,
       resourceType.MySQL.value,
+      resourceType.AntDBInstance.value,
+      resourceType.AntDBClusterInstance.value,
       resourceType.SQLServerClusterInstance.value,
       resourceType.SQLServerInstance.value,
       resourceType.SQLServerGroup.value,
@@ -43,11 +45,13 @@
       resourceType.OceanBaseTenant.value,
       resourceType.tidbCluster.value,
       resourceType.tdsqlDistributedInstance.value,
+      resourceType.goldendbInstance.value,
       resourceType.ExchangeGroup.value,
       resourceType.ExchangeSingle.value,
       resourceType.ExchangeDataBase.value,
       resourceType.saphanaDatabase.value,
-      resourceType.MongodbSingleInstance.value
+      resourceType.MongodbSingleInstance.value,
+      resourceType.oraclePDB.value
     ].includes(resType)
   "
 >
@@ -103,6 +107,17 @@
                   rowData.resourceType === dataMap.Resource_Type.volume.value
                 "
               ></i>
+                    <i
+                      lv-icon="aui-icon-help"
+                      lv-tooltip="{{
+                        'common_worm_expiration_time_tips_label' | i18n
+                      }}"
+                      lvTooltipTheme="light"
+                      lvTooltipPosition="top"
+                      lvColorState="true"
+                      class="index-icon"
+                      *ngIf="item.key === 'worm_expiration_time'"
+                    ></i>
             </span>
             <div lvCustom *ngIf="item.key === 'cluster_name'">
               <aui-custom-table-search
@@ -129,7 +144,10 @@
               ></aui-custom-table-search>
             </div>
             <div lvCustom *ngIf="item.key === 'labelList'">
-              <aui-custom-table-search (search)="searchByLabel($event)" [filterTitle]="item.label"></aui-custom-table-search>
+              <aui-custom-table-search
+                (search)="searchByLabel($event)"
+                [filterTitle]="item.label"
+              ></aui-custom-table-search>
             </div>
           </th>
         </ng-container>
@@ -164,10 +182,7 @@
               <ng-container [ngSwitch]="col.key">
                 <ng-container *ngSwitchCase="'origin_copy_time_stamp'">
                   <div lv-overflow>
-                    <a
-                      id="outerClosable"
-                      (click)="getDetail(item)"
-                    >
+                    <a id="outerClosable" (click)="getDetail(item)">
                       {{
                         item.origin_copy_time_stamp
                           ? (item.origin_copy_time_stamp
@@ -179,10 +194,7 @@
                 </ng-container>
                 <ng-container *ngSwitchCase="'display_timestamp'">
                   <div lv-overflow>
-                    <a
-                      id="outerClosable"
-                      (click)="getDetail(item)"
-                    >
+                    <a id="outerClosable" (click)="getDetail(item)">
                       {{ item.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss' }}
                     </a>
                   </div>
@@ -217,7 +229,12 @@
                           resourceType.tdsqlInstance.value,
                           resourceType.KubernetesStatefulset.value,
                           resourceType.kubernetesNamespaceCommon.value,
-                          resourceType.kubernetesDatasetCommon.value
+                          resourceType.kubernetesDatasetCommon.value,
+                          resourceType.fusionOne.value,
+                          resourceType.APSCloudServer.value,
+                          resourceType.APSResourceSet.value,
+                          resourceType.APSZone.value,
+                          resourceType.hyperVVm.value
                         ].includes(item.resource_sub_type);
                       else normalType
                     "
@@ -243,6 +260,9 @@
                     !!item?.storage_snapshot_flag | textMap: 'isBusinessOptions'
                   }}
                 </ng-container>
+                <ng-container *ngSwitchCase="'can_table_restore'">
+                  {{ item?.can_table_restore | textMap: 'isBusinessOptions' }}
+                </ng-container>
                 <ng-container *ngSwitchCase="'worm_status'">
                   <i
                     [lv-tooltip]="getWormLabel(item) | i18n"
@@ -253,6 +273,14 @@
                     style="width:20px;height:20px"
                   ></i>
                 </ng-container>
+                <ng-contianer *ngSwitchCase="'worm_expiration_time'">
+                  {{
+                    item.worm_expiration_time
+                      ? (item.worm_expiration_time
+                        | date: 'yyyy-MM-dd HH:mm:ss':timeZone)
+                      : '--'
+                  }}
+                </ng-contianer>
                 <ng-container *ngSwitchCase="'isSanClient'">
                   {{
                     (item.properties
@@ -264,8 +292,11 @@
                 <ng-container *ngSwitchCase="'isSystemBackup'">
                   {{
                     (item.resource_properties
-                      ? _parse(item.resource_properties).ext_parameters
-                          .system_backup_flag
+                      ? rowData?.subType  === dataMap.Resource_Type.fileset.value
+                        ? _parse(item.resource_properties).extendInfo
+                            ?.is_OS_backup === 'true' || false
+                        : _parse(item.resource_properties).ext_parameters
+                            .system_backup_flag
                       : ''
                     ) | textMap: 'copyDataVolume'
                   }}
@@ -340,7 +371,10 @@
                 </ng-container>
                 <ng-container *ngSwitchCase="'labelList'">
                   <ng-container *ngIf="item?.labelList?.length; else emptyTpl">
-                    <lv-tag [ngModel]="item?.showLabelList" [lv-tooltip]="TagTpl"></lv-tag>
+                    <lv-tag
+                      [ngModel]="item?.showLabelList"
+                      [lv-tooltip]="TagTpl"
+                    ></lv-tag>
                     <ng-template #TagTpl>
                       <lv-tag [ngModel]="item?.hoverLabelList"></lv-tag>
                     </ng-template>
@@ -378,7 +412,6 @@
     (columnsStatusChange)="onColumnsChange()"
   ></column-filter-tpl>
 </ng-template>
-
 
 <ng-template #emptyTpl>
   --

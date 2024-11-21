@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AlarmColorConsts,
   ColorConsts,
@@ -63,6 +63,16 @@ export const DataMap = {
     disable: {
       value: false,
       label: 'common_disable_label'
+    }
+  },
+  Switch_Sla_Info_Status: {
+    enable: {
+      value: true,
+      label: 'common_sp_enable_label' // sp标识区别enable和enabled，中文不变
+    },
+    disable: {
+      value: false,
+      label: 'common_sp_disable_label'
     }
   },
   airGapSwitchStatus: {
@@ -336,6 +346,95 @@ export const DataMap = {
       value: '3',
       label: 'common_status_pause_label',
       color: ColorConsts.OFFLINE
+    }
+  },
+  nutanixHostStatus: {
+    normal: {
+      value: 'NORMAL',
+      label: 'common_status_normal_label',
+      color: ColorConsts.NORMAL
+    },
+    new: {
+      value: 'NEW',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    },
+    notDetachable: {
+      value: 'MARKED_FOR_REMOVAL_BUT_NOT_DETACHABLE',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    },
+    detachable: {
+      value: 'DETACHABLE',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    }
+  },
+  nutanixVmStatus: {
+    on: {
+      value: 'on',
+      label: 'protection_vm_status_on_label',
+      color: ColorConsts.NORMAL
+    },
+    off: {
+      value: 'off',
+      label: 'protection_vm_status_off_label',
+      color: ColorConsts.OFFLINE
+    },
+    paused: {
+      value: 'paused',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    },
+    unknown: {
+      value: 'unknown',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    },
+    poweringOn: {
+      value: 'powering_on',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    },
+    shuttingDown: {
+      value: 'shutting_down',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    },
+    poweringOff: {
+      value: 'powering_off',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    },
+    pausing: {
+      value: 'pausing',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    },
+    suspending: {
+      value: 'suspending',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    },
+    suspended: {
+      value: 'suspended',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    },
+    resuming: {
+      value: 'resuming',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    },
+    resetting: {
+      value: 'resuming',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
+    },
+    mirgrating: {
+      value: 'mirgrating',
+      label: 'common_status_exception_label',
+      color: ColorConsts.ABNORMAL
     }
   },
   HCS_Host_LinkStatus: {
@@ -734,11 +833,6 @@ export const DataMap = {
       label: 'common_status_deleting_label',
       color: ColorConsts.RUNNING
     },
-    restoring: {
-      value: 'Restoring',
-      label: 'common_status_restoring_label',
-      color: ColorConsts.RUNNING
-    },
     mounting: {
       value: 'Mounting',
       label: 'common_status_mounting_label',
@@ -842,6 +936,10 @@ export const DataMap = {
     [WormStatusEnum.SET_FAILED]: {
       value: WormStatusEnum.SET_FAILED,
       label: 'explore_copy_worm_set_fail_label'
+    },
+    [WormStatusEnum.EXPIRATION]: {
+      value: WormStatusEnum.EXPIRATION,
+      label: 'common_active_expired_label'
     }
   },
   CopyData_fileIndex: {
@@ -945,6 +1043,16 @@ export const DataMap = {
       label: 'common_no_label'
     }
   },
+  pdbSetType: {
+    pdb: {
+      value: 'true',
+      label: 'protection_is_pdb_label'
+    },
+    cdb: {
+      value: 'false',
+      label: 'protection_is_cdb_label'
+    }
+  },
   copyDataVolume: {
     enable: {
       value: true,
@@ -968,12 +1076,12 @@ export const DataMap = {
     },
     dispatching: {
       value: 'DISPATCHING',
-      label: 'common_dispatch_label',
+      label: 'common_pending_label',
       color: JobColorConsts.PENDING
     },
     redispatch: {
       value: 'REDISPATCH',
-      label: 'common_dispatch_label',
+      label: 'common_pending_label',
       color: JobColorConsts.PENDING
     },
     running: {
@@ -1057,6 +1165,10 @@ export const DataMap = {
     host_register: {
       value: 'host_register',
       label: 'protection_client_registration_label'
+    },
+    updateBackupServiceIp: {
+      value: 'protect_agent_update_backup_service_ip',
+      label: 'protection_agent_update_backup_service_ip_label'
     },
     protect_agent_update: {
       value: 'protect_agent_update',
@@ -2196,6 +2308,10 @@ export const DataMap = {
       value: 'COMMON',
       label: 'system_local_user_label'
     },
+    adfs: {
+      value: 'ADFS',
+      label: 'system_adfs_service_user_label'
+    },
     ldap: {
       value: 'LDAP',
       label: 'system_ldap_service_user_label'
@@ -2228,6 +2344,10 @@ export const DataMap = {
       value: 'UBackupAgent',
       label: 'protection_ubackupagent_native_label'
     },
+    agent: {
+      value: 'Host',
+      label: 'protection_proxy_host_label'
+    },
     SBackupAgent: {
       value: 'SBackupAgent',
       label: 'protection_sbackupagent_native_label'
@@ -2244,6 +2364,14 @@ export const DataMap = {
       value: 'ADDS',
       label: 'Active Directory'
     },
+    AntDBInstance: {
+      value: 'AntDBInstance',
+      label: 'resource_sub_type_ant_db_instance_label'
+    },
+    AntDBClusterInstance: {
+      value: 'AntDBClusterInstance',
+      label: 'resource_sub_type_ant_db_cluster_instance_label'
+    },
     volume: {
       value: 'Volume',
       label: 'protection_volume_label'
@@ -2255,6 +2383,10 @@ export const DataMap = {
     oracleCluster: {
       value: 'Oracle-cluster',
       label: 'common_oracle_cluster_database_label'
+    },
+    oraclePdbSet: {
+      value: 'Oracle-pdb',
+      label: 'common_oracle_pdb_label'
     },
     dbTwoCluster: {
       value: 'DB2-cluster',
@@ -2520,6 +2652,22 @@ export const DataMap = {
       value: 'FusionOneCompute',
       label: 'common_fo_vm_label'
     },
+    nutanix: {
+      value: 'Nutanix',
+      label: 'common_nutanix_env_label'
+    },
+    nutanixCluster: {
+      value: 'NutanixCluster',
+      label: 'common_nutanix_cluster_label'
+    },
+    nutanixHost: {
+      value: 'NutanixHost',
+      label: 'common_nutanix_host_label'
+    },
+    nutanixVm: {
+      value: 'NutanixVm',
+      label: 'common_nutanix_vm_label'
+    },
     kubernetes: {
       value: 'Kubernetes',
       label: 'protection_kubernetes_cluster_label'
@@ -2559,6 +2707,14 @@ export const DataMap = {
     ElasticSearch: {
       value: 'ElasticSearchBackupSet',
       label: 'protection_elasticsearch_backupset_label'
+    },
+    DoradoV7: {
+      value: 'DoradoV7',
+      label: 'OceanStor Dorado V7'
+    },
+    OceanStorDoradoV7: {
+      value: 'OceanStorV7',
+      label: 'OceanStor V7'
     },
     OceanStorDorado_6_1_3: {
       value: 'DoradoV6',
@@ -2747,9 +2903,21 @@ export const DataMap = {
     saphanaDatabase: {
       value: 'SAPHANA-database',
       label: 'protection_saphana_database_label'
+    },
+    saponoracleDatabase: {
+      value: 'SAP_ON_ORACLE_SINGLE',
+      label: 'protection_saponoracle_database_label'
     }
   },
   globalResourceType: {
+    AntDBInstance: {
+      value: 'AntDBInstance',
+      label: 'resource_sub_type_ant_db_instance_label'
+    },
+    AntDBClusterInstance: {
+      value: 'AntDBClusterInstance',
+      label: 'resource_sub_type_ant_db_cluster_instance_label'
+    },
     ExchangeSingle: {
       value: 'Exchange-single-node',
       label: 'protection_exchange_single_node_label'
@@ -3218,6 +3386,10 @@ export const DataMap = {
       value: 'SAPHANA-database',
       label: 'protection_saphana_database_label'
     },
+    saponoracleDatabase: {
+      value: 'SAP_ON_ORACLE_SINGLE',
+      label: 'protection_saponoracle_database_label'
+    },
     hyperVScvmm: {
       value: 'HyperV.SCVMM',
       label: 'protection_hyperv_scvmm_label'
@@ -3429,6 +3601,18 @@ export const DataMap = {
       value: 'APS-instance',
       label: 'common_cloud_server_label'
     },
+    AntDB: {
+      value: 'AntDB',
+      label: 'AntDB'
+    },
+    AntDBClusterInstance: {
+      value: 'AntDBClusterInstance',
+      label: 'resource_sub_type_ant_db_cluster_instance_label'
+    },
+    AntDBInstance: {
+      value: 'AntDBInstance',
+      label: 'resource_sub_type_ant_db_instance_label'
+    },
     tdsql: {
       value: 'TDSQL',
       label: 'TDSQL'
@@ -3523,7 +3707,7 @@ export const DataMap = {
     },
     OpenGauss: {
       value: 'OpenGauss',
-      label: 'openGauss'
+      label: 'common_opengauss_label'
     },
     OpenGauss_instance: {
       value: 'OpenGauss-instance',
@@ -3588,6 +3772,10 @@ export const DataMap = {
     oracleCluster: {
       value: 'Oracle-cluster',
       label: 'Oracle'
+    },
+    oraclePDB: {
+      value: 'Oracle-pdb',
+      label: 'protection_pdb_set_label'
     },
     vmware: {
       value: 'VMware',
@@ -3697,7 +3885,7 @@ export const DataMap = {
     },
     hyperVHost: {
       value: 'HyperV.Host',
-      label: 'common_host_label'
+      label: 'common_oracle_host_label'
     },
     hyperVVm: {
       value: 'HyperV.VM',
@@ -3988,6 +4176,10 @@ export const DataMap = {
       value: 'SapHana',
       label: 'SAP HANA'
     },
+    Saponoracle: {
+      value: 'SAP_ON_ORACLE',
+      label: 'common_sap_on_oracle_label'
+    },
     H3cCas: {
       value: 'H3cCas',
       label: 'H3C Cas'
@@ -4175,9 +4367,33 @@ export const DataMap = {
       value: 'SAPHANA-database',
       label: 'protection_saphana_database_label'
     },
+    saponoracleDatabase: {
+      value: 'SAP_ON_ORACLE_SINGLE',
+      label: 'protection_saponoracle_database_label'
+    },
     fusionOne: {
       value: 'FusionOneCompute',
       label: 'protection_fusionone_label'
+    },
+    nutanix: {
+      value: 'Nutanix',
+      label: 'common_nutanix_env_label'
+    },
+    nutanixCluster: {
+      value: 'NutanixCluster',
+      label: 'common_nutanix_cluster_label'
+    },
+    nutanixHost: {
+      value: 'NutanixHost',
+      label: 'common_nutanix_host_label'
+    },
+    nutanixVm: {
+      value: 'NutanixVm',
+      label: 'common_nutanix_vm_label'
+    },
+    nutanixDisk: {
+      value: 'NutanixDisk',
+      label: 'common_disk_label'
     }
   },
   clickHouseResourceType: {
@@ -4291,6 +4507,10 @@ export const DataMap = {
       value: ApplicationType.LocalLun,
       label: 'protection_local_lun_label'
     },
+    AntDB: {
+      value: ApplicationType.AntDB,
+      label: 'AntDB'
+    },
     General: {
       value: ApplicationType.Common,
       label: 'common_general_label'
@@ -4318,6 +4538,10 @@ export const DataMap = {
     cnware: {
       value: ApplicationType.CNware,
       label: 'common_cnware_label'
+    },
+    nutanix: {
+      value: ApplicationType.Nutanix,
+      label: 'common_nutanix_label'
     },
     ABBackupClient: {
       value: ApplicationType.Volume,
@@ -4409,7 +4633,7 @@ export const DataMap = {
     },
     OpenGauss: {
       value: ApplicationType.OpenGauss,
-      label: 'OpenGauss'
+      label: 'common_opengauss_label'
     },
     ElasticSearch: {
       value: ApplicationType.Elasticsearch,
@@ -4490,6 +4714,10 @@ export const DataMap = {
     saphana: {
       value: ApplicationType.SapHana,
       label: 'SAP HANA'
+    },
+    Saponoracle: {
+      value: ApplicationType.Saponoracle,
+      label: 'common_sap_on_oracle_label'
     }
   },
   Sla_Category: {
@@ -5100,6 +5328,10 @@ export const DataMap = {
     cyberEngineBackupStorage: {
       value: '88038QKC-88038QKD-88038QKE-88038QKF-88038QKG',
       label: 'common_cyber_engine_backup_storage_soft_capacity_label'
+    },
+    E1000: {
+      value: '88039TEX',
+      label: 'common_e1000_data_backup_capacity_label'
     }
   },
   homeLicenseType: {
@@ -5244,6 +5476,33 @@ export const DataMap = {
     specified: {
       value: 2,
       label: 'explore_detect_after_time_copy_label'
+    }
+  },
+  deleteArchiveLogDuringUnit: {
+    hour: {
+      value: 'h',
+      label: 'common_hours_label',
+      isLeaf: true
+    },
+    day: {
+      value: 'd',
+      label: 'common_days_label',
+      isLeaf: true
+    },
+    week: {
+      value: 'w',
+      label: 'common_weeks_label',
+      isLeaf: true
+    },
+    month: {
+      value: 'M',
+      label: 'common_months_label',
+      isLeaf: true
+    },
+    year: {
+      value: 'Y',
+      label: 'common_years_label',
+      isLeaf: true
     }
   },
   Detecting_During_Unit: {
@@ -5423,6 +5682,10 @@ export const DataMap = {
     hypervVm: {
       value: 'HyperV.VM',
       label: 'common_hyper_vm_machine_label'
+    },
+    nutanixVm: {
+      value: 'NutanixVm',
+      label: 'common_nutanix_vm_label'
     },
     hcsContainer: {
       value: 'HCSCloudHost',
@@ -6246,15 +6509,15 @@ export const DataMap = {
   Target_Cluster_Role: {
     primaryNode: {
       value: 7,
-      label: 'system_backup_cluster_primary_node_label'
+      label: 'system_backup_cluster_primary_node_low_label'
     },
     memberNode: {
       value: 5,
-      label: 'system_backup_cluster_member_node_label'
+      label: 'system_backup_cluster_member_node_low_label'
     },
     backupNode: {
       value: 6,
-      label: 'system_backup_cluster_standby_node_label'
+      label: 'system_backup_cluster_standby_node_low_label'
     },
     replication: {
       value: 1,
@@ -6328,6 +6591,14 @@ export const DataMap = {
     }
   },
   Device_Storage_Type: {
+    DoradoV7: {
+      value: 'DoradoV7',
+      label: 'OceanStor Dorado V7'
+    },
+    OceanStorDoradoV7: {
+      value: 'OceanStorV7',
+      label: 'OceanStor V7'
+    },
     OceanStorDorado_6_1_3: {
       value: 'DoradoV6',
       label: 'OceanStor Dorado 6.x'
@@ -7110,17 +7381,9 @@ export const DataMap = {
       value: 'aix',
       label: 'AIX'
     },
-    hpux: {
-      value: 'hp_ux',
-      label: 'HP-UX'
-    },
     solaris: {
       value: 'solaris',
       label: 'Solaris'
-    },
-    openvm: {
-      value: 'open_vms',
-      label: 'OpenVMS'
     }
   },
   Create_Fileset_Mode: {
@@ -7193,7 +7456,7 @@ export const DataMap = {
     },
     partSucess: {
       value: 'PART_SUCCESS',
-      color: ColorConsts.NORMAL,
+      color: ColorConsts.WARN,
       label: 'job_status_partial_success_label'
     }
   },
@@ -7248,9 +7511,9 @@ export const DataMap = {
     }
   },
   exportLogRange: {
-    last15: {
-      value: 15,
-      label: 'common_last_15_day_label',
+    customRange: {
+      value: 'custom',
+      label: 'common_custom_time_range_label',
       isLeaf: true
     },
     all: {
@@ -7299,6 +7562,10 @@ export const DataMap = {
     standby: {
       value: '3',
       label: 'protection_deployment_standby_label'
+    },
+    cmdb: {
+      value: '4',
+      label: 'protection_cmdb_label'
     }
   },
   guassdbTDeploymentType: {
@@ -7319,6 +7586,10 @@ export const DataMap = {
     standby: {
       value: '3',
       label: 'protection_deployment_standby_label'
+    },
+    cmdb: {
+      value: '4',
+      label: 'protection_cmdb_label'
     }
   },
   Register_Type: {
@@ -7343,6 +7614,16 @@ export const DataMap = {
     pxc: {
       value: 'PXC',
       label: 'PXC(Percona XtraDB Cluster)'
+    }
+  },
+  AntDB_Instance_Type: {
+    singleInstance: {
+      value: 'AntDBInstance',
+      label: 'protection_single_instance_label'
+    },
+    clusterInstance: {
+      value: 'AntDBClusterInstance',
+      label: 'protection_cluster_instance_label'
     }
   },
   PostgreSql_Cluster_Type: {
@@ -7701,11 +7982,11 @@ export const DataMap = {
     },
     ldap: {
       value: 'LDAP',
-      label: 'system_ldap_service_user_label'
+      label: 'system_ldap_service_user_type_label'
     },
     ldapGroup: {
       value: 'LDAPGROUP',
-      label: 'system_ldap_service_user_group_label'
+      label: 'system_ldap_service_user_group_type_label'
     },
     saml: {
       value: 'SAML',
@@ -7718,6 +7999,10 @@ export const DataMap = {
     adfs: {
       value: 'ADFS',
       label: 'system_adfs_service_user_label'
+    },
+    dme: {
+      value: 'DME',
+      label: 'system_dme_user_label'
     }
   },
   loginMethod: {
@@ -8833,6 +9118,23 @@ export const DataMap = {
       label: 'protection_incomplete_label'
     }
   },
+  gaussDBInstanceStatus: {
+    online: {
+      value: '1',
+      label: 'common_online_label',
+      color: ColorConsts.NORMAL
+    },
+    offline: {
+      value: '0',
+      label: 'common_off_label',
+      color: ColorConsts.OFFLINE
+    },
+    abnormal: {
+      value: '2',
+      label: 'common_status_abnormal_label',
+      color: ColorConsts.ABNORMAL
+    }
+  },
   fileReplaceType: {
     overwrite: {
       value: VmFileReplaceStrategy.Overwriting,
@@ -9121,7 +9423,7 @@ export const DataMap = {
   copyDataLimitType: {
     restoreOrigin: {
       value: 'OLD_LOCATION_RESTORE',
-      label: 'common_restore_to_origin_location_cyber_label'
+      label: 'system_restore_to_origin_label'
     },
     restoreNew: {
       value: 'NEW_LOCATION_RESTORE',
@@ -9129,15 +9431,15 @@ export const DataMap = {
     },
     fineGrainedRestore: {
       value: 'FLR_RESTORE',
-      label: 'protection_fine_grained_restore_label'
+      label: 'explore_copy_limit_file_level_restore_label'
     },
     liveMount: {
       value: 'LIVE_MOUNT',
-      label: 'common_live_mount_label'
+      label: 'explore_copy_limit_live_mount_label'
     },
     liveMountRestore: {
       value: 'LIVE_RESTORE',
-      label: 'common_live_restore_job_label'
+      label: 'common_live_restore_job_lowercase_label'
     },
     donwload: {
       value: 'DOWNLOAD',
@@ -9159,7 +9461,72 @@ export const DataMap = {
     },
     replicate: {
       value: 'Replicated',
-      label: 'common_copy_a_copy_label'
+      label: 'common_replication_copy_label'
+    }
+  },
+  windowsVolumeBackupType: {
+    volume: {
+      value: 1,
+      label: 'protection_volume_label',
+      isLeaf: true
+    },
+    bareMetal: {
+      value: 2,
+      label: 'common_bare_metal_other_label',
+      isLeaf: true
+    }
+  },
+  packageType: {
+    zip: {
+      value: 'ZIP',
+      label: 'zip'
+    },
+    tar: {
+      value: 'TAR',
+      label: 'tar'
+    }
+  },
+  unitTranslateMap: {
+    d: 1,
+    w: 7,
+    MO: 30,
+    y: 365,
+    p: Infinity
+  },
+  unitPlaceHolderMap: {
+    d: '1~365',
+    w: '1~54',
+    MO: '1~24',
+    y: '1~20'
+  },
+  replicationAction: {
+    data: {
+      value: 'replication',
+      label: 'protection_sla_rep_type_data_label'
+    },
+    log: {
+      value: 'replication_log',
+      label: 'protection_sla_rep_type_log_label'
+    }
+  },
+  initLogicPortExistStatus: {
+    exist: {
+      value: true,
+      label: 'common_yes_label'
+    },
+    notExist: {
+      value: false,
+      label: 'common_no_label'
+    }
+  },
+  recoveryDrillType: {
+    liveMount: {
+      value: 'live_mount',
+      label: 'common_live_mount_label'
+    },
+    restore: {
+      value: 'RESTORE',
+      label: 'common_restore_label'
     }
   }
 };

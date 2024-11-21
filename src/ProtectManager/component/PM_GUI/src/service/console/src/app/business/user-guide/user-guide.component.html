@@ -1,3 +1,4 @@
+<div class="user-guide-slider">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,199 +12,203 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="guide-container" *ngIf="currentGuide === guideMap.main">
-    <lv-group class="header">
-        <div class="guide-h1">{{'protection_guide_title_label' | i18n}}</div>
-        <i lv-icon="lv-icon-close" class="close-link" (click)="closeGuide()"></i>
-    </lv-group>
-    <lv-group class="title" lvGutter="20px">
-        <i lv-icon="aui-guide-large" class="title-logo"></i>
-        <lv-group class="title-desc" lvDirection="vertical" lvGutter="4px">
-            <span class="aui-text-label">
-                {{'protection_guide_assistant_label' | i18n}}
-            </span>
-            <span class="guide-h1">
-                {{'protection_guide_assistant_tip_label' | i18n}}
-            </span>
+    <div class="guide-container" *ngIf="currentGuide === guideMap.main">
+        <lv-group class="header">
+            <div class="guide-h1">{{'protection_guide_title_label' | i18n}}</div>
+            <i lv-icon="lv-icon-close" class="close-link" (click)="closeGuide()"></i>
         </lv-group>
-    </lv-group>
-    <!-- 退出提示 -->
-    <div class="close-guide-content" *ngIf="hasGuideFlag">
-        <lv-group lvGutter='8px' class="aui-gutter-column-sm">
-            <i lv-icon="aui-guide-small" class="guide-small-icon"></i>
-            <span class="close-guide-title">
-                {{'protection_close_guide_title_label' | i18n}}
-            </span>
-        </lv-group>
-        <lv-group lvGutter='8px' class="close-app-tip">
-            <div class="app-logo-container" [style.backgroundColor]="activeApp?.color">
-                {{activeApp?.prefix}}
-            </div>
-            <lv-group lvDirection='vertical'>
-                <span class="warp-app-label" lv-overflow>
-                    {{activeApp?.label | i18n}}
+        <lv-group class="title" lvGutter="20px">
+            <i lv-icon="aui-guide-large" class="title-logo"></i>
+            <lv-group class="title-desc" lvDirection="vertical" lvGutter="4px">
+                <span class="aui-text-label">
+                    {{'protection_guide_assistant_label' | i18n}}
                 </span>
-                <span class="aui-text-desc aui-number-6">{{guideTime}}</span>
+                <span class="guide-h1">
+                    {{'protection_guide_assistant_tip_label' | i18n}}
+                </span>
             </lv-group>
         </lv-group>
-        <lv-group lvGutter='16px' class="close-button">
-            <span class="aui-link" (click)="closeGuide()">
-                {{'protection_guide_end_label' | i18n}}
-            </span>
-            <span class="aui-link" (click)="continnue()">
-                {{'common_continnue_label' | i18n}}
-            </span>
-        </lv-group>
+        <!-- 退出提示 -->
+        <div class="close-guide-content" *ngIf="hasGuideFlag">
+            <lv-group lvGutter='8px' class="aui-gutter-column-sm">
+                <i lv-icon="aui-guide-small" class="guide-small-icon"></i>
+                <span class="close-guide-title">
+                    {{'protection_close_guide_title_label' | i18n}}
+                </span>
+            </lv-group>
+            <lv-group lvGutter='8px' class="close-app-tip">
+                <div class="app-logo-container" [style.backgroundColor]="activeApp?.color">
+                    {{activeApp?.prefix}}
+                </div>
+                <lv-group lvDirection='vertical'>
+                    <span class="warp-app-label" lv-overflow>
+                        {{activeApp?.label | i18n}}
+                    </span>
+                    <span class="aui-text-desc aui-number-6">{{guideTime}}</span>
+                </lv-group>
+            </lv-group>
+            <lv-group lvGutter='16px' class="close-button">
+                <span class="aui-link" (click)="closeGuide()">
+                    {{'protection_guide_end_label' | i18n}}
+                </span>
+                <span class="aui-link" (click)="continnue()">
+                    {{'protection_resume_label' | i18n}}
+                </span>
+            </lv-group>
+        </div>
+        <div class="content">
+            <ng-container *ngFor="let step of guideSteps">
+                <lv-group lvGutter='8px' lvDirection="vertical" class="aui-gutter-column-xl">
+                    <lv-group lvGutter='4px'>
+                        <span class="label-tag"></span>
+                        <span class="guide-h2 guide-aui-link" (click)="toGuide(step.id)">
+                            {{step.title}}
+                        </span>
+                    </lv-group>
+                    <span class="aui-text-desc aui-number-6 pdl-desc">{{step.desc}}</span>
+                </lv-group>
+            </ng-container>
+        </div>
     </div>
-    <div class="content">
-        <ng-container *ngFor="let step of guideSteps">
-            <lv-group lvGutter='8px' lvDirection="vertical" class="aui-gutter-column-xl">
-                <lv-group lvGutter='4px'>
-                    <span class="label-tag"></span>
-                    <span class="guide-h2 guide-aui-link" (click)="toGuide(step.id)">
-                        {{step.title}}
+    <!-- 备份向导-->
+    <div class="main-container user-guide-step" *ngIf="currentGuide === guideMap.backup">
+        <ng-container *ngTemplateOutlet="guideTitle; context: { $implicit: guideSteps[0]?.title }">
+        </ng-container>
+        <!-- step1选择资源类型 -->
+        <div class="step1" [ngClass]="{'visible': activeStep === 1, 'hidden': activeStep !== 1}">
+            <div class="guide-h3 mgt-24 aui-gutter-column-lg">
+                {{'protection_guide_select_resource_label' | i18n}}
+            </div>
+            <lv-collapse [lvType]="'simple'">
+                <ng-container *ngFor="let application of applicationConfig; first as isFirst">
+                    <lv-collapse-panel lvTitle="{{application.label | i18n}}" [lvExpanded]="isFirst">
+                        <lv-group [lvColumns]='["auto", "auto"]' lvRowGutter="16px" lvColumnGutter="16px">
+                            <ng-container *ngFor="let app of application.apps">
+                                <lv-group lvGutter='8px' class="app-group" (click)="activeClick(app)"
+                                    [ngClass]="{'active-status': activeAppId === app.id}">
+                                    <div class="app-logo-container" [style.backgroundColor]="app.color">
+                                        {{app.prefix}}
+                                    </div>
+                                    <span class="warp-app-label" lv-overflow>
+                                        {{app.label | i18n}}
+                                    </span>
+                                </lv-group>
+                            </ng-container>
+                        </lv-group>
+                    </lv-collapse-panel>
+                </ng-container>
+            </lv-collapse>
+        </div>
+        <!-- step2对应资源引导流程 -->
+        <div class="step2" [ngClass]="{'visible': activeStep === 2, 'hidden': activeStep !== 2}">
+            <lv-group lvGutter='8px' class="mgt-24 aui-gutter-column-lg">
+                <div class="active-app-logo-container" [style.backgroundColor]="activeApp?.color">
+                    {{activeApp?.prefix}}
+                </div>
+                <lv-group lvDirection='vertical' lvGutter='4px'>
+                    <span>{{activeApp?.label | i18n}}</span>
+                    <span class="guide-label">
+                        {{'protection_backup_guide_label' | i18n}}
                     </span>
                 </lv-group>
-                <span class="aui-text-desc aui-number-6 pdl-desc">{{step.desc}}</span>
             </lv-group>
-        </ng-container>
-    </div>
-</div>
-<!-- 备份向导-->
-<div class="main-container" *ngIf="currentGuide === guideMap.backup">
-    <ng-container *ngTemplateOutlet="guideTitle; context: { $implicit: guideSteps[0]?.title }">
-    </ng-container>
-    <!-- step1选择资源类型 -->
-    <div class="step1" [ngClass]="{'visible': activeStep === 1, 'hidden': activeStep !== 1}">
-        <div class="guide-h3 mgt-24 aui-gutter-column-lg">
-            {{'protection_guide_select_resource_label' | i18n}}
-        </div>
-        <lv-collapse [lvType]="'simple'">
-            <ng-container *ngFor="let application of applicationConfig; first as isFirst">
-                <lv-collapse-panel lvTitle="{{application.label | i18n}}" [lvExpanded]="isFirst">
-                    <lv-group [lvColumns]='["auto", "auto"]' lvRowGutter="16px" lvColumnGutter="16px">
-                        <ng-container *ngFor="let app of application.apps">
-                            <lv-group lvGutter='8px' class="app-group" (click)="activeClick(app)"
-                                [ngClass]="{'active-status': activeAppId === app.id}">
-                                <div class="app-logo-container" [style.backgroundColor]="app.color">
-                                    {{app.prefix}}
-                                </div>
-                                <span class="warp-app-label" lv-overflow>
-                                    {{app.label | i18n}}
-                                </span>
-                            </lv-group>
+            <!-- NAS共享分2个模块 -->
+            <div class="nasshare-step aui-gutter-column-md"
+                *ngIf="activeApp?.subType === dataMap.Resource_Type.NASShare.value">
+                <lv-radio-group #group [(ngModel)]="selectedMode" [lvGroupName]="'nasshare'"
+                    (ngModelChange)="modeClick()">
+                    <lv-group [lvGutter]="'16px'" lvWrap="true">
+                        <ng-container *ngFor="let mode of nasshareMode">
+                            <lv-radio [lvViewType]="'custom'" [lvValue]="mode.value">
+                                <lv-card class="ui-card" [ngClass]="{'ui-card-zh': !isEn, 'ui-card-en': isEn}"
+                                    lvType="border" [lvTitle]="mode.title" [lvChecked]="group.isChecked(mode.value)">
+                                    <p class="content">{{ mode.content }}</p>
+                                </lv-card>
+                            </lv-radio>
                         </ng-container>
                     </lv-group>
-                </lv-collapse-panel>
-            </ng-container>
-        </lv-collapse>
-    </div>
-    <!-- step2对应资源引导流程 -->
-    <div class="step2" [ngClass]="{'visible': activeStep === 2, 'hidden': activeStep !== 2}">
-        <lv-group lvGutter='8px' class="mgt-24 aui-gutter-column-lg">
-            <div class="active-app-logo-container" [style.backgroundColor]="activeApp?.color">
-                {{activeApp?.prefix}}
+                </lv-radio-group>
             </div>
-            <lv-group lvDirection='vertical' lvGutter='4px'>
-                <span>{{activeApp?.label | i18n}}</span>
-                <span class="guide-label">
-                    {{'protection_backup_guide_label' | i18n}}
-                </span>
-            </lv-group>
-        </lv-group>
-        <!-- NAS共享分2个模块 -->
-        <div class="nasshare-step aui-gutter-column-md"
-            *ngIf="activeApp?.subType === dataMap.Resource_Type.NASShare.value">
-            <lv-radio-group #group [(ngModel)]="selectedMode" [lvGroupName]="'nasshare'" (ngModelChange)="modeClick()">
-                <lv-group [lvGutter]="'16px'" lvWrap="true">
-                    <ng-container *ngFor="let mode of nasshareMode">
-                        <lv-radio [lvViewType]="'custom'" [lvValue]="mode.value">
-                            <lv-card class="ui-card" lvType="border" [lvTitle]="mode.title"
-                                [lvChecked]="group.isChecked(mode.value)">
-                                <p class="content">{{ mode.content }}</p>
-                            </lv-card>
-                        </lv-radio>
+            <div class="guide-content">
+                <lv-group lvDirection='vertical' lvGutter='16px'>
+                    <ng-container *ngFor="let step of backupSteps;index as i">
+                        <div class="step-bar">
+                            <div class="step-bar-title" (click)="expandBar(step)">
+                                <lv-group lvGutter='4px'>
+                                    <span class="step-index">{{i+1}}</span>
+                                    <span>
+                                        {{step.label | i18n}}
+                                    </span>
+                                </lv-group>
+                                <i lv-icon="{{step.expand ? 'lv-icon-triangle-up' : 'lv-icon-triangle-down'}}"
+                                    class="step-expand-icon"></i>
+                            </div>
+                            <ng-container *ngIf="step.expand">
+                                <div class="bar-dash-line"></div>
+                                <div class="step-bar-content">
+                                    <ng-container *ngFor="let item of step.steps; last as isLast">
+                                        <!-- 英文联机帮助没有的情况 -->
+                                        <ng-container *ngIf="!(isEn && item.link && !item.enLink)">
+                                            <lv-group class="flex-content" [ngClass]="{'aui-gutter-column-lg': !isLast}"
+                                                [lvColumns]='["auto", "60px"]'>
+                                                <lv-group lvDirection='vertical'>
+                                                    <span *ngIf="item.title" class="setp-title">
+                                                        {{item.title | i18n:[item.titleParams]}}
+                                                    </span>
+                                                    <span class="step-desc" *ngIf="item.desc">
+                                                        {{item.desc | i18n}}
+                                                    </span>
+                                                </lv-group>
+                                                <!-- 联机帮助 -->
+                                                <span *ngIf="item.link" class="aui-link align-r"
+                                                    (click)="gotoHelp(item)">
+                                                    {{'protection_view_detail_label' | i18n}}
+                                                </span>
+                                                <!-- 路由跳转 -->
+                                                <span *ngIf="item.routerLink && !step.isDefault"
+                                                    class="aui-link align-r" (click)="gotoRouter(item)">
+                                                    {{'protection_go_label' | i18n}}
+                                                </span>
+                                            </lv-group>
+                                            <!-- 路由跳转，按钮换行 -->
+                                            <div *ngIf="item.routerLink && step.isDefault" class="aui-link align-r"
+                                                (click)="gotoRouter(item)">
+                                                {{'protection_go_label' | i18n}}
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </div>
                     </ng-container>
                 </lv-group>
-            </lv-radio-group>
-        </div>
-        <div class="guide-content">
-            <lv-group lvDirection='vertical' lvGutter='16px'>
-                <ng-container *ngFor="let step of backupSteps;index as i">
-                    <div class="step-bar">
-                        <div class="step-bar-title" (click)="expandBar(step)">
-                            <lv-group lvGutter='4px'>
-                                <span class="step-index">{{i+1}}</span>
-                                <span>
-                                    {{step.label | i18n}}{{(step.isOptional ? 'protection_guide_step_optional_label' :
-                                    '') | i18n }}
-                                </span>
-                            </lv-group>
-                            <i lv-icon="{{step.expand ? 'lv-icon-triangle-up' : 'lv-icon-triangle-down'}}"
-                                class="step-expand-icon"></i>
-                        </div>
-                        <ng-container *ngIf="step.expand">
-                            <div class="bar-dash-line"></div>
-                            <div class="step-bar-content">
-                                <ng-container *ngFor="let item of step.steps; last as isLast">
-                                    <lv-group class="flex-content" [ngClass]="{'aui-gutter-column-lg': !isLast}"
-                                        [lvColumns]='["auto", "60px"]'>
-                                        <lv-group lvDirection='vertical'>
-                                            <span *ngIf="item.title" class="setp-title">
-                                                {{item.title | i18n:[item.titleParams]}}{{(item.isOptional ?
-                                                'protection_guide_step_optional_label' : '') | i18n}}
-                                            </span>
-                                            <span class="step-desc" *ngIf="item.desc">
-                                                {{item.desc | i18n}}
-                                            </span>
-                                        </lv-group>
-                                        <!-- 联机帮助 -->
-                                        <span *ngIf="item.link" class="aui-link align-r" (click)="gotoHelp(item)">
-                                            {{'protection_view_detail_label' | i18n}}
-                                        </span>
-                                        <!-- 路由跳转 -->
-                                        <span *ngIf="item.routerLink && !step.isDefault" class="aui-link align-r"
-                                            (click)="gotoRouter(item)">
-                                            {{'common_goto_external_system_label' | i18n}}
-                                        </span>
-                                    </lv-group>
-                                    <!-- 路由跳转，按钮换行 -->
-                                    <div *ngIf="item.routerLink && step.isDefault" class="aui-link align-r"
-                                        (click)="gotoRouter(item)">
-                                        {{'common_goto_external_system_label' | i18n}}
-                                    </div>
-                                </ng-container>
-                            </div>
-                        </ng-container>
-                    </div>
-                </ng-container>
-            </lv-group>
+            </div>
         </div>
     </div>
-</div>
-<!-- 复制向导 -->
-<div class="main-container" *ngIf="currentGuide === guideMap.replication">
-    <ng-container *ngTemplateOutlet="guideTitle; context: { $implicit: guideSteps[1]?.title }">
-    </ng-container>
-</div>
-<!-- 归档向导 -->
-<div class="main-container" *ngIf="currentGuide === guideMap.archive">
-    <ng-container *ngTemplateOutlet="guideTitle; context: { $implicit: guideSteps[2]?.title }">
-    </ng-container>
-</div>
+    <!-- 复制向导 -->
+    <div class="main-container" *ngIf="currentGuide === guideMap.replication">
+        <ng-container *ngTemplateOutlet="guideTitle; context: { $implicit: guideSteps[1]?.title }">
+        </ng-container>
+    </div>
+    <!-- 归档向导 -->
+    <div class="main-container" *ngIf="currentGuide === guideMap.archive">
+        <ng-container *ngTemplateOutlet="guideTitle; context: { $implicit: guideSteps[2]?.title }">
+        </ng-container>
+    </div>
 
-<!-- 结束引导 -->
-<lv-group class="guide-btn-container" lvGutter='16px' *ngIf="currentGuide !== guideMap.main">
-    <button lv-button (click)="endGuide()">
-        {{'protection_guide_end_label'|i18n}}
-    </button>
-    <button lv-button lvType="primary" [disabled]="!activeAppId" (click)="next()" *ngIf="activeStep === 1">
-        {{'common_next_label'|i18n}}
-    </button>
-    <button lv-button (click)="previous()" *ngIf="activeStep === 2">
-        {{'common_previous_label'|i18n}}
-    </button>
-</lv-group>
+    <!-- 结束引导 -->
+    <lv-group class="guide-btn-container" lvGutter='16px' *ngIf="currentGuide !== guideMap.main">
+        <button lv-button (click)="endGuide()">
+            {{'protection_guide_end_label'|i18n}}
+        </button>
+        <button lv-button lvType="primary" [disabled]="!activeAppId" (click)="next()" *ngIf="activeStep === 1">
+            {{'common_next_label'|i18n}}
+        </button>
+        <button lv-button (click)="previous()" *ngIf="activeStep === 2">
+            {{'common_previous_label'|i18n}}
+        </button>
+    </lv-group>
+</div>
 
 <ng-template #guideTitle let-data>
     <lv-group class="header">

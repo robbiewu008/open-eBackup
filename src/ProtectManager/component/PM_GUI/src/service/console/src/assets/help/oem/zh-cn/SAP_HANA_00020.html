@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤1：注册SAP HANA数据库（Backint备份方式）">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="SAP_HANA_00019.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="SAP_HANA_00020">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤1：注册SAP HANA数据库（Backint备份方式）</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="SAP_HANA_00020"></a><a name="SAP_HANA_00020"></a>
+  <h1 class="topictitle1">步骤1：注册SAP HANA数据库（Backint备份方式）</h1>
+  <div>
+   <p>Backint备份方式是通过第三方备份工具写入备份数据，每个SAP HANA服务启动Backint for SAP HANA agent，将备份数据发送给第三方备份工具。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="SAP_HANA_00020__zh-cn_topic_0000001839142377_uicontrol5648197104718">“<span id="SAP_HANA_00020__zh-cn_topic_0000001839142377_text264897164717">保护</span> &gt; <span id="SAP_HANA_00020__zh-cn_topic_0000001839142377_text1364812716472">应用</span> &gt; <span id="SAP_HANA_00020__zh-cn_topic_0000001839142377_text1079695192219">SAP HANA</span>”</span>。</span></li>
+     <li><span>注册SAP HANA实例。</span><p></p>
+      <div class="p">
+       在<span class="uicontrol">“实例”</span>页签，单击<span class="uicontrol">“注册”</span>。SAP HANA实例注册信息相关参数说明，如<a href="#SAP_HANA_00020__table1180165510331">表2</a>所示。 
+       <div class="tablenoborder">
+        <table cellpadding="4" cellspacing="0" summary="" frame="border" border="1" rules="all">
+         <caption>
+          <b>表1 </b>SAP HANA实例注册信息
+         </caption>
+         <colgroup>
+          <col style="width:25.629999999999995%">
+          <col style="width:74.37%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.2.2.2.2.1.4.2.3.1.1"><p>参数</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.2.2.2.2.1.4.2.3.1.2"><p>说明</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span>名称</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>用户自行设置的实例名称。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p>实例ID</p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>安装数据库时设置的ID。实例ID查询方式请参考<a href="SAP_HANA_00011.html">备份前准备</a>。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span>主机</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>数据库所在的主机。</p> <p>如果数据库是集群部署，请选择数据库所在的所有主机。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span>认证模式</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p id="SAP_HANA_00020__p25061832172611">选择<span class="uicontrol" id="SAP_HANA_00020__uicontrol2050633212618">“<span id="SAP_HANA_00020__text750653214264">数据库认证</span>”</span>或<span style="color:#1A1A1A;">“Hdbuserstore模式”。</span></p>
+            <div class="note">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <ul>
+               <li id="SAP_HANA_00020__li1272758914">当选择数据库认证模式时，用户需要在注册时输入数据库用户名与密码。</li>
+              </ul>
+             </div>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p id="SAP_HANA_00020__p178508137816">Hdbuserstore KEY</p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 ">
+            <div class="p">
+             如果数据库是集群部署，当选择Hdbuserstore模式时，用户需要在实例所在的所有主机设置Hdbuserstore KEY参数，可通过以下方式设置。
+             <ol type="a" id="SAP_HANA_00020__ol556191216136">
+              <li id="SAP_HANA_00020__li956131217138">使用PuTTY工具，以root用户登录SAP HANA数据库所在主机。</li>
+              <li id="SAP_HANA_00020__li12561312191314">执行以下命令切换SAP HANA数据库用户，以用户名<strong id="SAP_HANA_00020__b1656113123138">s00adm</strong>为例。<pre class="screen" id="SAP_HANA_00020__screen556111127132">su - <em id="SAP_HANA_00020__i5967165483218">s00adm</em></pre></li>
+              <li id="SAP_HANA_00020__li456101219137">执行以下命令设置Hdbuserstore KEY参数。<pre class="screen" id="SAP_HANA_00020__screen656116121137">hdbuserstore set <em id="SAP_HANA_00020__i256141216131">S00SAPDB</em> "<em id="SAP_HANA_00020__i1856115128131">hana1</em>:30013" SYSTEM <em id="SAP_HANA_00020__i1256111121131">1234</em></pre> <p id="SAP_HANA_00020__p05619121136">其中S00SAPDB是用户设置的KEY参数，hana1是主机名，30013是默认端口号，1234是数据库密码，<span style="color:#666666;">请根据实际替换</span>。</p></li>
+              <li id="SAP_HANA_00020__li756171241312">执行以下命令查看Hdbuserstore KEY参数。<pre class="screen" id="SAP_HANA_00020__screen45611512171320">hdbuserstore list</pre> <p id="SAP_HANA_00020__p12561201211135">回显如下所示，KEY所在行是Hdbuserstore KEY参数。</p> <p id="SAP_HANA_00020__p17561512171316"><span><img id="SAP_HANA_00020__image3561171216130" src="zh-cn_image_0000002058723905.png"></span></p></li>
+             </ol>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span>系统数据库用户名</span></p></td>
+           <td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p id="SAP_HANA_00020__p1124516374411">认证模式选择<span class="uicontrol" id="SAP_HANA_00020__uicontrol7754151012283">“<span id="SAP_HANA_00020__text1511991692611">数据库认证</span>”</span>时，请输入系统数据库用户名与密码。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span>系统数据库密码</span></p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span>系统数据库端口</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p id="SAP_HANA_00020__p123716127594">安装数据库时所设置的端口号，默认端口号是30013。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span>日志备份</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p><span style="color:#282B33;">功能开启后才能进行日志备份。</span></p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p>定期日志备份时间间隔</p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>设置日志备份的时间间隔<span style="color:#282B33;">。</span></p>
+            <div class="note">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p>建议该时间间隔的取值在<a href="zh-cn_topic_0000002058628320.html#ZH-CN_TOPIC_0000002058628320__zh-cn_topic_0000002004293194_zh-cn_topic_0000002004090332_zh-cn_topic_0000001839268545_table2663151516335">表1</a>中设置的日志备份时间间隔的50%~100%之间。例如当备份策略中设置的日志备份时间间隔为60分钟，则此参数建议配置的时间间隔取值范围为30分钟~60分钟。</p>
+             </div>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p>日志备份路径</p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>设置数据日志备份生成的路径。</p>
+            <div class="note">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <ul>
+               <li>请确保日志备份目录可用空间大于所有日志备份副本将占用的空间，并且确保SAP HANA日志备份路径权限至少为755。</li>
+               <li>如果生产环境已经设置了日志备份路径，则这里设置之后会改变原有日志备份路径。</li>
+               <li>在执行备份任务后，设置的日志备份路径才会生效。</li>
+              </ul>
+             </div>
+            </div></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+     <li><span>注册SAP HANA数据库。</span><p></p>
+      <div class="p">
+       在<span class="uicontrol">“数据库”</span>页签，单击<span class="uicontrol">“注册”</span>。SAP HANA数据库注册信息相关参数说明，如<a href="#SAP_HANA_00020__table1180165510331">表2</a>所示。 
+       <div class="tablenoborder">
+        <a name="SAP_HANA_00020__table1180165510331"></a><a name="table1180165510331"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="SAP_HANA_00020__table1180165510331" frame="border" border="1" rules="all">
+         <caption>
+          <b>表2 </b>SAP HANA数据库注册信息
+         </caption>
+         <colgroup>
+          <col style="width:25.6%">
+          <col style="width:74.4%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="25.6%" id="mcps1.3.2.2.4.2.1.4.2.3.1.1"><p>参数</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="74.4%" id="mcps1.3.2.2.4.2.1.4.2.3.1.2"><p>说明</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span>类型</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>数据库类型。</p>
+            <ul>
+             <li><span class="uicontrol">“系统数据库”</span>。</li>
+             <li><span class="uicontrol">“租户数据库”</span>。</li>
+            </ul>
+            <div class="note">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p>在注册系统数据库、租户数据库或集群时，用户需要具有备份管理员的权限，建议系统数据库用户名使用SYSTEM。</p>
+             </div>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span>名称</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 ">
+            <div class="p">
+             待保护的数据库名称，该名称与生产环境的数据库名称保持一致，查询方式请参考<a href="SAP_HANA_00011.html">备份前准备</a>。
+             <div class="note">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <ul>
+                <li>如果<span>类型</span>选择<span class="uicontrol">“系统数据库”</span>，则选择注册安装数据库时所设置的数据库名称。</li>
+                <li>如果类型选择<span class="uicontrol">“租户数据库”</span>，则选择注册租户数据库时所设置的租户数据库名称。</li>
+               </ul>
+              </div>
+             </div>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span>实例</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>选择对应已注册的实例。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span>主机</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>数据库所在的主机。</p> <p>如果数据库是集群部署，请选择数据库分布的所有主机。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span>认证模式</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>选择<span class="uicontrol" id="SAP_HANA_00020__sap_hana_00020_uicontrol2050633212618">“<span id="SAP_HANA_00020__sap_hana_00020_text750653214264">数据库认证</span>”</span>或<span style="color:#1A1A1A;">“Hdbuserstore模式”。</span></p>
+            <div class="note">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <ul>
+               <li>当选择数据库认证模式时，用户需要在注册时输入数据库用户名与密码。</li>
+              </ul>
+             </div>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p>Hdbuserstore KEY</p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 ">
+            <div class="p">
+             如果数据库是集群部署，当选择Hdbuserstore模式时，用户需要在数据库所在的所有主机设置Hdbuserstore KEY参数，可通过以下方式设置。
+             <ol type="a">
+              <li id="SAP_HANA_00020__sap_hana_00020_li956131217138">使用PuTTY工具，以root用户登录SAP HANA数据库所在主机。</li>
+              <li id="SAP_HANA_00020__sap_hana_00020_li12561312191314">执行以下命令切换SAP HANA数据库用户，以用户名<strong id="SAP_HANA_00020__sap_hana_00020_b1656113123138">s00adm</strong>为例。<pre class="screen" id="SAP_HANA_00020__sap_hana_00020_screen556111127132">su - <em id="SAP_HANA_00020__sap_hana_00020_i5967165483218">s00adm</em></pre></li>
+              <li id="SAP_HANA_00020__sap_hana_00020_li456101219137">执行以下命令设置Hdbuserstore KEY参数。<pre class="screen" id="SAP_HANA_00020__sap_hana_00020_screen656116121137">hdbuserstore set <em id="SAP_HANA_00020__sap_hana_00020_i256141216131">S00SAPDB</em> "<em id="SAP_HANA_00020__sap_hana_00020_i1856115128131">hana1</em>:30013" SYSTEM <em id="SAP_HANA_00020__sap_hana_00020_i1256111121131">1234</em></pre> <p id="SAP_HANA_00020__sap_hana_00020_p05619121136">其中S00SAPDB是用户设置的KEY参数，hana1是主机名，30013是默认端口号，1234是数据库密码，<span style="color:#666666;">请根据实际替换</span>。</p></li>
+              <li id="SAP_HANA_00020__sap_hana_00020_li756171241312">执行以下命令查看Hdbuserstore KEY参数。<pre class="screen" id="SAP_HANA_00020__sap_hana_00020_screen45611512171320">hdbuserstore list</pre> <p id="SAP_HANA_00020__sap_hana_00020_p12561201211135">回显如下所示，KEY所在行是Hdbuserstore KEY参数。</p> <p id="SAP_HANA_00020__sap_hana_00020_p17561512171316"><span><img id="SAP_HANA_00020__sap_hana_00020_image3561171216130" src="zh-cn_image_0000002058723905.png"></span></p></li>
+             </ol>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span>系统数据库用户名</span></p></td>
+           <td class="cellrowborder" rowspan="2" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>认证模式选择<span class="uicontrol" id="SAP_HANA_00020__sap_hana_00020_uicontrol7754151012283">“<span id="SAP_HANA_00020__sap_hana_00020_text1511991692611">数据库认证</span>”</span>时，请输入系统数据库用户名与密码。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span>系统数据库密码</span></p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span>系统数据库端口</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>安装数据库时所设置的端口号，默认端口号是30013。</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="SAP_HANA_00019.html">备份SAP HANA数据库（SAP HANA应用入口）（仅1.6.0及后续版本）</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

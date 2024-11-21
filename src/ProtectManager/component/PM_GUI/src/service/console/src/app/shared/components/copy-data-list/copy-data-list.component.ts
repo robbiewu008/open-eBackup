@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   Component,
@@ -37,6 +37,8 @@ import {
   hiddenDwsFileLevelRestore,
   hiddenHcsUserFileLevelRestore,
   hiddenOracleFileLevelRestore,
+  hideSqlserverArchive,
+  hideSqlserverRetention,
   I18NService,
   isHideOracleInstanceRestore,
   isHideOracleMount,
@@ -44,10 +46,12 @@ import {
   WarningMessageService
 } from 'app/shared';
 import { CopiesService } from 'app/shared/api/services/copies.service';
+import { WormSetComponent } from 'app/shared/components';
 import {
   CommonConsts,
   DataMap,
   GROUP_COMMON,
+  hasArchivePermission,
   hasCopyDeletePermission,
   hasCopyIndexPermission,
   hasLivemountPermission,
@@ -57,6 +61,7 @@ import {
   OperateItems,
   RestoreType,
   RestoreV2Type,
+  SYSTEM_TIME,
   VM_COPY_TYPE,
   WormStatusEnum
 } from 'app/shared/consts';
@@ -75,10 +80,12 @@ import {
   find,
   get,
   includes,
+  intersection,
   isBoolean,
   isEmpty,
   isFunction,
   isString,
+  isUndefined,
   mapValues,
   reject,
   trim
@@ -88,7 +95,6 @@ import { switchMap, takeUntil } from 'rxjs/operators';
 import { ModifyRetentionPolicyComponent } from '..';
 import { CopyDataDetailComponent } from '../copy-data-detail/copy-data-detail.component';
 import { CopyVerifyComponent } from '../copy-verify-proxy/copy-verify.component';
-
 @Component({
   selector: 'aui-copy-data-list',
   templateUrl: './copy-data-list.component.html',
@@ -200,6 +206,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
         return 'explore_copy_worm_setted_label';
       case WormStatusEnum.SET_FAILED:
         return 'explore_copy_worm_set_fail_label';
+      case WormStatusEnum.EXPIRATION:
+        return 'common_active_expired_label';
       default:
         return 'explore_copy_worm_unset_label';
     }
@@ -227,8 +235,7 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
         .toArray('copydata_validStatus', [
           DataMap.copydata_validStatus.normal.value,
           DataMap.copydata_validStatus.invalid.value,
-          DataMap.copydata_validStatus.deleting.value,
-          DataMap.copydata_validStatus.restoring.value
+          DataMap.copydata_validStatus.deleting.value
         ])
         .filter(item => {
           if (this.resType !== DataMap.Resource_Type.commonShare.value) {
@@ -247,8 +254,7 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             ? [
                 DataMap.copydata_validStatus.normal.value,
                 DataMap.copydata_validStatus.invalid.value,
-                DataMap.copydata_validStatus.deleting.value,
-                DataMap.copydata_validStatus.restoring.value
+                DataMap.copydata_validStatus.deleting.value
               ].includes(item.value)
             : [
                 DataMap.Resource_Type.HCSCloudHost.value,
@@ -256,13 +262,13 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
                 DataMap.Resource_Type.cNwareVm.value,
                 DataMap.Resource_Type.dbTwoDatabase.value,
                 DataMap.Resource_Type.dbTwoTableSet.value,
-                DataMap.Resource_Type.APSCloudServer.value
+                DataMap.Resource_Type.APSCloudServer.value,
+                DataMap.Resource_Type.nutanixVm.value
               ].includes(this.resType)
             ? [
                 DataMap.copydata_validStatus.normal.value,
                 DataMap.copydata_validStatus.invalid.value,
                 DataMap.copydata_validStatus.deleting.value,
-                DataMap.copydata_validStatus.restoring.value,
                 DataMap.copydata_validStatus.verifying.value,
                 DataMap.copydata_validStatus.deleteFailed.value
               ].includes(item.value)
@@ -301,13 +307,15 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
                 DataMap.Resource_Type.ExchangeEmail.value,
                 DataMap.Resource_Type.ExchangeDataBase.value,
                 DataMap.Resource_Type.saphanaDatabase.value,
-                DataMap.Resource_Type.ObjectSet.value
+                DataMap.Resource_Type.saponoracleDatabase.value,
+                DataMap.Resource_Type.ObjectSet.value,
+                DataMap.Resource_Type.AntDBInstance.value,
+                DataMap.Resource_Type.AntDBClusterInstance.value
               ].includes(this.resType)
             ? [
                 DataMap.copydata_validStatus.normal.value,
                 DataMap.copydata_validStatus.invalid.value,
                 DataMap.copydata_validStatus.deleting.value,
-                DataMap.copydata_validStatus.restoring.value,
                 DataMap.copydata_validStatus.deleteFailed.value
               ].includes(item.value)
             : item;
@@ -355,6 +363,7 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
           [
             DataMap.Resource_Type.MySQL.value,
             DataMap.Resource_Type.oracle.value,
+            DataMap.Resource_Type.oraclePDB.value,
             DataMap.Resource_Type.fileset.value,
             DataMap.Resource_Type.NASShare.value,
             DataMap.Resource_Type.MySQLDatabase.value,
@@ -448,7 +457,11 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             DataMap.Resource_Type.ExchangeSingle.value,
             DataMap.Resource_Type.ExchangeDataBase.value,
             DataMap.Resource_Type.ObjectSet.value,
-            DataMap.Resource_Type.saphanaDatabase.value
+            DataMap.Resource_Type.goldendbInstance.value,
+            DataMap.Resource_Type.saphanaDatabase.value,
+            DataMap.Resource_Type.saponoracleDatabase.value,
+            DataMap.Resource_Type.AntDBInstance.value,
+            DataMap.Resource_Type.AntDBClusterInstance.value
           ],
           this.resType
         )
@@ -686,7 +699,10 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
         includes(
           [
             DataMap.Resource_Type.tidbCluster.value,
-            DataMap.Resource_Type.tdsqlDistributedInstance.value
+            DataMap.Resource_Type.tdsqlDistributedInstance.value,
+            DataMap.Resource_Type.saponoracleDatabase.value,
+            DataMap.Resource_Type.AntDBClusterInstance.value,
+            DataMap.Resource_Type.AntDBInstance.value
           ],
           this.resType
         )
@@ -773,7 +789,11 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
         show: false,
         isLeaf: true,
         displayCheck: () => {
-          return this.isOceanProtect && !this.appUtilsService.isDistributed;
+          return (
+            this.isOceanProtect &&
+            !this.appUtilsService.isDistributed &&
+            !this.appUtilsService.isDecouple
+          );
         }
       },
       {
@@ -855,7 +875,7 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             DataMap.Deploy_Type.hyperdetect.value,
             DataMap.Deploy_Type.cloudbackup.value
           ].includes(this.i18n.get('deploy_type')),
-        isShow: true
+        isShow: false
       },
       {
         key: 'storage_snapshot_flag',
@@ -872,7 +892,23 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             DataMap.Deploy_Type.cloudbackup.value
           ].includes(this.i18n.get('deploy_type')) ||
           this.isHcsUser,
-        isShow: true
+        isShow: false
+      },
+      {
+        key: 'can_table_restore',
+        label: this.i18n.get('protection_copy_contains_table_info_label'),
+        hidden:
+          ![
+            DataMap.Resource_Type.oracleCluster.value,
+            DataMap.Resource_Type.oracle.value
+          ].includes(this.resType) ||
+          [
+            DataMap.Deploy_Type.cyberengine,
+            DataMap.Deploy_Type.hyperdetect.value,
+            DataMap.Deploy_Type.cloudbackup.value
+          ].includes(this.i18n.get('deploy_type')) ||
+          this.isHcsUser,
+        isShow: false
       },
       {
         key: 'copy_format',
@@ -888,6 +924,11 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
         isShow: true
       },
       {
+        key: 'worm_expiration_time',
+        label: this.i18n.get('common_worm_expiration_time_label'),
+        isShow: true
+      },
+      {
         key: 'copy_verify_status',
         label: this.i18n.get('common_copy_verify_status_label'),
         hidden: ![
@@ -898,7 +939,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
           DataMap.Resource_Type.FusionComputeVM.value,
           DataMap.Resource_Type.fusionOne.value,
           DataMap.Resource_Type.cNwareVm.value,
-          DataMap.Resource_Type.APSCloudServer.value
+          DataMap.Resource_Type.APSCloudServer.value,
+          DataMap.Resource_Type.nutanixVm.value
         ].includes(this.resType),
         isShow: true
       },
@@ -921,7 +963,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             this.resourceType.ObjectSet.value,
             this.resourceType.APSCloudServer.value,
             this.resourceType.cNwareVm.value,
-            this.resourceType.hyperVVm.value
+            this.resourceType.hyperVVm.value,
+            this.resourceType.nutanixVm.value
           ].includes(this.resType) &&
             !includes(
               [
@@ -954,7 +997,10 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
         key: 'isSystemBackup',
         label: this.i18n.get('protection_volume_advanced_backup_label'),
         hidden: !includes(
-          [DataMap.Resource_Type.volume.value],
+          [
+            DataMap.Resource_Type.volume.value,
+            DataMap.Resource_Type.fileset.value
+          ],
           this.rowData.resourceType
         ),
         isShow: true,
@@ -1000,7 +1046,13 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
     ];
     const deployType = this.i18n.get('deploy_type');
     if (['d3', 'd4', 'cloudbackup'].includes(deployType)) {
-      this.columns = this.columns.filter(item => item.key !== 'worm_status');
+      this.columns = this.columns.filter(
+        item =>
+          !includes(
+            ['worm_status', 'worm_expiration_time', 'labelList'],
+            item.key
+          )
+      );
     }
     // 如果配置项中写了displayCheck，就用对应的bool值
     this.columns = this.columns.filter(item =>
@@ -1072,7 +1124,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
                   DataMap.Resource_Type.APSCloudServer.value,
                   DataMap.Resource_Type.cNware.value,
                   DataMap.Resource_Type.hyperVVm.value,
-                  DataMap.Resource_Type.volume.value
+                  DataMap.Resource_Type.volume.value,
+                  DataMap.Resource_Type.nutanixVm.value
                 ],
                 this.rowData.resourceType
               )
@@ -1142,8 +1195,14 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
       [
         this.resourceType.fusionComputeVirtualMachine.value,
         this.resourceType.FusionCompute.value,
+        this.resourceType.fusionOne.value,
         this.resourceType.HCSCloudHost.value,
-        this.resourceType.KubernetesStatefulset.value
+        this.resourceType.KubernetesStatefulset.value,
+        this.resourceType.tdsqlInstance.value,
+        this.resourceType.hyperVVm.value,
+        this.resourceType.hyperVHost.value,
+        this.resourceType.hyperVCluster.value,
+        this.resourceType.hyperVScvmm.value
       ].includes(this.resType)
     ) {
       e.value = e.value.map(item => (item === 5 ? 2 : item));
@@ -1202,7 +1261,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             resType: this.resType,
             name: this.datePipe.transform(
               data.display_timestamp,
-              'yyyy-MM-dd HH:mm:ss'
+              'yyyy-MM-dd HH:mm:ss',
+              SYSTEM_TIME.timeZone
             ),
             rowData: this.rowData
           },
@@ -1252,7 +1312,40 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
       })
     );
   }
-
+  wormSet(data) {
+    this.drawModalService.create(
+      assign({}, MODAL_COMMON.generateDrawerOptions(), {
+        lvHeader: this.i18n.get('common_worm_setting_label'),
+        lvModalKey: 'worm-set',
+        lvOkLoadingText: this.i18n.get('common_loading_label'),
+        lvWidth: MODAL_COMMON.smallModal,
+        lvContent: WormSetComponent,
+        lvOkDisabled: true,
+        lvAfterOpen: modal => {
+          const content = modal.getContentComponent() as WormSetComponent;
+          const modalIns = modal.getInstance();
+          content.formGroup.statusChanges.subscribe(res => {
+            modalIns.lvOkDisabled = res !== 'VALID';
+          });
+        },
+        lvComponentParams: {
+          data
+        },
+        lvOk: modal => {
+          return new Promise(resolve => {
+            const content = modal.getContentComponent() as WormSetComponent;
+            content.onOK().subscribe({
+              next: () => {
+                resolve(true);
+                this.getCopyData(data);
+              },
+              error: error => resolve(false)
+            });
+          });
+        }
+      })
+    );
+  }
   optsCallback = data => {
     return this.getOptsItems(data);
   };
@@ -1481,7 +1574,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
                 DataMap.Resource_Type.openStackCloudServer.value,
                 DataMap.Resource_Type.cNwareVm.value,
                 DataMap.Resource_Type.APSCloudServer.value,
-                DataMap.Resource_Type.hyperVVm.value
+                DataMap.Resource_Type.hyperVVm.value,
+                DataMap.Resource_Type.nutanixVm.value
               ],
               data.resource_sub_type
             ) &&
@@ -1489,7 +1583,6 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
           ) ||
           (includes(
             [
-              DataMap.Resource_Type.SQLServerInstance.value,
               DataMap.Resource_Type.SQLServerClusterInstance.value,
               DataMap.Resource_Type.dbTwoTableSet.value,
               DataMap.Resource_Type.lightCloudGaussdbInstance.value,
@@ -1549,7 +1642,21 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             data,
             RestoreV2Type.CommonRestore,
             this.dataMapService
-          ),
+          ) ||
+          (includes(
+            [
+              DataMap.Resource_Type.saphanaDatabase.value,
+              DataMap.Resource_Type.saponoracleDatabase.value
+            ],
+            data.resource_sub_type
+          ) &&
+            includes(
+              [
+                DataMap.CopyData_Backup_Type.incremental.value,
+                DataMap.CopyData_Backup_Type.diff.value
+              ],
+              data.source_copy_type
+            )),
         permission: OperateItems.RestoreCopy,
         onClick: () => {
           this.restoreService.restore({
@@ -1662,7 +1769,9 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               data.resource_sub_type
             ) &&
               data.status === DataMap.copydata_validStatus.invalid.value)
-          ) || disableValidCopyBtn(data, properties),
+          ) ||
+          disableValidCopyBtn(data, properties) ||
+          !hasRecoveryPermission(data),
         hidden: !includes(
           [
             DataMap.Resource_Type.virtualMachine.value,
@@ -1701,7 +1810,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
         id: 'objectLevelRestore',
         label: objectLevelRestoreLabel(data.resource_sub_type),
         hidden: isObjectLevelRestoreHidden(),
-        disabled: isObjectLevelRestoreDisabled(),
+        disabled:
+          isObjectLevelRestoreDisabled() || !hasRecoveryPermission(data),
         onClick: () => {
           this.restoreService.restore({
             childResType: data.resource_sub_type,
@@ -1750,7 +1860,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               DataMap.Resource_Type.KubernetesStatefulset.value,
               DataMap.Resource_Type.cNwareVm.value,
               DataMap.Resource_Type.APSCloudServer.value,
-              DataMap.Resource_Type.hyperVVm.value
+              DataMap.Resource_Type.hyperVVm.value,
+              DataMap.Resource_Type.nutanixVm.value
             ],
             data.resource_sub_type
           ) ||
@@ -1827,7 +1938,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
         disabled:
           isSchemaLevelRestoreDisabled() ||
           (data.status === DataMap.copydata_validStatus.invalid.value &&
-            properties?.isMemberDeleted === 'true'),
+            properties?.isMemberDeleted === 'true') ||
+          !hasRecoveryPermission(data),
         hidden: isSchemaLevelRestoreHideen(),
         permission: OperateItems.SchemaLevelRestore,
         onClick: () => {
@@ -1891,56 +2003,69 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             )
           ? this.i18n.get('common_object_level_restore_label')
           : this.i18n.get('common_file_level_restore_label'),
-        disabled: includes(
-          [
-            DataMap.Resource_Type.LocalFileSystem.value,
-            DataMap.Resource_Type.HDFSFileset.value,
-            DataMap.Resource_Type.FusionCompute.value,
-            DataMap.Resource_Type.fusionOne.value,
-            DataMap.Resource_Type.HCSCloudHost.value,
-            DataMap.Resource_Type.openStackCloudServer.value,
-            DataMap.Resource_Type.APSCloudServer.value,
-            DataMap.Resource_Type.cNwareVm.value,
-            DataMap.Resource_Type.hyperVVm.value,
-            DataMap.Resource_Type.ndmp.value
-          ],
-          data.resource_sub_type
-        )
-          ? !(
-              data.status === DataMap.copydata_validStatus.normal.value &&
-              includes([DataMap.CopyData_fileIndex.indexed.value], data.indexed)
-            )
-          : data.status !== DataMap.copydata_validStatus.normal.value ||
-            (includes(
-              [
-                DataMap.Resource_Type.NASShare.value,
-                DataMap.Resource_Type.NASFileSystem.value
-              ],
-              data.resource_sub_type
-            ) &&
-              DataMap.CopyData_generatedType.cloudArchival.value ===
-                data.generated_by &&
-              data.indexed !== DataMap.CopyData_fileIndex.indexed.value) ||
-            (includes(
-              [DataMap.Resource_Type.DWS_Cluster.value],
-              data.resource_sub_type
-            ) &&
-              get(JSON.parse(data.properties), 'replicate_count') > 2 &&
-              data.generated_by ===
-                DataMap.CopyData_generatedType.reverseReplication.value) ||
-            (data.generated_by ===
-              DataMap.CopyData_generatedType.liveMount.value &&
-              includes(
-                [DataMap.Resource_Type.fileset.value],
+        disabled:
+          !hasRecoveryPermission(data) ||
+          (includes(
+            [
+              DataMap.Resource_Type.LocalFileSystem.value,
+              DataMap.Resource_Type.HDFSFileset.value,
+              DataMap.Resource_Type.ndmp.value
+            ],
+            data.resource_sub_type
+          )
+            ? !(
+                data.status === DataMap.copydata_validStatus.normal.value &&
+                includes(
+                  [DataMap.CopyData_fileIndex.indexed.value],
+                  data.indexed
+                )
+              )
+            : data.status !== DataMap.copydata_validStatus.normal.value ||
+              (includes(
+                [
+                  DataMap.Resource_Type.NASShare.value,
+                  DataMap.Resource_Type.NASFileSystem.value
+                ],
                 data.resource_sub_type
-              )) ||
-            (includes(
-              [DataMap.Resource_Type.volume.value],
-              data.resource_sub_type
-            ) &&
-              data.indexed !== DataMap.CopyData_fileIndex.indexed.value) ||
-            (data.status === DataMap.copydata_validStatus.invalid.value &&
-              properties?.isMemberDeleted === 'true'),
+              ) &&
+                includes(
+                  [
+                    DataMap.CopyData_generatedType.cloudArchival.value,
+                    DataMap.CopyData_generatedType.tapeArchival.value
+                  ],
+                  data.generated_by
+                ) &&
+                data.indexed !== DataMap.CopyData_fileIndex.indexed.value) ||
+              (includes(
+                [DataMap.Resource_Type.DWS_Cluster.value],
+                data.resource_sub_type
+              ) &&
+                get(JSON.parse(data.properties), 'replicate_count') > 2 &&
+                data.generated_by ===
+                  DataMap.CopyData_generatedType.reverseReplication.value) ||
+              (data.generated_by ===
+                DataMap.CopyData_generatedType.liveMount.value &&
+                includes(
+                  [DataMap.Resource_Type.fileset.value],
+                  data.resource_sub_type
+                )) ||
+              (includes(
+                [DataMap.Resource_Type.volume.value],
+                data.resource_sub_type
+              ) &&
+                data.indexed !== DataMap.CopyData_fileIndex.indexed.value) ||
+              (data.status === DataMap.copydata_validStatus.invalid.value &&
+                properties?.isMemberDeleted === 'true') ||
+              (includes(
+                [
+                  DataMap.Resource_Type.fileset.value,
+                  DataMap.Resource_Type.ObjectStorage.value
+                ],
+                data.resource_sub_type
+              ) &&
+                DataMap.CopyData_generatedType.tapeArchival.value ===
+                  data.generated_by &&
+                data.indexed !== DataMap.CopyData_fileIndex.indexed.value)),
         hidden:
           !includes(
             [
@@ -1973,14 +2098,16 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               DataMap.Resource_Type.cNwareVm.value,
               DataMap.Resource_Type.hyperVVm.value,
               DataMap.Resource_Type.ndmp.value,
-              DataMap.Resource_Type.virtualMachine.value
+              DataMap.Resource_Type.virtualMachine.value,
+              DataMap.Resource_Type.nutanixVm.value
             ],
             data.resource_sub_type
           ) ||
           (includes(
             [
               DataMap.Resource_Type.NASShare.value,
-              DataMap.Resource_Type.NASFileSystem.value
+              DataMap.Resource_Type.NASFileSystem.value,
+              DataMap.Resource_Type.virtualMachine.value
             ],
             data.resource_sub_type
           ) &&
@@ -2011,7 +2138,9 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               DataMap.Resource_Type.tidbDatabase.value,
               DataMap.Resource_Type.ObjectSet.value,
               DataMap.Resource_Type.oracle.value,
-              DataMap.Resource_Type.oracleCluster.value
+              DataMap.Resource_Type.oracleCluster.value,
+              DataMap.Resource_Type.virtualMachine.value,
+              DataMap.Resource_Type.APSCloudServer.value
             ],
             data.resource_sub_type
           ) &&
@@ -2025,7 +2154,10 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               DataMap.Resource_Type.tidbCluster.value,
               DataMap.Resource_Type.OceanBaseCluster.value,
               DataMap.Resource_Type.oracle.value,
-              DataMap.Resource_Type.oracleCluster.value
+              DataMap.Resource_Type.oracleCluster.value,
+              DataMap.Resource_Type.SQLServerClusterInstance.value,
+              DataMap.Resource_Type.SQLServerInstance.value,
+              DataMap.Resource_Type.SQLServerGroup.value // 屏蔽SQL server日志备份的数据库级恢复选项
             ],
             data.resource_sub_type
           ) &&
@@ -2067,15 +2199,11 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             ) &&
             data.indexed !== DataMap.CopyData_fileIndex.indexed.value) ||
           hiddenHcsUserFileLevelRestore(data, this.isHcsUser) ||
-          ([
-            DataMap.Resource_Type.fileset.value,
-            DataMap.Resource_Type.volume.value,
-            DataMap.Resource_Type.NASShare.value,
-            DataMap.Resource_Type.NASFileSystem.value
-          ].includes(data.resource_sub_type) &&
+          ([DataMap.Resource_Type.volume.value].includes(
+            data.resource_sub_type
+          ) &&
             includes(
               [
-                DataMap.CopyData_generatedType.replicate.value,
                 DataMap.CopyData_generatedType.cascadedReplication.value,
                 DataMap.CopyData_generatedType.reverseReplication.value
               ],
@@ -2147,13 +2275,25 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
       {
         id: 'singleFileRestore',
         label: this.i18n.get('common_single_file_level_restore_label'),
-        hidden: !includes(
-          [
-            DataMap.Resource_Type.oracle.value,
-            DataMap.Resource_Type.oracleCluster.value
-          ],
-          data.resource_sub_type
-        ),
+        disabled:
+          data.status !== DataMap.copydata_validStatus.normal.value ||
+          !hasRecoveryPermission(data),
+        hidden:
+          !includes(
+            [
+              DataMap.Resource_Type.oracle.value,
+              DataMap.Resource_Type.oracleCluster.value
+            ],
+            data.resource_sub_type
+          ) ||
+          (!data?.storage_snapshot_flag &&
+            [
+              DataMap.CopyData_generatedType.replicate.value,
+              DataMap.CopyData_generatedType.cloudArchival.value,
+              DataMap.CopyData_generatedType.tapeArchival.value,
+              DataMap.CopyData_generatedType.cascadedReplication.value
+            ].includes(data.generated_by)) ||
+          !!data?.storage_snapshot_flag,
         permission: OperateItems.RestoreCopy,
         onClick: () => {
           this.restoreService.singleFileRestore({
@@ -2170,14 +2310,15 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
       {
         id: 'instantRestore',
         label: this.i18n.get('common_live_restore_job_label'),
-        disabled: !(
-          data.status === DataMap.copydata_validStatus.normal.value ||
-          (includes(
-            [DataMap.Resource_Type.cNwareVm.value],
-            data.resource_sub_type
-          ) &&
-            data.status === DataMap.copydata_validStatus.invalid.value)
-        ),
+        disabled:
+          !(
+            data.status === DataMap.copydata_validStatus.normal.value ||
+            (includes(
+              [DataMap.Resource_Type.cNwareVm.value],
+              data.resource_sub_type
+            ) &&
+              data.status === DataMap.copydata_validStatus.invalid.value)
+          ) || !hasLivemountPermission(data),
         hidden:
           includes(
             [
@@ -2227,7 +2368,9 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               DataMap.Resource_Type.ExchangeEmail.value,
               DataMap.Resource_Type.commonShare.value,
               DataMap.Resource_Type.saphanaDatabase.value,
-              DataMap.Resource_Type.ObjectSet.value
+              DataMap.Resource_Type.saponoracleDatabase.value,
+              DataMap.Resource_Type.ObjectSet.value,
+              DataMap.Resource_Type.ndmp.value
             ],
             data.resource_sub_type
           ) ||
@@ -2277,7 +2420,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               DataMap.Resource_Type.tidbCluster.value,
               DataMap.Resource_Type.tidbDatabase.value,
               DataMap.Resource_Type.tidbTable.value,
-              DataMap.Resource_Type.volume.value
+              DataMap.Resource_Type.volume.value,
+              DataMap.Resource_Type.APSCloudServer.value
             ],
             data.resource_sub_type
           ) &&
@@ -2381,7 +2525,9 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               DataMap.Resource_Type.ActiveDirectory.value,
               DataMap.Resource_Type.commonShare.value,
               DataMap.Resource_Type.saphanaDatabase.value,
-              DataMap.Resource_Type.ObjectSet.value
+              DataMap.Resource_Type.saponoracleDatabase.value,
+              DataMap.Resource_Type.ObjectSet.value,
+              DataMap.Resource_Type.ndmp.value
             ],
             data.resource_sub_type
           ) ||
@@ -2414,7 +2560,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               DataMap.Resource_Type.SQLServerClusterInstance.value,
               DataMap.Resource_Type.tidbCluster.value,
               DataMap.Resource_Type.tidbDatabase.value,
-              DataMap.Resource_Type.tidbTable.value
+              DataMap.Resource_Type.tidbTable.value,
+              DataMap.Resource_Type.APSCloudServer.value
             ],
             data.resource_sub_type
           ) &&
@@ -2427,13 +2574,20 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               data.generated_by
             )) ||
           (includes(
+            [DataMap.Resource_Type.MySQLInstance.value],
+            data.resource_sub_type
+          ) &&
+            includes(
+              [DataMap.CopyData_generatedType.liveMount.value],
+              data.generated_by
+            )) ||
+          (includes(
             [
-              DataMap.Resource_Type.MySQLClusterInstance.value,
-              DataMap.Resource_Type.MySQLInstance.value,
-              DataMap.Resource_Type.MySQLDatabase.value,
               DataMap.Resource_Type.tdsqlInstance.value,
               DataMap.Resource_Type.OceanBaseCluster.value,
-              DataMap.Resource_Type.OceanBaseTenant.value
+              DataMap.Resource_Type.OceanBaseTenant.value,
+              DataMap.Resource_Type.MySQLDatabase.value,
+              DataMap.Resource_Type.MySQLClusterInstance.value
             ],
             data.resource_sub_type
           ) &&
@@ -2469,7 +2623,10 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             includes(
               [
                 DataMap.Resource_Type.fileset.value,
-                DataMap.Resource_Type.NASShare.value
+                DataMap.Resource_Type.NASShare.value,
+                DataMap.Resource_Type.NASFileSystem.value,
+                DataMap.Resource_Type.ndmp.value,
+                DataMap.Resource_Type.volume.value
               ],
               data.resource_sub_type
             )) ||
@@ -2529,16 +2686,104 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
       {
         id: 'archive',
         label: this.i18n.get('common_manual_archive_label'),
-        disabled:
+        disabled: !hasArchivePermission(data),
+        hidden:
+          !this.isOceanProtect ||
+          hideSqlserverArchive(data) ||
           !includes(
             [
               DataMap.CopyData_generatedType.replicate.value,
+              DataMap.CopyData_generatedType.cascadedReplication.value,
               DataMap.CopyData_generatedType.backup.value,
               DataMap.CopyData_generatedType.Imported.value
             ],
             data.generated_by
           ) ||
-          !includes([DataMap.copydata_validStatus.normal.value], data.status),
+          includes(
+            [
+              DataMap.copydata_validStatus.deleteFailed.value,
+              DataMap.copydata_validStatus.deleting.value,
+              DataMap.copydata_validStatus.invalid.value
+            ],
+            data.status
+          ) ||
+          (includes(
+            [
+              DataMap.CopyData_generatedType.replicate.value,
+              DataMap.CopyData_generatedType.cascadedReplication.value
+            ],
+            data.generated_by
+          ) &&
+            includes(
+              [DataMap.Resource_Type.ActiveDirectory.value],
+              data.resource_sub_type
+            )) ||
+          (!includes(
+            [DataMap.CopyData_Backup_Type.full.value],
+            data.source_copy_type
+          ) &&
+            get(JSON.parse(data?.properties), 'format') === 1) ||
+          includes(
+            [DataMap.CopyData_Backup_Type.log.value],
+            data.source_copy_type
+          ) ||
+          (includes(
+            [DataMap.CopyData_Backup_Type.diff.value],
+            data.source_copy_type
+          ) &&
+            !includes(
+              [
+                DataMap.Resource_Type.MySQLDatabase.value,
+                DataMap.Resource_Type.MySQLInstance.value,
+                DataMap.Resource_Type.MySQLClusterInstance.value,
+                DataMap.Resource_Type.SQLServerInstance.value,
+                DataMap.Resource_Type.SQLServerClusterInstance.value,
+                DataMap.Resource_Type.SQLServerGroup.value,
+                DataMap.Resource_Type.SQLServerDatabase.value,
+                DataMap.Resource_Type.oracle.value,
+                DataMap.Resource_Type.oracleCluster.value
+              ],
+              data.resource_sub_type
+            )) ||
+          (includes(
+            [DataMap.CopyData_Backup_Type.incremental.value],
+            data.source_copy_type
+          ) &&
+            !includes(
+              [
+                DataMap.Resource_Type.fusionComputeVirtualMachine.value,
+                DataMap.Resource_Type.FusionCompute.value,
+                DataMap.Resource_Type.HCS.value
+              ],
+              this.resType
+            ) &&
+            !includes(
+              [
+                DataMap.Resource_Type.ElasticsearchBackupSet.value,
+                DataMap.Resource_Type.HBaseBackupSet.value,
+                DataMap.Resource_Type.HDFSFileset.value,
+                DataMap.Resource_Type.HiveBackupSet.value,
+                DataMap.Resource_Type.virtualMachine.value,
+                DataMap.Resource_Type.openStackCloudServer.value,
+                DataMap.Resource_Type.hyperVVm.value,
+                DataMap.Resource_Type.cNwareVm.value,
+                DataMap.Resource_Type.tdsqlInstance.value,
+                DataMap.Resource_Type.KubernetesStatefulset.value,
+                DataMap.Resource_Type.kubernetesNamespaceCommon.value,
+                DataMap.Resource_Type.kubernetesDatasetCommon.value,
+                DataMap.Resource_Type.fusionOne.value,
+                DataMap.Resource_Type.APSCloudServer.value,
+                DataMap.Resource_Type.APSResourceSet.value,
+                DataMap.Resource_Type.APSZone.value,
+                DataMap.Resource_Type.oracle.value,
+                DataMap.Resource_Type.oracleCluster.value,
+                DataMap.Resource_Type.MySQLClusterInstance.value,
+                DataMap.Resource_Type.MySQLInstance.value,
+                DataMap.Resource_Type.MySQLDatabase.value,
+                DataMap.Resource_Type.nutanixVm.value
+              ],
+              data.resource_sub_type
+            )),
         onClick: () =>
           this.takeManualArchiveService.manualArchive(data, () => {
             this.getCopyData();
@@ -2570,8 +2815,46 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             DataMap.Resource_Type.HBaseBackupSet.value &&
             data.backup_type === DataMap.CopyData_Backup_Type.log.value) ||
           data.generated_by ===
-            DataMap.CopyData_generatedType.tapeArchival.value,
+            DataMap.CopyData_generatedType.tapeArchival.value ||
+          hideSqlserverRetention(data),
         onClick: () => this.modifyRetention(data)
+      },
+      {
+        id: 'wormSet',
+        disabled:
+          !includes(
+            [
+              DataMap.copydata_validStatus.normal.value,
+              DataMap.copydata_validStatus.deleteFailed.value
+            ],
+            data.status
+          ) ||
+          (data.status === DataMap.copydata_validStatus.invalid.value &&
+            properties?.isMemberDeleted === 'true'),
+        label: this.i18n.get('common_worm_setting_label'),
+        permission: OperateItems.WormSet,
+        hidden:
+          !this.isOceanProtect ||
+          (includes(
+            [DataMap.Resource_Type.ImportCopy.value],
+            data.resource_sub_type
+          ) &&
+            data.generated_by ===
+              DataMap.CopyData_generatedType.download.value) ||
+          includes(
+            [
+              DataMap.CopyData_generatedType.tapeArchival.value,
+              DataMap.CopyData_generatedType.cloudArchival.value
+            ],
+            data.generated_by
+          ) || // worm设置在归档副本时隐藏
+          includes(
+            [DataMap.Resource_Type.commonShare.value],
+            data.resource_sub_type
+          ), // 通用共享不支持worm
+        onClick: () => {
+          this.wormSet(data);
+        }
       },
       {
         id: 'download',
@@ -2606,7 +2889,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             lvContent: this.i18n.get('common_tape_archive_download_tip_label', [
               this.datePipe.transform(
                 data.display_timestamp,
-                'yyyy-MM-dd HH:mm:ss'
+                'yyyy-MM-dd HH:mm:ss',
+                SYSTEM_TIME.timeZone
               )
             ]),
             lvFooter: [
@@ -2654,11 +2938,7 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               data.generated_by) ||
           data.backup_type === DataMap.CopyData_Backup_Type.log.value ||
           data.generated_by ===
-            DataMap.CopyData_generatedType.tapeArchival.value ||
-          (data.resource_sub_type ===
-            DataMap.Resource_Type.lightCloudGaussdbInstance.value &&
-            data.backup_type ===
-              DataMap.CopyData_Backup_Type.incremental.value),
+            DataMap.CopyData_generatedType.tapeArchival.value,
         disabled:
           !includes(
             [
@@ -2696,7 +2976,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             content: this.i18n.get('common_copy_delete_label', [
               this.datePipe.transform(
                 data.display_timestamp,
-                'yyyy-MM-dd HH:mm:ss'
+                'yyyy-MM-dd HH:mm:ss',
+                SYSTEM_TIME.timeZone
               )
             ]),
             onOK: () => {
@@ -2803,14 +3084,13 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               DataMap.Resource_Type.cNwareVm.value,
               DataMap.Resource_Type.hyperVVm.value,
               DataMap.Resource_Type.ndmp.value,
-              DataMap.Resource_Type.virtualMachine.value
+              DataMap.Resource_Type.virtualMachine.value,
+              DataMap.Resource_Type.nutanixVm.value
             ],
             data.resource_sub_type
           ) ||
           includes(
             [
-              DataMap.CopyData_generatedType.cascadedReplication.value,
-              DataMap.CopyData_generatedType.reverseReplication.value,
               DataMap.CopyData_generatedType.tapeArchival.value,
               DataMap.CopyData_generatedType.import.value,
               DataMap.CopyData_generatedType.cloudArchival.value,
@@ -2818,6 +3098,17 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             ],
             data.generated_by
           ) ||
+          (includes(
+            [
+              DataMap.CopyData_generatedType.cascadedReplication.value,
+              DataMap.CopyData_generatedType.reverseReplication.value
+            ],
+            data.generated_by
+          ) &&
+            !includes(
+              [DataMap.Resource_Type.virtualMachine.value],
+              data.resource_sub_type
+            )) ||
           (DataMap.CopyData_generatedType.replicate.value ===
             data.generated_by &&
             !includes(
@@ -2828,7 +3119,11 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
                 DataMap.Resource_Type.openStackCloudServer.value,
                 DataMap.Resource_Type.APSCloudServer.value,
                 DataMap.Resource_Type.cNwareVm.value,
-                DataMap.Resource_Type.hyperVVm.value
+                DataMap.Resource_Type.hyperVVm.value,
+                DataMap.Resource_Type.virtualMachine.value,
+                DataMap.Resource_Type.ndmp.value,
+                DataMap.Resource_Type.nutanixVm.value,
+                DataMap.Resource_Type.volume.value
               ],
               data.resource_sub_type
             )) ||
@@ -2954,6 +3249,24 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
         const resourceProperties = isString(item.resource_properties)
           ? JSON.parse(item.resource_properties)
           : item.resource_properties;
+      });
+    } else if (
+      includes(
+        [
+          DataMap.Resource_Type.oracle.value,
+          DataMap.Resource_Type.oracleCluster.value
+        ],
+        this.resType
+      )
+    ) {
+      each(data, item => {
+        const properties = JSON.parse(item?.properties || '{}');
+        item.can_table_restore = isUndefined(properties?.can_table_restore)
+          ? ''
+          : properties?.can_table_restore;
+        if (item.backup_type === DataMap.CopyData_Backup_Type.log.value) {
+          item.can_table_restore = '';
+        }
       });
     }
   }

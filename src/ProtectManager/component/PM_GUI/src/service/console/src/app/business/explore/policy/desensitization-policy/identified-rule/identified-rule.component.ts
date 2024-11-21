@@ -1,23 +1,22 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnInit,
   Pipe,
-  PipeTransform,
-  ViewChild
+  PipeTransform
 } from '@angular/core';
 import { MessageboxService } from '@iux/live';
 import {
@@ -37,7 +36,7 @@ import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { InfoMessageService } from 'app/shared/services/info-message.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
-import { assign, each, filter, isEmpty, size } from 'lodash';
+import { assign, each, filter, isEmpty, remove, size } from 'lodash';
 import { combineLatest } from 'rxjs';
 import { AddIdentifiedRuleComponent } from './add-identified-rule/add-identified-rule.component';
 import { RelatedDesensitizationPolicyComponent } from './related-desensitization-policy/related-desensitization-policy.component';
@@ -79,6 +78,10 @@ export class IdentifiedRuleComponent implements OnInit {
       key: 'name'
     },
     {
+      label: this.i18n.get('explore_anonymization_rule_chinese_label'),
+      key: 'translatedName'
+    },
+    {
       label: this.i18n.get('explore_anonymization_rule_mode_label'),
       key: 'create_method',
       filterMap: this.dataMapService.toArray('Senesitization_Create_Method')
@@ -99,7 +102,7 @@ export class IdentifiedRuleComponent implements OnInit {
   groupCommon = GROUP_COMMON;
   roleOperationMap = RoleOperationMap;
   constructor(
-    private i18n: I18NService,
+    public i18n: I18NService,
     private drawModalService: DrawModalService,
     private policyManagerApiService: IdentRuleControllerService,
     private dataMapService: DataMapService,
@@ -329,6 +332,9 @@ export class IdentifiedRuleComponent implements OnInit {
   };
 
   ngOnInit() {
+    if (this.i18n.isEn) {
+      remove(this.columns, { key: 'translatedName' });
+    }
     this.getTableData();
     this.virtualScroll.getScrollParam(270);
   }

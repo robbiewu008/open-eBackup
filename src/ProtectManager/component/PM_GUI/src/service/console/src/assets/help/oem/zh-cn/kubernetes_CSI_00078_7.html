@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="上传Kubernetes安装包至Kubernetes集群">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00078_6.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="kubernetes_CSI_00078_7">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>上传Kubernetes安装包至Kubernetes集群</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="kubernetes_CSI_00078_7"></a><a name="kubernetes_CSI_00078_7"></a>
+  <h1 class="topictitle1">上传Kubernetes安装包至Kubernetes集群</h1>
+  <div>
+   <p id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_p16263205421516">本节以Kubernetes 1.23版本为例说明如何上传Kubernetes安装包至Kubernetes集群，不同版本操作可能略有差异。如果您有镜像仓库，也可上传镜像至镜像仓库。</p>
+   <div class="section" id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_section86041226145019">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_p155091416131516">上传Kubernetes安装包前，请根据版本及补丁号下载“<em id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_i18595720101314">XXX_K8s_BackupImage.tgz</em>”安装包，Kubernetes安装包通过以下方式获取。</p>
+    <ul id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_ul1470191016457">
+     <li id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_li12701151074511">企业用户：<a href="https://support.huawei.com/enterprise/zh/flash-storage/oceanprotect-databackup-pid-258115661/software/" target="_blank" rel="noopener noreferrer">点此前往</a></li>
+     <li id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_li8194016184520">运营商用户：<a href="https://support.huawei.com/carrier/navi?coltype=software#col=software&amp;path=PBI1-21430725/PBI1-251363742/PBI1-250389226/PBI1-251366310/PBI1-258115661" target="_blank" rel="noopener noreferrer">点此前往</a></li>
+    </ul>
+   </div>
+   <div class="section" id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_section9489618195319">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_ol1582192319535">
+     <li id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_li25831223175311"><span>上传获取到的Kubernetes安装包到Kubernetes集群的所有节点。</span></li>
+     <li id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_li17995942115717"><a name="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_li17995942115717"></a><a name="zh-cn_topic_0000001955319077_li17995942115717"></a><span>进入安装包路径后，执行以下命令解压安装包。</span><p></p><pre class="screen" id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_screen22399112589">tar -xvzf <em id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_i19953174220148">XXX</em>_K8s_BackupImage.tgz</pre> <p></p></li>
+     <li id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_li164691476581"><a name="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_li164691476581"></a><a name="zh-cn_topic_0000001955319077_li164691476581"></a><span>进入镜像包路径后，执行以下命令导入镜像包至Kubernetes节点。</span><p></p>
+      <div class="p" id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_p1872711154112">
+       此处以x86架构为例，ARM架构请导入相应的镜像包。
+       <pre class="screen" id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_screen61619506017">ctr -n k8s.io i import k8s_backup_image_<em id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_i17127552215">x86</em>.tar </pre>
+      </div> <p></p></li>
+     <li id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_li168502461906"><span>在其他Kubernetes集群节点依次执行<a href="#kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_li17995942115717">2</a>~<a href="#kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_li164691476581">3</a>的操作。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="kubernetes_CSI_00078_6.html">备份前准备（适用于原生Kubernetes）</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

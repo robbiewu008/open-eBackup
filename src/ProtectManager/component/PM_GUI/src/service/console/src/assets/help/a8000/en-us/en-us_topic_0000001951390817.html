@@ -1,4 +1,17 @@
 
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
@@ -9,11 +22,13 @@
 <meta name="DC.Type" content="topic">
 <meta name="DC.Title" content="Step 1: Checking and Enabling the sudo Permission of the PostgreSQL Database Installation User">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792402592.html">
+<meta name="DC.Relation" scheme="URI" content="postgresql-0010-2.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Publisher" content="20241030">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="EN-US_TOPIC_0000001951390817">
 <meta name="DC.Language" content="en-us">
@@ -29,13 +44,13 @@
 </li><li>If the user does not have the <strong>sudo</strong> permission, a message is displayed, indicating that the user cannot run the <strong>sudo</strong> commands. Go to <a href="#EN-US_TOPIC_0000001951390817__li89912406816">3</a>.<p><span><img src="en-us_image_0000001924126958.png"></span></p>
 </li></ul>
 </p></li><li id="EN-US_TOPIC_0000001951390817__li89912406816"><a name="EN-US_TOPIC_0000001951390817__li89912406816"></a><a name="li89912406816"></a><span>Enable the <strong>sudo</strong> permission of the database installation user.</span><p><p>Switch to user <strong>root</strong>, run the <strong>visudo</strong> command to open the configuration file, and add the following configuration to the end of the file:</p>
-<p><em>Database installation username</em>  ALL=(ALL) NOPASSWD:ALL</p>
+<p><em>Name of the database installation user</em>  ALL=(ALL) NOPASSWD:ALL</p>
 </p></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001792402592.html">Backing Up PostgreSQL</a></div>
+<div class="parentlink"><strong>Parent topic:</strong> <a href="postgresql-0010-2.html">Backing Up PostgreSQL</a></div>
 </div>
 </div>
 

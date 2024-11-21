@@ -43,6 +43,8 @@ public enum DeployType {
      */
     X3000("x3000", "d2"),
 
+    E1000("e1000", "d8"),
+
     /**
      * CLOUDBACKUP
      */

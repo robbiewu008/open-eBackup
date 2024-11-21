@@ -1,3 +1,4 @@
+<lv-collapse *ngIf="resourceData?.sub_type !== dataMap.Resource_Type.msVirtualMachine.value"
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-collapse *ngIf="resourceData?.sub_type !== dataMap.Resource_Type.msVirtualMachine.value"
     [lvMultiExpansion]="'false'" lvType="simple">
     <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
         <lv-form [formGroup]='formGroup' class="formGroup" [lvLabelColon]='false'>
@@ -33,7 +33,16 @@
                             <i lv-icon="{{
                               item.link_status === dataMap.resource_LinkStatus.normal.value ? 'aui-host-online' : 'aui-host-offline'
                             }}"></i>
-                            <span>{{ item.label }}</span>
+                            <span
+                                [ngClass]="{'host-warp': isSingleHostClusterProtect && item.extendInfo?.is_belongs_to_host_or_cluster === 'true'}"
+                                lv-overflow>
+                                {{ item.label }}
+                            </span>
+                            <ng-container
+                                *ngIf="isSingleHostClusterProtect && item.extendInfo?.is_belongs_to_host_or_cluster === 'true'">
+                                <lv-tag [(ngModel)]="belongTag" [ngModelOptions]="{standalone: true}"
+                                    lvMaxWidth="420"></lv-tag>
+                            </ng-container>
                         </lv-group>
                     </ng-template>
                 </lv-form-control>

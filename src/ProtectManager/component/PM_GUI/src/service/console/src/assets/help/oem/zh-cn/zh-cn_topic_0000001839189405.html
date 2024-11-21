@@ -1,4 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -19,7 +32,7 @@
    <div class="section" id="ZH-CN_TOPIC_0000001839189405__section9955555123918">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001211955661_zh-cn_topic_0000001211799265_ol16439939183618">
-     <li id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001166356758_zh-cn_topic_0000001084775528_li10690245104713"><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839142377_uicontrol08941439165212">“<span id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839142377_text22651956143811">保护</span> &gt; 客户端”</span>。</span></li>
+     <li id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001166356758_zh-cn_topic_0000001084775528_li10690245104713"><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839142377_uicontrol08941439165212">“<span id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839142377_text22651956143811">保护</span> &gt; 客户端 &gt; 客户端”</span>。</span></li>
      <li id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001211955661_zh-cn_topic_0000001211799265_zh-cn_topic_0000001084775528_li14824101211517"><span>单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001211955661_zh-cn_topic_0000001211799265_zh-cn_topic_0000001084775528_uicontrol1753112645517">“ProtectAgent软件包管理”</span>，配置相关参数。</span><p></p><p id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001211955661_zh-cn_topic_0000001211799265_zh-cn_topic_0000001084775528_p4601194812552">参数说明如<a href="#ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001211955661_zh-cn_topic_0000001211799265_table717414424387">表1</a>所示。</p>
       <div class="tablenoborder">
        <a name="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001211955661_zh-cn_topic_0000001211799265_table717414424387"></a><a name="zh-cn_topic_0000001211955661_zh-cn_topic_0000001211799265_table717414424387"></a>
@@ -50,13 +63,26 @@
             <ul id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839189313_ul51081046153514">
              <li id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839189313_li2041316610365"><span id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839189313_text186111605711">VMware备份代理</span>：当受保护资源为VMware虚拟机时，选择该类型。</li>
              <li id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839189313_li10259161517365"><span id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839189313_text10744185291919">通用备份代理</span>：除VMware外的受保护资源，选择该类型。</li>
-             <li id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839189313_li15157142212345"><span id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839189313_text1856797812">SAN Client代理</span>：AIX或Solaris主机使用FC组网时，选择该类型。</li>
+             <li id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839189313_li15157142212345"><span id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839189313_text1856797812">SAN Client代理</span>：当受保护资源为DB2，且AIX或Solaris主机使用FC组网时，选择该类型。</li>
             </ul>
            </div></td>
          </tr>
          <tr id="ZH-CN_TOPIC_0000001839189405__row07771471437">
           <td class="cellrowborder" valign="top" width="34.910000000000004%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839189405__p0850134515340"><span id="ZH-CN_TOPIC_0000001839189405__text6721736132711">操作系统</span></p></td>
           <td class="cellrowborder" valign="top" width="65.09%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839189405__p68501345183411">代理主机的操作系统类型。</p></td>
+         </tr>
+         <tr id="ZH-CN_TOPIC_0000001839189405__row78405231135">
+          <td class="cellrowborder" valign="top" width="34.910000000000004%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 ">
+           <div class="p" id="ZH-CN_TOPIC_0000001839189405__p584116231736">
+            下载包类型
+            <div class="note" id="ZH-CN_TOPIC_0000001839189405__note4312948630">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143213_p8320153562113">仅1.6.0及后续版本支持设置该参数。</p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="65.09%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839189405__p834134119716">当“<span id="ZH-CN_TOPIC_0000001839189405__text123047251089">操作系统</span>”选择“Linux”时，请选择下载的安装包类型，支持的类型包括“zip”和“tar”。</p></td>
          </tr>
          <tr id="ZH-CN_TOPIC_0000001839189405__row1811921239">
           <td class="cellrowborder" valign="top" width="34.910000000000004%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839189405__p4590700554"><span id="ZH-CN_TOPIC_0000001839189405__text77645221936">应用类型</span></p></td>
@@ -68,8 +94,11 @@
            <div class="note" id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001191380933_note15968185410217">
             <span class="notetitle"> 说明： </span>
             <div class="notebody">
-             <p id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001191380933_p1044453017268">填写私钥密码后，<span id="ZH-CN_TOPIC_0000001839189405__text48556398112">本产品</span>将使用此处填写的私钥密码对ProtectAgent软件包中的私钥文件进行加密。</p>
-             <p id="ZH-CN_TOPIC_0000001839189405__zh-cn_topic_0000001191380933_p796818546217">如果在下载ProtectAgent软件包前，已参考《安全配置指南》导入Agent证书，此处可以填写与Agent证书相同的私钥密码，也可以自行定义私钥密码。</p>
+             <ul id="ZH-CN_TOPIC_0000001839189405__ul3371185614104">
+              <li id="ZH-CN_TOPIC_0000001839189405__li17169115881016">当“操作系统”为“AIX”、“HP-UX”或“Solaris”时，输入的私钥密码请勿包含<span style="color:#252B3A;">^`{_|}~</span>特殊字符，否则会导致使用该软件包安装ProtectAgent时，安装失败。</li>
+              <li id="ZH-CN_TOPIC_0000001839189405__li63712562105">填写私钥密码后，<span id="ZH-CN_TOPIC_0000001839189405__text48556398112">本产品</span>将使用此处填写的私钥密码对ProtectAgent软件包中的私钥文件进行加密。</li>
+              <li id="ZH-CN_TOPIC_0000001839189405__li173711569109">如果在下载ProtectAgent软件包前，已参考《安全配置指南》导入Agent证书，此处可以填写与Agent证书相同的私钥密码，也可以自行定义私钥密码。</li>
+             </ul>
             </div>
            </div></td>
          </tr>

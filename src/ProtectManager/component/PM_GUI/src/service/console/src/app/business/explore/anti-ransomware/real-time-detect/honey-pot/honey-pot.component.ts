@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -53,8 +53,7 @@ import {
   isUndefined,
   size,
   trim,
-  values,
-  map as _map
+  values
 } from 'lodash';
 import { map } from 'rxjs/operators';
 import { FileDetailComponent } from './file-detail/file-detail.component';
@@ -183,7 +182,7 @@ export class HoneyPotComponent implements OnInit, AfterViewInit, OnDestroy {
               lvOkType: 'primary'
             });
           } else {
-            this.startDetection(data);
+            this.parseStartMessage(data);
           }
         },
         type: 'primary'
@@ -313,6 +312,7 @@ export class HoneyPotComponent implements OnInit, AfterViewInit, OnDestroy {
     ];
 
     this.tableConfig = {
+      filterTags: true,
       table: {
         autoPolling: CommonConsts.TIME_INTERVAL,
         compareWith: 'resourceId',
@@ -339,6 +339,28 @@ export class HoneyPotComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     };
+  }
+
+  private parseStartMessage(data: any) {
+    const hasStart = includes(
+      [
+        DataMap.fileHoneypotStatus.enable.value,
+        DataMap.fileHoneypotStatus.deploy.value
+      ],
+      data[0].status
+    );
+    if (!hasStart) {
+      this.messageBox.confirm({
+        lvOkType: 'primary',
+        lvCancelType: 'default',
+        lvContent: this.i18n.get('explore_honeypot_start_detection_tip_label'),
+        lvOk: () => {
+          this.startDetection(data, hasStart);
+        }
+      });
+    } else {
+      this.startDetection(data, hasStart);
+    }
   }
 
   search() {
@@ -401,18 +423,12 @@ export class HoneyPotComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
-  startDetection(data) {
+  startDetection(data, hasStart = false) {
     this.drawModalService.create(
       assign({}, MODAL_COMMON.generateDrawerOptions(), {
         lvModalKey: 'start-honeypot-detection',
         lvWidth: MODAL_COMMON.normalWidth + 100,
-        lvHeader: includes(
-          [
-            DataMap.fileHoneypotStatus.enable.value,
-            DataMap.fileHoneypotStatus.deploy.value
-          ],
-          data[0].status
-        )
+        lvHeader: hasStart
           ? this.i18n.get('explore_honeypot_setting_label')
           : this.i18n.get('explore_honeypot_start_detection_label'),
         lvContent: HoneypotSettingComponent,

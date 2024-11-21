@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { I18NService, DataMapService, DataMap, MODAL_COMMON } from 'app/shared';
 import { each, filter, sortBy, isEmpty, includes, assign } from 'lodash';
@@ -42,12 +42,13 @@ import { AppUtilsService } from 'app/shared/services/app-utils.service';
         margin-right: 8px;
       }
       .details-container {
-        border: 0.01rem solid #b8becc;
+        border: 0.01rem solid var(--live-angular-color-card-border);
         padding: 20px;
         margin-top: 10px;
       }
       .title-border {
-        border-bottom: 0.01rem dashed #d4d9e6;
+        border-bottom: 0.01rem dashed
+          var(--live-angular-color-divider-secondary);
         padding-bottom: 12px;
         margin-bottom: 12px;
       }
@@ -63,10 +64,7 @@ import { AppUtilsService } from 'app/shared/services/app-utils.service';
       }
       .performance-no-data {
         text-align: center;
-      }
-      .performance-no-data i {
-        width: 240px;
-        height: 240px;
+        margin-top: 64px;
       }
       .import-btn {
         margin-top: 20px;

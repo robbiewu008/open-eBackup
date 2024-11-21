@@ -1,16 +1,24 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import {
   CommonConsts,
   DataMap,
@@ -31,7 +39,8 @@ import {
   includes,
   union,
   set,
-  first
+  first,
+  isArray
 } from 'lodash';
 import { Subject } from 'rxjs';
 
@@ -39,7 +48,8 @@ import { Subject } from 'rxjs';
   selector: 'aui-tables',
   templateUrl: './tables.component.html',
   styleUrls: ['./tables.component.less'],
-  providers: [CapacityCalculateLabel]
+  providers: [CapacityCalculateLabel],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TablesComponent implements OnInit {
   tableData = [];
@@ -53,6 +63,7 @@ export class TablesComponent implements OnInit {
 
   constructor(
     private i18n: I18NService,
+    private cdr: ChangeDetectorRef,
     private capacityCalculateLabel: CapacityCalculateLabel,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService
   ) {}
@@ -112,6 +123,7 @@ export class TablesComponent implements OnInit {
           children: []
         });
         this.tableData = nameSpaces;
+        this.cdr.detectChanges();
       }
       this.expandChildren(
         find(this.tableData, { label: namespaceLabel }),
@@ -124,6 +136,7 @@ export class TablesComponent implements OnInit {
       }
     });
     this.tableData = [...this.tableData];
+    this.cdr.detectChanges();
   }
 
   expandChildren(node, path) {
@@ -143,6 +156,7 @@ export class TablesComponent implements OnInit {
       }
     });
     this.tableData = [...this.tableData];
+    this.cdr.detectChanges();
   }
 
   getTables(recordsTemp?, startPage?) {
@@ -198,6 +212,7 @@ export class TablesComponent implements OnInit {
             })
           );
           this.tableData = [...this.tableData];
+          this.cdr.detectChanges();
           return;
         }
         this.getTables(recordsTemp, startPage);
@@ -218,6 +233,7 @@ export class TablesComponent implements OnInit {
 
       return originItem ? originItem : item;
     });
+    this.cdr.detectChanges();
     // 处理selection
     const childrenMap = [];
     each(this.tableData, item => {
@@ -229,6 +245,7 @@ export class TablesComponent implements OnInit {
         !includes(map(childrenMap, 'name'), item.name)
       );
     });
+    this.cdr.detectChanges();
     this.selectionChange();
   }
 
@@ -251,7 +268,7 @@ export class TablesComponent implements OnInit {
     this.getResource(node);
   }
 
-  getResource(node, recordsTemp?, startPage?) {
+  getResource(node, startPage?) {
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START,
       pageSize: 100,
@@ -262,44 +279,54 @@ export class TablesComponent implements OnInit {
     this.protectedEnvironmentApiService
       .ListEnvironmentResource(params)
       .subscribe(res => {
-        if (!recordsTemp) {
-          recordsTemp = [];
-        }
         if (!isNumber(startPage)) {
           startPage = CommonConsts.PAGE_START;
         }
         startPage++;
-        recordsTemp = [...recordsTemp, ...res.records];
-        if (
-          startPage === Math.ceil(res.totalCount / 100) ||
-          res.totalCount === 0
-        ) {
-          each(recordsTemp, (item: any) => {
-            item['label'] = `${
-              item.extendInfo.tableName
-            }(${this.capacityCalculateLabel.transform(
-              +item.extendInfo.tableSingleSize,
-              '1.3-3',
-              CAPACITY_UNIT.BYTE,
-              true
-            )})`;
-            item['isLeaf'] = true;
-            item['contentToggleIcon'] = 'aui-icon-file';
-          });
-          node.children = recordsTemp;
-          if (!isUndefined(find(this.tableSelection, { label: node.label }))) {
-            this.tableSelection = union(this.tableSelection, node.children);
-            this.selectionChange();
-          }
-          this.tableData = [...this.tableData];
-          this.children$.next(node);
-          return;
+        each(res.records, (item: any) => {
+          item['label'] = `${
+            item.extendInfo.tableName
+          }(${this.capacityCalculateLabel.transform(
+            +item.extendInfo.tableSingleSize,
+            '1.3-3',
+            CAPACITY_UNIT.BYTE,
+            true
+          )})`;
+          item['isLeaf'] = true;
+          item['contentToggleIcon'] = 'aui-icon-file';
+        });
+        if (isArray(node.children) && !isEmpty(node.children)) {
+          node.children = [
+            ...reject(node.children, n => {
+              return !!n.isMoreBtn;
+            }),
+            ...res.records
+          ];
+        } else {
+          node.children = [...res.records];
         }
-        this.getResource(node, recordsTemp, startPage);
+        if (res.totalCount > size(node.children)) {
+          const moreClickNode = {
+            label: `${this.i18n.get('common_more_label')}...`,
+            isMoreBtn: true,
+            isLeaf: true,
+            disabled: true,
+            startPage: Math.floor(size(node.children) / 100)
+          };
+          node.children = [...node.children, moreClickNode];
+        }
+        if (!isUndefined(find(this.tableSelection, { label: node.label }))) {
+          this.tableSelection = union(this.tableSelection, node.children);
+          this.selectionChange();
+        }
+        this.tableData = [...this.tableData];
+        this.cdr.detectChanges();
+        this.children$.next(node);
       });
   }
 
   selectionChange() {
     this.onSelectionChange.emit(this.tableSelection);
+    this.cdr.detectChanges();
   }
 }

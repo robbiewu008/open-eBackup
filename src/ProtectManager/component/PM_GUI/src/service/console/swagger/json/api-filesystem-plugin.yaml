@@ -125,8 +125,17 @@ definitions:
       protectedCount:
         type: integer
         format: int32
-        description: 已保护资源数量
+        description: NAS的已保护资源数量
       unprotectedCount:
         type: integer
         format: int32
-        description: 未保护资源数量
+        description: NAS的未保护资源数量
+      protectedCountLun:
+        type: integer
+        format: int32
+        description: LUN的已保护资源数量
+      unprotectedCountLun:
+        type: integer
+        format: int32
+        description: LUN的未保护资源数量
+

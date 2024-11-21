@@ -1,3 +1,4 @@
+<div class="about-text" [innerHTML]="tagTipLabel"></div>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="about-text" [innerHTML]="tagTipLabel"></div>
 <div class="aui-operation" *ngIf="isAdd">
   <lv-group lvGutter='16px'>
     <button lv-popover lv-button class="createBtn" lvType="primary" [lvPopoverHeader]="headerTemplate"
@@ -25,7 +25,7 @@
   <lv-form-item>
     <lv-form-label></lv-form-label>
     <lv-form-control>
-      <lv-transfer #transfer [lvSourceColumns]="sourceColumns" [lvSourceData]="sourceData"
+      <lv-transfer #transfer [lvSourceColumns]="sourceColumns" [lvSourceData]="sourceData" [lvTitles]="['common_optional_label' | i18n, 'common_selected_label' | i18n]"
         [lvSourceSelection]="sourceSelection" [lvTargetColumns]="targetColumns" (lvStateChange)="stateChange($event)"
         (lvSelectionChange)="change($event)" lvAsync="true" [lvTotal]="total" [lvItemSize]="20" [lvColDisplayControl]="false"
         lvDataKey="uuid"></lv-transfer>

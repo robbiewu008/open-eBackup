@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
@@ -22,9 +22,9 @@ import {
   BaseUtilService,
   CommonConsts,
   DataMapService,
+  getMultiHostOps,
   I18NService,
-  MultiCluster,
-  getMultiHostOps
+  MultiCluster
 } from 'app/shared';
 import {
   EnvironmentsService,
@@ -39,16 +39,18 @@ import {
   RestoreFileType
 } from 'app/shared/consts';
 import {
-  USER_GUIDE_CACHE_DATA,
-  cacheGuideResource
+  cacheGuideResource,
+  USER_GUIDE_CACHE_DATA
 } from 'app/shared/consts/guide-config';
 import {
   assign,
   cloneDeep,
+  defer,
   each,
   endsWith,
   filter,
   find,
+  get,
   includes,
   isArray,
   isEmpty,
@@ -56,12 +58,12 @@ import {
   map,
   omit,
   reject,
+  set,
   size,
   startsWith,
-  union,
-  unionBy,
   trim,
-  set
+  union,
+  unionBy
 } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
 
@@ -120,7 +122,12 @@ export class CreateFilesetComponent implements OnInit {
           : '',
         Validators.required
       ),
-      name: new FormControl(this.rowItem ? this.rowItem.name : '')
+      name: new FormControl(this.rowItem ? this.rowItem.name : ''),
+      is_OS_backup: new FormControl(
+        this.rowItem
+          ? get(this.rowItem.extendInfo, 'is_OS_backup', 'false') === 'true'
+          : false
+      )
     });
     if (this.sub_type === DataMap.Resource_Type.fileset.value) {
       this.formGroup
@@ -137,6 +144,9 @@ export class CreateFilesetComponent implements OnInit {
         invalidName: this.i18n.get('protection_fileset_name_vaild_label'),
         invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [256])
       };
+      this.formGroup.get('is_OS_backup').valueChanges.subscribe(res => {
+        defer(() => this.validPath());
+      });
     } else {
       this.formGroup
         .get('name')
@@ -174,13 +184,15 @@ export class CreateFilesetComponent implements OnInit {
     if (this.rowItem) {
       const paths = this.getPath(this.fileSelection);
       this.fileValid$.next(
-        size(union(paths, this.copyRowItemPaths)) > 0 &&
+        (size(union(paths, this.copyRowItemPaths)) > 0 ||
+          this.formGroup.get('is_OS_backup').value) &&
           size(union(paths, this.copyRowItemPaths)) <=
             (this.sub_type === DataMap.Resource_Type.HDFS.value ? 256 : 64)
       );
     } else {
       this.fileValid$.next(
-        size(this.fileSelection) > 0 &&
+        (size(this.fileSelection) > 0 ||
+          this.formGroup.get('is_OS_backup').value) &&
           size(this.getPath(this.fileSelection)) <=
             (this.sub_type === DataMap.Resource_Type.HDFS.value ? 256 : 64)
       );
@@ -325,9 +337,8 @@ export class CreateFilesetComponent implements OnInit {
     array.push({
       key: item.uuid,
       value: item.uuid,
-      label: !isEmpty(item.environment?.endpoint)
-        ? `${item.environment?.name}(${item.environment?.endpoint})`
-        : item.environment?.name,
+      label: `${item.environment?.name}(${item.environment?.extendInfo
+        ?.subNetFixedIp || item.environment?.endpoint})`,
       os_type: item.environment?.osType,
       parentUuid: item.parentUuid,
       isLeaf: true
@@ -340,7 +351,9 @@ export class CreateFilesetComponent implements OnInit {
     if (this.rowItem) {
       this.filesData = [
         {
-          label: `${this.rowItem.environment?.name}(${this.rowItem.environment?.endpoint})`,
+          label: `${this.rowItem.environment?.name}(${this.rowItem.environment
+            ?.extendInfo?.subNetFixedIp ||
+            this.rowItem.environment?.endpoint})`,
           uuid: this.rowItem.environment?.uuid,
           contentToggleIcon: 'aui-icon-host',
           children: [],
@@ -398,9 +411,8 @@ export class CreateFilesetComponent implements OnInit {
             hostArr.push({
               key: item.uuid,
               value: item.uuid,
-              label: !isEmpty(item.environment?.endpoint)
-                ? `${item.environment?.name}(${item.environment?.endpoint})`
-                : item.environment?.name,
+              label: `${item.environment?.name}(${item.environment?.extendInfo
+                ?.subNetFixedIp || item.environment?.endpoint})`,
               os_type: item.environment?.osType,
               parentUuid: item.parentUuid,
               installPath: trim(item.environment?.extendInfo?.install_path),
@@ -521,6 +533,9 @@ export class CreateFilesetComponent implements OnInit {
         })
       );
       this.osType = this.selectHost?.os_type;
+      if (this.osType !== DataMap.Os_Type.linux.value) {
+        this.formGroup.get('is_OS_backup').setValue(false);
+      }
     }
     this.getFiles();
   }
@@ -841,7 +856,8 @@ export class CreateFilesetComponent implements OnInit {
               return { name: path };
             })
           ),
-          filters: JSON.stringify(this.filterParams)
+          filters: JSON.stringify(this.filterParams),
+          is_OS_backup: this.formGroup.get('is_OS_backup').value
         }
       };
       this.protectedResourceApiService
@@ -1046,7 +1062,8 @@ export class CreateFilesetComponent implements OnInit {
             })
           ),
           filters: JSON.stringify(this.filterParams),
-          templateId: ''
+          templateId: '',
+          is_OS_backup: this.formGroup.get('is_OS_backup').value
         }
       };
       this.protectedResourceApiService

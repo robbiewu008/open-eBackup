@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤2：检查并开启vmware-vapi-endpoint服务">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0015.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="vmware_gud_0017">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤2：检查并开启vmware-vapi-endpoint服务</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="vmware_gud_0017"></a><a name="vmware_gud_0017"></a>
+  <h1 class="topictitle1">步骤2：检查并开启vmware-vapi-endpoint服务</h1>
+  <div>
+   <p>注册VMware虚拟化环境前，请确保vCenter Server上vmware-vapi-endpoint服务已开启，否则注册将失败。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>使用PuTTY，以<strong>root</strong>账号登录vCenter Server。</span></li>
+     <li><span>执行以下命令进入shell模式。</span><p></p><pre class="screen">shell</pre> <p></p></li>
+     <li><span>执行以下命令检查vmware-vapi-endpoint服务是否已开启。</span><p></p><pre class="screen">service-control --status</pre> <p>回显类似如下表示服务已开启，否则请执行<a href="#vmware_gud_0017__li3254446179">4</a>开启服务。</p> <pre class="screen">root@vc161-99 [ <font style="font-size:8pt" face="Courier New">~</font> ]# service-control --status
+Stopped: 
+vmcam vmware-analytics vmware-eam vmware-imagebuilder vmware-mbcs vmware-netdumper vmware-rbd-watchdog vmware-statsmonitor vmware-vcha vsan-dps
+<strong>Running: </strong>
+applmgmt lwsmd pschealth vmafdd vmcad vmdird vmdnsd vmonapi vmware-cis-license vmware-cm vmware-content-library vmware-perfcharts vmware-pod vmware-postgres-archiver vmware-rhttpproxy vmware-sca vmware-sps vmware-sts-idmd vmware-stsd vmware-updatemgr <strong>vmware-vapi-endpoint</strong> vmware-vmon vmware-vpostgres vmware-vpxd vmware-vpxd-svcs vmware-vsan-health vmware-vsm vsphere-client vsphere-ui</pre> <p></p></li>
+     <li id="vmware_gud_0017__li3254446179"><a name="vmware_gud_0017__li3254446179"></a><a name="li3254446179"></a><span>执行以下命令开启vmware-vapi-endpoint服务。</span><p></p><pre class="screen">service-control --start vmware-vapi-endpoint</pre> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="vmware_gud_0015.html">备份VMware虚拟机</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

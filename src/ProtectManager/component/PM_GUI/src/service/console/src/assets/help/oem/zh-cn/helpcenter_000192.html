@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="管理事件转储">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="helpcenter_000110.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="helpcenter_000192">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>管理事件转储</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="helpcenter_000192"></a><a name="helpcenter_000192"></a>
+  <h1 class="topictitle1">管理事件转储</h1>
+  <div>
+   <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_p159125100541">通过事件转储功能，系统会定时将事件导出到系统的本地磁盘，并删除保留周期外的数据库中的事件记录。</p>
+   <div class="section" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_section1596185819173">
+    <h4 class="sectiontitle">背景信息</h4>
+    <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_p10738881161">用户可以通过<span id="helpcenter_000192__zh-cn_topic_0000001839224657_text1410816018451">本产品</span>下载已转储的事件文件，并可以删除该目录下不需要保留的事件文件。</p>
+   </div>
+   <div class="section" id="helpcenter_000192__zh-cn_topic_0000001839224657_section365920491758">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p id="helpcenter_000192__zh-cn_topic_0000001839224657_p454611815596">如果出现“事件存储空间即将达到上限”告警，请到DeviceManager管理界面，开启告警转储。</p>
+    <ol id="helpcenter_000192__zh-cn_topic_0000001839224657_ol71596016109">
+     <li id="helpcenter_000192__zh-cn_topic_0000001839224657_li1852152571019">单击“设置 &gt; 告警设置 &gt; 告警转储”，进入告警转储界面。</li>
+     <li id="helpcenter_000192__zh-cn_topic_0000001839224657_li1286119167116">单击告警转储旁<span><img id="helpcenter_000192__zh-cn_topic_0000001839224657_image54799123127" src="zh-cn_image_0000001932431442.png"></span>，开启告警转储。</li>
+     <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li14348752411">设置告警转储的相关参数，相关参数说明如<a href="#helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_table98331154151817">表1</a>所示。 
+      <div class="tablenoborder">
+       <a name="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_table98331154151817"></a><a name="zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_table98331154151817"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_table98331154151817" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>告警转储参数
+        </caption>
+        <colgroup>
+         <col style="width:25.2%">
+         <col style="width:74.8%">
+        </colgroup>
+        <thead align="left">
+         <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_row208347544188">
+          <th align="left" class="cellrowborder" valign="top" width="25.2%" id="mcps1.3.3.3.3.2.2.3.1.1"><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p2083465411817">参数名称</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.8%" id="mcps1.3.3.3.3.2.2.3.1.2"><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p683415441817">参数说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_row78341540186">
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.3.2.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p0834115418188">传输协议</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.3.2.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p14834165419185">告警转储的传输协议，包含“SFTP”和“FTP”。</p>
+           <div class="note" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_note15492183162011">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p049373172019">出于兼容性考虑，系统保留了对FTP协议的支持。为了保证传输数据的安全，推荐使用SFTP协议。</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_row118341254131810">
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.3.2.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p2834195412184">用户名</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.3.2.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p183445413180">用于登录SFTP服务器或FTP服务器的用户名称。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p2087918618406">[取值范围]</p>
+           <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_ul587976194012">
+            <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li1487914624012">名称不能重复。</li>
+            <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li1587917620405">长度为1～63个字符。</li>
+            <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li148791263403">不能包含特殊字符!':;|`$&lt;&gt;&amp;-()#?"\*。</li>
+           </ul></td>
+         </tr>
+         <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_row4834105481817">
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.3.2.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p383485411188">密码</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.3.2.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p3242191512013">登录服务器的密码。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p1454442412405">[取值范围]</p>
+           <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_ul18188173017408">
+            <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li1256442014218">长度为1～63个字符。</li>
+            <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li111891530164014">密码不能包括扩展ASCII码或Unicode字符，否则密码无法正常使用，建议使用：数字（0~9），字母（a~z、A~Z），空格以及[]^_{|}~`@!"#$%&amp;'()*+,-./:;&lt;=&gt;?。</li>
+           </ul></td>
+         </tr>
+         <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_row38341554171810">
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.3.2.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p28341546189">服务器IP地址</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.3.2.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p1483411543181">服务器IP地址。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p733113774017">[取值范围]</p>
+           <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_ul99831210132115">
+            <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li1898351042110">当IP地址为IPv4时：
+             <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_ul29831110152115">
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li15983191019210">IPv4的32位地址分成4个8位字段，每个8位字段写成十进制，中间用点号分隔。</li>
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li49831610102117">IPv4地址各字段不能为空，只能为整数。</li>
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li20983131032110">左起第一个字段的取值范围为1～223（不包括127）。</li>
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li179831110172113">其余字段的取值范围为0～255。</li>
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li18983121018214">IP地址不能设置为特殊地址，例如广播地址等。</li>
+             </ul></li>
+            <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li1498351042111">当IP地址为IPv6时：
+             <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_ul16983121072116">
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li69831310132114">IPv6的128位地址分成8个16位字段，每个16位字段写成4个十六进制，中间用冒号分隔。</li>
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li098301018214">IPv6地址中每个16位字段中的前导零位可以去除做简化表示，但每个字段必须至少保留一位数字。</li>
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li69831410122110">如果地址中包含很长的零序列，为进一步简化表示，可以用冒号将十六进制格式中相邻的连续零位合并，用双冒号“::”表示。“::”在一个地址中只能出现一次，该符号也能用来压缩地址中前部和尾部的相邻的连续零位。</li>
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li16983510142111">IP地址不能设置为特殊地址，例如网络地址、回环地址、组播地址等。</li>
+             </ul></li>
+           </ul></td>
+         </tr>
+         <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_row1087634813199">
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.3.2.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p1787734861916">文件保存路径</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.3.2.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p13877114891913">存储系统信息转储的文件路径。在用户的FTP软件上会设置一个保存路径，用户需要在这个保存目录下创建一个文件夹，DeviceManager上“文件保存路径”就只输入此文件夹的名字。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_p65097479">[取值范围]</p>
+           <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_ul119931957439">
+            <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li1099319574317">长度为1～255个字符。</li>
+            <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li10993205714320">不能包含特殊字符!':;|`$&lt;&gt;&amp;-()#?"\*，首字符不能为“.”且首尾字符不能为空格，与路径分隔符/后第一个字符不能为“.”。</li>
+           </ul></td>
+         </tr>
+        </tbody>
+       </table>
+      </div></li>
+     <li id="helpcenter_000192__zh-cn_topic_0000001839224657_li699175918433">（可选）单击“测试”，可校验已设置的参数值是否正确。
+      <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_ul11156141742310">
+       <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li04511617162320">当系统弹出错误提示框时，表明其中至少有一个参数设置错误，请修改后重试。</li>
+       <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001160283003_li2451191732315">当系统弹出成功提示框时，表明告警转储参数设置正确。</li>
+      </ul></li>
+     <li id="helpcenter_000192__zh-cn_topic_0000001839224657_li1485196184418">单击“保存”。</li>
+    </ol>
+   </div>
+   <div class="section" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_section20287103810283">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_ol61721291281">
+     <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_li31809451213"><span>选择“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_text0225915459">系统</span> &gt; <span id="helpcenter_000192__zh-cn_topic_0000001839224657_text49716338518">设置</span> &gt; <span id="helpcenter_000192__zh-cn_topic_0000001839224657_text972217511511">事件转储</span>”。</span></li>
+     <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li282810281524"><span>修改转储参数。</span><p></p>
+      <ol type="a" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_ol10826228125212">
+       <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li1419834385215">在<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol11951173516102">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_text36119211411">转储参数</span>”</span>区域，单击<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol6991143151013">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_text125843917115">修改</span>”</span>。</li>
+       <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li382622816525">配置转储参数，相关参数说明如<a href="#helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_table13374941017">表2</a>所示。 
+        <div class="tablenoborder">
+         <a name="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_table13374941017"></a><a name="zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_table13374941017"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_table13374941017" frame="border" border="1" rules="all">
+          <caption>
+           <b>表2 </b>事件转储参数说明
+          </caption>
+          <colgroup>
+           <col style="width:23.96%">
+           <col style="width:76.03999999999999%">
+          </colgroup>
+          <thead align="left">
+           <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_row937139171015">
+            <th align="left" class="cellrowborder" valign="top" width="23.96%" id="mcps1.3.4.2.2.2.1.2.2.2.3.1.1"><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p43287665">参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="76.03999999999999%" id="mcps1.3.4.2.2.2.1.2.2.2.3.1.2"><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p16640014">说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_row153810991014">
+            <td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p49536326"><span id="helpcenter_000192__zh-cn_topic_0000001839224657_text4138192464116">转储时间</span></p></td>
+            <td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p53019476">设置事件信息的转储时间。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p7413244">通常设置转储时间为系统业务空闲时间段。</p></td>
+           </tr>
+           <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_row13381496108">
+            <td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_p135601413597"><span id="helpcenter_000192__zh-cn_topic_0000001839224657_text155141932154117">转储周期</span></p></td>
+            <td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p15156672">系统每隔多久自动转储一次事件信息。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p78734156541">【取值范围】</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p580392112543">7~120天。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p2192324">例如，转储周期设置为7天，则系统每7天进行一次自动转储操作。</p></td>
+           </tr>
+           <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_row17381292106">
+            <td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p4978733"><span id="helpcenter_000192__zh-cn_topic_0000001839224657_text14826240104110">保留最近的数据库记录</span></p></td>
+            <td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_p1079116101905">保留数据库中最近X天的事件记录。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p12603242185415">【取值范围】</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p18603194215543">7~120天。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p624200">例如，保留最近的数据库记录设置为7天，则系统的数据库中保留最近7天的事件记录。</p></td>
+           </tr>
+           <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_row8393941011">
+            <td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_p320516317119"><span id="helpcenter_000192__zh-cn_topic_0000001839224657_text1174765118419">文件类型</span></p></td>
+            <td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p4100073">转储事件文件的格式。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p36900657">取值包括“Excel”和“CSV”。</p></td>
+           </tr>
+           <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_row173919911101">
+            <td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_p1028515283217"><span id="helpcenter_000192__zh-cn_topic_0000001839224657_text1576645615214">语言类型</span></p></td>
+            <td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p2254227">事件信息的语言。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p20288046">取值包括简体中文和英文。</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li118773530515">单击<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol28771953175110">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_text1687714533512">保存</span>”</span>。</li>
+      </ol> <p></p></li>
+     <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li8466164633216"><span>配置和开启SFTP服务器。</span><p></p>
+      <ol type="a" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_ol1714711493319">
+       <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li214701413334">在<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol61711623422">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_text16792116463">SFTP服务器</span>”</span>区域，单击<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol0187114174213">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_text133258313433">修改</span>”</span>。</li>
+       <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li175521919345">单击<span><img id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_image1878121518360" src="zh-cn_image_0000001792345818.png"></span>，开启并配置SFTP服务器的相关参数，相关参数说明如<a href="#helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_alarm_alarm_save_table01">表3</a>所示。 
+        <div class="tablenoborder">
+         <a name="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_alarm_alarm_save_table01"></a><a name="zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_alarm_alarm_save_table01"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_alarm_alarm_save_table01" frame="border" border="1" rules="all">
+          <caption>
+           <b>表3 </b>SFTP服务器参数
+          </caption>
+          <colgroup>
+           <col style="width:25.45%">
+           <col style="width:74.55000000000001%">
+          </colgroup>
+          <thead align="left">
+           <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_row40286359">
+            <th align="left" class="cellrowborder" valign="top" width="25.45%" id="mcps1.3.4.2.3.2.1.2.3.2.3.1.1"><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p41969672">参数名称</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="74.55000000000001%" id="mcps1.3.4.2.3.2.1.2.3.2.3.1.2"><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p44100310">参数说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_row64272308">
+            <td class="cellrowborder" valign="top" width="25.45%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p38674437"><span id="helpcenter_000192__zh-cn_topic_0000001839224657_text12486189164718">用户名</span></p></td>
+            <td class="cellrowborder" valign="top" width="74.55000000000001%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p45621724">用于存储事件信息的SFTP服务器的用户名称。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p4372126">[取值范围]</p>
+             <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_ul39349140">
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li18597941">长度为1～255个字符。</li>
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li33163748">不能包含特殊字符，特殊字符包括：!':;|`$&lt;&gt;&amp;-()#?"\* 。</li>
+             </ul> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p143101839181619">[示例]</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p209964415169">admin</p></td>
+           </tr>
+           <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_row17181697">
+            <td class="cellrowborder" valign="top" width="25.45%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p49540230"><span id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_text86851244114511">密码</span></p></td>
+            <td class="cellrowborder" valign="top" width="74.55000000000001%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p53335679">登录SFTP服务器的密码。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p25222741">[取值范围]</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p25678078">长度为1～255个字符。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p29776111">[示例]</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p66658409">user123456</p></td>
+           </tr>
+           <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_row63054773">
+            <td class="cellrowborder" valign="top" width="25.45%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p7163025"><span id="helpcenter_000192__zh-cn_topic_0000001839224657_text18091717124713">服务器IP地址</span></p></td>
+            <td class="cellrowborder" valign="top" width="74.55000000000001%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p43334120">SFTP服务器的IP地址。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p20402852">[取值范围]</p>
+             <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_ul49407948">
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li42018349">当IP地址为IPv4时：
+               <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_ul42620826">
+                <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li48043114">IPv4的32位地址分成4个8位字段，每个8位字段写成十进制，中间用点号分隔。</li>
+                <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li29734848">IPv4地址各字段不能为空，只能为整数。</li>
+                <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li66287044">左起第一个字段的取值范围为1～223（不包括127）。</li>
+                <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li59712487">其余字段的取值范围为0～255。</li>
+                <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li541474">IP地址不能设置为特殊地址，例如广播地址等。</li>
+               </ul></li>
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li4873270">当IP地址为IPv6时：
+               <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_ul43859437">
+                <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li59190614">IPv6的128位地址分成8个16位字段，每个16位字段写成4个十六进制，中间用冒号分隔。</li>
+                <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li62953484">IPv6地址中每个16位字段中的前导零位可以去除做简化表示，但每个字段必须至少保留一位数字。</li>
+                <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li29710447">如果地址中包含很长的零序列，为进一步简化表示，可以用冒号将十六进制格式中相邻的连续零位合并，用双冒号“::”表示。“::”在一个地址中只能出现一次，该符号也能用来压缩地址中前部和尾部的相邻的连续零位。</li>
+                <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li66067432">IP地址不能设置为特殊地址，例如网络地址、回环地址、组播地址等。</li>
+               </ul></li>
+             </ul> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p54247797">[示例]</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p18468133">192.168.1.100</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p31995475">fc00::1234</p></td>
+           </tr>
+           <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_row196216816393">
+            <td class="cellrowborder" valign="top" width="25.45%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p79621187396"><span id="helpcenter_000192__zh-cn_topic_0000001839224657_text43701815114811">端口</span></p></td>
+            <td class="cellrowborder" valign="top" width="74.55000000000001%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p199621987398">SFTP服务器的端口。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p13928067403">[取值范围]</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p1592811634012">取值范围为：1～65535。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p7928167400">[示例]</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p1292946104010">22</p></td>
+           </tr>
+           <tr id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_row41496693">
+            <td class="cellrowborder" valign="top" width="25.45%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.1 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p5788996"><span id="helpcenter_000192__zh-cn_topic_0000001839224657_text1591272254811">文件保存路径</span></p></td>
+            <td class="cellrowborder" valign="top" width="74.55000000000001%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.2 "><p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p66255527">事件信息转储的文件路径。</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p1248652184210">[取值范围]</p>
+             <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_ul1045852174211">
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li194510528425">长度为1～1024个字符。</li>
+              <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li17600105444218">不能包含特殊字符!':;|`$&lt;&gt;&amp;-()#?"\*，首字符不能为“.”且首尾字符不能为空格，与路径分隔符/后第一个字符不能为“.”。</li>
+             </ul> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p38404427">[示例]</p> <p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_p10095526">/test</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li2489145201717">（可选）单击<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol1671555755818">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_text12515141194820">测试</span>”</span>，可校验已设置的参数值是否正确。
+        <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_ul44772769">
+         <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li301738">当系统弹出错误提示框时，表明其中至少有一个参数设置错误，请修改后重试。</li>
+         <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li2715650">当系统弹出成功提示框时，表明SFTP服务器参数设置正确。</li>
+        </ul></li>
+       <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_li117683399153">单击<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol1061119814511">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_text5126174513512">保存</span>”</span>。</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+   <div class="section" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_section9223236">
+    <h4 class="sectiontitle">后续处理</h4>
+    <ul id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_ul1464016429256">
+     <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li1269191615261">查看和下载转储文件：<p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p938971652617"><a name="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li1269191615261"></a><a name="zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li1269191615261"></a>在<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol2012194183014">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_text2465181314917">转储历史</span>”</span>区域，您可以查看事件转储的历史记录，同时您可以在已转储的事件记录所在<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol22955116309">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_text1026518374498">转储文件</span>”</span>区域，单击文件名称，并将其下载至本地备份。</p></li>
+     <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li16592021142620">删除转储文件：<p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p1261954252617"><a name="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li16592021142620"></a><a name="zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li16592021142620"></a>在<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol1574113133016">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_text118216104911">转储历史</span>”</span>区域，某个转储文件所在行右侧的<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol2977113103011">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_text2746132818314">更多</span>”</span>并选择<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol16426515103012">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_text78221756114912">删除</span>”</span>，删除保存在系统上的转储文件。</p></li>
+     <li id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li1088324562618">上传转储事件：<p id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_p1271115812617"><a name="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li1088324562618"></a><a name="zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_li1088324562618"></a>在<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol63778194303">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_text1948710183498">转储历史</span>”</span>区域，某个转储文件所在行右侧的<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol12556101710309">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_text16122131153112">更多</span>”</span>并选择<span class="uicontrol" id="helpcenter_000192__zh-cn_topic_0000001839224657_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_uicontrol76333162308">“<span id="helpcenter_000192__zh-cn_topic_0000001839224657_text133203917508">上传</span>”</span>，将保存在系统上的转储事件上传至已开启的SFTP服务器。</p></li>
+    </ul>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="helpcenter_000110.html">系统</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

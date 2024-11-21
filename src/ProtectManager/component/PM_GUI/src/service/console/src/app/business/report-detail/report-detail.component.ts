@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   ElementRef,
@@ -161,6 +161,7 @@ export class ReportDetailComponent implements OnInit {
   @ViewChild('subjectUserTpl', { static: true }) subjectUserTpl: TemplateRef<
     any
   >;
+  @ViewChild('fileTpl', { static: true }) fileTpl: TemplateRef<any>;
 
   constructor(
     private detectReportApi: DetectReportAPIService,
@@ -337,7 +338,8 @@ export class ReportDetailComponent implements OnInit {
           },
           {
             key: 'fileName',
-            name: this.i18n.get('common_file_path_label')
+            name: this.i18n.get('common_file_path_label'),
+            cellRender: this.fileTpl
           },
           {
             key: 'createDate',
@@ -903,6 +905,7 @@ export class ReportDetailComponent implements OnInit {
           if (this.softwareType === SoftwareType.CV) {
             this.assCopyTable.setColsDisplay([
               'backupTime',
+              'backupType',
               'backupJobId',
               'copySize',
               'copyPath',

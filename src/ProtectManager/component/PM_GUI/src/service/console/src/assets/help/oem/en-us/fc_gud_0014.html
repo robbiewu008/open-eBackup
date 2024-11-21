@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Create a FusionOne Compute Interconnection User">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="fc_gud_0013.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="fc_gud_0014">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Create a FusionOne Compute Interconnection User</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="fc_gud_0014"></a><a name="fc_gud_0014"></a>
+  <h1 class="topictitle1">Step 1: Create a FusionOne Compute Interconnection User</h1>
+  <div>
+   <p>This section describes how to create a user for interconnecting FusionOne Compute to the <span>product</span>.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Log in to FusionOne Compute.</span></li>
+     <li><span>Create a role on the FusionOne Compute management page. This role is used to create an account for interconnecting with the <span>product</span>.</span><p></p>
+      <ol type="a">
+       <li>Click <span><img src="en-us_image_0000002038168337.png"></span> in the navigation pane and choose <span class="uicontrol"><b>System &gt; Rights Management &gt; Role Management</b></span>.</li>
+       <li>Click <strong>Add Role</strong>.</li>
+       <li>Enter the role information. See <a href="#fc_gud_0014__fig2131133513913">Figure 1</a>.
+        <ul>
+         <li>Set <strong>Role Name</strong> to <strong>OceanProtect</strong>.</li>
+         <li>For details about how to configure permissions, see <a href="fc_gud_0066.html">Configuring FusionOne Compute Role Permissions</a>.</li>
+        </ul>
+        <div class="fignone" id="fc_gud_0014__fig2131133513913">
+         <a name="fc_gud_0014__fig2131133513913"></a><a name="fig2131133513913"></a><span class="figcap"><b>Figure 1 </b>Adding a role</span><br><span><img src="en-us_image_0000002038288829.png"></span>
+        </div> <p></p></li>
+       <li>Click <span><strong>OK</strong></span>.</li>
+      </ol> <p></p></li>
+     <li><span>On the FusionOne Compute management page, create an account for interconnecting with the <span>product</span>.</span><p></p>
+      <ol type="a">
+       <li>Choose <span class="uicontrol"><b>System &gt; Rights Management &gt; User Management</b></span>.</li>
+       <li>Click <span><strong>Add User</strong></span>.</li>
+       <li>Enter the user information. See <a href="#fc_gud_0014__fig139451316431">Figure 2</a>.
+        <ul>
+         <li><strong>User Type</strong>: Select <strong>Interface interconnection user</strong>.</li>
+         <li><strong>Role</strong>: Select <strong>OceanProtect</strong>.</li>
+        </ul>
+        <div class="fignone" id="fc_gud_0014__fig139451316431">
+         <a name="fc_gud_0014__fig139451316431"></a><a name="fig139451316431"></a><span class="figcap"><b>Figure 2 </b>Creating an interface interconnection user</span><br><span><img src="en-us_image_0000002038297033.png"></span>
+        </div> <p></p></li>
+       <li>Click <span><strong>OK</strong></span>.</li>
+       <li>Choose <span class="uicontrol"><b>System &gt; Rights Management &gt; Password Policy</b></span>.</li>
+       <li>In the left corner of the <strong>Password Policy</strong> page, click <strong>Modify</strong>.</li>
+       <li>Change the value of <strong>Forcibly change passwords upon a reset or initial login.</strong> to <strong>No</strong>.</li>
+       <li>Click <strong>Save</strong>.</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="fc_gud_0013.html">Backing Up a FusionOne Compute VM</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

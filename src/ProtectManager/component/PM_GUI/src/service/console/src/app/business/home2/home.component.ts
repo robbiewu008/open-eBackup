@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
@@ -20,8 +20,8 @@ import {
   I18NService
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { includes } from 'lodash';
-import { forkJoin, Subject } from 'rxjs';
+import { includes, reject, set } from 'lodash';
+import { forkJoin, of, Subject } from 'rxjs';
 import { cardlist } from './cardlist';
 
 const map = new Map();
@@ -44,7 +44,6 @@ const widthClassMap: any = [
   styleUrls: ['./home.component.less']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  private linkElement: HTMLLinkElement;
   @ViewChild('missionOverview', { static: false }) missionOverview;
   @ViewChild('performance', { static: false }) performance;
   @ViewChild('capacityDiction', { static: false }) capacityDiction;
@@ -72,11 +71,21 @@ export class HomeComponent implements OnInit, OnDestroy {
     ],
     this.i18n.get('deploy_type')
   );
-
+  isDataBackupOrDecouple = includes(
+    [
+      DataMap.Deploy_Type.a8000.value,
+      DataMap.Deploy_Type.x3000.value,
+      DataMap.Deploy_Type.x6000.value,
+      DataMap.Deploy_Type.x8000.value,
+      DataMap.Deploy_Type.x9000.value,
+      DataMap.Deploy_Type.decouple.value
+    ],
+    this.i18n.get('deploy_type')
+  );
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private i18n: I18NService,
-    private appUtilsService: AppUtilsService,
+    public appUtilsService: AppUtilsService,
     private clusterApiService: ClustersApiService,
     private BackupClustersApiService: BackupClustersApiService
   ) {}
@@ -85,10 +94,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.isNoXSeries) {
       return;
     }
-    this.linkElement = this.document.createElement('link');
-    this.linkElement.rel = 'stylesheet';
-    this.linkElement.href = 'assets/style/aui-dark.min.css';
-    this.document.head.appendChild(this.linkElement);
 
     this.initTimeOption();
     this.setResizeListener();
@@ -104,9 +109,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.topTimeOption = this.getTimeOption([4, 5]);
   }
   ngOnDestroy() {
-    if (this.linkElement && this.linkElement.parentNode) {
-      this.linkElement.parentNode.removeChild(this.linkElement);
-    }
     window.removeEventListener('resize', this.resizeHandler);
   }
 
@@ -163,41 +165,108 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   getClusters() {
-    this.clusterApiService
-      .getClustersInfoUsingGET({
-        startPage: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE * 10,
-        roleList: [
-          DataMap.Target_Cluster_Role.managed.value,
-          DataMap.Target_Cluster_Role.management.value
-        ],
-        statusList: [DataMap.Cluster_Status.online.value]
-      })
-      .subscribe(res => {
-        this.clusterOption = res.records.map(item => {
-          return {
-            isLeaf: true,
-            label: item.clusterName,
-            value: item.clusterId,
-            ...item
-          };
-        });
-        this.cardList.find(item => {
-          return (item.name = 'missionOverview');
-        }).selectcluster = this.clusterOption[0]?.value;
-
-        const nodeRequests = this.clusterOption.map(item => {
-          return this.BackupClustersApiService.queryAllMembers({
-            clustersType: item.clustersType,
-            clustersId: item.clustersId
-          });
-        });
-
-        this.requestNodes(nodeRequests);
+    const params = this.isDataBackupOrDecouple
+      ? {
+          startPage: CommonConsts.PAGE_START,
+          pageSize: CommonConsts.PAGE_SIZE,
+          roleList: this.appUtilsService.isDecouple
+            ? [DataMap.Target_Cluster_Role.backupStorage.value]
+            : [
+                DataMap.Target_Cluster_Role.management.value,
+                DataMap.Target_Cluster_Role.managed.value
+              ]
+        }
+      : {
+          startPage: CommonConsts.PAGE_START,
+          pageSize: CommonConsts.PAGE_SIZE,
+          typeList: [1]
+        };
+    set(params, 'akLoading', false);
+    this.clusterApiService.getClustersInfoUsingGET(params).subscribe(res => {
+      this.clusterOption = res.records.map(item => {
+        return {
+          isLeaf: true,
+          label: item.clusterName,
+          value: item.clusterId,
+          ...item
+        };
       });
+      if (this.appUtilsService.isDecouple) {
+        // e1000 性能容量预测不需要展示本地盘
+        this.clusterOption = reject(
+          this.clusterOption,
+          item => item.deviceType === DataMap.poolStorageDeviceType.Server.value
+        );
+      }
+      this.cardList.find(item => {
+        return (item.name = 'missionOverview');
+      }).selectcluster = this.clusterOption[0]?.value;
+      const nodeRequests = this.clusterOption.map(item => {
+        return this.appUtilsService.isDecouple
+          ? of(item)
+          : this.BackupClustersApiService.queryAllMembers({
+              clustersType: item.clusterType,
+              clustersId: item.clusterId,
+              akLoading: false
+            });
+      });
+
+      this.requestNodes(nodeRequests);
+    });
   }
   requestNodes(nodeRequests) {
     forkJoin(nodeRequests).subscribe((res: any) => {
+      this.processClusterOptions(res);
+      let performance = this.cardList.find(item => {
+        return item.name === 'performance';
+      });
+      let capacityDiction = this.cardList.find(item => {
+        return item.name === 'capacityDiction';
+      });
+      performance.clusterNodesOptions = this.clusterNodesOption; // 将节点值在card中存一份
+      capacityDiction.clusterNodesOptions = this.clusterNodesOption;
+      const defaultNode = this.clusterNodesOption[0];
+      performance.clusterType = defaultNode?.clusterType;
+      capacityDiction.clusterType = defaultNode?.clusterType;
+      if (this.appUtilsService.isDecouple) {
+        this.performanceSelectClusterNodes = defaultNode?.label;
+        this.capacityDictionSelectClusterNodes = defaultNode?.label;
+        performance.selectNode = [defaultNode?.value];
+        capacityDiction.selectNode = [defaultNode?.value];
+      } else {
+        this.performanceSelectClusterNodes = defaultNode?.children[0]?.label;
+        this.capacityDictionSelectClusterNodes =
+          defaultNode?.children[0]?.label;
+        performance.selectNode = [
+          defaultNode?.value,
+          defaultNode?.children[0]?.value
+        ];
+        capacityDiction.selectNode = [
+          defaultNode?.value,
+          defaultNode?.children[0]?.value
+        ];
+      }
+
+      this.refresh('performance');
+      this.refresh('capacityDiction');
+      this.clusterOption = [
+        {
+          isLeaf: true,
+          label: this.i18n.get('common_home_all_clusters_label'),
+          value: -1
+        },
+        ...this.clusterOption
+      ];
+    });
+  }
+
+  private processClusterOptions(res: any) {
+    if (this.appUtilsService.isDecouple) {
+      this.clusterNodesOption = res.map(item => ({
+        ...item,
+        children: []
+      }));
+    } else {
       this.clusterNodesOption = this.clusterOption.map((item, index) => {
         return {
           ...item,
@@ -205,36 +274,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           children: this.mapChildren(res, index)
         };
       });
-      this.performanceSelectClusterNodes = this.clusterNodesOption[0]?.children[0]?.label;
-      this.capacityDictionSelectClusterNodes = this.clusterNodesOption[0]?.children[0]?.label;
-      let performance = this.cardList.find(item => {
-        return item.name === 'performance';
-      });
-      let capacityDiction = this.cardList.find(item => {
-        return item.name === 'capacityDiction';
-      });
-      performance.selectNode = [
-        this.clusterNodesOption[0]?.value,
-        this.clusterNodesOption[0]?.children[0].value
-      ];
-      capacityDiction.selectNode = [
-        this.clusterNodesOption[0]?.value,
-        this.clusterNodesOption[0]?.children[0].value
-      ];
-      performance.clusterType = this.clusterNodesOption[0]?.clusterType;
-      capacityDiction.clusterType = this.clusterNodesOption[0]?.clusterType;
-
-      this.refresh('performance');
-      this.refresh('capacityDiction');
-      this.clusterOption = [
-        {
-          isLeaf: true,
-          label: '全部集群',
-          value: -1
-        },
-        ...this.clusterOption
-      ];
-    });
+    }
   }
 
   mapChildren(res, index) {
@@ -248,8 +288,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  clusterNodesSelectionChange(values, name): void {
-    this.refresh(name);
+  clusterNodesSelectionChange(values, name, card): void {
+    card.clusterType = values[0].clusterType;
     this[`${name}SelectClusterNodes`] = values.pop().label;
+    this.refresh(name);
   }
 }

@@ -1,3 +1,4 @@
+<lv-form class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form class="formGroup">
     <!-- 备份完成后删除归档日志 -->
     <lv-form-item *ngIf="isDeleteLog">
         <lv-form-label>
@@ -178,6 +178,16 @@
     </lv-form-item>
     <!-- 卷的操作系统备份 -->
     <lv-form-item *ngIf="application === applicationType.Volume">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_snapshot_size_percent_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_snapshot_size_percent_tips_label' | i18n }}"
+                    lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]='percentErrorTip'>
+                {{data?.snapshot_size_percent || 5}}%
+            </lv-form-control>
+        </lv-form-item>
         <lv-form-label>
             {{'protection_volume_advanced_backup_label' | i18n}}
         </lv-form-label>
@@ -201,6 +211,16 @@
             </lv-form-label>
             <lv-form-control>
                 {{data?.consistent_backup| textMap: 'Switch_Status' }}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="data?.consistent_backup">
+            <lv-form-label>
+                {{'protection_snapshot_size_percent_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_snapshot_size_percent_tips_label' | i18n }}"
+                    lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]='percentErrorTip'>
+                {{data?.snapshot_size_percent || 5}}%
             </lv-form-control>
         </lv-form-item>
         <lv-form-item>
@@ -246,7 +266,7 @@
     </ng-container>
     <!-- Nasshare -->
     <ng-container *ngIf="application === applicationType.NASShare">
-        <lv-form-item>
+        <lv-form-item *ngIf="shareMode === dataMap.Shared_Mode.cifs.value">
             <lv-form-label>
                 {{ 'protection_smb_hardlink_protection_label' | i18n }}
             </lv-form-label>
@@ -254,7 +274,7 @@
                 {{data?.smb_hardlink_protection | textMap: 'Switch_Status'}}
             </lv-form-control>
         </lv-form-item>
-        <lv-form-item>
+        <lv-form-item *ngIf="shareMode === dataMap.Shared_Mode.cifs.value">
             <lv-form-label>
                 {{ 'protection_smb_acl_protection_label' | i18n }}
             </lv-form-label>
@@ -268,6 +288,14 @@
             </lv-form-label>
             <lv-form-control>
                 {{!!data?.backup_hot_data | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_backup_cold_data_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{!!data?.backup_cold_data | textMap: 'Switch_Status'}}
             </lv-form-control>
         </lv-form-item>
         <lv-form-item>
@@ -352,5 +380,9 @@
                 </lv-form-control>
             </lv-form-item>
         </ng-container>
+    </ng-container>
+    <!-- 自动索引 -->
+    <ng-container *ngIf="isIndex">
+        <aui-update-index [isDetail]="isDetail" [protectData]="data"></aui-update-index>
     </ng-container>
 </lv-form>

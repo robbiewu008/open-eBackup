@@ -1,4 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -142,7 +155,7 @@
            <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
            <div class="notebody">
             <ul id="ZH-CN_TOPIC_0000001792526934__zh-cn_topic_0000001311093369_ul2568183912262">
-             <li id="ZH-CN_TOPIC_0000001792526934__li10617949153020">非多集群场景，当证书类型为“服务端证书”及“ProtectAgent证书”时，导入证书就是批量推送更新证书至ProtectAgent代理主机。</li>
+             <li id="ZH-CN_TOPIC_0000001792526934__li10617949153020">当证书类型为“服务端证书”及“ProtectAgent证书”时，导入证书后，系统会将CA证书推送到所有成员节点。</li>
              <li id="ZH-CN_TOPIC_0000001792526934__zh-cn_topic_0000001311093369_li15681939152612">远程复制场景，替换源端或目标端的服务端证书后，需要使用同一CA证书签发的证书替换目标端或源端的服务端证书。如果不替换，将导致远程复制失败。</li>
              <li id="ZH-CN_TOPIC_0000001792526934__zh-cn_topic_0000001311093369_li75697397266">如果用户已安装数据保护代理，再次更新服务端证书时，如果新的服务端证书和客户端证书不是同一CA证书签发，更新服务端证书后，需要参见<a href="zh-cn_topic_0000001792367190.html">替换客户端ProtectAgent的SSL证书（非Windows OS）</a>替换客户端证书。</li>
              <li id="ZH-CN_TOPIC_0000001792526934__li14512092518">仅支持导入签名算法为SHA256/SHA384/SHA512的证书。</li>

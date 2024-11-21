@@ -1,0 +1,125 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="查看NAS文件系统">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="nas_s_0091.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="nas_s_0092">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>查看NAS文件系统</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="nas_s_0092"></a><a name="nas_s_0092"></a>
+
+<h1 class="topictitle1">查看NAS文件系统</h1>
+<div><p>当存储设备添加至<span>OceanProtect</span>后，<span>OceanProtect</span>会自动扫描该存储设备，将扫描到的文件系统显示出来。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol">“<span id="nas_s_0092__zh-cn_topic_0000001839142377_text847555644011">保护</span> &gt; 文件系统 &gt; NAS文件系统”</span>。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="nas_s_0092__zh-cn_topic_0000001839142377_p1811010145186">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0092__zh-cn_topic_0000001839142377_uicontrol1211016146184">“<span id="nas_s_0092__zh-cn_topic_0000001839142377_text51105144188">保护</span> &gt; 文件服务 &gt; NAS文件系统”</span>。</p>
+</div></div>
+<p>NAS文件系统信息如<a href="#nas_s_0092__table2382789197">表1</a>所示。</p>
+
+<div class="tablenoborder"><a name="nas_s_0092__table2382789197"></a><a name="table2382789197"></a><table cellpadding="4" cellspacing="0" summary="" id="nas_s_0092__table2382789197" frame="border" border="1" rules="all"><caption><b>表1 </b>NAS文件系统信息</caption><colgroup><col style="width:20.169999999999998%"><col style="width:79.83%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20.169999999999998%" id="mcps1.3.2.2.1.2.3.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.83%" id="mcps1.3.2.2.1.2.3.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>NAS文件系统名称。</p>
+<p>单击名称，可以查看NAS文件系统的总览、副本数据、任务、文件系统信息、NFS共享信息、CIFS共享信息。</p>
+<ul><li>总览<p>显示名称、SLA信息、任务执行时间、副本总数等。</p>
+</li><li>副本数据<p>您可以依次按照年、月、天查找相应时间的副本。</p>
+<p>时间下方显示<span><img src="zh-cn_image_0000001839159885.png"></span>，表示该时间存在副本。</p>
+<p id="nas_s_0092__p148931546102114">单击“<span id="nas_s_0092__text6231156172516">清除索引</span>”，可以删除该资源下的所有索引。</p>
+<div class="note" id="nas_s_0092__note442313152720"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="nas_s_0092__ul183831433163112"><li id="nas_s_0092__li1838353343113">如果副本正在索引中，需等待索引完成后才能删除。</li><li id="nas_s_0092__li12383153315316">如果资源所关联的SLA开启“<span id="nas_s_0092__text1910522642811">自动索引</span>”，当备份策略开启“<span id="nas_s_0092__text1157112002916">自动索引</span>”时，需要关闭“<span id="nas_s_0092__text1914650122916">自动索引</span>”或者解除资源与SLA的关联关系才能删除索引。当归档策略开启“<span id="nas_s_0092__text14895235309">自动索引</span>”时，需要解除资源与SLA的关联关系才能删除索引。</li></ul>
+</div></div>
+</li><li>任务<p>所有任务展示，包括备份、恢复等任务。</p>
+</li><li>文件系统信息<p>显示文件系统所属的设备、租户和容量情况。</p>
+</li><li>NFS共享信息<p>显示NFS共享的共享路径、客户端、类型和权限级别。</p>
+</li><li>CIFS共享信息<p>显示CIFS共享的共享名称、共享路径、用户/用户组、类型和权限级别。</p>
+</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span>存储设备</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>NAS文件系统所属的存储设备名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span>共享协议</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>NAS文件系统使用的共享协议，包含：NFS、CIFS、NFS+CIFS、无。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span>租户</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>NAS文件系统所属的租户。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span>SLA</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>NAS文件系统关联的SLA名称。</p>
+<p>单击SLA名称，可以查看SLA的基本信息和关联资源。</p>
+<ul><li>基本信息<p>显示备份策略和高级配置。</p>
+</li><li>关联资源<p>显示该SLA关联的资源。</p>
+</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span>SLA遵从度</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><div class="p">SLA遵从度指某次备份任务是否按设定的备份频率或备份窗口成功完成备份。<ul id="nas_s_0092__zh-cn_topic_0000001792344110_zh-cn_topic_0000001792344094_ul1823814519293"><li id="nas_s_0092__zh-cn_topic_0000001792344110_zh-cn_topic_0000001792344094_li9238184572919">遵从：如果某次备份任务（首次全量备份除外）的备份时间满足备份窗口或备份频率要求，且备份成功，则表示SLA遵从。</li><li id="nas_s_0092__zh-cn_topic_0000001792344110_zh-cn_topic_0000001792344094_li189142052112912">不遵从：如果备份时间不满足备份窗口或备份频率要求，例如某次备份任务SLA设定的备份频率为每半小时执行一次，最终备份时间超过半小时，则表示SLA不遵从。建议调整备份频率或备份窗口。</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span>保护状态</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>NAS文件系统当前是否被保护。</p>
+<ul><li><span>未保护</span>：NAS文件系统未关联SLA，或者NAS文件系统已关联SLA但已禁用保护。</li><li><span>已保护</span>：NAS文件系统已关联SLA，且已激活保护。</li><li><span>创建中</span>：NAS文件系统已关联SLA，正在创建保护。</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><div class="p">标签<div class="note" id="nas_s_0092__zh-cn_topic_0000001792344110_note1330311543247"><span class="notetitle"> 说明： </span><div class="notebody"><p id="nas_s_0092__zh-cn_topic_0000001792344110_p630385412417">仅1.6.0及后续版本存在此参数。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>当资源已添加标签时，则此处显示标签名称。否则，显示“--”。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="nas_s_0091.html">NAS文件系统</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

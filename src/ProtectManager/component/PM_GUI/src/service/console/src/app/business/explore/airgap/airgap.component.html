@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,11 +12,10 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
   <ng-container *ngIf="isCyberEngine; else elseTemplate">
-    <div class="overview-tag">
-      <lv-group lvGutter="24px" class="title-group">
-        <img src="assets/img/airgap_brand.svg" class="logo">
+    <div class="overview-tag aui-gutter-column-md">
+      <lv-group [lvColumns]='["122px", "auto"]' lvGutter="24px" class="group-mgr">
+        <div class="air-gap-brand"></div>
         <lv-group lvGutter="8px" lvDirection='vertical'>
           <h1>{{ 'Air Gap' }}</h1>
           <span class="aui-text-label desc-font">

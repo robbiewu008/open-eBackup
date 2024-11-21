@@ -1,3 +1,4 @@
+<div class="report-detection-result">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="report-detection-result">
     <i [lv-icon]="detectionIcon"></i>
     <div class="no-data-label">
         <h1 class="aui-gutter-column-sm">{{detectionResultLabel}}</h1>
@@ -31,8 +31,7 @@
     </ng-container>
     <ng-container *ngIf="_isEmpty(reportLabel)">
         <div class="report-no-data aui-block">
-            <i lv-icon="aui-icon-no-data"></i>
-            <div class="no-data-label">{{'common_no_data_label' | i18n}}</div>
+            <lv-empty></lv-empty>
         </div>
     </ng-container>
 </div>

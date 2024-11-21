@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Creating a Volume">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="volume-0010.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="volume-0011">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Creating a Volume</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="volume-0011"></a><a name="volume-0011"></a>
+  <h1 class="topictitle1">Step 1: Creating a Volume</h1>
+  <div>
+   <p>Create a volume before performing volume protection.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li id="volume-0011__li1468195084214"><span></span></li>
+     <li><span>Choose <span class="uicontrol" id="volume-0011__en-us_topic_0000001839142377_uicontrol34250519116"><b><span id="volume-0011__en-us_topic_0000001839142377_text154255511911"><strong>Protection</strong></span> &gt; File Systems &gt; Volumes</b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span>.</span></li>
+     <li><span>In the <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> dialog box that is displayed, create a volume for a single host.</span><p></p><p><a href="#volume-0011__en-us_topic_0000001218047555_table6268122683816">Table 1</a> describes the related parameters.</p>
+      <div class="tablenoborder">
+       <a name="volume-0011__en-us_topic_0000001218047555_table6268122683816"></a><a name="en-us_topic_0000001218047555_table6268122683816"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="volume-0011__en-us_topic_0000001218047555_table6268122683816" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Parameters for creating a volume
+        </caption>
+        <colgroup>
+         <col style="width:11.450000000000001%">
+         <col style="width:10.879999999999999%">
+         <col style="width:77.66999999999999%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.4.2.2.2.4.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.4.2.2.2.4.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.4.2.2.2.4.1.1 "><p><span><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.2.2.2.4.1.2 "><p>User-defined volume name.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.4.2.2.2.4.1.1 "><p><span><strong>Select Host</strong></span></p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.2.2.2.4.1.2 "><p>Select the host for which volume protection is to be performed.</p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p>Only one volume set can be created for a host. The hosts for which volume sets have been created are not displayed.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.4.2.2.2.4.1.1 "><p><strong>OS Backup</strong></p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.2.2.2.4.1.2 "><p>After this option is selected, you can enable or disable OS backup when creating or modifying volume protection. If you want to back up data of all system volumes, you must select all system volumes.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.4.2.2.2.4.1.1 "><p><strong>Backup Type</strong></p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p>This parameter is available only in 1.6.0.</p>
+            </div>
+           </div>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p>This parameter is available only for the Windows OS.</p>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.2.2.2.4.1.2 "><p>Select a backup type: <strong>Volume</strong> or <strong>Bare Metal</strong>.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.4.2.2.2.4.1.1 "><p><span><strong>Volume</strong></span></p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.2.2.2.4.1.2 "><p>Select the volumes to be protected.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span>OK</span></b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="volume-0010.html">Backing Up Volumes</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

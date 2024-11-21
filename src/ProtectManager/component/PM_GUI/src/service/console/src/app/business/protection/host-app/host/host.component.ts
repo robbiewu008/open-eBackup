@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -51,7 +51,8 @@ import {
   isRBACDPAdmin,
   RoleOperationMap,
   getLabelList,
-  RoleOperationAuth
+  RoleOperationAuth,
+  SetTagType
 } from 'app/shared';
 import {
   ClientManagerApiService,
@@ -203,7 +204,8 @@ export class HostComponent implements OnInit, OnDestroy {
             DataMap.Os_Type.windows.value,
             DataMap.Os_Type.linux.value,
             DataMap.Os_Type.aix.value,
-            DataMap.Os_Type.solaris.value
+            DataMap.Os_Type.solaris.value,
+            DataMap.Os_Type.hpux.value
           ],
           item.value
         );
@@ -236,7 +238,7 @@ export class HostComponent implements OnInit, OnDestroy {
       isShow: this.hostTrustOpen
     },
     {
-      label: this.i18n.get('protection_sla_source_deduplication_label'),
+      label: this.i18n.get('common_source_deduplication_support_label'),
       key: 'src_deduption',
       isShow: false
     },
@@ -570,7 +572,10 @@ export class HostComponent implements OnInit, OnDestroy {
           return true;
         },
         disableCheck: data => {
-          return !size(this.selection);
+          return (
+            !size(this.selection) ||
+            some(this.selection, v => !this.hasClientPermission(v))
+          );
         },
         label: this.i18n.get('common_add_tag_label'),
         onClick: () => this.addLabel(this.selection)
@@ -582,7 +587,10 @@ export class HostComponent implements OnInit, OnDestroy {
           return true;
         },
         disableCheck: data => {
-          return !size(this.selection);
+          return (
+            !size(this.selection) ||
+            some(this.selection, v => !this.hasClientPermission(v))
+          );
         },
         label: this.i18n.get('common_remove_tag_label'),
         onClick: () => this.removeLabel(this.selection)
@@ -595,6 +603,7 @@ export class HostComponent implements OnInit, OnDestroy {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data,
+      type: SetTagType.Agent,
       onOk: () => {
         this.selection = [];
         this.getHosts();
@@ -606,6 +615,7 @@ export class HostComponent implements OnInit, OnDestroy {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data,
+      type: SetTagType.Agent,
       onOk: () => {
         this.selection = [];
         this.getHosts();
@@ -653,7 +663,8 @@ export class HostComponent implements OnInit, OnDestroy {
                   DataMap.Os_Type.windows.value,
                   DataMap.Os_Type.linux.value,
                   DataMap.Os_Type.aix.value,
-                  DataMap.Os_Type.solaris.value
+                  DataMap.Os_Type.solaris.value,
+                  DataMap.Os_Type.hpux.value
                 ],
                 item.value
               );
@@ -677,7 +688,7 @@ export class HostComponent implements OnInit, OnDestroy {
       this.hostListSub$.unsubscribe();
     }
     let manualRefresh = true;
-    this.hostListSub$ = timer(0, CommonConsts.TIME_INTERVAL)
+    this.hostListSub$ = timer(0, CommonConsts.TIME_INTERVAL_RESOURCE)
       .pipe(
         switchMap(index => {
           manualRefresh = !index;
@@ -689,17 +700,17 @@ export class HostComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(res => {
-        each(res.records, item => {
+        each(res.records, (item: any) => {
           // 获取标签数据
           const { showList, hoverList } = getLabelList(item);
 
           const _trustworthiness = get(item, ['extendInfo', 'trustworthiness']);
           assign(item, {
             sub_type: item.subType,
-            protection_status: item['protectionStatus'],
-            link_status: +item['linkStatus'],
-            os_type: item['osType'],
-            authorized_user: item['authorizedUser'],
+            protection_status: item?.protectionStatus,
+            link_status: Number(item?.linkStatus),
+            os_type: item?.osType,
+            authorized_user: item?.authorizedUser,
             trustworthiness: isNil(_trustworthiness)
               ? false
               : JSON.parse(_trustworthiness),
@@ -830,12 +841,6 @@ export class HostComponent implements OnInit, OnDestroy {
       isCluster: false
     });
 
-    if (window['queryDBBackupAgentParams']) {
-      assign(this.filterParams, {
-        ...window['queryDBBackupAgentParams']
-      });
-    }
-
     each(this.filterParams, (value, key) => {
       if (isEmpty(value) && !isBoolean(value)) {
         delete this.filterParams[key];
@@ -858,7 +863,7 @@ export class HostComponent implements OnInit, OnDestroy {
           this.filterParams,
           'trustworthiness'
         );
-        delete this.filterParams['trustworthiness'];
+        delete this.filterParams?.trustworthiness;
       }
 
       assign(params, {
@@ -1027,15 +1032,7 @@ export class HostComponent implements OnInit, OnDestroy {
         id: 'modifyHost',
         label: this.i18n.get('protection_modify_host_label'),
         permission: OperateItems.ModifyHost,
-        disabled:
-          includes(
-            [
-              DataMap.Resource_Type.DWSBackupAgent.value,
-              DataMap.Resource_Type.UBackupAgent.value,
-              DataMap.Resource_Type.SBackupAgent.value
-            ],
-            data.sub_type
-          ) || !this.hasClientPermission(data),
+        disabled: !this.hasClientPermission(data),
         onClick: () => this.modifyHost(data)
       },
       {
@@ -1084,12 +1081,14 @@ export class HostComponent implements OnInit, OnDestroy {
         id: 'addLabel',
         permission: OperateItems.AddTag,
         label: this.i18n.get('common_add_tag_label'),
+        disabled: !this.hasClientPermission(data),
         onClick: () => this.addLabel([data])
       },
       {
         id: 'removeLabel',
         permission: OperateItems.RemoveTag,
         label: this.i18n.get('common_remove_tag_label'),
+        disabled: !this.hasClientPermission(data),
         onClick: () => this.removeLabel([data])
       }
     ];
@@ -1233,14 +1232,20 @@ export class HostComponent implements OnInit, OnDestroy {
     this.protectService.openProtectModal(type, action, {
       data: datas,
       width: 780,
-      onOK: () =>
-        this.getHosts(
-          !isArray(datas)
-            ? datas
-            : isArray(datas) && size(datas) === 1
-            ? datas[0]
-            : null
-        )
+      onOK: () => {
+        let params;
+        if (!isArray(datas)) {
+          params = datas;
+        } else {
+          if (isArray(datas) && size(datas) === 1) {
+            params = datas[0];
+          } else {
+            params = null;
+          }
+        }
+
+        this.getHosts(params);
+      }
     });
   }
 
@@ -1534,6 +1539,12 @@ export class HostComponent implements OnInit, OnDestroy {
     });
   }
 
+  SynchronizingConfigurations() {
+    this.clientManagerApiService
+      .updateAgentContainerFrontEndIpPUT({})
+      .subscribe();
+  }
+
   clientRegister() {
     this.router.navigateByUrl(RouterUrl.ProtectionHostAppHostRegister);
   }
@@ -1818,9 +1829,7 @@ export class HostComponent implements OnInit, OnDestroy {
     ) {
       item.disabled = some(
         this.selection,
-        select =>
-          select.sub_type !== DataMap.Resource_Type.VMBackupAgent.value ||
-          !this.hasClientPermission(select)
+        select => !this.hasClientPermission(select)
       );
     } else if (item.id === 'addLabel') {
       item.disabled = !size(this.selection);

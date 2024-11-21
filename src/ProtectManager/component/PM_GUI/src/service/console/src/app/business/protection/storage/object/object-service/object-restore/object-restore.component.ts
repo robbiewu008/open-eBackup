@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -60,6 +60,12 @@ export class ObjectRestoreComponent implements OnInit {
   storageOptions = [];
   bucketOptions = [];
   bucketEnable = false;
+  tapeCopy = false;
+  bucketErrorTip = {
+    invalidName: this.i18n.get('explore_object_bucket_pacific_error_tip_label'),
+    invalidSameName: this.i18n.get('explore_object_bucket_same_name_label')
+  };
+  storageType;
 
   @Input() rowCopy;
   @Input() childResType;
@@ -92,15 +98,39 @@ export class ObjectRestoreComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // 判断副本是否是磁带归档，且已开启索引
+    this.tapeCopy =
+      this.rowCopy?.generated_by ===
+        DataMap.CopyData_generatedType.tapeArchival.value &&
+      this.rowCopy?.indexed === DataMap.CopyData_fileIndex.indexed.value;
     this.resourceData = isString(this.rowCopy.resource_properties)
       ? JSON.parse(this.rowCopy.resource_properties)
       : {};
+    this.storageType = Number(this.resourceData.extendInfo.storageType);
+    if (this.storageType === DataMap.objectStorageType.ali.value) {
+      assign(this.bucketErrorTip, {
+        invalidName: this.i18n.get('explore_object_bucket_ali_error_tip_label')
+      });
+    } else if (this.storageType === DataMap.objectStorageType.hcs.value) {
+      assign(this.bucketErrorTip, {
+        invalidName: this.i18n.get(
+          'explore_object_bucket_hcs_error_tip_basic_label'
+        ),
+        invalidLine: this.i18n.get(
+          'explore_object_bucket_hcs_error_tip_rule_label'
+        ),
+        invalidAddress: this.i18n.get(
+          'explore_object_bucket_hcs_error_tip_ip_label'
+        )
+      });
+    }
     this.initForm();
     this.getStorageOptions();
   }
 
   initForm() {
     this.formGroup = this.fb.group({
+      isDirectRecovery: new FormControl(this.tapeCopy),
       restoreLocation: new FormControl(RestoreV2LocationType.ORIGIN),
       originLocation: new FormControl({
         value:
@@ -118,7 +148,9 @@ export class ObjectRestoreComponent implements OnInit {
       bucketEnable: new FormControl(false),
       bucketType: new FormControl('0'),
       targetBucket: new FormControl(''),
-      newBucket: new FormControl(''),
+      newBucket: new FormControl('', {
+        validators: this.validBucket()
+      }),
       prefix: new FormControl('', {
         validators: [
           this.validPrefix(),
@@ -155,6 +187,19 @@ export class ObjectRestoreComponent implements OnInit {
       }
       this.getBucketOptions(res);
     });
+
+    this.formGroup.get('bucketType').valueChanges.subscribe(res => {
+      if (!res) {
+        return;
+      }
+      const newBucketControl = this.formGroup.get('newBucket');
+      if (res === '0') {
+        newBucketControl.clearValidators();
+      } else {
+        newBucketControl.setValidators([this.validBucket()]);
+      }
+      newBucketControl.updateValueAndValidity();
+    });
   }
 
   validPrefix(): ValidatorFn {
@@ -172,6 +217,51 @@ export class ObjectRestoreComponent implements OnInit {
       }
       if (control.value.indexOf('//') !== -1) {
         return { invalidNear: { value: control.value } };
+      }
+
+      return null;
+    };
+  }
+
+  validBucket(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (!control.value) {
+        return;
+      }
+
+      const value = control.value;
+
+      if (find(this.bucketOptions, { value: value })) {
+        return { invalidSameName: { value: value } };
+      }
+
+      let reg;
+      if (this.storageType === DataMap.objectStorageType.pacific.value) {
+        reg = /^(?=.*[a-zA-Z])(?=.*\d)[0-9a-zA-Z-_.]{1,255}$/;
+      } else if (this.storageType === DataMap.objectStorageType.ali.value) {
+        reg = /^(?=[a-z0-9][a-z-0-9]*[a-z0-9])[a-z0-9-]{3,63}$/;
+      }
+
+      if (this.storageType === DataMap.objectStorageType.hcs.value) {
+        const reg1 = /^[a-z0-9-.]{3,63}$/;
+        const reg2 = /^(?![.-])(?!.*\.\.)(?!.*[-.]{2})(?!.*[-.][.-])(?![.-].*[.-])[a-z0-9-.]{3,63}(?<![.-])$/;
+        const reg3 = CommonConsts.REGEX.ipv4;
+        const reg4 = CommonConsts.REGEX.ipv6;
+        if (!reg1.test(value)) {
+          return { invalidName: { value: value } };
+        }
+
+        if (!reg2.test(value)) {
+          return { invalidLine: { value: value } };
+        }
+
+        if (reg3.test(value) || reg4.test(value)) {
+          return { invalidAddress: { value: value } };
+        }
+      } else {
+        if (!reg.test(value)) {
+          return { invalidName: { value: value } };
+        }
       }
 
       return null;
@@ -255,6 +345,14 @@ export class ObjectRestoreComponent implements OnInit {
         fileReplaceStrategy: String(this.formGroup.value.overwriteType)
       }
     };
+
+    if (this.formGroup.get('isDirectRecovery').value) {
+      assign(params, {
+        restoreType: RestoreV2Type.FileRestore,
+        subObjects: ['/']
+      });
+    }
+
     if (this.formGroup.value.bucketEnable) {
       set(
         params,

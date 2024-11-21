@@ -1,0 +1,61 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤3：在TPOPS管理界面配置实例的备份默认根路径">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="TPOPS_GaussDB_00010.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="TPOPS_GaussDB_00011">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤3：在TPOPS管理界面配置实例的备份默认根路径</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="TPOPS_GaussDB_00011"></a><a name="TPOPS_GaussDB_00011"></a>
+
+<h1 class="topictitle1">步骤3：在TPOPS管理界面配置实例的备份默认根路径</h1>
+<div><p>使用备份或恢复的功能之前，需要通过<span class="uicontrol">“<span>备份参数管理</span>”</span>设置执行备份的默认根路径。</p>
+<div class="p">用户可根据使用的管理平台确定是否需要执行本节操作：<ul id="TPOPS_GaussDB_00011__tpops_gaussdb_00013_ul126368123442"><li id="TPOPS_GaussDB_00011__tpops_gaussdb_00013_li1963611216447">对于OLTP OPS管理平台，请执行本节操作。</li><li id="TPOPS_GaussDB_00011__tpops_gaussdb_00013_li5226451173818">对于云数据库GaussDB管理平台，请忽略本节操作。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="TPOPS_GaussDB_00011__li116111446111410"><span>登录TPOPS管理界面。</span><p><div class="note" id="TPOPS_GaussDB_00011__note743132013449"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="TPOPS_GaussDB_00011__p954623143019">不同版本的TPOPS登录地址不同。</p>
+<ul id="TPOPS_GaussDB_00011__ul177312116363"><li id="TPOPS_GaussDB_00011__li8970813203619">https://<em id="TPOPS_GaussDB_00011__i2172613364">TPOPS管理面IP地址</em>:8443/gaussdb，例如https://192.168.10.2:8443/gaussdb</li><li id="TPOPS_GaussDB_00011__li77319115364">https://<em id="TPOPS_GaussDB_00011__i1155574993513">TPOPS管理面IP地址</em>:7070/APW，例如https://192.168.10.3:7070/APW</li></ul>
+</div></div>
+</p></li><li><span>检查待备份实例是否已配置备份默认根路径。</span><p><ol type="a"><li>在所有实例区域，单击待备份实例的名称。</li><li>单击<span class="uicontrol">“实例管理 &gt; 实例备份/恢复 &gt; 备份参数管理”</span>进入参数管理页面，查看是否已配置备份默认根路径。<ul><li>如果已配置备份默认根路径，当需要修改该路径时，需先关闭已有默认根路径的归档状态再重新配置。可在默认根路径所在行单击<span class="uicontrol">“关闭归档”</span>，关闭默认根路径的归档状态。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>切换备份默认根路径后，在进行日志备份或差异备份前，需要执行一次全量备份。</p>
+</div></div>
+</li><li>如果未配置，请执行<a href="#TPOPS_GaussDB_00011__li197361743192220">3</a>。</li></ul>
+</li></ol>
+</p></li><li id="TPOPS_GaussDB_00011__li197361743192220"><a name="TPOPS_GaussDB_00011__li197361743192220"></a><a name="li197361743192220"></a><span>配置备份默认根路径。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="TPOPS_GaussDB_00010.html">备份GaussDB实例</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

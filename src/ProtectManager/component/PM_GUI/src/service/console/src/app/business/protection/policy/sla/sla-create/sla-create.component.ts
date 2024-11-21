@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -25,7 +25,6 @@ import {
   DataMapService,
   deepEqualObject,
   I18NService,
-  LANGUAGE,
   MODAL_COMMON,
   NasDistributionStoragesApiService,
   PolicyAction,
@@ -35,9 +34,13 @@ import {
   SlaApiService,
   SlaType,
   SLA_BACKUP_NAME,
+  SupportLicense,
   WarningMessageService,
-  SupportLicense
+  getAppTheme,
+  ThemeEnum
 } from 'app/shared';
+import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { SlaParseService } from 'app/shared/services/sla-parse.service';
 import {
@@ -51,6 +54,7 @@ import {
   get,
   has,
   includes,
+  isEmpty,
   isUndefined,
   keys,
   map as _map,
@@ -68,7 +72,6 @@ import { SelectApplicationComponent } from './select-application/select-applicat
 import { SpecifiedArchivalPolicyComponent } from './specified-archival-policy/specified-archival-policy.component';
 import { SpecifiedBackupPolicyComponent } from './specified-backup-policy/specified-backup-policy.component';
 import { SpecifiedReplicationPolicyComponent } from './specified-replication-policy/specified-replication-policy.component';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'sla-create',
@@ -77,6 +80,7 @@ import { AppUtilsService } from 'app/shared/services/app-utils.service';
   providers: [DatePipe]
 })
 export class SlaCreateComponent implements OnInit {
+  userGuide = USER_GUIDE_CACHE_DATA;
   isDisabled = false;
   sla;
   action;
@@ -104,7 +108,10 @@ export class SlaCreateComponent implements OnInit {
       ? this.applicationTypeView.Specified
       : this.applicationTypeView.General,
     click: () => {
-      if (this.action !== this.protectResourceAction.Create || this.sla) {
+      if (
+        (this.action !== this.protectResourceAction.Create || this.sla) &&
+        !this.sla?.isOnlyGuide
+      ) {
         return;
       }
       this.selectApplication();
@@ -314,7 +321,8 @@ export class SlaCreateComponent implements OnInit {
                 ApplicationType.FusionCompute,
                 ApplicationType.FusionOne,
                 ApplicationType.TDSQL,
-                ApplicationType.Volume
+                ApplicationType.Volume,
+                ApplicationType.HyperV
               ],
               this.application.value
             )
@@ -322,7 +330,9 @@ export class SlaCreateComponent implements OnInit {
               : 'common_incremental_backup_label';
             assign(this.backupPolicy, {
               tooltip: this.i18n.get('protection_sla_backup_tooltip_label'),
-              checkedUrl: 'assets/img/oceanprotect-disabled.gif',
+              checkedUrl: this.isThemeLight()
+                ? 'assets/img/oceanprotect-disabled.gif'
+                : 'assets/img/oceanprotect-disabled_dark.gif',
               newData: '',
               policyList: []
             });
@@ -407,7 +417,9 @@ export class SlaCreateComponent implements OnInit {
                   tooltip: '',
                   newData: res.newData,
                   policyList: res.originalData,
-                  checkedUrl: 'assets/img/oceanprotect_enable.png'
+                  checkedUrl: this.isThemeLight()
+                    ? 'assets/img/oceanprotect_enable.png'
+                    : 'assets/img/oceanprotect_enable_dark.png'
                 });
                 this.valid$.next(
                   this.formGroup.valid && !!size(this.policy_list)
@@ -449,7 +461,9 @@ export class SlaCreateComponent implements OnInit {
       assign({}, MODAL_COMMON.generateDrawerOptions(), {
         lvHeader: this.i18n.get('protection_archival_policy_label'),
         lvContent: SpecifiedArchivalPolicyComponent,
-        lvWidth: MODAL_COMMON.smallModal,
+        lvWidth: this.i18n.isEn
+          ? MODAL_COMMON.smallModal + 100
+          : MODAL_COMMON.smallModal,
         lvComponentParams: {
           activeIndex,
           sla: this.sla,
@@ -615,6 +629,11 @@ export class SlaCreateComponent implements OnInit {
       }
 
       if (!this.dwsStorageVaild()) {
+        observer.error(null);
+        return;
+      }
+
+      if (!this.validLinkRedelete()) {
         observer.error(null);
         return;
       }
@@ -820,10 +839,21 @@ export class SlaCreateComponent implements OnInit {
         return;
       }
 
+      if (!this.validLinkRedelete()) {
+        observer.error(null);
+        return;
+      }
+
       const body = assign(this.formGroup.value, {
         application: this.application.value,
         policy_list: this.policy_list
       });
+
+      if (this.isHcsUser) {
+        assign(body, {
+          user_id: this.sla?.user_id
+        });
+      }
 
       // 升级场景复制策略，replication_target_type为空，默认复制所有。
       each(body.policy_list, item => {
@@ -1089,5 +1119,174 @@ export class SlaCreateComponent implements OnInit {
       }
     }
     return true;
+  }
+
+  // NAS共享、NAS文件系统、文件集、对象存储的备份SLA目标端重删关闭，复制的SLA链路重删不能开启
+  validLinkRedelete(): boolean {
+    const backupPolicy = find(
+      this.policy_list,
+      item => item.type === PolicyType.BACKUP
+    );
+    const hasLinkDeduplicationReplica = find(
+      this.policy_list,
+      item =>
+        item.type === PolicyType.REPLICATION &&
+        item.ext_parameters?.link_deduplication
+    );
+    const backpExtParams: any = backupPolicy?.ext_parameters;
+    if (
+      includes(
+        [
+          ApplicationType.NASFileSystem,
+          ApplicationType.NASShare,
+          ApplicationType.Fileset,
+          ApplicationType.ObjectStorage
+        ],
+        this.application.value
+      ) &&
+      !backpExtParams?.deduplication &&
+      !isEmpty(hasLinkDeduplicationReplica)
+    ) {
+      this.messageService.error(
+        this.i18n.get(
+          this.appUtilsService.isDataBackup
+            ? 'protection_link_redelete_tips_label'
+            : 'protection_redelete_tips_label'
+        ),
+        {
+          lvMessageKey: 'lvMsg_key_link_deduplication_error_label',
+          lvShowCloseButton: true
+        }
+      );
+      return false;
+    }
+    return true;
+  }
+
+  isThemeLight(): boolean {
+    return getAppTheme(this.i18n) === ThemeEnum.light;
+  }
+
+  // 获取应用设置图
+  getApplicationImg(isEnable): string {
+    if (this.isThemeLight()) {
+      return isEnable
+        ? 'assets/img/application_enable.png'
+        : 'assets/img/application_flickers.gif';
+    } else {
+      return isEnable
+        ? 'assets/img/application_enable_dark.png'
+        : 'assets/img/application_flickers_dark.gif';
+    }
+  }
+
+  // 获取圆形图
+  getlinkCircledImg(isEnable): string {
+    if (this.isThemeLight()) {
+      return isEnable
+        ? 'assets/img/link_circled_enable.png'
+        : 'assets/img/link_circled_disabled.png';
+    } else {
+      return isEnable
+        ? 'assets/img/link_circled_enable_dark.png'
+        : 'assets/img/link_circled_disabled_dark.png';
+    }
+  }
+
+  // 获取备份策略图
+  getBackupImg(isEnable): string {
+    if (this.isThemeLight()) {
+      return isEnable
+        ? 'assets/img/oceanprotect_enable.png'
+        : this.backupPolicy.checkedUrl;
+    } else {
+      return isEnable
+        ? 'assets/img/oceanprotect_enable_dark.png'
+        : this.backupPolicy.checkedUrl;
+    }
+  }
+
+  // 获取归档、复制连线图
+  getUpCurvedImg(isEnable): string {
+    if (this.isThemeLight()) {
+      return isEnable
+        ? 'assets/img/up_curved_enable.png'
+        : 'assets/img/up_curved_disabled.png';
+    } else {
+      return isEnable
+        ? 'assets/img/up_curved_enable_dark.png'
+        : 'assets/img/up_curved_disabled_dark.png';
+    }
+  }
+
+  // 获取归档图片
+  getArchivalImg(): string {
+    if (
+      (this.backupPolicy.newData !== '' &&
+        this.archival.policyList.length > 0) ||
+      (includes(
+        [this.applicationType.ImportCopy, this.applicationType.Replica],
+        this.application.value
+      ) &&
+        this.archival.policyList.length > 0)
+    ) {
+      if (this.archival.policyList.length === 4) {
+        return 'assets/img/archival_enable.png';
+      } else {
+        return this.isThemeLight()
+          ? 'assets/img/archival_enable_add.png'
+          : 'assets/img/archival_enable_add_dark.png';
+      }
+    } else if (
+      includes(
+        [this.applicationType.ImportCopy, this.applicationType.Replica],
+        this.application.value
+      ) ||
+      (this.backupPolicy.newData !== '' &&
+        !includes([this.applicationType.Volume], this.application.value))
+    ) {
+      return this.isThemeLight()
+        ? 'assets/img/archival_disabled.gif'
+        : 'assets/img/archival_disabled_dark.gif';
+    } else {
+      return this.isThemeLight()
+        ? 'assets/img/archival_disabled.png'
+        : 'assets/img/archival_disabled_dark.png';
+    }
+  }
+
+  // 获取复制图片
+  getReplicationImg(): string {
+    if (
+      (this.backupPolicy.newData !== '' &&
+        this.replication.policyList.length > 0) ||
+      (includes(
+        [this.applicationType.ImportCopy, this.applicationType.Replica],
+        this.application.value
+      ) &&
+        this.replication.policyList.length > 0)
+    ) {
+      if (this.replication.policyList.length === 4) {
+        return 'assets/img/replication_enable.png';
+      } else {
+        return this.isThemeLight()
+          ? 'assets/img/replication_enable_add.png'
+          : 'assets/img/replication_enable_add_dark.png';
+      }
+    } else if (
+      includes(
+        [this.applicationType.ImportCopy, this.applicationType.Replica],
+        this.application.value
+      ) ||
+      this.backupPolicy.newData !== ''
+    ) {
+      return this.isThemeLight()
+        ? 'assets/img/replication_disabled.gif'
+        : 'assets/img/replication_disabled_dark.gif';
+    } else {
+      return this.isThemeLight()
+        ? 'assets/img/replication_disabled.png'
+        : 'assets/img/replication_disabled_dark.png';
+    }
   }
 }

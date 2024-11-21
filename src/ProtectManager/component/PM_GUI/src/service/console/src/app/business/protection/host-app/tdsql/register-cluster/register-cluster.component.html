@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'common_name_label' | i18n }}
@@ -98,7 +98,7 @@
               >
                 <lv-select
                   class="input-position"
-                  [lvOptions]="proxyOptions"
+                  [lvOptions]="managerProxyOptions"
                   formControlName="proxy"
                   lvValueKey="value"
                   lvMode="single"
@@ -151,7 +151,12 @@
             </td>
           </tr>
         </ng-container>
-      </tbody></lv-datatable
+      </tbody>
+    <lv-group [hidden]="!repeatNodes" [lvColumns]="['16px','auto']" class="error-tips">
+        <i lv-icon="lv-icon-status-failed"></i>
+        <span>{{'protection_duplication_node_tips_label'|i18n}}</span>
+    </lv-group>
+    </lv-datatable
     >
 
     <button
@@ -214,6 +219,7 @@
                   lvValueKey="value"
                   lvMode="single"
                   lvShowFilter
+                  lvShowClear
                   lvShowCheckAll
                   lvFilterKey="label"
                   lvFilterMode="contains"

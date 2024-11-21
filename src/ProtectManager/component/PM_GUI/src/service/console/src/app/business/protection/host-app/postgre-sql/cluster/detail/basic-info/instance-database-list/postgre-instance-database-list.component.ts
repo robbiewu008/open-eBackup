@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -105,17 +105,17 @@ export class PostgreInstanceDatabaseListComponent
         }
       },
       {
-        key: 'auth_status',
-        name: this.i18n.get('common_auth_status_label'),
+        key: 'linkStatus',
+        name: this.i18n.get('common_status_label'),
         filter: {
           type: 'select',
           isMultiple: true,
           showCheckAll: true,
-          options: this.dataMapService.toArray('Verify_Status')
+          options: this.dataMapService.toArray('resource_LinkStatus_Special')
         },
         cellRender: {
           type: 'status',
-          config: this.dataMapService.toArray('Verify_Status')
+          config: this.dataMapService.toArray('resource_LinkStatus_Special')
         }
       },
       {
@@ -222,7 +222,7 @@ export class PostgreInstanceDatabaseListComponent
         map(res => {
           each(res.records, item => {
             assign(item, {
-              auth_status: DataMap.Verify_Status.true.value
+              linkStatus: item.extendInfo?.linkStatus
             });
             extendSlaInfo(item);
           });

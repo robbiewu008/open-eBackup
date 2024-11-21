@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'common_name_label' | i18n }}
@@ -57,4 +57,39 @@
       </lv-select>
     </lv-form-control>
   </lv-form-item>
+  <ng-container *ngIf="formGroup.value.deployType === dataMap.Deployment_Type.cmdb.value">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'protection_dcs_adress_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+        <input lv-input formControlName="dcsAddress"/>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+    <lv-form-label lvRequired>
+        {{ 'protection_dcs_port_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="portErrorTip">
+        <input lv-input formControlName="dcsPort" />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_dcs_user_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="dcsUserErrorTip">
+      <input lv-input formControlName="dcsUser" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+  <lv-form-label lvRequired>
+    {{ 'protection_dcs_password_label' | i18n }}
+  </lv-form-label>
+  <lv-form-control [lvErrorTip]="dcsUserErrorTip">
+    <aui-inupt-with-eye formControlName="dcsPassword" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+  </lv-form-control>
+</lv-form-item>
+  </ng-container>
+  
 </lv-form>

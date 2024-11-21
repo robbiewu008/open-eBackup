@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { OptionItem } from '@iux/live';
@@ -100,6 +100,9 @@ export class TakeManualArchiveComponent implements OnInit {
       1,
       this.maxRetentionDay
     ])
+  });
+  driverCountErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 32])
   });
 
   constructor(
@@ -231,8 +234,8 @@ export class TakeManualArchiveComponent implements OnInit {
         validators: [this.baseUtilService.VALID.required()]
       }),
       node_id: new FormControl(''),
-      mediaSet: new FormControl(''),
-      storage_id: new FormControl('', {
+      mediaSet: new FormControl([]),
+      storage_id: new FormControl([], {
         validators: [this.baseUtilService.VALID.required()],
         updateOn: 'change'
       }),
@@ -248,7 +251,8 @@ export class TakeManualArchiveComponent implements OnInit {
       auto_index: new FormControl(true),
       qos_id: new FormControl(''),
       esn: new FormControl(''),
-      network_access: new FormControl(true)
+      network_access: new FormControl(true),
+      driver_count: new FormControl(1)
     });
 
     this.listenForm();
@@ -270,6 +274,7 @@ export class TakeManualArchiveComponent implements OnInit {
         this.formGroup
           .get('duration_unit')
           .setValue(DataMap.Interval_Unit.day.value);
+        this.formGroup.get('driver_count').clearValidators();
         this.formGroup.get('node_id').clearValidators();
         this.formGroup.get('mediaSet').clearValidators();
       } else {
@@ -280,16 +285,24 @@ export class TakeManualArchiveComponent implements OnInit {
         this.formGroup
           .get('mediaSet')
           .setValidators([this.baseUtilService.VALID.required()]);
+        this.formGroup
+          .get('driver_count')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.integer(),
+            this.baseUtilService.VALID.rangeValue(1, 32)
+          ]);
         this.formGroup.get('qos_id').setValue('');
         this.formGroup
           .get('duration_unit')
           .setValue(DataMap.Interval_Unit.persistent.value);
       }
-      this.formGroup.get('storage_id').setValue('');
+      this.formGroup.get('storage_id').setValue([]);
       this.formGroup.get('storage_id').updateValueAndValidity();
       this.formGroup.get('node_id').updateValueAndValidity();
       this.formGroup.get('mediaSet').updateValueAndValidity();
       this.formGroup.get('retention_duration').updateValueAndValidity();
+      this.formGroup.get('driver_count').updateValueAndValidity();
       this.getStorageNames(res);
     });
 
@@ -303,7 +316,7 @@ export class TakeManualArchiveComponent implements OnInit {
         return;
       }
 
-      this.formGroup.get('mediaSet').setValue('');
+      this.formGroup.get('mediaSet').setValue([]);
       this.formGroup.get('mediaSet').updateValueAndValidity();
       const cluster = find(this.clusterNodeNames, { value: res });
       this.curNodeInfo = {
@@ -487,12 +500,12 @@ export class TakeManualArchiveComponent implements OnInit {
           ? RetentionType.PERMANENTLY_RETAINED
           : RetentionType.TEMPORARY_RESERVATION,
       network_access: this.formGroup.get('network_access').value,
-      storage_list: [
-        {
-          storage_id: this.formGroup.get('storage_id').value,
+      storage_list: map(this.formGroup.get('storage_id').value, item => {
+        return {
+          storage_id: item,
           protocol: this.formGroup.get('protocol').value
-        }
-      ]
+        };
+      })
     };
 
     if (!!this.formGroup.get('qos_id').value) {
@@ -505,9 +518,15 @@ export class TakeManualArchiveComponent implements OnInit {
       this.formGroup.get('protocol').value ===
       DataMap.Archival_Protocol.tapeLibrary.value
     ) {
-      assign(params.storage_list[0], {
-        esn: this.formGroup.get('esn').value,
-        storage_id: this.formGroup.get('mediaSet').value
+      params.storage_list = map(this.formGroup.get('mediaSet').value, item => {
+        return {
+          storage_id: item,
+          esn: this.formGroup.get('esn').value,
+          protocol: this.formGroup.get('protocol').value
+        };
+      });
+      assign(params, {
+        driver_count: +this.formGroup.get('driver_count').value
       });
     } else {
       assign(params, {
@@ -529,7 +548,9 @@ export class TakeManualArchiveComponent implements OnInit {
         ApplicationType.HDFS,
         ApplicationType.ImportCopy,
         ApplicationType.Fileset
-      ].includes(this.application)
+      ].includes(this.application) &&
+      this.formGroup.get('protocol').value ===
+        DataMap.Archival_Protocol.objectStorage.value
     ) {
       assign(params, {
         auto_index: this.formGroup.get('auto_index').value

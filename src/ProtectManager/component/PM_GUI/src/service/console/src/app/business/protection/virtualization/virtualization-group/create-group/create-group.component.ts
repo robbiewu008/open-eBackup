@@ -1,23 +1,18 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import {
-  FilterType,
-  TransferColumnItem,
-  TransferComponent,
-  TransferTableComponent
-} from '@iux/live';
+import { FilterType, TransferColumnItem, TransferComponent } from '@iux/live';
 import {
   BaseUtilService,
   CommonConsts,
@@ -26,8 +21,7 @@ import {
   I18NService,
   ProtectedResourceApiService,
   ResourceType,
-  VirtualResourceService,
-  VmRestoreOptionType
+  VirtualResourceService
 } from 'app/shared';
 import { assign, each, find, includes, isEmpty, size } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
@@ -243,16 +237,7 @@ export class CreateGroupComponent implements OnInit {
 
   change(e) {
     this.sourceSelection = e.selection;
-    if (!this.rowData) {
-      this.selectValid$.next(!!size(this.sourceSelection));
-    }
-  }
-
-  clearAll(data, panel: TransferTableComponent): void {
-    this.sourceSelection = [];
-    if (!this.rowData) {
-      this.selectValid$.next(false);
-    }
+    this.selectValid$.next(!!size(this.sourceSelection));
   }
 
   changeLocation(event) {

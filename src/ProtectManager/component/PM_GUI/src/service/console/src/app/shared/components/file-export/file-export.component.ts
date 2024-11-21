@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   Input,
@@ -17,16 +17,13 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { MessageService } from '@iux/live';
 import {
+  CAPACITY_UNIT,
   CommonConsts,
-  CookieService,
   CopyControllerService,
   I18NService,
   RestoreFileType,
-  RestoreManagerService as RestoreServiceApi,
-  DataMap,
-  CAPACITY_UNIT
+  getFileIcon
 } from 'app/shared';
 import {
   assign,
@@ -57,6 +54,8 @@ export class FileExportComponent implements OnInit {
   unitconst = CAPACITY_UNIT;
   RestoreFileType = RestoreFileType;
 
+  disableRootCheckbox = true;
+
   fileDownloadCompletedLabel = this.i18n.get(
     'common_file_download_completed_label'
   );
@@ -70,9 +69,6 @@ export class FileExportComponent implements OnInit {
 
   constructor(
     private i18n: I18NService,
-    private cookieService: CookieService,
-    private messageService: MessageService,
-    private restoreServiceApi: RestoreServiceApi,
     private copyControllerService: CopyControllerService,
     private exportFilesService: ExportFilesService
   ) {}
@@ -111,7 +107,12 @@ export class FileExportComponent implements OnInit {
         copyId: this.rowItem.uuid,
         parentPath: node.rootPath || '/'
       })
-      .subscribe(res => this.updataNode(res, node));
+      .subscribe(res => {
+        if (res.totalCount) {
+          this.disableRootCheckbox = false;
+        }
+        this.updataNode(res, node);
+      });
   }
 
   updataNode(res, node) {
@@ -124,10 +125,7 @@ export class FileExportComponent implements OnInit {
             : `${node.rootPath}/${item['path']}`,
         isLeaf: item.type !== RestoreFileType.Directory,
         children: item.type === RestoreFileType.Directory ? [] : null,
-        icon:
-          item.type === RestoreFileType.Directory
-            ? 'aui-icon-directory'
-            : 'aui-icon-file',
+        icon: getFileIcon(item),
         size: item.size
       });
     });
@@ -148,6 +146,7 @@ export class FileExportComponent implements OnInit {
         hasChildren: false,
         isLeaf: true,
         children: null,
+        parent: node,
         startPage: Math.floor(size(node.children) / 200)
       };
       node.children = [...node.children, moreClickNode];
@@ -165,6 +164,8 @@ export class FileExportComponent implements OnInit {
   getPath(paths) {
     let filterPaths = [];
     let childPaths = [];
+    // 不能下载根目录
+    paths = reject(paths, item => item.rootPath === '/');
     paths = reject(paths, { rootPath: '' });
     paths = reject(paths, { isMoreBtn: true });
     each(paths, item => {

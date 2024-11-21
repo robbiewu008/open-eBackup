@@ -1,3 +1,4 @@
+<p class="aui-text-help-sm aui-gutter-column-lg">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<p class="aui-text-help-sm aui-gutter-column-lg">
     {{'system_backup_tip_label'|i18n}}
 </p>
 <lv-form [formGroup]="formGroup" class="formGroup">
@@ -20,7 +20,8 @@
             {{'system_launch_time_label' | i18n}}
         </lv-form-label>
         <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
-            <lv-time-picker formControlName="backupTime" lvPlaceholder="HH:mm" [lvFormat]="'HH:mm'">
+            <lv-time-picker formControlName="backupTime" lvPlaceholder="HH:mm" [lvFormat]="'HH:mm'"
+                [lvFooter]="timePickerFooterTpl">
             </lv-time-picker>
         </lv-form-control>
     </lv-form-item>
@@ -70,7 +71,7 @@
     <lv-form-item>
         <lv-form-label>
             {{'system_backup_dest_label' | i18n}}
-            <i *ngIf="isCyberengine" lv-icon="aui-icon-help" lv-tooltip="{{'system_backup_dest_help_label' | i18n}}"
+            <i *ngIf="isCyberengine || isOceanProtect" lv-icon="aui-icon-help" lv-tooltip="{{backupPathTip}}"
                 lvTooltipPosition="top" lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
         </lv-form-label>
         <lv-form-control [lvErrorTip]="destPathErrorTip">
@@ -126,4 +127,10 @@
             </button>
         </lv-group>
     </div>
+</ng-template>
+
+<ng-template #timePickerFooterTpl>
+    <button lv-button lvType="link" class="time-picker-current" (click)="setSysTime()">
+        {{'common_current_time_label' | i18n}}
+    </button>
 </ng-template>

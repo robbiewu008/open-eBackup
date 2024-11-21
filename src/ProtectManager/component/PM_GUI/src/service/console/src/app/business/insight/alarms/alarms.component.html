@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,13 +12,19 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
   <div class="aui-header-1">
     <lv-group lvGutter="8px">
       <h1>
         {{ 'common_alarms_events_label' | i18n }}
-        <i lv-icon="aui-icon-help" [lv-tooltip]="alarmHelpTpl" lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint alarm-help"
-          lvColorState='true' (mouseenter)="alarmHelpHover()"></i>
+        <i
+          lv-icon="aui-icon-help"
+          [lv-tooltip]="alarmHelpTpl"
+          lvTooltipTheme="light"
+          lvTooltipPosition="right"
+          class="configform-constraint alarm-help"
+          lvColorState="true"
+          (mouseenter)="alarmHelpHover()"
+        ></i>
       </h1>
       <aui-multi-cluster-switch
         (onChange)="onChange()"
@@ -612,7 +619,11 @@
               <lv-group>
                 <div class="insight-export">
                   <i
-                    lv-icon="aui-icon-export"
+                    lv-icon="{{
+                      isThemeLight()
+                        ? 'aui-icon-export-extra'
+                        : 'aui-icon-export-extra-dark'
+                    }}"
                     [lvColorState]="true"
                     (click)="exportHistoryAlarms()"
                     lv-tooltip="{{ exportEventTipLabel }}"
@@ -630,6 +641,13 @@
               </lv-group>
             </div>
             <div class="list-container">
+              <aui-filter-tags
+                [filterMap]="eventFilters"
+                [tableCols]="eventCols"
+                (clearCertainTag)="clearEventTag($event)"
+                (clearAllTag)="clearAllEventTag()"
+                *ngIf="isHyperDetect"
+              ></aui-filter-tags>
               <lv-datatable
                 [lvData]="eventsData"
                 lvSelectionMode="multiple"

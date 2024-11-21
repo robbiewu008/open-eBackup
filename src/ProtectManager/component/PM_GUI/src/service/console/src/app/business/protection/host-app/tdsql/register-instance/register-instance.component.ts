@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MessageboxService } from '@iux/live';
@@ -41,9 +41,10 @@ import {
   last,
   set,
   isEmpty,
-  isUndefined
+  toNumber
 } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'aui-register-instance',
@@ -65,6 +66,7 @@ export class RegisterInstanceComponent implements OnInit {
     data: [],
     total: 0
   };
+  mysqlVersion;
   dataNodesCache;
   originalDataNodes;
   tableConfig: TableConfig;
@@ -183,7 +185,9 @@ export class RegisterInstanceComponent implements OnInit {
       manualAdd: new FormControl(manualAdd),
       host: new FormControl(rowData ? rowData.host : ''),
       type: new FormControl(
-        rowData ? rowData.type : DataMap.tdsqlDataNodeType.standby.value
+        rowData
+          ? toNumber(rowData.type)
+          : DataMap.tdsqlDataNodeType.standby.value
       ),
       defaultFile: new FormControl(rowData ? rowData.defaultFile : '', {
         validators: [this.baseUtilService.VALID.required()]
@@ -239,84 +243,96 @@ export class RegisterInstanceComponent implements OnInit {
     this.protectedEnvironmentApiService
       .ListEnvironmentResource(params)
       .subscribe(res => {
-        const clusterInstanceInfo = JSON.parse(
-          get(first(res.records), 'extendInfo.clusterInstanceInfo', '{}')
-        );
-        let dataNodes = [];
+        const result = first(res.records);
+        this.createFormNode(result);
+        return;
+      });
+  }
 
-        each(get(clusterInstanceInfo, 'groups'), group => {
-          dataNodes = [
-            ...dataNodes,
-            ...map(get(group, 'dataNodes'), node => {
-              return {
-                ...node,
-                setId: group.setId
-              };
-            })
-          ];
-        });
-        this.dataNodesCache = dataNodes;
-        if (!dataNodes.length) {
-          this.setIdDisabled = false;
-        } else {
-          this.setIdDisabled = true;
-        }
-        for (let node of dataNodes) {
-          const data = {
-            setId: node.setId,
-            host: `${node.ip}:${node.port}`,
-            type: node.isMaster,
-            defaultFile: node.defaultsFile,
-            socket: node.socket,
-            proxy: '',
-            priority: DataMap.tdsqlNodePriority.medium.value
+  private createFormNode(result) {
+    const clusterInstanceInfo = JSON.parse(
+      get(result, 'extendInfo.clusterInstanceInfo', '{}')
+    );
+    this.mysqlVersion = get(result, 'extendInfo.mysql_version', null);
+    let dataNodes = [];
+
+    each(get(clusterInstanceInfo, 'groups'), group => {
+      dataNodes = [
+        ...dataNodes,
+        ...map(get(group, 'dataNodes'), node => {
+          return {
+            ...node,
+            setId: group.setId
           };
+        })
+      ];
+    });
+    this.dataNodesCache = dataNodes;
+    this.setIdDisabled = dataNodes.length > 0;
+    for (let node of dataNodes) {
+      const data = {
+        setId: node.setId,
+        host: `${node.ip}:${node.port}`,
+        type: node.isMaster,
+        defaultFile: node.defaultsFile,
+        socket: node.socket,
+        proxy: '',
+        priority: DataMap.tdsqlNodePriority.medium.value
+      };
 
-          if (!!this.rowData) {
-            const matchNode = find(this.originalDataNodes, item => {
-              return item.ip === node.ip;
-            });
-            if (!!matchNode) {
-              set(data, 'proxy', get(matchNode, 'parentUuid', ''));
-              set(
-                data,
-                'priority',
-                get(
-                  matchNode,
-                  'priority',
-                  DataMap.tdsqlNodePriority.medium.value
-                )
-              );
-            }
-          }
+      if (!!this.rowData) {
+        const matchNode = find(this.originalDataNodes, item => {
+          return item.ip === node.ip;
+        });
+        if (!!matchNode) {
+          set(data, 'proxy', get(matchNode, 'parentUuid', ''));
+          set(
+            data,
+            'priority',
+            get(matchNode, 'priority', DataMap.tdsqlNodePriority.medium.value)
+          );
+        }
+      }
+
+      this.addDataRow(false, data);
+    }
+
+    if (!!this.rowData) {
+      each(this.originalDataNodes, node => {
+        if (
+          !find(dataNodes, item => {
+            return item.ip === node.ip;
+          })
+        ) {
+          const data = {
+            host: `${node?.ip}:${node?.port}`,
+            type: node?.isMaster,
+            defaultFile: node?.defaultsFile,
+            socket: node?.socket,
+            proxy: node?.parentUuid,
+            priority: node?.priority
+          };
 
           this.addDataRow(false, data);
         }
-
-        if (!!this.rowData) {
-          each(this.originalDataNodes, node => {
-            if (
-              !find(dataNodes, item => {
-                return item.ip === node.ip;
-              })
-            ) {
-              const data = {
-                host: `${node?.ip}:${node?.port}`,
-                type: node?.isMaster,
-                defaultFile: node?.defaultsFile,
-                socket: node?.socket,
-                proxy: node?.parentUuid,
-                priority: node?.priority
-              };
-
-              this.addDataRow(false, data);
-            }
-          });
-        }
-
-        this.originalDataNodes = [];
-        return;
       });
+    }
+
+    this.originalDataNodes = [];
+  }
+
+  queryDatabaseInfoById() {
+    const params = {
+      pageNo: CommonConsts.PAGE_START,
+      pageSize: CommonConsts.PAGE_SIZE * 10,
+      envId: this.formGroup.value.cluster,
+      resourceType: DataMap.Resource_Type.tdsqlCluster.value,
+      conditions: JSON.stringify({
+        type: DataMap.tdsqlInstanceType.nonDistributed.value,
+        id: this.formGroup.get('setId').value
+      })
+    };
+    return this.protectedEnvironmentApiService.ListEnvironmentResource(params);
   }
 
   repeatScanDataNodes() {
@@ -330,56 +346,46 @@ export class RegisterInstanceComponent implements OnInit {
         while (size(this.dataNodes)) {
           this.deleteDataRow(0);
         }
-        const params = {
-          pageNo: CommonConsts.PAGE_START,
-          pageSize: CommonConsts.PAGE_SIZE * 10,
-          envId: this.formGroup.value.cluster,
-          resourceType: DataMap.Resource_Type.tdsqlCluster.value,
-          conditions: JSON.stringify({
-            type: DataMap.tdsqlInstanceType.nonDistributed.value,
-            id: this.formGroup.get('setId').value
-          })
-        };
-        this.protectedEnvironmentApiService
-          .ListEnvironmentResource(params)
-          .subscribe(res => {
-            const clusterInstanceInfo = JSON.parse(
-              get(first(res.records), 'extendInfo.clusterInstanceInfo', '{}')
-            );
-            let dataNodes = [];
+        this.queryDatabaseInfoById().subscribe(res => {
+          const result = first(res.records);
+          const clusterInstanceInfo = JSON.parse(
+            get(result, 'extendInfo.clusterInstanceInfo', '{}')
+          );
+          this.mysqlVersion = get(result, 'extendInfo.mysql_version', null);
+          let dataNodes = [];
 
-            each(get(clusterInstanceInfo, 'groups'), group => {
-              dataNodes = [
-                ...dataNodes,
-                ...map(get(group, 'dataNodes'), node => {
-                  return {
-                    ...node,
-                    setId: group.setId
-                  };
-                })
-              ];
-            });
-            this.dataNodesCache = dataNodes;
-            if (!dataNodes.length) {
-              this.setIdDisabled = false;
-            } else {
-              this.setIdDisabled = true;
-            }
-            for (let node of dataNodes) {
-              const data = {
-                setId: node.setId,
-                host: `${node.ip}:${node.port}`,
-                type: node.isMaster,
-                defaultFile: node.defaultsFile,
-                socket: node.socket,
-                proxy: '',
-                priority: DataMap.tdsqlNodePriority.medium.value
-              };
-
-              this.addDataRow(false, data);
-            }
-            return;
+          each(get(clusterInstanceInfo, 'groups'), group => {
+            dataNodes = [
+              ...dataNodes,
+              ...map(get(group, 'dataNodes'), node => {
+                return {
+                  ...node,
+                  setId: group.setId
+                };
+              })
+            ];
           });
+          this.dataNodesCache = dataNodes;
+          if (!dataNodes.length) {
+            this.setIdDisabled = false;
+          } else {
+            this.setIdDisabled = true;
+          }
+          for (let node of dataNodes) {
+            const data = {
+              setId: node.setId,
+              host: `${node.ip}:${node.port}`,
+              type: node.isMaster,
+              defaultFile: node.defaultsFile,
+              socket: node.socket,
+              proxy: '',
+              priority: DataMap.tdsqlNodePriority.medium.value
+            };
+
+            this.addDataRow(false, data);
+          }
+          return;
+        });
       }
     });
   }
@@ -404,7 +410,7 @@ export class RegisterInstanceComponent implements OnInit {
           username: get(res, 'auth.authKey')
         });
         this.formGroup.get('setId').disable();
-        this.scanDataNodes();
+        this.createFormNode(this.rowData);
         this.dataDetail = res;
       });
   }
@@ -484,6 +490,25 @@ export class RegisterInstanceComponent implements OnInit {
     );
   }
 
+  getMysqlVersion(path: string) {
+    const MYSQL_START = 'mysql-',
+      MARIADB_START = 'mariadb-',
+      PERCONA_START = 'percona-';
+    if (isEmpty(path)) {
+      return this.mysqlVersion;
+    }
+    return (
+      path
+        .split('/')
+        .find(
+          item =>
+            item.startsWith(MYSQL_START) ||
+            item.startsWith(MARIADB_START) ||
+            item.startsWith(PERCONA_START)
+        ) || this.mysqlVersion
+    );
+  }
+
   getParams() {
     const agents = map(this.formGroup.value.dataNodes, node => {
       return {
@@ -494,18 +519,6 @@ export class RegisterInstanceComponent implements OnInit {
       get(this.dataDetail, 'dependencies.agents'),
       item => !find(agents, val => val.uuid === item.uuid)
     );
-    const dataNodes = map(this.formGroup.value.dataNodes, item => {
-      return {
-        ip: first(split(item.host, ':')),
-        port: last(split(item.host, ':')),
-        isMaster: String(item.type),
-        defaultsFile: item.defaultFile,
-        socket: item.socket,
-        parentUuid: item.proxy,
-        priority: item.priority,
-        nodeType: DataMap.tdsqlNodeType.dataNode.value
-      };
-    });
     const clusterInstanceInfo = {
       name: this.formGroup.get('name').value,
       cluster: this.formGroup.value.cluster,
@@ -549,7 +562,10 @@ export class RegisterInstanceComponent implements OnInit {
         }
       },
       extendInfo: {
-        clusterInstanceInfo: JSON.stringify(clusterInstanceInfo)
+        clusterInstanceInfo: JSON.stringify(clusterInstanceInfo),
+        mysql_version: this.getMysqlVersion(
+          this.formGroup.value.dataNodes[0]?.defaultFile
+        )
       },
       dependencies: {
         agents: agents,
@@ -564,39 +580,60 @@ export class RegisterInstanceComponent implements OnInit {
         return;
       }
       const params = this.getParams();
-      if (this.rowData) {
-        this.protectedResourceApiService
-          .UpdateResource({
-            resourceId: this.rowData.uuid,
-            UpdateResourceRequestBody: params
+      this.queryDatabaseInfoById()
+        .pipe(
+          finalize(() => {
+            this.createRestoreTask(params, observer);
           })
-          .subscribe({
-            next: res => {
-              observer.next();
-              observer.complete();
-            },
-            error: err => {
-              observer.error(err);
-              observer.complete();
-            }
-          });
-      } else {
-        this.protectedResourceApiService
-          .CreateResource({
-            CreateResourceRequestBody: params
-          })
-          .subscribe({
-            next: res => {
-              cacheGuideResource(res);
-              observer.next();
-              observer.complete();
-            },
-            error: err => {
-              observer.error(err);
-              observer.complete();
-            }
-          });
-      }
+        )
+        .subscribe(res => {
+          const result = first(res.records);
+          set(
+            params,
+            'extendInfo.mysql_version',
+            get(
+              result,
+              'extendInfo.mysql_version',
+              params.extendInfo.mysql_version
+            )
+          );
+        });
     });
+  }
+
+  private createRestoreTask(params, observer: Observer<void>) {
+    if (this.rowData) {
+      this.protectedResourceApiService
+        .UpdateResource({
+          resourceId: this.rowData.uuid,
+          UpdateResourceRequestBody: params
+        })
+        .subscribe({
+          next: res => {
+            observer.next();
+            observer.complete();
+          },
+          error: err => {
+            observer.error(err);
+            observer.complete();
+          }
+        });
+    } else {
+      this.protectedResourceApiService
+        .CreateResource({
+          CreateResourceRequestBody: params
+        })
+        .subscribe({
+          next: res => {
+            cacheGuideResource(res);
+            observer.next();
+            observer.complete();
+          },
+          error: err => {
+            observer.error(err);
+            observer.complete();
+          }
+        });
+    }
   }
 }

@@ -1,18 +1,19 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
+  AppService,
   BaseUtilService,
   CommonConsts,
   DataMap,
@@ -23,8 +24,17 @@ import {
   ProtectedResourceApiService,
   ResourceType
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { each, filter, find, get, isNumber, map, set } from 'lodash';
-import { Observable, Observer, Subject } from 'rxjs';
+import {
+  concatMap,
+  from,
+  Observable,
+  Observer,
+  of,
+  Subject,
+  takeWhile
+} from 'rxjs';
 
 @Component({
   selector: 'aui-register-database',
@@ -42,12 +52,7 @@ export class RegisterDatabaseComponent implements OnInit {
     item['isLeaf'] = true;
     return item;
   });
-  unitOptions = this.dataMapService
-    .toArray('Detecting_During_Unit')
-    .map(item => {
-      item['isLeaf'] = true;
-      return item;
-    });
+  instanceDatabaseOpts = [];
   dataMap = DataMap;
 
   tableData = {
@@ -88,6 +93,7 @@ export class RegisterDatabaseComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public i18n: I18NService,
+    private appService: AppService,
     private dataMapService: DataMapService,
     public baseUtilService: BaseUtilService,
     private protectedResourceApiService: ProtectedResourceApiService,
@@ -125,6 +131,8 @@ export class RegisterDatabaseComponent implements OnInit {
 
   watchFormGroup() {
     this.formGroup.get('type').valueChanges.subscribe(res => {
+      this.formGroup.get('instance').setValue('');
+      this.instanceDatabaseOpts = [];
       if (res === DataMap.saphanaDatabaseType.systemdb.value) {
         this.formGroup.get('host').clearValidators();
         this.formGroup.get('authMode').clearValidators();
@@ -198,6 +206,7 @@ export class RegisterDatabaseComponent implements OnInit {
 
       if (res) {
         this.getProxyOptions(res);
+        this.getDatabaseNameByInstanceId(res);
       }
     });
   }
@@ -235,6 +244,7 @@ export class RegisterDatabaseComponent implements OnInit {
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START,
       pageSize: CommonConsts.PAGE_SIZE,
+      queryDependency: true,
       conditions: JSON.stringify({
         subType: DataMap.Resource_Type.saphanaInstance.value,
         isTopInstance: InstanceType.TopInstance
@@ -287,6 +297,74 @@ export class RegisterDatabaseComponent implements OnInit {
         });
         this.hostOptions = hostArray;
       });
+  }
+
+  getDatabaseNameByInstanceId(instanceId: string) {
+    this.instanceDatabaseOpts = [];
+    let agents = [];
+    let found = false; // 用于跟踪流程是否结束
+    let targetInstance;
+    if (this.rowData) {
+      agents = map(JSON.parse(this.rowData.extendInfo.nodes), 'uuid');
+      targetInstance = this.rowData.environment;
+    } else {
+      targetInstance = find(this.instanceOptions, { value: instanceId });
+      agents = map(get(targetInstance, 'dependencies.agents', []), 'uuid');
+    }
+    from(agents)
+      .pipe(
+        concatMap(agentId => {
+          if (found) {
+            return of(null);
+          }
+          return this.appService
+            .ListResourcesDetails(
+              this.getRequestParam(agentId, targetInstance.uuid)
+            )
+            .pipe(
+              takeWhile(response => {
+                if (
+                  response.records.length > 0 &&
+                  response.records[0].extendInfo
+                ) {
+                  found = true;
+                  this.formatDatabaseOpts(response.records[0]);
+                  return false;
+                }
+                return true;
+              })
+            );
+        })
+      )
+      .subscribe();
+  }
+
+  getRequestParam(agentId, resourceId) {
+    return {
+      envId: agentId,
+      agentId: agentId,
+      pageNo: CommonConsts.PAGE_START_EXTRA,
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
+      resourceIds: [resourceId],
+      appType: DataMap.Resource_Type.saphanaInstance.value,
+      conditions: JSON.stringify({
+        queryType:
+          this.formGroup.get('type').value ===
+          DataMap.saphanaDatabaseType.systemdb.value
+            ? 'systemDb'
+            : 'notSystemDb'
+      })
+    };
+  }
+
+  formatDatabaseOpts(data) {
+    const dbArr = JSON.parse(get(data, 'extendInfo.db', '[]'));
+    this.instanceDatabaseOpts = map(dbArr, item => ({
+      key: item,
+      value: item,
+      label: item,
+      isLeaf: true
+    }));
   }
 
   getParams() {

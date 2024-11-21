@@ -1,3 +1,4 @@
+<div class="detail-container">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="detail-container">
   <div class="detail-header">
     <img src="assets/img/multi_cluster_backup_normal.png" class="cluster-icon">
     <lv-form-control class="detail-head">
@@ -73,7 +73,7 @@
     <h2> {{'common_manger_auth_label'|i18n}}</h2>
     <div class="aui-operation">
       <lv-group lvGutter="8px">
-        <a (click)="modify()" *ngIf="isView" 
+        <a (click)="modify()" *ngIf="isView"
         [ngClass]="{'aui-link': managerAble,'aui-link-disabled':!managerAble || !isAuth,'en-management-width':isEn}"
         pmpermission pmOperation='ModifyAuthenticationStatus'>
         {{'common_modify_label' | i18n}}</a>
@@ -143,7 +143,7 @@
     </h2>
     <div class="aui-operation">
       <lv-group lvGutter="8px">
-        <a (click)="updateStoragePwd()" *ngIf="isAuth && isUpdate" 
+        <a (click)="updateStoragePwd()" *ngIf="isAuth && isUpdate"
         [ngClass]="{'aui-link': isView,'aui-link-disabled':!isView,'en-width':isEn}"
         pmpermission pmOperation='ModifyAuthenticationStatus'>
         {{'system_update_password_label' | i18n}}</a>
@@ -160,9 +160,9 @@
   </div>
 
       <span class="info-message" *ngIf="authForm.value.status === 'ABNORMAL'">
-        <i lv-icon="lv-icon-status-info" class="lv-icon"></i>
-        {{'system_service_auth_fail_info_label' | i18n}}
-        <span class="aui-link" (click)="openDeviceManage()">{{'system_goto_devicemanager_label' | i18n}}</span>
+   <i lv-icon="lv-icon-status-info" class="lv-icon"></i>
+  {{'system_service_auth_fail_info_oceanstorpacific_label' | i18n}}
+  <span class="aui-link" (click)="openDeviceManage()">{{'system_goto_oceanstorpacific_label' | i18n}}</span>
       </span>
 
   <lv-form [formGroup]="authForm" class="auth">

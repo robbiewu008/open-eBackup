@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
     <lv-form-item>
         <lv-form-label>
             {{ 'protection_restore_to_label' | i18n }}
@@ -62,64 +62,64 @@
             </lv-select>
         </lv-form-control>
     </lv-form-item>
-  <lv-form-item>
-    <lv-form-label>
-      {{'protection_original_ip_label'|i18n}}
-    </lv-form-label>
-    <lv-form-control>
-      <span>{{originalIP|nil}}</span>
-    </lv-form-control>
-  </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_original_ip_label'|i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <span>{{originalIP|nil}}</span>
+        </lv-form-control>
+    </lv-form-item>
     <lv-form-item>
         <lv-form-label lvRequired>{{'protection_network_label' | i18n}}</lv-form-label>
         <lv-form-control>
             <lv-group lvDirection="vertical" lvGutter="10px">
-              <lv-select formControlName="network" [lvOptions]="networkOptions" lvValueKey="value" lvShowCheckAll
-                         lvShowFilter lvFilterKey="label" lvFilterMode="contains" lvMode="multiple">
-              </lv-select>
-              <lv-checkbox [lvValue]="'true'" formControlName="specifyIP">
-                <lv-group lvGutter="4px" lvDirection="vertical">
-                  {{'protection_specify_network_ip_label'|i18n}}
-                  <span class="ip-empty">{{'protection_specify_network_ip_placeholder_label'|i18n}}</span>
-                </lv-group>
-              </lv-checkbox>
-              <div *ngIf="formGroup.get('specifyIP').value && !!networkAndIPControlArr?.length">
-                <lv-datatable
-                  [lvData]="networkOptions"
-                  lvFake="true"
-                  lvSize="small"
-                  lvResize
-                  lvCompareWith="value"
-                  formArrayName="networkAndIPArr"
-                >
-                  <thead>
-                    <tr>
-                      <th width="120px">
-                        {{'protection_network_card_sequence_label'|i18n}}
-                        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_network_card_sequence_tips_label' | i18n}}"
-                           lvTooltipPosition="topRight" lvTooltipTheme="light" class="configform-constraint"
-                           lvColorState='true'></i>
-                      </th>
-                      <th>{{'common_network_label'|i18n}}</th>
-                      <th>{{'IP'}}</th>
-                    </tr>
-                  </thead>
-                  <tbody cdkDropList (cdkDropListDropped)='drop($event)'>
-                  <ng-container *ngFor="let item of networkAndIPControlArr.controls;let i = index;">
-                    <tr [formGroupName]="i" cdkDrag  class="network-card">
-                      <td colspan="3" class='app-custom-placeholder' *cdkDragPlaceholder></td>
-                      <td cdkDragHandle>{{i+1}}</td>
-                      <td cdkDragHandle>{{item.get('name').value|nil}}</td>
-                      <td>
-                        <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip" class="migrate-host-container">
-                          <input lv-input formControlName="specifiedIp" placeholder="{{'protection_specify_network_ip_placeholder_label'|i18n}}">
-                        </lv-form-control>
-                      </td>
-                    </tr>
-                  </ng-container>
-                  </tbody>
-                </lv-datatable>
-              </div>
+                <lv-select formControlName="network" [lvOptions]="networkOptions" lvValueKey="value" lvShowCheckAll
+                    lvShowFilter lvFilterKey="label" lvFilterMode="contains" lvMode="multiple">
+                </lv-select>
+                <lv-checkbox [lvValue]="'true'" formControlName="specifyIP">
+                    <lv-group lvGutter="4px" lvDirection="vertical">
+                        {{'protection_specify_network_ip_label'|i18n}}
+                        <span class="ip-empty">{{'protection_specify_network_ip_placeholder_label'|i18n}}</span>
+                    </lv-group>
+                </lv-checkbox>
+                <ng-container *ngIf="formGroup.get('specifyIP')?.value">
+                    <lv-alert lvType="warning">{{'protection_openstack_ip_tip_label' | i18n}}</lv-alert>
+                </ng-container>
+                <div *ngIf="formGroup.get('specifyIP').value && !!networkAndIPControlArr?.length">
+                    <lv-datatable [lvData]="networkOptions" lvFake="true" lvSize="small" lvResize lvCompareWith="value"
+                        formArrayName="networkAndIPArr">
+                        <thead>
+                            <tr>
+                                <th width="120px">
+                                    {{'protection_network_card_sequence_label'|i18n}}
+                                    <i lv-icon="aui-icon-help"
+                                        lv-tooltip="{{'protection_network_card_sequence_tips_label' | i18n}}"
+                                        lvTooltipPosition="topRight" lvTooltipTheme="light"
+                                        class="configform-constraint" lvColorState='true'></i>
+                                </th>
+                                <th>{{'common_network_label'|i18n}}</th>
+                                <th>{{'IP'}}</th>
+                            </tr>
+                        </thead>
+                        <tbody cdkDropList (cdkDropListDropped)='drop($event)'>
+                            <ng-container *ngFor="let item of networkAndIPControlArr.controls;let i = index;">
+                                <tr [formGroupName]="i" cdkDrag class="network-card">
+                                    <td colspan="3" class='app-custom-placeholder' *cdkDragPlaceholder></td>
+                                    <td cdkDragHandle>{{i+1}}</td>
+                                    <td cdkDragHandle>{{item.get('name').value|nil}}</td>
+                                    <td>
+                                        <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip"
+                                            class="migrate-host-container">
+                                            <input lv-input formControlName="specifiedIp"
+                                                placeholder="{{'protection_specify_network_ip_placeholder_label'|i18n}}">
+                                        </lv-form-control>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </lv-datatable>
+                </div>
             </lv-group>
             <lv-group [lvColumns]='["16px", "auto"]' lvRowGutter="4px" class="disk-type-warn"
                 *ngIf="diskTableData?.data?.length >= 20">
@@ -146,7 +146,7 @@
     </lv-form-item>
     <lv-form-item>
         <lv-form-label lvRequired>
-            {{'protection_new_vm_name_label' | i18n}}
+            {{'protection_new_cloud_server_name_label' | i18n}}
         </lv-form-label>
         <lv-form-control [lvErrorTip]="nameErrorTip">
             <input lv-input type="text" formControlName="vmName" />
@@ -154,7 +154,7 @@
     </lv-form-item>
     <lv-form-item *ngIf="formGroup.value.restoreTo === restoreLocationType.ORIGIN">
         <lv-form-label>
-            {{'protection_rewrite_origin_vm_label' | i18n}}
+            {{'protection_rewrite_origin_cloud_label' | i18n}}
         </lv-form-label>
         <lv-form-control>
             <lv-switch formControlName="rewriteVm"></lv-switch>

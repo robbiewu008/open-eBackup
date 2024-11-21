@@ -1,3 +1,4 @@
+<lv-datatable [lvData]='tableData' (lvSortChange)="sortChange($event)" [lvPaginator]="page" lvSize="small" lvSort
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-datatable [lvData]='tableData' (lvSortChange)="sortChange($event)" [lvPaginator]="page" lvSize="small" lvSort
     #lvTable lvAsync>
     <thead>
         <tr>
@@ -36,7 +36,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="'nodeLastModifiedTime'">
                                 <span lv-overflow>
-                                    {{item[col.key] * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}
+                                    {{item[col.key] * 1000 | date: 'yyyy-MM-dd HH:mm:ss':timeZone}}
                                 </span>
                             </ng-container>
                             <ng-container *ngSwitchCase="'nodeType'">

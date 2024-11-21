@@ -1,3 +1,4 @@
+<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-fullpage">
     <div class="aui-header-1">
         <lv-group lvGutter="8px">
             <i lv-icon="aui-widget-datepicker-previous" [lvColorState]="true" (click)="gotoRecoveryDrill()"></i>
@@ -51,7 +51,7 @@
             <lv-form [formGroup]="formGroup" lvKeepRequiredWidth>
                 <lv-form-item>
                     <lv-form-label>
-                        {{ 'explore_drill_type_label' | i18n }}
+                        {{ 'explore_drill_plan_type_label' | i18n }}
                     </lv-form-label>
                     <lv-form-control>
                         <lv-radio-group formControlName="type" [lvGroupName]="'typeGroup'">
@@ -68,7 +68,7 @@
                 </lv-form-item>
                 <lv-form-item>
                     <lv-form-label lvRequired>
-                        {{'explore_drill_name_label' | i18n}}
+                        {{'explore_drill_plan_name_label' | i18n}}
                     </lv-form-label>
                     <lv-form-control [lvErrorTip]="nameErrorTip">
                         <input lv-input type="text" formControlName="name" />
@@ -137,7 +137,8 @@
                 {{'explore_drill_execute_config_label' | i18n}}
             </h3>
             <lv-alert lvType="info" lvClosable="false">
-                {{'explore_drill_close_database_label' | i18n}}
+                {{(formGroup.value.type === dataMap.drillType.period.value ? 'explore_drill_perid_tip_label' :
+                'explore_drill_single_tip_label') | i18n}}
             </lv-alert>
             <ng-container *ngIf="hasTdsqlRecovery()">
                 <lv-alert lvType="info" lvClosable="false">
@@ -157,7 +158,7 @@
             <lv-form>
                 <lv-form-item>
                     <lv-form-label>
-                        {{ 'explore_drill_type_label' | i18n }}
+                        {{ 'explore_drill_plan_type_label' | i18n }}
                     </lv-form-label>
                     <lv-form-control>
                         <span>{{formGroup.value.type | textMap:'drillType'}}</span>
@@ -165,7 +166,7 @@
                 </lv-form-item>
                 <lv-form-item>
                     <lv-form-label>
-                        {{'explore_drill_name_label' | i18n}}
+                        {{'explore_drill_plan_name_label' | i18n}}
                     </lv-form-label>
                     <lv-form-control>
                         <span>{{formGroup.value.name}}</span>
@@ -244,7 +245,7 @@
     <lv-datatable [lvData]="configTableData" [lvPaginator]="page" lvCompareWith="uuid" #lvTable lvResize>
         <thead>
             <tr>
-                <th><span lv-overflow>{{'common_name_label' | i18n}}</span></th>
+                <th><span lv-overflow>{{'explore_drill_resource_name_label' | i18n}}</span></th>
                 <th><span lv-overflow>{{'common_resource_type_label' | i18n}}</span></th>
                 <th><span lv-overflow>{{'common_location_label' | i18n}}</span></th>
                 <th><span lv-overflow>{{'explore_drill_type_label' | i18n}}</span></th>
@@ -299,15 +300,24 @@
         <span lv-overflow>{{item.path}}</span>
     </td>
     <td>
-        <span lv-overflow>
-            {{(isSupportMount(item.subType) ? 'common_live_mount_label' : 'common_restore_label') | i18n}}
-        </span>
+        <!-- 周期演练可以支持选择挂载或者恢复 -->
+        <ng-container
+            *ngIf="isConfigTable && formGroup.value.type === dataMap.drillType.period.value && isSupportMount(item.subType); else elseDrillTypeTemplate">
+            <lv-select [lvOptions]="mountTypeOptions" lvValueKey="value" [(ngModel)]="item.mountType"
+                (ngModelChange)='mountTypeChange(item)' class="table-item">
+            </lv-select>
+        </ng-container>
+        <ng-template #elseDrillTypeTemplate>
+            <span lv-overflow>
+                {{(isUseLivemountType(item) ? 'common_live_mount_label' : 'common_restore_label') | i18n}}
+            </span>
+        </ng-template>
     </td>
     <td>
         <span lv-overflow>{{item.environment?.osType | textMap:'Os_Type'}}</span>
     </td>
     <td>
-        <ng-container *ngIf="isSupportMount(item.subType); else elseEmptyTemplate">
+        <ng-container *ngIf="isUseLivemountType(item); else elseEmptyTemplate">
             <ng-container *ngIf="isConfigTable; else elseMountTemplate">
                 <lv-select [lvOptions]="mountOptions" lvValueKey="value" [(ngModel)]="item.mountConfig"
                     class="table-item">

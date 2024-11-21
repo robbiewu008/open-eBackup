@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
@@ -24,8 +24,10 @@ import {
   I18NService,
   ProtectedEnvironmentApiService,
   HdfsFilesetReplaceOptions,
-  RestoreMode
+  RestoreMode,
+  MODAL_COMMON
 } from 'app/shared';
+import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import {
   assign,
   cloneDeep,
@@ -61,12 +63,20 @@ export class BackupsetRestoreComponent implements OnInit {
   resourceObj;
   clusterUuid: any;
   resource_properties;
+  capacityThresholdToolTip = this.i18n.get(
+    'protection_bigdata_capacity_threshold_tip_label'
+  );
+  capacityThresholdErrorTip = {
+    ...this.baseUtilService.rangeErrorTip,
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 100])
+  };
   constructor(
     private fb: FormBuilder,
     private modal: ModalRef,
     private i18n: I18NService,
     private baseUtilService: BaseUtilService,
     private restoreV2Service: RestoreApiV2Service,
+    private drawModalService: DrawModalService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService
   ) {}
@@ -105,7 +115,13 @@ export class BackupsetRestoreComponent implements OnInit {
         validators: this.baseUtilService.VALID.required()
       }),
       tableFileOverwriteType: new FormControl(true),
-      tableNewLocationPath: new FormControl([])
+      tableNewLocationPath: new FormControl([]),
+      available_capacity_threshold: new FormControl(20, {
+        validators: [
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(1, 100)
+        ]
+      })
     });
 
     this.listenForm();
@@ -324,7 +340,10 @@ export class BackupsetRestoreComponent implements OnInit {
         isDeleteTableFile: this.formGroup.value.tableFileOverwriteType,
         tableNewLocation: !this.formGroup.value.tableFileOverwriteType
           ? tableLocation.extendInfo?.path || '/'
-          : ''
+          : '',
+        available_capacity_threshold: Number(
+          this.formGroup.value.available_capacity_threshold
+        )
       }
     };
 
@@ -376,19 +395,62 @@ export class BackupsetRestoreComponent implements OnInit {
   restore(): Observable<void> {
     return new Observable<void>((observer: Observer<void>) => {
       const params = this.getParams();
-      this.restoreV2Service
-        .CreateRestoreTask({ CreateRestoreTaskRequestBody: params as any })
-        .subscribe(
-          res => {
-            observer.next();
-            observer.complete();
-          },
-          err => {
-            observer.error(err);
+      if (this.formGroup.value.restoreLocation === RestoreV2LocationType.NEW) {
+        this.showTips(params, observer);
+      } else {
+        this.createRestoreTask(params, observer);
+      }
+    });
+  }
+
+  private showTips(params, observer: Observer<void>) {
+    let tips = this.i18n.get(
+      'protection_hbase_restore_no_backup_task_tips_label'
+    );
+    this.drawModalService.create({
+      ...MODAL_COMMON.generateDrawerOptions(),
+      lvModalKey: 'hive-restore-tips-info',
+      ...{
+        lvType: 'dialog',
+        lvDialogIcon: 'lv-icon-popup-danger-48',
+        lvHeader: this.i18n.get(
+          'protection_hbase_restore_no_backup_task_header_label'
+        ),
+        lvContent: tips,
+        lvWidth: 500,
+        lvOkType: 'primary',
+        lvCancelType: 'default',
+        lvOkDisabled: false,
+        lvFocusButtonId: 'cancel',
+        lvCloseButtonDisplay: true,
+        lvOk: () => this.createRestoreTask(params, observer),
+        lvCancel: () => {
+          observer.error(null);
+          observer.complete();
+        },
+        lvAfterClose: result => {
+          if (result && result.trigger === 'close') {
+            observer.error(null);
             observer.complete();
           }
-        );
+        }
+      }
     });
+  }
+
+  private createRestoreTask(params, observer: Observer<void>) {
+    this.restoreV2Service
+      .CreateRestoreTask({ CreateRestoreTaskRequestBody: params as any })
+      .subscribe(
+        res => {
+          observer.next();
+          observer.complete();
+        },
+        err => {
+          observer.error(err);
+          observer.complete();
+        }
+      );
   }
 
   disableOkBtn() {

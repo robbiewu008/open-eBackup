@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   AfterViewInit,
@@ -36,6 +36,7 @@ import {
   filterJobType,
   getPermissionMenuItem,
   getTableOptsItems,
+  GlobalService,
   I18NService,
   JobAPIService,
   JobColorConsts,
@@ -47,9 +48,9 @@ import {
   RestoreV2Type,
   SlaApiService,
   SLA_BACKUP_NAME,
-  Table_Size,
-  WarningMessageService,
-  SupportLicense
+  SupportLicense,
+  SYSTEM_TIME,
+  WarningMessageService
 } from 'app/shared';
 import { JobBo } from 'app/shared/api/models';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -92,12 +93,12 @@ import {
   size,
   uniq
 } from 'lodash';
-import { combineLatest } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { JobDetailComponent } from './job-detail/job-detail.component';
-import { ModifyRemarksComponent } from './modify-remarks/modify-remarks.component';
-import { ModifyHandleComponent } from './modify-handle/modify-handle.component';
 import { BatchRetryComponent } from './batch-retry/batch-retry.component';
+import { JobDetailComponent } from './job-detail/job-detail.component';
+import { ModifyHandleComponent } from './modify-handle/modify-handle.component';
+import { ModifyRemarksComponent } from './modify-remarks/modify-remarks.component';
 
 @Component({
   selector: 'aui-job-table',
@@ -113,9 +114,7 @@ export class JobTableComponent implements OnInit, AfterViewInit {
   toStartTime;
   optsConfig;
   groupOpts;
-  sysTime;
-  timeOffset;
-  timeZone = 'UTC+08:00';
+  timeZone = SYSTEM_TIME.timeZone;
   tableConfig: TableConfig;
   tableData: TableData;
   rangeDate = [];
@@ -187,6 +186,8 @@ export class JobTableComponent implements OnInit, AfterViewInit {
     this.appUtilsService.isDistributed;
 
   showRetry = false;
+  jump$: Subscription = new Subscription();
+  destroy$ = new Subject();
 
   constructor(
     public appUtilsService: AppUtilsService,
@@ -205,7 +206,8 @@ export class JobTableComponent implements OnInit, AfterViewInit {
     private batchOperateService?: BatchOperateService,
     private warningMessageService?: WarningMessageService,
     private sqlVerificateApiService?: AnonyControllerService,
-    private virtualScroll?: VirtualScrollService
+    private virtualScroll?: VirtualScrollService,
+    public globalService?: GlobalService
   ) {}
 
   ngAfterViewInit() {
@@ -219,7 +221,11 @@ export class JobTableComponent implements OnInit, AfterViewInit {
     this.querySlas();
     this.initConfig();
     this.statusArr = cloneDeep(this.statusList);
-    if (this.isDataBackup || this.appUtilsService.isDecouple) {
+    if (
+      this.isDataBackup ||
+      this.appUtilsService.isDecouple ||
+      this.appUtilsService.isDistributed
+    ) {
       if (this.activeIndex === JOB_ORIGIN_TYPE.HISTORIC) {
         this.statusArr.push(DataMap.Job_status.dispatch_failed.value);
       }
@@ -324,7 +330,8 @@ export class JobTableComponent implements OnInit, AfterViewInit {
           displayCheck: ([data]) => {
             return (
               this.showRetry &&
-              this.activeIndex === JOB_ORIGIN_TYPE.HISTORIC &&
+              (this.activeIndex === JOB_ORIGIN_TYPE.HISTORIC ||
+                this.isHandled) &&
               this.cookieService.role !== 5 &&
               data.markStatus !== DataMap.markStatus.notSupport.value
             );
@@ -444,7 +451,8 @@ export class JobTableComponent implements OnInit, AfterViewInit {
                       DataMap.Job_status.cancelled.value,
                       DataMap.Job_status.abnormal.value,
                       DataMap.Job_status.abort_failed.value,
-                      DataMap.Job_status.redispatch.value
+                      DataMap.Job_status.redispatch.value,
+                      DataMap.Job_status.dispatching.value
                     ],
                     item.value
                   )
@@ -464,11 +472,13 @@ export class JobTableComponent implements OnInit, AfterViewInit {
               options: this.dataMapService.toArray('markStatus'),
               isMultiple: true,
               showCheckAll: true
-            }
+            },
+        hidden: !this.isHandled
       },
       {
         key: 'mark',
-        name: this.i18n.get('common_handling_opinion_label')
+        name: this.i18n.get('common_handling_opinion_label'),
+        hidden: !this.isHandled
       },
       {
         key: 'startTime',
@@ -527,7 +537,6 @@ export class JobTableComponent implements OnInit, AfterViewInit {
     if (this.isHandled) {
       remove(cols, { key: 'type' });
       remove(cols, { key: 'sourceSubType' });
-      remove(cols, { key: 'operation' });
     }
 
     // 非OP不支持处理状态和意见
@@ -539,6 +548,7 @@ export class JobTableComponent implements OnInit, AfterViewInit {
       cols = filter(cols, item => !includes(['eventStatus'], item.key));
     }
     this.tableConfig = {
+      filterTags: this.isHyperdetect,
       table: {
         autoPolling: CommonConsts.TIME_INTERVAL,
         compareWith: 'jobId',
@@ -735,7 +745,8 @@ export class JobTableComponent implements OnInit, AfterViewInit {
           DataMap.Resource_Type.lightCloudGaussdbInstance.value,
           DataMap.Resource_Type.OceanBaseCluster.value,
           DataMap.Resource_Type.OceanBaseTenant.value,
-          DataMap.Resource_Type.saphanaDatabase.value
+          DataMap.Resource_Type.saphanaDatabase.value,
+          DataMap.Resource_Type.saponoracleDatabase.value
         ],
         this.selectedResource?.subType
       )
@@ -940,19 +951,30 @@ export class JobTableComponent implements OnInit, AfterViewInit {
             item.value
           );
         }
-        return !includes(
-          [
-            DataMap.Job_Target_Type.ImportCopy.value,
-            DataMap.Job_Target_Type.DBBackupAgent.value,
-            DataMap.Job_Target_Type.OceanStorDorado.value,
-            DataMap.Job_Target_Type.cyberOceanStorPacific.value,
-            DataMap.Job_Target_Type.OceanProtect.value,
-            DataMap.Job_Target_Type.fileSystem.value,
-            DataMap.Job_Target_Type.VMwarevCenterServer.value,
-            DataMap.Job_Target_Type.LocalLun.value
-          ],
-          item.value
-        );
+        const rejectType = [
+          DataMap.Job_Target_Type.ImportCopy.value,
+          DataMap.Job_Target_Type.DBBackupAgent.value,
+          DataMap.Job_Target_Type.OceanStorDorado.value,
+          DataMap.Job_Target_Type.cyberOceanStorPacific.value,
+          DataMap.Job_Target_Type.OceanProtect.value,
+          DataMap.Job_Target_Type.fileSystem.value,
+          DataMap.Job_Target_Type.VMwarevCenterServer.value,
+          DataMap.Job_Target_Type.LocalLun.value
+        ];
+        // 服务化不支持OpenStack、flexVolume、GuassDB
+        if (this.appUtilsService.isHcsUser) {
+          rejectType.push(
+            DataMap.Job_Target_Type.lightCloudGaussdbInstance.value,
+            DataMap.Job_Target_Type.lightCloudGaussdbProject.value,
+            DataMap.Job_Target_Type.Openstack.value,
+            DataMap.Job_Target_Type.OpenStackProject.value,
+            DataMap.Job_Target_Type.OpenStackCloudServer.value,
+            DataMap.Job_Target_Type.kubernetes.value,
+            DataMap.Job_Target_Type.kubernetesNamespace.value,
+            DataMap.Job_Target_Type.kubernetesStatefulSet.value
+          );
+        }
+        return !includes(rejectType, item.value);
       });
 
     if (this.isCyberEngine) {
@@ -968,6 +990,10 @@ export class JobTableComponent implements OnInit, AfterViewInit {
         label: this.i18n.get('protection_local_lun_label'),
         key: DataMap.Job_Target_Type.LocalLun.value
       });
+      // 去除备份存储
+      remove(options, item =>
+        includes([DataMap.Job_Target_Type.s3Storage.value], item.value)
+      );
       if (!SupportLicense.isFile) {
         return reject(options, item =>
           includes([DataMap.Job_Target_Type.LocalFileSystem.value], item.value)
@@ -1344,24 +1370,31 @@ export class JobTableComponent implements OnInit, AfterViewInit {
   }
 
   getParams(filter, args) {
+    this.getJump();
+
     const params = {
       isSystem: false,
       isVisible: true,
       akLoading:
-        !isUndefined(args) && args.isAutoPolling ? !args.isAutoPolling : true,
-      startPage: filter.paginator.pageIndex + 1,
-      pageSize: filter.paginator.pageSize,
+        !isUndefined(args) && args?.isAutoPolling ? !args.isAutoPolling : true,
+      startPage: filter?.paginator?.pageIndex + 1,
+      pageSize: filter?.paginator?.pageSize,
       statusList: this.statusArr,
       orderType: 'desc',
       orderBy: 'startTime'
     };
 
     if (this.isHandled) {
-      assign(params, { markStatus: DataMap.markStatus.handled.value });
+      assign(params, {
+        markStatus: [
+          DataMap.markStatus.handled.value,
+          DataMap.markStatus.notHandled.value
+        ]
+      });
     }
 
-    if (!isEmpty(filter.conditions)) {
-      const conditions = JSON.parse(filter.conditions);
+    if (!isEmpty(filter?.conditions)) {
+      const conditions = JSON.parse(filter?.conditions);
       if (conditions.type) {
         assign(params, {
           types: includes(
@@ -1404,8 +1437,11 @@ export class JobTableComponent implements OnInit, AfterViewInit {
                     array.push(DataMap.Job_status.dispatch_failed.value);
                   }
                 }
-                if (item === DataMap.Job_status.dispatching.value) {
-                  array.push(DataMap.Job_status.redispatch.value);
+                if (item === DataMap.Job_status.pending.value) {
+                  array.push(
+                    DataMap.Job_status.redispatch.value,
+                    DataMap.Job_status.dispatching.value
+                  );
                 }
                 return array;
               },
@@ -1485,10 +1521,10 @@ export class JobTableComponent implements OnInit, AfterViewInit {
       }
     }
 
-    if (!!size(filter.orders)) {
+    if (!!size(filter?.orders)) {
       assign(params, {
-        orderType: filter.sort.direction,
-        orderBy: filter.sort.key === 'status' ? 'progress' : filter.sort.key
+        orderType: filter?.sort?.direction,
+        orderBy: filter?.sort?.key === 'status' ? 'progress' : filter?.sort?.key
       });
     }
 
@@ -1516,58 +1552,98 @@ export class JobTableComponent implements OnInit, AfterViewInit {
     return params;
   }
 
-  getData(filter, args) {
-    combineLatest([
-      this.systemTimeService.getSystemTime(
-        !isUndefined(args) && args.isAutoPolling ? !args.isAutoPolling : true
-      ),
-      this.jobApiService.queryJobsUsingGET({
-        ...this.getParams(filter, args)
-      })
-    ]).subscribe(res => {
-      this.timeOffset = res[0].offset;
-      this.timeZone = res[0].displayName;
-      this.sysTime = new Date(
-        `${res[0].time.replace(/-/g, '/')} ${res[0].displayName}`
-      ).getTime();
-      this.tableData = {
-        data: map(res[1].records, item => {
-          item['durationTime'] = this.getDuration(
-            includes(
-              [
-                DataMap.Job_status.running.value,
-                DataMap.Job_status.initialization.value,
-                DataMap.Job_status.pending.value,
-                DataMap.Job_status.aborting.value
-              ],
-              item.status
-            )
-              ? this.sysTime - item.startTime < 0
-                ? 0
-                : this.sysTime - item.startTime
-              : item.endTime
-              ? item.endTime - item.startTime
-              : 0
-          );
-          const tag = get(JSON.parse(item.extendStr), 'tag', void 0);
-          !isNil(tag) && set(item, 'remark', tag);
-          return item;
-        }),
-        total: res[1].totalCount
-      };
-      if (this.isCyberEngine) {
-        each(this.tableData.data, item => {
-          if (
-            item.sourceSubType ===
-              DataMap.Job_Target_Type.NASFileSystem.value ||
-            item.sourceSubType === DataMap.Job_Target_Type.LocalFileSystem.value
-          ) {
-            item.sourceSubType = DataMap.Job_Target_Type.fileSystem.value;
-          }
+  getJump() {
+    if (!!this.appUtilsService.getCacheValue('homeToJob', false)) {
+      const params = this.appUtilsService.getCacheValue('homeToJob');
+
+      // 任务时间范围
+      this.fromStartTime = params?.fromStartTime;
+      this.toStartTime = params?.toStartTime;
+      this.rangeDate = [
+        new Date(params?.fromStartTime),
+        new Date(params?.toStartTime)
+      ];
+      const paramsArr = [];
+
+      // 任务类型
+      if (!isUndefined(params.taskType)) {
+        paramsArr.push({
+          caseSensitive: false,
+          key: 'type',
+          value: [params.taskType]
         });
       }
-      this.cdr.detectChanges();
-    });
+
+      // 任务状态
+      if (!isEmpty(params.status)) {
+        paramsArr.push({
+          caseSensitive: false,
+          key: 'status',
+          value: params.status
+        });
+      }
+
+      this.dataTable.setFilterMap(
+        assign(this.dataTable.filterMap, {
+          filters: paramsArr
+        })
+      );
+    }
+  }
+
+  getData(filter, args) {
+    this.jobApiService
+      .queryJobsUsingGET({
+        ...this.getParams(filter, args)
+      })
+      .subscribe(res => {
+        const systemTime = this.appUtilsService.getCurrentSysTime();
+        this.tableData = {
+          data: map(res.records, (item: any) => {
+            item['durationTime'] = this.getDuration(
+              includes(
+                [
+                  DataMap.Job_status.running.value,
+                  DataMap.Job_status.initialization.value,
+                  DataMap.Job_status.pending.value,
+                  DataMap.Job_status.aborting.value
+                ],
+                item.status
+              )
+                ? systemTime - item.startTime < 0
+                  ? 0
+                  : systemTime - item.startTime
+                : item.endTime
+                ? item.endTime - item.startTime
+                : 0
+            );
+            const tag = get(JSON.parse(item.extendStr), 'tag', void 0);
+            !isNil(tag) && set(item, 'remark', tag);
+            // 批量重试未处理不可选
+            if (this.isHandled) {
+              assign(item, {
+                disabled:
+                  item.markStatus === DataMap.markStatus.notHandled.value
+              });
+            }
+            return item;
+          }),
+          total: res.totalCount
+        };
+        if (this.isCyberEngine) {
+          each(this.tableData.data, item => {
+            if (
+              item.sourceSubType ===
+                DataMap.Job_Target_Type.NASFileSystem.value ||
+              item.sourceSubType ===
+                DataMap.Job_Target_Type.LocalFileSystem.value
+            ) {
+              item.sourceSubType = DataMap.Job_Target_Type.fileSystem.value;
+            }
+          });
+        }
+        this.cdr.detectChanges();
+      });
   }
 
   openDetail(job, detectionCopy?) {
@@ -1639,6 +1715,7 @@ export class JobTableComponent implements OnInit, AfterViewInit {
             ? GroupJobDetailComponent
             : JobDetailComponent,
         lvModalKey: 'jobDetailModalKey',
+        lvClass: 'jobModalContainer',
         lvWidth: this.i18n.isEn
           ? MODAL_COMMON.largeWidth + 100
           : MODAL_COMMON.largeWidth,
@@ -1716,6 +1793,7 @@ export class JobTableComponent implements OnInit, AfterViewInit {
     const extendObject = isEmpty(job.extendStr)
       ? {}
       : JSON.parse(job.extendStr);
+    const jobConfig = extendObject?.jobConfig || {};
     const backupType = extendObject.sourceCopyType || extendObject.backupType;
     switch (job.type) {
       case DataMap.Job_type.backup_job.value:
@@ -1778,18 +1856,26 @@ export class JobTableComponent implements OnInit, AfterViewInit {
             ? `${this.i18n.get('common_restore_type_label', [], true)}${
                 includes(
                   [
-                    DataMap.Job_Target_Type.HBaseBackupSet.value,
-                    DataMap.Job_Target_Type.ClickHouse.value,
-                    DataMap.Job_Target_Type.HiveBackupSet.value,
-                    DataMap.Job_Target_Type.dwsCluster.value,
-                    DataMap.Job_Target_Type.dwsSchema.value,
-                    DataMap.Job_Target_Type.dwsTable.value,
-                    DataMap.Job_Target_Type.oceanBaseCluster.value,
                     DataMap.Job_Target_Type.oracle.value,
                     DataMap.Job_Target_Type.oracleCluster.value
                   ],
                   job.sourceSubType
-                )
+                ) && jobConfig?.isSingleFileRestore === 'true'
+                  ? this.i18n.get('common_single_file_level_restore_label')
+                  : includes(
+                      [
+                        DataMap.Job_Target_Type.HBaseBackupSet.value,
+                        DataMap.Job_Target_Type.ClickHouse.value,
+                        DataMap.Job_Target_Type.HiveBackupSet.value,
+                        DataMap.Job_Target_Type.dwsCluster.value,
+                        DataMap.Job_Target_Type.dwsSchema.value,
+                        DataMap.Job_Target_Type.dwsTable.value,
+                        DataMap.Job_Target_Type.oceanBaseCluster.value,
+                        DataMap.Job_Target_Type.oracle.value,
+                        DataMap.Job_Target_Type.oracleCluster.value
+                      ],
+                      job.sourceSubType
+                    )
                   ? this.i18n.get('protection_table_level_restore_label')
                   : includes(
                       [DataMap.Job_Target_Type.damengSingleNode.value],
@@ -1852,7 +1938,6 @@ export class JobTableComponent implements OnInit, AfterViewInit {
               )}`
             : '';
         break;
-      case DataMap.Job_type.restore_job.value:
       case DataMap.Job_type.migrate.value:
       case DataMap.Job_type.resource_scan.value:
       case DataMap.Job_type.unmout.value:
@@ -1873,8 +1958,8 @@ export class JobTableComponent implements OnInit, AfterViewInit {
 
   changePickerMode(dates) {
     if (dates[0] && dates[1]) {
-      this.fromStartTime = new Date(dates[0]).getTime();
-      this.toStartTime = new Date(dates[1]).getTime();
+      this.fromStartTime = this.appUtilsService.toSystemTimeLong(dates[0]);
+      this.toStartTime = this.appUtilsService.toSystemTimeLong(dates[1]);
     }
     if (!dates[0] && !dates[1]) {
       this.fromStartTime = null;
@@ -1902,9 +1987,7 @@ export class JobTableComponent implements OnInit, AfterViewInit {
           DataMap.Resource_Type.virtualMachine.value,
           DataMap.Resource_Type.cNwareVm.value,
           DataMap.Resource_Type.msVirtualMachine.value,
-          DataMap.Resource_Type.lightCloudGaussdbInstance.value,
           DataMap.Resource_Type.GaussDB_T.value,
-          DataMap.Resource_Type.GaussDB_DWS.value,
           DataMap.Resource_Type.DB2.value,
           ApplicationType.KubernetesStatefulSet,
           DataMap.Resource_Type.MySQL.value,
@@ -1916,6 +1999,7 @@ export class JobTableComponent implements OnInit, AfterViewInit {
           DataMap.Resource_Type.Dameng.value,
           DataMap.Resource_Type.OpenGauss.value,
           DataMap.Resource_Type.ElasticsearchBackupSet.value,
+          ApplicationType.AntDB,
           ApplicationType.OpenStack,
           ApplicationType.Oracle,
           ApplicationType.OceanBase,
@@ -1933,7 +2017,8 @@ export class JobTableComponent implements OnInit, AfterViewInit {
         pageNo: CommonConsts.PAGE_START,
         pageSize: 10000,
         akLoading: false,
-        applications: appList
+        applications: appList,
+        isGetAssociatedCount: false
       })
       .subscribe(res => {
         const arr = [];
@@ -1951,6 +2036,14 @@ export class JobTableComponent implements OnInit, AfterViewInit {
   }
 
   changeSlaName(e) {
+    // 最多支持选择100个，选到100个时其它选项置灰
+    const slas = map(e, 'id');
+    each(this.slaNameOps, sla => {
+      assign(sla, {
+        disabled: size(slas) >= 100 && !includes(slas, sla.id)
+      });
+    });
+    this.slaNameOps = [...this.slaNameOps];
     this.dataTable?.fetchData();
   }
 

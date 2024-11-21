@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -46,7 +46,6 @@ export class AdfsConfigComponent implements OnInit {
   editForm: FormGroup;
   isFileValid = false;
   caValidFlag = '';
-
   providerOptions = this.dataMapService.toArray('adfsProvider').map(item => {
     item['isLeaf'] = true;
     return item;
@@ -225,7 +224,7 @@ export class AdfsConfigComponent implements OnInit {
       {
         name: 'suffix',
         filterFn: (files: UploadFile[]) => {
-          const supportSuffix = ['pem'];
+          const supportSuffix = ['pem', 'cer'];
           this.selectCaCertificateFile = '';
           const validFiles = files.filter(file => {
             const suffix = file.name.split('.').pop();
@@ -239,8 +238,15 @@ export class AdfsConfigComponent implements OnInit {
 
           const fileType = files[0].name.split('.').pop();
           if (!supportSuffix.includes(fileType)) {
+            const errorMassageArr = [
+              'pem',
+              this.i18n.get('common_or_label'),
+              'cer'
+            ];
             this.message.error(
-              this.i18n.get('common_format_error_label', ['pem']),
+              this.i18n.get('common_format_error_label', [
+                `${errorMassageArr.join(this.i18n.isEn ? ' ' : '')}`
+              ]),
               {
                 lvMessageKey: 'formatErrorKey',
                 lvShowCloseButton: true

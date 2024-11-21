@@ -1,3 +1,4 @@
+<div class="capacity">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="capacity">
   <div class="capacity-item backup-storage-unit">
     <div
       class="capacity-header jumpable"
@@ -20,7 +20,7 @@
       <div class="icon"></div>
       <div class="title navigator">
         {{ 'common_home_backup_storage_unit_label' | i18n }}
-        <span>({{ backupStorageUnits.total }}) </span>
+        <span>({{ backupStorageUnits.storageNum }}) </span>
       </div>
       <svg width="16" height="16" style="fill:#808080">
         <use
@@ -33,7 +33,7 @@
     <div class="capacity-body">
       <div class="capacity-chart">
         <capacity-chart
-          [percent]="backupCapacityInfo.percent"
+          [percent]="backupStorageUnits.percent"
           color="#3388FF"
           warningColor="#FA8241"
         ></capacity-chart>
@@ -42,13 +42,13 @@
         <div>
           <span class="used"
             >{{ 'common_home_used_label' | i18n }}
-            {{ backupCapacityInfo.usedCapacity }}</span
+            {{ backupStorageUnits.usedCapacity }}</span
           >
-          <span class="all">/ {{ backupCapacityInfo.totalCapacity }}</span>
+          <span class="all">/{{ backupStorageUnits.totalCapacity }}</span>
         </div>
         <div class="notUsed">
           {{ 'common_home_remaining_label' | i18n }}
-          {{ backupCapacityInfo.freeCapacity }}
+          {{ backupStorageUnits.freeCapacity }}
         </div>
       </div>
     </div>
@@ -68,7 +68,7 @@
       <div class="icon"></div>
       <div class="title navigator">
         {{ 'common_home_replication_cluster_label' | i18n }}
-        <span>({{ copyList.length }})</span>
+        <span>({{ copyList.total }})</span>
       </div>
       <svg width="16" height="16" style="fill:#808080">
         <use
@@ -77,11 +77,11 @@
         ></use>
       </svg>
     </div>
-    <ng-container *ngIf="copyList.length">
+    <ng-container *ngIf="copyList.total">
       <div class="capacity-body">
         <div class="capacity-chart">
           <capacity-chart
-            [percent]="copyList[0]?.percent"
+            [percent]="copyList?.percent"
             color="#2EB6E6"
             warningColor="#FA8241"
           ></capacity-chart>
@@ -90,18 +90,18 @@
           <div>
             <span class="used"
               >{{ 'common_home_used_label' | i18n }}
-              {{ copyList[0]?.usedCapacity }}</span
+              {{ copyList?.usedCapacity }}</span
             >
-            <span class="all">/ {{ copyList[0]?.totalCapacity }}</span>
+            <span class="all">/{{ copyList?.totalCapacity }}</span>
           </div>
           <div class="notUsed">
             {{ 'common_home_remaining_label' | i18n }}
-            {{ copyList[0]?.freeCapacity }}
+            {{ copyList?.freeCapacity }}
           </div>
         </div>
       </div>
     </ng-container>
-    <ng-container *ngIf="copyList.length === 0">
+    <ng-container *ngIf="copyList.total === 0">
       <div class="empty-box">
         <lv-empty
           [lvDescription]="'common_home_no_copy_cluster_label' | i18n"
@@ -129,7 +129,7 @@
       </svg>
     </div>
 
-    <div *ngIf="hasArchiving" class="capacity-body">
+    <div class="capacity-body">
       <div class="object-storage">
         <div class="text">
           <span class="title">{{
@@ -140,19 +140,18 @@
         <div class="chart">
           <div
             class="used-chart"
-            [style]="'width:' + cloudStorageInfo.percent || 0 + '%;'"
+            [ngStyle]="{width: cloudStorageInfo.percent + '%'}"
           ></div>
         </div>
         <div class="used">
           {{ 'common_home_used_label' | i18n }}
-          {{ cloudStorageInfo.usedCapacity }}
-          <span class="all">/ {{ cloudStorageInfo.totalCapacity }}</span>
+          {{ cloudStorageInfo.usedCapacity }}<span class="all">/{{ cloudStorageInfo.totalCapacity }}</span>
         </div>
         <div class="notUsed">
           {{ 'common_home_remaining_label' | i18n }}
           {{ cloudStorageInfo.freeCapacity }}
         </div>
-        <div class="taped">
+        <div class="taped" *ngIf="showTape">
           <div>{{ 'common_home_tapes_label' | i18n }}</div>
           <div class="taped-used">
             {{ 'common_home_used_label' | i18n }} {{ tapeInfo.usedCapacity }}
@@ -160,13 +159,5 @@
         </div>
       </div>
     </div>
-
-    <ng-container *ngIf="!hasArchiving">
-      <div class="empty-box">
-        <lv-empty
-          [lvDescription]="'common_home_no_library_label' | i18n"
-        ></lv-empty>
-      </div>
-    </ng-container>
   </div>
 </div>

@@ -1,3 +1,4 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,15 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
+    <ng-container *ngIf="!isNdmp && isOceanProtect && tapeCopy && restoreType !== restoreTypeEnum.FileRestore">
+        <lv-form-item>
+        <lv-form-label>{{'protection_tape_all_restore_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="isDirectRecovery"></lv-switch>
+        </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    
     <lv-form-item>
         <lv-form-label>{{'protection_restore_to_label' | i18n}}</lv-form-label>
         <lv-form-control>
@@ -44,20 +53,16 @@
             </lv-form-control>
         </lv-form-item>
         <ng-container *ngIf="(isNasFileSystemFileRestore || isCloudArchiveCopy) && !isNdmp">
+            <lv-alert lvType="info" lvClosable="false">
+                <span
+                    innerHTML="{{(fileShareMode === dataMap.Shared_Mode.nfs.value ? 'protection_nas_share_nfs_restore_label' : 'protection_nas_share_restore_label') | i18n}}"></span>
+            </lv-alert>
             <lv-form-item>
-                <lv-form-label >{{'explore_share_name_label' | i18n}}</lv-form-label>
+                <lv-form-label>{{'explore_share_name_label' | i18n}}</lv-form-label>
                 <lv-form-control>
                     <lv-select formControlName="share" [lvOptions]='shareOptions' lvValueKey="key" lvShowFilter
                         lvFilterKey='label' lvFilterMode='contains'>
                     </lv-select>
-                    <div *ngIf="formGroup.value.share !== ''">
-                        <i lv-icon="lv-icon-status-info" class="tip-icon" lvColorState='true'></i>
-                        <span class="tip-content">
-                            {{fileShareMode ===
-                            dataMap.Shared_Mode.nfs.value ? ('protection_nas_pg_restore_nfs_desc_label' | i18n) :
-                            ('protection_nas_pg_restore_cifs_desc_label' | i18n)}}
-                        </span>
-                    </div>
                 </lv-form-control>
             </lv-form-item>
             <lv-form-item>
@@ -139,7 +144,20 @@
                 </lv-form-control>
             </lv-form-item>
         </ng-container>
+        <!-- NDMP恢复目录 -->
+        <lv-form-item *ngIf="isNdmpPath && this.formGroup.value.fileSystem">
+            <lv-form-label lvRequired>
+                {{'common_directory_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="directoryErrorTip">
+                <input lv-input type="text" formControlName="fullName" />
+            </lv-form-control>
+        </lv-form-item>
         <ng-container *ngIf="formGroup.value.equipment && !isNdmp">
+            <lv-alert lvType="info" lvClosable="false">
+                <span
+                    innerHTML="{{(fileShareMode === dataMap.Shared_Mode.nfs.value ? 'protection_nas_share_nfs_restore_label' : 'protection_nas_share_restore_label') | i18n}}"></span>
+            </lv-alert>
             <lv-form-item>
                 <lv-form-label lvRequired>{{'explore_share_name_label' | i18n}}</lv-form-label>
                 <lv-form-control>
@@ -153,19 +171,11 @@
                             <lv-select formControlName="share" [lvOptions]='shareOptions' lvValueKey="key" lvShowFilter
                                 lvFilterKey='label' lvFilterMode='contains'>
                             </lv-select>
-                            <button lv-button (click)='createNasShare()'>
+                            <button *ngIf="isSupportReg" lv-button (click)='createNasShare()'>
                                 {{'common_register_label' | i18n}}
                             </button>
                         </lv-group>
                     </ng-container>
-                    <div *ngIf="formGroup.value.share !== ''">
-                        <i lv-icon="lv-icon-status-info" class="tip-icon" lvColorState='true'></i>
-                        <span class="tip-content">
-                            {{fileShareMode ===
-                            dataMap.Shared_Mode.nfs.value ? ('protection_nas_pg_restore_nfs_desc_label' | i18n) :
-                            ('protection_nas_pg_restore_cifs_desc_label' | i18n)}}
-                        </span>
-                    </div>
                 </lv-form-control>
             </lv-form-item>
         </ng-container>
@@ -230,12 +240,39 @@
             </ng-container>
         </ng-container>
     </ng-container>
+    <ng-container>
+        <ng-container *ngIf="rowCopy.resource_sub_type === dataMap.Resource_Type.NASShare.value || isShowChannels">
+            <lv-form-item>
+                <lv-form-label>{{ 'protection_channel_number_label' | i18n }}
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="tipsLabel" lvTooltipTheme="light"
+                        class="configform-constraint" lvColorState="true"></i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="channelsErrorTip">
+                    <input lv-input type="text" formControlName="channels" placeholder="1-40" />
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+        <ng-container *ngIf="exterAgent">
+            <lv-form-item>
+                <lv-form-label lvRequired>
+                    {{'protection_proxy_host_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                    <aui-agent-select [lvOptions]="hostOptions" formControlName="proxyHost" lvValueKey="value"
+                        lvMode="multiple">
+                    </aui-agent-select>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </ng-container>
+
     <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.NATIVE">
         <!-- 仅副本数据生成方式为对象存储归档时，节点可选 -->
         <lv-form-item *ngIf="isOceanProtect">
             <lv-form-label lvRequired>{{'system_servers_label' | i18n}}</lv-form-label>
             <lv-form-control>
-                <lv-select formControlName="memberEsn" [lvOptions]='onlineNodeOps' lvValueKey="value" [lvDisabled]="!objStorageArchival">
+                <lv-select formControlName="memberEsn" [lvOptions]='onlineNodeOps' lvValueKey="value"
+                    [lvDisabled]="!objStorageArchival">
                 </lv-select>
                 <div *ngIf="abNormalFlag && !objStorageArchival">
                     <i lv-icon="lv-icon-status-info" class="tip-icon" lvColorState='true'></i>
@@ -250,9 +287,11 @@
             <lv-form-control>
                 <lv-group [lvColumns]='["auto", "120px"]' lvGutter='8px'>
                     <lv-select formControlName="fileSystem" [lvOptions]='nativeFileSystemOptions' lvValueKey="key"
-                        lvShowFilter lvFilterKey='label' lvFilterMode='contains' [lvDisabled]="isOceanProtect && !formGroup.value.memberEsn">
+                        lvShowFilter lvFilterKey='label' lvFilterMode='contains'
+                        [lvDisabled]="isOceanProtect && !formGroup.value.memberEsn">
                     </lv-select>
-                    <button lv-button (click)='createFileSystem()' [disabled]="isOceanProtect && !formGroup.value.memberEsn">
+                    <button lv-button (click)='createFileSystem()'
+                        [disabled]="isOceanProtect && !formGroup.value.memberEsn">
                         {{'common_create_label' | i18n}}
                     </button>
                 </lv-group>
@@ -268,11 +307,13 @@
                     <lv-group [lvGutter]="'20px'" lvDirection='vertical' class="mgt-8">
                         <lv-radio [lvValue]="fileReplaceStrategy.Replace">{{'protection_overwrite_label' | i18n}}
                         </lv-radio>
-                        <ng-container *ngIf="!(rowCopy.resource_sub_type === dataMap.Resource_Type.ndmp.value && this.resourceObj?.extendInfo?.protocol === dataMap.NasFileSystem_Protocol.ndmp.value)">
-                            <lv-radio [lvValue]="fileReplaceStrategy.Ignore">{{'protection_skip_label' | i18n}}</lv-radio>
+                        <ng-container
+                            *ngIf="!(rowCopy.resource_sub_type === dataMap.Resource_Type.ndmp.value && this.resourceObj?.extendInfo?.protocol === dataMap.NasFileSystem_Protocol.ndmp.value) && !isNdmpPath">
+                            <lv-radio [lvValue]="fileReplaceStrategy.Ignore">{{'protection_skip_label' |
+                                i18n}}</lv-radio>
                             <lv-radio [lvValue]="fileReplaceStrategy.ReplaceOldFile">
                                 {{'protection_restore_replace_older_label' | i18n}}</lv-radio>
-                        </ng-container>    
+                        </ng-container>
                     </lv-group>
                 </lv-radio-group>
             </lv-form-control>

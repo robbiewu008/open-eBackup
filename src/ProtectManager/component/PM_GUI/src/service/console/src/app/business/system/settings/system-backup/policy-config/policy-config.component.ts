@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
@@ -22,13 +22,14 @@ import {
 import { MessageboxService, MessageService, ModalRef } from '@iux/live';
 import {
   BaseUtilService,
+  CommonConsts,
   DataMap,
   I18NService,
   SysbackupApiService,
-  CommonConsts,
   SystemApiService
 } from 'app/shared';
-import { assign, includes, isUndefined, trim, isFunction } from 'lodash';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
+import { assign, includes, isFunction, isUndefined, trim } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -72,6 +73,23 @@ export class PolicyConfigComponent implements OnInit {
   ]);
   isCyberengine =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.cyberengine.value;
+  isDataBackup = includes(
+    [
+      DataMap.Deploy_Type.a8000.value,
+      DataMap.Deploy_Type.x3000.value,
+      DataMap.Deploy_Type.x6000.value,
+      DataMap.Deploy_Type.x8000.value,
+      DataMap.Deploy_Type.x9000.value
+    ],
+    this.i18n.get('deploy_type')
+  );
+
+  // 备份软件,包含X系列，E6000，软硬解耦
+  isOceanProtect =
+    this.appUtilsService.isDataBackup ||
+    this.appUtilsService.isDecouple ||
+    this.appUtilsService.isDistributed;
+  backupPathTip = this.i18n.get('system_backup_databackup_dest_help_label');
 
   @ViewChild('tipContentTpl', { static: false }) tipContentTpl: TemplateRef<
     any
@@ -86,15 +104,23 @@ export class PolicyConfigComponent implements OnInit {
     public datePipe: DatePipe,
     private messageBox: MessageboxService,
     public baseUtilService: BaseUtilService,
+    private appUtilsService: AppUtilsService,
     private systemApiService: SystemApiService,
     private sysbackupApiService: SysbackupApiService
   ) {}
 
   ngOnInit() {
+    if (this.isCyberengine) {
+      this.backupPathTip = this.i18n.get('system_backup_dest_help_label');
+    }
     this.getFooter();
     this.initForm();
     this.updateData();
     this.setDestPath();
+  }
+
+  setSysTime() {
+    this.appUtilsService.setTimePickerCurrent(this.formGroup.get('backupTime'));
   }
 
   getFooter() {

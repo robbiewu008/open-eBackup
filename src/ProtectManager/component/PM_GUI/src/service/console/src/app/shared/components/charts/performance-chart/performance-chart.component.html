@@ -1,3 +1,4 @@
+<lv-loading [lvLoading]='loading'>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-loading [lvLoading]='loading'>
   <div class="performance-container">
     <div class="performance-title">
       <div class="tittle">
@@ -40,10 +40,7 @@
       <div id="performance-chart"></div>
     </div>
     <div class="performance-no-data" *ngIf="!showChart">
-      <i lv-icon="aui-icon-no-data"></i>
-      <div class="no-data-label">
-        {{'common_no_data_label' | i18n}}
-      </div>
+      <lv-empty></lv-empty>
     </div>
   </div>
 </lv-loading>

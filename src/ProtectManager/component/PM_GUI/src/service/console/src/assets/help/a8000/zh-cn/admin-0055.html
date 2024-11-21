@@ -1,0 +1,104 @@
+
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="管理RBAC（适用于1.6.0及后续版本）">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="helpcenter_000110.html">
+<meta name="DC.Relation" scheme="URI" content="admin-0056.html">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002059543622.html">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002059385278.html">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002095582433.html">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002095463905.html">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002059543630.html">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002059385282.html">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002095582437.html">
+<meta name="DC.Relation" scheme="URI" content="admin-0057.html">
+<meta name="DC.Relation" scheme="URI" content="admin-0058.html">
+<meta name="DC.Relation" scheme="URI" content="admin-0059.html">
+<meta name="DC.Relation" scheme="URI" content="admin-0060.html">
+<meta name="DC.Relation" scheme="URI" content="admin-0061.html">
+<meta name="DC.Relation" scheme="URI" content="admin-0062.html">
+<meta name="DC.Relation" scheme="URI" content="admin-0063.html">
+<meta name="DC.Relation" scheme="URI" content="admin-0064.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="admin-0055">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>管理RBAC（适用于1.6.0及后续版本）</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="admin-0055"></a><a name="admin-0055"></a>
+
+<h1 class="topictitle1">管理RBAC（适用于1.6.0及后续版本）</h1>
+<div><p id="admin-0055__zh-cn_topic_0000002014087417_p115338504102">通过为不同用户分配特定的角色，可以实施基于角色的权限管理。权限涵盖对资源的访问和操作。该特性用于实现权限和资源细粒度的划分，最小化用户权限，如<a href="#admin-0055__zh-cn_topic_0000002014087417_fig782612112143">图1</a>所示。</p>
+<div class="fignone" id="admin-0055__zh-cn_topic_0000002014087417_fig782612112143"><a name="admin-0055__zh-cn_topic_0000002014087417_fig782612112143"></a><a name="zh-cn_topic_0000002014087417_fig782612112143"></a><span class="figcap"><b>图1 </b>权限和资源关系图</span><br><span><img class="eddx" id="admin-0055__zh-cn_topic_0000002014087417_image19688185818232" src="zh-cn_image_0000002060884500.png"></span></div>
+<div class="note" id="admin-0055__zh-cn_topic_0000002014087417_note173202388820"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="admin-0055__zh-cn_topic_0000002014087417_ul148413521684"><li id="admin-0055__zh-cn_topic_0000002014087417_li7841552689">除系统当前定义角色外，支持系统自定义角色，用户赋予角色获得相应权限。</li><li id="admin-0055__zh-cn_topic_0000002014087417_li48418523810">一个用户可绑定多个角色，用户所授权的资源为所有绑定的角色所关联的资源集的并集。动态扫描到的子资源对于对应的父资源所绑定的用户可见。</li><li id="admin-0055__zh-cn_topic_0000002014087417_li88415214811">资源的相关操作，如查看（默认）、备份、原位置恢复、新位置恢复、挂载、脱敏、WORM设置等均支持权限设置。</li><li id="admin-0055__zh-cn_topic_0000002014087417_li188415526814">系统管理、监控相关操作不支持权限设置，暂不分权分域。</li><li id="admin-0055__zh-cn_topic_0000002014087417_li54811747122218">用户只能操作在资源集授权之后执行的任务。</li><li id="admin-0055__zh-cn_topic_0000002014087417_li1010031093119">用户被授权资源集后只能查看或操作该资源集创建后对应资源产生的副本。</li></ul>
+</div></div>
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><strong><a href="admin-0056.html">内置用户角色介绍</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="zh-cn_topic_0000002059543622.html">创建角色</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="zh-cn_topic_0000002059385278.html">修改角色</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="zh-cn_topic_0000002095582433.html">克隆角色</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="zh-cn_topic_0000002095463905.html">删除角色</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="zh-cn_topic_0000002059543630.html">创建资源集</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="zh-cn_topic_0000002059385282.html">删除资源集</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="zh-cn_topic_0000002095582437.html">修改资源集</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="admin-0057.html">创建用户</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="admin-0058.html">修改用户</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="admin-0059.html">锁定用户</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="admin-0060.html">解锁用户</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="admin-0061.html">移除用户</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="admin-0062.html">重置用户密码</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="admin-0063.html">重置系统管理员密码</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="admin-0064.html">找回密码邮箱设置</a></strong><br>
+</li>
+</ul>
+
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="helpcenter_000110.html">系统</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

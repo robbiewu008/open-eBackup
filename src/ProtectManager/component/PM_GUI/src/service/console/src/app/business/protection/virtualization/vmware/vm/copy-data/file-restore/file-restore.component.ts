@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   EventEmitter,
@@ -40,7 +40,7 @@ import {
   VmFileReplaceStrategy,
   VmRestoreOptionType
 } from 'app/shared';
-import { each, size, first, includes, trim } from 'lodash';
+import { each, size, first, includes, trim, isFunction } from 'lodash';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -305,14 +305,14 @@ export class FileRestoreComponent implements OnInit {
     };
     this.restoreFilesControllerService
       .checkDestConnection({ checkDestConnectionRequest: params })
-      .subscribe(
-        () => {
+      .subscribe({
+        next: () => {
           this.isTest = true;
         },
-        () => {
+        error: () => {
           this.isTest = false;
         }
-      );
+      });
   }
 
   restore() {
@@ -321,6 +321,9 @@ export class FileRestoreComponent implements OnInit {
       .createRestoreV1RestoresPost({ body: params })
       .subscribe(res => {
         this.modal.close();
+        if (isFunction(this.rowCopy.closeDetailFn)) {
+          this.rowCopy.closeDetailFn();
+        }
       });
   }
 }

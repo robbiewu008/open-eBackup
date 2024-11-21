@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -20,6 +20,7 @@ import {
 } from '@angular/core';
 import {
   ApplicationType,
+  autoTableScroll,
   CommonConsts,
   CookieService,
   CopyControllerService,
@@ -140,7 +141,13 @@ export class ResourceReplicaListComponent implements OnInit {
     this.getColumns();
     this.getResource();
     this.initColumnSelection();
-    this.virtualScroll.getScrollParam(this.isHyperdetect ? 320 : 420);
+    this.virtualScroll.getScrollParam(this.isHyperdetect ? 170 : 270);
+    autoTableScroll(
+      this.virtualScroll,
+      this.isHyperdetect ? 170 : 270,
+      null,
+      this.cdr
+    );
   }
 
   getColumns() {
@@ -668,14 +675,14 @@ export class ResourceReplicaListComponent implements OnInit {
         data: assign(
           {
             uuid: item.resourceId,
-            name: item.resourceName,
             ip:
               resource.sub_type === DataMap.Resource_Type.virtualMachine.value
                 ? ''
                 : resource.environment_endpoint
           },
           item,
-          resource
+          resource,
+          { name: item.resourceName }
         ),
         formCopyDataList: true
       },

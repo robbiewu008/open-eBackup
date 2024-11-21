@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { isJson } from '../utils';
 import { DataMap } from './data-map.config';
 import { RouterUrl } from './permission.const';
@@ -60,6 +60,12 @@ export const USER_GUIDE_PROTECTION_STEPS = {
       {
         desc: 'protection_guide_client_desc_label',
         routerLink: RouterUrl.ProtectionHostAppHost
+      },
+      {
+        desc: 'protection_guide_client_desc_pre_label'
+      },
+      {
+        desc: 'protection_guide_client_desc_post_label'
       }
     ]
   },
@@ -121,8 +127,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_before_backup_label',
-              link: 'zh-cn_topic_0000001792363862.html',
-              enLink: 'en-us_topic_0000001792363862.html'
+              link: 'DB2-00006.html',
+              enLink: 'DB2-00010.html'
             }
           ],
           resource: [
@@ -139,8 +145,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               activeTab: DataMap.Resource_Type.dbTwoInstance.value
             },
             {
-              title: 'protection_guide_cretae_db2_tableset_label',
-              desc: 'protection_guide_cretae_db2_tableset_desc_label',
+              title: 'protection_guide_create_db2_tableset_label',
+              desc: 'protection_guide_create_db2_tableset_desc_label',
               isOptional: true,
               routerLink: RouterUrl.ProtectionHostAppDB2,
               activeTab: DataMap.Resource_Type.dbTwoTableSet.value
@@ -177,18 +183,18 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001839269593.html',
-              enLink: 'en-us_topic_0000001839269593.html'
+              link: 'dameng-00008.html',
+              enLink: 'en-us_topic_0000002012732625.html'
             },
             {
               title: 'protection_guide_dameng_dma_label',
-              link: 'zh-cn_topic_0000001839189601.html',
-              enLink: 'en-us_topic_0000001839189601.html'
+              link: 'dameng-00010.html',
+              enLink: 'dameng-00012.html'
             },
             {
               title: 'protection_guide_dameng_archive_label',
-              link: 'zh-cn_topic_0000001792550232.html',
-              enLink: 'en-us_topic_0000001792550232.html'
+              link: 'dameng-00011.html',
+              enLink: 'dameng-00013.html'
             }
           ],
           resource: [
@@ -220,28 +226,26 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001839145153.html',
-              enLink: 'en-us_topic_0000001839145153.html'
+              link: 'TPOPS_GaussDB_00009.html',
+              enLink: 'TPOPS_GaussDB_00009.html'
             },
             {
               title: 'protection_guide_gaussdb_xbsa_label',
-              link: 'zh-cn_topic_0000001839145089.html',
-              enLink: 'en-us_topic_0000001839145089.html'
+              link: 'TPOPS_GaussDB_00013.html',
+              enLink: 'TPOPS_GaussDB_00013.html'
             },
             {
               title: 'protection_guide_gaussdb_root_path_label',
-              link: 'zh-cn_topic_0000001792346026.html',
-              enLink: 'en-us_topic_0000001792346026.html'
+              link: 'TPOPS_GaussDB_00011.html'
             },
             {
               title: 'protection_guide_gaussdb_monitor_label',
-              link: 'zh-cn_topic_0000001839145117.html',
-              enLink: 'en-us_topic_0000001839145117.html'
+              link: 'TPOPS_GaussDB_00012.html'
             },
             {
               title: 'protection_guide_gaussdb_ip_port_label',
-              link: 'zh-cn_topic_0000001839145157.html',
-              enLink: 'en-us_topic_0000001839145157.html'
+              link: 'TPOPS_GaussDB_00014.html',
+              enLink: 'TPOPS_GaussDB_00014.html'
             }
           ],
           resource: [
@@ -274,18 +278,18 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001839188033.html',
-              enLink: 'en-us_topic_0000001839188033.html'
+              link: 'gaussdbT_00009.html',
+              enLink: 'gaussdbT_00009.html'
             },
             {
               title: 'protection_guide_oracle_environment_ready_label',
-              link: 'zh-cn_topic_0000001792548676.html',
-              enLink: 'en-us_topic_0000001792548676.html'
+              link: 'gaussdbT_00011.html',
+              enLink: 'gaussdbT_00011.html'
             },
             {
               title: 'protection_guide_gaussdbt_redo_label',
-              link: 'zh-cn_topic_0000001839268009.html',
-              enLink: 'en-us_topic_0000001839268009.html'
+              link: 'gaussdbT_00071.html',
+              enLink: 'gaussdbT_00071.html'
             }
           ],
           resource: [
@@ -351,7 +355,7 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
             {
               title: 'protection_config_xbsa_path_label',
               link: 'zh-cn_topic_0000001792358014.html',
-              enLink: 'en-us_topic_0000001792358014.html'
+              enLink: 'informix-0011.html'
             }
           ],
           resource: [
@@ -425,34 +429,33 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001792343550.html',
-              enLink: 'en-us_topic_0000001792343550.html'
+              link: 'mysql-0008.html',
+              enLink: 'mysql-0010.html'
             },
             {
               title: 'protection_enable_database_permission_label',
-              link: 'zh-cn_topic_0000001839142693.html',
-              enLink: 'en-us_topic_0000001839142693.html'
+              link: 'mysql-0010.html',
+              enLink: 'mysql-0012.html'
             },
             {
               title: 'protection_install_backup_tool_label',
-              link: 'zh-cn_topic_0000001839222569.html',
-              enLink: 'en-us_topic_0000001839222569.html'
+              link: 'mysql-0011.html',
+              enLink: 'mysql-0013.html'
             },
             {
               title: 'protection_config_environment_path_label',
-              link: 'zh-cn_topic_0000001792343582.html',
-              enLink: 'en-us_topic_0000001792343582.html'
+              link: 'mysql-0014.html',
+              enLink: 'mysql-0016.html'
             },
             {
               title: 'protection_enable_log_mode_label',
-              link: 'zh-cn_topic_0000001839142717.html',
-              enLink: 'en-us_topic_0000001839142717.html'
+              link: 'mysql-0015.html',
+              enLink: 'mysql-0017.html'
             }
           ],
           resource: [
             {
               title: 'protection_guide_register_cluster_label',
-              desc: 'protection_register_kingbase_cluster_desc_label',
               isOptional: true,
               routerLink: RouterUrl.ProtectionHostAppMySQL,
               activeTab: 'cluster'
@@ -494,8 +497,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001792583046.html',
-              enLink: 'en-us_topic_0000001792583046.html'
+              link: 'oceanbase_00008.html',
+              enLink: 'oceanbase_00008.html'
             },
             {
               title: 'protection_enable_nfs_label',
@@ -548,18 +551,18 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001792548932.html',
-              enLink: 'en-us_topic_0000001792548932.html'
+              link: 'oracle_gud_0012.html',
+              enLink: 'oracle_gud_0012.html'
             },
             {
               title: 'protection_guide_oracle_environment_ready_label',
-              link: 'zh-cn_topic_0000001839268265.html',
-              enLink: 'en-us_topic_0000001839268265.html'
+              link: 'oracle_gud_0015.html',
+              enLink: 'oracle_gud_0015.html'
             },
             {
               title: 'protection_guide_oracle_ca_ready_label',
-              link: 'zh-cn_topic_0000001867111253.html',
-              enLink: 'en-us_topic_0000001867111253.html'
+              link: 'oracle_gud_ca.html',
+              enLink: 'oracle_gud_ca.html'
             }
           ],
           resource: [
@@ -600,8 +603,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001839281753.html',
-              enLink: 'en-us_topic_0000001839281753.html'
+              link: 'postgresql-0008.html',
+              enLink: 'postgresql-0009_a1.html'
             },
             {
               title: 'protection_install_user_sudo_label',
@@ -610,8 +613,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
             },
             {
               title: 'protection_open_archive_mode_label',
-              link: 'zh-cn_topic_0000001839201717.html',
-              enLink: 'en-us_topic_0000001839201717.html'
+              link: 'postgresql-0010_0.html',
+              enLink: 'postgresql-0010_0.html'
             }
           ],
           resource: [
@@ -652,28 +655,28 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001839165561.html',
-              enLink: 'en-us_topic_0000001839165561.html'
+              link: 'sql-0011.html',
+              enLink: 'sql-0008.html'
             },
             {
               title: 'protection_guide_oracle_environment_ready_label',
-              link: 'zh-cn_topic_0000001792366450.html',
-              enLink: 'en-us_topic_0000001792366450.html'
+              link: 'sql-0013.html',
+              enLink: 'sql-0010.html'
             },
             {
               title: 'protection_set_powershell_permission_label',
-              link: 'zh-cn_topic_0000001839165589.html',
-              enLink: 'en-us_topic_0000001839165589.html'
+              link: 'sql-0014.html',
+              enLink: 'sql-0011.html'
             },
             {
               title: 'protection_enable_sysadmin_label',
-              link: 'zh-cn_topic_0000001792526242.html',
-              enLink: 'en-us_topic_0000001792526242.html'
+              link: 'sql-0016.html',
+              enLink: 'sql-0013.html'
             },
             {
               title: 'protection_log_recovery_mode_label',
-              link: 'zh-cn_topic_0000001792526198.html',
-              enLink: 'en-us_topic_0000001792526198.html'
+              link: 'sql-0017.html',
+              enLink: 'sql-0014.html'
             }
           ],
           resource: [
@@ -728,23 +731,23 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001792411496.html',
-              enLink: 'en-us_topic_0000001792411496.html'
+              link: 'tdsql_gud_081.html',
+              enLink: 'tdsql_gud_081.html'
             },
             {
               title: 'protection_guide_constraint_label',
-              link: 'zh-cn_topic_0000001792571148.html',
-              enLink: 'en-us_topic_0000001792571148.html'
+              link: 'tdsql_gud_082.html',
+              enLink: 'tdsql_gud_082.html'
             },
             {
               title: 'protection_enable_tdsql_permission_label',
-              link: 'zh-cn_topic_0000001839210537.html',
-              enLink: 'en-us_topic_0000001839210537.html'
+              link: 'tdsql_gud_010.html',
+              enLink: 'tdsql_gud_010.html'
             },
             {
               title: 'protection_enable_zkmeta_label',
-              link: 'zh-cn_topic_0000001792571132.html',
-              enLink: 'en-us_topic_0000001792571132.html'
+              link: 'tdsql_gud_080.html',
+              enLink: 'tdsql_gud_080.html'
             }
           ],
           resource: [
@@ -795,8 +798,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001839144149.html',
-              enLink: 'en-us_topic_0000001839144149.html'
+              link: 'TiDB_00007.html',
+              enLink: 'TiDB_00007.html'
             }
           ],
           resource: [
@@ -844,15 +847,15 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
       {
         id: ApplicationType.OpenGauss,
         subType: DataMap.Resource_Type.OpenGauss.value,
-        label: 'openGauss',
+        label: 'common_opengauss_label',
         prefix: 'O',
         color: '#2081C4',
         steps: {
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001792550132.html',
-              enLink: 'en-us_topic_0000001792550132.html'
+              link: 'opengauss-0009.html',
+              enLink: 'opengauss-0110.html'
             }
           ],
           resource: [
@@ -925,32 +928,32 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001839267053.html',
-              enLink: 'en-us_topic_0000001839267053.html'
+              link: 'vmware_gud_0014.html',
+              enLink: 'vmware_gud_0014.html'
             },
             {
               title: 'protection_install_vmware_tools_label',
               desc: 'protection_install_vmware_tools_desc_label',
-              link: 'zh-cn_topic_0000001792387912.html',
-              enLink: 'en-us_topic_0000001792387912.html'
+              link: 'vmware_gud_0016.html',
+              enLink: 'vmware_gud_0016.html'
             },
             {
               title: 'protection_check_vapi_endpoint_label',
               desc: 'protection_check_vapi_endpoint_desc_label',
-              link: 'zh-cn_topic_0000001792547692.html',
-              enLink: 'en-us_topic_0000001792547692.html'
+              link: 'vmware_gud_0017.html',
+              enLink: 'vmware_gud_0017.html'
             },
             {
               title: 'protection_config_script_label',
               desc: 'protection_config_script_desc_label',
-              link: 'zh-cn_topic_0000001839267033.html',
-              enLink: 'en-us_topic_0000001839267033.html'
+              link: 'vmware_gud_0018.html',
+              enLink: 'vmware_gud_0018.html'
             },
             {
               title: 'protection_get_vmware_certificates_label',
               desc: 'protection_get_vmware_certificates_desc_label',
-              link: 'zh-cn_topic_0000001839187061.html',
-              enLink: 'en-us_topic_0000001839187061.html'
+              link: 'vmware_gud_0023.html',
+              enLink: 'vmware_gud_0023.html'
             }
           ],
           resource: [
@@ -1016,14 +1019,14 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001839266493.html',
-              enLink: 'en-us_topic_0000001839266493.html'
+              link: 'fc_gud_0012.html',
+              enLink: 'fc_gud_0012_0.html'
             },
             {
               title: 'protection_create_fc_user_label',
               desc: 'protection_create_fc_user_desc_label',
-              link: 'zh-cn_topic_0000001792387464.html',
-              enLink: 'en-us_topic_0000001792387464.html'
+              link: 'fc_gud_0014.html',
+              enLink: 'fc_gud_0014_0.html'
             }
           ],
           resource: [
@@ -1089,14 +1092,14 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001851882649.html',
-              enLink: 'en-us_topic_0000001851882649.html'
+              link: 'cnware_00010.html',
+              enLink: 'CNware_00015.html'
             },
             {
               title: 'protection_get_cnware_certificates_label',
               desc: 'protection_get_cnware_certificates_desc_label',
-              link: 'zh-cn_topic_0000001851802625.html',
-              enLink: 'en-us_topic_0000001851802625.html'
+              link: 'cnware_00012.html',
+              enLink: 'CNware_00024.html'
             }
           ],
           resource: [
@@ -1151,6 +1154,79 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
             }
           ]
         }
+      },
+      {
+        id: ApplicationType.Nutanix,
+        subType: DataMap.Resource_Type.nutanix.value,
+        label: 'common_nutanix_label',
+        prefix: 'N',
+        color: '#316CE6',
+        steps: {
+          beforeBackup: [
+            {
+              title: 'protection_guide_oracle_info_ready_label',
+              link: '',
+              enLink: ''
+            },
+            {
+              title: 'protection_get_nutanix_certificates_label',
+              desc: 'protection_get_nutanix_certificates_desc_label',
+              link: '',
+              enLink: ''
+            }
+          ],
+          resource: [
+            {
+              title: 'protection_guide_register_resource_label',
+              routerLink: RouterUrl.ProtectionVirtualizationNutanix
+            }
+          ],
+          vmGroup: [
+            {
+              desc: 'protection_create_vm_group_desc_label',
+              routerLink: RouterUrl.ProtectionVirtualizationNutanix,
+              isOptional: true,
+              activeTab: 'group',
+              hideTips: true
+            }
+          ],
+          backup: [
+            {
+              desc: 'protection_guide_backup_guide_tip_label'
+            },
+            {
+              title: 'protection_guide_backup_app_tip_label',
+              titleParams: 'common_nutanix_cluster_label',
+              desc: 'protection_vmware_cluster_desc_label',
+              routerLink: RouterUrl.ProtectionVirtualizationNutanix,
+              activeTab: 'cluster',
+              hideTips: true
+            },
+            {
+              title: 'protection_guide_backup_app_tip_label',
+              titleParams: 'common_nutanix_host_label',
+              desc: 'protection_vmware_host_desc_label',
+              routerLink: RouterUrl.ProtectionVirtualizationNutanix,
+              activeTab: 'host',
+              hideTips: true
+            },
+            {
+              title: 'protection_guide_backup_app_tip_label',
+              titleParams: 'common_nutanix_vm_label',
+              desc: 'protection_vmware_desc_label',
+              routerLink: RouterUrl.ProtectionVirtualizationNutanix,
+              activeTab: 'vm',
+              hideTips: true
+            },
+            {
+              title: 'protection_guide_backup_app_tip_label',
+              titleParams: 'protection_nutanix_group_label',
+              routerLink: RouterUrl.ProtectionVirtualizationNutanix,
+              activeTab: 'group',
+              hideTips: true
+            }
+          ]
+        }
       }
     ]
   },
@@ -1168,20 +1244,20 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001839239721.html',
-              enLink: 'en-us_topic_0000001839239721.html'
+              link: 'nas_s_0010.html',
+              enLink: 'nas_s_0010.html'
             },
             {
               title: 'protection_get_ca_certificates_label',
               desc: 'protection_get_ca_certificates_desc_label',
-              link: 'zh-cn_topic_0000001839239793.html',
-              enLink: 'en-us_topic_0000001839239793.html'
+              link: 'nas_s_0012.html',
+              enLink: 'nas_s_0012.html'
             },
             {
               title: 'protection_create_port_label',
               desc: 'protection_create_port_desc_label',
-              link: 'zh-cn_topic_0000001792520494.html',
-              enLink: 'en-us_topic_0000001792520494.html'
+              link: 'nas_s_0014.html',
+              enLink: 'nas_s_0014.html'
             }
           ],
           storageDevice: [
@@ -1213,8 +1289,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001897469022.html',
-              enLink: 'en-us_topic_0000001897469022.html'
+              link: 'nas_s_0010_0.html',
+              enLink: 'nas_s_0010_0.html'
             }
           ],
           storageDevice: [
@@ -1246,20 +1322,20 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'zh-cn_topic_0000001839239721.html',
-              enLink: 'en-us_topic_0000001839239721.html'
+              link: 'nas_s_0010.html',
+              enLink: 'nas_s_0010.html'
             },
             {
               title: 'protection_get_ca_certificates_label',
               desc: 'protection_get_ca_certificates_desc_label',
-              link: 'zh-cn_topic_0000001839239773.html',
-              enLink: 'en-us_topic_0000001839239773.html'
+              link: 'nas_s_0021.html',
+              enLink: 'nas_s_0021.html'
             },
             {
               title: 'protection_enable_sv_service_label',
               desc: 'protection_enable_sv_service_desc_label',
-              link: 'zh-cn_topic_0000001839159845.html',
-              enLink: 'en-us_topic_0000001839159845.html'
+              link: 'nas_s_0028_0.html',
+              enLink: 'nas_s_0028_2.html'
             }
           ],
           storageDevice: [
@@ -1284,8 +1360,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           configPermission: [
             {
               desc: 'protection_config_permission_desc_label',
-              link: 'zh-cn_topic_0000001839239777.html',
-              enLink: 'en-us_topic_0000001839239777.html'
+              link: 'nas_s_0025.html',
+              enLink: 'nas_s_0025.html'
             }
           ],
           backup: [
@@ -1347,8 +1423,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
             },
             {
               title: 'protection_enable_sv_service_label',
-              link: 'zh-cn_topic_0000001831055878.html',
-              enLink: 'en-us_topic_0000001831055878.html'
+              link: 'nas_s_0028.html',
+              enLink: 'object-0016.html'
             }
           ],
           resource: [
@@ -1389,8 +1465,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
             {
               title: 'protection_mount_agent_label',
               desc: 'protection_mount_agent_desc_label',
-              link: 'zh-cn_topic_0000001855872137.html',
-              enLink: 'en-us_topic_0000001855872137.html'
+              link: 'object-0006.html',
+              enLink: 'object-0006_0.html'
             }
           ],
           resource: [

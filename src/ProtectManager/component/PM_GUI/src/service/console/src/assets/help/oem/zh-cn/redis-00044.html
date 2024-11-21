@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="关于数据重删压缩">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="redis-00043.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="redis-00044">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>关于数据重删压缩</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="redis-00044"></a><a name="redis-00044"></a>
+  <h1 class="topictitle1">关于数据重删压缩</h1>
+  <div>
+   <p id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_p43941312368">生产数据备份至<span id="redis-00044__zh-cn_topic_0000001792503834_text750932617416">本产品</span>后，<span id="redis-00044__zh-cn_topic_0000001792503834_text16580729155412">本产品</span>默认对备份数据执行先重删后压缩以消除冗余数据，节省存储空间。该功能默认开启，不支持用户手动开启或关闭。</p>
+   <div class="section" id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_section77794515142">
+    <h4 class="sectiontitle">重复数据删除</h4>
+    <p id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_p6116101118381"><span id="redis-00044__zh-cn_topic_0000001792503834_text132132710417">本产品</span>基于变长分片和双重指纹技术对重复数据进行删除，相比传统重删技术达到较高的重删率，并减少存储系统CPU的开销。</p>
+    <ul id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_ul63985811510">
+     <li id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_li1531487205214">变长分片<p id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_p1569917135219"><a name="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_li1531487205214"></a><a name="zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_li1531487205214"></a>变长分片技术通过计算数据流的特征，根据特征决定切点的位置，切分后得到不一致长度的数据块，当写入数据发生变更时，仅在变更位置附近的极小范围内数据特征有变化，其他位置数据特征保持不变，这样修改前后的数据特征差异程度仅和变更的数据量有关，未发生变更的位置将生成完全一致的变长分片，最终被存储系统重删，达到较高的重删率。</p></li>
+     <li id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_li1633811615210">双重指纹<p id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_p16109219141114"><a name="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_li1633811615210"></a><a name="zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_li1633811615210"></a>传统重删算法针对数据块计算指纹，匹配到相同指纹后从磁盘读取数据，再逐字节对比数据内容，此种方式消耗过多CPU资源。</p> <p id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_p197775342117"><span id="redis-00044__zh-cn_topic_0000001792503834_text8557427546">本产品</span>针对数据块计算双重哈希，执行两次指纹比较，无需从磁盘读取数据逐字节比较，可节省大量CPU资源，达到提升系统性能的目的。</p></li>
+    </ul>
+    <p id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_p986313819368">数据重删过程如<a href="#redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_fig431618376300">图1</a>。</p>
+    <div class="fignone" id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_fig431618376300">
+     <a name="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_fig431618376300"></a><a name="zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_fig431618376300"></a><span class="figcap"><b>图1 </b>重复数据删除业务流</span><br><span><img class="eddx" id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_image331633793015" src="zh-cn_image_0000001792503886.png"></span>
+    </div>
+    <ol id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_ol1612412196184">
+     <li id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_li951712118182"><span id="redis-00044__zh-cn_topic_0000001792503834_text7461928645">本产品</span>将备份数据切分为不同长度的数据块。</li>
+     <li id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_li16476172216182">通过指纹算法对每个数据块计算两次不同的指纹。</li>
+     <li id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_li19124111981818">在指纹表中依次对比两个指纹，如果未匹配到相同指纹则进入数据压缩流程，否则认为当前数据块存在重复数据，删除重复数据块。<p id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_p1561513339181"><a name="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_li19124111981818"></a><a name="zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_li19124111981818"></a>指纹表中记录数据块的指纹信息和数据块存储位置的映射关系。</p></li>
+    </ol>
+   </div>
+   <div class="section" id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_section1998131119142">
+    <h4 class="sectiontitle">数据压缩</h4>
+    <p id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_p97171381420">数据块经过重删后再执行压缩，<span id="redis-00044__zh-cn_topic_0000001792503834_text16501428347">本产品</span>采用压缩算法对数据块进行压缩，形成一个个小的数据块后，再将这些数据块拼接起来写入磁盘。压缩过程中识别较难压缩的部分，采用自研专用压缩算法进行压缩，其他部分的数据使用通用压缩算法进行压缩，如<a href="#redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_fig75012522013">图2</a>所示。</p>
+    <div class="fignone" id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_fig75012522013">
+     <a name="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_fig75012522013"></a><a name="zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_fig75012522013"></a><span class="figcap"><b>图2 </b>数据压缩流程</span><br><span><img class="eddx" id="redis-00044__zh-cn_topic_0000001792503834_zh-cn_topic_0000001170463690_image105013521115" src="zh-cn_image_0000001839223229.png"></span>
+    </div>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="redis-00043.html">数据重删压缩</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

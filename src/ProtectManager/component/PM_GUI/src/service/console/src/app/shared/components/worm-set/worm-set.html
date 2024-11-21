@@ -1,0 +1,60 @@
+<lv-form [formGroup]="formGroup" class="formGroup sla-policy" [lvLabelColon]="false">
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+  <ng-container>
+    <lv-form-item>
+      <lv-form-control>
+        <lv-switch  formControlName="convert_worm_switch" lvDisabled="{{formGroup.value.convert_worm_switch}}"></lv-switch><span>{{'common_set_worm_copy_label'|i18n}}</span>
+        <lv-form-label>{{'common_open_worm_tips_label'|i18n}}</lv-form-label>
+        <lv-alert  *ngIf="formGroup.value.convert_worm_switch" lvType="info"><p class="lv-alert-desc">{{'common_worm_retention_label'|i18n}}</p></lv-alert>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+    <lv-form-item *ngIf="formGroup.value.convert_worm_switch">
+        <lv-form-label>{{'common_worm_validity_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="worm_validity_type" [lvGroupName]="'retentionTypeGroup'">
+                <lv-group [lvGutter]="'20px'">
+                    <lv-radio [lvValue]="1" [lvDisabled]="data.source_copy_type===dataMap.CopyData_Backup_Type.log.value&&isSQLServerAndHbase">
+                    {{'common_worm_same_validity_label' | i18n}}
+                  </lv-radio>
+                    <lv-radio [lvValue]="2">
+                        {{'common_worm_custom_validity_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+      <lv-form-item *ngIf="formGroup.value.worm_validity_type === 2">
+        <lv-form-label lvRequired>
+          {{'common_valid_worm_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="retentionDurationErrorTip">
+          <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right">
+            <input lv-input formControlName="retention_duration"
+                   placeholder="{{dataMap.unitPlaceHolderMap[formGroup.get('duration_unit').value]}}" />
+          </lv-input-group>
+          <ng-template #unitTpl>
+            <lv-select [lvOptions]="retentionDurations" formControlName="duration_unit" class="unit-inner-select"
+                       lvValueKey="value" (ngModelChange)="changeTimeUnits($event)"></lv-select>
+          </ng-template>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form-item>
+  <lv-form-item *ngIf="formGroup.get('worm_validity_type').value === 1">
+    <lv-form-label>{{'common_copy_retention_time_label'|i18n}}
+    {{data.retention_duration?data.retention_duration:''}} {{dataMapService.getLabel('Interval_Unit',data.duration_unit)}}</lv-form-label>
+  </lv-form-item>
+</lv-form>
+
+

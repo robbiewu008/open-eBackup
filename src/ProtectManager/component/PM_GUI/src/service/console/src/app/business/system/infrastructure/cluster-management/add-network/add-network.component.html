@@ -1,3 +1,4 @@
+<lv-form class="formGroup aui-gutter-column-md" [formGroup]="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,7 +12,6 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form class="formGroup aui-gutter-column-md" [formGroup]="formGroup">
   <lv-form-item>
     <lv-form-label>
       {{ 'common_ip_address_type_label' | i18n }}
@@ -151,7 +151,6 @@
     *ngIf="
       formGroup.value.homePortType !==
         dataMap.initHomePortType.ethernet.value &&
-      !(formGroup.value.reuse && enableVlan) &&
       !isX9000
     "
   >
@@ -175,7 +174,7 @@
   </div>
   <div class="transfer" *ngIf="!formGroup.value.reuse">
     <lv-transfer
-      [lvHeaders]="[sourceHeadTpl, targetHeadTpl]"
+      [lvTitles]="['system_select_port_label' | i18n , 'system_selected_port_label' | i18n]"
       [lvSourceColumns]="source.cols"
       [lvSourceData]="source.data"
       [lvSourceSelection]="source.selection"
@@ -189,7 +188,7 @@
   <!-- 复用时使用新的表和变量 -->
   <div class="transfer" *ngIf="formGroup.value.reuse">
     <lv-transfer
-      [lvHeaders]="[sourceHeadTpl, targetHeadTpl]"
+      [lvTitles]="['system_select_port_label' | i18n , 'system_selected_port_label' | i18n]"
       [lvSourceColumns]="oldSource.cols"
       [lvSourceData]="oldSource.data"
       [lvSourceSelection]="oldSource.selection"
@@ -225,23 +224,11 @@
       [ipType]="formGroup.value.ipType"
       (routeStatus)="routeStatusChange($event)"
       [routeData]="routeData"
+      [gateway]="formGroup.get('gateway').value"
       *ngIf="enableRoute"
     ></aui-route-config>
   </lv-collapse-panel>
 </lv-collapse>
-
-<ng-template #sourceHeadTpl>
-  <span>{{ 'system_select_port_label' | i18n }}</span>
-</ng-template>
-
-<ng-template #targetHeadTpl>
-  <lv-group class="selected-header">
-    <span>{{ 'system_selected_port_label' | i18n }}</span>
-    <span class="aui-link" (click)="clearSelected()">{{
-      'protection_clear_all_label' | i18n
-    }}</span>
-  </lv-group>
-</ng-template>
 
 <ng-template #titleTpl>
   <lv-group lvGutter="8px">

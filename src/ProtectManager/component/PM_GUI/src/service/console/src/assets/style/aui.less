@@ -13,18 +13,18 @@
 
 /*--------------------------------AUI设计规范--------------------------------*/
 // 主背景色
-@background-color: #f0f2f5;
+@background-color: var(--live-angular-color-page-background);
 
 // 主色
-@color-primary: #6c92fa;
-@color-primary-dark: #5b7ede;
-@color-primary-light: #86a6fc;
+@color-primary: var(--live-angular-color-primary);
+@color-primary-dark: var(--live-angular-color-primary);
+@color-primary-light: var(--live-angular-color-primary);
 @color-white: #ffffff;
 @color-black: #000000;
 
-@color-brand-blue: #2673e5;
-@color-hover-blue: #1664d9;
-@color-active-blue: #1359bf;
+@color-brand-blue: var(--live-angular-color-primary);
+@color-hover-blue: var(--live-angular-color-primary-hover);
+@color-active-blue: var(--live-angular-color-primary-active);
 
 // 状态色
 @color-success: #7adfa0;
@@ -40,20 +40,22 @@
 
 // 文字
 @text-color-link: @color-primary-dark;
-@text-color-primary: #282b33; //主文本
-@text-color-secondary: #6c7280; //副本文
-@text-color-tertiary: #b8becc; //disable, placeholder和其他辅助文本
+@text-color-primary: var(--live-angular-color-text-regular); //主文本
+@text-color-secondary: var(--live-angular-color-text-secondary); //副本文
+@text-color-tertiary: var(
+  --live-angular-color-text-hint
+); //disable, placeholder和其他辅助文本
 @text-color-error: #f45c5e;
 @text-color-dark-primary: #d4d9e6; // 特殊场景文字
 
 // 边框
 @border-width: 1px;
 @border-radius: 1px;
-@border-color: #b8becc; //线框色
-@border-color-disabled: #e6ebf5; //线框禁用色
+@border-color: var(--live-angular-color-border-regular); //线框色
+@border-color-disabled: var(--live-angular-color-border-disabled); //线框禁用色
 
 // 分割线
-@seprate-line-color: #e6ebf5; //线框色
+@seprate-line-color: var(--live-angular-color-divider-regular); //线框色
 
 // 选中
 @selection-color: @color-white;
@@ -78,16 +80,16 @@
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
   border-radius: 0.04rem;
-  background: #bdbdbd;
+  background: var(--live-angular-color-scrollbar);
   -webkit-box-shadow: none;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ccc;
+  background: var(--live-angular-color-scrollbar-hover);
 }
 
 ::-webkit-scrollbar-thumb:window-inactive {
-  background-color: #ccc;
+  background-color: var(--live-angular-color-scrollbar-hover);
 }
 
 /*-----------------------------------文本----------------------------------------*/
@@ -136,7 +138,7 @@ p {
 }
 
 .aui-form-label {
-  color: #4d4d4d;
+  color: var(--live-angular-color-text-secondary);
 }
 
 //辅助信息/表头
@@ -324,7 +326,7 @@ a {
 // 容器块
 .aui-block {
   padding: 24px;
-  background: @color-white;
+  background: var(--live-angular-color-container-background);
   border-radius: 8px;
 
   // top:32, bottom: 24;
@@ -488,7 +490,7 @@ a {
   .aui-custom-modal-title {
     font-size: 0.18rem;
     font-weight: 600;
-    color: #282b33;
+    color: var(--live-angular-color-text-regular);
   }
 
   .aui-custom-modal-icon {
@@ -799,4 +801,135 @@ a {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.formGroup .select-tag .lv-form-control,
+.formGroup .select-tag .lv-select {
+  width: 90%;
+}
+
+.search-label {
+  color: var(--live-angular-color-text-hint);
+}
+
+.weak-password-container .lv-table-body {
+  overflow-y: auto !important;
+}
+
+.lv-menu.lv-left-menu {
+  background: var(--live-angular-color-container-background);
+}
+
+.lv-menu.lv-left-menu ul > li > .lv-menu-item:not([disabled]):hover {
+  background-color: var(--live-angular-color-background-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0);
+}
+
+:root {
+  --custom-overview-background: url(../img/mission-overview-background-light.png)
+    repeat-x center;
+  --custom-overview-production-environment: url(../img/mission-overview-production-environment-light.png)
+    no-repeat center;
+  --custom-production-environment-footer: url(../img/mission-overview-production-environment-footer-light.gif);
+  --custom-production-environment-hover: url(../img/mission-overview-production-environment-hover-light.png);
+  --custom-overview-backing-up: url(../img/mission-overview-backing-up-light.png)
+    no-repeat center;
+  --custom-overview-backing-up-abnormal: url(../img/mission-overview-backing-up-abnormal-light.png)
+    no-repeat center;
+  --custom-mission-overview-backing-up-footer: url(../img/mission-overview-backing-up-footer-light.gif);
+  --custom-overview-backing-up-hover: url(../img/mission-overview-backing-up-hover-light.png);
+  --custom-overview-backing-up-abnormal-hover: url(../img/mission-overview-backing-up-abnormal-hover-light.png) !important;
+  --custom-mission-overview-duplicate: url(../img/mission-overview-duplicate-light.png)
+    no-repeat center;
+  --custom-mission-overview-duplicate-abnormal: url(../img/mission-overview-duplicate-abnormal-light.png)
+    no-repeat center;
+  --custom-mission-overview-duplicate-not-configured: url(../img/mission-overview-duplicate-not-configured-light.png)
+    no-repeat center;
+  --custom-mission-overview-duplicate-footer: url(../img/mission-overview-duplicate-footer-light.gif);
+  --custom-mission-overview-duplicate-hover: url(../img/mission-overview-duplicate-hover-light.png);
+  --custom-mission-overview-duplicate-abnormal-hover: url(../img/mission-overview-duplicate-abnormal-hover-light.png) !important;
+  --custom-mission-overview-archiving: url(../img/mission-overview-archiving-light.png)
+    no-repeat center;
+  --custom-mission-overview-archiving-abnormal: url(../img/mission-overview-archiving-abnormal-light.png)
+    no-repeat center;
+  --custom-mission-overview-archiving-not-configured: url(../img/mission-overview-archiving-note-configured-light.png)
+    no-repeat center;
+  --custom-mission-overview-archiving-footer: url(../img/mission-overview-archiving-footer-light.gif);
+  --custom-mission-overview-archiving-hover: url(../img/mission-overview-archiving-hover-light.png);
+  --custom-mission-overview-archiving-abnormal-hover: url(../img/mission-overview-archiving-abnormal-hover-light.png) !important;
+  --custom-mission-overview-line-1: url(../img/mission-overview-line-1-light.png)
+    no-repeat;
+  --custom-mission-overview-line-1-not-work: url(../img/mission-overview-line-1-not-work-light.png)
+    no-repeat;
+  --custom-mission-overview-line-2: url(../img/mission-overview-line-2-light.png)
+    no-repeat;
+  --custom-mission-overview-line-2-not-work: url(../img/mission-overview-line-2-not-work-light.png)
+    no-repeat;
+  --custom-mission-overview-line-3: url(../img/mission-overview-line-3-light.png)
+    no-repeat;
+  --custom-mission-overview-line-3-not-work: url(../img/mission-overview-line-3-not-work-light.png)
+    no-repeat;
+  --custom-anti-ransomware-normal-gif: url('../img/home-anti-ransomware-normal-light.gif')
+    no-repeat center;
+  --custom-anti-ransomware-abnormal-gif: url('../img/home-anti-ransomware-abnormal-light.gif')
+    no-repeat center;
+  --custom-anti-ransomware-infected-gif: url('../img/home-anti-ransomware-infected-light.gif')
+    no-repeat center;
+  --custom-user-guide-bg: url('../img/guide-bg.png') no-repeat;
+}
+
+:root[live-theme-angular='dark'] {
+  --custom-overview-background: url(../img/mission-overview-background.png)
+    repeat-x center;
+  --custom-overview-production-environment: url(../img/mission-overview-production-environment.png)
+    no-repeat center;
+  --custom-production-environment-footer: url(../img/mission-overview-production-environment-footer.gif);
+  --custom-production-environment-hover: url(../img/mission-overview-production-environment-hover.png);
+  --custom-overview-backing-up: url(../img/mission-overview-backing-up.png)
+    no-repeat center;
+  --custom-overview-backing-up-abnormal: url(../img/mission-overview-backing-up-abnormal.png)
+    no-repeat center;
+  --custom-mission-overview-backing-up-footer: url(../img/mission-overview-backing-up-footer.gif);
+  --custom-overview-backing-up-hover: url(../img/mission-overview-backing-up-hover.png);
+  --custom-overview-backing-up-abnormal-hover: url(../img/mission-overview-backing-up-abnormal-hover.png) !important;
+  --custom-mission-overview-duplicate: url(../img/mission-overview-duplicate.png)
+    no-repeat center;
+  --custom-mission-overview-duplicate-abnormal: url(../img/mission-overview-duplicate-abnormal.png)
+    no-repeat center;
+  --custom-mission-overview-duplicate-not-configured: url(../img/mission-overview-duplicate-not-configured.png)
+    no-repeat center;
+  --custom-mission-overview-duplicate-footer: url(../img/mission-overview-duplicate-footer.gif);
+  --custom-mission-overview-duplicate-hover: url(../img/mission-overview-duplicate-hover.png);
+  --custom-mission-overview-duplicate-abnormal-hover: url(../img/mission-overview-duplicate-abnormal-hover.png) !important;
+  --custom-mission-overview-archiving: url(../img/mission-overview-archiving.png)
+    no-repeat center;
+  --custom-mission-overview-archiving-abnormal: url(../img/mission-overview-archiving-abnormal.png)
+    no-repeat center;
+  --custom-mission-overview-archiving-not-configured: url(../img/mission-overview-archiving-note-configured.png)
+    no-repeat center;
+  --custom-mission-overview-archiving-footer: url(../img/mission-overview-archiving-footer.gif);
+  --custom-mission-overview-archiving-hover: url(../img/mission-overview-archiving-hover.png);
+  --custom-mission-overview-archiving-abnormal-hover: url(../img/mission-overview-archiving-abnormal-hover.png) !important;
+  --custom-mission-overview-line-1: url(../img/mission-overview-line-1.png)
+    no-repeat;
+  --custom-mission-overview-line-1-not-work: url(../img/mission-overview-line-1-not-work.png)
+    no-repeat;
+  --custom-mission-overview-line-2: url(../img/mission-overview-line-2.png)
+    no-repeat;
+  --custom-mission-overview-line-2-not-work: url(../img/mission-overview-line-2-not-work.png)
+    no-repeat;
+  --custom-mission-overview-line-3: url(../img/mission-overview-line-3.png)
+    no-repeat;
+  --custom-mission-overview-line-3-not-work: url(../img/mission-overview-line-3-not-work.png)
+    no-repeat;
+  --custom-anti-ransomware-normal-gif: url('../img/home-anti-ransomware-normal.gif')
+    no-repeat center;
+  --custom-anti-ransomware-abnormal-gif: url('../img/home-anti-ransomware-abnormal.gif')
+    no-repeat center;
+  --custom-anti-ransomware-infected-gif: url('../img/home-anti-ransomware-infected.gif')
+    no-repeat center;
+  --custom-user-guide-bg: #181a20;
 }

@@ -12,7 +12,7 @@
 }
 
 .tree-container {
-  border: 1px solid #e6e6e6;
+  border: 1px solid var(--live-angular-color-border-regular);
   height: 640px;
   width: 480px;
   z-index: 2;
@@ -23,12 +23,12 @@
   height: 36px;
   line-height: 36px;
   padding-left: 0.16rem;
-  background: #f7f7f7;
-  border-bottom: 1px solid #e6ebf5;
+  background: var(--live-angular-color-header-background);
+  border-bottom: 1px solid var(--live-angular-color-border-regular);
 }
 
 .selected-table {
-  border: 1px solid #e6e6e6;
+  border: 1px solid var(--live-angular-color-border-regular);
   height: 640px;
   width: 480px;
   overflow: auto;
@@ -51,14 +51,14 @@
 }
 
 .fileset-control {
-  width: 480px;
+  width: 480px !important;
 }
 
 .table-title {
   display: flex;
   padding: 4px 16px;
   justify-content: space-between !important;
-  background-color: #f7f7f7;
+  background-color: var(--live-angular-color-header-background);
 }
 
 .select-path-group {
@@ -71,10 +71,11 @@
 
 .arrow-container i {
   height: 20px;
+  margin-left: 4px;
 }
 
 .table-paginator {
   position: absolute;
   bottom: 0px;
-  left: 10px;
+  left: 5px;
 }

@@ -271,7 +271,7 @@ paths:
           description: X-Auth-Token
           type: string
         - name: name
-          in: query
+          in: query 
           required: false
           description: 用来搜索
           type: string
@@ -297,6 +297,11 @@ paths:
           required: false
           description: 默认true
           type: boolean
+        - name: resourceSetId
+          in: query
+          required: false
+          description: 资源集ID
+          type: string
       responses:
         '200':
           description: OK
