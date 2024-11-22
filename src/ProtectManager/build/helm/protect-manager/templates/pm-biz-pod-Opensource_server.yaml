@@ -185,6 +185,9 @@ spec:
               readOnly: true
             - mountPath: /whitebox
               name: whitebox-path
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
           {{- if eq $environment "Dorado" }}
           resources:
             requests:
