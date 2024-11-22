@@ -52,8 +52,12 @@ function build_maven(){
 }
 
 function copy_pkgs() {
-    mkdir -p ${PM_MS_DIR}/pkg
-	cp -f ${PM_MS_DIR}/src/service/target/PM_GUI.tar.gz ${PM_MS_DIR}/pkg/
+  cd ${PM_MS_DIR}/tmp
+  
+  # 重新压缩（含kmc库）
+  tar -zcvf PM_GUI.tar.gz * --format=gnu
+  mkdir -p ${PM_MS_DIR}/pkg
+	cp -f ${PM_MS_DIR}/tmp/PM_GUI.tar.gz  ${PM_MS_DIR}/pkg/
 	find  ${PM_MS_DIR}/pkg/ -type d | xargs chmod 700
 	find ${PM_MS_DIR}/pkg/ -type f | xargs chmod 550
 	cp ${PM_MS_DIR}/pkg/PM_GUI.tar.gz ${BASE_PATH}/pkg/mspkg/
@@ -111,6 +115,29 @@ function build_npm_i18n(){
 	
 }
 
+function download_kmc(){
+    echo "=========== Start copy KMC lib ==========="
+    # 将CMC DEE库上的KMC Lib拷贝下来，并解压到lib库。
+    echo "Download KMC lib"
+    artget pull -d ${PM_MS_DIR}/CI/conf/dependency_from_cmc.xml -ap ${PM_MS_DIR}/tmp/ -user ${cmc_user} -pwd ${cmc_pwd}
+    tar zxvf ${PM_MS_DIR}/tmp/kmc-3.1.1.tar.gz -C ${PM_MS_DIR}/tmp
+    if [ $? -ne 0 ]; then
+      echo "Unzip kmc failed"
+      exit 1
+    fi
+    rm -rf ${PM_MS_DIR}/tmp/kmc-3.1.1.tar.gz
+    mv ${PM_MS_DIR}/tmp/release/lib ${PM_MS_DIR}/tmp/lib
+    echo "=========== End copy KMC lib ==========="
+}
+
+function borrow_package(){
+    # 解压PM_GUI.tar.gz
+    echo "=========== start to borrow PM_GUI.tar.gz ==========="
+    mkdir -p ${PM_MS_DIR}/tmp/
+    tar -zxvf ${PM_MS_DIR}/src/service/target/PM_GUI.tar.gz -C ${PM_MS_DIR}/tmp
+    echo "=========== Borrow PM_GUI.tar.gz success ==========="
+}
+
 function build_private(){
 
 	build_npm
@@ -157,6 +184,8 @@ function main(){
 		copy_pkgs
 	else
 		build_private
+		borrow_package
+		download_kmc
 		copy_pkgs
 		if [ $? -ne 0 ]; then    
 			echo [INFO] private compile Failed.
