@@ -119,15 +119,10 @@ function download_kmc(){
     echo "=========== Start copy KMC lib ==========="
     # 将CMC DEE库上的KMC Lib拷贝下来，并解压到lib库。
     echo "Download KMC lib"
-    artget pull -d ${PM_MS_DIR}/CI/conf/dependency_from_cmc.xml -ap ${PM_MS_DIR}/tmp/ -user ${cmc_user} -pwd ${cmc_pwd}
-    tar zxvf ${PM_MS_DIR}/tmp/kmc-3.1.1.tar.gz -C ${PM_MS_DIR}/tmp
-    if [ $? -ne 0 ]; then
-      echo "Unzip kmc failed"
-      exit 1
-    fi
-    rm -rf ${PM_MS_DIR}/tmp/kmc-3.1.1.tar.gz
-    mv ${PM_MS_DIR}/tmp/release/lib ${PM_MS_DIR}/tmp/lib
-    echo "=========== End copy KMC lib ==========="
+    mkdir -p ${PM_MS_DIR}/tmp/tmp
+    tar -zxvf ${BIN_PATH}/PM_System_Base_Service.tar.gz -C ${PM_MS_DIR}/tmp/tmp
+    cp -rf ${PM_MS_DIR}/tmp/tmp/lib ${PM_MS_DIR}/tmp/lib
+    rm -rf ${PM_MS_DIR}/tmp/tmp
 }
 
 function borrow_package(){
