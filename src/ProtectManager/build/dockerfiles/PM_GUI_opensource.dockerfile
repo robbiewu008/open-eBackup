@@ -32,7 +32,7 @@ COPY --chown=15012:99 curl_dorado_timezone.sh          .
 COPY --chown=15012:99 check_health.sh          .
 COPY --chown=15012:99 init_cluster_role.sh          .
 COPY --chown=15012:99 frontend ./frontend
-COPY --chown=15012:99 lib /usr/local/${JDK_VERSION}/lib/aarch64/kmc
+COPY --chown=15012:99 lib /usr/local/${JDK_VERSION}/lib/aarch64/
 
 RUN chmod +x ./app.sh
 RUN yum install dejavu-sans-fonts fontconfig -y
@@ -62,9 +62,7 @@ RUN touch "/etc/timezone" \
     && chown 15012:99 -R "/etc/timezone" \
     && mkdir -m 750 "/script" \
     && chown root:nobody "/script" \
-    && chmod a+x /usr/local/${JDK_VERSION}/lib/aarch64/kmc/* \
-    && mv /usr/local/${JDK_VERSION}/lib/aarch64/kmc/* /usr/local/${JDK_VERSION}/lib/aarch64/ \
-    && rm -rf /usr/local/${JDK_VERSION}/lib/aarch64/kmc \
+    && chmod a+x /usr/local/${JDK_VERSION}/lib/aarch64/* \
     && mkdir -p "/app/gui/conf/wcc" \
     && chown 15012:99 -R "/app/gui/conf" \
     && echo "pm_gui  ALL=(root)      NOPASSWD:/script/change_permission.sh * *" >> /etc/sudoers \

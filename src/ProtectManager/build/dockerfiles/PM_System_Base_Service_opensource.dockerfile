@@ -26,7 +26,7 @@ RUN chmod 750 /app \
 COPY --chown=99:99 pm-main-server.jar ./app.jar
 COPY --chown=99:99 conf/                  ./conf/
 COPY --chown=99:99 pkg/                   ./
-COPY --chown=99:99 lib /usr/local/${JDK_VERSION}/lib/aarch64/kmc
+COPY --chown=99:99 lib /usr/local/${JDK_VERSION}/lib/aarch64/
 
 RUN mkdir -p /img/agent/client/ \
     && chmod 750 "/app/conf" \
@@ -46,9 +46,7 @@ RUN mkdir -p /img/agent/client/ \
     && mkdir -p "/script" \
     && chown root:nobody "/script" \
     && chmod 750 "/script" \
-    && chmod a+x /usr/local/${JDK_VERSION}/lib/aarch64/kmc/* \
-    && mv /usr/local/${JDK_VERSION}/lib/aarch64/kmc/* /usr/local/${JDK_VERSION}/lib/aarch64/ \
-    && rm -rf /usr/local/${JDK_VERSION}/lib/aarch64/kmc \
+    && chmod a+x /usr/local/${JDK_VERSION}/lib/aarch64/* \
     && chmod -R +x bin/*.sh *.sh \
     && touch "/etc/timezone" \
     && echo "nobody  ALL=(root)      NOPASSWD:/script/change_permission.sh * *" >> /etc/sudoers \
