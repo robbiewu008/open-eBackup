@@ -71,7 +71,7 @@ copy_file()
 
     # Copy file plugin library
     SCANNER_DIR=$(cd "${APPPLUGINS_ROOT_PATH}/common/FS_Scanner"; pwd)
-    SCANNER_LIB_PATH=${SCANNER_DIR}/build-cmake-file
+    SCANNER_LIB_PATH=${SCANNER_DIR}/lib
     find ${SCANNER_LIB_PATH} -name $libName | xargs -I{} cp -f {} ${FRAMEWORK_OUTPUT}/lib/service
 
     # Copy file plugin library
@@ -111,6 +111,7 @@ main()
 
     # Execute framework package
     sh ${FRAMEWORK_DIR}/build/pack.sh
+    sh ${FRAMEWORK_DIR}/build/generate_full_pkg.sh FilePlugin
 }
 
 main "$@"
