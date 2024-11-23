@@ -361,7 +361,8 @@ class RestoreParam(BaseParam):
         """
         host_url = node.get(ParamField.HOSTURL)
         config = {"username": None, "password": None, "auth_type": 0}
-        mongo = DB(host_url, config, direct_connection=True)
+        bin_path = node.get('extendInfo').get('binPath')
+        mongo = DB(host_url, config, direct_connection=True, bin_path=bin_path)
         try:
             yield mongo
         except Exception as ex:

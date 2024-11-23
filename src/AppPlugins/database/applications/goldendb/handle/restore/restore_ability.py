@@ -43,6 +43,23 @@ class RestoreAbility:
     def allow_restore_in_local_node(req_id, job_id, sub_id, data):
         log.info(f"Start to execute the allow_restore_in_local_node task.")
         output = ActionResult(code=ExecuteResultEnum.SUCCESS)
+        try:
+            body_param = JsonParam.parse_param_with_jsonschema(req_id)
+        except Exception as err_code:
+            log.error(f"Failed to parse job param file for {str(err_code)}")
+            raise Exception(f"Failed to parse job param file.") from err_code
+        if not body_param:
+            log.error(f"Failed to parse job param file is none.")
+            raise Exception(f"Failed to parse job param file is none.")
+        try:
+            # 异常时，上报
+            ret = Restore(req_id, job_id, sub_id, data, body_param).allow_restore_in_local_node()
+        except Exception as ex:
+            log.error(f"Failed to execute allow_restore_in_local_node, {str(ex)}")
+            raise Exception(f"Allow restore in local node failed.") from ex
+        if not ret:
+            log.error(f"Failed to execute allow_restore_in_local_node.")
+            return ExecuteResultEnum.INTERNAL_ERROR
         output_result_file(req_id, output.dict(by_alias=True))
         return ExecuteResultEnum.SUCCESS
 
@@ -56,7 +73,7 @@ class RestoreAbility:
             raise Exception(f"Failed to parse job param file for {err_code}") from err_code
         if not body_param:
             raise Exception(f"Failed to parse job param file is none")
-        ret, error_code = Restore(req_id, job_id, sub_id, data, body_param).restore_prerequisite()
+        Restore(req_id, job_id, sub_id, data, body_param).restore_prerequisite()
         return ExecuteResultEnum.SUCCESS
 
     @staticmethod

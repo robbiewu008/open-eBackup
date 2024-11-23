@@ -13,16 +13,24 @@
 
 import sys
 from common.process_handle import process_handle
-from mysql import log
+from common.logger import Logger
 from mysql.src.resource.resource_ability import ResourceAbility
+from mysql.src.service.backup.backup_ability import BackupAbility
 
 fun = {
     'CheckApplication': ResourceAbility.check_application,
     'ListApplicationResource': ResourceAbility.list_application_resource,
     'VerifyClusterNode': ResourceAbility.verify_cluster_node,
-    'QueryCluster': ResourceAbility.query_cluster
-}
+    'QueryCluster': ResourceAbility.query_cluster,
 
+    "QueryJobPermission": BackupAbility.query_job_permission,
+    "CheckBackupJobType": BackupAbility.check_backup_job_type,
+    "AllowBackupInLocalNode": BackupAbility.allow_backup_in_local_node,
+    "BackupPrerequisite": BackupAbility.backup_prerequisite,
+    "Backup": BackupAbility.backup,
+    "BackupPostJob": BackupAbility.backup_post_job,
+    "QueryBackupCopy": BackupAbility.query_backup_copy
+}
 
 # MySQL Plugin API 入口
 if __name__ == '__main__':
@@ -39,5 +47,5 @@ if __name__ == '__main__':
     python3 mysql_api.py Backup 1657539915784 2e0c6c0b faa3e2c0
     """
     # 打印日志
-    log.info('Enter MySQL Plugin process')
+    log = Logger().get_logger("mysql.log")
     process_handle(log, sys.argv, sys.stdin, fun)

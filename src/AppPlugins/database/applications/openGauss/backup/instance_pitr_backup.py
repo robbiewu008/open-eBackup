@@ -13,14 +13,14 @@
 
 import os
 import json
-from common.const import DeployType
+from common.const import DeployType, BackupTypeEnum
 from common.common import write_content_to_file, read_tmp_json_file, convert_time_to_timestamp
 from openGauss.backup.instance_backup import InstanceBackup
 from openGauss.common.const import Status, ResultCode, SyncMode, \
-    MetaDataKey, ProtectSubObject, CopyInfoKey, NodeRole, SUCCESS_RET, MAX_FILE_NUMBER_OF_LOG_BACKUP, BackupStatus
+    MetaDataKey, ProtectSubObject, CopyInfoKey, SUCCESS_RET, MAX_FILE_NUMBER_OF_LOG_BACKUP, BackupStatus
 from openGauss.common.error_code import BodyErr
 from openGauss.common.common import get_value_from_dict, str_to_int, get_previous_copy_info, execute_cmd_by_user, \
-    is_wal_file, get_backup_info_file, get_last_backup_stop_time, safe_remove_path
+    is_wal_file, get_backup_info_file, get_last_backup_stop_time, safe_remove_path, is_cmdb_distribute
 
 
 class InstancePitrBackup(InstanceBackup):
@@ -28,10 +28,13 @@ class InstancePitrBackup(InstanceBackup):
         super(InstancePitrBackup, self).__init__(pid, job_id, param_json)
         self._parent_id_list = []
         self._start_time = ""
+        self._stop_time = None
 
     # 日志备份需要检查是否已经存在全量备份，并检查归档模式是否开启。在增量备份的基础上增加归档模式开启检查
     def check_backup_type(self):
         self.log.info(f"Check backup type. job id: {self._job_id}")
+        if is_cmdb_distribute(self._deploy_type, self._database_type):
+            return SUCCESS_RET
         endpoint = self._resource_info.get_local_endpoint()
         if self._resource_info.get_node_status(endpoint) != Status.NORMAL:
             self.log.error(f"Node status is abnormal job id: {self._job_id}")
@@ -62,12 +65,20 @@ class InstancePitrBackup(InstanceBackup):
         执行备份任务
         :return:
         """
-        self.log.info(f"Execute instance pitr backup. job id: {self._job_id}")
+        self.log.info(f"Execute instance log backup. job id: {self._job_id}. deploy type {self._deploy_type}."
+                      f"database type {self._database_type}")
+        # CMDB分布式场景
+        if is_cmdb_distribute(self._deploy_type, self._database_type):
+            try:
+                return self.exec_cmdb_instance_backup(BackupTypeEnum.LOG_BACKUP)
+            except Exception as err:
+                self.log.error(f'exec cmdb failed, error: {err}')
+                self.update_progress(BackupStatus.FAILED)
+                return False
         if not self.pre_backup():
             self.log.error(f"Backup prepose failed. job id: {self._job_id}")
             return False
         return self.exec_instance_pitr_backup()
-
 
     def extend_parent_id_list(self, last_log_stop_time):
         backups = self.parse_backup_infos()
@@ -120,7 +131,6 @@ class InstancePitrBackup(InstanceBackup):
         self.log.info(f"Filter file list number :{len(files)}")
         return files
 
-
     def rsync_archive_logs(self, wal_dir):
         endpoint = self._resource_info.get_local_endpoint()
         nodeips = self._resource_info.get_cluster_nodes()
@@ -133,8 +143,6 @@ class InstancePitrBackup(InstanceBackup):
                     self.log.error(f"Fail to rsync log, std_err: {std_err}")
                 else:
                     self.log.info(f"Success to rsync.")
-
-
 
     def backup_log_wals(self, wal_dir, last_wal, start_file):
         # 检查.backup文件在当前节点的归档目录中是否存在
@@ -172,7 +180,6 @@ class InstancePitrBackup(InstanceBackup):
         wal_files = [file for file in files if int(file, 16) > last_wal_file_time_id]
         self.log.info(f"Filter file list number :{len(wal_files)}")
         return wal_files
-
 
     def check_backups_before_last_log(self, last_log_stop_time):
         # 检查最近一次日备之前是否存在其他备份
@@ -267,7 +274,6 @@ class InstancePitrBackup(InstanceBackup):
         self.update_progress(BackupStatus.COMPLETED)
         return True
 
-
     def exec_instance_pitr_backup(self):
         # 开始备份
         self.update_progress(BackupStatus.RUNNING)
@@ -308,10 +314,8 @@ class InstancePitrBackup(InstanceBackup):
             return False
         return True
 
-
     def present_copy_info(self):
         return True, f"log_{self._job_id}", "LOG"
-
 
     def update_progress(self, status):
         copy_id = f"log_{self._job_id}"
@@ -324,7 +328,6 @@ class InstancePitrBackup(InstanceBackup):
         if status == BackupStatus.COMPLETED:
             content = content + f"\nINFO: Backup {copy_id} completed"
         write_content_to_file(progress_file, content)
-
 
     def get_copy_meta_data(self, copy_time):
         # 组装备份副本信息

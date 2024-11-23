@@ -34,13 +34,15 @@ class KbConst:
     # 数据库data目录恢复前需删除文件名称
     DELETE_FILE_NAMES_OF_DATA_DIR = ("kingbase.pid", "kingbase.opts", "backup_label.old")
     # 重做集群备库前需删除的配置参数
-    DELETE_PARAMETER_OF_STANDBY = ("restore_command", "recovery_target_time",
-                                   "recovery_target_action", "recovery_end_command")
+    DELETE_PARAMETER_OF_STANDBY = (
+        "restore_command", "recovery_target_time", "recovery_target_action", "recovery_end_command"
+    )
     KINGBASE_HBA_CONF_FILE = "sys_hba.conf"
     KINGBASE_AUTO_CONF_FILE = "kingbase.auto.conf"
     # 恢复前需要备份的配置文件列表
-    NEED_BAK_CFG_FILES = (KINGBASE_CONF_FILE_NAME, KINGBASE_HBA_CONF_FILE, KINGBASE_AUTO_CONF_FILE,
-                          CLUSTER_CONF_FILE_NAME)
+    NEED_BAK_CFG_FILES = (
+        KINGBASE_CONF_FILE_NAME, KINGBASE_HBA_CONF_FILE, KINGBASE_AUTO_CONF_FILE, CLUSTER_CONF_FILE_NAME
+    )
     # 恢复成功后需要删除备份的配置文件
     DELETE_FILE_NAMES_OF_BAK_CONF = ("kingbase.auto.conf.bak", "kingbase.conf.bak", "sys_hba.conf.bak")
     # 路径黑名单
@@ -94,6 +96,8 @@ class KbConst:
     MAX_PARALLEL_PROCESS = 999
     MIN_PARALLEL_PROCESS = 1
     IS_NEW_COPY = "Y"
+    # sys_controldata 记录kingbase控制文件信息，数据库的物理结构、WAL日志信息、检查点信息、事务状态、timeline等
+    SYS_CONTROLDATA = "sys_controldata"
 
 
 class CmdRetCode(str, Enum):
@@ -118,6 +122,7 @@ class BodyErrCode(Enum):
     NOT_EXIT_WAL_BACKUP_FILE_AND_SNAPSHOT_BACKUP = 0x5E025037
     # 原因：数据库已执行过恢复。建议：请重新执行全量备份后再进行日志备份。
     ERR_RESTORED = 0x5E0250F5
+    ERROR_INCREMENT_TO_FULL = 1577209901
 
 
 class PexpectResult:

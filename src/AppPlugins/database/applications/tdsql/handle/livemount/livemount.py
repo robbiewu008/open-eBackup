@@ -22,7 +22,7 @@ from tdsql.common.util import get_tdsql_config
 from tdsql.logger import log
 
 
-def live_mount(mount_path, mysql_port, cnf_path, pool_size, basedir):
+def live_mount(mount_path, mysql_port, cnf_path, pool_size, mysql_version):
     log.info("begin to make directories")
     alive_cnf = f"{mount_path}/temp_alive/alive.cnf"
     cmd = f"mkdir -p {mount_path}/temp_alive ; mkdir -p {mount_path}/temp_alive/logbin ; \
@@ -34,7 +34,7 @@ def live_mount(mount_path, mysql_port, cnf_path, pool_size, basedir):
         return False
 
     log.info(f"begin to prepare alive config file {cnf_path}")
-    cmd = generate_live_mount_cmd(mount_path, mysql_port, cnf_path, pool_size, alive_cnf)
+    cmd = generate_live_mount_cmd(mount_path, mysql_port, pool_size, alive_cnf, mysql_version)
     ret, output = subprocess.getstatusoutput(cmd)
     if ret:
         log.error(f"Exec to {cmd}, the output detail is {output}.")
@@ -46,6 +46,8 @@ def live_mount(mount_path, mysql_port, cnf_path, pool_size, basedir):
         log.error(f"Exec to {cmd}, the output detail is {output}.")
         return False
 
+    basedir = cnf_path[:cnf_path.rindex("/")]
+    basedir = basedir[:basedir.rindex("/")]
     cmd = f"{basedir}/bin/mysqld --defaults-file={alive_cnf}"
     process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8")
     err_data = process.stderr.read()
@@ -53,7 +55,7 @@ def live_mount(mount_path, mysql_port, cnf_path, pool_size, basedir):
     return True
 
 
-def generate_live_mount_cmd(mount_path, mysql_port, cnf_path, pool_size, alive_cnf):
+def generate_live_mount_cmd(mount_path, mysql_port, pool_size, alive_cnf, mysql_version):
     cmd = f"sed -i 's#innodb_data_home_dir.*$#innodb_data_home_dir={mount_path}#g' {alive_cnf} ; \
             sed -i 's#datadir.*$#datadir={mount_path}#g' {alive_cnf} ; \
             sed -i 's#log-bin.*$#log-bin={mount_path}/temp_alive/logbin#g' {alive_cnf} ; \
@@ -77,7 +79,6 @@ def generate_live_mount_cmd(mount_path, mysql_port, cnf_path, pool_size, alive_c
             echo sqlasyn=off >> {alive_cnf} ; \
             echo sqlasync_group_slave_ack=off >> {alive_cnf} ;"
     tdsql_config = get_tdsql_config()
-    mysql_version = cnf_path.split("/")[4]
     live_mount_conf = tdsql_config.get('liveMountConf').get(mysql_version)
     log.info(f"live_mount_conf {live_mount_conf}")
     for conf in live_mount_conf:

@@ -58,6 +58,7 @@ public:
     void ReleaseBufferCache(const uint64_t &offsetInBytes, const uint64_t &readLen);
     int32_t Flush();
     std::shared_ptr<JobHandle> GetJobHandleInTask();
+    int32_t QueryStoragePoolUsedRate(double &usedCapacityRate) override;
     std::shared_ptr<DiskDeviceFile> GetDiskDeviceFile() override
     {
         return m_spDeviceFile;

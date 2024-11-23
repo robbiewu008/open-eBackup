@@ -15,6 +15,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include "log/Log.h"
+#include "common/Utils.h"
 #include "common/utils/Utils.h"
 #ifdef WIN32
 #include <windows.h>
@@ -68,7 +69,7 @@ bool BaseTokenMgr::TokenIsExpired(std::string &date)
         ERRLOG("Failed to trans date to time stamp.");
         return false;
     }
-    int64_t expiresTimeStamp = std::stoi(timeStamp);
+    int64_t expiresTimeStamp = Module::SafeStoi(timeStamp);
     int timeStampDiff = GetTimeDiffWithGMT();
     if ((expiresTimeStamp + timeStampDiff - EARLY_EXPIRATION_TIME) < nowTimeStamp) { // 提前30秒过期
         return true;

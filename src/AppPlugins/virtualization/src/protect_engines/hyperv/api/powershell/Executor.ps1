@@ -65,6 +65,8 @@ $COMMAND_MAP = @{
     GetVMInfo = (Get-Item "function:get_vm_info").ScriptBlock;
     GetVMDriver = (Get-Item "function:get_vm_harddisk_drive").ScriptBlock;
     CreateVHD = (Get-Item "function:create_vhd").ScriptBlock;
+    AddCluster = (Get-Item "function:add_cluster").ScriptBlock;
+    GetClusterSharedVolume = (Get-Item "function:get_cluster_shared_volume").ScriptBlock;
 }
 
 $RETURN_VALUT = @{

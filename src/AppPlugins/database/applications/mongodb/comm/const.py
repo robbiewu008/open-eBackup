@@ -75,6 +75,8 @@ class ErrorCode(int, Enum):
     # 启动实例失败
     INSTANCE_START_ERROR = 1677873205
     ERROR_INCREMENT_TO_FULL = 1577209901
+    # 插件日志备份无法进行，需要转成全量备份
+    LOG_TO_FULL_ERR = 1577213517
     ERROR_DIFFERENT_VERSION = 1577210056
     ERROR_DIFFERENT_TOPO = 1577209972
     ERROR_DIFFERENT_USER = 1577209973
@@ -142,6 +144,8 @@ class ErrorCode(int, Enum):
     ENV_HOST_ROLE_ERROR = 1677873161
     # 主机注册类型与实际类型不一致
     ENV_CLUSTER_TYPE_ERROR = 1677873160
+    # 执行注册或修改单实例时，由于日志备份开关与实际不一致，操作失败。
+    CHECK_OPEN_OPLOG_ERROR = 1577213585
     # 停止平衡失败
     FAILED_STOP_BALANCE = 1677873209
     # 日志备份失败
@@ -441,6 +445,7 @@ class DefaultValue(Enum):
     LOCAL_DB = "local"
     OPLOG_COLLECTION = "oplog.rs"
     BIND_ALL_IP = '0.0.0.0'
+    MONGO_CLIENT_SUPPORT_VERSION = '3.6.0'
 
 
 ROLE_MAP = {

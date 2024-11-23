@@ -99,7 +99,7 @@ class InstanceConnectivityVerify:
         if not PostgreCommonUtils.check_black_list(self.client_path):
             return ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, bodyErr=ErrorCode.CLIENT_PATH_IS_NOT_EXIST,
                                 message="Cilent path in black list!")
-        if not PostgreCommonUtils.check_os_name(self.os_username, self.client_path, self.enable_root)[0]:
+        if not PostgreCommonUtils.check_os_user(self.os_username, self.client_path, self.enable_root)[0]:
             return ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, bodyErr=ErrorCode.USER_IS_NOT_EXIST,
                                 message="Os username is not exist!")
         LOGGER.info(
@@ -159,7 +159,7 @@ class InstanceConnectivityVerify:
             LOGGER.info(f"Success to login pgsql by db verify!pid:{self.pid}")
             child.close()
             data_file_directory = parse_html_result(data_dir)
-            code, res = PostgreCommonUtils.check_os_name(self.os_username, data_file_directory, self.enable_root)
+            code, res = PostgreCommonUtils.check_os_user(self.os_username, data_file_directory, self.enable_root)
             return code, res
         finally:
             if child:
@@ -183,7 +183,7 @@ class InstanceConnectivityVerify:
             data_dir = child.before
             child.close()
             data_file_directory = parse_html_result(data_dir)
-            code, res = PostgreCommonUtils.check_os_name(self.os_username, data_file_directory, self.enable_root)
+            code, res = PostgreCommonUtils.check_os_user(self.os_username, data_file_directory, self.enable_root)
             return code, res
         finally:
             if child:

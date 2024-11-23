@@ -29,15 +29,18 @@ from common.util.check_utils import check_repo_path
 from common.util.exec_utils import exec_overwrite_file, check_path_valid, exec_append_file, exec_append_newline_file, \
     exec_cat_cmd, su_exec_rm_cmd
 from openGauss.common.error_code import NormalErr
-from openGauss.common.const import logger, RpcParamKey, ResultCode, ProgressInfo, WhitePath
+from openGauss.common.const import logger, RpcParamKey, ResultCode, ProgressInfo, WhitePath, OpenGaussDeployType, \
+    ProtectObject
 from openGauss.common.const import ParamKey
 
 if platform.system().lower() == "linux":
     import pwd
     import grp
 
-INJECTION_CHAR_LIST = ("|", ";", "&", "$", "<", ">", "`", "\\", "'", "\"", "{", "}", "(", ")",
-                       "[", "]", "~", "*", "?", " ", "!", "\n")
+INJECTION_CHAR_LIST = (
+    "|", ";", "&", "$", "<", ">", "`", "\\", "'", "\"", "{", "}", "(", ")",
+    "[", "]", "~", "*", "?", " ", "!", "\n"
+)
 
 
 def path_check(path):
@@ -310,9 +313,11 @@ def get_previous_copy_info(protect_obj, job_id):
         return {}
     input_file_name = RpcParamKey.INPUT_FILE_PREFFIX + job_id
     input_file_path = os.path.join(ParamConstant.PARAM_FILE_PATH, input_file_name)
-    input_dict = {RpcParamKey.APPLICATION: protect_obj,
-                  RpcParamKey.TYPES: [RpcParamKey.FULL_COPY, RpcParamKey.INCREMENT_COPY], RpcParamKey.COPY_ID: "",
-                  ParamKey.JOB_ID: job_id}
+    input_dict = {
+        RpcParamKey.APPLICATION: protect_obj,
+        RpcParamKey.TYPES: [RpcParamKey.FULL_COPY, RpcParamKey.INCREMENT_COPY], RpcParamKey.COPY_ID: "",
+        ParamKey.JOB_ID: job_id
+    }
     exec_overwrite_file(input_file_path, input_dict)
     output_file_name = RpcParamKey.OUTPUT_FILE_PREFFIX + job_id
     output_file_path = os.path.join(ParamConstant.RESULT_PATH, output_file_name)
@@ -403,6 +408,18 @@ def safe_check_injection_char(*check_values):
     return True
 
 
+def get_env_value(key):
+    global STDIN_VALUE
+    if not STDIN_VALUE:
+        STDIN_VALUE = input()
+    try:
+        value_dict = json.loads(STDIN_VALUE)
+    except Exception:
+        logger.exception("Standard input can not json load.")
+        return ""
+    return value_dict.get(key)
+
+
 def repositories_check(repositories, *repository_types):
     # 只校验挂载仓路径是否存在软链接
     if not isinstance(repositories, list) or len(repositories) == 0:
@@ -430,6 +447,15 @@ def safe_remove_path(path: str):
             logger.error(f"Execute remove file command failed! File path: {path}.")
             return False
     return not os.path.exists(path)
+
+
+def is_cmdb_distribute(deploy_type, database_type):
+    if deploy_type == OpenGaussDeployType.DISTRIBUTED and ProtectObject.CMDB in database_type:
+        logger.info("Cur job is CMDB distributed")
+        return True
+    else:
+        logger.info("Cur job is not CMDB distributed")
+        return False
 
 
 def is_wal_file(file_name):

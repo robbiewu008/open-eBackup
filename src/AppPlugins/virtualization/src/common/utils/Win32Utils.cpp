@@ -28,4 +28,17 @@ std::wstring String2WstringByUtf8(const std::string &s)
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
     return converter.from_bytes(s);
 }
+
+std::string BSTRToString(const BSTR &bStr)
+{
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    return converter.to_bytes(bStr);
+}
+
+BSTR StringToBSTR(const std::string& str)
+{
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    std::wstring wstr = converter.from_bytes(str);
+    return SysAllocString(wstr.c_str());
+}
 #endif

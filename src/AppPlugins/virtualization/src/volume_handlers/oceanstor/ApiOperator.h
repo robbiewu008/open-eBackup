@@ -73,6 +73,7 @@ const int32_t FC_INITIATOR_NOTIN = 1077950342;  // same to iscsi
 const int32_t OBJECT_NOTEXIST = 1077948996;
 const int32_t V3_IS_BUSY = 1073793588;
 const int32_t V3_SYSTEM_BUSY = 1077949006;
+const int32_t LUN_MAPPED_SAME_HOST = 1077936864;
 const int32_t UNAUTH = -401;
 };  // namespace ApiErrorCode
 
@@ -241,6 +242,8 @@ public:
     void SetRetry(const bool retry);
     void SetCurlTimeOut(const uint64_t &curlTimeOut);
     int32_t TestIscsiTargetIpConnect();
+    int32_t QueryStoragePoolUsedRate(double &usedCapacityRate);
+    int32_t TestFcConnect();
 
 private:
     std::string FormatFullUrl(const std::string &fullUrl);

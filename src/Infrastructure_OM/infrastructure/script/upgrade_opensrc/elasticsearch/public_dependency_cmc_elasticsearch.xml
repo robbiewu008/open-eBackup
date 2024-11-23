@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>
+    <dependencies>
+        <!-- httpclient -->
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+            <package>httpclient-4.5.13.jar</package>
+            <dest></dest>
+            <!--pdmCode>05837DSR</pdmCode-->
+        </dependency>
+        <!-- jackson -->
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.13.5</version>
+            <package>jackson-annotations-2.13.5.jar</package>
+            <dest></dest>
+            <!--pdmCode>05838AGK</pdmCode-->
+        </dependency>
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>jackson-core</artifactId>
+            <version>2.13.5</version>
+            <package>jackson-core-2.13.5.jar</package>
+            <dest></dest>
+            <!--pdmCode>05838AGT</pdmCode-->
+        </dependency>
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.5</version>
+            <package>jackson-databind-2.13.5.jar</package>
+            <dest></dest>
+            <!--pdmCode>05838AGM</pdmCode-->
+        </dependency>
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>jackson-dataformat-cbor</artifactId>
+            <version>2.12.1</version>
+            <package>jackson-dataformat-cbor-2.12.1.jar</package>
+            <dest></dest>
+            <!--pdmCode>05838CTA</pdmCode-->
+        </dependency>
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>jackson-dataformat-smile</artifactId>
+            <version>2.12.1</version>
+            <package>jackson-dataformat-smile-2.12.1.jar</package>
+            <dest></dest>
+            <!--pdmCode>05838CKB</pdmCode-->
+        </dependency>
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.12.1</version>
+            <package>jackson-dataformat-yaml-2.12.1.jar</package>
+            <dest></dest>
+            <!--pdmCode>05838CSY</pdmCode-->
+        </dependency>
+        <!-- netty-buffer-->
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>netty-buffer</artifactId>
+            <version>4.1.77.Final</version>
+            <package>netty-buffer-4.1.77.Final.jar</package>
+            <dest></dest>
+            <!--pdmCode>0583053259</pdmCode-->
+        </dependency>
+        <!-- netty-codec-->
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>netty-codec</artifactId>
+            <version>4.1.77.Final</version>
+            <package>netty-codec-4.1.77.Final.jar</package>
+            <dest></dest>
+            <!--pdmCode>0583053239</pdmCode-->
+        </dependency>
+        <!-- netty-codec-http-->
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>netty-codec-http</artifactId>
+            <version>4.1.77.Final</version>
+            <package>netty-codec-http-4.1.77.Final.jar</package>
+            <dest></dest>
+            <!--pdmCode>0583053242</pdmCode-->
+        </dependency>
+        <!-- netty-common-->
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>netty-common</artifactId>
+            <version>4.1.77.Final</version>
+            <package>netty-common-4.1.77.Final.jar</package>
+            <dest></dest>
+            <!--pdmCode>0583053241</pdmCode-->
+        </dependency>
+        <!-- netty-handler-->
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>netty-handler</artifactId>
+            <version>4.1.77.Final</version>
+            <package>netty-handler-4.1.77.Final.jar</package>
+            <dest></dest>
+            <!--pdmCode>0583053245</pdmCode-->
+        </dependency>
+        <!-- netty-resolver-->
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>netty-resolver</artifactId>
+            <version>4.1.77.Final</version>
+            <package>netty-resolver-4.1.77.Final.jar</package>
+            <dest></dest>
+            <!--pdmCode>0583053254</pdmCode-->
+        </dependency>
+        <!-- netty-transport-->
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>netty-transport</artifactId>
+            <version>4.1.77.Final</version>
+            <package>netty-transport-4.1.77.Final.jar</package>
+            <dest></dest>
+            <!--pdmCode>0583053256</pdmCode-->
+        </dependency>
+        <!-- snakeyaml-->
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.32</version>
+            <package>snakeyaml-1.32.jar</package>
+            <dest></dest>
+            <!--pdmCode>0583075279</pdmCode-->
+        </dependency>
+    </dependencies>
+</project>

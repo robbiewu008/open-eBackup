@@ -21,21 +21,19 @@ from goldendb.handle.resource.resource_info import GoldenDBResourceInfo
 from goldendb.logger import log
 from common.file_common import get_user_info
 from common.common import output_result_file, invoke_rpc_tool_interface, execute_cmd_list, output_execution_result_ex, \
-    read_tmp_json_file
-from common.common_models import SubJobDetails, LogDetail
+    read_tmp_json_file, report_job_details
+from common.common_models import SubJobDetails, SubJobModel, LogDetail
 from common.const import SubJobPriorityEnum, SubJobStatusEnum, RepositoryDataTypeEnum, RpcParamKey, CMDResult, \
-    CopyDataTypeEnum, ReportDBLabel
+    CopyDataTypeEnum, ReportDBLabel, SubJobTypeEnum, SubJobPolicyEnum
 from common.util.exec_utils import exec_cat_cmd, exec_cp_dir_no_user, su_exec_rm_cmd
+from common.util.scanner_utils import scan_dir_size
 from common.util.validators import ValidatorEnum
-from goldendb.handle.backup.parse_backup_params import get_goldendb_structure, report_job_details, write_file, \
-    check_goldendb_structure
+from goldendb.handle.backup.parse_backup_params import get_goldendb_structure, write_file, check_goldendb_structure
 from goldendb.handle.common.const import SubJobName, MasterSlavePolicy, Report, LogLevel, GoldenDBJsonConst, \
-    ExecutePolicy, GoldenDBNodeType, ErrorCode, LastCopyType
+    GoldenDBNodeType, ErrorCode, LastCopyType
 from goldendb.handle.common.goldendb_common import get_repository_path, su_exec_cmd, verify_path_trustlist, \
-    get_backup_path, mkdir_chmod_chown_dir_recursively
+    get_backup_path, mkdir_chmod_chown_dir_recursively, get_agent_uuids, get_bkp_root_dir_via_role
 from goldendb.handle.common.goldendb_param import JsonParam
-from goldendb.schemas.glodendb_schemas import SubJob
-from openGauss.common.common import safe_get_dir_size
 
 
 class GoldenDBLogBackupToolService:
@@ -73,14 +71,16 @@ class GoldenDBLogBackupToolService:
         response = []
         # 1：首先要在管理节点执行日志备份
         # 当前搭建环境只有单个管理节点
-        sub_job = self.__create_sub_job(self._cluster_structure.manager_nodes[0],
-                                        SubJobName.EXEC_LOG_BACKUP,
+        agent_uuids = get_agent_uuids(self._file_content)
+        manager_node_list = self._cluster_structure.manager_nodes
+        online_managers = [node for node in manager_node_list if node[2] in agent_uuids]
+        sub_job = self.__create_sub_job(online_managers[0], SubJobName.EXEC_LOG_BACKUP,
                                         SubJobPriorityEnum.JOB_PRIORITY_1)
         response.append(sub_job)
 
         # 2：执行拷贝任务
         # 执行节点添加管理节点首节点，当前搭建环境只有单个管理节点
-        exec_nodes = [self._cluster_structure.manager_nodes[0]]
+        exec_nodes = [online_managers[0]]
         # 添加GTM所有节点
         exec_nodes.extend(self._cluster_structure.gtm_nodes)
         # 添加数据节点
@@ -95,7 +95,7 @@ class GoldenDBLogBackupToolService:
             response.append(copy_job)
 
         # 3：生成上报需要的data_size和speed
-        sub_job = self.__create_sub_job(self._cluster_structure.manager_nodes[0],
+        sub_job = self.__create_sub_job(online_managers[0],
                                         SubJobName.EXEC_REPORT_DATA_SIZE,
                                         SubJobPriorityEnum.JOB_PRIORITY_3)
         response.append(sub_job)
@@ -106,8 +106,8 @@ class GoldenDBLogBackupToolService:
             raise Exception(f'job id: {self._job_id}, generate zero sub job')
         # 加入查询信息子任务，不添加的话不会调用queryCopy方法，不会上报给UBC
         response.append(
-            SubJob(jobId=self._job_id, policy=ExecutePolicy.ANY_NODE, jobName='queryCopy',
-                   jobPriority=SubJobPriorityEnum.JOB_PRIORITY_4).dict(by_alias=True))
+            SubJobModel(jobId=self._job_id, policy=SubJobPolicyEnum.ANY_NODE, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB,
+                        jobPriority=SubJobPriorityEnum.JOB_PRIORITY_4, jobName='queryCopy').dict(by_alias=True))
         log.info(f'step 4: finish to execute backup_gen_sub_job, {self.get_log_comm()}')
         output_result_file(self._req_id, response)
 
@@ -215,6 +215,10 @@ class GoldenDBLogBackupToolService:
         # /home/goldendb/${role_name}/backup_root
         backup_path = get_backup_path(self._role_name, self._node_type, self._file_content,
                                       GoldenDBJsonConst.PROTECTOBJECT)
+        ini_bkp_root_path = get_bkp_root_dir_via_role(self._node_type, backup_path, self._job_id)
+        if ini_bkp_root_path:
+            log.info(f"Get ini bkp root success for {self._role_name} {self._node_type}, {self.get_log_comm()}")
+            backup_path = ini_bkp_root_path
         group_name, _ = get_user_info(self._role_name)
         if not mkdir_chmod_chown_dir_recursively(target_data_dir, 0o770, self._role_name, group_name, True):
             log.error(f"fail to make a data path, {self.get_log_comm()}")
@@ -380,8 +384,9 @@ class GoldenDBLogBackupToolService:
         agent_id = execute_node[2]
         goldendb_node_type = execute_node[3]
         job_info = f"{user_name} {goldendb_node_type}"
-        return SubJob(jobId=self._job_id, execNodeId=agent_id, jobName=job_name, jobInfo=job_info,
-                      jobPriority=priority).dict(by_alias=True)
+        return SubJobModel(jobId=self._job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB, jobName=job_name,
+                           jobPriority=priority, policy=SubJobPolicyEnum.FIXED_NODE, execNodeId=agent_id,
+                           jobInfo=job_info).dict(by_alias=True)
 
     def __exec_log_backup_cmd(self):
         cluster_id = self._cluster_structure.cluster_id
@@ -429,7 +434,11 @@ class GoldenDBLogBackupToolService:
         path_all = os.path.abspath(os.path.join(self._log_data_path))
 
         # 录入初始仓库大小
-        original_size = safe_get_dir_size(path_all)
+        original_size = 0
+        ret, size = scan_dir_size(self._job_id, path_all)
+        if ret:
+            log.info(f"scan data size {size} success, {self.get_log_comm()}")
+            original_size = size
 
         original_data_size_path = os.path.join(self._cache_data_path, f'D{self._job_id}')
         write_file(original_data_size_path, str(original_size))
@@ -469,7 +478,10 @@ class GoldenDBLogBackupToolService:
 
         log.info(f"query_size_and_speed, start_time: {start_time}, original_data_size: {original_data_size}, "
                  f"{self.get_log_comm()}")
-        size = safe_get_dir_size(data_path)
+        ret, size = scan_dir_size(self._job_id, data_path)
+        if not ret:
+            log.error(f"scan data size failed, {self.get_log_comm()}")
+            size = original_data_size
         new_time = int((time.time()))
         datadiff = int((size - int(original_data_size)))
         timediff = new_time - int(start_time)

@@ -11,6 +11,15 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
+__all__ = (
+    "check_path_valid", "exec_append_file", "exec_append_newline_file", "exec_cat_cmd", "exec_cp_cmd",
+    "exec_cp_cmd_no_user", "exec_ln_cmd", "exec_mkdir_cmd", "exec_mount_cmd", "exec_mv_cmd", "exec_overwrite_file",
+    "exec_umount_cmd", "exec_write_file", "exec_write_file_without_x_permission", "exec_write_new_file",
+    "exec_write_new_file_without_x_permission", "ExecFuncParam", "get_exe_abs_path", "get_user_env_param_by_key",
+    "get_user_home", "su_exec_cat_cmd", "su_exec_cmd_list", "su_exec_rm_cmd", "su_exec_touch_cmd",
+    "exec_mount_cmd_with_aix", "exec_cp_dir_no_user", "read_lines_cmd"
+)
+
 import json
 import os
 import platform
@@ -30,6 +39,7 @@ from common.err_code import CommErrCode
 from common.exception.common_exception import ErrCodeException
 from common.file_common import check_file_or_dir, get_user_info, exec_lchown
 from common.number_const import NumberConst
+from common.security.anonym_utils.anonymity import Anonymity
 from common.util.check_user_utils import check_path_owner, check_os_user
 from common.util.check_utils import check_param_chars_no_quote, check_dir_path, check_file_path, check_real_path, \
     check_dir_path_without_check_mode
@@ -61,7 +71,9 @@ SIZE_1_G = 1073741824
 
 class ExecFuncParam:
     def __init__(self, os_user: str, cmd_list: List[str], fmt_params_list: List[List], timeout: int = None,
-                 env_file_list: List[str] = None, shell_file: str = None, chk_exe_owner: bool = True):
+                 env_file_list: List[str] = None, shell_file: str = None, chk_exe_owner: bool = True,
+                 treat_as_error_echo_list: List[str] = None, need_input_password_echo_list: List[str] = None,
+                 password: str = None):
         """
         :param os_user: 操作系统用户名
         :param cmd_list: 命令列表，例：["python3 {zctl_file} -t {t_p}", "ls -l"]
@@ -75,6 +87,9 @@ class ExecFuncParam:
         :param env_file_list: 环境变量文件列表
         :param shell_file: shell文件
         :param chk_exe_owner: 是否校验可执行文件的用户
+        :param treat_as_error_echo_list: 视为错误的回显，出现就视为命令执行失败
+        :param need_input_password_echo_list: 需要输入密码场景的回显
+        :param password: 需要输入密码场景下的键入密码
         """
         self.os_user = os_user
         self.cmd_list = cmd_list
@@ -83,6 +98,9 @@ class ExecFuncParam:
         self.env_file_list = env_file_list or list()
         self.shell_file = shell_file
         self.chk_exe_owner = chk_exe_owner
+        self.treat_as_error_echo_list = treat_as_error_echo_list
+        self.need_input_password_echo_list = need_input_password_echo_list
+        self.password = password
 
 
 class WriteFileParam:
@@ -357,6 +375,23 @@ def get_exe_abs_path(os_user: str, exe: str, shell_file: str = None):
     return exe_abs_path
 
 
+def handle_extended_scenarios(ssh, param, expect_list):
+    if param.treat_as_error_echo_list:
+        expect_list = expect_list[:1] + param.treat_as_error_echo_list + expect_list[1:]
+    if param.need_input_password_echo_list:
+        index = ssh.expect(expect_list + param.need_input_password_echo_list,
+                           timeout=param.timeout or NumberConst.THIRTY)
+        if index in range(len(expect_list), len(expect_list) + len(param.need_input_password_echo_list)):
+            if param.password:
+                ssh.sendline(param.password)
+            else:
+                ssh.sendline()
+            index = ssh.expect(expect_list, timeout=param.timeout or NumberConst.THIRTY)
+    else:
+        index = ssh.expect(expect_list, timeout=param.timeout or NumberConst.THIRTY)
+    return index
+
+
 def su_exec_cmd_list(param: ExecFuncParam):
     """
     切换用户交互式执行命令
@@ -374,11 +409,12 @@ def su_exec_cmd_list(param: ExecFuncParam):
             LOGGER.error("Execute command(%s) failed, index: %s, out: %s.", su_cmd, index, out)
             raise ErrCodeException(CommErrCode.FAILED_EXECUTE_COMMAND, *[su_cmd, out])
         _temp_change_prompt(ssh)
+        expect_list = [TEMP_PROMPT, pexpect.EOF, pexpect.TIMEOUT]
         # 存在环境变量，先导环境变量
         if param.env_file_list:
             source_cmd = " && ".join([f"source {i}" for i in param.env_file_list])
             ssh.sendline(source_cmd)
-            index = ssh.expect([TEMP_PROMPT, pexpect.EOF, pexpect.TIMEOUT], timeout=NumberConst.THIRTY)
+            index = ssh.expect(expect_list, timeout=NumberConst.THIRTY)
             if index != 0:
                 out = ssh.before
                 LOGGER.error("Execute command(%s) failed, index: %s, out: %s.", source_cmd, index, out)
@@ -391,10 +427,10 @@ def su_exec_cmd_list(param: ExecFuncParam):
             fmt_cmd_list.append(fmt_cmd)
         cmd_str = " && ".join(fmt_cmd_list)
         ssh.sendline(cmd_str)
-        index = ssh.expect([TEMP_PROMPT, pexpect.EOF, pexpect.TIMEOUT], timeout=param.timeout)
+        index = handle_extended_scenarios(ssh, param, expect_list)
         if index != 0:
             out = ssh.before
-            LOGGER.error("Execute command(%s) failed, index: %s, out: %s.", cmd_str, index, out)
+            LOGGER.error("Execute command(%s) failed, index: %s, out: %s.", Anonymity.process(cmd_str), index, out)
             raise ErrCodeException(CommErrCode.FAILED_EXECUTE_COMMAND, *[cmd_str, out])
         last_before = _handle_output(ssh.before, cmd_str)
         ssh.close()

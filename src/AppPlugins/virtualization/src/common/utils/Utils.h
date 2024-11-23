@@ -188,6 +188,7 @@ int32_t GetBoolValueByKeyFromJsonString(const std::string& bodyStr, const std::s
 int32_t SetJsonValueByKeyToJsonString(std::string& bodyStr, const std::string& key, const Json::Value& value);
 void InitAndRegTracePoint();
 void InitAndRegTracePointForHcs();
+double SafeStod(const std::string& str, double defaultValue = FAILED);
 int32_t GetUtf8CharNumber(const std::string &str);
 template <class T>
 int32_t TransStrToApsaraApiResponse(const std::string &resStr, T &apiResponse, const int32_t &expectedCode = 200)

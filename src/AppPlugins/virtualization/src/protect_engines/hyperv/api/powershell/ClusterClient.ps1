@@ -1,13 +1,15 @@
 <#PSScriptInfo
-. This file is a part of the open-eBackup project.
-. This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-. If a copy of the MPL was not distributed with this file, You can obtain one at
-. http://mozilla.org/MPL/2.0/.
-.
-. Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-. THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-. EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-. MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+
+.COPYRIGHT (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.\
+
+.FILE ClusterClient.ps1
+
+.AUTHOR h00606494
+
+.VERSION 0.1
+
+.DATE 2023-05-12
+
 #>
 
 . C:\DataBackup\ProtectClient\Plugins\VirtualizationPlugin\bin\Common.ps1
@@ -82,4 +84,30 @@ function get_host_list_from_cluster() {
         $node | Add-Member -MemberType NoteProperty -Name 'IPAddress' -Value $nodeAdd
     }
     return write_cache $CACHE_NAME_CLUSTER_LIST $result
+}
+
+function add_cluster {
+    param ([string]$action, [string]$uuid)
+    $result = '{"code": 0, "bodyErr": 0, "message": ""}'
+    $resultCode = $SUCCESS
+    try {
+        $jsonParm = read_parm_file $uuid
+        $response = Add-ClusterVirtualMachineRole -VMId $jsonParm.VMId
+        INFOLOG("$response AddCluster success!")
+    } catch {
+        $expInfo = $_.Exception.Message
+        ERRLOG("Run AddCluster failed, err: $expInfo")
+        $result = '{"code": 200, "bodyErr": 200, "message": "Add Cluster error"}'
+        $resultCode = $FAILED
+    }
+    $write_result = write_result_file $uuid $result
+    return $resultCode
+}
+
+function get_cluster_shared_volume {
+    param ([string]$action, [string]$uuid)
+    $result = Get-ClusterSharedVolume | Select-Object -ExpandProperty SharedVolumeInfo | Select-Object FriendlyVolumeName
+    $result = format_result $result
+    $write_result = write_result_file $uuid $result
+    return $write_result
 }

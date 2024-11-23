@@ -160,6 +160,7 @@ public:
      *  @return 错误码：0 成功，非0 失败
      */
     int32_t QuerySnapshot(const std::string &snapshotName, std::string &errDes);
+    int32_t QueryStoragePoolUsedRate(double &usedCapacityRate);
     int32_t RetryToQueryBitmap(BitmapVolumeInfo &info);
 
 private:

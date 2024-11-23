@@ -41,6 +41,7 @@ int VirtualizationBasicJob::ExecHook(const ExecHookParam &para)
         auto hook = (para.hookType == HookType::PRE_HOOK) ? preHook : postHook;
         ret = hook(para);
         if (ret == FAILED) {
+            ERRLOG("ExecHook failed, hookType: %d.", static_cast<int>(para.hookType == HookType::PRE_HOOK));
             ERRLOG("Exec hook failed, stage: %d.", static_cast<int>(para.stage));
             return ret;
         }

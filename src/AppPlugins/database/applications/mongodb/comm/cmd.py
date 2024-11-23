@@ -13,6 +13,7 @@
 
 import json
 import os
+import re
 
 import sys
 from contextlib import contextmanager
@@ -157,9 +158,19 @@ class Cmd:
         return_code, out_info, err_info = execute_cmd(cmd)
         ret = (return_code == CMDResult.SUCCESS.value)
         if not ret:
-            LOGGER.error("Execute cmd wrong, return_code: %s, out_info: %s, err_info: %s", return_code, out_info,
-                         err_info)
-            return path
+            LOGGER.error(f"Execute cmd wrong, return_code: {return_code}, out_info: {out_info}, "
+                         f"err_info: {err_info}")
+            return_code, whoami, err_info = execute_cmd("whoami")
+            if return_code != CMDResult.SUCCESS.value:
+                LOGGER.error(f"Execute cmd wrong, return_code: {return_code}, out_info: {whoami}, "
+                             f"err_info: {err_info}")
+                return path
+            cmd = cmd_format("su - {} -c 'which {}'", whoami.strip(), path)
+            return_code, out_info, err_info = execute_cmd(cmd)
+            if return_code != CMDResult.SUCCESS.value:
+                LOGGER.error(f"Execute cmd wrong, return_code: {return_code}, out_info: {out_info}, "
+                             f"err_info: {err_info}")
+                return path
         return out_info
 
     @staticmethod
@@ -178,8 +189,7 @@ class Cmd:
         return_code, out_info, err_info = execute_cmd(cmd)
         ret = (return_code == CMDResult.SUCCESS.value)
         if not ret:
-            LOGGER.error("Execute cmd wrong, return_code: %s, out_info: %s, err_info: %s", return_code, out_info,
-                         err_info)
+            LOGGER.error(f"Execute cmd wrong, return_code: {return_code}, out_info: {out_info}, err_info: {err_info}")
         res_cont = out_info if ret else err_info
         return ret, res_cont
 
@@ -192,8 +202,7 @@ class Cmd:
         return_code, out_info, err_info = execute_cmd(self._base_cmd.format(user, cmd))
         ret = (return_code == CMDResult.SUCCESS.value)
         if not ret:
-            LOGGER.error("Execute cmd wrong, return_code: %s, out_info: %s, err_info: %s", return_code, out_info,
-                         err_info)
+            LOGGER.error(f"Execute cmd wrong, return_code: {return_code}, out_info: {out_info}, err_info: {err_info}")
         res_cont = out_info if ret else err_info
         return ret, res_cont
 
@@ -214,12 +223,19 @@ class Cmd:
     def get_db_pwd_key(self, node_id=""):
         return "_".join((EnvName.DB_PASSWORD.format(node_id), self.pid))
 
+    def get_db_restore_job_auth_type_key(self, node_id=""):
+        return "_".join((EnvName.CUSTOM_SETTINGS.format(node_id), self.pid))
+
     def get_db_pwd(self, node_id=""):
         key = self.get_db_pwd_key(node_id)
         return get_stdin_field(key)
 
     def get_db_user_auth_type(self, node_id=""):
         key = self.get_db_user_auth_type_key(node_id)
+        return get_stdin_field(key)
+
+    def get_db_restore_job_auth_type(self, node_id=""):
+        key = self.get_db_restore_job_auth_type_key(node_id)
         return get_stdin_field(key)
 
     @Checker.check_args(
@@ -257,12 +273,42 @@ class Cmd:
         return self._execute_cmd(df_cmd)
 
     def show_lv_info(self):
-        lvs = "lvs -o name,vg_name,path,size --units m --reportformat json"
-        return self._execute_cmd(lvs)
+        lvs = "lvs -o name,vg_name,path,size --units m"
+        ret, lv_info = self._execute_cmd(lvs)
+        report_list = []
+        if ret and len(lv_info) > 1:
+            split_lines = lv_info.splitlines()
+            lv_list = []
+            for row in split_lines[1:]:
+                row = row.strip()
+                columns = re.split(r' +', row)
+                lv_list.append({
+                    "lv_name": columns[0].strip(),
+                    "vg_name": columns[1].strip(),
+                    "lv_path": columns[2].strip(),
+                    "lv_size": columns[3].strip()
+                })
+            report_list.append({"lv": lv_list})
+        result = {"report": report_list}
+        return ret, result
 
     def show_vg_info(self):
-        lvs = "vgs -o name,free --units m --reportformat json"
-        return self._execute_cmd(lvs)
+        lvs = "vgs -o name,free --units m"
+        ret, vg_info = self._execute_cmd(lvs)
+        report_list = []
+        if ret and len(vg_info) > 1:
+            split_lines = vg_info.splitlines()
+            vg_list = []
+            for row in split_lines[1:]:
+                row = row.strip()
+                columns = re.split(r' +', row)
+                vg_list.append({
+                    "vg_name": columns[0].strip(),
+                    "vg_free": columns[1].strip()
+                })
+            report_list.append({"vg": vg_list})
+        result = {"report": report_list}
+        return ret, result
 
     @Checker.check_args(
         cmd_args=["size", "name", "lvm_name"]
@@ -322,7 +368,6 @@ class Cmd:
         result, error_param = su_exec_cmd_list(param)
         return (result == CMDResult.SUCCESS.value), error_param
 
-
     @Checker.check_args(
         cmd_args=["mongod_bin_dir"]
     )
@@ -354,7 +399,7 @@ class Cmd:
     )
     def check_mongo_tool(self, mongo_tool_type):
         mongo_check_cmd = "%s --help" % mongo_tool_type
-        LOGGER.debug("Check mongo tool: %s", mongo_check_cmd)
+        LOGGER.debug(f"Check mongo tool: {mongo_check_cmd}")
         return self.execute_cmd_by_os_user(mongo_check_cmd, mongo_tool_type)
 
     @Checker.check_args(
@@ -363,7 +408,7 @@ class Cmd:
     )
     def check_mongo_version(self, mongo_tool_type):
         mongo_check_cmd = "%s --version" % mongo_tool_type
-        LOGGER.debug("Check mongo version: %s", mongo_check_cmd)
+        LOGGER.debug(f"Check mongo version: {mongo_check_cmd}")
         return self.execute_cmd_by_os_user(mongo_check_cmd, mongo_tool_type)
 
     @Checker.check_args(
@@ -412,10 +457,9 @@ class Cmd:
     def check_mongo_user_and_path(self, path):
         os_user, envpath = self.get_os_user(path)
         if not check_path_owner(envpath, [os_user]):
-            LOGGER.error("The owner of path: %s is not %s.", envpath, os_user)
+            LOGGER.error(f"The owner of path: {envpath} is not {os_user}.")
             return False
         return True
-
 
     @contextmanager
     def _safe_get_key(self, env_key):
@@ -443,5 +487,5 @@ class Cmd:
         ret = (return_code == 0)
         res_cont = std_out if ret else std_err
         if not ret:
-            LOGGER.debug("execute with expect:%s,result:%s", ret, res_cont)
+            LOGGER.debug(f"execute with expect: {ret}, result: {res_cont}")
         return ret, res_cont

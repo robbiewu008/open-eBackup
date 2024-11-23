@@ -27,8 +27,8 @@ import psutil
 from common.logger import Logger
 from common.const import ExecuteResultEnum, SubJobStatusEnum, BackupTypeEnum, DeployType, RepositoryDataTypeEnum, \
     DBLogLevel, ReportDBLabel, CopyDataTypeEnum, ParamConstant, RoleType
-from common.common import output_result_file, execute_cmd, convert_time_to_timestamp, clean_dir, exter_attack, \
-    write_content_to_file, read_tmp_json_file, output_execution_result_ex
+from common.common import output_result_file, execute_cmd, convert_time_to_timestamp, exter_attack, \
+    write_content_to_file, read_tmp_json_file, output_execution_result_ex, clean_dir_not_walk_link
 from common.number_const import NumberConst
 from common.util import check_utils, check_user_utils
 from common.util.backup import backup, backup_files, query_progress
@@ -83,6 +83,9 @@ class PgBackup(object):
         self._calc_progress_thread_flag = True
         self.install_deploy_type = (self._job_dict.get("protectEnv", {}).get("extendInfo", {}).
                                     get("installDeployType", InstallDeployType.PGPOOL))
+        if self.install_deploy_type == InstallDeployType.PGPOOL:
+            self._port = self._job_dict.get("protectObject", {}).get("extendInfo", {}).get("instancePort",
+                                                                                           PgConst.DB_DEFAULT_PORT)
         self.enable_root = PostgreCommonUtils.get_root_switch()
         self._backup_type = self._job_dict.get("jobParam", {}).get("backupType", "")
         self._last_stop_wal = None
@@ -121,6 +124,8 @@ class PgBackup(object):
         """
         清空数据仓目录
         """
+        if os.path.islink(dir_path):
+            return
         ret, realpath = PostgreCommonUtils.check_path_in_white_list(dir_path)
         if not ret:
             return
@@ -128,7 +133,7 @@ class PgBackup(object):
             new_path = os.path.join(realpath, path)
             if '.snapshot' in new_path:
                 continue
-            if os.path.isfile(new_path):
+            if os.path.isfile(new_path) or os.path.islink(new_path):
                 os.remove(new_path)
             elif os.path.isdir(new_path):
                 shutil.rmtree(new_path, ignore_errors=True)
@@ -182,7 +187,7 @@ class PgBackup(object):
         if not check_utils.is_port(self._port):
             LOGGER.error(f"The port: {self._port} is invalid!")
             return False
-        if not PostgreCommonUtils.check_os_name(self._os_user_name, self._client_path, self.enable_root)[0]:
+        if not PostgreCommonUtils.check_os_user(self._os_user_name, self._client_path, self.enable_root)[0]:
             return False
         return True
 
@@ -191,7 +196,7 @@ class PgBackup(object):
         if not os.path.exists(pg_ctl_path):
             LOGGER.error(f"pg_ctl_path is not exist!")
             return False
-        if not PostgreCommonUtils.check_os_name(self._os_user_name, pg_ctl_path, self.enable_root)[0]:
+        if not PostgreCommonUtils.check_os_user(self._os_user_name, pg_ctl_path, self.enable_root)[0]:
             LOGGER.error("Check database status failed!Because os username is not exist!")
             return False
         if not self.enable_root:
@@ -241,6 +246,36 @@ class PgBackup(object):
                     return False
         return False
 
+    def check_node_is_primary_clup(self):
+        local_service_ip = ''
+        host_ips = PostgreCommonUtils.get_local_ips()
+        nodes = self._job_dict.get("protectSubObject", [])
+        for node in nodes:
+            node_extend_info = node.get("extendInfo", {})
+            service_ip = node_extend_info.get('serviceIp', "")
+            if service_ip in host_ips:
+                local_service_ip = service_ip
+                break
+        if local_service_ip == '':
+            LOGGER.error(f"Unable to find the IP of the local database host, job_id: {self._job_id}.")
+            return False
+        sql_cmd = "select pg_is_in_recovery();"
+        pg_sql = ExecPgSql(self._pid, self._client_path, local_service_ip, self._port)
+        return_code, std_out, st_err = pg_sql.exec_sql_cmd(self._os_user_name, sql_cmd)
+        if not return_code:
+            LOGGER.error(
+                f"Failed to exec cmd: {sql_cmd}, job_id: {self._job_id}, return_code: {return_code}, st_err: {st_err}.")
+            return False
+        recovery_state = pg_sql.parse_html_result(std_out)
+        if not recovery_state:
+            LOGGER.error(f"The command execution did not yield any results, cmd: {sql_cmd}, job_id: {self._job_id}.")
+            return False
+        if recovery_state[0].get('pg_is_in_recovery') == 't':
+            LOGGER.error(f"The node is standy and status is normal, job_id: {self._job_id}.")
+            return False
+        LOGGER.info(f"The node is primary and status is normal, job_id: {self._job_id}.")
+        return True
+
     def check_node_is_primary(self):
         sql_cmd = "show pool_nodes;"
         pg_sql = self.get_pg_sql()
@@ -275,22 +310,24 @@ class PgBackup(object):
         if int(deploy_type) == DeployType.CLUSTER_TYPE.value:
             install_deploy_type = (self._job_dict.get("protectEnv", {}).get("extendInfo", {}).
                                    get("installDeployType", InstallDeployType.PGPOOL))
-            if install_deploy_type == InstallDeployType.PATRONI:
-                if not self.check_node_is_primary_patroni():
-                    body_err = ErrorCode.PLUGIN_CANNOT_BACKUP_ERR.value
-                    message = "Cluster node is standby."
-                    self.set_action_result(ExecuteResultEnum.INTERNAL_ERROR.value, body_err, message)
-                    LOGGER.error(f"Failed to check cluster status, job_id: {self._job_id}.")
-                    return False
-            elif install_deploy_type == InstallDeployType.PGPOOL:
-                if not self.check_node_is_primary():
-                    body_err = ErrorCode.PLUGIN_CANNOT_BACKUP_ERR.value
-                    message = "Cluster node is standby."
-                    self.set_action_result(ExecuteResultEnum.INTERNAL_ERROR.value, body_err, message)
-                    LOGGER.error(f"Failed to check cluster status, job_id: {self._job_id}.")
-                    return False
-            else:
-                return True
+            if install_deploy_type == InstallDeployType.PATRONI and not self.check_node_is_primary_patroni():
+                body_err = ErrorCode.PLUGIN_CANNOT_BACKUP_ERR.value
+                message = "Cluster node is standby."
+                self.set_action_result(ExecuteResultEnum.INTERNAL_ERROR.value, body_err, message)
+                LOGGER.error(f"Failed to check cluster status, job_id: {self._job_id}.")
+                return False
+            elif install_deploy_type == InstallDeployType.PGPOOL and not self.check_node_is_primary():
+                body_err = ErrorCode.PLUGIN_CANNOT_BACKUP_ERR.value
+                message = "Cluster node is standby."
+                self.set_action_result(ExecuteResultEnum.INTERNAL_ERROR.value, body_err, message)
+                LOGGER.error(f"Failed to check cluster status, job_id: {self._job_id}.")
+                return False
+            elif install_deploy_type == InstallDeployType.CLUP and not self.check_node_is_primary_clup():
+                body_err = ErrorCode.PLUGIN_CANNOT_BACKUP_ERR.value
+                message = "Cluster node is standby."
+                self.set_action_result(ExecuteResultEnum.INTERNAL_ERROR.value, body_err, message)
+                LOGGER.error(f"Failed to check cluster status, job_id: {self._job_id}.")
+                return False
         LOGGER.info(f"The node can backup, job_id: {self._job_id}.")
         return True
 
@@ -540,6 +577,9 @@ class PgBackup(object):
             if not self.backup_directory(src_path, self._data_area, self._job_id):
                 LOGGER.error(f"Failed to backup database's files, job id: {self._job_id}.")
                 return False, ErrCode.BACKUP_TOOL_FAILED
+            copy_pg_start_log_path = os.path.join(self._data_area, "pg_start.log")
+            if os.path.exists(copy_pg_start_log_path) and os.path.isfile(copy_pg_start_log_path):
+                os.remove(copy_pg_start_log_path)
             if not self.backup_table_space():
                 LOGGER.error(f"Failed to backup table space, job id: {self._job_id}.")
                 return False, ErrCode.BACKUP_TABLE_SPACE_FAILED
@@ -746,7 +786,8 @@ class PgBackup(object):
                 return False
             # 清空wal目录
             target = os.path.join(self._data_area, pg_wal_dir)
-            clean_dir(target)
+            if not os.path.islink(target):
+                clean_dir_not_walk_link(target)
         else:
             if not check_utils.check_path_in_white_list(self._log_area):
                 LOGGER.error(f"Data area is incorrect :{self._log_area}.")

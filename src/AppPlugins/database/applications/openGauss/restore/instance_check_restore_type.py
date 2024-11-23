@@ -20,7 +20,7 @@ from common.file_common import change_path_permission
 from common.util.exec_utils import exec_append_file
 from openGauss.backup.resource_info import ResourceInfo
 from openGauss.common.common import write_progress_file, safe_get_environ
-from openGauss.common.const import logger, Env, ProgressInfo, Status
+from openGauss.common.const import logger, Env, ProgressInfo, Status, OpenGaussDeployType, ProtectObject
 from openGauss.common.error_code import NormalErr, OpenGaussErrorCode
 from openGauss.resource.cluster_instance import GaussCluster
 
@@ -104,15 +104,28 @@ class CheckRestore:
         # 还需检查备份文件链是否存在
         progress_file = os.path.join(self.input_info.get("cache_path"), f'{JobData.JOB_ID}pre_job')
         write_progress_file(ProgressInfo.START, progress_file)
-        self.check_conf()
+
+        # 检查恢复配置
+        deploy_type = self.input_info.get("deploy_type", "")
+        cluster_version = self.input_info.get("cluster_version", "")
+        logger.info(
+            f"Restore post job deploy type {deploy_type}, cluster_version: {cluster_version}")
+        if deploy_type != OpenGaussDeployType.DISTRIBUTED or ProtectObject.CMDB not in cluster_version:
+            # CMDB分布式集群由pw_ctl控制恢复进程，无需手动关闭
+            self.check_conf()
+
+        # 检查备份恢复是否一致
         check_result = self.check_user()
         if check_result != NormalErr.NO_ERR:
             write_progress_file(ProgressInfo.FAILED, progress_file)
             return check_result
+        # 校验备份恢复版本号是否一致
         check_result = self.check_version()
         if check_result != NormalErr.NO_ERR:
             write_progress_file(ProgressInfo.FAILED, progress_file)
             return check_result
+
+        # 检查备份恢复架构是否一致
         check_result = self.check_node_and_topo()
         if check_result != NormalErr.NO_ERR:
             write_progress_file(ProgressInfo.FAILED, progress_file)

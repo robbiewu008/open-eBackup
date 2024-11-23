@@ -13,12 +13,13 @@
 
 import json
 import os.path
+import shutil
 import threading
 import time
 
 from common.cleaner import clear
 from common.common import output_result_file, output_execution_result_ex, check_command_injection, clean_dir, \
-    read_tmp_json_file
+    read_tmp_json_file, check_command_injection_exclude_quote
 from common.common_models import SubJobDetails, LogDetail, SubJobModel
 from common.const import ParamConstant, SubJobTypeEnum, DBLogLevel, SubJobPolicyEnum, SubJobPriorityEnum, \
     ExecuteResultEnum, SubJobStatusEnum
@@ -26,10 +27,12 @@ from common.parse_parafile import get_env_variable
 from common.util.cmd_utils import cmd_format
 from oracle.common.common import write_tmp_json_file
 from tdsql.common.const import ErrorCode, TdsqlRestoreSubJobName, ActionResponse, HostParam, ArchiveType, \
-    ConnectParam, MySQLVersion, BackupPath
+    ConnectParam, MySQLVersion
 from tdsql.common.const import TdsqlJsonConst
 from tdsql.common.tdsql_common import report_job_details, extract_ip, execute_cmd_list, get_log_uri
-from tdsql.common.util import is_slave, exec_sql, get_tdsql_status, get_version_path
+from tdsql.common.util import is_slave, exec_sql, get_tdsql_status, get_version_path, get_online_data_nodes, \
+    get_mysql_version_path, get_backup_pre_from_defaults_file_path, get_mysql_version_from_defaults_file_path, \
+    check_status
 from tdsql.handle.common.const import TDSQLReportLabel, TDSQLProtectKeyName, TDSQLDataNodeStatus, TDSQLRestoreTaskStatus
 from tdsql.handle.common.tdsql_param import JsonParam
 from tdsql.handle.requests.rest_requests import RestRequests
@@ -54,7 +57,7 @@ class Restore:
         log.info(json_param)
         self._logdetail = None
         self._err_info = {}
-        self._query_progress_interval = 15
+        self._query_progress_interval = 30
         self._cache_area = JsonParam.get_cache_path(json_param)
         self._meta_path = JsonParam.get_meta_path(json_param)
         self._data_path = JsonParam.get_data_path(json_param)
@@ -63,31 +66,24 @@ class Restore:
         self._host_ip = self._json_param_object.get("job", {}).get("targetEnv", {}).get("endpoint", "")
         self._instance_id = self._json_param_object.get("job", {}).get("targetObject", {}).get("id", "")
         self._sub_name = self._json_param_object.get("subJob", {}).get("jobName", "")
-
         self._job_extend_info = self._json_param_object.get("job", {}).get("extendInfo", {})
         self._target_obj_extend_info = self._json_param_object.get("job", {}).get("targetObject", {}).get(
             "extendInfo", {})
         self._create_new_instance = self._json_param_object.get("job", {}).get("extendInfo", {}).get(
             "create_new_instance", "false")
-        if self._create_new_instance == "true" and self._sub_name in (
-                TdsqlRestoreSubJobName.SUB_EXEC_PREPARE, TdsqlRestoreSubJobName.SUB_CHECK_MYSQL_VERSION,
-                TdsqlRestoreSubJobName.SUB_EXEC_RESTORE):
-            self._instance_info_ = self.read_cluster_instance_info()
-        else:
-            self._instance_info_str = self._target_obj_extend_info.get("clusterInstanceInfo", "")
-            self._instance_info_ = json.loads(self._instance_info_str)
+        self._instance_info_ = self.get_instance_info()
         self._set_id = self._instance_info_.get("id", "")
-        self.nodes = self._instance_info_.get("groups", [])[0].get("dataNodes", "")
-
-        self._mysql_socket = self.nodes[0].get("socket", "")
-        self._mysql_conf_path = self.nodes[0].get("defaultsFile", "")
-        self._cluster_id = self._json_param_object.get("job", {}).get("targetEnv", {}).get("id", {})
         self._extend_info = self._json_param_object.get("job", {}).get("targetEnv", {}).get("extendInfo", {})
-
         self._cluster_info_str = self._extend_info.get("clusterInfo", "")
         self._cluster_info = json.loads(self._cluster_info_str)
+        self._oss_nodes = self._cluster_info.get("ossNodes", [])
+        self._cluster_id = self._json_param_object.get("job", {}).get("targetEnv", {}).get("id", {})
         self._scheduler_nodes = self._cluster_info.get("schedulerNodes", "")
-        self._oss_nodes = self._cluster_info.get("ossNodes", "")
+        self.oss_url = f'http://{self._oss_nodes[0].get("ip")}:{self._oss_nodes[0].get("port")}/tdsql'
+        self.nodes = self.get_data_nodes()
+        self._mysql_socket = self.nodes[0].get("socket", "")
+        self._mysql_conf_path = self.nodes[0].get("defaultsFile", "")
+        self._mysql_version = self.get_mysql_version()
         self.restore_type = self._json_param_object.get("job", {}).get("jobParam", {}).get("restoreType", "")
 
         self.user_name = "tdsql"
@@ -96,6 +92,7 @@ class Restore:
         self._job_json = self._json_param_object.get("job", {})
         self._auth = self._json_param_object.get("job", {}).get("targetObject", {}).get("auth", "")
         self._max_change_slave_status_times = 3
+        self._get_progress_file_failed_num = 0
 
     @staticmethod
     def restore_prerequisite():
@@ -107,9 +104,26 @@ class Restore:
         error_code = SubJobStatusEnum.COMPLETED.value
         return True, error_code
 
+    def get_instance_info(self):
+        if self._create_new_instance == "true" and self._sub_name in (
+                TdsqlRestoreSubJobName.SUB_EXEC_PREPARE, TdsqlRestoreSubJobName.SUB_CHECK_MYSQL_VERSION,
+                TdsqlRestoreSubJobName.SUB_EXEC_RESTORE):
+            instance_info = self.read_cluster_instance_info()
+        else:
+            instance_info_str = self._target_obj_extend_info.get("clusterInstanceInfo", "")
+            instance_info = json.loads(instance_info_str)
+        return instance_info
+
+    def get_data_nodes(self):
+        if self._create_new_instance == "true":
+            return self._instance_info_.get("groups", [])[0].get("dataNodes", "")
+        else:
+            return get_online_data_nodes(self._instance_info_.get("groups", [])[0].get("dataNodes", ""),
+                                         self.oss_url, self._set_id, "restore", self._pid)
+
     def allow_restore_in_local_node(self):
         ret, master_user, master_password = self.get_master_user_and_password()
-        mysql_version = self._mysql_conf_path.split("/")[4]
+        mysql_version = self._mysql_version
         if mysql_version.startswith(MySQLVersion.MARIADB):
             connect_param = ConnectParam(socket='', ip=self._mysql_ip, port=str(self._mysql_port))
         else:
@@ -148,9 +162,15 @@ class Restore:
         progress_file = os.path.join(self._cache_area, f"progress_{self._sub_job_id}_{extract_ip()[0]}")
         log.info(f'get_progress progress_file {progress_file}')
         if not os.path.exists(progress_file):
-            status = SubJobStatusEnum.FAILED
-            log.error(f"Progress file: {progress_file} not exist")
-            return status, progress
+            self._get_progress_file_failed_num += 1
+            log.info(f'progress_file not exist num is {self._get_progress_file_failed_num}')
+            if self._get_progress_file_failed_num > 1:
+                status = SubJobStatusEnum.FAILED
+                log.error(f"Progress file: {progress_file} not exist")
+                return status, progress
+            else:
+                return status, progress
+        self._get_progress_file_failed_num = 0
         log.info(f'Path exist')
         with open(progress_file, "r", encoding='UTF-8') as file_stream:
             data = file_stream.read()
@@ -203,6 +223,7 @@ class Restore:
             progress_dict.task_status = task_status
             progress_dict.progress = progress
             self._job_status = task_status
+            log.info(f"report_job_details task_status, {task_status}")
             report_job_details(self._job_id, progress_dict.dict(by_alias=True))
             time.sleep(self._query_progress_interval)
 
@@ -367,29 +388,30 @@ class Restore:
 
     def sub_job_check(self):
         log.info("check_mysql_version")
-        if not self.check_mysql_version(self._mysql_conf_path):
+        if not self.check_mysql_version():
             log.error("check mysql version failed")
+            return False
+
+        # 在/data/oc_agent/log/目录创建{port}_deploy.conf文件防止oc_agent将mysql自动拉起
+        log.info("create {port}_deploy.conf")
+        try:
+            if not create_deploy_conf(self._mysql_port):
+                log.error(f"create {self._mysql_port}_deploy.conf failed.")
+                return False
+        except Exception as ex:
+            log_detail = LogDetail(logInfo=TDSQLReportLabel.TDSQL_ORIGINAL_LOCATION_RESTORE_FAIL,
+                                   logInfoParam=[str(ex)],
+                                   logLevel=DBLogLevel.ERROR.value)
+            report_job_details(self._pid,
+                               SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
+                                             logDetail=[log_detail],
+                                             taskStatus=SubJobStatusEnum.FAILED.value).dict(by_alias=True))
+            log.error(f"create {self._mysql_port}_deploy.conf failed, no space left on device")
             return False
 
         # 检查数据库是否停用
         log.info("check_mysql_status")
         if check_mysql_status(self._mysql_port):
-            # 在/data/oc_agent/log/目录创建{port}_deploy.conf文件防止oc_agent将mysql自动拉起
-            log.info("create {port}_deploy.conf")
-            try:
-                if not create_deploy_conf(self._mysql_port):
-                    log.error(f"create {self._mysql_port}_deploy.conf failed.")
-                    return False
-            except Exception as ex:
-                log_detail = LogDetail(logInfo=TDSQLReportLabel.TDSQL_ORIGINAL_LOCATION_RESTORE_FAIL,
-                                       logInfoParam=[str(ex)],
-                                       logLevel=DBLogLevel.ERROR.value)
-                report_job_details(self._pid,
-                                   SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
-                                                 logDetail=[log_detail],
-                                                 taskStatus=SubJobStatusEnum.FAILED.value).dict(by_alias=True))
-                log.error(f"create {self._mysql_port}_deploy.conf failed, no space left on device")
-                return False
             log.info("stop_mysql_service")
             if not stop_mysql_service(self._mysql_port, self._mysql_conf_path):
                 log.error("stop mysql failed.")
@@ -406,7 +428,8 @@ class Restore:
             log.error("xtrabackup prepare get target_dir failed")
             return False
 
-        if not xtrabackup_prepare(port=self._mysql_port, target_dir=target_dir, mysql_conf_path=self._mysql_conf_path):
+        if not xtrabackup_prepare(port=self._mysql_port, target_dir=target_dir, mysql_conf_path=self._mysql_conf_path,
+                                  mysql_version=self._mysql_version):
             log.error("xtrabackup prepare fail")
             return False
         log.info("xtrabackup prepare success")
@@ -490,14 +513,20 @@ class Restore:
         defined_config_info_str = self._job_extend_info.get("extParameter", "")
         defined_instance_config_info = defined_config_info_str if not defined_config_info_str \
             else json.loads(defined_config_info_str)
-        default_instance_config_info = self._json_param_object.get(
-            "job", {}).get("copies", [{}, {}])[0].get("extendInfo", {}).get("instance_config_info", {})
+        copy = self._json_param_object.get(
+            "job", {}).get("copies", [{}, {}])[0]
+        copy_type = copy.get("type", "")
+        if copy_type in ArchiveType.archive_array:
+            default_instance_config_info = copy.get("extendInfo", {}).get(
+                "extendInfo", {}).get("instance_config_info", {})
+        else:
+            default_instance_config_info = copy.get("extendInfo", {}).get("instance_config_info", {})
         new_instance_nodes_list = self.gen_new_instance_nodes()
         assign_ip = ";".join([node.get("ip") for node in new_instance_nodes_list])
         node_num = len(new_instance_nodes_list)
         instance_config_info = {
-            "manual": False,
-            "idc_flag": True,
+            "manual": True,
+            "idc_flag": False,
             "lock": 1,
             "assign_ip": assign_ip,
             "nodeNum": node_num
@@ -544,7 +573,7 @@ class Restore:
             return False
 
         log.info("01.mv_data_and_log_dir")
-        if not mv_data_and_log_dir(data_dir=data_dir, dblogs_path=dblogs_path):
+        if not mv_data_and_log_dir(data_dir=data_dir, dblogs_path=dblogs_path, mysql_conf_path=self._mysql_conf_path):
             log.error("01.mv_data_and_log_dir fail")
             return False
 
@@ -553,7 +582,8 @@ class Restore:
             log.error("xtrabackup restore get target_dir failed")
             return False
         log.info("02.xtrabackup_restore")
-        if not xtrabackup_restore(port=self._mysql_port, target_dir=target_dir, mysql_conf_path=self._mysql_conf_path):
+        if not xtrabackup_restore(port=self._mysql_port, target_dir=target_dir, mysql_conf_path=self._mysql_conf_path,
+                                  mysql_version=self._mysql_version):
             log.error("02.xtrabackup_restore fail")
             return False
 
@@ -561,6 +591,9 @@ class Restore:
             return False
 
         if not self.change_master_and_restart_cluster():
+            return False
+
+        if not check_status(self._mysql_port):
             return False
 
         if need_log_restore(self._pid, self._job_id, self._json_param_object):
@@ -574,7 +607,7 @@ class Restore:
                 return False
 
         log.info("11. clean backup dir")
-        if not clean_backup_dir(data_dir=data_dir, dblogs_path=dblogs_path):
+        if not clean_backup_dir(data_dir=data_dir, dblogs_path=dblogs_path, mysql_conf_path=self._mysql_conf_path):
             return False
 
         return True
@@ -664,23 +697,24 @@ class Restore:
         authpwd = "job_copies_0_protectObject_auth_authPwd_"
         user = get_env_variable(authkey + self._pid)
         password = get_env_variable(authpwd + self._pid)
-        if check_command_injection(copy_start_time):
+        if check_command_injection_exclude_quote(copy_start_time):
             log.error(f"Check copy start time command injection. pid:{self._pid} jobId:{self._job_id}")
             return False
-        if check_command_injection(date_time):
+        if check_command_injection_exclude_quote(date_time):
             log.error(f"Check date time command injection. pid:{self._pid} jobId:{self._job_id}")
             return False
         if check_command_injection(user):
             log.error(f"Check user command injection. pid:{self._pid} jobId:{self._job_id}")
             return False
-        mysql_version = self._mysql_conf_path.split("/")[4]
+        mysql_version = self._mysql_version
         skip_gtid_cmd = ""
         if not mysql_version.startswith(MySQLVersion.MARIADB):
             skip_gtid_cmd = "--skip-gtids"
         # 密码无法用命令注入来校验，使用shell自身的引号安全机制
+        os.environ["MYSQL_PWD"] = password
         restore_cmd += cmd_format(" --disable-log-bin {} --start-datetime={} \
-                                                  --stop-datetime={} | mysql -f --user={} --password={} -S {}",
-                                  skip_gtid_cmd, copy_start_time, date_time, user, password, self._mysql_socket)
+                                                  --stop-datetime={} | mysql -f --user={} -S {}",
+                                  skip_gtid_cmd, copy_start_time, date_time, user, self._mysql_socket)
         try:
             ret = execute_command(restore_cmd, None)
         except Exception as ex:
@@ -689,6 +723,7 @@ class Restore:
         finally:
             clear(password)
             clear(restore_cmd)
+            del os.environ["MYSQL_PWD"]
         return ret
 
     def get_log_file_names(self, copy_start_time_stamp, end_time_stamp, log_path):
@@ -823,7 +858,11 @@ class Restore:
             return False, "", ""
         # 日志恢复需要最后一个数据副本来恢复
         copy = copies_json[-2]
-        extendinfo_json = copy.get("extendInfo", {})
+        copy_type = copy.get("type", "")
+        if copy_type in ArchiveType.archive_array:
+            extendinfo_json = copy.get("extendInfo", {}).get("extendInfo", {})
+        else:
+            extendinfo_json = copy.get("extendInfo", {})
         if not extendinfo_json:
             log.error(f"Get extendinfo json failed.")
             return False, "", ""
@@ -853,7 +892,7 @@ class Restore:
 
     def stop_slave(self, oss_url, agent_user, agent_pwd):
         output = ""
-        mysql_version = self._mysql_conf_path.split("/")[4]
+        mysql_version = self._mysql_version
         if mysql_version.startswith(MySQLVersion.MARIADB):
             connect_param = ConnectParam(socket='', ip=self._mysql_ip, port=str(self._mysql_port))
         else:
@@ -902,7 +941,7 @@ class Restore:
 
         cmd_str = f"change master to master_host='{master_host}', master_port={self._mysql_port}, " \
                   f"master_user='{master_user}', master_password='{master_password}'"
-        mysql_version = self._mysql_conf_path.split("/")[4]
+        mysql_version = self._mysql_version
         if not mysql_version.startswith(MySQLVersion.MARIADB):
             cmd_str += ", master_auto_position=1"
         log.info(f"change master cmd_str {cmd_str}")
@@ -941,7 +980,7 @@ class Restore:
             return False
 
         # 5.x版本需要在dblogs_path下手动创建bin/binlog.index文件
-        if not create_binlog_index(dblogs_path, self._mysql_conf_path):
+        if not create_binlog_index(dblogs_path, self._mysql_version):
             log.error("04.create binlog index file fail")
             return False
 
@@ -968,7 +1007,7 @@ class Restore:
         host_param = HostParam(url=url, ip=self._mysql_ip, port=str(self._mysql_port))
         if is_slave(host_param, set_id=self._set_id, task_type="restore", pid=self._pid):
             log.info('07-1.stop_mysqlagent')
-            if not stop_mysqlagent(self._mysql_port):
+            if not stop_mysqlagent(self._mysql_port, self._mysql_conf_path):
                 log.error("stop mysqlagent failed.")
                 return False
 
@@ -1008,7 +1047,7 @@ class Restore:
             return False, "", ""
         return True, master_user, master_password
 
-    def check_mysql_version(self, mysql_conf_path):
+    def check_mysql_version(self):
         extend_info_json = self.get_copy_extend_info()
         if not extend_info_json:
             log.error("step 2-4 get copy_mysql_version failed, copy extend_info is empty")
@@ -1019,7 +1058,7 @@ class Restore:
             # 兼容副本中mysql版本未上报的场景
             log.warn("copy_mysql_version is empty")
             return True
-        current_version = mysql_conf_path.split("/")[4]
+        current_version = self._mysql_version
         log.info(f"step 2-4 current_version is {current_version}")
         if copy_mysql_version != current_version:
             log.error(f"copy_mysql_version {copy_mysql_version} not match instance version {current_version}")
@@ -1061,7 +1100,9 @@ class Restore:
                 conf_file = "my_" + port + ".cnf"
                 log.info(f"port:{port}")
                 version_path = get_version_path(db_version)
-                defaults_file = os.path.join(BackupPath.BACKUP_PRE, port, f"{version_path}/etc", conf_file)
+                backup_pre = get_backup_pre_from_defaults_file_path(self._mysql_conf_path)
+                log.info(f"gen_new_instance_info backup_pre {backup_pre}")
+                defaults_file = os.path.join(backup_pre, port, f"{version_path}/etc", conf_file)
                 data_node["defaultsFile"] = defaults_file
                 # 改成从my.conf文件读取
                 exec_cmd_list = [f"cat {defaults_file}", "grep mysql.sock", "head -n 1", "awk -F '=' '{print $2}'"]
@@ -1098,3 +1139,26 @@ class Restore:
         new_instance_nodes = new_instance_nodes_str if not new_instance_nodes_str else json.loads(
             new_instance_nodes_str)
         return new_instance_nodes
+
+    def get_oss_nodes(self):
+        target_obj_extend_info = self._json_param_object.get("job", {}).get("targetEnv", {}) \
+            .get("extendInfo", {})
+        target_cluster_oss_nodes = json.loads(target_obj_extend_info.get("clusterInfo", "")).get("ossNodes", [])
+        oss_nodes = []
+        for target_oss_node in target_cluster_oss_nodes:
+            oss_node = {}
+            oss_node["ip"] = target_oss_node.get("ip")
+            oss_node["parentUuid"] = target_oss_node.get("parentUuid")
+            oss_node["port"] = target_oss_node.get("port")
+            oss_nodes.append(oss_node)
+        log.info(f"get_oss_nodes oss_nodes is {oss_nodes}")
+        return oss_nodes
+
+    def get_mysql_version(self):
+        mysql_version = self._target_obj_extend_info.get("mysql_version", "")
+        oss_url = f'http://{self._oss_nodes[0].get("ip")}:{self._oss_nodes[0].get("port")}/tdsql'
+        if not mysql_version:
+            mysql_version = get_mysql_version_path(oss_url, self._set_id, "restore", self._pid)
+        if not mysql_version:
+            mysql_version = get_mysql_version_from_defaults_file_path(self._mysql_conf_path)
+        return mysql_version

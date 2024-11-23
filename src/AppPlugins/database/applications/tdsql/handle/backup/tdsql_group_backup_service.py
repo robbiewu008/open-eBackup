@@ -70,6 +70,15 @@ class TdsqlGroupBackupService(object):
     @staticmethod
     def backup_pre_job(req_id, job_id, sub_id, json):
         log.info(f'step 2-2: execute backup_pre_job,req_id:{req_id} job_id:{job_id}')
+        param_inst = ResourceParam(req_id)
+        param = param_inst.get_param()
+        tdsql_group_backup_inst = TdsqlGroupBackUp(req_id, job_id, sub_id, json, param)
+        if not tdsql_group_backup_inst.backup_pre_job():
+            response = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR,
+                                    bodyErr=ErrorCode.ERR_ENVIRONMENT)
+            output_result_file(req_id, response.dict(by_alias=True))
+            return False
+
         response = ActionResult(code=ExecuteResultEnum.SUCCESS)
         log_detail = LogDetail(logInfo="plugin_execute_prerequisit_task_success_label",
                                logLevel=DBLogLevel.INFO.value)

@@ -44,21 +44,19 @@ public:
     ~ApsaraStackResourceAccess();
     void SetApplication(Application application);
 
-    int32_t ListResource(ResourceResultByPage &page, const std::string& resourceType,
-        const std::string &regionId, const std::string regionName, const std::string &instanceName);
+    int32_t ListResource(ResourceResultByPage &page, const ListResourcePara &conditionPara);
     int32_t CheckAppConnect(ActionResult& returnValue);
     
 protected:
-    int32_t ParseResourceResponse(ResourceResultByPage &page, const std::string &response,
-        const std::string& resourceType, const std::string &regionId, const std::string regionName);
-    int32_t GetResource(const std::string& resourceType, const std::string &regionId,
-        std::string &response, const std::string &instanceName);
+    int32_t ParseResourceResponse(ResourceResultByPage &page,
+        const std::string &response, const ListResourcePara &conditionPara);
+    int32_t GetResource(const ListResourcePara &conditionPara, std::string &response);
 
     bool SetRegion(const std::string &response, ResourceResultByPage &page);
     bool SetZone(const std::string &response, ResourceResultByPage &page,
-        const std::string &regionId, const std::string regionName);
+        const ListResourcePara &conditionPara);
     bool SetInstance(const std::string &response, ResourceResultByPage &page,
-        const std::string &regionId, const std::string regionName);
+        const ListResourcePara &conditionPara);
     bool SetDisk(const std::string &response, ResourceResultByPage &page);
     bool SetResourceSet(const std::string &response, ResourceResultByPage &page);
 

@@ -56,7 +56,7 @@ class ClusterInstFullRestore(PostgresClusterRestoreAbstract):
 
         # 1.清空目标实例data目录
         tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
-        PostgreRestoreService.backup_conf_file(tgt_data_path)
+        PostgreRestoreService.backup_conf_file(tgt_data_path, self.job_id)
         PostgreRestoreService.clear_data_dir(PostgreRestoreService.parse_os_user(self.param_dict), tgt_data_path)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                RestoreProgress(progress=15, message="delete data dir success"))
@@ -97,7 +97,7 @@ class ClusterInstFullRestore(PostgresClusterRestoreAbstract):
         PostgreRestoreService.change_owner_of_download_data(self.param_dict, copy_mount_path)
         PostgreRestoreService.restore_data(cache_path, copy_mount_path,
                                            tgt_data_path, job_id=self.job_id)
-        PostgreRestoreService.restore_conf_file(tgt_data_path)
+        PostgreRestoreService.restore_conf_file(tgt_data_path, self.job_id)
         PostgreCommonUtils.write_progress_info(
             cache_path, RestoreAction.QUERY_RESTORE,
             RestoreProgress(progress=NumberConst.SEVENTY, message="restore data success"))
@@ -142,6 +142,9 @@ class ClusterInstFullRestore(PostgresClusterRestoreAbstract):
         cache_path = PostgreRestoreService.get_cache_mount_path(self.param_dict)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE_POST,
                                                RestoreProgress(progress=0, message="begin"))
+
+        tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
+        PostgreRestoreService.delete_useless_bak_files(tgt_data_path, self.job_id)
 
         LOGGER.info("Execute restore post task success.")
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE_POST,

@@ -32,19 +32,24 @@ class ResourceAbility:
         params_from_pm = ResourceParam(req_id)
 
         resource_info = GoldenDBResourceInfo(req_id, params_from_pm)
+        node_info = resource_info.param.get_node_info()
+        node_type = node_info.get("nodeType")
         body_err_code = GoldenDBCode.SUCCESS.value
         err_code = GoldenDBCode.SUCCESS.value
-        err_msg = "Check connection success!"
+        err_dict = {"msg": "Check connection success!", "nodeType": node_type}
+        err_msg = json.dumps(err_dict)
         try:
             resource_info.check_node_status()
         except ErrCodeException as err_code_ex:
             err_code = GoldenDBCode.FAILED.value
+            err_dict = {"msg": err_code_ex.error_message_json, "nodeType": node_type}
             body_err_code = err_code_ex.error_code
-            err_msg = err_code_ex.error_message_json
+            err_msg = json.dumps(err_dict)
         except Exception as ex:
             err_code = GoldenDBCode.FAILED.value
             body_err_code = ErrorCode.ERR_INPUT_STRING
-            err_msg = "exception occurs."
+            err_dict = {"msg": "exception occurs.", "nodeType": node_type}
+            err_msg = json.dumps(err_dict)
         finally:
             resource_info.clear_auth()
             log.info(f"Check application end result is {err_msg}.")

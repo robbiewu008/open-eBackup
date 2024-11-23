@@ -143,8 +143,11 @@ protected:
     int32_t DeleteSnapshotGroup(const std::string &groupId);
     bool WaitSnapshotGroup(const CreateSnapshotGroupResponse &createRes, const std::string &snapGroupName,
         SnapshotInfo &snapshot);
+    int32_t ActiveSnapConsistency(const SnapshotInfo& snapshotInfo) override;
+    int32_t GetOrganizationInfo(const std::string &organizationId, Organization &org);
 
     Instance m_instance;
+    CommonApsaraExtendInfo m_envParam;
     std::string m_regionId = "";
     std::string m_pythonObject;
 };

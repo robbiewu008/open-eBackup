@@ -47,7 +47,7 @@ class SingleInstPitRestore(PostgresRestoreBase):
 
         # 1.清空目标实例data目录
         tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
-        PostgreRestoreService.backup_conf_file(tgt_data_path)
+        PostgreRestoreService.backup_conf_file(tgt_data_path, self.job_id)
         PostgreRestoreService.clear_data_dir(PostgreRestoreService.parse_os_user(self.param_dict), tgt_data_path)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                RestoreProgress(progress=5, message="delete data dir success"))
@@ -69,7 +69,7 @@ class SingleInstPitRestore(PostgresRestoreBase):
         tgt_db_os_user = tgt_obj_extend_info_dict.get("osUsername", "")
         PostgreRestoreService.restore_data(cache_path, full_copy_mount_path,
                                            tgt_data_path, job_id=self.job_id)
-        PostgreRestoreService.restore_conf_file(tgt_data_path)
+        PostgreRestoreService.restore_conf_file(tgt_data_path, self.job_id)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                RestoreProgress(progress=70, message="restore data success"))
 
@@ -111,6 +111,7 @@ class SingleInstPitRestore(PostgresRestoreBase):
         # 恢复后清理data目录无用文件
         _, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
         PostgreRestoreService.delete_useless_files_of_data_dir(tgt_data_path, before_restore=False)
+        PostgreRestoreService.delete_useless_bak_files(tgt_data_path, self.job_id)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE_POST, RestoreProgress(
             progress=50, message="delete useless file of data dir success"))
 

@@ -37,6 +37,10 @@ const int NOT_MATCH = -2;
 const int DIFFERENT_FLOW = 9;  // hook点返回码，则表示忽略框架流程，自定义处理流程, 暂定该值为9
 const int32_t DAMAGED = -2;
 const int32_t DEFAULT_SIZE = 500;
+const std::string AVAILABLE_CAPACITY_THRESHOLD_KEY = "available_capacity_threshold";
+const double DEFAULT_STORAGE_THRESHOLD_LIMIT = 20; // 默认容量阈值
+const double MIN_STORAGE_THRESHOLD_LIMIT = 0; // 最小容量阈值
+const double MAX_STORAGE_THRESHOLD_LIMIT = 100; // 最大容量阈值
 
 // 默认块大小为4M
 constexpr uint64_t DEFAULT_BLOCK_SIZE = 4 * 1024 * 1024ULL;

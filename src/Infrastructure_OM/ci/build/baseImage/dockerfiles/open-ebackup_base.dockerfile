@@ -44,4 +44,3 @@ RUN lgroupadd nobody -g 99
 # 不需要登录的账号禁止登录，当前涉及root和dnsmasq两个账号
 # 禁止root ssh登录
 RUN sed -i "s/\/bin\/bash/\/sbin\/nologin/" /etc/passwd \
-    && sed -i "s/PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config

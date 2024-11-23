@@ -13,12 +13,6 @@
 #ifndef __HYPERV_PROTECT_ENGINE_H__
 #define __HYPERV_PROTECT_ENGINE_H__
 
-#ifdef HYPERV_DLL_EXPORTS  // specified in vs
-#define HYPERV_API __declspec(dllexport)
-#else
-#define HYPERV_API __declspec(dllimport)
-#endif
-
 #include <map>
 #include <vector>
 #include "cstdint"
@@ -34,7 +28,7 @@ using namespace VirtPlugin;
 
 namespace HyperVPlugin {
 
-class HYPERV_API HyperVProtectEngine : public ProtectEngine {
+class HyperVProtectEngine : public ProtectEngine {
 public:
     HyperVProtectEngine() {}
     explicit HyperVProtectEngine(std::shared_ptr<VirtPlugin::JobHandle> &m_jobHandle, std::string jobId,
@@ -397,6 +391,11 @@ protected:
         const std::string &originDiskName, const std::string &uuid,
         const std::string &targetDiskFileFormat);
     int32_t CheckRestoreParams();
+    void GetDiskDriverPathSet(std::shared_ptr<HyperVPlugin::GetClusterSharedVolumeResponse> response, VMInfo vmInfo,
+        std::set<std::string> &diskDriverPathSet);
+    double GetStorageThresholdLimit();
+    bool CheckStorageThreshold();
+    void AddCluster(const std::string &vmId);
 
 private:
     std::string m_taskId;

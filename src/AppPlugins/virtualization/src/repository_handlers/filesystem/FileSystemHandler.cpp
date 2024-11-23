@@ -238,6 +238,7 @@ bool FileSystemHandler::Exists(const std::string &fileName)
         INFOLOG("File/dir(%s) does not exist.", fileName.c_str());
         return false;
     }
+    DBGLOG("File/dir(%s) exist.", fileName.c_str());
     return true;
 }
 
@@ -510,6 +511,7 @@ bool FileSystemHandler::Stat(const std::string &target, struct stat &statInfo, i
         WARNLOG("stat failed, file=[%s] errno[%d]: %s", target.c_str(), errNum, strerror(errNum));
         return FAILED;
     }
+    DBGLOG("State success, file=[%s]", target.c_str());
     return SUCCESS;
 }
 }

@@ -15,16 +15,16 @@ import os
 import sys
 import time
 import shutil
+from openGauss.common.const import logger, Env, CopyDirectory, SubJobType, NodeDetailRole, WhitePath, BackupStatus, \
+    OpenGaussDeployType, ProtectObject, ParamKey
 from common.common import output_result_file
 from common.common_models import ActionResult, SubJobDetails, LogDetail
 from common.const import JobData, ExecuteResultEnum, RepositoryDataTypeEnum, SubJobStatusEnum
-from common.parse_parafile import ParamFileUtil
 from common.util.check_utils import is_valid_id, check_path_in_white_list
 from common.util.exec_utils import su_exec_rm_cmd, exec_mkdir_cmd
 from common.util.backup import query_progress, backup_files
 from openGauss.common.common import read_progress, query_speed, check_path, safe_get_environ, \
     safe_check_injection_char, get_hostname, record_err_code, query_err_code, safe_remove_path
-from openGauss.common.const import logger, Env, CopyDirectory, SubJobType, NodeDetailRole, WhitePath, BackupStatus
 from openGauss.common.error_code import NormalErr
 from openGauss.common.opengauss_param import JsonParam
 from openGauss.resource.cluster_instance import GaussCluster
@@ -109,6 +109,26 @@ class RestoreOutput:
                     context["cache_path"] = path
         logger.info(f"Get media path success.")
         return context
+
+    @staticmethod
+    def get_cmdb_media_path(context, job_dict):
+        # 获取实例备份所在目录和cache仓目录
+        if context["restoreTimeStamp"]:
+            copy_dict = job_dict.get("copies", [{}])[-2]
+        else:
+            copy_dict = job_dict.get("copies", [{}])[-1]
+        repositories_info = copy_dict.get("repositories", [])
+        for reps in repositories_info:
+            path = reps.get("path", [])[0]
+            if reps.get("repositoryType") == RepositoryDataTypeEnum.DATA_REPOSITORY and check_path(path):
+                context["meta_path"] = path
+                context["media_path"] = os.path.join(path, CopyDirectory.INSTANCE_DIRECTORY)
+            if reps.get("repositoryType") == RepositoryDataTypeEnum.CACHE_REPOSITORY:
+                if check_path(path):
+                    context["cache_path"] = path
+        logger.info(f"Get media path success.")
+        return context
+
 
     @staticmethod
     def get_copy_mount_paths(copy_dict: {}, repo_type):
@@ -244,18 +264,33 @@ class RestoreOutput:
         context["parent_id"] = extend_dict.get("parentCopyId")
         context["backup_type"] = extend_dict.get("backupType")
         context["conf_file"] = extend_dict.get("pg_probackup.conf")
+        context["base_copy_id"] = extend_dict.get("baseCopyId")
+        context["target_copy_id"] = copy_dict.get("id")
         context["version"] = extend_dict.get("protectObject", {}).get("type")
         context["pre_user"] = extend_dict.get("userName")
         context["restoreTimeStamp"] = job_dict.get("extendInfo", {}).get("restoreTimestamp", "")
+        context["deploy_type"] = job_dict.get("targetEnv", {}).get("extendInfo", {}).get("deployType", "")
+        context["restore_type_"] = job_dict.get("targetEnv", {}).get("extendInfo", {}).get("deployType", "")
+        context["cluster_version"] = job_dict.get("targetEnv", {}).get("extendInfo", {}).get("clusterVersion", "")
+        context["dcs_address"] = job_dict.get("targetEnv", {}).get("extendInfo", {}).get(ParamKey.DCS_ADDRESS, "")
+        context["dcs_port"] = job_dict.get("targetEnv", {}).get("extendInfo", {}).get(ParamKey.DCS_PORT, "")
         # 仅当任意时间点恢复时生成日志合并目录
-        if context["restoreTimeStamp"]:
+        # 检查是否需要生成日志合并目录
+        if context["restoreTimeStamp"] and (
+                context["deploy_type"] != OpenGaussDeployType.DISTRIBUTED or ProtectObject.CMDB not in context[
+            "cluster_version"]):
             logger.info(f'The restore timestamp: {context["restoreTimeStamp"]}')
             context["merged_log_path"] = new_instance.handle_log_copy(job_dict)
         env_path = job_dict.get("targetEnv", {}).get("extendInfo", {}).get("envPath")
         context["env_path"] = env_path if check_path(env_path) else ""
         if param_dict.get("subJob", {}):
             context["sub_job_name"] = param_dict.get("subJob", {}).get("jobName")
-        return job_dict, RestoreOutput.get_media_path(context, job_dict)
+        if context["deploy_type"] == OpenGaussDeployType.DISTRIBUTED or ProtectObject.CMDB in context[
+            "cluster_version"]:
+            result = RestoreOutput.get_cmdb_media_path(context, job_dict)
+        else:
+            result = RestoreOutput.get_media_path(context, job_dict)
+        return job_dict, result
 
 
 if __name__ == '__main__':
@@ -295,6 +330,7 @@ if __name__ == '__main__':
         output_result_file(JobData.PID, sub_jobs)
         sys.exit(0)
     if func_type == "RestorePrerequisite":
+        logger.info(f"Get restore param: {job_log_dict}")
         pre_job_err = check_ins.pre_restore_job()
         if input_info.get("backup_type") == "LOG":
             new_instance.pre_merge_logs(job_log_dict, input_info)
@@ -320,6 +356,9 @@ if __name__ == '__main__':
     elif func_type == "Restore":
         sub_job_name = input_info.get("sub_job_name")
         logger.info(f"sub job name: {sub_job_name}. pid: {JobData.PID}. job id: {JobData.JOB_ID}")
+        if sub_job_name == SubJobType.CMDB_RESTORE:
+            new_instance.output_code.code, new_instance.output_code.body_err, new_instance.output_code.message \
+                = exec_ins.do_restore_job_cmdb()
         if sub_job_name == SubJobType.PREPARE_RESTORE:
             new_instance.output_code.code, new_instance.output_code.body_err, new_instance.output_code.message \
                 = exec_ins.do_prepare_restore()
@@ -339,8 +378,14 @@ if __name__ == '__main__':
         new_instance.progress_info.progress = progress
         new_instance.progress_info.task_status = status
         inst = GaussCluster(safe_get_environ(f"{Env.OPEN_GAUSS_USER}_{JobData.PID}"), input_info.get("env_path"))
-        new_instance.progress_info.data_size, new_instance.progress_info.speed = \
-            query_speed(inst.get_instance_data_path(), os.path.join(input_info.get("cache_path"), f'T{JobData.JOB_ID}'))
+        deploy_type = input_info.get("deploy_type", "")
+        cluster_version = input_info.get("cluster_version", "")
+        logger.info(
+            f"Restore post job deploy type {deploy_type}, cluster_version: {cluster_version}")
+        if deploy_type != OpenGaussDeployType.DISTRIBUTED or ProtectObject.CMDB not in cluster_version:
+            new_instance.progress_info.data_size, new_instance.progress_info.speed = \
+                query_speed(inst.get_instance_data_path(),
+                            os.path.join(input_info.get("cache_path"), f'T{JobData.JOB_ID}'))
         output_result_file(JobData.PID, new_instance.progress_info.dict(by_alias=True))
         sys.exit(0)
     elif func_type == "RestorePost":
@@ -350,12 +395,13 @@ if __name__ == '__main__':
                 logger.warn(f"Execute remove file command failed! File path: {restore_post_file}.")
                 sys.exit(0)
         merged_log_path = input_info.get("merged_log_path")
-        if os.path.exists(merged_log_path):
+        if merged_log_path is not None and os.path.exists(merged_log_path):
             shutil.rmtree(merged_log_path)
             logger.info("Delete the temporary log copy merge directory success.")
         user_name = safe_get_environ(f"{Env.OPEN_GAUSS_USER}_{JobData.PID}")
         inst = GaussCluster(user_name, input_info.get("env_path"))
         status = inst.cluster_state
+        logger.info(f"Restore post job cluster status: {status}")
         if status == "Normal":
             new_instance.output_code.code = ExecuteResultEnum.SUCCESS
         else:

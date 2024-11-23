@@ -12,8 +12,8 @@
 #
 
 import datetime
-import json
 import os.path
+import json
 import threading
 import time
 import pwd
@@ -21,12 +21,13 @@ import pwd
 from common.common import output_result_file, output_execution_result_ex, execute_cmd, execute_cmd_list, \
     execute_cmd_with_expect
 
+from common.cleaner import clear
 from common.common_models import SubJobDetails, LogDetail, SubJobModel
-from common.const import ParamConstant, SubJobPolicyEnum, SubJobPriorityEnum, CMDResult, RestoreTypeEnum, \
+from common.const import ParamConstant, SubJobPolicyEnum, SubJobPriorityEnum, CMDResult, SubJobTypeEnum, \
     RepositoryDataTypeEnum
 from common.const import SubJobStatusEnum, DBLogLevel
 from common.util.checkout_user_utils import get_path_owner
-from tidb.common.const import ErrorCode, SubJobType, TiDBTaskType, ClusterRequiredHost
+from tidb.common.const import ErrorCode, TiDBTaskType, ClusterRequiredHost, TiDBResourceKeyName
 from tidb.common.tidb_param import JsonParam
 from tidb.common.tidb_common import exec_mysql_sql, get_tidb_structure, report_job_details, get_env_variable, \
     get_status_up_role_one_host, check_roles_up, get_cluster_user, check_params_valid, query_local_business_ip
@@ -290,7 +291,7 @@ class Restore:
         return True
 
     def build_sub_job(self, job_priority, job_type, job_name, node_id, job_info):
-        return SubJobModel(jobId=self._job_id, jobType=SubJobType.BUSINESS_SUB_JOB.value, execNodeId=node_id,
+        return SubJobModel(jobId=self._job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB.value, execNodeId=node_id,
                            jobPriority=job_priority, jobName=job_name, policy=job_type, jobInfo=job_info,
                            ignoreFailed=False).dict(by_alias=True)
 
@@ -667,16 +668,20 @@ class Restore:
         ip_port = tidb_id.split(":")
         ip = ip_port[0]
         port = int(ip_port[1])
+        drop_table_cmd = "DROP TABLE IF EXISTS "
         for key, value in db_tables.items():
             db_name = key
-            table_name = ",".join(value)
-            if not check_params_valid(db_name, table_name):
-                log.error(f"The db_name {db_name} or table_name {table_name} verification fails")
+            full_tab_list = [f"{db_name}.{table}" for table in value]
+            full_tab_names = ','.join(full_tab_list)
+            if not check_params_valid(full_tab_names):
+                log.error(f"{full_tab_names} verification fails")
                 continue
-            drop_table_cmd = [f"use {db_name};", f"DROP TABLE IF EXISTS {table_name};"]
-            ret, output = exec_mysql_sql(TiDBTaskType.RESTORE, self._pid, drop_table_cmd, ip, port)
-            if not ret:
-                log.error(f"Delete table {table_name} in db {db_name} Failed: {output}")
+            drop_table_cmd += f"{full_tab_names},"
+        drop_table_cmd = drop_table_cmd.rstrip(",") + ";"
+        log.info("Get drop_table_cmd success.")
+        ret, output = exec_mysql_sql(TiDBTaskType.RESTORE, self._pid, drop_table_cmd, ip, port)
+        if not ret:
+            log.error(f"Delete tables Failed: {output}")
 
     def sub_job_exec_drop(self):
         log.info(f"start step-4-2 sub_job_exec_drop {self._job_id} {self._sub_job_id}")

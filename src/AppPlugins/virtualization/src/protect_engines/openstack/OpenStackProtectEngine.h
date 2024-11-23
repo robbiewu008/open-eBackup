@@ -95,6 +95,10 @@ public:
     int32_t DeleteSnapshot(const SnapshotInfo &snapshot) override;
     int32_t QuerySnapshotExists(SnapshotInfo &snapshot) override;
     int32_t GetSnapshotsOfVolume(const VolInfo &volInfo, std::vector<VolSnapInfo> &snapList) override;
+    int32_t ActiveSnapConsistency(const SnapshotInfo& snapshotInfo) override;
+    int32_t ActiveSnapInit();
+    virtual int32_t GetSnapshotProviderAuth(std::vector<std::string>& proAuth,
+        GetSnapshotRequest& request, const VolSnapInfo& volSnap);
     // meta and handle
     int32_t GetMachineMetadata(VMInfo &vmInfo) override;
     int32_t GetVolumesMetadata(const VMInfo &vmInfo,
@@ -170,6 +174,10 @@ protected:
     virtual bool CheckIsConsistenSnapshot();
     virtual int32_t DoDeleteConsistencySnapshot(const SnapshotInfo &snapshot);
     virtual bool GetVolumeSnapshot(VolSnapInfo &volSnap);
+    virtual int32_t CheckBeforeCreateSnapshot(const std::vector<VolInfo> &volList)
+    {
+        return SUCCESS;
+    }
     virtual bool MatchVolumeName(const std::string &volumeName)
     {
         std::regex reg("^Backup_volume_.*$");

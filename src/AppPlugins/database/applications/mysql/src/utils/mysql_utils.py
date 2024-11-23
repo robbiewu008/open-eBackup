@@ -80,21 +80,6 @@ class MysqlUtils:
         return log_bin_line.split("=")[1].strip()
 
     @staticmethod
-    def get_log_bin_index_by_config_file(my_cnf_path):
-        """
-        从mysql配置文件中，获取mysql的log_bin_index文件的路径，如果没有则返回空字符串
-        :return: 如果没有，则返回空字符串
-        """
-        ret, config_file = MysqlBaseUtils.find_mycnf_path(my_cnf_path)
-        if not ret:
-            raise Exception("Failed to find my.cnf file")
-        for line in open(config_file):
-            for log_bin_index in MysqlConfigFileKey.LOG_BIN_INDEX_ARR:
-                if line.startswith(log_bin_index):
-                    return line.split("=")[1].strip()
-        return ""
-
-    @staticmethod
     def get_log_bin_by_config_file(my_cnf_path):
         """
         从mysql配置文件中，读取mysql的log_bin文件的路径
@@ -105,36 +90,6 @@ class MysqlUtils:
             raise Exception("Failed to find my.cnf file")
         for line in open(config_file):
             for log_bin_index in MysqlConfigFileKey.LOG_BIN_ARR:
-                if line.startswith(log_bin_index):
-                    return line.split("=")[1].strip()
-        return ""
-
-    @staticmethod
-    def get_relay_log_by_config_file(my_cnf_path):
-        """
-        从mysql配置文件中，读取mysql的relay-log文件的路径
-        :return: 如果没有，则返回空字符串
-        """
-        ret, config_file = MysqlBaseUtils.find_mycnf_path(my_cnf_path)
-        if not ret:
-            raise Exception("Failed to find my.cnf file")
-        for line in open(config_file):
-            for log_bin_index in MysqlConfigFileKey.RELAY_LOG_ARR:
-                if line.startswith(log_bin_index):
-                    return line.split("=")[1].strip()
-        return ""
-
-    @staticmethod
-    def get_relay_log_recovery_by_config_file(my_cnf_path):
-        """
-        从mysql配置文件中，读取mysql的relay-log文件的路径
-        :return: 如果没有，则返回空字符串
-        """
-        ret, config_file = MysqlBaseUtils.find_mycnf_path(my_cnf_path)
-        if not ret:
-            raise Exception("Failed to find my.cnf file")
-        for line in open(config_file):
-            for log_bin_index in MysqlConfigFileKey.RELAY_LOG_DIRECTORY:
                 if line.startswith(log_bin_index):
                     return line.split("=")[1].strip()
         return ""

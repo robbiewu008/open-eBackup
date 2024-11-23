@@ -50,11 +50,7 @@ class EAppMysqlInstanceRestore(MysqlInstanceRestore):
         if not need_restore_logs:
             log.error("No bin log need to restore")
             return False
-        ret, index_path = self.get_mysql_log_index_path()
-        if not ret:
-            log.error("Failed to get log bin directory")
-            return False
-        log_bin_dir = index_path[:index_path.rindex("/")]
+        log_bin_dir = self.get_restore_binlog_dir()
         ret = mysql_backup_files(self._sub_job_id, need_restore_logs, log_bin_dir)
         if not ret:
             log.error(f"Restore log file failed. pid:%s jobId:%s, subJobId:%s",

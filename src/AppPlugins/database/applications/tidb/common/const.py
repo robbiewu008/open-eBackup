@@ -57,11 +57,6 @@ class TiDBTaskType:
     RESOURCE = "RESOURCE"
 
 
-class TiDBCode(Enum):
-    SUCCESS = 0
-    FAILED = 200
-
-
 class ErrorCode(int, Enum):
     # 错误码编号待定
     # 集群节点数不一致
@@ -118,11 +113,8 @@ class ErrorCode(int, Enum):
     UID_INCONSISTENCY = 1677873180
     # 数据库环境异常不支持备份恢复
     ERR_ENVIRONMENT = 1577213475
-
-
-class CMDResult(str, Enum):
-    SUCCESS = "0"
-    FAILED = "1"
+    # 校验ctl版本失败
+    ERR_CHECK_CTL_VERSION = 1677873254
 
 
 class ClusterRequiredHost:
@@ -181,22 +173,6 @@ class TidbPath:
     TIDB_LINK_PATH = f"{get_install_head_path()}/DataBackup/"
 
 
-class SubJobPriorityEnum(int, Enum):
-    JOB_PRIORITY_1 = 1
-    JOB_PRIORITY_2 = 2
-    JOB_PRIORITY_3 = 3
-    JOB_PRIORITY_4 = 4
-    JOB_PRIORITY_5 = 5
-    JOB_PRIORITY_6 = 6
-
-
-class SubJobType(int, Enum):
-    PRE_SUB_JOB = 0
-    GENERATE_SUB_JOB = 1
-    BUSINESS_SUB_JOB = 2
-    POST_SUB_JOB = 3
-
-
 class TidbSubJobName:
     SUB_DEPLOY_USER = "sub_deploy_user"
     SUB_CHECK_UP = "sub_check_up"
@@ -207,13 +183,6 @@ class TidbSubJobName:
     SUB_RECORD = "sub_record"
     SUB_UP_LOG = "sub_up_log"
     SUB_KF_LOG = "sub_kv_log"
-
-
-class SubJobPolicy(int, Enum):
-    LOCAL_NODE = 1,
-    EVERY_NODE_ONE_TIME = 2,
-    RETRY_OTHER_NODE_WHEN_FAILED = 3,
-    FIXED_NODE = 4
 
 
 class TdsqlBackupStatus:

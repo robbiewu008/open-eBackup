@@ -12,6 +12,7 @@
 #
 
 import json
+import re
 
 from goldendb.logger import log
 from common.cleaner import clear
@@ -231,7 +232,7 @@ class GoldenDBResourceInfo:
         """
         检查管理节点，gtm节点，dn zxmanager节点的服务是否运行
         @:param: os_user zxmanager用户 GTM节点用户 DN节点用户
-        :return: True 正常 False不正常
+        :return: [] 正常 [error services]不正常
         """
         if check_command_injection_exclude_quote(os_user) or not check_os_user(os_user):
             log.error("command injection in os user! The os user(%s) is invalid.", os_user)

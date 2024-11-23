@@ -145,3 +145,9 @@ DBPLUGIN_API void RemoveProtect(ActionResult& returnValue,
 {
     return ClusterOperation::RemoveProtect(returnValue, appEnv, application);
 }
+
+DBPLUGIN_API void FinalizeClear(ActionResult& _return, const ApplicationEnvironment& appEnv,
+    const Application& application, const std::map<std::string, std::string>& extendInfo)
+{
+    return ClusterOperation::FinalizeClear(_return, appEnv, application, extendInfo);
+}

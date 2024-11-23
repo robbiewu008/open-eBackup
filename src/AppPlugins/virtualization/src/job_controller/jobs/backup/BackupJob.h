@@ -270,6 +270,7 @@ private:
     int PostJobPostHook();
     void ReportBackupSpeed(const uint64_t &dataSizeInByte);
     void LoadSnapshotToBeDeleted(const std::string &file);
+    void LoadFailedSnapshotsToBeDeleted();
     void LoadSnapshotsOfVMToBeDeleted(const std::vector<VolSnapInfo>& exVolSnaps);
     void ShowSnapshot(const SnapshotInfo &snap);
     int FormatSubJobItems(const VolInfo &vol, std::vector<SubJob> &subJobs, const int index);

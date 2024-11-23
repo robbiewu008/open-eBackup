@@ -20,28 +20,29 @@ from concurrent.futures import ThreadPoolExecutor
 
 from common.util.exec_utils import su_exec_rm_cmd
 from common.common import check_command_injection_exclude_quote, output_result_file, output_execution_result_ex, \
-    read_tmp_json_file
-from common.common_models import SubJobDetails, LogDetail
-from common.const import BackupTypeEnum, ExecuteResultEnum, RepositoryDataTypeEnum, SubJobStatusEnum, \
-    SubJobPriorityEnum, ReportDBLabel
+    read_tmp_json_file, report_job_details
+from common.common_models import SubJobDetails, SubJobModel, LogDetail, ActionResult
+from common.const import BackupTypeEnum, ExecuteResultEnum, RepositoryDataTypeEnum, SubJobStatusEnum, SubJobTypeEnum, \
+    SubJobPriorityEnum, ReportDBLabel, SubJobPolicyEnum, DBLogLevel
 from common.file_common import get_user_info
 from common.util.scanner_utils import scan_dir_size
 
 from goldendb.handle.backup.goldendb_sqlite_service import GoldenDBSqliteService
 from goldendb.handle.backup.log.goldendb_log_backup_tool_service import GoldenDBLogBackupToolService
 from goldendb.handle.backup.parse_backup_params import get_goldendb_structure, get_master_or_slave_policy, \
-    check_goldendb_structure, report_job_details, write_file, query_size_and_speed, \
-    exec_cmd_spawn, get_backup_param, get_copy_result_info, get_agent_uuids
-from goldendb.handle.common.const import ErrorCode, GoldenDBMetaInfo, LogLevel, SubJobType, GoldenDBCode, \
-    MasterSlavePolicy, ExecutePolicy, SubJobName, GoldenDBJsonConst, CMDResult, Report, GoldenDBNodeType
+    check_goldendb_structure, write_file, query_size_and_speed, exec_cmd_spawn, get_backup_param, get_copy_result_info
+from goldendb.handle.common.const import ErrorCode, GoldenDBMetaInfo, GoldenDBCode, Report, SubJobName, CMDResult, \
+    MasterSlavePolicy, GoldenDBJsonConst, GoldenDBNodeType, ManagerPriority
 from goldendb.handle.common.goldendb_common import cp_active_folder, cp_result_info, get_backup_path, count_files, \
-    get_bkp_type_from_result_info, get_bkp_files_in_cluster_id_folder, mount_bind_path, verify_path_trustlist, \
+    get_bkp_type_from_result_info, get_bkp_result_names_in_cluster_id_dir, mount_bind_path, verify_path_trustlist, \
     umount_bind_path, get_repository_path, mkdir_chmod_chown_dir_recursively, umount_bind_backup_paths, \
-    get_task_path_from_result_info, format_capacity
+    get_task_path_from_result_info, format_capacity, check_task_on_all_managers, exec_task_on_all_managers, \
+    get_bkp_root_dir_via_role, get_agent_uuids, report_err_via_output_file, get_recognized_err_from_sts_file, \
+    report_err_via_rpc, update_agent_sts_general_after_exec, update_agent_sts
 from goldendb.handle.common.goldendb_param import JsonParam
 from goldendb.handle.resource.resource_info import GoldenDBResourceInfo
 from goldendb.logger import log
-from goldendb.schemas.glodendb_schemas import ActionResponse, SubJob
+from goldendb.schemas.glodendb_schemas import TaskInfo, StatusInfo
 
 MountParameters = collections.namedtuple('MountParameters', ['req_id', 'job_id', 'sub_id', 'data_path', 'file_content'])
 
@@ -72,9 +73,8 @@ class GoldenDBBackupService(object):
         @sub_job_id： 子任务ID
         返回值：
         """
-        log.info(
-            f'step 1: execute allow_backup_in_local_node, req_id: {req_id}, job_id: {job_id}, sub_job_id: {sub_job_id}')
-        response = ActionResponse()
+        log.info(f'Step 1: allow_backup_in_local_node, req_id: {req_id}, job_id: {job_id}, sub_job_id: {sub_job_id}.')
+        response = ActionResult(code=ExecuteResultEnum.SUCCESS)
         try:
             file_content = JsonParam.parse_param_with_jsonschema(req_id)
         except Exception as exception:
@@ -84,36 +84,38 @@ class GoldenDBBackupService(object):
         cluster_structure = get_goldendb_structure(file_content)
         if master_or_slave == MasterSlavePolicy.SLAVE and not check_goldendb_structure(master_or_slave,
                                                                                        cluster_structure):
-            log_detail = LogDetail(logInfo="goldendb_backup_pre_check_sla_failed_label", logLevel=LogLevel.WARN)
+            log_detail = LogDetail(logInfo="goldendb_backup_pre_check_sla_failed_label", logLevel=DBLogLevel.WARN.value)
             report_job_details(req_id, SubJobDetails(taskId=job_id, subTaskId=sub_job_id, progress=100,
                                                      logDetail=[log_detail], taskStatus=SubJobStatusEnum.RUNNING.value))
             master_or_slave = MasterSlavePolicy.MASTER
 
         agent_uuids = get_agent_uuids(file_content)
-        # 执行节点添加管理节点首节点，当前搭建环境只有单个管理节点
-        exec_nodes = [cluster_structure.manager_nodes[0]]
-        # 添加GTM所有节点
-        exec_nodes.extend(cluster_structure.gtm_nodes)
-        # 执行节点执行数据节点
+        # 检查管理节点
+        no_manager = all([node[2] not in agent_uuids for node in cluster_structure.manager_nodes])
+        if no_manager:
+            report_err_via_output_file(req_id, job_id, sub_job_id, "manager nodes all offline", )
+            return
+        log.info(f'Step 1: get manager nodes success, req_id: {req_id}, job_id: {job_id}, sub_job_id: {sub_job_id}.')
+        # 检查GTM节点
+        no_gtm = all([node[2] not in agent_uuids for node in cluster_structure.gtm_nodes])
+        if no_gtm:
+            report_err_via_output_file(req_id, job_id, sub_job_id, "gtms nodes all offline", )
+            return
+        log.info(f'Step 1: get gtm nodes success, req_id: {req_id}, job_id: {job_id}, sub_job_id: {sub_job_id}.')
+        # 检查数据节点
+        data_nodes = []
         for group in cluster_structure.data_nodes.values():
             if master_or_slave == MasterSlavePolicy.MASTER:
-                exec_nodes.append(group[MasterSlavePolicy.MASTER][0])
+                data_nodes.append(group[MasterSlavePolicy.MASTER][0])
             else:
-                exec_nodes.extend(group[MasterSlavePolicy.SLAVE])
-        for exec_node in exec_nodes:
-            agent_uuid = exec_node[2]
-            if agent_uuid not in agent_uuids:
-                response = ActionResponse(code=ExecuteResultEnum.INTERNAL_ERROR,
-                                          bodyErr=ErrorCode.ERR_ENVIRONMENT,
-                                          message=f"{agent_uuid} is offline")
-                log_detail = LogDetail(logInfo="plugin_generate_subjob_fail_label", logLevel=LogLevel.ERROR)
-                report_job_details(req_id, SubJobDetails(taskId=job_id, subTaskId=sub_job_id, progress=100,
-                                                         logDetail=[log_detail],
-                                                         taskStatus=SubJobStatusEnum.FAILED.value))
-                output_result_file(req_id, response.dict(by_alias=True))
-                return
+                data_nodes.extend(group[MasterSlavePolicy.SLAVE])
+        # 只要有一个节点在线就下发任务
+        no_dn = all([data_node[2] not in agent_uuids for data_node in data_nodes])
+        if no_dn:
+            report_err_via_output_file(req_id, job_id, sub_job_id, "data nodes all offline")
+            return
         output_result_file(req_id, response.dict(by_alias=True))
-        log.info(f"step 1: execute AllowBackupInLocalNode interface success")
+        log.info(f"Step 1: get data nodes success, execute AllowBackupInLocalNode interface success.")
 
     @staticmethod
     def check_backup_job_type(req_id, job_id):
@@ -134,14 +136,15 @@ class GoldenDBBackupService(object):
             if not verify_path_trustlist(data_path):
                 log.error(f"Invalid src path: {data_path}.")
                 return False
-            results_info_file = GoldenDBBackupService.get_file_name(cluster_id, data_path)
+            # 文件名，有后缀
+            results_info_file = GoldenDBBackupService.get_bkp_result_info_file(cluster_id, data_path)
             if not results_info_file:
-                log.error(f"results_info_file not exist please check copy")
+                log.error(f"results_info_file not exist please check copy.")
                 return False
             # 检查meta中记录的上次备份副本集群结构与当前集群结构是否相同
             goldendb_info_file = os.path.join(meta_path, GoldenDBMetaInfo.GOLDENDBINFO)
             if not os.path.exists(goldendb_info_file):
-                log.error(f"goldendb_info_file file: {goldendb_info_file} not exist please check copy")
+                log.error(f"goldendb_info_file file: {goldendb_info_file} not exist please check copy.")
                 return False
             if not verify_path_trustlist(goldendb_info_file):
                 log.error(f"Invalid src path: {goldendb_info_file}.")
@@ -152,11 +155,11 @@ class GoldenDBBackupService(object):
             cluster_info = content.get("job", {}).get("protectObject", {}).get("extendInfo", {}).get("clusterInfo",
                                                                                                      "")
             if old_cluster_info != cluster_info:
-                log.error(f"goldendb_info change")
+                log.error(f"goldendb_info change.")
                 return False
             return True
 
-        log.info(f'step 2-1: start execute check_backup_job_type, pid: {req_id}, job_id:{job_id}')
+        log.info(f'Step 2-1: start execute check_backup_job_type, pid: {req_id}, job_id:{job_id}')
         try:
             file_content = JsonParam.parse_param_with_jsonschema(req_id)
         except Exception as exception:
@@ -168,15 +171,15 @@ class GoldenDBBackupService(object):
         if backup_type == BackupTypeEnum.FULL_BACKUP:
             return True
         if not check_backup_type(file_content):
-            response = ActionResponse(code=ExecuteResultEnum.INTERNAL_ERROR,
-                                      bodyErr=ErrorCode.ERROR_INCREMENT_TO_FULL,
-                                      message="Can not apply this type backup job")
+            response = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR,
+                                    bodyErr=ErrorCode.ERROR_INCREMENT_TO_FULL,
+                                    message="Can not apply this type backup job")
             output_result_file(req_id, response.dict(by_alias=True))
-            log.info(f'step 2-1: finish execute check_backup_job_type filed, pid: {req_id}, job_id:{job_id}')
+            log.info(f'Step 2-1: finish execute check_backup_job_type filed, pid: {req_id}, job_id:{job_id}.')
             return False
-        response = ActionResponse(code=ExecuteResultEnum.SUCCESS)
+        response = ActionResult(code=ExecuteResultEnum.SUCCESS)
         output_result_file(req_id, response.dict(by_alias=True))
-        log.info(f'step 2-1: finish execute check_backup_job_type, pid: {req_id}, job_id:{job_id}')
+        log.info(f'Step 2-1: finish execute check_backup_job_type, pid: {req_id}, job_id:{job_id}.')
         return True
 
     @staticmethod
@@ -188,8 +191,8 @@ class GoldenDBBackupService(object):
          @job_id： 主任务任务ID
         返回值：
         """
-        log.info(f'step 3: execute backup_pre_job,req_id:{req_id} job_id:{job_id}')
-        response = ActionResponse()
+        log.info(f'Step 3: execute backup_pre_job, req_id: {req_id}, job_id: {job_id}.')
+        response = ActionResult(code=ExecuteResultEnum.SUCCESS)
         try:
             JsonParam.parse_param_with_jsonschema(req_id)
         except Exception as exception:
@@ -199,7 +202,7 @@ class GoldenDBBackupService(object):
             return False
         output_result_file(req_id, response.dict(by_alias=True))
         GoldenDBBackupService.report_complete(job_id, req_id, "", 0)
-        log.info(f'step 3: finish to execute backup_pre_job,req_id:{req_id} job_id:{job_id}')
+        log.info(f'Step 3: finish to execute backup_pre_job,req_id:{req_id} job_id:{job_id}.')
         return True
 
     @staticmethod
@@ -213,7 +216,7 @@ class GoldenDBBackupService(object):
         返回值：
         """
         log.info(
-            f'start execute backup_prerequisite_job_progress, req_id: {req_id}, job_id: {job_id},  sub_id: {sub_id}')
+            f'Start execute backup_prerequisite_job_progress, req_id: {req_id}, job_id: {job_id},  sub_id: {sub_id}.')
         progress = SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=100,
                                  taskStatus=SubJobStatusEnum.COMPLETED.value)
         output_result_file(req_id, progress.dict(by_alias=True))
@@ -227,7 +230,7 @@ class GoldenDBBackupService(object):
         @job_id： 主任务任务ID
         返回值：
         """
-        log.info(f'step 4: start to execute backup_gen_sub_job, req_id: {req_id}, job_id: {job_id}')
+        log.info(f'Step 4: start to execute backup_gen_sub_job, req_id: {req_id}, job_id: {job_id}.')
         try:
             file_content = JsonParam.parse_param_with_jsonschema(req_id)
         except Exception as exception:
@@ -242,7 +245,7 @@ class GoldenDBBackupService(object):
                 goldendb_backup_tool.gen_sub_jobs()
             except Exception as exception:
                 log.error(exception, exc_info=True)
-                response = ActionResponse()
+                response = ActionResult(code=ExecuteResultEnum.SUCCESS)
                 GoldenDBBackupService.set_error_response(response)
                 GoldenDBBackupService.report_error_job_details(job_id, req_id, response, job_id)
         else:
@@ -250,49 +253,61 @@ class GoldenDBBackupService(object):
 
     @staticmethod
     def full_and_inc_gen_sub_jobs(file_content, job_id, req_id):
+        agent_uuids = get_agent_uuids(file_content)
         response = []
         master_or_slave = get_master_or_slave_policy(file_content)  # return master or slave
         cluster_structure = get_goldendb_structure(file_content)
         if master_or_slave == MasterSlavePolicy.SLAVE and not check_goldendb_structure(master_or_slave,
                                                                                        cluster_structure):
-            log_detail = LogDetail(logInfo="goldendb_backup_pre_check_sla_failed_label", logLevel=LogLevel.WARN)
+            log_detail = LogDetail(logInfo="goldendb_backup_pre_check_sla_failed_label", logLevel=DBLogLevel.WARN.value)
             report_job_details(req_id, SubJobDetails(taskId=job_id, progress=100, logDetail=[log_detail],
                                                      taskStatus=SubJobStatusEnum.RUNNING.value))
             master_or_slave = MasterSlavePolicy.MASTER
-        # 执行节点添加管理节点首节点，当前搭建环境只有单个管理节点
-        exec_nodes = [cluster_structure.manager_nodes[0]]
-        # 添加GTM所有节点
-        exec_nodes.extend(cluster_structure.gtm_nodes)
-        # 执行节点执行数据节点
+        # 添加所有在线的管理节点
+        exec_nodes = [node for node in cluster_structure.manager_nodes if node[2] in agent_uuids]
+        # 添加所有在线的GTM节点
+        exec_nodes.extend([node for node in cluster_structure.gtm_nodes if node[2] in agent_uuids])
+        # 添加所有在线的GTM节点
+        data_nodes = []
         for group in cluster_structure.data_nodes.values():
             if master_or_slave == MasterSlavePolicy.MASTER:
-                exec_nodes.append(group[MasterSlavePolicy.MASTER][0])
+                data_nodes.append(group[MasterSlavePolicy.MASTER][0])
             else:
-                exec_nodes.extend(group[MasterSlavePolicy.SLAVE])
-
+                data_nodes.extend(group[MasterSlavePolicy.SLAVE])
+        exec_nodes.extend([node for node in data_nodes if node[2] in agent_uuids])
         # 向本次任务所有执行节点下发子任务
+        manager_node_priority = ManagerPriority.priority
+        meta_path = get_repository_path(file_content, RepositoryDataTypeEnum.META_REPOSITORY)
+        backup_status_file = os.path.join(meta_path, f'{job_id}_exec_backup_status.json')
+        backup_status = {}
         for exec_node in exec_nodes:
-            user_name = exec_node[0]
-            agent_id = exec_node[2]
-            goldendb_node_type = exec_node[3]
-            job_info = f"{user_name} {goldendb_node_type} {master_or_slave}"
+            user_name, _, agent_id, goldendb_node_type = exec_node
+            job_info = f"{user_name} {goldendb_node_type} {master_or_slave} {agent_id}"
             response.append(
-                SubJob(jobId=job_id, execNodeId=agent_id, jobName=SubJobName.MOUNT, jobInfo=job_info,
-                       jobPriority=SubJobPriorityEnum.JOB_PRIORITY_1).dict(by_alias=True))
+                SubJobModel(jobId=job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB, execNodeId=agent_id,
+                            jobName=SubJobName.MOUNT, jobInfo=job_info, policy=SubJobPolicyEnum.FIXED_NODE,
+                            jobPriority=SubJobPriorityEnum.JOB_PRIORITY_1).dict(by_alias=True))
             if goldendb_node_type == GoldenDBNodeType.ZX_MANAGER_NODE:
+                # 设置每个管理节点执行备份的初始状态及优先级
+                sts_info = StatusInfo(priority=manager_node_priority, status=SubJobStatusEnum.RUNNING.value)
+                backup_status.update(
+                    {agent_id: {'priority': sts_info.priority, 'status': sts_info.status, 'log_info': sts_info.log_info,
+                                'log_detail_param': sts_info.log_detail_param, 'log_detail': sts_info.log_detail}})
                 response.append(
-                    SubJob(jobId=job_id, execNodeId=agent_id, jobName=SubJobName.EXEC_BACKUP,
-                           jobInfo=job_info,
-                           jobPriority=SubJobPriorityEnum.JOB_PRIORITY_2).dict(by_alias=True))
+                    SubJobModel(jobId=job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB, execNodeId=agent_id,
+                                jobName=SubJobName.EXEC_BACKUP, jobInfo=job_info, policy=SubJobPolicyEnum.FIXED_NODE,
+                                jobPriority=SubJobPriorityEnum.JOB_PRIORITY_2).dict(by_alias=True))
+                manager_node_priority += 1
+        output_execution_result_ex(backup_status_file, backup_status)
         # 如果没有子任务，则报错
         if not response:
-            log.error(f'job id: {job_id}, generate zero sub job')
-            raise Exception(f'job id: {job_id}, generate zero sub job')
+            log.error(f'Generate zero sub job, job id: {job_id}.')
+            raise Exception(f'Generate zero sub job, job id: {job_id}.')
         # 加入查询信息子任务，不添加的话不会调用queryCopy方法，不会上报给UBC
         response.append(
-            SubJob(jobId=job_id, policy=ExecutePolicy.ANY_NODE, jobName='queryCopy',
-                   jobPriority=SubJobPriorityEnum.JOB_PRIORITY_4).dict(by_alias=True))
-        log.info(f'step 4: finish to execute backup_gen_sub_job, req_id: {req_id}, job_id: {job_id}')
+            SubJobModel(jobId=job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB, policy=SubJobPolicyEnum.ANY_NODE,
+                        jobPriority=SubJobPriorityEnum.JOB_PRIORITY_4, jobName='queryCopy').dict(by_alias=True))
+        log.info(f'Step 4: finish to execute backup_gen_sub_job, req_id: {req_id}, job_id: {job_id}.')
         output_result_file(req_id, response)
 
     @staticmethod
@@ -305,8 +320,8 @@ class GoldenDBBackupService(object):
         @sub_id：子任务ID
         返回值：
         """
-        response = ActionResponse()
-        log.info(f'step 5: execute backup, req_id: {req_id}, job_id: {job_id},sub_id:{sub_id}')
+        response = ActionResult(code=ExecuteResultEnum.SUCCESS)
+        log.info(f'Step 5: execute backup, req_id: {req_id}, job_id: {job_id},sub_id:{sub_id}.')
         try:
             file_content = JsonParam.parse_param_with_jsonschema(req_id)
         except Exception as exception:
@@ -326,25 +341,67 @@ class GoldenDBBackupService(object):
                 GoldenDBBackupService.set_error_response(response)
                 GoldenDBBackupService.report_error_job_details(job_id, req_id, response, sub_id)
         else:
-            sub_job_name = file_content["subJob"]["jobName"]
-            role_name, role_type, sla_policy = file_content["subJob"]["jobInfo"].split(" ")
-            data_path = get_repository_path(file_content, RepositoryDataTypeEnum.DATA_REPOSITORY)
-            if not verify_path_trustlist(data_path):
-                log.error(f"Invalid src path: {data_path}.")
-                return
-            if sub_job_name == SubJobName.MOUNT:
-                mount_parameters = MountParameters(req_id, job_id, sub_id, data_path, file_content)
-                if not GoldenDBBackupService.exec_mount_sub_job(mount_parameters):
-                    log.error("Failed to mount bind backup path")
-                    GoldenDBBackupService.set_error_response(response)
-            elif sub_job_name == SubJobName.EXEC_BACKUP:
-                bkp_sub_parameters = BackupSubJobParameters(req_id, role_name, file_content, job_id, sub_id, sla_policy)
-                if not GoldenDBBackupService.exec_backup_sub_job(bkp_sub_parameters):
-                    log.error("Failed to exec backup sub job")
-                    GoldenDBBackupService.set_error_response(response)
-
+            GoldenDBBackupService.exec_data_bkp_sub_with_report(file_content, job_id, req_id, response, sub_id)
+            # 上报未捕获的异常
             output_result_file(req_id, response.dict(by_alias=True))
             GoldenDBBackupService.report_error_job_details(job_id, req_id, response, sub_id)
+
+    @staticmethod
+    def exec_data_bkp_sub_with_report(file_content, job_id, req_id, response, sub_id):
+        # 获取管理节点备份状态文件
+        meta_path = get_repository_path(file_content, RepositoryDataTypeEnum.META_REPOSITORY)
+        bkp_sts_file = os.path.join(meta_path, f'{job_id}_exec_backup_status.json')
+        sub_job_name = file_content.get("subJob", {}).get("jobName")
+        job_infos = file_content.get("subJob", {}).get("jobInfo").strip().split(" ")
+        # 检查参数
+        if len(job_infos) != 4:
+            log.error(f'Step 5: failed to get job info, job_id: {job_id}.')
+            GoldenDBBackupService.set_error_response(response)
+            GoldenDBBackupService.report_error_job_details(job_id, req_id, response, sub_id)
+        role_name, role_type, sla_policy, agent_id = job_infos
+        data_path = get_repository_path(file_content, RepositoryDataTypeEnum.DATA_REPOSITORY)
+        if not verify_path_trustlist(data_path):
+            log.error(f"Step 5: invalid src path, {data_path}, job_id: {job_id},sub_id:{sub_id}.")
+            GoldenDBBackupService.set_error_response(response)
+            GoldenDBBackupService.report_error_job_details(job_id, req_id, response, sub_id)
+        log.info(f"Step 5: start {sub_job_name} on {agent_id}, req_id: {req_id}, job_id: {job_id}, sub_id: {sub_id}.")
+        # 执行子任务
+        if sub_job_name == SubJobName.MOUNT:
+            mount_parameters = MountParameters(req_id, job_id, sub_id, data_path, file_content)
+            if not GoldenDBBackupService.exec_mount_sub_job(mount_parameters):
+                log.error(f"Step 5: failed to mount bind backup path, job_id: {job_id}, sub_id: {sub_id}.")
+                GoldenDBBackupService.set_error_response(response)
+        elif sub_job_name == SubJobName.EXEC_BACKUP:
+            bkp_sub_parameters = BackupSubJobParameters(req_id, role_name, file_content, job_id, sub_id, sla_policy)
+            if not GoldenDBBackupService.exec_backup_sub_job(bkp_sub_parameters):
+                log.error(f"Step 5: failed to exec backup sub job on {agent_id}, job_id: {job_id}.")
+                ret = GoldenDBBackupService.check_backup_on_all_managers(agent_id, bkp_sts_file, job_id, req_id,
+                                                                         sub_id)
+                if not ret:
+                    log.error(f"Step 5: failed to exec backup sub job on all managers, job_id: {job_id}.")
+                    log_detail, log_detail_param, log_info = get_recognized_err_from_sts_file(agent_id, bkp_sts_file,
+                                                                                              "Backup")
+                    log_details = [log_detail, log_detail_param, log_info]
+                    report_err_via_rpc(req_id, job_id, sub_id, log_details)
+                else:
+                    log.info(f"Step 5: check backup sub job on all managers success, job_id: {job_id}.")
+                    GoldenDBBackupService.report_complete(job_id, req_id, sub_id, SubJobTypeEnum.BUSINESS_SUB_JOB)
+            else:
+                GoldenDBBackupService.report_complete(job_id, req_id, sub_id, SubJobTypeEnum.BUSINESS_SUB_JOB)
+        log.info(
+            f"Step 5: {sub_job_name} finished on {agent_id}, req_id: {req_id}, job_id: {job_id}, sub_id: {sub_id}.")
+
+    @staticmethod
+    def check_backup_on_all_managers(agent_id, bkp_sts_file, job_id, req_id, sub_id):
+        # 判断所有管理节点的备份结果
+        task_infos = TaskInfo(pid=req_id, jobId=job_id, subJobId=sub_id, taskType="Backup",
+                              logComm=f"pid: {req_id}, job_id: {job_id}, sub job id: {sub_id}")
+        try:
+            ret = check_task_on_all_managers(agent_id, bkp_sts_file, "Step 5-2: exec backup", task_infos)
+        except Exception as ex:
+            log.error(f"Step 5-2: {agent_id} check backup failed, message: {ex}, job_id: {job_id}.")
+            ret = False
+        return ret
 
     @staticmethod
     def backup_post_job(req_id, job_id):
@@ -355,12 +412,12 @@ class GoldenDBBackupService(object):
         @job_id： 主任务任务ID
         返回值：
         """
-        log.info(f'step 7: start execute backup_post_job, req_id: {req_id}, job_id: {job_id}')
+        log.info(f'Step 7: start execute backup_post_job, req_id: {req_id}, job_id: {job_id}.')
         umount_bind_backup_paths(job_id)
 
-        response = ActionResponse()
+        response = ActionResult(code=ExecuteResultEnum.SUCCESS)
         output_result_file(req_id, response.dict(by_alias=True))
-        log.info(f'step 7: finish execute backup_post_job, req_id: {req_id}, job_id: {job_id}')
+        log.info(f'Step 7: finish execute backup_post_job, req_id: {req_id}, job_id: {job_id}.')
 
     @staticmethod
     def backup_post_job_progress(req_id, job_id, sub_id):
@@ -372,7 +429,7 @@ class GoldenDBBackupService(object):
         @sub_id：子任务ID
         返回值：
         """
-        log.info(f'execute backup_post_job_progress, req_id: {req_id}, job_id: {job_id},  sub_id: {sub_id}')
+        log.info(f'execute backup_post_job_progress, req_id: {req_id}, job_id: {job_id},  sub_id: {sub_id}.')
         progress = SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=100,
                                  taskStatus=SubJobStatusEnum.COMPLETED.value)
         output_result_file(req_id, progress.dict(by_alias=True))
@@ -388,7 +445,7 @@ class GoldenDBBackupService(object):
         @sub_id：子任务ID
         返回值：
         """
-        log.info(f'step 6: execute to query_backup_copy, pid: {req_id}, job_id: {job_id}')
+        log.info(f'Step 6: execute to query_backup_copy, pid: {req_id}, job_id: {job_id}.')
         try:
             file_content = JsonParam.parse_param_with_jsonschema(req_id)
         except Exception as exception:
@@ -425,13 +482,15 @@ class GoldenDBBackupService(object):
 
     @staticmethod
     def report_complete(job_id, req_id, sub_id, job_type):
-        if not sub_id and job_type == SubJobType.PRE_SUB_JOB:
-            log_detail = LogDetail(logInfo="plugin_execute_prerequisit_task_success_label", logLevel=LogLevel.INFO)
+        if not sub_id and job_type == SubJobTypeEnum.PRE_SUB_JOB:
+            log_detail = LogDetail(logInfo="plugin_execute_prerequisit_task_success_label",
+                                   logLevel=DBLogLevel.INFO.value)
             report_job_details(req_id,
                                SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=100, logDetail=[log_detail],
                                              taskStatus=SubJobStatusEnum.COMPLETED.value))
-        elif job_type == SubJobType.BUSINESS_SUB_JOB:
-            log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_SUCCESS, logInfoParam=[sub_id], logLevel=LogLevel.INFO)
+        elif job_type == SubJobTypeEnum.BUSINESS_SUB_JOB:
+            log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_SUCCESS, logInfoParam=[sub_id],
+                                   logLevel=DBLogLevel.INFO.value)
             report_job_details(req_id,
                                SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=100, logDetail=[log_detail],
                                              taskStatus=SubJobStatusEnum.COMPLETED.value))
@@ -443,35 +502,41 @@ class GoldenDBBackupService(object):
 
     @staticmethod
     def exec_mount_sub_job(mount_parameters):
-        log.info(f'step 5-1: start execute mount sub job')
+        log.info(f'Step 5-1: start execute mount sub job.')
         file_content = mount_parameters.file_content
         data_path = mount_parameters.data_path
         sub_id = mount_parameters.sub_id
         req_id = mount_parameters.req_id
         job_id = mount_parameters.job_id
-        role_name, role_type, _ = file_content["subJob"]["jobInfo"].split(" ")
+        job_infos = file_content.get("subJob", {}).get("jobInfo", " ").strip().split(" ")
+        if len(job_infos) != 4:
+            log.error(f'Step 5-1: failed to get job info, job_id: {job_id}.')
+            return False
+        role_name, role_type, _, _ = job_infos
         backup_path = get_backup_path(role_name, role_type, file_content, GoldenDBJsonConst.PROTECTOBJECT)
         goldendb_structure = get_goldendb_structure(file_content)
         cluster_id = goldendb_structure.cluster_id
-        data_path_bkp = os.path.join(data_path, f'DBCluster_{cluster_id}', 'DATA_BACKUP')
-        backup_path_bkp = os.path.join(backup_path, f'DBCluster_{cluster_id}', 'DATA_BACKUP')
-        # 解挂载备份根data_backup目录
-        umount_bind_path(backup_path_bkp)
+        ini_bkp_root_dir = get_bkp_root_dir_via_role(role_type, backup_path, job_id)
+        if role_type == GoldenDBNodeType.GTM_NODE:
+            data_bkp_mnt_dir = os.path.join(data_path, f'DBCluster_{cluster_id}', 'LOGICAL_BACKUP')
+            prod_bkp_mnt_dir = os.path.join(ini_bkp_root_dir, f'DBCluster_{cluster_id}', 'LOGICAL_BACKUP')
+        else:
+            data_bkp_mnt_dir = os.path.join(data_path, f'DBCluster_{cluster_id}', 'DATA_BACKUP')
+            prod_bkp_mnt_dir = os.path.join(ini_bkp_root_dir, f'DBCluster_{cluster_id}', 'DATA_BACKUP')
+        # 解挂载生产端的备份根目录
+        umount_bind_path(prod_bkp_mnt_dir)
         group_name, _ = get_user_info(role_name)
-        if not mkdir_chmod_chown_dir_recursively(data_path_bkp, 0o770, role_name, group_name, True):
-            log.error("fail to make a data path.")
+        if not mkdir_chmod_chown_dir_recursively(data_bkp_mnt_dir, 0o770, role_name, group_name, True):
+            log.error("Fail to make a data path, job_id: {job_id}.")
             return False
-        if not mkdir_chmod_chown_dir_recursively(backup_path_bkp, 0o770, role_name, group_name, True):
-            log.error("fail to make  a back path.")
+        if not mkdir_chmod_chown_dir_recursively(prod_bkp_mnt_dir, 0o770, role_name, group_name, True):
+            log.error("Fail to make a back path, job_id: {job_id}.")
             return False
-        if not mount_bind_path(data_path_bkp, backup_path_bkp, job_id):
-            log.error(f"Mount data_path failed")
+        if not mount_bind_path(data_bkp_mnt_dir, prod_bkp_mnt_dir, job_id):
+            log.error(f"Mount data_path failed, job_id: {job_id}.")
             return False
-        log.info("step 5-1:finish Mount bind all backup path success")
-        log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_SUCCESS, logInfoParam=[sub_id], logLevel=LogLevel.INFO)
-        report_job_details(req_id,
-                           SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=100, logDetail=[log_detail],
-                                         taskStatus=SubJobStatusEnum.COMPLETED.value))
+        log.info("Step 5-1:finish Mount bind all backup path success, job_id: {job_id}.")
+        GoldenDBBackupService.report_complete(job_id, req_id, sub_id, SubJobTypeEnum.BUSINESS_SUB_JOB)
         return True
 
     @staticmethod
@@ -480,7 +545,55 @@ class GoldenDBBackupService(object):
             backup_parameters.job_id, backup_parameters.sub_id, backup_parameters.req_id,
             backup_parameters.file_content, backup_parameters.role_name, backup_parameters.sla_policy
         )
-        log.info(f'step 5-2: start to execute backup, job_id:{job_id},sub_id:{sub_id},req_id:{req_id}')
+        meta_path = get_repository_path(file_content, RepositoryDataTypeEnum.META_REPOSITORY)
+        backup_status_file = os.path.join(meta_path, f'{job_id}_exec_backup_status.json')
+        log.info(f"Step 5-2: start to backup, pid: {req_id}, job_id: {job_id}, sub job id: {sub_id}")
+        task_infos = TaskInfo(pid=req_id, jobId=job_id, subJobId=sub_id, taskType="Backup",
+                              jsonParam=file_content,
+                              logComm=f"pid: {req_id}, job_id: {job_id}, sub job id: {sub_id}")
+        result = exec_task_on_all_managers(GoldenDBBackupService.get_exec_bkp_result, backup_status_file,
+                                           f"Step 5-2: exec backup ", task_infos, backup_parameters)
+        return result
+
+    @staticmethod
+    def get_exec_bkp_result(agent_id, backup_status_file, backup_parameters):
+        """
+        功能描述：从单个管理节点中获取备份结果，根据该结果，更新恢复状态文件。
+        1. 执行成功
+        2. dbtool原生异常已在执行后完成更新，只需处理其余异常。
+        """
+        job_id = backup_parameters.job_id
+        backup_result = GoldenDBBackupService.exec_bkp_on_manager(backup_parameters)
+        update_agent_sts_general_after_exec(agent_id, backup_status_file, "Backup", backup_result, f"job id: {job_id}")
+        return backup_result
+
+    @staticmethod
+    def get_id_status_via_priority(backup_status_file, priority, job_id):
+        results = read_tmp_json_file(backup_status_file)
+        if not results:
+            log.error(f'Step 5-2: job_id:{job_id}, read backup status file failed.')
+            return "", SubJobStatusEnum.FAILED.value
+        for agent_id, value in results.items():
+            cur_priority = value.get("priority")
+            if priority == cur_priority:
+                log.info(
+                    f'Step 5-2: job_id:{job_id}, agent_id: {agent_id}, '
+                    f'priority: {priority}, status: {value.get("status")}.'
+                )
+                return agent_id, value.get("status")
+        log.error(f'Step 5-2: job_id:{job_id}, get_id_status_via_priority failed.')
+        return "", SubJobStatusEnum.FAILED.value
+
+    @staticmethod
+    def exec_bkp_on_manager(backup_parameters):
+        """
+        功能描述：在单个管理节点中执行备份
+        """
+        job_id, sub_id, req_id, file_content, role_name, sla_policy = (
+            backup_parameters.job_id, backup_parameters.sub_id, backup_parameters.req_id,
+            backup_parameters.file_content, backup_parameters.role_name, backup_parameters.sla_policy
+        )
+        log.info(f'Step 5-2: start to execute backup, job_id:{job_id}, sub_id:{sub_id}, req_id:{req_id}.')
         # 获取集群版本
         version = GoldenDBResourceInfo.get_cluster_version(role_name)
         cache_path = get_repository_path(file_content, RepositoryDataTypeEnum.CACHE_REPOSITORY)
@@ -488,7 +601,7 @@ class GoldenDBBackupService(object):
         output_execution_result_ex(version_file, {"version": version})
         data_path = get_repository_path(file_content, RepositoryDataTypeEnum.DATA_REPOSITORY)
         if not verify_path_trustlist(data_path):
-            log.error(f"Invalid src path: {data_path}.")
+            log.error(f"Invalid src path: {data_path}, job_id:{job_id}, sub_id:{sub_id}, req_id:{req_id}.")
             return False
         original_size = 0
         ret, size = scan_dir_size(job_id, data_path)
@@ -496,93 +609,110 @@ class GoldenDBBackupService(object):
             original_size = size
         process = SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=0, taskStatus=SubJobStatusEnum.RUNNING)
         log_detail = LogDetail(logInfo=ReportDBLabel.BACKUP_SUB_START_COPY, logInfoParam=[process.sub_task_id],
-                               logLevel=LogLevel.INFO)
+                               logLevel=DBLogLevel.INFO.value)
         process.log_detail = [log_detail]
         report_job_details(req_id, process)
         # 清空上报进度
         process.log_detail = None
         pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='goldendb-backup')
         message = str(int((time.time())))
-        write_file(os.path.join(
-            get_repository_path(file_content, RepositoryDataTypeEnum.CACHE_REPOSITORY), f'T{job_id}'), message)
+        write_file(os.path.join(cache_path, f'T{job_id}'), message)
 
         backup_cmd_parameters = BackupCmdParameters(req_id, role_name, file_content, sla_policy, job_id, sub_id,
                                                     data_path)
+        # 执行备份指令，完成后，检查命令回显以及文件系统数据仓中的副本文件
         copy_feature = pool.submit(GoldenDBBackupService.exec_backup_cmd, backup_cmd_parameters)
         while not copy_feature.done():
             time.sleep(Report.REPORT_INTERVAL)
             report_bkp_proc_parameters = ReportBkpProcParameters(req_id, job_id, process, file_content, original_size)
             if not GoldenDBBackupService.report_backup_process(report_bkp_proc_parameters):
-                log.error(f'full backup failed: backup root error')
+                log.error(f'Full backup failed: backup root error.')
                 pool.shutdown()
                 return False
         if not copy_feature.result()[0]:
             return False
         data_size = copy_feature.result()[1] - original_size
         process.data_size = data_size
-        process.task_status = SubJobStatusEnum.COMPLETED
+        process.task_status = SubJobStatusEnum.COMPLETED.value
         process.progress = 100
         log_detail = LogDetail(logInfo=ReportDBLabel.BACKUP_SUB_JOB_SUCCESS,
                                logInfoParam=[process.sub_task_id, count_files(data_path),
-                                             format_capacity(copy_feature.result()[1])], logLevel=LogLevel.INFO)
+                                             format_capacity(copy_feature.result()[1])], logLevel=DBLogLevel.INFO.value)
         process.log_detail = [log_detail]
         report_job_details(req_id, process)
-        log.info(f'step 5-2:finish  start to execute backup, job_id:{job_id},sub_id:{sub_id},req_id:{req_id}')
+        log.info(f'Step 5-2: success to execute backup, job_id: {job_id}, sub_id: {sub_id}, req_id: {req_id}.')
         return True
 
     @staticmethod
-    def check_backup_result(copy_feature, req_id, job_id, sub_id, action="Backup"):
+    def check_bkp_cmd_echo(copy_feature, job_id, sub_id):
+        """
+        功能描述：检查备份指令回显内容，返回可识别的异常，其余异常，默认为ErrorCode.ERROR_INTERNAL。
+        """
+        log_detail_param = None
         if int(copy_feature[0]) != int(CMDResult.SUCCESS):
+            log_detail = ErrorCode.ERROR_INTERNAL
+            log_info = ReportDBLabel.SUB_JOB_FALIED
+            log.error(f"Step 5: failed to exec dbtool cmd, job_id: {job_id}, sub_id: {sub_id}.")
             if "response message: " in copy_feature[1]:
+                log.error(f"Step 5: failed to exec dbtool cmd, err in response, job_id: {job_id}, sub_id: {sub_id}.")
                 message = copy_feature[1].split("response message: ")[1].replace("\\r\\n", " ").rstrip(
                     "'").strip()
-                log.debug(f"message :{message}")
-                log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[sub_id],
-                                       logLevel=LogLevel.ERROR, logDetail=ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL,
-                                       logDetailParam=[action, message])
-            else:
-                log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[sub_id],
-                                       logLevel=LogLevel.ERROR, logDetail=0)
-            report_job_details(req_id,
-                               SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=100, logDetail=[log_detail],
-                                             taskStatus=SubJobStatusEnum.FAILED.value))
-            return False
-        return True
+                log.debug(f"message: {message}")
+                log_detail = ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL
+                log_detail_param = ["Backup", message]
+            return False, log_detail, log_detail_param, log_info
+        log.info(f"Step 5: exec dbtool cmd success, job_id: {job_id}, sub_id: {sub_id}.")
+        # 检查正确，无错误码，无错误参数，无错误标签
+        return True, None, None, ReportDBLabel.SUB_JOB_SUCCESS
 
     @staticmethod
-    def check_backup_data(file_content):
-        # 检查备份数据是否完整
+    def check_dn_xtream_results(file_content):
+        """
+        功能描述：根据备份结果文件内容，获取各数据节点的备份结果文件，检查文件系统中该文件是否存在。
+        返回可识别的异常，其余异常，默认为ErrorCode.ERROR_INTERNAL。
+        """
         data_path = get_repository_path(file_content, RepositoryDataTypeEnum.DATA_REPOSITORY)
-        if not verify_path_trustlist(data_path):
-            log.error(f"Invalid src path: {data_path}.")
-            return False
         goldendb_structure = get_goldendb_structure(file_content)
         cluster_id = goldendb_structure.cluster_id
-        results_info_file = GoldenDBBackupService.get_file_name(cluster_id, data_path)
+        # 获取备份结果文件路径，文件名，有后缀
+        results_info_file = GoldenDBBackupService.get_bkp_result_info_file(cluster_id, data_path)
         if not results_info_file:
-            log.error(f'check_backup_data results_info_path no backup_resultsinfo.')
-            return False
+            # 文件系统中，备份结果文件名为空，异常
+            log.error(f'check_dn_xtream_results results_info_path failed, no backup_resultsinfo.')
+            _, task_id = get_copy_result_info(data_path, cluster_id)
+            err_path = os.path.join(data_path, f'DBCluster_{cluster_id}', f"{cluster_id}_backup_resultsinfo.{task_id}")
+            log_detail_param = [err_path]
+            return False, ErrorCode.ERR_BKP_CHECK, log_detail_param, ReportDBLabel.COPY_VERIFICATION_FALIED
         results_info_path = os.path.join(data_path, f"DBCluster_{cluster_id}", results_info_file)
         if os.path.exists(results_info_path):
             with open(results_info_path, encoding='utf-8') as file:
-                # 读取文件
+                # 读取备份结果文件内容
                 contents = file.readlines()
         else:
-            log.error(f'check_backup_data results_info_path ')
-            return False
-        log.debug(f'check_backup_data contents :{contents}')
+            # 文件系统中，备份结果文件路径不存在，异常
+            log.error(f'check_dn_xtream_results results_info_path failed.')
+            log_detail_param = [results_info_path]
+            return False, ErrorCode.ERR_BKP_CHECK, log_detail_param, ReportDBLabel.COPY_VERIFICATION_FALIED
+        log.debug(f'check_dn_xtream_results contents: {contents}.')
         record_info_list = []
         for record in contents:
             record_info = record.split()
             record_info_list.append(record_info)
-        log.debug(f'check_backup_data record_info_list :{record_info_list}')
+        log.debug(f'check_dn_xtream_results record_info_list :{record_info_list}.')
+        # 判断备份结果文件列出的数据节点文件在文件系统中是否存在
         for record_info in record_info_list:
-            if not GoldenDBBackupService.check_backup_path_exit(record_info, data_path):
-                return False
-        return True
+            ret, err_path = GoldenDBBackupService.check_dn_xtream_result(record_info, data_path, cluster_id)
+            if not ret:
+                # 文件系统中，数据节点副本缺失，异常
+                log.error(f'check_dn_xtream_results check_dn_xtream_result failed, not exist: {err_path}.')
+                log_detail_param = [err_path]
+                return False, ErrorCode.ERR_BKP_CHECK, log_detail_param, ReportDBLabel.COPY_VERIFICATION_FALIED
+        # 检查正确，无错误码，无错误参数，无错误标签
+        return True, None, None, ReportDBLabel.SUB_JOB_SUCCESS
 
     @staticmethod
-    def get_file_name(cluster_id, data_path):
+    def get_bkp_result_info_file(cluster_id, data_path):
+        # 备份根目录/DBCluster_{cluster_id}/DATA_BACKUP/{task_id}/ResultInfo/{cluster_id}_backup_resultsinfo_1.{timestamp}
         results_info_file = ""
         expect_file_name = f"{cluster_id}_backup_"
         bkp_result_dir = os.path.join(data_path, f'DBCluster_{cluster_id}')
@@ -594,18 +724,27 @@ class GoldenDBBackupService(object):
         return results_info_file
 
     @staticmethod
-    def check_backup_path_exit(record_info, data_path):
+    def check_dn_xtream_result(record_info, data_path, cluster_id):
+        """
+        功能描述：检查数据节点生成的备份结果文件，在文件系统中是否存在。
+        备份根目录/DBCluster_{cid}/DATA_BACKUP/{tid}/Data/Node_{groupid}_{roomid}_{ip}_{port}/{ip}_{bkp_type}_{tid}.xtream
+        """
+        # 在备份结果文件中，3表示副本信息
         if int(record_info[0]) == 3:
-            xbstream_list = list(filter(lambda x: "/backup_root/" in x, record_info))
+            _, task_id = get_copy_result_info(data_path, cluster_id)
+            dn_result_pattern = f"/DBCluster_{cluster_id}/DATA_BACKUP/{task_id}/Data/"
+            xbstream_list = list(filter(lambda x: dn_result_pattern in x, record_info))
             if xbstream_list:
-                xbstream_path = os.path.join(data_path, xbstream_list[0].split('backup_root')[1][1:])
-                if not verify_path_trustlist(xbstream_path):
-                    log.error(f"Invalid src path: {xbstream_path}.")
-                    return False
-                if not os.path.exists(xbstream_path):
-                    log.error(f'check_backup_data xbstream_path not exist: {xbstream_path}')
-                    return False
-        return True
+                dn_result_relative_path = xbstream_list[0].split(dn_result_pattern)[1]
+                dn_xbstream_path = os.path.join(data_path, f"DBCluster_{cluster_id}", "DATA_BACKUP", f"{task_id}",
+                                                "Data", dn_result_relative_path)
+                if not verify_path_trustlist(dn_xbstream_path):
+                    log.error(f"Invalid src path: {dn_xbstream_path}.")
+                    return False, dn_xbstream_path
+                if not os.path.exists(dn_xbstream_path):
+                    log.error(f'check_dn_bkp_path xbstream_path not exist: {dn_xbstream_path}.')
+                    return False, dn_xbstream_path
+        return True, ''
 
     @staticmethod
     def write_backup_result(cluster_structure, data_path, file_content):
@@ -636,28 +775,37 @@ class GoldenDBBackupService(object):
 
     @staticmethod
     def exec_umount_sub_job(req_id, job_id, sub_id, file_content):
-        log.info(f'step 5-3: start execute umount sub job')
-        role_name, role_type, sla_policy = file_content["subJob"]["jobInfo"].split(" ")
+        log.info(f'Step 5-3: start execute umount sub job.')
+        job_infos = file_content.get("subJob", {}).get("jobInfo", " ").strip().split(" ")
+        if len(job_infos) != 4:
+            log.error(f'Step 5-3: failed to get job info, job_id: {job_id}.')
+            return False
+        role_name, role_type, sla_policy, _ = job_infos
         backup_params = get_backup_param(req_id, file_content, sla_policy)
         cluster_id = backup_params.cluster_id
         backup_path = get_backup_path(role_name, role_type, file_content, GoldenDBJsonConst.PROTECTOBJECT)
-        log.debug(f'step 5-3: start execute umount sub job')
+        log.debug(f'Step 5-3: start execute umount sub job.')
 
-        if not umount_bind_path(os.path.join(backup_path, f'DBCluster_{cluster_id}', 'DATA_BACKUP')):
-            log.error(f"Failed to exec umount bind path")
+        ini_bkp_root_dir = get_bkp_root_dir_via_role(role_type, backup_path, job_id)
+        if role_type == GoldenDBNodeType.GTM_NODE:
+            prod_bkp_mnt_dir = os.path.join(ini_bkp_root_dir, f'DBCluster_{cluster_id}', 'LOGICAL_BACKUP')
+        else:
+            prod_bkp_mnt_dir = os.path.join(ini_bkp_root_dir, f'DBCluster_{cluster_id}', 'DATA_BACKUP')
+
+        if not umount_bind_path(prod_bkp_mnt_dir):
+            log.error(f"Failed to exec umount bind path for {role_name}, {role_type}.")
             return False
-        log.info("step 5-3:finish execute umount sub job")
-        log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_SUCCESS, logInfoParam=[sub_id], logLevel=LogLevel.INFO)
-        report_job_details(req_id,
-                           SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=100, logDetail=[log_detail],
-                                         taskStatus=SubJobStatusEnum.COMPLETED.value))
+
+        log.info("Step 5-3:finish execute umount sub job.")
+        GoldenDBBackupService.report_complete(job_id, req_id, sub_id, SubJobTypeEnum.BUSINESS_SUB_JOB)
         return True
 
     @staticmethod
     def report_error_job_details(job_id, req_id, response, sub_id):
         if response.code != GoldenDBCode.SUCCESS.value:
-            log.info(f'report_sub_job_details:{response}')
-            log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[sub_id], logLevel=LogLevel.ERROR)
+            log.info(f'report_sub_job_details: {response}.')
+            log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[sub_id],
+                                   logLevel=DBLogLevel.ERROR.value)
             report_job_details(req_id, SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=100,
                                                      logDetail=[log_detail], taskStatus=SubJobStatusEnum.FAILED.value))
 
@@ -684,7 +832,7 @@ class GoldenDBBackupService(object):
         file_num = count_files(data_path)
         log_detail = LogDetail(logInfo=ReportDBLabel.BACKUP_SUB_JOB_SUCCESS,
                                logInfoParam=[process.sub_task_id, file_num, format_capacity(size)],
-                               logLevel=LogLevel.INFO)
+                               logLevel=DBLogLevel.INFO.value)
         process.log_detail = [log_detail]
         report_job_details(req_id, process)
         return True
@@ -703,26 +851,41 @@ class GoldenDBBackupService(object):
         backup_type = backup_params.backup_type_str
         master_or_slave = backup_params.master_or_slave
         cluster_user = backup_params.cluster_user
-        _, role_type, _ = file_content["subJob"]["jobInfo"].split(" ")
-        backup_path = get_backup_path(role_name, role_type, file_content, GoldenDBJsonConst.PROTECTOBJECT)
-
-        if GoldenDBBackupService.bkp_cmd_injection(backup_type, cluster_id, cluster_user, master_or_slave, role_name):
-            log.error("command injection detected in backup command!")
+        job_infos = file_content.get("subJob", {}).get("jobInfo", " ").strip().split(" ")
+        if len(job_infos) != 4:
+            log.error(f'Step 5-2: failed to get job info, job_id: {job_id}.')
             return False, 0
-        pre_bkp_files = get_bkp_files_in_cluster_id_folder(backup_path, file_content)
+        _, role_type, _, agent_id = job_infos
+        meta_path = get_repository_path(file_content, RepositoryDataTypeEnum.META_REPOSITORY)
+        bkp_sts_file = os.path.join(meta_path, f'{job_id}_exec_backup_status.json')
+        backup_path = get_backup_path(role_name, role_type, file_content, GoldenDBJsonConst.PROTECTOBJECT)
+        # 从管理节点配置文件中取备份根目录
+        prod_bkp_root = get_bkp_root_dir_via_role(role_type, backup_path, job_id)
+        if GoldenDBBackupService.bkp_cmd_injection(backup_type, cluster_id, cluster_user, master_or_slave, role_name):
+            log.error("Command injection detected in backup command!")
+            return False, 0
+        # 获取本次备份前，生产端的备份结果文件的文件名
+        pre_bkp_files = get_bkp_result_names_in_cluster_id_dir(prod_bkp_root, file_content)
         backup_cmd = f'su - {role_name} -c "dbtool -mds -backup -binlogBackup -c={cluster_id} {backup_type} ' \
                      f'{master_or_slave} -user={cluster_user} -password"'
         # 需要输密码的命令
         status, out_str = exec_cmd_spawn(backup_cmd, req_id)
-        log.info(f'result: {(status, out_str)}')
-        # 复制活跃事务文件夹至文件系统, 复制备份结果文件至文件系统, 并删除冗余增量文件
-        if not GoldenDBBackupService.handle_files_after_bkp(backup_path, data_path, cluster_id, file_content,
-                                                            pre_bkp_files):
+        log.info(f'result: {(status, out_str)}.')
+        if int(status) == int(CMDResult.SUCCESS):
+            # 复制活跃事务文件夹至文件系统, 复制备份结果文件至文件系统, 并删除冗余增量文件
+            if not GoldenDBBackupService.handle_files_after_bkp(prod_bkp_root, data_path, cluster_id, file_content,
+                                                                pre_bkp_files):
+                return False, 0
+        else:
+            log.error(f"Backup failed with result: {(status, out_str)}.")
             return False, 0
-        if not GoldenDBBackupService.check_res_after_bkp((status, out_str), req_id, job_id, sub_id, file_content):
-            return False, 0
-        if not verify_path_trustlist(data_path):
-            log.error(f"Invalid src path: {data_path}.")
+        ret, log_detail, log_detail_param, log_info = GoldenDBBackupService.check_res_after_bkp((status, out_str),
+                                                                                                job_id, sub_id,
+                                                                                                file_content)
+        if not ret:
+            sts_info = StatusInfo(status=SubJobStatusEnum.FAILED.value, logDetail=log_detail,
+                                  logDetailParam=log_detail_param, logInfo=log_info)
+            update_agent_sts(agent_id, bkp_sts_file, sts_info)
             return False, 0
         cluster_structure = get_goldendb_structure(file_content)
         GoldenDBBackupService.write_backup_result(cluster_structure, data_path, file_content)
@@ -731,94 +894,145 @@ class GoldenDBBackupService(object):
         return True, size
 
     @staticmethod
-    def handle_files_after_bkp(backup_path, data_path, cluster_id, file_content, pre_bkp_files):
+    def handle_files_after_bkp(prod_bkp_root, data_path, cluster_id, file_content, pre_bkp_files):
         """
         复制活跃事务文件夹至文件系统, 复制备份结果文件至文件系统, 并删除冗余增量文件
-        :param backup_path: goldendb备份路径
-        :param data_path: 文件系统路径
+        :param prod_bkp_root: goldendb备份路径
+        :param data_path: 文件系统数据仓路径
         :param cluster_id: 集群id
         :param file_content: pm下发参数
-        :param pre_bkp_files: 本次备份前，goldendb中的所有备份结果文件
+        :param pre_bkp_files: 本次备份前，goldendb生产端中所有备份结果文件
         :return:
         """
         cluster_structure = get_goldendb_structure(file_content)
         manager_os_user = cluster_structure.manager_nodes[0][0]
-        if not cp_active_folder(backup_path, data_path, manager_os_user):
-            log.error('copy active tx info folder failed')
+        if not cp_active_folder(prod_bkp_root, data_path, manager_os_user):
+            log.error('Copy active tx info folder failed.')
             return False
-        bkp_resultinfo_file = GoldenDBBackupService.get_file_name(cluster_id, backup_path)
-        if not cp_result_info(cluster_id, bkp_resultinfo_file, backup_path, data_path):
-            log.error('copy backup result info file failed')
+        # 文件名，有后缀
+        bkp_resultinfo_file = GoldenDBBackupService.get_bkp_result_info_file(cluster_id, prod_bkp_root)
+        # 将生产端备份结果文件，复制到文件系统数据仓
+        if not cp_result_info(cluster_id, bkp_resultinfo_file, prod_bkp_root, data_path):
+            log.error('Copy backup result info file failed.')
             return False
-        if not GoldenDBBackupService.delete_redundant_inc_folders(cluster_id, file_content, pre_bkp_files):
-            log.error('delete redundant incremental backup info failed')
+        # 删除文件系统冗余文件
+        if not GoldenDBBackupService.rm_all_redundant_incr_result_infos(cluster_id, file_content, pre_bkp_files):
+            log.error('Delete redundant incremental backup info failed.')
             return False
         return True
 
     @staticmethod
-    def check_res_after_bkp(exec_bkp_outputs, req_id, job_id, sub_id, file_content):
-        if not GoldenDBBackupService.check_backup_result((exec_bkp_outputs[0], exec_bkp_outputs[1]), req_id, job_id,
-                                                         sub_id):
-            log.error(f'check_backup_result failed: {exec_bkp_outputs[0]}')
-            return False
-        if not GoldenDBBackupService.check_backup_data(file_content):
-            log.error(f'backup failed, check_backup_data failed')
-            return False
-        return True
+    def check_res_after_bkp(exec_bkp_outputs, job_id, sub_id, file_content):
+        """
+        功能描述：备份指令执行后，检查备份结果：1）备份指令回显内容；2）通过备份结果文件内容，检查备份数据是否完整。
+
+        返回值:
+        bool, int, list, string:
+        检查成功，返回True, None, None, ReportDBLabel.SUB_JOB_SUCCESS；检查失败，返回False，对应的错误码，参数，标签。
+        """
+        ret, log_detail, log_detail_param, log_info = GoldenDBBackupService.check_bkp_cmd_echo(
+            (exec_bkp_outputs[0], exec_bkp_outputs[1]), job_id, sub_id)
+        if not ret:
+            log.error(f'check_bkp_cmd_echo failed: {exec_bkp_outputs[0]}.')
+            return False, log_detail, log_detail_param, log_info
+
+        ret, log_detail, log_detail_param, log_info = GoldenDBBackupService.check_dn_xtream_results(file_content)
+        if not ret:
+            log.error(f'Backup failed, check_backup_data failed.')
+            return False, log_detail, log_detail_param, log_info
+        return True, None, None, ReportDBLabel.SUB_JOB_SUCCESS
 
     @staticmethod
     def bkp_cmd_injection(backup_type, cluster_id, cluster_user, master_or_slave, role_name):
         if check_command_injection_exclude_quote(backup_type):
-            log.error("command injection detected in backup_type!")
+            log.error("Command injection detected in backup_type!")
             return True
         if check_command_injection_exclude_quote(cluster_id):
-            log.error("command injection detected in cluster_id!")
+            log.error("Command injection detected in cluster_id!")
             return True
         if not cluster_id.isnumeric():
             log.error(f"cluster_id is invalid!")
             return True
         if check_command_injection_exclude_quote(cluster_user):
-            log.error("command injection detected in cluster_user!")
+            log.error("Command injection detected in cluster_user!")
             return True
         if check_command_injection_exclude_quote(master_or_slave):
-            log.error("command injection detected in master_or_slave!")
+            log.error("Command injection detected in master_or_slave!")
             return True
         if check_command_injection_exclude_quote(role_name):
-            log.error("command injection detected in role_name!")
+            log.error("Command injection detected in role_name!")
             return True
         return False
 
     @staticmethod
-    def delete_redundant_inc_folders(cluster_id, file_content, pri_bkp_files):
+    def rm_all_redundant_incr_result_infos(cluster_id, file_content, pre_bkp_files):
+        """
+        当前备份完成后，文件系统中会包含生产环境里的所有文件，其中包括本次备份前已存在的文件，需要将其中冗余的增量备份文件删除
+        如果本次备份为增量备份，遍历文件系统中的备份结果文件，并删除冗余的增量备份结果文件
+
+        参数:
+        cluster_id: 集群ID
+        file_content: 本次备份任务下发的结构体，包含了备份类型等信息
+        pre_bkp_files: 本次备份前，生产环境中的文件列表
+
+        返回值:
+        bool: 如果删除成功，返回True，否则返回False
+
+        异常描述:
+        如果路径不在白名单中，会抛出错误
+        """
+        # 获取数据仓库路径
         data_path = get_repository_path(file_content, RepositoryDataTypeEnum.DATA_REPOSITORY)
         if not verify_path_trustlist(data_path):
             log.error(f"Invalid src path: {data_path}.")
             return False
+        # 获取本次备份任务的类型，默认为全量备份
         backup_type = file_content.get("job", {}).get("jobParam", {}).get("backupType", BackupTypeEnum.FULL_BACKUP)
+        # 全量备份不需要处理
         if backup_type != BackupTypeEnum.FULL_BACKUP:
             cluster_id_path = os.path.join(data_path, f'DBCluster_{cluster_id}')
             cluster_bkp_result_infos = [f for f in os.listdir(cluster_id_path) if f.startswith(f'{cluster_id}_back')]
             for result_info in cluster_bkp_result_infos:
-                if not GoldenDBBackupService.remove_redundant_files(cluster_id_path, result_info, pri_bkp_files):
+                # 删除冗余的增量备份文件
+                if not GoldenDBBackupService.rm_redundant_incr_result_info(cluster_id_path, result_info, pre_bkp_files):
                     return False
         return True
 
     @staticmethod
-    def remove_redundant_files(cluster_id_path, result_info, pri_bkp_files):
-        if result_info in pri_bkp_files:
+    def rm_redundant_incr_result_info(cluster_id_path, result_info, pre_bkp_files):
+        """
+        判断输入的文件是否为冗余文件，并删除。
+        如果该文件备份前已存在于生产端，且该文件为增量备份任务生成，需要在文件系统中，删除该文件。
+
+        参数:
+        cluster_id_path: 文件系统中的集群ID路径
+        result_info: 文件系统中的备份结果文件
+        pri_bkp_files: 本次备份前，生产环境中的文件列表
+
+        返回值:
+        如果删除成功，返回True，否则返回False
+
+        异常描述:
+        如果无法备份任务文件夹，或者删除冗余增量备份任务文件夹或结果文件失败，将记录错误日志并返回False
+        """
+        # 判断该文件是否为本次备份前存在的文件
+        if result_info in pre_bkp_files:
+            # 获取该备份结果信息在文件系统中的全路径：数据仓/DBCluster_{cid}/{cid}_backup_resultsinfo.{tid}
             result_info_path = os.path.join(cluster_id_path, result_info)
-            bkp_type = get_bkp_type_from_result_info(result_info_path)
-            if bkp_type == 'INCREMENTAL':
+            # 获取当前文件的备份类型
+            bkp_file_type = get_bkp_type_from_result_info(result_info_path)
+            if bkp_file_type == 'INCREMENTAL':
+                # 读文件系统中的备份结果文件，获取对应的增量备份任务（时间戳）路径：数据仓/DBCluster_{cid}/DATA_BACKUP/{tid}
                 ret, task_path = get_task_path_from_result_info(result_info_path, cluster_id_path)
                 if not ret:
-                    log.error(f'can not backup task folders.')
+                    log.error(f'Can not backup task folders.')
                     return False
-                # 删除冗余增量备份task id文件夹
+                # 在文件系统中，删除冗余增量备份task id（时间戳）文件夹
                 if not su_exec_rm_cmd(task_path):
-                    log.error(f'remove redundant incremental backup task folders failed.')
+                    log.error(f'Remove redundant incremental backup task folders failed.')
                     return False
-                # 删除冗余增量备份结果文件
+                # 在文件系统中，删除冗余增量备份结果文件
                 if not su_exec_rm_cmd(result_info_path):
-                    log.error(f'remove redundant incremental backup info files failed.')
+                    log.error(f'Remove redundant incremental backup info files failed.')
                     return False
         return True

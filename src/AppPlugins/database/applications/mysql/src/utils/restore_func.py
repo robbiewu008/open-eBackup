@@ -85,8 +85,24 @@ def convert_restore_binlog_files_str(restore_files: [str]):
     return " ".join(map(lambda x: f"\"{x}\"", restore_files))
 
 
+def show_master_status(sql_param: SQLParam):
+    sql_param.sql = "show master status"
+    ret, output = exec_mysql_sql_cmd(sql_param)
+    if not ret:
+        return "", ""
+    return output[0][0], output[0][1]
+
+
 def stop_slave(sql_param: SQLParam):
     sql_param.sql = "stop slave"
+    ret, output = exec_mysql_sql_cmd(sql_param)
+    if not ret:
+        return False
+    return True
+
+
+def start_slave(sql_param: SQLParam):
+    sql_param.sql = "start slave"
     ret, output = exec_mysql_sql_cmd(sql_param)
     if not ret:
         return False

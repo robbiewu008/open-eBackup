@@ -203,6 +203,10 @@ class SubJobPriorityEnum(int, Enum):
     JOB_PRIORITY_3 = 3
     JOB_PRIORITY_4 = 4
     JOB_PRIORITY_5 = 5
+    JOB_PRIORITY_6 = 6
+    JOB_PRIORITY_7 = 7
+    JOB_PRIORITY_8 = 8
+    JOB_PRIORITY_9 = 9
 
 
 class DBLogLevel(int, Enum):
@@ -369,3 +373,7 @@ class FilePath:
 
     # 读取文件黑名单
     READ_BLACK_LIST = r"^/dev/random$|^/dev/urandom$"
+
+
+class Encoding:
+    INTERNAL_ENCODING = "utf-8"

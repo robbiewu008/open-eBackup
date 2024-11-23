@@ -33,6 +33,9 @@
     <ClCompile Include="..\..\..\..\src\src\host\CheckConnectStatus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\host\ConnectivityManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\inc\host\host.h">
@@ -53,5 +56,8 @@
     <ClInclude Include="..\..\..\..\src\inc\host\CheckConnectStatus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\..\src\src\host\ConnectivityManager.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

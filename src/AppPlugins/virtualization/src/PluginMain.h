@@ -73,7 +73,9 @@ void InitAppCfg();
 void InitOpenStackCfg();
 void InitApsaraStackCfg();
 void InitCNwareCfg();
+void InitNutanixCfg();
 void InitHyperVCfg();
+void InitHCSCfg();
 #ifndef WIN32
 void RegisterWhitelist();
 #endif

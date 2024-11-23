@@ -50,6 +50,8 @@ private:
         std::string jobId, std::string subJobId);
     static std::shared_ptr<ProtectEngine> CreateCNwareEngine(std::shared_ptr<JobHandle> jobHandle,
         std::string jobId, std::string subJobId);
+    static std::shared_ptr<ProtectEngine> CreateNutanixEngine(std::shared_ptr<JobHandle> jobHandle,
+        std::string jobId, std::string subJobId);
 #else
     static std::shared_ptr<ProtectEngine> CreateHyperVEngine(std::shared_ptr<JobHandle> jobHandle,
         std::string jobId, std::string subJobId);

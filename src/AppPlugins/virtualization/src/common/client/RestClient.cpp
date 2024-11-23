@@ -66,6 +66,10 @@ int32_t RestClient::DoHttpRequestSync(Module::HttpRequest &request, std::shared_
             ERRLOG("Failed to call rest api.");
             break;
         }
+        if (response == nullptr) {
+            ERRLOG("Response is null, send request faield.");
+            return FAILED;
+        }
         // 发送成功但是状态为401是token错误
         if (response->GetStatusCode() == static_cast<uint32_t>(Module::SC_UNAUTHORIZED) &&
             model.GetNeedRetry()) {

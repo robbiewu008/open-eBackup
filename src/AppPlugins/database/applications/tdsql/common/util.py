@@ -29,14 +29,14 @@ import requests
 
 from common.cleaner import clear
 from common.common_models import LogDetail, SubJobDetails
-from common.common import execute_cmd_with_expect, execute_cmd, execute_cmd_list
+from common.common import execute_cmd_with_expect, execute_cmd, execute_cmd_list, clean_dir
 from common.const import SubJobStatusEnum, CMDResultInt, CMDResult, DBLogLevel
 from common.env_common import get_install_head_path
 from common.util.cmd_utils import cmd_format
 from tdsql.common.const import TdsqlBackTypeConstant, BackupParam, ErrorCode, EnvNameValue, HostParam, \
     MySQLVersion, ConnectParam, JobInfo
 from tdsql.common.tdsql_common import report_job_details, get_std_in_variable
-from tdsql.handle.common.const import TDSQLReportLabel
+from tdsql.handle.common.const import TDSQLReportLabel, TDSQLDataNodeStatus, TDSQLResourceKeyName
 from tdsql.logger import log
 from mysql.src.common.constant import MysqlExecSqlError
 
@@ -48,7 +48,7 @@ def exec_backupcmd(backup_cmd, backup_step):
     output = std_out if ret else std_err
     if not ret:
         log.error(f"Exec {backup_step} cmd failed at time {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}, the "
-                  f"output detail is {output}.")
+                  f"std_out is {std_out}, std_err is {std_err} .")
         return False
     log.info(f"End to execute {backup_step} success at time {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}, "
              f"the output detail is {output}.")
@@ -128,8 +128,8 @@ def backup_tdsql(backup_param: BackupParam, backup_pwd, req_id, job_id, sub_id):
     node_info = ip + ":" + port
 
     # 清空target_dir文件夹、保存mysqld版本进而last_node文件
-    cmd = f"rm -rf {target_dir}/* ; \
-           `dirname {backup_tools}`/../bin/mysqld --version >> {target_dir}/mysql_version; \
+    clean_dir(target_dir)
+    cmd = f"`dirname {backup_tools}`/../bin/mysqld --version >> {target_dir}/mysql_version; \
            echo {ip}/{port}/`date +'%Y-%m-%d %H:%M:%S'` > {target_dir}/last_node"
     log.info(f"begin to execute command {cmd}")
     ret, output = subprocess.getstatusoutput(cmd)
@@ -140,6 +140,7 @@ def backup_tdsql(backup_param: BackupParam, backup_pwd, req_id, job_id, sub_id):
 
     # 数据备份
     cmd = generate_backup_cmd(backup_type, backup_param, base_dir)
+    std_out = ''
     if backup_param.mysql_version.startswith(MySQLVersion.MARIADB):
         # mariaDB 需要在命令中拼接密码
         cmd = cmd + cmd_format(" --password={}", backup_pwd)
@@ -150,7 +151,7 @@ def backup_tdsql(backup_param: BackupParam, backup_pwd, req_id, job_id, sub_id):
         return_code, out_str = exec_cmd_spawn(cmd, backup_pwd)
     if return_code != CMDResultInt.SUCCESS:
         set_failed_and_choose_node(file_name, node_info, req_id, job_id, sub_id)
-        log.error(f"Execute command failed: {out_str}.")
+        log.error(f"Execute command failed: {out_str}, std_out {std_out}.")
         return False
 
     # 执行prepare
@@ -403,6 +404,9 @@ def get_tdsql_status(url, set_id, task_type, pid):
     if task_type == "backup":
         caller = get_std_in_variable(f"{EnvNameValue.IAM_USERNAME_BACKUP}_{pid}")
         password = get_std_in_variable(f"{EnvNameValue.IAM_PASSWORD_BACKUP}_{pid}")
+    elif task_type == "livemount":
+        caller = get_std_in_variable(f"{EnvNameValue.IAM_USERNAME_LIVEMOUNT}_{pid}")
+        password = get_std_in_variable(f"{EnvNameValue.IAM_PASSWORD_LIVEMOUNT}_{pid}")
     else:
         caller = get_std_in_variable(f"{EnvNameValue.IAM_USERNAME_RESTORE}_{pid}")
         password = get_std_in_variable(f"{EnvNameValue.IAM_PASSWORD_RESTORE}_{pid}")
@@ -415,6 +419,7 @@ def get_tdsql_status(url, set_id, task_type, pid):
         "version": "1.0"
     }
     ret, body, header = request_post(url, request_body, request_header)
+
     try:
         if not (ret and body.get("returnData").get("err_code") == 0):
             log.error(f"get tdsql status error happened")
@@ -668,7 +673,7 @@ def get_tdsql_config():
 def get_version_path(db_version):
     default_version_path = ""
     log.info(f"db_version:{db_version}")
-    if '-' in db_version:
+    if db_version and '-' in db_version:
         mysql_version = db_version.split('-')[0]
         tdsql_config = get_tdsql_config()
         version_path = tdsql_config.get('versionPath').get(mysql_version, '')
@@ -744,6 +749,24 @@ def exec_sql(user, passwd, connect_param: ConnectParam, sql_str):
     return True, results
 
 
+def get_online_data_nodes(data_nodes, oss_url, set_id, job_type, pid):
+    nodes = []
+    instance_list = get_tdsql_status(oss_url, set_id, job_type, pid)
+    log.info(f"get_online_data_nodes get_tdsql_status body {instance_list}")
+    ip_port_list = []
+    for instance in instance_list:
+        for db in dict(instance).get("db"):
+            ip_port_str = str(db.get("ip")) + ":" + str(db.get("port"))
+            ip_port_list.append(ip_port_str)
+    log.info(f"get_online_data_nodes ip_port_list {ip_port_list}")
+    for data_node in data_nodes:
+        ip_port_str = str(data_node.get("ip")) + ":" + str(data_node.get("port"))
+        if ip_port_str in ip_port_list:
+            nodes.append(data_node)
+    log.info(f"get_online_data_nodes nodes {nodes}")
+    return nodes
+
+
 def report_label_prompt(job_info: JobInfo, log_info):
     """
     用于上报label提示
@@ -759,3 +782,50 @@ def report_label_prompt(job_info: JobInfo, log_info):
                                             logDetail=[log_detail],
                                             taskStatus=SubJobStatusEnum.RUNNING.value).dict(
                                   by_alias=True))
+
+
+def is_valid_port(port):
+    try:
+        port_num = int(port)
+    except ValueError:
+        log.error(f"port not int value, {port}")
+        return False
+    return 0 <= port_num <= 65535
+
+
+def get_mysql_version_from_defaults_file_path(defaults_file_path):
+    defaults_path_splits = defaults_file_path.split("/")
+    for defaults_path in defaults_path_splits:
+        if (defaults_path.startswith(MySQLVersion.MYSQL_START) or defaults_path.startswith(MySQLVersion.MARIADB_START)
+                or defaults_path.startswith(MySQLVersion.PERCONA_START)):
+            return defaults_path
+    return ''
+
+
+def get_mysql_version_path(url, set_id, task_type, pid):
+    log.info(f"get_mysql_version_path start, oss_url {url}, set_id {set_id}")
+    tdsql_body = get_tdsql_status(url, set_id, task_type, pid)
+    log.info(f"get_mysql_version tdsql_body {tdsql_body}")
+    if not tdsql_body:
+        return ''
+    db_version = ''
+    for item in tdsql_body:
+        db_version = item.get("db_version", '')
+        if db_version:
+            break
+    if not db_version:
+        return ''
+    version_path = get_version_path(db_version)
+    log.info(f"get_mysql_version version_path {version_path}")
+    return version_path
+
+
+def get_backup_pre_from_defaults_file_path(defaults_file_path):
+    defaults_path_splits = defaults_file_path.split('/')
+    backup_pre = ''
+    for defaults_path in defaults_path_splits:
+        if defaults_path.isdigit() and is_valid_port(defaults_path):
+            return backup_pre
+        if defaults_path:
+            backup_pre += '/' + defaults_path
+    return ''

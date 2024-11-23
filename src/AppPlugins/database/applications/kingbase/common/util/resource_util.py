@@ -18,11 +18,13 @@ import socket
 
 import psutil
 
-from common.common import check_command_injection, execute_cmd
+from common.common import check_command_injection_ex_quote_space, execute_cmd
 from common.const import CMDResult, IPConstant
 from common.logger import Logger
 from common.util import check_utils
 from common.util.check_utils import check_file_path, is_domain
+from common.util.exec_utils import su_exec_cmd_list, ExecFuncParam
+from common.util.validators import ValidatorEnum
 from kingbase.common.const import ConfigKeyStatus, KbConst
 from kingbase.common.error_code import ErrorCode
 from oceanbase.common.const import CMDResult
@@ -104,7 +106,7 @@ def is_wal_file(file_name):
 
 def check_special_character(check_strings):
     for check_string in check_strings:
-        if check_command_injection(check_string):
+        if check_command_injection_ex_quote_space(check_string):
             LOGGER.error(f"String contains special characters, check string: {check_string}.")
             raise Exception(f"String contains special characters.")
     LOGGER.info(f"Check special character complete.")
@@ -361,3 +363,33 @@ def get_current_repo_host(sys_rman_conf_path, job_id=""):
             repo_ip = line_str.split("=")[1].strip()
             return repo_ip
     return repo_host
+
+
+def get_database_timeline(install_path, data_path, os_user_name, job_id=""):
+    LOGGER.info(f"Begin to get database timeline, job id: {job_id}.")
+    timeline_id = 0
+    sys_controldata_path = os.path.join(install_path, KbConst.BIN_DIR_NAME, KbConst.SYS_CONTROLDATA)
+    param = ExecFuncParam(
+        os_user=f"{os_user_name}",
+        cmd_list=[
+            "{sys_controldata_path} {data_path}"
+        ],
+        fmt_params_list=[[
+            ("sys_controldata_path", sys_controldata_path, ValidatorEnum.PATH_CHK_FILE),
+            ("data_path", data_path, ValidatorEnum.PATH_CHK_DIR)
+        ]],
+        shell_file="/bin/sh", chk_exe_owner=False)
+    try:
+        result, out = su_exec_cmd_list(param)
+    except Exception as err:
+        LOGGER.error(f"exec cmd with kingbase env new failed, error: {err}, job id: {job_id}.")
+        return timeline_id
+    if result == CMDResult.SUCCESS:
+        # 使用正则表达式搜索 TimeLineID，如果找到匹配项，则提取 TimeLineID 的值
+        match = re.search(r'Latest checkpoint\'s TimeLineID:\s+(\d+)', out)
+        if match:
+            timeline_id = match.group(1)
+            LOGGER.info(f"The latest checkpoint's TimeLineID is: {timeline_id}, job id: {job_id}.")
+            return timeline_id
+    LOGGER.error(f"TimeLineID not found in the output：{out}, job id: {job_id}.")
+    return timeline_id

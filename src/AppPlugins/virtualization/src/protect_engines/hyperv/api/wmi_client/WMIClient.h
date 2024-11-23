@@ -218,6 +218,8 @@ private:
         std::vector<IWbemClassObject *> &controllers);
     VARIANT String2BSTRVariant(const std::string& strValue);
     VARIANT Bool2BoolVariant(const bool b);
+    CComPtr<IWbemClassObject> ProcessParamsAndExecMethodForCreateVM(
+        const VmModifyParam &modifyParam, std::string &errorDetails);
     void PrepareDriver(std::vector<WmiMethodParam> &params, const VARIANT &controller_path,
         const HyperVPlugin::VolumeExtendInfo &diskInfo);
     IWbemServices *m_pSvc = nullptr;

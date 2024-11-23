@@ -34,11 +34,6 @@ public:
     int GenerateSubJobManually() override;
 private:
     int QueryBackupCopy();
-#ifndef WIN32
-    int setPermissions(const mp_string path);
-    void changeCopyPermission(const Json::Value backupJobStr);
-    bool IsDir(const struct dirent* direntry, const mp_string& dirPath);
-#endif
 };
 }
 #endif // COMMON_BACKUP_JOB_H
