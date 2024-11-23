@@ -19,8 +19,6 @@ TEST_DIR=$(cd "${BACKUP_HOME}/test"; pwd)
 MODULE_ROOT_PATH=${BACKUP_HOME}/Module
 DT_UTILS_DIR=$(cd "${MODULE_ROOT_PATH}/dt_utils"; pwd)
 
-source ${BUILD_ROOT_DIR}/common/branch.sh
-
 function clean_test()
 {
     rm -rf ${BACKUP_HOME}/build-cmake
@@ -97,20 +95,6 @@ function build_backup_test()
     fi
 }
 
-function download_data_and_scanout_from_cmc
-{
-    cd ${TEST_DIR}/conf
-    if [ -d "${TEST_DIR}/conf/data" -a -d "${TEST_DIR}/conf/scan" -a -d "${TEST_DIR}/conf/backup_out" ]; then
-        return 0
-    fi
-
-    if [ ! -f "backup.tar.gz" ]; then
-        artget pull "ProtectAgent-Client 1.0" -ru software -user ${cmc_user} -pwd ${cmc_pwd} -rp "llt/backup.tar.gz" -ap ${TEST_DIR}/conf
-    fi
-
-    tar zxvf backup.tar.gz
-}
-
 function main()
 {
     if [ X$1 == Xclean ];then
@@ -122,10 +106,8 @@ function main()
     compile_backup
     build_dtutils
     build_backup_test
-    download_data_and_scanout_from_cmc
-    local ret=$?
     echo "Compile backup LLT code success"
-    return $ret
+    return 0
 }
 
 main "$@"

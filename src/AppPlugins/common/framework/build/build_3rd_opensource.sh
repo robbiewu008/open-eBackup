@@ -16,8 +16,7 @@ SCRIPT_PATH=$(cd $(dirname $0); pwd)
 FRAMEWORK_ROOT_DIR=$(cd "${SCRIPT_PATH}/.."; pwd)
 MODULE_ROOT=$(cd "${FRAMEWORK_ROOT_DIR}/../Module" 2>/dev/null; pwd)
 COMMON_PATH=${SCRIPT_PATH}/common
-. ${COMMON_PATH}/branch.sh
-. ${COMMON_PATH}/common_artget.sh
+. ${COMMON_PATH}/common.sh
 SCRIPT_NAME=$(basename $0)
 OBLIGATION_ROOT=${binary_path}
 if [ -z "$OBLIGATION_ROOT" ]; then
