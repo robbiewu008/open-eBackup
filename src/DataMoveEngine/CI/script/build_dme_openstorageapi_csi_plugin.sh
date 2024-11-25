@@ -38,6 +38,7 @@ echo "#########################################################"
 
 
 if [ -f "${BASE_PATH}/pkg/mspkg/${MS_NAME}.tar.gz" ]; then
+    mkdir -p ${BASE_PATH}/tmp/${MS_NAME}/mstmp/
     tar xvf "${BASE_PATH}/pkg/mspkg/${MS_NAME}.tar.gz" -C "${BASE_PATH}/tmp/${MS_NAME}/mstmp/"
     if [ $? != 0 ]; then
         echo "untar $MS_NAME.tar.gz failed"
@@ -52,8 +53,7 @@ fi
 if [[ "${Compile_image}" == "Y" ]];then
     binary_list=(oceanprotect-csi csi-attacher snapshot-controller csi-node-driver-registrar csi-provisioner csi-snapshotter)
     for binary in ${binary_list[@]}; do
-        build_image $binary
-        push_image_to_harbor $binary
+        build_image "bin/${binary}"
     done
 fi
 
