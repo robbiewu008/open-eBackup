@@ -53,7 +53,7 @@ fi
 if [[ "${Compile_image}" == "Y" ]];then
     binary_list=(oceanprotect-csi csi-attacher snapshot-controller csi-node-driver-registrar csi-provisioner csi-snapshotter)
     for binary in ${binary_list[@]}; do
-        build_image "bin/${binary}"
+        build_image $binary
     done
 fi
 
