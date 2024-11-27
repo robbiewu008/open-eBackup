@@ -32,6 +32,16 @@ spec:
       middlewares:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
+    - match: Method(`GET`) && Path(`/v1/host-agent/{uuid:\w{8}(-\w{4}){3}-\w{12}}/vmware`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
     - match: Method(`GET`) && Path(`/v1/host-agent/agents`)
       kind: Rule
       services:

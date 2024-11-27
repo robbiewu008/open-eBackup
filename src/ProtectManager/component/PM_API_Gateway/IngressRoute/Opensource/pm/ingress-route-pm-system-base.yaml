@@ -1284,37 +1284,6 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: ingress-route-pm-system-base-kms
-  namespace: dpa
-spec:
-  entryPoints:
-    - internal
-  routes:
-    - match: Method(`POST`) && PathPrefix(`/v1/kms/`)
-      kind: Rule
-      services:
-        - name: pm-nginx
-          port: 30093
-          scheme: https
-          serversTransport: serverstransport-traefik-backend
-      middlewares:
-        - name: middleware-pm-replace-path-regex
-    - match: Method(`GET`) && Path(`/v1/secret/redis`)
-      kind: Rule
-      services:
-        - name: pm-nginx
-          port: 30093
-          scheme: https
-          serversTransport: serverstransport-traefik-backend
-      middlewares:
-        - name: middleware-pm-replace-path-regex
-  tls:
-    secretName: secret-pm-tls
-
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
   name: ingress-route-pm-system-base-third
   namespace: dpa
 spec:
