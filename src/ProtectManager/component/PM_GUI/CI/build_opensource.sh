@@ -19,7 +19,7 @@ BIN_PATH=$1
 merge_id=$2
 
 function build_npm(){
-	cd ${PM_MS_DIR}/src/service/console/
+    cd ${PM_MS_DIR}/src/service/console/
 
     tar -zxvf ${BIN_PATH}/PM_GUI.tar.gz -C ${PM_MS_DIR}/src/service/console/
     if [[ $? -ne 0 ]]; then
@@ -52,12 +52,11 @@ function build_maven(){
 }
 
 function copy_pkgs() {
-  cd ${PM_MS_DIR}/tmp
-  
-  # 重新压缩（含kmc库）
-  tar -zcvf PM_GUI.tar.gz * --format=gnu
-  mkdir -p ${PM_MS_DIR}/pkg
-	cp -f ${PM_MS_DIR}/tmp/PM_GUI.tar.gz  ${PM_MS_DIR}/pkg/
+	cd ${PM_MS_DIR}/tmp
+	mkdir -p ${PM_MS_DIR}/pkg
+	# 重新压缩（含kmc库）
+	tar -zcvf ${PM_MS_DIR}/pkg/PM_GUI.tar.gz * --format=gnu
+
 	find  ${PM_MS_DIR}/pkg/ -type d | xargs chmod 700
 	find ${PM_MS_DIR}/pkg/ -type f | xargs chmod 550
 	cp ${PM_MS_DIR}/pkg/PM_GUI.tar.gz ${BASE_PATH}/pkg/mspkg/
