@@ -93,56 +93,28 @@ cp -rf Agent/ci/script/PackingRules/* ${BASE_PATH}/final_pkg/package
 
 # Plugins
 cd ${BASE_PATH}/Agent/ci/LCRP/conf
-if [ "$BUILD_PKG_TYPE" = "OceanCyber" ]; then
-    artget pull -d OceanCyber_pkg_from_cmc.xml -p "{'componentVersion':'${componentVersion}','AGENT_BRANCH':'${branch}','Version':'${Version}', 'PKG_TYPE':'${PKG_TYPE}', 'FILEPLUGIN_BRANCH':'${FILEPLUGIN_BRANCH}'}" -ap ${BASE_PATH}/Plugins -user ${cmc_user} -pwd ${cmc_pwd}
-elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "aarch64" ]; then
+if [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/HadoopPlugin.tar.gz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/ElasticSearchPlugin.tar.gz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/NasPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/FilePlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/GeneralDBPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/VirtualizationPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/FusionComputePlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/ObsPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/cppframework-Linux_aarch64.tar.xz ${BASE_PATH}/Plugins
-elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "x86_64" ]; then
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/HadoopPlugin.tar.gz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/ElasticSearchPlugin.tar.gz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/NasPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/FilePlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/GeneralDBPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/VirtualizationPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/FusionComputePlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/ObsPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/cppframework-Linux_x86_64.tar.xz ${BASE_PATH}/Plugins
-elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "solaris" ]; then
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Solaris/FilePlugin_sun4v.tar.gz ${BASE_PATH}/Plugins
-elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "aix" ]; then
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/FilePlugin_ppc_64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/GeneralDBPlugin.tar.xz ${BASE_PATH}/Plugins
-elif [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/HadoopPlugin.tar.gz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/ElasticSearchPlugin.tar.gz ${BASE_PATH}/Plugins
+
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/NasPlugin.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/FilePlugin.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/FilePlugin_ppc_64.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Solaris/FilePlugin_sun4v.tar.gz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/GeneralDBPlugin.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/VirtualizationPlugin.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/GeneralDBPlugin_ppc_64.tar.xz ${BASE_PATH}/Plugins
+    # CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/GeneralDBPlugin.tar.xz ${BASE_PATH}/Plugins
+    # CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/VirtualizationPlugin.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/FusionComputePlugin.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/FilePlugin.zip ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/VirtualizationPlugin.zip ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/GeneralDBPlugin.zip ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/ADDSPlugin.zip ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/ObsPlugin.tar.xz ${BASE_PATH}/Plugins
+
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/cppframework-Linux_aarch64.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/cppframework-Linux_x86_64.tar.xz ${BASE_PATH}/Plugins
+
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/FilePlugin.zip ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/VirtualizationPlugin.zip ${BASE_PATH}/Plugins
+
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/FilePlugin_ppc_64.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/cppframework-AIX_ppc_64.tar.xz ${BASE_PATH}/Plugins
+
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Solaris/FilePlugin_sun4v.tar.gz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Solaris/cppframework-SunOS_sun4v.tar.gz ${BASE_PATH}/Plugins
-else
-#full download
-    artget pull -d pkg_from_cmc.xml -p "{'componentVersion':'${componentVersion}','AGENT_BRANCH':'${branch}','Version':'${Version}', 'HADOOP_BRANCH':'${HADOOP_BRANCH}', 'PKG_TYPE':'${PKG_TYPE}', 'GENERALDB_BRANCH':'${GENERALDB_BRANCH}', 'FILEPLUGIN_BRANCH':'${FILEPLUGIN_BRANCH}', 'VIRTUALIZATION_BRANCH':'${VIRTUALIZATION_BRANCH}', 'BLOCKSERVICE_BRANCH':'${BLOCKSERVICE_BRANCH}', 'FUSIONCOMPUTE_BRANCH':'${FUSIONCOMPUTE_BRANCH}'}" -ap ${BASE_PATH}/Plugins -user ${cmc_user} -pwd ${cmc_pwd}
 fi
 
 if [ $? -ne 0 ]; then
