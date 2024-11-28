@@ -74,8 +74,8 @@ int Win32CopyReader::ReadMeta(FileHandle& fileHandle)
         ERRLOG("put read meta task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -228,7 +228,7 @@ bool Win32CopyReader::IsComplete()
             "skipDirCnt %llu unaggregatedFiles %llu emptyFiles %llu unaggregatedFailedFiles %llu) "
             "(totalFiles %llu totalDir %llu unarchiveFiles %llu)",
             m_controlInfo->m_controlReaderPhaseComplete.load(), m_readQueue->GetSize(), m_timer.GetCount(),
-            m_readTaskProduce.load(), m_readTaskConsume.load(),
+            m_controlInfo->m_readTaskProduce.load(), m_controlInfo->m_readTaskConsume.load(),
             m_controlInfo->m_noOfSubStreamRead.load(), m_controlInfo->m_noOfSubStreamFound.load(),
             m_controlInfo->m_noOfFilesRead.load(), m_controlInfo->m_noOfDirRead.load(),
             m_controlInfo->m_noOfFilesReadFailed.load(), m_controlInfo->m_skipFileCnt.load(),
@@ -240,10 +240,10 @@ bool Win32CopyReader::IsComplete()
     if (m_controlInfo->m_controlReaderPhaseComplete &&
         m_readQueue->Empty() &&
         (m_timer.GetCount() == 0) &&
-        (m_readTaskProduce == m_readTaskConsume) &&
+        (m_controlInfo->m_readTaskProduce == m_controlInfo->m_readTaskConsume) &&
         (m_controlInfo->m_noOfSubStreamRead == m_controlInfo->m_noOfSubStreamFound) &&
         ((m_controlInfo->m_noOfFilesRead + m_controlInfo->m_noOfDirRead + m_controlInfo->m_noOfFilesReadFailed +
-        m_controlInfo->m_skipFileCnt + m_controlInfo->m_skipDirCnt +
+        m_controlInfo->m_skipFileCnt + m_controlInfo->m_skipDirCnt + m_controlInfo->m_noOfFilesWriteSkip +
         m_controlInfo->m_unaggregatedFiles + m_controlInfo->m_emptyFiles + m_controlInfo->m_unaggregatedFaildFiles) ==
         (m_controlInfo->m_noOfFilesToBackup + m_controlInfo->m_noOfDirToBackup + m_controlInfo->m_unarchiveFiles))) {
         INFOLOG("CopyReader complete: controlReaderComplete %d readQueueSize %llu timerSize %llu "
@@ -253,7 +253,7 @@ bool Win32CopyReader::IsComplete()
             "skipDirCnt %llu unaggregatedFiles %llu emptyFiles %llu unaggregatedFailedFiles %llu) "
             "(totalFiles %llu totalDir %llu unarchiveFiles %llu)",
             m_controlInfo->m_controlReaderPhaseComplete.load(), m_readQueue->GetSize(), m_timer.GetCount(),
-            m_readTaskProduce.load(), m_readTaskConsume.load(),
+            m_controlInfo->m_readTaskProduce.load(), m_controlInfo->m_readTaskConsume.load(),
             m_controlInfo->m_noOfSubStreamRead.load(), m_controlInfo->m_noOfSubStreamFound.load(),
             m_controlInfo->m_noOfFilesRead.load(), m_controlInfo->m_noOfDirRead.load(),
             m_controlInfo->m_noOfFilesReadFailed.load(), m_controlInfo->m_skipFileCnt.load(),

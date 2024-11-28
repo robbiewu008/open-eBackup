@@ -13,12 +13,12 @@
 #ifndef MODULE_BACKUP_INDEX_H
 #define MODULE_BACKUP_INDEX_H
 
-#include "NasControlFile.h"
 #include <string>
 #include <map>
 #include <set>
 #include <vector>
 #include <mutex>
+#include "NasControlFile.h"
 #include "ScannerBackupMeta.h"
 
 /* "/" cannot be used for file name on both NTFS & UNIX platform */
@@ -140,254 +140,253 @@ struct BackupIndexFileMetaInfo {
 };
 
 class BackupIndex {
-    private:
-        std::mutex m_lock {};                       /* Lock */
-        std::string m_indexFileName;                /* This index file name */
-        BackupIndexHeader m_header;                 /* File header info */
-        BackupIndexDirEntry m_dirEntry;             /* Dir entry of this index file */
+public:
+    /**
+    * Contructor to be used by (producers) users for writing to the control file
+    */
+    explicit BackupIndex(const BackupIndexParams &params);
 
-        std::ifstream m_readFd;       /* Read FD */
-        std::stringstream m_readBuffer;                  /* Read Buffer */
-        std::ofstream m_writeFd;      /* Write FD */
-        std::stringstream m_writeBuffer;                 /* Write Buffer */
+    /**
+    * Contructor to be used by (consumers) users for reading from the control file
+    */
+    explicit BackupIndex(std::string &indexFileName);
 
-        uint32_t m_entries { 0 };                   /* Number of file/dir entries in the file */
-        uint32_t m_fileEntryCount { 0 };            /* To track filecount per file. */
+    /**
+    *  Destructor
+    */
+    ~BackupIndex();
 
-        time_t m_indexFileCreationTime { 0 };       /* Index file creation time */
-        uint32_t m_indexFileTimeElapsed { 0 };      /* Time elapsed since index file created */
+    /**
+    * Open the index file
+    * Producers must use mode NAS_INDEX_FILE_OPEN_MODE_WRITE/NAS_INDEX_FILE_OPEN_MODE_UPDATE
+    * Consumers must use mode NAS_INDEX_FILE_OPEN_MODE_READ
+    *
+    */
+    NAS_INDEX_FILE_RETCODE Open(NAS_INDEX_FILE_OPEN_MODE mode);
 
-        std::unordered_map<std::string, std::unordered_map<std::string, BackupIndexFileMetaInfo>> m_archiveMap;
-        std::unordered_map<std::string, std::unordered_map<std::string, BackupIndexFileMetaInfo>> m_archiveMapInc;
-        std::unordered_set<std::string> m_archiveDeleteList;
-        std::unordered_map<std::string, std::unordered_set<std::string>> m_archivePartialDeleteList;
-        std::unordered_set<std::string> m_incFileSet;
+    /**
+    * Close the index file
+    */
+    NAS_INDEX_FILE_RETCODE Close(NAS_INDEX_FILE_OPEN_MODE mode);
 
-        /**
-         * Open index file as read mode
-         */
-        NAS_INDEX_FILE_RETCODE OpenRead();
+    /**
+    * Load index file into in-memory map
+    */
+    NAS_INDEX_FILE_RETCODE Load();
 
-        /**
-         * Open index file as write mode
-         */
-        NAS_INDEX_FILE_RETCODE OpenWrite();
+    /**
+    * Dump in-memory map into index file
+    */
+    NAS_INDEX_FILE_RETCODE Unload();
 
-        /**
-         * Open index file as read & write mode
-         */
-        NAS_INDEX_FILE_RETCODE OpenReadWrite();
+    /**
+    * Write current dir entry
+    */
+    NAS_INDEX_FILE_RETCODE WriteDirEntry(BackupIndexDirEntry &dirEntry);
 
-        /**
-         * Template to Open a File in Read or Write Mode
-         */
-        template<class FileStream>
-        NAS_CTRL_FILE_RETCODE FileOpen(FileStream &strmFd, std::string fileName, std::ios::openmode fileMode);
+    /**
+    * Write current dir metadata
+    */
+    NAS_INDEX_FILE_RETCODE WriteDirectoryMeta(DirectoryMeta &dirMeta);
 
-        /**
-         * Read file entries from index file to specific archive map
-         */
-        NAS_INDEX_FILE_RETCODE ReadEntries(INDEX_ENTRY_OP_TYPE opType);
+    /**
+    * Write a file entry
+    * during full backup copy phase, opType should be INDEX_ENTRY_OP_FULL
+    * during inc backup copy phase,  optype should be INDEX_ENTRY_OP_INC
+    */
+    NAS_INDEX_FILE_RETCODE WriteFileEntry(BackupIndexFileEntry &fileEntry, INDEX_ENTRY_OP_TYPE opType);
 
-        /**
-         * Read an entry from index file which would be dir entry, archive entry or file entry
-         */
-        NAS_INDEX_FILE_RETCODE ReadEntry(
-            BackupIndexDirEntry &dirEntry, BackupIndexArchiveEntry &archiveEntry, BackupIndexFileEntry &fileEntry,
-            INDEX_ENTRY_TYPE &entryType);
+    /**
+    * Write a file entry list
+    * during full backup copy phase, opType should be INDEX_ENTRY_OP_FULL
+    * during inc backup copy phase,  optype should be INDEX_ENTRY_OP_INC
+    */
+    NAS_INDEX_FILE_RETCODE WriteFileEntries(
+        std::vector<BackupIndexFileEntry> &fileEntries, INDEX_ENTRY_OP_TYPE opType);
 
-        /**
-         * Release internal in-memory map
-         */
-        NAS_INDEX_FILE_RETCODE Release();
+    /**
+    * Check whether a file exist in previous copy's file list. Should be call after Load
+    * It's better to not use this API
+    */
+    bool Exist(const std::string &fileName);
 
-        /**
-         * Dump archive map into index file
-         */
-        NAS_INDEX_FILE_RETCODE UnloadArchiveMap();
+    /**
+    * Query for delete & partial delete archive list from index file. Should be call after Load
+    */
+    NAS_INDEX_FILE_RETCODE GetDeleteList(const std::unordered_set<std::string> &deleteFiles,
+        std::unordered_set<std::string> &archiveDeleteList,
+        std::unordered_map<std::string, std::unordered_set<std::string>> &archivePartialDeleteList);
 
-        /**
-         * Dump archive map inc part into index file
-         */
-        NAS_INDEX_FILE_RETCODE UnloadArchiveMapInc();
+    /**
+    * Get the archive map for this index file
+    */
+    NAS_INDEX_FILE_RETCODE GetArchiveMap(
+        std::unordered_map<std::string, std::unordered_map<std::string, BackupIndexFileMetaInfo>> &archiveMap);
+    /**
+    * Get the directory entry
+    */
+    NAS_INDEX_FILE_RETCODE GetDirEntry(BackupIndexDirEntry &dirEntry);
 
-        /**
-         * Write the file header info to file from m_header
-         */
-        NAS_INDEX_FILE_RETCODE WriteHeader();
+    /**
+    * Merge a list of index files with this->m_indexFileName
+    *
+    */
+    NAS_INDEX_FILE_RETCODE Merge(std::vector<std::string> &tmpIndexFileList);
 
-        /**
-         * Merge external archive map to this archive map
-         */
-        NAS_INDEX_FILE_RETCODE Merge(
-            std::unordered_map<std::string, std::unordered_map<std::string, BackupIndexFileMetaInfo>> &archiveMap);
+    /**
+    * Synthetic index file to the final status. should be call after WriteDirEntry/WriteFileEntry/GetDeleteList
+    */
+    NAS_INDEX_FILE_RETCODE Synthetic();
 
-        /**
-         * Get header line
-         */
-        std::string GetFileHeaderLine(INDEX_HEADER_INFO headerLine);
+    /**
+    * Check whether there's no file entry
+    */
+    bool IsFileBufferEmpty();
 
-        /**
-         * Write dir entry to index file
-         */
-        NAS_INDEX_FILE_RETCODE WriteDir();
+    /**
+    * Get total number of file entries
+    */
+    uint32_t GetEntries();
 
-        /**
-         * Read the file header info from file and load to m_header
-         */
-        NAS_INDEX_FILE_RETCODE ReadHeader();
-        NAS_INDEX_FILE_RETCODE FillHeader(uint32_t &headerLine, std::vector<std::string> &indexHeaderLineSplit,
-            std::string &indexHeaderLine);
+    /**
+    * Check index file time elapse
+    */
+    bool CheckIndexFileTimeElapse();
 
-        /**
-         * Validate header information read from the file
-         */
-        NAS_INDEX_FILE_RETCODE ValidateHeader();
+private:
+    std::mutex m_lock {};                       /* Lock */
+    std::string m_indexFileName;                /* This index file name */
+    BackupIndexHeader m_header;                 /* File header info */
+    BackupIndexDirEntry m_dirEntry;             /* Dir entry of this index file */
 
-        /**
-         * Translate dir entry to string
-         */
-        std::string TranslateFromDirEntry(BackupIndexDirEntry &dirEntry);
+    std::ifstream m_readFd;       /* Read FD */
+    std::stringstream m_readBuffer;                  /* Read Buffer */
+    std::ofstream m_writeFd;      /* Write FD */
+    std::stringstream m_writeBuffer;                 /* Write Buffer */
 
-        /**
-         * Translate string content to dir entry
-         */
-        void TranslateToDirEntry(const std::vector<std::string> &fileContents, BackupIndexDirEntry &dirEntry);
+    uint32_t m_entries { 0 };                   /* Number of file/dir entries in the file */
+    uint32_t m_fileEntryCount { 0 };            /* To track filecount per file. */
 
-        /**
-         * Translate archive entry to string
-         */
-        std::string TranslateFromArchiveEntry(BackupIndexArchiveEntry &archiveEntry);
+    time_t m_indexFileCreationTime { 0 };       /* Index file creation time */
+    uint32_t m_indexFileTimeElapsed { 0 };      /* Time elapsed since index file created */
 
-        /**
-         * Translate string content to archive entry
-         */
-        void TranslateToArchiveEntry(const std::vector<std::string> &archiveContents, BackupIndexArchiveEntry &archiveEntry);
+    std::unordered_map<std::string, std::unordered_map<std::string, BackupIndexFileMetaInfo>> m_archiveMap;
+    std::unordered_map<std::string, std::unordered_map<std::string, BackupIndexFileMetaInfo>> m_archiveMapInc;
+    std::unordered_set<std::string> m_archiveDeleteList;
+    std::unordered_map<std::string, std::unordered_set<std::string>> m_archivePartialDeleteList;
+    std::unordered_set<std::string> m_incFileSet;
 
-        /**
-         * Translate file entry to string
-         */
-        std::string TranslateFromFileEntry(BackupIndexFileEntry &fileEntry);
+    /**
+    * Open index file as read mode
+    */
+    NAS_INDEX_FILE_RETCODE OpenRead();
 
-        /**
-         * Translate string content to file entry
-         */
-        void TranslateToFileEntry(const std::vector<std::string> &fileContents, BackupIndexFileEntry &fileEntry);
+    /**
+    * Open index file as write mode
+    */
+    NAS_INDEX_FILE_RETCODE OpenWrite();
 
-    public:
-        /**
-         * Contructor to be used by (producers) users for writing to the control file
-         */
-        explicit BackupIndex(const BackupIndexParams &params);
+    /**
+    * Open index file as read & write mode
+    */
+    NAS_INDEX_FILE_RETCODE OpenReadWrite();
 
-        /**
-         * Contructor to be used by (consumers) users for reading from the control file
-         */
-        explicit BackupIndex(std::string &indexFileName);
+    /**
+    * Template to Open a File in Read or Write Mode
+    */
+    template<class FileStream>
+    NAS_CTRL_FILE_RETCODE FileOpen(FileStream &strmFd, std::string fileName, std::ios::openmode fileMode);
 
-        /**
-         *  Destructor
-         */
-        ~BackupIndex();
+    /**
+    * Read file entries from index file to specific archive map
+    */
+    NAS_INDEX_FILE_RETCODE ReadEntries(INDEX_ENTRY_OP_TYPE opType);
 
-        /**
-         * Open the index file
-         * Producers must use mode NAS_INDEX_FILE_OPEN_MODE_WRITE/NAS_INDEX_FILE_OPEN_MODE_UPDATE
-         * Consumers must use mode NAS_INDEX_FILE_OPEN_MODE_READ
-         *
-         */
-        NAS_INDEX_FILE_RETCODE Open(NAS_INDEX_FILE_OPEN_MODE mode);
+    /**
+    * Read an entry from index file which would be dir entry, archive entry or file entry
+    */
+    NAS_INDEX_FILE_RETCODE ReadEntry(
+        BackupIndexDirEntry &dirEntry, BackupIndexArchiveEntry &archiveEntry, BackupIndexFileEntry &fileEntry,
+        INDEX_ENTRY_TYPE &entryType);
 
-        /**
-         * Close the index file
-         */
-        NAS_INDEX_FILE_RETCODE Close(NAS_INDEX_FILE_OPEN_MODE mode);
+    /**
+    * Release internal in-memory map
+    */
+    NAS_INDEX_FILE_RETCODE Release();
 
-        /**
-         * Load index file into in-memory map
-         */
-        NAS_INDEX_FILE_RETCODE Load();
+    /**
+    * Dump archive map into index file
+    */
+    NAS_INDEX_FILE_RETCODE UnloadArchiveMap();
 
-        /**
-         * Dump in-memory map into index file
-         */
-        NAS_INDEX_FILE_RETCODE Unload();
+    /**
+    * Dump archive map inc part into index file
+    */
+    NAS_INDEX_FILE_RETCODE UnloadArchiveMapInc();
 
-        /**
-         * Write current dir entry
-         */
-        NAS_INDEX_FILE_RETCODE WriteDirEntry(BackupIndexDirEntry &dirEntry);
+    /**
+    * Write the file header info to file from m_header
+    */
+    NAS_INDEX_FILE_RETCODE WriteHeader();
 
-        /**
-         * Write current dir metadata
-         */
-        NAS_INDEX_FILE_RETCODE WriteDirectoryMeta(DirectoryMeta &dirMeta);
+    /**
+    * Merge external archive map to this archive map
+    */
+    NAS_INDEX_FILE_RETCODE Merge(
+        std::unordered_map<std::string, std::unordered_map<std::string, BackupIndexFileMetaInfo>> &archiveMap);
 
-        /**
-         * Write a file entry
-         * during full backup copy phase, opType should be INDEX_ENTRY_OP_FULL
-         * during inc backup copy phase,  optype should be INDEX_ENTRY_OP_INC
-         */
-        NAS_INDEX_FILE_RETCODE WriteFileEntry(BackupIndexFileEntry &fileEntry, INDEX_ENTRY_OP_TYPE opType);
+    /**
+    * Get header line
+    */
+    std::string GetFileHeaderLine(INDEX_HEADER_INFO headerLine);
 
-        /**
-         * Write a file entry list
-         * during full backup copy phase, opType should be INDEX_ENTRY_OP_FULL
-         * during inc backup copy phase,  optype should be INDEX_ENTRY_OP_INC
-         */
-        NAS_INDEX_FILE_RETCODE WriteFileEntries(
-            std::vector<BackupIndexFileEntry> &fileEntries, INDEX_ENTRY_OP_TYPE opType);
+    /**
+    * Write dir entry to index file
+    */
+    NAS_INDEX_FILE_RETCODE WriteDir();
 
-        /**
-         * Check whether a file exist in previous copy's file list. Should be call after Load
-         * It's better to not use this API
-         */
-        bool Exist(const std::string &fileName);
+    /**
+    * Read the file header info from file and load to m_header
+    */
+    NAS_INDEX_FILE_RETCODE ReadHeader();
+    NAS_INDEX_FILE_RETCODE FillHeader(uint32_t &headerLine, std::vector<std::string> &indexHeaderLineSplit,
+        std::string &indexHeaderLine);
 
-        /**
-         * Query for delete & partial delete archive list from index file. Should be call after Load
-         */
-        NAS_INDEX_FILE_RETCODE GetDeleteList(const std::unordered_set<std::string> &deleteFiles,
-            std::unordered_set<std::string> &archiveDeleteList,
-            std::unordered_map<std::string, std::unordered_set<std::string>> &archivePartialDeleteList);
+    /**
+    * Validate header information read from the file
+    */
+    NAS_INDEX_FILE_RETCODE ValidateHeader();
 
-        /**
-         * Get the archive map for this index file
-         */
-        NAS_INDEX_FILE_RETCODE GetArchiveMap(
-            std::unordered_map<std::string, std::unordered_map<std::string, BackupIndexFileMetaInfo>> &archiveMap);
+    /**
+    * Translate dir entry to string
+    */
+    std::string TranslateFromDirEntry(BackupIndexDirEntry &dirEntry);
 
+    /**
+    * Translate string content to dir entry
+    */
+    void TranslateToDirEntry(const std::vector<std::string> &fileContents, BackupIndexDirEntry &dirEntry);
 
-        /**
-         * Get the directory entry
-         */
-        NAS_INDEX_FILE_RETCODE GetDirEntry(BackupIndexDirEntry &dirEntry);
+    /**
+    * Translate archive entry to string
+    */
+    std::string TranslateFromArchiveEntry(BackupIndexArchiveEntry &archiveEntry);
 
-        /**
-         * Merge a list of index files with this->m_indexFileName
-         *
-         */
-        NAS_INDEX_FILE_RETCODE Merge(std::vector<std::string> &tmpIndexFileList);
+    /**
+    * Translate string content to archive entry
+    */
+    void TranslateToArchiveEntry(const std::vector<std::string> &archiveContents,
+        BackupIndexArchiveEntry &archiveEntry);
 
-        /**
-         * Synthetic index file to the final status. should be call after WriteDirEntry/WriteFileEntry/GetDeleteList
-         */
-        NAS_INDEX_FILE_RETCODE Synthetic();
+    /**
+    * Translate file entry to string
+    */
+    std::string TranslateFromFileEntry(BackupIndexFileEntry &fileEntry);
 
-        /**
-         * Check whether there's no file entry
-         */
-        bool IsFileBufferEmpty();
-
-        /**
-         * Get total number of file entries
-         */
-        uint32_t GetEntries();
-
-        /**
-         * Check index file time elapse
-         */
-        bool CheckIndexFileTimeElapse();
+    /**
+    * Translate string content to file entry
+    */
+    void TranslateToFileEntry(const std::vector<std::string> &fileContents, BackupIndexFileEntry &fileEntry);
 };
 }
 

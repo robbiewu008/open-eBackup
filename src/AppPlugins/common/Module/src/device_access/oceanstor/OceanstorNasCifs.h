@@ -34,7 +34,8 @@ namespace Module {
         OceanstorNasCIFS(ControlDeviceInfo deviceInfo, std::string fsId) : OceanstorNas(deviceInfo, fsId) {}
 
         OceanstorNasCIFS(ControlDeviceInfo deviceInfo, std::string id, std::string path)
-                : OceanstorNas(deviceInfo) {
+            : OceanstorNas(deviceInfo)
+        {
             fileSystemId = id;
             uniquePath = path;
         }

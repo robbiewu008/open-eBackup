@@ -16,6 +16,7 @@
 #include <vector>
 #include <string>
 #include <cstring>
+#include <openssl/sha.h>
 #include "securec.h"
 
 namespace Module {
@@ -114,6 +115,7 @@ enum class CTRL_FILE_RETCODE {
     SUCCESS = 0,
     LIMIT_REACHED = 1,
     READ_EOF = 2,
+    INVALID_CONTENT = 3
 };
 
 enum class MetaType {
@@ -258,16 +260,47 @@ public:
 class FileMetaWrapper {
 public:
     FileMeta m_meta;
-	std::vector<XMetaField> m_xMeta;
+    std::vector<XMetaField> m_xMeta;
 
     FileMetaWrapper() {};
     ~FileMetaWrapper() {};
 };
 
+struct CompareFileMetaWrapper {
+    bool operator() (const FileMetaWrapper& fm1, const FileMetaWrapper& fm2) const
+    {
+        std::string fmFileName1;
+        std::string fmFileName2;
+        for (uint32_t i = 0; i < fm1.m_xMeta.size(); i++) {
+            if (fm1.m_xMeta[i].m_xMetaType == XMETA_TYPE::XMETA_TYPE_NAME) {
+                fmFileName1 = fm1.m_xMeta[i].m_value;
+                break;
+            }
+        }
+        for (uint32_t i = 0; i < fm2.m_xMeta.size(); i++) {
+            if (fm2.m_xMeta[i].m_xMetaType == XMETA_TYPE::XMETA_TYPE_NAME) {
+                fmFileName2 = fm2.m_xMeta[i].m_value;
+                break;
+            }
+        }
+        unsigned char sha1[SHA_DIGEST_LENGTH + 1];
+        unsigned char sha2[SHA_DIGEST_LENGTH + 1];
+        // Get FilePath SHA-1 Hash Value
+        memset_s(sha1, SHA_DIGEST_LENGTH + 1, 0x0, SHA_DIGEST_LENGTH + 1);
+        SHA1((unsigned char *)(fmFileName1.c_str()), fmFileName1.length(), sha1);
+
+        // Get FilePath SHA-1 Hash Value
+        memset_s(sha2, SHA_DIGEST_LENGTH + 1, 0x0, SHA_DIGEST_LENGTH + 1);
+        SHA1((unsigned char *)(fmFileName2.c_str()), fmFileName2.length(), sha2);
+        
+        return (memcmp(sha1, sha2, SHA_DIGEST_LENGTH) > 0);
+    }
+};
+
 class DirMetaWrapper {
 public:
     DirMeta m_meta;
-	std::vector<XMetaField> m_xMeta;
+    std::vector<XMetaField> m_xMeta;
 
     DirMetaWrapper() {};
     ~DirMetaWrapper() {};
@@ -379,8 +412,8 @@ public:
     uint16_t m_fileId = 0;      /* metadata file id */
     uint16_t m_fcacheFileId = 0; /* fcache file id */
     uint16_t m_metaLength = 0;  /* Total meta length stored in meta file */
-    Hash m_dirPathHash {0};     /* Hash of full-path of the dir*/
-    Hash m_dirMetaHash {0};     /* Hash of meta-data of the dir*/
+    Hash m_dirPathHash {0};     /* Hash of full-path of the dir */
+    Hash m_dirMetaHash {0};     /* Hash of meta-data of the dir */
 
     DirCache() {};
     explicit DirCache(const DirCache *dc)
@@ -477,8 +510,8 @@ public:
     uint16_t m_fileId = 0;     /* metadata file id */
     uint16_t m_metaLength = 0;  /* Total meta length stored in meta file */
     uint16_t m_compareFlag = FCACHE_FILE_NOT_MODIFIED; /* Compare flag which is used at incremental scan */
-    Hash m_filePathHash {0};    /* Hash of full-path of the file*/
-    Hash m_fileMetaHash {0};    /* Hash of meta-data of the file*/
+    Hash m_filePathHash {0};    /* Hash of full-path of the file */
+    Hash m_fileMetaHash {0};    /* Hash of meta-data of the file */
 
     FileCache() {};
     explicit FileCache(const FileCache *fcache)

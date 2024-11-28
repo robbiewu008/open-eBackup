@@ -46,7 +46,8 @@ const std::shared_ptr<Protocol::Message>& ErrorResponse::Data() const
 
 std::shared_ptr<Protocol::Message> ErrorResponse::NewErrorResponse(ErrorType type,
                                                                    std::size_t requestHandler,
-                                                                   const std::string& message)
+                                                                   const std::string& message,
+                                                                   const std::shared_ptr<MessageHeader>& reqMsgHeader)
 {
     constexpr static MessageType messageType = MessageType::ERROR;
     decltype(MessageHeader::messageLength) messageLength = sizeof(type) + sizeof(requestHandler) + message.size();
@@ -56,6 +57,9 @@ std::shared_ptr<Protocol::Message> ErrorResponse::NewErrorResponse(ErrorType typ
 
     // Copy message header
     protocolMessage->AddData(reinterpret_cast<const char*>(&messageType), sizeof(messageType));
+    protocolMessage->AddData(reinterpret_cast<const char*>(&PROTOCOL_VERSION_V1), sizeof(PROTOCOL_VERSION_V1));
+    protocolMessage->AddData(reinterpret_cast<const char*>(&reqMsgHeader->sequenceNumber),
+        sizeof(reqMsgHeader->sequenceNumber));
     protocolMessage->AddData(reinterpret_cast<char*>(&messageLength), sizeof(messageLength));
 
     // Copy error type

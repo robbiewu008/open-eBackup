@@ -212,7 +212,4 @@ class AGENT_API CtrlFile {
         bool CheckCtrlFileTimeElapse();
 };
 }
-
-
-
 #endif // DME_NAS_SCANNER_HARDLINKCTRL_H

@@ -22,14 +22,16 @@
 namespace Module {
     class DoradoNasCIFS : public DoradoNas {
     public:
-        explicit DoradoNasCIFS(ControlDeviceInfo deviceInfo, bool readFromK8s = true) : DoradoNas(deviceInfo,
-                                                                                                  readFromK8s) {
+        explicit DoradoNasCIFS(ControlDeviceInfo deviceInfo, bool readFromK8s = true)
+            : DoradoNas(deviceInfo, readFromK8s)
+        {
             readK8s = readFromK8s;
             fileSystemName = deviceInfo.deviceName;
         }
 
         DoradoNasCIFS(ControlDeviceInfo deviceInfo, std::string fsId, bool readFromK8s = true)
-                : DoradoNas(deviceInfo, fsId, readFromK8s) {
+            : DoradoNas(deviceInfo, fsId, readFromK8s)
+        {
             readK8s = readFromK8s;
         }
 

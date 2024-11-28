@@ -51,7 +51,14 @@ int SendLinkDelete(FileHandle &fileHandle, NfsLinkDeleteCbData *cbData)
         delete cbData;
         return MP_FAILED;
     }
-    if (nfs->NfsUnlinkAsync(fileHandle.m_file->m_fileName.c_str(), SendLinkDeleteCb, cbData) != MP_SUCCESS) {
+    int ret = MP_FAILED;
+    if (cbData->nfsfh == nullptr) {
+        ret = nfs->NfsUnlinkAsync(fileHandle.m_file->m_fileName.c_str(), SendLinkDeleteCb, cbData);
+    } else {
+        ret = nfs->NfsUnlinkAsyncWithParentFh(fileHandle.m_file->m_onlyFileName.c_str(), cbData->nfsfh,
+            SendLinkDeleteCb, cbData);
+    }
+    if (ret != MP_SUCCESS) {
         ERRLOG("Send Link Delete req failed for: %s, ERR: %s", fileHandle.m_file->m_fileName.c_str(),
             nfs->NfsGetError());
         delete cbData;

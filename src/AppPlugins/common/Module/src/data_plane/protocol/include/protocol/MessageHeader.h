@@ -18,25 +18,31 @@
 namespace Module {
 namespace Protocol { // Ugly, but nested namespaces are not present in C++11
 
-enum class MessageType : std::uint32_t {
+enum class MessageType : std::uint8_t {
     AUTHORIZATION,
     FUSE,
     ERROR,
     FILE_ADMIN
 };
 
+enum class ProtocolVersion : std::uint8_t {
+    V1
+};
+
 /*!
  * \brief
  *
- * \details Message type is 32bits length + 32bits for message length. It is done for proper memory alignment.
+ * \details Message type is 8bits length + 32bits for message length. It is done for proper memory alignment.
  */
 struct MessageHeader {
 public:
     MessageType type;
+    ProtocolVersion version;
+    std::uint16_t sequenceNumber;
     std::uint32_t messageLength;
 };
-
 }
 }
-
+constexpr Module::Protocol::ProtocolVersion PROTOCOL_VERSION_V1 = Module::Protocol::ProtocolVersion::V1;
+const uint16_t SEQUENCE_NUMBER_ZERO = 0;
 #endif

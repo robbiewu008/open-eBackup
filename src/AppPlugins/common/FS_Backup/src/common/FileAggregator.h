@@ -343,6 +343,7 @@ private:
     bool m_started { false };
     bool m_abort { false };
     bool m_isAggregateFileSetProcessed { false };
+    bool m_isUsedLocalDir{ false };
     std::vector<std::shared_ptr<BlobFileList>> m_blobFileList;
 
 public:
@@ -381,7 +382,7 @@ private:
     void CreateSqliteIndexTask(std::shared_ptr<AggregateDirInfo> aggregateDirInfo) const;
     void CreateSqliteIndexTaskForEmptyDir(const std::string &dirName);
     void CreateSqliteIndexTaskForDir(FileHandle &fileHandle) const;
-    void CreateSqliteIndexForAllParentDirs(std::string parentDir) const;
+    void CreateSqliteIndexForAllParentDirs(FileHandle &curFileHandle) const;
     void HandleAggrFileSet() const;
     void HandleSuccessEvent(std::shared_ptr<FileAggregateTask> taskPtr) const;
     void HandleFailureEvent(std::shared_ptr<FileAggregateTask> taskPtr);
@@ -423,6 +424,8 @@ private:
     int GetRecordFromMultiSqliteByName(FileHandle &fileHandle, std::string& dbFile,
         std::vector<IndexDetails>& vecIndexInfo);
     int GetFileMetaByName(FileHandle &fileHandle);
+    bool CheckSqliteDir(const std::string& path);
+    bool GetDirCapacity(const char *pathName, uint64_t &capacity, uint64_t &free);
 };
 
 #endif

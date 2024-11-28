@@ -19,7 +19,6 @@
 #include "curl_http/HttpClientInterface.h"
 #include "device_access/Const.h"
 #include "device_access/ControlDevice.h"
-//#include "common/DiskCommDef.h"
 #include "device_access/SessionCache.h"
 
 namespace Module {
@@ -54,21 +53,22 @@ namespace Module {
     };  // namespace OceanstorErrorCode
 
     const int g_noNeedRetryOceanstorErrorCode[] = {
-            OceanstorErrorCode::FILESYSTEMALREADYEXIST, OceanstorErrorCode::NFSSHAREALREADYEXIST,
-            OceanstorErrorCode::CIFSSHAREALREADYEXIST, OceanstorErrorCode::ALREADYINWHITE,
-            OceanstorErrorCode::FILESYSTEMNOTEXIST, OceanstorErrorCode::FILESYSTEMSNAPSHOTEXIST,
-            OceanstorErrorCode::FSSNAPSHOT_NOTEXIST, OceanstorErrorCode::HOSTLUNMAPPINGEXIST,
-            OceanstorErrorCode::FILESYSTEMIDNOTEXIST, OceanstorErrorCode::WINDOWSUSERNOTEXIST,
-            OceanstorErrorCode::HOSTEXIST, OceanstorErrorCode::SNAPSHOT_NOTEXIST,
-            OceanstorErrorCode::NOTNEEDADDNUMBER, OceanstorErrorCode::LUN_HOST_MAPPING_EXIST,
-            OceanstorErrorCode::LUNGROUP_HOST_MAPPING_NOTEXIST, OceanstorErrorCode::FC_AND_ISCSI_NOTEXIST,
-            OceanstorErrorCode::LUNGROUP_HOST_MAPPING_EXIST, OceanstorErrorCode::LUN_HOST_MAPPING_NOTEXIST
+        OceanstorErrorCode::FILESYSTEMALREADYEXIST, OceanstorErrorCode::NFSSHAREALREADYEXIST,
+        OceanstorErrorCode::CIFSSHAREALREADYEXIST, OceanstorErrorCode::ALREADYINWHITE,
+        OceanstorErrorCode::FILESYSTEMNOTEXIST, OceanstorErrorCode::FILESYSTEMSNAPSHOTEXIST,
+        OceanstorErrorCode::FSSNAPSHOT_NOTEXIST, OceanstorErrorCode::HOSTLUNMAPPINGEXIST,
+        OceanstorErrorCode::FILESYSTEMIDNOTEXIST, OceanstorErrorCode::WINDOWSUSERNOTEXIST,
+        OceanstorErrorCode::HOSTEXIST, OceanstorErrorCode::SNAPSHOT_NOTEXIST,
+        OceanstorErrorCode::NOTNEEDADDNUMBER, OceanstorErrorCode::LUN_HOST_MAPPING_EXIST,
+        OceanstorErrorCode::LUNGROUP_HOST_MAPPING_NOTEXIST, OceanstorErrorCode::FC_AND_ISCSI_NOTEXIST,
+        OceanstorErrorCode::LUNGROUP_HOST_MAPPING_EXIST, OceanstorErrorCode::LUN_HOST_MAPPING_NOTEXIST
     };
     const std::string OCEANSTOR_MODULE_NAME = "OceanStor";
 
     class OceanstorNas : public ControlDevice {
     public:
-        explicit OceanstorNas(ControlDeviceInfo deviceInfo, bool useSharedSession = true) {
+        explicit OceanstorNas(ControlDeviceInfo deviceInfo, bool useSharedSession = true)
+        {
             fs_pHttpCLient = IHttpClient::GetInstance();
             Compress = deviceInfo.compress;
             Dedup = deviceInfo.dedup;
@@ -88,7 +88,8 @@ namespace Module {
             InitHttpStatusCodeForRetry();
         }
 
-        OceanstorNas(ControlDeviceInfo deviceInfo, std::string fsId, bool useSharedSession = true) : fileSystemId(fsId) {
+        OceanstorNas(ControlDeviceInfo deviceInfo, std::string fsId, bool useSharedSession = true) : fileSystemId(fsId)
+        {
             fs_pHttpCLient = IHttpClient::GetInstance();
             Compress = deviceInfo.compress;
             Dedup = deviceInfo.dedup;
@@ -125,7 +126,8 @@ namespace Module {
 
         void SetCurlTimeOut(uint64_t tmpTimeOut = 90) override;
 
-        int QueryContorllerCnt(int &outCnt) override {
+        int QueryContorllerCnt(int &outCnt) override
+        {
             return FAILED;
         }
 
@@ -192,85 +194,105 @@ namespace Module {
 
         int DeleteFileSystemAndParentSnapshot();
 
-        int SetIsDeleteParentSnapShotFlag(bool flag) {
+        int SetIsDeleteParentSnapShotFlag(bool flag)
+        {
             isDeleteParentSnapShot = flag;
         }
 
-        int Bind(HostInfo &host, const std::string &shareId = "") {
+        int Bind(HostInfo &host, const std::string &shareId = "")
+        {
             return FAILED;
         }
 
-        int UnBind(HostInfo host, const std::string &shareId = "") {
+        int UnBind(HostInfo host, const std::string &shareId = "")
+        {
             return FAILED;
         }
 
-        int Mount(DeviceMountInfo mountInfo, const std::string &shareName = "") {
+        int Mount(DeviceMountInfo mountInfo, const std::string &shareName = "")
+        {
             return FAILED;
         }
 
-        int UnMount(DeviceMountInfo mountInfo) {
+        int UnMount(DeviceMountInfo mountInfo)
+        {
             return FAILED;
         }
 
-        int UnMount() {
+        int UnMount()
+        {
             return FAILED;
         }
 
-        int Create(unsigned long long size) {
+        int Create(unsigned long long size)
+        {
             return FAILED;
         }
 
-        int Delete() {
+        int Delete()
+        {
             return FAILED;
         }
 
-        std::unique_ptr <ControlDevice> CreateClone(std::string cloneName, int &errorCode) {
+        std::unique_ptr <ControlDevice> CreateClone(std::string cloneName, int &errorCode)
+        {
             return nullptr;
         }
 
-        int QueryServiceHost(std::vector<std::string> &iscsiList, IP_TYPE ipType = IP_TYPE::IP_V4) {
+        int QueryServiceHost(std::vector<std::string> &iscsiList, IP_TYPE ipType = IP_TYPE::IP_V4)
+        {
             return FAILED;
         }
 
         int QueryServiceIpController(
-                std::vector<std::pair<std::string, std::string>> &ipControllerList, IP_TYPE ipType = IP_TYPE::IP_V4) {
+                std::vector<std::pair<std::string, std::string>> &ipControllerList, IP_TYPE ipType = IP_TYPE::IP_V4)
+        {
             return FAILED;
         }
 
-        int ExtendSize(unsigned long long size) {
+        int ExtendSize(unsigned long long size)
+        {
             return FAILED;
         }
 
-        int QuerySnapshotList(std::vector<FSSnapshotInfo> &snapshots) {
+        int QuerySnapshotList(std::vector<FSSnapshotInfo> &snapshots)
+        {
             return FAILED;
         }
 
-        int Revert(std::string SnapshotName) {
+        int Revert(std::string SnapshotName)
+        {
             return FAILED;
         }
 
-        int QueryRevertInfo(const std::string &resourceName, std::string &rollbackRate, std::string &rollbackStatus) {
+        int QueryRevertInfo(const std::string &resourceName, std::string &rollbackRate, std::string &rollbackStatus)
+        {
             return FAILED;
         }
 
         int CreateReplication(int localResId, int rResId, std::string rDevId, int bandwidth,
-                              std::string &repId) {
+                              std::string &repId)
+        {
             return FAILED;
         }
 
-        int ActiveReplication(std::string repId) {
+        int ActiveReplication(std::string repId)
+        {
             return FAILED;
         }
 
-        int QueryReplication(ReplicationPairInfo &replicationPairInfo) {
+        int QueryReplication(ReplicationPairInfo &replicationPairInfo)
+        {
             return FAILED;
         }
 
-        int DeleteReplication(std::string pairId) {
+        int DeleteReplication(std::string pairId)
+        {
             return FAILED;
         }
 
-        int CreateShare() {
+        int CreateShare()
+        {
             return FAILED;
         }
 

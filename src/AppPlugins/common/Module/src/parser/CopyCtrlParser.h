@@ -151,7 +151,7 @@ private:
     uint64_t m_minDataSize = 0;                 /* Minimum data size represented by all entries in this file */
     uint64_t m_dataSize = 0;                    /* Total data size represented by all entries in this file */
     uint32_t m_entries = 0;                     /* Number of file/dir entries in the file */
-    uint32_t m_fileCount = 0;                   /* To track filecount per dir. Will be reset on each dir update*/
+    uint32_t m_fileCount = 0;                   /* To track filecount per dir. Will be reset on each dir update */
 
     time_t m_ctrlFileCreationTime = 0;         /* Ctrl file creation time */
     uint32_t m_ctrlFileTimeElapsed = 0;         /* Time elapsed since control file created */

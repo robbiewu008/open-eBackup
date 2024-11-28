@@ -115,6 +115,7 @@ private:
     bool SetBucketAcl();
     bool SetObjectAcl();
     bool SetObjectMeta();
+    void RecordErrMessage(int64_t errCode, const std::string& errMessage);
 };
 
 #endif // OBJECT_SERVICE_TASK_H

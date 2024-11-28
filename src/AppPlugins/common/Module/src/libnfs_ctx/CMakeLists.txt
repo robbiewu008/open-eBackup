@@ -15,6 +15,7 @@ add_library(nfs_ctx
 
 target_include_directories(nfs_ctx
     PUBLIC 
+    ${PLATFORM}/SecureCLib_rel/include
     ${MODULE_PATH}
     ${NFS_PATH}/include
     ${BOOST_PATH}/include/

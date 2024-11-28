@@ -76,6 +76,8 @@ private:
     bool m_abort { false };
     time_t m_isCompleteTimer { 0 };
     std::string m_metaFileVersion = META_VERSION_V20;
+
+    std::shared_ptr<Module::BackupFailureRecorder> m_failureRecorder = nullptr;
 };
 
 #endif // DELETE_CONTROL_FILE_READER_H

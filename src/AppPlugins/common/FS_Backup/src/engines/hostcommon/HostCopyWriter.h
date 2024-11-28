@@ -64,8 +64,6 @@ protected:
     std::thread             m_pollThread;
     bool                    m_threadDone { false };
     bool                    m_pollThreadDone { false };
-    std::atomic<uint64_t>   m_writeTaskProduce { 0 };
-    std::atomic<uint64_t>   m_writeTaskConsume { 0 };
     std::mutex              m_cacheMutex;
     HostParams              m_params;
     time_t                  m_isCompleteTimer { 0 };

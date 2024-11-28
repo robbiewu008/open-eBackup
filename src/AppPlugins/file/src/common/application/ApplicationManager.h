@@ -52,10 +52,13 @@ protected:
         appException.__set_message(message);
         throw appException;
     }
- 
+    virtual void TransformResultForVolume(AppProtect::ResourceResultByPage& returnValue,
+        const FilePlugin::FileResourceInfo& resourceInfo);
 private:
+    void TransformResultForNative(AppProtect::ResourceResultByPage& returnValue,
+        const FilePlugin::FileResourceInfo& resourceInfo);
     void TransformResult(AppProtect::ResourceResultByPage& returnValue,
-                         const FilePlugin::FileResourceInfo& resourceInfo);
+        const FilePlugin::FileResourceInfo& resourceInfo);
 };
  
 using AppManagerPtr = std::unique_ptr<ApplicationManager>;

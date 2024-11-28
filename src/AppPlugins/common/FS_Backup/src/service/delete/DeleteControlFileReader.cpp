@@ -36,7 +36,8 @@ DeleteControlFileReader::DeleteControlFileReader(const ReaderParams& readerParam
     : m_backupParams(readerParams.backupParams),
     m_readQueue(readerParams.readQueuePtr),
     m_controlInfo(readerParams.controlInfo),
-    m_blockBufferMap(readerParams.blockBufferMap) {}
+    m_blockBufferMap(readerParams.blockBufferMap),
+    m_failureRecorder(readerParams.failureRecorder) {}
 
 DeleteControlFileReader::DeleteControlFileReader(BackupParams& backupParams,
     shared_ptr<BackupQueue<FileHandle>> readQueuePtr,

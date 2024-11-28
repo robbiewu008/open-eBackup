@@ -345,7 +345,7 @@ bool DeviceMount::LoadDevice()
     return true;
 }
 
-string DeviceMount::GetFsType(string file)
+string DeviceMount::GetFsType(const string file)
 {
     shared_ptr<FsDevice> fsDevicePtr = FindDevice(file);
     if (fsDevicePtr == nullptr) {

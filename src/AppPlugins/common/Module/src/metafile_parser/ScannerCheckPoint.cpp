@@ -41,11 +41,13 @@ ScannerCheckPoint::ScannerCheckPoint(string chkPntFileName)
 
 ScannerCheckPoint::~ScannerCheckPoint()
 {
-    if (m_writeFd.is_open())
+    if (m_writeFd.is_open()) {
         Close(NAS_CTRL_FILE_OPEN_MODE_WRITE);
+    }
 
-    if (m_readFd.is_open())
+    if (m_readFd.is_open()) {
         Close(NAS_CTRL_FILE_OPEN_MODE_READ);
+    }
 }
 
 NAS_CTRL_FILE_RETCODE ScannerCheckPoint::Open(NAS_CTRL_FILE_OPEN_MODE mode)
@@ -206,7 +208,7 @@ NAS_CTRL_FILE_RETCODE ScannerCheckPoint::WriteChkPntEntry(string chkPntEntry)
     m_writeBuffer << std::endl;
     m_entries++;
 
-    uint32_t bufSize = (uint32_t) m_writeBuffer.tellp();
+    uint32_t bufSize = static_cast<uint32_t>(m_writeBuffer.tellp());
     if (bufSize >= m_maxFileSize || m_entries >= m_maxEntriesPerFile) {
         // The caller has to close this file and create a new file
         return NAS_CTRL_FILE_RET_MAX_LIMIT_REACHED;

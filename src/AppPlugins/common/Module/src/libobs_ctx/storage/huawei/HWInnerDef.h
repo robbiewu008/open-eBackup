@@ -25,7 +25,7 @@ namespace Module {
         "ContentType", "WebsiteRedirectLocation", "Expires"};
 
     class listServiceData : public ListBucketsResponse {
-        public:
+    public:
         int headerPrinted {0};
         int allDetails {0};
         obs_status ret_status {OBS_STATUS_BUTT};
@@ -34,25 +34,27 @@ namespace Module {
     };
 
     class ListObjectCallBackData : public ListObjectsResponse {
-        public:
+    public:
         obs_status retStatus = OBS_STATUS_BUTT;
     };
 
     class GetObjectMetaDataCallBackData : public GetObjectMetaDataResponse {
-        public:
+    public:
         obs_status retStatus = OBS_STATUS_BUTT;
 
-        bool AddSysDefMetaData(const char* name, const char* value) {
+        bool AddSysDefMetaData(const char* name, const char* value)
+        {
             if (name == nullptr || value == nullptr) {
                 return false;
             }
             if (SUPPORT_RECOVER_SYS_META_DATA_NAME_LIST.count(name) == 0) {
                 return false;
-            } 
+            }
             sysDefMetaData[name] = value;
             return true;
         }
-        bool AddUserDefMetaData(const char* name, const char* value) {
+        bool AddUserDefMetaData(const char* name, const char* value)
+        {
             if (name == nullptr || value == nullptr) {
                 return false;
             }
@@ -62,7 +64,7 @@ namespace Module {
     };
 
     class GetObjectCallBackData : public GetObjectResponse {
-        public:
+    public:
         obs_status retStatus = OBS_STATUS_BUTT;
         uint8_t* buffer = nullptr;
         int bufferSize = 0;
@@ -70,17 +72,17 @@ namespace Module {
     };
 
     class MultiPartDownloadObjectCallBackData : public MultiPartDownloadObjectResponse {
-        public:
+    public:
         obs_status retStatus = OBS_STATUS_BUTT;
     };
 
     class HeadBucketCallBackData : public HeadBucketResponse {
-        public:
+    public:
         obs_status retStatus = OBS_STATUS_BUTT;
     };
 
     class MultiPartUploadObjectCallBackData : public MultiPartUploadObjectResponse {
-        public:
+    public:
         obs_status retStatus = OBS_STATUS_BUTT;
         MultiPartUploadObjectCallbackFun *callBack = nullptr;
         void* callBackData = nullptr;
@@ -89,12 +91,12 @@ namespace Module {
     };
 
     class GetUploadIdCallData : public GetUploadIdResponse {
-        public:
+    public:
         obs_status retStatus = OBS_STATUS_BUTT;
     };
 
     class PutObjectPartCallData : public PutObjectPartResponse {
-        public:
+    public:
         obs_status retStatus = OBS_STATUS_BUTT;
         char* bufPtr = nullptr;
         uint64_t partSize;

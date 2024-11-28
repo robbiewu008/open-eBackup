@@ -28,6 +28,7 @@ const auto MODULE = "HostArchiveRestore";
 
 const int SUCCESS = 0;
 const int FAILED = -1;
+const int TAP_REMIND_ERROR = 17;
 
 constexpr int PREPARE_ARCHIVE_CLIENT_INTERVAL = 10;
 constexpr uint32_t CTRL_FILE_CNT = 100;
@@ -61,12 +62,14 @@ struct RestoreJobExtendInfo {
     std::string postScript;
     std::string preScript;
     std::string restoreOption;
+    string channels = "1";  // 恢复设置的通道数，默认为1
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(failedScript, failed_script)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(postScript, post_script)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(preScript, pre_script)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(restoreOption, restoreOption)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(channels, channels)
     END_SERIAL_MEMEBER
 };
 
@@ -458,7 +461,8 @@ bool HostArchiveRestore::InitArchiveInfo()
     std::string copyExtInfoString {};
     for (const auto& copy : m_jobInfoPtr->copies) {
         for (const auto& repo : copy.repositories) {
-            if (repo.protocol == RepositoryProtocolType::type::S3) {
+            if (repo.protocol == RepositoryProtocolType::type::S3 ||
+                repo.protocol == RepositoryProtocolType::type::TAPE) {
                 copyExtInfoString = repo.extendInfo;
             }
         }
@@ -523,6 +527,12 @@ int HostArchiveRestore::PrerequisiteJobInner()
         ERRLOG("Check disconnect archive server failed.");
         return FAILED;
     }
+    RestoreJobExtendInfo extendInfo;
+    if (!Module::JsonHelper::JsonStringToStruct(m_jobInfoPtr->extendInfo, extendInfo)) {
+        HCP_Log(ERR, MODULE) << "Convert to RestoreJobExtendInfo json failed." << HCPENDLOG;
+        return FAILED;
+    }
+    SetNumOfChannels(extendInfo.channels);
 
     INFOLOG("Exit PrerequisiteJobInner");
     return SUCCESS;
@@ -716,11 +726,14 @@ bool HostArchiveRestore::DownloadMetaFile()
     if (downloadFile.m_state == ArchiveDownloadState::FAILED) {
         ERRLOG("download failed");
         return false;
-    }
-
-    if (downloadFile.m_state == ArchiveDownloadState::EMPTY_COPY) {
+    } else if (downloadFile.m_state == ArchiveDownloadState::EMPTY_COPY) {
         m_jobState = ArchiveJobState::EMPTY_COPY;
         WARNLOG("Empty archive copy");
+        return false;
+    } else if (downloadFile.m_state == ArchiveDownloadState::TAP_REMIND) {
+        ReportJobDetailsWithLabelAndErrcode(
+            make_tuple(JobLogLevel::TASK_LOG_ERROR, SubJobStatus::RUNNING, PROGRESS0),
+            "plugin_tape_not_support_direct_restore_label", 0);
         return false;
     }
 
@@ -1061,6 +1074,16 @@ int HostArchiveRestore::ExecuteSubJobInner()
     }
 
     SubJobStatus::type monitorRet = MonitorRestore();
+    // 磁带细粒度恢复失败，错误码为17，提示用户“读取磁带数据失败，请关闭直接恢复开关后重试。”
+    std::unordered_set<FailedRecordItem, FailedRecordItemHash> failedRecordItem = m_backup->GetFailedDetails();
+    for (const auto &item : failedRecordItem) {
+        if (item.errNum == TAP_REMIND_ERROR) {
+            ReportJobDetailsWithLabelAndErrcode(
+                make_tuple(JobLogLevel::TASK_LOG_ERROR, SubJobStatus::RUNNING, PROGRESS0),
+                "plugin_tape_not_support_direct_restore_label", 0);
+            break;
+        }
+    }
 
     if (m_backup != nullptr) {
         m_backup->Destroy();
@@ -1109,11 +1132,7 @@ bool HostArchiveRestore::StartRestore()
 
     BackupParams backupParams = FillRestoreConfig(subJobInfo);
 
-    // 这版本暂时不实现归档硬链接
-    if (subJobInfo.subTaskType == SUBJOB_TYPE_DATACOPY_HARDLINK_PHASE ||
-        subJobInfo.subTaskType == SUBJOB_TYPE_DATACOPY_DELETE_PHASE) {
-        WARNLOG("Skip delete or hardlink phase");
-        m_jobState = ArchiveJobState::SKIP_PHASE;
+    if (!IsSkipHardlinkPhase(subJobInfo.subTaskType)) {
         return false;
     }
 
@@ -1132,6 +1151,27 @@ bool HostArchiveRestore::StartRestore()
         return false;
     }
     return true;
+}
+
+bool HostArchiveRestore::IsSkipHardlinkPhase(uint32_t subTaskType)
+{
+    if (!(subTaskType == SUBJOB_TYPE_DATACOPY_HARDLINK_PHASE ||
+        subTaskType == SUBJOB_TYPE_DATACOPY_DELETE_PHASE)) {
+        return true;
+    }
+    HostBackupCopy backupCopy {};
+    if (!JsonFileTool::ReadFromFile(PluginUtils::PathJoin(m_cacheMdPath, BACKUP_COPY_METAFILE), backupCopy)) {
+        HCP_Log(ERR, MODULE) << "ReadBackupCopyFromFile failed " << HCPENDLOG;
+        m_jobState = ArchiveJobState::SKIP_PHASE;
+        return false;
+    }
+    INFOLOG("isArchiveSupportHardlink is %s.", backupCopy.m_isArchiveSupportHardlink.c_str());
+    if (backupCopy.m_isArchiveSupportHardlink == "true") {
+        return true;
+    }
+    WARNLOG("Skip delete or hardlink phase");
+    m_jobState = ArchiveJobState::SKIP_PHASE;
+    return false;
 }
 
 BackupParams HostArchiveRestore::FillRestoreConfig(const BackupSubJob& subJobInfo)
@@ -1248,7 +1288,7 @@ bool HostArchiveRestore::UpdateMainBackupStats()
             ERRLOG("Query failed, jobId: %s, subJobId: %s, path: %s", m_jobId.c_str(), path.c_str(), subJobId.c_str());
             return false;
         }
-        mainStats = CalcuSumStructBackupStatistic(mainStats, subStats);
+        mainStats = mainStats + subStats;
     }
     m_backupStats = mainStats;
     m_dataSize = m_backupStats.noOfBytesCopied / NUMBER1024;

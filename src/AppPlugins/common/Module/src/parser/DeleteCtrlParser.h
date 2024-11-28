@@ -147,7 +147,8 @@ private:
      * Read the file header info from file and load to m_header
      */
     CTRL_FILE_RETCODE ReadHeader();
-    CTRL_FILE_RETCODE FillHeader(uint32_t &headerLine, std::vector<std::string> &cltHeaderLineSplit, std::string &cltHeaderLine);
+    CTRL_FILE_RETCODE FillHeader(uint32_t &headerLine,
+        std::vector<std::string> &cltHeaderLineSplit, std::string &cltHeaderLine);
 
     /**
      * Write the file header info to file from m_header

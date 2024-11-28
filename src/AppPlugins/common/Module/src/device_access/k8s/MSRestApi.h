@@ -24,24 +24,20 @@
 #include "json/json.h"
 #include <set>
 #include <memory>
+#include "curl_http/HttpClientInterface.h"
 
 namespace Module {
     const int HTTP_NETWORK_ERROR = 200000;
 
-    class HttpRequest;
-
-    class IHttpResponse;
-
-    class IHttpClient;
-
-#define Token_Expired 100 //used for token expired time
-#define Token_Invalid 101 //used for token invalid
+#define Token_Expired 100 // used for token expired time
+#define Token_Invalid 101 // used for token invalid
 
     struct RestResult {
         int retCode;
         Json::Value data;
 
-        RestResult() {
+        RestResult()
+        {
             retCode = 0;
         }
     };
@@ -79,7 +75,7 @@ namespace Module {
         virtual int SendRequest(const HttpRequest &req,
                                 Json::Value &data, std::string &errorDes, bool retry = true);
 
-        //send raw request information (with errorCode)
+        // send raw request information (with errorCode)
         virtual int SendRequest(const HttpRequest &req,
                                 Json::Value &data, std::string &errorDes, std::string *token, int &errorCode);
 
@@ -113,7 +109,9 @@ namespace Module {
         GetHeadByName(const std::map<std::string, std::set<std::string> > &headers, const std::string &header_name);
 
     private:
-        //lint -e1735  //Virtual function 'MSRestApi::SendAndParseRsp(const HttpRequest &amp;, Json::Value &amp;, std::basic_string&lt;char&gt; &amp;, bool)' has default parameter
+        //lint -e1735  //Virtual function
+        //'MSRestApi::SendAndParseRsp(const HttpRequest &amp;, Json::Value &amp;,
+        // std::basic_string&lt;char&gt; &amp;, bool)' has default parameter
 
         virtual int SendAndParseRsp(bool retry,
                                     const HttpRequest &req,
@@ -149,4 +147,4 @@ namespace Module {
         IHttpClient *m_pHttpCLient;
     };
 }
-#endif//_MS_REST_API_H_
+#endif

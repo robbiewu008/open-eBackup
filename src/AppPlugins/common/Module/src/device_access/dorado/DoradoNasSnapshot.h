@@ -23,7 +23,8 @@ namespace Module {
     public:
         explicit DoradoNasSnapshot(ControlDeviceInfo deviceInfo, std::string id, std::string path,
                                    bool readFromK8s = true)
-                : DoradoNas(deviceInfo, readFromK8s) {
+            : DoradoNas(deviceInfo, readFromK8s)
+        {
             fileSystemId = id;
             uniquePath = path;
             readK8s = readFromK8s;
@@ -47,11 +48,13 @@ namespace Module {
 
         void AssignDeviceInfo(ControlDeviceInfo &deviceInfo, std::string volumeName);
 
-        int QueryServiceHost(std::vector<std::string> &iscsiList, IP_TYPE ipType = IP_TYPE::IP_V4) override {
+        int QueryServiceHost(std::vector<std::string> &iscsiList, IP_TYPE ipType = IP_TYPE::IP_V4) override
+        {
             return FAILED;
         }
 
-        void SetFileSystemId(std::string &systemId) {
+        void SetFileSystemId(std::string &systemId)
+        {
             fileSystemId = systemId;
         }
 

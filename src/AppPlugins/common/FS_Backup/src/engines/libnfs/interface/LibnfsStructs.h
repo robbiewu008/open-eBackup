@@ -22,8 +22,6 @@
 #include "BackupTimer.h"
 #include "PacketStats.h"
 
-#define IS_LIBNFS_RETRIABLE_ERROR(status) ((status) == -EINTR || (status) == -EAGAIN || (status) == -EIO)
-
 #define IS_FILE_COPY_FAILED(fileHandle) \
 ((fileHandle).m_file->GetSrcState() == FileDescState::READ_FAILED || \
     (fileHandle).m_file->GetDstState() == FileDescState::WRITE_FAILED || \

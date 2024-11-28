@@ -19,7 +19,6 @@
 #include "define/Types.h"
 #include "system/System.hpp"
 #include "common/JsonUtils.h"
-// #include "framework/MessageProcess.h"
 #include "curl_http/HttpClientInterface.h"
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
@@ -35,9 +34,9 @@ namespace Module {
 
         virtual ~NetAppNasNFS();
 
-        int Bind(HostInfo &host, const std::string &shareId="") override;
+        int Bind(HostInfo &host, const std::string &shareId = "") override;
 
-        int UnBind(HostInfo host, const std::string &shareId="") override;
+        int UnBind(HostInfo host, const std::string &shareId = "") override;
 
         int Create(unsigned long long size) override;
 
@@ -56,8 +55,6 @@ namespace Module {
         }
 
     protected:
-
-
         int QueryNFSShare(std::string volumeName, std::string &sharePath, int& errorCode);
 
         int DeleteNFSShare(std::string volumeName);

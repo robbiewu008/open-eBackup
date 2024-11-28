@@ -14,9 +14,9 @@
 #define __STDC_FORMAT_MACROS
 #endif
 #include "CopyCtrlParser.h"
+#include <cinttypes>
 #include "securec.h"
 #include "Log.h"
-#include <cinttypes>
 
 using namespace std;
 using namespace Module;
@@ -214,8 +214,11 @@ void CopyCtrlParser::PrintCopyCtrlDirEntry(CopyCtrlDirEntry& dirEntry)
 void CopyCtrlParser::PrintCopyCtrlFileEntry(CopyCtrlFileEntry& fileEntry)
 {
     DBGLOG("Write to ctrl file - %s", m_fileName.c_str());
-    DBGLOG("Write fileEntry - m_mode: %s, m_fileName: %s, m_metaFileName: %s, metaFileReadLen: %u, m_aclFlag: %u, metaFileOffset: %u, m_fileSize: %u, m_metaFileIndex: %u",
-        fileEntry.m_mode.c_str(), fileEntry.m_fileName.c_str(), fileEntry.m_metaFileName.c_str(), fileEntry.metaFileReadLen, fileEntry.m_aclFlag, fileEntry.metaFileOffset, fileEntry.m_fileSize, fileEntry.m_metaFileIndex);
+    DBGLOG("Write fileEntry - m_mode: %s, m_fileName: %s, m_metaFileName: %s,"
+        "metaFileReadLen: %u, m_aclFlag: %u, metaFileOffset: %u, m_fileSize: %u, m_metaFileIndex: %u",
+        fileEntry.m_mode.c_str(), fileEntry.m_fileName.c_str(), fileEntry.m_metaFileName.c_str(),
+        fileEntry.metaFileReadLen, fileEntry.m_aclFlag, fileEntry.metaFileOffset,
+        fileEntry.m_fileSize, fileEntry.m_metaFileIndex);
 }
 
 CTRL_FILE_RETCODE CopyCtrlParser::WriteDirEntry(CopyCtrlDirEntry &dirEntry)

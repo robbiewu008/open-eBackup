@@ -29,7 +29,8 @@ namespace Module {
 
     class FusionStorageBlock : public ControlDevice {
     public:
-        FusionStorageBlock(ControlDeviceInfo deviceInfo, bool useSharedSession = true) {
+        FusionStorageBlock(ControlDeviceInfo deviceInfo, bool useSharedSession = true)
+        {
             fs_pHttpCLient = IHttpClient::GetInstance();
             Compress = deviceInfo.compress;
             Dedup = deviceInfo.dedup;
@@ -50,7 +51,8 @@ namespace Module {
                     << HCPENDLOG;
         }
 
-        virtual ~FusionStorageBlock() {
+        virtual ~FusionStorageBlock()
+        {
             if (useCache && g_fusionStorageSessionCache != nullptr) {
                 if (this->sessionPtr != nullptr) {
                     DeleteDeviceSession();
@@ -75,23 +77,28 @@ namespace Module {
 
         int UnBind(HostInfo host, const std::string &shareId = "") override;
 
-        int Mount(DeviceMountInfo mountInfo, const std::string &shareName = "") override {
+        int Mount(DeviceMountInfo mountInfo, const std::string &shareName = "") override
+        {
             return FAILED;
         }
 
-        int UnMount(DeviceMountInfo mountInfo) override {
+        int UnMount(DeviceMountInfo mountInfo) override
+        {
             return FAILED;
         }
 
-        int UnMount() override {
+        int UnMount() override
+        {
             return FAILED;
         }
 
-        int CreateShare() override {
+        int CreateShare() override
+        {
             return FAILED;
         }
 
-        int QueryContorllerCnt(int &outCnt) override {
+        int QueryContorllerCnt(int &outCnt) override
+        {
             return FAILED;
         }
 
@@ -118,7 +125,8 @@ namespace Module {
         int Revert(std::string SnapshotName) override;
 
         int QueryRevertInfo(
-                const std::string &resourceName, std::string &rollbackRate, std::string &rollbackStatus) override {
+                const std::string &resourceName, std::string &rollbackRate, std::string &rollbackStatus) override
+        {
             return FAILED;
         }
 
@@ -164,7 +172,8 @@ namespace Module {
         Description:
                     1.query fusionstorage Lun by lun name
         */
-        int QueryLUN(std::string volumeName, int &id, std::string &WWN, unsigned long long &size, unsigned long long &usedSize);
+        int QueryLUN(std::string volumeName, int &id, std::string &WWN,
+                     unsigned long long &size, unsigned long long &usedSize);
 
         /*
         delete volume with name

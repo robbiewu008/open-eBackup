@@ -19,7 +19,6 @@
 #include <fstream>
 #include "securec.h"
 #include "NasControlFile.h"
-// #include "ScannerUtils.h"
 
 namespace ScannerFileCache {
 const std::string NAS_SCANNERBACKUPFCACHE_HEADER_TITLE = "NAS Scanner Fcache File";
@@ -146,135 +145,135 @@ public:
 
 // class will be similar to control file class.
 class CacheFile {
-    public:
-        /**
-         * Contructor to be used by (producers) users for writing to the filecache file
-         */
-        explicit CacheFile(Params params);
+public:
+    /**
+    * Contructor to be used by (producers) users for writing to the filecache file
+    */
+    explicit CacheFile(Params params);
 
-        /**
-         * Contructor to be used by (consumers) users for reading from the filecache file
-         */
-        explicit CacheFile(std::string fcacheFileName);
+    /**
+    * Contructor to be used by (consumers) users for reading from the filecache file
+    */
+    explicit CacheFile(std::string fcacheFileName);
 
-        /**
-         *  Destructor
-         */
-        ~CacheFile();
+    /**
+    *  Destructor
+    */
+    ~CacheFile();
 
-        /*
-         * Open file based on read/write mode.
-         */
-        NAS_CTRL_FILE_RETCODE Open(NAS_CTRL_FILE_OPEN_MODE mode);
+    /*
+    * Open file based on read/write mode.
+    */
+    NAS_CTRL_FILE_RETCODE Open(NAS_CTRL_FILE_OPEN_MODE mode);
 
-        /*
-         * This will add filecache entry to sorted queue. if its full it will write to file.
-         */
-        NAS_CTRL_FILE_RETCODE WriteFileCache(Cache &fcache);
+    /*
+    * This will add filecache entry to sorted queue. if its full it will write to file.
+    */
+    NAS_CTRL_FILE_RETCODE WriteFileCache(Cache &fcache);
 
-        /*
-         * Write filecache entries from queue to buffer
-         */
-        NAS_CTRL_FILE_RETCODE WriteFileCacheEntries(std::queue<Cache> &fileCacheQueue);
-        NAS_CTRL_FILE_RETCODE WriteFileCacheEntries(
-            std::priority_queue<Cache, std::vector<Cache>, Comparator> &fileCacheQueue);
+    /*
+    * Write filecache entries from queue to buffer
+    */
+    NAS_CTRL_FILE_RETCODE WriteFileCacheEntries(std::queue<Cache> &fileCacheQueue);
+    NAS_CTRL_FILE_RETCODE WriteFileCacheEntries(
+    std::priority_queue<Cache, std::vector<Cache>, Comparator> &fileCacheQueue);
 
-        /*
-         * Get the current offset of a file.
-         */
-        uint64_t GetCurrentOffset();
+    /*
+    * Get the current offset of a file.
+    */
+    uint64_t GetCurrentOffset();
 
-        /*
-         * Flush all the data from buffer to file and close file.
-         */
-        NAS_CTRL_FILE_RETCODE Close(NAS_CTRL_FILE_OPEN_MODE mode);
+    /*
+    * Flush all the data from buffer to file and close file.
+    */
+    NAS_CTRL_FILE_RETCODE Close(NAS_CTRL_FILE_OPEN_MODE mode);
 
-        /*
-         * Write data from buffer to file.
-         */
-        NAS_CTRL_FILE_RETCODE FlushToFile();
+    /*
+    * Write data from buffer to file.
+    */
+    NAS_CTRL_FILE_RETCODE FlushToFile();
 
-        /**
-         * Get batch fcache entries
-         */
-        NAS_CTRL_FILE_RETCODE ReadFileCacheEntries(std::queue<Cache> &fcQueue,
-            uint64_t offset, uint32_t totalCount, uint16_t metaFileIndex);
+    /**
+    * Get batch fcache entries
+    */
+    NAS_CTRL_FILE_RETCODE ReadFileCacheEntries(std::queue<Cache> &fcQueue,
+        uint64_t offset, uint32_t totalCount, uint16_t metaFileIndex);
         
-        /**
-         * Get all fcache entries
-         */
-        NAS_CTRL_FILE_RETCODE ReadFileCacheEntries(std::queue<Cache> &fcQueue, uint32_t maxEntries,
-            uint16_t metaFileIndex);
+    /**
+    * Get all fcache entries
+    */
+    NAS_CTRL_FILE_RETCODE ReadFileCacheEntries(std::queue<Cache> &fcQueue, uint32_t maxEntries,
+        uint16_t metaFileIndex);
 
-        /**
-         * Get filecache filename
-         */
-        std::string GetFileName();
+    /**
+    * Get filecache filename
+    */
+    std::string GetFileName();
 
-    private:
+private:
 
-        std::mutex m_lock {};                            /* Lock */
-        std::string m_fcacheFileName {};                 /* Fcache filename */
-        std::string m_fcacheFileParentDir {};            /* Parent Dir of Fcache File */
-        Header m_header {};        /* File header info */
+    std::mutex m_lock {};                            /* Lock */
+    std::string m_fcacheFileName {};                 /* Fcache filename */
+    std::string m_fcacheFileParentDir {};            /* Parent Dir of Fcache File */
+    Header m_header {};        /* File header info */
 
-        std::stringstream m_writeBuffer {};                 /* Write Buffer */
-        std::ifstream m_readFd {};    /* Read FD */
-        std::ofstream m_writeFd {};   /* Write FD */
+    std::stringstream m_writeBuffer {};                 /* Write Buffer */
+    std::ifstream m_readFd {};    /* Read FD */
+    std::ofstream m_writeFd {};   /* Write FD */
 
-        uint64_t m_currWriteOffset = 0;             /* Filecache write offset */
-        uint64_t m_readBufferSize = 0;              /* Filecache write offset */
-        char *m_readBuffer = nullptr;               /* Read buffer */
+    uint64_t m_currWriteOffset = 0;             /* Filecache write offset */
+    uint64_t m_readBufferSize = 0;              /* Filecache write offset */
+    char *m_readBuffer = nullptr;               /* Read buffer */
 
-        /**
-         * Template to Open a File in Read/Write Mode
-         */
-        template<class FileStream>
-        NAS_CTRL_FILE_RETCODE FileOpen(FileStream &strmFd, std::ios::openmode fileMode);
+    /**
+    * Template to Open a File in Read/Write Mode
+    */
+    template<class FileStream>
+    NAS_CTRL_FILE_RETCODE FileOpen(FileStream &strmFd, std::ios::openmode fileMode);
 
-        /**
-         * Validate header information read from the file
-         */
-        NAS_CTRL_FILE_RETCODE ValidateHeader();
+    /**
+    * Validate header information read from the file
+    */
+    NAS_CTRL_FILE_RETCODE ValidateHeader();
 
-        /**
-         * Read the file header and retry if its failed
-         */
-        NAS_CTRL_FILE_RETCODE ReadFCacheFileHeader();
+    /**
+    * Read the file header and retry if its failed
+    */
+    NAS_CTRL_FILE_RETCODE ReadFCacheFileHeader();
 
-        /**
-         * Read the file header info from file and load to m_header
-         */
-        NAS_CTRL_FILE_RETCODE ReadHeader();
-        NAS_CTRL_FILE_RETCODE FillHeader(uint32_t &headerLine, std::vector<std::string> &cltHeaderLineSplit,
-            std::string &cltHeaderLine);
+    /**
+    * Read the file header info from file and load to m_header
+    */
+    NAS_CTRL_FILE_RETCODE ReadHeader();
+    NAS_CTRL_FILE_RETCODE FillHeader(uint32_t &headerLine, std::vector<std::string> &cltHeaderLineSplit,
+        std::string &cltHeaderLine);
 
-        /**
-         * Write the file header info to file from m_header
-         */
-        NAS_CTRL_FILE_RETCODE WriteHeader();
+    /**
+    * Write the file header info to file from m_header
+    */
+    NAS_CTRL_FILE_RETCODE WriteHeader();
 
-        /**
-        * Get the line to write in header info of file
-        */
-        std::string GetFileHeaderLine(uint32_t headerLine);
+    /**
+    * Get the line to write in header info of file
+    */
+    std::string GetFileHeaderLine(uint32_t headerLine);
 
-        /**
-         * Get the file header info read from file
-         */
-        NAS_CTRL_FILE_RETCODE GetHeader(Header &header);
+    /**
+    * Get the file header info read from file
+    */
+    NAS_CTRL_FILE_RETCODE GetHeader(Header &header);
 
-        /**
-         * Read entries from file and set to queue
-         */
-        NAS_CTRL_FILE_RETCODE ReadEntries(std::queue<Cache> &fcQueue, uint32_t maxEntries, uint16_t metaFileIndex);
+    /**
+    * Read entries from file and set to queue
+    */
+    NAS_CTRL_FILE_RETCODE ReadEntries(std::queue<Cache> &fcQueue, uint32_t maxEntries, uint16_t metaFileIndex);
 
-        /**
-         * Read version 1.0 file
-         */
-        NAS_CTRL_FILE_RETCODE ReadEntriesV10(std::queue<Cache> &fcQueue, uint32_t maxEntries, uint16_t metaFileIndex);
+    /**
+    * Read version 1.0 file
+    */
+    NAS_CTRL_FILE_RETCODE ReadEntriesV10(std::queue<Cache> &fcQueue, uint32_t maxEntries, uint16_t metaFileIndex);
 
-        uint32_t GetRandomNumber(uint32_t minNum, uint32_t maxNum);
+    uint32_t GetRandomNumber(uint32_t minNum, uint32_t maxNum);
 };
 }
 

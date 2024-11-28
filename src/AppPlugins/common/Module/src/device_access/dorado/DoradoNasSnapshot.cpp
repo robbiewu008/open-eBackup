@@ -13,11 +13,13 @@
 #include "device_access/dorado/DoradoNasSnapshot.h"
 #include "common/JsonUtils.h"
 namespace Module {
-    int DoradoNasSnapshot::Create(unsigned long long size) {
+    int DoradoNasSnapshot::Create(unsigned long long size)
+    {
         return FAILED;
     }
 
-    int DoradoNasSnapshot::Query(DeviceDetails &info) {
+    int DoradoNasSnapshot::Query(DeviceDetails &info)
+    {
         std::string id;
         int ret = QuerySnapshot(ResourceName, id);
         if (ret == SUCCESS) {
@@ -29,7 +31,8 @@ namespace Module {
         return ret;
     }
 
-    std::unique_ptr<ControlDevice> DoradoNasSnapshot::CreateClone(std::string cloneName, int &errorCode) {
+    std::unique_ptr<ControlDevice> DoradoNasSnapshot::CreateClone(std::string cloneName, int &errorCode)
+    {
         int id;
         DeviceDetails info;
         ControlDeviceInfo deviceInfo = {};
@@ -52,7 +55,8 @@ namespace Module {
         return std::make_unique<DoradoNas>(deviceInfo, fsId, readK8s);
     }
 
-    int DoradoNasSnapshot::CreateCloneFromSnapShot(std::string cloneName, std::string &fsId) {
+    int DoradoNasSnapshot::CreateCloneFromSnapShot(std::string cloneName, std::string &fsId)
+    {
         HttpRequest req;
         DeviceDetails info;
         req.method = "POST";
@@ -77,7 +81,8 @@ namespace Module {
         return errorCode;
     }
 
-    void DoradoNasSnapshot::AssignDeviceInfo(ControlDeviceInfo &deviceInfo, std::string volumeName) {
+    void DoradoNasSnapshot::AssignDeviceInfo(ControlDeviceInfo &deviceInfo, std::string volumeName)
+    {
         deviceInfo.deviceName = volumeName;
         deviceInfo.url = DoradoIP;
         deviceInfo.port = DoradoPort;
@@ -86,7 +91,8 @@ namespace Module {
         deviceInfo.poolId = DoradoPoolId;
     }
 
-    int DoradoNasSnapshot::Delete() {
+    int DoradoNasSnapshot::Delete()
+    {
         std::string id;
         int ret = QuerySnapshot(ResourceName, id);
         if (ret == SUCCESS) {
@@ -103,15 +109,18 @@ namespace Module {
         return SUCCESS;
     }
 
-    int DoradoNasSnapshot::Bind(HostInfo &host, const std::string &shareId) {
+    int DoradoNasSnapshot::Bind(HostInfo &host, const std::string &shareId)
+    {
         return FAILED;
     }
 
-    int DoradoNasSnapshot::UnBind(HostInfo host, const std::string &shareId) {
+    int DoradoNasSnapshot::UnBind(HostInfo host, const std::string &shareId)
+    {
         return FAILED;
     }
 
-    std::unique_ptr<ControlDevice> DoradoNasSnapshot::CreateSnapshot(std::string snapshotName, int &errorCode) {
+    std::unique_ptr<ControlDevice> DoradoNasSnapshot::CreateSnapshot(std::string snapshotName, int &errorCode)
+    {
         return nullptr;
     }
 }

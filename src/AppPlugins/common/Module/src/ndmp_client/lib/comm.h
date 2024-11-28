@@ -13,10 +13,12 @@
 #ifndef __MODULE_COMM_H__
 #define __MODULE_COMM_H__
 
+#include <stdio.h>
+
 #define MODULE_FREE(p) do \
-    {\
+    { \
         if (NULL != p) \
-            free(p);\
+            free(p); \
         p = NULL;        \
     } while (0)
 
@@ -28,7 +30,7 @@
         } \
     } while (0)
  
-#define CHECK_RESULT_GOTO(r, n, l)\
+#define CHECK_RESULT_GOTO(r, n, l) \
     do {  \
         if ((r) != (n)) { \
             ERRLOG("Check result(%d) failed.", (int)(r)); \
@@ -52,7 +54,7 @@
         } \
     } while (0)
 
-#define CHECK_MEMCPY(r ,n) \
+#define CHECK_MEMCPY(r, n) \
     do { \
         if ((r) != (n)) { \
             ERRLOG("memcpy_failed, ret:%d.", (int)(r)); \
@@ -60,6 +62,8 @@
     } while (0)
  
 void close_thread(pthread_t *pt);
-#define IPV4_ADDRSTRLEN 48;
+FILE *NdmpOpenFileWithRetry(char *fileName, char *mode);
+
+#define IPV4_ADDRSTRLEN 48
  
 #endif

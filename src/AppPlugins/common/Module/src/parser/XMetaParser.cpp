@@ -596,7 +596,7 @@ CTRL_FILE_RETCODE XMetaParser::ReadXMetaFieldFromReadCache(uint64_t offset, XMet
     }
     field.m_xMetaType = xMetaType;
     bufferPtr += sizeof(uint16_t);
-	tlvLen = le32toh(*(uint32_t *)bufferPtr);
+    tlvLen = le32toh(*(uint32_t *)bufferPtr);
     bufferPtr += sizeof(uint32_t);
     if (tlvLen == 0) {
         ERRLOG("tlv length is zero");

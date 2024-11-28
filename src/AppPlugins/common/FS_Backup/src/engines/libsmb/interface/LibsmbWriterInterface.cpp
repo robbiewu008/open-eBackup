@@ -114,9 +114,9 @@ void WriterCallBack(struct smb2_context *smb2, int status, void *data, void *pri
 
     cbData->pktStats->Increment(LibsmbEventToPKT_TYPE(cbData->event), PKT_COUNTER::RECVD);
 
-    DBGLOG("Writer Event: %s, file: %s, status: %d, seq: %d",
+    DBGLOG("Writer Event: %s, file: %s, status: %d, seq: %d, m_blockSize: %u",
         GetLibsmbEventName(cbData->event).c_str(), cbData->fileHandle.m_file->m_fileName.c_str(),
-        status, cbData->fileHandle.m_block.m_seq);
+        status, cbData->fileHandle.m_block.m_seq, cbData->fileHandle.m_block.m_size);
 
     WriterCallBackHandleEvent(smb2, status, data, cbData);
     return;
@@ -276,8 +276,7 @@ int ProcessRestorePolicy(SmbWriterCommonData *cbData)
     DBGLOG("restore policy file %s", cbData->fileHandle.m_file->m_fileName.c_str());
     if (cbData->params.restoreReplacePolicy == RestoreReplacePolicy::IGNORE_EXIST) {
         cbData->fileHandle.m_file->SetDstState(FileDescState::WRITE_SKIP);
-        ++cbData->controlInfo->m_noOfFilesCopied;
-        cbData->controlInfo->m_noOfBytesCopied += cbData->fileHandle.m_file->m_size;
+        ++cbData->controlInfo->m_noOfFilesWriteSkip;
         cbData->blockBufferMap->Delete(cbData->fileHandle.m_file->m_fileName);
         DBGLOG("ignore exists file %s success!", cbData->fileHandle.m_file->m_fileName.c_str());
         delete cbData;
@@ -311,8 +310,7 @@ void ResetFileAttr(SmbWriterCommonData *cbData)
 {
     if (cbData->params.restoreReplacePolicy == RestoreReplacePolicy::IGNORE_EXIST) {
         cbData->fileHandle.m_file->SetDstState(FileDescState::WRITE_SKIP);
-        ++cbData->controlInfo->m_noOfFilesCopied;
-        cbData->controlInfo->m_noOfBytesCopied += cbData->fileHandle.m_file->m_size;
+        ++cbData->controlInfo->m_noOfFilesWriteSkip;
         cbData->blockBufferMap->Delete(cbData->fileHandle.m_file->m_fileName);
         WARNLOG("ignore access deny file %s success!", cbData->fileHandle.m_file->m_fileName.c_str());
         delete cbData;
@@ -343,8 +341,9 @@ int SendWriteRequest(FileHandle &fileHandle, SmbWriterCommonData *cbData)
 void SmbWriteCb(struct smb2_context *smb2, int status, void *data, SmbWriterCommonData *cbData)
 {
     data = data;
-
-    if (IfNeedRetry(cbData->fileHandle.m_retryCnt, DEFAULT_ERROR_SINGLE_FILE_CNT, status)) {
+    if (IfNeedRetry(cbData->fileHandle.m_retryCnt, DEFAULT_ERROR_SINGLE_FILE_CNT, status) ||
+        (status > 0 && status < cbData->fileHandle.m_block.m_size)) {
+        // 如果写入的字节数不等于预期，或者是可以重试的错误，则重试
         HandleSmbWriteStatusRetry(status, cbData);
         return;
     }
@@ -415,6 +414,27 @@ void HandleSmbWriteStatusFailed(struct smb2_context *smb2, void *data, int statu
 
 void HandleSmbWriteStatusRetry(int status, SmbWriterCommonData *cbData)
 {
+    // 如果status大于0（表示实际写入的大小），且小于block的size，说明写入的字节数不等于预期，需要重试
+    if (status > 0 && status < cbData->fileHandle.m_block.m_size) {
+        INFOLOG("File(%s) write bytes(%d) not equal to expected(%u)", cbData->fileHandle.m_file->m_fileName.c_str(),
+            status, cbData->fileHandle.m_block.m_size);
+        // 写入成功的数据不需要再次写入，仅需重试未写入的部分
+        uint8_t *tmpBuffer = new uint8_t[cbData->fileHandle.m_block.m_size - status];
+        if (memcpy_s(tmpBuffer, cbData->fileHandle.m_block.m_size - status,
+            cbData->fileHandle.m_block.m_buffer + status, cbData->fileHandle.m_block.m_size - status) != 0) {
+            // memcpy失败，重试全部数据
+            WARNLOG("memcpy_s failed(%d), try to write full data.", errno);
+            delete[] tmpBuffer;
+        } else {
+            // memcpy成功，重置block大小与偏移
+            cbData->blockBufferMap->Delete(cbData->fileHandle.m_file->m_fileName, cbData->fileHandle);
+            cbData->fileHandle.m_block.m_size -= status;
+            cbData->fileHandle.m_block.m_offset += status;
+            cbData->fileHandle.m_block.m_buffer = tmpBuffer;
+            cbData->blockBufferMap->Add(cbData->fileHandle.m_file->m_fileName, cbData->fileHandle);
+        }
+        cbData->fileHandle.m_retryCnt = 0;  // 重置重试次数，直到所有数据写成功
+    }
     SmbEnqueueToTimer(cbData->timer, cbData->fileHandle);
     cbData->pktStats->Increment(PKT_TYPE::WRITE, PKT_COUNTER::FAILED, 1, PKT_ERROR::RETRIABLE_ERR);
 
@@ -491,6 +511,11 @@ int SendSetSdRequest(FileHandle &fileHandle, SmbWriterCommonData *cbData)
     string smbPath = RemoveFirstSeparator(fileHandle.m_file->m_fileName);
     ConcatRootPath(smbPath, cbData->params.dstRootPath);
     wstring wsInput {};
+    if (fileHandle.m_file->m_aclText.empty()) {
+        DBGLOG("acl text file :%s is empty, pass it.", fileHandle.m_file->m_fileName.c_str());
+        return SUCCESS;
+    }
+
     try {
         wstring_convert<codecvt_utf8<wchar_t>> converter;
         wsInput = converter.from_bytes(fileHandle.m_file->m_aclText).c_str();
@@ -675,8 +700,7 @@ void SmbStatCb(struct smb2_context *smb2, int status, void *data, SmbWriterCommo
     } else {
         DBGLOG("restore policy is OVERWRITE_OLDER, skip, file %s dstTime(%d) > srcTime(%d).",
             cbData->fileHandle.m_file->m_fileName.c_str(), st->smb2_mtime, cbData->fileHandle.m_file->m_mtime);
-        ++cbData->controlInfo->m_noOfFilesCopied;
-        cbData->controlInfo->m_noOfBytesCopied += cbData->fileHandle.m_file->m_size;
+        ++cbData->controlInfo->m_noOfFilesWriteSkip;
         cbData->blockBufferMap->Delete(cbData->fileHandle.m_file->m_fileName);
         cbData->fileHandle.m_file->SetDstState(FileDescState::WRITE_SKIP);
         delete cbData;

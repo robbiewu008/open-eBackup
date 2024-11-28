@@ -207,6 +207,7 @@ public:
     int NfsFsyncAsyncLock(struct nfsfh *nfsfh, nfs_cb cb, void *privateData);
     int NfsUnlinkAsync(const char *path, nfs_cb cb, void *privateData);
     int NfsUnlinkAsyncLock(const char *path, nfs_cb cb, void *privateData);
+    int NfsUnlinkAsyncWithParentFh(const char *path, struct nfsfh *fh, nfs_cb cb, void *privateData);
     uint64_t GetNfsReadMaxSize();
     uint64_t GetNfsReadMaxSizeLock();
     uint64_t GetNfsWriteMaxSize();

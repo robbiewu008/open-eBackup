@@ -12,7 +12,6 @@
 */
 #ifndef __CONST_H__
 #define __CONST_H__
-//#include "common/Types.h"
 
 const std::string COMPRESS = "Compress";
 const std::string DEDUP = "Dedup";

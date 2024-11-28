@@ -53,5 +53,6 @@ void Message::RemoveHeader()
     }
     m_data.erase(m_data.begin(), m_data.begin() + sizeof(MessageHeader));
 }
+
 }
 }

@@ -16,11 +16,11 @@
 #include "ndmp_common.h"
 
 typedef struct msg_data_s {
-    int			message;	/* message that was produced */
-    int			reason;		/* reason message was produced */
+    int         message;    /* message that was produced */
+    int         reason;     /* reason message was produced */
     char                text[512];      /* message reported by backend */
-    NdmpConnection	connection;	/* connection message was received on */
-    struct msg_data_s	*next;
+    NdmpConnection  connection; /* connection message was received on */
+    struct msg_data_s* next;
     void            *body;
 } MsgData;
 

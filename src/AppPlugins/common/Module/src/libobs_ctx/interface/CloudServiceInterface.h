@@ -39,7 +39,8 @@ namespace Module {
 
         bool IsSucc() const { return result == ResultType::SUCCESS; }
 
-        bool operator== (const OBSResult& other) {
+        bool operator == (const OBSResult& other)
+        {
             return result == other.result && errorCode == other.errorCode && errorDesc == other.errorDesc;
         }
     };

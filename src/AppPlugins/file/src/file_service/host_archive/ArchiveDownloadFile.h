@@ -26,7 +26,8 @@ enum class ArchiveDownloadState {
     FAILED,
     FINISH,
     RUNNING,
-    EMPTY_COPY
+    EMPTY_COPY,
+    TAP_REMIND
 };
 
 struct ArchiveServerInfo {
@@ -92,7 +93,7 @@ private:
 
     bool OpenFileExistOrNew();
     inline bool IsDir(const std::string& name) const;
-    bool ArchiveWriteFile(const ControlFileData& ctrlData) const;
+    bool ArchiveWriteFile(const ControlFileData& ctrlData);
     int WriteBufferToFile(const char* buf, uint64_t offset, uint64_t length) const;
 #ifdef WIN32
     std::string GetCacheRepoRootPath(const std::string& cacheFsPath) const;

@@ -20,6 +20,7 @@
 #include "errno.h"
 namespace Module {
 constexpr int64_t OBS_INTERNAL_ERROR_CODE = 200;                                // 内部错误
+constexpr int64_t OBS_CONNECTIVITY_ERROR_CODE = 1577212936;                     // 连接性错误
 constexpr int64_t ERROR_OBS_RESOURCE_ENDPOINT_CONNECT_FAILED = 1577213547;      // 备份软件与对象存储服务的Endpoint不连通
 constexpr int64_t ERROR_OBS_RESOURCE_AK_OR_SK_ERROR = 1577213549;               // AK或SK填写不正确
 constexpr int64_t ERROR_OBS_RESOURCE_PROXY_SERVER_CONNECT_FAILED = 1577213551;  // 连接代理服务器失败

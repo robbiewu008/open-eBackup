@@ -35,7 +35,8 @@ constexpr uint8_t OFFSET_10  = 10;
 constexpr uint8_t NUMBER1  = 1;
 constexpr uint8_t NUMBER2  = 2;
 
-#define IS_LIBNFS_NEED_RETRY(status) ((status) == -EINTR || (status) == -EAGAIN || (status) == -EIO)
+#define IS_LIBNFS_NEED_RETRY(status) \
+    ((status) == -EINTR || (status) == -EAGAIN || (status) == -EIO || (status) == -EFAULT)
 #define VALIDATE_WRITE_COMMON_DATA_PTR_RECEIVED(cbData) \
     if ((cbData) == nullptr) \
         return; \

@@ -46,8 +46,9 @@ CacheFile::~CacheFile()
         Close(NAS_CTRL_FILE_OPEN_MODE_WRITE);
     }
 
-    if (m_readFd.is_open())
+    if (m_readFd.is_open()) {
         Close(NAS_CTRL_FILE_OPEN_MODE_READ);
+    }
 }
 
 NAS_CTRL_FILE_RETCODE CacheFile::Open(NAS_CTRL_FILE_OPEN_MODE mode)

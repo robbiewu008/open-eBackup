@@ -120,7 +120,7 @@ void ObjectCopyWriter::PrintControlInfo(std::string head)
         "(totalFiles %llu totalDirs %llu archiveFiles %llu)", head.c_str(),
         m_controlInfo->m_aggregatePhaseComplete.load(),
         m_writeQueue->GetSize(), m_writeCache.size(), m_timer.GetCount(),
-        m_writeTaskProduce.load(), m_writeTaskConsume.load(),
+        m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load(),
         m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfDirCopied.load(),
         m_controlInfo->m_aggregatedFiles.load(),
         m_controlInfo->m_skipFileCnt.load(),
@@ -144,7 +144,7 @@ bool ObjectCopyWriter::IsComplete()
     }
 
     if (m_controlInfo->m_aggregatePhaseComplete && m_writeQueue->Empty() && (m_writeCache.size() == 0) &&
-        (m_timer.GetCount() == 0) && (m_writeTaskProduce == m_writeTaskConsume) &&
+        (m_timer.GetCount() == 0) && (m_controlInfo->m_writeTaskProduce == m_controlInfo->m_writeTaskConsume) &&
         ((m_controlInfo->m_noOfFilesCopied + m_controlInfo->m_noOfFilesFailed) == m_controlInfo->m_noOfFilesToBackup)) {
         PrintControlInfo("CopyWriter complete");
         m_controlInfo->m_writePhaseComplete = true;
@@ -173,8 +173,8 @@ int ObjectCopyWriter::OpenFile(FileHandle& fileHandle)
         ERRLOG("put open file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
-    DBGLOG("total writeTask produce for now: %d", m_writeTaskProduce.load());
+    ++m_controlInfo->m_writeTaskProduce;
+    DBGLOG("total writeTask produce for now: %d", m_controlInfo->m_writeTaskProduce.load());
     return SUCCESS;
 }
 
@@ -187,8 +187,8 @@ int ObjectCopyWriter::WriteData(FileHandle& fileHandle)
         ERRLOG("put write data task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
-    DBGLOG("total writeTask produce for now: %d", m_writeTaskProduce.load());
+    ++m_controlInfo->m_writeTaskProduce;
+    DBGLOG("total writeTask produce for now: %d", m_controlInfo->m_writeTaskProduce.load());
     return SUCCESS;
 }
 
@@ -199,7 +199,7 @@ int ObjectCopyWriter::WriteMeta(FileHandle& fileHandle)
         ERRLOG("put write meta file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     return SUCCESS;
 }
 
@@ -212,8 +212,8 @@ int ObjectCopyWriter::CloseFile(FileHandle& fileHandle)
         ERRLOG("put close task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
-    DBGLOG("total writeTask produce for now: %d", m_writeTaskProduce.load());
+    ++m_controlInfo->m_writeTaskProduce;
+    DBGLOG("total writeTask produce for now: %d", m_controlInfo->m_writeTaskProduce.load());
     return SUCCESS;
 }
 
@@ -337,8 +337,8 @@ void ObjectCopyWriter::PollWriteTask()
                 ERRLOG("task is nullptr");
                 break;
             }
-            ++m_writeTaskConsume;
-            DBGLOG("write tasks consume cnt for now %llu", m_writeTaskConsume.load());
+            ++m_controlInfo->m_writeTaskConsume;
+            DBGLOG("write tasks consume cnt for now %llu", m_controlInfo->m_writeTaskConsume.load());
             if (taskPtr->m_result == SUCCESS) {
                 HandleSuccessEvent(taskPtr);
             } else {
@@ -444,10 +444,9 @@ void ObjectCopyWriter::HandleFailedEvent(std::shared_ptr<ObjectServiceTask> task
             if (taskPtr->m_errDetails.second == EISDIR) {
                 m_controlInfo->m_noOfDirFailed++;
             }
+            fileHandle.m_errNum = taskPtr->m_errDetails.second;
         }
         fileHandle.m_file->UnlockCommonMutex();
-        fileHandle.m_errNum = taskPtr->m_errDetails.second;
-        m_failedList.emplace_back(fileHandle);
     }
     m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
     if ((event != ObjectEvent::CLOSE_DST) && (event != ObjectEvent::WRITE_META) && !IsSmallFile(fileHandle)) {
@@ -458,6 +457,9 @@ void ObjectCopyWriter::HandleFailedEvent(std::shared_ptr<ObjectServiceTask> task
         ERRLOG("set backup to failed!");
         m_controlInfo->m_failed = true;
         m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+    }
+    if (!fileHandle.m_errMessage.empty()) {
+        m_failedList.emplace_back(fileHandle);
     }
     ERRLOG("copy write failed for file %s, totalFailed: %llu %llu",
            fileHandle.m_file->m_fileName.c_str(),
@@ -494,7 +496,7 @@ int ObjectCopyWriter::CreateBucket(FileHandle& fileHandle)
         ERRLOG("put create bucket task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     return SUCCESS;
 }
 

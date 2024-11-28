@@ -17,10 +17,15 @@
 #include <codecvt>
 #include <optional>
 #include <atlbase.h>
+#include <mutex>
 #include "log/Log.h"
+#include "Utils.h"
 
 using namespace std;
+using namespace Module;
 using namespace Win32VSSWrapper;
+
+std::mutex g_vssClientMtx;
 
 std::optional<std::wstring> VssID2WStr(const VSS_ID& vssID)
 {
@@ -48,7 +53,8 @@ std::optional<VSS_ID> VssIDfromWStr(const std::wstring& vssIDWstr)
     do { \
         _com_error err(HR); \
         if (HR != S_OK) { \
-            ERRLOG("HRESULT Return FAILED, Function: " ## FUNC ## ", Error: %s", err.ErrorMessage()); \
+            std::wstring werrstr(err.ErrorMessage()); \
+            ERRLOG("HRESULT Return FAILED, Function: " ## FUNC ## ", Error: %s", Utf16ToUtf8(werrstr).c_str()); \
             return RET; \
         } \
     } \
@@ -300,7 +306,8 @@ std::wstring SnapshotSetResult::SnapshotSetIDW() const
     return m_wSnapshotSetID;
 }
 
-std::optional<SnapshotSetResult> VssClient::CreateSnapshotsW(const std::vector<std::wstring>& wVolumePathList)
+std::optional<SnapshotSetResult> VssClient::CreateSnapshotsW(const std::vector<std::wstring>& wVolumePathList,
+    const std::string& snapshotPercent)
 {
     InitializeBackupContect(VSS_CTX_APP_ROLLBACK);
     SnapshotSetResult result;
@@ -317,11 +324,27 @@ std::optional<SnapshotSetResult> VssClient::CreateSnapshotsW(const std::vector<s
         if (wcscpy_s(volume, MAX_PATH, wVolumePath.c_str()) != 0) {
             return std::nullopt;
         }
-        hr = m_pVssObject->AddToSnapshotSet(volume, GUID_NULL, &snapshotID);
-        CHECK_HR_RETURN(hr, "AddToSnapshotSet", std::nullopt);
-        result.m_wSnapshotIDList.emplace_back(VssID2WStr(snapshotID).value());
-    }
+        float percent = SafeStof(snapshotPercent);
+    
+        // 获取卷信息
+        ULARGE_INTEGER freeBytes, totalBytes, totalFreeBytes;
+        if (GetDiskFreeSpaceEx(wVolumePath.c_str(), &freeBytes, &totalBytes, &totalFreeBytes)) {
+            float availableSpace = static_cast<float>(freeBytes.QuadPart) / totalBytes.QuadPart * 100;
 
+            if (availableSpace < percent) {
+                ERRLOG("Not enough space for backup. Available: %f percent, errorcode: %d",
+                    availableSpace, GetLastError());
+                return std::nullopt;
+            }
+
+            hr = m_pVssObject->AddToSnapshotSet(volume, GUID_NULL, &snapshotID);
+            CHECK_HR_RETURN(hr, "AddToSnapshotSet", std::nullopt);
+            result.m_wSnapshotIDList.emplace_back(VssID2WStr(snapshotID).value());
+        } else {
+            ERRLOG("Error getting free space: %d", GetLastError());
+            return std::nullopt;
+        }
+    }
     CHECK_BOOL_RETURN(PrepareForBackupSync(), "PrepareForBackupSync", std::nullopt);
     CHECK_BOOL_RETURN(DoSnapshotSetSync(), "DoSnapshotSetSync", std::nullopt);
 
@@ -329,13 +352,15 @@ std::optional<SnapshotSetResult> VssClient::CreateSnapshotsW(const std::vector<s
     return std::make_optional<SnapshotSetResult>(result);
 }
 
-std::optional<SnapshotSetResult> VssClient::CreateSnapshots(const std::vector<std::string>& volumePathList)
+std::optional<SnapshotSetResult> VssClient::CreateSnapshots(const std::vector<std::string>& volumePathList,
+    const std::string& snapshotPercent)
 {
+    std::lock_guard<std::mutex> lock(g_vssClientMtx);
     std::vector<std::wstring> wVolumePathList;
     for (const std::string& volumePath: volumePathList) {
         wVolumePathList.emplace_back(Utf8ToUtf16(volumePath));
     }
-    return CreateSnapshotsW(wVolumePathList);
+    return CreateSnapshotsW(wVolumePathList, snapshotPercent);
 }
 
 bool VssClient::DeleteSnapshotW(const std::wstring& wSnapshotID)
@@ -521,17 +546,6 @@ bool VssClient::InitializeCom()
     HRESULT hr = ::CoInitializeEx(nullptr, COINIT::COINIT_MULTITHREADED);
     CHECK_HR_RETURN(hr, "CoInitializeEx", false);
     m_comInitialized = true;
-    hr = CoInitializeSecurity(
-        NULL,                           //  Allow *all* VSS writers to communicate back!
-        -1,                             //  Default COM authentication service
-        NULL,                           //  Default COM authorization service
-        NULL,                           //  reserved parameter
-        RPC_C_AUTHN_LEVEL_PKT_PRIVACY,  //  Strongest COM authentication level
-        RPC_C_IMP_LEVEL_IMPERSONATE,    //  Minimal impersonation abilities
-        NULL,                           //  Default COM authentication settings
-        EOAC_DYNAMIC_CLOAKING,          //  Cloaking
-        NULL);                          //  Reserved parameter
-    CHECK_HR_RETURN(hr, "CoInitializeSecurity", false);
     return true;
 }
 

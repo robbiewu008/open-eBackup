@@ -84,10 +84,12 @@ int CIniKeySection::SetValue(const char* pszKeyName, const char* pszValue)
     char szKey[KEY_MAX_LENGTH + 1] = {0};
     int iRet = SUCCESS;
     string strValue = pszValue;
+    if (pszKeyName == nullptr) {
+        return FAILED;
+    }
     if (strlen(pszKeyName) > KEY_MAX_LENGTH) {
         return FAILED;
     }
-
     iRet = strncpy_s(szKey, sizeof(szKey), pszKeyName, strlen(pszKeyName));
     if (SUCCESS != iRet) {
         return iRet;
@@ -258,7 +260,6 @@ int CIniFile::GetStrValue(const char* pszSectionName, const char* pszKeyName, st
         return FAILED;
     }
 
-    //pSection->Print();
     const char* pszValue = pSection->GetValue(pszKeyName);
     if (NULL == pszValue)
     {
@@ -387,7 +388,9 @@ CIniKeySection* CIniFile::GetSection(const char* pszSection)
 {
     int iRet = SUCCESS;
     char szSName[1024] = {0};
-
+    if (pszSection == nullptr) {
+        return nullptr;
+    }
     iRet = strncpy_s(szSName, sizeof(szSName), pszSection, strlen(pszSection));
     if (SUCCESS != iRet) {
         return NULL;

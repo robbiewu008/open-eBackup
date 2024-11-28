@@ -79,6 +79,8 @@ private:
 
     /* methods defined only for posix backup task */
     int ProcessOpenDst(const std::string& dstFile);
+    int ProessOpenDstFailed(const std::string& dstFile, const std::wstring wDstFile, DWORD lastError);
+    int ReopenDstNoAccessFile(const std::string& dstFile, const std::wstring wDstFile);
     int ProcessRestorePolicy(const std::string& dstFile);
     int ProcessOverwriteOlderPolicy(const std::string& dstFile);
     int ProcessOverwritePolicy(const std::string& dstFile);
@@ -91,6 +93,7 @@ private:
     bool InitSparseFile(const std::string& filepath, HANDLE hFile, uint64_t size);
     bool ProcessCreateSymlink(const std::string& dstFile);
     void CloseSmallFileDstFd();
+    void CloseSmallFileSrcFd();
     bool Win32DeleteFile(const std::string& filePath);
     bool DeleteReadOnlyFile(const std::string& filePath);
     bool SetFileInformation();
@@ -100,7 +103,7 @@ private:
     void HandleFindStreamFailed(const std::string& srcFile, DWORD lastError);
     void PostReadMetaRoutine() const;
     void HandleWriteMetaForADS();
-
+    bool WriteFileWithRetry(const std::string& dstFile);
 private:
 
     Win32TaskExtendContext m_extendContext {};    /* used to store ADS context in ReadMeta stage */

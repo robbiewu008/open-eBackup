@@ -27,13 +27,15 @@ namespace Module {
 
     class DoradoNasNFS : public DoradoNas {
     public:
-        explicit DoradoNasNFS(ControlDeviceInfo deviceInfo, bool readFromK8s = true) : DoradoNas(deviceInfo,
-                                                                                                 readFromK8s) {
+        explicit DoradoNasNFS(ControlDeviceInfo deviceInfo, bool readFromK8s = true)
+            : DoradoNas(deviceInfo, readFromK8s)
+        {
             readK8s = readFromK8s;
         }
 
         DoradoNasNFS(ControlDeviceInfo deviceInfo, std::string fsId, bool readFromK8s = true)
-                : DoradoNas(deviceInfo, fsId, readFromK8s) {
+            : DoradoNas(deviceInfo, fsId, readFromK8s)
+        {
             readK8s = readFromK8s;
         }
 
@@ -59,7 +61,8 @@ namespace Module {
 
         int QueryNFSShareClient(NasSharedInfo &info, std::string sharedId);
 
-        int SetIsDeleteParentSnapShotFlag(bool flag) {
+        int SetIsDeleteParentSnapShotFlag(bool flag)
+        {
             isDeleteParentSnapShot = flag;
         }
 

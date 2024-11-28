@@ -30,7 +30,8 @@ DirControlFileReader::DirControlFileReader(const ReaderParams& readerParams)
     : m_backupParams(readerParams.backupParams),
     m_readQueue(readerParams.readQueuePtr),
     m_controlInfo(readerParams.controlInfo),
-    m_blockBufferMap(readerParams.blockBufferMap)
+    m_blockBufferMap(readerParams.blockBufferMap),
+    m_failureRecorder(readerParams.failureRecorder)
 {}
 
 DirControlFileReader::DirControlFileReader(BackupParams& backupParams,
@@ -99,10 +100,10 @@ bool DirControlFileReader::IsComplete()
 {
     if ((FSBackupUtils::GetCurrentTime() - m_isCompleteTimer) > COMPLETION_CHECK_INTERVAL) {
         m_isCompleteTimer = FSBackupUtils::GetCurrentTime();
-        INFOLOG("DirControlFileReader check is complete: dirCount %llu", m_dirCount.load());
+        INFOLOG("DirControlFileReader check is complete: dirCount %llu", m_controlInfo->m_noOfDirToBackup.load());
     }
     if (m_controlInfo->m_controlReaderPhaseComplete) {
-        INFOLOG("DirControlFileReader complete: dirCount %llu", m_dirCount.load());
+        INFOLOG("DirControlFileReader complete: dirCount %llu", m_controlInfo->m_noOfDirToBackup.load());
         return true;
     }
     return false;
@@ -224,7 +225,7 @@ int DirControlFileReader::FillStatsFromControlHeader()
         DBGLOG("get control file header failed");
         return Module::FAILED;
     }
-    m_dirCount = header.stats.noOfDirs;
+    m_controlInfo->m_noOfDirToBackup += header.stats.noOfDirs;
     return Module::SUCCESS;
 }
 
@@ -286,7 +287,7 @@ int DirControlFileReader::FillStatsFromControlHeaderV10()
         ERRLOG("Get Header Failed!");
         return Module::FAILED;
     }
-    m_dirCount = header.stats.noOfDirs;
+    m_controlInfo->m_noOfDirToBackup += header.stats.noOfDirs;
     return Module::SUCCESS;
 }
 
@@ -296,16 +297,26 @@ int DirControlFileReader::ReadControlFileEntryAndProcess(MtimeCtrlEntry& dirEntr
     if (ret == FINISH) {
         return FINISH;
     }
-    // 不写根路径的权限
+    // 不写根路径的权限, nas中 nfs 根目录 '.' , cifs 根目录是 '/'
     if (!dirEntry.m_absPath.empty() && dirEntry.m_absPath != "." &&
         dirEntry.m_absPath != "/") {
         ProcessDirEntry(dirEntry, fileHandle);
         DBGLOG("ProcessDirEntry: %s, %d", dirEntry.m_absPath.c_str(), ret);
     } else {
+        // 文件集扫描的时候会算根目录， NAS扫描的时候不算根目录
+        if (!dirEntry.m_absPath.empty() && !IsNasConfig()) {
+            ++m_controlInfo->m_noOfDirCopied;  // 跳过的目录默认认为成功，防止插件扫描与备份的目录数不一致
+        }
         DBGLOG("Skip dir %s", dirEntry.m_absPath.c_str());
         return SKIP;
     }
     return Module::SUCCESS;
+}
+
+bool DirControlFileReader::IsNasConfig() const
+{
+    return m_backupParams.srcEngine == BackupIOEngine::LIBNFS || m_backupParams.srcEngine == BackupIOEngine::LIBSMB
+        || m_backupParams.dstEngine == BackupIOEngine::LIBNFS || m_backupParams.dstEngine == BackupIOEngine::LIBSMB;
 }
 
 int DirControlFileReader::ReadControlFileEntryAndProcessV10(BackupMtimeCtrlEntry& dirEntry, FileHandle& fileHandle)

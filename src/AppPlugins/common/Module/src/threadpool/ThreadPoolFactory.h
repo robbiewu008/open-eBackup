@@ -13,16 +13,14 @@
 #ifndef THREADPOOLFACTORY_H
 #define THREADPOOLFACTORY_H
 
-#include "ThreadPool.h"
 #include <string>
 #include <unordered_map>
+#include "ThreadPool.h"
 #include "define/Defines.h"
 
-namespace Module 
-{
+namespace Module {
 
-enum class ThreadPoolType
-{
+enum class ThreadPoolType {
     THREAD_POOL_TYPE_SCAN = 0,
     THREAD_POOL_TYPE_BACKUP
 };

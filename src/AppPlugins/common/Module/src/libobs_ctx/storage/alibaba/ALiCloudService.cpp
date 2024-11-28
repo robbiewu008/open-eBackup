@@ -116,9 +116,9 @@ bool ALiCloudService::CheckRetryAndWait(
         HCP_Log(WARN, MODULE_NAME) << "request failed, need retry, retry time " << retryCount << HCPENDLOG;
         sleep(retryConfig.retryInterval);
         return true;
-    } else {
-        return false;
     }
+    HCP_Log(ERR, MODULE_NAME) << "request failed, retry reachs the max times: " << retryConfig.retryNum << HCPENDLOG;
+    return false;
 }
 
 bool ALiCloudService::SplitUrl(const std::string &url, std::string &protocol, std::string &ip, unsigned int &port)
@@ -180,28 +180,39 @@ OBSResult ALiCloudService::ListBuckets(
         return result;
     }
 
+    bool isTruncated = false;  // true: Not all results are returned. false: All results have been returned.
     int retryCount = 0;
+    AlibabaCloud::OSS::ListBucketsRequest aLiRequest;
+    const int onceListNum = 200;
+    aLiRequest.setMaxKeys(onceListNum);
+
+    ListServiceData data;
     do {
-        AlibabaCloud::OSS::ListBucketsRequest aLiRequest;
         outcome = client->ListBuckets(aLiRequest);
         if (outcome.isSuccess()) {
             std::vector<Bucket> buckets = outcome.result().Buckets();
-            ListServiceData data;
-            data.bucketListSize = buckets.size();
-            for (int i = 0; i < data.bucketListSize; i++) {
+            for (int i = 0; i < buckets.size(); i++) {
                 data.bucketList.push_back(buckets[i].Name());
             }
-            resp = std::make_unique<ListBucketsResponse>(data);
-            if (resp == nullptr) {
-                HCP_Log(ERR, MODULE_NAME) << "make unique for ListBucketsResponse failed" << HCPENDLOG;
-                result.result = ResultType::FAILED;
-                break;
-            }
+            data.bucketListSize += buckets.size();
+            isTruncated = outcome.result().IsTruncated();
+            aLiRequest.setMarker(outcome.result().NextMarker());
+            HCP_Log(DEBUG, MODULE_NAME) << "isTruncated: " << isTruncated
+                                        << ", marker: " << outcome.result().NextMarker() << HCPENDLOG;
         } else {
             HCP_Log(ERR, MODULE_NAME) << "list bucket failed." << outcome.error().Code() << HCPENDLOG;
         }
-    } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
-    
+    } while (isTruncated || CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
+
+    if (result.IsSucc()) {
+        resp = std::make_unique<ListBucketsResponse>(data);
+        if (resp == nullptr) {
+            HCP_Log(ERR, MODULE_NAME) << "make unique for ListBucketsResponse failed" << HCPENDLOG;
+            result.result = ResultType::FAILED;
+            return result;
+        }
+    }
+    HCP_Log(INFO, MODULE_NAME) << "list buckets end, size: " << data.bucketList.size() << HCPENDLOG;
     return result;
 }
 
@@ -299,6 +310,14 @@ OBSResult ALiCloudService::ListObjects(
                     << " size of commonPrefixes - " << resp->commonPrefixes.size() << HCPENDLOG;
         } else {
             HCP_Log(ERR, MODULE_NAME) << "list object failed." << outcome.error().Code() << HCPENDLOG;
+            std::string aliErrorCode = outcome.error().Code();
+            if (aliErrorCode == "AccessDenied") {
+                HCP_Log(ERR, MODULE_NAME) << "AccessDenied Occurred" << HCPENDLOG;
+                result.result = ResultType::FAILED;
+                result.errorCode = outcome.error().Code();
+                result.errorDesc = outcome.error().Message();
+                break;
+            }
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 

@@ -11,11 +11,10 @@
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
 #include "device_access/oceanstor/OceanstorNasSnapshot.h"
-//#include "device_access/oceanstor/OceanstorNasCifs.h"
-//#include "device_access/oceanstor/OceanstorNasNFS.h"
 #include "common/JsonUtils.h"
 namespace Module {
-    mp_int32 OceanstorNasSnapshot::Query(DeviceDetails &info) {
+    mp_int32 OceanstorNasSnapshot::Query(DeviceDetails &info)
+    {
         std::string id;
         mp_int32 ret = QuerySnapshot(ResourceName, id);
         if (ret == SUCCESS) {
@@ -27,7 +26,8 @@ namespace Module {
         return ret;
     }
 
-    std::unique_ptr <ControlDevice> OceanstorNasSnapshot::CreateClone(std::string cloneName, int &errorCode) {
+    std::unique_ptr <ControlDevice> OceanstorNasSnapshot::CreateClone(std::string cloneName, int &errorCode)
+    {
         mp_int32 id;
         DeviceDetails info;
         ControlDeviceInfo deviceInfo = {};
@@ -42,15 +42,19 @@ namespace Module {
         ret = CreateCloneFromSnapShot(cloneName, fsId);
         if (ret != SUCCESS) {
             errorCode = ret;
+            auto clones = std::make_unique<OceanstorNas>(deviceInfo, cloneName);
+            clones->SetErrorCode(GetErrorCode());
+            clones->SetExtendInfo(GetExtendInfo());
             HCP_Log(ERR, OCEANSTOR_MODULE_NAME) << "create clone failed, errorCode: "
-                                                << ret << HCPENDLOG;
-            return nullptr;
+                                                << ret << " GetExtendInfo: "<< clones->GetExtendInfo() << HCPENDLOG;
+            return clones;
         }
         AssignDeviceInfo(deviceInfo, cloneName);
         return std::make_unique<OceanstorNas>(deviceInfo, fsId);
     }
 
-    mp_int32 OceanstorNasSnapshot::CreateCloneFromSnapShot(std::string cloneName, std::string &fsId) {
+    mp_int32 OceanstorNasSnapshot::CreateCloneFromSnapShot(std::string cloneName, std::string &fsId)
+    {
         HttpRequest req;
         DeviceDetails info;
         req.method = "POST";
@@ -77,7 +81,8 @@ namespace Module {
             HCP_Log(INFO, OCEANSTOR_MODULE_NAME) << "create clone success, file system id: " << fsId << HCPENDLOG;
             return SUCCESS;
         }
-        HCP_Log(ERR, OCEANSTOR_MODULE_NAME) << "create clone failed, errorCode: " << errorCode << HCPENDLOG;
+        HCP_Log(ERR, OCEANSTOR_MODULE_NAME) << "create clone failed, errorCode: " << errorCode << " errorDes: "
+            << errorDes << "getExtendInfo: " <<  GetExtendInfo() << HCPENDLOG;
         return errorCode;
     }
 }

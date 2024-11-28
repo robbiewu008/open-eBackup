@@ -83,8 +83,6 @@ namespace Module {
 
         uint64_t GetCurrentMillis();
 
-//        bool GetAllPodsInfo(PodInfoList &infoList);
-
         bool GetAllNodesInfo(NodeInfoList &infoList);
 
         bool CheckDBUserPD(bool isNormal, DBUserPD &userPD, bool hasError);
@@ -95,14 +93,12 @@ namespace Module {
 
         bool GetSuperDBUserPD(DBUserPD &userPD);
 
-//        uint32_t GetRunningPodsNum(const std::string podName);
-
         void AddConfigMapItem(const std::string &cfgName, const std::string &cfgItem, const std::string &cfgVal);
 
         std::string GetConfigMapItem(const std::string &cfgName, const std::string &cfgItem);
 
-        std::string
-        GetConfigMapItem(const std::string &cfgName, const std::string &cfgItem, const std::string &defaultCfg);
+        std::string GetConfigMapItem(const std::string &cfgName, const std::string &cfgItem,
+            const std::string &defaultCfg);
     };  // namespace k8s
 }
 #endif

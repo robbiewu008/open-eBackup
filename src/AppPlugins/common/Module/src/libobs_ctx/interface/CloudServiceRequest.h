@@ -26,14 +26,14 @@ namespace Module {
     const uint64_t MULTI_PART_DOWNLOAD_OBJECT_TASK_NUM = 8;
 
     class RetryConfig {
-        public:
+    public:
         bool isRetryable = true;                   // 是否需要失败重试（只针对特定可重试恢复的错误码）
         int retryNum = DEFAULT_RETRY_NUM;           // 重试次数
         int retryInterval = DEFAULT_RETRY_INTERVAL; // 重试间隔时间（单位：秒）
     };
 
     class BasicRequest {
-        public:
+    public:
         std::string bucketName;  // 桶名
         RetryConfig retryConfig; // 重试设置
     };
@@ -50,7 +50,7 @@ namespace Module {
     };
 
     class ListObjectsRequest : public BasicRequest {
-        public:
+    public:
         std::string prefix;     // 限定返回的对象名必须带有prefix前缀
         std::string marker;     // 列举对象的起始位置，返回的对象列表将是对象名按照字典序排序后该参数以后的所有对象
         std::string delimiter;  // 用于对对象名进行分组的字符。对于对象名中包含delimiter的对象，其对象名
@@ -60,20 +60,20 @@ namespace Module {
     };
 
     class GetObjectMetaDataRequest : public BasicRequest {
-        public:
+    public:
         std::string key;         // 对象名
         std::string versionId;   // 版本号
     };
 
     class GetObjectACLRequest : public BasicRequest {
-        public:
+    public:
         std::string key;         // 对象名
         std::string versionId;   // 版本号
         bool isNewGet {false};   // 判断是否为backup新的获取
     };
 
     class GetObjectRequest : public BasicRequest {
-        public:
+    public:
         std::string key;         // 对象名
         std::string versionId;   // 版本号
         uint64_t startByte = 0;  // 分片起始位置（字节）
@@ -84,7 +84,7 @@ namespace Module {
     };
 
     class MultiPartDownloadObjectRequest : public BasicRequest {
-        public:
+    public:
         std::string key;         // 对象名
         std::string versionId;   // 版本号
         std::string downLoadTargetPath;                           // 下载目标路径
@@ -98,18 +98,17 @@ namespace Module {
     };
 
     class HeadBucketRequest : public BasicRequest {
-
     };
 
     class CreateBucketRequest : public BasicRequest {
-        public:
+    public:
         int cannedAcl = 0;  // 桶的ACL
     };
 
     typedef void(MultiPartUploadObjectCallbackFun)(uint64_t partSize, int partCount, void* callBackData);
 
     class MultiPartUploadObjectRequest : public BasicRequest {
-        public:
+    public:
         std::string key;         // 对象名
         std::string upLoadTargetPath;                             // 上传目标路径
         uint64_t partSize = MULTI_PART_DOWNLOAD_OBJECT_PART_SIZE; // 每个分块大小（最大5GB，单位：字节）
@@ -121,7 +120,7 @@ namespace Module {
     };
 
     class SetObjectACLRequest : public BasicRequest {
-        public:
+    public:
         std::string key;                    // 对象名
         std::string versionId;              // 版本号，非多版本对象version设置为0
         std::string ownerId;                // 用户的domianID
@@ -130,14 +129,14 @@ namespace Module {
     };
 
     class SetBucketACLRequest : public BasicRequest {
-        public:
+    public:
         std::string ownerId;                // 用户的domianID
         std::string ownerDisplayName;       // 用户显示名称
         std::vector<ACLGrant> aclGrants;    // acl规则
     };
 
     class SetObjectMetaDataRequest : public BasicRequest {
-        public:
+    public:
         std::string key;         // 对象名
         std::string versionId;   // 版本号
         std::unordered_map<std::string, std::string> sysDefMetaData; // 系统metadata
@@ -145,12 +144,12 @@ namespace Module {
     };
 
     class GetUploadIdRequest : public SetObjectMetaDataRequest {
-        public:
+    public:
         std::string key;            // 对象名
     };
 
     class PutObjectPartRequest : public SetObjectMetaDataRequest {
-        public:
+    public:
         std::string key;            // 对象名
         uint32_t partNumber = 0;    // 分片编号1,2,3... (只有分段上传接口使用)
         std::string uploadId;       // upload id唯一,用于标识本次分段上传任务 (只有分段上传接口使用)
@@ -160,13 +159,13 @@ namespace Module {
     };
 
     class UploadInfo {
-        public:
+    public:
         uint32_t partNumber = 0;
         std::string etag;
     };
 
     class CompletePutObjectPartRequest : public BasicRequest {
-        public:
+    public:
         std::string key;            // 对象名
         std::string uploadId;       // upload id唯一,用于标识本次分段上传任务
         std::vector<UploadInfo> uploadInfo; // 上传分片信息

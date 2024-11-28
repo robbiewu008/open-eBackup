@@ -14,9 +14,9 @@
 #define __STDC_FORMAT_MACROS
 #endif
 #include "HardlinkCtrlParser.h"
+#include <cinttypes>
 #include "Log.h"
 #include "securec.h"
-#include <cinttypes>
 
 using namespace std;
 using namespace Module;
@@ -43,7 +43,7 @@ HardlinkCtrlParser::HardlinkCtrlParser(Params params) : FileParser(false)
     m_header.proto = params.proto;
     m_header.protoVersion = params.protoVersion;
     m_header.backupType = params.backupType;
-    m_maxFileSize = params.maxCtrlFileSize;;
+    m_maxFileSize = params.maxCtrlFileSize;
 
     DBGLOG("Hardlink params - maxEntriesPerFile: %u, minEntriesPerFile: %u, m_ctrlFileTimeElapsed: %u,",
         " maxDataSize: %u, minDataSize: %u ,m_ctlFileName: %s, taskId: %s, backupType: %s, nasServer: %s,",

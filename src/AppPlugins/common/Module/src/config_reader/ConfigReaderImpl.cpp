@@ -296,7 +296,7 @@ void ConfigReaderImpl::InitConfigInfoForWDS()
 
 void ConfigReaderImpl::InitConfigInfoForHCS()
 {
-    putIntConfigInfo("HcsConfig", "CreateBitmapVolumeTimeOut", 300, 600, 7200);
+    putIntConfigInfo("HcsConfig", "CreateBitmapVolumeTimeOut", 300, 7200, 600);
     putIntConfigInfo("HcsConfig", "CreateSnapshotLimit", 1, 30, 10);
     putIntConfigInfo("HcsConfig", "CreateSnapshotApigwFailedRetry", 3, 10, 3);
 }

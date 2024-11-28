@@ -117,7 +117,7 @@ bool HostCopyWriter::IsComplete()
             "(totalFiles %llu archiveFiles %llu)",
             m_controlInfo->m_aggregatePhaseComplete.load(),
             m_writeQueue->GetSize(), m_writeCache.size(), m_timer.GetCount(),
-            m_writeTaskProduce.load(), m_writeTaskConsume.load(),
+            m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load(),
             m_controlInfo->m_noOfFilesCopied.load(),
             m_controlInfo->m_aggregatedFiles.load(),
             m_controlInfo->m_skipFileCnt.load(),
@@ -131,8 +131,8 @@ bool HostCopyWriter::IsComplete()
         m_writeQueue->Empty() &&
         (m_writeCache.size() == 0) &&
         (m_timer.GetCount() == 0) &&
-        (m_writeTaskProduce == m_writeTaskConsume) &&
-        ((m_controlInfo->m_noOfFilesCopied  +
+        (m_controlInfo->m_writeTaskProduce == m_controlInfo->m_writeTaskConsume) &&
+        ((m_controlInfo->m_noOfFilesCopied + m_controlInfo->m_skipFileCnt + m_controlInfo->m_noOfFilesWriteSkip +
         m_controlInfo->m_noOfFilesFailed) == m_controlInfo->m_noOfFilesToBackup)) {
         INFOLOG("CopyWriter complete: aggrComplete %d writeQueueSize %llu writeCacheSize %llu timerSize %llu "
             "(writeTaskProduce %llu writeTaskConsume %llu) "
@@ -141,7 +141,7 @@ bool HostCopyWriter::IsComplete()
             "(totalFiles %llu totalDirs %llu archiveFiles %llu)",
             m_controlInfo->m_aggregatePhaseComplete.load(),
             m_writeQueue->GetSize(), m_writeCache.size(), m_timer.GetCount(),
-            m_writeTaskProduce.load(), m_writeTaskConsume.load(),
+            m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load(),
             m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfDirCopied.load(),
             m_controlInfo->m_aggregatedFiles.load(),
             m_controlInfo->m_skipFileCnt.load(),
@@ -179,9 +179,9 @@ int HostCopyWriter::OpenFile(FileHandle& fileHandle)
         ERRLOG("put open file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     m_dstOpenedHandleSet.insert(fileHandle.m_file);
-    DBGLOG("total writeTask produce for now: %d", m_writeTaskProduce.load());
+    DBGLOG("total writeTask produce for now: %d", m_controlInfo->m_writeTaskProduce.load());
     return SUCCESS;
 }
 
@@ -194,8 +194,8 @@ int HostCopyWriter::WriteData(FileHandle& fileHandle)
         ERRLOG("put write data task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
-    DBGLOG("total writeTask produce for now: %d", m_writeTaskProduce.load());
+    ++m_controlInfo->m_writeTaskProduce;
+    DBGLOG("total writeTask produce for now: %d", m_controlInfo->m_writeTaskProduce.load());
     return SUCCESS;
 }
 
@@ -208,9 +208,9 @@ int HostCopyWriter::CloseFile(FileHandle& fileHandle)
         ERRLOG("put close task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     m_dstOpenedHandleSet.erase(fileHandle.m_file);
-    DBGLOG("total writeTask produce for now: %d", m_writeTaskProduce.load());
+    DBGLOG("total writeTask produce for now: %d", m_controlInfo->m_writeTaskProduce.load());
     return SUCCESS;
 }
 
@@ -223,8 +223,8 @@ int HostCopyWriter::CreateDir(FileHandle& fileHandle)
         ERRLOG("put create dir task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
-    DBGLOG("total writeTask produce for now: %d", m_writeTaskProduce.load());
+    ++m_controlInfo->m_writeTaskProduce;
+    DBGLOG("total writeTask produce for now: %d", m_controlInfo->m_writeTaskProduce.load());
     return SUCCESS;
 }
 
@@ -320,8 +320,8 @@ void HostCopyWriter::PollWriteTask()
                 ERRLOG("task is nullptr");
                 break;
             }
-            ++m_writeTaskConsume;
-            DBGLOG("write tasks consume cnt for now %llu", m_writeTaskConsume.load());
+            ++m_controlInfo->m_writeTaskConsume;
+            DBGLOG("write tasks consume cnt for now %llu", m_controlInfo->m_writeTaskConsume.load());
             if (taskPtr->m_result == SUCCESS) {
                 HandleSuccessEvent(taskPtr);
             } else {
@@ -420,12 +420,12 @@ void HostCopyWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskPtr
         // failed dirs are collected in the dir phase.
         if (!fileHandle.m_file->IsFlagSet(IS_DIR) &&
             fileHandle.m_file->GetSrcState() != FileDescState::READ_FAILED) {
-            // 若read的状态为READ_FAILED时，说明该文件已经被reader记为失败
+            // 若read的状态为READ_FAILED时，说明该文件已经被reader记为失败, 文件夹错误不进入错误队列
             m_controlInfo->m_noOfFilesFailed += fileHandle.m_file->m_originalFileCount;
+            fileHandle.m_errNum = taskPtr->m_errDetails.second;
+            m_failedList.emplace_back(fileHandle);
         }
         fileHandle.m_file->UnlockCommonMutex();
-        fileHandle.m_errNum = taskPtr->m_errDetails.second;
-        m_failedList.emplace_back(fileHandle);
     }
     m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
     CloseWriteFailedHandle(fileHandle);

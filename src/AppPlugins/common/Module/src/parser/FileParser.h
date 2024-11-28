@@ -21,9 +21,9 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/functional/hash.hpp>
+#include <fstream>
 #include "ParserUtils.h"
 #include "securec.h"
-#include <fstream>
 #include "define/Defines.h"
 
 namespace Module {

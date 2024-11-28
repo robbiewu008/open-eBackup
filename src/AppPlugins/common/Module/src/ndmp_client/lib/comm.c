@@ -761,48 +761,6 @@ ndmpProcessRequests(NdmpConnection	connectionHandle)
 	return(0);
 }
 
-int loopNdmpRequestSend(Connection *connection, NdmpConnection	connectionHandle,
-	void** reply, ndmp_message	message)
-{
-	for (;;) {
-		int	r;
-		r = ndmp_process_messages(connection, TRUE);
-		/* connection error? */
-		if (r < 0) {
-			ERRLOG("connection error, %d", r);
-			return(-1);
-		}
-
-		/* no reply received? */
-		if (r == 0)
-			continue;
-
-		/* reply received? */
-		if (r == 1) {
-			INFOLOG("reply received!");
-			if (message != connection->msginfo.hdr.message) {
-				ERRLOG("Received unexpected reply 0x%x.", connection->msginfo.hdr.message);
-				ndmpFreeMessage(connectionHandle);
-				return -1;
-			}
-
-			if (reply != 0) {
-				*reply = connection->msginfo.body;
-			} else {
-				INFOLOG("reply is 0 , where on earth set it!");
-				ndmpFreeMessage(connectionHandle);
-			}
-			
-			return(connection->msginfo.hdr.error);
-		}
-
-		/* error handling reply */
-		ERRLOG("error handling reply");
-		return -1;
-	}
-
-	return 0;
-}
 /*
  * ndmpSendRequest
  *

@@ -95,6 +95,7 @@ private:
     bool UpdateMainBackupStats();
     void PrintBackupStatistics(const BackupStatistic &backupStatistic);
     bool ReportBackupRunningStatus();
+    bool IsSkipHardlinkPhase(uint32_t subTaskType);
 
     // post
     void ReportPostJob();
