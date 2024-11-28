@@ -544,6 +544,8 @@ execute_pack_script() {
         echo "Failed to execute framework pack script."
         exit 1
     fi
+    sh ${FRAMEWORK_PATH}/build/generate_full_pkg.sh GeneralDBPlugin
+    echo "execute pack script end"
 }
 
 download_xtrabackup_script() {
