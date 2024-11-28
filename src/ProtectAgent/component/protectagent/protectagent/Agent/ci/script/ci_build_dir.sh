@@ -100,7 +100,7 @@ if [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/NasPlugin.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/FilePlugin.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/GeneralDBPlugin.tar.xz ${BASE_PATH}/Plugins
-    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/VirtualizationPlugin.tar.xz ${BASE_PATH}/Plugins
+    # CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/VirtualizationPlugin.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/FusionComputePlugin.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/ObsPlugin.tar.xz ${BASE_PATH}/Plugins
 
