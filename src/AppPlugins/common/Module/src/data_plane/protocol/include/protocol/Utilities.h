@@ -72,6 +72,27 @@ struct FuseEntryParams {
     double entryTimeout;
     Attributes attributes;
 };
+
+struct UserGroup {
+    std::uint32_t uid;
+    std::uint32_t gid;
+    int pid;
+    std::uint32_t umask;
+
+    UserGroup(std::uint32_t u, std::uint32_t g, int p, std::uint32_t m)
+        : uid(u), gid(g), pid(p), umask(m)
+    {
+    }
+    
+    UserGroup(const struct fuse_ctx *ctx)
+    {
+        uid = ctx->uid;
+        gid = ctx->gid;
+        pid = ctx->pid;
+        umask = ctx->umask;
+    }
+};
+
 using AuxDataSize = std::uint16_t;
 
 #endif

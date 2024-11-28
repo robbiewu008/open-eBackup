@@ -15,8 +15,7 @@
 
 using namespace std;
 
-namespace Module
-{
+namespace Module {
     std::mutex tp_mutex;
     template<typename O, typename A>
     inline void Remove(O& o, A a)
@@ -41,7 +40,7 @@ namespace Module
 
     std::mutex g_poolLock;
 
-    void CreateThreads(ThreadPool* pool,size_t nThread)
+    void CreateThreads(ThreadPool* pool, size_t nThread)
     {
         lock_guard<std::mutex> lock(g_poolLock);
         DBGLOG("CreateThreads");
@@ -50,13 +49,13 @@ namespace Module
             return;
         }
         HCP_Logger_noid(INFO, "BackupNode") << "Create thread:"<<nThread<< HCPENDLOG;
-        pool->m_Threads = new std::thread*[nThread];
+        pool->m_Threads = new std::thread* [nThread];
         pool->m_threadNum = nThread;
         if (NULL == pool->m_Threads) {
             HCP_Logger_noid(ERR, "BackupNode") << "new fault,m_threads is NULL."<< HCPENDLOG;
             return;
         }
-        for (size_t i = 0; i< nThread; ++i) {
+        for (size_t i = 0; i < nThread; ++i) {
             pool->m_Threads[i] = new std::thread(bind(&ThreadPool::WorkerLoop, pool));
         }
         DBGLOG("CreateThreads success");
@@ -66,14 +65,14 @@ namespace Module
     {
         lock_guard<std::mutex> lock(g_poolLock);
         DBGLOG("DeleteThreads");
-        for (size_t i = 0; i< pool->m_threadNum; ++i) {
+        for (size_t i = 0; i < pool->m_threadNum; ++i) {
             pool->m_input.Put(pool->m_haltItem);
         }
         if (NULL == pool->m_Threads) {
             HCP_Logger_noid(ERR, "BackupNode") << "m_threads is NULL."<< HCPENDLOG;
             return;
         }
-        for (size_t i = 0; i< pool->m_threadNum; ++i) {
+        for (size_t i = 0; i < pool->m_threadNum; ++i) {
             if (NULL == pool->m_Threads[i]) {
                 continue;
             }
@@ -87,10 +86,9 @@ namespace Module
         DBGLOG("DeleteThreads success");
     }
 
-    //new in constructor for class 'ThreadPool' which has no assignment operator, and has no copy constructor
-    ThreadPool::ThreadPool(size_t nThreads) :
-        m_input(),
-        m_haltItem(new ExecutableItem())
+    // new in constructor for class 'ThreadPool' which has no assignment operator, and has no copy constructor
+    ThreadPool::ThreadPool(size_t nThreads)
+        : m_input(), m_haltItem(new ExecutableItem())
     {
         DBGLOG("ThreadPool create");
         CreateThreads(this, nThreads);
@@ -122,7 +120,9 @@ namespace Module
                         HCP_Logger_noid(ERR, "BackupNode") << "item is null" << HCPENDLOG;
                         return;
                     }
-                    if (item.get() == m_haltItem.get()) return;
+                    if (item.get() == m_haltItem.get()) {
+                        return;
+                    }
                     Run(item);
                 }
                 item.reset();
@@ -142,9 +142,9 @@ namespace Module
     }
 
         /*lint -e1524*/ /*lint -e1732*/ /*lint -e1733*/
-    JobScheduler::JobScheduler(ThreadPool& threadPool) :
-        m_output(new UnlimitedQueue<ExecutableItem>()),
-        m_input(threadPool.GetInputQueue())
+    JobScheduler::JobScheduler(ThreadPool& threadPool)
+        : m_output(new UnlimitedQueue<ExecutableItem>()),
+          m_input(threadPool.GetInputQueue())
     {}
 
     JobScheduler::~JobScheduler()
@@ -206,11 +206,9 @@ namespace Module
     }
 
     JobScheduler::ItemWrapper::ItemWrapper(shared_ptr<ExecutableItem> item,
-                                        STPOutput output) :
-        m_item(item),
-        m_output(output)
+        STPOutput output)
+        : m_item(item), m_output(output)
     {
-
     }
     void JobScheduler::ItemWrapper::Exec()
     {
@@ -232,13 +230,12 @@ namespace Module
         m_output->Put(m_item);
     }
 
-    class NullExcutebleObject:public ExcutebleObject
-    {
-    public:    
-       virtual void Read() {};
-       virtual void Write() {};
-       virtual void Exec() {};
-       virtual void Finish(){};
-       virtual void Next() {};  
+    class NullExcutebleObject : public ExcutebleObject {
+    public:
+    void Read() override {};
+    void Write() override {};
+    void Exec() override {};
+    void Finish() override {};
+    void Next() override {};
     };
 } // namespace Module

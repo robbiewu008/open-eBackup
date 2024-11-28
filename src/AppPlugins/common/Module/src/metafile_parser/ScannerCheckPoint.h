@@ -22,7 +22,7 @@
 #include "NasControlFile.h"
 
 constexpr uint32_t NAS_SCANNER_CHECKPOINT_MAX_ENTRIES_PER_FILE = 100000;
-constexpr uint64_t NAS_SCANNER_CHECKPOINT_MAX_FILE_SIZE = (10 * 1024 * 1024)  /* 10 MB */;
+constexpr uint64_t NAS_SCANNER_CHECKPOINT_MAX_FILE_SIZE = (10 * 1024 * 1024);  /* 10 MB */
 
 const std::string NAS_SCANNER_CHECKPOINT_HEADER_TITLE = "NAS Scanner Checkpoint File";
 const std::string NAS_SCANNER_CHECKPOINT_HEADER_VERSION = "1.0";
@@ -89,8 +89,8 @@ public:
     }
 };
 
-//Define a list that will store values using the base hook
-//The list can't have constant-time size!
+// Define a list that will store values using the base hook
+// The list can't have constant-time size!
 using IntrusiveList = boost::intrusive::list<CheckPointObj, boost::intrusive::constant_time_size<false>>;
 
 struct DeleteDisposer {

@@ -112,7 +112,7 @@ bool HostHardlinkWriter::IsComplete()
             "(noOfFilesCopied %llu noOfFilesFailed %llu) (noOfFilesToBackup %llu)",
             m_controlInfo->m_aggregatePhaseComplete.load(),
             m_writeQueue->GetSize(), m_writeCache.size(), m_timer.GetCount(),
-            m_writeTaskProduce.load(), m_writeTaskConsume.load(),
+            m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load(),
             m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfFilesFailed.load(),
             m_controlInfo->m_noOfFilesToBackup.load());
     }
@@ -120,14 +120,14 @@ bool HostHardlinkWriter::IsComplete()
         m_writeQueue->Empty() &&
         (m_writeCache.size() == 0) &&
         (m_timer.GetCount() == 0) &&
-        (m_writeTaskProduce == m_writeTaskConsume) &&
+        (m_controlInfo->m_writeTaskProduce == m_controlInfo->m_writeTaskConsume) &&
         (m_controlInfo->m_noOfFilesCopied + m_controlInfo->m_noOfFilesFailed == m_controlInfo->m_noOfFilesToBackup)) {
         INFOLOG("HardlinkWriter complete: aggrComplete %d writeQueueSize %llu writeCacheSize %llu timerSize %llu "
             "(writeTaskProduce %llu writeTaskConsume %llu) "
             "(noOfFilesCopied %llu noOfFilesFailed %llu) (noOfFilesToBackup %llu)",
             m_controlInfo->m_aggregatePhaseComplete.load(),
             m_writeQueue->GetSize(), m_writeCache.size(), m_timer.GetCount(),
-            m_writeTaskProduce.load(), m_writeTaskConsume.load(),
+            m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load(),
             m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfFilesFailed.load(),
             m_controlInfo->m_noOfFilesToBackup.load());
         m_controlInfo->m_writePhaseComplete = true;
@@ -156,7 +156,7 @@ int HostHardlinkWriter::OpenFile(FileHandle& fileHandle)
         ERRLOG("put open file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     return SUCCESS;
 }
  
@@ -169,7 +169,7 @@ int HostHardlinkWriter::WriteMeta(FileHandle& fileHandle)
         ERRLOG("put write meta file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     return SUCCESS;
 }
  
@@ -181,9 +181,9 @@ int HostHardlinkWriter::WriteData(FileHandle& fileHandle)
         ERRLOG("put write data file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     DBGLOG("WriteData: %s, total writeTask produce for now: %d", fileHandle.m_file->m_fileName.c_str(),
-        m_writeTaskProduce.load());
+        m_controlInfo->m_writeTaskProduce.load());
     return SUCCESS;
 }
  
@@ -195,9 +195,9 @@ int HostHardlinkWriter::CloseFile(FileHandle& fileHandle)
         ERRLOG("put close file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     DBGLOG("CloseFile:%s ,total writeTask produce for now: %d", fileHandle.m_file->m_fileName.c_str(),
-        m_writeTaskProduce.load());
+        m_controlInfo->m_writeTaskProduce.load());
     return SUCCESS;
 }
 
@@ -210,9 +210,9 @@ int HostHardlinkWriter::LinkFile(FileHandle& fileHandle)
         ERRLOG("put write link file task failed %s", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     DBGLOG("LinkFile:%s ,total writeTask produce for now: %d", fileHandle.m_file->m_fileName.c_str(),
-        m_writeTaskProduce.load());
+        m_controlInfo->m_writeTaskProduce.load());
     return SUCCESS;
 }
  
@@ -307,8 +307,8 @@ void HostHardlinkWriter::PollWriteTask()
             } else {
                 HandleFailedEvent(task);
             }
-            ++m_writeTaskConsume;
-            DBGLOG("write tasks consume cnt for now %llu", m_writeTaskConsume.load());
+            ++m_controlInfo->m_writeTaskConsume;
+            DBGLOG("write tasks consume cnt for now %llu", m_controlInfo->m_writeTaskConsume.load());
         }
     }
     INFOLOG("Finish HostHardlinkWriter PollWriteTask thread");
@@ -433,10 +433,13 @@ void HostHardlinkWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> tas
                 // 如果是source , 将map里同inode的fileHandle都置为失败， 并添加到failedList
                 HandleFailedLinkSource(fileHandle);
             }
+            // 文件夹错误不进入错误队列
+            if (!fileHandle.m_file->IsFlagSet(IS_DIR)) {
+                fileHandle.m_errNum = taskPtr->m_errDetails.second;
+                m_failedList.emplace_back(fileHandle);
+            }
         }
         fileHandle.m_file->UnlockCommonMutex();
-        fileHandle.m_errNum = taskPtr->m_errDetails.second;
-        m_failedList.emplace_back(fileHandle);
     }
     m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
     if (!m_backupParams.commonParams.skipFailure || taskPtr->IsCriticalError()) {

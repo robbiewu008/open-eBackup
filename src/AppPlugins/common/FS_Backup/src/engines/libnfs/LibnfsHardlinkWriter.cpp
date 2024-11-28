@@ -479,7 +479,7 @@ int LibnfsHardlinkWriter::ProcessWriteEntries(FileHandle &fileHandle)
         return LinkDelete(fileHandle, m_commonData, m_blockBufferMap);
     } else if (state == FileDescState::LINK_DEL_FOR_RESTORE) {
         // Should set dstState to LSTAT after link delete
-        return LinkDeleteForRestore(fileHandle, m_commonData);
+        return LinkDeleteForRestore(fileHandle, m_commonData, m_fileHandleCache);
     } else if (state == FileDescState::DIR_DEL || state == FileDescState::DIR_DEL_RESTORE) {
         // Should set dstState to INIT/LSTAT after dir delete
         return DirectoryDelete(fileHandle, m_commonData);

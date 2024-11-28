@@ -20,7 +20,6 @@
 #include <fstream>
 #include "securec.h"
 #include "NasControlFile.h"
-// #include "ScannerUtils.h"
 
 namespace ScannerDirCache {
 const std::string NAS_SCANNERBACKUPDCACHE_HEADER_TITLE = "NAS Scanner DirCache File";
@@ -160,120 +159,119 @@ public:
 
 // class will be similar to control file class.
 class CacheFile {
-    public:
-        /**
-         * Contructor to be used by (producers) users for writing to the dircache file
-         */
-        explicit CacheFile(Params params);
+public:
+    /**
+    * Contructor to be used by (producers) users for writing to the dircache file
+    */
+    explicit CacheFile(Params params);
 
-        /**
-         * Contructor to be used by (consumers) users for reading from the dircache file
-         */
-        explicit CacheFile(std::string dirFileName);
+    /**
+    * Contructor to be used by (consumers) users for reading from the dircache file
+    */
+    explicit CacheFile(std::string dcacheFileName);
+    /**
+    *  Destructor
+    */
+    ~CacheFile();
 
-        /**
-         *  Destructor
-         */
-        ~CacheFile();
+    /*
+    * Open file based on read/write mode.
+    */
+    NAS_CTRL_FILE_RETCODE Open(NAS_CTRL_FILE_OPEN_MODE mode);
 
-        /*
-         * Open file based on read/write mode.
-         */
-        NAS_CTRL_FILE_RETCODE Open(NAS_CTRL_FILE_OPEN_MODE mode);
+    /*
+    * This will add directory entry to sorted queue.
+    */
+    NAS_CTRL_FILE_RETCODE WriteDirCache(Cache &dcache, DCACHE_WRITE_INFO writeInfo);
 
-        /*
-         * This will add directory entry to sorted queue.
-         */
-        NAS_CTRL_FILE_RETCODE WriteDirCache(Cache &dcache, DCACHE_WRITE_INFO writeInfo);
+    /*
+    * Write dircache entries to buffer
+    */
+    int32_t WriteDirCacheEntries(std::queue<Cache> &dcQueue);
+    int32_t WriteDirCacheEntries(
+        std::priority_queue<Cache, std::vector<Cache>, Comparator> &dcQueue);
 
-        /*
-         * Write dircache entries to buffer
-         */
-        int32_t WriteDirCacheEntries(std::queue<Cache> &dcQueue);
-        int32_t WriteDirCacheEntries(
-            std::priority_queue<Cache, std::vector<Cache>, Comparator> &dcQueue);
+    /**
+    * Get total size
+    */
+    uint64_t GetSize();
 
-        /**
-         * Get total size
-         */
-        uint64_t GetSize();
+    /*
+    * Get batch dircache entries from file.
+    */
+    NAS_CTRL_FILE_RETCODE ReadDirCacheEntries(std::queue<Cache> &dcQueue, uint32_t numOfEntriesToRead);
 
-        /*
-         * Get batch dircache entries from file.
-         */
-        NAS_CTRL_FILE_RETCODE ReadDirCacheEntries(std::queue<Cache> &dcQueue, uint32_t numOfEntriesToRead);
+    /*
+    * Flush data from buffer to file and close.
+    */
+    NAS_CTRL_FILE_RETCODE Close(NAS_CTRL_FILE_OPEN_MODE mode);
 
-        /*
-         * Flush data from buffer to file and close.
-         */
-        NAS_CTRL_FILE_RETCODE Close(NAS_CTRL_FILE_OPEN_MODE mode);
+    /**
+    * Get dircache file name
+    */
+    std::string GetFileName();
 
-        /**
-         * Get dircache file name
-         */
-        std::string GetFileName();
+private:
+    std::mutex m_lock {};                            /* Lock */
+    char *m_readBuffer = nullptr;               /* Read buffer */
+    std::stringstream m_writeBuffer {};              /* Write Buffer */
+    Header m_header {};        /* File header info */
+    std::ifstream m_readFd {};    /* Read FD */
+    std::ofstream m_writeFd {};   /* Write FD */
+    std::string m_dcacheFileName {};              /* File name */
+    uint64_t m_readBufferSize = 0;              /* Filecache write offset */
+    std::string m_dcacheFileParentDir {};            /* Parent Dir of DCache File */
+    std::priority_queue<Cache, std::vector<Cache>, Comparator> m_dirCacheQueue {}; /* Sorted queue */
 
-    private:
-        std::mutex m_lock {};                            /* Lock */
-        char *m_readBuffer = nullptr;               /* Read buffer */
-        std::stringstream m_writeBuffer {};              /* Write Buffer */
-        Header m_header {};        /* File header info */
-        std::ifstream m_readFd {};    /* Read FD */
-        std::ofstream m_writeFd {};   /* Write FD */
-        std::string m_dcacheFileName {};              /* File name */
-        uint64_t m_readBufferSize = 0;              /* Filecache write offset */
-        std::string m_dcacheFileParentDir {};            /* Parent Dir of DCache File */
-        std::priority_queue<Cache, std::vector<Cache>, Comparator> m_dirCacheQueue {}; /* Sorted queue */
+    /**
+    * Template to Open a File in Read/Write Mode
+    */
+    template<class FileStream>
+    NAS_CTRL_FILE_RETCODE FileOpen(FileStream &strmFd, std::ios::openmode fileMode);
 
-        /**
-         * Template to Open a File in Read/Write Mode
-         */
-        template<class FileStream>
-        NAS_CTRL_FILE_RETCODE FileOpen(FileStream &strmFd, std::ios::openmode fileMode);
+    /**
+    * Validate header information read from the file
+    */
+    NAS_CTRL_FILE_RETCODE ValidateHeader();
 
-        /**
-         * Validate header information read from the file
-         */
-        NAS_CTRL_FILE_RETCODE ValidateHeader();
+    /**
+    * Read the file header and retry if its failed
+    */
+    NAS_CTRL_FILE_RETCODE ReadDCacheFileHeader();
 
-        /**
-         * Read the file header and retry if its failed
-         */
-        NAS_CTRL_FILE_RETCODE ReadDCacheFileHeader();
+    /**
+    * Read the file header info from file and load to m_header
+    */
+    NAS_CTRL_FILE_RETCODE ReadHeader();
+    NAS_CTRL_FILE_RETCODE FillHeader(uint32_t &headerLine, std::vector<std::string> &cltHeaderLineSplit,
+        std::string &cltHeaderLine);
 
-        /**
-         * Read the file header info from file and load to m_header
-         */
-        NAS_CTRL_FILE_RETCODE ReadHeader();
-        NAS_CTRL_FILE_RETCODE FillHeader(uint32_t &headerLine, std::vector<std::string> &cltHeaderLineSplit,
-            std::string &cltHeaderLine);
+    /**
+    * Write the file header info to file from m_header
+    */
+    NAS_CTRL_FILE_RETCODE WriteHeader();
 
-        /**
-         * Write the file header info to file from m_header
-         */
-        NAS_CTRL_FILE_RETCODE WriteHeader();
+    /**
+    * Get the line to write in header info of file
+    */
+    std::string GetFileHeaderLine(uint32_t headerLine);
 
-        /**
-        * Get the line to write in header info of file
-        */
-        std::string GetFileHeaderLine(uint32_t headerLine);
+    /**
+    * Get the file header info read from file
+    */
+    NAS_CTRL_FILE_RETCODE GetHeader(Header &header);
 
-        /**
-         * Get the file header info read from file
-         */
-        NAS_CTRL_FILE_RETCODE GetHeader(Header &header);
+    /*
+    * Flush data from buffer to file.
+    */
+    NAS_CTRL_FILE_RETCODE FlushToFile();
 
-        /*
-         * Flush data from buffer to file.
-         */
-        NAS_CTRL_FILE_RETCODE FlushToFile();
+    /**
+    * Read dircache entries V10 version
+    */
+    NAS_CTRL_FILE_RETCODE ReadDirCacheEntriesV10(std::queue<Cache> &dcQueue, uint32_t numOfEntriesToRead);
 
-        /**
-         * Read dircache entries V10 version
-         */
-        NAS_CTRL_FILE_RETCODE ReadDirCacheEntriesV10(std::queue<Cache> &dcQueue, uint32_t numOfEntriesToRead);
-
-        uint32_t GetRandomNumber(uint32_t minNum, uint32_t maxNum);
+    uint32_t GetRandomNumber(uint32_t minNum, uint32_t maxNum);
 };
 }
 

@@ -118,6 +118,9 @@ std::shared_ptr<Message> AuthorizationMessage::AllocateBuffer(AuthorizationMessa
     authorizationMessage->Reserve(sizeof(MessageHeader) + messageLength);
     // Copy message header
     authorizationMessage->AddData(reinterpret_cast<const char*>(&messageType), sizeof(messageType));
+    authorizationMessage->AddData(reinterpret_cast<const char*>(&PROTOCOL_VERSION_V1), sizeof(PROTOCOL_VERSION_V1));
+    authorizationMessage->AddData(reinterpret_cast<const char*>(&SEQUENCE_NUMBER_ZERO), sizeof(SEQUENCE_NUMBER_ZERO));
+
     authorizationMessage->AddData(reinterpret_cast<char*>(&messageLength), sizeof(messageLength));
     // Copy message type
     authorizationMessage->AddData(reinterpret_cast<char*>(&type), sizeof(type));

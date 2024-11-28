@@ -33,17 +33,20 @@ namespace Module {
 
         SessionInfo() {}
 
-        ~SessionInfo() {
+        ~SessionInfo()
+        {
             Module::CleanMemoryPwd(token);
         }
 
-        SessionInfo(const SessionInfo &obj) {
+        SessionInfo(const SessionInfo &obj)
+        {
             this->token = obj.token;
             this->cookie = obj.cookie;
             this->device_id = obj.device_id;
         }
 
-        SessionInfo &operator=(const SessionInfo &obj) {
+        SessionInfo &operator=(const SessionInfo &obj)
+        {
             if (this == &obj)
                 return *this;
             this->token = obj.token;
@@ -60,25 +63,29 @@ namespace Module {
         std::string cookie;
         std::mutex sessionMutex;
 
-        Session() {
+        Session()
+        {
             deviceId = "";
             token = "";
             cookie = "";
         }
 
-        Session(std::string _token, std::string _deviceId, std::string _cookie) {
+        Session(std::string _token, std::string _deviceId, std::string _cookie)
+        {
             this->token = _token;
             this->deviceId = _deviceId;
             this->cookie = _cookie;
         }
 
-        Session(const Session &obj) {
+        Session(const Session &obj)
+        {
             this->token = obj.token;
             this->cookie = obj.cookie;
             this->deviceId = obj.deviceId;
         }
 
-        Session &operator=(const Session &obj) {
+        Session &operator=(const Session &obj)
+        {
             if (this == &obj)
                 return *this;
             this->token = obj.token;
@@ -89,15 +96,9 @@ namespace Module {
     };
 
     class SessionCache {
-
-    private:
-        std::string deviceType;                                            // DORAOD or OCEANSTOR OR FS OR NETAPP...
-        std::mutex cacheMutex;                                             // Mutex to protect cache
-        std::map<std::tuple<std::string, std::string, std::string>,
-                std::tuple<std::shared_ptr<Session>, int>> m_sessionCache;     // Session Cache
-
     public:
-        explicit SessionCache(std::string deviceType) {
+        explicit SessionCache(std::string deviceType)
+        {
             this->deviceType = deviceType;
         }
 
@@ -114,6 +115,12 @@ namespace Module {
          */
         std::shared_ptr<Session> GetSession(std::string deviceIp, std::string deviceUserName,
                                             std::string devicePort);
+
+    private:
+        std::string deviceType;                                            // DORAOD or OCEANSTOR OR FS OR NETAPP...
+        std::mutex cacheMutex;                                             // Mutex to protect cache
+        std::map<std::tuple<std::string, std::string, std::string>,
+                std::tuple<std::shared_ptr<Session>, int>> m_sessionCache;     // Session Cache
     };
 }
 

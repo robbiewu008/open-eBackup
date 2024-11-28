@@ -664,3 +664,11 @@ void FSBackupUtils::MemoryTrim()
     malloc_trim(0);
 #endif
 }
+
+std::string FSBackupUtils::LowerCase(const std::string& path)
+{
+    std::string lowerPath = path;
+    std::transform(lowerPath.begin(), lowerPath.end(), lowerPath.begin(),
+        [](unsigned char c) { return ::tolower(c); });
+    return lowerPath;
+}

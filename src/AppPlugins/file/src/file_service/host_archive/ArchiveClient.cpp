@@ -90,7 +90,7 @@ int ArchiveClient::GetFileData(const ArchiveRequest& req, ArchiveResponse& rsp)
     int ret = m_clientHandler->GetFileData(archiveReq, archiveRsp);
     if (ret != SUCCESS) {
         ERRLOG("Archive client get file data failed, ret: %d", ret);
-        return FAILED;
+        return ret;
     }
 
     // rsp path is empty, print req path here

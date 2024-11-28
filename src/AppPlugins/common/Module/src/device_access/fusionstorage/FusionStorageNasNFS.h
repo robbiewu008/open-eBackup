@@ -20,12 +20,18 @@ namespace Module {
     public:
         explicit FusionStorageNasNFS(ControlDeviceInfo deviceInfo) : FusionStorageNas(deviceInfo) {}
 
-        virtual ~FusionStorageNasNFS() {}
+        ~FusionStorageNasNFS() {}
 
         int Query(DeviceDetails &info) override;
+        
+        std::unique_ptr <ControlDevice> CreateSnapshot(std::string snapshotName, int &errorCode) override;
+
+        int DeleteSnapshot(std::string SnapshotName) override;
 
     protected:
         int QueryNFSShare(DeviceDetails &info, std::string fsId);
+
+        int QueryDtreeWithShare() override;
     };
 }
 

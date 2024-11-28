@@ -25,6 +25,7 @@
 #include "common/Timer.h"
 #include "device_access/k8s/K8sutil.h"
 #include "curl_http/CurlHttpClient.h"
+#include "config_reader/ConfigIniReaderImpl.h"
 
 using namespace std::chrono;
 namespace Module {
@@ -52,7 +53,8 @@ Description:
              2.cache token for this instance
 */
 
-    SessionInfo DoradoBlock::Login() {
+    SessionInfo DoradoBlock::Login()
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "sessions";
@@ -83,7 +85,8 @@ Description:
         return sessionInfo;
     }
 
-    int DoradoBlock::TestDeviceConnection() {
+    int DoradoBlock::TestDeviceConnection()
+    {
         int ret = Module::SUCCESS;
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Testing Connection..." << HCPENDLOG;
         SessionInfo sessionInfo = Login();
@@ -122,7 +125,8 @@ return : Success.Module::SUCCESS, failed:Module::FAILED or HTTP ERROR CODE.
 Description:
              1.logout at destruct this instance
 */
-    int DoradoBlock::Logout(SessionInfo sessionInfo) {
+    int DoradoBlock::Logout(SessionInfo sessionInfo)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start Authentication Exit. " << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -139,7 +143,8 @@ Description:
         }
     }
 
-    void DoradoBlock::Clean() {
+    void DoradoBlock::Clean()
+    {
         if (fs_pHttpCLient) {
             fs_pHttpCLient = NULL;
         }
@@ -155,7 +160,8 @@ Description:
              1.Create fusionstorage Lun
 */
 
-    int DoradoBlock::Create(unsigned long long size) {
+    int DoradoBlock::Create(unsigned long long size)
+    {
         std::string originalName = ResourceName;
         // the max length of the LUN name is 32
         if (ResourceName.length() > MAX_LENGTH) {
@@ -198,7 +204,8 @@ Description:
         }
     }
 
-    int DoradoBlock::NameLegalization(std::string &name) {
+    int DoradoBlock::NameLegalization(std::string &name)
+    {
         std::vector<std::string>::iterator iter;
         int begin = -1;
         std::string result = "";
@@ -211,7 +218,8 @@ Description:
         return Module::SUCCESS;
     }
 
-    int DoradoBlock::LoginIscsiTarget(const std::string &iscsiIP, std::string &iqnNumber) {
+    int DoradoBlock::LoginIscsiTarget(const std::string &iscsiIP, std::string &iqnNumber)
+    {
         std::vector<std::string> cmdoutput;
         std::vector<std::string> stderroutput;
         std::vector<std::string> paramList;
@@ -257,7 +265,8 @@ Description:
         return Module::SUCCESS;
     }
 
-    int DoradoBlock::Bind(HostInfo &host, const std::string &shareId) {
+    int DoradoBlock::Bind(HostInfo &host, const std::string &shareId)
+    {
         int ret;
 
         for (auto iter = host.iscsinitor.begin(); iter != host.iscsinitor.end(); ++iter) {
@@ -298,7 +307,8 @@ Description:
         return ret;
     }
 
-    int DoradoBlock::CreateHost(const std::string hostName, const std::string hostIp, std::string &hostID) {
+    int DoradoBlock::CreateHost(const std::string hostName, const std::string hostIp, std::string &hostID)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start create host " << hostName << HCPENDLOG;
         int mpRet = QueryHost(hostName, hostID);
         if (mpRet == Module::SUCCESS) {
@@ -326,7 +336,8 @@ Description:
         }
     }
 
-    int DoradoBlock::QueryHost(const std::string hostName, std::string &hostId) {
+    int DoradoBlock::QueryHost(const std::string hostName, std::string &hostId)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query host " << hostName << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -344,7 +355,8 @@ Description:
         }
     }
 
-    int DoradoBlock::CreateISCSIPort(const std::string id) {
+    int DoradoBlock::CreateISCSIPort(const std::string id)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start create iscsi port." << HCPENDLOG;
         int mpRet = QueryISCSIPort(id);
         if (mpRet == Module::SUCCESS) {
@@ -369,7 +381,8 @@ Description:
         }
     }
 
-    int DoradoBlock::CreateFcPort(const std::string id) {
+    int DoradoBlock::CreateFcPort(const std::string id)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start create FC port." << HCPENDLOG;
         int mpRet = QueryFcPort(id);
         if (mpRet == Module::SUCCESS) {
@@ -394,7 +407,8 @@ Description:
         }
     }
 
-    int DoradoBlock::CreateIscsiHostMapping(const std::string iscsi, HostInfo &host) {
+    int DoradoBlock::CreateIscsiHostMapping(const std::string iscsi, HostInfo &host)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME)
                 << "Start bind iscsi port," << " and bind to host " << host.hostId << HCPENDLOG;
         int mpRet = QueryIscsiHostMapping(iscsi, host);
@@ -427,7 +441,8 @@ Description:
         }
     }
 
-    int DoradoBlock::CreateFcHostMapping(const std::string fc, HostInfo &host) {
+    int DoradoBlock::CreateFcHostMapping(const std::string fc, HostInfo &host)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME)
                 << "Start bind fc port " << " and bind to host " << host.hostId << HCPENDLOG;
         int mpRet = QueryFcHostMapping(fc, host);
@@ -460,7 +475,8 @@ Description:
         }
     }
 
-    int DoradoBlock::QueryISCSIPort(const std::string id) {
+    int DoradoBlock::QueryISCSIPort(const std::string id)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query iscsi port." << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -479,7 +495,8 @@ Description:
         }
     }
 
-    int DoradoBlock::QueryFcPort(const std::string id) {
+    int DoradoBlock::QueryFcPort(const std::string id)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query FC port." << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -498,7 +515,8 @@ Description:
         }
     }
 
-    int DoradoBlock::QueryIscsiHostMapping(const std::string id, HostInfo &host) {
+    int DoradoBlock::QueryIscsiHostMapping(const std::string id, HostInfo &host)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query iscsi " << " to host " << host.hostId << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -518,7 +536,8 @@ Description:
         }
     }
 
-    int DoradoBlock::QueryFcHostMapping(const std::string id, HostInfo &host) {
+    int DoradoBlock::QueryFcHostMapping(const std::string id, HostInfo &host)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query fc " << " to host " << host.hostId << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -538,7 +557,8 @@ Description:
         }
     }
 
-    int DoradoBlock::QueryHostISCSIPort(std::string hostName, std::string iscsiPort) {
+    int DoradoBlock::QueryHostISCSIPort(std::string hostName, std::string iscsiPort)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME)
                 << "Start query iscsi port bind " << hostName << " to iscsiPort." << HCPENDLOG;
         HttpRequest req;
@@ -555,7 +575,8 @@ Description:
         }
     }
 
-    int DoradoBlock::QueryHostFcPort(std::string hostName, std::string fcPort) {
+    int DoradoBlock::QueryHostFcPort(std::string hostName, std::string fcPort)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME)
                 << "Start query fc port bind " << hostName << " to " << fcPort << HCPENDLOG;
         HttpRequest req;
@@ -578,7 +599,8 @@ Description:
         const std::string LUNGROUPNAME = "lunGroupName";
     } // namespace
 
-    int DoradoBlock::CreateHostMapping(const std::string hostName, const std::string lunName) {
+    int DoradoBlock::CreateHostMapping(const std::string hostName, const std::string lunName)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME)
                 << "Start create host mapping " << hostName << " to lun " << lunName << HCPENDLOG;
         int lunId;
@@ -620,7 +642,8 @@ Description:
         }
     }
 
-    int DoradoBlock::DeleteHostLunMapping(const std::string hostName, const std::string lunName) {
+    int DoradoBlock::DeleteHostLunMapping(const std::string hostName, const std::string lunName)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME)
                 << "Start delete host mapping " << hostName << " to lun " << lunName << HCPENDLOG;
         int lunId;
@@ -662,7 +685,8 @@ Description:
         }
     }
 
-    int DoradoBlock::QueryHostLunMapping(const std::string hostName, const std::string lunName) {
+    int DoradoBlock::QueryHostLunMapping(const std::string hostName, const std::string lunName)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "query host mapping" << hostName << " to lun " << lunName << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -679,7 +703,8 @@ Description:
         }
     }
 
-    int DoradoBlock::QueryLunGroupByLunId(std::string &lunGroupName, const int &lunId) {
+    int DoradoBlock::QueryLunGroupByLunId(std::string &lunGroupName, const int &lunId)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME)
                 << "Start query lun group by lun id: " << lunId << HCPENDLOG;
 
@@ -699,7 +724,8 @@ Description:
         }
     }
 
-    int DoradoBlock::Query(DeviceDetails &info) {
+    int DoradoBlock::Query(DeviceDetails &info)
+    {
         unsigned long long capacity = 0;
         unsigned long long usedCapacity = 0;
         // the max length of the LUN name is 32
@@ -720,8 +746,9 @@ Description:
     }
 
     int DoradoBlock::QueryLUN(
-            std::string volumeName, int &volumeId, std::string &wwn, unsigned long long &capacity,
-            unsigned long long &usedCapacity) {
+        std::string volumeName, int &volumeId, std::string &wwn, unsigned long long &capacity,
+        unsigned long long &usedCapacity)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query lun " << volumeName << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -743,7 +770,8 @@ Description:
         }
     }
 
-    int DoradoBlock::QueryLunDescription(std::string volumeName, std::string &description) {
+    int DoradoBlock::QueryLunDescription(std::string volumeName, std::string &description)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query lun " << volumeName << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -760,7 +788,8 @@ Description:
         }
     }
 
-    int DoradoBlock::UnBind(HostInfo host, const std::string &shareId) {
+    int DoradoBlock::UnBind(HostInfo host, const std::string &shareId)
+    {
         // the max length of the LUN name is 32
         if (host.hostId.length() > MAX_LENGTH) {
             host.hostId = host.hostId.substr(0, MAX_LENGTH);
@@ -778,7 +807,8 @@ return : Success.Module::SUCCESS, failed:Module::FAILED or HTTP ERROR CODE.
 Description:
              1.delete volume with name
 */
-    int DoradoBlock::Delete() {
+    int DoradoBlock::Delete()
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start delete lun " << ResourceName << HCPENDLOG;
         int volumeId;
         std::string wwn;
@@ -804,7 +834,8 @@ Description:
         }
     }
 
-    int DoradoBlock::ExtendSize(unsigned long long size) {
+    int DoradoBlock::ExtendSize(unsigned long long size)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start extend lun " << ResourceName << HCPENDLOG;
         int volumeId;
         std::string wwn;
@@ -835,7 +866,8 @@ Description:
         }
     }
 
-    int DoradoBlock::ParseCookie(const std::set<std::string> &cookie_values, SessionInfo &sessionInfo) {
+    int DoradoBlock::ParseCookie(const std::set<std::string> &cookie_values, SessionInfo &sessionInfo)
+    {
         if (cookie_values.empty()) {
             HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Cookie is empty." << HCPENDLOG;
             return Module::FAILED;
@@ -853,10 +885,13 @@ Description:
     }
 
     int DoradoBlock::SendHttpReq(
-            std::shared_ptr<IHttpResponse> &rsp, const HttpRequest &req, std::string &errorDes, int &errorCode) {
+        std::shared_ptr<IHttpResponse> &rsp, const HttpRequest &req, std::string &errorDes, int &errorCode)
+    {
         HttpRequest tempReq = req;
         tempReq.url = FormatFullUrl(tempReq.url);
-        tempReq.enableProxy = m_enableProxy;
+        if (m_enableProxy || GetEnableProxy()) {
+            tempReq.enableProxy = true;
+        }
         rsp = fs_pHttpCLient->SendRequest(tempReq, CurlTimeOut);
         if (NULL == rsp.get()) {
             HCP_Log(ERR, DORADO_MODULE_NAME) << "Return response is empty. " << HCPENDLOG;
@@ -959,7 +994,8 @@ Description:
 
     int DoradoBlock::ResponseSuccessHandle(HttpRequest req,
                                            std::shared_ptr<IHttpResponse> &rsp, Json::Value &data,
-                                           Module::RestResult& result) {
+                                           Module::RestResult& result)
+    {
         int Ret = ParseResponse(rsp->GetBody(), data, result);
         SetErrorCode(result.errorCode);
         SetExtendInfo(result.errDesc);
@@ -1000,19 +1036,22 @@ Description:
         return Ret;
     }
 
-    void DoradoBlock::SetRetryAttr(int _retryTimes, int _retryIntervalTime) {
+    void DoradoBlock::SetRetryAttr(int _retryTimes, int _retryIntervalTime)
+    {
         retryTimes = _retryTimes;
         retryIntervalTime = _retryIntervalTime;
         HCP_Log(INFO, DORADO_MODULE_NAME) << "set retry times: " << retryTimes << HCPENDLOG;
     }
 
-    void DoradoBlock::SetCurlTimeOut(uint64_t tmpTimeOut) {
+    void DoradoBlock::SetCurlTimeOut(uint64_t tmpTimeOut)
+    {
         if (tmpTimeOut > MIN_CURL_TIME_OUT) {
             CurlTimeOut = tmpTimeOut;
         }
     }
 
-    void DoradoBlock::DelayTimeSendRequest() {
+    void DoradoBlock::DelayTimeSendRequest()
+    {
         auto now = std::chrono::steady_clock::now();
         while ((double(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() -
                                                                              now).count()) *
@@ -1024,17 +1063,20 @@ Description:
         return;
     }
 
-    void DoradoBlock::DeleteDeviceSession() {
+    void DoradoBlock::DeleteDeviceSession()
+    {
         m_sessionCache->DeleteSession(DoradoIP, DoradoUsername, DoradoPort,
                                       [this](SessionInfo sesInfo) -> int { return Logout(sesInfo); });
     }
 
-    void DoradoBlock::CreateDeviceSession() {
+    void DoradoBlock::CreateDeviceSession()
+    {
         this->sessionPtr = m_sessionCache->CreateSession(DoradoIP, DoradoUsername, DoradoPort,
                                                          [this]() -> SessionInfo { return Login(); });
     }
 
-    void DoradoBlock::LoginAndGetSessionInfo() {
+    void DoradoBlock::LoginAndGetSessionInfo()
+    {
         if (useCache && m_sessionCache != nullptr) {
             CreateDeviceSession();
         } else {
@@ -1054,6 +1096,9 @@ Description:
     {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "SendHttpRequest ,req has been spliced. " << req.url << HCPENDLOG;
         int iRet = FAILED;
+        if (m_enableProxy || GetEnableProxy()) {
+            req.enableProxy = true;
+        }
         std::shared_ptr<IHttpResponse> rsp = fs_pHttpCLient->SendRequest(req);
         if (NULL == rsp.get()) {
             HCP_Log(ERR, DORADO_MODULE_NAME) << "Return response is empty. " << HCPENDLOG;
@@ -1121,7 +1166,8 @@ Description:
     }
 
     int DoradoBlock::SendRequest(HttpRequest &req, Json::Value &data, std::string &errorDes,
-        int &errorCode, bool lockSession) {
+        int &errorCode, bool lockSession)
+    {
         Module::RestResult result;
         int ret = SendRequest(req, data, result, lockSession);
         errorDes = result.errDesc;
@@ -1129,15 +1175,14 @@ Description:
         return ret;
     }
 
-    int DoradoBlock::SendRequest(HttpRequest &req, Json::Value &data, Module::RestResult& result, bool lockSession) {
+    int DoradoBlock::SendRequest(HttpRequest &req, Json::Value &data, Module::RestResult& result, bool lockSession)
+    {
         // 检查存储设备是否含有证书和吊销列表信息
         if (!certification.empty()) {
             req.cert = certification;
             req.isVerify = VCENTER_VERIFY;
         }
-        if (!crl.empty()) {
-            req.revocationList = crl;
-        }
+        req.revocationList = !crl.empty() ? crl : req.revocationList;
         int retryNum = 0;
         while (retryNum < retryTimes) {
             HCP_Log(INFO, DORADO_MODULE_NAME) << "send request for " << (retryNum + 1)
@@ -1169,11 +1214,10 @@ Description:
                     return Module::SUCCESS;
                 }
             }
-            // 1.when curl success and ret not Module::FAILED, ret is httpStatusCode,
-            // so judge whether ret is in httpRspStatusCodeForRetry for retry.
-            // 2.when when curl success and ret is Module::FAILED,
-            // DoradoResposeNeedRetry, not judge http retry code, directly retry.
-            // 3.when errorCode not 0,mean curl failed,directly retry.
+            // 1.when curl success and ret not Module::FAILED, ret is httpStatusCode,so judge whether ret is
+            // in httpRspStatusCodeForRetry for retry.2.when when curl success and ret is Module::FAILED,
+            // DoradoResposeNeedRetry, not judge http retry code, directly retry.3.when errorCode not 0,
+            // mean curl failed,directly retry.
             if (result.errorCode == 0 && !DoradoResposeNeedRetry(ret) &&
                 std::find(httpRspStatusCodeForRetry.begin(), httpRspStatusCodeForRetry.end(), ret)
                 == httpRspStatusCodeForRetry.end()) {
@@ -1187,7 +1231,8 @@ Description:
         return Module::FAILED;
     }
 
-    int DoradoBlock::QuerySnapshot(std::string SnapshotName, int &id, std::string &WWN) {
+    int DoradoBlock::QuerySnapshot(std::string SnapshotName, int &id, std::string &WWN)
+    {
         if (SnapshotName.length() > MAX_LENGTH) {
             SnapshotName = SnapshotName.substr(0, MAX_LENGTH);
         }
@@ -1209,7 +1254,8 @@ Description:
         }
     }
 
-    int DoradoBlock::QuerySnapshotDescription(std::string SnapshotName, std::string &desp) {
+    int DoradoBlock::QuerySnapshotDescription(std::string SnapshotName, std::string &desp)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query snapshot " << SnapshotName << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -1226,7 +1272,8 @@ Description:
         }
     }
 
-    std::unique_ptr<ControlDevice> DoradoBlock::CreateSnapshot(std::string SnapshotName, int &errorCode) {
+    std::unique_ptr<ControlDevice> DoradoBlock::CreateSnapshot(std::string SnapshotName, int &errorCode)
+    {
         int id;
         std::string sWwn;
         std::string originalName = SnapshotName;
@@ -1277,7 +1324,8 @@ Description:
         return std::make_unique<DoradoBlockSnapshot>(deviceInfo, id, sWwn);
     }
 
-    void DoradoBlock::AssignDeviceInfo(ControlDeviceInfo &deviceInfo, std::string SnapshotName) {
+    void DoradoBlock::AssignDeviceInfo(ControlDeviceInfo &deviceInfo, std::string SnapshotName)
+    {
         deviceInfo.deviceName = SnapshotName;
         deviceInfo.url = DoradoIP;
         deviceInfo.port = DoradoPort;
@@ -1287,7 +1335,8 @@ Description:
     }
 
 // Writable Snapshot
-    std::unique_ptr<ControlDevice> DoradoBlock::CreateClone(std::string volumeName, int &errorCode) {
+    std::unique_ptr<ControlDevice> DoradoBlock::CreateClone(std::string volumeName, int &errorCode)
+    {
         unsigned long long size;
         unsigned long long usedSize;
         int id;
@@ -1309,7 +1358,8 @@ Description:
         return CreateSnapshot(volumeName, errorCode);
     }
 
-    int DoradoBlock::QueryServiceHost(std::vector<std::string> &iscsiList, IP_TYPE ipType) {
+    int DoradoBlock::QueryServiceHost(std::vector<std::string> &iscsiList, IP_TYPE ipType)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query iscsi host " << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -1327,7 +1377,8 @@ Description:
         }
     }
 
-    int DoradoBlock::IterateIscsiHost(Json::Value data, std::vector<std::string> &iscsiList, IP_TYPE ipType) {
+    int DoradoBlock::IterateIscsiHost(Json::Value data, std::vector<std::string> &iscsiList, IP_TYPE ipType)
+    {
         for (int i = 0; i < data.size(); i++) {
             Json::Value oneNode = data[i];
 
@@ -1348,7 +1399,8 @@ Description:
     }
 
 
-    int DoradoBlock::GetTheServiceHost(std::string &iscsiIP) {
+    int DoradoBlock::GetTheServiceHost(std::string &iscsiIP)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start get the usable iscsi host " << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -1375,7 +1427,8 @@ Description:
         return Module::FAILED;
     }
 
-    void DoradoBlock::DoScanAfterAttach(const std::string &wwn, std::string &lunPath) {
+    void DoradoBlock::DoScanAfterAttach(const std::string &wwn, std::string &lunPath)
+    {
         std::string cmd = "sh /usr/bin/rescan-scsi-bus.sh";
         std::vector<std::string> paramList;
         std::vector<std::string> cmdoutput;
@@ -1402,7 +1455,8 @@ Description:
         HCP_Log(ERR, DORADO_MODULE_NAME) << "Scan Lun filed " << HCPENDLOG;
     }
 
-    std::string DoradoBlock::ScanLunAfterAttach(std::string &lunID) {
+    std::string DoradoBlock::ScanLunAfterAttach(std::string &lunID)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start scan lun after attach" << HCPENDLOG;
         std::string lunPath = "";
         DeviceDetails lunInfo;
@@ -1418,7 +1472,8 @@ Description:
         return lunPath;
     }
 
-    int DoradoBlock::QuerySnapshotList(std::vector<FSSnapshotInfo> &snapshots) {
+    int DoradoBlock::QuerySnapshotList(std::vector<FSSnapshotInfo> &snapshots)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query snapshot list" << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -1440,7 +1495,8 @@ Description:
         return Module::FAILED;
     }
 
-    int DoradoBlock::Revert(std::string SnapshotName) {
+    int DoradoBlock::Revert(std::string SnapshotName)
+    {
         int id;
         std::string WWN;
         int ret = QuerySnapshot(SnapshotName, id, WWN);
@@ -1470,14 +1526,15 @@ Description:
     }
 
     int DoradoBlock::QueryRevertInfo(
-            const std::string &resourceName, std::string &rollbackRate, std::string &rollbackStatus) {
+        const std::string &resourceName, std::string &rollbackRate, std::string &rollbackStatus)
+    {
         return Module::SUCCESS;
     }
 
     int DoradoBlock::SendRequestEx(HttpRequest &req, Json::Value &data, std::string &errorDes,
-                                   int &errorCode, SessionInfo &sessionInfo) {
+                                   int &errorCode, SessionInfo &sessionInfo)
+    {
         int iRet = Module::FAILED;
-        HttpRequest request = req;
         if (req.method == "DELETE") {
             req.url = "https://" + DoradoIP + ":" + DoradoPort + "/deviceManager/rest/" +
                       sessionInfo.device_id + "/" + req.url;
@@ -1490,7 +1547,9 @@ Description:
         if (DoradoIP == INNER_SAFE_IP) {
             req.isVerify = DO_NOT_VERIFY;
         }
-        req.enableProxy = m_enableProxy;
+        if (m_enableProxy || GetEnableProxy()) {
+            req.enableProxy = true;
+        }
         std::shared_ptr<IHttpResponse> rsp = fs_pHttpCLient->SendRequest(req);
         if (NULL == rsp.get()) {
             HCP_Log(ERR, DORADO_MODULE_NAME) << "Return response is empty. " << HCPENDLOG;
@@ -1518,7 +1577,15 @@ Description:
         }
     }
 
-    int DoradoBlock::isNeedRetryErrorCode(const int &errorCode) {
+    bool DoradoBlock::GetEnableProxy()
+    {
+        auto configReader = ConfigReaderImpl::instance();
+        std::string backupScene = configReader->GetBackupSceneFromXml("backup_scene");
+        return backupScene == "0" ? false : true;
+    }
+
+    int DoradoBlock::isNeedRetryErrorCode(const int &errorCode)
+    {
         int size = sizeof(g_noNeedRetryErrorCode) / sizeof(int);
         for (int i = 0; i < size; i++) {
             if (errorCode == g_noNeedRetryErrorCode[i]) {
@@ -1528,12 +1595,14 @@ Description:
         return Module::SUCCESS;
     }
 
-    void DoradoBlock::InitHttpStatusCodeForRetry() {
+    void DoradoBlock::InitHttpStatusCodeForRetry()
+    {
         ConfigReader::getIntValueVector("MicroService", "HttpStatusCodesForRetry", ",",
                                         httpRspStatusCodeForRetry);
     }
 
-    bool DoradoBlock::DoradoResposeNeedRetry(const int ret) {
+    bool DoradoBlock::DoradoResposeNeedRetry(const int ret)
+    {
         // when errorCode ==0 && ret == Module::FAILED mean dorado response need retry
         return (ret == Module::FAILED) ? true : false;
     }
@@ -1549,7 +1618,7 @@ Description:
     }
 
     int DoradoBlock::ParseResponse(
-            const std::string &json_data, Json::Value &data, Module::RestResult& result)
+        const std::string &json_data, Json::Value &data, Module::RestResult& result)
     {
         Json::Value jsonValue;
         Json::Reader reader;
@@ -1597,7 +1666,8 @@ Description:
         return Module::SUCCESS;
     }
 
-    bool DoradoBlock::GetJsonValue(const Json::Value &jsValue, std::string strKey, std::string &strValue) {
+    bool DoradoBlock::GetJsonValue(const Json::Value &jsValue, std::string strKey, std::string &strValue)
+    {
         if (jsValue.isArray()) {
             HCP_Log(ERR, DORADO_MODULE_NAME) << "Json is Array." << HCPENDLOG;
             return false;
@@ -1618,7 +1688,8 @@ Description:
         return false;
     }
 
-    int DoradoBlock::GetLunInfoByName(DeviceDetails &info, std::string &errDes) {
+    int DoradoBlock::GetLunInfoByName(DeviceDetails &info, std::string &errDes)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Start get lun info: " << info.deviceName << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -1645,7 +1716,8 @@ Description:
         return Module::FAILED;
     }
 
-    int DoradoBlock::GetLunInfoByID(DeviceDetails &info, std::string &errDes) {
+    int DoradoBlock::GetLunInfoByID(DeviceDetails &info, std::string &errDes)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Start get lun info: " << info.deviceId << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -1671,7 +1743,8 @@ Description:
         return Module::FAILED;
     }
 
-    int DoradoBlock::GetLunInfoByWWN(DeviceDetails &info, std::string &errDes) {
+    int DoradoBlock::GetLunInfoByWWN(DeviceDetails &info, std::string &errDes)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Start get lun info: " << info.deviceUniquePath << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -1699,7 +1772,8 @@ Description:
     }
 
     int DoradoBlock::GetSnapshotAllocDiffBitmap(
-            const std::string &objectId, SnapshotDiffBitmap &diffBitmap, std::string &errDes) {
+        const std::string &objectId, SnapshotDiffBitmap &diffBitmap, std::string &errDes)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Start get Snapshot alloc diffBitmap: " << objectId << HCPENDLOG;
         Timer timer;
         diffBitmap.bitmap.clear();
@@ -1743,7 +1817,8 @@ Description:
     }
 
     int DoradoBlock::GetSnapshotAllocDiffBitmapImp(
-            const std::string &objectId, SnapshotDiffBitmap &diffBitmap, std::string &errDes) {
+        const std::string &objectId, SnapshotDiffBitmap &diffBitmap, std::string &errDes)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url =
@@ -1761,8 +1836,9 @@ Description:
     }
 
     int DoradoBlock::GetSnapshotUnsharedDiffBitmap(
-            const std::string &objectId, const std::string &parentObjectId, SnapshotDiffBitmap &diffBitmap,
-            std::string &errDes) {
+        const std::string &objectId, const std::string &parentObjectId, SnapshotDiffBitmap &diffBitmap,
+        std::string &errDes)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME)
                 << "Start get Snapshot Unshared diffBitmap: " << DBG(objectId) << DBG(parentObjectId) << HCPENDLOG;
         Timer timer;
@@ -1807,8 +1883,9 @@ Description:
     }
 
     int DoradoBlock::GetSnapshotUnsharedDiffBitmapImp(
-            const std::string &objectId, const std::string &parentObjectId, SnapshotDiffBitmap &diffBitmap,
-            std::string &errDes) {
+        const std::string &objectId, const std::string &parentObjectId, SnapshotDiffBitmap &diffBitmap,
+        std::string &errDes)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "lun_bitmap/get_unshared?BASELUNID=" + parentObjectId + "&LUNID=" + objectId +
@@ -1825,7 +1902,8 @@ Description:
         return Module::FAILED;
     }
 
-    int DoradoBlock::CheckReplicationPair(int lunId, std::string devId, std::string &pairId) {
+    int DoradoBlock::CheckReplicationPair(int lunId, std::string devId, std::string &pairId)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "replicationpair/associate?ASSOCIATEOBJTYPE=11&ASSOCIATEOBJID=" + std::to_string(lunId);
@@ -1852,7 +1930,8 @@ Description:
     }
 
     int DoradoBlock::CreateReplication(
-            int lunId, int rLunId, std::string rDevId, int bandwidth, std::string &pairId) {
+        int lunId, int rLunId, std::string rDevId, int bandwidth, std::string &pairId)
+    {
         int ret = CheckReplicationPair(lunId, rDevId, pairId);
         if (ret == Module::SUCCESS) {
             HCP_Log(INFO, DORADO_MODULE_NAME)
@@ -1893,9 +1972,10 @@ Description:
             2: asynchronous replication */
         jsonReq["REPLICATIONMODEL"] = ASYNCHRONOUS_REPLICATION;
         /*  0:"NOT_SYNC_SNAP": User snapshots are not synchronized.
-            1:"SAME_AS_SOURCE": Snapshots on the secondary storage system must be the same as those on the primary storage
-           system. 2:"USER_SNAP_RETENTION_NUM": A specified number of user snapshots are retained on the secondary storage
-           system. */
+            1:"SAME_AS_SOURCE": Snapshots on the secondary storage system must be the same as
+                those on the primary storage system.
+            2:"USER_SNAP_RETENTION_NUM": A specified number of user snapshots are retained
+                on the secondary storage system. */
         jsonReq["syncSnapPolicy"] = USER_SNAP_RETENTION_NUM;
         jsonReq["userSnapRetentionNum"] = SAN_SNAPSHOT_NUM;
         Json::FastWriter jsonWriter;
@@ -1915,7 +1995,8 @@ Description:
         }
     }
 
-    int DoradoBlock::ActiveReplication(std::string pairId) {
+    int DoradoBlock::ActiveReplication(std::string pairId)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1938,7 +2019,8 @@ Description:
         }
     }
 
-    int DoradoBlock::QueryReplication(ReplicationPairInfo &replicationPairInfo) {
+    int DoradoBlock::QueryReplication(ReplicationPairInfo &replicationPairInfo)
+    {
         HttpRequest req;
         Json::Value data;
         req.method = "GET";
@@ -1961,7 +2043,7 @@ Description:
             replicationPairInfo.status = std::stoi(data["RUNNINGSTATUS"].asString());
             replicationPairInfo.bandWidth = std::stoll(data["bandwidth"].asString());
             replicationPairInfo.progress = std::stoi(
-                    (data["REPLICATIONPROGRESS"].asString() == "") ? "-1" : data["REPLICATIONPROGRESS"].asString());
+                (data["REPLICATIONPROGRESS"].asString() == "") ? "-1" : data["REPLICATIONPROGRESS"].asString());
             replicationPairInfo.secresDataStatus = std::stoi(data["SECRESDATASTATUS"].asString());
             replicationPairInfo.remoteResID = data["REMOTERESID"].asString();
             replicationPairInfo.remoteResName = data["REMOTERESNAME"].asString();
@@ -1976,7 +2058,8 @@ Description:
         }
     }
 
-    int DoradoBlock::UpdateReplication(int bandwidth, std::string pairId) {
+    int DoradoBlock::UpdateReplication(int bandwidth, std::string pairId)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -2001,7 +2084,8 @@ Description:
         }
     }
 
-    int DoradoBlock::DeleteReplication(std::string pairId) {
+    int DoradoBlock::DeleteReplication(std::string pairId)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -2023,7 +2107,8 @@ Description:
         }
     }
 
-    int DoradoBlock::GetSnapShoCoupleUuid(const std::string snapShotId, std::string &coupleUuid, std::string &errDes) {
+    int DoradoBlock::GetSnapShoCoupleUuid(const std::string snapShotId, std::string &coupleUuid, std::string &errDes)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Start get snapshot coupleUuid: " << snapShotId << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -2041,7 +2126,9 @@ Description:
         }
     }
 
-    int DoradoBlock::GetSnapshotByCoupleUuid(const std::string coupleUuid, std::string &snapShotId, std::string &errDes) {
+    int DoradoBlock::GetSnapshotByCoupleUuid(const std::string coupleUuid, std::string &snapShotId,
+        std::string &errDes)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Start get snapshot by coupleUuid: " << coupleUuid << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -2059,7 +2146,8 @@ Description:
         }
     }
 
-    int DoradoBlock::SplitReplication(std::string pairId) {
+    int DoradoBlock::SplitReplication(std::string pairId)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -2082,7 +2170,8 @@ Description:
         }
     }
 
-    int DoradoBlock::CreateRemoteDeviceUser(const std::string &userName, const std::string &passWord) {
+    int DoradoBlock::CreateRemoteDeviceUser(const std::string &userName, const std::string &passWord)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -2110,8 +2199,9 @@ Description:
     }
 
     int DoradoBlock::CreateRemoteDevice(
-            std::string localPort, std::string remoteIP, std::string remoteUser, std::string remotePassWord,
-            std::string &devicdID) {
+        std::string localPort, std::string remoteIP, std::string remoteUser, std::string remotePassWord,
+        std::string &devicdID)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -2141,7 +2231,8 @@ Description:
         return Module::SUCCESS;
     }
 
-    int DoradoBlock::GetLogicPortNameList(std::vector<std::string> &iscsiList) {
+    int DoradoBlock::GetLogicPortNameList(std::vector<std::string> &iscsiList)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start get the LogicPortNameList " << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -2173,7 +2264,8 @@ Description:
     }
 
     int DoradoBlock::BindRepportgroupsToRemoteDevice(
-            std::string devicdID, std::string localGroupId, std::string remoteGroupId) {
+        std::string devicdID, std::string localGroupId, std::string remoteGroupId)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -2226,7 +2318,8 @@ int DoradoBlock::GetDoradoIp(std::string& doradoPanelIp)
     return GetDoradoIpFromCommanLine(doradoPanelIp);
 }
 
-    int DoradoBlock::GetDoradoIpFromCommanLine(std::string &doradoPanelIp) {
+    int DoradoBlock::GetDoradoIpFromCommanLine(std::string &doradoPanelIp)
+    {
         std::vector<std::string> paramList;
         std::vector<std::string> output;
         std::vector<std::string> erroutput;
@@ -2256,11 +2349,13 @@ int DoradoBlock::GetDoradoIp(std::string& doradoPanelIp)
     }
 
     int DoradoBlock::QueryServiceIpController(
-            std::vector<std::pair<std::string, std::string>> &ipControllerList, IP_TYPE ipType) {
+        std::vector<std::pair<std::string, std::string>> &ipControllerList, IP_TYPE ipType)
+    {
         return Module::FAILED;
     }
 
-    int DoradoBlock::DeleteSnapshot(std::string SnapshotName) {
+    int DoradoBlock::DeleteSnapshot(std::string SnapshotName)
+    {
         return Module::SUCCESS;
     }
 }

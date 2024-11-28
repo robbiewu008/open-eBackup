@@ -19,6 +19,7 @@
 #include "log/BackupFailureRecorder.h"
 #include "common/EnvVarManager.h"
 #include "common/Thread.h"
+#include "common/Path.h"
 #include "HostCommonService.h"
 
 using namespace std;
@@ -43,6 +44,8 @@ namespace {
         R"(\DataBackup\ProtectClient\ProtectClient-E\log\Plugins\FilePlugin)";
 };
 
+std::mutex HostCommonService::m_pluginAtrributeJsonFileMutex {};
+
 HostCommonService::HostCommonService()
 {
     /* use logger root as the failure records output root */
@@ -66,6 +69,9 @@ void HostCommonService::SerializeBackupStats(const BackupStats& backupStats, Bac
     backupStatistic.noOfDirCopied      = backupStats.noOfDirCopied;
     backupStatistic.noOfFilesCopied    = backupStats.noOfFilesCopied;
     backupStatistic.noOfBytesCopied    = backupStats.noOfBytesCopied;
+    backupStatistic.skipFileCnt        = backupStats.skipFileCnt;
+    backupStatistic.skipDirCnt         = backupStats.skipDirCnt;
+    backupStatistic.noOfFilesWriteSkip = backupStats.noOfFilesWriteSkip;
     backupStatistic.noOfDirDeleted     = backupStats.noOfDirDeleted;
     backupStatistic.noOfFilesDeleted   = backupStats.noOfFilesDeleted;
     backupStatistic.noOfDirFailed      = backupStats.noOfDirFailed;
@@ -75,54 +81,6 @@ void HostCommonService::SerializeBackupStats(const BackupStats& backupStats, Bac
     backupStatistic.noOfSrcRetryCount  = backupStats.noOfSrcRetryCount;
     backupStatistic.noOfDstRetryCount  = backupStats.noOfDstRetryCount;
     backupStatistic.noOfFailureRecordsWritten  = backupStats.noOfFailureRecordsWritten;
-}
-
-BackupStatistic HostCommonService::CalcuSumStructBackupStatistic(const BackupStatistic& A_backupStatistic,
-                                                                 const BackupStatistic& B_backupStatistic) const
-{
-    HCP_Log(DEBUG, MODULE) << "start to calcu the sum of A_backupStatistic and B_backupStatistic" << HCPENDLOG;
-    BackupStatistic sumBackupStatistic;
-    sumBackupStatistic.noOfDirToBackup   = A_backupStatistic.noOfDirToBackup    + B_backupStatistic.noOfDirToBackup;
-    sumBackupStatistic.noOfFilesToBackup = A_backupStatistic.noOfFilesToBackup  + B_backupStatistic.noOfFilesToBackup;
-    sumBackupStatistic.noOfBytesToBackup = A_backupStatistic.noOfBytesToBackup  + B_backupStatistic.noOfBytesToBackup;
-    sumBackupStatistic.noOfDirToDelete   = A_backupStatistic.noOfDirToDelete    + B_backupStatistic.noOfDirToDelete;
-    sumBackupStatistic.noOfFilesToDelete = A_backupStatistic.noOfFilesToDelete  + B_backupStatistic.noOfFilesToDelete;
-    sumBackupStatistic.noOfDirCopied     = A_backupStatistic.noOfDirCopied      + B_backupStatistic.noOfDirCopied;
-    sumBackupStatistic.noOfFilesCopied   = A_backupStatistic.noOfFilesCopied    + B_backupStatistic.noOfFilesCopied;
-    sumBackupStatistic.noOfBytesCopied   = A_backupStatistic.noOfBytesCopied    + B_backupStatistic.noOfBytesCopied;
-    sumBackupStatistic.noOfDirDeleted    = A_backupStatistic.noOfDirDeleted     + B_backupStatistic.noOfDirDeleted;
-    sumBackupStatistic.noOfFilesDeleted  = A_backupStatistic.noOfFilesDeleted   + B_backupStatistic.noOfFilesDeleted;
-    sumBackupStatistic.noOfDirFailed     = A_backupStatistic.noOfDirFailed      + B_backupStatistic.noOfDirFailed;
-    sumBackupStatistic.noOfFilesFailed   = A_backupStatistic.noOfFilesFailed    + B_backupStatistic.noOfFilesFailed;
-    sumBackupStatistic.noOfSrcRetryCount = A_backupStatistic.noOfSrcRetryCount  + B_backupStatistic.noOfSrcRetryCount;
-    sumBackupStatistic.noOfDstRetryCount = A_backupStatistic.noOfDstRetryCount  + B_backupStatistic.noOfDstRetryCount;
-    sumBackupStatistic.noOfFailureRecordsWritten =
-        A_backupStatistic.noOfFailureRecordsWritten + B_backupStatistic.noOfFailureRecordsWritten;
-    return sumBackupStatistic;
-}
-
-BackupStatistic HostCommonService::CalcuAddedBackupStatistic(const BackupStatistic& A_backupStatistic,
-                                                             const BackupStatistic& B_backupStatistic) const
-{
-    HCP_Log(DEBUG, MODULE) << "start to calcu Added Backup Statici" << HCPENDLOG;
-    BackupStatistic addedBackupStatistic;
-    addedBackupStatistic.noOfDirToBackup   = A_backupStatistic.noOfDirToBackup   - B_backupStatistic.noOfDirToBackup;
-    addedBackupStatistic.noOfFilesToBackup = A_backupStatistic.noOfFilesToBackup - B_backupStatistic.noOfFilesToBackup;
-    addedBackupStatistic.noOfBytesToBackup = A_backupStatistic.noOfBytesToBackup - B_backupStatistic.noOfBytesToBackup;
-    addedBackupStatistic.noOfDirToDelete   = A_backupStatistic.noOfDirToDelete   - B_backupStatistic.noOfDirToDelete;
-    addedBackupStatistic.noOfFilesToDelete = A_backupStatistic.noOfFilesToDelete - B_backupStatistic.noOfFilesToDelete;
-    addedBackupStatistic.noOfDirCopied     = A_backupStatistic.noOfDirCopied     - B_backupStatistic.noOfDirCopied;
-    addedBackupStatistic.noOfFilesCopied   = A_backupStatistic.noOfFilesCopied   - B_backupStatistic.noOfFilesCopied;
-    addedBackupStatistic.noOfBytesCopied   = A_backupStatistic.noOfBytesCopied   - B_backupStatistic.noOfBytesCopied;
-    addedBackupStatistic.noOfDirDeleted    = A_backupStatistic.noOfDirDeleted    - B_backupStatistic.noOfDirDeleted;
-    addedBackupStatistic.noOfFilesDeleted  = A_backupStatistic.noOfFilesDeleted  - B_backupStatistic.noOfFilesDeleted;
-    addedBackupStatistic.noOfDirFailed     = A_backupStatistic.noOfDirFailed     - B_backupStatistic.noOfDirFailed;
-    addedBackupStatistic.noOfFilesFailed   = A_backupStatistic.noOfFilesFailed   - B_backupStatistic.noOfFilesFailed;
-    addedBackupStatistic.noOfSrcRetryCount = A_backupStatistic.noOfSrcRetryCount - B_backupStatistic.noOfSrcRetryCount;
-    addedBackupStatistic.noOfDstRetryCount = A_backupStatistic.noOfDstRetryCount - B_backupStatistic.noOfDstRetryCount;
-    addedBackupStatistic.noOfFailureRecordsWritten =
-        A_backupStatistic.noOfDstRetryCount - B_backupStatistic.noOfFailureRecordsWritten;
-    return addedBackupStatistic;
 }
 
 BackupStatistic HostCommonService::GetIncBackupStats(const BackupStats& currStats, BackupStatistic prevStats)
@@ -583,6 +541,55 @@ uint64_t HostCommonService::CalculateSizeInKB(uint64_t bytes) const
         return NUM1;
     }
     return kiloBytes;
+}
+
+bool HostCommonService::SetNumOfChannels(const std::string& channelCntStr) const
+{
+    int channelCnt = Module::SafeStoi(channelCntStr);
+    if (channelCnt <= 0) {
+        WARNLOG("Invaid channelCnt: %s, don't set Cnt.", channelCntStr.c_str());
+        return false;
+    }
+    std::string path = PluginUtils::PathJoin(Module::CPath::GetInstance().GetRootPath(), PLUGIN_ATT_JSON);
+    DBGLOG("SetNumOfChannels, plugin_attribute_1.0.0.json path: %s", path.c_str());
+    try {
+        std::lock_guard<std::mutex> lk(m_pluginAtrributeJsonFileMutex);
+        std::string pluginAttributeContent {};
+        if (!PluginUtils::ReadFile(path, pluginAttributeContent)) {
+            ERRLOG("Read plugin_attribute_1.0.0.json failed.");
+            return false;
+        }
+        Json::Value jsonVal;
+        if (!Module::JsonHelper::JsonStringToJsonValue(pluginAttributeContent, jsonVal)) {
+            ERRLOG("JsonStringToJsonValue error, str: %s", pluginAttributeContent.c_str());
+            return false;
+        }
+        if (jsonVal["application_sub_job_cnt_max"]["Fileset"].isInt() &&
+            jsonVal["application_sub_job_cnt_max"]["Fileset"].asInt() == channelCnt) {
+            INFOLOG("no need to write channel cnt to json file, cnt: %d", channelCnt);
+            return true;
+        }
+        INFOLOG("Current channels of Fileset: %s, set to %d",
+            jsonVal["application_sub_job_cnt_max"]["Fileset"].asString().c_str(), channelCnt);
+        jsonVal["application_sub_job_cnt_max"]["Fileset"] = Json::Value(channelCnt);
+        Json::StyledWriter sWriter;
+        std::ofstream outFileStream(path, std::ios::out | std::ios::trunc);
+        if (!outFileStream.is_open()) {
+#ifdef WIN32
+            uint32_t errcode = ::GetLastError();
+            ERRLOG("Open file %s failed, errno[%lu]:%s.", path.c_str(), errcode, strerror(errcode));
+#else
+            ERRLOG("Open file %s failed, errno[%d]:%s.", path.c_str(), errno, strerror(errno));
+#endif
+            return false;
+        }
+        outFileStream << sWriter.write(jsonVal);
+        outFileStream.close();
+    } catch (const std::exception &ex) {
+        ERRLOG("Standard C++ Exception: %s", ex.what());
+        return false;
+    }
+    return true;
 }
 
 }

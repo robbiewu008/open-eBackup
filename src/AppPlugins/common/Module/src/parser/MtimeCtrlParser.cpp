@@ -14,9 +14,9 @@
 #define __STDC_FORMAT_MACROS
 #endif
 #include "MtimeCtrlParser.h"
+#include <cinttypes>
 #include "Log.h"
 #include "securec.h"
-#include <cinttypes>
 
 using namespace std;
 using namespace Module;
@@ -209,13 +209,13 @@ CTRL_FILE_RETCODE MtimeCtrlParser::WriteEntry(MtimeCtrlEntry &mtimeEntry)
 void MtimeCtrlParser::PrintEntry(MtimeCtrlEntry& mtimeEntry)
 {
     DBGLOG("write to mtime ctrl - %s", m_fileName.c_str());
-	DBGLOG("write mtimeEntry - m_absPath: %s, ctime: %llu, atime: %llu, mtime: %llu, btime: %llu,"
-		"uid: %lu, gid: %lu, attr: %lu, mode: %lu, subDirsCnt: %lu",
-		mtimeEntry.m_absPath.c_str(), mtimeEntry.m_ctime, mtimeEntry.m_atime,
-		mtimeEntry.m_mtime, mtimeEntry.m_btime, mtimeEntry.m_uid, mtimeEntry.m_gid,
-		mtimeEntry.m_attr,
-		mtimeEntry.m_mode,
-		mtimeEntry.m_subDirsCnt);
+    DBGLOG("write mtimeEntry - m_absPath: %s, ctime: %llu, atime: %llu, mtime: %llu, btime: %llu,"
+        "uid: %lu, gid: %lu, attr: %lu, mode: %lu, subDirsCnt: %lu",
+        mtimeEntry.m_absPath.c_str(), mtimeEntry.m_ctime, mtimeEntry.m_atime,
+        mtimeEntry.m_mtime, mtimeEntry.m_btime, mtimeEntry.m_uid, mtimeEntry.m_gid,
+        mtimeEntry.m_attr,
+        mtimeEntry.m_mode,
+        mtimeEntry.m_subDirsCnt);
 }
 #endif
 CTRL_FILE_RETCODE MtimeCtrlParser::ReadHeader()

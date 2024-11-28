@@ -22,10 +22,10 @@
 namespace Module {
     DoradoNasCIFS::~DoradoNasCIFS() {}
 
-    int DoradoNasCIFS::Bind(HostInfo &host, const std::string &shareId) {
+    int DoradoNasCIFS::Bind(HostInfo &host, const std::string &shareId)
+    {
         int iRet;
         std::string userName = host.chapAuthName;
-        std::string password = host.chapPassword;
         if (userName.size() > MAXNAMELENGTH) {
             userName = userName.substr(0, MAXNAMELENGTH - 1);
         }
@@ -40,13 +40,11 @@ namespace Module {
             HCP_Log(ERR, DORADO_MODULE_NAME) << "Add  User to Cifsshare Failed! errorCode:" << iRet << HCPENDLOG;
             return iRet;
         }
-
-        // clear memeory storage password
-        CleanMemoryPwd(password);
         return SUCCESS;
     }
 
-    int DoradoNasCIFS::AddShareClient(HostInfo &host, const std::string &sharePath, std::string &cifsShareName) {
+    int DoradoNasCIFS::AddShareClient(HostInfo &host, const std::string &sharePath, std::string &cifsShareName)
+    {
         std::string userName = host.chapAuthName;
         if (userName.size() > MAXNAMELENGTH) {
             userName = userName.substr(0, MAXNAMELENGTH - 1);
@@ -74,12 +72,14 @@ namespace Module {
         return SUCCESS;
     }
 
-    int DoradoNasCIFS::UnBind(HostInfo host, const std::string &shareId) {
+    int DoradoNasCIFS::UnBind(HostInfo host, const std::string &shareId)
+    {
         HCP_Log(ERR, DORADO_MODULE_NAME) << "do not need to unbind!" << HCPENDLOG;
         return SUCCESS;
     }
 
-    int DoradoNasCIFS::Create(unsigned long long size) {
+    int DoradoNasCIFS::Create(unsigned long long size)
+    {
         int ret = CreateFileSystem(size, NTFS);
         if (ret != SUCCESS) {
             HCP_Log(ERR, DORADO_MODULE_NAME) << "Create filesystem failure! errorCode:" << ret << HCPENDLOG;
@@ -88,7 +88,8 @@ namespace Module {
         return CreateCifsShare(ResourceName, fileSystemId);
     }
 
-    int DoradoNasCIFS::Query(DeviceDetails &info) {
+    int DoradoNasCIFS::Query(DeviceDetails &info)
+    {
         int iRet = QueryFileSystem(info);
         if (iRet != SUCCESS) {
             HCP_Log(ERR, DORADO_MODULE_NAME) << "Query filesystem failure! errorCode:" << iRet << HCPENDLOG;
@@ -97,7 +98,8 @@ namespace Module {
         return QueryCifsShare(info, fileSystemId);
     }
 
-    int DoradoNasCIFS::QueryFileSystem(DeviceDetails &info) {
+    int DoradoNasCIFS::QueryFileSystem(DeviceDetails &info)
+    {
         if (fileSystemName.empty() == true) {
             if (GetFsNameFromShareName() != SUCCESS) {
                 HCP_Log(ERR, DORADO_MODULE_NAME) << "Get FS name from Sharename Failed" << HCPENDLOG;
@@ -112,7 +114,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int DoradoNasCIFS::CIFSShareAddClient(std::string name, int ID, const std::string &domainName) {
+    int DoradoNasCIFS::CIFSShareAddClient(std::string name, int ID, const std::string &domainName)
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "CIFS_SHARE_AUTH_CLIENT";
@@ -135,7 +138,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNasCIFS::QueryCifsShareClient(NasSharedInfo &info, std::string sharedId) {
+    int DoradoNasCIFS::QueryCifsShareClient(NasSharedInfo &info, std::string sharedId)
+    {
         std::string url = "CIFS_SHARE_AUTH_CLIENT?filter=PARENTID::" + sharedId;
         int iRet = QueryNasShareClient(info, url, "CIFS");
         if (iRet != SUCCESS) {
@@ -146,7 +150,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int DoradoNasCIFS::DeleteCIFSShare(DeviceDetails info) {
+    int DoradoNasCIFS::DeleteCIFSShare(DeviceDetails info)
+    {
         HttpRequest req;
         int iRet;
         req.method = "DELETE";
@@ -163,7 +168,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNasCIFS::Delete() {
+    int DoradoNasCIFS::Delete()
+    {
         DeviceDetails info;
         int iRet = QueryFileSystem(info);
         if (iRet != SUCCESS) {
@@ -188,7 +194,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int DoradoNasCIFS::DeleteShare(const std::string sharePath, const std::string shareName) {
+    int DoradoNasCIFS::DeleteShare(const std::string sharePath, const std::string shareName)
+    {
         DeviceDetails info;
         int iRet = QueryFileSystem(info);
         if (iRet != SUCCESS) {
@@ -210,7 +217,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int DoradoNasCIFS::CreateShare() {
+    int DoradoNasCIFS::CreateShare()
+    {
         DeviceDetails info;
         int ret = QueryFileSystem(info);
         if (ret != SUCCESS) {
@@ -220,7 +228,8 @@ namespace Module {
         return CreateCifsShare(ResourceName, std::to_string(info.deviceId));
     }
 
-    int DoradoNasCIFS::CreateCifsShare(std::string fileSystemName, std::string FsId) {
+    int DoradoNasCIFS::CreateCifsShare(std::string fileSystemName, std::string FsId)
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "CIFSHARE";
@@ -246,7 +255,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNasCIFS::QueryCifsShare(DeviceDetails &info, std::string fsId) {
+    int DoradoNasCIFS::QueryCifsShare(DeviceDetails &info, std::string fsId)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "CIFSHARE?filter=FSID::" + fsId;
@@ -263,7 +273,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNasCIFS::QueryCifsShare(const std::string sharePath, DeviceDetails &info, std::string cifsShareName) {
+    int DoradoNasCIFS::QueryCifsShare(const std::string sharePath, DeviceDetails &info, std::string cifsShareName)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "CIFSHARE?filter=FSID::" + fileSystemId;
@@ -291,7 +302,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNasCIFS::QueryCifsShare(std::vector<NasSharedInfo> &infos, std::string fsId) {
+    int DoradoNasCIFS::QueryCifsShare(std::vector<NasSharedInfo> &infos, std::string fsId)
+    {
         std::string url = "CIFSHARE?filter=FSID::" + fsId;
         int iRet = QueryNasShare(infos, url, "CIFS");
         if (iRet != SUCCESS) {
@@ -302,7 +314,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int DoradoNasCIFS::DeleteWindowsUser(std::string userName) {
+    int DoradoNasCIFS::DeleteWindowsUser(std::string userName)
+    {
         HttpRequest req;
         req.method = "DELETE";
         req.url = "WINDOWS_USER?NAME=" + userName;
@@ -317,7 +330,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNasCIFS::CreateWindowUser(std::string userName, std::string password) {
+    int DoradoNasCIFS::CreateWindowUser(std::string userName, std::string password)
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "WINDOWS_USER";
@@ -336,7 +350,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    std::unique_ptr<ControlDevice> DoradoNasCIFS::CreateClone(std::string volumeName, int &errorCode) {
+    std::unique_ptr<ControlDevice> DoradoNasCIFS::CreateClone(std::string volumeName, int &errorCode)
+    {
         DeviceDetails info;
         std::string cloneFsId;
         ControlDeviceInfo deviceInfo = {};
@@ -367,7 +382,8 @@ namespace Module {
         return std::make_unique<DoradoNasCIFS>(deviceInfo, cloneFsId, readK8s);
     }
 
-    int DoradoNasCIFS::QueryServiceHost(std::vector<std::string> &ipList, IP_TYPE ipType) {
+    int DoradoNasCIFS::QueryServiceHost(std::vector<std::string> &ipList, IP_TYPE ipType)
+    {
         Json::Value data;
         int ret = QueryLIFPortList(ipList, data);
         if (ret != SUCCESS) {
@@ -382,7 +398,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    void DoradoNasCIFS::FilterLogicPort(Json::Value data, std::vector<std::string> &cifsIPList, IP_TYPE ipType) {
+    void DoradoNasCIFS::FilterLogicPort(Json::Value data, std::vector<std::string> &cifsIPList, IP_TYPE ipType)
+    {
         for (int i = 0; i < data.size(); i++) {
             Json::Value oneNode = data[i];
             std::string proto = oneNode["SUPPORTPROTOCOL"].asString();
@@ -405,7 +422,8 @@ namespace Module {
         return;
     }
 
-    int DoradoNasCIFS::GetFsNameFromShareName() {
+    int DoradoNasCIFS::GetFsNameFromShareName()
+    {
         HttpRequest req;
         req.method = "GET";
         std::string errorDes;
@@ -429,7 +447,8 @@ namespace Module {
         return FAILED;
     }
 
-    std::unique_ptr<ControlDevice> DoradoNasCIFS::CreateSnapshot(std::string SnapshotName, int &errorCode) {
+    std::unique_ptr<ControlDevice> DoradoNasCIFS::CreateSnapshot(std::string SnapshotName, int &errorCode)
+    {
         std::string id;
         ControlDeviceInfo deviceInfo;
         deviceInfo.deviceName = SnapshotName;

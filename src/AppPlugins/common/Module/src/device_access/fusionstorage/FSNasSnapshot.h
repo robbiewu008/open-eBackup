@@ -23,14 +23,16 @@ namespace Module {
     class FSNasSnapshot : public FusionStorageNas {
     public:
         explicit FSNasSnapshot(ControlDeviceInfo deviceInfo, std::string id, std::string path)
-                : FusionStorageNas(deviceInfo) {
+            : FusionStorageNas(deviceInfo)
+        {
             fileSystemId = id;
             uniquePath = path;
         }
 
         virtual ~FSNasSnapshot() {}
 
-        std::unique_ptr <ControlDevice> CreateClone(std::string cloneName, int &errorCode) {
+        std::unique_ptr <ControlDevice> CreateClone(std::string cloneName, int &errorCode)
+        {
             return nullptr;
         }
 

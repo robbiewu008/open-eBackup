@@ -22,22 +22,23 @@ using namespace FS_Backup;
 namespace {
     const int SUCCESS = 0;
     const int FAILED = -1;
+    const int POSITION_OF_POINT = 0;
+    const int POSITION_OF_SEP = 1;
 }
 
 // 去除文件名前缀 / . 适配根目录文件的 //a.out 的情况
 std::string ArchiveServiceTask::CutPrefixSlash(const std::string& path) const
 {
-    int offset = 0;
-    std::string p;
-    for (std::size_t i = 0; i < path.size(); i++) {
-        p = path[offset];
-        if (p == "/" || p == ".") {
-            offset++;
-            continue;
-        }
-        break;
+    size_t pos = 0;
+    if (path.size() > (POSITION_OF_SEP + 1) && (path[POSITION_OF_POINT] == '.' && path[POSITION_OF_SEP] == '/')) {
+        pos = POSITION_OF_SEP + 1;
     }
-    return path.substr(offset, path.size());
+    for (; pos < path.size(); ++pos) {
+        if (path[pos] != '/') {
+            break;
+        }
+    }
+    return path.substr(pos);
 }
 
 void ArchiveServiceTask::Exec()
@@ -95,7 +96,14 @@ void ArchiveServiceTask::HandleReadData()
     fileName = CutPrefixSlash(fileName);
 
     ArchiveRequest req;
+#ifdef WIN32
+    // Windows目录需要转为小写，文件大小写不变读归档数据
+    std::string absFilePath = m_params.srcRootPath + "/" + fileName;
+    req.m_fileName = FSBackupUtils::LowerCase(FSBackupUtils::GetParentDir(absFilePath)) + "/" +
+        m_fileHandle.m_file->m_onlyFileName;
+#else
     req.m_fileName = m_params.srcRootPath + "/" + fileName; // no-agg: /source_*_Context/** or agg: /jobid/**
+#endif
     req.m_offset = m_fileHandle.m_block.m_offset;
     req.m_size = m_fileHandle.m_block.m_size; // size is determined by nfs or cifs
     req.m_buffer = m_fileHandle.m_block.m_buffer; // send buffer to req to get data
@@ -140,7 +148,7 @@ int ArchiveServiceTask::ProcessReadSoftLinkData()
     if (ret != SUCCESS) {
         ERRLOG("Get file data from archive failed, file name: %s, offset: %llu, size: %llu",
             req.m_fileName.c_str(), req.m_offset, req.m_size);
-        return FAILED;
+        return ret;
     }
 
     uint64_t cnt = rsp.m_size;

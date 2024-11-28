@@ -25,6 +25,8 @@ import org.apache.log4j.Logger;
 /**
  * <Description>
  * 
+ * @author  j55771
+ * @version  [V100R001C00, 2012-7-26]
  */
 class CommandHandler
 {
@@ -59,6 +61,7 @@ class CommandHandler
         CMD_ARG_KEY_NAME_SET.add(ToolsContances.CMD_ARG_DSWAREFLOAT_IP);
         
         CMD_NAME_SET.add(ToolsContances.CMD_NAME_DELETE_VOLUME);
+        CMD_NAME_SET.add(ToolsContances.CMD_NAME_QUERY_POOL_INFO);
         CMD_NAME_SET.add(ToolsContances.CMD_NAME_CREATE_BITMAP_VOLUME);
         CMD_NAME_SET.add(ToolsContances.CMD_NAME_QUERY_BITMAP_VOLUME);
         CMD_NAME_SET.add(ToolsContances.CMD_NAME_QUERY_ALL_BITMAP_VOLUME);

@@ -24,6 +24,8 @@ namespace {
     const int RETRY_TIME_MILLISENCOND = 1000;
     const int OOM_SLEEP_SECOND = 1;
     const uint32_t INVALID_MEMORY = static_cast<uint32_t>(-1);
+    const uint32_t FILENOTEXIST = 2;
+    const uint32_t PATHNOTEXIST = 3;
 }
 
 HostCopyReader::HostCopyReader(
@@ -123,7 +125,7 @@ bool HostCopyReader::IsComplete()
             "(totalFiles %llu totalDir %llu unarchiveFiles %llu)",
             m_controlInfo->m_controlReaderPhaseComplete.load(),
             m_readQueue->GetSize(), m_timer.GetCount(),
-            m_readTaskProduce.load(), m_readTaskConsume.load(),
+            m_controlInfo->m_readTaskProduce.load(), m_controlInfo->m_readTaskConsume.load(),
             m_controlInfo->m_noOfFilesRead.load(), m_controlInfo->m_noOfDirRead.load(),
             m_controlInfo->m_noOfFilesReadFailed.load(),
             m_controlInfo->m_skipFileCnt.load(), m_controlInfo->m_skipDirCnt.load(),
@@ -135,9 +137,9 @@ bool HostCopyReader::IsComplete()
     if (m_controlInfo->m_controlReaderPhaseComplete &&
         m_readQueue->Empty() &&
         (m_timer.GetCount() == 0) &&
-        (m_readTaskProduce == m_readTaskConsume) &&
+        (m_controlInfo->m_readTaskProduce == m_controlInfo->m_readTaskConsume) &&
         ((m_controlInfo->m_noOfFilesRead + m_controlInfo->m_noOfDirRead + m_controlInfo->m_noOfFilesReadFailed +
-        m_controlInfo->m_skipFileCnt + m_controlInfo->m_skipDirCnt +
+        m_controlInfo->m_skipFileCnt + m_controlInfo->m_skipDirCnt + m_controlInfo -> m_noOfFilesWriteSkip +
         m_controlInfo->m_unaggregatedFiles + m_controlInfo->m_emptyFiles + m_controlInfo->m_unaggregatedFaildFiles) ==
         (m_controlInfo->m_noOfFilesToBackup + m_controlInfo->m_noOfDirToBackup + m_controlInfo->m_unarchiveFiles))) {
         INFOLOG("CopyReader complete: controlReaderComplete %d readQueueSize %llu timerSize %llu "
@@ -146,7 +148,7 @@ bool HostCopyReader::IsComplete()
             "(totalFiles %llu totalDir %llu unarchiveFiles %llu)",
             m_controlInfo->m_controlReaderPhaseComplete.load(),
             m_readQueue->GetSize(), m_timer.GetCount(),
-            m_readTaskProduce.load(), m_readTaskConsume.load(),
+            m_controlInfo->m_readTaskProduce.load(), m_controlInfo->m_readTaskConsume.load(),
             m_controlInfo->m_noOfFilesRead.load(), m_controlInfo->m_noOfDirRead.load(),
             m_controlInfo->m_noOfFilesReadFailed.load(),
             m_controlInfo->m_skipFileCnt.load(), m_controlInfo->m_skipDirCnt.load(),
@@ -170,8 +172,8 @@ int HostCopyReader::OpenFile(FileHandle& fileHandle)
         return FAILED;
     }
     m_srcOpenedHandleSet.insert(fileHandle.m_file);
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -194,8 +196,8 @@ int HostCopyReader::ReadSymlinkData(FileHandle& fileHandle)
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -224,8 +226,8 @@ int HostCopyReader::ReadHugeObjectData(FileHandle& fileHandle)
         return FAILED;
     }
 
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -254,9 +256,9 @@ int HostCopyReader::ReadNormalData(FileHandle& fileHandle)
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_readTaskProduce;
+    ++m_controlInfo->m_readTaskProduce;
 
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -300,9 +302,9 @@ int HostCopyReader::CloseFile(FileHandle& fileHandle)
         ERRLOG("put close src task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_readTaskProduce;
+    ++m_controlInfo->m_readTaskProduce;
     m_srcOpenedHandleSet.erase(fileHandle.m_file);
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -363,8 +365,8 @@ void HostCopyReader::PollReadTask()
             } else {
                 HandleFailedEvent(task);
             }
-            ++m_readTaskConsume;
-            DBGLOG("read tasks consume cnt for now %llu", m_readTaskConsume.load());
+            ++m_controlInfo->m_readTaskConsume;
+            DBGLOG("read tasks consume cnt for now %llu", m_controlInfo->m_readTaskConsume.load());
         }
     }
     INFOLOG("Finish HostCopyReader PollReadTask thread");
@@ -469,6 +471,13 @@ void HostCopyReader::HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> ta
         OS_PLATFORM_NAME.c_str(), fileHandle.m_file->m_fileName.c_str(), fileHandle.m_block.m_size,
         static_cast<int>(event), fileHandle.m_retryCnt);
     FileDescState state = fileHandle.m_file->GetSrcState();
+    if (m_params.discardReadError && (taskPtr->m_errDetails.second == FILENOTEXIST || taskPtr->m_errDetails.second == PATHNOTEXIST)) {
+        // 如果设置了忽略读失败，对于文件不存在的情况，认为该文件备份成功，设置为跳过文件
+        WARNLOG("File %s not exist, discardReadError is true, ignore it", fileHandle.m_file->m_fileName.c_str());
+        ++m_controlInfo->m_noOfFilesWriteSkip;
+        m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+        return;
+    }
     if (state != FileDescState::READ_FAILED &&  /* If state is READ_FAILED, needn't retry */
         fileHandle.m_retryCnt < DEFAULT_ERROR_SINGLE_FILE_CNT && !taskPtr->IsCriticalError()) {
         m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
@@ -484,16 +493,15 @@ void HostCopyReader::HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> ta
             if (!fileHandle.m_file->IsFlagSet(AGGREGATE_GEN_FILE) &&
                 fileHandle.m_file->GetDstState() != FileDescState::WRITE_FAILED) {
                 // 若write的状态为WRITE_FAILED时，说明该文件已经被writer记为失败
-                m_controlInfo->m_noOfFilesFailed++;
+                ++m_controlInfo->m_noOfFilesFailed;
+                fileHandle.m_errNum = taskPtr->m_errDetails.second;
+                m_failedList.emplace_back(fileHandle);
             }
         } else {
-            m_controlInfo->m_noOfDirFailed++;
+            ++m_controlInfo->m_noOfDirFailed;
         }
         fileHandle.m_file->UnlockCommonMutex();
         ++m_controlInfo->m_noOfFilesReadFailed;
-        // errno -> m_retryCnt
-        fileHandle.m_errNum = taskPtr->m_errDetails.second;
-        m_failedList.emplace_back(fileHandle);
     }
     m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
     if (!m_backupParams.commonParams.skipFailure || taskPtr->IsCriticalError()) {

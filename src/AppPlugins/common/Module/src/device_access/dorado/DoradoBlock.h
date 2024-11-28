@@ -13,13 +13,10 @@
 #ifndef DORADO_BLOCK_H
 #define DORADO_BLOCK_H
 
-//#include "framework/MessageProcess.h"
 #include "log/Log.h"
-//#include "utility/HttpClientInterface.h"
 #include "device_access/Const.h"
 #include "device_access/ControlDevice.h"
 #include "device_access/SessionCache.h"
-//#include "common/DiskCommDef.h"
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/property_tree/ini_parser.hpp>
@@ -80,22 +77,22 @@ namespace Module {
     };  // namespace DoradoErrorCode
 
     const int g_noNeedRetryErrorCode[] = {
-            DoradoErrorCode::FILESYSTEMALREADYEXIST, DoradoErrorCode::NFSSHAREALREADYEXIST,
-            DoradoErrorCode::CIFSSHAREALREADYEXIST, DoradoErrorCode::ALREADYINWHITE,
-            DoradoErrorCode::FILESYSTEMNOTEXIST,
-            DoradoErrorCode::FILESYSTEMSNAPSHOTEXIST, DoradoErrorCode::FSSNAPSHOT_NOTEXIST,
-            DoradoErrorCode::HOSTLUNMAPPINGEXIST, DoradoErrorCode::FILESYSTEMIDNOTEXIST,
-            DoradoErrorCode::WINDOWSUSERNOTEXIST,
-            DoradoErrorCode::HOSTEXIST, DoradoErrorCode::SNAPSHOT_NOTEXIST, DoradoErrorCode::NOTNEEDADDNUMBER,
-            DoradoErrorCode::LUN_HOST_MAPPING_EXIST, DoradoErrorCode::LUNGROUP_HOST_MAPPING_NOTEXIST,
-            DoradoErrorCode::FC_AND_ISCSI_NOTEXIST, DoradoErrorCode::LUNGROUP_HOST_MAPPING_EXIST,
-            DoradoErrorCode::LUN_HOST_MAPPING_NOTEXIST, DoradoErrorCode::RETURN_SNAP_REACH_FILE_SYSTEM_MAX_NUM,
-            DoradoErrorCode::RETURN_SNAP_REACH_ENTIRE_SYSTEM_MAX_NUM,
-            DoradoErrorCode::RETRUN_SNAP_REACH_PARENT_FS_MAX_NUM,
-            DoradoErrorCode::DTREENOTEXIST, DoradoErrorCode::DTREENAMEISEXIST,
-            DoradoErrorCode::FILESYSTEM_IN_WRITE_PROTECTION_STATE, DoradoErrorCode::FILESYSTEM_DATA_STATUS_INCONSISTENT,
-            DoradoErrorCode::RETURN_SNAP_FS_SPACE_NOT_ENOUGH, DoradoErrorCode::PARAMETER_INCORRECT,
-            DoradoErrorCode::USERNAMEALREADYEXIST
+        DoradoErrorCode::FILESYSTEMALREADYEXIST, DoradoErrorCode::NFSSHAREALREADYEXIST,
+        DoradoErrorCode::CIFSSHAREALREADYEXIST, DoradoErrorCode::ALREADYINWHITE,
+        DoradoErrorCode::FILESYSTEMNOTEXIST,
+        DoradoErrorCode::FILESYSTEMSNAPSHOTEXIST, DoradoErrorCode::FSSNAPSHOT_NOTEXIST,
+        DoradoErrorCode::HOSTLUNMAPPINGEXIST, DoradoErrorCode::FILESYSTEMIDNOTEXIST,
+        DoradoErrorCode::WINDOWSUSERNOTEXIST,
+        DoradoErrorCode::HOSTEXIST, DoradoErrorCode::SNAPSHOT_NOTEXIST, DoradoErrorCode::NOTNEEDADDNUMBER,
+        DoradoErrorCode::LUN_HOST_MAPPING_EXIST, DoradoErrorCode::LUNGROUP_HOST_MAPPING_NOTEXIST,
+        DoradoErrorCode::FC_AND_ISCSI_NOTEXIST, DoradoErrorCode::LUNGROUP_HOST_MAPPING_EXIST,
+        DoradoErrorCode::LUN_HOST_MAPPING_NOTEXIST, DoradoErrorCode::RETURN_SNAP_REACH_FILE_SYSTEM_MAX_NUM,
+        DoradoErrorCode::RETURN_SNAP_REACH_ENTIRE_SYSTEM_MAX_NUM,
+        DoradoErrorCode::RETRUN_SNAP_REACH_PARENT_FS_MAX_NUM,
+        DoradoErrorCode::DTREENOTEXIST, DoradoErrorCode::DTREENAMEISEXIST,
+        DoradoErrorCode::FILESYSTEM_IN_WRITE_PROTECTION_STATE, DoradoErrorCode::FILESYSTEM_DATA_STATUS_INCONSISTENT,
+        DoradoErrorCode::RETURN_SNAP_FS_SPACE_NOT_ENOUGH, DoradoErrorCode::PARAMETER_INCORRECT,
+        DoradoErrorCode::USERNAMEALREADYEXIST
     };
 
     enum RepLocalResType {
@@ -173,7 +170,8 @@ namespace Module {
     class DoradoBlock : public ControlDevice {
     public:
         explicit DoradoBlock(ControlDeviceInfo deviceInfo, bool readFromK8s = true,
-                             bool useSharedSession = true) {
+                             bool useSharedSession = true)
+        {
             fs_pHttpCLient = IHttpClient::GetInstance();
             Compress = deviceInfo.compress;
             Dedup = deviceInfo.dedup;
@@ -202,7 +200,8 @@ namespace Module {
 
         explicit DoradoBlock() {}
 
-        virtual ~DoradoBlock() {
+        virtual ~DoradoBlock()
+        {
             if (useCache && m_sessionCache != nullptr) {
                 if (this->sessionPtr != nullptr) {
                     DeleteDeviceSession();
@@ -230,23 +229,28 @@ namespace Module {
 
         int UnBind(HostInfo host, const std::string &shareId = "") override;
 
-        int Mount(DeviceMountInfo mountInfo, const std::string &shareName = "") override {
+        int Mount(DeviceMountInfo mountInfo, const std::string &shareName = "") override
+        {
             return Module::FAILED;
         }
 
-        int UnMount(DeviceMountInfo mountInfo) override {
+        int UnMount(DeviceMountInfo mountInfo) override
+        {
             return Module::FAILED;
         }
 
-        int UnMount() override {
+        int UnMount() override
+        {
             return Module::FAILED;
         }
 
-        int CreateShare() override {
+        int CreateShare() override
+        {
             return Module::FAILED;
         }
 
-        int QueryContorllerCnt(int &outCnt) override {
+        int QueryContorllerCnt(int &outCnt) override
+        {
             return Module::FAILED;
         }
 
@@ -330,11 +334,13 @@ namespace Module {
                         int &errorCode, bool lockSession = false);
         int SendRequest(HttpRequest &req, Json::Value &data, Module::RestResult& result, bool lockSession = false);
 
-        void SetResourceName(const std::string &resourceName) {
+        void SetResourceName(const std::string &resourceName)
+        {
             ResourceName = resourceName;
         }
 
-        void SetDoradoIP(const std::string &doradoIp, std::string doradoPort = OUT_DORADO_PORT) {
+        void SetDoradoIP(const std::string &doradoIp, std::string doradoPort = OUT_DORADO_PORT)
+        {
             DoradoIP = doradoIp;
             DoradoPort = std::move(doradoPort);
         }
@@ -452,6 +458,7 @@ namespace Module {
         bool DoradoResposeNeedRetry(const int ret);
         mp_int32 SendRequestToOSA(HttpRequest &req, Json::Value &data, std::string &errorDes, int &errorCode);
         mp_int32 SendRequestToOSAOnce(HttpRequest req, Json::Value &data, std::string &errorDes, int &errorCode);
+        bool GetEnableProxy();
 
     protected:
         bool useCache;

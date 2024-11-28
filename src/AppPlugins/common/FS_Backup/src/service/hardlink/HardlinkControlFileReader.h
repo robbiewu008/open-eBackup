@@ -79,6 +79,10 @@ private:
     int ReadControlFileEntryAndProcess(Module::HardlinkCtrlEntry& linkEntry,
         Module::HardlinkCtrlInodeEntry& inodeEntry, ParentInfo& parentInfo, FileHandle& fileHandle);
 
+    // process for archive restore
+    void PushFileHandlesToReadQueue(ParentInfo& parentInfo, FileHandle &fileHandle);
+    void WaitAndPushToReadQueue(FileHandle &fileHandle);
+
 private:
     BackupParams m_backupParams;
 
@@ -106,6 +110,9 @@ private:
     uint64_t m_noOfBytesToBackup { 0 };
     time_t m_isCompleteTimer { 0 };
     std::string m_metaFileVersion = META_VERSION_V20;
+    std::vector<FileHandle> m_current_links;
+
+    std::shared_ptr<Module::BackupFailureRecorder> m_failureRecorder = nullptr;
 };
 
 #endif // HARDLINK_CONTROL_FILE_READER_H

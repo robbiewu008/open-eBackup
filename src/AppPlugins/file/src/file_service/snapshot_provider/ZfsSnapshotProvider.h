@@ -22,7 +22,8 @@ class ZfsSnapshotProvider : public SnapshotProvider {
 public:
     ZfsSnapshotProvider(std::shared_ptr<DeviceMount> deviceMount, const std::string &jobId);
     ~ZfsSnapshotProvider() override {};
-    SnapshotResult CreateSnapshot(const std::string& filePath, bool isCrossVolume) override;
+    SnapshotResult CreateSnapshot(const std::string& filePath, bool isCrossVolume,
+        const std::string& snapshotPercent) override;
     SnapshotDeleteResult DeleteAllSnapshots(const std::set<std::string>& snapshotInfos = {}) override;
     bool MountSnapshot(const std::string &volumeDevice, const std::string& mountPath) override;
     SnapshotResult QuerySnapshot(const std::string& filePath) override;
@@ -31,7 +32,7 @@ private:
     void GetZfsVolumesInfoR(const std::string& file, bool isCrossVolume, std::vector<LvmSnapshot>& volumeInfo);
     void GetZfsVolumesInfo(const std::string& file, std::vector<LvmSnapshot>& volumeInfo);
     std::shared_ptr<LvmSnapshot> CreateSnapshotByVolume(
-        const std::string &volumeName, const std::string &volumeMntPoint, int& ret);
+        const std::string &volumeName, const std::string &volumeMntPoint, int& ret, const std::string &snapshotPercent);
     bool DeleteSnapshotByVolume(const std::string &snapVolumeName);
     bool DeleteSnapshotByTag(const std::string &snapTag);
 private:

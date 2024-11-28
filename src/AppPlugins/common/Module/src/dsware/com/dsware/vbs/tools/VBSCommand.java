@@ -24,6 +24,8 @@ import java.lang.reflect.Method;
 /**
  * <Description>
  * 
+ * @author  j55771
+ * @version  [V100R001C00, 2012-7-26]
  */
 public class VBSCommand
 {
@@ -104,10 +106,11 @@ public class VBSCommand
             return ToolsErrors.TOOLS_SUCCESS;
         }
         
-        //add by wenzhibin end       
-        int poolId = Integer.parseInt(cmdArgs.get(ToolsContances.CMD_ARG_POOL_ID));
+        //add by wenzhibin end
+        //deleteType The default value is 0. 0: Deletion is delayed. 1: Delete immediately.
+        int delete_type = 0;
         try {
-            mDes.invoke(delBitmapVolApi, dsaIp.split(","), volName, poolId);
+            mDes.invoke(delBitmapVolApi, dsaIp.split(","), volName, delete_type);
         }
         catch (InvocationTargetException e) {
             DSwareException ec = (DSwareException) e.getTargetException();
@@ -426,6 +429,8 @@ public class VBSCommand
         }
         
         try {
+            String dswareFloatIp = cmdArgs.get(ToolsContances.CMD_ARG_DSWAREFLOAT_IP);
+            api = new DSwareApiImpl(dswareFloatIp);
             DSwarePoolInfo pool = api.queryPoolInfo(dsaIp.split(","), poolId);
             Map<Integer, DSwarePoolInfo> poolMap = new HashMap<Integer, DSwarePoolInfo>();
             poolMap.put(poolId, pool);

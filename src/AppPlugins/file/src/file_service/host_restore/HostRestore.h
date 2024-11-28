@@ -62,7 +62,6 @@ struct HostTaskInfo {
     END_SERIAL_MEMEBER
 };
 
-
 struct CopyControlFilePath {
     std::string scanContrlFilePath;
     std::string restoreContrlFilePath;
@@ -79,7 +78,7 @@ public:
     int PostJob() override;
 
 private:
-    int PrerequisiteJobInner() const;
+    int PrerequisiteJobInner();
     int GenerateSubJobInner();
     int ExecuteSubJobInner();
     int PostJobInner();
@@ -179,6 +178,11 @@ private:
     void CalcuSpeed(BackupStatistic& mainBackupStats, time_t startTime);
     std::string GetLastCtrlPath();
 
+#ifdef __linux__
+    bool OSConfigRestore();
+    bool CheckBMRCompatible();
+#endif
+
 private:
     StorageRepository m_cacheFs {};
     std::string m_cacheFsPath;
@@ -189,6 +193,9 @@ private:
     StorageRepository m_metaFs {};
     std::string m_metaFsPath;
     std::string m_scanStatusPath;
+
+    std::string m_sysInfoPath;
+    std::string m_lvmInfoPath;
 
     bool m_scanRedo {false};
 

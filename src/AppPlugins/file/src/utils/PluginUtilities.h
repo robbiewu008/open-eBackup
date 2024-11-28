@@ -80,13 +80,14 @@ namespace PluginUtils {
     std::string VolumeNameTransform(const std::string& mapperName);
     uint64_t GetVolumeSize(const std::string& devicePath);
     std::string GetVolumeUuid(const std::string& devicePath);
-    std::string GetLvmVolumeName(const std::string& dmDevicePath);
-
+    std::string GetVolumeName(const std::string& dmDevicePath);
     std::string LowerCase(const std::string& path);
 #ifndef WIN32
     std::string GetRealPath(const std::string& path);
     std::string GetDirName(const std::string& path);
     bool IsDir(const std::string& path);
+#else
+    uint64_t GetWinVolumeSize(const std::string& devicePath);
 #endif
     template<class ... T>
     std::string PathJoin(T&&... paths)

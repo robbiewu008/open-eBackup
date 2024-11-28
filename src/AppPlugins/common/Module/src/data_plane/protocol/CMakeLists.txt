@@ -39,6 +39,7 @@ add_library(${PROTOCOL_TARGET_NAME}
                    include/protocol/fuse/Unlink.h
                    include/protocol/fuse/RemoveDirectory.h
                    include/protocol/fuse/MakeDirectory.h
+                   include/protocol/fuse/MkNod.h
                    include/protocol/fuse/Link.h
                    include/protocol/fuse/SymLink.h
                    include/protocol/fuse/Rename.h

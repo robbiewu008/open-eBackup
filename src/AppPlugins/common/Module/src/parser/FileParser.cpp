@@ -139,7 +139,6 @@ CTRL_FILE_RETCODE FileParser::Open(CTRL_FILE_OPEN_MODE mode)
 {
     CTRL_FILE_RETCODE ret;
     lock_guard<std::mutex> lk(m_lock);
-
     if (mode == CTRL_FILE_OPEN_MODE::READ) {
         if (m_readFd.is_open()) {
             return CTRL_FILE_RETCODE::SUCCESS;
@@ -180,7 +179,6 @@ CTRL_FILE_RETCODE FileParser::Open(CTRL_FILE_OPEN_MODE mode)
         }
         return CTRL_FILE_RETCODE::SUCCESS;
     }
-
     if (mode == CTRL_FILE_OPEN_MODE::WRITE) {
         if (m_writeFd.is_open()) {
             return CTRL_FILE_RETCODE::SUCCESS;
@@ -195,7 +193,8 @@ CTRL_FILE_RETCODE FileParser::Open(CTRL_FILE_OPEN_MODE mode)
         } else {
             m_writeCtrlLine = (char *)malloc(CTRL_WRITE_LINE_SIZE);
             if (m_writeCtrlLine == nullptr) {
-                HCP_Log(ERR, MODULE) << "Malloc failed, sz: " << CTRL_WRITE_LINE_SIZE << "file: " << m_fileName << HCPENDLOG;
+                HCP_Log(ERR, MODULE) << "Malloc failed, sz: " <<
+                    CTRL_WRITE_LINE_SIZE << "file: " << m_fileName << HCPENDLOG;
                 return CTRL_FILE_RETCODE::FAILED;
             }
             ret = FileOpen<std::ofstream>(m_writeFd, std::ios::out | std::ios::app);

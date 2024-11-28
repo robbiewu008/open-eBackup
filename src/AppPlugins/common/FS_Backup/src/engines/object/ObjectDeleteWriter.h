@@ -55,8 +55,6 @@ private:
     std::atomic<uint64_t> m_deleteFailedDir { 0 };
     std::atomic<uint64_t> m_deleteFile { 0 };
     std::atomic<uint64_t> m_deleteFailedFile { 0 };
-    std::atomic<uint64_t> m_writeTaskProduce { 0 };
-    std::atomic<uint64_t> m_writeTaskConsume { 0 };
 
     std::shared_ptr<Module::JobScheduler> m_jsPtr;
     std::shared_ptr<ObjectBackupAdvanceParams> m_dstAdvParams;

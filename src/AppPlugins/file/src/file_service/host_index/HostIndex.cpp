@@ -27,6 +27,7 @@ namespace FilePlugin {
 namespace {
     constexpr auto MODULE = "HostIndex";
     constexpr auto INDEXPATHDIVIDERMARK = "DEE-SHARE";
+    const std::string PLUGIN_CONFIG_KEY = "FilePluginConfig";
     constexpr auto RFI = "rfi";
     const int RFI_PREFIX_LENGTH = 6;
     const int REPORT_INTERVAL = 45;
@@ -182,13 +183,13 @@ int HostIndex::IdentifyRepos()
 
     m_indexType = m_preRepo != nullptr ? HostIndexType::HOST_INDEX_TYPE_INC : HostIndexType::HOST_INDEX_TYPE_FULL;
 
-    if (m_curRepo == nullptr || m_cacheRepo == nullptr || m_indexRepo == nullptr) {
+    if (m_curRepo == nullptr || m_cacheRepo == nullptr || m_indexRepo == nullptr || m_metaRepo == nullptr) {
         ERRLOG("repo init not complete");
         return Module::FAILED;
     }
-    if (m_cacheRepo->path.size() == 0 || m_indexRepo->path.size() == 0) {
-        ERRLOG("m_cacheRepo->path.size: %d, m_indexRepo->path.size: %d",
-            m_cacheRepo->path.size(), m_indexRepo->path.size());
+    if (m_cacheRepo->path.size() == 0 || m_indexRepo->path.size() == 0 || m_metaRepo->path.size() == 0) {
+        ERRLOG("m_cacheRepo->path.size: %d, m_indexRepo->path.size: %d, m_metaRepo->path.size: %d",
+            m_cacheRepo->path.size(), m_indexRepo->path.size(), m_metaRepo->path.size());
         return FAILED;
     }
     return Module::SUCCESS;
@@ -234,8 +235,10 @@ int HostIndex::IdentifyRepo(StorageRepository& repo)
             INFOLOG("set pre meta repo complete!");
         }
     }
-    if (m_metaRepo != nullptr && m_metaRepo->path[0].find("--checkpoint=") != string::npos) {
-        ERRLOG("tar is unsafe, because path contains checkpoint=1");
+    if (m_metaRepo != nullptr && !m_metaRepo->path.empty() &&
+        m_metaRepo->path[0].find("--checkpoint=") != string::npos) {
+        ERRLOG("meta repo path size is %d, or tar is unsafe, because path contains checkpoint=.",
+            m_metaRepo->path.size());
         return Module::FAILED;
     }
     return Module::SUCCESS;
@@ -784,6 +787,10 @@ void HostIndex::FillScanConfigForGenerateRfi(const string& prevDcachePath,
     m_scanConfig.scanResultCb = GeneratedCopyCtrlFileCb;
     m_scanConfig.scanHardlinkResultCb = GeneratedHardLinkCtrlFileCb;
     m_scanConfig.rfiCtrlCb = GenerateRfiCtrlFileCb;
+    if (Module::ConfigReader::getString(PLUGIN_CONFIG_KEY, "KEEP_RFI_IN_CACHE_REPO") == "1") {
+        INFOLOG("set to keep rfifile, jobId %s", m_indexPara->jobId.c_str());
+        m_scanConfig.keepRfiFile = true;
+    }
     HCP_Log(INFO, MODULE) << "EXIT FillScanConfig" << HCPENDLOG;
 }
 

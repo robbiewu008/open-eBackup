@@ -28,6 +28,7 @@
 #include "utils/PluginUtilities.h"
 #include "system/System.hpp"
 #include "common/Thread.h"
+#include "thrift_interface/ApplicationProtectPlugin_types.h"
 
 namespace {
     constexpr auto STAT_TIMEOUT_MILLSEC = 100;
@@ -35,6 +36,7 @@ namespace {
 }
 
 using namespace std;
+using namespace AppProtect;
 
 namespace {
     constexpr auto MODULE = "PosixHandler";
@@ -353,6 +355,23 @@ void PosixHandler::ListVolumeResource(
 #else
     WARNLOG("ListVolumeResource not implemented on this platform!");
 #endif
+}
+
+void PosixHandler::TransformResultForVolume(ResourceResultByPage& returnValue,
+    const FileResourceInfo& resourceInfo)
+{
+    returnValue.total = resourceInfo.totalCount;
+    for (auto resourceInfo : resourceInfo.resourceDetailVec) {
+        ApplicationResource resource;
+        resource.__set_id(std::to_string(returnValue.total));
+        std::string extendInfo;
+        if (!Module::JsonHelper::StructToJsonString(resourceInfo, extendInfo)) {
+            ERRLOG("Failed to get result of volume!");
+            continue;
+        }
+        resource.__set_extendInfo(extendInfo);
+        returnValue.items.push_back(resource);
+    }
 }
 
 }

@@ -26,7 +26,6 @@ using namespace FilePlugin;
 
 namespace {
 const std::string FILESET_STR = "Fileset";
-const std::string VOLUME_STR = "Volume";
 static const std::string GENERALDN_LOG_NAME = "AppPlugins.log";
 /* agent安装目录的相对路径，使用时需要在前面加上agent的安装目录 */
 #ifdef WIN32
@@ -54,8 +53,8 @@ const int MIN_MEMORY = 20 * 1024 * 1024;
 const int MAX_MEMORY = 200 * 1024 * 1024;
 const int DEFAULT_MEMORY = 50 * 1024 * 1024;
 const int BACKUP_STUCK_TIME_MIN = 120;
-const int BACKUP_STUCK_TIME_MAX = 480;
-const int BACKUP_STUCK_TIME_DEFAULT = 300;
+const int BACKUP_STUCK_TIME_MAX = 86400;
+const int BACKUP_STUCK_TIME_DEFAULT = 1800;
 const int ADD_NEW_SUBJOB_STUCK_TIME_MIN = 3600;
 const int ADD_NEW_SUBJOB_STUCK_TIME_MAX = 864000;
 const int ADD_NEW_SUBJOB_STUCK_TIME_DEFAULT = 86400;
@@ -226,9 +225,7 @@ FILEPLUGIN_API void CheckBackupJobType(ActionResult& returnValue, const AppProte
     int ret = Module::SUCCESS;
     auto jobCommonInfoPtr = make_shared<JobCommonInfo>(make_shared<BackupJob>(job));
     std::string appType = job.protectObject.subType;
-    if (appType == VOLUME_STR) {
-        ERRLOG("Volume backup is not implemented on this platform");
-    } else if (appType == FILESET_STR) {
+    if (appType == FILESET_STR) {
         auto jobptr = std::make_shared<HostBackup>();
         jobptr->SetJobInfo(jobCommonInfoPtr);
         ret = jobptr->CheckBackupJobType();

@@ -113,6 +113,7 @@ namespace FSBackupUtils {
     bool IsHandleMetaModified(const std::string &scannermode, const BackupDataFormat &format);
     bool OnlyGenerateSqlite(bool genSqlite);
     void MemoryTrim();
+    std::string LowerCase(const std::string& path);
 };
 
 #endif // UTILITIES_H

@@ -111,11 +111,12 @@ public:
     CTRL_FILE_RETCODE WriteUpdateDirMeta(const Module::DirCache& dcache1, const Module::DirMetaWrapper& dmeta1,
         const Module::DirCache& dcache2, const Module::DirMetaWrapper& dmeta2);
     CTRL_FILE_RETCODE WriteUpdateFileMeta(const Module::FileCache& fcache1, const Module::FileMetaWrapper& fmeta1,
-        const Module::FileCache& fcache2,const Module::FileMetaWrapper& fmeta2, const std::string& prePath);
-    CTRL_FILE_RETCODE WriteSingleDirMeta(const Module::DirCache& dcache,const Module::DirMetaWrapper& dmeta,
+        const Module::FileCache& fcache2, const Module::FileMetaWrapper& fmeta2, const std::string& prePath);
+    CTRL_FILE_RETCODE WriteSingleDirMeta(const Module::DirCache& dcache, const Module::DirMetaWrapper& dmeta,
         RfiEntryStatus status);
-    CTRL_FILE_RETCODE WriteSingleFileMeta(const Module::FileCache& fcache,const Module::FileMetaWrapper& fmeta,
+    CTRL_FILE_RETCODE WriteSingleFileMeta(const Module::FileCache& fcache, const Module::FileMetaWrapper& fmeta,
         const std::string& prePath, RfiEntryStatus status);
+    CTRL_FILE_RETCODE WriteEmptyDir(const std::string& dirName);
     CTRL_FILE_RETCODE GenerateZip();
     /**
         * Check the number of entries in the control file

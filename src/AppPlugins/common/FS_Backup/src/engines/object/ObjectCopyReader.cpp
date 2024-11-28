@@ -507,12 +507,15 @@ void ObjectCopyReader::HandleFailedEvent(std::shared_ptr<ObjectServiceTask> task
         m_controlInfo->m_failed = true;
         m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
     }
+    if (!fileHandle.m_errMessage.empty()) {
+        m_failedList.emplace_back(fileHandle);
+    }
     // NATIVE format doesn't need push to aggregator.
     if ((m_backupParams.commonParams.backupDataFormat == BackupDataFormat::AGGREGATE) ||
         FSBackupUtils::OnlyGenerateSqlite(m_backupParams.commonParams.genSqlite)) {
         PushToAggregator(fileHandle); // file handle so aggregate can handle failurs of reading file
     }
-    ERRLOG("copy read failed for file %s, %llu， totalFailed: %llu, %llu", fileHandle.m_file->m_fileName.c_str(),
+    ERRLOG("copy read failed for file %s, %llu, totalFailed: %llu, %llu", fileHandle.m_file->m_fileName.c_str(),
         m_controlInfo->m_noOfFilesReadFailed.load(), m_controlInfo->m_noOfDirFailed.load(),
         m_controlInfo->m_noOfFilesFailed.load());
     return;

@@ -29,6 +29,7 @@ const std::string CTRL_FILE_PATH_SEPARATOR = "/"; /* Control file and XMeta alwa
 const int SKIP = 1;
 const int FINISH = 2;
 const int NUMBER_ONE = 1;
+const int NUMBER_TWO = 2;
 const int QUEUE_TIMEOUT_MILLISECOND = 200;
 const string XMETA_FILENAME_PFX = "xmeta_file_";
 const int XMETA_FILENAME_LEN = 1024;
@@ -39,7 +40,8 @@ HardlinkControlFileReader::HardlinkControlFileReader(const ReaderParams& readerP
     m_readQueue(readerParams.readQueuePtr),
     m_controlInfo(readerParams.controlInfo),
     m_blockBufferMap(readerParams.blockBufferMap),
-    m_hardlinkMap(readerParams.hardlinkMap)
+    m_hardlinkMap(readerParams.hardlinkMap),
+    m_failureRecorder(readerParams.failureRecorder)
 {}
  
 HardlinkControlFileReader::HardlinkControlFileReader(BackupParams& backupParams,
@@ -155,21 +157,61 @@ void HardlinkControlFileReader::ThreadFunc()
         }
 
         if (ret == Module::FAILED) {
-            break;
+            continue;
         }
         if (ret == SKIP) {
             continue;
         }
-        while (!m_readQueue->WaitAndPush(fileHandle, QUEUE_TIMEOUT_MILLISECOND)) {
-            if (IsAbort()) {
-                break;
-            }
-        }
+        PushFileHandlesToReadQueue(parentInfo, fileHandle);
         ++m_controlInfo->m_controlFileReaderProduce;
     }
     m_controlInfo->m_controlReaderPhaseComplete = true;
     INFOLOG("HardlinkControlFileReader main thread end!");
     return;
+}
+
+// 归档恢复的硬链接，与归档约定了，只归档硬链接中字典序第一位的文件，所以归档恢复只用第一个请求数据
+void HardlinkControlFileReader::PushFileHandlesToReadQueue(ParentInfo& parentInfo, FileHandle &fileHandle)
+{
+    // 兼容磁带归档副本下载恢复，历史版本直接push到reader，后续版本都排序后决定读哪个文件
+    if (m_metaFileVersion == META_VERSION_V10) {
+        WaitAndPushToReadQueue(fileHandle);
+        return;
+    }
+#ifdef _NAS
+    // nfs根目录是./file
+    if (fileHandle.m_file->m_fileName.size() > NUMBER_TWO &&
+        (fileHandle.m_file->m_fileName[0] == '.' && fileHandle.m_file->m_fileName[1] == '/')) {
+        fileHandle.m_file->m_fileName = fileHandle.m_file->m_fileName.substr(1);
+    }
+#endif
+    m_current_links.push_back(fileHandle);
+    // 归档恢复，需要等所有的硬链接都从控制文件读出来，再push到readQueue，links本身是有序的，不需要再排序
+    DBGLOG("PushFileHandlesToReadQueue hardlink, file %s, current link size: %d, links: %d, ctrlfile links: %d",
+        fileHandle.m_file->m_fileName.c_str(), m_current_links.size(), fileHandle.m_file->m_nlink, parentInfo.nlink);
+    if (m_current_links.size() != parentInfo.nlink) {
+        return;
+    }
+    sort(m_current_links.begin(), m_current_links.end());
+    m_current_links[0].m_file->SetSrcState(FileDescState::INIT);
+    DBGLOG("first hardlink, file %s, state is: %d",
+        m_current_links[0].m_file->m_fileName.c_str(), (int)m_current_links[0].m_file->GetSrcState());
+    for (size_t i = 0; i < m_current_links.size(); ++i) {
+        ProcessHardlink(parentInfo, m_current_links[i]);
+        DBGLOG("push hardlink, file %s, state is: %d",
+            m_current_links[i].m_file->m_fileName.c_str(), (int)m_current_links[i].m_file->GetSrcState());
+        WaitAndPushToReadQueue(m_current_links[i]);
+    }
+    m_current_links.clear();
+}
+
+void HardlinkControlFileReader::WaitAndPushToReadQueue(FileHandle &fileHandle)
+{
+    while (!m_readQueue->WaitAndPush(fileHandle, QUEUE_TIMEOUT_MILLISECOND)) {
+        if (IsAbort()) {
+            break;
+        }
+    }
 }
 
 int HardlinkControlFileReader::ReadControlFileEntryAndProcess(HardlinkCtrlEntry& linkEntry,
@@ -185,6 +227,9 @@ int HardlinkControlFileReader::ReadControlFileEntryAndProcess(HardlinkCtrlEntry&
     } else if (!linkEntry.dirName.empty() && !linkEntry.fileName.empty()) {
         ret = ProcessFileEntry(parentInfo, linkEntry, fileHandle);
         if (ret == Module::FAILED) {
+            ++m_controlInfo->m_controlFileReaderProduce;
+            ++m_controlInfo->m_noOfFilesFailed;
+            ++m_controlInfo->m_noOfFilesReadFailed;
             return Module::FAILED;
         }
         return Module::SUCCESS;
@@ -207,6 +252,9 @@ int HardlinkControlFileReader::ReadControlFileEntryAndProcessV10(ScannerHardLink
         DBGLOG("ProcessFileEntry: %s, %s, %d", linkEntry.dirName.c_str(), linkEntry.fileName.c_str(),
             ret1);
         if (ret1 == Module::FAILED) {
+            ++m_controlInfo->m_controlFileReaderProduce;
+            ++m_controlInfo->m_noOfFilesFailed;
+            ++m_controlInfo->m_noOfFilesReadFailed;
             return Module::FAILED;
         }
         return Module::SUCCESS;
@@ -419,13 +467,16 @@ string HardlinkControlFileReader::GetOpenedXMetaFileName() const
 int HardlinkControlFileReader::ProcessFileEntry(
     ParentInfo& parentInfo, const HardlinkCtrlEntry& linkEntry, FileHandle& fileHandle)
 {
+    fileHandle.m_file->m_fileName = linkEntry.dirName + CTRL_FILE_PATH_SEPARATOR  + linkEntry.fileName;
     if (linkEntry.metaFileName.empty()) {
+        m_failureRecorder->RecordFailure(fileHandle.m_file->m_fileName, "Failed to read meta file name!");
         ERRLOG("meta file is empty");
         return Module::FAILED;
     }
     if (GetOpenedMetaFileName() != GetMetaFile(linkEntry.metaFileName)) {
         parentInfo.metaFileName = GetMetaFile(linkEntry.metaFileName);
         if (OpenMetaControlFile(parentInfo.metaFileName) != Module::SUCCESS) {
+            m_failureRecorder->RecordFailure(fileHandle.m_file->m_fileName, "Failed to open meta file!");
             ERRLOG("open meta file failed!");
             return Module::FAILED;
         }
@@ -433,11 +484,11 @@ int HardlinkControlFileReader::ProcessFileEntry(
 
     FileMeta fileMeta;
     if (ReadFileMeta(fileMeta, linkEntry.metaFileOffset) != Module::SUCCESS) {
+        m_failureRecorder->RecordFailure(fileHandle.m_file->m_fileName, "Failed to read meta file!");
         ERRLOG("read file meta failed!");
         return Module::FAILED;
     }
 
-    fileHandle.m_file->m_fileName = linkEntry.dirName + CTRL_FILE_PATH_SEPARATOR  + linkEntry.fileName;
     fileHandle.m_file->m_dirName = linkEntry.dirName;
     fileHandle.m_file->m_fileCount = linkEntry.m_hardLinkFilesCnt;
     DBGLOG("Enter ProcessFileEntry: %s", fileHandle.m_file->m_fileName.c_str());
@@ -447,6 +498,7 @@ int HardlinkControlFileReader::ProcessFileEntry(
         string xMetafilename = GetXMetaFile(fileMeta.m_xMetaFileIndex);
         if (GetOpenedXMetaFileName() != xMetafilename) {
             if (OpenXMetaControlFile(xMetafilename) != Module::SUCCESS) {
+                m_failureRecorder->RecordFailure(fileHandle.m_file->m_fileName, "Failed to open xmeta file!");
                 ERRLOG("Failed to open xmeta file");
                 return Module::FAILED;
             }
@@ -454,11 +506,13 @@ int HardlinkControlFileReader::ProcessFileEntry(
 
         /* Get fh from XMetaFile */
         if (ReadFileXMeta(fileHandle, fileMeta) != Module::SUCCESS) {
+            m_failureRecorder->RecordFailure(fileHandle.m_file->m_fileName, "Failed to read xmeta file!");
             return Module::FAILED;
         }
     }
-
-    ProcessHardlink(parentInfo, fileHandle);
+    if (m_metaFileVersion == META_VERSION_V10) {
+        ProcessHardlink(parentInfo, fileHandle);
+    }
 
     return Module::SUCCESS;
 }

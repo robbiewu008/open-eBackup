@@ -10,6 +10,9 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
+#ifndef BACKUPFAILEDCTRLPARSER_H
+#define BACKUPFAILEDCTRLPARSER_H
+
 #include <string>
 #include <mutex>
 #include "FileParser.h"
@@ -19,7 +22,6 @@
 namespace Module {
 
 class BackupFailedCtrlParser : public FileParser {
-
 public:
     BackupFailedCtrlParser();
     ~BackupFailedCtrlParser();
@@ -41,3 +43,4 @@ public:
     CTRL_FILE_RETCODE ReadFailedFile(std::string& fileName);
 };
 };
+#endif

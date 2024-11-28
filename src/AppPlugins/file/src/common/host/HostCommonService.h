@@ -105,10 +105,6 @@ protected:
     void SetJobCtrlPhase(const std::string& jobCtrlPhase);
 
     /* Backup Statistic */
-    BackupStatistic CalcuSumStructBackupStatistic(const BackupStatistic& A_backupStatistic,
-        const BackupStatistic& B_backupStatistic) const;
-    BackupStatistic CalcuAddedBackupStatistic(const BackupStatistic& A_backupStatistic,
-        const BackupStatistic& B_backupStatistic) const;
     BackupStatistic GetIncBackupStats(const BackupStats& currStats, BackupStatistic prevStats);
     void SerializeBackupStats(const BackupStats& backupStats, BackupStatistic& backupStatistic);
 
@@ -146,8 +142,8 @@ protected:
     void MergeBackupFailureRecords();
     bool IsBackupStatusInprogress(SubJobStatus::type &jobStatus) const;
     uint64_t CalculateSizeInKB(uint64_t bytes) const;
+    bool SetNumOfChannels(const std::string& channelCntStr) const;
 
-protected:
     BackupStats m_backupStats;
     uint64_t m_curProcess = 0;
     std::string m_subJobId;
@@ -173,6 +169,8 @@ protected:
     /* Root Path Of Backup Failure Recorder Output */
     std::string m_failureRecordRoot {};
     uint64_t m_maxFailureRecordsNum = 0;
+    /* 插件配置文件读写锁 */
+    static std::mutex m_pluginAtrributeJsonFileMutex;
 };
 }
 #endif

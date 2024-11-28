@@ -115,10 +115,10 @@ public:
 
 private:
     uint32_t m_maxEntryPerFile = 0;             /* Maximum entries per control file */
-    MtimeCtrlParser::Header m_header {};			/* File header info */
+    MtimeCtrlParser::Header m_header {};            /* File header info */
 
-    uint32_t m_maxFileSize = 0;					/* Maximum size of the control file */
-    uint32_t m_entries = 0;						/* Number of file/dir entries in the file */
+    uint32_t m_maxFileSize = 0;                 /* Maximum size of the control file */
+    uint32_t m_entries = 0;                     /* Number of file/dir entries in the file */
 
     CTRL_FILE_RETCODE OpenWrite() override;
     CTRL_FILE_RETCODE CloseWrite() override;

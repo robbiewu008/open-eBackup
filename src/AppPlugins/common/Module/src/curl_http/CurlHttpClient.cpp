@@ -477,7 +477,7 @@ void CurlHttpResponse::SendRequest(const HttpRequest& req, const uint32_t timeOu
     }
     if (m_ErrorCode != CURLE_OK) {
         HCP_Log(ERR, HTTP_CLIENT_MODULE_NAME) << "Http send request failed. Error is"
-            << curl_error_str << HCPENDLOG;
+            << m_ErrorCode << ", " << curl_error_str << HCPENDLOG;
     }
     if (headers != nullptr) {
         curl_slist_free_all(headers);

@@ -22,12 +22,14 @@ typedef unsigned long long u_longlong_t;
 #define USE_SELECT
 #endif
 
-#define XDR_AND_SIZE(func) (bool_t(*)(XDR*, ...))xdr_##func,sizeof(func)
+#define XDR_AND_SIZE(func) (bool_t(*)(XDR*, ...))xdr_##func, sizeof(func)
 #define AUTH_REQUIRED		TRUE
 #define AUTH_NOT_REQUIRED	FALSE
+#define MAX_RETRY_CNT 5  // 文件打开失败重试次数
 
 
-//ndmpcopy
+// ndmpcopy
+#define NDMPCOPY_SUCCESS                   0
 #define NDMPCOPY_OTHER_ERR                 -1
 #define NDMPCOPY_USERINFO_ERR              -2
 #define NDMPCOPY_CONNECT_ERR               -3
@@ -36,104 +38,98 @@ typedef unsigned long long u_longlong_t;
 #define NDMPCOPY_FS_PARAMS                 -6
 #define NDMPCOPY_CCDB_TIMEOUT             -7
 
+#define UNITY_OS "Unity"
+#define DORADO_OS "Huawei"
+#define NETAPP_OS "NetApp"
+#define ISILON_OS "Isilon"
+
 typedef void* NdmpConnection;
 
 typedef void NdmpConHandlerFunc(NdmpConnection);
 	
-typedef void NdmpMsgHandlerFunc(NdmpConnection	connection,
-								void*			request);
+typedef void NdmpMsgHandlerFunc(NdmpConnection	connection, void* request);
 
+static pthread_mutex_t      g_dataMutex = PTHREAD_MUTEX_INITIALIZER;
+
+void writeProcessMsg(char *msg);
 typedef struct NdmpMsgHandler
 {
-	ndmp_message		message;
-	u_short				version;
-	NdmpMsgHandlerFunc*	func;
-	bool_t				auth_required;
-	bool_t				(*xdr_request)(XDR* xdrs, ...);
-	int					sizeof_request;
-	bool_t				(*xdr_reply)(XDR* xdrs, ...);
-	int					sizeof_reply;
+    ndmp_message        message;
+    u_short             version;
+    NdmpMsgHandlerFunc* func;
+    bool_t              auth_required;
+    bool_t              (*xdr_request)(XDR* xdrs, ...);
+    int                 sizeof_request;
+    bool_t              (*xdr_reply)(XDR* xdrs, ...);
+    int                 sizeof_reply;
 } NdmpMsgHandler;
 
-NdmpConnection
-ndmpCreateConnection(NdmpMsgHandler*	msgHandlerTbl);
+typedef enum NdmpStatus
+{
+    NDMP_STATUS_INIT = 1, 						/* 初始状态 */
+    NDMP_STATUS_PROCESSING = 2, 				/* 备份/恢复进行中 */
+    NDMP_STATUS_ABORTED = 3, 					/* 备份/恢复中断 */
+    NDMP_STATUS_FINISHED = 4,					/* 备份/恢复任务上报成功 */
+    NDMP_STATUS_CONNECTION_HALTED = 5,			/* 备份/恢复任务异常结束 */
+	NDMP_STATUS_COMPLETED = 6,					/* 备份/恢复任务完成 */
+    NDMP_STATUS_INTERNAL_ERROR = -1				/* 内部错误 */
+} NdmpStatus;
 
-void
-ndmpDestroyConnection(NdmpConnection	connection);
+NdmpConnection ndmpCreateConnection(NdmpMsgHandler* msgHandlerTbl);
 
-void
-ndmpClose(NdmpConnection	connectionHandle);
+void ndmpDestroyConnection(NdmpConnection connection);
 
-int
-ndmpConnect(NdmpConnection	connectionHandle,
-			char*			host,
-			u_long          port);
+void ndmpClose(NdmpConnection connectionHandle);
 
-int
-ndmpPoll(NdmpConnection	connectionHandle,
-		 bool_t			block);
+int ndmpConnect(NdmpConnection connectionHandle, char* host, u_long port);
 
-void
-ndmpRun(u_long				port,
-		bool_t				dofork,
-		NdmpMsgHandler*		msgHandlerTbl,
-		NdmpConHandlerFunc*	conHandlerFunc);
+int ndmpPoll(NdmpConnection	connectionHandle, bool_t block);
 
-int
-ndmpProcessRequests(NdmpConnection	connectionHandle);
+void ndmpRun(u_long	port, bool_t dofork, NdmpMsgHandler* msgHandlerTbl, NdmpConHandlerFunc* conHandlerFunc);
 
-int
-ndmpSendReply(NdmpConnection	connectionHandle,
-			  ndmp_error		err,
-			  void*				data);
+int ndmpProcessRequests(NdmpConnection connectionHandle);
 
-int
-ndmpSendRequest(NdmpConnection	connectionHandle,
-				ndmp_message	message,
-				ndmp_error		err,
-				void*			request_data,
-				void**			reply_data);
+int ndmpSendReply(NdmpConnection connectionHandle, ndmp_error err, void* data);
 
-void
-ndmpFreeMessage(NdmpConnection	connectionHandle);
+int ndmpSendRequest(NdmpConnection connectionHandle, ndmp_message message,
+    ndmp_error err, void* request_data, void** reply_data);
 
-int
-ndmpGetFd(NdmpConnection	connectionHandle);
+void ndmpFreeMessage(NdmpConnection	connectionHandle);
 
-void
-ndmpSetClientData(NdmpConnection	connectionHandle,
-				  void				*client_data);
+int ndmpGetFd(NdmpConnection connectionHandle);
 
-void*
-ndmpGetClientData(NdmpConnection	connectionHandle);
+void ndmpSetClientData(NdmpConnection connectionHandle, void* client_data);
 
-void
-ndmpSetVersion(NdmpConnection	connectionHandle,
-			   u_short			version);
+void* ndmpGetClientData(NdmpConnection connectionHandle);
 
-u_short
-ndmpGetVersion(NdmpConnection	connectionHandle);
+void ndmpSetVersion(NdmpConnection connectionHandle, u_short version);
 
-void
-ndmpSetAuthorized(NdmpConnection	connectionHandle,
-				  bool_t			authorized);
+u_short ndmpGetVersion(NdmpConnection connectionHandle);
 
-u_longlong_t
-quadToLongLong(ndmp_u_quad	quad);
+void ndmpSetAuthorized(NdmpConnection connectionHandle, bool_t authorized);
 
-ndmp_u_quad
-longLongToQuad(u_longlong_t	ull);
+u_longlong_t quadToLongLong(ndmp_u_quad	quad);
 
-int 
-check_connect_socket(NdmpConnection connectionHandle);
+ndmp_u_quad longLongToQuad(u_longlong_t	ull);
 
-void 
-set_connect_socket_valid(NdmpConnection connectionHandle);
+int check_connect_socket(NdmpConnection connectionHandle);
 
-void
-removeLifIpConn();
+void set_connect_socket_valid(NdmpConnection connectionHandle);
 
-void
-intSaveLifIp();
+void removeLifIpConn();
+
+void intSaveLifIp();
+
+int NdmpProcessFhAddDir(void *body);
+
+int NdmpProcessFhAddNode(void *body);
+
+int NdmpProcessFhAddFile(void *body);
+
+void NdmpProcessInterrupt();
+
+void set_ndmp_status(NdmpStatus status);
+
+void ndmp_get_connect_stat(NdmpConnection *ndmp_connection, bool is_src);
 
 #endif /* _ndmp_common_h */

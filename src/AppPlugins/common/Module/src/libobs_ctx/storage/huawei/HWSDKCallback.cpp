@@ -22,8 +22,6 @@ namespace {
 const std::string MODULE_NAME = "HWSDKCallback";
 }  // namespace
 
-
-
 namespace Module {
 
 void PrintCompleteCallbackErrorDesc(obs_status status, const obs_error_details *error)
@@ -212,7 +210,7 @@ void MultiPartDownloadObjectCallback(obs_status status, char* resultMsg, int par
     MultiPartDownloadObjectCallBackData* data = (MultiPartDownloadObjectCallBackData*) callbackData;
 
     obs_download_file_part_info* pstDownloadInfoList = downloadInfoList;
-    for(int i = 0; i < partCountReturn; i++) {
+    for (int i = 0; i < partCountReturn; i++) {
         DownloadObjectPartInfo downloadObjectPartInfo;
         downloadObjectPartInfo.partId = pstDownloadInfoList[i].part_num;
         downloadObjectPartInfo.startByte = pstDownloadInfoList[i].start_byte;
@@ -270,7 +268,7 @@ void MultiPartUploadObjectCallback(obs_status status, char* resultMsg, int partC
 
     MultiPartUploadObjectCallBackData* data = (MultiPartUploadObjectCallBackData*) callbackData;
 
-    for(int i = 0; i < partCountReturn; i++) {
+    for (int i = 0; i < partCountReturn; i++) {
         UploadObjectPartInfo tmpUploadObjectInfo;
         tmpUploadObjectInfo.partId = uploadInfoList[i].part_num;
         tmpUploadObjectInfo.startByte = uploadInfoList[i].start_byte;
@@ -304,7 +302,7 @@ obs_status PutPartObjectPropertiesCallback(const obs_response_properties *proper
 {
     if (properties == NULL || callbackData == NULL) {
         HCP_Log(WARN, MODULE_NAME) << "put object buffer or callbackData is null" << HCPENDLOG;
-        return OBS_STATUS_OK;;
+        return OBS_STATUS_OK;
     }
 
     PutObjectPartCallData *data = (PutObjectPartCallData *)callbackData;
@@ -320,7 +318,7 @@ obs_status PutPartObjectPropertiesCallback(const obs_response_properties *proper
 int PutPartObjectCallback(int buffer_size, char *buffer, void *callbackData)
 {
     int ret = 0;
-    if (buffer == NULL || callbackData == NULL) {
+    if (buffer == nullptr || callbackData == nullptr) {
         HCP_Log(WARN, MODULE_NAME) << "put object buffer or callbackData is null" << HCPENDLOG;
         return ret;
     }

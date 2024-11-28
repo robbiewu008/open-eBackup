@@ -208,7 +208,8 @@ int SmbContextWrapper::SmbCloseQueryDir(struct smb2_query_directory_data *qd)
     return smb2_close_querydir(m_smbContext, qd);
 }
 
-int SmbContextWrapper::SmbCloseQueryDirAsync(struct smb2_query_directory_data *qd, smb2_command_cb cb, void *privateData)
+int SmbContextWrapper::SmbCloseQueryDirAsync(struct smb2_query_directory_data *qd,
+    smb2_command_cb cb, void *privateData)
 {
     return smb2_close_querydir_async(m_smbContext, qd, cb, privateData);
 }

@@ -16,11 +16,10 @@
 #include <mutex>
 #include <string>
 #include <vector>
-#include "NasControlFile.h"
 #include <fstream>
-#include "define/Defines.h" 
+#include "NasControlFile.h"
+#include "define/Defines.h"
 
-// #include "ScannerUtils.h"
 
 const std::string NAS_SCANNERBACKUPCTRL_ENTRY_MODE_DATA_MODIFIED = "dm";
 const std::string NAS_SCANNERBACKUPCTRL_ENTRY_MODE_META_MODIFIED = "mm";
@@ -127,14 +126,14 @@ class AGENT_API ScannerBackupCtrl {
         std::stringstream m_readBuffer {};               /* Read Buffer */
         std::ofstream m_writeFd {};   /* Write FD */
         std::stringstream m_writeBuffer {};              /* Write Buffer */
-        std::stringstream m_writeFileBuffer {};          /* Temporary write buffer to hold file entries for a dir entry */
+        std::stringstream m_writeFileBuffer {};     /* Temporary write buffer to hold file entries for a dir entry */
 
         uint32_t m_maxFileSize = 0;                 /* Maximum size of the control file */
         uint64_t m_maxDataSize = 0;                 /* Maximum data size represented by all entries in this file */
         uint64_t m_minDataSize = 0;                 /* Minimum data size represented by all entries in this file */
         uint64_t m_dataSize = 0;                    /* Total data size represented by all entries in this file */
         uint32_t m_entries = 0;                     /* Number of file/dir entries in the file */
-        uint32_t m_fileCount = 0;                   /* To track filecount per dir. Will be reset on each dir update*/
+        uint32_t m_fileCount = 0;                   /* To track filecount per dir. Will be reset on each dir update */
 
         time_t m_ctrlFileCreationTime = 0;         /* Ctrl file creation time */
         uint32_t m_ctrlFileTimeElapsed = 0;         /* Time elapsed since control file created */
@@ -181,12 +180,14 @@ class AGENT_API ScannerBackupCtrl {
          * Translate dir entry read from file to ScannerBackupCtrlDirEntry sructure
          */
         void TranslateDirEntry(std::vector<std::string> &dirEntryStringFromFile, ScannerBackupCtrlDirEntry &dirEntry);
-        void TranslateDirEntryV10(std::vector<std::string> &dirEntryStringFromFile, ScannerBackupCtrlDirEntry &dirEntry);
+        void TranslateDirEntryV10(std::vector<std::string> &dirEntryStringFromFile,
+            ScannerBackupCtrlDirEntry &dirEntry);
 
         /**
          * Translate file entry read from file to ScannerBackupCtrlFileEntry sructure
          */
-        void TranslateFileEntry(std::vector<std::string> &fileEntryStringFromFile, ScannerBackupCtrlFileEntry &fileEntry);
+        void TranslateFileEntry(std::vector<std::string> &fileEntryStringFromFile,
+            ScannerBackupCtrlFileEntry &fileEntry);
         void TranslateFileEntryV10(std::vector<std::string> &fileEntryStringFromFile,
             ScannerBackupCtrlFileEntry &fileEntry);
 

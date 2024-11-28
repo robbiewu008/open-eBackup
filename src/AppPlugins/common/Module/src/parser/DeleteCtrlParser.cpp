@@ -14,9 +14,9 @@
 #define __STDC_FORMAT_MACROS
 #endif
 #include "DeleteCtrlParser.h"
+#include <cinttypes>
 #include "Log.h"
 #include "securec.h"
-#include <cinttypes>
 
 using namespace std;
 using namespace Module;
@@ -135,7 +135,7 @@ CTRL_FILE_RETCODE DeleteCtrlParser::WriteDirEntry(DeleteCtrlEntry &deleteEntry)
         return CTRL_FILE_RETCODE::FAILED;
     }
 
-    int len = snprintf_s(m_writeCtrlLine, CTRL_WRITE_LINE_SIZE, CTRL_WRITE_LINE_SIZE, 
+    int len = snprintf_s(m_writeCtrlLine, CTRL_WRITE_LINE_SIZE, CTRL_WRITE_LINE_SIZE,
                         "d,%" PRIu32 ",%s,%d\n",
                         commaCount,
                         deleteEntry.m_absPath.c_str(),

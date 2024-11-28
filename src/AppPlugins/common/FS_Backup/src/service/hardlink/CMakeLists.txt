@@ -44,6 +44,7 @@ target_include_directories(service_hardlink_obj
     ${BACKUP_SRC_PATH}/engines/libnfs/requests
     ${BACKUP_SRC_PATH}/engines/libnfs/interface
     ${BACKUP_SRC_PATH}/engines/archive_client
+    ${BACKUP_SRC_PATH}/engines/nfs_anti_ransomware
     ${BACKUP_SRC_PATH}/service
     ${BACKUP_SRC_PATH}/service/copy
     ${BACKUP_SRC_PATH}/service/delete

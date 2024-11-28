@@ -62,6 +62,11 @@ public:
         return { m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t) + sizeof(AuxDataSize) +
             sizeof(AuxDataSize) + linkSize, nameSize };
     }
+    const UserGroup* Uidgid(AuxDataSize linkSize, AuxDataSize nameSize) const
+    {
+        return reinterpret_cast<const UserGroup*>(m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t) +
+            sizeof(AuxDataSize) + sizeof(AuxDataSize) + linkSize + nameSize);
+    }
 
 private:
     boost::string_view m_data;

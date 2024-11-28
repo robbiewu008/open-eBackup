@@ -36,7 +36,8 @@ JfsSnapshotProvider::JfsSnapshotProvider(
     : deviceMount(deviceMount), jobId(jobId), m_snapshotMountRoot(snapshotMountRoot)
 {}
 
-SnapshotResult JfsSnapshotProvider::CreateSnapshot(const std::string& filePath, bool isCrossVolume)
+SnapshotResult JfsSnapshotProvider::CreateSnapshot(const std::string& filePath, bool isCrossVolume,
+    const std::string& snapshotPercent)
 {
     SnapshotResult snapshotResult;
     if (filePath.empty()) {
@@ -60,7 +61,7 @@ SnapshotResult JfsSnapshotProvider::CreateSnapshot(const std::string& filePath, 
     for (auto it = volumeInfo.begin(); it != volumeInfo.end(); ++it) {
         int ret = 0;
         std::shared_ptr<LvmSnapshot> snapshotPtr = CreateSnapshotByVolume((*it).m_oriDeviceVolume,
-            (*it).m_oriDeviceMountPath, ret);
+            (*it).m_oriDeviceMountPath, ret, snapshotPercent);
         INFOLOG("CreateSnapshotByVolume returned value is %d", ret);
         if (ret == SNAP_ERRNO_SPACELESS) {
             size_t pos = (*it).m_oriDeviceVolume.find('/');
@@ -298,7 +299,7 @@ bool JfsSnapshotProvider::DeleteSnapshotByVolume(const std::string &snapVolumeNa
 }
 // Determines whether a snapshot has been created, and returns the created snapshot.
 std::shared_ptr<LvmSnapshot> JfsSnapshotProvider::CreateSnapshotByVolume(const std::string &volumeName,
-    const std::string &volumePath, int& ret)
+    const std::string &volumePath, int& ret, const std::string &snapshotPercent)
 {
     HCP_Log(INFO, MODULE) << "CreateSnapshotByVolume,start create device volume:"
         << volumeName << HCPENDLOG;
@@ -310,7 +311,8 @@ std::shared_ptr<LvmSnapshot> JfsSnapshotProvider::CreateSnapshotByVolume(const s
     std::vector<std::string> paramList;
     paramList.push_back(Module::CPath::GetInstance().GetRootPath());
     paramList.push_back(volumePath); // Original volume mount directory
-    std::string cmd = "?/bin/jfsSnapshot.sh -cv '?'";
+    paramList.push_back(snapshotPercent);  // snapshot size (%)
+    std::string cmd = "?/bin/jfsSnapshot.sh -cv '?' '?'";
     ret = ExecShellCmd(cmd, paramList, output);
     if (ret != 0 || output.size() == 0) {
         INFOLOG("create jfs volume snapshot failed, volumeName:%s", volumeName);

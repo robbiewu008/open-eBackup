@@ -11,12 +11,11 @@
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
 #include "device_access/oceanstor/OceanstorNasCifs.h"
-#include "device_access/oceanstor/OceanstorNasNFS.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#include "device_access/oceanstor/OceanstorNasNFS.h"
 #include "device_access/oceanstor/OceanstorNas.h"
 #include "common/JsonUtils.h"
-//#include "common/Utility.h"
 #include "system/System.hpp"
 #include "common/Path.h"
 #include "common/CleanMemPwd.h"
@@ -27,34 +26,31 @@ namespace Module {
     OceanstorNasCIFS::~OceanstorNasCIFS() {
     }
 
-    int OceanstorNasCIFS::Bind(HostInfo &host, const std::string &shareId) {
+    int OceanstorNasCIFS::Bind(HostInfo &host, const std::string &shareId)
+    {
         int iRet;
-        std::string userName = host.chapAuthName;
-        std::string password = host.chapPassword;
-
         DeviceDetails info;
         iRet = Query(info);
         if (iRet != SUCCESS) {
             return iRet;
         }
 
-        iRet = CIFSShareAddClient(userName, info.deviceId, host.domainName);
+        iRet = CIFSShareAddClient(host.chapAuthName, info.deviceId, host.domainName);
         if (iRet != SUCCESS) {
             HCP_Log(ERR, OCEANSTOR_MODULE_NAME) << "Add  User to Cifsshare Failed! errorCode:" << iRet << HCPENDLOG;
             return iRet;
         }
-
-        // clear memeory storage password
-        CleanMemoryPwd(password);
         return SUCCESS;
     }
 
-    int OceanstorNasCIFS::UnBind(HostInfo host, const std::string &shareId) {
+    int OceanstorNasCIFS::UnBind(HostInfo host, const std::string &shareId)
+    {
         HCP_Log(ERR, OCEANSTOR_MODULE_NAME) << "do not need to unbind!" << HCPENDLOG;
         return SUCCESS;
     }
 
-    int OceanstorNasCIFS::Query(DeviceDetails &info) {
+    int OceanstorNasCIFS::Query(DeviceDetails &info)
+    {
         int iRet = QueryFileSystem(info);
         if (iRet != SUCCESS) {
             HCP_Log(ERR, OCEANSTOR_MODULE_NAME) << "Query filesystem failure! errorCode:" << iRet << HCPENDLOG;
@@ -63,7 +59,8 @@ namespace Module {
         return QueryCifsShare(info, fileSystemId);
     }
 
-    int OceanstorNasCIFS::QueryFileSystem(DeviceDetails &info) {
+    int OceanstorNasCIFS::QueryFileSystem(DeviceDetails &info)
+    {
         HCP_Log(DEBUG, OCEANSTOR_MODULE_NAME) << "CIFS QueryFileSystem Enter" << HCPENDLOG;
         fileSystemName = ResourceName;
         int ret = OceanstorNas::QueryFileSystem(fileSystemName, info);
@@ -74,7 +71,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int OceanstorNasCIFS::CIFSShareAddClient(std::string name, int ID, const std::string &domainName) {
+    int OceanstorNasCIFS::CIFSShareAddClient(std::string name, int ID, const std::string &domainName)
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "CIFS_SHARE_AUTH_CLIENT";
@@ -99,7 +97,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int OceanstorNasCIFS::DeleteCIFSShare(DeviceDetails info) {
+    int OceanstorNasCIFS::DeleteCIFSShare(DeviceDetails info)
+    {
         HttpRequest req;
         int iRet;
         req.method = "DELETE";
@@ -118,7 +117,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int OceanstorNasCIFS::Delete() {
+    int OceanstorNasCIFS::Delete()
+    {
         DeviceDetails info;
         int iRet = QueryFileSystem(info);
         if (iRet != SUCCESS) {
@@ -162,7 +162,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int OceanstorNasCIFS::CreateShare() {
+    int OceanstorNasCIFS::CreateShare()
+    {
         DeviceDetails info;
         int ret = QueryFileSystem(info);
         if (ret != SUCCESS) {
@@ -172,7 +173,8 @@ namespace Module {
         return CreateCifsShare(ResourceName, std::to_string(info.deviceId));
     }
 
-    int OceanstorNasCIFS::CreateCifsShare(std::string fileSystemName, std::string FsId) {
+    int OceanstorNasCIFS::CreateCifsShare(std::string fileSystemName, std::string FsId)
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "CIFSHARE";
@@ -198,7 +200,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int OceanstorNasCIFS::QueryCifsShare(DeviceDetails &info, std::string fsId) {
+    int OceanstorNasCIFS::QueryCifsShare(DeviceDetails &info, std::string fsId)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "CIFSHARE?filter=FSID::" + fsId;
@@ -218,7 +221,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int OceanstorNasCIFS::DeleteWindowsUser(std::string userName) {
+    int OceanstorNasCIFS::DeleteWindowsUser(std::string userName)
+    {
         HttpRequest req;
         req.method = "DELETE";
         req.url = "WINDOWS_USER?NAME=" + userName;
@@ -236,7 +240,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int OceanstorNasCIFS::CreateWindowUser(std::string userName, std::string password) {
+    int OceanstorNasCIFS::CreateWindowUser(std::string userName, std::string password)
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "WINDOWS_USER";
@@ -258,7 +263,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    std::unique_ptr <ControlDevice> OceanstorNasCIFS::CreateClone(std::string volumeName, int &errorCode) {
+    std::unique_ptr <ControlDevice> OceanstorNasCIFS::CreateClone(std::string volumeName, int &errorCode)
+    {
         DeviceDetails info;
         std::string cloneFsId;
         ControlDeviceInfo deviceInfo = {};
@@ -288,7 +294,8 @@ namespace Module {
         return std::make_unique<OceanstorNasCIFS>(deviceInfo, cloneFsId);
     }
 
-    int OceanstorNasCIFS::GetFsNameFromShareName() {
+    int OceanstorNasCIFS::GetFsNameFromShareName()
+    {
         if (vstoreId.empty()) {
             GetVstoreId();
         }
@@ -321,7 +328,8 @@ namespace Module {
         return FAILED;
     }
 
-    std::unique_ptr <ControlDevice> OceanstorNasCIFS::CreateSnapshot(std::string SnapshotName, int &errorCode) {
+    std::unique_ptr <ControlDevice> OceanstorNasCIFS::CreateSnapshot(std::string SnapshotName, int &errorCode)
+    {
         std::string id;
         ControlDeviceInfo deviceInfo;
         deviceInfo.deviceName = SnapshotName;
@@ -335,7 +343,8 @@ namespace Module {
 
         int ret = QuerySnapshot(SnapshotName, id);
         if (ret == SUCCESS) {
-            return std::make_unique<OceanstorNasSnapshot>(deviceInfo, fileSystemId, vstoreId, "/" + fileSystemName + "/");
+            return std::make_unique<OceanstorNasSnapshot>(deviceInfo,
+                fileSystemId, vstoreId, "/" + fileSystemName + "/");
         }
         if (fileSystemId.empty()) {
             ret = GetFsNameFromShareName();
@@ -367,7 +376,8 @@ namespace Module {
         Json::Value data;
         int iRet = SendRequest(req, data, errorDes, errorCode, true);
         if (iRet == SUCCESS && errorCode == SUCCESS) {
-            return std::make_unique<OceanstorNasSnapshot>(deviceInfo, fileSystemId, vstoreId, "/" + fileSystemName + "/");
+            return std::make_unique<OceanstorNasSnapshot>(deviceInfo,
+                fileSystemId, vstoreId, "/" + fileSystemName + "/");
         } else {
             return nullptr;
         }

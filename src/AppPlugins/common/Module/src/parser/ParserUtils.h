@@ -28,12 +28,15 @@ public:
     static std::string GetParentDirOfFile(std::string filePath);
     static bool CheckParentDirIsReachable(std::string path);
     static uint32_t GetRandomNumber(uint32_t minNum, uint32_t maxNum);
-    static std::string ConstructStringName(uint32_t &offset, uint32_t &totCommaCnt, std::vector<std::string> &lineContents);
+    static std::string ConstructStringName(uint32_t &offset,
+        uint32_t &totCommaCnt, std::vector<std::string> &lineContents);
     static uint32_t GetCommaCountOfString(const char *str);
     static uint16_t Atou16(const char *s);
     static time_t GetCurrentTimeInSeconds();
-    static std::vector<std::pair<std::string, std::string>> ParseXattr(const std::vector<Module::XMetaField> &xmetalist);
-    static std::vector<std::pair<uint64_t, uint64_t>> ParseSparseInfo(const std::vector<Module::XMetaField> &xmetalist);
+    static std::vector<std::pair<std::string, std::string>> ParseXattr(
+        const std::vector<Module::XMetaField> &xmetalist);
+    static std::vector<std::pair<uint64_t, uint64_t>> ParseSparseInfo(
+        const std::vector<Module::XMetaField> &xmetalist);
 
     /* parse ACL for Linux/NFS */
     static std::string ParseDefaultAcl(const std::vector<Module::XMetaField> &xmetalist);

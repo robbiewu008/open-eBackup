@@ -38,35 +38,39 @@ namespace Module {
         m_pHttpCLient = IHttpClient::GetInstance();
     }
 
-    MSRestApi::~MSRestApi() {
+    MSRestApi::~MSRestApi()
+    {
         IHttpClient::ReleaseInstance(m_pHttpCLient);
         m_pHttpCLient = NULL;
     }
 
     int MSRestApi::Login(
-            bool retry,
-            const std::string &url,
-            const std::string &userName,
-            const std::string &password,
-            const std::string &cert,
-            std::string &errDesc,
-            bool globalIAM,
-            const std::string &tenantID,
-            const std::string &domainID,
-            const std::string &specifyNetowrk
-    ) {
+        bool retry,
+        const std::string &url,
+        const std::string &userName,
+        const std::string &password,
+        const std::string &cert,
+        std::string &errDesc,
+        bool globalIAM,
+        const std::string &tenantID,
+        const std::string &domainID,
+        const std::string &specifyNetowrk
+    )
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = url;
         req.cert = cert;
         req.specialNetworkCard = specifyNetowrk;
 
-        Json::Value rootValue, identityValue, userValue;
+        Json::Value rootValue;
+        Json::Value identityValue;
+        Json::Value userValue;
         Json::FastWriter jsonWriter;
 
         userValue[REST_PARAM_IAM_NAME] = userName;
         userValue[REST_PARAM_IAM_PASSWORD] = password;
-        //added for replication
+        // added for replication
         if (globalIAM == true) {
             userValue[REST_PARAM_IAM_SCOPE_TYPE] = 5;
             userValue[REST_PARAM_IAM_DOMAIN_ID] = domainID;
@@ -83,7 +87,6 @@ namespace Module {
 
         Json::Value data;
         int iRet = SendAndParseRsp(retry, req, data, errDesc, true);
-
         if (RETURN_OK == iRet) {
             m_logined = true;
         }
@@ -98,7 +101,8 @@ namespace Module {
                          const std::string &cert,
                          std::string &errDesc,
                          bool retry
-    ) {
+    )
+    {
         Json::FastWriter jsonWriter;
         HttpRequest req;
         req.method = "POST";
@@ -119,7 +123,8 @@ namespace Module {
 
     int MSRestApi::Logout(const std::string &url,
                           const std::string &cert,
-                          std::string &errDesc) {
+                          std::string &errDesc)
+    {
         if (!m_logined) {
             HCP_Log(INFO, MODULE_NAME) << "It is not logined." << HCPENDLOG;
             return RETURN_OK;
@@ -144,7 +149,8 @@ namespace Module {
                                Json::Value &data,
                                std::string &errorDes,
                                bool retry
-    ) {
+    )
+    {
         if (!m_logined) {
             HCP_Log(ERR, MODULE_NAME) << "It is not logined." << HCPENDLOG;
             return RETURN_ERROR;
@@ -159,27 +165,31 @@ namespace Module {
     int MSRestApi::SendRequestDirectly(const HttpRequest &req,
                                        Json::Value &data,
                                        std::string &errorDes,
-                                       bool retry /*default true*/) {
+                                       bool retry /* default true */)
+    {
         return SendAndParseRsp(retry, req, data, errorDes, false);
     }
 
     int MSRestApi::SendRequestDirectly(const HttpRequest &req,
                                        std::map<std::string, std::set<std::string> > &rspHeaders,
                                        std::string &rspData, std::string &errorDes,
-                                       bool retry /*default true*/) {
+                                       bool retry /* default true */)
+    {
         return SendRequest(req, rspHeaders, rspData, errorDes, retry);
     }
 
     int MSRestApi::SendRequestDirectly(const HttpRequest &req,
                                        std::string &rspData, std::string &errorDes,
-                                       bool retry /*default true*/) {
+                                       bool retry /* default true */)
+    {
         std::map<std::string, std::set<std::string> > rspHeaders;
         return SendRequest(req, rspHeaders, rspData, errorDes, retry);
     }
 
-//send raw request information (with errorCode)
+// send raw request information (with errorCode)
     int MSRestApi::SendRequest(const HttpRequest &req, Json::Value &data, std::string &errorDes, std::string *token,
-                               int &errorCode) {
+                               int &errorCode)
+    {
         if (NULL == m_pHttpCLient) {
             HCP_Log(ERR, MODULE_NAME) << "HttpClient is NULL. " << HCPENDLOG;
             return RETURN_ERROR;
@@ -200,7 +210,7 @@ namespace Module {
                 HCP_Log(ERR, MODULE_NAME) << "StatsCode: " << rsp->GetHttpStatusCode()
                                           << " , Http response error. Error is " << errorDes << HCPENDLOG;
                 (void) GetErrorCode(rsp->GetBody(), data, errorDes, errorCode);
-                return rsp->GetHttpStatusCode();    //return http status code
+                return rsp->GetHttpStatusCode();    // return http status code
             } else {
                 errorDes = rsp->GetErrString();
                 HCP_Log(ERR, MODULE_NAME) << "StatsCode: " << rsp->GetHttpStatusCode()
@@ -235,13 +245,15 @@ namespace Module {
                                std::string &rspData,
                                std::string &errorDes,
                                bool retry
-    ) {
+    )
+    {
         if (NULL == m_pHttpCLient) {
             HCP_Log(ERR, MODULE_NAME) << "HttpClient is NULL." << HCPENDLOG;
             return RETURN_ERROR;
         }
         std::shared_ptr<IHttpResponse> rsp;
-        uint64_t StartTime, Count = 0;
+        uint64_t StartTime = 0;
+        uint64_t Count = 0;
 
         StartTime = CTime::GetTimeSec();
         do {
@@ -305,10 +317,10 @@ namespace Module {
                                    const HttpRequest &req,
                                    Json::Value &data,
                                    std::string &errorDes,
-                                   const bool is_login /*= false*/
+                                   const bool is_login /*= false */
 
-    ) {
-
+    )
+    {
         std::map<std::string, std::set<std::string> > headers;
         std::string dataStr;
 
@@ -331,7 +343,8 @@ namespace Module {
     }
 
     std::set<std::string> MSRestApi::GetHeadByName(const std::map<std::string, std::set<std::string> > &headers,
-                                                   const std::string &header_name) {
+                                                   const std::string &header_name)
+    {
         std::map<std::string, std::set<std::string> >::const_iterator it = headers.find(header_name);
         if (it != headers.end()) {
             return it->second;
@@ -340,12 +353,14 @@ namespace Module {
     }
 //lint +e734
 
-    bool MSRestApi::IsLogined() {
+    bool MSRestApi::IsLogined()
+    {
         return m_logined;
     }
 
 
-    int MSRestApi::DownloadAttchment(const HttpRequest &req, std::string &errorDes) {
+    int MSRestApi::DownloadAttchment(const HttpRequest &req, std::string &errorDes)
+    {
         if (!m_logined) {
             HCP_Log(ERR, MODULE_NAME) << "It is not logined." << HCPENDLOG;
             return RETURN_ERROR;
@@ -375,7 +390,8 @@ namespace Module {
         return RETURN_OK;
     }
 
-    int MSRestApi::UploadAttachment(const HttpRequest &req, Json::Value &data, std::string &errorDes) {
+    int MSRestApi::UploadAttachment(const HttpRequest &req, Json::Value &data, std::string &errorDes)
+    {
         if (!m_logined) {
             HCP_Log(ERR, MODULE_NAME) << "It is not logined." << HCPENDLOG;
             return RETURN_ERROR;
@@ -390,7 +406,8 @@ namespace Module {
         return UploadAttachmentAndParseRsp(httpRequest, data, errorDes);
     }
 
-    int MSRestApi::UploadAttachmentAndParseRsp(const HttpRequest &req, Json::Value &data, std::string &errorDes) {
+    int MSRestApi::UploadAttachmentAndParseRsp(const HttpRequest &req, Json::Value &data, std::string &errorDes)
+    {
         if (NULL == m_pHttpCLient) {
             HCP_Log(ERR, MODULE_NAME) << "HttpClient is NULL. " << HCPENDLOG;
             return RETURN_ERROR;
@@ -422,7 +439,7 @@ namespace Module {
             HCP_Log(ERR, MODULE_NAME) << "Parse body failed " << HCPENDLOG;
             return iRet;
         }
-        //Get Set-Cookie from HTTP response
+        // Get Set-Cookie from HTTP response
         std::string cookie_value;
         const std::set<std::string> &cookie = rsp->GetHeadByName(HTTP_HEAD_SET_COOKIE);
         if (cookie.empty()) {
@@ -439,7 +456,8 @@ namespace Module {
 
     int MSRestApi::ParseRsp(const std::string &json_data,
                             Json::Value &data,
-                            std::string &errorDes) {
+                            std::string &errorDes)
+    {
         Json::Value jsonValue;
         Json::Reader reader;
         if (!reader.parse(json_data, jsonValue)) {
@@ -490,7 +508,8 @@ namespace Module {
         return RETURN_OK;
     }
 
-    int MSRestApi::ParseToken(const std::set<std::string> &tokens) {
+    int MSRestApi::ParseToken(const std::set<std::string> &tokens)
+    {
         if (tokens.empty()) {
             HCP_Log(ERR, MODULE_NAME) << "Token is empty. " << HCPENDLOG;
             return RETURN_ERROR;
@@ -503,18 +522,20 @@ namespace Module {
     int MSRestApi::GetErrorCode(const std::string &json_data,
                                 Json::Value &data,
                                 std::string &errorDes,
-                                int &errorCode) {
+                                int &errorCode)
+    {
         int iRet = ParseRsp(json_data, data, errorDes);
         if (RETURN_ERROR == iRet) {
             HCP_Log(ERR, MODULE_NAME) << "Parse body failed " << HCPENDLOG;
             return iRet;
         }
-        errorCode = iRet;   //get errorCode
+        errorCode = iRet;   // get errorCode
 
         return RETURN_OK;
     }
 
-    void MSRestApi::CleanToken() {
+    void MSRestApi::CleanToken()
+    {
         for (std::string::size_type i = 0; i < m_tokenID.size(); ++i) {
             m_tokenID[i] = (char) 0xcc;
         }

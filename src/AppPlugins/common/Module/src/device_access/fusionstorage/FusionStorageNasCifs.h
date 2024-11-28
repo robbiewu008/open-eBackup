@@ -23,7 +23,8 @@ namespace Module {
         FusionStorageNasCIFS(ControlDeviceInfo deviceInfo, std::string fsId) : FusionStorageNas(deviceInfo, fsId) {}
 
         FusionStorageNasCIFS(ControlDeviceInfo deviceInfo, std::string id, std::string path)
-                : FusionStorageNas(deviceInfo) {
+            : FusionStorageNas(deviceInfo)
+        {
             fileSystemId = id;
             uniquePath = path;
         }
@@ -34,6 +35,8 @@ namespace Module {
 
         std::unique_ptr <ControlDevice> CreateSnapshot(std::string snapshotName, int &errorCode) override;
 
+        int DeleteSnapshot(std::string snapshotName) override;
+
     protected:
         int QueryFileSystem(DeviceDetails &info);
 
@@ -41,9 +44,15 @@ namespace Module {
 
         int GetFsNameFromShareName();
 
-        std::string uniquePath;
+        int GetFsNameFromShareListResponse(Json::Value &data);
+ 
+        int GetCifsShareCount(int &count);
 
-        std::string fileSystemName{};
+        int QueryDtreeId();
+
+        int QueryDtreeIdByPath(const std::string& sharePath);
+ 
+        std::string uniquePath;
     };
 }
 

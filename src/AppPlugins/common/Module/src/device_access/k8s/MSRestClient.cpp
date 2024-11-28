@@ -19,17 +19,20 @@
 namespace Module {
     const std::string MODULE_NAME = "MSRestCLient";
 
-    MSRestCLient::MSRestCLient() {
+    MSRestCLient::MSRestCLient()
+    {
         CMpThread::InitLock(&m_lockRestApi);
         CMpThread::InitLock(&m_lockLoginToken);
     }
 
-    MSRestCLient::~MSRestCLient() {
+    MSRestCLient::~MSRestCLient()
+    {
         CMpThread::DestroyLock(&m_lockRestApi);
         CMpThread::DestroyLock(&m_lockLoginToken);
     }
 
-    int MSRestCLient::Login(MSRestApi &restApi, const MSRestRequest &req, std::string &errDesc) {
+    int MSRestCLient::Login(MSRestApi &restApi, const MSRestRequest &req, std::string &errDesc)
+    {
         CThreadAutoLock tlock(&m_lockRestApi);
         int ret = restApi.Login(req.retry,
                                 req.IAMUrl,
@@ -37,13 +40,12 @@ namespace Module {
                                 req.password,
                                 req.cert,
                                 errDesc);
-
         if (RETURN_OK != ret) {
             HCP_Log(ERR, MODULE_NAME) << "Login failed. ret: " << ret << HCPENDLOG;
-            Token("");  //clear cache token
+            Token("");  // clear cache token
             return ret;
         }
-        //Cache token
+        // Cache token
         if (restApi.Token().empty()) {
             HCP_Log(ERR, MODULE_NAME) << "Login failed, token is empty." << HCPENDLOG;
             return RETURN_ERROR;
@@ -54,9 +56,9 @@ namespace Module {
         return RETURN_OK;
     }
 
-    int MSRestCLient::LogoutRequest(
-            const MSRestRequest &req, const std::string &tokenID, Json::Value &rsp, std::string &errDesc,
-            int &errorCode) {
+    int MSRestCLient::LogoutRequest(const MSRestRequest &req, const std::string &tokenID, Json::Value &rsp,
+        std::string &errDesc, int &errorCode)
+    {
         MSRestApi restApi;
         Json::Value jsonBody;
         jsonBody["Id"] = req.userName;
@@ -73,8 +75,9 @@ namespace Module {
         return restApi.SendRequest(httpRequest, rsp, errDesc, NULL, errorCode);
     }
 
-    int MSRestCLient::LoginRequest(
-            const MSRestRequest &req, std::string *tokenID, Json::Value &rsp, std::string &errDesc, int &errorCode) {
+    int MSRestCLient::LoginRequest(const MSRestRequest &req, std::string *tokenID, Json::Value &rsp,
+        std::string &errDesc, int &errorCode)
+    {
         HttpRequest httpRequest;
         httpRequest.method = req.httpMethod;
         httpRequest.url = req.serviceUrl;
@@ -95,7 +98,8 @@ namespace Module {
         return restApi.SendRequest(httpRequest, rsp, errDesc, tokenID, errorCode);
     }
 
-    int MSRestCLient::GetAccessIPFromIAM(const MSRestRequest &loginReq) {
+    int MSRestCLient::GetAccessIPFromIAM(const MSRestRequest &loginReq)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = ConfigReader::getString("MicroService", "LoadbalanceAddress") + "/v3/auth_inner/get_access_ip";
@@ -117,14 +121,11 @@ namespace Module {
         return iRet;
     }
 
-    int MSRestCLient::SendReqeust(
-            const MSRestRequest &req,
-            Json::Value &rsp,
-            std::string &errDesc
-    ) {
+    int MSRestCLient::SendReqeust(const MSRestRequest &req, Json::Value &rsp, std::string &errDesc)
+    {
         MSRestApi restApi;
         int ret = RETURN_OK;
-        //Send request
+        // Send request
         ret = DoSendReqeust(req, rsp, errDesc);
         if (RETURN_OK != ret) {
             HCP_Log(ERR, MODULE_NAME) << "Send failed, ret: " << ret << HCPENDLOG;
@@ -134,13 +135,10 @@ namespace Module {
         return RETURN_OK;
     }
 
-//Send request directly without login.
-    int MSRestCLient::DoSendReqeust(
-            const MSRestRequest &req,
-            Json::Value &rsp,
-            std::string &errDesc
-    ) {
-        //[Step.1]. Build request
+// Send request directly without login.
+    int MSRestCLient::DoSendReqeust(const MSRestRequest &req, Json::Value &rsp, std::string &errDesc)
+    {
+        // [Step.1]. Build request
         HttpRequest httpRequest;
         httpRequest.method = req.httpMethod;
         httpRequest.url = req.serviceUrl;
@@ -149,7 +147,6 @@ namespace Module {
         if (!req.k8sToken.empty()) {
             httpRequest.heads.insert(std::make_pair(g_headerAuthorization, req.k8sToken));
         }
-
 
         if (!req.clientIP.empty()) {
             httpRequest.heads.insert(std::make_pair(HTTP_HEAD_CLIENT_IP, req.clientIP));
@@ -160,9 +157,7 @@ namespace Module {
             httpRequest.body = jsonWriter.write(req.reqBody);
         }
 
-
-
-        //[Step.2]. Send request
+        // [Step.2]. Send request
         MSRestApi restApi;
         int ret = restApi.SendRequestDirectly(httpRequest, rsp, errDesc, req.retry);
         if (RETURN_OK != ret) {
@@ -173,13 +168,9 @@ namespace Module {
         return RETURN_OK;
     }
 
-    int MSRestCLient::SendReqeust(
-            const MSRestRequest &req,
-            std::string s_tokenID,
-            std::string *c_tokenID,
-            Json::Value &rsp,
-            std::string &errDesc,
-            int &errorCode) {
+    int MSRestCLient::SendReqeust(const MSRestRequest &req, std::string s_tokenID, std::string *c_tokenID,
+        Json::Value &rsp, std::string &errDesc, int &errorCode)
+    {
         MSRestApi restApi;
         HttpRequest httpRequest;
         httpRequest.method = req.httpMethod;
@@ -202,8 +193,9 @@ namespace Module {
     }
 
     int MSRestCLient::UploadAttachment(const MSRestRequest &req,
-                                       Json::Value &rsp,
-                                       std::string &errDesc, bool firstTime) {
+        Json::Value &rsp,
+        std::string &errDesc, bool firstTime)
+    {
         if (req.attachmentPath.empty()) {
             HCP_Log(ERR, MODULE_NAME) << "There is no attachment file full path. " << HCPENDLOG;
             return RETURN_ERROR;
@@ -246,7 +238,8 @@ namespace Module {
     }
 
 
-    int MSRestCLient::DownloadAttchment(const MSRestRequest &req, std::string &errDesc, bool firstTime /*= true*/) {
+    int MSRestCLient::DownloadAttchment(const MSRestRequest &req, std::string &errDesc, bool firstTime /*= true */)
+    {
         MSRestApi restApi;
         int ret = Login(restApi, req, errDesc);
         if (ret != RETURN_OK) {
@@ -284,18 +277,21 @@ namespace Module {
         return RETURN_OK;
     }
 
-    MSRestCLient &MSRestCLient::Instance() {
+    MSRestCLient &MSRestCLient::Instance()
+    {
         static MSRestCLient restClient;
         return restClient;
     }
 
-    MSRestCLient &MSRestCLient::OutConnectInstance() {
+    MSRestCLient &MSRestCLient::OutConnectInstance()
+    {
         static MSRestCLient outRestClient;
         return outRestClient;
     }
 
 /*lint -e1788*/
-    int MSRestCLient::GetRestApi(std::string &key, MSRestApi *&) {
+    int MSRestCLient::GetRestApi(std::string &key, MSRestApi *&)
+    {
         CThreadAutoLock tlock(&m_lockRestApi);
         return 0;
     }//lint !e1788
@@ -303,29 +299,14 @@ namespace Module {
 
 //    void MSRestCLient::BuildBaseRequest(MSRestRequest &req, const std::string method, const std::string api,
 //                                        const std::string params, const std::string cert) {
-//        std::string serviceURLPostfix = api + params;
-//        std::string LBAddress = ConfigReader::getString("MicroService", "LoadbalanceAddress");
-//        std::string serviceURL = LBAddress + serviceURLPostfix;
 //
 //        std::string IAMAuthURLPostfix = "/v3/auth/tokens";
-//        std::string IAMAuthURL = LBAddress + IAMAuthURLPostfix;
-//        std::string userName = ConfigReader::getAdminNodeIAMUser();
 //        SecString password;
-//        password = ConfigReader::getAdminNodeIAMPasswd();
 //        SecString decPasswd;
-//        if (SecuritySS::decInFilePwdForStore(password, decPasswd) != SecuritySS_Success) {
 //            HCP_Log(ERR, MODULE_NAME) << "Failed to decInFilePwdForStore the IAMPasswd." << HCPENDLOG;
-//            return;
 //        }
 //
-//        req.IAMUrl = IAMAuthURL;
-//        req.userName = userName;
-//        req.password = decPasswd;
-//        req.httpMethod = method;
-//        req.serviceUrl = serviceURL;
-//        req.cert = cert;
 //
-//        HCP_Logger_noid(DEBUG, MODULE_NAME) << "serviceURLPostfix: " << WIPE_SENSITIVE(serviceURLPostfix) << HCPENDLOG;
 //        HCP_Logger_noid(DEBUG, MODULE_NAME) << "LBAddress: " << LBAddress << HCPENDLOG;
 //        HCP_Logger_noid(DEBUG, MODULE_NAME) << "serviceURL: " << WIPE_SENSITIVE(serviceURL) << HCPENDLOG;
 //    }

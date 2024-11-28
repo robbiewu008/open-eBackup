@@ -346,8 +346,10 @@ CTRL_FILE_RETCODE FileCacheParser::WriteFileCacheEntries(
 void FileCacheParser::PrintFileCache(const FileCache& fileCache)
 {
     DBGLOG("Write to fcache - %s", m_fileName.c_str());
-    DBGLOG("Write fileCache - inode: %u, mdataoffset: %u, hastag: %u, crc: %u, fileId: %u, metalength: %u, compareFilg: %u",
-        fileCache.m_inode, fileCache.m_mdataOffset, fileCache.m_filePathHash.crc, fileCache.m_fileMetaHash.crc, fileCache.m_fileId, fileCache.m_metaLength, fileCache.m_compareFlag);
+    DBGLOG("Write fileCache - inode: %u, mdataoffset: %u,"
+        "hastag: %u, crc: %u, fileId: %u, metalength: %u, compareFilg: %u",
+        fileCache.m_inode, fileCache.m_mdataOffset, fileCache.m_filePathHash.crc,
+        fileCache.m_fileMetaHash.crc, fileCache.m_fileId, fileCache.m_metaLength, fileCache.m_compareFlag);
 }
 
 CTRL_FILE_RETCODE FileCacheParser::FlushToFile()

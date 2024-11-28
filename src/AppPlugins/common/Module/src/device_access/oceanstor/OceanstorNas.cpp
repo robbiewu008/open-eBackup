@@ -17,7 +17,6 @@
 #include "system/System.hpp"
 #include "common/JsonUtils.h"
 #include "common/Timer.h"
-//#include "common/DiskCommDef.h"
 #include "device_access/Const.h"
 #include "common/CleanMemPwd.h"
 #include "config_reader/ConfigIniReaderImpl.h"
@@ -47,7 +46,8 @@ Description:
              2.cache token for this instance
 */
 
-    OceanstorNas::~OceanstorNas() {
+    OceanstorNas::~OceanstorNas()
+    {
         fileSystemId = "";
         if (useCache && m_oceanstorSessionCache != nullptr) {
             if (this->sessionPtr != nullptr) {
@@ -66,7 +66,8 @@ Description:
         CleanMemoryPwd(OceanstorPassword);
     }
 
-    SessionInfo OceanstorNas::Login() {
+    SessionInfo OceanstorNas::Login()
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "sessions";
@@ -102,7 +103,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.logout at destruct this instance
 */
-    int OceanstorNas::Logout(SessionInfo sessionInfo) {
+    int OceanstorNas::Logout(SessionInfo sessionInfo)
+    {
         HCP_Log(INFO, OCEANSTOR_MODULE_NAME) << "Start Authentication Exit. " << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -119,13 +121,15 @@ Description:
         }
     }
 
-    void OceanstorNas::Clean() {
+    void OceanstorNas::Clean()
+    {
         if (fs_pHttpCLient) {
             fs_pHttpCLient = NULL;
         }
     }
 
-    int OceanstorNas::ParseCookie(const std::set <std::string> &cookie_values, SessionInfo &sessionInfo) {
+    int OceanstorNas::ParseCookie(const std::set <std::string> &cookie_values, SessionInfo &sessionInfo)
+    {
         if (cookie_values.empty()) {
             HCP_Log(DEBUG, OCEANSTOR_MODULE_NAME) << "Cookie is empty." << HCPENDLOG;
             return FAILED;
@@ -143,7 +147,8 @@ Description:
     }
 
     int OceanstorNas::SendHttpReq(std::shared_ptr <IHttpResponse> &rsp, const HttpRequest &req,
-                                  std::string &errorDes, int &errorCode) {
+                                  std::string &errorDes, int &errorCode)
+    {
         HttpRequest tempReq = req;
         tempReq.url = FormatFullUrl(tempReq.url);
         rsp = fs_pHttpCLient->SendRequest(tempReq, CurlTimeOut);
@@ -178,7 +183,8 @@ Description:
         return SUCCESS;
     }
 
-    int OceanstorNas::SendRequestOnce(HttpRequest req, Json::Value &data, std::string &errorDes, int &errorCode) {
+    int OceanstorNas::SendRequestOnce(HttpRequest req, Json::Value &data, std::string &errorDes, int &errorCode)
+    {
         int iRet;
         HttpRequest request = req;
         request.url =
@@ -202,7 +208,8 @@ Description:
 
     int OceanstorNas::ResponseSuccessHandle(HttpRequest req,
                                             std::shared_ptr <IHttpResponse> &rsp, Json::Value &data,
-                                            std::string &errorDes, int &errorCode) {
+                                            std::string &errorDes, int &errorCode)
+    {
         int Ret = ParseResponse(rsp->GetBody(), data, errorDes, errorCode);
         if (errorCode == OceanstorErrorCode::UNAUTH ||
             errorCode == OceanstorErrorCode::NOUSERPERMISSION ||
@@ -236,7 +243,8 @@ Description:
         return Ret;
     }
 
-    void OceanstorNas::DelayTimeSendRequest() {
+    void OceanstorNas::DelayTimeSendRequest()
+    {
         auto now = std::chrono::steady_clock::now();
         while ((double(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() -
                                                                              now).count()) *
@@ -248,17 +256,20 @@ Description:
         return;
     }
 
-    void OceanstorNas::DeleteDeviceSession() {
+    void OceanstorNas::DeleteDeviceSession()
+    {
         m_oceanstorSessionCache->DeleteSession(OceanstorIP, OceanstorUsername, OceanstorPort,
                                                [this](SessionInfo sesInfo) -> int { return Logout(sesInfo); });
     }
 
-    void OceanstorNas::CreateDeviceSession() {
+    void OceanstorNas::CreateDeviceSession()
+    {
         this->sessionPtr = m_oceanstorSessionCache->CreateSession(OceanstorIP, OceanstorUsername, OceanstorPort,
                                                                   [this]() -> SessionInfo { return Login(); });
     }
 
-    void OceanstorNas::LoginAndGetSessionInfo() {
+    void OceanstorNas::LoginAndGetSessionInfo()
+    {
         if (useCache && m_oceanstorSessionCache != nullptr) {
             CreateDeviceSession();
         } else {
@@ -274,15 +285,14 @@ Description:
     }
 
     int OceanstorNas::SendRequest(HttpRequest &req, Json::Value &data, std::string &errorDes, int &errorCode,
-                                  bool lockSession) {
+                                  bool lockSession)
+    {
         // 检查存储设备是否含有证书和吊销列表信息
         if (!certification.empty()) {
             req.cert = certification;
             req.isVerify = VCENTER_VERIFY;
         }
-        if (!crl.empty()) {
-            req.revocationList = crl;
-        }
+        req.revocationList = !crl.empty() ? crl : req.revocationList;
         int retryNum = 0;
         while (retryNum < retryTimes) {
             HCP_Log(INFO, OCEANSTOR_MODULE_NAME) << "send request for " << (retryNum + 1) << "time" <<
@@ -334,7 +344,8 @@ Description:
         return FAILED;
     }
 
-    int OceanstorNas::QueryFileSystem(DeviceDetails &info) {
+    int OceanstorNas::QueryFileSystem(DeviceDetails &info)
+    {
         if (vstoreId.empty()) {
             GetVstoreId();
         }
@@ -346,7 +357,8 @@ Description:
         return SUCCESS;
     }
 
-    int OceanstorNas::QueryFileSystem(std::string fileName, DeviceDetails &info) {
+    int OceanstorNas::QueryFileSystem(std::string fileName, DeviceDetails &info)
+    {
         if (vstoreId.empty()) {
             GetVstoreId();
         }
@@ -394,7 +406,8 @@ Description:
     }
 
     int OceanstorNas::SendRequestEx(HttpRequest &req, Json::Value &data, std::string &errorDes, int &errorCode,
-                                    SessionInfo &sessionInfo) {
+                                    SessionInfo &sessionInfo)
+    {
         int iRet = FAILED;
         if (req.method == "DELETE") {
             req.url = "https://" + OceanstorIP + ":" + OceanstorPort + "/deviceManager/rest/" +
@@ -438,7 +451,8 @@ Description:
         }
     }
 
-    int OceanstorNas::isNeedRetryErrorCode(const int &errorCode) {
+    int OceanstorNas::isNeedRetryErrorCode(const int &errorCode)
+    {
         int size = sizeof(g_noNeedRetryOceanstorErrorCode) / sizeof(int);
         for (int i = 0; i < size; i++) {
             if (errorCode == g_noNeedRetryOceanstorErrorCode[i]) {
@@ -448,12 +462,14 @@ Description:
         return SUCCESS;
     }
 
-    void OceanstorNas::InitHttpStatusCodeForRetry() {
+    void OceanstorNas::InitHttpStatusCodeForRetry()
+    {
         ConfigReader::getIntValueVector("MicroService", "HttpStatusCodesForRetry", ",",
                                         httpRspStatusCodeForRetry);
     }
 
-    bool OceanstorNas::OceanstorResposeNeedRetry(const int ret) {
+    bool OceanstorNas::OceanstorResposeNeedRetry(const int ret)
+    {
         // when errorCode ==0 && ret == FAILED mean oceanstor response need retry
         if (ret == FAILED) {
             return true;
@@ -461,8 +477,9 @@ Description:
         return false;
     }
 
-    int OceanstorNas::ParseResponse(
-            const std::string &json_data, Json::Value &data, std::string &errorDes, int &errorCode) {
+    int OceanstorNas::ParseResponse(const std::string &json_data, Json::Value &data,
+        std::string &errorDes, int &errorCode)
+    {
         Json::Value jsonValue;
         Json::Reader reader;
         if (!reader.parse(json_data, jsonValue)) {
@@ -486,6 +503,7 @@ Description:
             errorDes = jsonValue["error"]["description"].asString();
             errorCode = jsonValue["error"]["code"].asInt();
             SetErrorCode(errorCode);
+            SetExtendInfo(errorDes);
             return FAILED;
         }
 
@@ -505,7 +523,8 @@ Description:
         return backupScene == "0" ? false : true;
     }
 
-    bool OceanstorNas::GetJsonValue(const Json::Value &jsValue, std::string strKey, std::string &strValue) {
+    bool OceanstorNas::GetJsonValue(const Json::Value &jsValue, std::string strKey, std::string &strValue)
+    {
         if (jsValue.isArray()) {
             HCP_Log(ERR, OCEANSTOR_MODULE_NAME) << "Json is Array." << HCPENDLOG;
             return false;
@@ -528,11 +547,13 @@ Description:
         }
     }
 
-    int OceanstorNas::Query(DeviceDetails &info) {
+    int OceanstorNas::Query(DeviceDetails &info)
+    {
         return QueryFileSystem(info);
     }
 
-    int OceanstorNas::QuerySnapshot(std::string SnapshotName, std::string &id) {
+    int OceanstorNas::QuerySnapshot(std::string SnapshotName, std::string &id)
+    {
         int iRet;
         DeviceDetails info;
         if (fileSystemId.empty()) {
@@ -568,7 +589,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.create snapshot for special volume
 */
-    std::unique_ptr <ControlDevice> OceanstorNas::CreateSnapshot(std::string SnapshotName, int &errorCode) {
+    std::unique_ptr <ControlDevice> OceanstorNas::CreateSnapshot(std::string SnapshotName, int &errorCode)
+    {
         std::string id;
         ControlDeviceInfo deviceInfo;
         deviceInfo.deviceName = SnapshotName;
@@ -607,7 +629,8 @@ Description:
         }
     }
 
-    int OceanstorNas::DeleteSnapshot(std::string SnapshotName) {
+    int OceanstorNas::DeleteSnapshot(std::string SnapshotName)
+    {
         std::string id;
         int ret = QuerySnapshot(SnapshotName, id);
         if (ret != SUCCESS) {
@@ -630,7 +653,8 @@ Description:
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int OceanstorNas::EndSnapshotDiffSession(std::string sessionId) {
+    int OceanstorNas::EndSnapshotDiffSession(std::string sessionId)
+    {
         HttpRequest req;
         req.method = "DELETE";
         std::string errorDes;
@@ -648,7 +672,8 @@ Description:
     }
 
     int OceanstorNas::StartSnapshotDiffSession(std::string BaseSnapshotName, std::string IncrementalSnapshotName,
-                                               std::string &sessionId) {
+                                               std::string &sessionId)
+    {
         std::string base_id;
         std::string incremental_id;
         int iRet = QuerySnapshot(BaseSnapshotName, base_id);
@@ -684,7 +709,8 @@ Description:
         }
     }
 
-    void CopyMetadtaResponse(SnapdiffMetadataInfo metadatInfo[], Json::Value data) {
+    void CopyMetadtaResponse(SnapdiffMetadataInfo metadatInfo[], Json::Value data)
+    {
         Json::Value metaDataArray;
         Json::Reader reader;
         if (reader.parse(data["changeList"].asString(), metaDataArray)) {
@@ -708,7 +734,8 @@ Description:
     }
 
     int OceanstorNas::GetSnapshotDiffChanges(std::string sessionId, SnapdiffInfo &snapdiffInfo,
-                                             SnapdiffMetadataInfo metadatInfo[], int metadataListLen) {
+                                             SnapdiffMetadataInfo metadatInfo[], int metadataListLen)
+    {
         HttpRequest req;
         req.method = "GET";
         std::string errorDes;
@@ -759,7 +786,8 @@ Description:
         return SUCCESS;
     }
 
-    int OceanstorNas::GetVstoreId() {
+    int OceanstorNas::GetVstoreId()
+    {
         HttpRequest req;
         req.method = "GET";
         std::string errorDes;
@@ -785,7 +813,8 @@ Description:
         return FAILED;
     }
 
-    int OceanstorNas::DeleteFileSystem() {
+    int OceanstorNas::DeleteFileSystem()
+    {
         HttpRequest req;
         req.method = "DELETE";
         req.url = "filesystem/" + fileSystemId;
@@ -802,7 +831,8 @@ Description:
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int OceanstorNas::CreateCloneFileSystem(std::string volumeName, std::string &fsid) {
+    int OceanstorNas::CreateCloneFileSystem(std::string volumeName, std::string &fsid)
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "filesystem";
@@ -833,7 +863,8 @@ Description:
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    void OceanstorNas::AssignDeviceInfo(ControlDeviceInfo &deviceInfo, std::string volumeName) {
+    void OceanstorNas::AssignDeviceInfo(ControlDeviceInfo &deviceInfo, std::string volumeName)
+    {
         deviceInfo.deviceName = volumeName;
         deviceInfo.url = OceanstorIP;
         deviceInfo.port = OceanstorPort;
@@ -842,7 +873,8 @@ Description:
         deviceInfo.poolId = OceanstorPoolId;
     }
 
-    int OceanstorNas::DeleteFileSystemAndParentSnapshot() {
+    int OceanstorNas::DeleteFileSystemAndParentSnapshot()
+    {
         HttpRequest req;
         req.method = "DELETE";
         req.url = "filesystem/" + fileSystemId + "?ISDELETEPARENTSNAPSHOT=true";
@@ -860,7 +892,8 @@ Description:
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    void OceanstorNas::SetCurlTimeOut(uint64_t tmpTimeOut) {
+    void OceanstorNas::SetCurlTimeOut(uint64_t tmpTimeOut)
+    {
         if (tmpTimeOut > MIN_CURL_TIME_OUT) {
             CurlTimeOut = tmpTimeOut;
         }

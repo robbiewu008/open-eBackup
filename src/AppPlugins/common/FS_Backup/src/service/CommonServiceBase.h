@@ -210,6 +210,8 @@ public:
         stats.noOfDirCopied     = m_controlInfo->m_noOfDirCopied;
         stats.noOfFilesCopied   = m_controlInfo->m_noOfFilesCopied;
         stats.noOfBytesCopied   = m_controlInfo->m_noOfBytesCopied;
+        stats.skipFileCnt       = m_controlInfo->m_skipFileCnt;
+        stats.skipDirCnt        = m_controlInfo->m_skipDirCnt;
         stats.noOfDirDeleted    = m_controlInfo->m_noOfDirDeleted;
         stats.noOfFilesDeleted  = m_controlInfo->m_noOfFilesDeleted;
         stats.noOfDirFailed     = m_controlInfo->m_noOfDirFailed;
@@ -220,18 +222,23 @@ public:
         stats.readConsume       = m_controlInfo->m_readConsume;
         stats.aggregateConsume  = m_controlInfo->m_aggregateConsume;
         stats.writerConsume     = m_controlInfo->m_writerConsume;
-
+        stats.noOfFilesWriteSkip = m_controlInfo->m_noOfFilesWriteSkip;
+        stats.noOfReadTaskProduce = m_controlInfo->m_readTaskProduce;
+        stats.noOfReadTaskConsume = m_controlInfo->m_readTaskConsume;
+        stats.noOfWriteTaskProduce = m_controlInfo->m_writeTaskProduce;
+        stats.noOfWriteTaskConsume = m_controlInfo->m_writeTaskConsume;
         time_t timeElapsed = Module::ParserUtils::GetCurrentTimeInSeconds() - m_controlInfo->m_startTime;
         uint64_t elapsedTime = static_cast<uint64_t>(timeElapsed);
         if (elapsedTime != 0) {
             stats.backupspeed = (stats.noOfBytesCopied / elapsedTime);
         }
 
-        INFOLOG("Backup Speed: %s, noOfDirToBackup: %lu, noOfFilesToBackup: %lu, noOfBytesToBackup: %lu, "
-            "noOfDirCopied: %lu, noOfFilesCopied: %lu, noOfBytesCopied: %lu, noOfDirFailed: %lu, noOfFilesFailed: %lu",
+        INFOLOG("Backup Speed: %s, noOfDirToBackup: %llu, noOfFilesToBackup: %llu, noOfBytesToBackup: %llu, "
+            "noOfDirCopied: %llu, noOfFilesCopied: %llu, noOfBytesCopied: %llu, skipFileCnt: %llu, "
+            "skipDirCnt: %llu noOfDirFailed: %llu, noOfFilesFailed: %llu",
             FSBackupUtils::FormatSpeed(stats.backupspeed).c_str(), stats.noOfDirToBackup, stats.noOfFilesToBackup,
             stats.noOfBytesToBackup, stats.noOfDirCopied, stats.noOfFilesCopied, stats.noOfBytesCopied,
-            stats.noOfDirFailed, stats.noOfFilesFailed);
+            stats.skipFileCnt, stats.skipDirCnt, stats.noOfDirFailed, stats.noOfFilesFailed);
 
         return stats;
     }
@@ -253,6 +260,7 @@ public:
             item.offset = fileHandle.m_file->m_metaFileOffset;
             item.errNum= fileHandle.m_errNum;
             item.filePath = fileHandle.m_file->m_fileName;
+            item.errMsg = fileHandle.m_errMessage;
             totalFailedRecords.insert(item);
         }
         for (auto& fileHandle : writerFailedList) {
@@ -261,6 +269,7 @@ public:
             item.offset = fileHandle.m_file->m_metaFileOffset;
             item.errNum= fileHandle.m_errNum;
             item.filePath = fileHandle.m_file->m_fileName;
+            item.errMsg = fileHandle.m_errMessage;
             totalFailedRecords.insert(item);
         }
         INFOLOG("get failed list total: %u", totalFailedRecords.size());
@@ -407,6 +416,7 @@ protected:
         readerParams.blockBufferMap = m_blockBufferMap;
         readerParams.controlInfo = m_controlInfo;
         readerParams.hardlinkMap = m_hardlinkMap;
+        readerParams.failureRecorder = m_failureRecorder;
         return readerParams;
     }
 

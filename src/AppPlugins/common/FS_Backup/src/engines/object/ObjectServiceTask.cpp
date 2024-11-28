@@ -178,7 +178,9 @@ void ObjectServiceTask::HandleCreateBucket()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
-        ERRLOG("Create bucket name %s failed.", req->bucketName.c_str());
+        RecordErrMessage(errorCode, ret.errorDesc);
+        ERRLOG("Create bucket(%s) failed. errorCode: %lld, errorDesc: %s",
+            req->bucketName.c_str(), errorCode, ret.errorDesc.c_str());
         m_result = Module::FAILED;
         return;
     }
@@ -192,6 +194,7 @@ void ObjectServiceTask::HandleCreateBucket()
             int64_t errorCode = createRet.GetLinuxErrorCode();
             m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
             SetCriticalErrorInfo(errorCode);
+            RecordErrMessage(errorCode, createRet.errorDesc);
             ERRLOG("Create bucket name %s failed.", createReq->bucketName.c_str());
             m_result = Module::FAILED;
             return;
@@ -239,6 +242,7 @@ void ObjectServiceTask::HandleReadMeta()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to get meta data of %s", req->key.c_str());
         m_result = Module::FAILED;
         return;
@@ -280,6 +284,7 @@ void ObjectServiceTask::HandleReadData()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Get object %s failed, bucket name is %s, filename: %s",
             req->key.c_str(), req->bucketName.c_str(), m_fileHandle.m_file->m_fileName.c_str());
         m_result = Module::FAILED;
@@ -308,6 +313,14 @@ void ObjectServiceTask::SetCriticalErrorInfo(int64_t err)
         m_backupFailReason = BackupPhaseStatus::FAILED_NOMEMORY;
     }
     return;
+}
+
+void ObjectServiceTask::RecordErrMessage(int64_t errCode, const std::string& errMessage)
+{
+    if (errCode != ENOSPC && errCode != ENETUNREACH && errCode != EACCES && errCode != ENOMEM) {
+        m_fileHandle.m_errMessage = errMessage;
+        ERRLOG("Record errorCode: %lld, errorDesc: %s", errCode, errMessage.c_str());
+    }
 }
 
 bool ObjectServiceTask::IsNeedRestore()
@@ -359,6 +372,7 @@ void ObjectServiceTask::HandleOpenDst()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to get uploadid file: %s", m_fileHandle.m_file->m_fileName.c_str());
         m_result = Module::FAILED;
         return;
@@ -382,6 +396,7 @@ int ObjectServiceTask::GetObjectMtime(time_t &mtime)
     OBSResult ret = m_obsCtx->GetObjectMetaData(req, resp);
     if (!ret.IsSucc()) {
         INFOLOG("No this object or can not get meta data of %s", req->key.c_str());
+        RecordErrMessage(ret.GetLinuxErrorCode(), ret.errorDesc);
         return Module::FAILED;
     }
 
@@ -418,6 +433,7 @@ int ObjectServiceTask::HandleWriteHugeData()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to MultiPartUploadObject %s", req->key.c_str());
         return Module::FAILED;
     }
@@ -473,6 +489,7 @@ int ObjectServiceTask::HandleWriteSmallData()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to PutObject file: %s", req->key.c_str());
         return Module::FAILED;
     }
@@ -521,6 +538,7 @@ void ObjectServiceTask::HandleWriteData()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to PutObjectPart file: %s", req->key.c_str());
         m_result = Module::FAILED;
         return;
@@ -563,6 +581,7 @@ void ObjectServiceTask::HandleCloseDst()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to close file: %s", m_fileHandle.m_file->m_fileName.c_str());
         m_result = Module::FAILED;
         return;
@@ -615,6 +634,7 @@ void ObjectServiceTask::HandleDelete()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to delete object: %s", req->key.c_str());
         m_result = Module::FAILED;
         return;
@@ -664,6 +684,7 @@ int ObjectServiceTask::GetBucketAcl(std::unique_ptr<GetBucketACLResponse>& newAc
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to get bucket ACL of %s", req->bucketName.c_str());
         return Module::FAILED;
     }
@@ -686,6 +707,7 @@ int ObjectServiceTask::GetObjectAcl(std::unique_ptr<GetObjectACLResponse>& newAc
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to get object ACL of %s", req->key.c_str());
         return Module::FAILED;
     }
@@ -722,6 +744,7 @@ bool ObjectServiceTask::SetBucketAcl()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to set bucket ACL for %s", m_fileHandle.m_file->m_fileName.c_str());
         return false;
     }
@@ -760,6 +783,7 @@ bool ObjectServiceTask::SetObjectAcl()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to set object ACL for %s", req->key.c_str());
         m_result = Module::FAILED;
         return false;
@@ -823,6 +847,7 @@ bool ObjectServiceTask::SetObjectMeta()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to meta data for file %s", req->key.c_str());
         return false;
     }
