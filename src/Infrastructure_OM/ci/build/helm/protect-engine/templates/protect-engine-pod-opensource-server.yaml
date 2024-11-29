@@ -366,6 +366,7 @@ spec:
           image: dme_unifiedbackupcontroller:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
           securityContext:
+            privileged: true
             seccompProfile:
               type: RuntimeDefault
             capabilities:
@@ -388,6 +389,9 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 10
           volumeMounts:
+            - mountPath: /dev/fuse
+              name: fuse
+              readOnly: true
             - mountPath: /cache
               name: ubc-tmp
             - mountPath: /mnt/repository
@@ -657,6 +661,9 @@ spec:
         - name: date-config
           hostPath:
             path: /etc/localtime
+        - name: fuse
+          hostPath:
+            path: /dev/fuse
         - name: cache-volume
           emptyDir: {}
         - name: cache-filesystem
