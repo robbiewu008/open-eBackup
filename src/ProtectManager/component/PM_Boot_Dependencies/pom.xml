@@ -110,8 +110,8 @@
         <jgit.version>5.13.1.202206130422-r</jgit.version>
 
         <!-- 被动依赖主动指定版本 -->
-        <tomcat.version>9.0.90</tomcat.version>
-        <tomcat.pdmcode>0583555138</tomcat.pdmcode>
+        <tomcat.version>9.0.97</tomcat.version>
+        <tomcat.pdmcode>0583588627</tomcat.pdmcode>
         <log4j.version>2.23.1</log4j.version>
         <log4j.pdmcode>0583536774</log4j.pdmcode>
         <javassist.version>3.29.0-GA</javassist.version>
@@ -153,7 +153,7 @@
         <!-- 自研二进制版本 -->
         <huawei.license.version>1.1</huawei.license.version>
         <huawei.opengauss.version>5.0.0</huawei.opengauss.version>
-        <huawei.kmc.version>3.1.1-SNAPSHOT</huawei.kmc.version>
+        <huawei.kmc.version>3.1.1</huawei.kmc.version>
         <hauwei.baize.version>1.1.12</hauwei.baize.version>
 
         <!-- 基础版本号 -->
