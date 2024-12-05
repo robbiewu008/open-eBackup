@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -111,7 +111,13 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><strong>Prefix</strong></p></td>
-          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Prefix added to the object to be restored.</p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Prefix added to the object to be restored.</p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p>After a prefix is added, the prefix length of some objects may exceed the limit of the production end. As a result, the object restoration job fails.</p>
+            </div>
+           </div></td>
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p></td>

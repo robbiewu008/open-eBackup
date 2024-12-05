@@ -88,6 +88,11 @@ export class SelectSlaComponent implements OnInit {
   pageIndex1 = CommonConsts.PAGE_START;
   pageIndex2 = CommonConsts.PAGE_START;
   valid$ = new Subject<boolean>();
+  policyAction = PolicyAction;
+  hasRansomware = false; // 用于判断该资源是否有已经存在的防勒索策略，目前只用于文件集和nas共享
+  hasAggregationApp = false; // 用于标识该应用的保护高级参数里是否有小文件聚合
+  _intersection = intersection;
+  isBatchProtect = false; // 用于判断批量保护场景
   actionsFilterMap = [
     {
       label: this.i18n.get('common_full_backup_label'),
@@ -339,16 +344,27 @@ export class SelectSlaComponent implements OnInit {
         .subscribe(res => {
           this.slaList = res.items;
           this.total = res.total;
-          if (find(res.items, { uuid: createSla })) {
+          const tmpSla = find(res.items, { uuid: createSla });
+          if (
+            find(res.items, { uuid: createSla }) &&
+            !(
+              this.hasAggregationApp &&
+              this.hasRansomware &&
+              !!find(tmpSla.policy_list, { action: PolicyAction.INCREMENT })
+            )
+          ) {
             this.slaChange(createSla);
           }
-          this.slaList.forEach(
-            item =>
-              (item.isWormSLAList = some(
-                item.policy_list,
-                policy => policy?.worm_validity_type >= 1
-              ))
-          );
+          this.slaList.forEach(item => {
+            item.isWormSLAList = some(
+              item.policy_list,
+              policy => policy?.worm_validity_type >= 1
+            );
+            item.disabled =
+              this.hasAggregationApp &&
+              this.hasRansomware &&
+              find(item.policy_list, { action: PolicyAction.INCREMENT });
+          });
         });
     }
   }
@@ -436,11 +452,23 @@ export class SelectSlaComponent implements OnInit {
               assign(item, {
                 isWormSLAList: item.policy_list?.some(
                   e => e?.worm_validity_type >= 1
-                )
+                ),
+                disabled:
+                  this.hasAggregationApp &&
+                  this.hasRansomware &&
+                  find(item.policy_list, { action: PolicyAction.INCREMENT })
               });
             });
           }
-          if (find(res.items, { uuid: createSla })) {
+          const tmpSla = find(res.items, { uuid: createSla });
+          if (
+            find(res.items, { uuid: createSla }) &&
+            !(
+              this.hasAggregationApp &&
+              this.hasRansomware &&
+              !!find(tmpSla.policy_list, { action: PolicyAction.INCREMENT })
+            )
+          ) {
             this.selectionRow(createSla);
           }
         });
@@ -549,7 +577,30 @@ export class SelectSlaComponent implements OnInit {
       .ShowAntiRansomwarePolicies(resourceParams)
       .subscribe(res => {
         this.isWormData = !!find(res.records, item => item.schedule.setWorm);
+        this.hasRansomware = !!find(
+          res.records,
+          item => item.schedule.needDetect
+        );
+        if (!this.hasAggregationApp) {
+          return;
+        }
+        // 如果后获取完防勒索策略信息再做一次判断
+        this.setSlaDisabled(this.slaList);
+        this.setSlaDisabled(this.slaDatas);
+        // 获取之后通知高级组件
+        this.globalService.emitStore({
+          action: 'syncRansomwareStatus',
+          state: this.hasRansomware
+        });
       });
+  }
+
+  setSlaDisabled(slaArray) {
+    each(slaArray, item => {
+      item.disabled =
+        this.hasRansomware &&
+        find(item.policy_list, { action: PolicyAction.INCREMENT });
+    });
   }
 
   initData(data: any, _?, action?: ProtectResourceAction) {
@@ -557,6 +608,7 @@ export class SelectSlaComponent implements OnInit {
       this.getDataWormStatus(data);
     }
     this.resourceData = isArray(data) ? data[0] : data;
+    this.isBatchProtect = isArray(data);
     this.subResourceType =
       this.resourceData.sub_type || this.resourceData.sourceSubType;
     this.isBatchModify =
@@ -1027,6 +1079,15 @@ export class SelectSlaComponent implements OnInit {
         'value'
       );
     }
+    // 判断这些应用是有小文件聚合的
+    if (
+      !!intersection(this.applications, [
+        ApplicationType.Fileset,
+        ApplicationType.NASShare
+      ]).length
+    ) {
+      this.hasAggregationApp = true;
+    }
     this.viewChange(this.selectedSlaView);
   }
 
@@ -1202,6 +1263,9 @@ export class SelectSlaComponent implements OnInit {
 
   selectionRow(sla_id, notManualClick?) {
     const tmpSla = this.slaDatas.find(item => item.uuid === sla_id);
+    if (tmpSla.disabled) {
+      return;
+    }
     this.isWormSLA =
       !this.isCyber &&
       !!(

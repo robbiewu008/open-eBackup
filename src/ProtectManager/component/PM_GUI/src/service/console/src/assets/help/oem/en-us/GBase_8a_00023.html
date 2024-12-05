@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,31 +11,32 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="Step 1: Creating a Logical Port for the Replication Network (Applicable to 1.5.0)">
+  <meta name="DC.Title" content="Step 1: Creating a Replication Network Logical Port (Applicable to Some Models)">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="GBase_8a_00021.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
   <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
   <meta name="DC.Publisher" content="20241029">
-  <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
+  <meta name="prodname" content="csbs">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="GBase_8a_00023">
   <meta name="DC.Language" content="en-us">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>Step 1: Creating a Logical Port for the Replication Network (Applicable to 1.5.0)</title>
+  <title>Step 1: Creating a Replication Network Logical Port (Applicable to Some Models)</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="GBase_8a_00023"></a><a name="GBase_8a_00023"></a>
-  <h1 class="topictitle1">Step 1: Creating a Logical Port for the Replication Network (Applicable to 1.5.0)</h1>
+  <h1 class="topictitle1">Step 1: Creating a Replication Network Logical Port<span> (Applicable to Some Models)</span></h1>
   <div>
-   <p id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1720618465166">On DeviceManager of the primary and secondary storage systems, you can create logical ports for the replication network to remotely transmit replication data.</p>
+   <p id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1720618465166">On DeviceManager of the primary and secondary storage systems, you can create replication network logical ports to remotely transmit replication data.</p>
    <div class="section" id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_section76551503175">
     <h4 class="sectiontitle">Prerequisites</h4>
     <p id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_p4324626143813">The replication network IP addresses have been planned at the primary and secondary ends.</p>
@@ -44,12 +44,7 @@
    <div class="section" id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_section01286189357">
     <h4 class="sectiontitle">Procedure</h4>
     <ol id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_ol3195132918350">
-     <li id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_li319522912350"><span>Log in to DeviceManager.</span><p></p>
-      <ol type="a" id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_ol8463855369">
-       <li id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001607531760_en-us_topic_0000001311295305_en-us_topic_0000001149078659_li929117916361">Choose <span class="uicontrol" id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001839143213_en-us_topic_0000001311295305_en-us_topic_0000001149078659_uicontrol1098185683619"><b><span id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001839143213_text157651936143415"><strong>System</strong></span> &gt; <span id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001839143213_text49601653123416"><strong>Infrastructure</strong></span> &gt; <span id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001839143213_text112401684352"><strong>Cluster Management</strong></span></b></span>.</li>
-       <li id="GBase_8a_00023__en-us_topic_0000001839223165_li19932939164117">In the <span class="uicontrol" id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol1050641575312"><b><span id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001839143213_text133861121163513"><strong>Local Cluster Nodes</strong></span></b></span> area of the <span class="uicontrol" id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol13691645105219"><b><span id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001839143213_text1763193125313"><strong>Backup Cluster</strong></span></b></span> tab page, click the node name.</li>
-       <li id="GBase_8a_00023__en-us_topic_0000001839223165_li1115217015589">In the <span class="uicontrol" id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol1144724616332"><b><span id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001839143213_text51761646203516"><strong>Node detail</strong></span></b></span> dialog box that is displayed, click <span class="uicontrol" id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol1544714611335"><b><span id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001839143213_text1624910583612"><strong>Open the device management platform</strong></span></b></span> to go to DeviceManager.</li>
-      </ol> <p></p></li>
+     <li id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_li319522912350"><span>Log in to DeviceManager of the primary and secondary storage systems separately.</span></li>
      <li id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_li1749374163512"><span>Choose <span class="uicontrol" id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_uicontrol6420811144214"><b>Services &gt; Network &gt; Logical Ports</b></span>.</span></li>
      <li id="GBase_8a_00023__en-us_topic_0000001839223165_li17548185061613"><span>Select <strong id="GBase_8a_00023__en-us_topic_0000001839223165_b1619211561110">All vStores</strong> for <strong id="GBase_8a_00023__en-us_topic_0000001839223165_b131921615141119">vStore</strong>.</span></li>
      <li id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_li1020518291423"><span>Click <span class="uicontrol" id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_uicontrol9233246164210"><b>Create</b></span> to create a logical port.</span><p></p><p id="GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_p122201058114510"><a href="#GBase_8a_00023__en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617">Table 1</a> describes the related parameters.</p>

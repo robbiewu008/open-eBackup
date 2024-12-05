@@ -161,9 +161,7 @@ export class ComputerLocationComponent implements OnInit {
         each(res.items, item => {
           if (
             this.vmRestoreOptionType === VmRestoreOptionType.VM &&
-            (item.type === ResourceType.VM ||
-              (event.subType === DataMap.Resource_Type.dataCenter.value &&
-                !item.alias_type))
+            item.type === ResourceType.VM
           ) {
             return;
           }

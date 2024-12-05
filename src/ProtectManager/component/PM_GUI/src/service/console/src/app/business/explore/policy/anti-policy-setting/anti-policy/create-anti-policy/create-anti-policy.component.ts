@@ -141,7 +141,8 @@ export const EXCLUDE_RESOURCE_TYPES: ExcludeItem[] = [
   DataMap.Job_Target_Type.APSZone,
   DataMap.Job_Target_Type.nutanix,
   DataMap.Job_Target_Type.nutanixCluster,
-  DataMap.Job_Target_Type.nutanixHost
+  DataMap.Job_Target_Type.nutanixHost,
+  DataMap.Job_Target_Type.nutanixVm
 ];
 
 /**
@@ -265,6 +266,12 @@ export class CreateAntiPolicyComponent implements OnInit {
       return;
     }
     this.selectedResources = this.data.selectedResources;
+    if (
+      !isEmpty(this.selectedResources) &&
+      this.data.dataSourceType === DataMap.Detecting_Data_Source.local.value
+    ) {
+      this.getLastSelectedDataStatus();
+    }
     this.formGroup.patchValue(this.data);
     if (!this.data.schedule) {
       return;
@@ -300,6 +307,38 @@ export class CreateAntiPolicyComponent implements OnInit {
           .setValue(this.data.schedule.schedulePolicy);
       }
     });
+  }
+
+  getLastSelectedDataStatus() {
+    const extParams = {
+      conditions: JSON.stringify({
+        uuid: map(this.selectedResources, 'resourceId')
+      })
+    };
+    // 获取上次所选数据的文件聚合和worm状态
+    this.appUtilsService.getResourceByRecursion(
+      extParams,
+      params => this.protectedResourceApiService.ListResources(params),
+      resource => {
+        each(this.selectedResources, item => {
+          const tmpResource = find(resource, { uuid: item.resourceId });
+          assign(item, {
+            worm_switch: get(
+              tmpResource,
+              'protectedObject.extParameters.worm_switch',
+              false
+            ),
+            small_file_aggregation: [true, 2].includes(
+              get(
+                tmpResource,
+                'protectedObject.extParameters.small_file_aggregation',
+                false
+              )
+            )
+          });
+        });
+      }
+    );
   }
 
   /**
@@ -503,6 +542,15 @@ export class CreateAntiPolicyComponent implements OnInit {
       } else {
         this.resourceTypes = cloneDeep(this.allResourceTypes);
       }
+      if (!isEmpty(this.tableData?.data)) {
+        this.checkListStatus();
+        this.selectedResources = [
+          ...this.selectedResources.filter(
+            item => !(item.small_file_aggregation && val)
+          )
+        ];
+        this.refreshList();
+      }
       defer(() => {
         this.antiTamperingSettingOptions[0].disabled = val;
         this.antiTamperingSettingOptions[1].disabled = !val;
@@ -514,8 +562,13 @@ export class CreateAntiPolicyComponent implements OnInit {
     });
 
     this.formGroup.get('setWorm').valueChanges.subscribe(val => {
-      const needDetect = this.formGroup.get('needDetect').value;
-
+      if (!isEmpty(this.tableData?.data)) {
+        this.checkListStatus();
+        this.selectedResources = [
+          ...this.selectedResources.filter(item => !(item.worm_switch && val))
+        ];
+        this.refreshList();
+      }
       defer(() => {
         this.formGroup
           .get('antiTamperingSetting')
@@ -524,6 +577,28 @@ export class CreateAntiPolicyComponent implements OnInit {
           );
       });
     });
+  }
+
+  checkListStatus() {
+    each(this.tableData.data, item => {
+      item.disabled =
+        !(
+          isEmpty(item?.policyName) ||
+          (!isEmpty(this.data) && this.data?.policyName === item?.policyName)
+        ) ||
+        (item.worm_switch && this.formGroup.get('setWorm').value) ||
+        (item.small_file_aggregation && this.formGroup.get('needDetect').value);
+    });
+  }
+  refreshList() {
+    if (!isUndefined(this.resourceTable)) {
+      this.resourceTable.setSelections(cloneDeep(this.selectedResources));
+    }
+    if (!isUndefined(this.seletedTable)) {
+      this.seletedTable.setSelections(cloneDeep(this.selectedResources));
+      this.selectIndexChange('selected');
+    }
+    this.currentSelect = this.selectedResources.length;
   }
 
   configSourceSelect() {
@@ -795,6 +870,13 @@ export class CreateAntiPolicyComponent implements OnInit {
                       item,
                       'protectedObject.extParameters.worm_switch',
                       false
+                    ),
+                    small_file_aggregation: [true, 2].includes(
+                      get(
+                        item,
+                        'protectedObject.extParameters.small_file_aggregation',
+                        false
+                      )
                     )
                   };
                   each(data.records, policy => {
@@ -811,7 +893,11 @@ export class CreateAntiPolicyComponent implements OnInit {
                   (isEmpty(item?.policyName) ||
                     (!isEmpty(this.data) &&
                       this.data?.policyName === item?.policyName)) &&
-                  !item.worm_switch
+                  !(item.worm_switch && this.formGroup.get('setWorm').value) &&
+                  !(
+                    item.small_file_aggregation &&
+                    this.formGroup.get('needDetect').value
+                  )
                     ? item
                     : assign(item, { disabled: true })
                 ),

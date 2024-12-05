@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
@@ -20,7 +20,7 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤2：创建归档SLA">
+<meta name="DC.Title" content="步骤2：创建备份副本归档SLA">
 <meta name="product" content="">
 <meta name="DC.Relation" scheme="URI" content="tdsql_gud_033.html">
 <meta name="prodname" content="">
@@ -33,16 +33,16 @@
 <meta name="DC.Identifier" content="tdsql_gud_037">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤2：创建归档SLA</title>
+<title>步骤2：创建备份副本归档SLA</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="tdsql_gud_037"></a><a name="tdsql_gud_037"></a>
 
-<h1 class="topictitle1">步骤2：创建归档SLA</h1>
+<h1 class="topictitle1">步骤2：创建备份副本归档SLA</h1>
 <div><p>如果您需要对生成的备份副本进行归档，请参考本节配置归档SLA。</p>
 <div class="section"><h4 class="sectiontitle">前提条件</h4><p>已创建备份策略的SLA，如果未创建请先参考<a href="tdsql_gud_014.html">步骤6：创建备份SLA</a>创建备份策略的SLA。</p>
 </div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="tdsql_gud_037__zh-cn_topic_0000001792503806_uicontrol9143133018394">“<span id="tdsql_gud_037__zh-cn_topic_0000001792503806_text1093174963311">保护</span> &gt; <span id="tdsql_gud_037__zh-cn_topic_0000001792503806_text18596203494212">保护策略</span> &gt; <span id="tdsql_gud_037__zh-cn_topic_0000001792503806_text16431530122616">SLA</span>”</span>。</span></li><li><span>查找到需要创建归档策略的SLA，单击<span class="uicontrol" id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_uicontrol577717611320">“<span id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text19646163524813">更多</span> &gt; <span id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text068935811482">修改</span>”</span>。</span><p><p id="tdsql_gud_037__zh-cn_topic_0000001792503806_p1816920251869">系统预置的SLA不支持修改。</p>
-</p></li><li><span>单击<span class="uicontrol" id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_uicontrol12308113618612">“<span id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text95301130194917">归档策略</span>”</span>图标。</span></li><li><span>配置归档策略信息。</span><p><p>单击页面右侧的<span class="uicontrol">“<span>添加</span>”</span>，可创建多个归档策略，最多允许创建4个归档策略，最多支持归档到4个归档存储。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001839142377_uicontrol8111821122820">“<span id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001839142377_text71111921162814">保护</span> &gt; 保护策略 &gt; SLA”</span>。</span></li><li><span>查找到需要创建归档策略的SLA，单击<span class="uicontrol" id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_uicontrol577717611320">“<span id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text19646163524813">更多</span> &gt; <span id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text068935811482">修改</span>”</span>。</span><p><p id="tdsql_gud_037__zh-cn_topic_0000001792503806_p1816920251869">系统预置的SLA不支持修改。</p>
+</p></li><li><span>单击<span class="uicontrol" id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_uicontrol12308113618612">“<span id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text95301130194917">归档策略</span>”</span>图标。</span></li><li><span>配置归档策略信息。</span><p><p>单击页面右侧的<span class="uicontrol">“添加”</span>，可创建多个归档策略，最多允许创建4个归档策略，最多支持归档到4个归档存储。</p>
 <p>相关参数说明如<a href="#tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_table13531347181416">表1</a>。</p>
 
 <div class="tablenoborder"><a name="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_table13531347181416"></a><a name="zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_table13531347181416"></a><table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_table13531347181416" frame="border" border="1" rules="all"><caption><b>表1 </b>归档参数说明</caption><colgroup><col style="width:30.5%"><col style="width:69.5%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="30.5%" id="mcps1.3.3.2.4.2.3.2.3.1.1"><p>参数</p>
@@ -64,9 +64,13 @@
 <tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p><span id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text157818825116">归档存储</span></p>
 </td>
 <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><ul><li id="tdsql_gud_037__zh-cn_topic_0000001792503806_li078744584316">归档存储类型选择为<span class="uicontrol" id="tdsql_gud_037__zh-cn_topic_0000001792503806_uicontrol816164574110">“<span id="tdsql_gud_037__zh-cn_topic_0000001792503806_text1616174511413">对象存储</span>”</span>时，请选择已添加的对象存储，也可以单击<span class="uicontrol" id="tdsql_gud_037__zh-cn_topic_0000001792503806_uicontrol1971818559393">“<span id="tdsql_gud_037__zh-cn_topic_0000001792503806_text1719105510393">添加</span>”</span>添加对象存储。</li><li id="tdsql_gud_037__zh-cn_topic_0000001792503806_li113522047134319">归档存储类型选择为<span class="uicontrol" id="tdsql_gud_037__zh-cn_topic_0000001792503806_uicontrol8492104174212">“<span id="tdsql_gud_037__zh-cn_topic_0000001792503806_text649212418424">磁带库</span>”</span>时，请选择节点。</li></ul>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>仅OceanProtect X系列备份一体机支持选择<span class="uicontrol">“<span>磁带库</span>”</span>。</p>
+</div></div>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p><span id="tdsql_gud_037__zh-cn_topic_0000001792503806_text55110119106">介质集</span></p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p><span id="tdsql_gud_037__ph47441955181310">仅OceanProtect X系列备份一体机支持设置此参数。</span></p>
+</div></div>
 </td>
 <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p>归档存储类型选择为<span class="uicontrol" id="tdsql_gud_037__zh-cn_topic_0000001792503806_uicontrol1656982061114">“<span id="tdsql_gud_037__zh-cn_topic_0000001792503806_text1556910209115">磁带库</span>”</span>时，请选择介质集。也可以单击<span class="uicontrol" id="tdsql_gud_037__zh-cn_topic_0000001792503806_uicontrol056992061120">“<span id="tdsql_gud_037__zh-cn_topic_0000001792503806_text155691220141114">添加</span>”</span>创建介质集。</p>
 </td>
@@ -86,7 +90,7 @@
 <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p>选择需要归档的备份副本并设置归档副本的保留时长。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><div class="p">驱动数量<div class="note" id="tdsql_gud_037__zh-cn_topic_0000001792503806_note754320443218"><span class="notetitle"> 说明： </span><div class="notebody"><p id="tdsql_gud_037__zh-cn_topic_0000001792503806_zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143213_p8320153562113">仅1.6.0及后续版本支持设置该参数。</p>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><div class="p">驱动数量<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>仅1.6.0及后续版本支持设置该参数。</li><li><span>仅OceanProtect X系列备份一体机支持设置此参数。</span></li></ul>
 </div></div>
 </div>
 </td>

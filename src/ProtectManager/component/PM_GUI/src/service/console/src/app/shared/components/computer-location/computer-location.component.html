@@ -3,9 +3,9 @@
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
   If a copy of the MPL was not distributed with this file, You can obtain one at
   http://mozilla.org/MPL/2.0/.
-
+  
   Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-
+  
   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
@@ -19,7 +19,7 @@
         (ngModelChange)='resTree.filter({ filterMode: "contains", key: "label", value: $event})'></lv-search>
     <lv-tree [lvData]="treeData" lvShowLine lvSelectionMode="single" [(lvSelection)]="treeSelection" #resTree
         (lvExpandedChange)="expandedChange($event)" (lvCheck)="nodeCheck($event)" [lvHighlightContent]="searchValue"
-        lvShowContentIcon>
+        lvShowContentIcon lvVirtualScroll lvSelectionAssociate="false">
     </lv-tree>
 </div>
 <div *ngIf="showErrorTip" lv-overflow style="width:711px">

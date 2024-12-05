@@ -1,4 +1,3 @@
-<div class="report-container">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="report-container">
   <ng-container *ngIf="isProtectObjectDetail; else elseTemplate">
     <div class="header protect-object-header">
       <div class="report-title" *ngIf="loaded">{{ protectObjectName }}</div>
@@ -187,6 +187,8 @@
       <!-- 最近一次快照侦测情况 -->
       <div class="latest-card-title aui-gutter-column-lg">
         {{ 'explore_latest_snapshot_detect_report_label' | i18n }}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_latest_snapshot_detect_report_help_label' | i18n}}"
+          lvColorState='true'></i>
       </div>
       <div class="latest-report">
         <ng-container *ngIf="reportDataResponse?.latestInfectionSnapshotInfo; else elseNoDataTemplate">

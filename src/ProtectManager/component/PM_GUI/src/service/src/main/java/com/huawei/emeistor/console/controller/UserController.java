@@ -116,6 +116,8 @@ public class UserController extends AdvBaseController {
     @PostMapping("/v1/auth/action/login")
     public LoginResponse login(@RequestBody @Valid AuthRequest authRequest) {
         log.info("login start");
+        authRequest.setUserName(rsaService.decrypt(authRequest.getUserName()));
+        authRequest.setPassword(rsaService.decrypt(authRequest.getPassword()));
         return userService.login(NormalizerUtil.normalizeForBean(authRequest, AuthRequest.class));
     }
 

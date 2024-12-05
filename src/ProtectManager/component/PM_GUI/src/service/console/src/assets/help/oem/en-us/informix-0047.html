@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -45,7 +45,11 @@
     <h4 class="sectiontitle">Prerequisites</h4>
     <p>Before restoration, shut down the Informix/GBase 8s database. If the Informix/GBase 8s cluster is an HDR cluster, shut down the Informix/GBase 8s database on both the active and standby nodes.</p>
     <ol>
-     <li>Use PuTTY to log in to the Informix/GBase 8s database host and switch to the database installation user.</li>
+     <li>Use PuTTY to log in to the Informix/GBase 8s database host as user <strong>root</strong>.
+      <ul>
+       <li>On the Informix host, run <strong>su - informix</strong> to switch to the database user.</li>
+       <li>On the GBase 8s host, run <strong>su - gbasedbt</strong> to switch to the database user.</li>
+      </ul></li>
      <li>Run the <strong>source ~/.bash_profile</strong> command to configure environment variables.</li>
      <li>Run the <strong>onstat -l</strong> command to check the status of the Informix/GBase 8s database.<p>If <strong>On-Line (Prim)</strong>, <strong>Read-Only (sec)</strong>, or <strong>On-Line</strong> is displayed in the command output, the database is not shut down. Proceed with subsequent operations to shut down the database.</p> <p><span><img src="en-us_image_0000001924413566.png"></span></p>
       <div class="note">
@@ -77,9 +81,9 @@
           <div class="note">
            <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
            <div class="notebody">
-            <ul id="informix-0047__oracle_gud_0058_ul75802612312">
-             <li id="informix-0047__oracle_gud_0058_li1497342618234">For 1.5.0, a maximum of 100 copies can be displayed on the timeline. You can click <span><img id="informix-0047__oracle_gud_0058_image173544102299" src="en-us_image_0000001886153709.png"></span> to view all copies.</li>
-             <li id="informix-0047__oracle_gud_0058_li95818264231">During point-in-time recovery, the information about the copy used for restoration cannot be obtained on the management page. Therefore, users cannot view the copy information of the restoration job on pages of the restoration job and related events.</li>
+            <ul>
+             <li>For 1.5.0, a maximum of 100 copies can be displayed on the timeline. You can click <span><img src="en-us_image_0000002093451620.png"></span> to view all copies.</li>
+             <li>During point-in-time restoration, the information about the copy used for restoration cannot be obtained on the management page. Therefore, users cannot view the copy information of the restoration job on pages of the restoration job and related events.</li>
             </ul>
            </div>
           </div></li>

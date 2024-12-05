@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
@@ -20,26 +20,26 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="Step 8: Enabling the NFSv4.1 Service (Applicable to X Series Appliances)">
+<meta name="DC.Title" content="Step 8: Enabling the NFSv4.1 Service (Applicable to X Series Backup Appliances)">
 <meta name="product" content="">
 <meta name="DC.Relation" scheme="URI" content="nas_s_0020.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
-<meta name="documenttype" content="usermanual">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="nas_s_0028">
 <meta name="DC.Language" content="en-us">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>Step 8: Enabling the NFSv4.1 Service (Applicable to X Series Appliances)</title>
+<title>Step 8: Enabling the NFSv4.1 Service (Applicable to X Series Backup Appliances)</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="nas_s_0028"></a><a name="nas_s_0028"></a>
 
-<h1 class="topictitle1">Step 8: Enabling the NFSv4.1 Service (Applicable to X Series Appliances)</h1>
+<h1 class="topictitle1">Step 8: Enabling the NFSv4.1 Service (Applicable to X Series Backup Appliances)</h1>
 <div><p>Before performing NAS backup, you must enable the NFSv4.1 service. Otherwise, the backup will fail.</p>
-<div class="section"><h4 class="sectiontitle">Logging In to DeviceManager</h4><ol><li><span>Choose <span class="uicontrol" id="nas_s_0028__en-us_topic_0000001839143213_en-us_topic_0000001311295305_en-us_topic_0000001149078659_uicontrol1098185683619"><b><span id="nas_s_0028__en-us_topic_0000001839143213_text157651936143415"><strong>System</strong></span> &gt; <span id="nas_s_0028__en-us_topic_0000001839143213_text49601653123416"><strong>Infrastructure</strong></span> &gt; <span id="nas_s_0028__en-us_topic_0000001839143213_text112401684352"><strong>Cluster Management</strong></span></b></span>.</span></li><li><span>In the <span class="uicontrol" id="nas_s_0028__en-us_topic_0000001839143213_uicontrol1050641575312"><b><span id="nas_s_0028__en-us_topic_0000001839143213_text133861121163513"><strong>Local Cluster Nodes</strong></span></b></span> area of the <span class="uicontrol" id="nas_s_0028__en-us_topic_0000001839143213_uicontrol13691645105219"><b><span id="nas_s_0028__en-us_topic_0000001839143213_text1763193125313"><strong>Backup Cluster</strong></span></b></span> tab page, click the node name.</span></li><li><span>In the <span class="uicontrol" id="nas_s_0028__en-us_topic_0000001839143213_uicontrol1144724616332"><b><span id="nas_s_0028__en-us_topic_0000001839143213_text51761646203516"><strong>Node detail</strong></span></b></span> dialog box that is displayed, click <span class="uicontrol" id="nas_s_0028__en-us_topic_0000001839143213_uicontrol1544714611335"><b><span id="nas_s_0028__en-us_topic_0000001839143213_text1624910583612"><strong>Open the device management platform</strong></span></b></span> to go to DeviceManager.</span></li></ol>
+<div class="section"><h4 class="sectiontitle">Logging In to DeviceManager</h4><ol><li><span>Choose <strong>System</strong> &gt; <strong>Infrastructure</strong> &gt; <strong>Cluster Management</strong>.</span></li><li><span>On the <strong>Backup Clusters</strong> tab page, click a node name under the <strong>Local Cluster Nodes</strong> area.</span></li><li><span>On the displayed <strong>Node Details</strong> page, click <strong>Open the device management platform</strong> to go to DeviceManager.</span></li></ol>
 </div>
 <div class="section" id="nas_s_0028__section16941161934519"><h4 class="sectiontitle">Enabling the NFSv4.1 Service on DeviceManager</h4><ol id="nas_s_0028__en-us_topic_0000001292005288_en-us_topic_0000001223878385_ol9474161314358"><li id="nas_s_0028__en-us_topic_0000001292005288_en-us_topic_0000001223878385_li6474813183518"><span>Choose <strong id="nas_s_0028__b1438153784513">Settings</strong> &gt; <strong id="nas_s_0028__b19439203734515">File Service</strong> &gt; <strong id="nas_s_0028__b044011377457">NFS Service</strong>.</span></li><li id="nas_s_0028__en-us_topic_0000001292005288_en-us_topic_0000001223878385_li0195181917353"><span>In the <strong id="nas_s_0028__b7153132674613">vStore</strong> drop-down box in the upper left, select the vStore for which you want to enable the NFSv4 service.</span></li><li id="nas_s_0028__en-us_topic_0000001292005288_en-us_topic_0000001223878385_li184362365364"><span>Click <strong id="nas_s_0028__b124793342464">Modify</strong> in the upper right.</span><p><p id="nas_s_0028__en-us_topic_0000001292005288_en-us_topic_0000001223878385_p8880155893611">The page for configuring the NFS service is displayed.</p>
 <p id="nas_s_0028__en-us_topic_0000001292005288_p1648016318135"><span><img id="nas_s_0028__en-us_topic_0000001292005288_image369813213135" src="en-us_image_0000001792360766.png"></span></p>

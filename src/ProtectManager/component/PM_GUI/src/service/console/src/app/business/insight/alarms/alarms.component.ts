@@ -1298,6 +1298,27 @@ export class AlarmsComponent implements OnInit, OnDestroy {
     );
   }
 
+  exportCurrentAlarms() {
+    this.alarmApiService
+      .exportAlarmsUsingPOST({
+        entityIds: { entityIdSet: [] },
+        lang: this.i18n.language,
+        akOperationTips: false
+      })
+      .subscribe(blob => {
+        const file = new File([blob], `CurrentAlarms_${now()}.xls`, {
+          type: 'application/vnd.ms.excel'
+        });
+        this.appUtilsService.downloadFile(
+          this.activeNodeName
+            ? `HistoryAlarms_${now()}_Node_${this.activeNodeName}.xls`
+            : `HistoryAlarms_${now()}.xls`,
+          file
+        );
+        this.cdr.detectChanges();
+      });
+  }
+
   exportHistoryAlarms() {
     const alarmIdSet = [];
     const options = this.eventsTable.getSelection();
@@ -1643,16 +1664,9 @@ export class AlarmsComponent implements OnInit, OnDestroy {
   }
 
   selectionAlarmChange(source) {
-    const array = this.alarmsTable.getSelection();
-    if (!!array.length) {
-      this.exportAlarmTipLabel = this.i18n.get('common_export_selected_label', [
-        this.alarm
-      ]);
-    } else {
-      this.exportAlarmTipLabel = this.i18n.get('common_export_all_label', [
-        this.alarm
-      ]);
-    }
+    this.exportAlarmTipLabel = this.i18n.get('common_export_all_label', [
+      this.alarm
+    ]);
   }
 
   selectionEventChange(source) {

@@ -47,6 +47,16 @@ public class CommonConstant {
      */
     public static final String COLON = ":";
 
+    /**
+     * 登录时加解密的私钥key
+     */
+    public static final String PRIVATE_SYSTEM_CONFIG_KEY = "LOGIN_IN_PRIVATE_KEY";
+
+    /**
+     * 登录时加解密的公钥key
+     */
+    public static final String PUBLIC_SYSTEM_CONFIG_KEY = "LOGIN_IN_PUBLIC_KEY";
+
     private CommonConstant() {
     }
 }

@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -42,7 +42,7 @@
 <div class="section"><h4 class="sectiontitle">背景信息</h4><ul><li>不同版本的操作界面可能会有少许差异，操作时请以实际情况为准。</li><li>当前仅支持Linux主机的Oracle数据库实现表级恢复。</li><li>表级恢复仅恢复表中的数据，恢复后的表的相关权限以及外键等约束需要用户重新配置。</li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">前提条件</h4><p>恢复至的目标主机已安装ProtectAgent及其他相关软件。</p>
-<p>具体操作可参考<span id="oracle_gud_0131__oracle_gud_0066_cite574135311512">《OceanProtect <span id="oracle_gud_0131__oracle_gud_0066_zh-cn_topic_0000001792502994_ph19170214112011">备份一体机 1.5.0-1.6.0</span> ProtectAgent安装指南》</span>。</p>
+<p>具体操作可参考<span id="oracle_gud_0131__oracle_gud_0066_cite574135311512">《OceanProtect DataBackup 1.5.0-1.6.0 ProtectAgent安装指南》</span>。</p>
 </div>
 <div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>检查并配置Oracle数据库的Open状态，具体操作请参见<a href="oracle_gud_0016.html">检查并配置Oracle数据库的Open状态</a>。</span></li><li><span>检查目标数据库是否为归档模式，具体操作请参见<a href="oracle_gud_0017.html">检查并配置Oracle数据库的归档模式</a>。</span></li><li><span>检查目标数据库是否为读写模式。</span><p><ol type="a"><li>登录Oracle数据库主机，以Linux操作系统为例。<p>请使用PuTTY登录Oracle数据库主机，并执行<strong>su - oracle</strong>命令，切换到<strong>oracle</strong>账户。</p>
 </li><li>登录Oracle数据库实例。<ul><li>若为OS认证，请执行以下命令：<pre class="screen">export ORACLE_SID<strong>=</strong><em>数据库实例名称</em>
@@ -184,7 +184,7 @@ startup;</pre>
 </tbody>
 </table>
 </div>
-</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>当恢复任务详情中存在“恢复任务可能存在资源残留”内容时，可参见<a href="zh-cn_topic_0000002053451505.html">恢复任务提示存在资源残留</a>进行操作。</p>
+</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>当恢复任务详情中存在“恢复任务可能存在资源残留”内容时，可参见<a href="zh-cn_topic_0000002053451505.html">恢复任务提示存在资源残留（适用于1.6.0及后续版本）</a>进行操作。</p>
 </div></div>
 </li></ol>
 </li></ol>

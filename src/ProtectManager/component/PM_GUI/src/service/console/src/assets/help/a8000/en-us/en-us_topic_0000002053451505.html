@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
@@ -20,22 +20,22 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="Residual Resources Exist for a Restoration Job">
+<meta name="DC.Title" content="In a Restoration Job, a Message Is Displayed Indicating that Residual Resources Exist (Applicable to 1.6.0 and Later Versions)">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="EN-US_TOPIC_0000002053451505">
 <meta name="DC.Language" content="en-us">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>Residual Resources Exist for a Restoration Job</title>
+<title>In a Restoration Job, a Message Is Displayed Indicating that Residual Resources Exist (Applicable to 1.6.0 and Later Versions)</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002053451505"></a><a name="EN-US_TOPIC_0000002053451505"></a>
 
-<h1 class="topictitle1">Residual Resources Exist for a Restoration Job</h1>
-<div><p>During table-level restoration, an auxiliary database instance is generated on the target host. When the restoration job is complete, the generated auxiliary database instance is deleted automatically. If the restoration job details contain information indicating that residual resources may exist for the restoration job, you need to manually delete the residual resources.</p>
-<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="EN-US_TOPIC_0000002053451505__li10370134113596"><a name="EN-US_TOPIC_0000002053451505__li10370134113596"></a><a name="li10370134113596"></a><span>Check whether there are residual resources on the target host.</span><p><ol type="a"><li>Log in to the OceanProtect WebUI.</li><li>Obtain the SID of the auxiliary database instance from the restoration job details page.</li><li>Check whether there are residual resources on the host.<ol class="substepthirdol"><li>Use PuTTY to log in to the Oracle database host.</li><li>Run the following command to switch to user <strong>oracle</strong>:<pre class="screen">su - oracle</pre>
-</li><li>Run the following commands to check whether resources related to the auxiliary database instance exist on the host. In this example, <em>Instance SID</em> is set to <strong>hw1726111726</strong>.<pre class="screen">find $ORACLE_BASE/ -iname <em>Instance SID</em>
+<h1 class="topictitle1">In a Restoration Job, a Message Is Displayed Indicating that Residual Resources Exist (Applicable to 1.6.0 and Later Versions)</h1>
+<div><p>During table-level restoration, an auxiliary database instance is generated on the target host. When the restoration job is complete, the generated auxiliary database instance is deleted automatically. If the restoration job details contain information indicating that residual resources may exist in the restoration job, you need to manually delete the residual resources.</p>
+<div class="section"><h4 class="sectiontitle">Linux Scenario</h4><ol><li id="EN-US_TOPIC_0000002053451505__li10370134113596"><a name="EN-US_TOPIC_0000002053451505__li10370134113596"></a><a name="li10370134113596"></a><span>Check whether there are residual resources on the target host.</span><p><ol type="a"><li>Log in to the OceanProtect WebUI.</li><li>Obtain the SID of the auxiliary database instance from the restoration job details page.</li><li>Check whether there are residual resources on the host.<ol class="substepthirdol"><li>Use PuTTY to log in to the Oracle database host.</li><li>Run the following command to switch to user <strong>oracle</strong>:<pre class="screen">su - oracle</pre>
+</li><li>Run the following commands to check whether resources related to the auxiliary database instance exist on the host. In this example, <em>SID of the auxiliary database instance</em> is set to <strong>hw1726111726</strong>.<pre class="screen">find $ORACLE_BASE/ -iname <em>SID of the auxiliary database instance</em>
 find $ORACLE_BASE/* -iname <em>'*hw1726111726*'</em> | grep -v admin | grep -v oradata</pre>
 <p>If the residual resource path is displayed in the command output, residual resources exist.</p>
-<p>If the following information is displayed, residual resources of secondary database instance <strong>hw1726111726</strong> exist.</p>
+<p>If the following information is displayed, residual resources of auxiliary database instance <strong>hw1726111726</strong> exist.</p>
 <pre class="screen">[oracle@adg1 ~]$ find $ORACLE_BASE/ -iname <em>hw1726111726</em>
 /u01/app/oracle_base/diag/rdbms/hw1726111726
 /u01/app/oracle_base/diag/rdbms/hw1726111726/hw1726111726
@@ -57,7 +57,7 @@ find $ORACLE_BASE/* -iname <em>'*hw1726111726*'</em> | grep -v admin | grep -v o
 </li></ol>
 </li></ol>
 </p></li><li><span>Shut down the database mounted to the host.</span><p><ol type="a"><li>Use PuTTY to log in to the Oracle database host.</li><li>Run the following command to switch to user <strong id="EN-US_TOPIC_0000002053451505__oracle_gud_0095_b16255161422315">oracle</strong>:<p id="EN-US_TOPIC_0000002053451505__oracle_gud_0095_p139165195318"><strong id="EN-US_TOPIC_0000002053451505__oracle_gud_0095_b86201184533">su - oracle</strong></p>
-</li><li>Run the following commands to clear the residual resources of the auxiliary database instance. In this example, <em>Instance SID</em> is set to <strong>hw1726111726</strong>.<pre class="screen">find $ORACLE_BASE/ -iname <em><strong>Instance SID</strong></em><em><strong> </strong></em>-exec rm -rf {} \;
+</li><li>Run the following commands to clear the residual resources of the auxiliary database instance. In this example, <em>SID of the auxiliary database instance</em> is set to <strong>hw1726111726</strong>.<pre class="screen">find $ORACLE_BASE/ -iname <em><strong>SID of the auxiliary database instance</strong></em><em><strong> </strong></em>-exec rm -rf {} \;
 find $ORACLE_BASE/* -iname '*hw1726111726*' | grep -v admin | grep -v oradata | xargs rm -rf</pre>
 <p>If the following information is displayed, the residual resources of the auxiliary database instance have been cleared. You can perform <a href="#EN-US_TOPIC_0000002053451505__li10370134113596">1</a> to check whether the residual resources have been cleared.</p>
 <pre class="screen">[oracle@adg1 ~]$ find $ORACLE_BASE/ -iname hw1726111726  -exec rm -rf {} \;
@@ -72,7 +72,13 @@ find: '/u01/app/oracle_base/admin/hw1726111726': No such file or directory
 </li></ol>
 </p></li></ol>
 </div>
-<p></p>
+<div class="section"><h4 class="sectiontitle">Windows Scenario</h4><ol><li><span>Log in to the OceanProtect WebUI and obtain the SID of the auxiliary database instance on the restoration job details page.</span></li><li><span>Search the Windows programs for <strong>Services</strong> and check whether <strong>OracleService</strong><em>SID of the auxiliary database instance </em> exists in the <span class="uicontrol"><b>Name</b></span> column.</span><p><div class="p">If yes, press <strong>Win+R</strong> to open a <strong>Run</strong> window. Enter <strong>cmd</strong> and press <strong>Enter</strong>. In the displayed screen, run the following command to delete the auxiliary database instance:<pre class="screen">oradim -delete -sid <em>SID of the auxiliary database instance</em></pre>
+</div>
+</p></li><li id="EN-US_TOPIC_0000002053451505__li137585182072"><a name="EN-US_TOPIC_0000002053451505__li137585182072"></a><a name="li137585182072"></a><span>Press <strong>Win+R</strong> to open the <strong>Run</strong> window. Enter <strong>regedit</strong> and press <strong>Enter</strong>. Find the paths of <strong>ORACLE_BASE</strong> and <strong>ORACLE_HOME</strong> and save the paths.</span></li><li id="EN-US_TOPIC_0000002053451505__li33752214231"><a name="EN-US_TOPIC_0000002053451505__li33752214231"></a><a name="li33752214231"></a><span>Search the Windows programs for <strong>Windows PowerShell</strong> and run the following commands in sequence to search for residual resources: <em>ORACLE_BASE path</em> and <em>ORACLE_HOME path</em> are the paths obtained in <a href="#EN-US_TOPIC_0000002053451505__li137585182072">3</a>.</span><p><pre class="screen">Get-ChildItem -Path <em>ORACLE_BASE path</em> -Recurse -File | Where-Object {$_.Name -like "*<em>SID of the auxiliary database instance</em>*"}</pre>
+<pre class="screen">Get-ChildItem -Path <em>ORACLE_HOME path</em> -Recurse -File | Where-Object {$_.Name -like "*<em>SID of the auxiliary database instance</em>*"}</pre>
+<p><span><img src="en-us_image_0000002085881410.png"></span></p>
+</p></li><li><span>Manually confirm and delete the files displayed in <a href="#EN-US_TOPIC_0000002053451505__li33752214231">4</a>. After the deletion is complete, perform <a href="#EN-US_TOPIC_0000002053451505__li33752214231">4</a> again. If no file is displayed, the residual resources of the auxiliary database instance have been cleared.</span></li></ol>
+</div>
 </div>
 
 <div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>

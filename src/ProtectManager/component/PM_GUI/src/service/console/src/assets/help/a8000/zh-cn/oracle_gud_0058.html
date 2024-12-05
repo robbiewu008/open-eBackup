@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -45,13 +45,13 @@
 </li><li>对于1.6.0及后续版本，执行存储层快照恢复时：<ul><li>单机场景下支持使用备份副本、复制副本、归档副本、导入的副本进行恢复。</li><li>集群场景下支持使用备份副本、归档副本、导入的副本进行恢复。</li><li>Windows集群场景下仅支持恢复至原位置。</li><li>系统在指定位置恢复LUN，恢复后目标LUN中的数据会被覆盖。</li><li>非ASM部署形态执行存储层快照恢复，恢复前后LUN的挂载盘符可能会不一致。</li></ul>
 </li><li>不同版本的操作界面可能会有少许差异，操作时请以实际情况为准。</li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>恢复至的目标主机已安装ProtectAgent及其他相关软件。<p>具体操作可参考<span>《OceanProtect <span id="oracle_gud_0058__zh-cn_topic_0000001792502994_ph19170214112011">备份一体机 1.5.0-1.6.0</span> ProtectAgent安装指南》</span>。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>恢复至的目标主机已安装ProtectAgent及其他相关软件。<p>具体操作可参考<span>《OceanProtect DataBackup 1.5.0-1.6.0 ProtectAgent安装指南》</span>。</p>
 </li><li>异机恢复至目标主机时，请确保目标主机的剩余磁盘空间大小要大于数据库的大小。</li><li>对于1.6.0及后续版本，执行存储层快照恢复前，请确保：<ul><li>OCR或voting files所在磁盘与数据文件所在磁盘不在同一个LUN上。</li><li>OCR或voting files所在磁盘与日志文件所在磁盘不在同一个LUN上。</li><li>所保护的数据库资源所在的ASM磁盘组无其他数据库实例。</li></ul>
 </li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="oracle_gud_0058__li1386725584414"><a name="oracle_gud_0058__li1386725584414"></a><a name="li1386725584414"></a><span>恢复时，如果目标位置存在同名数据库，请先关闭该同名数据库再恢复，否则会导致恢复失败。关闭数据库操作如下：</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>当目标位置存在同名数据库时，恢复后同名数据库将被覆盖。</p>
 </div></div>
-<ol type="a"><li>登录Oracle数据库主机。<ul id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_ul1983714162204"><li id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_li7258697580">如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行<strong id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_b119369483451">su - oracle</strong>命令，切换到<strong id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_b2486163014495">oracle</strong>帐户。</li><li id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_li1366015032013">如果是Windows操作系统，请使用系统管理员登录Oracle数据库主机。</li></ul>
+<ol type="a"><li>登录Oracle数据库主机。<ul id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_ul1983714162204"><li id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_li7258697580">如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行<strong id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_b119369483451">su - oracle</strong>命令，切换到<strong id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_b2486163014495">oracle</strong>账户。</li><li id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_li1366015032013">如果是Windows操作系统，请使用系统管理员登录Oracle数据库主机。</li></ul>
 </li><li>执行以下命令，登录Oracle数据库实例。<ul id="oracle_gud_0058__oracle_gud_0016_ul7420345341"><li id="oracle_gud_0058__oracle_gud_0016_li15682124913711">OS认证：<ul id="oracle_gud_0058__oracle_gud_0016_ul89443983816"><li id="oracle_gud_0058__oracle_gud_0016_li18420124173415">如果是Linux操作系统，请执行以下命令：<p id="oracle_gud_0058__oracle_gud_0016_p95148598366"><a name="oracle_gud_0058__oracle_gud_0016_li18420124173415"></a><a name="oracle_gud_0016_li18420124173415"></a><strong id="oracle_gud_0058__oracle_gud_0016_b14236563719">export ORACLE_SID=</strong><em id="oracle_gud_0058__oracle_gud_0016_i85144598369">数据库实例名称</em></p>
 <p id="oracle_gud_0058__oracle_gud_0016_p145141259153613"><strong id="oracle_gud_0058__oracle_gud_0016_b1597618293715">sqlplus / as sysdba</strong></p>
 </li><li id="oracle_gud_0058__oracle_gud_0016_li7402151163816">如果是Windows操作系统，请执行以下操作：<ol class="substepthirdol" id="oracle_gud_0058__oracle_gud_0016_ol124110408264"><li id="oracle_gud_0058__oracle_gud_0016_li624120402267">在键盘上按<span class="uicontrol" id="oracle_gud_0058__oracle_gud_0016_oracle_gud_0016_uicontrol11819941114510">“Win+R”</span>，打开运行窗口。</li><li id="oracle_gud_0058__oracle_gud_0016_li161821338277">输入<span class="parmvalue" id="oracle_gud_0058__oracle_gud_0016_parmvalue122291222476">“cmd”</span>，执行以下命令。<p id="oracle_gud_0058__oracle_gud_0016_p1755152313372"><strong id="oracle_gud_0058__oracle_gud_0016_b19591532143713">set ORACLE_SID=</strong><em id="oracle_gud_0058__oracle_gud_0016_i16755423133718">数据库实例名称</em></p>
@@ -72,6 +72,10 @@
 </li></ul>
 </li></ul>
 </li><li>执行以下命令关闭同名数据库。<p><strong>shutdown immediate;</strong></p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>对于RAC集群，所有节点均需要执行该命令。</p>
+</div></div>
+<p>回显如下表示数据库关闭完成。</p>
+<pre class="screen">ORACLE instance shut down.</pre>
 </li></ol>
 </p></li><li id="oracle_gud_0058__li17844445165619"><a name="oracle_gud_0058__li17844445165619"></a><a name="li17844445165619"></a><span>恢复至原位置时，要求目标主机的空闲内存大小必须大于数据库的SGA（<span style="color:#4D4D4D;">System Global Area</span>）和PGA（Process Global Area）的大小总和，否则可能导致恢复失败。</span><p><ol type="a"><li>查看SGA和PGA大小。<ol class="substepthirdol"><li>登录Oracle数据库。具体操作可参考<a href="#oracle_gud_0058__li1386725584414">1</a>。</li><li id="oracle_gud_0058__li465910318509">执行以下命令查看SGA的大小。<p id="oracle_gud_0058__p1865918316502"><a name="oracle_gud_0058__li465910318509"></a><a name="li465910318509"></a><strong id="oracle_gud_0058__b1265903185017">show parameter sga;</strong></p>
 <div class="p" id="oracle_gud_0058__p196591232506">回显类似如下，查看<span class="uicontrol" id="oracle_gud_0058__uicontrol365911365013">“sga_target”</span>的值。<pre class="screen" id="oracle_gud_0058__screen965973135010">SQL&gt; show parameter sga;
@@ -110,18 +114,28 @@ Swap:           99G          0B         99G</pre>
 </div></div>
 </li></ol>
 </div>
-</p></li><li><span>对于1.6.0及后续版本，如果需执行存储层快照恢复，请执行本步骤。否则，请跳过。</span><p><ul><li>对于ASM实例：<ul><li>如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行以下操作。<div class="p">执行以下命令，解挂载非OCR和表决磁盘数据所在的ASM磁盘组。其中<strong>DATA</strong>为磁盘组名称。<pre class="screen">su - grid</pre>
+</p></li><li><span>对于1.6.0及后续版本，如果需执行存储层快照恢复，请执行本步骤。否则，请跳过。</span><p><ul><li>对于ASM实例：<ul><li>如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行以下操作。<ol type="a"><li>关闭ASM实例或者解挂载ASM磁盘组。<ul><li>如果是单机场景，执行以下命令关闭ASM实例。<pre class="screen">su - grid
+srvctl stop asm -force</pre>
+</li><li>如果是RAC集群场景，执行以下命令，解挂载非OCR和表决磁盘数据所在的ASM磁盘组，其中<em>DATA</em>为磁盘组名称。<pre class="screen">su - grid</pre>
 <pre class="screen">asmcmd</pre>
-<pre class="screen">ASMCMD&gt; umount -f DATA</pre>
-</div>
+<pre class="screen">ASMCMD&gt; umount -f <em>DATA</em></pre>
+</li></ul>
+</li><li><span id="oracle_gud_0058__ph1373181923716">对于恢复Oracle集群场景下的日志副本，请执行以下操作。否则，请跳过该步骤。</span><p id="oracle_gud_0058__p7416617181812">执行以下命令，关闭crs服务。</p>
+<pre class="screen">su - grid</pre>
+<pre class="screen">cd $ORACLE_HOME/bin</pre>
+<pre class="screen" id="oracle_gud_0058__screen18913141015199">crsctl stop res ora.crsd -init</pre>
+</li></ol>
 </li><li>如果是Windows操作系统，请使用系统管理员登录Oracle数据库主机，并执行以下操作。<ol type="a"><li>指定“ORACLE_HOME”的路径。以Oracle 19c为例。<ol class="substepthirdol"><li>在键盘上按“Win+R”，输入“regedit”，打开注册表，在“Computer\HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE\KEY_OraGI<em>19Home1</em>”路径下获取“ORACLE_HOME”的路径。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>路径中“KEY_OraGI<em>19Home1</em>”为示例，请以实际为准。</p>
 </div></div>
 </li><li>在键盘上按<span class="uicontrol">“Win+R”</span>，打开运行窗口。</li><li>输入<span class="parmvalue">“cmd”</span>，执行以下命令，指定“ORACLE_HOME”的路径。<pre class="screen">set ORACLE_HOME=<em>查询到的ORACLE_HOME路径</em></pre>
 </li></ol>
-</li><li>解挂载非OCR和表决磁盘数据所在的ASM磁盘组。<div class="p">在键盘上按“Win+R”，输入“cmd”，执行以下命令。其中<em>DATA</em>为磁盘组名称。<pre class="screen">set ORACLE_SID<strong>=</strong><em>ASM实例名</em></pre>
+</li><li>在键盘上按“Win+R”，输入“cmd”，执行命令关闭ASM实例或者解挂载ASM磁盘组。<ul><li>如果是单机场景，执行以下命令关闭ASM实例。<pre class="screen">srvctl stop asm -force</pre>
+</li><li>如果是RAC集群场景，执行以下命令，解挂载非OCR和表决磁盘数据所在的ASM磁盘组，其中<em>DATA</em>为磁盘组名称。<pre class="screen">set ORACLE_SID<strong>=</strong><em>ASM实例名</em></pre>
 <pre class="screen">asmcmd</pre>
 <pre class="screen">ASMCMD&gt; umount -f <em>DATA</em></pre>
-</div>
+</li></ul>
+</li><li><span>对于恢复Oracle集群场景下的日志副本，请执行以下操作。否则，请跳过该步骤。</span><p>执行以下命令，关闭crs服务。</p>
+<pre class="screen">crsctl stop res ora.crsd -init</pre>
 </li></ol>
 </li></ul>
 </li><li>对于非ASM实例：<ol type="a"><li>执行以下命令，检查回显中数据文件、控制文件、日志文件、pfile和spfile参数文件所在目录是否存在生效的挂载规则。<p><strong>cat /etc/fstab</strong></p>

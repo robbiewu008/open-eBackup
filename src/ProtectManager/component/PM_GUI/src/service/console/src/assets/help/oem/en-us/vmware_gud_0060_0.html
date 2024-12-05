@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -51,15 +51,13 @@
     <ol>
      <li><span>Choose <span class="uicontrol" id="vmware_gud_0060_0__vmware_gud_0058_0_en-us_topic_0000001839142377_uicontrol1812933174613"><b><span id="vmware_gud_0060_0__vmware_gud_0058_0_en-us_topic_0000001839142377_text0129103112462"><strong>Explore</strong></span> &gt; <span id="vmware_gud_0060_0__vmware_gud_0058_0_en-us_topic_0000001839142377_text81291431134613"><strong>Copy Data</strong></span> &gt; <span id="vmware_gud_0060_0__vmware_gud_0058_0_en-us_topic_0000001839142377_text860175510430"><strong>Virtualization</strong></span> &gt; <span id="vmware_gud_0060_0__vmware_gud_0058_0_en-us_topic_0000001839142377_text8319371528"><strong>VMware</strong></span></b></span>.</span></li>
      <li id="vmware_gud_0060_0__li888616341964"><span>You can search for a copy by VM or copy. This section uses a VM as an example.</span><p></p><p id="vmware_gud_0060_0__p624620403810">Click <strong id="vmware_gud_0060_0__b1858284474018">Resources</strong> to switch to the corresponding page, search for the VM to be restored by name, and click the VM name.</p> <p></p></li>
-     <li id="vmware_gud_0060_0__li02165214225"><span>Click <span class="uicontrol" id="vmware_gud_0060_0__uicontrol1812414562220"><b><span id="vmware_gud_0060_0__text2022513145564"><strong>Copy Data</strong></span></b></span> and select the year, month, and day in sequence to find the copy.</span><p></p><p id="vmware_gud_0060_0__p9918150182310">If <span><img id="vmware_gud_0060_0__image99531319193912" src="en-us_image_0000001839187161.png"></span> is displayed below a month or day, a copy is generated in the month or on the day.</p> <p></p></li>
-     <li><span>In the row of the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>File-level Restoration</strong></span></b></span>.</span></li>
-     <li><span>In the dialog box that is displayed, click the <span class="wintitle"><b><span><strong>File</strong></span></b></span> tab.</span></li>
-     <li><span>Select the files to be restored and click <span class="uicontrol"><b><span><strong>Restore File</strong></span></b></span>.</span><p></p>
+     <li id="vmware_gud_0060_0__li02165214225"><span>Click <span class="uicontrol" id="vmware_gud_0060_0__uicontrol1812414562220"><b><span id="vmware_gud_0060_0__text2022513145564"><strong>Copy Data</strong></span></b></span> and select the year, month, and day in sequence to find the copy.</span><p></p><p id="vmware_gud_0060_0__p9918150182310">If <span><img id="vmware_gud_0060_0__image99531319193912" src="en-us_image_0000001839187161.png"></span> is displayed below a month or date, copies exist in the month or on the date.</p> <p></p></li>
+     <li><span>In the row of the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>File-level Restoration</strong></span></b></span>.</span><p></p>
       <div class="note">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
         <ul>
-         <li id="vmware_gud_0060_0__li15621555121712">For 1.5.0, only copies with the index status of <span class="uicontrol" id="vmware_gud_0060_0__uicontrol483213401802"><b><span id="vmware_gud_0060_0__text1711017353520"><strong>Indexed</strong></span></b></span> support file-level restoration. For 1.6.0 and later versions, copies of the <span id="vmware_gud_0060_0__text413155718286"><strong>Not indexed</strong></span> state also support file-level restoration. <span id="vmware_gud_0060_0__ph1285012501144">If no index is created for a copy, browsing a directory with more than 2 million files may fail due to timeout. You are advised to manually create an index first.</span></li>
+         <li id="vmware_gud_0060_0__li15621555121712">For 1.5.0, the index status of the copy used for file-level restoration must be <span class="uicontrol" id="vmware_gud_0060_0__uicontrol483213401802"><b><span id="vmware_gud_0060_0__text1711017353520"><strong>Indexed</strong></span></b></span>. For 1.6.0 and later versions, copies whose index status is <span id="vmware_gud_0060_0__text413155718286"><strong>Not indexed</strong></span> can also be used for file-level restoration.</li>
          <li id="vmware_gud_0060_0__li1694104242611">For 1.5.0, if automatic indexing has been enabled for the SLA associated with the VM corresponding to the copy, the index status of the copy is <span class="uicontrol" id="vmware_gud_0060_0__uicontrol2988201618593"><b><span id="vmware_gud_0060_0__text198816168595"><strong>Indexed</strong></span></b></span>, and file-level restoration can be directly performed. If automatic indexing is disabled, click <span class="uicontrol" id="vmware_gud_0060_0__uicontrol1036516011116"><b><span id="vmware_gud_0060_0__text31091220421"><strong>Manually Create Index</strong></span></b></span> and then perform file-level restoration.</li>
          <li id="vmware_gud_0060_0__li158712231756">A copy that does not contain system disks cannot be used for file-level restoration.</li>
          <li id="vmware_gud_0060_0__li1022011225616">Reverse replication copies and archive copies cannot be used for file-level restoration.</li>
@@ -69,9 +67,25 @@
          <li id="vmware_gud_0060_0__li1836116462493">If the target VM runs the Windows OS and only the SMBv1 service is enabled, the time of the restored file is the current VM time.</li>
         </ul>
        </div>
-      </div>
+      </div> <p></p></li>
+     <li id="vmware_gud_0060_0__li1695634732916"><span>On the displayed page, click the <span class="wintitle" id="vmware_gud_0060_0__wintitle15956154715296"><b><span id="vmware_gud_0060_0__text10956184782910"><strong>File</strong></span></b></span> tab.</span></li>
+     <li id="vmware_gud_0060_0__li789323103112"><span>Select the files to be restored and click <span class="uicontrol" id="vmware_gud_0060_0__uicontrol4286263213"><b>Restore File</b></span>.</span><p></p>
+      <ul id="vmware_gud_0060_0__ul1521452811317">
+       <li id="vmware_gud_0060_0__li8386311313">For 1.5.0, select the files to be restored from the directory tree.</li>
+       <li id="vmware_gud_0060_0__li12142286316">For 1.6.0 and later versions, set <strong id="vmware_gud_0060_0__b175942210539">File Obtaining Mode</strong>, which can be <strong id="vmware_gud_0060_0__b29462035125211">Select file paths from the directory tree</strong> or <strong id="vmware_gud_0060_0__b1211515508528">Enter file paths</strong>.
+        <div class="note" id="vmware_gud_0060_0__note1195634711290">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <ul id="vmware_gud_0060_0__ul14956124712297">
+           <li id="vmware_gud_0060_0__li1095674772911">If the copy contains too many files, the system may time out, preventing you from selecting files to be restored from the directory tree. Therefore, you are advised to enter the paths of files to be restored.</li>
+           <li id="vmware_gud_0060_0__li19956104762918">When entering a file path, enter a complete file path, for example, <strong id="vmware_gud_0060_0__b745510458333">/opt/abc/efg.txt</strong> or <strong id="vmware_gud_0060_0__b186591048123315">C:\abc\efg.txt</strong>. If you enter a folder path, for example, <strong id="vmware_gud_0060_0__b15108423133414">/opt/abc</strong> or <strong id="vmware_gud_0060_0__b13283162543410">C:\abc</strong>, all files in the folder are restored. The file name in the path is case sensitive.</li>
+          </ul>
+         </div>
+        </div></li>
+      </ul> <p></p></li>
+     <li><span>On the displayed <strong>Restore File</strong> page, select <strong>Original location</strong> or <strong>New location</strong> for <strong>Restore To</strong> and set restoration parameters.</span><p></p>
       <ul>
-       <li>Select <strong>Original Location</strong> to restore data to, that is, restore data to the original directory of the original VM.
+       <li>Select <strong>Original location</strong> to restore data to the original directory of the original VM.
         <div class="p">
          <a href="#vmware_gud_0060_0__table9960822181311">Table 1</a> describes the related parameters. 
          <div class="tablenoborder">
@@ -86,16 +100,16 @@
            </colgroup>
            <thead align="left">
             <tr>
-             <th align="left" class="cellrowborder" valign="top" width="29.9%" id="mcps1.3.4.2.6.2.2.1.2.2.2.3.1.1"><p>Parameter</p></th>
-             <th align="left" class="cellrowborder" valign="top" width="70.1%" id="mcps1.3.4.2.6.2.2.1.2.2.2.3.1.2"><p>Description</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="29.9%" id="mcps1.3.4.2.7.2.1.1.2.2.2.3.1.1"><p>Parameter</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="70.1%" id="mcps1.3.4.2.7.2.1.1.2.2.2.3.1.2"><p>Description</p></th>
             </tr>
            </thead>
            <tbody>
             <tr>
-             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.6.2.2.1.2.2.2.3.1.1 "><p><span><strong>VM IP Address</strong></span></p></td>
-             <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.2.6.2.2.1.2.2.2.3.1.2 ">
+             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.7.2.1.1.2.2.2.3.1.1 "><p><span><strong>VM IP Address</strong></span></p></td>
+             <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.2.7.2.1.1.2.2.2.3.1.2 ">
               <div class="p" id="vmware_gud_0060_0__p49594222135">
-               Select the configured backup network IP address.
+               Select the configured backup network IP address. For 1.6.0 and later versions, you can manually enter the IP address.
                <div class="note" id="vmware_gud_0060_0__note13959142281314">
                 <span class="notetitle"> NOTE: </span>
                 <div class="notebody">
@@ -108,8 +122,8 @@
               </div></td>
             </tr>
             <tr>
-             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.6.2.2.1.2.2.2.3.1.1 "><p><span><strong>VM Username</strong></span></p></td>
-             <td class="cellrowborder" rowspan="2" valign="top" width="70.1%" headers="mcps1.3.4.2.6.2.2.1.2.2.2.3.1.2 ">
+             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.7.2.1.1.2.2.2.3.1.1 "><p><span><strong>VM Username</strong></span></p></td>
+             <td class="cellrowborder" rowspan="2" valign="top" width="70.1%" headers="mcps1.3.4.2.7.2.1.1.2.2.2.3.1.2 ">
               <div class="p" id="vmware_gud_0060_0__p196016226135">
                During file-level restoration, the target VM needs to verify the login credential of the <span id="vmware_gud_0060_0__text426913561378">product</span>. Enter a username and its password for logging in to the target VM.
                <ul id="vmware_gud_0060_0__ul119609220135">
@@ -128,11 +142,11 @@
               </div></td>
             </tr>
             <tr>
-             <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.2.1.2.2.2.3.1.1 "><p><span><strong>VM Password</strong></span></p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.1.1.2.2.2.3.1.1 "><p><span><strong>VM Password</strong></span></p></td>
             </tr>
             <tr>
-             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.6.2.2.1.2.2.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p></td>
-             <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.2.6.2.2.1.2.2.2.3.1.2 ">
+             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.7.2.1.1.2.2.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p></td>
+             <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.2.7.2.1.1.2.2.2.3.1.2 ">
               <div class="p" id="vmware_gud_0060_0__p78773497306">
                If a file with the same name exists in the restoration path, you can choose to replace or skip the existing file.
                <ul id="vmware_gud_0060_0__ul138776497307">
@@ -152,10 +166,10 @@
           </table>
          </div>
         </div></li>
-       <li>Select a new location to restore data to, that is, restore data to a specified VM.<p><a href="#vmware_gud_0060_0__table14691181871520">Table 2</a> describes the related parameters.</p>
+       <li>Select <strong>New location</strong> to restore data to a specified VM.<p><a href="#vmware_gud_0060_0__table1881412588262">Table 2</a> describes the related parameters.</p>
         <div class="tablenoborder">
-         <a name="vmware_gud_0060_0__table14691181871520"></a><a name="table14691181871520"></a>
-         <table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0060_0__table14691181871520" frame="border" border="1" rules="all">
+         <a name="vmware_gud_0060_0__table1881412588262"></a><a name="table1881412588262"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0060_0__table1881412588262" frame="border" border="1" rules="all">
           <caption>
            <b>Table 2 </b>Parameters for restoring data to a new location
           </caption>
@@ -165,14 +179,14 @@
           </colgroup>
           <thead align="left">
            <tr>
-            <th align="left" class="cellrowborder" valign="top" width="22.75%" id="mcps1.3.4.2.6.2.2.2.2.2.3.1.1"><p>Parameter</p></th>
-            <th align="left" class="cellrowborder" valign="top" width="77.25%" id="mcps1.3.4.2.6.2.2.2.2.2.3.1.2"><p>Description</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="22.75%" id="mcps1.3.4.2.7.2.1.2.3.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="77.25%" id="mcps1.3.4.2.7.2.1.2.3.2.3.1.2"><p>Description</p></th>
            </tr>
           </thead>
           <tbody>
            <tr>
-            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.1 "><p><span><strong>Compute Location</strong></span></p></td>
-            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.2 ">
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.7.2.1.2.3.2.3.1.1 "><p><span><strong>Compute Location</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.7.2.1.2.3.2.3.1.2 ">
              <div class="p">
               Select the target VM to which data is restored.
               <div class="note">
@@ -180,13 +194,13 @@
                <div class="notebody">
                 <div class="p">
                  For 1.5.0 and earlier versions:
-                 <ul>
-                  <li>If the specified VM runs the Windows OS, the directory to which the file is restored is the same as the source directory of the file.
-                   <ul>
-                    <li>If the corresponding drive letter does not exist on the VM, the restoration will fail.</li>
-                    <li>If the corresponding drive letter exists but the corresponding directory does not exist on the VM, the corresponding directory will be created on the specified VM before file restoration. For example, if the path of the specified file is <strong>D:\a</strong>, the <strong>a</strong> directory will be created in the <strong>D</strong> disk of the specified VM before file restoration.</li>
+                 <ul id="vmware_gud_0060_0__ul1581325811265">
+                  <li id="vmware_gud_0060_0__li4813358152610">If the specified VM runs the Windows OS, the directory to which the file is restored is the same as the source directory of the file.
+                   <ul id="vmware_gud_0060_0__ul481325852619">
+                    <li id="vmware_gud_0060_0__li88134588262">If the corresponding drive letter does not exist on the VM, the restoration will fail.</li>
+                    <li id="vmware_gud_0060_0__li2081385812616">If the corresponding drive letter exists but the corresponding directory does not exist on the VM, the corresponding directory will be automatically created on the VM before file restoration. For example, if the path of the specified file is <strong id="vmware_gud_0060_0__b17645189926">D:\a</strong>, the <strong id="vmware_gud_0060_0__b8645396219">a</strong> directory will be automatically created in drive <strong id="vmware_gud_0060_0__b3646129822">D</strong> of the specified VM before file restoration.</li>
                    </ul></li>
-                  <li>If the specified VM runs the Linux OS, the directory to which data is restored is the same as the original directory of the file. During restoration, the corresponding directory is created on the specified VM before file restoration is performed</li>
+                  <li id="vmware_gud_0060_0__li081325872610">If the specified VM runs the Linux OS, the directory to which data is restored is the same as the original directory of the file. During restoration, the corresponding path is automatically created on the VM before file restoration is performed.</li>
                  </ul>
                 </div>
                </div>
@@ -194,14 +208,14 @@
              </div></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.1 "><p>Target Path</p>
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.7.2.1.2.3.2.3.1.1 "><p>Target Path</p>
              <div class="note">
               <span class="notetitle"> NOTE: </span>
               <div class="notebody">
                <p>Only 1.6.0 and later versions support this parameter.</p>
               </div>
              </div></td>
-            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.2 ">
+            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.7.2.1.2.3.2.3.1.2 ">
              <ul>
               <li>If no target path is not specified, data will be restored to the target VM based on the original path where the selected files are stored.</li>
               <li>If the target path is specified, the files will be restored to the specified path on the target VM. Enter an absolute path.
@@ -209,18 +223,18 @@
                 <span class="notetitle"> NOTE: </span>
                 <div class="notebody">
                  <ul>
-                  <li>Assume that the target VM runs the Windows OS and the specified path for file restoration is <strong>D:\a</strong>. If drive <strong>D</strong> does not exist on the target VM, the restoration will fail. If drive <strong>D</strong> exists on the target VM but does not have the <strong>a</strong> directory, the <strong>a</strong> directory will be created on drive <strong>D</strong> of the specified VM before file restoration.</li>
-                  <li>Assume that the target VM runs the Linux OS and the specified path for file restoration is <strong>/opt/b</strong>. If the target path does not exist on the VM, the corresponding directory will be created on the target VM before file restoration.</li>
+                  <li>Assume that the target VM runs the Windows OS and the specified path for file restoration is <strong>D:\a</strong>. If drive <strong>D</strong> does not exist on the target VM, the restoration will fail. If drive <strong>D</strong> exists on the target VM but does not have the <strong>a</strong> directory, the <strong>a</strong> directory will be automatically created on drive <strong>D</strong> of the VM before file restoration is performed.</li>
+                  <li>Assume that the target VM runs the Linux OS and the specified path for file restoration is <strong>/opt/b</strong>. If the target path does not exist on the VM, the corresponding path will be automatically created on the VM before file restoration is performed.</li>
                  </ul>
                 </div>
                </div></li>
              </ul></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.1 "><p><span><strong>VM IP Address</strong></span></p></td>
-            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.2 ">
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.7.2.1.2.3.2.3.1.1 "><p><span><strong>VM IP Address</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.7.2.1.2.3.2.3.1.2 ">
              <div class="p">
-              Select the configured backup network IP address.
+              Select the configured backup network IP address. For 1.6.0 and later versions, you can manually enter the IP address.
               <div class="note" id="vmware_gud_0060_0__vmware_gud_0060_0_note13959142281314">
                <span class="notetitle"> NOTE: </span>
                <div class="notebody">
@@ -233,8 +247,8 @@
              </div></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.1 "><p><span><strong>VM Username</strong></span></p></td>
-            <td class="cellrowborder" rowspan="2" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.2 ">
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.7.2.1.2.3.2.3.1.1 "><p><span><strong>VM Username</strong></span></p></td>
+            <td class="cellrowborder" rowspan="2" valign="top" width="77.25%" headers="mcps1.3.4.2.7.2.1.2.3.2.3.1.2 ">
              <div class="p">
               During file-level restoration, the target VM needs to verify the login credential of the <span id="vmware_gud_0060_0__vmware_gud_0060_0_text426913561378">product</span>. Enter a username and its password for logging in to the target VM.
               <ul id="vmware_gud_0060_0__vmware_gud_0060_0_ul119609220135">
@@ -253,11 +267,11 @@
              </div></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.1 "><p><span><strong>VM Password</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.1.2.3.2.3.1.1 "><p><span><strong>VM Password</strong></span></p></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p></td>
-            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.2 ">
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.7.2.1.2.3.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.7.2.1.2.3.2.3.1.2 ">
              <div class="p">
               If a file with the same name exists in the restoration path, you can choose to replace or skip the existing file.
               <ul id="vmware_gud_0060_0__vmware_gud_0060_0_ul138776497307">
@@ -283,7 +297,7 @@
    </div>
    <div class="section">
     <h4 class="sectiontitle">Follow-up Procedure</h4>
-    <p id="vmware_gud_0060_0__vmware_gud_0058_0_p171491160561">For 1.6.0 and later versions: If a restoration job fails, perform the job again by referring to <a href="vmware_gud_0099_2.html">How Do I Retry a Failed VMware Restoration Job? (Applicable to 1.6.0 and Later Versions)</a>.</p>
+    <p id="vmware_gud_0060_0__vmware_gud_0058_0_p171491160561">For 1.6.0 and later versions, if a restoration job fails, execute the job again by referring to <a href="vmware_gud_0099_2.html">How Do I Retry a Failed VMware Restoration Job? (Applicable to 1.6.0 and Later Versions)</a>.</p>
    </div>
   </div>
  </body>

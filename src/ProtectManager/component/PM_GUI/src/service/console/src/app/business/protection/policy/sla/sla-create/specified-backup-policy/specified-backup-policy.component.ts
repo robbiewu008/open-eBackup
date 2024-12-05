@@ -15,6 +15,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MessageService, ModalRef } from '@iux/live';
 import {
+  AntiRansomwarePolicyApiService,
   ApplicationType,
   BaseUtilService,
   CommonConsts,
@@ -29,8 +30,7 @@ import {
   ProtectResourceAction,
   RetentionType,
   ScheduleTrigger,
-  SLA_BACKUP_NAME,
-  AntiRansomwarePolicyApiService
+  SLA_BACKUP_NAME
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { SlaValidatorService } from 'app/shared/services/sla-validator.service';
@@ -43,10 +43,8 @@ import {
   first,
   get,
   includes,
-  isArray,
   isEmpty,
   isUndefined,
-  map as _map,
   map,
   omit,
   pick,
@@ -259,17 +257,6 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
         ) {
           this.specialResourceTips = this.i18n.get(
             'protection_opengauss_sla_tips_vaild_label'
-          );
-        } else if (!!this.hasOpenGauss.length) {
-          this.specialResourceTips = this.i18n.get(
-            'protection_unsupport_backup_policy_label',
-            [
-              this.i18n.get(
-                'protection_opengauss_sla_instance_tips_valid_label'
-              ),
-              '',
-              this.i18n.get('common_log_backup_label')
-            ]
           );
         }
       });
@@ -1382,33 +1369,11 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
           this.messageService.error(
             this.i18n.get('protection_fileset_sla_vaild_label', [
               this.i18n.get('resource_sub_type_open_gauss_database_label'),
-              `${this.i18n.get(
-                'common_incremental_backup_label'
-              )}、${this.i18n.get('common_log_backup_label')}`
+              `${this.i18n.get('common_incremental_backup_label')}`
             ]),
             {
               lvShowCloseButton: true,
-              lvMessageKey: 'filesetSLAMessageKey'
-            }
-          );
-          observer.error(false);
-          return;
-        }
-
-        if (
-          this.hasOpenGauss.includes(
-            DataMap.Resource_Type.OpenGauss_instance.value
-          ) &&
-          find(policyArray, item => [PolicyAction.LOG].includes(item.action))
-        ) {
-          this.messageService.error(
-            this.i18n.get('protection_fileset_sla_vaild_label', [
-              this.i18n.get('resource_sub_type_open_gauss_instance_label'),
-              this.i18n.get('common_log_backup_label')
-            ]),
-            {
-              lvShowCloseButton: true,
-              lvMessageKey: 'filesetSLAMessageKey'
+              lvMessageKey: 'openGaussDatabaseSLAMessageKey'
             }
           );
           observer.error(false);

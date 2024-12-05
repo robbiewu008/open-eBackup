@@ -2364,14 +2364,6 @@ export const DataMap = {
       value: 'ADDS',
       label: 'Active Directory'
     },
-    AntDBInstance: {
-      value: 'AntDBInstance',
-      label: 'resource_sub_type_ant_db_instance_label'
-    },
-    AntDBClusterInstance: {
-      value: 'AntDBClusterInstance',
-      label: 'resource_sub_type_ant_db_cluster_instance_label'
-    },
     volume: {
       value: 'Volume',
       label: 'protection_volume_label'
@@ -2383,10 +2375,6 @@ export const DataMap = {
     oracleCluster: {
       value: 'Oracle-cluster',
       label: 'common_oracle_cluster_database_label'
-    },
-    oraclePdbSet: {
-      value: 'Oracle-pdb',
-      label: 'common_oracle_pdb_label'
     },
     dbTwoCluster: {
       value: 'DB2-cluster',
@@ -2903,10 +2891,6 @@ export const DataMap = {
     saphanaDatabase: {
       value: 'SAPHANA-database',
       label: 'protection_saphana_database_label'
-    },
-    saponoracleDatabase: {
-      value: 'SAP_ON_ORACLE_SINGLE',
-      label: 'protection_saponoracle_database_label'
     }
   },
   globalResourceType: {
@@ -3483,7 +3467,7 @@ export const DataMap = {
       label: 'SCSI'
     },
     VDB: {
-      value: 'VDB',
+      value: 'VBD',
       label: 'VBD'
     }
   },
@@ -9108,6 +9092,33 @@ export const DataMap = {
       color: ColorConsts.OFFLINE
     }
   },
+  hypervHostStatus: {
+    Up: {
+      value: 'Up',
+      label: 'common_online_label',
+      color: ColorConsts.NORMAL
+    },
+    Ok: {
+      value: 'OK',
+      label: 'common_online_label',
+      color: ColorConsts.NORMAL
+    },
+    Off: {
+      value: 'Off',
+      label: 'common_off_label',
+      color: ColorConsts.OFFLINE
+    },
+    need: {
+      value: 'NeedsAttention',
+      label: 'common_off_label',
+      color: ColorConsts.OFFLINE
+    },
+    Down: {
+      value: 'Down',
+      label: 'common_off_label',
+      color: ColorConsts.OFFLINE
+    }
+  },
   gaussDBCanRestoreMode: {
     can: {
       value: true,
@@ -9401,6 +9412,23 @@ export const DataMap = {
     detecting: {
       value: 4,
       label: 'common_home_detecting_label'
+    }
+  },
+  backupSoftwareTimeType: {
+    lastDay: {
+      value: '1d',
+      label: 'common_home_last_day_label',
+      isLeaf: true
+    },
+    lastWeek: {
+      value: '1w',
+      label: 'common_home_last_week_label',
+      isLeaf: true
+    },
+    lastMonth: {
+      value: '1m',
+      label: 'common_home_last_month_label',
+      isLeaf: true
     }
   },
   homeTimeType: {

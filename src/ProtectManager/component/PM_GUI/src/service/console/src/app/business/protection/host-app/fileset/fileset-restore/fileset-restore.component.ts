@@ -114,10 +114,7 @@ export class FilesetRestoreComponent implements OnInit {
 
   ngOnInit() {
     // 判断副本是否是磁带归档，且已开启索引
-    this.tapeCopy =
-      this.rowCopy?.generated_by ===
-        DataMap.CopyData_generatedType.tapeArchival.value &&
-      this.rowCopy?.indexed === DataMap.CopyData_fileIndex.indexed.value;
+    this.tapeCopy = false;
     this.isVolume =
       this.rowCopy.resource_sub_type === DataMap.Resource_Type.volume.value;
     this.disableOriginLocation =

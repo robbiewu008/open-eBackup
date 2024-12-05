@@ -1174,6 +1174,7 @@ export class RestoreService {
               case DataMap.Resource_Type.oracle.value:
               case DataMap.Resource_Type.oracleCluster.value:
               case DataMap.Resource_Type.oraclePDB.value:
+              case DataMap.Resource_Type.ActiveDirectory.value:
                 if (option.restoreType === RestoreType.FileRestore) {
                   content.valid$.subscribe(res => {
                     modalIns.lvOkDisabled = res;

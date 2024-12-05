@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
@@ -20,7 +20,7 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤1：创建复制网络逻辑端口">
+<meta name="DC.Title" content="步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机）">
 <meta name="product" content="">
 <meta name="DC.Relation" scheme="URI" content="foc_gud_0024.html">
 <meta name="prodname" content="">
@@ -33,12 +33,12 @@
 <meta name="DC.Identifier" content="foc_gud_0026">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤1：创建复制网络逻辑端口</title>
+<title>步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机）</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="foc_gud_0026"></a><a name="foc_gud_0026"></a>
 
-<h1 class="topictitle1">步骤1：创建复制网络逻辑端口</h1>
-<div><p id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001149078659_p1720618465166">分别在主从端的<span id="foc_gud_0026__zh-cn_topic_0000001846804084_text17286144712414">OceanProtect</span>中创建复制网络逻辑端口，用于远程复制数据传输。</p>
+<h1 class="topictitle1">步骤1：创建复制网络逻辑端口<span id="ph6196532153113">（适用于OceanProtect X系列备份一体机）</span></h1>
+<div id="body0000001847465054"><p id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001149078659_p1720618465166">分别在主从端的<span id="foc_gud_0026__zh-cn_topic_0000001846804084_text17286144712414">OceanProtect</span>中创建复制网络逻辑端口，用于远程复制数据传输。</p>
 <div class="section" id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001149078659_section76551503175"><h4 class="sectiontitle">前提条件</h4><p id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001149078659_p4324626143813">已规划主从端复制网络IP地址。</p>
 </div>
 <div class="section" id="foc_gud_0026__zh-cn_topic_0000001846804084_section52861652181216"><h4 class="sectiontitle">注意事项</h4><p id="foc_gud_0026__zh-cn_topic_0000001846804084_p26913558128">请确保网络配置时无正在运行的任务。</p>
@@ -64,7 +64,7 @@
 </tr>
 <tr id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001835836232_zh-cn_topic_0000001835836232_row15732681949"><td class="cellrowborder" valign="top" width="49.94%" headers="mcps1.3.4.2.3.2.1.5.3.2.3.1.1 "><p id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001835836232_zh-cn_topic_0000001835836232_p87321281417">端口选择</p>
 </td>
-<td class="cellrowborder" valign="top" width="50.06%" headers="mcps1.3.4.2.3.2.1.5.3.2.3.1.2 "><div class="p" id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001835836232_zh-cn_topic_0000001835836232_p1473217816411">支持“创建新端口”或“复用当前已配置端口”。<div class="note" id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001835836232_zh-cn_topic_0000001835836232_note331015191857"><span class="notetitle"> 说明： </span><div class="notebody"><p id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001835836232_zh-cn_topic_0000001835836232_p123109191657">当“端口类型”选择“绑定端口”，但当前可用以太网端口数量小于2个时，“端口选择”请设置为“复用当前已配置端口”或修改“端口类型”为“以太网端口”。</p>
+<td class="cellrowborder" valign="top" width="50.06%" headers="mcps1.3.4.2.3.2.1.5.3.2.3.1.2 "><div class="p" id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001835836232_zh-cn_topic_0000001835836232_p1473217816411">支持“创建新端口”或“复用当前已配置端口”。<div class="note" id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001835836232_zh-cn_topic_0000001835836232_note331015191857"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001835836232_zh-cn_topic_0000001835836232_ul20615134193717"><li id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001835836232_zh-cn_topic_0000001835836232_li8235141811372">当勾选了“是否使用VLAN”或“端口类型”选择<span class="uicontrol" id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001835836232_zh-cn_topic_0000001835836232_uicontrol13558193543810">“绑定端口”</span>时，才显示此参数。</li><li id="foc_gud_0026__zh-cn_topic_0000001846804084_zh-cn_topic_0000001835836232_zh-cn_topic_0000001835836232_li661544113711">当“端口类型”选择“绑定端口”，但当前可用以太网端口数量小于2个时，“端口选择”请设置为“复用当前已配置端口”或修改“端口类型”为“以太网端口”。</li></ul>
 </div></div>
 </div>
 </td>

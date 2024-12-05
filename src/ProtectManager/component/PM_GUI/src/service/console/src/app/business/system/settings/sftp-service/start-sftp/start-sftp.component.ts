@@ -498,7 +498,8 @@ export class StartSftpComponent implements OnInit {
             item.generatedType ===
               DataMap.backupStorageGeneratedType.local.value &&
             item.deviceType ===
-              DataMap.poolStorageDeviceType.OceanProtectX.value
+              DataMap.poolStorageDeviceType.OceanProtectX.value &&
+            item.deviceId === this.activeNode
           ) {
             unitArray.push({
               ...item,

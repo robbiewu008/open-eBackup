@@ -1,4 +1,3 @@
-<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-fullpage">
   <div class="aui-header-1">
     <lv-group lvGutter="8px">
       <h1>
@@ -89,6 +89,15 @@
                 >
                   <span>{{ clear }}</span>
                 </button>
+                  <div class="insight-export">
+                      <i
+                              lv-icon="{{
+                      isThemeLight()
+                        ? 'aui-icon-export-extra'
+                        : 'aui-icon-export-extra-dark'
+                    }}" [lvColorState]='true' (click)="exportCurrentAlarms()"
+                         lv-tooltip="{{exportAlarmTipLabel}}" lvTooltipPosition="bottom" lvTooltipTheme="light"></i>
+                  </div>
               </div>
               <div class="list-container">
                 <div class="tags-container" *ngIf="apiFilters?.length">
@@ -339,17 +348,21 @@
           </lv-group>
           <div class="aui-block insight-padding-none" *ngIf="!isDataBackup">
             <div class="aui-operation alarms-operation">
-              <button
-                lv-button
-                lvType="primary"
-                [disabled]="
-                  !alarmsTable.getSelection() ||
-                  alarmsTable.getSelection().length < 1
-                "
-                (click)="clearAlarms()"
-              >
-                <span>{{ clear }}</span>
-              </button>
+              <lv-group>
+                <button
+                  lv-button
+                  pmpermission
+                  pmOperation="ClearAlarm"
+                  lvType="primary"
+                  [disabled]="
+                    !alarmsTable.getSelection() ||
+                    alarmsTable.getSelection().length < 1
+                  "
+                  (click)="clearAlarms()"
+                >
+                  <span>{{ clear }}</span>
+                </button>
+              </lv-group>
               <lv-group>
                 <div class="insight-refresh">
                   <i

@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -44,7 +44,7 @@
 </li></ul>
 </li><li>During instant recovery, if a database with the same name exists in the target location, you are advised not to stop the restoration job. Otherwise, the original database will be damaged.</li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>ProtectAgent and other related software have been installed on the target host for restoration.<p>For details, see the <i><cite>OceanProtect <span id="oracle_gud_0062__en-us_topic_0000001792502994_ph19170214112011">Appliance 1.5.0-1.6.0</span> ProtectAgent Installation Guide</cite></i>.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>ProtectAgent and other related software have been installed on the target host for restoration.<p>For details, see the <i><cite>OceanProtect DataBackup 1.5.0-1.6.0 ProtectAgent Installation Guide</cite></i>.</p>
 </li><li>When restoring data to the original host and you have configured Oracle Managed Files (OMF) for the host, ensure that the free disk space of the host is greater than the size of the database.</li><li>When restoring data to a different host, ensure that the free disk space of the target host is greater than the size of the database.</li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="oracle_gud_0062__li189532553114"><a name="oracle_gud_0062__li189532553114"></a><a name="li189532553114"></a><span>During the restoration, if a database with the same name exists in the target location, shut down the database first. Otherwise, the restoration will fail. To shut down the database, do as follows:</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>The database with the same name at the target location will be overwritten after the restoration.</p>
@@ -59,6 +59,10 @@
 <p id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_p159150224117">Enter the password as prompted.</p>
 </li></ul>
 </li><li id="oracle_gud_0062__en-us_topic_0000001656561309_li198251911109">Run the following command to shut down the database with the same name:<p id="oracle_gud_0062__en-us_topic_0000001656561309_p96841918142516"><a name="oracle_gud_0062__en-us_topic_0000001656561309_li198251911109"></a><a name="en-us_topic_0000001656561309_li198251911109"></a><strong id="oracle_gud_0062__en-us_topic_0000001656561309_b1025322122520">shutdown immediate;</strong></p>
+<div class="note" id="oracle_gud_0062__note470175616170"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="oracle_gud_0062__p127116565174">For an RAC cluster, run this command on all nodes.</p>
+</div></div>
+<p id="oracle_gud_0062__p146421258946">If the following information is displayed, the database is shut down.</p>
+<pre class="screen" id="oracle_gud_0062__screen730142119511">ORACLE instance shut down.</pre>
 </li></ol>
 </p></li><li id="oracle_gud_0062__li17844445165619"><a name="oracle_gud_0062__li17844445165619"></a><a name="li17844445165619"></a><span>When restoring data to the original location, ensure that the free memory size of the target host must be greater than the total size of the SGA and PGA of the database. Otherwise, the restoration may fail.</span><p><div class="p">The procedures for checking the memory size, SGA size, and PGA size are as follows:<ol type="a"><li>Check the SGA size and PGA size.<ol class="substepthirdol"><li>Log in to the Oracle database.<p>For details, see <a href="#oracle_gud_0062__li189532553114">1</a>.</p>
 </li><li>Run the following command to check the SGA size:<p id="oracle_gud_0062__oracle_gud_0058_p1865918316502"><strong id="oracle_gud_0062__oracle_gud_0058_b1265903185017">show parameter sga;</strong></p>
@@ -99,7 +103,7 @@ Swap:           99G          0B         99G</pre>
 </div>
 </p></li><li><span>Choose <span class="uicontrol" id="oracle_gud_0062__oracle_gud_0058_en-us_topic_0000001839142377_uicontrol1186171611461"><b><span id="oracle_gud_0062__oracle_gud_0058_en-us_topic_0000001839142377_text6186101615464"><strong>Explore</strong></span> &gt; <span id="oracle_gud_0062__oracle_gud_0058_en-us_topic_0000001839142377_text74373665812"><strong>Copy Data</strong></span> &gt; <span id="oracle_gud_0062__oracle_gud_0058_en-us_topic_0000001839142377_text12413710445"><strong>Databases</strong></span> &gt; <span id="oracle_gud_0062__oracle_gud_0058_en-us_topic_0000001839142377_text151861216124615"><strong>Oracle</strong></span></b></span>.</span></li><li><span>You can search for copies by database resource or copy. This section uses database resources as an example.</span><p><p>On the <span class="wintitle"><b><span><strong>Resources</strong></span></b></span> tab page, locate the database for which instant recovery is to be performed by database name and then click the name.</p>
 </p></li><li><span>Specify a copy or time point to perform instant recovery.</span><p><p>You can specify a copy or any time point between two copies for instant recovery.</p>
-<div class="p">If you need to specify an SCN for instant recovery, ignore this step and go to <a href="#oracle_gud_0062__li02165214225">7</a>.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>For 1.6.0 and later versions: If "Mounting succeeded, the target database has started, and data migration starts." is displayed in the restoration job details, you can access the target database.</p>
+<div class="p">If you need to specify an SCN for instant recovery, ignore this step and go to <a href="#oracle_gud_0062__li02165214225">7</a>.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>For 1.6.0 and later versions, if "Mounting succeeded, the target database has started, and data migration starts." is displayed in the restoration job details, you can access the target database.</p>
 </div></div>
 <ol type="a"><li>On the <span><strong>By Date</strong></span> tab page, select a year, month, and day in sequence to search for copies.<p>If <span><img src="en-us_image_0000001839268409.png"></span> is displayed under a month or date, copies exist in the month or on the date.</p>
 </li><li>Perform instant recovery by specifying a copy or any time point between two copies. The 1.5.0 GUI is used as an example.<ul><li>Specifying a copy for instant recovery<p><span><img class="eddx" src="en-us_image_0000001792389360.png"></span></p>
@@ -237,7 +241,7 @@ Swap:           99G          0B         99G</pre>
 </tbody>
 </table>
 </div>
-</li><li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="oracle_gud_0062__oracle_gud_0058_p63168441018">For 1.6.0 and later versions: If the name of the target database for restoration is the same as that of the original database, scan the restoration target resource after the restoration job is complete to ensure that the obtained instance name information is correct.</p>
+</li><li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="oracle_gud_0062__oracle_gud_0058_p63168441018">For 1.6.0 and later versions, if the name of the target database for restoration is the same as that of the original database, scan the restoration target resource after the restoration job is complete to ensure that the obtained instance name information is correct.</p>
 </div></div>
 </li></ol>
 </li></ul>

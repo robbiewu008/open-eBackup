@@ -1,4 +1,3 @@
-<lv-tabs lvType="card" *ngIf="isTask && (backupTeams.length || archiveTeams.length || replicationTeams.length)">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-tabs lvType="card" *ngIf="isTask && (backupTeams.length || archiveTeams.length || replicationTeams.length)">
     <ng-container *ngIf="backupTeams.length">
         <lv-tab [lvTitle]="'common_backup_policy_label' | i18n">
             <ng-container *ngTemplateOutlet="backupTeamsTpl"></ng-container>
@@ -277,7 +277,7 @@
         </ng-container>
         <ng-container
             *ngIf="!_includes([appType.GBase, appType.Vmware, appType.Common, appType.LocalFileSystem, appType.LocalLun], sla.application)">
-            <aui-advanced-parameters [appType]="sla.application" [formGroup]="formGroup" [data]="backupTeams"
+            <aui-advanced-parameters [appType]="sla.application" [formGroup]="formGroup" [data]="backupTeams" [qosNames]="qosNames"
                 [isSlaDetail]="true">
             </aui-advanced-parameters>
         </ng-container>
@@ -289,7 +289,7 @@
                     </aui-general-advanced-parameter>
                 </ng-container>
                 <ng-container *ngSwitchCase="appType.Vmware">
-                    <aui-vmware-advanced-parameter [formGroup]="formGroup" [data]="backupTeams" [isSlaDetail]="true">
+                    <aui-vmware-advanced-parameter [formGroup]="formGroup" [data]="backupTeams" [isSlaDetail]="true" [qosNames]="qosNames">
                     </aui-vmware-advanced-parameter>
                 </ng-container>
                 <ng-container *ngSwitchCase="appType.LocalFileSystem">
@@ -471,7 +471,7 @@
                         </lv-form-label>
                         <lv-form-control>
                             {{qosNames.length ? find(qosNames, {uuid: item.qos_id}) ? find(qosNames, {uuid:
-                            item.qos_id})['name']: '--':'--'}}
+                                item.qos_id})['name']: '--':'--'}}
                         </lv-form-control>
                     </lv-form-item>
                 </ng-container>

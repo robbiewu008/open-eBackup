@@ -10,6 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -21,6 +22,7 @@ import {
 import {
   AbstractControl,
   FormBuilder,
+  FormControl,
   FormGroup,
   ValidatorFn
 } from '@angular/forms';
@@ -51,12 +53,15 @@ import {
   assign,
   each,
   find,
+  first,
   get,
   includes,
   isEmpty,
   isString,
   map,
   remove,
+  set,
+  sortedIndex,
   trim
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
@@ -66,6 +71,7 @@ import ListCopyCatalogsParams = CopyControllerService.ListCopyCatalogsParams;
   selector: 'aui-database-group-restore',
   templateUrl: './restore.component.html',
   styleUrls: ['./restore.component.less'],
+  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RestoreComponent implements OnInit {
@@ -81,6 +87,9 @@ export class RestoreComponent implements OnInit {
   sourceData = [];
   sourceSelection = [];
   targetData = [];
+  logCopyTimeStamp = [];
+  isExchangeDatabaseAndLogCopy = false; // Exchange数据库的日志副本需要查询sqlite
+  isNeedSelectTimeStamp = false; // 接口正常返回时，才能手动选择时间
   pageSizeS = CommonConsts.PAGE_SIZE;
   pageIndexS = CommonConsts.PAGE_START;
   pageSizeT = CommonConsts.PAGE_SIZE; // target pageSize
@@ -141,6 +150,7 @@ export class RestoreComponent implements OnInit {
     private modal: ModalRef,
     private fb: FormBuilder,
     private i18n: I18NService,
+    private datePipe: DatePipe,
     private appUtilsService: AppUtilsService,
     private restoreV2Service: RestoreApiV2Service,
     private protectedResourceApiService: ProtectedResourceApiService,
@@ -152,6 +162,9 @@ export class RestoreComponent implements OnInit {
     this.initConfig();
     this.initForm();
     this.getTargetHosts();
+    if (this.isExchangeDatabaseAndLogCopy) {
+      this.getLogCopyRestoreTimeStamp();
+    }
   }
 
   updateDrillData() {
@@ -229,6 +242,10 @@ export class RestoreComponent implements OnInit {
       this.childResType === DataMap.Resource_Type.ExchangeGroup.value ||
       this.rowCopyResourceProperties?.environment_sub_type ===
         DataMap.Resource_Type.ExchangeGroup.value;
+    this.isExchangeDatabaseAndLogCopy =
+      this.childResType === DataMap.Resource_Type.ExchangeDataBase.value &&
+      this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value &&
+      !isEmpty(get(this.rowCopy, 'restoreTimeStamp', ''));
   }
 
   initForm() {
@@ -510,6 +527,109 @@ export class RestoreComponent implements OnInit {
         ];
   }
 
+  getLogCopyRestoreTimeStamp() {
+    const params = {
+      parentPath: `/logtime`, // 固定的请求名
+      copyId: this.rowCopy.uuid,
+      pageNo: CommonConsts.PAGE_START,
+      pageSize: CommonConsts.PAGE_SIZE,
+      akDoException: false,
+      akOperationTips: false
+    };
+    this.copyControllerService.ListCopyCatalogs(params).subscribe({
+      next: res => {
+        const data = first(res.records);
+        const timestamps = get(
+          JSON.parse(get(data, 'extendInfo', '{}')),
+          'logtimes',
+          []
+        );
+        if (isEmpty(timestamps)) {
+          this.isNeedSelectTimeStamp = false;
+          return;
+        }
+        this.isNeedSelectTimeStamp = true;
+        this.cdr.markForCheck();
+        this.formGroup.addControl(
+          'log_copy_restore_time_stamp',
+          new FormControl('', {
+            validators: [this.baseUtilService.VALID.required()]
+          })
+        );
+        this.findClosestTimestamps(
+          timestamps,
+          Number(get(this.rowCopy, 'restoreTimeStamp'))
+        );
+      },
+      error: err => {
+        this.isNeedSelectTimeStamp = false;
+      }
+    });
+  }
+
+  // 辅助函数，用于在数组中找到更接近给定时间戳的时间戳
+  findCloserTimestamp(
+    timestamps: number[],
+    givenTimestamp: number,
+    currentIndex: number
+  ): number {
+    let closerIndex = currentIndex;
+    let minDiff = Math.abs(timestamps[currentIndex] - givenTimestamp);
+
+    // 检查左右两边的时间戳
+    if (currentIndex > 0) {
+      const leftDiff = Math.abs(timestamps[currentIndex - 1] - givenTimestamp);
+      if (leftDiff < minDiff) {
+        minDiff = leftDiff;
+        closerIndex = currentIndex - 1;
+      }
+    }
+
+    if (currentIndex < timestamps.length - 1) {
+      const rightDiff = Math.abs(timestamps[currentIndex + 1] - givenTimestamp);
+      if (rightDiff < minDiff) {
+        minDiff = rightDiff;
+        closerIndex = currentIndex + 1;
+      }
+    }
+
+    return closerIndex;
+  }
+
+  // 右优先
+  // 输入2在[1,3]中会优先找到3
+  findClosestTimestamps(timestamps: number[], givenTimestamp: number) {
+    // 找到给定时间戳最接近的时间戳
+    let index = sortedIndex(timestamps, givenTimestamp);
+    let start: number;
+    let end: number;
+
+    if (index === 0) {
+      start = 0;
+      end = Math.min(index + 3, timestamps.length);
+    } else if (index === timestamps.length) {
+      start = Math.max(index - 3, 0);
+      end = timestamps.length;
+    } else {
+      // 检查目标时间戳是否与给定时间戳相同
+      if (timestamps[index] !== givenTimestamp) {
+        // 找到更接近给定时间戳的时间戳
+        index = this.findCloserTimestamp(timestamps, givenTimestamp, index);
+      }
+      start = Math.max(index - 2, 0);
+      end = Math.min(index + 3, timestamps.length);
+    }
+    // 返回结果
+    this.logCopyTimeStamp = timestamps.slice(start, end).map(time => {
+      return {
+        value: time,
+        key: time,
+        label: this.datePipe.transform(time * 1e3, 'yyyy-MM-dd HH:mm:ss'),
+        isLeaf: true
+      };
+    });
+  }
+
   getParams() {
     const {
       restoreLocation,
@@ -588,6 +708,13 @@ export class RestoreComponent implements OnInit {
       assign(params.extendInfo, {
         restoreTimestamp: timeStamp
       });
+      if (this.isExchangeDatabaseAndLogCopy && this.isNeedSelectTimeStamp) {
+        set(
+          params,
+          'extendInfo.restoreTimestamp',
+          this.formGroup.get('log_copy_restore_time_stamp').value
+        );
+      }
     }
     return params;
   }

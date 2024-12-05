@@ -81,7 +81,8 @@ export class PostgreRegisterComponent implements OnInit {
     .map(item => {
       item.isLeaf = true;
       return item;
-    });
+    })
+    .filter(item => item.value !== DataMap.PostgreSqlDeployType.CLup.value);
 
   @ViewChild('footerTpl', { static: true }) footerTpl: TemplateRef<any>;
 

@@ -130,6 +130,7 @@ export const cardlist = [
         isBtn: true,
         navigateInfo: [RouterUrl.ExternalAssociatedSystems]
       }
-    ]
+    ],
+    selectTime: '1d'
   }
 ];

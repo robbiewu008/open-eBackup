@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,7 +36,7 @@
   <a name="admin-0077"></a><a name="admin-0077"></a>
   <h1 class="topictitle1">管理Windows ADFS配置（适用于1.6.0及后续版本）</h1>
   <div>
-   <p id="admin-0077__zh-cn_topic_0000001888626984_p1428416391405"><span id="admin-0077__zh-cn_topic_0000001888626984_text5812258201217">本产品</span>支持使用ADFS登录的方式登录OceanProtect管理界面。</p>
+   <p id="admin-0077__zh-cn_topic_0000001888626984_p1428416391405"><span id="admin-0077__zh-cn_topic_0000001888626984_text5812258201217">本产品</span>支持使用ADFS登录的方式登录管理界面。</p>
    <div class="section" id="admin-0077__zh-cn_topic_0000001888626984_section1357741818336">
     <h4 class="sectiontitle">前提条件</h4>
     <ul id="admin-0077__zh-cn_topic_0000001888626984_ul68911710111117">
@@ -93,12 +93,12 @@
             <li id="admin-0077__zh-cn_topic_0000001888626984_li20440201014123">启动Server Manager工具。</li>
             <li id="admin-0077__zh-cn_topic_0000001888626984_li819917173127">在Server Manager界面上选择<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol77021214161311">“Local Server”</span>。</li>
             <li id="admin-0077__zh-cn_topic_0000001888626984_li487871910138">在PROPERTIES界面上查看对应的<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol649113761717">“computer name”</span>、<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol536164517176">“domain”</span>和<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol14519164919177">“Ethernet0”</span>的值。ADFS域名为<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol996407184">“Computer name”</span>.<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol278414343190">“domain”</span>，ADFS的Local地址为<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol13827161612014">“Ethernet0”</span>。</li>
-           </ol> <p id="admin-0077__zh-cn_topic_0000001888626984_p08129577429">在本地登录的OceanProtect的PC上配置hosts文件，如果本地PC能访问提供商的URL就无需配置。</p>
+           </ol> <p id="admin-0077__zh-cn_topic_0000001888626984_p08129577429">在本地登录的本产品的PC上配置hosts文件，如果本地PC能访问提供商的URL就无需配置。</p>
            <ol type="a" id="admin-0077__zh-cn_topic_0000001888626984_ol177224612111">
             <li id="admin-0077__zh-cn_topic_0000001888626984_li97729462112">进入目录<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol173491148144013">“C:\Windows\System32\drivers\etc”</span>。</li>
             <li id="admin-0077__zh-cn_topic_0000001888626984_li177244691110">打开<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol819815511425">“hosts”</span>文件。</li>
             <li id="admin-0077__zh-cn_topic_0000001888626984_li1677211462117">在文件中配置以下内容后保存。<pre class="screen" id="admin-0077__zh-cn_topic_0000001888626984_screen12583120145212"><em id="admin-0077__zh-cn_topic_0000001888626984_i183805595413">ADFS的Local地址</em> <em id="admin-0077__zh-cn_topic_0000001888626984_i131718223228">ADFS域名</em></pre></li>
-           </ol> <p id="admin-0077__zh-cn_topic_0000001888626984_p8164957155616">在本地登录的OceanProtect的PC上访问ADFS服务器供应商URL，如果能正常访问无需进行以下配置。</p>
+           </ol> <p id="admin-0077__zh-cn_topic_0000001888626984_p8164957155616">在本地登录的本产品的PC上访问ADFS服务器供应商URL，如果能正常访问无需进行以下配置。</p>
            <ol type="a" id="admin-0077__zh-cn_topic_0000001888626984_ol2067055410113">
             <li id="admin-0077__zh-cn_topic_0000001888626984_li126701154131112">打开本地PC的<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol1612012512106">“设置”</span>。</li>
             <li id="admin-0077__zh-cn_topic_0000001888626984_li1567045411110">选择<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol15103175713109">“网络和Internet”</span>&gt;<span class="uicontrol" id="admin-0077__zh-cn_topic_0000001888626984_uicontrol16722153212117">“代理”</span>。</li>

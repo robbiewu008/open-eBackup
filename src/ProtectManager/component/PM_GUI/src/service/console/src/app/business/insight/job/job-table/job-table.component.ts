@@ -918,6 +918,18 @@ export class JobTableComponent implements OnInit, AfterViewInit {
         DataMap.Job_Target_Type.LocalFileSystem.value,
         DataMap.Job_Target_Type.s3Storage.value
       ])
+      .filter(
+        item =>
+          !includes(
+            [
+              DataMap.Job_Target_Type.nutanix.value,
+              DataMap.Job_Target_Type.nutanixCluster.value,
+              DataMap.Job_Target_Type.nutanixHost.value,
+              DataMap.Job_Target_Type.nutanixVm.value
+            ],
+            item.value
+          )
+      )
       .map(item => {
         if (
           this.cookieService.isCloudBackup &&
@@ -1190,27 +1202,7 @@ export class JobTableComponent implements OnInit, AfterViewInit {
       content: warnTip,
       onOK: () => {
         if (data.length === 1) {
-          if (
-            includes(
-              [
-                DataMap.Job_type.db_desesitization.value,
-                DataMap.Job_type.db_identification.value
-              ],
-              data[0].type
-            )
-          ) {
-            this.sqlVerificateApiService
-              .stopTaskUsingPOST({
-                request: {
-                  request_id: data[0].jobId
-                }
-              })
-              .subscribe(() => this.dataTable.fetchData());
-          } else {
-            this.jobApiService
-              .stopTaskUsingPUT({ jobId: data[0].jobId })
-              .subscribe(() => this.dataTable.fetchData());
-          }
+          this.stopSingleJob(data);
         } else {
           this.batchOperateService.selfGetResults(
             item => {
@@ -1225,9 +1217,7 @@ export class JobTableComponent implements OnInit, AfterViewInit {
               return assign(d, { name: d.sourceName, isAsyn: false });
             }),
             () => {
-              this.selectionData = [];
-              this.dataTable.setSelections([]);
-              this.dataTable.fetchData();
+              this.clearSelection();
             },
             '',
             true
@@ -1236,6 +1226,41 @@ export class JobTableComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
+  private stopSingleJob(data: any) {
+    if (
+      includes(
+        [
+          DataMap.Job_type.db_desesitization.value,
+          DataMap.Job_type.db_identification.value
+        ],
+        data[0].type
+      )
+    ) {
+      this.sqlVerificateApiService
+        .stopTaskUsingPOST({
+          request: {
+            request_id: data[0].jobId
+          }
+        })
+        .subscribe(() => {
+          this.clearSelection();
+        });
+    } else {
+      this.jobApiService
+        .stopTaskUsingPUT({ jobId: data[0].jobId })
+        .subscribe(() => {
+          this.clearSelection();
+        });
+    }
+  }
+
+  private clearSelection() {
+    this.selectionData = [];
+    this.dataTable.setSelections([]);
+    this.dataTable.fetchData();
+  }
+
   setRemarks(row: JobBo) {
     this.drawModalService.create({
       ...MODAL_COMMON.generateDrawerOptions(),

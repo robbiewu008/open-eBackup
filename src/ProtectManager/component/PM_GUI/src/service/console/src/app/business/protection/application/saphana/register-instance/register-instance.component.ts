@@ -56,8 +56,7 @@ export class RegisterInstanceComponent implements OnInit {
       return [
         DataMap.Detecting_During_Unit.second.value,
         DataMap.Detecting_During_Unit.minute.value,
-        DataMap.Detecting_During_Unit.hour.value,
-        DataMap.Detecting_During_Unit.day.value
+        DataMap.Detecting_During_Unit.hour.value
       ].includes(item.value);
     });
   dataMap = DataMap;
@@ -242,7 +241,6 @@ export class RegisterInstanceComponent implements OnInit {
   }
 
   getTimeRangeValid(val?) {
-    // 切换校验会有报错，待修改
     const ONE_MONTH = 30;
     const UNIT = val || this.formGroup.value.logBackupUnit;
     switch (UNIT) {
@@ -252,8 +250,8 @@ export class RegisterInstanceComponent implements OnInit {
         return this.baseUtilService.VALID.rangeValue(1, ONE_MONTH * 24 * 60);
       case DataMap.Detecting_During_Unit.hour.value:
         return this.baseUtilService.VALID.rangeValue(1, ONE_MONTH * 24);
-      case DataMap.Detecting_During_Unit.day.value:
-        return this.baseUtilService.VALID.rangeValue(1, ONE_MONTH);
+      default:
+        return this.baseUtilService.VALID.rangeValue(1, ONE_MONTH * 24);
     }
   }
 

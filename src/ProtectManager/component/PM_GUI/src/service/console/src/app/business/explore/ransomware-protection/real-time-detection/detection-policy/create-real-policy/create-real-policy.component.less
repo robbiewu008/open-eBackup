@@ -12,7 +12,7 @@
   font-size: 12px;
   border: 1px solid #f1f5fb;
   margin-left: 10px;
-
+  border-radius: 0.08rem;
   .decoy-icon {
     width: 70px;
     height: 67px;
@@ -26,24 +26,27 @@
   .open-tip {
     margin-top: 10px;
     line-height: 24px;
-    padding-left: 20px;
-    padding-bottom: 10px;
+    padding: 0 10px 10px 20px;
   }
 }
 
 .update-frequency {
-  border: 1px solid #f1f5fb;
+  border: 1px solid var(--live-angular-color-card-border);
+  border-radius: 4px;
   margin-left: 8px;
   margin-top: 5px;
 }
 
 .frequency-radio-group {
-  margin: 14px 0 14px 28px;
+  height: 32px;
+  line-height: 32px;
+  background-color: var(--live-angular-color-header-background);
+  padding-left: 16px;
 }
 
 .frequency-container {
-  padding: 20px 0 28px 28px;
-  background-color: #f1f5fb;
+  padding: 16px;
+  background-color: var(--live-angular-color-container-background);
 }
 
 .frequency-input,
@@ -55,4 +58,11 @@
   margin-top: 10px;
   font-size: 12px;
   margin-left: 8px;
+}
+.detection-group {
+  margin-bottom: 0;
+}
+
+.input-margin {
+  margin-bottom: 24px;
 }

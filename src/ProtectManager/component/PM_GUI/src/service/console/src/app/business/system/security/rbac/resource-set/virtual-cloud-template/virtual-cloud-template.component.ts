@@ -53,7 +53,7 @@ import {
   size,
   some
 } from 'lodash';
-import { Observable, Subscription } from 'rxjs';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 
 interface Tab {
   id: string;
@@ -715,7 +715,8 @@ export class VirtualCloudTemplateComponent
               children: [],
               isLeaf: this.isLeaf(node),
               rootNodeSubType: node.sub_type,
-              width: 170
+              width: 170,
+              expanded: this.getExpandedIndex(node.uuid) !== -1
             });
             if (node.expanded) {
               this.getExpandedChangeData(CommonConsts.PAGE_START, node);
@@ -735,6 +736,7 @@ export class VirtualCloudTemplateComponent
               });
             }
             this.clearTreeNodeCheck(this.treeData);
+            this.treeData = [...this.treeData];
           }
           if (
             !!this.data &&
@@ -742,7 +744,8 @@ export class VirtualCloudTemplateComponent
             !this.isDetail
           ) {
             // 只有在修改场景时第一次进入组件会获取一次
-            this.getSelectedData();
+            this.getAllSelectedData();
+            this.getResourceGroupSelectedData();
           }
           if (
             [
@@ -760,24 +763,46 @@ export class VirtualCloudTemplateComponent
       });
   }
 
+  getAllSelectedData() {
+    forkJoin([
+      this.getSelectedData(),
+      this.getResourceGroupSelectedData()
+    ]).subscribe(response => {
+      const [resourceData, resourceGroupData] = response;
+      set(this.allSelectionMap, this.appType, {
+        data: map(resourceData, item => {
+          return { uuid: item };
+        })
+      });
+      set(this.allSelectionMap, ResourceSetType.RESOURCE_GROUP, {
+        data: map(resourceGroupData, item => {
+          return { uuid: item, scopeType: this.appType };
+        })
+      });
+      this.showSelect = true;
+      if (!!size(resourceData)) {
+        this.syncModifySelectedData();
+      }
+      this.allSelectChange.emit();
+    });
+  }
+
   getSelectedData() {
     const params: any = {
       resourceSetId: this.data[0].uuid,
       scopeModule: this.appType,
       type: 'RESOURCE'
     };
-    this.resourceSetService.queryResourceObjectIdList(params).subscribe(res => {
-      set(this.allSelectionMap, this.appType, {
-        data: map(res, item => {
-          return { uuid: item };
-        })
-      });
-      this.showSelect = true;
-      if (!!size(res)) {
-        this.syncModifySelectedData();
-      }
-      this.allSelectChange.emit();
-    });
+    return this.resourceSetService.queryResourceObjectIdList(params);
+  }
+
+  getResourceGroupSelectedData() {
+    const params: any = {
+      resourceSetId: this.data[0].uuid,
+      scopeModule: this.appType,
+      type: ResourceSetType.RESOURCE_GROUP
+    };
+    return this.resourceSetService.queryResourceObjectIdList(params);
   }
 
   syncModifySelectedData(data?) {
@@ -843,8 +868,13 @@ export class VirtualCloudTemplateComponent
           ? 'aui-cluster-online-16'
           : 'aui-cluster-offline-16';
       case DataMap.Resource_Type.hyperVHost.value:
-        return node.linkStatus ===
-          DataMap.resource_LinkStatus_Special.normal.value
+        return includes(
+          [
+            DataMap.hypervHostStatus.Up.value,
+            DataMap.hypervHostStatus.Ok.value
+          ],
+          node.extendInfo.State
+        )
           ? 'aui-host-online-16'
           : 'aui-host-offline-16';
       case DataMap.Resource_Type.HCSRegion.value:
@@ -1111,6 +1141,9 @@ export class VirtualCloudTemplateComponent
             isLeaf: this.isLeaf(item),
             expanded: this.getExpandedIndex(item.uuid) !== -1
           };
+          if (node.uuid === this.treeNodeChecked.uuid) {
+            node.checked = true;
+          }
           if (
             isParentSelected &&
             !some(this.treeSelection, { uuid: item.uuid })

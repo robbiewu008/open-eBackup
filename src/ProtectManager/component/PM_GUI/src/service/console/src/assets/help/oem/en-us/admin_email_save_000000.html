@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,12 +11,13 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="Managing Event Dump">
+  <meta name="DC.Title" content="Managing Event Dump (Applicable to Some Models)">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="helpcenter000126.html">
   <meta name="prodname" content="">
@@ -28,11 +28,11 @@
   <meta name="DC.Identifier" content="admin_email_save_000000">
   <meta name="DC.Language" content="en-us">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>Managing Event Dump</title>
+  <title>Managing Event Dump (Applicable to Some Models)</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="admin_email_save_000000"></a><a name="admin_email_save_000000"></a>
-  <h1 class="topictitle1">Managing Event Dump</h1>
+  <h1 class="topictitle1">Managing Event Dump<span id="en-us_topic_0000001839224657_ph18101719191917"> (Applicable to Some Models)</span></h1>
   <div>
    <p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_p159125100541">Through event dump, the system periodically exports events to local disks of the storage system and deletes event records from the database beyond the retention period.</p>
    <div class="section" id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_section1596185819173">
@@ -43,6 +43,7 @@
     <h4 class="sectiontitle">Precautions</h4>
     <p id="admin_email_save_000000__en-us_topic_0000001839224657_p454611815596">If an alarm indicating that the event storage space is about to reach the upper limit is generated, go to DeviceManager and enable alarm dump.</p>
     <ol id="admin_email_save_000000__en-us_topic_0000001839224657_ol71596016109">
+     <li id="admin_email_save_000000__en-us_topic_0000001839224657_li515920013105">Log in to DeviceManager by referring to <a href="en-us_topic_0000001792345770.html">Logging In to DeviceManager</a>.</li>
      <li id="admin_email_save_000000__en-us_topic_0000001839224657_li1852152571019">Choose <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b764712156012">Settings</strong> &gt; <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b14217191010">Alarm Settings</strong> &gt; <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b511802110017">Alarm Dump</strong> to display the <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b188814301502">Alarm Dump</strong> page.</li>
      <li id="admin_email_save_000000__en-us_topic_0000001839224657_li1286119167116">Click <span><img id="admin_email_save_000000__en-us_topic_0000001839224657_image54799123127" src="en-us_image_0000001932431442.png"></span> next to <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b1441854615010">Alarm Dump</strong> to enable alarm dump.</li>
      <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li14348752411">Set alarm dump parameters. <a href="#admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_table98331154151817">Table 1</a> describes the related parameters. 
@@ -58,14 +59,14 @@
         </colgroup>
         <thead align="left">
          <tr id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_row208347544188">
-          <th align="left" class="cellrowborder" valign="top" width="25.2%" id="mcps1.3.3.3.3.2.2.3.1.1"><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p2083465411817">Parameter</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="74.8%" id="mcps1.3.3.3.3.2.2.3.1.2"><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p683415441817">Description</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="25.2%" id="mcps1.3.3.3.4.2.2.3.1.1"><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p2083465411817">Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.8%" id="mcps1.3.3.3.4.2.2.3.1.2"><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p683415441817">Description</p></th>
          </tr>
         </thead>
         <tbody>
          <tr id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_row78341540186">
-          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.3.2.2.3.1.1 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p0834115418188">Transport Protocol</p></td>
-          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.3.2.2.3.1.2 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p14834165419185">Transport protocol of alarm dump, which can be <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b786121113111">SFTP</strong> or <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b188621011418">FTP</strong>.</p>
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.4.2.2.3.1.1 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p0834115418188">Transport Protocol</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.4.2.2.3.1.2 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p14834165419185">Transport protocol of alarm dump, which can be <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b786121113111">SFTP</strong> or <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b188621011418">FTP</strong>.</p>
            <div class="note" id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_note15492183162011">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -74,8 +75,8 @@
            </div></td>
          </tr>
          <tr id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_row118341254131810">
-          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.3.2.2.3.1.1 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p2834195412184">Username</p></td>
-          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.3.2.2.3.1.2 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p183445413180">Username used for logging in to the SFTP or FTP server.</p> <p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p2087918618406">[Value range]</p>
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.4.2.2.3.1.1 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p2834195412184">Username</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.4.2.2.3.1.2 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p183445413180">Username used for logging in to the SFTP or FTP server.</p> <p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p2087918618406">[Value range]</p>
            <ul id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_ul587976194012">
             <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li1487914624012">The name must be unique.</li>
             <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li1587917620405">The value contains 1 to 63 characters.</li>
@@ -83,20 +84,20 @@
            </ul></td>
          </tr>
          <tr id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_row4834105481817">
-          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.3.2.2.3.1.1 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p383485411188">Password</p></td>
-          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.3.2.2.3.1.2 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p3242191512013">Password used for logging in to the server.</p> <p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p1454442412405">[Value range]</p>
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.4.2.2.3.1.1 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p383485411188">Password</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.4.2.2.3.1.2 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p3242191512013">Password used for logging in to the server.</p> <p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p1454442412405">[Value range]</p>
            <ul id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_ul18188173017408">
             <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li1256442014218">The value contains 1 to 63 characters.</li>
             <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li111891530164014">A valid password cannot contain extended ASCII characters or Unicode characters. It is recommended that a password should contain the following characters: digits (0 to 9), letters (a to z and A to Z), spaces, and special characters ([\]^_{|}~`@!"#$%&amp;'()*+-./:;&lt;=&gt;?).</li>
            </ul></td>
          </tr>
          <tr id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_row38341554171810">
-          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.3.2.2.3.1.1 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p28341546189">Server IP Address</p></td>
-          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.3.2.2.3.1.2 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p1483411543181">IP address of the server.</p> <p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p733113774017">[Value range]</p>
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.4.2.2.3.1.1 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p28341546189">Server IP Address</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.4.2.2.3.1.2 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p1483411543181">IP address of the server.</p> <p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p733113774017">[Value range]</p>
            <ul id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_ul99831210132115">
             <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li1898351042110">When an IPv4 address is used:
              <ul id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_ul29831110152115">
-              <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li15983191019210">A 32-bit IPv4 address is divided into four fields that are expressed in dotted decimal notation.</li>
+              <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li15983191019210">The 32-bit IPv4 address is divided into four 8-bit fields that are expressed in dotted decimal notation.</li>
               <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li49831610102117">Each field of the IPv4 address must be an integer.</li>
               <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li20983131032110">The value of the first field ranges from 1 to 223 (excluding 127).</li>
               <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li179831110172113">The values of the other fields range from 0 to 255.</li>
@@ -106,14 +107,14 @@
              <ul id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_ul16983121072116">
               <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li69831310132114">The 128-bit IPv6 address is divided into eight 16-bit fields. Each 16-bit field consists of four colon-separated hexadecimal numbers.</li>
               <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li098301018214">In each 16-bit field, leading zeros can be omitted for simplicity. However, at least one digit must be reserved in each field.</li>
-              <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li69831410122110">To achieve further simplicity, you can use a double colon (::) in place of a series of zeros. A double colon (::) can be used only once in an IPv6 address. It can also represent the neighboring consecutive zeros at the beginning or end of an IPv6 address.</li>
+              <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li69831410122110">To achieve further simplicity, you can use a double colon (::) in place of a series of zeros. A double colon (::) can be used only once in an address. It can also represent the neighboring consecutive zeros at the beginning or end of an address.</li>
               <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li16983510142111">The IP address cannot be set to a special address, such as a network address, loopback address, or multicast address.</li>
              </ul></li>
            </ul></td>
          </tr>
          <tr id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_row1087634813199">
-          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.3.2.2.3.1.1 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p1787734861916">File Save Path</p></td>
-          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.3.2.2.3.1.2 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p13877114891913">File path for storing the dumped storage system information. A save path is set on the FTP software. You must create a folder in the save path and enter the folder name in <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b78113317514">File Save Path</strong> on DeviceManager.</p> <p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p65097479">[Value range]</p>
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.4.2.2.3.1.1 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p1787734861916">File Save Path</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.4.2.2.3.1.2 "><p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p13877114891913">File path for storing the dumped storage system information. A save path is set on the FTP software. You must create a folder in the save path and enter the folder name in <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b78113317514">File Save Path</strong> on DeviceManager.</p> <p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_p65097479">[Value range]</p>
            <ul id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_ul119931957439">
             <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li1099319574317">The value contains 1 to 255 characters.</li>
             <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li10993205714320">Special characters !':;|`$&lt;&gt;&amp;-()#?"\* are not allowed. The first character cannot be a period (.). The first and last characters cannot be spaces. The first character after a slash (/) in the path cannot be a period (.).</li>
@@ -122,7 +123,7 @@
         </tbody>
        </table>
       </div></li>
-     <li id="admin_email_save_000000__en-us_topic_0000001839224657_li699175918433">(Optional) Click <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b245216311763">Test</strong> to verify parameter values.
+     <li id="admin_email_save_000000__en-us_topic_0000001839224657_li699175918433">(Optional) Click <strong id="admin_email_save_000000__en-us_topic_0000001839224657_b245216311763">Test</strong> to verify the parameter values.
       <ul id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_ul11156141742310">
        <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li04511617162320">If an error dialog box is displayed, at least one parameter value is incorrect. Modify the parameter and try again.</li>
        <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001160283003_li2451191732315">If a success dialog box is displayed, the alarm dump parameters have been configured correctly.</li>
@@ -229,7 +230,7 @@
                <ul id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_ul43859437">
                 <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li59190614">The 128-bit IPv6 address is divided into eight 16-bit fields. Each 16-bit field consists of four colon-separated hexadecimal numbers.</li>
                 <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li62953484">In each 16-bit field, leading zeros can be omitted for simplicity. However, at least one digit must be reserved in each field.</li>
-                <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li29710447">To achieve further simplicity, you can use a double colon (::) in place of a series of zeros. A double colon (::) can be used only once in an IPv6 address. It can also represent the neighboring consecutive zeros at the beginning or end of an IPv6 address.</li>
+                <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li29710447">To achieve further simplicity, you can use a double colon (::) in place of a series of zeros. A double colon (::) can be used only once in an address. It can also represent the neighboring consecutive zeros at the beginning or end of an address.</li>
                 <li id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li66067432">The IP address cannot be set to a special address, such as a network address, loopback address, or multicast address.</li>
                </ul></li>
              </ul> <p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p54247797">[Example]</p> <p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p18468133">192.168.1.100</p> <p id="admin_email_save_000000__en-us_topic_0000001839224657_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p31995475">fc00::1234</p></td>

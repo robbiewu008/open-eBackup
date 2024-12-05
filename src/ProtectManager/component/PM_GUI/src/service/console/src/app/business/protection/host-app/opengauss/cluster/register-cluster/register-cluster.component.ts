@@ -59,7 +59,8 @@ export class RegisterClusterComponent implements OnInit {
     .map(item => {
       item.isLeaf = true;
       return item;
-    });
+    })
+    .filter(v => v.value !== DataMap.Deployment_Type.cmdb.value);
   proxyOptions = [];
   proxyMultiple = 'multiple';
 

@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -28,7 +28,7 @@
   <a name="EN-US_TOPIC_0000002092966049"></a><a name="EN-US_TOPIC_0000002092966049"></a>
   <h1 class="topictitle1">Starting the Windows OS in WinPE Mode and Then Configuring an IP Address</h1>
   <div>
-   <p>If the target host for bare metal restoration runs Windows, start the target host in WinPE mode and configure an IP address for the target host to communicate with this product.</p>
+   <p>If the target host for bare metal restoration runs Windows, start the target host in WinPE mode and configure an IP address for the target host to communicate with the product.</p>
    <div class="section">
     <h4 class="sectiontitle">Prerequisites</h4>
     <p class="msonormal">The target host has been shut down.</p>
@@ -39,7 +39,7 @@
      <li id="EN-US_TOPIC_0000002092966049__li101449241407"><a name="EN-US_TOPIC_0000002092966049__li101449241407"></a><a name="li101449241407"></a><span>Upload image file <strong>OP_Win10XPE_v3.iso</strong> to the VMware ESXi virtual platform.</span><p></p>
       <ol type="a">
        <li>Log in to the VMware ESXi virtual platform.</li>
-       <li>Choose <strong>Storage</strong> &gt; <strong>Datastores</strong> &gt; <strong>Datastore browser</strong>.</li>
+       <li>Choose <span class="uicontrol"><b>Storage</b></span> &gt; <strong>Datastores</strong> &gt; <strong>Datastore browser</strong>.</li>
        <li>Click the name of the datastore with sufficient capacity.</li>
        <li>Select a directory and click <span class="uicontrol"><b>Upload</b></span> to upload the image file to the directory.</li>
       </ol> <p></p></li>
@@ -52,7 +52,7 @@
      <li><span>Set the boot options of the target host.</span><p></p>
       <ol type="a">
        <li>Click <span class="uicontrol"><b>Virtual Machines</b></span> and select the target host.</li>
-       <li>On the top of the target host, choose <strong>Actions</strong> &gt; <strong>Edit settings</strong> &gt; <strong>VM Options</strong> &gt; <strong>Boot Options</strong>.</li>
+       <li>On the top of the target host, choose <span class="uicontrol"><b>Actions</b></span> &gt; <strong>Edit settings</strong> &gt; <strong>VM Options</strong> &gt; <strong>Boot Options</strong>.</li>
        <li>Set boot options:
         <ul>
          <li>EFI: Select <strong>Force EFI setup</strong>.</li>
@@ -63,7 +63,7 @@
       <ol type="a">
        <li>Click <span class="uicontrol"><b>Virtual Machines</b></span> and select the target host.</li>
        <li>Click <span class="uicontrol"><b>Power On</b></span> in the upper part of the target host tab page.</li>
-       <li>Choose <strong>Console</strong> &gt; <strong>Open browser console</strong>.</li>
+       <li>Choose <span class="uicontrol"><b>Console</b></span> &gt; <strong>Open browser console</strong>.</li>
        <li>Set the boot mode on the boot screen:
         <ul>
          <li>EFI: Select <span class="uicontrol"><b>EFI UMware Virtual SATA CDROM Drive (0.0)</b></span> and press <span class="uicontrol"><b>Enter</b></span>.</li>

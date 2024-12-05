@@ -1,4 +1,3 @@
-<ng-container *ngFor="let config of protectionConfig">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<ng-container *ngFor="let config of protectionConfig">
     <aui-create-container-modal [resourceType]="type" [config]="config" [option]="option" [action]="action"
         (onConfigChange)="onConfigChange($event)">
     </aui-create-container-modal>

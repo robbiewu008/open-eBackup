@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,7 +36,7 @@
   <a name="tdsql_gud_044"></a><a name="tdsql_gud_044"></a>
   <h1 class="topictitle1">Restoring a TDSQL Database</h1>
   <div>
-   <p>This section describes how to use a copy to restore a database that has been backed up. For 1.6.0 and later: Multiple instances in the same TDSQL cluster can be backed up or restored at the same time.</p>
+   <p>This section describes how to use a copy to restore a database that has been backed up. For 1.6.0 and later versions, multiple instances in the same TDSQL cluster can be backed up or restored at the same time.</p>
    <div class="section">
     <h4 class="sectiontitle">Prerequisites</h4>
     <ul>
@@ -50,7 +50,7 @@
      <li id="tdsql_gud_044__en-us_topic_0000001263614142_li10796132225712"><span>Choose <span class="uicontrol" id="tdsql_gud_044__en-us_topic_0000001839142377_uicontrol8687163819368"><b><span id="tdsql_gud_044__en-us_topic_0000001839142377_text176879387363"><strong>Explore</strong></span> &gt; <span id="tdsql_gud_044__en-us_topic_0000001839142377_text156881638113617"><strong>Copy Data</strong></span> &gt; <span id="tdsql_gud_044__en-us_topic_0000001839142377_text49981969503"><strong>Databases</strong></span> &gt; TDSQL</b></span>.</span></li>
      <li><span>Search for copies by TDSQL resource or copy. This section describes how to search for copies by resource.</span><p></p><p>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> tab page, locate the resource to be restored by resource name and click the name.</p> <p></p></li>
      <li><span>Select the year, month, and day in sequence to find the copy.</span><p></p><p>If <span><img src="en-us_image_0000001839210621.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p> <p></p></li>
-     <li><span>Specify a copy or point in time for restoration.</span><p></p>
+     <li><span>Specify a copy or a point in time for restoration.</span><p></p>
       <div class="p">
        You can specify a copy or any point in time between two copies for restoration.
        <div class="note">
@@ -86,9 +86,9 @@
              </ol></li>
             <li>Restore the TDSQL database to a new location.
              <ol class="substepthirdol">
-              <li>Set <strong>Restore To</strong> to <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</li>
+              <li>Select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for restoration.</li>
               <li>Select a cluster for restoration from the <span class="parmname"><b><span><strong>Target Cluster</strong></span></b></span> drop-down list.</li>
-              <li>Set the target instance for restoration.<p>For 1.5.0, you can only select an existing instance as the target instance. For 1.6.0 and later versions: You can select an existing instance or create an instance. The database version of the selected target instance must be the same as that of the original instance. If you choose to create an instance, see <a href="#tdsql_gud_044__table814219141233">Table 1</a>.</p>
+              <li>Set the target instance for restoration.<p>For 1.5.0, you can only select an existing instance as the target instance. For 1.6.0 and later versions, you can select an existing instance or create an instance. The database version of the selected target instance must be the same as that of the original instance. If you choose to create an instance, see <a href="#tdsql_gud_044__table814219141233">Table 1</a>.</p>
                <div class="note">
                 <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
                 <div class="notebody">
@@ -119,7 +119,7 @@
                   </tr>
                   <tr>
                    <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.3.3.2.4.1.1 "><p>Instance Name</p></td>
-                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.3.3.2.4.1.2 "><p>Custom instance name.</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.3.3.2.4.1.2 "><p>Name of an instance, which can be customized.</p></td>
                   </tr>
                   <tr>
                    <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.3.3.2.4.1.1 "><p>Agent Host</p></td>
@@ -200,19 +200,19 @@
                    <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="tdsql_gud_044__p36621521182414">Select the target model.</p></td>
                   </tr>
                   <tr id="tdsql_gud_044__row6662132182414">
-                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_044__p186621621162419"><strong id="tdsql_gud_044__b32166259">CPU (Cores)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_044__p186621621162419"><strong id="tdsql_gud_044__b1064991108">CPU (Cores)</strong></p></td>
                    <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="tdsql_gud_044__p86621521172410">The value ranges from 1 to 64.</p></td>
                   </tr>
                   <tr id="tdsql_gud_044__row26621821122419">
-                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_044__p66628212242"><strong id="tdsql_gud_044__b1924426850">Memory Size (GB)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_044__p66628212242"><strong id="tdsql_gud_044__b120715118">Memory Size (GB)</strong></p></td>
                    <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="tdsql_gud_044__p172071437202715">The value ranges from 1 to 128.</p></td>
                   </tr>
                   <tr id="tdsql_gud_044__row266262110245">
-                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_044__p14662152182410"><strong id="tdsql_gud_044__b1550332103">Data Disk Size (GB)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_044__p14662152182410"><strong id="tdsql_gud_044__b958865432">Data Disk Size (GB)</strong></p></td>
                    <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="tdsql_gud_044__p18104921182913">The value ranges from 1 to 800.</p></td>
                   </tr>
                   <tr id="tdsql_gud_044__row116886327298">
-                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_044__p156881932182912"><strong id="tdsql_gud_044__b1499951413">Log Disk Size (GB)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_044__p156881932182912"><strong id="tdsql_gud_044__b1335652519">Log Disk Size (GB)</strong></p></td>
                    <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="tdsql_gud_044__p8456447102919">The value ranges from 1 to 800.</p></td>
                   </tr>
                  </tbody>
@@ -267,19 +267,19 @@
                    <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.2 "><p id="tdsql_gud_044__tdsql_gud_044_p36621521182414">Select the target model.</p></td>
                   </tr>
                   <tr id="tdsql_gud_044__tdsql_gud_044_row6662132182414">
-                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.1 "><p id="tdsql_gud_044__tdsql_gud_044_p186621621162419"><strong id="tdsql_gud_044__tdsql_gud_044_b32166259">CPU (Cores)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.1 "><p id="tdsql_gud_044__tdsql_gud_044_p186621621162419"><strong id="tdsql_gud_044__tdsql_gud_044_b1064991108">CPU (Cores)</strong></p></td>
                    <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.2 "><p id="tdsql_gud_044__tdsql_gud_044_p86621521172410">The value ranges from 1 to 64.</p></td>
                   </tr>
                   <tr id="tdsql_gud_044__tdsql_gud_044_row26621821122419">
-                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.1 "><p id="tdsql_gud_044__tdsql_gud_044_p66628212242"><strong id="tdsql_gud_044__tdsql_gud_044_b1924426850">Memory Size (GB)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.1 "><p id="tdsql_gud_044__tdsql_gud_044_p66628212242"><strong id="tdsql_gud_044__tdsql_gud_044_b120715118">Memory Size (GB)</strong></p></td>
                    <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.2 "><p id="tdsql_gud_044__tdsql_gud_044_p172071437202715">The value ranges from 1 to 128.</p></td>
                   </tr>
                   <tr id="tdsql_gud_044__tdsql_gud_044_row266262110245">
-                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.1 "><p id="tdsql_gud_044__tdsql_gud_044_p14662152182410"><strong id="tdsql_gud_044__tdsql_gud_044_b1550332103">Data Disk Size (GB)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.1 "><p id="tdsql_gud_044__tdsql_gud_044_p14662152182410"><strong id="tdsql_gud_044__tdsql_gud_044_b958865432">Data Disk Size (GB)</strong></p></td>
                    <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.2 "><p id="tdsql_gud_044__tdsql_gud_044_p18104921182913">The value ranges from 1 to 800.</p></td>
                   </tr>
                   <tr id="tdsql_gud_044__tdsql_gud_044_row116886327298">
-                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.1 "><p id="tdsql_gud_044__tdsql_gud_044_p156881932182912"><strong id="tdsql_gud_044__tdsql_gud_044_b1499951413">Log Disk Size (GB)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.1 "><p id="tdsql_gud_044__tdsql_gud_044_p156881932182912"><strong id="tdsql_gud_044__tdsql_gud_044_b1335652519">Log Disk Size (GB)</strong></p></td>
                    <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.5.3.2.3.1.2 "><p id="tdsql_gud_044__tdsql_gud_044_p8456447102919">The value ranges from 1 to 800.</p></td>
                   </tr>
                  </tbody>

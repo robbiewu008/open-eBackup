@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
     <lv-form-item>
         <lv-form-label>
             {{ copyNameLable }}
@@ -28,14 +28,16 @@
                 lvColorState='true'></i>
         </lv-form-label>
         <lv-form-control>
-            <lv-group lvGutter="8px" [lvColumns]='["300px", "auto"]'>
+            <lv-input-group [lvAddAfter]="unitTpl" class="aui-select-right">
                 <input lv-input formControlName="retention_duration" type="text"
-                    placeholder="{{formGroup.value.duration_unit=='d'?'1~365':formGroup.value.duration_unit=='w'?'1~54':formGroup.value.duration_unit=='MO'?'1~24':formGroup.value.duration_unit=='p' ? '':'1~10'}}"
-                    class="retention" />
+                       placeholder="{{formGroup.value.duration_unit=='d'?'1~365':formGroup.value.duration_unit=='w'?'1~54':formGroup.value.duration_unit=='MO'?'1~24':formGroup.value.duration_unit=='p' ? '':'1~10'}}"
+                       class="retention" />
+            </lv-input-group>
+            <ng-template #unitTpl>
                 <lv-select [lvOptions]="durationUnitOptions" formControlName="duration_unit" lvValueKey="value"
-                    class="retention-option">
+                           class="aui-inner-select">
                 </lv-select>
-            </lv-group>
+            </ng-template>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item *ngIf="isOceanProtect">

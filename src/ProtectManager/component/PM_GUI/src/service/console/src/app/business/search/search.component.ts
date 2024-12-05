@@ -132,7 +132,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       },
       {
         value: `${FilterType.NutanixVm}`,
-        label: this.i18n.get('common_nutanix_label')
+        label: this.i18n.get('common_nutanix_label'),
+        hidden: true
       },
       {
         value: `${FilterType.HDFSFileset}`,
@@ -192,7 +193,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       },
       {
         value: `${DataMap.Resource_Type.AntDB.value},${DataMap.Resource_Type.AntDBInstance.value},${DataMap.Resource_Type.AntDBClusterInstance.value}`,
-        label: this.i18n.get('common_antdb_label')
+        label: this.i18n.get('common_antdb_label'),
+        hidden: true
       },
       {
         value: DataMap.Resource_Type.oracle.value,
@@ -276,7 +278,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       },
       {
         value: `${DataMap.Resource_Type.Saponoracle.value},${DataMap.Resource_Type.saponoracleDatabase.value}`,
-        label: this.i18n.get('common_sap_on_oracle_label')
+        label: this.i18n.get('common_sap_on_oracle_label'),
+        hidden: true
       },
       {
         value: `${DataMap.Resource_Type.generalDatabase.value}`,
@@ -304,7 +307,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       },
       {
         value: `${DataMap.Resource_Type.nutanixCluster.value},${DataMap.Resource_Type.nutanixHost.value},${DataMap.Resource_Type.nutanixVm.value}`,
-        label: this.i18n.get('common_nutanix_label')
+        label: this.i18n.get('common_nutanix_label'),
+        hidden: true
       },
       {
         value: `${DataMap.Resource_Type.Kubernetes.value},${DataMap.Resource_Type.KubernetesNamespace.value},${DataMap.Resource_Type.KubernetesStatefulset.value}`,

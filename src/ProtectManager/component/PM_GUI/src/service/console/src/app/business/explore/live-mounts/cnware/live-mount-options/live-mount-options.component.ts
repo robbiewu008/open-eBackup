@@ -615,6 +615,81 @@ export class LiveMountOptionsComponent implements OnInit {
       if (isEmpty(trim(String(v)))) {
         return;
       }
+      // 带宽Min
+      if (
+        k === 'min_bandwidth' &&
+        !(
+          this.formGroup.value.bindWidthStatus &&
+          this.formGroup.value.bindWidthMin
+        )
+      ) {
+        return;
+      }
+      // 带宽max
+      if (
+        k === 'max_bandwidth' &&
+        !(
+          this.formGroup.value.bindWidthStatus &&
+          this.formGroup.value.bindWidthMax
+        )
+      ) {
+        return;
+      }
+      // 带宽burst
+      if (
+        k === 'burst_bandwidth' &&
+        !(
+          this.formGroup.value.bindWidthStatus &&
+          this.formGroup.value.bindWidthMax &&
+          this.formGroup.value.max_bandwidth &&
+          this.formGroup.value.bindWidthBurst
+        )
+      ) {
+        return;
+      }
+      // IOPS min
+      if (
+        k === 'min_iops' &&
+        !(this.formGroup.value.iopsStatus && this.formGroup.value.iopsMin)
+      ) {
+        return;
+      }
+      // IOPS max
+      if (
+        k === 'max_iops' &&
+        !(this.formGroup.value.iopsStatus && this.formGroup.value.iopsMax)
+      ) {
+        return;
+      }
+      // IOPS burst
+      if (
+        k === 'burst_iops' &&
+        !(
+          this.formGroup.value.iopsStatus &&
+          this.formGroup.value.iopsMax &&
+          this.formGroup.value.max_iops &&
+          this.formGroup.value.iopsBurst
+        )
+      ) {
+        return;
+      }
+      // time burst
+      if (
+        k === 'burst_time' &&
+        !(
+          (this.formGroup.value.bindWidthStatus &&
+            this.formGroup.value.bindWidthMax &&
+            this.formGroup.value.max_bandwidth &&
+            this.formGroup.value.bindWidthBurst) ||
+          (this.formGroup.value.iopsStatus &&
+            this.formGroup.value.iopsMax &&
+            this.formGroup.value.max_iops &&
+            this.formGroup.value.iopsBurst)
+        )
+      ) {
+        return;
+      }
+      // 标准IOPS
       if (!this.formGroup.value.latencyStatus && k === 'latency') {
         return;
       }

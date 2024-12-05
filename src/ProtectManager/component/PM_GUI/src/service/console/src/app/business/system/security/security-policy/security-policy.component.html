@@ -1,4 +1,3 @@
-<div class="aui-fullpage security-policy-page">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-fullpage security-policy-page">
   <div class="aui-header-1">
     <lv-group lvGutter='8px'>
       <h1>{{ 'system_security_policy_label' | i18n }}</h1>
@@ -460,7 +460,7 @@
           <td><span lv-overflow>
               <span lv-overflow>{{item.password}}</span>
             </span></td>
-          <td width="235px">
+          <td width="236px">
             <span class="aui-link" (click)='deleteRow(item)'>{{'common_delete_label' | i18n}}</span>
           </td>
         </ng-template>
@@ -476,7 +476,7 @@
               </lv-form-control>
             </lv-form>
           </td>
-          <td width="250px">
+          <td width="236px">
             <lv-group [lvGutter]="'24px'">
               <a (click)='saveData(item)' [ngClass]="{'aui-link': formGroupMap[item.id] && formGroupMap[item.id].valid,
                             'aui-link-disabled': formGroupMap[item.id] && formGroupMap[item.id].invalid}">
@@ -554,10 +554,10 @@
                 </ng-container>
               </tbody>
             </lv-datatable>
-          </div>
-          <div class="aui-paginator-wrap">
-            <lv-paginator lvPageSize="10" #page2 [hidden]="!ipTable.renderData.length" [lvPageSizeOptions]='sizeOptions'
-              lvMode="simple"></lv-paginator>
+              <div class="aui-paginator-wrap">
+                <lv-paginator lvPageSize="10" #page2 [hidden]="!ipTable.renderData.length" [lvPageSizeOptions]='sizeOptions'
+                  lvMode="simple"></lv-paginator>
+              </div>
           </div>
         </div>
 

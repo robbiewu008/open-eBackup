@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -39,8 +39,7 @@
 
 <h1 class="topictitle1">步骤5：注册VMware虚拟化环境</h1>
 <div><p>执行VMware备份前，需要将VMware虚拟化环境注册至<span>OceanProtect</span>。</p>
-<div class="section"><h4 class="sectiontitle">背景信息</h4><p>注册VMware虚拟化环境至<span>OceanProtect</span>时，支持注册vCenter Server或ESXi主机。如果有多个独立的ESXi则需要注册多次。</p>
-<p>注册VMware虚拟化环境后，可以在管理界面浏览vCenter Server、ESXi或虚拟机的信息并对其进行保护，也可将其作为恢复目标。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><ul><li>注册VMware虚拟化环境至<span>OceanProtect</span>时，支持注册vCenter Server或ESXi主机。如果有多个独立的ESXi主机则需要注册多次。</li><li>注册VMware虚拟化环境后，可以在管理界面浏览vCenter Server、ESXi主机或虚拟机的信息并对其进行保护。</li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="vmware_gud_0024__zh-cn_topic_0000001839142377_uicontrol1738217261378">“<span id="vmware_gud_0024__zh-cn_topic_0000001839142377_text738292620372">保护</span> &gt; 虚拟化 &gt; VMware”</span>。</span></li><li><span>单击<span class="uicontrol">“注册”</span>，注册VMware虚拟化平台信息。</span><p><div class="p">VMware注册信息如<a href="#vmware_gud_0024__table613227155112">表1</a>所示。
 <div class="tablenoborder"><a name="vmware_gud_0024__table613227155112"></a><a name="table613227155112"></a><table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0024__table613227155112" frame="border" border="1" rules="all"><caption><b>表1 </b>VMware注册信息</caption><colgroup><col style="width:25.6%"><col style="width:74.4%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.6%" id="mcps1.3.3.2.2.2.1.2.2.3.1.1"><p>参数</p>
@@ -67,8 +66,7 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>用户名</span></p>
 </td>
-<td class="cellrowborder" rowspan="2" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><ul><li>当注册的是vCenter Server时，输入登录VMware vSphere web Client的用户名及其密码。<p>用户的最小权限要求请参考<a href="vmware_gud_0093_0.html">注册VMware虚拟化环境时，注册用户的最小权限要求</a>。</p>
-</li><li>当注册的是ESXi时，输入登录ESXi主机的用户名及其密码。</li></ul>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><ul><li>当注册的是vCenter Server时，输入登录VMware vSphere web Client的用户名及其密码。</li><li>当注册的是ESXi时，输入登录ESXi主机的用户名及其密码。</li></ul>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>密码</span></p>
@@ -97,7 +95,9 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>安全tls版本与算法</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p><span style="color:#282B33;">默认关闭，关闭后默认使用TLS 1.3安全协议，开启后通信双方自主协商。</span></p>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><div class="p">默认关闭，关闭后默认使用TLS 1.3安全协议，开启后通信双方自主协商。<div class="note" id="vmware_gud_0024__zh-cn_topic_0000001657021745_note1655773912333"><span class="notetitle"> 说明： </span><div class="notebody"><p id="vmware_gud_0024__zh-cn_topic_0000001657021745_p355717393330">开启后，系统连接外部服务端可能会使用不安全的加密算法，存在安全风险，请谨慎操作。</p>
+</div></div>
+</div>
 </td>
 </tr>
 </tbody>
@@ -144,7 +144,7 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span>证书</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>导入存储设备的CA证书。获取存储设备的CA证书具体操作可参考<span>《OceanProtect <span id="vmware_gud_0024__zh-cn_topic_0000001792502994_ph195917325202">备份一体机 1.5.0-1.6.0</span> 数据备份特性指南(适用于NAS文件)》</span>中的<span class="parmvalue">“步骤1：获取存储设备CA证书”</span>章节。</p>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>导入存储设备的CA证书。获取存储设备的CA证书具体操作可参考<span>《OceanProtect DataBackup 1.5.0-1.6.0 数据备份特性指南(适用于NAS文件)》</span>中的<span class="parmvalue">“步骤1：获取存储设备CA证书”</span>章节。</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span>吊销列表</span></p>

@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -130,7 +130,13 @@
       <ul id="HA00017__ul4168101284719">
        <li id="HA00017__li161691123478">Port selection: You can select <span class="uicontrol" id="HA00017__uicontrol1843105516496"><b>Creating a port</b></span> or <span class="uicontrol" id="HA00017__uicontrol239791105017"><b>Reusing the configured port</b></span>.</li>
        <li id="HA00017__li6280184155013"><strong id="HA00017__b458011617451">Port Sharing</strong> (optional): This option is available when <span class="uicontrol" id="HA00017__uicontrol225594865817"><b>Port Type</b></span> is set to <span class="uicontrol" id="HA00017__uicontrol089964425819"><b>Bond Port</b></span>. If <span class="uicontrol" id="HA00017__uicontrol756410491518"><b>Port Sharing</b></span> is enabled, the number of required ports can be reduced, but the reliability of the internal communication network decreases.</li>
-      </ul> <p id="HA00017__p1271751711314">For details about the minimum number of ports that need to be selected for each controller of different device types in different scenarios, see <a href="HA00061.html">Minimum Number of Ports Selected per Controller on the Internal Communication Network</a>.</p> <p></p></li>
+      </ul>
+      <div class="note" id="HA00017__note89765103387">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="HA00017__p4727041145210">If multiple sets of the <span id="HA00017__text1278956184819">product</span> form a cluster, reserve two additional IP addresses for each node to synchronize configuration information in the cluster.</p>
+       </div>
+      </div> <p></p></li>
      <li id="HA00017__li16902184110158"><span>(Optional) In the <strong id="HA00017__b20216112113214">Advanced</strong> area, select <span class="uicontrol" id="HA00017__uicontrol1417910172019"><b>Configure Route</b></span> to configure a route for the internal communication network. Choose <span class="uicontrol" id="HA00017__uicontrol13785123742017"><b>Add</b></span> to add the corresponding route. The route type can be <span class="uicontrol" id="HA00017__uicontrol45422057811331"><b>Network segment route</b></span>, <span class="uicontrol" id="HA00017__uicontrol213070986411331"><b>Host route</b></span>, or <span class="uicontrol" id="HA00017__uicontrol205092273511331"><b>Default route</b></span>.</span><p></p><p id="HA00017__p1302194392420"></p>
       <div class="p" id="HA00017__p1676518467244">
        <div class="note" id="HA00017__note1176813248236">

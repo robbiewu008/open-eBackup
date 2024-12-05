@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -47,7 +47,7 @@
        <li>Restored to a new location<p>An Oracle database is restored to a specified location. If a database with the same name exists at the location, it will be overwritten.</p></li>
        <li>During the restoration, if a database with the same name exists in the target location, you are advised not to stop the restoration job. Otherwise, the original database will be damaged.</li>
       </ul></li>
-     <li>For 1.6.0 and later versions: When snapshot-based restoration at the storage layer is performed:
+     <li>For 1.6.0 and later versions, when snapshot-based restoration at the storage layer is performed:
       <ul>
        <li>Backup copies, replication copies, and imported copies can be used for restoration in the single-node system scenario.</li>
        <li>Backup copies and imported copies can be used for restoration in the cluster scenario.</li>
@@ -55,7 +55,7 @@
        <li>The system restores LUNs at the specified location. After the restoration, data on the target LUNs will be overwritten.</li>
        <li>If snapshot-based restoration at the storage layer is performed in non-ASM deployment mode, the drive letters to which LUNs are mounted before and after the restoration may be different.</li>
       </ul></li>
-     <li>GUIs may vary with versions.</li>
+     <li>The GUI may vary with versions.</li>
     </ul>
    </div>
    <div class="section">
@@ -63,7 +63,7 @@
     <ul>
      <li>ProtectAgent and other related software have been installed on the target host for restoration.<p>For details, see the <i><cite>ProtectAgent Installation Guide</cite></i>.</p></li>
      <li>When restoring data to a different host, ensure that the free disk space of the target host is greater than the size of the database.</li>
-     <li>For 1.6.0 and later versions: Before performing snapshot-based restoration at the storage layer, ensure that:
+     <li>For 1.6.0 and later versions, before performing snapshot-based restoration at the storage layer, ensure that:
       <ul>
        <li>The disk where OCR or voting files reside is not on the same LUN as the disk where data files reside.</li>
        <li>The disk where OCR or voting files reside is not on the same LUN as the disk where log files reside.</li>
@@ -84,7 +84,7 @@
       <ol type="a">
        <li>Log in to the Oracle database host.
         <ul id="oracle_gud_0058__oracle_gud_0020_en-us_topic_0000001656760969_ul1983714162204">
-         <li id="oracle_gud_0058__oracle_gud_0020_en-us_topic_0000001656760969_li7258697580">If the Linux OS is used, use PuTTY to log in to the Oracle database host and run the <strong id="oracle_gud_0058__oracle_gud_0020_b168335021216">su - oracle</strong> command to switch to user <strong id="oracle_gud_0058__oracle_gud_0020_b683125031217">oracle</strong>.</li>
+         <li id="oracle_gud_0058__oracle_gud_0020_en-us_topic_0000001656760969_li7258697580">If the Linux OS is used, use PuTTY to log in to the Oracle database host and run the <strong id="oracle_gud_0058__oracle_gud_0020_b14682476107">su - oracle</strong> command to switch to user <strong id="oracle_gud_0058__oracle_gud_0020_b1646874718106">oracle</strong>.</li>
          <li id="oracle_gud_0058__oracle_gud_0020_en-us_topic_0000001656760969_li1366015032013">If the Windows OS is used, log in to the Oracle database host as the system administrator.</li>
         </ul></li>
        <li>Run the following commands to log in to the Oracle database instance.
@@ -108,7 +108,13 @@
             </ol></li>
           </ul></li>
         </ul></li>
-       <li>Run the following command to shut down the database with the same name:<p><strong>shutdown immediate;</strong></p></li>
+       <li>Run the following command to shut down the database with the same name:<p><strong>shutdown immediate;</strong></p>
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>For an RAC cluster, run this command on all nodes.</p>
+         </div>
+        </div> <p>If the following information is displayed, the database is shut down.</p> <pre class="screen">ORACLE instance shut down.</pre></li>
       </ol> <p></p></li>
      <li id="oracle_gud_0058__li17844445165619"><a name="oracle_gud_0058__li17844445165619"></a><a name="li17844445165619"></a><span>For data restoration to the original location, ensure that the size of the free memory of the target host is greater than the total size of the system global area (SGA) and process global area (PGA) of the database. Otherwise, the restoration may fail.</span><p></p>
       <ol type="a">
@@ -164,17 +170,20 @@ Swap:           99G          0B         99G</pre></li>
          </div></li>
        </ol>
       </div> <p></p></li>
-     <li><span>For 1.6.0 and later versions: Perform this step if snapshot-based restoration at the storage layer is required. Otherwise, skip this step.</span><p></p>
+     <li><span>For 1.6.0 and later versions, perform this step if snapshot-based restoration at the storage layer is required. Otherwise, skip this step.</span><p></p>
       <ul>
        <li>For an ASM instance:
         <ul>
          <li>If the Linux OS is used, use PuTTY to log in to the Oracle database host and perform the following operations:
-          <div class="p">
-           Run the following commands to unmount the ASM disk group where the OCR and voting disk data are not stored. <strong>DATA</strong> indicates the disk group name.
-           <pre class="screen">su - grid</pre>
-           <pre class="screen">asmcmd</pre>
-           <pre class="screen">ASMCMD&gt; umount -f DATA</pre>
-          </div></li>
+          <ol type="a">
+           <li>Shut down the ASM instance or unmount the ASM disk group.
+            <ul>
+             <li>In a single-node system, run the following commands to shut down the ASM instance:<pre class="screen">su - grid
+srvctl stop asm -force</pre></li>
+             <li>In the RAC cluster scenario, run the following commands to unmount the ASM disk group where the non-OCR and voting disk data is located. <em>DATA</em> indicates the disk group name.<pre class="screen">su - grid</pre> <pre class="screen">asmcmd</pre> <pre class="screen">ASMCMD&gt; umount -f <em>DATA</em></pre></li>
+            </ul></li>
+           <li><span id="oracle_gud_0058__ph1373181923716">For restoration using log copies of the Oracle cluster, perform the following operations. Otherwise, skip this step.</span><p id="oracle_gud_0058__p7416617181812">Run the following commands to disable the crs service:</p> <pre class="screen">su - grid</pre> <pre class="screen">cd $ORACLE_HOME/bin</pre> <pre class="screen" id="oracle_gud_0058__screen18913141015199">crsctl stop res ora.crsd -init</pre></li>
+          </ol></li>
          <li>If the Windows OS is used, log in to the Oracle database host as the system administrator and perform the following operations:
           <ol type="a">
            <li>Specify the <strong>ORACLE_HOME</strong> path. Oracle 19c is used as an example.
@@ -189,13 +198,12 @@ Swap:           99G          0B         99G</pre></li>
              <li>Press <span class="uicontrol"><b>Win+R</b></span> to open the <strong>Run</strong> window.</li>
              <li>Enter <span class="parmvalue"><b>cmd</b></span> and press <strong>Enter</strong>. In the displayed window, run the following command to specify the <strong>ORACLE_HOME</strong> path:<pre class="screen">set ORACLE_HOME=<em>queried ORACLE_HOME path</em></pre></li>
             </ol></li>
-           <li>Unmount the ASM disk group where the OCR and voting disk data are not stored.
-            <div class="p">
-             Press <strong>Win+R</strong> to open the <strong>Run</strong> dialog box. Enter <strong>cmd</strong> and press <strong>Enter</strong>. In the displayed window, run the following commands: <em>DATA</em> indicates the disk group name.
-             <pre class="screen">set ORACLE_SID <strong>=</strong> <em>ASM instance name</em></pre>
-             <pre class="screen">asmcmd</pre>
-             <pre class="screen">ASMCMD&gt; umount -f <em>DATA</em></pre>
-            </div></li>
+           <li>Press <strong>Win+R</strong>, enter <strong>cmd</strong>, and press <strong>Enter</strong>. In the Command Prompt, shut down the ASM instance or unmount the ASM disk group by running commands.
+            <ul>
+             <li>In a single-node system, run the following command to shut down the ASM instance:<pre class="screen">srvctl stop asm -force</pre></li>
+             <li>In the RAC cluster scenario, run the following commands to unmount the ASM disk group where the non-OCR and voting disk data is located. <em>DATA</em> indicates the disk group name.<pre class="screen">set ORACLE_SID <strong>=</strong> <em>ASM instance name</em></pre> <pre class="screen">asmcmd</pre> <pre class="screen">ASMCMD&gt; umount -f <em>DATA</em></pre></li>
+            </ul></li>
+           <li><span>For restoration using log copies of the Oracle cluster, perform the following operations. Otherwise, skip this step.</span><p>Run the following commands to disable the crs service:</p> <pre class="screen">crsctl stop res ora.crsd -init</pre></li>
           </ol></li>
         </ul></li>
        <li>For a non-ASM instance:
@@ -570,7 +578,7 @@ Swap:           99G          0B         99G</pre></li>
               <div class="note" id="oracle_gud_0058__note131611441701">
                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
                <div class="notebody">
-                <p id="oracle_gud_0058__p63168441018">For 1.6.0 and later versions: If the name of the target database for restoration is the same as that of the original database, scan the restoration target resource after the restoration job is complete to ensure that the obtained instance name information is correct.</p>
+                <p id="oracle_gud_0058__p63168441018">For 1.6.0 and later versions, if the name of the target database for restoration is the same as that of the original database, scan the restoration target resource after the restoration job is complete to ensure that the obtained instance name information is correct.</p>
                </div>
               </div></li>
             </ol></li>

@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -42,24 +42,24 @@
 <div class="note" id="kingbase-00007_a1__note141813814318"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="kingbase-00007_a1__ul17447111517311"><li id="kingbase-00007_a1__li18475121815115"><span id="kingbase-00007_a1__ph1292522251311">本节操作如无特殊说明均以操作系统版本是Linux localhost.localdomain 2.6.32-431.el6.x86_64，数据库版本是Kingbase V8.0为例进行，不同操作系统或数据库版本可能存在差异，请以实际为准。</span></li><li id="kingbase-00007_a1__li135951626152410"><span id="kingbase-00007_a1__ph1879711368271">对于以集群方式部署的Kingbase数据库，如无特殊说明，均需登录集群实例所在的所有主机执行以下操作。</span></li></ul>
 </div></div>
 
-<div class="tablenoborder"><a name="kingbase-00007_a1__zh-cn_topic_0000001505943769_table10744125193920"></a><a name="zh-cn_topic_0000001505943769_table10744125193920"></a><table cellpadding="4" cellspacing="0" summary="" id="kingbase-00007_a1__zh-cn_topic_0000001505943769_table10744125193920" frame="border" border="1" rules="all"><caption><b>表1 </b>备份前准备</caption><colgroup><col style="width:26.97%"><col style="width:60%"><col style="width:13.03%"></colgroup><thead align="left"><tr id="kingbase-00007_a1__zh-cn_topic_0000001505943769_row17745751113919"><th align="left" class="cellrowborder" valign="top" width="26.970000000000006%" id="mcps1.3.3.2.4.1.1"><p id="kingbase-00007_a1__zh-cn_topic_0000001505943769_p07451351153920">准备项</p>
+<div class="tablenoborder"><a name="kingbase-00007_a1__zh-cn_topic_0000001505943769_table10744125193920"></a><a name="zh-cn_topic_0000001505943769_table10744125193920"></a><table cellpadding="4" cellspacing="0" summary="" id="kingbase-00007_a1__zh-cn_topic_0000001505943769_table10744125193920" frame="border" border="1" rules="all"><caption><b>表1 </b>备份前准备</caption><colgroup><col style="width:26.93%"><col style="width:60.040000000000006%"><col style="width:13.03%"></colgroup><thead align="left"><tr id="kingbase-00007_a1__zh-cn_topic_0000001505943769_row17745751113919"><th align="left" class="cellrowborder" valign="top" width="26.93%" id="mcps1.3.3.2.4.1.1"><p id="kingbase-00007_a1__zh-cn_topic_0000001505943769_p07451351153920">准备项</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="60.00000000000001%" id="mcps1.3.3.2.4.1.2"><p id="kingbase-00007_a1__zh-cn_topic_0000001505943769_p374585115396">获取方式</p>
+<th align="left" class="cellrowborder" valign="top" width="60.040000000000006%" id="mcps1.3.3.2.4.1.2"><p id="kingbase-00007_a1__zh-cn_topic_0000001505943769_p374585115396">获取方式</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="13.030000000000003%" id="mcps1.3.3.2.4.1.3"><p id="kingbase-00007_a1__zh-cn_topic_0000001505943769_p153691420200">数据使用章节</p>
+<th align="left" class="cellrowborder" valign="top" width="13.03%" id="mcps1.3.3.2.4.1.3"><p id="kingbase-00007_a1__zh-cn_topic_0000001505943769_p153691420200">数据使用章节</p>
 </th>
 </tr>
 </thead>
-<tbody><tr id="kingbase-00007_a1__zh-cn_topic_0000001505943769_row169941864113"><td class="cellrowborder" valign="top" width="26.970000000000006%" headers="mcps1.3.3.2.4.1.1 "><p id="kingbase-00007_a1__zh-cn_topic_0000001311214069_p1041419595410"><span id="kingbase-00007_a1__text11280184116112">用户名</span></p>
+<tbody><tr id="kingbase-00007_a1__zh-cn_topic_0000001505943769_row169941864113"><td class="cellrowborder" valign="top" width="26.93%" headers="mcps1.3.3.2.4.1.1 "><p id="kingbase-00007_a1__zh-cn_topic_0000001311214069_p1041419595410"><span id="kingbase-00007_a1__text11280184116112">用户名</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="60.00000000000001%" headers="mcps1.3.3.2.4.1.2 "><div class="p" id="kingbase-00007_a1__p1481913395319">数据库的用户名可通过以下方式查询。<ol id="kingbase-00007_a1__ol775354125917"><li id="kingbase-00007_a1__li157541941594">使用PuTTY登录Kingbase数据库所在主机。</li><li id="kingbase-00007_a1__li20555010105919">执行以下命令，查询Kingbase数据库的安装用户名。数据库端口是注册数据库时用户设置的，默认为54321。<pre class="screen" id="kingbase-00007_a1__screen5866193918598">ss -ntlp | grep <em id="kingbase-00007_a1__i11990164305">数据库端口</em></pre>
-<p id="kingbase-00007_a1__p66160360216">回显类似如下信息，其中<strong id="kingbase-00007_a1__b2536678410">kingbase</strong>为数据库用户名。</p>
+<td class="cellrowborder" valign="top" width="60.040000000000006%" headers="mcps1.3.3.2.4.1.2 "><div class="p" id="kingbase-00007_a1__p1481913395319">数据库安装用户名可通过以下方式查询。<ol id="kingbase-00007_a1__ol775354125917"><li id="kingbase-00007_a1__li157541941594">使用PuTTY登录Kingbase数据库所在主机。</li><li id="kingbase-00007_a1__li20555010105919">执行以下命令，查询Kingbase数据库安装用户名。数据库端口是注册数据库时用户设置的，默认为54321。<pre class="screen" id="kingbase-00007_a1__screen5866193918598">ss -ntlp | grep <em id="kingbase-00007_a1__i11990164305">数据库端口</em></pre>
+<p id="kingbase-00007_a1__p66160360216">回显类似如下信息，其中<strong id="kingbase-00007_a1__b2536678410">kingbase</strong>为数据库安装用户名。</p>
 <pre class="screen" id="kingbase-00007_a1__screen2186355310">users:(("kingbase",25085,4))
 LISTEN     0      128                       *:54321                    *:*      users:(("kingbase",25085,3))</pre>
 </li></ol>
 </div>
 </td>
-<td class="cellrowborder" rowspan="3" valign="top" width="13.030000000000003%" headers="mcps1.3.3.2.4.1.3 "><p id="kingbase-00007_a1__zh-cn_topic_0000001505943769_p121306421565"><a href="kingbase-00009.html">步骤2：注册Kingbase单实例下的数据库</a></p>
+<td class="cellrowborder" rowspan="3" valign="top" width="13.03%" headers="mcps1.3.3.2.4.1.3 "><p id="kingbase-00007_a1__zh-cn_topic_0000001505943769_p121306421565"><a href="kingbase-00009.html">步骤2：注册Kingbase单实例下的数据库</a></p>
 <p id="kingbase-00007_a1__p1719579345"><a href="kingbase-00010.html">步骤3：注册Kingbase集群实例下的数据库</a></p>
 </td>
 </tr>
@@ -84,11 +84,14 @@ LISTEN     0      128                       *:54321                    *:*      
 </li><li id="kingbase-00007_a1__li5824105034317">执行以下命令，打开kingbase.conf文件。<pre class="screen" id="kingbase-00007_a1__screen18241650114317">vim kingbase.conf</pre>
 </li><li id="kingbase-00007_a1__li11824350174310">执行以下命令，搜索listen_addresses所在行<pre class="screen" id="kingbase-00007_a1__screen182411507434">/listen_addresses</pre>
 <p id="kingbase-00007_a1__p19824850194318">回显如下所示：</p>
-<p id="kingbase-00007_a1__p1982425014313"><span><img id="kingbase-00007_a1__image6824175016433" src="zh-cn_image_0000002031627657.png"></span></p>
-</li></ol>
-<div class="p" id="kingbase-00007_a1__p1762173214523"><div class="note" id="kingbase-00007_a1__note1094982216269"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="kingbase-00007_a1__ul220074214440"><li id="kingbase-00007_a1__li152010427447">如果配置值为*，则取登录数据库后台的IP。</li><li id="kingbase-00007_a1__li1539171010458">如果配置值为IP地址，单机则取listen_addresses字段值中的任意一个IP，集群则取listen_addresses字段值中的主节点IP。</li></ul>
+<div class="p" id="kingbase-00007_a1__p1982425014313"><span><img id="kingbase-00007_a1__image6824175016433" src="zh-cn_image_0000002031627657.png"></span><div class="note" id="kingbase-00007_a1__note919211276469"><span class="notetitle"> 说明： </span><div class="notebody"><p id="kingbase-00007_a1__p19384123910468">如果配置值为*，则取登录数据库后台的IP。</p>
+<p id="kingbase-00007_a1__p1937163910461">如果配置值为IP地址，单机则取listen_addresses字段值中的任意一个IP，集群则取listen_addresses字段值中的主节点IP。</p>
 </div></div>
 </div>
+</li><li id="kingbase-00007_a1__li9819181864115">执行以下命令，查询主节点IP，<strong id="kingbase-00007_a1__b72365305">primary</strong>所在行的IP为主节点IP。<pre class="screen" id="kingbase-00007_a1__screen19113440418">su - kingbase -c '/安装目录/bin/repmgr cluster show'</pre>
+<p id="kingbase-00007_a1__p11611122654311">回显如下所示：</p>
+<p id="kingbase-00007_a1__p860882516115"><span><img id="kingbase-00007_a1__image63171278436" src="zh-cn_image_0000002087918028.png"></span></p>
+</li></ol>
 </li></ol>
 </td>
 </tr>

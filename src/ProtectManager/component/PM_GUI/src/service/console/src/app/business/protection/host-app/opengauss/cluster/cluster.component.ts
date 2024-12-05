@@ -299,7 +299,9 @@ export class ClusterComponent implements OnInit, AfterViewInit {
           type: 'select',
           isMultiple: true,
           showCheckAll: true,
-          options: this.dataMapService.toArray('Opengauss_Deployment_Type')
+          options: this.dataMapService
+            .toArray('Opengauss_Deployment_Type')
+            .filter(v => v.value !== DataMap.Deployment_Type.cmdb.value)
         },
         cellRender: {
           type: 'status',

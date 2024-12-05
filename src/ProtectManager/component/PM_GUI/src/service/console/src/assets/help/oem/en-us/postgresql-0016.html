@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -55,7 +55,7 @@
       <div class="note">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="postgresql-0016__en-us_topic_0000001964713008_p125947145711"><span id="postgresql-0016__en-us_topic_0000001964713008_ph1413818422327">If a WORM policy has been configured for the resource to be protected, select an SLA without a WORM policy to create protection to avoid WORM policy conflicts.</span></p>
+        <p id="postgresql-0016__en-us_topic_0000001964713008_p125947145711"><span id="postgresql-0016__en-us_topic_0000001964713008_ph1413818422327">If a WORM policy has been configured for the resources to be protected, select an SLA without a WORM policy to avoid WORM policy conflicts.</span></p>
        </div>
       </div> <p></p></li>
      <li><span>Set advanced parameters for the backup policy. </span><p></p>
@@ -104,7 +104,7 @@
                <ul id="postgresql-0016__en-us_topic_0000001656442629_en-us_topic_0000001607691468_ul5885426132914">
                 <li id="postgresql-0016__en-us_topic_0000001656442629_en-us_topic_0000001607691468_li10885172616299">An agent host can only be linked with one storage unit. To enable source deduplication, select <span class="parmvalue" id="postgresql-0016__en-us_topic_0000001656442629_en-us_topic_0000001607691468_parmvalue13417617181719"><b>Backup Storage Unit</b></span> for <span class="parmname" id="postgresql-0016__en-us_topic_0000001656442629_en-us_topic_0000001607691468_parmname164341313131719"><b>Specify Target Location</b></span>. Otherwise, a storage unit that is not linked with the agent host may be selected through intelligent balancing. As a result, source deduplication fails to be enabled. If different protected objects are associated with different SLAs, where different backup storage units are specified, select different agent hosts for the protected objects. Otherwise, source deduplication of some backup jobs will fail to be enabled.</li>
                 <li id="postgresql-0016__en-us_topic_0000001656442629_en-us_topic_0000001607691468_li9885182662911">If an agent host has been linked with a storage unit but is not performing a backup job with source deduplication, you can run the <strong id="postgresql-0016__en-us_topic_0000001656442629_en-us_topic_0000001607691468_b1734071915190">dataturbo delete storage_object storage_name=</strong><em id="postgresql-0016__en-us_topic_0000001656442629_en-us_topic_0000001607691468_i18291255102216">?</em> command on the agent host to delete the source deduplication link with the storage unit. The value of <strong id="postgresql-0016__en-us_topic_0000001656442629_en-us_topic_0000001607691468_b9927131312572">storage_name</strong> in the command can be queried by running the <strong id="postgresql-0016__en-us_topic_0000001656442629_en-us_topic_0000001607691468_b11782052162315">dataturbo show storage_object</strong> command. This way, when the agent host performs a backup job with source deduplication, the link between the agent host and a new storage unit can be established.</li>
-                <li id="postgresql-0016__en-us_topic_0000001656442629_en-us_topic_0000001607691468_li11885142615297">Check whether the host OS supports source deduplication by referring to <a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect Compatibility Query</a>. If the host OS does not support source deduplication, source deduplication does not take effect after being configured.</li>
+                <li id="postgresql-0016__en-us_topic_0000001656442629_en-us_topic_0000001607691468_li11885142615297">Check whether the host OS supports source deduplication by referring to Compatibility Query of the product</a>. If the host OS does not support source deduplication, source deduplication does not take effect after being configured.</li>
                </ul>
               </div>
              </div>
@@ -131,7 +131,7 @@
         </table>
        </div>
       </div> <p></p></li>
-     <li><span>Click <span class="uicontrol"><b>OK</b></span>. </span><p></p><p>If the current system time is later than the start time of the first backup set in the SLA, you can choose to execute the backup immediately or wait for the next scheduling based on the backup policy set in the SLA after the backup SLA is associated with the resource.</p> <p></p></li>
+     <li><span>Click <span class="uicontrol" id="postgresql-0016__en-us_topic_0000001964713008_uicontrol23691650677"><b>OK</b></span>.</span><p></p><p id="postgresql-0016__en-us_topic_0000001964713008_en-us_topic_0000001656691397_p25041111535">If the current system time is later than the start time of the first backup specified in the SLA, you can select <strong id="postgresql-0016__en-us_topic_0000001964713008_b9624185216713">Execute manual backup now</strong> in the dialog box that is displayed or choose to perform automatic backup periodically based on the backup policy set in the SLA.</p> <p></p></li>
      <li><strong>Optional: </strong><span>Perform manual backup.</span><p></p>
       <div class="p">
        If you want to execute a backup job immediately, perform manual backup through the following operations. Otherwise, skip this step.
@@ -140,11 +140,17 @@
          <div class="note" id="postgresql-0016__en-us_topic_0000001607531736_note187025312547">
           <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
           <div class="notebody">
-           <p id="postgresql-0016__en-us_topic_0000001607531736_p870125314544">You can select multiple resources to perform manual backup in batches. Select multiple resources and choose <span class="uicontrol" id="postgresql-0016__en-us_topic_0000001607531736_uicontrol14182155715711"><b><span id="postgresql-0016__en-us_topic_0000001607531736_text662114113158"><strong>More</strong></span> &gt; <span id="postgresql-0016__en-us_topic_0000001607531736_text1068159191519"><strong>Manual Backup</strong></span></b></span>.</p>
+           <p id="postgresql-0016__en-us_topic_0000001607531736_p870125314544">You can select multiple resources to perform manual backup in batches. Select multiple resources and choose <span class="uicontrol" id="postgresql-0016__en-us_topic_0000001607531736_uicontrol14182155715711"><b><span id="postgresql-0016__en-us_topic_0000001607531736_text662114113158"><strong>More</strong></span> &gt; <span id="postgresql-0016__en-us_topic_0000001607531736_text1068159191519"><strong>Manual Backup</strong></span></b></span> in the upper left corner of the page.</p>
           </div>
          </div></li>
         <li>Set the name of the copy generated during manual backup.<p>If this parameter is left unspecified, the system sets the copy name to <strong>backup_</strong><em>Timestamp</em> by default.</p></li>
-        <li>Select a protection policy, which can be <span><strong>Full backup</strong></span> or <span><strong>Forever Incremental (Synthetic Full) Backup</strong></span>.</li>
+        <li>Select a protection policy, which can be <span><strong>Full backup</strong></span> or <span><strong>Log Backup</strong></span>.
+         <div class="note">
+          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <p id="postgresql-0016__en-us_topic_0000001964713008_p13522118194919"><span id="postgresql-0016__en-us_topic_0000001964713008_ph19374310343">For 1.6.0 and later versions, if the selected protection policy is different from that configured in the associated SLA, the WORM configuration does not take effect.</span></p>
+          </div>
+         </div></li>
         <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
        </ol>
       </div> <p></p></li>

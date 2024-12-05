@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -48,16 +48,19 @@
    </div>
    <div class="section">
     <h4 class="sectiontitle">注意事项</h4>
-    <p>系统状态恢复期间，请不要对域控制器进行关机或断网等操作。系统状态恢复完成后，域控制器将会自动重启并进入正常模式。</p>
+    <ul>
+     <li id="ActiveDirectory-00047__li4944728151413">系统状态恢复期间，请不要对域控制器进行关机或断网等操作。</li>
+     <li id="ActiveDirectory-00047__li1094422814148">系统状态恢复完成后，域控制器将会自动重启并进入目录服务修复模式。 您需要手动退出目录服务修复模式，以确保域控制器进入正常模式，操作步骤请参见<a href="zh-cn_topic_0000002060651416.html">设置Windows服务器退出目录服务修复模式</a>。</li>
+    </ul>
    </div>
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>选择<span class="uicontrol" id="ActiveDirectory-00047__zh-cn_topic_0000001839142377_uicontrol193721239145518">“保护 &gt; 应用 &gt; Active Directory”</span>。</span></li>
+     <li><span>选择<span class="uicontrol" id="ActiveDirectory-00047__zh-cn_topic_0000001839142377_uicontrol193721239145518">“数据利用 &gt; 应用 &gt; Active Directory”</span>。</span></li>
      <li id="ActiveDirectory-00047__li888616341964"><span>您可以通过Active Directory资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p id="ActiveDirectory-00047__zh-cn_topic_0000001397321757_p624620403810">根据资源名称查找到需要恢复的资源，并单击资源名称。</p> <p></p></li>
      <li id="ActiveDirectory-00047__li7341134224"><span>选择“副本数据”页签。</span></li>
      <li id="ActiveDirectory-00047__li182120214713"><span>依次选择年、月、天找到副本。</span><p></p><p id="ActiveDirectory-00047__p9918150182310">当时间上显示<span><img id="ActiveDirectory-00047__image669318410309" src="zh-cn_image_0000001798060860.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
-     <li id="ActiveDirectory-00047__li52205391340"><span>指定副本进行恢复。</span><p></p><p id="ActiveDirectory-00047__p7323194318125">相关参数说明如<a href="#ActiveDirectory-00047__table194961441141219">表1</a>。</p>
+     <li id="ActiveDirectory-00047__li52205391340"><span>在待恢复的副本所在行选择“<span id="ActiveDirectory-00047__text2864554113918">更多</span> &gt; 系统状态恢复”，进行恢复参数的配置。</span><p></p><p id="ActiveDirectory-00047__p7323194318125">相关参数说明如<a href="#ActiveDirectory-00047__table194961441141219">表1</a>所示。</p>
       <div class="tablenoborder">
        <a name="ActiveDirectory-00047__table194961441141219"></a><a name="table194961441141219"></a>
        <table cellpadding="4" cellspacing="0" summary="" id="ActiveDirectory-00047__table194961441141219" frame="border" border="1" rules="all">
@@ -77,7 +80,7 @@
         <tbody>
          <tr id="ActiveDirectory-00047__row84968417127">
           <td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.5.2.5.2.2.2.3.1.1 "><p id="ActiveDirectory-00047__p124963413125"><span id="ActiveDirectory-00047__text136400224309">恢复至</span></p></td>
-          <td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.5.2.5.2.2.2.3.1.2 "><p id="ActiveDirectory-00047__p16496164110123">恢复至<span class="uicontrol" id="ActiveDirectory-00047__uicontrol84961241181211">“<span id="ActiveDirectory-00047__text19159183316300">原位置</span>”</span>。</p></td>
+          <td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.5.2.5.2.2.2.3.1.2 "><p id="ActiveDirectory-00047__p16496164110123">仅支持恢复至<span class="uicontrol" id="ActiveDirectory-00047__uicontrol84961241181211">“<span id="ActiveDirectory-00047__text19159183316300">原位置</span>”</span>。</p></td>
          </tr>
          <tr id="ActiveDirectory-00047__row349644119122">
           <td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.5.2.5.2.2.2.3.1.1 "><p id="ActiveDirectory-00047__p249664112126"><span id="ActiveDirectory-00047__text820182793118">位置</span></p></td>

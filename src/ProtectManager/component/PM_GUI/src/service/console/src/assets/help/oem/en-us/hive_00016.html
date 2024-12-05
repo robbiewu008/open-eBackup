@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -40,42 +40,43 @@
    <div class="section" id="hive_00016__section10758914153313">
     <a name="hive_00016__section10758914153313"></a><a name="section10758914153313"></a>
     <h4 class="sectiontitle">Prerequisites</h4>
-    <p>Before registering a Hive cluster, ensure that you have obtained the following files. This section uses FusionInsight 6.5.1 as an example. Operations may vary on different platforms. For details, see the corresponding version of product documentation of the big data platform.</p>
-    <ol>
-     <li>Log in to FusionInsight Manager using a browser.</li>
-     <li>Click <span><img src="en-us_image_0000001792521278.png"></span> on the left of the home page to download the client.</li>
-     <li>Decompress the downloaded client to obtain the following files:
-      <ul>
-       <li>The <strong>../Hive/config/hiveclient.properties</strong> file</li>
-       <li>The <strong>../Hive/config/hive-site.xml</strong> file</li>
-       <li>The <strong>../Hive/config/core-site.xml</strong> file</li>
-       <li>The <strong>../Hdfs/config/hdfs-site.xml</strong> file</li>
-      </ul></li>
-    </ol>
-   </div>
-   <div class="note">
-    <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
-    <div class="notebody">
-     <p>The following describes how to obtain the <strong>jaas.conf</strong> and <strong>hive-site.xml</strong> configuration files when the big data platform is Transwarp Data Hub (TDH). This part uses TDH 8.0.2 as an example. Operations may vary with versions. For details, see the Transwarp Data Hub product documentation.</p>
-     <ol>
-      <li>Use a browser to log in to TDH.</li>
-      <li>Choose <strong>Dashboard</strong> &gt; <strong>Cluster</strong>. On the <strong>Service List</strong> tab page, click the Hive cluster name configured in TDH.</li>
-      <li>In the upper right corner of the Hive cluster page, click the <span><img src="en-us_image_0000001839240593.png"></span> icon and click <strong>Download Service Configurations</strong> to obtain <strong>jaas.conf</strong> and <strong>hive-site.xml</strong> from the downloaded package.</li>
-      <li>Choose <strong>Dashboard</strong> &gt; <strong>Cluster</strong>. On the <strong>Service List</strong> page, click the HDFS cluster name configured in TDH.</li>
-      <li>In the upper right corner of the HDFS cluster page, click the <span><img src="en-us_image_0000001792521282.png"></span> icon and click <strong>Download Service Configurations</strong> to obtain <strong>core-site.xml</strong> and <strong>hdfs-site.xml</strong> from the downloaded package.</li>
-      <li>Delete the following information from the <strong>core-site.xml</strong> file:<pre class="screen">&lt;property&gt;
+    <ul>
+     <li>Before registering a Hive cluster, ensure that you have obtained the following files. This section uses FusionInsight 6.5.1 as an example. Operations may vary on different platforms. For details, see the corresponding version of product documentation of the big data platform.
+      <ol>
+       <li>Log in to FusionInsight Manager using a browser.</li>
+       <li>Click <span><img src="en-us_image_0000001792521278.png"></span> on the left of the home page to download the client.</li>
+       <li>Decompress the downloaded client to obtain the following files:
+        <ul>
+         <li>The <strong>../Hive/config/hiveclient.properties</strong> file</li>
+         <li>The <strong>../Hive/config/hive-site.xml</strong> file</li>
+         <li>The <strong>../Hive/config/core-site.xml</strong> file</li>
+         <li>The <strong>../Hdfs/config/hdfs-site.xml</strong> file</li>
+        </ul></li>
+      </ol>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>The following describes how to obtain the <strong>jaas.conf</strong> and <strong>hive-site.xml</strong> configuration files when the big data platform is Transwarp Data Hub (TDH). This part uses TDH 8.0.2 as an example. Operations may vary with versions. For details, see the Transwarp Data Hub product documentation.</p>
+        <ol>
+         <li>Use a browser to log in to TDH.</li>
+         <li>Choose <strong>Dashboard</strong> &gt; <strong>Cluster</strong>. On the <strong>Service List</strong> tab page, click the Hive cluster name configured in TDH.</li>
+         <li>In the upper right corner of the Hive cluster page, click the <span><img src="en-us_image_0000001839240593.png"></span> icon and click <strong>Download Service Configurations</strong> to obtain <strong>jaas.conf</strong> and <strong>hive-site.xml</strong> from the downloaded package.</li>
+         <li>Choose <strong>Dashboard</strong> &gt; <strong>Cluster</strong>. On the <strong>Service List</strong> page, click the HDFS cluster name configured in TDH.</li>
+         <li>In the upper right corner of the HDFS cluster page, click the <span><img src="en-us_image_0000001792521282.png"></span> icon and click <strong>Download Service Configurations</strong> to obtain <strong>core-site.xml</strong> and <strong>hdfs-site.xml</strong> from the downloaded package.</li>
+         <li>Delete the following information from the <strong>core-site.xml</strong> file:<pre class="screen">&lt;property&gt;
     &lt;name&gt;hadoop.security.group.mapping.ldap.bind.password.file&lt;/name&gt;
     &lt;value&gt;/etc/hdfs1/conf/ldap-conn-pass.txt&lt;/value&gt;
 &lt;/property&gt;</pre></li>
-     </ol>
-    </div>
+        </ol>
+       </div>
+      </div></li>
+    </ul>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
-     <li><span></span></li>
      <li id="hive_00016__li0198134611381"><span>Choose <span class="uicontrol" id="hive_00016__en-us_topic_0000001839142377_uicontrol186516504391"><b><span id="hive_00016__en-us_topic_0000001839142377_text8651165012398"><strong>Protection</strong></span> &gt; Big Data &gt; Hive</b></span>.</span></li>
-     <li><span>On the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> page, click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register a Hive cluster.</span><p></p><p><a href="#hive_00016__table164432003147">Table 1</a> describes the Hive cluster registration information.</p>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Clusters</strong></span></b></span> page, click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register a Hive cluster.</span><p></p><p><a href="#hive_00016__table164432003147">Table 1</a> describes the Hive cluster registration information.</p>
       <div class="tablenoborder">
        <a name="hive_00016__table164432003147"></a><a name="table164432003147"></a>
        <table cellpadding="4" cellspacing="0" summary="" id="hive_00016__table164432003147" frame="border" border="1" rules="all">
@@ -88,18 +89,18 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="25.03%" id="mcps1.3.4.2.3.2.2.2.3.1.1"><p>Parameter</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="74.97%" id="mcps1.3.4.2.3.2.2.2.3.1.2"><p>Description</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="25.03%" id="mcps1.3.3.2.2.2.2.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.97%" id="mcps1.3.3.2.2.2.2.2.3.1.2"><p>Description</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>Customize a Hive cluster name.</p></td>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Customize a Hive cluster name.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>HiveServer2 Link</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>Open the <strong>hiveclient.properties</strong> file obtained in <a href="#hive_00016__section10758914153313">Prerequisites</a>. The value of <span class="uicontrol"><b>zk.quorum</b></span> is the configured value.</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>HiveServer2 Link</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Open the <strong>hiveclient.properties</strong> file obtained in <a href="#hive_00016__section10758914153313">Prerequisites</a>. The value of <span class="uicontrol"><b>zk.quorum</b></span> is the configured value.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -111,12 +112,12 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>ZooKeeper Namespace</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>Open the <strong>hiveclient.properties</strong> file obtained in <a href="#hive_00016__section10758914153313">Prerequisites</a>. The value of <span class="uicontrol"><b>zooKeeperNamespace</b></span> is the configured value.</p></td>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>ZooKeeper Namespace</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Open the <strong>hiveclient.properties</strong> file obtained in <a href="#hive_00016__section10758914153313">Prerequisites</a>. The value of <span class="uicontrol"><b>zooKeeperNamespace</b></span> is the configured value.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><strong>hive-site.xml</strong></p></td>
-          <td class="cellrowborder" rowspan="4" valign="top" width="74.97%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>Upload the <span class="filepath"><b>hive-site.xml</b></span>, <span class="filepath"><b>hdfs-site.xml</b></span>, <span class="filepath"><b>core-site.xml</b></span>, and <span class="filepath"><b>hiveclient.properties</b></span> files obtained in <a href="#hive_00016__section10758914153313">Prerequisites</a> to the management page.</p> <p>This file is used to configure Hive cluster information.</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><strong>hive-site.xml</strong></p></td>
+          <td class="cellrowborder" rowspan="4" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Upload the <span class="filepath"><b>hive-site.xml</b></span>, <span class="filepath"><b>hdfs-site.xml</b></span>, <span class="filepath"><b>core-site.xml</b></span>, and <span class="filepath"><b>hiveclient.properties</b></span> files obtained in <a href="#hive_00016__section10758914153313">Prerequisites</a> to the management page.</p> <p>This file is used to configure Hive cluster information.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -129,17 +130,17 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><strong>hdfs-site.xml</strong></p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><strong>hdfs-site.xml</strong></p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><strong>core-site.xml</strong></p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><strong>core-site.xml</strong></p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><strong>hiveclient.properties</strong></p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><strong>hiveclient.properties</strong></p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><strong>Hive Version</strong></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>Hive version number.</p> <p>The following uses FusionInsight 6.5.1 as an example to describe how to check the Hive version:</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><strong>Hive Version</strong></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Hive version number.</p> <p>The following uses FusionInsight 6.5.1 as an example to describe how to check the Hive version:</p>
            <ol type="a">
             <li id="hive_00016__li0580145917135"><a name="hive_00016__li0580145917135"></a><a name="li0580145917135"></a>Log in to FusionInsight Manager using a browser.</li>
             <li>Choose <span class="uicontrol"><b>Cluster &gt; Hive</b></span> to view the Hive version.</li>
@@ -152,16 +153,16 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Authentication Mode</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>Configure the authentication mode for communication between the Hive cluster and the <span>product</span>. Set this parameter based on the authentication mode configured for the Hive cluster.</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Authentication Mode</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Configure the authentication mode for communication between the Hive cluster and the <span>product</span>. Set this parameter based on the authentication mode configured for the Hive cluster.</p>
            <ul>
             <li><span><strong>Simple Authentication</strong></span>: Select this authentication mode when Kerberos authentication is disabled for the Hive cluster. In this authentication mode, usernames are used for authentication, which is less secure.</li>
             <li><span><strong>Kerberos Authentication</strong></span>: Select this authentication mode when Kerberos authentication is enabled for the Hive cluster. The Kerberos protocol is used for identity authentication between the Hive cluster and the <span>product</span>.</li>
            </ul></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Username</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Simple Authentication</strong></span></b></span>.</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Username</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Simple Authentication</strong></span></b></span>.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -173,12 +174,12 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Kerberos</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>Select the created Kerberos authentication. When you register a Hive cluster for the first time, click <span class="uicontrol"><b>Create</b></span> and configure Kerberos authentication parameters. For details about the parameters, see <a href="#hive_00016__table93413354118">Table 2</a>.</p></td>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Kerberos</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>Select the created Kerberos authentication. When you register a Hive cluster for the first time, click <span class="uicontrol"><b>Create</b></span> and configure Kerberos authentication parameters. For details about the parameters, see <a href="#hive_00016__table93413354118">Table 2</a>.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>HiveServer2 Principal</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>Open the <strong>hiveclient.properties</strong> file obtained in <a href="#hive_00016__section10758914153313">Prerequisites</a>. The value of <span class="uicontrol"><b>principal</b></span> is the configured value.</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>HiveServer2 Principal</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>Open the <strong>hiveclient.properties</strong> file obtained in <a href="#hive_00016__section10758914153313">Prerequisites</a>. The value of <span class="uicontrol"><b>principal</b></span> is the configured value.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -187,8 +188,8 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>Select the agent host for data protection.</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Select the agent host for data protection.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -197,8 +198,8 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Certificate verification</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>. The <span><strong>Certificate verification</strong></span> function is enabled by default.</p> <p>If you want to encrypt data during communication between the <span>product</span> and the big data platform for secure communication, import the certificate and enter the certificate password.</p> <p>Import the JKS certificate generated in <a href="hive_00015.html">Step 2: (Optional) Generating and Obtaining a Certificate</a>. The certificate password is the keystore password set in <a href="hive_00015.html">Step 2: (Optional) Generating and Obtaining a Certificate</a>.</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Certificate verification</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>. The <span><strong>Certificate verification</strong></span> function is enabled by default.</p> <p>If you want to encrypt data during communication between the <span>product</span> and the big data platform for secure communication, import the certificate and enter the certificate password.</p> <p>Import the JKS certificate generated in <a href="hive_00015.html">Step 2: (Optional) Generating and Obtaining a Certificate</a>. The certificate password is the keystore password set in <a href="hive_00015.html">Step 2: (Optional) Generating and Obtaining a Certificate</a>.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -210,8 +211,8 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Security Protocol</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>. The <span><strong>Security Protocol</strong></span> function is enabled by default.</p> <p>Whether to enable the TLS protocol.</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Security Protocol</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>. The <span><strong>Security Protocol</strong></span> function is enabled by default.</p> <p>Whether to enable the TLS protocol.</p>
            <ul>
             <li>If the TLS protocol is disabled, TLS 1.2 is used by default.</li>
             <li>If the TLS protocol is enabled, TLS 1.2 or later is supported.
@@ -241,18 +242,18 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="30%" id="mcps1.3.4.2.3.2.4.2.3.1.1"><p>Parameter</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="70%" id="mcps1.3.4.2.3.2.4.2.3.1.2"><p>Description</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="30%" id="mcps1.3.3.2.2.2.4.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="70%" id="mcps1.3.3.2.2.2.4.2.3.1.2"><p>Description</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.3.2.4.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.3.2.4.2.3.1.2 "><p>User-defined Kerberos authentication name.</p></td>
+          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>User-defined Kerberos authentication name.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.3.2.4.2.3.1.1 "><p><span><strong>Principal Name</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.3.2.4.2.3.1.2 "><p>Principal name of Kerberos authentication.</p>
+          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span><strong>Principal Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>Principal name of Kerberos authentication.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -265,8 +266,8 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.3.2.4.2.3.1.1 "><p><span><strong>Configuration Mode</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.3.2.4.2.3.1.2 ">
+          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span><strong>Configuration Mode</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 ">
            <div class="p">
             Kerberos authentication mode, which must be the same as that configured on the Kerberos server. Two authentication modes are available:
             <ul>
@@ -282,24 +283,24 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.3.2.4.2.3.1.1 "><p><span><strong>Config File</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.3.2.4.2.3.1.2 "><p><span class="filepath"><b>.conf</b></span> configuration file used during Kerberos authentication (for example, krb5.conf). Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img src="en-us_image_0000001792361534.png"></span> to upload it to the management page.</p>
+          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span><strong>Config File</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p><span class="filepath"><b>.conf</b></span> configuration file used during Kerberos authentication (for example, krb5.conf). Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img src="en-us_image_0000001792361534.png"></span> to upload it to the management page.</p>
            <div class="p">
             If <span class="uicontrol"><b>renew_lifetime</b></span> exists in the configuration file, comment it out. Otherwise, the registration may fail. For example:
             <pre class="screen">#renew_lifetime = 7d</pre>
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.3.2.4.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.3.2.4.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Password</strong></span></b></span>.</p> <p>Set this parameter to the password of <span class="uicontrol"><b><span><strong>Principal Name</strong></span></b></span>.</p></td>
+          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Password</strong></span></b></span>.</p> <p>Set this parameter to the password of <span class="uicontrol"><b><span><strong>Principal Name</strong></span></b></span>.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.3.2.4.2.3.1.1 "><p><span><strong>Confirm Password</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.3.2.4.2.3.1.2 "><p>Confirm password of <span class="uicontrol"><b><span><strong>Principal Name</strong></span></b></span>.</p></td>
+          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span><strong>Confirm Password</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>Confirm password of <span class="uicontrol"><b><span><strong>Principal Name</strong></span></b></span>.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.3.2.4.2.3.1.1 "><p><span><strong>Keytab File</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.3.2.4.2.3.1.2 "><p><span class="filepath"><b>.keytab</b></span> configuration file (for example, <strong>krb5.keytab</strong>) used during Kerberos authentication. This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Keytab File</strong></span></b></span>.</p> <p>Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img src="en-us_image_0000001839240589.png"></span> to upload it to the management page.</p></td>
+          <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span><strong>Keytab File</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p><span class="filepath"><b>.keytab</b></span> configuration file (for example, <strong>krb5.keytab</strong>) used during Kerberos authentication. This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Keytab File</strong></span></b></span>.</p> <p>Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img src="en-us_image_0000001839240589.png"></span> to upload it to the management page.</p></td>
          </tr>
         </tbody>
        </table>

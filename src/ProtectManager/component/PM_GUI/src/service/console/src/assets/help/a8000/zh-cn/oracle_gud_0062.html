@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -44,7 +44,7 @@
 </li></ul>
 </li><li>即时恢复时，如果目标位置存在同名数据库，建议恢复任务执行过程中不要中止任务，否则会导致原同名数据库损坏。</li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>恢复至的目标主机已安装ProtectAgent及其他相关软件。<p>具体操作可参考<span>《OceanProtect <span id="oracle_gud_0062__zh-cn_topic_0000001792502994_ph19170214112011">备份一体机 1.5.0-1.6.0</span> ProtectAgent安装指南》</span>。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>恢复至的目标主机已安装ProtectAgent及其他相关软件。<p>具体操作可参考<span>《OceanProtect DataBackup 1.5.0-1.6.0 ProtectAgent安装指南》</span>。</p>
 </li><li>原机恢复且主机已配置了OMF（Oracle Managed Files）时，请确保主机的磁盘剩余空间大小要大于数据库的大小。</li><li>异机恢复至目标主机时，请确保目标主机的磁盘剩余空间大小要大于数据库的大小。</li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="oracle_gud_0062__li189532553114"><a name="oracle_gud_0062__li189532553114"></a><a name="li189532553114"></a><span>恢复时，如果目标位置存在同名数据库，请先关闭该同名数据库再恢复，否则会导致恢复失败。关闭数据库操作如下：</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>当目标位置存在同名数据库时，恢复后同名数据库将被覆盖。</p>
@@ -59,6 +59,10 @@
 <p id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p159150224117">根据提示输入密码。</p>
 </li></ul>
 </li><li id="oracle_gud_0062__zh-cn_topic_0000001656561309_li198251911109">执行以下命令关闭同名数据库。<p id="oracle_gud_0062__zh-cn_topic_0000001656561309_p96841918142516"><a name="oracle_gud_0062__zh-cn_topic_0000001656561309_li198251911109"></a><a name="zh-cn_topic_0000001656561309_li198251911109"></a><strong id="oracle_gud_0062__zh-cn_topic_0000001656561309_b1025322122520">shutdown immediate;</strong></p>
+<div class="note" id="oracle_gud_0062__note470175616170"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="oracle_gud_0062__p127116565174">对于RAC集群，所有节点均需要执行该命令。</p>
+</div></div>
+<p id="oracle_gud_0062__p146421258946">回显如下表示数据库关闭完成。</p>
+<pre class="screen" id="oracle_gud_0062__screen730142119511">ORACLE instance shut down.</pre>
 </li></ol>
 </p></li><li id="oracle_gud_0062__li17844445165619"><a name="oracle_gud_0062__li17844445165619"></a><a name="li17844445165619"></a><span>恢复至原位置时，要求目标主机的空闲内存大小必须大于数据库的SGA和PGA的大小总和，否则可能导致恢复失败。</span><p><div class="p">检查内存、SGA、PGA大小的操作如下：<ol type="a"><li>查看SGA和PGA大小。<ol class="substepthirdol"><li>登录Oracle数据库。<p>具体操作可参考<a href="#oracle_gud_0062__li189532553114">1</a>。</p>
 </li><li>执行以下命令查看SGA的大小。<p id="oracle_gud_0062__oracle_gud_0058_p1865918316502"><strong id="oracle_gud_0062__oracle_gud_0058_b1265903185017">show parameter sga;</strong></p>

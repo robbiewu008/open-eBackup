@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -41,8 +41,8 @@
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
      <li><span>Use PuTTY to log in to any NameNode in the big data cluster.</span></li>
-     <li><span>Run the following command to enable the snapshot function for the directory:</span><p></p><pre class="screen">source <em>Installation directory</em>/bigdata_env
-hdfs dfsadmin -allowSnapshot <em>directory_name</em></pre> <p><em>directory_name</em> indicates the parent directory of the fileset to be protected. For details about how to manage snapshots, see <a href="en-us_topic_0000002024918278.html">Managing Snapshots</a>.</p> <p></p></li>
+     <li><span>Run the following commands as user <strong>root</strong> to enable the snapshot function for the directory:</span><p></p><pre class="screen">source <em>Installation directory</em>/bigdata_env</pre> <pre class="screen">hdfs dfsadmin -allowSnapshot <em>directory_name</em></pre> <p><em>directory_name</em> indicates the parent directory of the fileset to be protected. For details about how to manage snapshots, see <a href="en-us_topic_0000002024918278.html">Managing Snapshots</a>.</p> <p>If command output similar to the following is displayed, the snapshot function for the HDFS directory has been enabled:</p> <pre class="screen">[rootenrs1 hadoopclient]# hdfs dfsadmin -allowSnapshot /
+Allowing snapshot on / succeeded</pre> <p></p></li>
     </ol>
    </div>
   </div>

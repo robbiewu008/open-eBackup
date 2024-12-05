@@ -64,6 +64,10 @@ import { AppUtilsService } from 'app/shared/services/app-utils.service';
       .between-page div:first-child {
         margin-right: 16px;
       }
+
+      .header-margin {
+        margin-top: 0;
+      }
     `
   ]
 })

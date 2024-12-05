@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -40,7 +40,7 @@
     <h4 class="sectiontitle">前提条件</h4>
     <ul>
      <li>已为待恢复到的目标虚拟机配置备份网络平面IP地址。</li>
-     <li>当目标虚拟机为Windows OS时，请确保目标虚拟机已开启CIFS服务，具体操作请参考<a href="https://docs.microsoft.com/zh-cn/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3" target="_blank" rel="noopener noreferrer">Microsoft官方网站</a>。</li>
+     <li>当目标虚拟机为Windows OS时，请确保目标虚拟机已开启CIFS服务，具体操作请参考<a href="https://learn.microsoft.com/zh-cn/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3?tabs=server#how-to-detect-status-enable-and-disable-smb-protocols" target="_blank" rel="noopener noreferrer">Microsoft官方网站</a>。</li>
      <li>当目标虚拟机为非Windows OS时，请确保目标虚拟机已安装并开启rsync。</li>
     </ul>
    </div>
@@ -50,36 +50,37 @@
      <li><span>选择<span class="uicontrol" id="fc_gud_re1__zh-cn_topic_0000001839142377_uicontrol9143133018394">“<span id="fc_gud_re1__zh-cn_topic_0000001839142377_text154711237125112">数据利用</span> &gt; <span id="fc_gud_re1__zh-cn_topic_0000001839142377_text3405121755116">副本数据</span> &gt; <span id="fc_gud_re1__zh-cn_topic_0000001839142377_text13859104734315">虚拟化</span> &gt; <span id="fc_gud_re1__zh-cn_topic_0000001839142377_text1825442418308">FusionCompute</span>”</span>。</span></li>
      <li><span>支持以虚拟机维度或以副本维度查找副本，本节以虚拟机维度为例进行说明。</span><p></p><p id="fc_gud_re1__vmware_gud_0060_p624620403810">在“资源”页签，根据虚拟机名称查找到需要恢复的虚拟机，并单击虚拟机名称。</p> <p></p></li>
      <li><span>在<span class="uicontrol" id="fc_gud_re1__vmware_gud_0060_uicontrol1812414562220">“<span id="fc_gud_re1__vmware_gud_0060_text2022513145564">副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p id="fc_gud_re1__vmware_gud_0060_p9918150182310">当时间上显示<span><img id="fc_gud_re1__vmware_gud_0060_image99531319193912" src="zh-cn_image_0000001839187161.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
-     <li><span>找到要恢复的副本，单击其右侧的“<span>更多</span> &gt; <span>文件级恢复</span>”。</span><p></p>
+     <li><span>在副本所在的行，单击“<span>更多</span> &gt; <span>文件级恢复</span>”。</span><p></p>
       <div class="note">
        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
        <div class="notebody">
         <ul>
-         <li>对于1.5.0版本，如果副本对应的虚拟机关联的SLA已开启自动索引，则副本的索引状态为<span class="uicontrol" id="fc_gud_re1__vmware_gud_0060_uicontrol297019162714">“<span id="fc_gud_re1__vmware_gud_0060_text597081112711">已索引</span>”</span>，可以直接进行文件级恢复。如果未开启自动索引，请先单击<span class="uicontrol" id="fc_gud_re1__vmware_gud_0060_uicontrol1036516011116">“<span id="fc_gud_re1__vmware_gud_0060_text31091220421">手动创建索引</span>”</span>，再进行文件级恢复。对于1.6.0及后续版本，“<span id="fc_gud_re1__vmware_gud_0060_text164417864211">未索引</span>”的副本也支持文件级恢复。</li>
+         <li>对于1.5.0版本，副本的索引状态必须为<span class="uicontrol" id="fc_gud_re1__vmware_gud_0060_uicontrol483213401802">“<span id="fc_gud_re1__vmware_gud_0060_text1711017353520">已索引</span>”</span>才支持文件级恢复。对于1.6.0及后续版本，索引状态为“<span id="fc_gud_re1__vmware_gud_0060_text413155718286">未索引</span>”的副本也支持文件级恢复。</li>
+         <li>对于1.5.0版本，如果副本对应的虚拟机关联的SLA已开启自动索引，则副本的索引状态为<span class="uicontrol" id="fc_gud_re1__vmware_gud_0060_uicontrol297019162714">“<span id="fc_gud_re1__vmware_gud_0060_text597081112711">已索引</span>”</span>，可以直接进行文件级恢复。如果未开启自动索引，请先单击<span class="uicontrol" id="fc_gud_re1__vmware_gud_0060_uicontrol1036516011116">“<span id="fc_gud_re1__vmware_gud_0060_text31091220421">手动创建索引</span>”</span>，再进行文件级恢复。</li>
          <li>如果副本中没有包含系统盘，则该副本无法进行文件级恢复。</li>
          <li>反向复制副本和归档副本不支持文件级恢复。</li>
          <li id="fc_gud_re1__li2038716319473">链接文件不支持文件级恢复。</li>
          <li>备份FusionCompute虚拟机时，未写入/etc/fstab文件的挂载点信息存储在内存中，<span>本产品</span>不会备份该内容，也不支持文件级恢复。如新增的文件系统需支持文件级恢复，请将新增的文件系统挂载点信息写入/etc/fstab。</li>
-        </ul>
-       </div>
-      </div> <p></p></li>
-     <li><span>对于1.6.0及后续版本，设置恢复文件的选择方式。</span><p></p>
-      <div class="note" id="fc_gud_re1__vmware_gud_0060_note4858522104619">
-       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
-       <div class="notebody">
-        <p id="fc_gud_re1__vmware_gud_0060_p2858142274615">如果文件数量较多，系统可能会超时，建议选择“手动输入文件路径”。</p>
-       </div>
-      </div> <p></p></li>
-     <li><span>勾选要恢复的文件，并配置恢复参数。</span><p></p>
-      <div class="note">
-       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
-       <div class="notebody">
-        <ul>
          <li>当文件夹或文件名称存在乱码时，不支持文件级恢复。请勿勾选该类型的文件夹或文件，否则恢复失败。</li>
          <li>当目标虚拟机为Windows OS时，且仅开启了SMBv1服务，文件恢复后的时间为虚拟机的当前时间。</li>
         </ul>
        </div>
-      </div>
+      </div> <p></p></li>
+     <li id="fc_gud_re1__li14915111745214"><span>选择待恢复的文件。</span><p></p>
+      <ul id="fc_gud_re1__vmware_gud_0060_ul1521452811317">
+       <li id="fc_gud_re1__vmware_gud_0060_li8386311313">对于1.5.0版本，从目录树勾选待恢复的文件。</li>
+       <li id="fc_gud_re1__vmware_gud_0060_li12142286316">对于1.6.0及后续版本，请先设置恢复文件的选择方式，再从目录树选择待恢复文件或手动输入待恢复文件的路径。
+        <div class="note" id="fc_gud_re1__vmware_gud_0060_note1195634711290">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <ul id="fc_gud_re1__vmware_gud_0060_ul14956124712297">
+           <li id="fc_gud_re1__vmware_gud_0060_li1095674772911">如果副本中的文件数量较多，系统可能超时，无法从目录树上选择待恢复文件，建议手动输入恢复文件路径。</li>
+           <li id="fc_gud_re1__vmware_gud_0060_li19956104762918">手动输入文件路径时，请输入文件完整路径，例如：/opt/abc/efg.txt或者C:\abc\efg.txt。当输入文件夹路径时，表示恢复该文件夹下的所有文件，例如：/opt/abc或者C:\abc。路径中的文件名区分大小写。</li>
+          </ul>
+         </div>
+        </div></li>
+      </ul> <p></p></li>
+     <li><span>选择恢复至“原位置”或“新位置”，并设置恢复参数。</span><p></p>
       <ul>
        <li>选择恢复至原位置，即恢复至原虚拟机的原目录。
         <div class="p">
@@ -96,27 +97,27 @@
            </colgroup>
            <thead align="left">
             <tr>
-             <th align="left" class="cellrowborder" valign="top" width="29.9%" id="mcps1.3.4.2.6.2.2.1.1.2.2.3.1.1"><p>参数</p></th>
-             <th align="left" class="cellrowborder" valign="top" width="70.1%" id="mcps1.3.4.2.6.2.2.1.1.2.2.3.1.2"><p>说明</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="29.9%" id="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.1"><p>参数</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="70.1%" id="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.2"><p>说明</p></th>
             </tr>
            </thead>
            <tbody>
             <tr>
-             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.6.2.2.1.1.2.2.3.1.1 "><p><span>虚拟机IP地址</span></p></td>
-             <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.2.6.2.2.1.1.2.2.3.1.2 ">
+             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.1 "><p>虚拟机IP地址</p></td>
+             <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.2 ">
               <div class="p" id="fc_gud_re1__p49594222135">
-               选择已配置的备份网络IP地址。
+               选择已配置的备份网络IP地址。对于1.6.0及后续版本，支持手动输入IP地址。
                <div class="note" id="fc_gud_re1__note12471512182010">
                 <span class="notetitle"> 说明： </span>
                 <div class="notebody">
-                 <p id="fc_gud_re1__p19476122207"><span style="color:#282B33;">请确保虚拟机已安装Tools工具，否则无法获取该虚拟机备份网络IP地址。</span>如果未安装，请参考<span id="fc_gud_re1__text87919863611">FusionCompute联机帮助</span>进行安装。</p>
+                 <p id="fc_gud_re1__p19476122207">请确保虚拟机已安装Tools工具，否则无法获取该虚拟机备份网络IP地址。如果未安装，请参考FusionCompute联机帮助进行安装。</p>
                 </div>
                </div>
               </div></td>
             </tr>
             <tr>
-             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.6.2.2.1.1.2.2.3.1.1 "><p><span>虚拟机用户名</span></p></td>
-             <td class="cellrowborder" rowspan="2" valign="top" width="70.1%" headers="mcps1.3.4.2.6.2.2.1.1.2.2.3.1.2 ">
+             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.1 "><p>虚拟机用户名</p></td>
+             <td class="cellrowborder" rowspan="2" valign="top" width="70.1%" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.2 ">
               <div class="p">
                文件级恢复时，目标虚拟机需要验证<span id="fc_gud_re1__vmware_gud_0060_text426913561378">本产品</span>的登录凭据，输入目标虚拟机的登录用户名及密码。
                <ul id="fc_gud_re1__vmware_gud_0060_ul119609220135">
@@ -135,17 +136,17 @@
               </div></td>
             </tr>
             <tr>
-             <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.2.1.1.2.2.3.1.1 "><p><span>虚拟机密码</span></p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.1 "><p>虚拟机密码</p></td>
             </tr>
             <tr>
-             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.6.2.2.1.1.2.2.3.1.1 "><p><span>覆盖规则</span></p></td>
-             <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.2.6.2.2.1.1.2.2.3.1.2 ">
+             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.1 "><p>覆盖规则</p></td>
+             <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.2 ">
               <div class="p">
                当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。
                <ul id="fc_gud_re1__vmware_gud_0060_ul138776497307">
-                <li id="fc_gud_re1__vmware_gud_0060_li1087714914306"><span id="fc_gud_re1__vmware_gud_0060_text2877849173018">直接替换已经存在的文件</span></li>
+                <li id="fc_gud_re1__vmware_gud_0060_li1087714914306"><span id="fc_gud_re1__vmware_gud_0060_text2877849173018">直接替换已经存在的文件</span>。</li>
                 <li id="fc_gud_re1__vmware_gud_0060_li1287717497308"><span id="fc_gud_re1__vmware_gud_0060_text148771149123013">忽略已存在的文件</span>，即跳过这些同名文件不替换。</li>
-                <li id="fc_gud_re1__vmware_gud_0060_li68771149143011"><span id="fc_gud_re1__vmware_gud_0060_text5877184993017">只替换比恢复文件更旧的文件</span>
+                <li id="fc_gud_re1__vmware_gud_0060_li68771149143011"><span id="fc_gud_re1__vmware_gud_0060_text5877184993017">只替换比恢复文件更旧的文件</span>。
                  <div class="note" id="fc_gud_re1__vmware_gud_0060_note98771049113012">
                   <span class="notetitle"> 说明： </span>
                   <div class="notebody">
@@ -172,43 +173,47 @@
           </colgroup>
           <thead align="left">
            <tr>
-            <th align="left" class="cellrowborder" valign="top" width="22.75%" id="mcps1.3.4.2.6.2.2.2.2.2.3.1.1"><p>参数</p></th>
-            <th align="left" class="cellrowborder" valign="top" width="77.25%" id="mcps1.3.4.2.6.2.2.2.2.2.3.1.2"><p>说明</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="22.75%" id="mcps1.3.4.2.6.2.1.2.2.2.3.1.1"><p>参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="77.25%" id="mcps1.3.4.2.6.2.1.2.2.2.3.1.2"><p>说明</p></th>
            </tr>
           </thead>
           <tbody>
            <tr>
-            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.1 "><p><span>计算位置</span></p></td>
-            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.2 ">
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p>目标计算位置</p></td>
+            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 ">
              <div class="p">
               选择恢复到的目标虚拟机。
               <div class="note">
                <span class="notetitle"> 说明： </span>
                <div class="notebody">
                 <ul>
-                 <li>指定虚拟机为Windows OS时，恢复到的目录与文件的源目录一致，如果虚拟机中不存在相应的盘符，则恢复失败。如：文件所在路径为<strong>D:\a</strong>，则在指定虚拟机的D盘下新建<strong>a</strong>目录，再进行文件恢复，如果指定虚拟机不存在<strong>D</strong>盘，则恢复失败。</li>
-                 <li>指定虚拟机为Linux OS时，恢复到的目录与文件的源目录一致，恢复时在指定虚拟机中新建相应的目录，再进行文件恢复。</li>
+                 <li id="fc_gud_re1__vmware_gud_0060_li4813358152610">指定虚拟机为Windows OS时，恢复到的目录与文件的源目录一致。
+                  <ul id="fc_gud_re1__vmware_gud_0060_ul481325852619">
+                   <li id="fc_gud_re1__vmware_gud_0060_li88134588262">如果虚拟机中不存在相应的盘符，则恢复失败。</li>
+                   <li id="fc_gud_re1__vmware_gud_0060_li2081385812616">如果虚拟机存在相应的盘符但无对应目录，恢复时在该虚拟机中自动新建相应的目录，再进行文件恢复。如：指定文件所在路径为<strong id="fc_gud_re1__vmware_gud_0060_b12813558172617">D:\a</strong>，则在指定虚拟机的<strong id="fc_gud_re1__vmware_gud_0060_b3813175814269">D</strong>盘下自动新建<strong id="fc_gud_re1__vmware_gud_0060_b58131858132617">a</strong>目录，再进行文件恢复。</li>
+                  </ul></li>
+                 <li id="fc_gud_re1__vmware_gud_0060_li081325872610">指定虚拟机为Linux OS时，恢复到的目录与文件的源目录一致，恢复时在该虚拟机中自动新建相应的路径，再进行文件恢复。</li>
                 </ul>
                </div>
               </div>
              </div></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.1 "><p><span>虚拟机IP地址</span></p></td>
-            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.2 ">
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p>虚拟机IP地址</p></td>
+            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 ">
              <div class="p">
-              选择已配置的备份网络IP地址。
+              选择已配置的备份网络IP地址。对于1.6.0及后续版本，支持手动输入IP地址。
               <div class="note" id="fc_gud_re1__fc_gud_re1_note12471512182010">
                <span class="notetitle"> 说明： </span>
                <div class="notebody">
-                <p id="fc_gud_re1__fc_gud_re1_p19476122207"><span style="color:#282B33;">请确保虚拟机已安装Tools工具，否则无法获取该虚拟机备份网络IP地址。</span>如果未安装，请参考<span id="fc_gud_re1__fc_gud_re1_text87919863611">FusionCompute联机帮助</span>进行安装。</p>
+                <p id="fc_gud_re1__fc_gud_re1_p19476122207">请确保虚拟机已安装Tools工具，否则无法获取该虚拟机备份网络IP地址。如果未安装，请参考FusionCompute联机帮助进行安装。</p>
                </div>
               </div>
              </div></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.1 "><p><span>虚拟机用户名</span></p></td>
-            <td class="cellrowborder" rowspan="2" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.2 ">
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p>虚拟机用户名</p></td>
+            <td class="cellrowborder" rowspan="2" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 ">
              <div class="p">
               文件级恢复时，目标虚拟机需要验证<span id="fc_gud_re1__vmware_gud_0060_text426913561378_1">本产品</span>的登录凭据，输入目标虚拟机的登录用户名及密码。
               <ul id="fc_gud_re1__vmware_gud_0060_ul119609220135_1">
@@ -227,17 +232,17 @@
              </div></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.1 "><p><span>虚拟机密码</span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p>虚拟机密码</p></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.1 "><p><span>覆盖规则</span></p></td>
-            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.2.2.2.2.3.1.2 ">
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p>覆盖规则</p></td>
+            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 ">
              <div class="p">
               当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。
               <ul id="fc_gud_re1__vmware_gud_0060_ul138776497307_1">
-               <li id="fc_gud_re1__vmware_gud_0060_li1087714914306_1"><span id="fc_gud_re1__vmware_gud_0060_text2877849173018_1">直接替换已经存在的文件</span></li>
+               <li id="fc_gud_re1__vmware_gud_0060_li1087714914306_1"><span id="fc_gud_re1__vmware_gud_0060_text2877849173018_1">直接替换已经存在的文件</span>。</li>
                <li id="fc_gud_re1__vmware_gud_0060_li1287717497308_1"><span id="fc_gud_re1__vmware_gud_0060_text148771149123013_1">忽略已存在的文件</span>，即跳过这些同名文件不替换。</li>
-               <li id="fc_gud_re1__vmware_gud_0060_li68771149143011_1"><span id="fc_gud_re1__vmware_gud_0060_text5877184993017_1">只替换比恢复文件更旧的文件</span>
+               <li id="fc_gud_re1__vmware_gud_0060_li68771149143011_1"><span id="fc_gud_re1__vmware_gud_0060_text5877184993017_1">只替换比恢复文件更旧的文件</span>。
                 <div class="note" id="fc_gud_re1__vmware_gud_0060_note98771049113012_1">
                  <span class="notetitle"> 说明： </span>
                  <div class="notebody">

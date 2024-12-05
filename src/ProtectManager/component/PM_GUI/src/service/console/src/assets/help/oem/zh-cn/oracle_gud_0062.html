@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -74,7 +74,13 @@
          <li id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li15682124913711">OS认证：<p id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p95148598366"><a name="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li15682124913711"></a><a name="zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li15682124913711"></a><strong id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_b14236563719">export ORACLE_SID=</strong><em id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_i85144598369">数据库实例名称</em></p> <p id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p145141259153613"><strong id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_b1597618293715">sqlplus / as sysdba</strong></p></li>
          <li id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li105571236103417">数据库认证：<p id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p920984963717"><a name="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li105571236103417"></a><a name="zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li105571236103417"></a><strong id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_b19174355163720">export ORACLE_SID=</strong><em id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_i1420924973715">数据库实例名称</em></p> <p id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p182093496371"><strong id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_b034785743716">sqlplus</strong></p> <p id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p17915722412">根据提示输入具备<strong id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_b1691518214115">sysdba</strong>权限的用户：</p> <pre class="screen" id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_screen9915112104114"><em id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_i1915102164113">username </em>as sysdba</pre> <p id="oracle_gud_0062__zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p159150224117">根据提示输入密码。</p></li>
         </ul></li>
-       <li id="oracle_gud_0062__zh-cn_topic_0000001656561309_li198251911109">执行以下命令关闭同名数据库。<p id="oracle_gud_0062__zh-cn_topic_0000001656561309_p96841918142516"><a name="oracle_gud_0062__zh-cn_topic_0000001656561309_li198251911109"></a><a name="zh-cn_topic_0000001656561309_li198251911109"></a><strong id="oracle_gud_0062__zh-cn_topic_0000001656561309_b1025322122520">shutdown immediate;</strong></p></li>
+       <li id="oracle_gud_0062__zh-cn_topic_0000001656561309_li198251911109">执行以下命令关闭同名数据库。<p id="oracle_gud_0062__zh-cn_topic_0000001656561309_p96841918142516"><a name="oracle_gud_0062__zh-cn_topic_0000001656561309_li198251911109"></a><a name="zh-cn_topic_0000001656561309_li198251911109"></a><strong id="oracle_gud_0062__zh-cn_topic_0000001656561309_b1025322122520">shutdown immediate;</strong></p>
+        <div class="note" id="oracle_gud_0062__note470175616170">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="oracle_gud_0062__p127116565174">对于RAC集群，所有节点均需要执行该命令。</p>
+         </div>
+        </div> <p id="oracle_gud_0062__p146421258946">回显如下表示数据库关闭完成。</p> <pre class="screen" id="oracle_gud_0062__screen730142119511">ORACLE instance shut down.</pre></li>
       </ol> <p></p></li>
      <li id="oracle_gud_0062__li17844445165619"><a name="oracle_gud_0062__li17844445165619"></a><a name="li17844445165619"></a><span>恢复至原位置时，要求目标主机的空闲内存大小必须大于数据库的SGA和PGA的大小总和，否则可能导致恢复失败。</span><p></p>
       <div class="p">

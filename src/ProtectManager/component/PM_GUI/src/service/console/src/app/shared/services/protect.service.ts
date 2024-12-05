@@ -1682,6 +1682,20 @@ export class ProtectService {
           });
         }
 
+        if (
+          includes(
+            [
+              DataMap.Resource_Type.APSZone.value,
+              DataMap.Resource_Type.APSResourceSet.value
+            ],
+            params.subType
+          )
+        ) {
+          assign(obj.ext_parameters, {
+            all_disk: true
+          });
+        }
+
         // 是否执行一次备份
         if (params.post_action) {
           assign(obj, { post_action: params.post_action });
@@ -1741,6 +1755,20 @@ export class ProtectService {
               ? params.diskInfo
               : [],
           all_disk: params.enableSelectAll ?? true
+        });
+      }
+
+      if (
+        includes(
+          [
+            DataMap.Resource_Type.APSZone.value,
+            DataMap.Resource_Type.APSResourceSet.value
+          ],
+          params.subType
+        )
+      ) {
+        assign(body.ext_parameters, {
+          all_disk: true
         });
       }
 

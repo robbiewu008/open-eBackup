@@ -204,8 +204,7 @@ export class HostComponent implements OnInit, OnDestroy {
             DataMap.Os_Type.windows.value,
             DataMap.Os_Type.linux.value,
             DataMap.Os_Type.aix.value,
-            DataMap.Os_Type.solaris.value,
-            DataMap.Os_Type.hpux.value
+            DataMap.Os_Type.solaris.value
           ],
           item.value
         );
@@ -663,8 +662,7 @@ export class HostComponent implements OnInit, OnDestroy {
                   DataMap.Os_Type.windows.value,
                   DataMap.Os_Type.linux.value,
                   DataMap.Os_Type.aix.value,
-                  DataMap.Os_Type.solaris.value,
-                  DataMap.Os_Type.hpux.value
+                  DataMap.Os_Type.solaris.value
                 ],
                 item.value
               );

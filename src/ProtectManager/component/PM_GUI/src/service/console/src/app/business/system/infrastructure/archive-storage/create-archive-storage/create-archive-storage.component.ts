@@ -147,7 +147,7 @@ export class CreateArchiveStorageComponent implements OnInit {
       cloudType: new FormControl('', {
         validators: [this.baseUtilService.VALID.required()]
       }),
-      connectType: new FormControl(DataMap.azureLinkMode.connection.value),
+      connectType: new FormControl(DataMap.azureLinkMode.standard.value),
       port: new FormControl(''),
       endpoint: new FormControl('', {
         validators: [

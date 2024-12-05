@@ -89,13 +89,22 @@ export const decoupleFilterUrl = [
   RouterUrl.ProtectionCommonShare
 ];
 
+// 1130要屏蔽的应用
+export const shieldFilterUrl = [
+  RouterUrl.ProtectionVirtualizationNutanix,
+  RouterUrl.ExploreCopyDataNutanix,
+  RouterUrl.ExploreAntiApplicationNutanix
+];
+
 /**
  * 通过url权限表，获取当前角色查看的menu
  */
 export function getAccessibleMenu(menu, cookie, i18n, absolute = true): any {
   // 若角色为RBAC自定义角色，则视为数据保护管理员，拥有与数据保护管理员相同的页面访问权限
   const role = cookie.role || RoleType.DataProtectionAdmin;
-  let auth = URL_PERMISSION[role] || '';
+  let auth =
+    filter(URL_PERMISSION[role], item => !includes(shieldFilterUrl, item)) ||
+    '';
   if (
     i18n.get('deploy_type') === DataMap.Deploy_Type.cloudbackup.value ||
     i18n.get('deploy_type') === DataMap.Deploy_Type.cloudbackup2.value
@@ -1470,10 +1479,8 @@ export function hiddenOracleFileLevelRestore(
     includes(
       [
         DataMap.CopyData_generatedType.liveMount.value,
-        DataMap.CopyData_generatedType.replicate.value,
         DataMap.CopyData_generatedType.tapeArchival.value,
-        DataMap.CopyData_generatedType.cloudArchival.value,
-        DataMap.CopyData_generatedType.cascadedReplication.value
+        DataMap.CopyData_generatedType.cloudArchival.value
       ],
       rowCopy.generated_by
     )
@@ -1771,7 +1778,13 @@ export function hideSqlserverArchive(data) {
       ],
       data?.resource_sub_type
     ) &&
-    includes([DataMap.CopyData_Backup_Type.log.value], data?.source_copy_type)
+    includes(
+      [
+        DataMap.CopyData_Backup_Type.log.value,
+        DataMap.CopyData_Backup_Type.diff.value
+      ],
+      data?.source_copy_type
+    )
   );
 }
 

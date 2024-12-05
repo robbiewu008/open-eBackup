@@ -1,4 +1,3 @@
-<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-fullpage">
     <div class="aui-block vm-container">
         <lv-group class="group">
             <lv-group class="left" lvDirection='vertical'>
@@ -38,7 +38,7 @@
                 </div>
                 <div class="tree-container">
                     <ng-container *ngIf="treeData.length;else noDataTpl">
-                        <lv-tree lvCompareWith="uuid" [lvData]='treeData' [(lvSelection)]="treeSelection"
+                        <lv-tree lvCompareWith="uuid" lvSelectionAssociate="false" [lvData]='treeData' [(lvSelection)]="treeSelection"
                             lvSelectionMode='single' [lvBeforeSelected]="beforeSelected" (lvCheck)="nodeCheck($event)"
                             lvShowContentIcon (lvExpandedChange)="expandedChange($event)" [lvNodeTemplate]='nodeTpl'
                             [lvScroll]='virtualScroll.scrollParamMap["vmware-tree"]' lvVirtualScroll>
@@ -91,11 +91,6 @@
                 <span [ngClass]="{'tree-node-offline': item.rootNodeLinkStatus === 0}">{{item.label}}</span>
             </div>
         </lv-group>
-        <lv-group *ngIf="item.type === ResourceType.VSPHERE">
-            <img class="base-info-icon" [src]="!!item.userId?
-           'assets/img/vmware_vcenter.svg':'assets/img/vmware_vcenter_offline.svg'
-        " lv-tooltip="{{!!item.userId?assginLabel:unAssignLabel}}" />
-        </lv-group>
-        <lv-group *ngIf="item.type !== ResourceType.VSPHERE"></lv-group>
+        <lv-group></lv-group>
     </lv-group>
 </ng-template>

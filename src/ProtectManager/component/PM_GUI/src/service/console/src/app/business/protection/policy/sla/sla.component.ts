@@ -172,7 +172,6 @@ export class SlaComponent implements OnInit, OnDestroy {
       return includes(
         [
           ApplicationType.Common,
-          ApplicationType.AntDB,
           ApplicationType.DB2,
           ApplicationType.Fileset,
           ApplicationType.Oracle,

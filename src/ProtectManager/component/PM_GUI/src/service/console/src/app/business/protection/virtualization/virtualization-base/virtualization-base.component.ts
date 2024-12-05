@@ -637,7 +637,8 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
             !data.length ||
             data[0].disableAuth ||
             this.disableBtn(first(data)) ||
-            !hasResourcePermission(first(data))
+            !hasResourcePermission(first(data)) ||
+            this.hiddenResourceScan(data[0])
           );
         },
         permission: OperateItems.ModifyHCSTenant,
@@ -740,8 +741,14 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
           ? 'aui-cluster-online-16'
           : 'aui-cluster-offline-16';
       case DataMap.Resource_Type.hyperVHost.value:
-        return node.linkStatus ===
-          DataMap.resource_LinkStatus_Special.normal.value
+        return includes(
+          [
+            DataMap.hypervHostStatus.Up.value,
+            DataMap.hypervHostStatus.Ok.value
+          ],
+          node.extendInfo.State
+        ) ||
+          node.linkStatus === DataMap.resource_LinkStatus_Special.normal.value // 单主机有linkStatus，主机在集群下走extendInfo
           ? 'aui-host-online-16'
           : 'aui-host-offline-16';
       default:
@@ -877,7 +884,15 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
           return item.subType !== DataMap.Resource_Type.APSResourceSet.value;
         });
       }
-      res.records.forEach(item => {
+      res.records.forEach((item: any) => {
+        if (
+          item.subType === DataMap.Resource_Type.hyperVCluster.value &&
+          item.linkStatus === null &&
+          event.subType === DataMap.Resource_Type.hyperVScvmm.value
+        ) {
+          // SCVMM下面的集群没有linkstatus，集群使用SCVMM的状态
+          item.linkStatus = event.linkStatus;
+        }
         const node = {
           ...item,
           label: item.name,

@@ -33,6 +33,7 @@ import {
   isArray,
   isEmpty,
   map,
+  reduce,
   replace,
   set,
   toNumber
@@ -214,15 +215,27 @@ export class RegisterComponent implements OnInit {
       this.formGroup.get('agent').updateValueAndValidity();
     });
   }
-
+  getAllEndpoint() {
+    let arr = [];
+    reduce(
+      this.formGroup.value.agents,
+      (acc, item) => {
+        acc.push(find(this.proxyOptions, { value: item })?.endpoint);
+        return acc;
+      },
+      arr
+    );
+    return arr.join(',');
+  }
   getEndpoint() {
     if (
       this.formGroup.get('type').value ===
       DataMap.Resource_Type.hyperVCluster.value
     ) {
-      return this.formGroup.value.agents[0];
+      return this.getAllEndpoint();
     } else {
-      return this.formGroup.value.agent;
+      return find(this.proxyOptions, { value: this.formGroup.value.agent })
+        ?.endpoint;
     }
   }
 
@@ -248,8 +261,7 @@ export class RegisterComponent implements OnInit {
       name: this.formGroup.value.name,
       type: ResourceType.Virtualization,
       subType: this.formGroup.value.type,
-      endpoint: find(this.proxyOptions, { value: this.getEndpoint() })
-        ?.endpoint,
+      endpoint: this.getEndpoint(),
       extendInfo: {
         targetType: replace(this.formGroup.value.type, 'HyperV.', '')
       },

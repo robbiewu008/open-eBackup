@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -39,10 +39,10 @@
 
 <h1 class="topictitle1">Restoring a Single Table or Multiple Tables in an Oracle Database (Applicable to 1.6.0 and Later Versions)</h1>
 <div><p>This section describes how to restore a single table or multiple tables in an Oracle database to their original locations or a new location.</p>
-<div class="section"><h4 class="sectiontitle">Context</h4><ul><li>GUIs may vary with versions.</li><li>Currently, only Oracle databases on Linux hosts support table-level restoration.</li><li>Table-level restoration restores only the data in tables. You need to reconfigure constraints on permissions and foreign keys of the tables after restoration.</li></ul>
+<div class="section"><h4 class="sectiontitle">Context</h4><ul><li>The GUI may vary with versions.</li><li>Currently, only Oracle databases on Linux hosts support table-level restoration.</li><li>Table-level restoration restores only the data in tables. You need to reconfigure constraints on permissions and foreign keys of the tables after restoration.</li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">Prerequisites</h4><p>ProtectAgent and other related software have been installed on the target host for restoration.</p>
-<p>For details, see the <i><cite id="oracle_gud_0131__oracle_gud_0066_cite574135311512">OceanProtect <span id="oracle_gud_0131__oracle_gud_0066_en-us_topic_0000001792502994_ph19170214112011">Appliance 1.5.0-1.6.0</span> ProtectAgent Installation Guide</cite></i>.</p>
+<p>For details, see the <i><cite id="oracle_gud_0131__oracle_gud_0066_cite574135311512">OceanProtect DataBackup 1.5.0-1.6.0 ProtectAgent Installation Guide</cite></i>.</p>
 </div>
 <div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Check and configure the Open state of the Oracle database. For details, see <a href="oracle_gud_0016.html">Checking and Configuring the Open State of the Oracle Database</a>.</span></li><li><span>To check whether the target database is in archive mode. For details, see <a href="oracle_gud_0017.html">Checking and Configuring the Archive Mode of the Oracle Database</a>.</span></li><li><span>Check whether the target database is in read/write mode.</span><p><ol type="a"><li>Log in to the Oracle database host. Assume that the Linux OS is used.<p>Use PuTTY to log in to the Oracle database host and run the <strong>su - oracle</strong> command to switch to user <strong>oracle</strong>.</p>
 </li><li>Log in to the Oracle database instance.<ul><li>If OS authentication is used, run the following commands:<pre class="screen">export ORACLE_SID<strong>=</strong><em>Database instance name</em>
@@ -184,7 +184,7 @@ startup;</pre>
 </tbody>
 </table>
 </div>
-</li><li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>If the restoration job details contain information indicating that residual resources may exist for the restoration job, perform operations by referring to <a href="en-us_topic_0000002053451505.html">Residual Resources Exist for a Restoration Job</a>.</p>
+</li><li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>If the restoration job details contain information indicating that residual resources may exist for the restoration job, perform operations by referring to <a href="en-us_topic_0000002053451505.html">In a Restoration Job, a Message Is Displayed Indicating that Residual Resources Exist (Applicable to 1.6.0 and Later Versions)</a>.</p>
 </div></div>
 </li></ol>
 </li></ol>

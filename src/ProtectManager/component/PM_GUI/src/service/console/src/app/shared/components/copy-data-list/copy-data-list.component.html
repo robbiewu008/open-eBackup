@@ -3,9 +3,9 @@
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
   If a copy of the MPL was not distributed with this file, You can obtain one at
   http://mozilla.org/MPL/2.0/.
-
+  
   Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-
+  
   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
@@ -46,8 +46,6 @@
       resourceType.tidbCluster.value,
       resourceType.tdsqlDistributedInstance.value,
       resourceType.goldendbInstance.value,
-      resourceType.ExchangeGroup.value,
-      resourceType.ExchangeSingle.value,
       resourceType.ExchangeDataBase.value,
       resourceType.saphanaDatabase.value,
       resourceType.MongodbSingleInstance.value,
@@ -107,17 +105,17 @@
                   rowData.resourceType === dataMap.Resource_Type.volume.value
                 "
               ></i>
-                    <i
-                      lv-icon="aui-icon-help"
-                      lv-tooltip="{{
-                        'common_worm_expiration_time_tips_label' | i18n
-                      }}"
-                      lvTooltipTheme="light"
-                      lvTooltipPosition="top"
-                      lvColorState="true"
-                      class="index-icon"
-                      *ngIf="item.key === 'worm_expiration_time'"
-                    ></i>
+              <i
+                lv-icon="aui-icon-help"
+                lv-tooltip="{{
+                  'common_worm_expiration_time_tips_label' | i18n
+                }}"
+                lvTooltipTheme="light"
+                lvTooltipPosition="top"
+                lvColorState="true"
+                class="index-icon"
+                *ngIf="item.key === 'worm_expiration_time'"
+              ></i>
             </span>
             <div lvCustom *ngIf="item.key === 'cluster_name'">
               <aui-custom-table-search
@@ -290,16 +288,7 @@
                   }}
                 </ng-container>
                 <ng-container *ngSwitchCase="'isSystemBackup'">
-                  {{
-                    (item.resource_properties
-                      ? rowData?.subType  === dataMap.Resource_Type.fileset.value
-                        ? _parse(item.resource_properties).extendInfo
-                            ?.is_OS_backup === 'true' || false
-                        : _parse(item.resource_properties).ext_parameters
-                            .system_backup_flag
-                      : ''
-                    ) | textMap: 'copyDataVolume'
-                  }}
+                  {{ getSystemBackupStatus(item) | textMap: 'copyDataVolume' }}
                 </ng-container>
                 <ng-container *ngSwitchCase="'isBackupAcl'">
                   {{

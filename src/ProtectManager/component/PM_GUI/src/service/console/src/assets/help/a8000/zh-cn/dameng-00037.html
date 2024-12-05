@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
@@ -20,7 +20,7 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="创建介质集（归档存储是磁带库）">
+<meta name="DC.Title" content="创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）">
 <meta name="product" content="">
 <meta name="DC.Relation" scheme="URI" content="dameng-00035.html">
 <meta name="prodname" content="">
@@ -33,13 +33,13 @@
 <meta name="DC.Identifier" content="dameng-00037">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>创建介质集（归档存储是磁带库）</title>
+<title>创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="dameng-00037"></a><a name="dameng-00037"></a>
 
-<h1 class="topictitle1">创建介质集（归档存储是磁带库）</h1>
+<h1 class="topictitle1">创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）</h1>
 <div><p id="dameng-00037__zh-cn_topic_0000001839143173_p52126361762">当将磁带库作为归档存储时，请参考本节创建介质集。如果归档存储不是磁带库请忽略本节。</p>
-<div class="section" id="dameng-00037__zh-cn_topic_0000001839143173_section64578218528"><h4 class="sectiontitle">背景信息</h4><ul id="dameng-00037__zh-cn_topic_0000001839143173_ul20158183415546"><li id="dameng-00037__zh-cn_topic_0000001839143173_li12775337145414">介质集是基于磁带创建的，是一个磁带存储池，用于存放归档数据。因此创建介质集前需确保已有磁带库被扫描并更新至<span id="dameng-00037__zh-cn_topic_0000001839143173_text18376218116">OceanProtect</span>。</li><li id="dameng-00037__zh-cn_topic_0000001839143173_li104011181308">系统每隔10分钟自动扫描磁带库，发现连接到<span id="dameng-00037__zh-cn_topic_0000001839143173_text1834982214116">OceanProtect</span>的磁带库后会将其自动更新至<span id="dameng-00037__zh-cn_topic_0000001839143173_text1679762213115">OceanProtect</span>。<p id="dameng-00037__zh-cn_topic_0000001839143173_p22934181108">如果您发现磁带库还未更新至<span id="dameng-00037__zh-cn_topic_0000001839143173_text102942231211">OceanProtect</span>，可手动扫描磁带库，具体操作可参考<span id="dameng-00037__zh-cn_topic_0000001839143173_zh-cn_topic_0000001132896521_cite789410454417">《OceanProtect <span id="dameng-00037__zh-cn_topic_0000001839143173_zh-cn_topic_0000001792502994_ph14959193919202">备份一体机 1.5.0-1.6.0</span> 管理员指南》</span>中的<span class="parmvalue" id="dameng-00037__zh-cn_topic_0000001839143173_zh-cn_topic_0000001132896521_parmvalue63001041533">“扫描磁带库”</span>。</p>
+<div class="section" id="dameng-00037__zh-cn_topic_0000001839143173_section64578218528"><h4 class="sectiontitle">背景信息</h4><ul id="dameng-00037__zh-cn_topic_0000001839143173_ul20158183415546"><li id="dameng-00037__zh-cn_topic_0000001839143173_li12775337145414">介质集是基于磁带创建的，是一个磁带存储池，用于存放归档数据。因此创建介质集前需确保已有磁带库被扫描并更新至<span id="dameng-00037__zh-cn_topic_0000001839143173_text18376218116">OceanProtect</span>。</li><li id="dameng-00037__zh-cn_topic_0000001839143173_li104011181308">系统每隔10分钟自动扫描磁带库，发现连接到<span id="dameng-00037__zh-cn_topic_0000001839143173_text1834982214116">OceanProtect</span>的磁带库后会将其自动更新至<span id="dameng-00037__zh-cn_topic_0000001839143173_text1679762213115">OceanProtect</span>。<p id="dameng-00037__zh-cn_topic_0000001839143173_p22934181108">如果您发现磁带库还未更新至<span id="dameng-00037__zh-cn_topic_0000001839143173_text102942231211">OceanProtect</span>，可手动扫描磁带库，具体操作可参考<span id="dameng-00037__zh-cn_topic_0000001839143173_zh-cn_topic_0000001132896521_cite789410454417">《OceanProtect DataBackup 1.5.0-1.6.0 管理员指南》</span>中的<span class="parmvalue" id="dameng-00037__zh-cn_topic_0000001839143173_zh-cn_topic_0000001132896521_parmvalue63001041533">“扫描磁带库”</span>。</p>
 </li></ul>
 </div>
 <div class="section" id="dameng-00037__zh-cn_topic_0000001839143173_section24210211414"><h4 class="sectiontitle">前提条件</h4><p id="dameng-00037__zh-cn_topic_0000001839143173_p166439914143">请确保磁带库内的所有磁带的“Access Status”为“Accessible”，“Access Status”可在磁带管理界面查看。</p>

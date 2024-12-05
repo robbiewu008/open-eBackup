@@ -1,4 +1,3 @@
-<div class="aui-gutter-column-xl">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-gutter-column-xl">
   <ng-container *ngTemplateOutlet="basicInfoTpl"></ng-container>
 </div>
 <div class="aui-gutter-column-xl" *ngIf="[dataMap.Resource_Type.virtualMachine.value].includes(data.resource_sub_type)">
@@ -273,7 +273,7 @@
     </lv-group>
   </div>
   <aui-file-tree [copy]="data" [treeData]="treeTableData" (tableSelectionChange)="tableSelectionChange($event)"
-    (treeExpandedChange)="expandedChange($event)"></aui-file-tree>
+    (treeExpandedChange)="expandedChange($event)" #fileTree></aui-file-tree>
 </ng-template>
 
 <ng-template #volumeTpl>

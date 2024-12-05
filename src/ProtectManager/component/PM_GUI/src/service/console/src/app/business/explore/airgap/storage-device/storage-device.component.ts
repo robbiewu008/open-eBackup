@@ -31,6 +31,8 @@ import {
   I18NService,
   MODAL_COMMON,
   OperateItems,
+  RoleOperationAuth,
+  RoleOperationMap,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -90,6 +92,7 @@ export class StorageDeviceComponent implements OnInit, AfterViewInit {
   );
 
   groupCommon = GROUP_COMMON;
+  hasPermission = true;
 
   @Output() refreshDevice = new EventEmitter();
   optsConfig;
@@ -107,7 +110,7 @@ export class StorageDeviceComponent implements OnInit, AfterViewInit {
   timeTpl: TemplateRef<any>;
 
   constructor(
-    private i18n: I18NService,
+    public i18n: I18NService,
     private dataMapService: DataMapService,
     private drawModalService: DrawModalService,
     private messageBox: MessageboxService,
@@ -119,6 +122,9 @@ export class StorageDeviceComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    if (this.appUtilsService.isDataBackup) {
+      this.hasPermission = includes(RoleOperationAuth, RoleOperationMap.airGap);
+    }
     this.policyStatus = this.isCyberengine
       ? 'airgapPolicyCyberStatus'
       : 'airgapPolicyStatus';
@@ -174,7 +180,8 @@ export class StorageDeviceComponent implements OnInit, AfterViewInit {
             !data.length ||
             !data[0].airGapPolicyInfo ||
             data[0].policyStatus === DataMap.airgapPolicyStatus.invalid.value ||
-            data[0].linkStatus === DataMap.airgapDeviceStatus.offline.value
+            data[0].linkStatus === DataMap.airgapDeviceStatus.offline.value ||
+            !this.hasPermission
           );
         },
         label: this.i18n.get('common_modify_association_label'),
@@ -188,7 +195,9 @@ export class StorageDeviceComponent implements OnInit, AfterViewInit {
         divide: true,
         label: this.i18n.get('common_remove_association_label'),
         disableCheck: data => {
-          return !data.length || !data[0].airGapPolicyInfo;
+          return (
+            !data.length || !data[0].airGapPolicyInfo || !this.hasPermission
+          );
         },
         onClick: data => {
           this.removeTactics(data);
@@ -202,7 +211,8 @@ export class StorageDeviceComponent implements OnInit, AfterViewInit {
             !data.length ||
             data[0].policyStatus === DataMap.airgapPolicyStatus.enable.value ||
             !data[0].airGapPolicyInfo ||
-            data[0].linkStatus === DataMap.airgapDeviceStatus.offline.value
+            data[0].linkStatus === DataMap.airgapDeviceStatus.offline.value ||
+            !this.hasPermission
           );
         },
         label: this.i18n.get('common_turn_on_association_label'),
@@ -221,7 +231,8 @@ export class StorageDeviceComponent implements OnInit, AfterViewInit {
             data[0].policyStatus ===
               DataMap.airgapPolicyCyberStatus.invalid.value ||
             !data[0].airGapPolicyInfo ||
-            data[0].linkStatus === DataMap.airgapDeviceStatus.offline.value
+            data[0].linkStatus === DataMap.airgapDeviceStatus.offline.value ||
+            !this.hasPermission
           );
         },
         label: this.i18n.get('common_turn_off_association_label'),
@@ -240,7 +251,8 @@ export class StorageDeviceComponent implements OnInit, AfterViewInit {
           return (
             !data.length ||
             data[0].replicationLinkStatus !==
-              DataMap.airgapLinkStatus.open.value
+              DataMap.airgapLinkStatus.open.value ||
+            !this.hasPermission
           );
         },
         onClick: data => {

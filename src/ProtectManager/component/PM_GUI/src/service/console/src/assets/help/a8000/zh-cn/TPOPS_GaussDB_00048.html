@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -42,7 +42,7 @@
 <div class="section"><h4 class="sectiontitle">背景信息</h4><p>支持使用备份副本、复制副本、反向复制副本、级联复制副本、归档副本进行恢复。支持恢复至原位置（复制副本及其归档副本、级联复制副本及其归档副本不支持恢复至原位置）或新位置。</p>
 </div>
 <div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>执行恢复前，请确保数据库状态为正常。</li></ul>
-<ul><li>执行恢复前，确保代理主机中已启动backUpAgent。启动方法请参见<span>《OceanProtect <span id="TPOPS_GaussDB_00048__zh-cn_topic_0000001792502994_ph19170214112011">备份一体机 1.5.0-1.6.0</span> ProtectAgent安装指南》</span>中的“启动backUpAgent”章节。</li><li>执行恢复前，确保被OLTP OPS纳管的实例已打开监控。打开方法请参见<a href="TPOPS_GaussDB_00012.html">步骤4：在TPOPS管理界面打开实例监控</a>。</li><li>执行恢复前，确保在OLTP OPS管理界面已配置实例的备份默认根路径并执行过备份操作。若未执行过备份操作，需要刷新实例的备份默认根路径。配置实例的备份默认根路径和刷新操作，可参见<a href="TPOPS_GaussDB_00011.html">步骤3：在TPOPS管理界面配置实例的备份默认根路径</a>。</li><li>执行恢复前，确保原实例已被TPOPS纳管。</li><li>执行恢复到新位置时，确保新实例已存在，且新实例与原实例的部署方式、分片数、版本号一致。</li><li>时间点恢复依赖于NTP时钟，生产环境实例所在的各节点需保持同样的时钟源配置。</li><li>恢复前请确保恢复目标实例的空间大于或等于备份副本大小。</li><li>恢复前请确认原实例的副本一致性协议与恢复到的实例的副本一致性协议一致。</li></ul>
+<ul><li>执行恢复前，确保代理主机中已启动backUpAgent。启动方法请参见<span>《OceanProtect DataBackup 1.5.0-1.6.0 ProtectAgent安装指南》</span>中的“启动backUpAgent”章节。</li><li>执行恢复前，确保被OLTP OPS纳管的实例已打开监控。打开方法请参见<a href="TPOPS_GaussDB_00012.html">步骤4：在TPOPS管理界面打开实例监控</a>。</li><li>执行恢复前，确保在OLTP OPS管理界面已配置实例的备份默认根路径并执行过备份操作。若未执行过备份操作，需要刷新实例的备份默认根路径。配置实例的备份默认根路径和刷新操作，可参见<a href="TPOPS_GaussDB_00011.html">步骤3：在TPOPS管理界面配置实例的备份默认根路径</a>。</li><li>执行恢复前，确保原实例已被TPOPS纳管。</li><li>执行恢复到新位置时，确保新实例已存在，且新实例与原实例的部署方式、分片数、版本号一致。</li><li>时间点恢复依赖于NTP时钟，生产环境实例所在的各节点需保持同样的时钟源配置。</li><li>恢复前请确保恢复目标实例的空间大于或等于备份副本大小。</li><li>恢复前请确认原实例的副本一致性协议与恢复到的实例的副本一致性协议一致。</li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">注意事项</h4><p>当恢复任务失败后，TPOPS实例监控将自动关闭，影响告警信息上报。用户需要手动开启实例监控，开启监控操作请参见<a href="TPOPS_GaussDB_00012.html">步骤4：在TPOPS管理界面打开实例监控</a>。</p>
 </div>

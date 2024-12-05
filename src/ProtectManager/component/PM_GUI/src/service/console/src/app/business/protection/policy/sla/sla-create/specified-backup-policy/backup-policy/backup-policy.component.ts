@@ -1398,8 +1398,7 @@ export class BackupPolicyComponent implements OnInit, OnChanges {
         ApplicationType.Exchange,
         ApplicationType.GoldenDB,
         ApplicationType.SapHana,
-        ApplicationType.Saponoracle,
-        ApplicationType.OpenGauss
+        ApplicationType.Saponoracle
       ],
       this.applicationType
     );

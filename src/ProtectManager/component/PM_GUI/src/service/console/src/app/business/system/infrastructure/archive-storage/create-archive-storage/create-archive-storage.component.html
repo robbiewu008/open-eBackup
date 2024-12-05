@@ -1,4 +1,3 @@
-<lv-form [formGroup]='formGroup' [lvLabelColon]='false' class="formGroup archive-storage-create">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]='formGroup' [lvLabelColon]='false' class="formGroup archive-storage-create">
     <h3 class="aui-gutter-column-xs">{{basicInfoLabel}}</h3>
     <lv-form-item>
         <lv-form-label lvRequired="true">{{nameLabel}}</lv-form-label>
@@ -36,7 +36,7 @@
     </lv-form-item>
     <!-- 连接模式 -->
     <ng-container *ngIf="formGroup.value.cloudType === dataMap.Storage_Cloud_Platform.azure.value">
-        <lv-form-item>
+        <lv-form-item *ngIf="false">
             <lv-form-label lvRequired="true">
                 {{'system_archive_storage_link_mode_label' | i18n}}
             </lv-form-label>
@@ -93,7 +93,7 @@
                     placeholder="{{'common_endpoint_placeholder_label' | i18n}}" />
             </lv-form-control>
         </lv-form-item>
-        <lv-alert lvType="info" lvClosable="false">{{'system_archive_storage_endpoint_tip_label' | i18n}}</lv-alert>
+        <lv-alert lvType="info" lvClosable="false" *ngIf="formGroup.value.cloudType !== dataMap.Storage_Cloud_Platform.azure.value">{{'system_archive_storage_endpoint_tip_label' | i18n}}</lv-alert>
         <lv-form-item>
             <lv-form-label lvRequired="true">{{protocolLabel}}</lv-form-label>
             <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>

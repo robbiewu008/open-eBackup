@@ -1,0 +1,42 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Windows OS恢复完成后部分磁盘处于Foreign状态">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="volume_0080">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Windows OS恢复完成后部分磁盘处于Foreign状态</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="volume_0080"></a><a name="volume_0080"></a>
+
+<h1 class="topictitle1">Windows OS恢复完成后部分磁盘处于Foreign状态</h1>
+<div><p>当磁盘类型为动态磁盘（dynamic disk）时，磁盘是在WinPE系统下进行裸机恢复。恢复完成后操作系统会认为这是一个外部动态磁盘（foreign dynamic disk），导致Windows OS恢复完成后部分磁盘处于Foreign状态。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><p class="msonormal">已登录Windows OS。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li><span>以Windows Server 2016为例，按“Windows+R”打开“运行”对话框。</span></li><li><span>在“运行”对话框中输入diskmgmt.msc进入磁盘管理界面，如图<a href="#volume_0080__fig2097983011565">图1</a>所示。</span><p><div class="fignone" id="volume_0080__fig2097983011565"><a name="volume_0080__fig2097983011565"></a><a name="fig2097983011565"></a><span class="figcap"><b>图1 </b>磁盘管理</span><br><span><img src="zh-cn_image_0000002103092101.png"></span></div>
+</p></li><li><span>右键单击外部磁盘，选择<span class="uicontrol">“导入外部磁盘”</span>。</span></li><li><span>在导入外部磁盘的对话框中，勾选磁盘组，单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

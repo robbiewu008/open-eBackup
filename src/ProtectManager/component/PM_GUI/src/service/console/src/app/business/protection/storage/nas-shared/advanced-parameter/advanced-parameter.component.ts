@@ -10,7 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -26,6 +26,7 @@ import {
   CommonConsts,
   DataMap,
   DataMapService,
+  GlobalService,
   I18NService,
   PermissonsAttributes,
   ProtectedResourceApiService,
@@ -47,14 +48,14 @@ import {
   toNumber,
   trim
 } from 'lodash';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'aui-advanced-parameter',
   templateUrl: './advanced-parameter.component.html',
   styleUrls: ['./advanced-parameter.component.less']
 })
-export class AdvancedParameterComponent implements OnInit {
+export class AdvancedParameterComponent implements OnInit, OnDestroy {
   includes = includes;
   formGroup: FormGroup;
   resourceData;
@@ -87,6 +88,8 @@ export class AdvancedParameterComponent implements OnInit {
   isAgentExternal = false;
   externalAgentLists = [];
   extParams;
+  hasRansomware = false; // 用于判断是否有已创建的防勒索策略
+  ransomwareStatus$: Subscription = new Subscription();
 
   channelsErrorTip = {
     ...this.baseUtilService.rangeErrorTip,
@@ -141,6 +144,7 @@ export class AdvancedParameterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private i18n: I18NService,
+    private globalService: GlobalService,
     private dataMapService: DataMapService,
     public baseUtilService: BaseUtilService,
     private messageService: MessageService,
@@ -156,6 +160,11 @@ export class AdvancedParameterComponent implements OnInit {
     this.initForm();
     this.getProtocol();
     this.getProxyOptions();
+    this.getRansomwareStatus();
+  }
+
+  ngOnDestroy() {
+    this.ransomwareStatus$.unsubscribe();
   }
 
   initDetailData(data) {
@@ -300,6 +309,15 @@ export class AdvancedParameterComponent implements OnInit {
           return;
         }
         this.getProxyOptions(recordsTemp, startPage);
+      });
+  }
+
+  getRansomwareStatus() {
+    // 开启了防勒索策略的资源是不能开小文件聚合的
+    this.ransomwareStatus$ = this.globalService
+      .getState('syncRansomwareStatus')
+      .subscribe(res => {
+        this.hasRansomware = res;
       });
   }
 

@@ -10,7 +10,15 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
   ApplicationType,
@@ -45,14 +53,15 @@ import {
   templateUrl: './advanced-parameters.component.html',
   styleUrls: ['./advanced-parameters.component.less']
 })
-export class AdvancedParametersComponent implements OnInit {
+export class AdvancedParametersComponent implements OnInit, OnChanges {
   find = find;
   size = size;
-  qosNames = [];
+  qosNameOps = [];
   @Input() appType: any;
   @Input() isSlaDetail: boolean;
   @Input() action: any;
   @Input() data: any;
+  @Input() qosNames: any;
   @Input() formGroup: FormGroup;
   @Input() isUsed: boolean;
   @Output() isDisableBasicDiskWorm = new EventEmitter<any>();
@@ -93,6 +102,7 @@ export class AdvancedParametersComponent implements OnInit {
     invalidInteger: this.i18n.get('common_cannot_decimal_label')
   };
 
+  slaQosName;
   protectResourceAction = ProtectResourceAction;
   applicationType = ApplicationType;
   proxyOptions = [];
@@ -133,9 +143,19 @@ export class AdvancedParametersComponent implements OnInit {
     private cookieService: CookieService,
     private protectedResourceApiService: ProtectedResourceApiService
   ) {}
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!isEmpty(this.qosNames) && size(this.data)) {
+      this.slaQosName = find(this.qosNames, {
+        uuid: first(map(this.data, 'ext_parameters')).qos_id
+      })?.name;
+    }
+  }
 
   ngOnInit(): void {
-    this.getQosNames();
+    if (!this.isSlaDetail) {
+      this.getQosNames();
+    }
+
     this.updateForm();
     // 根据应用类型增加表单控件
     this.updateSpecialControl();
@@ -826,7 +846,7 @@ export class AdvancedParametersComponent implements OnInit {
         pageSize: 100
       })
       .subscribe(res => {
-        this.qosNames = map(res.items, (item: any) => {
+        this.qosNameOps = map(res.items, (item: any) => {
           item['isLeaf'] = true;
           item['label'] = item.name;
           return item;

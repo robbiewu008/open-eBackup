@@ -37,12 +37,7 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
-import {
-  CAPACITY_UNIT,
-  DataMap,
-  SYSTEM_TIME,
-  WormStatusEnum
-} from 'app/shared/consts';
+import { CAPACITY_UNIT, DataMap, WormStatusEnum } from 'app/shared/consts';
 import {
   CookieService,
   DataMapService,
@@ -77,6 +72,7 @@ import { switchMap, takeUntil } from 'rxjs/operators';
 import { AppUtilsService } from '../../services/app-utils.service';
 import { DownloadFlrFilesComponent } from '../download-flr-files/download-flr-files.component';
 import { ExportFilesService } from '../export-files/export-files.component';
+import { FileTreeComponent } from '../file-tree/file-tree.component';
 
 @Component({
   selector: 'aui-copy-data-detail',
@@ -147,6 +143,9 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
   );
   @ViewChild('groupDataTable', { static: false })
   groupDataTable: ProTableComponent;
+
+  @ViewChild('fileTree', { static: false })
+  fileTreeComponent: FileTreeComponent;
 
   cloudArchivalDesc = this.i18n.get('explore_cloud_archive_file_desc_label');
   downloadFlrFilesComponent = new DownloadFlrFilesComponent(
@@ -846,6 +845,13 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
   }
 
   getVmFilePath(paths, isTable?) {
+    // 手动输入路径无需任何处理
+    if (
+      this.fileTreeComponent?.pathMode ===
+      this.fileTreeComponent?.modeMap?.fromTag
+    ) {
+      return paths;
+    }
     let filterPaths = [];
     let childPaths = [];
     if (isTable && !paths[0].nodeName) {
@@ -1154,15 +1160,23 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
   }
 
   downloadFile(datas) {
-    const filterPaths = this.getVmFileDownloadPath(cloneDeep(datas));
-    const paths = [];
-    each(filterPaths, node => {
-      paths.push(
-        node.path === '/'
-          ? `${node.path}${node.nodeName}`
-          : `${node.path}/${node.nodeName}`
-      );
-    });
+    let paths = [];
+    // 手动输入路径无需任何处理
+    if (
+      this.fileTreeComponent?.pathMode ===
+      this.fileTreeComponent?.modeMap?.fromTag
+    ) {
+      paths = [...datas];
+    } else {
+      const filterPaths = this.getVmFileDownloadPath(cloneDeep(datas));
+      each(filterPaths, node => {
+        paths.push(
+          node.path === '/'
+            ? `${node.path}${node.nodeName}`
+            : `${node.path}/${node.nodeName}`
+        );
+      });
+    }
     if (!size(paths)) {
       return;
     }

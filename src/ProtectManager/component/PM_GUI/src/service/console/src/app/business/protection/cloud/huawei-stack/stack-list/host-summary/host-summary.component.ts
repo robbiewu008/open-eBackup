@@ -245,8 +245,10 @@ export class HCSHostSummaryComponent implements OnInit {
             kinds: item.extendInfo?.category,
             sla:
               ext_parameters &&
-              (ext_parameters.all_disk === 'True' ||
-                ext_parameters.disk_info.includes(item.uuid)),
+              (ext_parameters?.all_disk === 'True' ||
+                isEmpty(ext_parameters?.disk_info) ||
+                (!!ext_parameters?.disk_info &&
+                  ext_parameters.disk_info.includes(item.uuid))),
             name: `${item.name}(${item.uuid})`
           });
         });

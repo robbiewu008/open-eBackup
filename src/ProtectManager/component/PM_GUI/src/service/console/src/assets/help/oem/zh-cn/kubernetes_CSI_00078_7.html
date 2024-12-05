@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -39,11 +39,22 @@
    <p id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_p16263205421516">本节以Kubernetes 1.23版本为例说明如何上传Kubernetes安装包至Kubernetes集群，不同版本操作可能略有差异。如果您有镜像仓库，也可上传镜像至镜像仓库。</p>
    <div class="section" id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_section86041226145019">
     <h4 class="sectiontitle">前提条件</h4>
-    <p id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_p155091416131516">上传Kubernetes安装包前，请根据版本及补丁号下载“<em id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_i18595720101314">XXX_K8s_BackupImage.tgz</em>”安装包，Kubernetes安装包通过以下方式获取。</p>
+    <p id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_p155091416131516">上传Kubernetes安装包前，请用户在了解<span id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_text157711162916">本产品</span>管理界面上查询版本及补丁号，再根据查询到的版本及补丁号下载“<em id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_i9958111620322">OceanProtect_DataProtect</em><em id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_i1257961753219">_X.X.X_</em><em id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_i19958181613216">K8s_BackupImage.tgz</em>”安装包，解压安装包后，获得对应产品架构的“k8s_backup_image_x86.tar”或“k8s_backup_image_arm64.tar”压缩包，Kubernetes安装包通过以下方式获取。</p>
     <ul id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_ul1470191016457">
      <li id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_li12701151074511">企业用户：<a href="https://support.huawei.com/enterprise/zh/flash-storage/oceanprotect-databackup-pid-258115661/software/" target="_blank" rel="noopener noreferrer">点此前往</a></li>
      <li id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_li8194016184520">运营商用户：<a href="https://support.huawei.com/carrier/navi?coltype=software#col=software&amp;path=PBI1-21430725/PBI1-251363742/PBI1-250389226/PBI1-251366310/PBI1-258115661" target="_blank" rel="noopener noreferrer">点此前往</a></li>
     </ul>
+    <div class="note" id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_note2555152512588">
+     <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+     <div class="notebody">
+      <p id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_p8557192519583">可通过以下方式查询版本及补丁号。</p>
+      <ol id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_ol1134712489218">
+       <li id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_li1334716481522"></li>
+       <li id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_li858118598213">单击右上角<span><img id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_image1458902641019" src="zh-cn_image_0000002032410457.png"></span>图标，选择“<span id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_text1501142871111">关于</span>”。</li>
+       <li id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_li11788143451113">在弹框中“<span id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_zh-cn_topic_0000001682777972_text8170123961415">版本</span>”所在行显示出版本及补丁号。</li>
+      </ol>
+     </div>
+    </div>
    </div>
    <div class="section" id="kubernetes_CSI_00078_7__zh-cn_topic_0000001955319077_section9489618195319">
     <h4 class="sectiontitle">操作步骤</h4>

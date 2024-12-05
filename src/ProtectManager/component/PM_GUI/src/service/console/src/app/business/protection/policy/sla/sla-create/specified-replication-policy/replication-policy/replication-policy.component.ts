@@ -1213,16 +1213,16 @@ export class ReplicationPolicyComponent implements OnInit {
         ) {
           this.externalStorageMap[
             `${replicationForm.value.external_system_id}+${replicationForm.value.specifyUser}`
-          ] = map(res.records, item => {
+          ] = map(res.records, (item: any) => {
+            // 升级场景直接塞为oceanprotectx
+            item.storageType =
+              item?.storageType ??
+              DataMap.poolStorageDeviceType.OceanProtectX.value;
             return assign(item, {
+              ...item,
               label: item.storageName,
               value: item.storageId,
-              isLeaf: true,
-              storageType: get(
-                item,
-                'storageType',
-                DataMap.poolStorageDeviceType.OceanProtectX.value
-              )
+              isLeaf: true
             });
           });
           if (this.type !== DataMap.Resource_Type.GaussDB_DWS.value) {
@@ -1262,17 +1262,16 @@ export class ReplicationPolicyComponent implements OnInit {
         ) {
           this.externalStorageUnitMaintainMap[
             `${replicationForm.value.external_system_id}+${replicationForm.value.specifyUser}`
-          ] = map(res.records, item => {
+          ] = map(res.records, (item: any) => {
+            // 升级场景直接塞为oceanprotectx
+            item.storageType =
+              item?.storageType ??
+              DataMap.poolStorageDeviceType.OceanProtectX.value;
             return assign(item, {
               ...item,
               label: item.storageName,
               value: item.storageId,
-              isLeaf: true,
-              storageType: get(
-                item,
-                'storageType',
-                DataMap.poolStorageDeviceType.OceanProtectX.value
-              )
+              isLeaf: true
             });
           }).filter(item => {
             return (
@@ -1774,6 +1773,7 @@ export class ReplicationPolicyComponent implements OnInit {
   getWormDuration(item) {
     let params;
     if (!isUndefined(item.worm_switch)) {
+      // worm_switch有值，提交备份策略后进入复制策略
       params = {
         worm_validity_type: item.worm_switch ? item.worm_validity_type : 0,
         retention: {
@@ -1800,6 +1800,21 @@ export class ReplicationPolicyComponent implements OnInit {
       };
     }
     this.getSpecialBackupData(item, params);
+    if (
+      item.worm_validity_type === 1 &&
+      item.specified_duration_unit === 'p' &&
+      item.duration_unit === 'p'
+    ) {
+      // 修改场景永久保留时，worm_specified_retention_duration和worm_duration_unit是null，特殊赋值
+      params = {
+        worm_validity_type: item.worm_validity_type,
+        retention: {
+          worm_retention_duration:
+            item.worm_specified_retention_duration || null,
+          worm_duration_unit: 'p' || null
+        }
+      };
+    }
     return params;
   }
 

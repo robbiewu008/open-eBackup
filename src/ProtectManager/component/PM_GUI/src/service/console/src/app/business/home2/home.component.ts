@@ -16,12 +16,16 @@ import {
   BackupClustersApiService,
   ClustersApiService,
   CommonConsts,
+  CookieService,
   DataMap,
-  I18NService
+  DataMapService,
+  I18NService,
+  RoleType
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { includes, reject, set } from 'lodash';
 import { forkJoin, of, Subject } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { cardlist } from './cardlist';
 
 const map = new Map();
@@ -31,9 +35,9 @@ cardlist.forEach(item => {
 const widthClassMap: any = [
   [736, ['oneColumn', 'wider']],
   [852, ['twoColumns', 'narrower']],
-  [1112, ['twoColumns', 'wider']],
+  [1220, ['twoColumns', 'wider']],
   [1289, ['threeColumns', 'narrower']],
-  [1488, ['threeColumns', 'wider']],
+  [1643, ['threeColumns', 'wider']],
   [1724, ['fourColumns', 'narrower']],
   [Infinity, ['fourColumns', 'wider']]
 ];
@@ -51,6 +55,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   topFailedTasksSlaProtectionPolicy;
   @ViewChild('topFailedTasksResourceObjects', { static: false })
   topFailedTasksResourceObjects;
+  @ViewChild('backupSoftwareManagement', { static: false })
+  backupSoftwareManagement;
   cardList = cardlist;
   windowResizeObserver = new Subject();
   timer;
@@ -62,6 +68,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   missionOverviewTimeOption;
   performanceTimeOption;
   topTimeOption;
+  backupSoftWareTimeOption;
   isNoXSeries = includes(
     [
       DataMap.Deploy_Type.hyperdetect.value,
@@ -87,6 +94,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private i18n: I18NService,
     public appUtilsService: AppUtilsService,
     private clusterApiService: ClustersApiService,
+    private dataMapService: DataMapService,
+    private cookieService: CookieService,
     private BackupClustersApiService: BackupClustersApiService
   ) {}
 
@@ -107,6 +116,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.missionOverviewTimeOption = this.getTimeOption([0, 3, 4, 5]);
     this.performanceTimeOption = this.getTimeOption([1, 2, 3, 4, 5, 6]);
     this.topTimeOption = this.getTimeOption([4, 5]);
+    this.backupSoftWareTimeOption = this.dataMapService.toArray(
+      'backupSoftwareTimeType'
+    );
   }
   ngOnDestroy() {
     window.removeEventListener('resize', this.resizeHandler);
@@ -149,6 +161,12 @@ export class HomeComponent implements OnInit, OnDestroy {
       // x3000 不支持防勒索
       this.cardList = this.cardList.filter((item: any) => item.index !== 5);
     }
+    // 自定义用户或者数据保护管理员不支持查看DPA纳管
+    if (
+      ![RoleType.SysAdmin, RoleType.Auditor].includes(this.cookieService.role)
+    ) {
+      this.cardList = this.cardList.filter((item: any) => item.index !== 13);
+    }
     return this.cardList.filter((item: any) => {
       return !item?.show;
     });
@@ -182,37 +200,52 @@ export class HomeComponent implements OnInit, OnDestroy {
           typeList: [1]
         };
     set(params, 'akLoading', false);
-    this.clusterApiService.getClustersInfoUsingGET(params).subscribe(res => {
-      this.clusterOption = res.records.map(item => {
-        return {
-          isLeaf: true,
-          label: item.clusterName,
-          value: item.clusterId,
-          ...item
-        };
-      });
-      if (this.appUtilsService.isDecouple) {
-        // e1000 性能容量预测不需要展示本地盘
-        this.clusterOption = reject(
-          this.clusterOption,
-          item => item.deviceType === DataMap.poolStorageDeviceType.Server.value
-        );
-      }
-      this.cardList.find(item => {
-        return (item.name = 'missionOverview');
-      }).selectcluster = this.clusterOption[0]?.value;
-      const nodeRequests = this.clusterOption.map(item => {
-        return this.appUtilsService.isDecouple
-          ? of(item)
-          : this.BackupClustersApiService.queryAllMembers({
-              clustersType: item.clusterType,
-              clustersId: item.clusterId,
-              akLoading: false
-            });
-      });
+    this.clusterApiService
+      .getClustersInfoUsingGET(params)
+      .pipe(
+        finalize(() => {
+          this.clusterOption = [
+            {
+              isLeaf: true,
+              label: this.i18n.get('common_home_all_clusters_label'),
+              value: -1
+            },
+            ...this.clusterOption
+          ];
+          this.cardList.find(item => {
+            return (item.name = 'missionOverview');
+          }).selectcluster = this.clusterOption[0]?.value;
+        })
+      )
+      .subscribe(res => {
+        this.clusterOption = res.records.map(item => {
+          return {
+            isLeaf: true,
+            label: item.clusterName,
+            value: item.clusterId,
+            ...item
+          };
+        });
+        if (this.appUtilsService.isDecouple) {
+          // e1000 性能容量预测不需要展示本地盘
+          this.clusterOption = reject(
+            this.clusterOption,
+            item =>
+              item.deviceType === DataMap.poolStorageDeviceType.Server.value
+          );
+        }
+        const nodeRequests = this.clusterOption.map(item => {
+          return this.appUtilsService.isDecouple
+            ? of(item)
+            : this.BackupClustersApiService.queryAllMembers({
+                clustersType: item.clusterType,
+                clustersId: item.clusterId,
+                akLoading: false
+              });
+        });
 
-      this.requestNodes(nodeRequests);
-    });
+        this.requestNodes(nodeRequests);
+      });
   }
   requestNodes(nodeRequests) {
     forkJoin(nodeRequests).subscribe((res: any) => {
@@ -249,14 +282,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       this.refresh('performance');
       this.refresh('capacityDiction');
-      this.clusterOption = [
-        {
-          isLeaf: true,
-          label: this.i18n.get('common_home_all_clusters_label'),
-          value: -1
-        },
-        ...this.clusterOption
-      ];
     });
   }
 
@@ -267,13 +292,15 @@ export class HomeComponent implements OnInit, OnDestroy {
         children: []
       }));
     } else {
-      this.clusterNodesOption = this.clusterOption.map((item, index) => {
-        return {
-          ...item,
-          isLeaf: false,
-          children: this.mapChildren(res, index)
-        };
-      });
+      this.clusterNodesOption = this.clusterOption
+        .slice(1)
+        .map((item, index) => {
+          return {
+            ...item,
+            isLeaf: false,
+            children: this.mapChildren(res, index)
+          };
+        });
     }
   }
 

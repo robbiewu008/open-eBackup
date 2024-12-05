@@ -20,8 +20,19 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { I18NService } from 'app/shared/services';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidatorFn
+} from '@angular/forms';
+import { ModalRef, TreeNode } from '@iux/live';
+import { isJson } from 'app/shared';
+import {
+  CopyControllerService,
+  RestoreApiV2Service
+} from 'app/shared/api/services';
 import {
   Filters,
   ProTableComponent,
@@ -29,7 +40,13 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
-import { ModalRef, TreeNode } from '@iux/live';
+import {
+  CommonConsts,
+  RestoreFileType,
+  RestoreV2LocationType,
+  RestoreV2Type
+} from 'app/shared/consts';
+import { BaseUtilService, I18NService } from 'app/shared/services';
 import {
   assign,
   find,
@@ -45,18 +62,7 @@ import {
   trim,
   uniqueId
 } from 'lodash';
-import {
-  CopyControllerService,
-  RestoreApiV2Service
-} from 'app/shared/api/services';
-import {
-  CommonConsts,
-  RestoreFileType,
-  RestoreV2LocationType,
-  RestoreV2Type
-} from 'app/shared/consts';
-import { isJson } from 'app/shared';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, Subject } from 'rxjs';
 
 @Component({
   selector: 'aui-object-level-restore',
@@ -68,7 +74,7 @@ export class ObjectLevelRestoreComponent implements OnInit {
   @Input() rowCopy;
   @Input() childResType;
   @Input() restoreType;
-
+  valid$ = new Subject<boolean>();
   title = this.i18n.get('explore_object_need_restore_label');
   formGroup: FormGroup;
   pathView = 'all';
@@ -79,6 +85,7 @@ export class ObjectLevelRestoreComponent implements OnInit {
   properties;
   treeData = [];
   treeSelection = [];
+  customInputSelection = [];
   tableData: TableData;
   tableConfig: TableConfig;
   selectionTableData = [];
@@ -87,7 +94,16 @@ export class ObjectLevelRestoreComponent implements OnInit {
   isSearch = false; // 是否触发了手动搜索
   // 搜索关键字
   searchKey: string;
+  modeMap = {
+    fromTree: '0',
+    fromInput: '1'
+  };
+  @ViewChild('clearAllPathPopover', { static: false }) clearAllPathPopover;
 
+  pathErrorTip = {
+    invalidPath: this.i18n.get('common_incorrect_format_label'),
+    invalidMaxLength: this.i18n.get('common_valid_length_rang_label', [1, 2048])
+  };
   @ViewChild('input', { static: false }) pathInput: ElementRef<
     HTMLIFrameElement
   >;
@@ -103,6 +119,7 @@ export class ObjectLevelRestoreComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private i18n: I18NService,
     private modal: ModalRef,
+    private baseUtilService: BaseUtilService,
     private restoreV2Service: RestoreApiV2Service,
     private copyControllerService: CopyControllerService
   ) {}
@@ -128,7 +145,23 @@ export class ObjectLevelRestoreComponent implements OnInit {
       location: new FormControl({
         value: this.resourceData?.name,
         disabled: true
-      })
+      }),
+      objectMode: new FormControl(this.modeMap.fromTree),
+      objectPath: new FormControl(
+        {
+          value: '',
+          disabled: true
+        },
+        {
+          validators: [this.baseUtilService.VALID.maxLength(2048)]
+        }
+      )
+    });
+    this.formGroup.get('objectMode').valueChanges.subscribe(res => {
+      res === this.modeMap.fromInput
+        ? this.formGroup.get('objectPath').enable()
+        : this.formGroup.get('objectPath').disable();
+      this.setValid();
     });
     this.modal.getInstance().lvOkDisabled = true;
   }
@@ -210,7 +243,17 @@ export class ObjectLevelRestoreComponent implements OnInit {
       data: mergePaths,
       total: this.selectedTotal
     };
-    this.modal.getInstance().lvOkDisabled = !this.selectedTotal;
+    this.setValid();
+  }
+
+  setValid() {
+    // 注意这里valid$发true 是disable，后续版本记得调整
+    const flag =
+      this.formGroup.invalid ||
+      (this.formGroup.get('objectMode').value === this.modeMap.fromTree
+        ? !this.selectedTotal
+        : isEmpty(this.customInputSelection));
+    this.valid$.next(flag);
   }
 
   tabChange() {
@@ -220,6 +263,33 @@ export class ObjectLevelRestoreComponent implements OnInit {
         this.cdr.markForCheck();
       });
     }
+  }
+
+  add() {
+    const path = this.formGroup.value.objectPath;
+    if (
+      find(this.customInputSelection, item => item.label === path) ||
+      !path ||
+      this.formGroup.get('objectPath').invalid
+    ) {
+      return;
+    }
+    this.customInputSelection.push({
+      label: path,
+      removable: true
+    });
+    this.customInputSelection = [...this.customInputSelection];
+    this.setValid();
+  }
+
+  clearAll() {
+    this.customInputSelection = [];
+    this.clearAllPathPopover?.hide();
+    this.setValid();
+  }
+
+  cancel() {
+    this.clearAllPathPopover?.hide();
   }
 
   initConfig(): void {
@@ -521,8 +591,15 @@ export class ObjectLevelRestoreComponent implements OnInit {
   }
 
   getParams() {
-    const objectInfo = map(this.selectTableData.data, 'extendInfo');
-    const params = {
+    let objectInfo = [];
+    const objectFromTree =
+      this.formGroup.get('objectMode').value === this.modeMap.fromTree;
+    if (objectFromTree) {
+      objectInfo = map(this.selectTableData.data, 'extendInfo');
+    } else {
+      objectInfo = map(this.customInputSelection, 'label');
+    }
+    return {
       copyId: this.rowCopy.uuid,
       targetEnv:
         this.resourceData?.environment_uuid || this.resourceData?.root_uuid,
@@ -530,16 +607,13 @@ export class ObjectLevelRestoreComponent implements OnInit {
       targetLocation: this.formGroup.value.restoreLocation,
       targetObject: this.resourceData?.uuid,
       extendInfo: {
-        objectInfo: JSON.stringify(objectInfo)
+        objectInfo: JSON.stringify(objectInfo),
+        objectFrom: this.formGroup.get('objectMode').value
       }
     };
-    return params;
   }
 
   restore(): Observable<void> {
-    if (isEmpty(this.selectTableData)) {
-      return;
-    }
     return new Observable<void>((observer: Observer<void>) => {
       const params = this.getParams();
       this.restoreV2Service

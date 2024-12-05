@@ -375,12 +375,7 @@ export class VolumeRestoreComponent implements OnInit {
                 volumeOptions: filter(this.volumeOptions, item => {
                   return (
                     toNumber(item.size ?? 0) >= tmp.size &&
-                    !(
-                      this.isWindows &&
-                      this.formGroup.get('restorationType').value ===
-                        DataMap.windowsVolumeBackupType.volume.value &&
-                      item.volumeType !== '3'
-                    )
+                    !(this.isWindows && item.isBackupable !== '1')
                   );
                 })
               });
@@ -559,10 +554,7 @@ export class VolumeRestoreComponent implements OnInit {
           each(recordsTemp, item => {
             if (!this.isWindows) {
               this.parseLinuxVolume(item, tableData);
-            } else if (
-              this.isWindows &&
-              item.extendInfo?.fileSystem === 'NTFS'
-            ) {
+            } else if (this.isWindows) {
               tableData.push(
                 assign(item, {
                   key: get(item, 'extendInfo.volumeName'),
@@ -572,6 +564,7 @@ export class VolumeRestoreComponent implements OnInit {
                   fileSystem: get(item, 'extendInfo.fileSystem'),
                   volumeType: get(item, 'extendInfo.volumeType'),
                   volumeName: get(item, 'extendInfo.volumeName'),
+                  isBackupable: get(item, 'extendInfo.isBackupable'),
                   isLeaf: true
                 })
               );
@@ -767,12 +760,7 @@ export class VolumeRestoreComponent implements OnInit {
       item.volumeOptions = this.volumeOptions.filter(tmp => {
         return (
           toNumber(tmp.size ?? 0) >= item.size &&
-          !(
-            this.isWindows &&
-            this.formGroup.get('restorationType').value ===
-              DataMap.windowsVolumeBackupType.volume.value &&
-            tmp.volumeType !== '3'
-          )
+          !(this.isWindows && tmp.isBackupable !== '1')
         );
       });
       // 若因为裸机和卷的切换导致原本可选的没了，就需要更新

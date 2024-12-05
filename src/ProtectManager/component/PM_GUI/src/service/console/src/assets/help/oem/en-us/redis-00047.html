@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -41,7 +41,7 @@
    <p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p1479982113919">In addition, to meet enterprises' different data protection requirements for various environments, the <span id="redis-00047__en-us_topic_0000001839223149_text087015321837">product</span> allows you to customize SLAs.</p>
    <div class="section" id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_section5197184061219">
     <h4 class="sectiontitle">Preset SLAs</h4>
-    <p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p22352378191">The system provides three preset SLAs: Gold, Silver, and Bronze. An SLA defines the backup frequency, copy retention period, and backup time window of a backup job.</p>
+    <p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p22352378191">The system provides three preset SLAs: Gold, Silver, and Bronze. An SLA defines the backup interval, copy retention period, and backup time window of a backup job.</p>
     <p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p48831228191910"><a href="#redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table179754488191">Table 1</a> describes the preset SLAs.</p>
     <ul id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_ul54087306518">
      <li id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_li6408193016518"><span id="redis-00047__en-us_topic_0000001839223149_text05222406118"><strong>Backup Interval</strong></span>: First backup time and backup interval</li>
@@ -101,7 +101,7 @@
            <ul id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001337708186_en-us_topic_0000001089449281_ul204671046183020">
             <li id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001337708186_li13272171464619"><span id="redis-00047__en-us_topic_0000001839223149_text52371313121110"><span id="redis-00047__en-us_topic_0000001839223149_text13237513201117"><strong id="redis-00047__en-us_topic_0000001839223149_b2078594914214">Backup Interval</strong></span></span>: once every day from April 20, 2021</li>
             <li id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001337708186_li564919593455"><span id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001337708186_text1631534445013"><strong>Copy Retention</strong></span>: one month</li>
-            <li id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li64671546123014"><span id="redis-00047__en-us_topic_0000001839223149_text1677815725"><span id="redis-00047__en-us_topic_0000001839223149_text1574507773"><strong id="redis-00047__en-us_topic_0000001839223149_b2012219042220">Backup Time Window</strong></span></span>: 01:00:00 to 01:00:00 on the next day</li>
+            <li id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li64671546123014"><span id="redis-00047__en-us_topic_0000001839223149_text1190342071"><span id="redis-00047__en-us_topic_0000001839223149_text392771717"><strong id="redis-00047__en-us_topic_0000001839223149_b2012219042220">Backup Time Window</strong></span></span>: 01:00:00 to 01:00:00 on the next day</li>
            </ul></li>
           <li id="redis-00047__en-us_topic_0000001839223149_li2537205323317"><strong id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001839223149_b1090654871915">Specify Target Location</strong> (This parameter is available only in 1.6.0 and later versions.)<p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001839223149_p11670168103016">The system automatically selects a target storage unit or storage unit group for backup through intelligent balancing.</p></li>
           <li id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001337708186_li14252019152814"><strong id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001839223149_b01427492115">Job Timeout Alarm</strong> (This parameter is available only in 1.6.0 and later versions.)<p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001839223149_p05091431163012">Disabled</p></li>
@@ -137,7 +137,7 @@
    </div>
    <div class="section" id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_section1969174516230">
     <h4 class="sectiontitle">Custom SLAs</h4>
-    <p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p118482029286">Users can customize SLAs for backup and replication jobs. In an SLA, user can customize basic parameters such as the job execution frequency, time window, and copy retention duration, and other advanced parameters for various protected resources.</p>
+    <p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p118482029286">You can customize SLAs for backup and replication jobs. In an SLA, you can define basic parameters such as the job execution interval, time window, and copy retention duration, as well as other advanced parameters specific to various resources to be protected.</p>
     <p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p1186264517237"><a href="#redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table171521524193513">Table 2</a> describes the SLAs used for different types of jobs.</p>
     <div class="tablenoborder">
      <a name="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table171521524193513"></a><a name="en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table171521524193513"></a>
@@ -151,18 +151,18 @@
       </colgroup>
       <thead align="left">
        <tr id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_row615222414352">
-        <th align="left" class="cellrowborder" valign="top" width="19.75%" id="mcps1.3.5.4.2.3.1.1"><p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p5152182416356"><strong id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_b83141864249">SLA</strong></p></th>
-        <th align="left" class="cellrowborder" valign="top" width="80.25%" id="mcps1.3.5.4.2.3.1.2"><p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p7152162483518"><strong id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_b12873191162417">Description</strong></p></th>
+        <th align="left" class="cellrowborder" valign="top" width="19.75%" id="mcps1.3.5.4.2.3.1.1"><p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p5152182416356">SLA</p></th>
+        <th align="left" class="cellrowborder" valign="top" width="80.25%" id="mcps1.3.5.4.2.3.1.2"><p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p7152162483518">Description</p></th>
        </tr>
       </thead>
       <tbody>
        <tr id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_row7152102483518">
         <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.4.2.3.1.1 "><p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p14152132413510">Backup SLA</p></td>
-        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p2015222473514">Users can define the execution frequency and retention period of backup copies of a backup job.</p></td>
+        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p2015222473514">Define parameters such as the backup job execution interval and backup copy retention period.</p></td>
        </tr>
        <tr id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_row61521124173515">
         <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.4.2.3.1.1 "><p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p71523242356">Replication SLA</p></td>
-        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p1315215248355">Users can specify the target cluster to which the backup copy is replicated, and customize the replication job execution frequency and copy retention period.</p></td>
+        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p id="redis-00047__en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p1315215248355">Specify the target cluster to which a backup copy is replicated, and define parameters such as the replication job execution interval and replication copy retention period.</p></td>
        </tr>
       </tbody>
      </table>

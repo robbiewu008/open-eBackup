@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -60,7 +60,20 @@
         <p>链接文件不支持文件级恢复。</p>
        </div>
       </div> <p></p></li>
-     <li><span>在文件集副本数据中选择单个或多个文件或目录。</span></li>
+     <li><span>在文件集副本数据中选择单个或多个文件或目录。</span><p></p>
+      <ul>
+       <li id="Files-0044__vmware_gud_0060_li8386311313">对于1.5.0版本，从目录树勾选待恢复的文件。</li>
+       <li id="Files-0044__vmware_gud_0060_li12142286316">对于1.6.0及后续版本，请先设置恢复文件的选择方式，再从目录树选择待恢复文件或手动输入待恢复文件的路径。
+        <div class="note" id="Files-0044__vmware_gud_0060_note1195634711290">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <ul id="Files-0044__vmware_gud_0060_ul14956124712297">
+           <li id="Files-0044__vmware_gud_0060_li1095674772911">如果副本中的文件数量较多，系统可能超时，无法从目录树上选择待恢复文件，建议手动输入恢复文件路径。</li>
+           <li id="Files-0044__vmware_gud_0060_li19956104762918">手动输入文件路径时，请输入文件完整路径，例如：/opt/abc/efg.txt或者C:\abc\efg.txt。当输入文件夹路径时，表示恢复该文件夹下的所有文件，例如：/opt/abc或者C:\abc。路径中的文件名区分大小写。</li>
+          </ul>
+         </div>
+        </div></li>
+      </ul> <p></p></li>
      <li><span>配置恢复文件参数。</span><p></p><p>相关参数说明如<a href="#Files-0044__table93951625101715">表1</a>所示。</p>
       <div class="tablenoborder">
        <a name="Files-0044__table93951625101715"></a><a name="table93951625101715"></a>

@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
@@ -21,6 +21,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
 <meta name="DC.Title" content="Live Mounting Volumes">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="volume-0047.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20241029">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="volume-0050">
 <meta name="DC.Language" content="en-us">
@@ -32,9 +40,9 @@
 <h1 class="topictitle1">Live Mounting Volumes</h1>
 <div><p>This section describes how to live mount a volume copy to the original or a new location to quickly start a new volume.</p>
 <div class="section"><h4 class="sectiontitle">Context</h4><p>ProtectAgent and other related software have been installed on the target host to which the copy is mounted.</p>
-<p>For details, see the <i><cite>OceanProtect <span id="volume-0050__en-us_topic_0000001792502994_ph19170214112011">Appliance 1.5.0-1.6.0</span> ProtectAgent Installation Guide</cite></i>.</p>
+<p>For details, see the <i><cite>OceanProtect DataBackup 1.5.0-1.6.0 ProtectAgent Installation Guide</cite></i>.</p>
 </div>
-<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="volume-0050__en-us_topic_0000001839142377_uicontrol183118309417"><b><span id="volume-0050__en-us_topic_0000001839142377_text9312030174113"><strong>Explore</strong></span> &gt; <span id="volume-0050__en-us_topic_0000001839142377_text123126308412"><strong>Live Mount</strong></span> &gt; <span id="volume-0050__en-us_topic_0000001839142377_text141509455414"><strong>Volume</strong></span></b></span>.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span>.</span></li><li><span>On the <span class="uicontrol"><b><span><strong>Select Resource</strong></span></b></span> tab page, search for or select the resource corresponding to the copy to be mounted, and click <span class="uicontrol"><b><span><strong>Next</strong></span></b></span>.</span></li><li><span>On the <span class="uicontrol"><b><span><strong>Select Copy</strong></span></b></span> tab page, perform the following operations:</span><p><ol type="a"><li>Select the copy to be mounted.<ul><li>The copy to be live mounted must be in the <span class="uicontrol"><b><span><strong>Normal</strong></span></b></span> status.</li><li>The copy generated after part of disks of a VM are backed up cannot be live mounted.</li></ul>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="volume-0050__en-us_topic_0000001839142377_uicontrol183118309417"><b><span id="volume-0050__en-us_topic_0000001839142377_text9312030174113"><strong>Explore</strong></span> &gt; <span id="volume-0050__en-us_topic_0000001839142377_text123126308412"><strong>Live Mount</strong></span> &gt; <span id="volume-0050__en-us_topic_0000001839142377_text336523562911"><strong>Volumes</strong></span></b></span>.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span>.</span></li><li><span>On the <span class="uicontrol"><b><span><strong>Select Resource</strong></span></b></span> tab page, search for or select the resource corresponding to the copy to be mounted, and click <span class="uicontrol"><b><span><strong>Next</strong></span></b></span>.</span></li><li><span>On the <span class="uicontrol"><b><span><strong>Select Copy</strong></span></b></span> tab page, perform the following operations:</span><p><ol type="a"><li>Select the copy to be mounted.<ul><li>The copy to be live mounted must be in the <span class="uicontrol"><b><span><strong>Normal</strong></span></b></span> status.</li><li>The copy generated after part of disks of a VM are backed up cannot be live mounted.</li></ul>
 </li><li>Select the created mount update policy.<p>If the mount update policy is not selected in this step, you can configure the mount update policy by <a href="volume-0053.html">modifying mount information</a> later.</p>
 </li><li>Click <span class="uicontrol"><b><span><strong>Next</strong></span></b></span>.</li></ol>
 </p></li><li><span>On the <span class="uicontrol"><b><span><strong>Mount Options</strong></span></b></span> tab page, set mounting parameters and click <span class="uicontrol"><b><span><strong>Next</strong></span></b></span>.</span><p><ol type="a"><li>Configure basic and advanced parameters for live mount.<div class="p"><a href="#volume-0050__en-us_topic_0000001387707949_table89615043315">Table 1</a> describes the related parameters.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>You can configure either or both of <strong>Bandwidth (MB/s)</strong> and <strong>Normalized IOPS (8 KB)</strong>. You are advised to configure only <strong>Bandwidth (MB/s)</strong> for bandwidth-intensive services and only <strong>Normalized IOPS (8 KB)</strong> for IOPS-intensive services. If you cannot determine the service type or the service type changes frequently, you can configure both parameters and the system will control the traffic using the parameter with a smaller value.</li><li>You can query the conversion between the standard IOPS (8 KB) model and real I/O model in the conversion table on the GUI.</li><li>The maximum traffic of mounted copies is limited to ensure the performance of backup and restoration jobs. In addition, the minimum traffic of mounted copies is set to ensure the minimum performance of mounted copies.</li></ul>
@@ -96,7 +104,7 @@
 </tr>
 <tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.1 "><p><span><strong>Max. Burst Duration (s)</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.2 "><p>This parameter needs to be set only when the <strong><span><strong>Burst</strong></span></strong> parameter of the bandwidth or standard IOPS is set. It indicates the maximum duration of burst bandwidth or burst IOPS.</p>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.2 "><p>Maximum duration of burst bandwidth or burst IOPS. This parameter needs to be set only when the <strong><span><strong>Burst</strong></span></strong> parameter of the bandwidth or standard IOPS is set.</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="16.439999999999998%" headers="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.1 "><p><span><strong>Normalized Latency (8 KB)</strong></span></p>
@@ -114,6 +122,11 @@
 </p></li><li><span>Preview and confirm the mounting parameters, and click <span class="uicontrol"><b><span><strong>Finish</strong></span></b></span>.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>If a copy is used for live mount immediately after it is generated, the live mount job may fail because the copy is still in the initialization status. In this case, try again in 3 minutes.</p>
 </div></div>
 </p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="volume-0047.html">Live Mount</a></div>
 </div>
 </div>
 

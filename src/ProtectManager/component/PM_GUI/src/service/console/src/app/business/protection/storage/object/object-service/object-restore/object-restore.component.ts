@@ -66,6 +66,7 @@ export class ObjectRestoreComponent implements OnInit {
     invalidSameName: this.i18n.get('explore_object_bucket_same_name_label')
   };
   storageType;
+  isAps = false; // 判断原副本是不是阿里云类型的
 
   @Input() rowCopy;
   @Input() childResType;
@@ -76,13 +77,19 @@ export class ObjectRestoreComponent implements OnInit {
     invalidName: this.i18n.get(
       'protection_object_bucket_prefix_letter_tip_label'
     ),
+    invalidApsName: this.i18n.get(
+      'protection_object_bucket_prefix_name_ali_tip_label'
+    ),
     invalidHead: this.i18n.get(
       'protection_object_bucket_prefix_head_tip_label'
+    ),
+    invalidApsHead: this.i18n.get(
+      'protection_object_bucket_prefix_head_ali_tip_label'
     ),
     invalidNear: this.i18n.get(
       'protection_object_bucket_prefix_near_tip_label'
     ),
-    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [256])
+    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [1024])
   };
 
   constructor(
@@ -111,6 +118,7 @@ export class ObjectRestoreComponent implements OnInit {
       assign(this.bucketErrorTip, {
         invalidName: this.i18n.get('explore_object_bucket_ali_error_tip_label')
       });
+      this.isAps = true;
     } else if (this.storageType === DataMap.objectStorageType.hcs.value) {
       assign(this.bucketErrorTip, {
         invalidName: this.i18n.get(
@@ -154,7 +162,7 @@ export class ObjectRestoreComponent implements OnInit {
       prefix: new FormControl('', {
         validators: [
           this.validPrefix(),
-          this.baseUtilService.VALID.maxLength(256)
+          this.baseUtilService.VALID.maxLength(1024)
         ]
       }),
       overwriteType: new FormControl(NasFileReplaceStrategy.Replace, {
@@ -209,11 +217,21 @@ export class ObjectRestoreComponent implements OnInit {
       }
 
       const reg1 = /[|:*?<>"\\]+/;
-      if (reg1.test(control.value)) {
+      if (reg1.test(control.value) && !this.isAps) {
         return { invalidName: { value: control.value } };
       }
-      if (control.value.startsWith('/')) {
+      if (control.value.startsWith('/') && !this.isAps) {
         return { invalidHead: { value: control.value } };
+      }
+      if (
+        (control.value.startsWith('\\') || control.value.startsWith('/')) &&
+        this.isAps
+      ) {
+        return { invalidApsHead: { value: control.value } };
+      }
+      const tmpValue = control.value.split('/');
+      if (find(tmpValue, item => item === '..') && this.isAps) {
+        return { invalidApsName: { value: control.value } };
       }
       if (control.value.indexOf('//') !== -1) {
         return { invalidNear: { value: control.value } };

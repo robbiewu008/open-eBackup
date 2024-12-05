@@ -127,7 +127,7 @@ export class AppUtilsService {
             DataMap.Resource_Type.AntDBInstance.value,
             DataMap.Resource_Type.AntDBClusterInstance.value
           ],
-          hide: !includes(items, ApplicationType.AntDB),
+          hide: true,
           label: this.i18n.get('protection_antdb_label'),
           prefix: 'A',
           color: '#01618B',
@@ -906,7 +906,7 @@ export class AppUtilsService {
             DataMap.Resource_Type.nutanixVm.value,
             ResourceSetType.RESOURCE_GROUP
           ],
-          hide: !includes(items, ApplicationType.Nutanix),
+          hide: true,
           label: this.i18n.get('common_nutanix_label'),
           prefix: 'N',
           color: '#316CE6',
@@ -1313,7 +1313,7 @@ export class AppUtilsService {
           id: 'Saponoracle',
           slaId: ApplicationType.Saponoracle,
           key: [DataMap.Resource_Type.saponoracleDatabase.value],
-          hide: !includes(items, ApplicationType.Saponoracle),
+          hide: true,
           label: this.i18n.get('common_sap_on_oracle_label'),
           prefix: 'S',
           color: '#006DB8',

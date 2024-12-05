@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -38,7 +38,7 @@
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="activedirectory_00055"></a><a name="activedirectory_00055"></a>
 
 <h1 class="topictitle1">Viewing Active Directory Copy Information</h1>
-<div><div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="activedirectory_00055__en-us_topic_0000001839142377_uicontrol193721239145518"><b>Protection &gt; Applications &gt; Active Directory</b></span>.</span></li><li><span>Select a copy viewing mode to view the copy information.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Replication copies can be viewed only in the target cluster.</p>
+<div><div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="activedirectory_00055__en-us_topic_0000001839142377_uicontrol193721239145518"><b>Explore &gt; Applications &gt; Active Directory</b></span>.</span></li><li><span>Select a copy viewing mode to view the copy information.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="activedirectory_00055__en-us_topic_0000001792503826_p189141741162012">Replication copies can be viewed only in the target cluster.</p>
 </div></div>
 <ul><li>Click the <span class="uicontrol"><b>Resources</b></span> tab to view the Active Directory copy information by resource. When an Active Directory domain controller is faulty or an Active Directory object is abnormal, you are advised to search for the copy of the corresponding point in time through this entry if you need to restore the system state of the Active Directory domain controller or the Active Directory object.<p><a href="#activedirectory_00055__en-us_topic_0000001295748056_en-us_topic_0000001311095373_table20406195873110">Table 1</a> describes the related parameters.</p>
 
@@ -69,7 +69,7 @@
 <ul><li>If yes, <strong><span><strong>Status</strong></span></strong> is <strong><span><strong>Existing</strong></span></strong>.</li><li>If no, <strong><span><strong>Status</strong></span></strong> is <strong><span><strong>Not existing</strong></span></strong>.</li></ul>
 </td>
 </tr>
-<tr><td class="cellrowborder" rowspan="3" valign="top" width="7.5200000000000005%" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Copy</strong></span></p>
+<tr><td class="cellrowborder" rowspan="3" valign="top" width="7.5200000000000005%" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Copies</strong></span></p>
 <p></p>
 <p></p>
 </td>
@@ -86,14 +86,14 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Replicated Copy Protection Status</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><div class="p">Whether a replication copy is protected. <ul id="activedirectory_00055__en-us_topic_0000001792503826_ul161172118317"><li id="activedirectory_00055__en-us_topic_0000001792503826_li11611621173118"><span id="activedirectory_00055__en-us_topic_0000001792503826_text16611162123119"><strong>Unprotected</strong></span>: The replication copy is not associated with an SLA, or the replication copy is associated with an SLA but protection is disabled.</li><li id="activedirectory_00055__en-us_topic_0000001792503826_li761111211312"><span id="activedirectory_00055__en-us_topic_0000001792503826_text161192116317"><strong>Protected</strong></span>: The replication copy is associated with an SLA and protection is enabled.</li><li id="activedirectory_00055__en-us_topic_0000001792503826_li2088261163715"><span id="activedirectory_00055__en-us_topic_0000001792503826_text12602914182118"><strong>Creating</strong></span>: The replication copy is associated with an SLA and protection is being created. The status is available only in 1.5.0 and earlier versions.</li></ul>
+<td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.1.3.2.4.1.1 "><div class="p">Whether a replication copy is protected. <ul><li><span><strong>Unprotected</strong></span>: The replication copy is not associated with an SLA, or the replication copy is associated with an SLA but protection is disabled.</li><li><span><strong>Protected</strong></span>: The replication copy is associated with an SLA and protection is enabled.</li></ul>
 </div>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-</li><li>Click the <span class="uicontrol"><b>Copy</b></span> tab to view information about all copies by copy. When you need to restore data by using a specified copy, you are advised to search for the copy through this entry.<p><a href="#activedirectory_00055__en-us_topic_0000001295748056_en-us_topic_0000001311095373_table1390718405171">Table 2</a> describes the related parameters.</p>
+</li><li>Click the <span class="uicontrol"><b>Copies</b></span> tab to view information about all copies by copy. When you need to restore data by using a specified copy, you are advised to search for the copy through this entry.<p><a href="#activedirectory_00055__en-us_topic_0000001295748056_en-us_topic_0000001311095373_table1390718405171">Table 2</a> describes the related parameters.</p>
 
 <div class="tablenoborder"><a name="activedirectory_00055__en-us_topic_0000001295748056_en-us_topic_0000001311095373_table1390718405171"></a><a name="en-us_topic_0000001295748056_en-us_topic_0000001311095373_table1390718405171"></a><table cellpadding="4" cellspacing="0" summary="" id="activedirectory_00055__en-us_topic_0000001295748056_en-us_topic_0000001311095373_table1390718405171" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Copy parameters</caption><colgroup><col style="width:15.770000000000001%"><col style="width:17.72%"><col style="width:66.51%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.1.2.2.2.2.2.3.2.4.1.1"><p>Parameter</p>
 </th>
@@ -101,7 +101,7 @@
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" rowspan="10" valign="top" width="15.770000000000001%" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Copy</strong></span></p>
+<tbody><tr><td class="cellrowborder" rowspan="10" valign="top" width="15.770000000000001%" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Copies</strong></span></p>
 <p></p>
 </td>
 <td class="cellrowborder" valign="top" width="17.72%" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Backup Time</strong></span></p>
@@ -139,15 +139,17 @@
 <p>The available option is <strong>Full</strong>.</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><strong id="activedirectory_00055__fc_gud_0058_0_en-us_topic_0000001792503826_b916692512">Expired At</strong></p>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><div class="p"><strong id="activedirectory_00055__fc_gud_0058_0_en-us_topic_0000001792503826_b916692512">Expired At</strong><div class="note" id="activedirectory_00055__fc_gud_0058_0_en-us_topic_0000001792503826_note130943715514"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="activedirectory_00055__fc_gud_0058_0_en-us_topic_0000001792503826_en-us_topic_0000001656771385_p108956094911">This parameter is available only in 1.5.0SPC26 and later versions.</p>
+</div></div>
+</div>
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>Copy expiration time. If a copy is permanently valid, <strong id="activedirectory_00055__fc_gud_0058_0_en-us_topic_0000001792503826_b19549142216517">--</strong> is displayed.</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>Backup Data</p>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><strong>Backup Data</strong></p>
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>Content of the backup data.</p>
-<ul><li><strong>System State</strong>: can be used for restoring the system state.</li><li><strong>System State+Objects</strong>: can be used for restoring the system state or objects.</li></ul>
+<ul><li><strong>System state</strong>: can be used for restoring the system state.</li><li><strong>System state + Object</strong>: can be used for restoring the system state or objects.</li></ul>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span id="activedirectory_00055__en-us_topic_0000001792503826_text68691158124911"><strong>WORM</strong></span></p>
@@ -156,9 +158,11 @@
 </div>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><strong>WORM Expiration Time</strong></p>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><strong>WORM Expired</strong></p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>If a copy is a WORM copy, the WORM expiration time is displayed. Otherwise, <strong id="activedirectory_00055__en-us_topic_0000001792503826_b1914333131317">--</strong> is displayed.</p>
+<td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><div class="p">If a copy is a WORM copy, the WORM expiration time is displayed. Otherwise, <strong id="activedirectory_00055__en-us_topic_0000001792503826_b1914333131317">--</strong> is displayed.<div class="note" id="activedirectory_00055__en-us_topic_0000001792503826_note173611252434"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="activedirectory_00055__en-us_topic_0000001792503826_p10361192510430">The WORM expiration time is based on the WORM file system compliance clock. If the WORM file system compliance clock time is inconsistent with the system time, check the WORM status after the WORM file system compliance clock reaches the set expiration time.</p>
+</div></div>
+</div>
 </td>
 </tr>
 <tr><td class="cellrowborder" rowspan="4" valign="top" width="15.770000000000001%" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Resources</strong></span></p>

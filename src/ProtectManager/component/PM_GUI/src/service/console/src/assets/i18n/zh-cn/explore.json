@@ -538,7 +538,7 @@
   "explore_associated_snapshot_time_label": "关联副本时间",
   "explore_associated_file_count_label": "内部文件数量",
   "explore_infected_file_count_label": "内部可疑文件数量",
-  "explore_latest_snapshot_detect_report_label": "最新已感染快照情况",
+  "explore_latest_snapshot_detect_report_label": "最新已感染快照文件情况",
   "explore_detect_infected_result_report_label": "系统在 {0} 针对文件系统（{1}）的快照（{2}）进行智能侦测（侦测模型：{3}），总文件大小{4}，发现：<br>{5}个可疑文件。",
   "explore_io_detect_infected_result_report_label": "系统在 {0} 针对文件系统（{1}）进行实时侦测（侦测模型：{3}）发现异常，生成安全快照（{2}），总文件大小{4}，发现：<br>{5}个可疑文件。",
   "explore_infected_file_report_label": "发现{0}个可疑文件。",
@@ -720,6 +720,7 @@
   "explore_honeypot_abnormal_header_label": "异常提醒",
   "explore_honeypot_exceed_limit_label": "超出开启数量限制",
   "explore_honeypot_start_detection_tip_label": "开启诱饵侦测功能前，请确保文件系统已开启NFS共享，否则会开启失败。",
+  "explore_honeypot_last_update_time_label": "诱饵文件更新时间",
   "explore_target_object_storage_label": "目标对象存储",
   "explore_target_bucket_label": "目标桶",
   "explore_choose_exist_bucket_label": "选择已有桶",
@@ -867,10 +868,12 @@
   "explore_no_worm_label": "未配置防勒索策略",
   "explore_go_set_label": "前往配置",
   "explore_honeypot_file_label": "诱饵文件",
-  "explore_antiransomware_switch_tip_label": "防勒索策略仅支持以下资源类型：\n{0}",
+  "explore_antiransomware_switch_tip_label": "若资源开启了小文件聚合，则不支持对该资源创建防勒索策略。\n防勒索策略仅支持以下资源类型：\n{0}",
   "explore_drill_plan_type_label": "演练计划类型",
   "explore_drill_plan_name_label": "演练计划名称",
   "explore_drill_resource_name_label": "资源名称",
   "explore_drill_perid_tip_label": "支持即时挂载的资源可选演练类型为恢复或即时挂载。系统默认选择最新的副本用于周期性演练，演练类型采用即时挂载时，不支持选择日志副本。",
-  "explore_drill_single_tip_label": "支持即时挂载的副本可选演练类型为恢复或即时挂载。"
+  "explore_drill_single_tip_label": "支持即时挂载的副本可选演练类型为恢复或即时挂载。",
+  "explore_latest_snapshot_detect_report_help_label": "仅支持侦测类型为“安全一体机侦测”的设备展示最新已感染快照文件情况。",
+  "explore_snapshot_restore_tips_label": "请确认所选快照及之前生成的快照是否存在已感染快照：<ul><li>不存在已感染快照：可以直接执行恢复。</li><li>存在已感染快照：请确认是否在所选快照生成前已经对文件系统中的感染文件进行处理，如果未处理则不建议使用该快照进行恢复。</li></ul>"
 }

@@ -80,7 +80,6 @@ import {
   find,
   get,
   includes,
-  intersection,
   isBoolean,
   isEmpty,
   isFunction,
@@ -799,6 +798,11 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
       {
         key: 'name',
         label: this.i18n.get('common_name_label'),
+        isShow: false
+      },
+      {
+        key: 'user_id',
+        label: this.i18n.get('common_owned_userid_label'),
         isShow: false
       },
       {
@@ -2140,7 +2144,11 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               DataMap.Resource_Type.oracle.value,
               DataMap.Resource_Type.oracleCluster.value,
               DataMap.Resource_Type.virtualMachine.value,
-              DataMap.Resource_Type.APSCloudServer.value
+              DataMap.Resource_Type.APSCloudServer.value,
+              DataMap.Resource_Type.FusionCompute.value,
+              DataMap.Resource_Type.fusionOne.value,
+              DataMap.Resource_Type.hyperVVm.value,
+              DataMap.Resource_Type.cNwareVm.value
             ],
             data.resource_sub_type
           ) &&
@@ -2736,10 +2744,6 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
                 DataMap.Resource_Type.MySQLDatabase.value,
                 DataMap.Resource_Type.MySQLInstance.value,
                 DataMap.Resource_Type.MySQLClusterInstance.value,
-                DataMap.Resource_Type.SQLServerInstance.value,
-                DataMap.Resource_Type.SQLServerClusterInstance.value,
-                DataMap.Resource_Type.SQLServerGroup.value,
-                DataMap.Resource_Type.SQLServerDatabase.value,
                 DataMap.Resource_Type.oracle.value,
                 DataMap.Resource_Type.oracleCluster.value
               ],
@@ -2973,6 +2977,8 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
             return;
           }
           this.warningMessageService.create({
+            rowData: data,
+            actionId: OperateItems.DeletingCopy,
             content: this.i18n.get('common_copy_delete_label', [
               this.datePipe.transform(
                 data.display_timestamp,
@@ -2980,10 +2986,15 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
                 SYSTEM_TIME.timeZone
               )
             ]),
-            onOK: () => {
+            onOK: modal => {
               this.copiesApiService
                 .deleteCopyV1CopiesCopyIdDelete({
-                  copyId: data.uuid
+                  copyId: data.uuid,
+                  isForced: get(
+                    modal,
+                    'contentInstance.forciblyDeleteCopy',
+                    null
+                  )
                 })
                 .subscribe(res => {
                   if (
@@ -3139,6 +3150,12 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
               [DataMap.CopyData_generatedType.Imported.value],
               data.generated_by
             )) ||
+          (includes(
+            [DataMap.Resource_Type.volume.value],
+            data.resource_sub_type
+          ) &&
+            JSON.parse(data.resource_properties || '{}')
+              ?.environment_os_type === DataMap.Os_Type.windows.value) ||
           this.isHcsUser,
         onClick: () => {
           this.copiesApiService
@@ -3160,6 +3177,26 @@ export class CopyDataListComponent implements OnInit, OnChanges, OnDestroy {
         this.getCopyData();
       }
     });
+  }
+
+  getSystemBackupStatus(item) {
+    const resourcePro = JSON.parse(item.resource_properties || '{}');
+    if (!resourcePro) {
+      return '';
+    }
+
+    if (this.rowData?.subType === DataMap.Resource_Type.fileset.value) {
+      return resourcePro?.extendInfo?.is_OS_backup === 'true' || false;
+    }
+
+    if (resourcePro?.environment_os_type === DataMap.Os_Type.windows.value) {
+      return (
+        Number(resourcePro?.extendInfo?.system_backup_type) ===
+        DataMap.windowsVolumeBackupType.bareMetal.value
+      );
+    }
+
+    return resourcePro?.ext_parameters?.system_backup_flag;
   }
 
   isEncrypted(data) {

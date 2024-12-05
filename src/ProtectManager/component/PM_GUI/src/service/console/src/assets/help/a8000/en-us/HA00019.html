@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="documenttype" content="usermanual">
 <meta name="prodname" content="csbs">
 <meta name="DC.Format" content="XHTML">
@@ -39,7 +39,7 @@
 
 <h1 class="topictitle1">Adding Member Nodes</h1>
 <div><p>This section describes how to add a member node. After a member node is added, backup copies can be stored on the backup storage corresponding to the member node. For 1.6.0 and later versions, <span class="uicontrol"><b>Internal Communication Network Plane</b></span> is renamed as <span class="uicontrol"><b>Internal Communication Network</b></span>. This section uses 1.5.0 as an example.</p>
-<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>The internal communication network plane has been added for the active node, and at least two IP addresses have been reserved for the member node to be added.</li><li>(Applicable to 1.6.0 and later versions) The internal communication network plane has been added to the backup storage device to be upgraded.</li><li>The version of the member node to be added is the same as that of the active node.</li><li>The member node to be added is not added to other replication clusters or multi-domain clusters.</li><li>(Applicable to 1.5.0) The local storage corresponding to the member node to be added is not added as a backup storage unit.</li><li>(Applicable to 1.6.0 and later versions) The local storage corresponding to the member node to be added is not added as a backup storage device.</li><li>The IP address of the internal communication network plane of the member node to be added must be able to communicate with the IP address of the internal communication network plane of the active node.</li><li>No job is running on the member node to be added.</li><li>You have downloaded the member node's CA certificate of the <span class="uicontrol"><b><span><strong>Server Certificate</strong></span></b></span> type and imported it to the active node. The type is set to <span class="uicontrol"><b>Backup/Multi-domain/Replication Cluster</b></span>. For details about how to import a CA certificate, see "Downloading a Certificate" and "Importing a Certificate" in the <i><cite>OceanProtect <span id="HA00019__en-us_topic_0000001792502994_ph2613737162018">Appliance 1.5.0-1.6.0</span> Security Configuration Guide</cite></i>.</li><li>Ensure that the environment of the member node to be added is newly deployed.<ul><li>The environment is deployed for the first time and only initialization has been performed.</li></ul>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>The internal communication network plane has been added for the active node, and at least two IP addresses have been reserved for the member node to be added.</li><li>(Applicable to 1.6.0 and later versions) The internal communication network plane has been added to the backup storage device to be upgraded.</li><li>The version of the member node to be added is the same as that of the active node.</li><li>The member node to be added is not added to other replication clusters or multi-domain clusters.</li><li>(Applicable to 1.5.0) The local storage corresponding to the member node to be added is not added as a backup storage unit.</li><li>(Applicable to 1.6.0 and later versions) The local storage corresponding to the member node to be added is not added as a backup storage device.</li><li>The IP address of the internal communication network plane of the member node to be added must be able to communicate with the IP address of the internal communication network plane of the active node.</li><li>No job is running on the member node to be added.</li><li>You have downloaded the member node's CA certificate of the <span class="uicontrol"><b><span><strong>Server Certificate</strong></span></b></span> type and imported it to the active node. The type is set to <span class="uicontrol"><b>Backup/Multi-domain/Replication Cluster</b></span>. For details about how to import a CA certificate, see "Downloading a Certificate" and "Importing a Certificate" in the <i><cite>OceanProtect DataBackup 1.5.0-1.6.0 Security Configuration Guide</cite></i>.</li><li>Ensure that the environment of the member node to be added is newly deployed.<ul><li>The environment is deployed for the first time and only initialization has been performed.</li></ul>
 <ul><li>For an environment where data protection services are performed, you need to reinstall the backup software and reinitialize the environment and ensure that no other operations have been performed. Verify that the following operations are not performed:<ul><li>Add an external cluster (replication cluster, management cluster, or managed cluster).</li><li>Add an archive storage.</li><li>Add a storage device.</li><li>Create a backup storage unit group.</li><li>Set the SFTP service.</li><li>Register ProtectAgent.</li><li>Create an SLA.</li><li>Register the protection resources of related features.</li><li>A job has been created or is being executed, such as backup, replication, archiving, restoration, or certificate import.</li><li>A member node is added as a backup storage device, replication cluster, management cluster, or managed cluster and so on by other clusters.</li></ul>
 </li></ul>
 </li></ul>

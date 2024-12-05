@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -39,7 +39,7 @@
    <p>The <span>product</span> allows you to perform operations, such as deletion and resource authorization or reclaiming, on the cluster where the database resides.</p>
    <div class="section">
     <h4 class="sectiontitle">Related Operations</h4>
-    <p>You need to log in to the management page, choose <span class="uicontrol"><b><span id="oracle_gud_0086__en-us_topic_0000001839142377_text63901566195"><strong>Protection</strong></span> &gt; Databases &gt; Oracle</b></span>, click the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab, and find the host or cluster on which you want to perform related operations.</p>
+    <p>You need to log in to the management page, choose <span class="uicontrol"><b><span id="oracle_gud_0086__en-us_topic_0000001839142377_text63901566195"><strong>Protection</strong></span> &gt; Databases &gt; Oracle</b></span>, click the <span class="uicontrol"><b><span><strong>Clusters</strong></span></b></span> tab, and find the host or cluster on which you want to perform related operations.</p>
     <p><a href="#oracle_gud_0086__table24934294919">Table 1</a> describes the related operations.</p>
    </div>
    <div class="tablenoborder">
@@ -70,7 +70,7 @@
          </div>
         </div></td>
        <td class="cellrowborder" valign="top" width="57.910000000000004%" headers="mcps1.3.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>By default, only the system administrator has the permission to protect resources. If you want to assign this permission to a data protection administrator, authorize the data protection administrator as the system administrator to protect resources.</p></td>
-       <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.3.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Authorize Resource</strong></span></b></span> in the row where the target cluster resides and select the desired data protection administrator to whom resources are authorized.</p></td>
+       <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.3.2.4.1.3 "><p>In the row of the target cluster, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Authorize Resource</strong></span></b></span> and select the data protection administrator for resource authorization.</p></td>
       </tr>
       <tr>
        <td class="cellrowborder" valign="top" width="14.360000000000003%" headers="mcps1.3.3.2.4.1.1 "><p>Reclaiming Oracle resources</p>
@@ -81,17 +81,17 @@
          </div>
         </div></td>
        <td class="cellrowborder" valign="top" width="57.910000000000004%" headers="mcps1.3.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to reclaim resources authorized to the data protection administrator. The data protection administration is not permitted to protect the resources that have been reclaimed.</p> <p><strong>Note</strong></p> <p>The protection permissions on a resource that has been associated with an SLA cannot be reclaimed. Before reclamation, remove the protection.</p></td>
-       <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.3.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Reclaim Resource</strong></span></b></span> in the row where the cluster resides.</p></td>
+       <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.3.2.4.1.3 "><p>In the row of the target cluster, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Reclaim Resource</strong></span></b></span>.</p></td>
       </tr>
       <tr>
        <td class="cellrowborder" valign="top" width="14.360000000000003%" headers="mcps1.3.3.2.4.1.1 "><p>Modifying a cluster</p></td>
        <td class="cellrowborder" valign="top" width="57.910000000000004%" headers="mcps1.3.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to modify the information such as cluster name and nodes in the cluster.</p></td>
-       <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.3.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify</strong></span></b></span> in the row where the cluster resides.</p></td>
+       <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.3.2.4.1.3 "><p>In the row of the target cluster, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify</strong></span></b></span>.</p></td>
       </tr>
       <tr>
        <td class="cellrowborder" valign="top" width="14.360000000000003%" headers="mcps1.3.3.2.4.1.1 "><p>Deleting a cluster</p></td>
        <td class="cellrowborder" valign="top" width="57.910000000000004%" headers="mcps1.3.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>If you do not need to protect a database on an Oracle cluster or you want to use the database as a recovery target, you can delete the Oracle cluster. After deletion, related information will disappear from the management page.</p> <p><strong>Note</strong></p> <p>Before deleting a cluster, delete the databases that have been registered with the <span>product</span> in the cluster.</p></td>
-       <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.3.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Delete</strong></span></b></span> in the row where the cluster resides.</p></td>
+       <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.3.2.4.1.3 "><p>In the row of the target cluster, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Delete</strong></span></b></span>.</p></td>
       </tr>
       <tr>
        <td class="cellrowborder" valign="top" width="14.360000000000003%" headers="mcps1.3.3.2.4.1.1 ">

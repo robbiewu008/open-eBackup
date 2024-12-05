@@ -1,4 +1,3 @@
-<div class="vmware-disk-container">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="vmware-disk-container">
     <lv-tabs [(lvActiveIndex)]="diskType">
         <ng-container *ngFor='let disk of disksInfo'>
             <lv-tab lvTitle='{{disk.type}}' [lvId]="disk.type">

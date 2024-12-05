@@ -336,6 +336,11 @@ export class SystemComponent implements OnInit {
               )
             ),
             routerLink: '/system/settings/config-network'
+          },
+          {
+            id: 'service-oriented-nms',
+            label: this.i18n.get('system_dme_access_setting_label'),
+            routerLink: '/system/settings/service-oriented-nms'
           }
         ]
       },

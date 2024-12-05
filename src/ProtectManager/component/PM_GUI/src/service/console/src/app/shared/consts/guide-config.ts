@@ -354,7 +354,7 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_config_xbsa_path_label',
-              link: 'zh-cn_topic_0000001792358014.html',
+              link: 'informix-0011.html',
               enLink: 'informix-0011.html'
             }
           ],
@@ -655,17 +655,17 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'sql-0011.html',
+              link: 'sql-0012.html',
               enLink: 'sql-0008.html'
             },
             {
               title: 'protection_guide_oracle_environment_ready_label',
-              link: 'sql-0013.html',
+              link: 'sql-0014.html',
               enLink: 'sql-0010.html'
             },
             {
               title: 'protection_set_powershell_permission_label',
-              link: 'sql-0014.html',
+              link: 'sql-0015.html',
               enLink: 'sql-0011.html'
             },
             {
@@ -1161,6 +1161,7 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
         label: 'common_nutanix_label',
         prefix: 'N',
         color: '#316CE6',
+        hidden: true,
         steps: {
           beforeBackup: [
             {

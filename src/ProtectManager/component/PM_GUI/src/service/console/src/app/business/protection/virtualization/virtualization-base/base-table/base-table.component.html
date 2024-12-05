@@ -1,4 +1,3 @@
-<div class="aui-operation" *ngIf="!isSummary">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-operation" *ngIf="!isSummary">
     <lv-group>
         <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData" [maxDisplayItems]="maxDisplayItems">
         </lv-pro-button-group>
@@ -42,6 +42,7 @@
 <ng-template #hypervStatusTpl let-item>
     <aui-status [value]="item.extendInfo?.State" type="hypervStatus"></aui-status>
 </ng-template>
+
 
 <ng-template #nutanixStatusTpl let-item>
     <aui-status [value]="item.extendInfo?.state" [type]="subType === dataMap.Resource_Type.nutanixHost.value ? 'nutanixHostStatus' : 'nutanixVmStatus'"></aui-status>

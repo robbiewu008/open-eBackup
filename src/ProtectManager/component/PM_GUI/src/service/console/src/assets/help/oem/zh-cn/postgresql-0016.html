@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -104,7 +104,7 @@
                <ul id="postgresql-0016__zh-cn_topic_0000001656442629_zh-cn_topic_0000001607691468_ul5885426132914">
                 <li id="postgresql-0016__zh-cn_topic_0000001656442629_zh-cn_topic_0000001607691468_li10885172616299">由于同一个代理主机只能和一个存储单元建链，如果开启源端重删，<span class="parmname" id="postgresql-0016__zh-cn_topic_0000001656442629_zh-cn_topic_0000001607691468_parmname1288482662917">“指定目标位置”</span>请选择<span class="parmvalue" id="postgresql-0016__zh-cn_topic_0000001656442629_zh-cn_topic_0000001607691468_parmvalue118843260299">“备份存储单元”</span>。否则，由于智能均衡可能会选择到未建链的存储单元，导致源端重删启用失败。如果不同受保护对象关联了不同SLA，且SLA中指定不同的备份存储单元，请为受保护对象选择不同代理主机，否则将会导致部分备份任务源端重删启用失败。</li>
                 <li id="postgresql-0016__zh-cn_topic_0000001656442629_zh-cn_topic_0000001607691468_li9885182662911">如果代理主机已经与一个存储单元建链，当该代理主机未执行源端重删备份任务时，可以在代理主机上执行<strong id="postgresql-0016__zh-cn_topic_0000001656442629_zh-cn_topic_0000001607691468_b288592682919">dataturbo delete storage_object storage_name=</strong><em id="postgresql-0016__zh-cn_topic_0000001656442629_zh-cn_topic_0000001607691468_i1188518269295">?</em>命令（命令中的<strong id="postgresql-0016__zh-cn_topic_0000001656442629_zh-cn_topic_0000001607691468_b13885926142911">storage_name=</strong><em id="postgresql-0016__zh-cn_topic_0000001656442629_zh-cn_topic_0000001607691468_i18885526102913">?</em>可以通过<strong id="postgresql-0016__zh-cn_topic_0000001656442629_zh-cn_topic_0000001607691468_b11885726112912">dataturbo show storage_object</strong>命令查询），删除与存储单元的源端重删链接。再选择该代理主机执行源端重删备份任务，则可以成功与新的存储单元建链。</li>
-                <li id="postgresql-0016__zh-cn_topic_0000001656442629_zh-cn_topic_0000001607691468_li11885142615297">请参考<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect兼容性查询</a>工具查看主机的操作系统类型是否支持源端重删，若不支持，配置源端重删后将不会生效。</li>
+                <li id="postgresql-0016__zh-cn_topic_0000001656442629_zh-cn_topic_0000001607691468_li11885142615297">请参考产品的兼容性查询工具查看主机的操作系统类型是否支持源端重删，若不支持，配置源端重删后将不会生效。</li>
                </ul>
               </div>
              </div>
@@ -131,7 +131,7 @@
         </table>
        </div>
       </div> <p></p></li>
-     <li><span>单击<span class="uicontrol">“确定”</span>。</span><p></p><p>如果当前系统时间已晚于该SLA首次备份的开始时间，则关联备份SLA后可以选择在当前立即执行备份或者根据SLA中设置的备份策略等待下次调度。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol" id="postgresql-0016__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p></p><p id="postgresql-0016__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p> <p></p></li>
      <li><strong>可选：</strong><span>执行手动备份。</span><p></p>
       <div class="p">
        当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。

@@ -422,7 +422,8 @@ export class TodayComponent implements OnInit {
             DataMap.Resource_Type.ExchangeDataBase.value,
             DataMap.Resource_Type.saphanaDatabase.value,
             DataMap.Resource_Type.AntDBClusterInstance.value,
-            DataMap.Resource_Type.AntDBInstance.value
+            DataMap.Resource_Type.AntDBInstance.value,
+            DataMap.Resource_Type.gaussdbForOpengaussInstance.value
           ],
           this.rowData.sub_type
         )
@@ -1615,13 +1616,16 @@ export class TodayComponent implements OnInit {
 
   deleteCopy(data) {
     this.warningMessageService.create({
+      rowData: data,
+      actionId: OperateItems.DeletingCopy,
       content: this.i18n.get('common_copy_delete_label', [
         this.datePipe.transform(data.display_timestamp, 'yyyy-MM-dd HH:mm:ss')
       ]),
-      onOK: () => {
+      onOK: modal => {
         this.copiesApiService
           .deleteCopyV1CopiesCopyIdDelete({
-            copyId: data.uuid
+            copyId: data.uuid,
+            isForced: get(modal, 'contentInstance.forciblyDeleteCopy', null)
           })
           .subscribe(res => {
             if (

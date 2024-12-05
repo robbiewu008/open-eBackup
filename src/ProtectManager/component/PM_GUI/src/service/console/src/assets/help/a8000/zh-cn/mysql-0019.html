@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -39,32 +39,34 @@
 
 <h1 class="topictitle1">步骤8：创建备份SLA</h1>
 <div><p>系统中预置了Gold、Silver、Bronze三种SLA，当预置SLA已满足您的备份需求时，请跳过本节。您也可以根据自身需求自定义SLA以对资源进行保护。</p>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="mysql-0019__zh-cn_topic_0000001839142377_uicontrol8111821122820">“<span id="mysql-0019__zh-cn_topic_0000001839142377_text71111921162814">保护</span> &gt; 保护策略 &gt; SLA”</span>。</span></li><li><span>单击<span class="uicontrol">“<span>创建</span>”</span>。</span></li><li><span>自定义SLA的名称。</span></li><li><span>选择需要创建SLA的应用类型。</span><p><ol type="a"><li>单击<span class="uicontrol">“<span>应用</span>”</span>图标，选择要创建SLA的应用。<ul><li><span id="mysql-0019__zh-cn_topic_0000001839143189_text10801323154310">通用SLA</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p144377559348">通用SLA可以应用到除文件集、SQL Server、PostgreSQL、Kingbase、Redis、ClickHouse、MongoDB、NAS共享、NAS文件系统、华为云Stack GaussDB、TDSQL、Kubernetes CSI、TiDB、卷、通用共享、Active Directory、GaussDB T 单机、对象存储、GaussDB（1.6.0及后续版本）、应用入口的SAP HANA（1.6.0及后续版本）以外的资源。</p>
-</li><li><span>指定应用</span><p>选择需要创建SLA的一种应用类型，本节以创建指定应用为例进行说明。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="mysql-0019__zh-cn_topic_0000001839142377_uicontrol8111821122820">“<span id="mysql-0019__zh-cn_topic_0000001839142377_text71111921162814">保护</span> &gt; 保护策略 &gt; SLA”</span>。</span></li><li><span>单击<span class="uicontrol">“<span>创建</span>”</span>。</span></li><li><span>自定义SLA的名称。</span></li><li><span>选择需要创建SLA的应用类型。</span><p><ol type="a" id="mysql-0019__zh-cn_topic_0000001839143189_ol71011061385"><li id="mysql-0019__zh-cn_topic_0000001839143189_li874192611325">单击<span class="uicontrol" id="mysql-0019__zh-cn_topic_0000001839143189_uicontrol16364345183319">“<span id="mysql-0019__zh-cn_topic_0000001839143189_text1149753619468">应用</span>”</span>图标，选择要创建SLA的应用。<ul id="mysql-0019__zh-cn_topic_0000001839143189_ul157501053341"><li id="mysql-0019__zh-cn_topic_0000001839143189_li3750135143412"><span id="mysql-0019__zh-cn_topic_0000001839143189_text10801323154310">通用SLA</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p144377559348">通用SLA可以应用到除文件集、SQL Server、PostgreSQL、Kingbase、Redis、ClickHouse、MongoDB、NAS共享、NAS文件系统、华为云Stack GaussDB、TDSQL、Kubernetes CSI、TiDB、卷、通用共享、Active Directory、GaussDB T 单机、对象存储、GaussDB（1.6.0及后续版本）、应用入口的SAP HANA（1.6.0及后续版本）以外的资源。</p>
+</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li1512516103413"><span id="mysql-0019__zh-cn_topic_0000001839143189_text1431211194314">指定应用</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p1889316245358">选择需要创建SLA的一种应用类型，本节以创建<span id="mysql-0019__zh-cn_topic_0000001839143189_text52802054182812">指定应用</span>为例进行说明。</p>
 </li></ul>
-</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li></ol>
+<div class="note" id="mysql-0019__zh-cn_topic_0000001839143189_note1521871141414"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="mysql-0019__zh-cn_topic_0000001839143189_p3218512141">仅OceanProtect X系列备份一体机支持选择NAS文件系统。</p>
+</div></div>
+</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li7586156123316">单击<span class="uicontrol" id="mysql-0019__zh-cn_topic_0000001839143189_uicontrol206968467360">“确定”</span>。</li></ol>
 </p></li><li><span>配置备份策略。</span><p><ol type="a"><li>单击<span class="uicontrol">“<span>备份策略</span>”</span>图标。</li><li>配置备份策略基础参数。<p>相关参数说明如<a href="#mysql-0019__table2663151516335">表1</a>所示。</p>
-<div class="p">请根据业务情况合理设置备份频率、副本保留时长和备份时间窗口，建议如下：<ul id="mysql-0019__oracle_gud_0026_zh-cn_topic_0000001839143189_ul188491594283"><li id="mysql-0019__oracle_gud_0026_zh-cn_topic_0000001142022930_li14385102192911">备份频率至少大于备份时长。</li><li id="mysql-0019__oracle_gud_0026_zh-cn_topic_0000001839143189_li19397172762917">全量副本的保留时长大于增量备份（或永久增量（合成全量）备份）副本的保留时长。</li><li id="mysql-0019__oracle_gud_0026_li249619119012">副本保留时长必须大于备份频率。</li></ul>
-<div class="note" id="mysql-0019__oracle_gud_0026_zh-cn_topic_0000001839143189_note71621858195515"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="mysql-0019__oracle_gud_0026_zh-cn_topic_0000001839143189_ul192116591633"><li id="mysql-0019__oracle_gud_0026_zh-cn_topic_0000001839143189_li921115591430">至少需要创建1个备份策略，如需添加其他备份策略，请单击界面右侧的<span><img id="mysql-0019__oracle_gud_0026_zh-cn_topic_0000001839143189_image178791955235" src="zh-cn_image_0000001914096218.png"></span>。</li><li id="mysql-0019__oracle_gud_0026_zh-cn_topic_0000001839143189_li621119590319">日志备份仅支持添加1个备份策略，其他备份类型最多支持添加4个备份策略。</li></ul>
+<div class="p">请根据业务情况合理设置备份频率、副本保留时长和备份时间窗口，建议如下：<ul><li>备份频率至少大于备份时长。</li><li>全量副本的保留时长大于增量备份（或永久增量（合成全量）备份）副本的保留时长。</li><li>副本保留时长必须大于备份频率。</li></ul>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>至少需要创建1个备份策略，如需添加其他备份策略，请单击界面右侧的<span><img src="zh-cn_image_0000002073208732.png"></span>。</li><li>日志备份仅支持添加1个备份策略，其他备份类型最多支持添加4个备份策略。</li><li>配置增量备份策略可实现增量备份。</li></ul>
 </div></div>
 </div>
 
-<div class="tablenoborder"><a name="mysql-0019__table2663151516335"></a><a name="table2663151516335"></a><table cellpadding="4" cellspacing="0" summary="" id="mysql-0019__table2663151516335" frame="border" border="1" rules="all"><caption><b>表1 </b>备份策略基础参数说明</caption><colgroup><col style="width:11.16%"><col style="width:15.989999999999998%"><col style="width:72.85000000000001%"></colgroup><thead align="left"><tr id="mysql-0019__zh-cn_topic_0000001839143189_row666215155334"><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.5.2.1.2.3.2.4.1.1"><p id="mysql-0019__zh-cn_topic_0000001839143189_p4662171516333">参数</p>
+<div class="tablenoborder"><a name="mysql-0019__table2663151516335"></a><a name="table2663151516335"></a><table cellpadding="4" cellspacing="0" summary="" id="mysql-0019__table2663151516335" frame="border" border="1" rules="all"><caption><b>表1 </b>备份策略基础参数说明</caption><colgroup><col style="width:11.16%"><col style="width:15.989999999999998%"><col style="width:72.85000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.5.2.1.2.3.2.4.1.1"><p>参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.5.2.1.2.3.2.4.1.2"><p id="mysql-0019__zh-cn_topic_0000001839143189_p166621215123312">说明</p>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.5.2.1.2.3.2.4.1.2"><p>说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr id="mysql-0019__zh-cn_topic_0000001839143189_row1186112273215"><td class="cellrowborder" rowspan="2" valign="top" width="11.16%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p14662115153320"><span id="mysql-0019__zh-cn_topic_0000001839143189_text189091138183019">全量备份</span></p>
+<tbody><tr><td class="cellrowborder" rowspan="2" valign="top" width="11.16%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span>全量备份</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="15.989999999999998%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p10862922113217"><span id="mysql-0019__zh-cn_topic_0000001839143189_text1451193120338">名称</span></p>
+<td class="cellrowborder" valign="top" width="15.989999999999998%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span>名称</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.2 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p486272220321">设置备份策略名称。</p>
+<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.2 "><p>设置备份策略名称。</p>
 </td>
 </tr>
-<tr id="mysql-0019__zh-cn_topic_0000001839143189_row117822001416"><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p46161395235">-</p>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p>-</p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><div class="p" id="mysql-0019__zh-cn_topic_0000001839143189_p1432741045617">配置全量备份的备份频率、副本保留时长以及允许备份的时间段。<ul id="mysql-0019__zh-cn_topic_0000001839143189_ul06281446133611"><li id="mysql-0019__zh-cn_topic_0000001839143189_li5628184619364">配置全量备份的备份频率以及副本的保留时长。<ul id="mysql-0019__zh-cn_topic_0000001839143189_ul3912541183319"><li id="mysql-0019__zh-cn_topic_0000001839143189_li1491311419338"><span id="mysql-0019__zh-cn_topic_0000001839143189_text881714512382">按年</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p7913141173316">设置每年xx月xx日执行一次，副本保留xx天/周/月/年或永久保留。</p>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><div class="p">配置全量备份的备份频率、副本保留时长以及允许备份的时间段。<ul id="mysql-0019__zh-cn_topic_0000001839143189_ul06281446133611"><li id="mysql-0019__zh-cn_topic_0000001839143189_li5628184619364">配置全量备份的备份频率以及副本的保留时长。<ul id="mysql-0019__zh-cn_topic_0000001839143189_ul3912541183319"><li id="mysql-0019__zh-cn_topic_0000001839143189_li1491311419338"><span id="mysql-0019__zh-cn_topic_0000001839143189_text881714512382">按年</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p7913141173316">设置每年xx月xx日执行一次，副本保留xx天/周/月/年或永久保留。</p>
 <p id="mysql-0019__zh-cn_topic_0000001839143189_p52204181864">如果当年不存在该日期，则不产生副本。</p>
 </li><li id="mysql-0019__zh-cn_topic_0000001839143189_li18913134153311"><span id="mysql-0019__zh-cn_topic_0000001839143189_text9120524389">按月</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p19131141133318">设置每月xx日（可选择多日）或最后一天执行一次，副本保留xx天/周/月/年或永久保留。</p>
 <p id="mysql-0019__zh-cn_topic_0000001839143189_p131866516465">如果设置为每月xx日执行一次备份，当月不存在该日期时，则不产生副本。</p>
@@ -78,16 +80,16 @@
 </div>
 </td>
 </tr>
-<tr id="mysql-0019__zh-cn_topic_0000001839143189_row13246917173820"><td class="cellrowborder" rowspan="2" valign="top" width="11.16%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p4761906401"><span id="mysql-0019__zh-cn_topic_0000001839143189_text459620167408">增量备份</span></p>
+<tr><td class="cellrowborder" rowspan="2" valign="top" width="11.16%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span>增量备份</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="15.989999999999998%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p1483592733814"><span id="mysql-0019__zh-cn_topic_0000001839143189_text48351227113813">名称</span></p>
+<td class="cellrowborder" valign="top" width="15.989999999999998%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span>名称</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.2 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p15835182717387">设置备份策略名称。</p>
+<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.2 "><p>设置备份策略名称。</p>
 </td>
 </tr>
-<tr id="mysql-0019__zh-cn_topic_0000001839143189_row6447154618391"><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p1577502402">-</p>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p>-</p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><div class="p" id="mysql-0019__zh-cn_topic_0000001839143189_p157911675147">配置增量备份的备份频率、副本保留时长以及允许备份的时间段。<span id="mysql-0019__zh-cn_topic_0000001839143189_ph1527624175915">增量备份和差异备份不能同时存在。</span><ul id="mysql-0019__zh-cn_topic_0000001839143189_ul167919791414"><li id="mysql-0019__zh-cn_topic_0000001839143189_li1079119781413">配置增量备份的备份频率以及副本的保留时长。<ul id="mysql-0019__zh-cn_topic_0000001839143189_ul1679113751412"><li id="mysql-0019__zh-cn_topic_0000001839143189_li177910751413"><span id="mysql-0019__zh-cn_topic_0000001839143189_text9791187121410">按年</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p7791117131413">设置每年xx月xx日执行一次，副本保留xx天/周/月/年或永久保留。</p>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><div class="p">配置增量备份的备份频率、副本保留时长以及允许备份的时间段。<span id="mysql-0019__zh-cn_topic_0000001839143189_ph1527624175915">增量备份和差异备份不能同时存在。</span><ul id="mysql-0019__zh-cn_topic_0000001839143189_ul167919791414"><li id="mysql-0019__zh-cn_topic_0000001839143189_li1079119781413">配置增量备份的备份频率以及副本的保留时长。<ul id="mysql-0019__zh-cn_topic_0000001839143189_ul1679113751412"><li id="mysql-0019__zh-cn_topic_0000001839143189_li177910751413"><span id="mysql-0019__zh-cn_topic_0000001839143189_text9791187121410">按年</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p7791117131413">设置每年xx月xx日执行一次，副本保留xx天/周/月/年或永久保留。</p>
 <p id="mysql-0019__zh-cn_topic_0000001839143189_p62586191379">如果当年不存在该日期，则不产生副本。</p>
 </li><li id="mysql-0019__zh-cn_topic_0000001839143189_li1279112715144"><span id="mysql-0019__zh-cn_topic_0000001839143189_text979110717147">按月</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p179113721413">设置每月xx日（可选择多日）或最后一天执行一次，副本保留xx天/周/月/年或永久保留。</p>
 <p id="mysql-0019__zh-cn_topic_0000001839143189_p125877114419">如果设置为每月xx日执行一次备份，当月不存在该日期时，则不产生副本。</p>
@@ -102,16 +104,16 @@
 </div>
 </td>
 </tr>
-<tr id="mysql-0019__zh-cn_topic_0000001839143189_row7570181021313"><td class="cellrowborder" rowspan="2" valign="top" width="11.16%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p109951957455"><span id="mysql-0019__zh-cn_topic_0000001839143189_text13286155114306">差异备份</span></p>
+<tr><td class="cellrowborder" rowspan="2" valign="top" width="11.16%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span>差异备份</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="15.989999999999998%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p665632115137"><span id="mysql-0019__zh-cn_topic_0000001839143189_text6656122119138">名称</span></p>
+<td class="cellrowborder" valign="top" width="15.989999999999998%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span>名称</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.2 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p065615211136">设置备份策略名称。</p>
+<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.2 "><p>设置备份策略名称。</p>
 </td>
 </tr>
-<tr id="mysql-0019__zh-cn_topic_0000001839143189_row329194814612"><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p158757169456">-</p>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p>-</p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><div class="p" id="mysql-0019__zh-cn_topic_0000001839143189_p841755810479">配置差异备份的备份频率、副本保留时长以及允许备份的时间段。<span id="mysql-0019__zh-cn_topic_0000001839143189_ph149491035175918">增量备份和差异备份不能同时存在。</span><ul id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_ul167919791414"><li id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_li1079119781413">配置差异备份的备份频率以及副本的保留时长。<ul id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_ul1679113751412"><li id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_li177910751413"><span id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_text9791187121410">按年</span><p id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_p7791117131413">设置每年xx月xx日执行一次，副本保留xx天/周/月/年或永久保留。</p>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><div class="p">配置差异备份的备份频率、副本保留时长以及允许备份的时间段。<span id="mysql-0019__zh-cn_topic_0000001839143189_ph149491035175918">增量备份和差异备份不能同时存在。</span><ul id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_ul167919791414"><li id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_li1079119781413">配置差异备份的备份频率以及副本的保留时长。<ul id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_ul1679113751412"><li id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_li177910751413"><span id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_text9791187121410">按年</span><p id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_p7791117131413">设置每年xx月xx日执行一次，副本保留xx天/周/月/年或永久保留。</p>
 <p id="mysql-0019__zh-cn_topic_0000001839143189_p1644311552076">如果当年不存在该日期，则不产生副本。</p>
 </li><li id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_li1279112715144"><span id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_text979110717147">按月</span><p id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_p179113721413">设置每月xx日（可选择多日）或最后一天执行一次，副本保留xx天/周/月/年或永久保留。</p>
 <p id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_p125877114419">如果设置为每月xx日执行一次备份，当月不存在该日期时，则不产生副本。</p>
@@ -126,20 +128,20 @@
 </div>
 </td>
 </tr>
-<tr id="mysql-0019__zh-cn_topic_0000001839143189_row59415442711"><td class="cellrowborder" rowspan="2" valign="top" width="11.16%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p159990425152"><span id="mysql-0019__zh-cn_topic_0000001839143189_text16694132312">日志备份</span></p>
+<tr><td class="cellrowborder" rowspan="2" valign="top" width="11.16%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span>日志备份</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="15.989999999999998%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p2203644151511"><span id="mysql-0019__zh-cn_topic_0000001839143189_text1820320448156">名称</span></p>
+<td class="cellrowborder" valign="top" width="15.989999999999998%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span>名称</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.2 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p82031244191515">设置备份策略名称。</p>
+<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.2 "><p>设置备份策略名称。</p>
 </td>
 </tr>
-<tr id="mysql-0019__zh-cn_topic_0000001839143189_row1915013813277"><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p id="mysql-0019__zh-cn_topic_0000001839143189_p2533254182118">-</p>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p>-</p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><div class="p" id="mysql-0019__zh-cn_topic_0000001839143189_p388052513187">配置日志备份的备份频率和副本保留时长。<ul id="mysql-0019__zh-cn_topic_0000001839143189_ul17373131873818"><li id="mysql-0019__zh-cn_topic_0000001839143189_li2514102132014"><span id="mysql-0019__zh-cn_topic_0000001839143189_text10232154917911">按天</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p185142219203">设置从xx年xx月xx日开始，每xx天执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
-</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li11514525202"><span id="mysql-0019__zh-cn_topic_0000001839143189_text9177753173410">按小时</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p18514722206">设置从xx年xx月xx日开始，每xx小时执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
-</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li15514102132011"><span id="mysql-0019__zh-cn_topic_0000001839143189_text1930617408347">按分钟</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p20514424208">设置从xx年xx月xx日开始，每xx分钟执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><div class="p">配置日志备份的备份频率和副本保留时长。<ul><li><span id="mysql-0019__zh-cn_topic_0000001839143189_text10232154917911">按天</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p185142219203">设置从xx年xx月xx日开始，每xx天执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
+</li><li><span id="mysql-0019__zh-cn_topic_0000001839143189_text9177753173410">按小时</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p18514722206">设置从xx年xx月xx日开始，每xx小时执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
+</li><li><span id="mysql-0019__zh-cn_topic_0000001839143189_text1930617408347">按分钟</span><p id="mysql-0019__zh-cn_topic_0000001839143189_p20514424208">设置从xx年xx月xx日开始，每xx分钟执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
 </li></ul>
-<div class="note" id="mysql-0019__zh-cn_topic_0000001839143189_note1831145514610"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="mysql-0019__zh-cn_topic_0000001839143189_ul983519554497"><li id="mysql-0019__zh-cn_topic_0000001839143189_li10836555174914">同一个SLA中仅支持配置一个日志备份策略。</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li7836655204912">执行日志备份前，必须已存在全量备份或永久增量（合成全量）备份副本。</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li118361555114915">存在日志备份副本后才可以指定时间点恢复。</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li1483625574914">不支持单独配置日志备份策略。</li></ul>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>同一个SLA中仅支持配置一个日志备份策略。</li><li>执行日志备份前，必须已存在全量备份或增量备份副本。</li><li>存在日志备份副本后才可以指定时间点恢复。</li><li>不支持单独配置日志备份策略。</li></ul>
 </div></div>
 </div>
 </td>
@@ -157,13 +159,11 @@
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="22.7%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><div class="p">指定目标位置<div class="note" id="mysql-0019__zh-cn_topic_0000001839143189_note81807159571"><span class="notetitle"> 说明： </span><div class="notebody"><p id="mysql-0019__zh-cn_topic_0000001839143189_p5180415155714">仅X系列备份一体机支持此参数。</p>
-</div></div>
-</div>
+<tbody><tr><td class="cellrowborder" valign="top" width="22.7%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p>指定目标位置</p>
 </td>
-<td class="cellrowborder" valign="top" width="77.3%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><div class="p">请指定备份副本的目标存储位置。<ul id="mysql-0019__zh-cn_topic_0000001839143189_ul3832679403"><li id="mysql-0019__zh-cn_topic_0000001839143189_li178323718400">备份存储单元：对应于备份集群节点。选择备份存储单元后，副本将存储至该存储单元。存储单元容量不足时，备份任务将会失败。</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li31700914016">备份存储单元组：是备份存储单元的集合。选择备份存储单元组后，系统根据存储单元组的存储策略自动选择备份目标存储单元。</li></ul>
-<div class="note" id="mysql-0019__zh-cn_topic_0000001839143189_note06533915171"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="mysql-0019__zh-cn_topic_0000001839143189_ul2261104811172"><li id="mysql-0019__zh-cn_topic_0000001839143189_li182618487176">对于1.5.0版本，如果您部署了集群高可用特性，该参数才显示。您也可以不指定目标位置，如不指定，则系统通过智能均衡自动选择备份目标存储单元。</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li1025484315189">对于1.6.0及后续版本，则必须指定目标位置。</li></ul>
-</div></div>
+<td class="cellrowborder" valign="top" width="77.3%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><div class="p">请指定备份副本的目标存储位置。<ul id="mysql-0019__foc_gud_0019_zh-cn_topic_0000001839143189_ul3832679403"><li id="mysql-0019__foc_gud_0019_zh-cn_topic_0000001839143189_li299019528162">备份存储单元：对应于备份集群节点。选择备份存储单元后，副本将存储至该存储单元。存储单元容量不足时，备份任务将会失败。<p id="mysql-0019__foc_gud_0019_zh-cn_topic_0000001839143189_p36749546164"><a name="mysql-0019__foc_gud_0019_zh-cn_topic_0000001839143189_li299019528162"></a><a name="foc_gud_0019_zh-cn_topic_0000001839143189_li299019528162"></a>创建备份存储单元的操作请参考<span id="mysql-0019__foc_gud_0019_zh-cn_topic_0000001839143189_cite114441740141613">《OceanProtect DataBackup 1.5.0-1.6.0 集群高可用特性指南》</span>中的“管理备份存储单元”章节。</p>
+</li><li id="mysql-0019__foc_gud_0019_zh-cn_topic_0000001839143189_li168151656101610"><span class="parmvalue" id="mysql-0019__foc_gud_0019_zh-cn_topic_0000001839143189_parmvalue142224995111">“备份存储单元组”</span>：是备份存储单元的集合。选择备份存储单元组后，系统根据存储单元组的存储策略自动选择备份目标存储单元。<p id="mysql-0019__foc_gud_0019_zh-cn_topic_0000001839143189_p15126135815168">创建备份存储单元组的操作请参考<span id="mysql-0019__foc_gud_0019_zh-cn_topic_0000001839143189_cite961778916">《OceanProtect DataBackup 1.5.0-1.6.0 集群高可用特性指南》</span>中的“（可选）创建备份存储单元组”章节。</p>
+</li></ul>
 </div>
 </td>
 </tr>
@@ -182,11 +182,11 @@
 <td class="cellrowborder" valign="top" width="77.3%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>开启后，执行备份时会优先使用备节点。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="22.7%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><div class="p"><span id="mysql-0019__zh-cn_topic_0000001839143189_text1535624514432">源端重删</span><div class="note" id="mysql-0019__zh-cn_topic_0000001839143189_note39361915173411"><span class="notetitle"> 说明： </span><div class="notebody"><p id="mysql-0019__zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143189_p5180415155714">仅X系列备份一体机支持此参数。</p>
+<tr><td class="cellrowborder" valign="top" width="22.7%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><div class="p"><span id="mysql-0019__zh-cn_topic_0000001839143189_text1535624514432">源端重删</span><div class="note" id="mysql-0019__zh-cn_topic_0000001839143189_note1141182723518"><span class="notetitle"> 说明： </span><div class="notebody"><p id="mysql-0019__zh-cn_topic_0000001839143189_p164111271351">仅OceanProtect X系列备份一体机和OceanProtect E1000（备份存储为OceanProtect）支持配置此参数。</p>
 </div></div>
 </div>
 </td>
-<td class="cellrowborder" valign="top" width="77.3%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><div class="p">开启后，可以减少传输的数据量，但会增加客户端的资源占用。<div class="note" id="mysql-0019__zh-cn_topic_0000001839143189_note8885112682911"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="mysql-0019__zh-cn_topic_0000001839143189_ul5885426132914"><li id="mysql-0019__zh-cn_topic_0000001839143189_li10885172616299">由于同一个代理主机只能和一个存储单元建链，如果开启源端重删，<span class="parmname" id="mysql-0019__zh-cn_topic_0000001839143189_parmname1288482662917">“指定目标位置”</span>请选择<span class="parmvalue" id="mysql-0019__zh-cn_topic_0000001839143189_parmvalue118843260299">“备份存储单元”</span>。否则，由于智能均衡可能会选择到未建链的存储单元，导致源端重删启用失败。如果不同受保护对象关联了不同SLA，且SLA中指定不同的备份存储单元，请为受保护对象选择不同代理主机，否则将会导致部分备份任务源端重删启用失败。</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li9885182662911">如果代理主机已经与一个存储单元建链，当该代理主机未执行源端重删备份任务时，可以在代理主机上执行<strong id="mysql-0019__zh-cn_topic_0000001839143189_b9845163710167">dataturbo delete storage_object storage_name=</strong><em id="mysql-0019__zh-cn_topic_0000001839143189_i19447038131614">?</em>命令（命令中的<strong id="mysql-0019__zh-cn_topic_0000001839143189_b1050314315162">storage_name=</strong><em id="mysql-0019__zh-cn_topic_0000001839143189_i1237554410161">?</em>可以通过<strong id="mysql-0019__zh-cn_topic_0000001839143189_b11885726112912">dataturbo show storage_object</strong>命令查询），删除与存储单元的源端重删链接。再选择该代理主机执行源端重删备份任务，则可以成功与新的存储单元建链。</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li11885142615297">请参考<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect兼容性查询</a>工具查看主机的操作系统类型是否支持源端重删，若不支持，配置源端重删后将不会生效。</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li7883549153219">若使用内置代理（即ProtectAgent合并部署到<span id="mysql-0019__zh-cn_topic_0000001839143189_text13835155817114">OceanProtect</span>）进行备份，配置源端重删后将不会生效。</li></ul>
+<td class="cellrowborder" valign="top" width="77.3%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><div class="p">开启后，可以减少传输的数据量，但会增加客户端的资源占用。<div class="note" id="mysql-0019__zh-cn_topic_0000001839143189_note8885112682911"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="mysql-0019__zh-cn_topic_0000001839143189_ul5885426132914"><li id="mysql-0019__zh-cn_topic_0000001839143189_li10885172616299">由于同一个代理主机只能和一个存储单元建链，如果开启源端重删，<span class="parmname" id="mysql-0019__zh-cn_topic_0000001839143189_parmname1288482662917">“指定目标位置”</span>请选择<span class="parmvalue" id="mysql-0019__zh-cn_topic_0000001839143189_parmvalue118843260299">“备份存储单元”</span>。否则，由于智能均衡可能会选择到未建链的存储单元，导致源端重删启用失败。如果不同受保护对象关联了不同SLA，且SLA中指定不同的备份存储单元，请为受保护对象选择不同代理主机，否则将会导致部分备份任务源端重删启用失败。</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li9885182662911">如果代理主机已经与一个存储单元建链，当该代理主机未执行源端重删备份任务时，可以在代理主机上执行<strong id="mysql-0019__zh-cn_topic_0000001839143189_b9845163710167">dataturbo delete storage_object storage_name=</strong><em id="mysql-0019__zh-cn_topic_0000001839143189_i19447038131614">?</em>命令（命令中的<strong id="mysql-0019__zh-cn_topic_0000001839143189_b1050314315162">storage_name=</strong><em id="mysql-0019__zh-cn_topic_0000001839143189_i1237554410161">?</em>可以通过<strong id="mysql-0019__zh-cn_topic_0000001839143189_b11885726112912">dataturbo show storage_object</strong>命令查询），删除与存储单元的源端重删链接。再选择该代理主机执行源端重删备份任务，则可以成功与新的存储单元建链。</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li11885142615297">请参考<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect兼容性查询</a>工具查看主机的操作系统类型是否支持源端重删。若不支持，配置源端重删后将不会生效。</li><li id="mysql-0019__zh-cn_topic_0000001839143189_li7883549153219">若使用内置代理（即ProtectAgent合并部署到<span id="mysql-0019__zh-cn_topic_0000001839143189_text13835155817114">OceanProtect</span>）进行备份，配置源端重删后将不会生效。</li></ul>
 </div></div>
 </div>
 </td>

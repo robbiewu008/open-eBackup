@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -39,7 +39,7 @@
 
 <h1 class="topictitle1">Checking the Storage Location of Cluster Data</h1>
 <div><p>In Oracle cluster backup and restoration scenarios, cluster data must be stored in ASM. Otherwise, backup and restoration jobs may fail. This section describes how to check the storage location of cluster data. Skip this section in non-cluster scenarios.</p>
-<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to the Oracle database host.</span><p><ul id="oracle_gud_00201__oracle_gud_0020_en-us_topic_0000001656760969_ul1983714162204"><li id="oracle_gud_00201__oracle_gud_0020_en-us_topic_0000001656760969_li7258697580">If the Linux OS is used, use PuTTY to log in to the Oracle database host and run the <strong id="oracle_gud_00201__oracle_gud_0020_b168335021216">su - oracle</strong> command to switch to user <strong id="oracle_gud_00201__oracle_gud_0020_b683125031217">oracle</strong>.</li><li id="oracle_gud_00201__oracle_gud_0020_en-us_topic_0000001656760969_li1366015032013">If the Windows OS is used, log in to the Oracle database host as the system administrator.</li></ul>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to the Oracle database host.</span><p><ul id="oracle_gud_00201__oracle_gud_0020_en-us_topic_0000001656760969_ul1983714162204"><li id="oracle_gud_00201__oracle_gud_0020_en-us_topic_0000001656760969_li7258697580">If the Linux OS is used, use PuTTY to log in to the Oracle database host and run the <strong id="oracle_gud_00201__oracle_gud_0020_b14682476107">su - oracle</strong> command to switch to user <strong id="oracle_gud_00201__oracle_gud_0020_b1646874718106">oracle</strong>.</li><li id="oracle_gud_00201__oracle_gud_0020_en-us_topic_0000001656760969_li1366015032013">If the Windows OS is used, log in to the Oracle database host as the system administrator.</li></ul>
 </p></li><li><span>Run the following commands to log in to the Oracle database instance.</span><p><ul id="oracle_gud_00201__oracle_gud_0016_ul7420345341"><li id="oracle_gud_00201__oracle_gud_0016_li15682124913711">OS authentication:<ul id="oracle_gud_00201__oracle_gud_0016_ul89443983816"><li id="oracle_gud_00201__oracle_gud_0016_li18420124173415">If the Linux OS is used, run the following commands:<p id="oracle_gud_00201__oracle_gud_0016_p95148598366"><a name="oracle_gud_00201__oracle_gud_0016_li18420124173415"></a><a name="oracle_gud_0016_li18420124173415"></a><strong id="oracle_gud_00201__oracle_gud_0016_b14236563719">export ORACLE_SID=</strong><em id="oracle_gud_00201__oracle_gud_0016_i85144598369">Database instance name</em></p>
 <p id="oracle_gud_00201__oracle_gud_0016_p145141259153613"><strong id="oracle_gud_00201__oracle_gud_0016_b1597618293715">sqlplus / as sysdba</strong></p>
 </li><li id="oracle_gud_00201__oracle_gud_0016_li7402151163816">If the Windows OS is used, perform the following operations:<ol type="a" id="oracle_gud_00201__oracle_gud_0016_ol124110408264"><li id="oracle_gud_00201__oracle_gud_0016_li624120402267">Press <span class="uicontrol" id="oracle_gud_00201__oracle_gud_0016_oracle_gud_0016_uicontrol11819941114510"><b>Win+R</b></span> to open the <strong id="oracle_gud_00201__oracle_gud_0016_oracle_gud_0016_b1015191219408">Run</strong> window.</li><li id="oracle_gud_00201__oracle_gud_0016_li161821338277">Enter <span class="parmvalue" id="oracle_gud_00201__oracle_gud_0016_parmvalue122291222476"><b>cmd</b></span> and run the following commands:<p id="oracle_gud_00201__oracle_gud_0016_p1755152313372"><strong id="oracle_gud_00201__oracle_gud_0016_b19591532143713">set ORACLE_SID=</strong><em id="oracle_gud_00201__oracle_gud_0016_i16755423133718">Database instance name</em></p>

@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,20 +36,20 @@
   <a name="DB2-00028"></a><a name="DB2-00028"></a>
   <h1 class="topictitle1">Step 4: Downloading and Importing a Certificate</h1>
   <div>
-   <p id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_p3314585811">Before using the remote replication function, import the CA certificate of the target cluster to the local cluster to which remote replication is applied. Otherwise, the system cannot verify the information about the accessed device, causing security risks.</p>
+   <p id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_p3314585811">Before using the replication function, import the CA certificate of the secondary cluster to the primary cluster for replication. Otherwise, the system cannot verify the information about the devices to be accessed, causing security risks.</p>
    <div class="section" id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_section17774134611364">
     <a name="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_section17774134611364"></a><a name="en-us_topic_0000001792503794_en-us_topic_0000001102065552_section17774134611364"></a>
-    <h4 class="sectiontitle">Downloading a Certificate from the Target Cluster</h4>
+    <h4 class="sectiontitle">Downloading a Certificate from the Secondary Cluster</h4>
     <ol id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_ol11979102814374">
-     <li id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_li1597932883716"><span>Log in to the <span id="DB2-00028__en-us_topic_0000001792503794_text20981175294311">product</span> management page of the replication target cluster.</span></li>
+     <li id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_li1597932883716"><span>Log in to the <span id="DB2-00028__en-us_topic_0000001792503794_text20981175294311">product</span> management page of the secondary cluster for replication.</span></li>
      <li id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_li10897959114110"><span>Choose <span class="uicontrol" id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_en-us_topic_0000001085869992_en-us_topic_0000001092505479_uicontrol123381932135316"><b><span id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_en-us_topic_0000001085869992_en-us_topic_0000001092505479_text113848306235"><span id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_text8949174614917"><strong>System</strong></span></span> &gt; <span id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_en-us_topic_0000001085869992_text484521122916"><span id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_text2943115917492"><strong>Security</strong></span></span> &gt; <span id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_text823315459535"><strong>Certificates</strong></span></b></span>.</span></li>
      <li id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_li791619610427"><span>In the row where <span class="uicontrol" id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_uicontrol1514113235454"><b><span id="DB2-00028__en-us_topic_0000001792503794_text5580124432715"><strong>Type</strong></span></b></span> is set to <span class="uicontrol" id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_uicontrol7482102811457"><b><span id="DB2-00028__en-us_topic_0000001792503794_text1886519544273"><strong>Server Certificate</strong></span></b></span>, choose <span class="uicontrol" id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_uicontrol41349391483"><b><span id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_text14725505213"><strong>More</strong></span> &gt; <span id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_text17920199185314"><strong>Download CA certificate</strong></span></b></span>.</span><p></p><p id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_p184648437483">Download a CA certificate and keep it properly.</p> <p></p></li>
     </ol>
    </div>
    <div class="section" id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_section0846167203710">
-    <h4 class="sectiontitle">Importing the Certificate to the Local Cluster</h4>
+    <h4 class="sectiontitle">Importing the Certificate to the Primary Cluster</h4>
     <ol id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_ol191881157546">
-     <li id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_li918818505418"><span>Log in to the <span id="DB2-00028__en-us_topic_0000001792503794_text5894195154417">product</span> management page of the local cluster.</span></li>
+     <li id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_li918818505418"><span>Log in to the <span id="DB2-00028__en-us_topic_0000001792503794_text5894195154417">product</span> management page of the primary cluster for replication.</span></li>
      <li id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_li5188859549"><span>Choose <span class="uicontrol" id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_uicontrol15591163716435"><b><span id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_text1259173794320"><span id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_text1359116375436"><strong>System</strong></span></span> &gt; <span id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_text195911637174317"><span id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_text0591183734313"><strong>Security</strong></span></span> &gt; <span id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_text559163704310"><strong>Certificates</strong></span></b></span>.</span></li>
      <li id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_li8602191845419"><span>Click <span class="uicontrol" id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_uicontrol754082417548"><b>Add External Certificate</b></span> to configure external certificate information.</span><p></p><p id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_p6842196195513"><a href="#DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_table146451017195515">Table 1</a> describes the related parameters.</p>
       <div class="tablenoborder">
@@ -79,7 +79,16 @@
          </tr>
          <tr id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_row48663202555">
           <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_p8867202065516"><span id="DB2-00028__en-us_topic_0000001792503794_text8265143919291"><strong>CA Certificate</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_p38671320165517">Click <span><img id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_image185391451568" src="en-us_image_0000001792344114.png"></span>, and import the <a href="#DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_section17774134611364">certificate downloaded in the target cluster</a>.</p></td>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 ">
+           <div class="p" id="DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_p38671320165517">
+            Click <span><img id="DB2-00028__en-us_topic_0000001792503794_image158881574223" src="en-us_image_0000002083844920.png"></span> and import the certificate downloaded in <a href="#DB2-00028__en-us_topic_0000001792503794_en-us_topic_0000001102065552_section17774134611364">Downloading a Certificate from the Secondary Cluster</a>.
+            <div class="note" id="DB2-00028__en-us_topic_0000001792503794_note11649816202117">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p id="DB2-00028__en-us_topic_0000001792503794_p1364911652113">For 1.5.0, click <span><img id="DB2-00028__en-us_topic_0000001792503794_image107471433122117" src="en-us_image_0000002119363401.png"></span>.</p>
+             </div>
+            </div>
+           </div></td>
          </tr>
         </tbody>
        </table>
@@ -88,7 +97,7 @@
       <div class="note" id="DB2-00028__en-us_topic_0000001792503794_note1311013186169">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="DB2-00028__en-us_topic_0000001792503794_p1315615274261">During the certificate import, if the system displays an error message indicating that the certificate already exists, the local cluster already has the same CA certificate as the target cluster. In this case, you do not need to import the certificate and can directly perform subsequent steps.</p>
+        <p id="DB2-00028__en-us_topic_0000001792503794_p1315615274261">During the certificate import, if the system displays an error message indicating that the certificate already exists, the primary cluster already has the same CA certificate as the secondary cluster. In this case, you can directly perform subsequent steps without importing the certificate.</p>
        </div>
       </div> <p></p></li>
     </ol>

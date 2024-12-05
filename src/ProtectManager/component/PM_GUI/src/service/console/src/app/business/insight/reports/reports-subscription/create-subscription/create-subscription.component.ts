@@ -177,6 +177,16 @@ export class CreateSubscriptionComponent implements OnInit {
         )
       );
     }
+    if (this.appUtilsService.isDistributed) {
+      this.reportTypeOptions = reject(this.reportTypeOptions, item =>
+        includes(
+          [
+            DataMap.Report_Type.tapeUsed.value // e6000没有磁带库，去除磁带使用表
+          ],
+          item.value
+        )
+      );
+    }
   }
 
   ngAfterViewInit() {

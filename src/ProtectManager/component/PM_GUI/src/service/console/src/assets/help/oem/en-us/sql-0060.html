@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -82,8 +82,17 @@
               </div></td>
             </tr>
             <tr>
-             <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.2.2.1.1.3.2.2.3.1.1 "><p><span><strong>Owner</strong></span></p></td>
-             <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.2.2.1.1.3.2.2.3.1.2 "><p>Data protection administrator of a cluster.</p> <p>If a data protection administrator is authorized for the cluster, the name of the data protection administrator is displayed. If no authorization is performed, <strong>--</strong> is displayed.</p></td>
+             <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.2.2.1.1.3.2.2.3.1.1 ">
+              <div class="p">
+               <strong id="sql-0060__en-us_topic_0000001792344110_b827118125517">Tag</strong>
+               <div class="note" id="sql-0060__en-us_topic_0000001792344110_note1330311543247">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p id="sql-0060__en-us_topic_0000001792344110_p630385412417">This parameter is available only in 1.6.0 and later versions.</p>
+                </div>
+               </div>
+              </div></td>
+             <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.2.2.1.1.3.2.2.3.1.2 "><p>If a tag has been added for the resource, the tag name is displayed. Otherwise, <strong id="sql-0060__en-us_topic_0000001792344110_b1959642011219">--</strong> is displayed.</p></td>
             </tr>
            </tbody>
           </table>
@@ -119,7 +128,7 @@
             </tr>
             <tr>
              <td class="cellrowborder" valign="top" width="20.330000000000002%" headers="mcps1.3.2.2.2.2.1.2.2.2.2.3.1.1 "><p><strong>Node IP Address</strong></p></td>
-             <td class="cellrowborder" valign="top" width="79.67%" headers="mcps1.3.2.2.2.2.1.2.2.2.2.3.1.2 "><p>IP address of the host where a database instance is located.</p></td>
+             <td class="cellrowborder" valign="top" width="79.67%" headers="mcps1.3.2.2.2.2.1.2.2.2.2.3.1.2 "><p>IP address of the host where a database instance resides.</p></td>
             </tr>
             <tr>
              <td class="cellrowborder" valign="top" width="20.330000000000002%" headers="mcps1.3.2.2.2.2.1.2.2.2.2.3.1.1 "><p><span><strong>Version</strong></span></p></td>
@@ -133,10 +142,10 @@
              <td class="cellrowborder" valign="top" width="20.330000000000002%" headers="mcps1.3.2.2.2.2.1.2.2.2.2.3.1.1 "><p><span><strong>SLA Compliance</strong></span></p></td>
              <td class="cellrowborder" valign="top" width="79.67%" headers="mcps1.3.2.2.2.2.1.2.2.2.2.3.1.2 ">
               <div class="p">
-               Whether a backup job is successfully executed based on the backup frequency or backup window set in the SLA.
+               Whether a backup job is successfully executed based on the backup interval or backup window set in the SLA.
                <ul id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_ul1823814519293">
-                <li id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919"><strong id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b1092516394564">Met</strong>: If the backup time of a backup job (except for the first full backup) meets the backup time window or backup frequency requirements and the backup job is executed successfully, SLA compliance is met.</li>
-                <li id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912"><strong id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b541520442564">Missed</strong>: If the backup time does not meet the backup time window or backup frequency requirements, for example, if the backup frequency set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup frequency or backup window.</li>
+                <li id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919"><strong id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b1092516394564">Met</strong>: If the backup time of a backup job (except for the first full backup) meets the backup time window or backup interval requirements and the backup job is executed successfully, SLA compliance is met.</li>
+                <li id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912"><strong id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b541520442564">Missed</strong>: If the backup time does not meet the backup time window or backup interval requirements, for example, if the backup interval set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup interval or backup window.</li>
                </ul>
               </div></td>
             </tr>
@@ -149,6 +158,19 @@
                <li><strong><span><strong>Creating</strong></span></strong>: The instance is associated with an SLA and protection is being created.</li>
               </ul></td>
             </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="20.330000000000002%" headers="mcps1.3.2.2.2.2.1.2.2.2.2.3.1.1 ">
+              <div class="p">
+               <strong id="sql-0060__en-us_topic_0000001792344110_b827118125517_1">Tag</strong>
+               <div class="note" id="sql-0060__en-us_topic_0000001792344110_note1330311543247_1">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p id="sql-0060__en-us_topic_0000001792344110_p630385412417_1">This parameter is available only in 1.6.0 and later versions.</p>
+                </div>
+               </div>
+              </div></td>
+             <td class="cellrowborder" valign="top" width="79.67%" headers="mcps1.3.2.2.2.2.1.2.2.2.2.3.1.2 "><p>If a tag has been added for the resource, the tag name is displayed. Otherwise, <strong id="sql-0060__en-us_topic_0000001792344110_b1959642011219_1">--</strong> is displayed.</p></td>
+            </tr>
            </tbody>
           </table>
          </div>
@@ -156,7 +178,7 @@
         <ol type="a">
          <li>Click the name and check the overview, copy information, and jobs. 
           <ul>
-           <li>Overview<p>Displays the SLA information, job execution time, total number of copies, nodes, and databases.</p></li>
+           <li>Overview<p>Displays the SLA information, job execution time, total number of copies, and information about nodes and databases.</p></li>
            <li>Copy data<p>You can search for copies by year, month, or day.</p> <p>If <span><img src="en-us_image_0000002052052313.png"></span> is displayed below the time, copies exist at that time.</p></li>
            <li>Job<p>Backup and restoration jobs are displayed.</p></li>
           </ul></li>
@@ -197,10 +219,10 @@
              <td class="cellrowborder" valign="top" width="21.18%" headers="mcps1.3.2.2.2.2.1.3.2.2.2.3.1.1 "><p><span><strong>SLA Compliance</strong></span></p></td>
              <td class="cellrowborder" valign="top" width="78.82000000000001%" headers="mcps1.3.2.2.2.2.1.3.2.2.2.3.1.2 ">
               <div class="p">
-               Whether a backup job is successfully executed based on the backup frequency or backup window set in the SLA.
+               Whether a backup job is successfully executed based on the backup interval or backup window set in the SLA.
                <ul id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_ul1823814519293_1">
-                <li id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919_1"><strong id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b1092516394564_1">Met</strong>: If the backup time of a backup job (except for the first full backup) meets the backup time window or backup frequency requirements and the backup job is executed successfully, SLA compliance is met.</li>
-                <li id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912_1"><strong id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b541520442564_1">Missed</strong>: If the backup time does not meet the backup time window or backup frequency requirements, for example, if the backup frequency set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup frequency or backup window.</li>
+                <li id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919_1"><strong id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b1092516394564_1">Met</strong>: If the backup time of a backup job (except for the first full backup) meets the backup time window or backup interval requirements and the backup job is executed successfully, SLA compliance is met.</li>
+                <li id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912_1"><strong id="sql-0060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b541520442564_1">Missed</strong>: If the backup time does not meet the backup time window or backup interval requirements, for example, if the backup interval set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup interval or backup window.</li>
                </ul>
               </div></td>
             </tr>
@@ -212,6 +234,19 @@
                <li><span><strong>Protected</strong></span>: The availability group is associated with an SLA and protection is activated.</li>
                <li><span><strong>Creating</strong></span>: The availability group is associated with an SLA and protection is being created.</li>
               </ul></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="21.18%" headers="mcps1.3.2.2.2.2.1.3.2.2.2.3.1.1 ">
+              <div class="p">
+               <strong id="sql-0060__en-us_topic_0000001792344110_b827118125517_2">Tag</strong>
+               <div class="note" id="sql-0060__en-us_topic_0000001792344110_note1330311543247_2">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p id="sql-0060__en-us_topic_0000001792344110_p630385412417_2">This parameter is available only in 1.6.0 and later versions.</p>
+                </div>
+               </div>
+              </div></td>
+             <td class="cellrowborder" valign="top" width="78.82000000000001%" headers="mcps1.3.2.2.2.2.1.3.2.2.2.3.1.2 "><p>If a tag has been added for the resource, the tag name is displayed. Otherwise, <strong id="sql-0060__en-us_topic_0000001792344110_b1959642011219_2">--</strong> is displayed.</p></td>
             </tr>
            </tbody>
           </table>
@@ -251,7 +286,7 @@
             </tr>
             <tr>
              <td class="cellrowborder" valign="top" width="20.380000000000003%" headers="mcps1.3.2.2.2.2.1.4.3.2.2.3.1.1 "><p><span><strong>Owning Host/Cluster</strong></span></p></td>
-             <td class="cellrowborder" valign="top" width="79.62%" headers="mcps1.3.2.2.2.2.1.4.3.2.2.3.1.2 "><p>Name of the host/cluster where a database resides.</p></td>
+             <td class="cellrowborder" valign="top" width="79.62%" headers="mcps1.3.2.2.2.2.1.4.3.2.2.3.1.2 "><p>Name of the host or cluster where a database resides.</p></td>
             </tr>
             <tr>
              <td class="cellrowborder" valign="top" width="20.380000000000003%" headers="mcps1.3.2.2.2.2.1.4.3.2.2.3.1.1 "><p><span><strong>Owning Instance</strong></span></p></td>
@@ -277,9 +312,22 @@
              <td class="cellrowborder" valign="top" width="79.62%" headers="mcps1.3.2.2.2.2.1.4.3.2.2.3.1.2 "><p>Indicates whether the database is protected.</p>
               <ul>
                <li><span><strong>Unprotected</strong></span>: The database is not associated with an SLA, or the database is associated with an SLA but protection is disabled.</li>
-               <li><span><strong>Protected</strong></span>: The database is associated with an SLA and protection is enabled.</li>
+               <li><span><strong>Protected</strong></span>: The database is associated with an SLA and protection is activated.</li>
                <li><span><strong>Creating</strong></span>: The database is associated with an SLA and protection is being created.</li>
               </ul></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="20.380000000000003%" headers="mcps1.3.2.2.2.2.1.4.3.2.2.3.1.1 ">
+              <div class="p">
+               <strong id="sql-0060__en-us_topic_0000001792344110_b827118125517_3">Tag</strong>
+               <div class="note" id="sql-0060__en-us_topic_0000001792344110_note1330311543247_3">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p id="sql-0060__en-us_topic_0000001792344110_p630385412417_3">This parameter is available only in 1.6.0 and later versions.</p>
+                </div>
+               </div>
+              </div></td>
+             <td class="cellrowborder" valign="top" width="79.62%" headers="mcps1.3.2.2.2.2.1.4.3.2.2.3.1.2 "><p>If a tag has been added for the resource, the tag name is displayed. Otherwise, <strong id="sql-0060__en-us_topic_0000001792344110_b1959642011219_3">--</strong> is displayed.</p></td>
             </tr>
            </tbody>
           </table>

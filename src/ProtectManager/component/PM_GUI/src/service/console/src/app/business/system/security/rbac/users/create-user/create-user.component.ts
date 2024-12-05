@@ -66,8 +66,8 @@ import {
   trim,
   upperCase
 } from 'lodash';
-import { AddRoleComponent } from './add-role/add-role.component';
 import { finalize } from 'rxjs';
+import { AddRoleComponent } from './add-role/add-role.component';
 
 @Component({
   selector: 'aui-create-user',
@@ -225,9 +225,10 @@ export class CreateUserComponent implements OnInit {
   ngOnInit() {
     this.initConfig();
     this.initForm();
-    this.getSecuritPolicy();
     if (this.data) {
       this.getData();
+    } else {
+      this.getSecuritPolicy();
     }
   }
 

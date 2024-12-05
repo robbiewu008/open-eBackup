@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -40,14 +40,14 @@
 <h1 class="topictitle1">Step 2: Checking and Enabling the vmware-vapi-endpoint Service</h1>
 <div><p>Before registering the VMware virtualization environment, ensure that the vmware-vapi-endpoint service has been enabled on the vCenter Server. Otherwise, the registration will fail.</p>
 <div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to the vCenter Server through PuTTY as user <strong>root</strong>.</span></li><li><span>Run the following command to enter the shell mode:</span><p><pre class="screen">shell</pre>
-</p></li><li><span>Run the following command to check whether the vmware-vapi-endpoint service is enabled:</span><p><pre class="screen">service-control --status</pre>
-<p>If information similar to the following is displayed, the service has been enabled. Otherwise, perform <a href="#vmware_gud_0017__li3254446179">4</a> to enable the service.</p>
+</p></li><li><span>Run the following command to check whether the <strong>vmware-vapi-endpoint</strong> service has been enabled:</span><p><pre class="screen">service-control --status</pre>
+<p>Information similar to the following is displayed. If <span class="parmname"><b>running</b></span> contains the <strong>vmware-vapi-endpoint</strong> service, the service has been enabled. Otherwise, perform <a href="#vmware_gud_0017__li3254446179">4</a> to enable the service.</p>
 <pre class="screen">root@vc161-99 [ ~ ]# service-control --status
-Stopped: 
-vmcam vmware-analytics vmware-eam vmware-imagebuilder vmware-mbcs vmware-netdumper vmware-rbd-watchdog vmware-statsmonitor vmware-vcha vsan-dps
 <strong>Running: </strong>
-applmgmt lwsmd pschealth vmafdd vmcad vmdird vmdnsd vmonapi vmware-cis-license vmware-cm vmware-content-library vmware-perfcharts vmware-pod vmware-postgres-archiver vmware-rhttpproxy vmware-sca vmware-sps vmware-sts-idmd vmware-stsd vmware-updatemgr <strong>vmware-vapi-endpoint</strong> vmware-vmon vmware-vpostgres vmware-vpxd vmware-vpxd-svcs vmware-vsan-health vmware-vsm vsphere-client vsphere-ui</pre>
-</p></li><li id="vmware_gud_0017__li3254446179"><a name="vmware_gud_0017__li3254446179"></a><a name="li3254446179"></a><span>Run the following command to enable the vmware-vapi-endpoint service:</span><p><pre class="screen">service-control --start vmware-vapi-endpoint</pre>
+applmgmt lwsmd pschealth vmafdd vmcad vmdird vmdnsd vmonapi vmware-cis-license vmware-cm vmware-content-library vmware-perfcharts vmware-pod vmware-postgres-archiver vmware-rhttpproxy vmware-sca vmware-sps vmware-sts-idmd vmware-stsd vmware-updatemgr <strong>vmware-vapi-endpoint</strong> vmware-vmon vmware-vpostgres vmware-vpxd vmware-vpxd-svcs vmware-vsan-health vmware-vsm vsphere-client vsphere-ui
+Stopped: 
+vmcam vmware-analytics vmware-eam vmware-imagebuilder vmware-mbcs vmware-netdumper vmware-rbd-watchdog vmware-statsmonitor vmware-vcha vsan-dps</pre>
+</p></li><li id="vmware_gud_0017__li3254446179"><a name="vmware_gud_0017__li3254446179"></a><a name="li3254446179"></a><span>Run the following command to enable the <strong>vmware-vapi-endpoint</strong> service:</span><p><pre class="screen">service-control --start vmware-vapi-endpoint</pre>
 </p></li></ol>
 </div>
 </div>

@@ -131,7 +131,9 @@ export class SlaInfoComponent implements OnInit {
       DataMap.Deploy_Type.x3000.value,
       DataMap.Deploy_Type.x6000.value,
       DataMap.Deploy_Type.x8000.value,
-      DataMap.Deploy_Type.x9000.value
+      DataMap.Deploy_Type.x9000.value,
+      DataMap.Deploy_Type.e6000.value,
+      DataMap.Deploy_Type.decouple.value
     ],
     this.i18n.get('deploy_type')
   );

@@ -25,6 +25,7 @@ import {
   FormGroup,
   ValidatorFn
 } from '@angular/forms';
+import { ModalRef } from '@iux/live';
 import {
   ApiStorageBackupPluginService,
   BaseUtilService,
@@ -38,7 +39,6 @@ import {
   PortPermisson,
   RestoreApiV2Service,
   RootPermisson,
-  SYSTEM_TIME,
   SnapshotRstore
 } from 'app/shared';
 import {
@@ -128,8 +128,11 @@ export class SnapshotRestoreComponent implements OnInit, AfterViewInit {
       );
     });
 
+  @ViewChild('headerTpl', { static: true }) headerTpl: TemplateRef<any>;
+
   constructor(
     private fb: FormBuilder,
+    private modal: ModalRef,
     private i18n: I18NService,
     private datePipe: DatePipe,
     private dataMapService: DataMapService,
@@ -147,6 +150,7 @@ export class SnapshotRestoreComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.initModalHeader();
     this.getSnapshotName();
     if (this.isResource) {
       this.initTable();
@@ -158,6 +162,16 @@ export class SnapshotRestoreComponent implements OnInit, AfterViewInit {
 
     this.initForm();
     this.getRowDataProperties();
+  }
+
+  initModalHeader() {
+    this.modal.setProperty({ lvHeader: this.headerTpl });
+  }
+
+  openHelp() {
+    const lang = this.i18n.isEn ? 'en-us' : 'zh-cn';
+    const targetUrl = `/console/assets/help/cyberengine/${lang}/index.html#${lang}_topic_0000001783060378.html`;
+    window.open(targetUrl, '_blank');
   }
 
   getRowDataProperties() {

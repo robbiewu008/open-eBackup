@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,12 +11,13 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="Step 4: Performing the Backup">
+  <meta name="DC.Title" content="Step 4: Performing Backup">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="exchange_gud_00020.html">
   <meta name="prodname" content="">
@@ -30,13 +30,13 @@
   <meta name="DC.Identifier" content="exchange_gud_00024">
   <meta name="DC.Language" content="en-us">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>Step 4: Performing the Backup</title>
+  <title>Step 4: Performing Backup</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="exchange_gud_00024"></a><a name="exchange_gud_00024"></a>
-  <h1 class="topictitle1">Step 4: Performing the Backup</h1>
+  <h1 class="topictitle1">Step 4: Performing Backup</h1>
   <div>
-   <p>Before performing backup, you need to associate the resources to be protected with a specified SLA policy. The system protects the resources based on the SLA policy and periodically performs backup jobs based on the SLA policy. You can perform a backup job immediately through manual backup.</p>
+   <p>Before performing backup, you need to associate the resources to be protected with a specified SLA. The system protects the resources and periodically executes backup jobs based on the SLA. You can perform a backup job immediately through manual backup.</p>
    <div class="section">
     <h4 class="sectiontitle">Precautions</h4>
     <p>If a full backup fails and the next backup is an incremental backup, the incremental backup is automatically converted to a full backup because the incremental backup depends on the copy generated in the last successful full backup.</p>
@@ -64,7 +64,7 @@
       <div class="note">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="exchange_gud_00024__en-us_topic_0000001964713008_p125947145711"><span id="exchange_gud_00024__en-us_topic_0000001964713008_ph1413818422327">If a WORM policy has been configured for the resource to be protected, select an SLA without a WORM policy to create protection to avoid WORM policy conflicts.</span></p>
+        <p id="exchange_gud_00024__en-us_topic_0000001964713008_p125947145711"><span id="exchange_gud_00024__en-us_topic_0000001964713008_ph1413818422327">If a WORM policy has been configured for the resources to be protected, select an SLA without a WORM policy to avoid WORM policy conflicts.</span></p>
        </div>
       </div> <p></p></li>
      <li><span>Configure advanced parameters for backing up an Exchange single-node system, availability group, or database.</span><p></p>
@@ -124,7 +124,7 @@
       </div> <p></p></li>
     </ol>
     <ol start="5">
-     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>. </span><p></p><p>If the current system time is later than the start time of the first backup set in the SLA, you can choose to perform the backup immediately or wait for the next scheduling based on the backup policy set in the SLA after the backup SLA is associated with the resource.</p> <p></p></li>
+     <li><span>Click <span class="uicontrol" id="exchange_gud_00024__en-us_topic_0000001964713008_uicontrol23691650677"><b>OK</b></span>.</span><p></p><p id="exchange_gud_00024__en-us_topic_0000001964713008_en-us_topic_0000001656691397_p25041111535">If the current system time is later than the start time of the first backup specified in the SLA, you can select <strong id="exchange_gud_00024__en-us_topic_0000001964713008_b9624185216713">Execute manual backup now</strong> in the dialog box that is displayed or choose to perform automatic backup periodically based on the backup policy set in the SLA.</p> <p></p></li>
      <li><strong>Optional: </strong><span>Perform manual backup.</span><p></p><p>If you want to perform a backup job immediately, perform manual backup through the following operations. Otherwise, skip this step.</p>
       <ol type="a">
        <li>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Manual Backup</strong></span></b></span> in the row containing the single-node system, availability group, or database to be backed up. Multiple resources can be manually backed up at the same time.</li>
@@ -132,7 +132,7 @@
         <div class="note">
          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
          <div class="notebody">
-          <p id="exchange_gud_00024__en-us_topic_0000001964713008_p13522118194919"><span id="exchange_gud_00024__en-us_topic_0000001964713008_ph19374310343">For 1.6.0 and later versions: If the selected protection policy is different from that configured in the associated SLA, the WORM configuration does not take effect.</span></p>
+          <p id="exchange_gud_00024__en-us_topic_0000001964713008_p13522118194919"><span id="exchange_gud_00024__en-us_topic_0000001964713008_ph19374310343">For 1.6.0 and later versions, if the selected protection policy is different from that configured in the associated SLA, the WORM configuration does not take effect.</span></p>
          </div>
         </div></li>
        <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</li>

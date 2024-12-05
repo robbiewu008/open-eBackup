@@ -130,7 +130,7 @@ paths:
         '200':
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/PerformanceConfigInfo'
         '401':
           description: Unauthorized
         '403':
@@ -2796,3 +2796,13 @@ definitions:
       isVerify:
         type: boolean
         description: 是否验证成功
+  PerformanceConfigInfo:
+    type: object
+    properties:
+      isPerformanceConfigOpen:
+        type: boolean
+        description: 性能监控开关
+      hasRemoveHistoryData:
+        type: integer
+        format: int32
+        description: 是否删除历史数据
