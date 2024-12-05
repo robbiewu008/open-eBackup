@@ -90,6 +90,10 @@ public class CopyDeleteCompleteHandler implements TaskCompleteHandler {
     @ExterAttack
     @Override
     public void onTaskCompleteSuccess(TaskCompleteMessageBo taskCompleteMessage) {
+        taskCommonPostProcess(taskCompleteMessage, true);
+    }
+
+    private void taskCommonPostProcess(TaskCompleteMessageBo taskCompleteMessage, boolean isSuccess) {
         updateTaskCanStop(taskCompleteMessage);
         String requestId = taskCompleteMessage.getJobRequestId();
         RMap<String, String> context = redissonClient.getMap(requestId, StringCodec.INSTANCE);
@@ -99,8 +103,8 @@ public class CopyDeleteCompleteHandler implements TaskCompleteHandler {
             extendsInfo = JSONObject.toBean(JSONObject.fromObject(extInfo), ExtendsInfo.class);
         }
         int status = taskCompleteMessage.getJobStatus();
-        boolean isCopyDamaged = DmeJobStatusEnum.SUCCESS.equals(DmeJobStatusEnum.fromStatus(status))
-                || (extendsInfo != null && extendsInfo.isCopyDamaged()); // false 副本未删除成功，可用 true 表示副本不可用
+        boolean isCopyDamaged = DmeJobStatusEnum.SUCCESS.equals(DmeJobStatusEnum.fromStatus(status)) || (
+            extendsInfo != null && extendsInfo.isCopyDamaged()); // false 副本未删除成功，可用 true 表示副本不可用
         context.put(COPY_DAMAGED, String.valueOf(isCopyDamaged));
 
         String copyId = context.get(ContextConstants.COPY_ID);
@@ -110,8 +114,10 @@ public class CopyDeleteCompleteHandler implements TaskCompleteHandler {
                 providerManager.findProvider(DeleteIndexProvider.class, copy.getResourceSubType())
                     .deleteIndex(requestId, copyId);
             }
-            // 副本删除成功，减少用户已使用配额
-            userQuotaManager.decreaseUsedQuota(requestId, copy);
+            if (isSuccess) {
+                // 副本删除成功，减少用户已使用配额
+                userQuotaManager.decreaseUsedQuota(requestId, copy);
+            }
         } catch (LegoCheckedException exception) {
             log.error("Delete copy index failed.", ExceptionUtil.getErrorMessage(exception));
         }
@@ -130,7 +136,7 @@ public class CopyDeleteCompleteHandler implements TaskCompleteHandler {
     @Override
     public void onTaskCompleteFailed(TaskCompleteMessageBo taskCompleteMessage) {
         // 失败的逻辑在副本模块已做处理，本次仅先做接口适配
-        onTaskCompleteSuccess(taskCompleteMessage);
+        taskCommonPostProcess(taskCompleteMessage, false);
     }
 
     private void updateTaskCanStop(TaskCompleteMessageBo taskCompleteMessage) {

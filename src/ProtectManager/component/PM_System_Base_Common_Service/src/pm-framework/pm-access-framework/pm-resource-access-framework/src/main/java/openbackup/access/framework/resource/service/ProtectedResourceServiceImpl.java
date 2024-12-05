@@ -15,10 +15,18 @@ package openbackup.access.framework.resource.service;
 import com.huawei.oceanprotect.job.sdk.JobService;
 import com.huawei.oceanprotect.system.base.label.service.LabelService;
 import com.huawei.oceanprotect.system.base.user.bo.DomainInfoBo;
+import com.huawei.oceanprotect.system.base.user.bo.ResourceSetBo;
+import com.huawei.oceanprotect.system.base.user.common.helper.ResourceSetRelationHelper;
+import com.huawei.oceanprotect.system.base.user.controller.response.ResourceSetRoleResponse;
+import com.huawei.oceanprotect.system.base.user.entity.DomainResourceObjectEntity;
 import com.huawei.oceanprotect.system.base.user.entity.ResourceSetResourceBo;
+import com.huawei.oceanprotect.system.base.user.entity.ResourceSetResourceEntity;
 import com.huawei.oceanprotect.system.base.user.service.DomainResourceSetService;
 import com.huawei.oceanprotect.system.base.user.service.DomainService;
 import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetResourceService;
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetService;
+import com.huawei.oceanprotect.system.base.user.service.UserService;
 import com.huawei.oceanprotect.system.sdk.dto.SystemSwitchDto;
 import com.huawei.oceanprotect.system.sdk.enums.SwitchNameEnum;
 import com.huawei.oceanprotect.system.sdk.enums.SwitchStatusEnum;
@@ -37,6 +45,7 @@ import openbackup.access.framework.resource.client.model.ResourceInfo;
 import openbackup.access.framework.resource.client.model.UpdateFileSystemRequest;
 import openbackup.access.framework.resource.client.model.UpdateLunInfoReq;
 import openbackup.access.framework.resource.dto.ResourceDependencyRelation;
+import openbackup.access.framework.resource.model.CopyListParams;
 import openbackup.access.framework.resource.persistence.dao.ProtectedResourceExtendInfoMapper;
 import openbackup.access.framework.resource.persistence.dao.ProtectedResourceMapper;
 import openbackup.access.framework.resource.persistence.dao.ResourceGroupMapper;
@@ -51,6 +60,7 @@ import openbackup.access.framework.resource.util.ResourceConstant;
 import openbackup.access.framework.resource.util.ResourceUtil;
 import openbackup.data.access.framework.core.common.exception.LockNotObtainedException;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
+import openbackup.data.access.framework.core.copy.CopyManagerService;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.backup.NextBackupModifyReq;
 import openbackup.data.protection.access.provider.sdk.backup.ResourceExtendInfoConstants;
@@ -85,6 +95,7 @@ import openbackup.data.protection.access.provider.sdk.resource.model.ResourceUps
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.ErrorCodeConstant;
 import openbackup.system.base.common.constants.TokenBo;
+import openbackup.system.base.common.enums.UserTypeEnum;
 import openbackup.system.base.common.errors.ResourceLockErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.PagingParamRequest;
@@ -100,14 +111,20 @@ import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.pack.lock.Lock;
 import openbackup.system.base.pack.lock.LockService;
 import openbackup.system.base.query.SessionService;
+import openbackup.system.base.sdk.auth.UserInnerResponse;
+import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.BasePage;
+import openbackup.system.base.sdk.copy.model.Copy;
+import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.job.model.JobLogBo;
 import openbackup.system.base.sdk.job.model.JobLogLevelEnum;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
+import openbackup.system.base.sdk.quota.QuotaService;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
+import openbackup.system.base.sdk.resource.model.UpdateCopyUserObjectReq;
 import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.service.hostagent.AgentQueryService;
@@ -160,6 +177,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
     private static final Integer MAX_DEPENDENCY_RESOURCE_NUM = 1000;
     private static final Integer MAX_OBTAIN_LOCK_TIME = 3;
     private static final Integer MAX_PAGE_NUM = 500;
+    private static final String SIZE = "size";
     private static final Integer QUERY_PAGE_SIZE = 10000;
     private static final Integer PARTITION_SIZE = 10000;
     private static final Integer MAX_DORADO_RESOURCE_NUM = 100000;
@@ -203,6 +221,18 @@ public class ProtectedResourceServiceImpl implements ResourceService {
     private static final String SCAN_SKIP_UPDATE_AND_INSERT = "scanSkipUpdateAndInsert";
 
     private static final String UPDATE_COPY_RESOURCE_NAME = "resource_name";
+
+    private static final String TASK_BACKUP = "Backup";
+
+    private static final String TASK_ARCHIVE = "CloudArchive";
+
+    private static final String TASK_REPLICATED = "Replicated";
+
+    private static final String INCREASE = "increase";
+
+    private static final String REDUCE = "reduce";
+
+    private static final String DATA_SIZE_DEFAULT_VALUE = "0";
 
     @Value("${MAX_RESOURCE_NUM:20000}")
     private int maxResourceNum;
@@ -250,6 +280,23 @@ public class ProtectedResourceServiceImpl implements ResourceService {
     @Autowired
     private MessageTemplate<String> messageTemplate;
 
+    @Autowired
+    private CopyRestApi copyRestApi;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private QuotaService quotaService;
+
+    @Autowired
+    private CopyManagerService copyManagerService;
+
+    @Autowired
+    private ResourceSetService resourceSetService;
+
+    @Autowired
+    private ResourceSetResourceService resourceSetResourceService;
 
     @Autowired
     public void setJobScheduleService(JobScheduleService jobScheduleService) {
@@ -1665,16 +1712,58 @@ public class ProtectedResourceServiceImpl implements ResourceService {
     }
 
     private void checkIfBeDependedOn(final String[] resources) {
-        Integer beDependedOnCount =
-            resourceExtendInfoMapper
-                .selectCount(
-                    new QueryWrapper<ProtectedResourceExtendInfoPo>().in("RESOURCE_ID", Arrays.asList(resources))
-                        .likeRight("KEY", ResourceConstants.CITATION + ResourceConstants.CITATION_SEPERATOR))
-                .intValue();
-        if (beDependedOnCount != null && beDependedOnCount > 0) {
-            throw new LegoCheckedException(CommonErrorCode.RESOURCE_BE_DEPENDED_BY_OTHERS,
+        List<ProtectedResourceExtendInfoPo> resourceExtendInfos = resourceExtendInfoMapper
+            .selectList(new QueryWrapper<ProtectedResourceExtendInfoPo>().in("RESOURCE_ID", Arrays.asList(resources))
+                .likeRight("KEY", ResourceConstants.CITATION + ResourceConstants.CITATION_SEPERATOR));
+        if (!VerifyUtil.isEmpty(resourceExtendInfos)) {
+            ProtectedResourceExtendInfoPo resourceExtendInfoPo = resourceExtendInfos.get(0);
+            // 如果还有关联资源 则打印日志并报错 取第一个资源uuid和type作为提示
+            String dependedResourceId = getUuidByCitation(resourceExtendInfoPo);
+            Optional<ProtectedResource> resource =
+                resourceService.getBasicResourceById(resourceExtendInfoPo.getResourceId());
+            if (resource.isPresent()) {
+                log.error("Resource still have dependency, fail to delete, resource uuid:{}, total dependency size:{}",
+                    dependedResourceId, resourceExtendInfos.size());
+                throw new LegoCheckedException(CommonErrorCode.RESOURCE_BE_DEPENDED_BY_OTHERS,
+                    new String[] {dependedResourceId, resource.get().getType()},
                     "The resource(ID: " + String.join(",", resources) + ") is depended by other resources.");
+            }
+            log.error(
+                "Unknown Resource still have dependency, fail to delete, resource uuid:{}, total dependency size:{}",
+                dependedResourceId, resourceExtendInfos.size());
+            throw new LegoCheckedException(CommonErrorCode.RESOURCE_BE_DEPENDED_BY_OTHERS,
+                new String[] {dependedResourceId, "Unknown"},
+                "The resource(ID: " + String.join(",", resources) + ") is depended by other resources.");
         }
+    }
+
+    /**
+     * 从引用的资源取后缀 即从形如$citations_XXX_UUID 中取uuid
+     *
+     * @param resourceExtendInfoPo 资源表中的引用资源
+     * @return uuid
+     */
+    private String getUuidByCitation(ProtectedResourceExtendInfoPo resourceExtendInfoPo) {
+        // 从 resourceExtendInfoPo 中获取值
+        String value = resourceExtendInfoPo.getValue();
+
+        // 检查值是否为空
+        if (VerifyUtil.isEmpty(value)) {
+            log.error("Fail to find string from resource extend Info! uuid:{}", resourceExtendInfoPo.getUuid());
+            return StringUtils.EMPTY;
+        }
+
+        // 以 "_" 进行分割
+        String[] parts = value.split("_");
+
+        // 检查分割后的数组是否符合预期
+        if (parts.length < 1) {
+            log.error("Fail to find string from resource extend Info! uuid:{}", resourceExtendInfoPo.getUuid());
+            return StringUtils.EMPTY;
+        }
+
+        // 返回最后一个部分，即 UUID
+        return parts[parts.length - 1];
     }
 
     /**
@@ -2758,5 +2847,173 @@ public class ProtectedResourceServiceImpl implements ResourceService {
     @Override
     public List<String> getAllSubTypeList() {
         return protectedResourceMapper.getAllSubTypeList();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateCopyUser(UpdateCopyUserObjectReq updateCopyUserObjectReq) {
+        UserInnerResponse userInfo = userService.getUserInfoByUserId(updateCopyUserObjectReq.getUserId());
+        if (!userService.isDPAdminAndCustomizedUser(updateCopyUserObjectReq.getUserId())) {
+            log.error("Only the data protection administrator can update the user to which the resource belongs.");
+            new LegoCheckedException(CommonErrorCode.USER_NOT_DP_ADMIN);
+        }
+        // 找到资源对应的各种类型的副本列表
+        CopyListParams copyListParams = buildCopyListParams(updateCopyUserObjectReq);
+        if (UserTypeEnum.HCS.getValue().equals(userInfo.getUserType())) {
+            checkHCSUserQuota(userInfo, copyListParams);
+            updateCopyUserForHCS(userInfo, copyListParams);
+            return;
+        }
+        checkUserQuotaExceptHCS(userInfo, copyListParams);
+        updateCopyUserExceptHcs(userInfo, copyListParams);
+    }
+
+    private CopyListParams buildCopyListParams(UpdateCopyUserObjectReq updateCopyUserObjectReq) {
+        CopyListParams copyListParams = new CopyListParams();
+        copyListParams.setArchiveCopies(
+            copyRestApi.queryCopiesByResourceIdAndGeneratedBy(updateCopyUserObjectReq.getResourceId(),
+                Collections.singletonList(CopyGeneratedByEnum.BY_CLOUD_ARCHIVE.value())));
+        copyListParams.setBackupCopies(
+            copyRestApi.queryCopiesByResourceIdAndGeneratedBy(updateCopyUserObjectReq.getResourceId(),
+                Collections.singletonList(CopyGeneratedByEnum.BY_BACKUP.value())));
+        copyListParams.setReplicationCopies(
+            copyRestApi.queryCopiesByResourceIdAndGeneratedBy(updateCopyUserObjectReq.getResourceId(),
+                Arrays.asList(CopyGeneratedByEnum.BY_REPLICATED.value(),
+                    CopyGeneratedByEnum.BY_CASCADED_REPLICATION.value(),
+                    CopyGeneratedByEnum.BY_REVERSE_REPLICATION.value())));
+        return copyListParams;
+    }
+
+    private void updateCopyUserForHCS(UserInnerResponse userInfoByUserId, CopyListParams copyListParams) {
+        // HCS用户特殊处理
+        updateUserQuota(userInfoByUserId.getUserId(), copyListParams.getTotalCopies());
+        updateCopyResourceSet(userInfoByUserId.getUserId(), copyListParams.getTotalCopies());
+        copyManagerService.updateCopiesUserId(
+            copyListParams.getTotalCopies().stream().map(Copy::getUuid).collect(Collectors.toList()),
+            userInfoByUserId.getUserId());
+    }
+
+    private void checkHCSUserQuota(UserInnerResponse userInfoByUserId, CopyListParams copyListParams) {
+        if (!VerifyUtil.isEmpty(copyListParams.getBackupCopies()) && !quotaService.checkIsUserHasEnoughQuota(
+            userInfoByUserId.getUserId(), copyListParams.getBackupCopies(), TASK_BACKUP)) {
+            log.error("The user type to be modified is {}. The {} quota of HCS is insufficient.",
+                UserTypeEnum.HCS.getValue(), TASK_BACKUP);
+            throw new LegoCheckedException(CommonErrorCode.USER_QUOTA_NOT_ENOUGH,
+                new String[] {userInfoByUserId.getUserType(), TASK_BACKUP});
+        }
+        if (!VerifyUtil.isEmpty(copyListParams.getReplicationCopies()) && quotaService.checkIsUserHasEnoughQuota(
+            userInfoByUserId.getUserId(), copyListParams.getReplicationCopies(), TASK_REPLICATED)) {
+            log.error("The user type to be modified is {}. The {} quota of HCS is insufficient.",
+                UserTypeEnum.HCS.getValue(), TASK_REPLICATED);
+            throw new LegoCheckedException(CommonErrorCode.USER_QUOTA_NOT_ENOUGH,
+                new String[] {userInfoByUserId.getUserType(), TASK_REPLICATED});
+        }
+        if (!VerifyUtil.isEmpty(copyListParams.getArchiveCopies()) && quotaService.checkIsUserHasEnoughQuota(
+            userInfoByUserId.getUserId(), copyListParams.getArchiveCopies(), TASK_ARCHIVE)) {
+            log.error("The user type to be modified is {}. The {} quota of HCS is insufficient.",
+                UserTypeEnum.HCS.getValue(), TASK_ARCHIVE);
+            throw new LegoCheckedException(CommonErrorCode.USER_QUOTA_NOT_ENOUGH,
+                new String[] {userInfoByUserId.getUserType(), TASK_ARCHIVE});
+        }
+    }
+
+    private void updateCopyUserExceptHcs(UserInnerResponse userInfoByUserId, CopyListParams copyListParams) {
+        updateUserQuota(userInfoByUserId.getUserId(), copyListParams.getTotalCopies());
+        updateCopyResourceSet(userInfoByUserId.getUserId(), copyListParams.getTotalCopies());
+        copyManagerService.updateCopiesUserId(
+            copyListParams.getTotalCopies().stream().map(Copy::getUuid).collect(Collectors.toList()),
+            userInfoByUserId.getUserId());
+    }
+
+    private void checkUserQuotaExceptHCS(UserInnerResponse userInfoByUserId, CopyListParams copyListParams) {
+        if (!VerifyUtil.isEmpty(copyListParams.getArchiveCopies()) && !quotaService.checkIsUserHasEnoughQuota(
+            userInfoByUserId.getUserId(), copyListParams.getArchiveCopies(), TASK_ARCHIVE)) {
+            log.error("The user type to be modified is {}. The {} quota is insufficient.",
+                userInfoByUserId.getUserType(), TASK_ARCHIVE);
+            throw new LegoCheckedException(CommonErrorCode.USER_QUOTA_NOT_ENOUGH,
+                new String[] {userInfoByUserId.getUserType(), TASK_ARCHIVE});
+        }
+        if (!VerifyUtil.isEmpty(copyListParams.getBackAndReplicationCopies())
+            && !quotaService.checkIsUserHasEnoughQuota(userInfoByUserId.getUserId(),
+            copyListParams.getBackAndReplicationCopies(), TASK_BACKUP)) {
+            log.error("The user type to be modified is {}. The {} quota is insufficient.",
+                userInfoByUserId.getUserType(), TASK_BACKUP);
+            throw new LegoCheckedException(CommonErrorCode.USER_QUOTA_NOT_ENOUGH,
+                new String[] {userInfoByUserId.getUserType(), TASK_BACKUP});
+        }
+    }
+
+    private void updateUserQuota(String userId, List<Copy> copyList) {
+        Map<String, List<Copy>> copyListGroupedByGeneratedBy = copyList.stream()
+            .filter(copy -> copy.getUserId() != null)
+            .collect(Collectors.groupingBy(Copy::getGeneratedBy));
+        copyListGroupedByGeneratedBy.forEach((generatedBy, copyGeneratedByList) -> {
+            Map<String, List<Copy>> copyListGroupedByUserId = copyGeneratedByList.stream()
+                .filter(copy -> copy.getUserId() != null)
+                .collect(Collectors.groupingBy(Copy::getUserId));
+            copyListGroupedByUserId.forEach((user, copies) -> {
+                String totalSize = String.valueOf(copies.stream().mapToLong(copy -> {
+                    JSONObject properties = JSONObject.fromObject(copy.getProperties());
+                    String quotaStr = properties.getString(SIZE, DATA_SIZE_DEFAULT_VALUE);
+                    return Long.parseLong(quotaStr);
+                }).sum());
+                if (!userService.isSysAdmin(user)) {
+                    quotaService.updateUserUsedQuota(user, null, generatedBy, REDUCE, totalSize);
+                }
+            });
+            String totalSize = String.valueOf(copyGeneratedByList.stream().mapToLong(copy -> {
+                JSONObject properties = JSONObject.fromObject(copy.getProperties());
+                String quotaStr = properties.getString(SIZE, DATA_SIZE_DEFAULT_VALUE);
+                return Long.parseLong(quotaStr);
+            }).sum());
+            quotaService.updateUserUsedQuota(userId, null, generatedBy, INCREASE, totalSize);
+        });
+    }
+
+    private void updateCopyResourceSet(String userId, List<Copy> copyList) {
+        Map<String, List<String>> userIdToUuidMap = copyList.stream()
+            .filter(copy -> copy.getUserId() != null)
+            .collect(Collectors.groupingBy(Copy::getUserId, Collectors.mapping(Copy::getUuid, Collectors.toList())));
+        String currentUserDomainId = domainService.getDomainInfoByUserId(userId).getUuid();
+        // 若原先副本属于系统管理员则不需要删除其资源集关系
+        userIdToUuidMap.forEach((useId, copyIdList) -> {
+            if (!userService.isSysAdmin(useId)) {
+                // 资源集删除
+                List<ResourceSetRoleResponse> resourceSetRoleResponses
+                    = resourceSetService.queryResourceSetRoleRelationListByUserIdWithoutCheck(useId);
+                resourceSetResourceService.deleteResourceSetWithResource(copyIdList, resourceSetRoleResponses.stream()
+                    .map(ResourceSetRoleResponse::getResourceSetId)
+                    .collect(Collectors.toList()));
+                // 域删除
+                domainResourceSetService.batchDeleteDomainResourceObjectRelation(
+                    domainService.getDomainInfoByUserId(useId).getUuid(), copyIdList, StringUtils.EMPTY);
+            }
+        });
+        // 添加到新用户的默认资源集中
+        ResourceSetBo defaultResourceSetByDomainId = resourceSetService.getDefaultResourceSetByDomainId(
+            currentUserDomainId);
+        List<ResourceSetResourceEntity> resourceSetResourceEntityList = copyList.stream()
+            .map(
+                copy -> ResourceSetRelationHelper.buildResourceSetResourceEntity(defaultResourceSetByDomainId.getUuid(),
+                    copy.getUuid(), ResourceSetTypeEnum.COPY.getType(), ResourceSetTypeEnum.COPY.getType(),
+                    Boolean.TRUE))
+            .collect(Collectors.toList());
+        resourceSetResourceService.batchCreateResourceSetRelation(resourceSetResourceEntityList);
+        // 添加域关系
+        List<DomainResourceObjectEntity> domainResourceObjectEntities = copyList.stream()
+            .map(copy -> buildDomainResourceObjectEntity(currentUserDomainId, copy.getUuid(), ResourceSetTypeEnum.COPY,
+                ResourceSetTypeEnum.COPY.getType()))
+            .collect(Collectors.toList());
+        domainResourceSetService.batchAddRelations(domainResourceObjectEntities);
+    }
+
+    private DomainResourceObjectEntity buildDomainResourceObjectEntity(String domainId, String resourceObjectId,
+        ResourceSetTypeEnum type, String scopeModule) {
+        DomainResourceObjectEntity domainResourceObjectEntity = new DomainResourceObjectEntity();
+        domainResourceObjectEntity.setDomainId(domainId);
+        domainResourceObjectEntity.setResourceObjectId(resourceObjectId);
+        domainResourceObjectEntity.setType(type);
+        domainResourceObjectEntity.setScopeModule(scopeModule);
+        return domainResourceObjectEntity;
     }
 }

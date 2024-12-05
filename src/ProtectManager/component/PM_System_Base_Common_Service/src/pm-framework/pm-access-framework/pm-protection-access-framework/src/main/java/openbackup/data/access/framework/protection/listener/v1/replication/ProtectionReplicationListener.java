@@ -176,7 +176,7 @@ public class ProtectionReplicationListener {
         String targetUserId = VerifyUtil.isEmpty(projectId) ? Strings.EMPTY : projectId.asText();
         String resourceUserId = userQuotaManager.getUserId(resourceEntity.getUserId(), resourceEntity.getRootUuid());
 
-        // SAML用户进行复制限额
+        // 所有用户进行复制限额
         replicationPreCheck(resourceUserId, targetCluster, targetUserId, policy);
         resetTargetResourceUserId(resourceEntity, targetUserId, resourceUserId);
         ReplicateContext replicateContext = applicationContextService.autowired(
@@ -276,10 +276,7 @@ public class ProtectionReplicationListener {
             userQuotaManager.checkHcsUserReplicationQuota(Integer.valueOf(targetCluster.getClusterId()), targetUserId);
             return;
         }
-        if (UserTypeEnum.SAML.getValue().equals(targetUser.getUserType())
-            || UserTypeEnum.DME.getValue().equals(targetUser.getUserType())) {
             checkBackUserQuota(targetCluster, targetUser);
-        }
     }
 
     private String getDpUserName(JsonNode extParameters) {
@@ -309,17 +306,13 @@ public class ProtectionReplicationListener {
         if (userInnerResponse == null) {
             return;
         }
-        // SAML用户和DME用户复制限额校验备份配额
-        if (UserTypeEnum.SAML.getValue().equals(userInnerResponse.getUserType())) {
-            checkBackUserQuota(targetCluster, userInnerResponse);
-        }
+        checkBackUserQuota(targetCluster, userInnerResponse);
     }
 
     private void checkBackUserQuota(TargetClusterVo targetCluster, UserInnerResponse userInnerResponse) {
         log.info("Start to check backup quota in target cluster!userId:{}", userInnerResponse.getUserId());
-
         // 校验目标端备份额度
-        userQuotaManager.checkSamlUserBackupQuotaInTargetWhenReplication(Integer.valueOf(targetCluster.getClusterId()),
+        userQuotaManager.checkUserBackupQuotaInTargetWhenReplication(Integer.valueOf(targetCluster.getClusterId()),
             userInnerResponse.getUserId());
     }
 

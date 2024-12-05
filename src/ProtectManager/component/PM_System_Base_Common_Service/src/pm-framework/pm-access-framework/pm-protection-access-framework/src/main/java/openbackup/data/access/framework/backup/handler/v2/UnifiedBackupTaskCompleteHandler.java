@@ -19,9 +19,12 @@ import com.huawei.oceanprotect.job.sdk.JobService;
 import com.huawei.oceanprotect.system.base.label.service.LabelService;
 import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.access.framework.resource.persistence.dao.ProtectedResourceMapper;
+import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
 import openbackup.data.access.client.sdk.api.framework.dme.CopyVerifyStatusEnum;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeCopyInfo;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
@@ -65,6 +68,7 @@ import openbackup.data.protection.access.provider.sdk.resource.Resource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.constants.IsmNumberConstant;
+import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.enums.RetentionTypeEnum;
 import openbackup.system.base.common.enums.WormValidityTypeEnum;
@@ -96,6 +100,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -164,6 +169,9 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
     @Autowired
     private AntiRansomwareApi antiRansomwareApi;
 
+    @Autowired
+    private ProtectedResourceMapper protectedResourceMapper;
+
     @Override
     public void onTaskCompleteSuccess(TaskCompleteMessageBo taskMessage) {
         JobBo job = jobService.queryJob(taskMessage.getJobId());
@@ -201,6 +209,8 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         } else {
             resp = copyRestApi.saveCopy(copyInfo);
         }
+        copyService.deleteInvalidCopies(copyInfo.getResourceId(), LegoNumberConstant.TWO,
+            Collections.singletonList(copyInfo.getUuid()));
         // 设置副本继承资源的标签
         labelService.setCopyLabel(copyInfo.getUuid(), copyInfo.getResourceId());
         resourceSetApi.createCopyResourceSetRelation(copyInfo.getUuid(), copyInfo.getResourceId(), Strings.EMPTY);
@@ -339,13 +349,22 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
                 .setIndexed(CopyIndexStatus.UNINDEXED.getIndexStaus())
                 .setDeletable(Boolean.TRUE)
                 .setBackupType(BackupTypeConstants.convert2AbBackType(backupType))
-                .setUserId(context.get(Constants.CURRENT_OPERATE_USER_ID))
+                .setUserId(queryUserId(resource.getUuid()))
                 .setName(context.get(CopyConstants.COPY_NAME))
                 .setStorageId(getStorageId(dmeCopyInfo))
                 .setSourceCopyType(BackupTypeConstants.convert2AbBackType(sourceCopyType))
                 .setDeviceEsn(memberClusterService.getCurrentClusterEsn())
                 .setPoolId(getCopyPoolId(properties))
                 .build();
+    }
+
+    private String queryUserId(String uuid) {
+        QueryWrapper<ProtectedResourcePo> wrapper = new QueryWrapper<>();
+        wrapper.eq("uuid", uuid);
+        if (!protectedResourceMapper.exists(wrapper)) {
+            return Strings.EMPTY;
+        }
+        return protectedResourceMapper.selectById(uuid).getUserId();
     }
 
     private String getLocationName(Map<String, String> context, DmeCopyInfo dmeCopyInfo) {
@@ -446,7 +465,7 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
             : BackupConstant.DEFAULT_CHECK_POINT_RETRY_NUM;
         int jobOverrideTimes = jobService.getJobOverrideTimes(job.getExtendStr());
         if (jobOverrideTimes >= retryNum) {
-            copyService.deleteInvalidCopies(job.getSourceId(), retryNum);
+            copyService.deleteInvalidCopies(job.getSourceId(), retryNum, Collections.emptyList());
             return true;
         }
         return false;

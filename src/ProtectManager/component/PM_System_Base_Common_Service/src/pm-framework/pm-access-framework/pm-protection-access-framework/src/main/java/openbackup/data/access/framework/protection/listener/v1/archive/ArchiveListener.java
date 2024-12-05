@@ -134,12 +134,15 @@ public class ArchiveListener {
             log.error("Copy is not present when cloudArchivePreCheck!CopyId:{}", copyId);
             return;
         }
-
         // 校验归档额度
-        checkArchiveQuota(rMap, copyId, copy.getUserId());
+        checkArchiveQuota(rMap, copy.getUserId());
     }
 
-    private void checkArchiveQuota(RMap<String, String> rMap, String copyId, String associatedUserId) {
+    private void checkArchiveQuota(RMap<String, String> rMap, String userId) {
+        if (VerifyUtil.isEmpty(userId)) {
+            log.info("checkArchiveQuota empty userId");
+            return;
+        }
         // 目前只支持对象存储额度管理
         // 校验对象存储归档额度开关
         Policy policy = openbackup.system.base.common.utils.JSONObject.fromObject(rMap.get("policy"))
@@ -149,19 +152,8 @@ public class ArchiveListener {
         }
         JsonNode protocol = policy.getExtParameters().get("protocol");
         if (!VerifyUtil.isEmpty(protocol) && CLOUD_ARCHIVE_PROTOCOL.equals(protocol.asText())) {
-            List<String> userIdList = userInternalService.getUserIdListByResourceObjectId(copyId);
-            if (VerifyUtil.isEmpty(userIdList)) {
-                log.warn(
-                    "Fail to find user id by resource, "
-                        + "will check archive quota with user: {} associated to current copy :{}",
-                        associatedUserId, copyId);
-                userQuotaManager.checkCloudArchiveQuota(associatedUserId, null);
-                return;
-            }
-            for (String userId : userIdList) {
-                userQuotaManager.checkCloudArchiveQuota(userId, null);
-            }
-            log.info("User list: {}, all have enough archive quota.", userIdList);
+            log.info("Start to checkArchiveQuota!userId:{}", userId);
+            userQuotaManager.checkCloudArchiveQuota(userId, null);
         }
     }
 

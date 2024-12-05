@@ -74,7 +74,6 @@ public class LiveMountJobScheduler {
         if (deployTypeService.isCyberEngine()) {
             return;
         }
-        log.info("LiveMountJobScheduler,regularUpdateTaskStatus,start.");
         // 过滤条件
         QueryJobRequest conditions = new QueryJobRequest();
         conditions.setTypes(Collections.singletonList(JobTypeEnum.LIVE_MOUNT.getValue()));
@@ -101,6 +100,5 @@ public class LiveMountJobScheduler {
                 }
             }
         });
-        log.info("LiveMountJobScheduler,regularUpdateTaskStatus,over.");
     }
 }

@@ -677,14 +677,16 @@ public class CopyServiceImpl implements CopyService, CopyServiceSdk {
     }
 
     @Override
-    public void deleteInvalidCopies(String sourceId, int limit) {
+    public void deleteInvalidCopies(String sourceId, int limit, List<String> excludeCopies) {
         BasePage<Copy> checkPointInvalidCopies = queryCopiesByResourceIdAndStatusAndExtendType(sourceId,
             CopyStatus.INVALID.getValue(), CopyExtendType.CHECKPOINT.getValue(), limit);
         List<Copy> deleteCopies = checkPointInvalidCopies.getItems();
         for (Copy c : deleteCopies) {
-            log.info("delete checkPoint invalid copies, total_num:{}, copy_id:{}", checkPointInvalidCopies.getTotal(),
-                c.getUuid());
-            copyRestApi.deleteCopy(c.getUuid(), null);
+            if (!excludeCopies.contains(c.getUuid())) {
+                log.info("delete checkPoint invalid copies, total_num:{}, copy_id:{}",
+                    checkPointInvalidCopies.getTotal(), c.getUuid());
+                copyRestApi.deleteCopy(c.getUuid(), null);
+            }
         }
     }
 

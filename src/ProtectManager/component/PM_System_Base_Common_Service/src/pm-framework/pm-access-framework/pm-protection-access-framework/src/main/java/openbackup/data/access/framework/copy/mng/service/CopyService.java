@@ -126,6 +126,7 @@ public interface CopyService {
      *
      * @param sourceId 资源ID
      * @param limit 上限
+     * @param excludeCopies 不删除的副本
      */
-    void deleteInvalidCopies(String sourceId, int limit);
+    void deleteInvalidCopies(String sourceId, int limit, List<String> excludeCopies);
 }

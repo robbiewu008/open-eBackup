@@ -12,8 +12,10 @@
 */
 package openbackup.data.access.framework.restore.service;
 
+import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
 import com.huawei.oceanprotect.exercise.service.ExerciseQueryService;
 import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants;
 import com.huawei.oceanprotect.system.base.user.service.UserService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,6 +36,7 @@ import openbackup.data.access.framework.protection.common.util.FibreUtil;
 import openbackup.data.access.framework.protection.service.SanClientService;
 import openbackup.data.access.framework.protection.service.job.JobLogRecorder;
 import openbackup.data.access.framework.protection.service.repository.TaskRepositoryManager;
+import openbackup.data.access.framework.restore.constant.RestoreConstant;
 import openbackup.data.access.framework.restore.constant.RestoreJobLabelConstant;
 import openbackup.data.access.framework.restore.controller.req.CreateRestoreTaskRequest;
 import openbackup.data.access.framework.restore.converter.RestoreTaskConverter;
@@ -42,10 +45,12 @@ import openbackup.data.access.framework.servitization.util.OpServiceHelper;
 import openbackup.data.protection.access.provider.sdk.agent.CommonAgentService;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupFeatureService;
+import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.enums.AgentMountTypeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnum;
+import openbackup.data.protection.access.provider.sdk.enums.RepositoryProtocolEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreLocationEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreModeEnum;
 import openbackup.data.protection.access.provider.sdk.lock.LockResourceBo;
@@ -63,7 +68,9 @@ import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.auth.UserInnerResponse;
+import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
 import openbackup.system.base.sdk.copy.model.Copy;
+import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.job.model.JobLogLevelEnum;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
@@ -148,6 +155,8 @@ public class RestoreTaskManager {
 
     private BackupFeatureService backupFeatureService;
 
+    private StorageUnitService storageUnitService;
+
     /**
      * 恢复任务流程管理构造函数
      *
@@ -211,6 +220,11 @@ public class RestoreTaskManager {
     @Autowired
     public void setCopyAuthVerifyService(CopyAuthVerifyService copyAuthVerifyService) {
         this.copyAuthVerifyService = copyAuthVerifyService;
+    }
+
+    @Autowired
+    public void setStorageUnitService(StorageUnitService storageUnitService) {
+        this.storageUnitService = storageUnitService;
     }
 
     /**
@@ -528,6 +542,12 @@ public class RestoreTaskManager {
             && ResourceSubTypeEnum.CLOUD_BACKUP_FILE_SYSTEM.getType().equals(copy.getResourceSubType())) {
             copy.setResourceSubType(ResourceSubTypeEnum.NAS_FILESYSTEM.getType());
         }
+        if (CopyGeneratedByEnum.BY_IMPORTED.value().equals(copy.getGeneratedBy())) {
+            Optional<StorageUnitVo> storageUnit = storageUnitService.getStorageUnitById(copy.getStorageUnitId());
+            String importEsn = storageUnit.map(StorageUnitVo::getDeviceId)
+                .orElse(findEsnInRepo(restoreTask.getRepositories()));
+            restoreTask.getAdvanceParams().put(RestoreConstant.IMPORT_RESTORE_ESN, importEsn);
+        }
         restoreTask.setAgents(
             restoreResourceService.queryEndpoints(restoreTask.getAdvanceParams(), copy.getResourceSubType(),
                 protectedEnvironment.getType(), protectedEnvironment));
@@ -537,6 +557,15 @@ public class RestoreTaskManager {
         RestoreTask task = provider.initialize(restoreTask);
         paramCorrection(task);
         opServiceHelper.injectVpcInfoForRestore(restoreTask);
+    }
+
+    private String findEsnInRepo(List<StorageRepository> storageRepositories) {
+        return storageRepositories.stream()
+            .filter(repo -> RepositoryProtocolEnum.S3.getProtocol() != repo.getProtocol())
+            .filter(repo -> repo.getExtendInfo().containsKey(ExtParamsConstants.ESN))
+            .findFirst()
+            .map(repo -> String.valueOf(repo.getExtendInfo().get(ExtParamsConstants.ESN)))
+            .orElse(storageUnitService.queryStorageUnits().get(0).getDeviceId());
     }
 
     private void paramCorrection(RestoreTask task) {

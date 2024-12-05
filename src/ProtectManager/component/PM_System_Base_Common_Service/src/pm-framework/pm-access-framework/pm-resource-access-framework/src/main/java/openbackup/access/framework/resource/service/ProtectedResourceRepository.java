@@ -302,6 +302,8 @@ public interface ProtectedResourceRepository {
 
     /**
      * 对需要使用老private签名的agent添加标记
+     *
+     * @param isFileExits isFileExits
      */
-    void legoHostSighWithOldPrivateKey();
+    void legoHostSighWithOldPrivateKey(boolean isFileExits);
 }
