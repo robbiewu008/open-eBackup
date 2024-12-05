@@ -33,6 +33,11 @@ public class FeignClientConstant {
     public static final int READ_TIMEOUT = 2 * 60 * 1000; // 2分钟
 
     /**
+     * FeignClient读取默认超时(ms)
+     */
+    public static final int FAST_FAIL_READ_TIMEOUT = 30 * 1000; // 30s
+
+    /**
      * FeignClient读取默认超时(s)
      */
     public static final int READ_TIMEOUT_SEC = 2 * 60; // 2分钟

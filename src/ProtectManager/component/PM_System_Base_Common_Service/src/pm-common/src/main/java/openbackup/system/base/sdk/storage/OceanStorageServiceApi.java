@@ -15,6 +15,7 @@ package openbackup.system.base.sdk.storage;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
+import openbackup.system.base.sdk.storage.model.CdpSnapshotBo;
 import openbackup.system.base.sdk.storage.model.HyperMetroDomainBo;
 import openbackup.system.base.sdk.storage.model.HyperMetroPairBo;
 import openbackup.system.base.sdk.storage.model.OceanStorageLogincalPortRes;
@@ -205,6 +206,20 @@ public interface OceanStorageServiceApi {
     @RequestLine("GET")
     @Headers({"iBaseToken:{iBaseToken}", "Cookie:{Cookie}"})
     StorageCommonRes<StorageFileSystemSnapshotBo> getFsSnapshotDetail(URI url, @Param("iBaseToken") String iBaseToken,
+        @Param("Cookie") String cookie);
+
+    /**
+     * 查询Cdp照信息
+     *
+     * @param url url
+     * @param iBaseToken token
+     * @param cookie cookie
+     * @return 是否成功
+     */
+    @ExterAttack
+    @RequestLine("GET")
+    @Headers({"iBaseToken:{iBaseToken}", "Cookie:{Cookie}"})
+    StorageCommonRes<CdpSnapshotBo> getCdpDetail(URI url, @Param("iBaseToken") String iBaseToken,
         @Param("Cookie") String cookie);
 
     /**

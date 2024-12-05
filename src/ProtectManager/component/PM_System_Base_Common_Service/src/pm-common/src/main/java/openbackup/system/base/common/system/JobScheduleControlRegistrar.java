@@ -200,7 +200,7 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
     }
 
     private JobScheduleConfig getOrNewJobScheduleConfig(Map<String, JobScheduleConfig> jobScheduleConfigMap,
-            JobScheduleControl control) {
+                                                        JobScheduleControl control) {
         String jobType = control.jobType().getValue();
         return Optional.ofNullable(jobScheduleConfigMap.get(jobType)).orElseGet(() -> {
             JobScheduleConfig scheduleConfig = new JobScheduleConfig();

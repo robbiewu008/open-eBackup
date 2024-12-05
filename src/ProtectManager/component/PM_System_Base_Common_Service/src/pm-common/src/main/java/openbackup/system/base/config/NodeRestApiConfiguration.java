@@ -36,12 +36,25 @@ public class NodeRestApiConfiguration {
      *
      * @return nodeRestApi
      */
-    @Bean("nodeRestApi")
+    @Bean("formDataNodeRestApi")
     @Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
-    public NodeRestApi createNodeRestApiClient() {
+    public NodeRestApi createFormDataNodeRestApiClient() {
         return FeignBuilder.buildInternalHttpsClientWithSpringMvcContract(NodeRestApi.class,
             feignClientConfig.getInternalClient());
     }
+
+    /**
+     * 获取NodeRestApi
+     *
+     * @return nodeRestApi
+     */
+    @Bean("defaultNodeRestApi")
+    @Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
+    public NodeRestApi createDefaultNodeRestApiClient() {
+        return FeignBuilder.buildInternalHttpsClientWithSpringMvcContractDefaultEncoder(NodeRestApi.class,
+            feignClientConfig.getInternalClient());
+    }
+
 
     /**
      * 获取pmConfigRestApi

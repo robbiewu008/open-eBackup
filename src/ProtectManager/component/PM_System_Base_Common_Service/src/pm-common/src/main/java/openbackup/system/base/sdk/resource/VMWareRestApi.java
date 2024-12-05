@@ -234,14 +234,4 @@ public interface VMWareRestApi {
     @GetMapping("/internal/free-effective-capacity")
     String getFreeEffectiveCapacity(@RequestParam("storage_ip") String storageIp,
                                     @RequestParam("env_id") String envId);
-
-    /**
-     * 检查虚拟机是否正在进行迁移
-     *
-     * @param vmUuid 资源ID
-     * @return true:虚拟机正在迁移，不允许备份。false：虚拟机没有在迁移，可以备份。
-     */
-    @ExterAttack
-    @GetMapping("/internal/check-migration-status/{vm_uuid}")
-    boolean isInMigrationProcess(@PathVariable("vm_uuid") String vmUuid);
 }

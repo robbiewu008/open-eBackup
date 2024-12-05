@@ -107,6 +107,10 @@ public class FeignBuilder extends Feign.Builder {
         FeignClientConstant.CONNECT_TIMEOUT, TimeUnit.MILLISECONDS, FeignClientConstant.READ_TIMEOUT,
         TimeUnit.MILLISECONDS, true);
 
+    private static Request.Options fastFailTimeoutOptions = new Request.Options(
+        FeignClientConstant.CONNECT_TIMEOUT, TimeUnit.MILLISECONDS, FeignClientConstant.FAST_FAIL_READ_TIMEOUT,
+        TimeUnit.MILLISECONDS, true);
+
     /**
      * VMware连接超时配置：连接超时时间30s，读取超时时间60分钟。
      */
@@ -178,6 +182,15 @@ public class FeignBuilder extends Feign.Builder {
      */
     public static FeignBuilder getDefaultFeignBuilder() {
         return new FeignBuilder().options(defaultTimeoutOptions);
+    }
+
+    /**
+     * 生成fast fail FeignBuilder
+     *
+     * @return fast fail FeignBuilder
+     */
+    public static Feign.Builder getFastFailFeignBuilder() {
+        return new FeignBuilder().options(fastFailTimeoutOptions).retryer(Retryer.NEVER_RETRY);
     }
 
     /**
@@ -639,7 +652,7 @@ public class FeignBuilder extends Feign.Builder {
      * @return target
      */
     public static <T> T buildInternalHttpsClientWithSpringMvcContractDefaultEncoder(Class<T> type, Client client) {
-        return getDefaultRetryableBuilder().encoder(createDefaultEncoder())
+        return getDefaultFeignBuilder().encoder(createDefaultEncoder())
             .decoder(CommonDecoder.decoder())
             .errorDecoder(CommonDecoder::errorDecode)
             .contract(new SpringMvcContract())
@@ -656,7 +669,7 @@ public class FeignBuilder extends Feign.Builder {
      * @return target
      */
     public static <T> T buildInternalHttpsClientWithSpringMvcContract(Class<T> type, Client client) {
-        return getDefaultRetryableBuilder().encoder(new SpringFormEncoder())
+        return getDefaultFeignBuilder().encoder(new SpringFormEncoder())
             .decoder(CommonDecoder.decoder())
             .errorDecoder(CommonDecoder::errorDecode)
             .contract(new SpringMvcContract())
@@ -751,7 +764,7 @@ public class FeignBuilder extends Feign.Builder {
      */
     public static <T> T buildProxyWithoutRetry(Class<T> type, Decoder decoder, ErrorDecoder errorDecoder, Proxy proxy) {
         ObjectFactory<HttpMessageConverters> converter = getHttpMessageConvertersObjectFactory();
-        Feign.Builder builder = getDefaultRetryableBuilder().retryer(Retryer.NEVER_RETRY)
+        Feign.Builder builder = getFastFailFeignBuilder().retryer(Retryer.NEVER_RETRY)
             .encoder(new SpringEncoder(converter))
             .decoder(decoder)
             .client(getProxyClient(proxy))

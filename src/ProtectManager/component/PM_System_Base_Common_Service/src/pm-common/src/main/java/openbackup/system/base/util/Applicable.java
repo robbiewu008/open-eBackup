@@ -16,7 +16,6 @@ package openbackup.system.base.util;
  * Applicable
  *
  * @param <T> template type
- *
  */
 public interface Applicable<T> {
     /**

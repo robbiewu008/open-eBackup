@@ -36,7 +36,7 @@ public class DeployTypeService {
      */
     public static final ImmutableList<String> WHITE_BOX_DEPLOY_TYPES = ImmutableList.of(DeployTypeEnum.X9000.getValue(),
             DeployTypeEnum.A8000.getValue(), DeployTypeEnum.X8000.getValue(), DeployTypeEnum.X6000.getValue(),
-            DeployTypeEnum.X3000.getValue());
+            DeployTypeEnum.X3000.getValue(), DeployTypeEnum.HYPER_DETECT.getValue());
 
     /**
      * x系列存储的设备枚举值

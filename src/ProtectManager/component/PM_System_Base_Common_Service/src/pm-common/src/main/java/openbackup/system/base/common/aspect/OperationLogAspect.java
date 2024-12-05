@@ -21,6 +21,7 @@ import openbackup.system.base.common.constants.AspectOrderConstant;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.constants.LegoInternalEvent;
+import openbackup.system.base.common.constants.RequestForwardRetryConstant;
 import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.log.OperationContextConfig;
@@ -35,6 +36,7 @@ import openbackup.system.base.common.utils.MethodUtil;
 import openbackup.system.base.common.utils.RequestUtil;
 import openbackup.system.base.common.utils.RightsControl;
 import openbackup.system.base.common.utils.StringUtil;
+import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.auth.api.AuthNativeApi;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -479,6 +481,11 @@ public class OperationLogAspect {
             Map.Entry<OperationLogging, List<List<Evaluation>>> operationLogConfig, Object result, boolean isSuccess,
             LegoCheckedException exception) {
         if (operationLogConfig == null) {
+            return;
+        }
+        if (!VerifyUtil.isEmpty(request.getHeader(RequestForwardRetryConstant.HTTP_HEADER_INTERNAL_RETRY))) {
+            // 内部跨控制器转发的重试请求，不记录操作日志，由原始的请求记录
+            log.info("The request is retry by another node, no need record operation log again");
             return;
         }
         OperationLogging logging = operationLogConfig.getKey();

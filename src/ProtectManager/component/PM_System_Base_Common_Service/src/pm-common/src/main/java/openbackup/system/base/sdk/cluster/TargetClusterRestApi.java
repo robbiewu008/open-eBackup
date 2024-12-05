@@ -535,15 +535,15 @@ public interface TargetClusterRestApi {
      * @param uri uri
      * @param token token
      * @param version 版本号
-     * @param netPlaneName 网络平面名称
      * @param deployType 部署类型
+     * @param infraIp 主节点infra ip
      * @return CheckInfo 检查信息
      */
     @ExterAttack
-    @RequestLine("GET /v1/clusters/backup/check?version={version}&netPlaneName={netPlaneName}&deployType={deployType}")
+    @RequestLine("GET /v1/clusters/backup/check?version={version}&deployType={deployType}&infraIp={infraIp}")
     @Headers({"x-auth-token: {token}"})
     CheckInfo checkBackupCluster(URI uri, @Param("token") String token, @Param("version") String version,
-            @Param("netPlaneName") String netPlaneName, @Param("deployType") String deployType);
+            @Param("deployType") String deployType, @Param("infraIp") String infraIp);
 
     /**
      * 功能说明 通知成员节点修改GaussDB ES映射接口

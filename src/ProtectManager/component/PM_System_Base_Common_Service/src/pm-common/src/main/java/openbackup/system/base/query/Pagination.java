@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 /**
  * Pagination
  *
+ * @param <T> template type
  */
 @Data
 public class Pagination<T> {
