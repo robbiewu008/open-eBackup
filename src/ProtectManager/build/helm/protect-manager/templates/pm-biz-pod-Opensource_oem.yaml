@@ -191,6 +191,9 @@ spec:
             - mountPath: /kmc_conf
               name: kmc-conf
               readOnly: true
+            - mountPath: /opt/multicluster_conf
+              name: multicluster-volume
+              readOnly: true
           {{- if eq $environment "Dorado" }}
           resources:
             requests:
@@ -340,6 +343,9 @@ spec:
         - name: cluster-volume
           configMap:
             name: cluster-conf
+        - name: multicluster-volume
+          configMap:
+            name: multicluster-conf
         - name: whitebox-path
           hostPath:
             path: /OSM/coffer_data/container_app_data

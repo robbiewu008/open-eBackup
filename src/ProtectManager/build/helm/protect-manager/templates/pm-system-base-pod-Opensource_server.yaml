@@ -127,6 +127,9 @@ spec:
             - mountPath: /kmc_conf
               name: kmc-conf
               readOnly: true
+            - mountPath: /opt/multicluster_conf
+              name: multicluster-volume
+              readOnly: true
       containers:
         - name: pm-nginx
           command: [ "/bin/sh", "-c", "sh script/start.sh && chmod 550 /usr/local/nginx/nginx && chmod 440 /usr/local/nginx/conf/nginx.conf && rm -rf /tmp/nginx"]
@@ -250,6 +253,9 @@ spec:
               readOnly: true
             - mountPath: /opt/ProtectManager/report/
               name: report-path
+            - mountPath: /opt/multicluster_conf
+              name: multicluster-volume
+              readOnly: true
           envFrom:
               - configMapRef:
                   name: protect-manager-conf
@@ -321,6 +327,8 @@ spec:
               value: "8094"
             - name: DEPLOY_TYPE
               value: d8
+            - name: VERSION
+              value: { { .Values.global.version } }
             {{- if .Values.global.region_id }}
             - name: REGION_ID
               value: {{ .Values.global.region_id }}
@@ -372,4 +380,7 @@ spec:
           configMap:
             name: protect-manager-conf
             defaultMode: 0640
+        - name: multicluster-volume
+          configMap:
+            name: multicluster-conf
 {{- end }}

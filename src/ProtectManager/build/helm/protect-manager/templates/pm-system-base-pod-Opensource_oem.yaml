@@ -127,6 +127,9 @@ spec:
               readOnly: true
             - mountPath: /opt/third_data/
               name: data-nas
+            - mountPath: /opt/cluster_config
+              name: cluster-volume
+              readOnly: true
       containers:
         - name: pm-nginx
           command: [ "/bin/sh", "-c", "sh script/start.sh && chmod 550 /usr/local/nginx/nginx && chmod 440 /usr/local/nginx/conf/nginx.conf && rm -rf /tmp/nginx"]
@@ -249,6 +252,8 @@ spec:
               name: data-nas
             - mountPath: /etc/adjtime
               name: adjtime-path
+            - mountPath: /var/run/cgroup2
+              name: cgroup2
           envFrom:
             - configMapRef:
                 name: protect-manager-conf
@@ -320,6 +325,8 @@ spec:
               value: "8094"
             - name: DEPLOY_TYPE
               value: {{$deploytype}}
+            - name: VERSION
+              value: {{ .Values.global.version }}
             {{- if .Values.global.region_id }}
             - name: REGION_ID
               value: {{ .Values.global.region_id }}
@@ -405,4 +412,8 @@ spec:
           configMap:
             name: protect-manager-conf
             defaultMode: 0640
+        - name: cgroup2
+          hostPath:
+            path: /var/run/cgroup2
+            type: Directory
 {{- end }}
