@@ -102,5 +102,4 @@ spec:
     - port: 30066
       name: dme-archive
       targetPort: 30066
-      nodePort: 30066
 {{- end }}

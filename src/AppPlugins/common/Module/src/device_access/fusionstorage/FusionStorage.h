@@ -31,7 +31,7 @@ namespace Module {
         unsigned long long usedSize = -1;
 
         LunParams(std::string vName, bool cpress, bool dd, int pd, unsigned long long sz)
-                : volumeName(vName), Compress(cpress), Dedup(dd), poolid(pd), Size(sz) {}
+            : volumeName(vName), Compress(cpress), Dedup(dd), poolid(pd), Size(sz) {}
 
         LunParams() {}
     };
@@ -43,7 +43,8 @@ namespace Module {
 
     class FusionStorage {
     public:
-        explicit FusionStorage(Json::Value fsJson) {
+        explicit FusionStorage(Json::Value fsJson)
+        {
             fs_pHttpCLient = IHttpClient::GetInstance();
             GET_JSON_STRING(fsJson, FUSION_STORAGE_TYPE, Type);
             GET_JSON_STRING(fsJson, FUSION_STORAGE_IP, FusionStorageIP);
@@ -59,7 +60,8 @@ namespace Module {
 
         explicit FusionStorage() {}
 
-        virtual ~FusionStorage() {
+        virtual ~FusionStorage()
+        {
             Logout();
             IHttpClient::ReleaseInstance(fs_pHttpCLient);
         }
@@ -84,7 +86,8 @@ namespace Module {
         Description:
                     1.query fusionstorage Lun by lun name
         */
-        int QueryLUN(std::string volumeName, int &id, std::string &WWN, unsigned long long &size, unsigned long long &usedSize);
+        int QueryLUN(std::string volumeName, int &id, std::string &WWN,
+            unsigned long long &size, unsigned long long &usedSize);
 
         /*
         delete volume with name
@@ -244,51 +247,63 @@ namespace Module {
         int QuerySnapshotList(std::string queryCond, std::vector<FSSnapshotInfo> &snapshots);
 
     public:
-        std::string GetType() {
+        std::string GetType()
+        {
             return Type;
         }
 
-        void SetType(std::string type) {
+        void SetType(std::string type)
+        {
             Type = type;
         }
 
-        std::string GetFusionStorageIP() {
+        std::string GetFusionStorageIP()
+        {
             return FusionStorageIP;
         }
 
-        void SetFusionStorageIP(std::string fusionStorageIP) {
+        void SetFusionStorageIP(std::string fusionStorageIP)
+        {
             FusionStorageIP = fusionStorageIP;
         }
 
-        std::string GetFusionStoragePort() {
+        std::string GetFusionStoragePort()
+        {
             return FusionStoragePort;
         }
 
-        void SetFusionStoragePort(std::string fusionStoragePort) {
+        void SetFusionStoragePort(std::string fusionStoragePort)
+        {
             FusionStoragePort = fusionStoragePort;
         }
 
-        std::string GetFusionStorageUsername() {
+        std::string GetFusionStorageUsername()
+        {
             return FusionStorageUsername;
         }
 
-        void SetFusionStorageUsername(std::string fusionStorageUsername) {
+        void SetFusionStorageUsername(std::string fusionStorageUsername)
+        {
             FusionStorageUsername = fusionStorageUsername;
         }
 
-        std::string GetFusionStoragePassword() {
+        std::string GetFusionStoragePassword()
+        {
             return FusionStoragePassword;
         }
 
-        void SetFusionStoragePassword(std::string fusionStoragePassword) {
+        void SetFusionStoragePassword(std::string fusionStoragePassword)
+        {
             FusionStoragePassword = fusionStoragePassword;
         }
 
-        int GetPoolid() {
+        int GetPoolid()
+        {
             return fsPoolid;
         }
 
-        void SetPoolid(int poolid) {
+        void SetPoolid(int poolid)
+        {
             fsPoolid = poolid;
         }
 

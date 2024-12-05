@@ -131,7 +131,7 @@ namespace {
 #elif defined(SOLARIS)
     const std::vector<std::string> SCAN_SKIP_DIRS = { ".", "..", ".snapshot", "~snapshot", ".zfs" };
 #else
-    const std::vector<std::string> SCAN_SKIP_DIRS = { ".", "..", ".snapshot", "~snapshot" };
+    const std::vector<std::string> SCAN_SKIP_DIRS = { ".", "..", ".snapshot", "~snapshot", ".snapshots"};
 #endif
 
     const string BACKUP_WORK_DIR = "backup-job";
@@ -145,6 +145,7 @@ namespace {
     constexpr uint64_t ERRNO_NO_SUCH_FILE_OR_DIR = 2;
     const string RESIDUAL_SNAPSHORTS_INFO_FILE = "residual_snapshots.info";
     const std::string ALARM_CODE_FAILED_DELETE_SNAPSHOT = "0x2064006F0001";
+    const std::string DEFAULT_SNAPSHOT_PERCENT = "5";
     const int MAX_RETRY_CNT = 3;
     const std::string VSS_MNT_ROOT = "C:\\vss_snapshots";
 }
@@ -364,7 +365,7 @@ int HostBackup::PrerequisiteJobInner()
         return Module::SUCCESS;
     }
     // Set the number of multi-channel
-    SetNumOfChannels();
+    SetNumOfChannels(m_fileset.m_advParms.m_channels);
     // 清理残留的快照
     ClearResidualSnapshotsAndAlarm();
     if (!CreateSnapshot()) {
@@ -415,7 +416,9 @@ int HostBackup::GenerateSubJobInner()
     if (!GetPrevBackupCopyInfo() || !InitIdGenerator()) {
         return Module::FAILED;
     }
-    PrintJobInfo();
+    if (!OsBackupGetSysInfo()) {
+        return Module::FAILED;
+    }
     if (!ShareResourceManager::GetInstance().InitResource(ShareResourceType::SCAN, m_jobId, m_scanStats)) {
         ERRLOG("Init scan resource failed");
         return Module::FAILED;
@@ -435,10 +438,10 @@ int HostBackup::GenerateSubJobInner()
         ReportJobLabel(JobLogLevel::TASK_LOG_INFO, "file_plugin_host_backup_scan_start_label");
         ShareResourceManager::GetInstance().CanReportStatToPM(m_jobId + "_scan"); // 初始化扫描上报时间
         HostScanStatistics preScanStats {};
-        if (!ScanPrimalSourceVol(preScanStats, jobInfoSet)
+        if (!ScanFailedVolume(preScanStats, jobInfoSet)
+            || !ScanPrimalSourceVol(preScanStats, jobInfoSet)
             || !ScanPrimalSnapshotVol(preScanStats, jobInfoSet)
             || !ScanSubVolume(preScanStats, jobInfoSet)
-            || !ScanFailedVolume(preScanStats, jobInfoSet)
             || !WriteScannSuccess(jobInfoSet)) {
             return Module::FAILED;
         }
@@ -451,6 +454,19 @@ int HostBackup::GenerateSubJobInner()
         return Module::FAILED;
     }
     return Module::SUCCESS;
+}
+
+bool HostBackup::OsBackupGetSysInfo()
+{
+    PrintJobInfo();
+    if (m_fileset.m_filesetExt.m_isOSBackup == "true") {
+        if (InitSystemVolume() != Module::SUCCESS) {
+            ReportJobLabel(JobLogLevel::TASK_LOG_ERROR, "file_plugin_generatesubjob_get_host_sysinfo_fail_label");
+            return false;
+        }
+        ReportJobLabel(JobLogLevel::TASK_LOG_INFO, "file_plugin_generatesubjob_get_host_sysinfo_success_label");
+    }
+    return true;
 }
 
 void HostBackup::HoldGenerateSubTaskAndKeepLive()
@@ -585,6 +601,15 @@ int HostBackup::ExecuteTeardownSubJobInner()
         ERRLOG("WriteBackupCpyToFile failed");
         return Module::FAILED;
     }
+    // write backup-copy-meta.json to metaRepo/copyID again if is aggregation task
+    if (IsAggregate()) {
+        string jsonFilePath = m_metaFs.path[0] + "/" + m_backupJobPtr->copy.id + BACKUP_COPY_METAFILE;
+        if (!JsonFileTool::WriteToFile(hostBackupCopy, jsonFilePath)) {
+            ERRLOG("write aggr copy json file failed");
+            return Module::FAILED;
+        }
+    }
+
     if (!SaveScannerMeta()) {
         ERRLOG("SaveScannerMeta failed");
         return Module::FAILED;
@@ -607,13 +632,15 @@ bool HostBackup::ReportBackupCompletionStatus()
     HostScanStatistics scanStats {};
     bool ret = ShareResourceManager::GetInstance().QueryResource(ShareResourceType::SCAN, m_jobId, scanStats);
     INFOLOG("get scan stats: %llu, %llu", scanStats.m_totDirsToBackup, scanStats.m_totFilesToBackup);
-    if (ret && (scanStats.m_totDirsToBackup > mainBackupStats.noOfDirCopied ||
-        scanStats.m_totFilesToBackup > mainBackupStats.noOfFilesCopied)) {
-        WARNLOG("force set to failed dirs and files. total dir: %llu, %llu, toatl files, %llu, %llu",
-            scanStats.m_totDirsToBackup, mainBackupStats.noOfDirCopied, scanStats.m_totFilesToBackup,
-            mainBackupStats.noOfFilesCopied);
-        mainBackupStats.noOfDirFailed = scanStats.m_totDirsToBackup - mainBackupStats.noOfDirCopied;
-        mainBackupStats.noOfFilesFailed = scanStats.m_totFilesToBackup - mainBackupStats.noOfFilesCopied;
+    if (ret && (scanStats.m_totDirsToBackup > mainBackupStats.noOfDirCopied + mainBackupStats.skipDirCnt ||
+        scanStats.m_totFilesToBackup > mainBackupStats.noOfFilesCopied + mainBackupStats.skipFileCnt + mainBackupStats.noOfFilesWriteSkip)) {
+        WARNLOG("force set to failed dirs and files. total dir: %llu, %llu, %llu; toatl files, %llu, %llu, %llu, %llu",
+            scanStats.m_totDirsToBackup, mainBackupStats.noOfDirCopied, mainBackupStats.skipDirCnt,
+            scanStats.m_totFilesToBackup, mainBackupStats.noOfFilesCopied, mainBackupStats.skipFileCnt, mainBackupStats.noOfFilesWriteSkip);
+        mainBackupStats.noOfDirFailed = scanStats.m_totDirsToBackup - mainBackupStats.noOfDirCopied -
+            mainBackupStats.skipDirCnt;
+        mainBackupStats.noOfFilesFailed = scanStats.m_totFilesToBackup - mainBackupStats.noOfFilesCopied -
+            mainBackupStats.skipFileCnt - mainBackupStats.noOfFilesWriteSkip;
     }
     /* As we report this from teardown-subjob or postjob, set datasize to 0. SO that UBC do not consider this size
        for speed calc */
@@ -624,8 +651,8 @@ bool HostBackup::ReportBackupCompletionStatus()
         ReportJobDetailsWithLabelAndErrcode(
             make_tuple(JobLogLevel::TASK_LOG_WARNING, SubJobStatus::RUNNING, PROGRESS0),
             "file_plugin_host_backup_data_completed_with_warn_label", INITIAL_ERROR_CODE,
-            to_string(mainBackupStats.noOfDirCopied),
-            to_string(mainBackupStats.noOfFilesCopied),
+            to_string(mainBackupStats.noOfDirCopied + mainBackupStats.skipDirCnt),
+            to_string(mainBackupStats.noOfFilesCopied + mainBackupStats.skipFileCnt + mainBackupStats.noOfFilesWriteSkip),
             FormatCapacity(mainBackupStats.noOfBytesCopied),
             to_string(mainBackupStats.noOfDirFailed),
             to_string(mainBackupStats.noOfFilesFailed));
@@ -633,8 +660,8 @@ bool HostBackup::ReportBackupCompletionStatus()
         ReportJobDetailsWithLabelAndErrcode(
             make_tuple(JobLogLevel::TASK_LOG_INFO, SubJobStatus::RUNNING, PROGRESS0),
             "file_plugin_host_backup_data_completed_label", INITIAL_ERROR_CODE,
-            to_string(mainBackupStats.noOfDirCopied),
-            to_string(mainBackupStats.noOfFilesCopied),
+            to_string(mainBackupStats.noOfDirCopied + mainBackupStats.skipDirCnt),
+            to_string(mainBackupStats.noOfFilesCopied + mainBackupStats.skipFileCnt + mainBackupStats.noOfFilesWriteSkip),
             FormatCapacity(mainBackupStats.noOfBytesCopied));
     }
     std::string statisticInfo;
@@ -1005,6 +1032,7 @@ int HostBackup::ZipFinalMeta() const
         ERRLOG("exec win cmd failed! cmd : %s, error code: %d", cmd.c_str(), errCode);
         return Module::FAILED;
     }
+    (void)PluginUtils::Remove(metaFileZipPath);  // 删除tmp目录下的metafile
 #endif
 
     return Module::SUCCESS;
@@ -1040,6 +1068,7 @@ int HostBackup::ExecuteBackupSubJobInner(BackupSubJob backupSubJob)
     }
     if (retryCnt >= MAX_RETRY_CNT && monitorRet == MONITOR_BACKUP_RES_TYPE::MONITOR_BACKUP_RES_TYPE_NEEDRETRY) {
         // seems this sub job is stuck for some reason , copy this control file to meta repo for further check
+        ReportJobLabel(JobLogLevel::TASK_LOG_INFO, "file_plugin_host_backup_data_stuck_label");
         INFOLOG("subjob is stuck, %s, copy controlFile: %s", m_subJobId.c_str(), backupSubJob.controlFile.c_str());
         CopyFile(backupSubJob.controlFile, m_metaFsPath);
     }
@@ -1065,14 +1094,16 @@ bool HostBackup::DoRealBackup(const BackupSubJob& backupSubJob, SubJobStatus::ty
         }
     }
     ret = MonitorBackup(jobStatus);
+    uint32_t subTaskType = backupSubJob.subTaskType;
+    // 仅在 Copy 阶段处理文件失败记录
     std::unordered_set<FailedRecordItem, FailedRecordItemHash> failedRecordItem = m_backup->GetFailedDetails();
-    if (!failedRecordItem.empty()) {
+    if (!failedRecordItem.empty() && subTaskType == SUBJOB_TYPE_DATACOPY_COPY_PHASE) {
         std::string tmpFile = PathJoin(m_scanMetaPath, m_volumeName, "latest", "failed_file_record_" + m_subJobId);
         std::ofstream outfile(tmpFile);
         if (outfile.is_open()) {
-            for (const auto& item : failedRecordItem) {
-                outfile << item.metaIndex << "," << item.errNum << "," << item.offset << ","
-                    << item.filePath << std::endl;
+            for (const auto &item : failedRecordItem) {
+                outfile << item.metaIndex << "," << item.errNum << "," << item.offset << "," << item.filePath
+                        << std::endl;
             }
             outfile.close();
         } else {
@@ -1144,8 +1175,8 @@ HostCommonService::MONITOR_BACKUP_RES_TYPE HostBackup::MonitorBackup(SubJobStatu
             INFOLOG("backup statistics last update time: %ld", statLastUpdateTime);
             m_backupStats = tmpStats;
         } else if ((m_backupStatus == BackupPhaseStatus::INPROGRESS) &&
-            (tmpStats.noOfFilesCopied + tmpStats.noOfFilesFailed != tmpStats.noOfFilesToBackup) &&
-            (PluginUtils::GetCurrentTimeInSeconds() - statLastUpdateTime >
+            (tmpStats.noOfFilesCopied + tmpStats.noOfFilesFailed + tmpStats.skipFileCnt + tmpStats.noOfFilesWriteSkip !=
+            tmpStats.noOfFilesToBackup) && (PluginUtils::GetCurrentTimeInSeconds() - statLastUpdateTime >
             Module::ConfigReader::getInt(PLUGIN_CONFIG_KEY, "BACKUP_STUCK_TIME"))) {
             UpdateSubBackupStats(true);
             HandleMonitorStuck(jobStatus);
@@ -1282,10 +1313,10 @@ void HostBackup::FillCommonParams(CommonParams& commonParams)
     commonParams.restoreReplacePolicy = RestoreReplacePolicy::OVERWRITE;
     commonParams.skipFailure = (m_fileset.m_advParms.m_isContinueOnFailed == "true");
     commonParams.writeSparseFile = (m_fileset.m_advParms.m_isSparseFileDetection == "true");
-    commonParams.discardReadError = false;
-    if (Module::ConfigReader::getInt("FilePluginConfig", "BACKUP_READ_FAILED_DISCARD") > 0) {
+    commonParams.discardReadError = true;
+    if (Module::ConfigReader::getInt("FilePluginConfig", "BACKUP_READ_FAILED_DISCARD") == 0) {
         WARNLOG("discard read error option enabled! jobId %s, subJobId %s", m_jobId.c_str(), m_subJobId.c_str());
-        commonParams.discardReadError = true;
+        commonParams.discardReadError = false;
     }
     if (Module::ConfigReader::getInt("FilePluginConfig", "FORCE_DISABLE_ACL") > 0) {
         WARNLOG("force disable ACL during backup by config! jobId %s, subJobId %s",
@@ -1365,9 +1396,10 @@ bool HostBackup::UpdateSubBackupStats(bool forceComplete)
     if (forceComplete) {
         // 目录阶段计算目录的失败数
         if (m_backup->m_backupParams.phase == BackupPhase::DIR_STAGE) {
-            currStats.noOfDirFailed = currStats.noOfDirToBackup - currStats.noOfDirCopied;
+            currStats.noOfDirFailed = currStats.noOfDirToBackup - currStats.noOfDirCopied - currStats.skipDirCnt;
         } else {
-            currStats.noOfFilesFailed = currStats.noOfFilesToBackup - currStats.noOfFilesCopied;
+            currStats.noOfFilesFailed = currStats.noOfFilesToBackup -
+            currStats.noOfFilesCopied - currStats.skipFileCnt -currStats.noOfFilesWriteSkip;
         }
     }
     SerializeBackupStats(currStats, m_subBackupStats);
@@ -1412,7 +1444,7 @@ bool HostBackup::UpdateMainBackupStats(BackupStatistic& mainStats)
             ERRLOG("Query failed, jobId: %s, subJobId: %s, path: %s", m_jobId.c_str(), path.c_str(), subJobId.c_str());
             return false;
         }
-        mainStats = CalcuSumStructBackupStatistic(mainStats, subStats);
+        mainStats = mainStats + subStats;
     }
     uint64_t dataInKB = mainStats.noOfBytesCopied / NUMBER1024;
     m_jobSpeed = dataInKB / backDuration;
@@ -1749,7 +1781,7 @@ string HostBackup::GetVolumeMountPath(const string& path) const
 
 void HostBackup::ExcludePathsInConfig(ScanConfig &scanConfig, const std::string& pathFix)
 {
-    if (m_excludePathList.empty()) {
+    if (m_excludePathList.empty() && m_failedRecords.empty()) {
         return;
     }
     for (const std::string& path : m_excludePathList) {
@@ -1773,6 +1805,16 @@ void HostBackup::ExcludePathsInConfig(ScanConfig &scanConfig, const std::string&
         }
         scanConfig.crossVolumeSkipSet.emplace(filterPath);
         INFOLOG("filterPath: %s, jobId: %s", filterPath.c_str(), m_jobId.c_str());
+    }
+    for (std::string path : m_failedRecords) {
+#ifdef WIN32
+        path = Module::Win32PathUtil::Win32ToPosix(path, true);
+#endif
+        INFOLOG("push to fctlr : %s", path.c_str());
+        scanConfig.fCtrlFltr.push_back(path);
+    }
+    if (!m_failedRecords.empty()) {
+        scanConfig.ctrlFilterType = CtrlFilterType::EXCLUDE;
     }
 }
 
@@ -1926,10 +1968,10 @@ bool HostBackup::ScanFailedVolume(HostScanStatistics& preScanStats, std::set<std
         PluginUtils::RemoveFile(failedRecordPath);
     }
     if (failedRecords.empty()) {
-        INFOLOG("no failed record to scan!");
         return true;
     }
-    return DoRealScanFailedVolume(failedRecords, preScanStats, jobInfoSet);
+    m_failedRecords = std::move(failedRecords);
+    return DoRealScanFailedVolume(preScanStats, jobInfoSet);
 }
 
 bool HostBackup::ProcessFailedRecordLine(const std::string& line, FailedRecordItem& item)
@@ -1971,8 +2013,7 @@ bool HostBackup::IsErrNeedSkip(const uint32_t errNum)
     return false;
 }
 
-bool HostBackup::DoRealScanFailedVolume(const std::vector<std::string>& failedRecords,
-    HostScanStatistics& preScanStats, std::set<std::string>& jobInfoSet)
+bool HostBackup::DoRealScanFailedVolume(HostScanStatistics& preScanStats, std::set<std::string>& jobInfoSet)
 {
     ScanConfig scanConfig {};
     string pathId = "failedVolume";
@@ -1980,11 +2021,13 @@ bool HostBackup::DoRealScanFailedVolume(const std::vector<std::string>& failedRe
     FillScanConfig(scanConfig);
     scanConfig.scanType = ScanJobType::FULL;
     scanConfig.lastBackupTime = 0;
-    scanConfig.maxScanQueueSize = failedRecords.size() + DEFAULT_SCANQUEUE_SIZE;
+    scanConfig.maxScanQueueSize = m_failedRecords.size() + DEFAULT_SCANQUEUE_SIZE;
+    scanConfig.ignoreDir = true;
     m_scanner = ScanMgr::CreateScanInst(scanConfig);
-    for (const std::string& file : failedRecords) {
+    for (const std::string& file : m_failedRecords) {
         m_scanner->Enqueue(file);
     }
+    
     if (m_scanner->Start() != SCANNER_STATUS::SUCCESS) {
         if (m_scanner != nullptr) {
             m_scanner->Destroy();
@@ -2592,26 +2635,30 @@ bool HostBackup::InitJobInfo()
 
 bool HostBackup::InitFilesetInfo()
 {
-    if (m_backupJobPtr->protectSubObject.empty()) {
-        ERRLOG("Invalid fileset, fileset is empty");
+    if (!Module::JsonHelper::JsonStringToStruct(m_backupJobPtr->extendInfo, m_fileset.m_advParms)) {
+        ERRLOG("JsonStringToStruct failed, m_advParms");
         return false;
     }
+    if (!Module::JsonHelper::JsonStringToStruct(m_backupJobPtr->protectObject.extendInfo, m_fileset.m_filesetExt)) {
+        ERRLOG("JsonStringToStruct failed, m_filesetExt");
+        return false;
+    }
+    INFOLOG("m_fileset.m_filesetExt.m_isOSBackup == %s", m_fileset.m_filesetExt.m_isOSBackup.c_str());
     string notExistPath;
     string notBackupPath;
-    for (AppProtect::ApplicationResource resource : m_backupJobPtr->protectSubObject) {
-        if (!PluginUtils::IsPathExists(resource.name)) {
-            ERRLOG("The selected path: %s is not exit", resource.name.c_str());
-            notExistPath += (resource.name + SEP);
-            continue;
+    if (m_backupJobPtr->protectSubObject.empty()) {
+        if (m_fileset.m_filesetExt.m_isOSBackup != "true") {
+            ERRLOG("Invalid fileset, fileset is empty");
+            return false;
         }
-        if (!IsBackupPath(resource.name)) {
-            ERRLOG("The selected path: %s is system path, do not backup", resource.name.c_str());
-            notBackupPath += (resource.name + SEP);
-            continue;
+        InitAndAddSysPath(notExistPath, notBackupPath);
+    } else {
+        AddUserSelectPath(notExistPath, notBackupPath);
+        if (m_fileset.m_filesetExt.m_isOSBackup == "true") {
+            InitAndAddSysPath(notExistPath, notBackupPath);
         }
-        m_fileset.m_protectedPaths.emplace(resource.name);
-        INFOLOG("protected path push %s", resource.name.c_str());
     }
+    /* m_fileset.m_protectedPaths填充完成 */
     if (!notExistPath.empty() && m_jobCtrlPhase == JOB_CTRL_PHASE_PREJOB) {
         size_t pos = notExistPath.size() - LEN_SEP; // 上报的path不带最后一个逗号
         /* path not exists or have no sufficient privelege will both use this label */
@@ -2624,15 +2671,8 @@ bool HostBackup::InitFilesetInfo()
         ReportJobLabel(JobLogLevel::TASK_LOG_WARNING, "file_plugin_backup_protected_path_invalid_warn_label",
             notBackupPath.substr(0, pos));
     }
+
     FilesetPathDeduplication();
-    if (!Module::JsonHelper::JsonStringToStruct(m_backupJobPtr->protectObject.extendInfo, m_fileset.m_filesetExt)) {
-        ERRLOG("JsonStringToStruct failed, m_filesetExt");
-        return false;
-    }
-    if (!Module::JsonHelper::JsonStringToStruct(m_backupJobPtr->extendInfo, m_fileset.m_advParms)) {
-        ERRLOG("JsonStringToStruct failed, m_advParms");
-        return false;
-    }
     if (!FilterProtectPaths()) {
         return false;
     }
@@ -2642,6 +2682,50 @@ bool HostBackup::InitFilesetInfo()
         return false;
     }
     return true;
+}
+
+void HostBackup::InitAndAddSysPath(std::string& notExistPath, std::string& notBackupPath)
+{
+    std::initializer_list<std::string> sysDirs = {"/boot", "/etc", "/root", "/var", "/usr", "/bin",
+                                                  "/sbin", "/lib", "/lib64"};
+    for (const auto& dir : sysDirs) {
+        if (!PluginUtils::IsPathExists(dir)) {
+            ERRLOG("The selected path: %s is not exist", dir.c_str());
+            notExistPath += (dir + SEP);
+            continue;
+        }
+        if (!IsBackupPath(dir)) {
+            ERRLOG("The selected path: %s is system path, do not backup", dir.c_str());
+            notBackupPath += (dir + SEP);
+            continue;
+        }
+        m_fileset.m_protectedPaths.emplace(dir);
+        INFOLOG("protected path push sysDirs: %s", dir.c_str());
+    }
+    if (notExistPath.empty() && notBackupPath.empty() && m_jobCtrlPhase == JOB_CTRL_PHASE_PREJOB) {
+        // add sys path complete label
+        ReportJobLabel(JobLogLevel::TASK_LOG_INFO, "file_plugin_backup_add_sys_protected_path_success_label");
+    }
+    return;
+}
+
+void HostBackup::AddUserSelectPath(std::string& notExistPath, std::string& notBackupPath)
+{
+    for (AppProtect::ApplicationResource resource : m_backupJobPtr->protectSubObject) {
+        if (!PluginUtils::IsPathExists(resource.name)) {
+            ERRLOG("The selected path: %s is not exist", resource.name.c_str());
+            notExistPath += (resource.name + SEP);
+            continue;
+        }
+        if (!IsBackupPath(resource.name)) {
+            ERRLOG("The selected path: %s is system path, do not backup", resource.name.c_str());
+            notBackupPath += (resource.name + SEP);
+            continue;
+        }
+        m_fileset.m_protectedPaths.emplace(resource.name);
+        INFOLOG("protected path push %s", resource.name.c_str());
+    }
+    return;
 }
 
 bool HostBackup::FilterProtectPaths()
@@ -2716,7 +2800,7 @@ bool HostBackup::InitMetaDataCacheBackupFs()
     }
 
     if (m_metaFs.path.empty() || m_dataFs.path.empty() || m_cacheFs.path.empty()) {
-        HCP_Log(DEBUG, MODULE) << "Received info is wrong, m_dataFs size: " << m_dataFs.path.size() <<
+        HCP_Log(ERR, MODULE) << "Received info is wrong, m_dataFs size: " << m_dataFs.path.size() <<
             ", m_cacheFs.path.size(): " << m_cacheFs.path.size() << ", m_metaFs.path.size(): " <<
             m_metaFs.path.size() << HCPENDLOG;
         return false;
@@ -2760,8 +2844,12 @@ void HostBackup::InitRepoPaths()
     // plugin can use any mounted meta path given by agent ,so using first one
     m_metaFsPath = IsAggregate() ? (m_metaFs.path[0] + dir_sep + m_backupJobPtr->copy.id) : m_metaFs.path[0];
     m_backupCopyInfoFilePath = PathJoin(m_metaFs.path[0], BACKUP_COPY_METAFILE);
+    m_sysInfoPath = PathJoin(m_metaFsPath, "sys_info");
     HCP_Log(DEBUG, MODULE) << " m_metaFs.remotePath: " << m_metaFs.remotePath << HCPENDLOG;
     HCP_Log(DEBUG, MODULE) << " m_metaFsPath: " << m_metaFsPath << HCPENDLOG;
+    HCP_Log(DEBUG, MODULE) << " m_meta_sysInfoPathofFsPath: " << m_sysInfoPath << HCPENDLOG;
+    INFOLOG("m_metaFsPath: %s", m_metaFsPath.c_str());
+    INFOLOG("m_meta_sysInfoPathofFsPath: %s", m_sysInfoPath.c_str());
     return;
 }
 
@@ -2784,6 +2872,7 @@ void HostBackup::PrintJobInfo() const
     INFOLOG("advPars.m_maxSizeAfterAggregate: %s", m_fileset.m_advParms.m_maxSizeAfterAggregate.c_str());
     INFOLOG("advPars.m_maxSizeToAggregate: %s", m_fileset.m_advParms.m_maxSizeToAggregate.c_str());
     INFOLOG("advPars.m_channels: %s", m_fileset.m_advParms.m_channels.c_str());
+    INFOLOG("advPars.m_snapshotSizePercent: %s", m_fileset.m_advParms.m_snapshotSizePercent.c_str());
     INFOLOG("dataLayout.backupFormat: %s", m_dataLayoutExt.m_backupFormat.c_str());
     INFOLOG("dataLayout.m_fileReplaceStrategy: %s", m_dataLayoutExt.m_fileReplaceStrategy.c_str());
     INFOLOG("dataLayout.metadataBackupType: %s", m_dataLayoutExt.m_metadataBackupType.c_str());
@@ -2798,6 +2887,38 @@ void HostBackup::PrintJobInfo() const
             INFOLOG("jobParam.filter, value: %s", value.c_str());
         }
     }
+}
+ 
+int HostBackup::InitSystemVolume()
+{
+#ifdef WIN32
+    ERRLOG("Do not support windows system backup.");
+    return Module::FAILED;
+#else
+    int ret = GetSystemInfo();
+    return ret;
+#endif
+}
+
+int HostBackup::GetSystemInfo()
+{
+    if (!CreateDirectory(m_sysInfoPath)) {
+        ERRLOG("Failed create directory %s", m_sysInfoPath.c_str());
+        return Module::FAILED;
+    }
+ 
+    std::vector<std::string> output;
+    std::vector<std::string> errOutput;
+    std::vector<std::string> paramList;
+    paramList.push_back(Module::CPath::GetInstance().GetRootPath());
+    paramList.push_back(m_sysInfoPath);
+    std::string cmd = "sh ?/bin/GetSystemInfo.sh ?";
+    int ret = Module::runShellCmdWithOutput(INFO, MODULE, 0, cmd, paramList, output, errOutput);
+    if (ret != Module::SUCCESS) {
+        PluginUtils::LogCmdExecuteError(ret, output, errOutput);
+        return ret;
+    }
+    return Module::SUCCESS;
 }
 
 bool HostBackup::SetupCacheFsForBackupJob() const
@@ -2850,7 +2971,6 @@ std::shared_ptr<SnapshotProvider> HostBackup::BuildSnapshotProvider() const {
 bool HostBackup::CreateSnapshot()
 {
     if (m_fileset.m_advParms.m_isConsistent == FALSE_STR) {
-        ReportJobDetails(make_tuple(JobLogLevel::TASK_LOG_INFO, SubJobStatus::RUNNING, PROGRESS50));
         return true;
     }
     string notSupports;
@@ -2866,10 +2986,14 @@ bool HostBackup::CreateSnapshot()
     SnapshotResult snapshotResult{};
     bool isCross = (m_fileset.m_advParms.m_isCrossFileSystem == TRUE_STR);
     string snapshotNames;
+    string snapshotPercent = m_fileset.m_advParms.m_snapshotSizePercent;
+    if (snapshotPercent.empty()) {
+        snapshotPercent = DEFAULT_SNAPSHOT_PERCENT;
+    }
     set<string> spaceless;
     set<string> mountedPaths;
     for (string path : m_fileset.m_protectedPaths) {
-        snapshotResult = snapPtr->CreateSnapshot(path, isCross);
+        snapshotResult = snapPtr->CreateSnapshot(path, isCross, snapshotPercent);
         if (snapshotResult.snapShotStatus == SNAPSHOT_STATUS::FAILED) {
             ReportJobLabel(
                 JobLogLevel::TASK_LOG_ERROR, "file_plugin_host_backup_prepare_create_snap_failed_label", path);
@@ -3051,13 +3175,14 @@ bool HostBackup::GetPrevBackupCopyInfo()
     return true;
 }
 
-void HostBackup::FillBackupCopyInfo(HostBackupCopy &HostBackupCopy)
+void HostBackup::FillBackupCopyInfo(HostBackupCopy &hostBackupCopy)
 {
-    HostBackupCopy.m_backupFormat = m_dataLayoutExt.m_backupFormat;
-    HostBackupCopy.m_metadataBackupType = m_dataLayoutExt.m_metadataBackupType;
-    HostBackupCopy.m_backupFilter = m_fileset.m_filesetExt.m_filters;
-    HostBackupCopy.m_isConsistent = m_fileset.m_advParms.m_isConsistent;
-    HostBackupCopy.m_lastBackupTime = m_lastBackupTime;
+    hostBackupCopy.m_backupFormat = m_dataLayoutExt.m_backupFormat;
+    hostBackupCopy.m_metadataBackupType = m_dataLayoutExt.m_metadataBackupType;
+    hostBackupCopy.m_backupFilter = m_fileset.m_filesetExt.m_filters;
+    hostBackupCopy.m_isConsistent = m_fileset.m_advParms.m_isConsistent;
+    hostBackupCopy.m_lastBackupTime = m_lastBackupTime;
+    hostBackupCopy.m_isArchiveSupportHardlink = "true";
     DBGLOG("FillBackupCopyInfo, m_lastBackupTime: %s", ConvertToReadableTime(m_lastBackupTime).c_str());
     return;
 }
@@ -3396,47 +3521,6 @@ std::string HostBackup::LoadSnapshotParentPath() const
         return SNAPSHOT_PARENT_PATH_DEFAULT;
     }
     return snapshotParentPath;
-}
-
-bool HostBackup::SetNumOfChannels() const
-{
-    std::string path = PluginUtils::PathJoin(Module::CPath::GetInstance().GetRootPath(), PLUGIN_ATT_JSON);
-    DBGLOG("SetNumOfChannels, plugin_attribute_1.0.0.json path: %s", path.c_str());
-    if (!PluginUtils::IsFileExist(path)) {
-        ERRLOG("plugin_attribute_1.0.0.json is not exist!");
-    }
-    try {
-        std::ifstream readStream(path, std::ios::in);
-        if (!readStream.is_open()) {
-            ERRLOG("Open file %s failed, errno[%d]:%s.", path.c_str(), errno, strerror(errno));
-            return false;
-        }
-        std::stringstream buffer;
-        buffer << readStream.rdbuf();
-        readStream.close();
-        std::string pluginAttributeContent(buffer.str());
-        Json::Value jsonVal;
-        if (!Module::JsonHelper::JsonStringToJsonValue(pluginAttributeContent, jsonVal)) {
-            ERRLOG("JsonStringToJsonValue error, str: %s", pluginAttributeContent.c_str());
-            return false;
-        }
-        int channels = std::stoi(m_fileset.m_advParms.m_channels);
-        INFOLOG("Current maxSubCount: %d, set to %d",
-            jsonVal["application_sub_job_cnt_max"]["Fileset"].asInt(), channels);
-        jsonVal["application_sub_job_cnt_max"]["Fileset"] = Json::Value(channels);
-        Json::StyledWriter sWriter;
-        std::ofstream outFileStream(path, std::ios::out | std::ios::trunc);
-        if (!outFileStream.is_open()) {
-            ERRLOG("Open file %s failed, errno[%d]:%s.", path.c_str(), errno, strerror(errno));
-            return false;
-        }
-        outFileStream << sWriter.write(jsonVal);
-        outFileStream.close();
-    } catch (const std::exception &ex) {
-        ERRLOG("Standard C++ Exception: %s", ex.what());
-        return false;
-    }
-    return true;
 }
 
 bool HostBackup::WriteSnapInfoToFile(const set<string>& snapshotInfo, const string& infoFilePath)

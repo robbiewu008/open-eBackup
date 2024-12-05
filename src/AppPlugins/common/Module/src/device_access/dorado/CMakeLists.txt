@@ -13,6 +13,10 @@ target_include_directories(dorado_device_obj
     ${OPEN_SRC}/boost_rel/include
     ${OPEN_SRC}/jsoncpp_rel/include
     ${OPEN_SRC}/curl_rel/include
+    ${OPEN_SRC}/curl_rel/include
+    ${OPEN_SRC}/tinyxml2_rel/include
+    ${MODULE_SRC_PATH}/src
+
 )
 
 target_link_directories(dorado_device_obj

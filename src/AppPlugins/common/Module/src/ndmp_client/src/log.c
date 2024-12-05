@@ -34,6 +34,7 @@
 #include "queue.h"
 #include "securec.h"
 #include "log/Log.h"
+extern char* g_srcIp;
 
 extern struct cmd_line_opts opts;
 /*
@@ -118,8 +119,8 @@ logMessage(NdmpConnection	connection,
     (void)sprintf_s(backend_msg.text, sizeof(backend_msg.text), "%s", request->entry);
     backend_msg.message = NDMP_LOG_MESSAGE;
     backend_msg.connection  = connection;
-    enqueue (backend_queue, &backend_msg);
-
+    INFOLOG("%s: %s", g_srcIp, backend_msg.text);
+    writeProcessMsg(backend_msg.text);
 	return;
 }
 

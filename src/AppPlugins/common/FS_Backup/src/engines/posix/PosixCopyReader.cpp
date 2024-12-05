@@ -59,8 +59,8 @@ int PosixCopyReader::ReadEmptyData(FileHandle& fileHandle)
         return FAILED;
     }
 
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -134,9 +134,6 @@ void PosixCopyReader::HandleSuccessEvent(shared_ptr<PosixServiceTask> taskPtr)
     FileDescState state = fileHandle.m_file->GetSrcState();
     DBGLOG("Posix copy reader success %s event %d state %d",
         fileHandle.m_file->m_fileName.c_str(), static_cast<int>(event), static_cast<int>(state));
-    if (fileHandle.m_file->IsFlagSet(READ_FAILED_DISCARD)) {
-        FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);
-    }
     // 小文件readdata后已经close了， 直接push给aggregator
     if ((fileHandle.m_file->m_size <= m_params.blockSize) || isHugeObjectFile(fileHandle)) {
         fileHandle.m_file->SetSrcState(FileDescState::SRC_CLOSED);

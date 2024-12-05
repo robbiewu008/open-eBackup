@@ -94,7 +94,7 @@ namespace Module {
     * @param downloadInfoList 分片详细信息
     * @param callbackData 用户自定义数据
     */
-    void MultiPartDownloadObjectCallback(obs_status status, char* , int partCountReturn,
+    void MultiPartDownloadObjectCallback(obs_status status, char*, int partCountReturn,
         obs_download_file_part_info* downloadInfoList, void* callbackData);
     /* common */
     /**

@@ -33,6 +33,7 @@ target_include_directories(service_delete_obj
     ${MODULE_ROOT_PATH}/third_open_src/protobuf_rel/include
     ${MODULE_ROOT_PATH}/third_open_src/jsoncpp_rel/include
     ${BOOST_PATH}/include
+    ${LIBSQL_OPENSRC_DIR}/sqlite-autoconf/include
 
     ${BACKUP_SRC_PATH}/engines/hostcommon
     ${BACKUP_SRC_PATH}/engines/posix
@@ -42,6 +43,7 @@ target_include_directories(service_delete_obj
     ${BACKUP_SRC_PATH}/engines/libnfs/requests
     ${BACKUP_SRC_PATH}/engines/libnfs/interface
     ${BACKUP_SRC_PATH}/engines/archive_client
+    ${BACKUP_SRC_PATH}/engines/nfs_anti_ransomware
     ${BACKUP_SRC_PATH}/service
     ${BACKUP_SRC_PATH}/service/copy
     ${BACKUP_SRC_PATH}/service/delete

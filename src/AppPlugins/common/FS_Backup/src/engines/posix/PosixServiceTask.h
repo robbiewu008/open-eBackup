@@ -79,9 +79,10 @@ private:
     bool SetXattr(const std::string &dstPath);
     bool ShouldWriteMode();
     int ProcessWriteSpecialFileReplacePolicy(const std::string& dstFile, std::string& newDstFile, bool &isContinue);
+    void CloseSmallFileSrcFd();
     void CloseSmallFileDstFd();
     bool CreateDirectory(const std::string &path);
-
+    ssize_t PwriteWithRetry(const int fd, const uint8_t *buf, const size_t size, const off_t offset);
 private:
     uint64_t m_offset { 0 };
     uint64_t m_length { 0 };

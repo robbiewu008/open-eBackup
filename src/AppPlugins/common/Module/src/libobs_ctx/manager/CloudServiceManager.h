@@ -27,7 +27,8 @@ namespace Module {
 
     class CloudServiceManager {
     public:
-        static std::unique_ptr<CloudServiceInterface> CreateInst(const StorageConfig& storageConfig) {
+        static std::unique_ptr<CloudServiceInterface> CreateInst(const StorageConfig& storageConfig)
+        {
             if (storageConfig.storageType == StorageType::PACIFIC) {
                 return std::make_unique<HWCloudService>(storageConfig.verifyInfo, obs_auth_switch::OBS_S3_TYPE);
             } else if (storageConfig.storageType == StorageType::HUAWEI) {

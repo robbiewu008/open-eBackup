@@ -37,6 +37,9 @@ public:
 
 private:
     std::string NormalizeDirectoryPath(std::string path);
+    void TransformResultForVolume(
+        AppProtect::ResourceResultByPage& returnValue,
+        const FileResourceInfo& resourceInfo) override;
 
     void BrowseFolderByPage(
         FilePlugin::FileResourceInfo& resourceInfo,

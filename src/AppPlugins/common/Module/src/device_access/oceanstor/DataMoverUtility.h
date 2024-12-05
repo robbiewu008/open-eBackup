@@ -30,7 +30,8 @@ namespace Module {
     // url处理工具
     class DataMoverUtility {
     public:
-        static std::string UrlEncode(const std::string& strToEncode) {
+        static std::string UrlEncode(const std::string& strToEncode)
+        {
             std::string src = strToEncode;
             char hex[] = "0123456789ABCDEF";
             std::string strEncoded;
@@ -47,7 +48,8 @@ namespace Module {
             }
             return strEncoded;
         }
-        static std::string OceanStorSeriesEscapeChar(const std::string& strToEscape) {
+        static std::string OceanStorSeriesEscapeChar(const std::string& strToEscape)
+        {
             std::string strEscaped = strToEscape;
             boost::replace_all(strEscaped, "&", AND_SYMBOL);
             boost::replace_all(strEscaped, "<", LEFT_ANGLE_BRACKET);

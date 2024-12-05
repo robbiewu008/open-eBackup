@@ -114,7 +114,7 @@ int ObjectDeleteWriter::WriteData(FileHandle& fileHandle)
         ERRLOG("put write data (delete) task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     return SUCCESS;
 }
 
@@ -138,11 +138,11 @@ bool ObjectDeleteWriter::IsAbort() const
 bool ObjectDeleteWriter::IsComplete()
 {
     if (m_controlInfo->m_aggregatePhaseComplete && m_writeQueue->Empty() && (m_timer.GetCount() == 0) &&
-        (m_writeTaskProduce == m_writeTaskConsume)) {
+        (m_controlInfo->m_writeTaskProduce == m_controlInfo->m_writeTaskConsume)) {
         INFOLOG("DeleteWriter complete: aggregateComplete %d writeQueueSize %llu timerSize %llu "
             "writeTaskProduce %llu writeTaskConsume %llu",
             m_controlInfo->m_aggregatePhaseComplete.load(), m_writeQueue->GetSize(),
-            m_timer.GetCount(), m_writeTaskProduce.load(), m_writeTaskConsume.load());
+            m_timer.GetCount(), m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load());
         m_controlInfo->m_writePhaseComplete = true;
         return true;
     }
@@ -152,7 +152,7 @@ bool ObjectDeleteWriter::IsComplete()
         INFOLOG("DeleteWriter check is complete: aggregateComplete %d writeQueueSize %llu timerSize %llu "
             "writeTaskProduce %llu writeTaskConsume %llu",
             m_controlInfo->m_aggregatePhaseComplete.load(), m_writeQueue->GetSize(),
-            m_timer.GetCount(), m_writeTaskProduce.load(), m_writeTaskConsume.load());
+            m_timer.GetCount(), m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load());
     }
 
     return false;
@@ -213,7 +213,7 @@ void ObjectDeleteWriter::PollWriteTask()
             ERRLOG("task is nullptr");
             break;
         }
-        ++m_writeTaskConsume;
+        ++m_controlInfo->m_writeTaskConsume;
         if (taskPtr->m_result == SUCCESS) {
             HandleSuccessEvent(taskPtr);
         } else {
@@ -258,8 +258,10 @@ void ObjectDeleteWriter::HandleFailedEvent(shared_ptr<ObjectServiceTask> taskPtr
         FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);
         if (fileHandle.m_file->GetDstState() != FileDescState::WRITE_FAILED) {
             fileHandle.m_file->SetDstState(FileDescState::WRITE_FAILED);
-            fileHandle.m_errNum = taskPtr->m_errDetails.second;
-            m_failedList.emplace_back(fileHandle);
+            if (!fileHandle.m_file->IsFlagSet(IS_DIR)) {
+                fileHandle.m_errNum = taskPtr->m_errDetails.second;
+                m_failedList.emplace_back(fileHandle);
+            }
         }
         if (fileHandle.m_file->IsFlagSet(IS_DIR)) {
             ++m_deleteFailedDir;
@@ -272,6 +274,9 @@ void ObjectDeleteWriter::HandleFailedEvent(shared_ptr<ObjectServiceTask> taskPtr
             ERRLOG("set backup to failed!");
             m_controlInfo->m_failed = true;
             m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+        }
+        if (!fileHandle.m_errMessage.empty()) {
+            m_failedList.emplace_back(fileHandle);
         }
         ERRLOG("delete failed for file %s %llu %llu, totalFailed: %llu, %llu",
             fileHandle.m_file->m_fileName.c_str(), m_deleteFailedDir.load(), m_deleteFailedFile.load(),

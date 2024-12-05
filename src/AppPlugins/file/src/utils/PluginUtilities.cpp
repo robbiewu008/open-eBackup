@@ -30,6 +30,8 @@
 
 #ifdef WIN32
 #include "FileSystemUtil.h"
+#include <windows.h>
+#include <winioctl.h>
 #endif
 
 using namespace std;
@@ -276,6 +278,12 @@ bool ReadFile(const std::string &path, std::string &data)
     std::ifstream infoFile(path, std::ios::in);
     std::stringstream fileBuffer{};
     if (!infoFile.is_open()) {
+#ifdef WIN32
+        DWORD errcode = ::GetLastError();
+        ERRLOG("Open file %s failed, errno[%lu]:%s.", path.c_str(), errcode, strerror(errcode));
+#else
+        ERRLOG("Open file %s failed, errno[%d]:%s.", path.c_str(), errno, strerror(errno));
+#endif
         return false;
     }
     fileBuffer << infoFile.rdbuf();
@@ -448,13 +456,12 @@ std::string GetFileName(const std::string& filePath)
 #ifdef _WIN32
     sep = '\\';
 #endif
-    size_t fileoffset = filePath.rfind(sep, filePath.length());
+    size_t fileoffset = filePath.rfind(sep);
     if (fileoffset == string::npos) {
         return filePath;
     }
-    size_t fileNameLen = filePath.length() - fileoffset - 1;
     size_t fileStarPos = fileoffset + 1;
-    return filePath.substr(fileStarPos, fileNameLen);
+    return filePath.substr(fileStarPos);
 }
 
 bool IsDirExist(const std::string& pathName)
@@ -807,6 +814,43 @@ std::string VolumeNameTransform(const std::string& mapperName)
     return lvmVolumeName;
 }
 
+#ifdef WIN32
+uint64_t GetWinVolumeSize(const std::string& devicePath)
+{
+    std::string winDevicePath = "\\\\.\\" + devicePath;
+    HANDLE hDevice = CreateFileA(
+        winDevicePath.c_str(),
+        GENERIC_READ,
+        FILE_SHARE_READ|FILE_SHARE_WRITE,
+        nullptr,
+        OPEN_EXISTING,
+        0,
+        nullptr);
+    if (hDevice == INVALID_HANDLE_VALUE) {
+        ERRLOG("Unable to open device.Error code: %d", GetLastError());
+        return 0;
+    }
+    GET_LENGTH_INFORMATION lengthInfo;
+    DWORD bytesReturned;
+    bool success = DeviceIoControl(
+        hDevice,
+        IOCTL_DISK_GET_LENGTH_INFO,
+        nullptr,
+        0,
+        &lengthInfo,
+        sizeof(lengthInfo),
+        &bytesReturned,
+        nullptr);
+    if (!success) {
+        ERRLOG("Unable to get device size.Error code: %d", GetLastError());
+        CloseHandle(hDevice);
+        return 0;
+    }
+    CloseHandle(hDevice);
+    return lengthInfo.Length.QuadPart;
+}
+#endif
+
 uint64_t GetVolumeSize(const std::string& devicePath)
 {
 #ifdef __linux__
@@ -823,6 +867,8 @@ uint64_t GetVolumeSize(const std::string& devicePath)
     }
     ::close(fd);
     return size;
+#elif defined(WIN32)
+    return GetWinVolumeSize(devicePath);
 #else
     WARNLOG("GetVolumeSize not implemented on this platform!");
     return 0;
@@ -849,7 +895,7 @@ string GetVolumeUuid(const std::string& devicePath)
 }
 
 // return lvm vg-lv name
-std::string GetLvmVolumeName(const std::string& dmDevicePath)
+std::string GetVolumeName(const std::string& dmDevicePath)
 {
     if (dmDevicePath.find("/dev/mapper/") != 0) {
         ERRLOG("invalid lvm dm device path %s", dmDevicePath.c_str());
@@ -924,4 +970,5 @@ std::string ReadFileContent(const std::string fullpath)
     }
     return content;
 }
+
 } // namespace

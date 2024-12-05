@@ -54,7 +54,6 @@ void PosixDirWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskPtr
         if (fileHandle.m_file->GetDstState() != FileDescState::WRITE_FAILED) {
             fileHandle.m_file->SetDstState(FileDescState::WRITE_FAILED);
             fileHandle.m_errNum = taskPtr->m_errDetails.second;
-            m_failedList.emplace_back(fileHandle);
         }
         ++m_controlInfo->m_noOfDirFailed;
         if (!m_backupParams.commonParams.skipFailure || taskPtr->IsCriticalError()) {

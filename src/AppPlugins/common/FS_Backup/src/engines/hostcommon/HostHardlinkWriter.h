@@ -64,8 +64,6 @@ protected:
     time_t              m_isCompleteTimer { 0 };
     bool                    m_threadDone { false };
     bool                    m_pollThreadDone { false };
-    std::atomic<uint64_t>   m_writeTaskProduce { 0 };
-    std::atomic<uint64_t>   m_writeTaskConsume { 0 };
     std::shared_ptr<Module::JobScheduler>       m_jsPtr;
     std::shared_ptr<HostBackupAdvanceParams>    m_srcAdvParams;
     std::shared_ptr<HostBackupAdvanceParams>    m_dstAdvParams;

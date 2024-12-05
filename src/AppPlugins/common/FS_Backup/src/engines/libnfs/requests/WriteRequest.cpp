@@ -124,7 +124,13 @@ void SendWriteCb(int status, struct nfs_context *nfs, void *data, void *privateD
         return;
     }
 
-    // Success case
+    // Partly success case
+    if (status < fileHandle.m_block.m_size) {
+        HandlePartlySuccess(cbData, fileHandle, status, nfs);
+        delete cbData;
+        return;
+    }
+    // Fully Success case
     fileHandle.m_retryCnt = 0;
     commonData->controlInfo->m_noOfBytesCopied += fileHandle.m_block.m_size;
     cbData->blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
@@ -155,11 +161,13 @@ void HandleWriteFailure(NfsWriteCbData *cbData, FileHandle &fileHandle, int stat
         commonData->pktStats->Increment(PKT_TYPE::WRITE, PKT_COUNTER::FAILED, 1, PKT_ERROR::RETRIABLE_ERR);
         fileHandle.m_retryCnt++;
         if (fileHandle.m_retryCnt > DEFAULT_MAX_READ_RETRY) {
-            ERRLOG("WriteReq failed for: %s, Offset: %lu, retryCnt: %d ERR: %s", fileHandle.m_file->m_fileName.c_str(),
-                fileHandle.m_block.m_offset, fileHandle.m_retryCnt, nfs_get_error(nfs));
+            ERRLOG("WriteReq failed for: %s, Offset: %lu, retryCnt: %d ERR: %s, status: %d",
+                fileHandle.m_file->m_fileName.c_str(), fileHandle.m_block.m_offset,
+                fileHandle.m_retryCnt, nfs_get_error(nfs), status);
         } else {
-            DBGLOG("Write retry for: %s, Offset: %lu, retryCount: %d ERR: %s", fileHandle.m_file->m_fileName.c_str(),
-                fileHandle.m_block.m_offset, fileHandle.m_retryCnt, nfs_get_error(nfs));
+            DBGLOG("Write retry for: %s, Offset: %lu, retryCount: %d ERR: %s, status: %d",
+                fileHandle.m_file->m_fileName.c_str(), fileHandle.m_block.m_offset,
+                fileHandle.m_retryCnt, nfs_get_error(nfs), status);
             commonData->pktStats->Increment(PKT_TYPE::WRITE, PKT_COUNTER::RETRIED);
             commonData->timer->Insert(fileHandle, fileHandle.m_retryCnt * DEFAULT_REQUEST_RETRY_TIMER);
             return;
@@ -179,6 +187,40 @@ void HandleWriteFailure(NfsWriteCbData *cbData, FileHandle &fileHandle, int stat
     return;
 }
 
+void HandlePartlySuccess(NfsWriteCbData *cbData, FileHandle &fileHandle, int status, struct nfs_context *nfs)
+{
+    WARNLOG("Partly success status: %d, total size: %d", status, fileHandle.m_block.m_size);
+    
+    NfsCommonData *commonData = cbData->writeCommonData;
+    if (commonData == nullptr) {
+        ERRLOG("commonData is nullptr");
+        return;
+    }
+
+    uint32_t newSize = fileHandle.m_block.m_size - status;
+    uint8_t *tmpBuffer = new uint8_t[newSize];
+    if (memcpy_s(tmpBuffer, newSize, fileHandle.m_block.m_buffer + status, newSize) != 0) {
+        // memcpy失败后先释放buffer
+        delete[] tmpBuffer;
+        // memcpy失败，重试全部数据
+        WARNLOG("memcpy_s failed(%d), try to write full data.", errno);
+        HandleWriteFailure(cbData, fileHandle, -EAGAIN, nfs);
+        return;
+    }
+
+    cbData->blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+    fileHandle.m_block.m_size -= status;
+    fileHandle.m_block.m_offset += status;
+    fileHandle.m_block.m_buffer = tmpBuffer;
+    cbData->blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
+
+    commonData->controlInfo->m_noOfBytesCopied += status;
+    // 回退block写完计数
+    fileHandle.m_file->m_blockStats.m_writeRespCnt--;
+    // 写入队列
+    commonData->timer->Insert(fileHandle, fileHandle.m_retryCnt * DEFAULT_REQUEST_RETRY_TIMER);
+    return;
+}
 void WriteFailureHandling(NfsCommonData *commonData, int status, FileHandle &fileHandle)
 {
     CheckForCriticalError(commonData, status, PKT_TYPE::WRITE);

@@ -65,15 +65,18 @@ public:
     bool Handshake();
     void SendMessage(const Protocol::Message& message);
     void SendAsyncMessage(const std::shared_ptr<Protocol::Message>& message,
-                          const std::function<void(const boost::system::error_code& error, std::size_t)>& finalHandler);
+                          const std::function<void(const boost::system::error_code& error, std::size_t,
+                          bool)>& finalHandler);
     boost::optional<Protocol::Message> ReceiveMessage();
     void ReceiveAsyncMessage(const std::function<void(std::shared_ptr<Protocol::Message>,
-                                                      Protocol::MessageType)>& finalHandler);
+                                                      std::shared_ptr<Protocol::MessageHeader>, bool)>& finalHandler);
 
     void StartDeadlineTimer(const boost::posix_time::seconds& seconds);
     void StopDeadlineTimer();
 
     bool HandleError(const boost::system::error_code& error, boost::string_view message);
+
+    uint16_t GetSequecenNumber();
 
 private:
     bool VerifyCertificate(bool preverified, boost::asio::ssl::verify_context& context);
@@ -111,6 +114,7 @@ private:
     std::function<void(Session*)> m_onDisconnectCallback;
 
     bool m_connected;
+    uint16_t m_sequnceNumber = 0;
 };
 }
 

@@ -92,11 +92,11 @@ namespace AppServiceExport {
         Json::Value appEnvStr;
         StructToJson(request.appEnv, appEnvStr);
         HCP_Log(INFO, MODULE) << "ListApplicationResource, parameter:" <<
-                              appEnvStr.toStyledString() << HCPENDLOG;
+                              WIPE_SENSITIVE(appEnvStr.toStyledString()) << HCPENDLOG;
         Json::Value applicationStr;
         StructToJson(request.applications[0], applicationStr);
         HCP_Log(INFO, MODULE) << "ListApplicationResource, parameter:" <<
-                              applicationStr.toStyledString() << HCPENDLOG;
+                              WIPE_SENSITIVE(applicationStr.toStyledString()) << HCPENDLOG;
 
         ListResourceParam listResourceParam;
         if (!ConstructResourceParam(request, listResourceParam)) {

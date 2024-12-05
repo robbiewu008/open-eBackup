@@ -21,11 +21,13 @@ namespace Module {
         const int NUM_3 = 3;
     }
 
-    int FusionStorageNas::Query(DeviceDetails &info) {
+    int FusionStorageNas::Query(DeviceDetails &info)
+    {
         return QueryFileSystem(info);
     }
 
-    int FusionStorageNas::QueryFileSystem(DeviceDetails &info) {
+    int FusionStorageNas::QueryFileSystem(DeviceDetails &info)
+    {
         int ret = QueryFileSystem(ResourceName, info);
         if (ret != SUCCESS) {
             return ret;
@@ -34,7 +36,15 @@ namespace Module {
         return SUCCESS;
     }
 
-    int FusionStorageNas::QueryFileSystem(std::string fileName, DeviceDetails &info) {
+    int FusionStorageNas::QueryFileSystem(std::string fileName, DeviceDetails &info)
+    {
+        QueryDtreeWithShare();
+        // 这里fileName可能是dtree路径， 比如 share/dtree
+        size_t pos = fileName.find('/');
+        if (pos != std::string::npos) {
+            fileName = fileName.substr(0, pos);
+        }
+        INFOLOG("Enter QueryFileSystem: %s", fileName.c_str());
         HttpRequest req;
         req.method = "GET";
         req.url = "/api/v2/converged_service/namespaces?name=" + fileName;
@@ -60,11 +70,13 @@ namespace Module {
         }
     }
 
-    int FusionStorageNas::Delete() {
+    int FusionStorageNas::Delete()
+    {
         return FAILED;
     }
 
-    std::unique_ptr <ControlDevice> FusionStorageNas::CreateSnapshot(std::string snapshotName, int &errorCode) {
+    std::unique_ptr <ControlDevice> FusionStorageNas::CreateSnapshot(std::string snapshotName, int &errorCode)
+    {
         std::string id;
         ControlDeviceInfo deviceInfo;
         deviceInfo.deviceName = snapshotName;
@@ -88,6 +100,11 @@ namespace Module {
         std::string errorDes;
         jsonValue["name"] = snapshotName;
         jsonValue["namespace_id"] = fileSystemId;
+        if (m_dtreeName != "") {
+            jsonValue["dtree_name"] = m_dtreeName;
+        }
+        INFOLOG("check snap param, name %s, namespace_id %s, dtree_id: %s", snapshotName.c_str(), fileSystemId.c_str(),
+            m_dtreeName.c_str());
         req.body = jsonWriter.write(jsonValue);
         Json::Value data;
         int iRet = SendRequest(req, data, errorDes, errorCode, true);
@@ -99,7 +116,8 @@ namespace Module {
         }
     }
 
-    int FusionStorageNas::QuerySnapshot(std::string snapshotName, std::string &id) {
+    int FusionStorageNas::QuerySnapshot(std::string snapshotName, std::string &id)
+    {
         int iRet;
         DeviceDetails info;
         if (fileSystemId.empty()) {
@@ -111,6 +129,9 @@ namespace Module {
         HttpRequest req;
         req.method = "GET";
         req.url = "/api/v2/converged_service/snapshots?name=" + snapshotName + "&namespace_id=" + fileSystemId;
+        if (dtreeId != "") {
+            req.url += "&dtree_id=" + dtreeId;
+        }
         std::string errorDes;
         int errorCode;
         Json::Value data;
@@ -123,7 +144,14 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int FusionStorageNas::DeleteSnapshot(std::string snapshotName) {
+    int FusionStorageNas::QueryDtreeWithShare()
+    {
+        INFOLOG("Enter QueryDtreeWithShare");
+        return SUCCESS;
+    }
+
+    int FusionStorageNas::DeleteSnapshot(std::string snapshotName)
+    {
         DeviceDetails info;
         if (fileSystemId.empty()) {
             if (QueryFileSystem(info) != SUCCESS) {
@@ -138,6 +166,11 @@ namespace Module {
         Json::FastWriter jsonWriter;
         jsonValue["name"] = snapshotName;
         jsonValue["namespace_id"] = fileSystemId;
+        if (m_dtreeName != "") {
+            jsonValue["dtree_name"] = m_dtreeName;
+        }
+        INFOLOG("deletesnapshot param, name %s, namespace_id %s, dtree_name: %s", snapshotName.c_str(),
+            fileSystemId.c_str(), m_dtreeName.c_str());
         req.body = jsonWriter.write(jsonValue);
         int errorCode;
         Json::Value data;
@@ -150,7 +183,8 @@ namespace Module {
     }
 
     int FusionStorageNas::QuerySnapshotRollBackStatus(const std::string &snapshotName, std::string &snapshotId,
-                                                      std::string &rollbackStatus, std::string &endTime) {
+                                                      std::string &rollbackStatus, std::string &endTime)
+    {
         HCP_Log(INFO, MODULE) << "Query snapshot rollback status by fileSystemId" << HCPENDLOG;
 
         DeviceDetails info;

@@ -60,7 +60,7 @@ NdmpMsgHandler ndmp_msg_handler_tbl[] =
 		0,
 		AUTH_NOT_REQUIRED,
 		0, 0,
-		XDR_AND_SIZE(ndmp_config_get_host_info_reply)
+		XDR_AND_SIZE(ndmp_config_get_host_info_reply_v4)
 	},
 	{
 		NDMP_CONFIG_GET_FS_INFO, NDMPVER,
@@ -354,6 +354,13 @@ NdmpMsgHandler ndmp_msg_handler_tbl[] =
 		fileHistoryAddNode,
 		AUTH_REQUIRED,
 		XDR_AND_SIZE(ndmp_fh_add_node_request_v3),
+		0, 0
+	},
+	{
+		NDMP_FH_ADD_FILE, NDMPVER,
+		FileHistoryAddFile,
+		AUTH_REQUIRED,
+		XDR_AND_SIZE(ndmp_fh_add_file_request_v3),
 		0, 0
 	},
 	{

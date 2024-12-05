@@ -40,7 +40,8 @@ namespace Module {
     class DeviceManager {
     public:
         static std::unique_ptr<ControlDevice> CreateDeviceInst(ControlDeviceInfo info, STORAGE_ENUM type, PROTOCOL pro,
-                                                               bool readFromK8s = true) {
+                                                               bool readFromK8s = true)
+        {
             if (type == FUSIONSTORAGE) {
                 return CreateFusionstorDeviceInst(info, pro);
             } else if (type == DORADO) {
@@ -54,7 +55,8 @@ namespace Module {
             }
         }
 
-        static std::unique_ptr<ControlDevice> CreateFusionstorDeviceInst(ControlDeviceInfo info, PROTOCOL pro) {
+        static std::unique_ptr<ControlDevice> CreateFusionstorDeviceInst(ControlDeviceInfo info, PROTOCOL pro)
+        {
 #ifndef JOBMANAGER_COMPILE
             if (pro == SAN) {
                 return std::make_unique<FusionStorageBlock>(info);
@@ -71,7 +73,8 @@ namespace Module {
         }
 
         static std::unique_ptr<ControlDevice> CreateDoradoDeviceInst(ControlDeviceInfo info, PROTOCOL pro,
-                                                                     bool readFromK8s = true) {
+                                                                     bool readFromK8s = true)
+        {
             if (pro == SAN) {
                 return std::make_unique<DoradoBlock>(info, readFromK8s);
             } else if (pro == NAS) {
@@ -85,7 +88,8 @@ namespace Module {
             }
         }
 
-        static std::unique_ptr<ControlDevice> CreateOceanstorDeviceInst(ControlDeviceInfo info, PROTOCOL pro) {
+        static std::unique_ptr<ControlDevice> CreateOceanstorDeviceInst(ControlDeviceInfo info, PROTOCOL pro)
+        {
             if (pro == NAS) {
                 return std::make_unique<OceanstorNas>(info);
             } else if (pro == NFS) {
@@ -97,7 +101,8 @@ namespace Module {
             }
         }
 
-        static std::unique_ptr<ControlDevice> CreateNetAppDeviceInst(ControlDeviceInfo info, PROTOCOL pro) {
+        static std::unique_ptr<ControlDevice> CreateNetAppDeviceInst(ControlDeviceInfo info, PROTOCOL pro)
+        {
             if (pro == SAN) {
                 return nullptr;
             } else if (pro == NAS) {
@@ -112,7 +117,8 @@ namespace Module {
         }
 
         static std::unique_ptr<ControlDevice> CreateSnapshotDeviceInst(ControlDeviceInfo info, STORAGE_ENUM type,
-                                                                       PROTOCOL pro, int id, std::string uniquePath) {
+                                                                       PROTOCOL pro, int id, std::string uniquePath)
+        {
             if (type == FUSIONSTORAGE) {
                 return CreateFusionstorSnapshotDevInst(info, pro, id, uniquePath);
             } else if (type == DORADO) {
@@ -127,7 +133,8 @@ namespace Module {
         }
 
         static std::unique_ptr<ControlDevice> CreateFusionstorSnapshotDevInst(ControlDeviceInfo info, PROTOCOL pro,
-                                                                              int id, std::string uniquePath) {
+                                                                              int id, std::string uniquePath)
+        {
             if (pro == SAN) {
                 return std::make_unique<FSBlockSnapshot>(info, id, uniquePath);
             } else if (pro == NAS) {
@@ -138,7 +145,8 @@ namespace Module {
         }
 
         static std::unique_ptr<ControlDevice> CreateDoradoSnapshotDevInst(ControlDeviceInfo info, PROTOCOL pro,
-                                                                          int id, std::string uniquePath) {
+                                                                          int id, std::string uniquePath)
+        {
             if (pro == SAN) {
                 return std::make_unique<DoradoBlockSnapshot>(info, id, uniquePath);
             } else if (pro == NAS) {
@@ -149,7 +157,8 @@ namespace Module {
         }
 
         static std::unique_ptr<ControlDevice> CreateOceanstorSnapshotDevInst(ControlDeviceInfo info, PROTOCOL pro,
-                                                                             int id, std::string uniquePath) {
+                                                                             int id, std::string uniquePath)
+        {
             if (pro == NAS) {
                 return std::make_unique<OceanstorNasSnapshot>(info, std::to_string(id), uniquePath);
             } else {
@@ -158,7 +167,8 @@ namespace Module {
         }
 
         static std::unique_ptr<ControlDevice> CreateNetAppSnapshotDeviInst(ControlDeviceInfo info, PROTOCOL pro,
-                                                                           int id, std::string uniquePath) {
+                                                                           int id, std::string uniquePath)
+        {
             if (pro == NAS) {
                 return std::make_unique<NetAppNasSnapshot>(info, std::to_string(id), uniquePath);
             } else {
@@ -166,7 +176,8 @@ namespace Module {
             }
         }
 
-        static void DestoryDeviceInst(std::shared_ptr<ControlDevice> dev) {
+        static void DestoryDeviceInst(std::shared_ptr<ControlDevice> dev)
+        {
             if (dev != nullptr) {
                 dev->Clean();
             }

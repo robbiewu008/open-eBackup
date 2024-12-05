@@ -325,6 +325,7 @@ public:
     BlockBuffer                 m_block             {};
     uint32_t                    m_retryCnt          { 0 };
     uint32_t                    m_errNum            { 0 };
+    std::string                 m_errMessage        {};
 
     bool operator< (const FileHandle & fileHandleObj) const
     {

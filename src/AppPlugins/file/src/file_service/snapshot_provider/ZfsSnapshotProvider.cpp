@@ -32,7 +32,8 @@ namespace {
 ZfsSnapshotProvider::ZfsSnapshotProvider(shared_ptr<DeviceMount> deviceMount, const string &jobId)
     : m_deviceMount(deviceMount), m_jobId(jobId) {}
 
-SnapshotResult ZfsSnapshotProvider::CreateSnapshot(const string& filePath, bool isCrossVolume)
+SnapshotResult ZfsSnapshotProvider::CreateSnapshot(const string& filePath, bool isCrossVolume,
+    const std::string& snapshotPercent)
 {
     SnapshotResult snapshotResult;
     if (filePath.empty()) {
@@ -61,7 +62,7 @@ SnapshotResult ZfsSnapshotProvider::CreateSnapshot(const string& filePath, bool 
     for (auto it = volumeInfo.begin(); it != volumeInfo.end(); ++it) {
         int ret = 0;
         shared_ptr<LvmSnapshot> snapshotPtr = CreateSnapshotByVolume(
-            it->m_oriDeviceVolume, it->m_oriDeviceMountPath, ret);
+            it->m_oriDeviceVolume, it->m_oriDeviceMountPath, ret, snapshotPercent);
         if (ret == SNAP_ERRNO_SPACELESS) {
             size_t pos = it->m_oriDeviceVolume.find('/');
             string zpoolName = it->m_oriDeviceVolume.substr(0, pos);
@@ -183,7 +184,7 @@ bool ZfsSnapshotProvider::DeleteSnapshotByVolume(const string &snapVolumeName)
 
 // Determines whether a snapshot has been created, and returns the created snapshot.
 shared_ptr<LvmSnapshot> ZfsSnapshotProvider::CreateSnapshotByVolume(
-    const string &volumeName, const string &volumeMntPoint, int& ret)
+    const string &volumeName, const string &volumeMntPoint, int& ret, const string &snapshotPercent)
 {
     DBGLOG("CreateSnapshotByVolume, start create device volume: %s", volumeName.c_str());
     if (deviceVolumeSnapshotMap.count(volumeName) != 0) {
@@ -195,7 +196,8 @@ shared_ptr<LvmSnapshot> ZfsSnapshotProvider::CreateSnapshotByVolume(
     paramList.push_back(Module::CPath::GetInstance().GetRootPath());
     paramList.push_back(volumeName);
     paramList.push_back(m_jobId); // snapTag
-    string cmd = "?/bin/zfsSnapshot.sh -cv '?' '?'";
+    paramList.push_back(snapshotPercent);  // snapshot size (%)
+    string cmd = "?/bin/zfsSnapshot.sh -cv '?' '?' '?'";
     ret = Module::runShellCmdWithOutput(INFO, "ZfsSnapshotProvider", 0, cmd, paramList, output, errput);
     if (ret != 0) {
         ERRLOG("Delete snapshot by volume failed: %s, ret: %d", cmd.c_str(), ret);

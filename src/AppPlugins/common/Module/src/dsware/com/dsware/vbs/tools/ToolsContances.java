@@ -15,6 +15,8 @@ package com.dsware.vbs.tools;
 /**
  * <Description>
  * 
+ * @author  j55771
+ * @version  [V100R001C00, 2012-7-26]
  */
 public final class ToolsContances
 {

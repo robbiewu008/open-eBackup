@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 #include <mutex>
-#include "NasControlFile.h"
 #include <fstream>
+#include "NasControlFile.h"
 #include "define/Defines.h"
 
 const std::string NAS_BACKUPDELETECTRL_HEADER_TITLE = "NAS Backup Delete Control File";
@@ -113,7 +113,8 @@ private:
      * Read the file header info from file and load to m_header
      */
     NAS_CTRL_FILE_RETCODE ReadHeader();
-    NAS_CTRL_FILE_RETCODE FillHeader(uint32_t &headerLine, std::vector<std::string> &cltHeaderLineSplit, std::string &cltHeaderLine);
+    NAS_CTRL_FILE_RETCODE FillHeader(uint32_t &headerLine,
+        std::vector<std::string> &cltHeaderLineSplit, std::string &cltHeaderLine);
 
     /**
      * Write the file header info to file from m_header

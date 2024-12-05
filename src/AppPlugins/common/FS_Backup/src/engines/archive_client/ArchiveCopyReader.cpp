@@ -143,8 +143,8 @@ int ArchiveCopyReader::OpenFile(FileHandle& fileHandle)
         ERRLOG("put open file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -163,8 +163,8 @@ int ArchiveCopyReader::CloseFile(FileHandle& fileHandle)
         ERRLOG("put close file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -209,8 +209,8 @@ int ArchiveCopyReader::ReadSymlinkData(FileHandle& fileHandle)
         ERRLOG("ReadSymlinkData task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("ReadSymlinkData total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("ReadSymlinkData total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 #endif
 }
@@ -234,8 +234,8 @@ int ArchiveCopyReader::ReadEmptyData(FileHandle& fileHandle)
         ERRLOG("ReadEmptyData put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("ReadEmptyData total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("ReadEmptyData total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -267,7 +267,7 @@ int ArchiveCopyReader::ReadNormalData(FileHandle& fileHandle)
             ERRLOG("ReadNormalData put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
             return FAILED;
         }
-        ++m_readTaskProduce;
+        ++m_controlInfo->m_readTaskProduce;
     }
 
     if (remainSize != 0) {
@@ -285,9 +285,9 @@ int ArchiveCopyReader::ReadNormalData(FileHandle& fileHandle)
             ERRLOG("ReadNormalData put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
             return FAILED;
         }
-        ++m_readTaskProduce;
+        ++m_controlInfo->m_readTaskProduce;
     }
-    DBGLOG("ReadNormalData total readTask produce for now: %d", m_readTaskProduce.load());
+    DBGLOG("ReadNormalData total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -423,8 +423,8 @@ void ArchiveCopyReader::PollReadTask()
             } else {
                 HandleFailedEvent(task);
             }
-            ++m_readTaskConsume;
-            DBGLOG("read tasks consume cnt for now %llu", m_readTaskConsume.load());
+            ++m_controlInfo->m_readTaskConsume;
+            DBGLOG("read tasks consume cnt for now %llu", m_controlInfo->m_readTaskConsume.load());
         }
     }
 
@@ -448,7 +448,7 @@ void ArchiveCopyReader::HandleSuccessEvent(shared_ptr<ArchiveServiceTask> taskPt
     if (taskPtr->m_event == ArchiveEvent::OPEN_SRC) {
         fileHandle.m_file->SetSrcState(FileDescState::SRC_OPENED); // INIT -> SRC_OPENED
         DBGLOG("Put SRC_OPENED file to read queue %s", fileHandle.m_file->m_fileName.c_str());
-        m_readQueue->WaitAndPush(fileHandle);
+        m_readQueue->Push(fileHandle);
         // push to aggregate to write to open dst
         PushFileHandleToAggregator(fileHandle);
     }
@@ -462,7 +462,7 @@ void ArchiveCopyReader::HandleSuccessEvent(shared_ptr<ArchiveServiceTask> taskPt
         if (fileHandle.m_file->m_blockStats.m_totalCnt == fileHandle.m_file->m_blockStats.m_readReqCnt ||
             fileHandle.m_file->m_size == 0) {
             fileHandle.m_file->SetSrcState(FileDescState::READED); // PARTIAL_READED|READ_DATA -> READED
-            m_readQueue->WaitAndPush(fileHandle);
+            m_readQueue->Push(fileHandle);
             DBGLOG("File is readed: %s, total: %d, readcnt: %d, size: %d", fileHandle.m_file->m_fileName.c_str(),
                 fileHandle.m_file->m_blockStats.m_totalCnt.load(), fileHandle.m_file->m_blockStats.m_readReqCnt.load(),
                 fileHandle.m_file->m_size);
@@ -478,10 +478,12 @@ void ArchiveCopyReader::HandleFailedEvent(shared_ptr<ArchiveServiceTask> taskPtr
     fileHandle.m_retryCnt++;
     ERRLOG("Enter HandleFailedEvent %s %d %d",
         fileHandle.m_file->m_fileName.c_str(), static_cast<int>(taskPtr->m_event), fileHandle.m_retryCnt);
-    if (taskPtr->m_result == -1) {
+    if (taskPtr->m_result != 0) {
         ERRLOG("Problem with Product Env. Timeout!!");
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         m_controlInfo->m_failed = true;
+        fileHandle.m_errNum = taskPtr->m_result;
+        m_failedList.emplace_back(fileHandle);
         return;
     }
     if (fileHandle.m_retryCnt >= DEFAULT_ERROR_SINGLE_FILE_CNT) {

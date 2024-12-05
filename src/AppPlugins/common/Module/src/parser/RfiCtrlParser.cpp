@@ -30,7 +30,7 @@ namespace {
     constexpr int MILLION = 1000000;
     constexpr auto FILESYSTEMFILTERHEADER = "/source_policy_";
     constexpr auto FILESYSTEMFILTERTAIL = "_Context";
-    const std::string POSIX_PATH_SEPARATOR = "/"; 
+    const std::string POSIX_PATH_SEPARATOR = "/";
 }
 
 /**
@@ -152,6 +152,36 @@ CTRL_FILE_RETCODE RfiCtrlParser::WriteDirMeta(const DirCache& dirCache, const Di
     return (m_entries >= m_maxEntriesPerFile) ? CTRL_FILE_RETCODE::LIMIT_REACHED : CTRL_FILE_RETCODE::SUCCESS;
 }
 
+CTRL_FILE_RETCODE RfiCtrlParser::WriteEmptyDir(const std::string& dirName)
+{
+    std::string path = dirName;
+    if (NeedCheckMultiSystemRootDirExist()) {
+        if (!CheckMultiSystemRootDirExist(path)) {
+            DBGLOG("Skip %s", path.c_str());
+            return CTRL_FILE_RETCODE::SUCCESS;
+        }
+    }
+    PrepareStatisticType(StatisticType::STATISTIC_TYPE_CREATE_FOLDER, true);
+    ExecStatisticType();
+    RfiDocument document {};
+    document.path = dirName;
+    document.mtime = "0";
+    document.size = "0";
+    document.inode = "0";
+    document.type = "d";
+    document.status = "new";
+    document.id = "0";
+    string rfiLine;
+    if (!JsonHelper::StructToJsonString(document, rfiLine)) {
+        ERRLOG("json struct to string failed");
+        return CTRL_FILE_RETCODE::FAILED;
+    }
+    m_writeBuffer << rfiLine << "\n";
+    m_entries++;
+    DBGLOG("Write rfi content:%s to file %s, entries:%d", rfiLine.c_str(), m_fileName.c_str(), m_entries);
+    return CTRL_FILE_RETCODE::SUCCESS;
+}
+
 void RfiCtrlParser::FillRfiFileDoc(const FileCache& fcache, const FileMetaWrapper& fileMeta,
     const string& filePath, RfiEntryStatus status, RfiDocument& document)
 {
@@ -220,8 +250,8 @@ CTRL_FILE_RETCODE RfiCtrlParser::WriteFileMeta(const FileCache& fcache, const Fi
     return (m_entries >= m_maxEntriesPerFile) ?  CTRL_FILE_RETCODE::LIMIT_REACHED : CTRL_FILE_RETCODE::SUCCESS;
 }
 
-CTRL_FILE_RETCODE RfiCtrlParser::WriteUpdateDirMeta(const DirCache& dcache1,const DirMetaWrapper& dmeta1,
-    const DirCache& dcache2,const DirMetaWrapper& dmeta2)
+CTRL_FILE_RETCODE RfiCtrlParser::WriteUpdateDirMeta(const DirCache& dcache1, const DirMetaWrapper& dmeta1,
+    const DirCache& dcache2, const DirMetaWrapper& dmeta2)
 {
     // 更新的文件写在同一个文件中
     PrepareStatisticType(StatisticType::STATISTIC_TYPE_UPDATE_FOLDER, false);
@@ -231,8 +261,8 @@ CTRL_FILE_RETCODE RfiCtrlParser::WriteUpdateDirMeta(const DirCache& dcache1,cons
     return ret;
 }
 
-CTRL_FILE_RETCODE RfiCtrlParser::WriteUpdateFileMeta(const FileCache& fcache1,const FileMetaWrapper& fmeta1,
-    const FileCache& fcache2,const FileMetaWrapper& fmeta2,const string& prePath)
+CTRL_FILE_RETCODE RfiCtrlParser::WriteUpdateFileMeta(const FileCache& fcache1, const FileMetaWrapper& fmeta1,
+    const FileCache& fcache2, const FileMetaWrapper& fmeta2, const string& prePath)
 {
     PrepareStatisticType(StatisticType::STATISTIC_TYPE_UPDATE_FILE, false);
     WriteFileMeta(fcache1, fmeta1, prePath, RfiEntryStatus::RFI_ENTRY_STATUS_NEW);
@@ -241,7 +271,7 @@ CTRL_FILE_RETCODE RfiCtrlParser::WriteUpdateFileMeta(const FileCache& fcache1,co
     return ret;
 }
 
-CTRL_FILE_RETCODE RfiCtrlParser::WriteSingleDirMeta(const DirCache& dcache,const DirMetaWrapper& dmeta,
+CTRL_FILE_RETCODE RfiCtrlParser::WriteSingleDirMeta(const DirCache& dcache, const DirMetaWrapper& dmeta,
     RfiEntryStatus status)
 {
     if (status == RfiEntryStatus::RFI_ENTRY_STATUS_NEW) {
@@ -253,7 +283,7 @@ CTRL_FILE_RETCODE RfiCtrlParser::WriteSingleDirMeta(const DirCache& dcache,const
     return ret;
 }
 
-CTRL_FILE_RETCODE RfiCtrlParser::WriteSingleFileMeta(const FileCache& fcache,const FileMetaWrapper& fmeta,
+CTRL_FILE_RETCODE RfiCtrlParser::WriteSingleFileMeta(const FileCache& fcache, const FileMetaWrapper& fmeta,
     const string& prePath, RfiEntryStatus status)
 {
     if (status == RfiEntryStatus::RFI_ENTRY_STATUS_NEW) {

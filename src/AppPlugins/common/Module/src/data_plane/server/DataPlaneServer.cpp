@@ -135,9 +135,9 @@ void DataPlaneServer::HandleAccept()
                     ERRLOG("Failed to perform handshake");
                     return;
                 }
-                INFOLOG("SSL is off.");
             } else {
                 session = Session::NewServer(std::move(socket), m_ioService);
+                INFOLOG("SSL is off.");
             }
             session->TurnDelayOff();
             INFOLOG("[Session: %zu] New incoming session established",
@@ -145,8 +145,12 @@ void DataPlaneServer::HandleAccept()
             OnNewSessionAccepted(session);
             session->ReceiveAsyncMessage(
                 [this, session](std::shared_ptr<Protocol::Message> message,
-                                Module::Protocol::MessageType messageType) {
-                    HandleReceivedMessage(session, std::move(message), messageType);
+                                std::shared_ptr<Protocol::MessageHeader> msgHeader, bool networkErrorFlag) {
+                    if (networkErrorFlag) {
+                        ERRLOG("Failed to receive message.");
+                        return;
+                    }
+                    HandleReceivedMessage(session, std::move(message), msgHeader);
                 });
             HandleAccept();
         });

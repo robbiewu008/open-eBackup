@@ -57,7 +57,7 @@ int PosixCopyWriter::WriteMeta(FileHandle& fileHandle)
         ERRLOG("put write meta file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     return SUCCESS;
 }
 

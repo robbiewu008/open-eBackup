@@ -19,7 +19,7 @@ BIN_PATH=$1
 merge_id=$2
 
 function build_npm(){
-	cd ${PM_MS_DIR}/src/service/console/
+    cd ${PM_MS_DIR}/src/service/console/
 
     tar -zxvf ${BIN_PATH}/PM_GUI.tar.gz -C ${PM_MS_DIR}/src/service/console/
     if [[ $? -ne 0 ]]; then
@@ -52,8 +52,11 @@ function build_maven(){
 }
 
 function copy_pkgs() {
-    mkdir -p ${PM_MS_DIR}/pkg
-	cp -f ${PM_MS_DIR}/src/service/target/PM_GUI.tar.gz ${PM_MS_DIR}/pkg/
+	cd ${PM_MS_DIR}/tmp
+	mkdir -p ${PM_MS_DIR}/pkg
+	# 重新压缩（含kmc库）
+	tar -zcvf ${PM_MS_DIR}/pkg/PM_GUI.tar.gz * --format=gnu
+
 	find  ${PM_MS_DIR}/pkg/ -type d | xargs chmod 700
 	find ${PM_MS_DIR}/pkg/ -type f | xargs chmod 550
 	cp ${PM_MS_DIR}/pkg/PM_GUI.tar.gz ${BASE_PATH}/pkg/mspkg/
@@ -111,6 +114,24 @@ function build_npm_i18n(){
 	
 }
 
+function download_kmc(){
+    echo "=========== Start copy KMC lib ==========="
+    # 将CMC DEE库上的KMC Lib拷贝下来，并解压到lib库。
+    echo "Download KMC lib"
+    mkdir -p ${PM_MS_DIR}/tmp/tmp
+    tar -zxvf ${BIN_PATH}/PM_System_Base_Service.tar.gz -C ${PM_MS_DIR}/tmp/tmp
+    cp -rf ${PM_MS_DIR}/tmp/tmp/lib ${PM_MS_DIR}/tmp/lib
+    rm -rf ${PM_MS_DIR}/tmp/tmp
+}
+
+function borrow_package(){
+    # 解压PM_GUI.tar.gz
+    echo "=========== start to borrow PM_GUI.tar.gz ==========="
+    mkdir -p ${PM_MS_DIR}/tmp/
+    tar -zxvf ${PM_MS_DIR}/src/service/target/PM_GUI.tar.gz -C ${PM_MS_DIR}/tmp
+    echo "=========== Borrow PM_GUI.tar.gz success ==========="
+}
+
 function build_private(){
 
 	build_npm
@@ -157,6 +178,8 @@ function main(){
 		copy_pkgs
 	else
 		build_private
+		borrow_package
+		download_kmc
 		copy_pkgs
 		if [ $? -ne 0 ]; then    
 			echo [INFO] private compile Failed.

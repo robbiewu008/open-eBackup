@@ -68,8 +68,6 @@ protected:
     std::string             m_threadPoolKey;
     std::thread             m_thread;
     std::thread             m_pollThread;
-    std::atomic<uint64_t>   m_writeTaskProduce { 0 };
-    std::atomic<uint64_t>   m_writeTaskConsume { 0 };
     std::mutex              m_cacheMutex;
     time_t                  m_isCompleteTimer { 0 };
 

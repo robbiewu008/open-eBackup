@@ -54,6 +54,7 @@ private:
     int OpenControlFileV20(const std::string& controlFile);
     int FillStatsFromControlHeaderV10();
     int ProcessDirEntryV10(const BackupMtimeCtrlEntry& dirEntry, FileHandle& fileHandle);
+    bool IsNasConfig() const;
 
 private:
     BackupParams m_backupParams;
@@ -69,12 +70,13 @@ private:
     std::shared_ptr<BackupControlInfo> m_controlInfo;
     std::shared_ptr<BlockBufferMap> m_blockBufferMap;
 
-    std::atomic<uint64_t> m_dirCount { 0 };
     time_t m_isCompleteTimer { 0 };
 
 private:
     bool m_abort { false };
     std::string m_metaFileVersion = META_VERSION_V20;
+
+    std::shared_ptr<Module::BackupFailureRecorder> m_failureRecorder = nullptr;
 };
 
 #endif // DIR_CONTROL_FILE_READER_H

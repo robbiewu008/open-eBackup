@@ -96,7 +96,7 @@ int HostDirWriter::WriteMeta(FileHandle& fileHandle)
         ERRLOG("put write meta file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     return SUCCESS;
 }
 
@@ -137,25 +137,25 @@ bool HostDirWriter::IsComplete()
             "aggrComplete %d writeQueueSize %llu (writeTaskProduce %llu writeTaskConsume %llu)"
             "(writedDir %llu writeFailedDir %llu) (controlFileReaderProduce %llu)",
             m_controlInfo->m_aggregatePhaseComplete.load(), m_writeQueue->GetSize(),
-            m_writeTaskProduce.load(), m_writeTaskConsume.load(),
+            m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load(),
             m_controlInfo->m_noOfDirCopied.load(),
             m_controlInfo->m_noOfDirFailed.load(),
-            m_controlInfo->m_controlFileReaderProduce.load());
+            m_controlInfo->m_noOfDirToBackup.load());
     }
 
     if (m_controlInfo->m_aggregatePhaseComplete &&
         m_writeQueue->Empty() &&
-        (m_writeTaskProduce == m_writeTaskConsume) &&
+        (m_controlInfo->m_writeTaskProduce == m_controlInfo->m_writeTaskConsume) &&
         ((m_controlInfo->m_noOfDirCopied + m_controlInfo->m_noOfDirFailed) ==
-        m_controlInfo->m_controlFileReaderProduce)) {
+        m_controlInfo->m_noOfDirToBackup)) {
         INFOLOG("DirWriter complete: "
             "aggrComplete %d writeQueueSize %llu (writeTaskProduce %llu writeTaskConsume %llu)"
             "(writedDir %llu writeFailedDir %llu) (controlFileReaderProduce %llu)",
             m_controlInfo->m_aggregatePhaseComplete.load(), m_writeQueue->GetSize(),
-            m_writeTaskProduce.load(), m_writeTaskConsume.load(),
+            m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load(),
             m_controlInfo->m_noOfDirCopied.load(),
             m_controlInfo->m_noOfDirFailed.load(),
-            m_controlInfo->m_controlFileReaderProduce.load());
+            m_controlInfo->m_noOfDirToBackup.load());
         m_controlInfo->m_writePhaseComplete = true;
         return true;
     }
@@ -219,7 +219,7 @@ void HostDirWriter::PollWriteTask()
             ERRLOG("task is nullptr");
             break;
         }
-        ++m_writeTaskConsume;
+        ++m_controlInfo->m_writeTaskConsume;
         if (task->m_result == SUCCESS) {
             HandleSuccessEvent(task);
         } else {

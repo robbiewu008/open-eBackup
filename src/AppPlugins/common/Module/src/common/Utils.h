@@ -27,6 +27,7 @@ namespace Module {
 AGENT_API int SafeStoi(const std::string& str, int defaultValue = FAILED);
 AGENT_API long SafeStol(const std::string& str, long defaultValue = FAILED);
 AGENT_API long long SafeStoll(const std::string& str, long long defaultValue = FAILED);
+AGENT_API float SafeStof(const std::string& str, float defaultValue = FAILED);
 
 // 不要直接使用signal注册信号
 typedef void (*signal_proc)(int);

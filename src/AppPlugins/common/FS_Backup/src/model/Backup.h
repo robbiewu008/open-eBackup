@@ -215,6 +215,11 @@ struct BackupControlInfo {
     std::atomic<uint64_t> m_aggrRestoreInMemoryFhCnt    {0};        /* Total filehandle in each DirMap enties */
 
     std::shared_ptr<StreamHostFilePendingMap>  m_streamHostFilePendingMap { nullptr };
+
+    std::atomic<uint64_t> m_writeTaskProduce { 0 };
+    std::atomic<uint64_t> m_writeTaskConsume { 0 };
+    std::atomic<uint64_t> m_readTaskProduce { 0 };
+    std::atomic<uint64_t> m_readTaskConsume { 0 };
 };
 
 struct BackupStats {
@@ -226,24 +231,32 @@ struct BackupStats {
     uint64_t noOfDirCopied      = 0;        /* No of directories copied */
     uint64_t noOfFilesCopied    = 0;        /* No of files copied */
     uint64_t noOfBytesCopied    = 0;        /* No of bytes (in KB) copied */
+    uint64_t skipFileCnt        = 0;        /* No of files skipped */
+    uint64_t skipDirCnt         = 0;        /* No of dir skipped */
     uint64_t noOfDirDeleted     = 0;        /* No of directories deleted */
     uint64_t noOfFilesDeleted   = 0;        /* No of files deleted */
     uint64_t noOfDirFailed      = 0;        /* No of directories failed to be copied/deleted */
     uint64_t noOfFilesFailed    = 0;        /* No of files failed to be copied/deleted */
+    uint64_t readConsume        = 0;        /* No of bloack reader consumed */
+    uint64_t aggregateConsume   = 0;        /* No of bloack aggregater consumed */
+    uint64_t writerConsume      = 0;        /* No of bloack writer consumed */
     uint64_t backupspeed        = 0;        /* Backup speed (in KBps) */
     time_t   startTime          = 0;        /* Start time of backup phase */
     uint64_t noOfSrcRetryCount  = 0;        /* No of src side retry count */
     uint64_t noOfDstRetryCount  = 0;        /* No of dst side retry count */
     uint64_t noOfFailureRecordsWritten = 0; /* No of backup failure records that have been written to file */
-    uint64_t readConsume      = 0;      /* No of bloack reader consumed */
-    uint64_t aggregateConsume = 0;      /* No of bloack aggregater consumed */
-    uint64_t writerConsume    = 0;      /* No of bloack writer consumed */
-
+    uint64_t noOfFilesWriteSkip = 0;    /* No of files skipped to write (Ignore replace policy) */
+    uint64_t noOfReadTaskProduce = 0;   /* No of read task produced */
+    uint64_t noOfReadTaskConsume = 0;   /* No of read task consumed */
+    uint64_t noOfWriteTaskProduce = 0;  /* No of write task produced */
+    uint64_t noOfWriteTaskConsume = 0;  /* No of write task consumed */
     bool operator !=(const BackupStats& other)
     {
         return noOfDirCopied != other.noOfDirCopied ||
             noOfFilesCopied != other.noOfFilesCopied ||
             noOfBytesCopied != other.noOfBytesCopied ||
+            skipFileCnt != other.skipFileCnt ||
+            skipDirCnt != other.skipDirCnt ||
             noOfDirDeleted != other.noOfDirDeleted ||
             noOfFilesDeleted != other.noOfFilesDeleted ||
             noOfDirFailed != other.noOfDirFailed ||
@@ -259,7 +272,12 @@ struct BackupStats {
             noOfFilesToBackup != other.noOfFilesToBackup ||
             noOfBytesToBackup != other.noOfBytesToBackup ||
             noOfDirToDelete != other.noOfDirToDelete ||
-            noOfFilesToDelete != other.noOfFilesToDelete;
+            noOfFilesToDelete != other.noOfFilesToDelete ||
+            noOfFilesWriteSkip != other.noOfFilesWriteSkip ||
+            noOfReadTaskProduce != other.noOfReadTaskProduce ||
+            noOfReadTaskConsume != other.noOfReadTaskConsume ||
+            noOfWriteTaskProduce != other.noOfWriteTaskProduce ||
+            noOfWriteTaskConsume != other.noOfWriteTaskConsume;
     }
 };
 
@@ -381,15 +399,20 @@ struct LibsmbBackupAdvanceParams : public BackupAdvanceParams {
     /* version: 协议版本，包括3.1.1、3.02、3.0、2.1、2.02 */
     std::string version;
 
-    uint32_t maxPendingAsyncReqCnt = DEFAULT_MAX_REQ_COUNT;      /* Max Async requests pending */
+    uint32_t maxPendingAsyncReqCnt = 32;        /* Max Async requests pending */
+
     uint32_t minPendingAsyncReqCnt = DEFAULT_MIN_REQ_COUNT;      /* Min Async requests pending */
     uint32_t maxPendingWriteReqCnt = DEFAULT_MAX_WRITE_COUNT;    /* Max Async write requests pending */
     uint32_t minPendingWriteReqCnt = DEFAULT_MIN_WRITE_COUNT;    /* Min Async write requests pending */
     uint32_t maxPendingReadReqCnt = DEFAULT_MAX_READ_COUNT;      /* Max Async read requests pending */
-    uint32_t minPendingReadReqCnt = DEFAULT_MIN_READ_COUNT;      /* Min Async read requests pending */
-    uint32_t serverCheckMaxCount = DEFAULT_SERVER_CHECK_COUNT;   /* Max Retriable count to initiate Server check */
+    uint32_t minPendingReadReqCnt = DEFAULT_MIN_READ_COUNT;      /* Min Async  requests pending */
+
+    uint32_t serverCheckMaxCount = DEFAULT_SERVER_CHECK_COUNT;       /* Max Retriable count to initiate Server check */
+    
     uint32_t serverCheckSleepTime = DEFAULT_SERVER_CHECK_SLEEP;  /* Max sleep time inbetween server checks */
     uint32_t serverCheckRetry = DEFAULT_SERVER_CHECK_RETRY;      /* Max retries for server check */
+    uint32_t maxOpenedFilehandleCount = 100;
+    uint32_t pollExpiredTime = 100;
 
     std::string rootPath;
 
@@ -433,6 +456,7 @@ struct FailedRecordItem {
     uint32_t errNum;
     uint64_t offset;
     std::string filePath;
+    std::string errMsg;
 
     bool operator<(const FailedRecordItem& other) const
     {

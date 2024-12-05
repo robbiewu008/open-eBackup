@@ -22,6 +22,7 @@
 #include <boost/utility/string_view.hpp>
 
 #include <protocol/Message.h>
+#include <protocol/MessageHeader.h>
 
 namespace Module {
 namespace Protocol { // Ugly, but nested namespaces are not present in C++11
@@ -50,7 +51,8 @@ public:
 
     static std::shared_ptr<Protocol::Message> NewErrorResponse(ErrorType type,
                                                                std::size_t requestHandler,
-                                                               const std::string& message);
+                                                               const std::string& message,
+                                                               const std::shared_ptr<MessageHeader>& reqMsgHeader);
 
 private:
     const ErrorType m_type;

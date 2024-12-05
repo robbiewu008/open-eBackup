@@ -209,4 +209,4 @@ NAS_CTRL_FILE_RETCODE CheckParentDirIsReachable(std::string dirPath);
 uint32_t GetCommaCountOfString(const std::string &strName);
 std::string ConstructStringName(uint32_t &offset, uint32_t &totCommaCnt, std::vector<std::string> &lineContents);
 
-#endif //DME_NAS_CONTROL_FILE_H
+#endif // DME_NAS_CONTROL_FILE_H

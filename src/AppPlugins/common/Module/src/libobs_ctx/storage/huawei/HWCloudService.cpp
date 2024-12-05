@@ -13,9 +13,9 @@
 #include "Log.h"
 #include "securec.h"
 #include "common/CloudServiceUtils.h"
-#include "HWCloudService.h"
 #include "HWInnerDef.h"
 #include "HWSDKCallback.h"
+#include "HWCloudService.h"
 
 using namespace Module;
 
@@ -150,7 +150,8 @@ OBSResult HWCloudService::ListBuckets(
             obs_list_service_handler listHandler = {{NULL, &HWCloudServiceCompleteCallback}, &HWCloudServiceS3Callback};
             list_bucket(&option, &listHandler, &data);
         } else {
-            obs_list_service_obs_handler listHandler = {{NULL, &HWCloudServiceCompleteCallback}, &HWCloudServiceCallback};
+            obs_list_service_obs_handler listHandler = {
+                {NULL, &HWCloudServiceCompleteCallback}, &HWCloudServiceCallback};
             list_bucket_obs(&option, &listHandler, &data);
         }
 
@@ -210,6 +211,7 @@ OBSResult HWCloudService::GetBucketACL(
             if (resp == nullptr) {
                 HCP_Log(ERR, MODULE_NAME) << "make unique for GetBucketACLResponse failed" << HCPENDLOG;
                 result.result = ResultType::FAILED;
+                FreeAclInfo(&aclinfo);
                 break;
             }
             ExtractAclInfo(aclinfo, resp->aclGrants, request->isNewGet);
@@ -663,12 +665,11 @@ void HWCloudService::ExtractAclInfo(const manager_acl_info* aclinfo,
     int aclGrantCount = *aclinfo->acl_grant_count_return;
     std::string ownerId = aclinfo->owner_id;
 
-    for (int i = 0; i < aclGrantCount; ++i) 
-    {
+    for (int i = 0; i < aclGrantCount; ++i) {
         ACLGrant aclGrant;
 
         obs_acl_grant *grant = aclinfo->acl_grants + i;
-        char composedId[OBS_MAX_GRANTEE_USER_ID_SIZE + 
+        char composedId[OBS_MAX_GRANTEE_USER_ID_SIZE +
                         OBS_MAX_GRANTEE_DISPLAY_NAME_SIZE + 16] = {0}; // 参照sdk样例添加了16这个余量，含义暂时不明
 
         aclGrant.grantType = grant->grantee_type;
@@ -676,27 +677,27 @@ void HWCloudService::ExtractAclInfo(const manager_acl_info* aclinfo,
         aclGrant.bucketDelivered = grant->bucket_delivered;
         std::string userId = "";
         switch (grant->grantee_type) {
-        case OBS_GRANTEE_TYPE_HUAWEI_CUSTOMER_BYEMAIL:
-            aclGrant.userType = "Email";
-            aclGrant.userId = grant->grantee.huawei_customer_by_email.email_address;
-            userId = aclGrant.userId;
-            break;
-        case OBS_GRANTEE_TYPE_CANONICAL_USER:
-            aclGrant.userType = "UserID";
-            snprintf_s(composedId, sizeof(composedId), sizeof(composedId) - 1,
+            case OBS_GRANTEE_TYPE_HUAWEI_CUSTOMER_BYEMAIL:
+                aclGrant.userType = "Email";
+                aclGrant.userId = grant->grantee.huawei_customer_by_email.email_address;
+                userId = aclGrant.userId;
+                break;
+            case OBS_GRANTEE_TYPE_CANONICAL_USER:
+                aclGrant.userType = "UserID";
+                snprintf_s(composedId, sizeof(composedId), sizeof(composedId) - 1,
                     "%s:%s", grant->grantee.canonical_user.id,
                     grant->grantee.canonical_user.display_name);
-            aclGrant.userId = composedId;
-            userId = grant->grantee.canonical_user.id;
-            break;
-        case OBS_GRANTEE_TYPE_ALL_OBS_USERS:
-            aclGrant.userType = "Group";
-            aclGrant.userId = "Authenticated AWS Users"; // 使用aws通用接口标准
-            break;
-        default:
-            aclGrant.userType = "Group";
-            aclGrant.userId = "All Users";
-            break;
+                aclGrant.userId = composedId;
+                userId = grant->grantee.canonical_user.id;
+                break;
+            case OBS_GRANTEE_TYPE_ALL_OBS_USERS:
+                aclGrant.userType = "Group";
+                aclGrant.userId = "Authenticated AWS Users"; // 使用aws通用接口标准
+                break;
+            default:
+                aclGrant.userType = "Group";
+                aclGrant.userId = "All Users";
+                break;
         }
         if (!isNewGet) {
             aclGrants.emplace_back(aclGrant);
@@ -735,8 +736,8 @@ void HWCloudService::DestroyLoggingMessage(bucket_logging_message *loggingMessag
     free(loggingMessage->acl_grant_count);
 }
 
-OBSResult HWCloudService::IsBucketExist(
-            const std::unique_ptr<HeadBucketRequest> &request, std::unique_ptr<HeadBucketResponse> &resp)
+OBSResult HWCloudService::IsBucketExist(const std::unique_ptr<HeadBucketRequest> &request,
+    std::unique_ptr<HeadBucketResponse> &resp)
 {
     obs_options option;
     OBSResult result;
@@ -973,7 +974,7 @@ void HWCloudService::SetAclGrantInfoInner(manager_acl_info* aclinfo, const std::
 
         if (aclGrants[i].userType == "Email") {
             if (strcpy_s(aclinfo->acl_grants[i].grantee.huawei_customer_by_email.email_address,
-                    OBS_MAX_GRANTEE_EMAIL_ADDRESS_SIZE, aclGrants[i].userId.c_str()) != 0) {
+                OBS_MAX_GRANTEE_EMAIL_ADDRESS_SIZE, aclGrants[i].userId.c_str()) != 0) {
                 HCP_Log(WARN, MODULE_NAME) << "strcpy_s failed" << HCPENDLOG;
             }
         } else if (aclGrants[i].userType == "UserID") {
@@ -1098,6 +1099,7 @@ OBSResult HWCloudService::GetUploadId(
     GetUploadIdCallData data;
 
     obs_put_properties putProperties;
+    putProperties.meta_data = NULL;
     init_put_properties(&putProperties);
     SetObjectMetaInfoInner(putProperties, request->sysDefMetaData, request->userDefMetaData);
 
@@ -1125,6 +1127,9 @@ OBSResult HWCloudService::GetUploadId(
                 << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, retStatus, result));
+    if (putProperties.meta_data != NULL) {
+        free(putProperties.meta_data);
+    }
 
     return result;
 }

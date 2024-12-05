@@ -16,18 +16,17 @@
 #include <queue>
 #include <mutex>
 #include <atomic>
-#include<condition_variable>
+#include <condition_variable>
 #include "boost/chrono.hpp"
 #include "boost/interprocess/sync/interprocess_semaphore.hpp"
 #include "boost/shared_ptr.hpp"
 #include "boost/thread.hpp"
 
-namespace Module
-{
+namespace Module {
 
-class Semaphore{
+class Semaphore {
 public:
-    Semaphore(int count) : m_count(count) {}
+    explicit Semaphore(int count) : m_count(count) {}
     ~Semaphore() {}
 
     void Wait()
@@ -43,7 +42,8 @@ public:
     {
         std::unique_lock<std::mutex> locker(m_mutex);
         std::chrono::milliseconds timeout(milliseconds);
-        if (m_condition.wait_for(locker, timeout, [&]{if (m_count > 0) return true;})) {
+        if (m_condition.wait_for(locker, timeout,
+            [&] {if (m_count > 0) return true;})) {
             return false;
         }
         m_count--;
@@ -75,15 +75,9 @@ private:
 };
 
 template<typename Type>
-class SingleItemQueue
-{
-private:
-    std::timed_mutex m_getMutex;
-    std::timed_mutex m_putMutex;
-    std::shared_ptr<Type> m_item;
-
+class SingleItemQueue {
 public:
-    SingleItemQueue() : m_getMutex(), m_putMutex(), m_item((Type*)NULL)
+    SingleItemQueue() : m_getMutex(), m_putMutex(), m_item(static_cast<Type*>(NULL))
     {
         m_getMutex.lock();
     }
@@ -133,16 +127,20 @@ public:
         // If mutex acquired, insert item and unlock the put mutex to allow getting this item.
         if (result) {
             item = m_item;
-            m_item.reset((Type*)NULL);
+            m_item.reset(static_cast<Type*>(NULL));
             m_putMutex.unlock();
         }
         return result;
     }
+
+private:
+    std::timed_mutex m_getMutex;
+    std::timed_mutex m_putMutex;
+    std::shared_ptr<Type> m_item;
 };
 
 template<typename Type>
-class UnlimitedQueue
-{
+class UnlimitedQueue {
 public:
     UnlimitedQueue() : m_queue(), m_mu(), m_sem(0) { }
     ~UnlimitedQueue() = default;
@@ -164,7 +162,8 @@ public:
         if ((block) && (milliseconds == 0)) {
             m_sem.wait();
         } else if (block) {
-            boost::posix_time::ptime timeout = boost::posix_time::microsec_clock::universal_time() + boost::posix_time::milliseconds(milliseconds);
+            boost::posix_time::ptime timeout = boost::posix_time::microsec_clock::universal_time() +
+                boost::posix_time::milliseconds(milliseconds);
             result = m_sem.timed_wait(timeout);
         } else {
             result = m_sem.try_wait();

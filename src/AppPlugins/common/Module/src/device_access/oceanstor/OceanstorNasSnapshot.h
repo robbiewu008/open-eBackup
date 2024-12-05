@@ -23,13 +23,15 @@ namespace Module {
     class OceanstorNasSnapshot : public OceanstorNas {
     public:
         explicit OceanstorNasSnapshot(ControlDeviceInfo deviceInfo, std::string id, std::string path)
-                : OceanstorNas(deviceInfo) {
+            : OceanstorNas(deviceInfo)
+        {
             fileSystemId = id;
             uniquePath = path;
         }
 
         OceanstorNasSnapshot(ControlDeviceInfo deviceInfo, std::string id, std::string vId, std::string path)
-                : OceanstorNas(deviceInfo) {
+            : OceanstorNas(deviceInfo)
+        {
             fileSystemId = id;
             vstoreId = vId;
             uniquePath = path;
@@ -37,7 +39,8 @@ namespace Module {
 
         virtual ~OceanstorNasSnapshot() {}
 
-        std::unique_ptr <ControlDevice> CreateSnapshot(std::string snapshotName, int &errorCode) override {
+        std::unique_ptr <ControlDevice> CreateSnapshot(std::string snapshotName, int &errorCode) override
+        {
             return nullptr;
         }
 

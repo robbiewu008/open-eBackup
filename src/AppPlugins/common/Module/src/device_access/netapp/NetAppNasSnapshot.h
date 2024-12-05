@@ -18,7 +18,6 @@
 #include "define/Types.h"
 #include "common/JsonUtils.h"
 #include "curl_http/HttpClientInterface.h"
-// #include "framework/MessageProcess.h"
 #include "device_access/Const.h"
 
 namespace Module {
@@ -38,8 +37,8 @@ namespace Module {
         virtual ~NetAppNasSnapshot()
         {};
 
-        int Bind(HostInfo &host, const std::string &shareId="") override;
-        int UnBind(HostInfo host, const std::string &shareId="") override;
+        int Bind(HostInfo &host, const std::string &shareId = "") override;
+        int UnBind(HostInfo host, const std::string &shareId = "") override;
         int Create(unsigned long long size) override;
         int Delete() override;
         int Query(DeviceDetails& info) override;

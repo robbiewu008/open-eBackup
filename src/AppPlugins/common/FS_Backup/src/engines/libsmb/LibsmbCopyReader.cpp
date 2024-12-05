@@ -269,11 +269,11 @@ void LibsmbCopyReader::ThreadFunc()
             break;
         }
         uint64_t totalBufferSize = m_blockBufferMap->GetTotalBufferSize();
-        if (m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) > MAX_PENDING_REQUEST_COUNT ||
+        if (m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) > m_srcAdvParams->maxPendingAsyncReqCnt ||
             totalBufferSize > m_backupParams.commonParams.maxBufferSize) {
             DBGLOG("SmbCopyReader PENDING packet(%d) or totalBufferSize(%llu) reach threshold.",
                 m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING), totalBufferSize);
-            ret = m_asyncContext->Poll(DEFAULT_POLL_EXPIRED_TIME);
+            ret = m_asyncContext->Poll(m_srcAdvParams->pollExpiredTime);
             if (ret < 0 && ProcessConnectionException() != SUCCESS) {
                 break;
             }
@@ -286,7 +286,7 @@ void LibsmbCopyReader::ThreadFunc()
 
         ProcessTimers();
 
-        ret = m_asyncContext->Poll(DEFAULT_POLL_EXPIRED_TIME);
+        ret = m_asyncContext->Poll(m_srcAdvParams->pollExpiredTime);
         // ret < 0说明连接有问题，需要重连, 如果ProcessConnectionException也返回失败，说明重连失败
         if (ret < 0 && ProcessConnectionException() != SUCCESS) {
             break;
@@ -339,7 +339,7 @@ void LibsmbCopyReader::ProcessPartialReadEntries()
         }
         uint64_t totalBufferSize = m_blockBufferMap->GetTotalBufferSize();
         if (totalBufferSize > m_backupParams.commonParams.maxBufferSize ||
-            m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) > MAX_PENDING_REQUEST_COUNT) {
+            m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) > m_srcAdvParams->maxPendingAsyncReqCnt) {
             DBGLOG("SmbCopyReader memroy(%llu) or PENDING packet(%d) reach threshold.", totalBufferSize,
                 m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING));
             break;
@@ -357,8 +357,9 @@ bool LibsmbCopyReader::IsReaderRequestReachThreshold() const
     uint64_t totalBufferSize = m_blockBufferMap->GetTotalBufferSize();
     int64_t openedCount = GetActualOpenedFileHandleCount(m_pktStats);
     if (totalBufferSize > m_backupParams.commonParams.maxBufferSize ||
-        m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) > MAX_PENDING_REQUEST_COUNT ||
-        openedCount >= MAX_OPENED_FILEHANDLE_COUNT) {
+        m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) >
+        m_srcAdvParams->maxPendingAsyncReqCnt ||
+        openedCount >= m_srcAdvParams->maxOpenedFilehandleCount) {
         DBGLOG("SmbCopyReader memroy(%llu) or PENDING packet(%d) or openedCount(%d) reach threshold."
             "open_sent(%d), open_failed(%d), open_retry(%d), close_recvd(%d)",
             totalBufferSize, m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING), openedCount,

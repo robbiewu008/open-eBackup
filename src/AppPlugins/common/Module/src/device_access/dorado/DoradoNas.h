@@ -37,16 +37,17 @@ namespace Module {
 
     class DoradoNas : public DoradoBlock {
     public:
-        explicit DoradoNas(ControlDeviceInfo deviceInfo, bool readFromK8s = true) : DoradoBlock(deviceInfo,
-                                                                                                readFromK8s) {
+        explicit DoradoNas(ControlDeviceInfo deviceInfo, bool readFromK8s = true)
+            : DoradoBlock(deviceInfo, readFromK8s)
+        {
             fileSystemId = "";
             readK8s = readFromK8s;
         }
 
         DoradoNas(ControlDeviceInfo deviceInfo, std::string fsId, bool readFromK8s = true)
-                : DoradoBlock(deviceInfo, readFromK8s),
-                  fileSystemId(fsId),
-                  readK8s(readFromK8s) {}
+            : DoradoBlock(deviceInfo, readFromK8s),
+              fileSystemId(fsId),
+              readK8s(readFromK8s) {}
 
         virtual ~DoradoNas();
 
@@ -159,10 +160,11 @@ namespace Module {
 
         int GetReplicationPairID(const std::string &fsID, const std::string &remoteDeviceEsn, std::string &pairID);
 
+        int GetReplicationPairWithFsId(const std::string &fsID, const std::string &localDeviceEsn, bool& isPrimary);
+
         int QueryFileSystemByID(const std::string &fileName, const std::string &fsID, DeviceDetails &info);
 
         int VerifyDoradoIP(std::string doradoIP);
-
 
         virtual int QueryFileSystem(DeviceDetails &info);
 
@@ -202,7 +204,8 @@ namespace Module {
 
         int CreateDTree(const std::string &dtreeName);
 
-        std::string GetFileSystemId() {
+        std::string GetFileSystemId()
+        {
             return fileSystemId;
         }
 
@@ -245,7 +248,6 @@ namespace Module {
 
     private:
         bool HandleHostData(Json::Value oneNode, IP_TYPE ipType, std::vector<LogicPortInfo> &logicPorts);
-
     };
 }
 #endif  // DORADO_NAS_H

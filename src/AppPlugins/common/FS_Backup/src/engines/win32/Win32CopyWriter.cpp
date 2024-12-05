@@ -57,7 +57,7 @@ int Win32CopyWriter::WriteMeta(FileHandle& fileHandle)
         ERRLOG("put write meta file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     return SUCCESS;
 }
 
@@ -167,7 +167,7 @@ bool Win32CopyWriter::IsComplete()
             "(totalFiles %llu totalDirs %llu archiveFiles %llu)",
             m_controlInfo->m_aggregatePhaseComplete.load(),
             m_writeQueue->GetSize(), m_writeCache.size(), m_timer.GetCount(),
-            m_writeTaskProduce.load(), m_writeTaskConsume.load(),
+            m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load(),
             m_controlInfo->m_noOfSubStreamCopied.load(), m_controlInfo->m_noOfSubStreamFound.load(),
             m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfDirCopied.load(),
             m_controlInfo->m_aggregatedFiles.load(), m_controlInfo->m_skipFileCnt.load(),
@@ -181,10 +181,10 @@ bool Win32CopyWriter::IsComplete()
         m_writeQueue->Empty() &&
         (m_writeCache.size() == 0) &&
         (m_timer.GetCount() == 0) &&
-        (m_writeTaskProduce == m_writeTaskConsume) &&
+        (m_controlInfo->m_writeTaskProduce == m_controlInfo->m_writeTaskConsume) &&
         (m_controlInfo->m_noOfSubStreamCopied == m_controlInfo->m_noOfSubStreamFound) &&
-        (m_controlInfo->m_noOfFilesCopied + m_controlInfo->m_noOfFilesFailed ==
-        m_controlInfo->m_noOfFilesToBackup)) {
+        (m_controlInfo->m_noOfFilesCopied + m_controlInfo->m_noOfFilesFailed + m_controlInfo->m_skipFileCnt +
+        m_controlInfo->m_noOfFilesWriteSkip == m_controlInfo->m_noOfFilesToBackup)) {
         INFOLOG("CopyWriter complete: aggrComplete %d writeQueueSize %llu writeCacheSize %llu timerSize %llu "
             "(writeTaskProduce %llu writeTaskConsume %llu) "
             "(noOfSubStreamCopied %llu noOfSubStreamFound %llu) "
@@ -193,7 +193,7 @@ bool Win32CopyWriter::IsComplete()
             "(totalFiles %llu totalDirs %llu archiveFiles %llu)",
             m_controlInfo->m_aggregatePhaseComplete.load(),
             m_writeQueue->GetSize(), m_writeCache.size(), m_timer.GetCount(),
-            m_writeTaskProduce.load(), m_writeTaskConsume.load(),
+            m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load(),
             m_controlInfo->m_noOfSubStreamCopied.load(), m_controlInfo->m_noOfSubStreamFound.load(),
             m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfDirCopied.load(),
             m_controlInfo->m_aggregatedFiles.load(), m_controlInfo->m_skipFileCnt.load(),
@@ -323,10 +323,10 @@ void Win32CopyWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskPt
             fileHandle.m_file->GetSrcState() != FileDescState::READ_FAILED && !fileHandle.IsAdsFile()) {
             // 若read的状态为READ_FAILED时，说明该文件已经被reader记为失败
             m_controlInfo->m_noOfFilesFailed += fileHandle.m_file->m_originalFileCount;
+            fileHandle.m_errNum = taskPtr->m_errDetails.second;
+            m_failedList.emplace_back(fileHandle);
         }
         fileHandle.m_file->UnlockCommonMutex();
-        fileHandle.m_errNum = taskPtr->m_errDetails.second;
-        m_failedList.emplace_back(fileHandle);
     }
     m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
     CloseWriteFailedHandle(fileHandle);

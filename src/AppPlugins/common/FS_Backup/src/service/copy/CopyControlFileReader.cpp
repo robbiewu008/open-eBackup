@@ -42,7 +42,8 @@ CopyControlFileReader::CopyControlFileReader(const ReaderParams& readerParams)
     m_readQueue(readerParams.readQueuePtr),
     m_aggregateQueue(readerParams.aggregateQueuePtr),
     m_controlInfo(readerParams.controlInfo),
-    m_blockBufferMap(readerParams.blockBufferMap)
+    m_blockBufferMap(readerParams.blockBufferMap),
+    m_failureRecorder(readerParams.failureRecorder)
 {}
 
 CopyControlFileReader::CopyControlFileReader(BackupParams& backupParams,
@@ -165,8 +166,7 @@ void CopyControlFileReader::ThreadFunc()
             break;
         }
         if (ret == Module::FAILED) {
-            m_controlInfo->m_controlReaderFailed = true;
-            break;
+            continue;
         }
     }
     if (m_noOfFileEntriesReaded != m_controlInfo->m_noOfFilesToBackup) {
@@ -240,7 +240,10 @@ int CopyControlFileReader::PushFileHandleToReader(const int& ret, FileHandle& fi
         ++m_controlInfo->m_skipFileCnt;
         return Module::SUCCESS;
     } else if (ret == Module::FAILED) {
-        ERRLOG("Read control file failed!");
+        ++m_controlInfo->m_controlFileReaderProduce;
+        ++m_controlInfo->m_noOfFilesFailed;
+        ++m_controlInfo->m_noOfFilesReadFailed;
+        WARNLOG("Read meta or xmeta file failed!");
         return Module::FAILED;
     }
     bool isDir = fileHandle.m_file->IsFlagSet(IS_DIR);
@@ -268,7 +271,9 @@ int CopyControlFileReader::PushDirToAggregator(const int& ret, FileHandle& fileH
         ++m_controlInfo->m_skipDirCnt;
         return Module::SUCCESS;
     } else if (ret == Module::FAILED) {
-        ERRLOG("Read control file failed!");
+        WARNLOG("Read meta or xmeta file failed!");
+        ++m_controlInfo->m_controlFileReaderProduce;
+        ++m_controlInfo->m_noOfDirRead;
         return Module::FAILED;
     }
     bool isDir = fileHandle.m_file->IsFlagSet(IS_DIR);
@@ -596,6 +601,7 @@ int CopyControlFileReader::ProcessDirEntry(ParentInfo &parentInfo, const CopyCtr
     if (parentInfo.metaFileName.empty()) {
         parentInfo.metaFileName = GetMetaFile(dirEntry.m_metaFileName);
         if (OpenMetaControlFile(parentInfo.metaFileName) != Module::SUCCESS) {
+            m_failureRecorder->RecordFailure(dirEntry.m_dirName, "Failed to open meta file!");
             return Module::FAILED;
         }
     }
@@ -603,11 +609,13 @@ int CopyControlFileReader::ProcessDirEntry(ParentInfo &parentInfo, const CopyCtr
     if (parentInfo.metaFileName != GetMetaFile(dirEntry.m_metaFileName)) {
         parentInfo.metaFileName = GetMetaFile(dirEntry.m_metaFileName);
         if (OpenMetaControlFile(parentInfo.metaFileName) != Module::SUCCESS) {
+            m_failureRecorder->RecordFailure(dirEntry.m_dirName, "Failed to open meta file!");
             return Module::FAILED;
         }
     }
     DirMeta dirMeta;
     if (ReadDirectoryMeta(dirMeta, dirEntry.metaFileOffset) != Module::SUCCESS) {
+        m_failureRecorder->RecordFailure(dirEntry.m_dirName, "Failed to read meta file!");
         return Module::FAILED;
     }
     fileHandle.m_file->m_fileName = dirEntry.m_dirName;
@@ -620,12 +628,14 @@ int CopyControlFileReader::ProcessDirEntry(ParentInfo &parentInfo, const CopyCtr
         string xMetaFileName = GetXMetaFile(dirMeta.m_xMetaFileIndex);
         if (GetOpenedXMetaFileName() != xMetaFileName) {
             if (OpenXMetaControlFile(xMetaFileName) != Module::SUCCESS) {
+                m_failureRecorder->RecordFailure(dirEntry.m_dirName, "Failed to open xmeta file!");
                 ERRLOG("Failed to open xmeta file");
                 return Module::FAILED;
             }
         }
 
         if (ReadDirectoryXMeta(fileHandle, dirMeta) != Module::SUCCESS) {
+            m_failureRecorder->RecordFailure(dirEntry.m_dirName, "Failed to read xmeta file!");
             return Module::FAILED;
         }
     }
@@ -677,32 +687,37 @@ int CopyControlFileReader::ProcessFileEntry(ParentInfo& parentInfo, const CopyCt
     if (fileEntry.m_mode == Module::CTRL_ENTRY_MODE_DATA_DELETED) {
         return FILE_SKIP;
     }
+    fileHandle.m_file->m_fileName = parentInfo.dirName + CTRL_FILE_PATH_SEPARATOR + fileEntry.m_fileName;
     if (fileEntry.m_metaFileName.empty()) {
+        m_failureRecorder->RecordFailure(fileHandle.m_file->m_fileName, "Failed to read meta file name!");
         return Module::FAILED;
     }
     if (GetOpenedMetaFileName() != GetMetaFile(fileEntry.m_metaFileName)) {
         parentInfo.metaFileName = GetMetaFile(fileEntry.m_metaFileName);
         if (OpenMetaControlFile(parentInfo.metaFileName) != Module::SUCCESS) {
+            m_failureRecorder->RecordFailure(fileHandle.m_file->m_fileName, "Failed to open meta file!");
             return Module::FAILED;
         }
     }
     FileMeta fileMeta;
     if (ReadFileMeta(fileMeta, fileEntry.metaFileOffset) != Module::SUCCESS) {
+        m_failureRecorder->RecordFailure(fileHandle.m_file->m_fileName, "Failed to read meta file!");
         return Module::FAILED;
     }
-    fileHandle.m_file->m_fileName = parentInfo.dirName + CTRL_FILE_PATH_SEPARATOR + fileEntry.m_fileName;
     FillFileMetaData(fileHandle, fileMeta, fileEntry);
     if (fileMeta.m_xMetaFileOffset != 0) {
         string xMetafilename = GetXMetaFile(fileMeta.m_xMetaFileIndex);
         if (GetOpenedXMetaFileName() != xMetafilename) {
             if (OpenXMetaControlFile(xMetafilename) != Module::SUCCESS) {
                 ERRLOG("Failed to open xmeta file, %s", xMetafilename.c_str());
+                m_failureRecorder->RecordFailure(fileHandle.m_file->m_fileName, "Failed to open xmeta file!");
                 return Module::FAILED;
             }
         }
 
         /* Get fh from XMetaFile */
         if (ReadFileXMeta(fileHandle, fileMeta) != Module::SUCCESS) {
+            m_failureRecorder->RecordFailure(fileHandle.m_file->m_fileName, "Failed to read xmeta file!");
             return Module::FAILED;
         }
     }

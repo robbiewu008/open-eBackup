@@ -12,13 +12,13 @@
 */
 #ifndef MODULE_BACKUP_MTIMECTRL_H
 #define MODULE_BACKUP_MTIMECTRL_H
-#include "NasControlFile.h"
-#include "define/Defines.h"
-#include "define/Types.h"
 #include <string>
 #include <vector>
 #include <fstream>
 #include <mutex>
+#include "NasControlFile.h"
+#include "define/Defines.h"
+#include "define/Types.h"
 
 const std::string NAS_BACKUPMTIMECTRL_HEADER_TITLE = "NAS Backup Mtime Control File";
 const std::string NAS_BACKUPMTIMECTRL_HEADER_VERSION = "1.0";
@@ -78,9 +78,9 @@ struct BackupMtimeCtrlEntry {
     uint32_t m_uid = 0;                 /* user ID of owner */
     uint32_t m_gid = 0;                 /* group ID of owner */
     uint32_t m_attr = 0;
-	#ifndef WIN32
-	mode_t   m_mode = 0;                /* protection type (rwx) */
-	#endif
+    #ifndef WIN32
+    mode_t   m_mode = 0;                /* protection type (rwx) */
+    #endif
 };
 
 class AGENT_API BackupMtimeCtrl {
@@ -89,15 +89,15 @@ class AGENT_API BackupMtimeCtrl {
         std::string m_ctlFileName {};               /* This controlFile name */
         std::string m_ctrlFileParentDir {};         /* Parent dir of the controlFile */
         uint32_t m_maxEntryPerFile = 0;             /* Maximum entries per control file */
-        BackupMtimeCtrlHeader m_header {};			/* File header info */
+        BackupMtimeCtrlHeader m_header {};          /* File header info */
 
         std::ifstream m_readFd {};    /* Read FD */
         std::stringstream m_readBuffer {};               /* Read Buffer */
         std::ofstream m_writeFd {};   /* Write FD */
         std::stringstream m_writeBuffer {};              /* Write Buffer */
 
-        uint32_t m_maxFileSize = 0;					/* Maximum size of the control file */
-        uint32_t m_entries = 0;						/* Number of file/dir entries in the file */
+        uint32_t m_maxFileSize = 0;                 /* Maximum size of the control file */
+        uint32_t m_entries = 0;                     /* Number of file/dir entries in the file */
 
         /**
          * Template to Open a File in Read/Write Mode

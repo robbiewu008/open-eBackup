@@ -361,6 +361,7 @@ function save_open_docker() {
           fi
         elif [ "${BUILD_MODULE}" == "system_dme" ];then
           dme_list="dme_vmware:${MS_IMAGE_TAG} dme_unifiedbackupcontroller:${MS_IMAGE_TAG} dme_replication:${MS_IMAGE_TAG} dme_openstorageapi:${MS_IMAGE_TAG} dme_jobmanager:${MS_IMAGE_TAG} dme_openstorageapi_data:${MS_IMAGE_TAG} dme_openstorageapi_controller:${MS_IMAGE_TAG} dme_nginx:${MS_IMAGE_TAG} dme_dns:${MS_IMAGE_TAG} dme_initcontainer:${MS_IMAGE_TAG} dme_dmc:${MS_IMAGE_TAG} dme_archive:${MS_IMAGE_TAG} dmc_nginx:${MS_IMAGE_TAG} dma_nginx:${MS_IMAGE_TAG}"
+          dme_list="${dme_list} dme-openstorageapi-csi-snapshotter:${MS_IMAGE_TAG} dme-openstorageapi-csi-provisioner:${MS_IMAGE_TAG} dme-openstorageapi-csi-node-driver-registrar:${MS_IMAGE_TAG} dme-openstorageapi-snapshot-controller:${MS_IMAGE_TAG} dme-openstorageapi-csi-attacher:${MS_IMAGE_TAG} dme-openstorageapi-oceanprotect-csi:${MS_IMAGE_TAG}"
           docker save ${dme_list} | xz -9e -T0 > ${G_BASE_DIR}/pkg/images/${PRODUCT}_${PKG_VERSION}_${PKG_NAME}.tar.xz
           if [ $? -ne 0 ]; then
               echo "docker save xz failed"

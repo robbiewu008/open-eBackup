@@ -119,6 +119,8 @@ private:
 
     uint64_t m_noOfFileEntriesReaded = 0;
     uint64_t m_noOfDirEntriedReaded = 0;
+
+    std::shared_ptr<Module::BackupFailureRecorder> m_failureRecorder = nullptr;
 };
 
 #endif // COPY_CONTROL_FILE_READER_H

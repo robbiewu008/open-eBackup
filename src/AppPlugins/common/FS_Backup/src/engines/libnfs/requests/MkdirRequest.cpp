@@ -55,7 +55,7 @@ int SendMkdir(FileHandle &fileHandle, NfsMkdirCbData *cbData)
     int ret = MP_FAILED;
     if (cbData->nfsfh == nullptr) {
         if (IsRootDir(fileHandle.m_file->m_dirName)) {
-                ret = CreateDirWithPath(fileHandle, nfs, cbData);
+            ret = CreateDirWithPath(fileHandle, nfs, cbData);
         } else {
             ret = HandleParentDirNotPresent(fileHandle, cbData->retryCnt, nfs, cbData);
         }
@@ -76,8 +76,14 @@ int CreateDirWithPath(FileHandle &fileHandle, shared_ptr<NfsContextWrapper> nfs,
 
     cbData->writeCommonData->pktStats->Increment(PKT_TYPE::MKDIR, PKT_COUNTER::SENT);
 
-    int ret = nfs->NfsMkdirGetFhLock(fileHandle.m_file->m_fileName.c_str(), fileHandle.m_file->m_mode,
-        &fileHandle.m_file->dstIOHandle.nfsFh);
+    int ret = MP_FAILED;
+    if (fileHandle.m_file->m_fileName == "." || fileHandle.m_file->m_fileName.empty()) {
+        ret = nfs->NfsLookupGetFhLock(fileHandle.m_file->m_fileName.c_str(),
+            &fileHandle.m_file->dstIOHandle.nfsFh);
+    } else {
+        ret = nfs->NfsMkdirGetFhLock(fileHandle.m_file->m_fileName.c_str(), fileHandle.m_file->m_mode,
+            &fileHandle.m_file->dstIOHandle.nfsFh);
+    }
 
     cbData->writeCommonData->pktStats->Increment(PKT_TYPE::MKDIR, PKT_COUNTER::RECVD);
     return ret;

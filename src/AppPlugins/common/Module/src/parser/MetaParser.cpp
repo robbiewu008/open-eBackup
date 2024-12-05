@@ -883,7 +883,6 @@ CTRL_FILE_RETCODE MetaParser::ReadFileMetaWithoutCache(FileMeta &fMeta, uint64_t
         return CTRL_FILE_RETCODE::FAILED;
     }
     ret = ReadFromBinaryFile(offset, sizeof(FileMeta));
- 
     if (ret != CTRL_FILE_RETCODE::SUCCESS) {
         char errMsg[ERROR_MSG_SIZE];
         HCP_Log(ERR, MODULE) << "failed to read metafile of length " << sizeof(FileMeta) << " error= "

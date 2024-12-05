@@ -21,12 +21,14 @@
 namespace Module {
     class FSBlockSnapshot : public FusionStorageBlock {
     public:
-        FSBlockSnapshot(ControlDeviceInfo deviceInfo, int id, mp_string wwn) : FusionStorageBlock(deviceInfo) {
+        FSBlockSnapshot(ControlDeviceInfo deviceInfo, int id, mp_string wwn) : FusionStorageBlock(deviceInfo)
+        {
             ResourceId = id;
             Wwn = wwn;
         }
 
-        virtual ~FSBlockSnapshot() {
+        virtual ~FSBlockSnapshot()
+        {
             DeleteDeviceSession();
             if (fs_pHttpCLient) {
                 fs_pHttpCLient = NULL;

@@ -248,36 +248,48 @@ bool doRealReceive(FILE *f)
     int rc = 0;
     int recvLen = 0;
     char dataBuf[NDMPD_DATA_DEFAULT_BUFFER_SIZE] = { 0 };
-    char aggBuf[NDMPD_DATA_AGGR_BUFFER_SIZE] = {0};
-    int offset_index = 0;
+    char aggBuf[NDMPD_DATA_AGGR_BUFFER_SIZE] = { 0 };
+
+    int offsetIndex = 0;
     while (1) {
         if (g_isSendAbort) {
             return false;
         }
-        bzero(dataBuf, NDMPD_DATA_DEFAULT_BUFFER_SIZE);            
-        recvLen = read(g_dataConnection.conn_sock, dataBuf, NDMPD_DATA_DEFAULT_BUFFER_SIZE - 1);
-        if (recvLen <= 0) {
-            break;
-        }
-        if (offset_index + recvLen > NDMPD_DATA_AGGR_BUFFER_SIZE) {
-            rc = fwrite(aggBuf, offset_index, 1, f);
-            if (rc == 0) {
-                ERRLOG("write data err, cannot write!");
+        bzero(dataBuf, NDMPD_DATA_DEFAULT_BUFFER_SIZE);
+        for (int i = 0; i < 256; ++i) {
+            recvLen = read(g_dataConnection.conn_sock, aggBuf + offsetIndex, NDMPD_DATA_DEFAULT_BUFFER_SIZE - 1);
+            if (recvLen <= 0) {
+                break;
+            }
+            offsetIndex += recvLen;
+        }        
+        rc = fwrite(aggBuf, 1, offsetIndex, f);
+        char *restBuf = aggBuf;
+        while (rc != offsetIndex) {
+            if (rc < 0) {
+                ERRLOG("write data err, cannot write! errno = %d", errno);
                 return false;
             }
-            offset_index = 0;
-            bzero(aggBuf, NDMPD_DATA_AGGR_BUFFER_SIZE);
+            offsetIndex -= rc;
+            restBuf += rc;
+            rc = fwrite(restBuf, 1, offsetIndex, f);
         }
-        memcpy_s(aggBuf + offset_index, recvLen, dataBuf, recvLen);
-        offset_index += recvLen;
+        offsetIndex = 0;
     }
-    if (offset_index > 0) {
-        rc = fwrite(aggBuf, offset_index, 1, f);
-        if (rc == 0) {
-            ERRLOG("write data err, cannot write!");
-            return false;
+
+    if (offsetIndex > 0) {
+        rc = fwrite(aggBuf, 1, offsetIndex, f);
+        char *restBuf = aggBuf;
+        while (rc != offsetIndex) {
+            if (rc < 0) {
+                ERRLOG("write data err, cannot write! errno = %d", errno);
+                return false;
+            }
+            offsetIndex -= rc;
+            restBuf += rc;
+            rc = fwrite(restBuf, 1, offsetIndex, f);
         }
-        offset_index = 0;
+        offsetIndex = 0;
         bzero(aggBuf, NDMPD_DATA_AGGR_BUFFER_SIZE);
     }
     return true;
@@ -291,10 +303,9 @@ void* NdmpStartDataReceive(void* args)
     char fileName[NDMPD_DATA_MAX_FILE_PATH] = { 0 };
     // if file exist , clear it first
     (void)NdmpGetBackupFileName(fileName);
-    f = fopen(fileName, "w");
-
+    f = NdmpOpenFileWithRetry(fileName, "w");
     if (NULL == f) {
-        ERRLOG("open file failed.");
+        ERRLOG("open file failed. errno: %d, error message: %s", errno, strerror(errno));
         goto ERR;
     }
 
@@ -326,9 +337,9 @@ void* NdmpStartRestoreData(void* args)
     char fileName[NDMPD_DATA_MAX_FILE_PATH] = { 0 };
     (void)NdmpGetBackupFileName(fileName);
 
-    FILE *f = fopen(fileName, "r+");
+    FILE *f = NdmpOpenFileWithRetry(fileName, "r+");
     if (NULL == f) {
-        ERRLOG("open file failed.");
+        ERRLOG("open file failed. errno: %d, error message: %s", errno, strerror(errno));
         goto ERR;
     }
 
@@ -346,11 +357,15 @@ void* NdmpStartRestoreData(void* args)
         bzero(dataBuf, NDMPD_DATA_DEFAULT_BUFFER_SIZE);
         readNum = fread(dataBuf, sizeof(char), sizeof(dataBuf) - 1, f);
         rc = write(g_dataConnection.conn_sock, dataBuf, readNum * sizeof(char));
-        if (rc < 0) {
-            if (errno == EAGAIN) {
+        char *restBuf = dataBuf;
+        while (rc != readNum) {
+            if (rc < 0) {
                 ERRLOG("write timeout errno(%d)", errno);
                 goto ERR;
             }
+            readNum -= rc;
+            restBuf += rc;
+            rc = write(g_dataConnection.conn_sock, restBuf, readNum * sizeof(char));
         }
     }
 

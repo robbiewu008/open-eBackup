@@ -50,6 +50,7 @@ const auto MODULE = "ArchiveDownloadFile";
 
 const int SUCCESS = 0;
 const int FAILED = -1;
+const int TAP_REMIND_ERROR = 17;
 
 const int SKD_PREPARE_CODE_NE1 = -1;
 const int SKD_PREPARE_CODE_0 = 0;
@@ -448,7 +449,7 @@ bool ArchiveDownloadFile::OpenFileExistOrNew()
     return true;
 }
 
-bool ArchiveDownloadFile::ArchiveWriteFile(const ControlFileData& ctrlData) const
+bool ArchiveDownloadFile::ArchiveWriteFile(const ControlFileData& ctrlData)
 {
     INFOLOG("Enter ArchiveWriteFile: %s", ctrlData.fileName.c_str());
     int readEnd = 0;
@@ -469,8 +470,11 @@ bool ArchiveDownloadFile::ArchiveWriteFile(const ControlFileData& ctrlData) cons
             " req.archiveBackupId: " << req.archiveBackupId << " req.fsID: " << req.fsID <<
             " req.filePath: " << req.filePath << " req.fileOffset: " << req.fileOffset <<
             " req.readSize: " << req.readSize << " req.maxResponseSize: " << req.maxResponseSize << HCPENDLOG;
-        if (m_clientHandler->GetFileData(req, retValue) != SUCCESS) {
-            HCP_Log(ERR, MODULE) << "GetFileData failed: " << m_fileFullPath << HCPENDLOG;
+        int clientError = 0;
+        if ((clientError = m_clientHandler->GetFileData(req, retValue)) != SUCCESS) {
+            ERRLOG("GetFileData failed: %s, error: %d", m_fileFullPath.c_str(), clientError);
+            m_state = (clientError == TAP_REMIND_ERROR) ?
+                ArchiveDownloadState::TAP_REMIND : ArchiveDownloadState::FAILED;
             return false;
         }
         HCP_Log(DEBUG, MODULE) << "retValue.fileSize: " << retValue.fileSize <<

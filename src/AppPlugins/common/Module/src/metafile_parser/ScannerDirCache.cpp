@@ -46,8 +46,9 @@ CacheFile::~CacheFile()
         Close(NAS_CTRL_FILE_OPEN_MODE_WRITE);
     }
 
-    if (m_readFd.is_open())
+    if (m_readFd.is_open()) {
         Close(NAS_CTRL_FILE_OPEN_MODE_READ);
+    }
 }
 
 NAS_CTRL_FILE_RETCODE CacheFile::Open(NAS_CTRL_FILE_OPEN_MODE mode)
@@ -409,7 +410,7 @@ NAS_CTRL_FILE_RETCODE CacheFile::ReadDirCacheEntries(std::queue<Cache> &dcQueue,
         HCP_Log(WARN, CTL_MOD_NAME) << "Cannot read " << numOfEntriesToRead
             << " entries, change to " << m_readBufferSize/sizeof(Cache) << HCPENDLOG;
         len = m_readBufferSize;
-        numOfEntriesToRead = m_readBufferSize/sizeof(Cache);
+        numOfEntriesToRead = m_readBufferSize / sizeof(Cache);
     }
     int result = memset_s(m_readBuffer, m_readBufferSize, 0, m_readBufferSize);
     if (result != 0) {
@@ -446,7 +447,7 @@ NAS_CTRL_FILE_RETCODE CacheFile::ReadDirCacheEntriesV10(std::queue<Cache> &dcQue
         HCP_Log(WARN, CTL_MOD_NAME) << "Cannot read " << numOfEntriesToRead
             << " entries, change to " << m_readBufferSize/sizeof(CacheV10) << HCPENDLOG;
         len = m_readBufferSize;
-        numOfEntriesToRead = m_readBufferSize/sizeof(CacheV10);
+        numOfEntriesToRead = m_readBufferSize / sizeof(CacheV10);
     }
     int result = memset_s(m_readBuffer, m_readBufferSize, 0, m_readBufferSize);
     if (result != 0) {

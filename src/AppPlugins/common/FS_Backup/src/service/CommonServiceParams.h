@@ -40,6 +40,7 @@ struct ReaderParams {
     std::shared_ptr<BackupControlInfo>          controlInfo { nullptr };
     std::shared_ptr<BlockBufferMap>             blockBufferMap { nullptr };
     std::shared_ptr<HardLinkMap>                hardlinkMap { nullptr };        /* only used in hardlink stage */
+    std::shared_ptr<Module::BackupFailureRecorder> failureRecorder = nullptr;
 };
  
 /*

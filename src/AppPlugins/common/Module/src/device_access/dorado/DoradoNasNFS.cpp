@@ -28,7 +28,8 @@ namespace Module {
     DoradoNasNFS::~DoradoNasNFS() {
     }
 
-    int DoradoNasNFS::Bind(HostInfo &host, const std::string &shareId) {
+    int DoradoNasNFS::Bind(HostInfo &host, const std::string &shareId)
+    {
         int iRet = FAILED;
         int nfsShareId = 0;
         if (shareId.empty()) {
@@ -74,7 +75,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    bool DoradoNasNFS::CheckNFSShareClientExist(std::string deviceId, std::string clientIp) {
+    bool DoradoNasNFS::CheckNFSShareClientExist(std::string deviceId, std::string clientIp)
+    {
         std::vector<std::string> clientIpList;
         int ret = QueryNFSShareClient(deviceId, clientIpList);
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "deviceId:" << deviceId << "clientIp:" << clientIp << HCPENDLOG;
@@ -91,7 +93,8 @@ namespace Module {
         }
     }
 
-    int DoradoNasNFS::UnBind(HostInfo host, const std::string &shareId) {
+    int DoradoNasNFS::UnBind(HostInfo host, const std::string &shareId)
+    {
         int iRet = FAILED;
         DeviceDetails info;
         iRet = Query(info);
@@ -111,7 +114,8 @@ namespace Module {
         return DeleteNFSShareClient(host.hostIpList, nfsShareId);
     }
 
-    int DoradoNasNFS::Create(unsigned long long size) {
+    int DoradoNasNFS::Create(unsigned long long size)
+    {
         int ret = CreateFileSystem(size, UNIX);
         if (ret != SUCCESS) {
             HCP_Log(ERR, DORADO_MODULE_NAME) << "Create filesystem failure! errorCode:" << ret << HCPENDLOG;
@@ -120,7 +124,8 @@ namespace Module {
         return CreateNFSShare(ResourceName, fileSystemId);
     }
 
-    int DoradoNasNFS::Query(DeviceDetails &info) {
+    int DoradoNasNFS::Query(DeviceDetails &info)
+    {
         int iRet = QueryFileSystem(info);
         if (iRet != SUCCESS) {
             HCP_Log(ERR, DORADO_MODULE_NAME) << "Query filesystem failure! errorCode:" << iRet << HCPENDLOG;
@@ -129,7 +134,8 @@ namespace Module {
         return QueryNFSShare(info, fileSystemId);
     }
 
-    int DoradoNasNFS::NFSShareAddClient(std::string name, int ID) {
+    int DoradoNasNFS::NFSShareAddClient(std::string name, int ID)
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "NFS_SHARE_AUTH_CLIENT";
@@ -154,7 +160,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNasNFS::QueryNFSShare(DeviceDetails &info, std::string fsId) {
+    int DoradoNasNFS::QueryNFSShare(DeviceDetails &info, std::string fsId)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "NFSHARE?filter=FSID::" + fsId;
@@ -174,7 +181,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNasNFS::QueryNFSShare(std::vector<NasSharedInfo> &infos, std::string fsId) {
+    int DoradoNasNFS::QueryNFSShare(std::vector<NasSharedInfo> &infos, std::string fsId)
+    {
         std::string url = "NFSHARE?filter=FSID::" + fsId;
         int iRet = QueryNasShare(infos, url, "NFS");
         if (iRet != SUCCESS) {
@@ -185,7 +193,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int DoradoNasNFS::DeleteNFSShare(DeviceDetails info) {
+    int DoradoNasNFS::DeleteNFSShare(DeviceDetails info)
+    {
         HttpRequest req;
         int iRet;
         req.method = "DELETE";
@@ -202,7 +211,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNasNFS::CreateShare() {
+    int DoradoNasNFS::CreateShare()
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "enter CreateShare " << HCPENDLOG;
         for (int i = 0; i < WAIT_FILE_SYSTEM_READY_COUNT; ++i) {
             DeviceDetails info;
@@ -223,7 +233,8 @@ namespace Module {
         return FAILED;
     }
 
-    int DoradoNasNFS::CreateNFSShare(std::string fileSystemName, std::string FsId) {
+    int DoradoNasNFS::CreateNFSShare(std::string fileSystemName, std::string FsId)
+    {
         DeviceDetails info;
         int iRet = QueryNFSShare(info, FsId);
         if (iRet == SUCCESS) {
@@ -259,7 +270,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNasNFS::CreateNFSShare() {
+    int DoradoNasNFS::CreateNFSShare()
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "enter CreateNFSShare " << HCPENDLOG;
         for (int i = 0; i < WAIT_FILE_SYSTEM_READY_COUNT; ++i) {
             DeviceDetails info;
@@ -280,7 +292,8 @@ namespace Module {
         return FAILED;
     }
 
-    int DoradoNasNFS::CreateNFSShareExact(std::string fileSystemName, std::string FsId) {
+    int DoradoNasNFS::CreateNFSShareExact(std::string fileSystemName, std::string FsId)
+    {
         std::string shareName = "/" + fileSystemName + "/";
         HttpRequest req;
         req.method = "POST";
@@ -320,7 +333,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNasNFS::Delete() {
+    int DoradoNasNFS::Delete()
+    {
         DeviceDetails info;
         int iRet = QueryFileSystem(info);
         if (iRet != SUCCESS) {
@@ -353,7 +367,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    std::unique_ptr<ControlDevice> DoradoNasNFS::CreateClone(std::string volumeName, int &errorCode) {
+    std::unique_ptr<ControlDevice> DoradoNasNFS::CreateClone(std::string volumeName, int &errorCode)
+    {
         DeviceDetails info;
         std::string cloneFsId;
         ControlDeviceInfo deviceInfo = {};
@@ -390,7 +405,8 @@ namespace Module {
         return cloneFileSystemObj;
     }
 
-    int DoradoNasNFS::QueryServiceHost(std::vector<std::string> &ipList, IP_TYPE ipType) {
+    int DoradoNasNFS::QueryServiceHost(std::vector<std::string> &ipList, IP_TYPE ipType)
+    {
         Json::Value data;
         int ret = QueryLIFPortList(ipList, data);
         if (ret != SUCCESS) {
@@ -407,16 +423,16 @@ namespace Module {
         return SUCCESS;
     }
 
-    void DoradoNasNFS::FilterLogicPort(Json::Value data, std::vector<std::string> &nfsIPList, IP_TYPE ipType) {
+    void DoradoNasNFS::FilterLogicPort(Json::Value data, std::vector<std::string> &nfsIPList, IP_TYPE ipType)
+    {
         for (int i = 0; i < data.size(); i++) {
             Json::Value oneNode = data[i];
             std::string proto = oneNode["SUPPORTPROTOCOL"].asString();
             std::string role = oneNode["ROLE"].asString();
             std::string RunningStatus = oneNode["RUNNINGSTATUS"].asString();
-            if (RunningStatus == RUNNINGSTATUS_LINKUP && (proto == SUPPORTPROTOCOL_NFS_CIFS
-                                                          || proto == SUPPORTPROTOCOL_NFS) && (role == PORT_ROLE_SERVICE
-                                                                                               || role ==
-                                                                                                  PORT_ROLE_MANAGE_SERVICE)) {
+            if (RunningStatus == RUNNINGSTATUS_LINKUP &&
+                (proto == SUPPORTPROTOCOL_NFS_CIFS || proto == SUPPORTPROTOCOL_NFS) &&
+                (role == PORT_ROLE_SERVICE || role == PORT_ROLE_MANAGE_SERVICE)) {
                 Json::Value ip;
                 if (ipType == IP_TYPE::IP_V4
                     && oneNode.isMember("IPV4ADDR")
@@ -435,7 +451,8 @@ namespace Module {
         return;
     }
 
-    int DoradoNasNFS::QueryNFSShareClient(const std::string shareId, std::vector<std::string> &iPList) {
+    int DoradoNasNFS::QueryNFSShareClient(const std::string shareId, std::vector<std::string> &iPList)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "NFS_SHARE_AUTH_CLIENT?filter=PARENTID::" + shareId;
@@ -457,7 +474,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNasNFS::QueryNFSShareClient(NasSharedInfo &info, std::string shareId) {
+    int DoradoNasNFS::QueryNFSShareClient(NasSharedInfo &info, std::string shareId)
+    {
         std::string url = "NFS_SHARE_AUTH_CLIENT?filter=PARENTID::" + shareId;
         int iRet = QueryNasShareClient(info, url, "NFS");
         if (iRet != SUCCESS) {
@@ -468,7 +486,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int DoradoNasNFS::DeleteNFSShareClient(const std::vector<std::string> &iPList, const std::string shareId) {
+    int DoradoNasNFS::DeleteNFSShareClient(const std::vector<std::string> &iPList, const std::string shareId)
+    {
         std::vector<std::string> nasShareIPList;
         int ret = QueryNFSShareClient(shareId, nasShareIPList);
         if (ret != SUCCESS && ret != DoradoErrorCode::FILESYSTEMNOTEXIST) {
@@ -509,7 +528,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int DoradoNasNFS::DeleteNFSShareClient(std::string shareClientId) {
+    int DoradoNasNFS::DeleteNFSShareClient(std::string shareClientId)
+    {
         HttpRequest req;
         req.method = "DELETE";
         req.url = "NFS_SHARE_AUTH_CLIENT/" + shareClientId;

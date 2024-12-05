@@ -19,6 +19,7 @@ class NfsLinkDeleteCbData {
 public:
     FileHandle fileHandle {};
     NfsCommonData *writeCommonData;
+    struct nfsfh *nfsfh;
 };
 
 NfsLinkDeleteCbData* CreateLinkDeleteCbData(FileHandle &fileHandle, NfsCommonData &commonData);

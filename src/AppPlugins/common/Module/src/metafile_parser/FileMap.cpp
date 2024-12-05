@@ -36,11 +36,13 @@ FileMap::FileMap(const string &fileMapName)
 
 FileMap::~FileMap()
 {
-    if (m_writeFd.is_open())
+    if (m_writeFd.is_open()) {
         Close(NAS_FILEMAP_OPEN_MODE_WRITE);
+    }
 
-    if (m_readFd.is_open())
+    if (m_readFd.is_open()) {
         Close(NAS_FILEMAP_OPEN_MODE_READ);
+    }
 }
 
 NAS_FILEMAP_RETCODE FileMap::OpenRead()

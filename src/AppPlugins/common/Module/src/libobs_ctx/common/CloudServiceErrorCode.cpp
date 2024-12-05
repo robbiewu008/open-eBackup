@@ -30,7 +30,6 @@ std::map<std::string, int64_t> CloudServiceErrorCode::m_errCodeALI2Linux = {
     {"SignatureDoesNotMatch", EACCES},
     {"AccessDenied", EACCES},
     {"UserDisable", EACCES},
-    {"TooManyBuckets", EACCES},
     {"ClientError:200007", EAGAIN}
 };
 

@@ -37,7 +37,7 @@
 #include "log/Log.h"
 
 extern struct cmd_line_opts             opts;
-
+extern uint64_t             g_backupFilesCnt;
 /*
  * fileHistoryAddUnix
  *   fh_add_unix request message handler.
@@ -110,13 +110,10 @@ fileHistoryAddUnixNode(NdmpConnection connection, void *body)
 void
 fileHistoryAddDir(NdmpConnection connection, void *body)
 {
-    MsgQueue    *backend_queue = (MsgQueue*)ndmpGetClientData(connection);
-    MsgData             backend_msg;
-
-	backend_msg.message = NDMP_FH_ADD_DIR;
-	backend_msg.connection  = connection;
-	backend_msg.body = body;
-	enqueue(backend_queue, &backend_msg);
+	int rc = NdmpProcessFhAddDir(body);
+	if (rc != NDMPCOPY_SUCCESS) {
+		NdmpProcessInterrupt();
+	}
 }
 
 void
@@ -128,16 +125,45 @@ fileHistoryAddNode(NdmpConnection connection, void *body)
     ndmp_fh_add_node_request_v4*	request =
 		(ndmp_fh_add_node_request_v4 *)body;
 
-	int cnt = 0;
+	uint64_t cnt = 0;
 	for (int i = 0; i < request->nodes.nodes_len; ++i) {
-		if (request->nodes.nodes_val[i].stats.stats_val->ftype == NDMP_FILE_REG) {
+		if (request->nodes.nodes_val[i].stats.stats_val->ftype != NDMP_FILE_DIR) {
 			++cnt;
 		}
 	}
 
-    (void)sprintf_s(backend_msg.text, sizeof(backend_msg.text), "%d", cnt);
-	backend_msg.message = NDMP_FH_ADD_NODE;
-	backend_msg.connection  = connection;
-	backend_msg.body = body;
-	enqueue(backend_queue, &backend_msg);
+	(void) pthread_mutex_lock(&g_dataMutex);
+	g_backupFilesCnt += cnt;
+	(void) pthread_mutex_unlock(&g_dataMutex);
+	INFOLOG("backup %llu files, total: %llu", cnt, g_backupFilesCnt);
+
+	int rc = NdmpProcessFhAddNode(body);
+	if (rc != NDMPCOPY_SUCCESS) {
+		NdmpProcessInterrupt();
+	}
+}
+
+void FileHistoryAddFile(NdmpConnection connection, void *body)
+{
+    MsgQueue *backend_queue = (MsgQueue*)ndmpGetClientData(connection);
+    MsgData backend_msg;
+
+    ndmp_fh_add_file_request_v4* request = (ndmp_fh_add_file_request_v4 *)body;
+
+	uint64_t cnt = 0;
+	for (int i = 0; i < request->files.files_len; ++i) {
+		if (request->files.files_val[i].stats.stats_val->ftype != NDMP_FILE_DIR) {
+			++cnt;
+		}
+	}
+
+	(void) pthread_mutex_lock(&g_dataMutex);
+	g_backupFilesCnt += cnt;
+	(void) pthread_mutex_unlock(&g_dataMutex);
+	INFOLOG("backup %llu files, total: %llu", cnt, g_backupFilesCnt);
+
+	int rc = NdmpProcessFhAddFile(body);
+	if (rc != NDMPCOPY_SUCCESS) {
+		NdmpProcessInterrupt();
+	}
 }

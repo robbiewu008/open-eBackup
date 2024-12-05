@@ -56,7 +56,7 @@ int SendHardlinkRequest(FileHandle &fileHandle, std::string targetPath, struct n
 int SendMknodRequest(FileHandle &fileHandle, struct nfsfh *nfsfh, NfsCommonData &commonData);
 int SendDstCloseRequest(FileHandle &fileHandle, NfsCommonData &commonData);
 int SendLinkDeleteRequest(FileHandle &fileHandle, NfsCommonData &commonData);
-int SendLinkDeleteRequestForRestore(FileHandle &fileHandle, NfsCommonData &commonData);
+int SendLinkDeleteRequestForRestore(FileHandle &fileHandle, struct nfsfh *nfsfh, NfsCommonData &commonData);
 int SendDirDeleteRequest(FileHandle &fileHandle, NfsCommonData &commonData);
 
 int ReadLink(FileHandle &fileHandle, NfsCommonData &commonData, std::shared_ptr<BlockBufferMap> blockBufferMap);
@@ -70,7 +70,8 @@ int CreateSpecialFile(FileHandle &fileHandle, NfsCommonData &commonData,
     std::shared_ptr<FileHandleCache> fileHandleCache);
 int WriteSymLinkMeta(FileHandle &fileHandle, NfsCommonData &commonData);
 int LinkDelete(FileHandle &fileHandle, NfsCommonData &commonData, std::shared_ptr<BlockBufferMap> blockBufferMap);
-int LinkDeleteForRestore(FileHandle &fileHandle, NfsCommonData &commonData);
+int LinkDeleteForRestore(FileHandle &fileHandle, NfsCommonData &commonData,
+    std::shared_ptr<FileHandleCache> fileHandleCache);
 int DirectoryDelete(FileHandle &fileHandle, NfsCommonData &commonData);
 int MakeDirectory(FileHandle &fileHandle, NfsCommonData &commonData, std::shared_ptr<FileHandleCache> fileHandleCache);
 

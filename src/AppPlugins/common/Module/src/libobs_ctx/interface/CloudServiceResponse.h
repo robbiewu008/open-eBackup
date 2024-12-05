@@ -19,7 +19,7 @@
 
 namespace Module {
     class ACLGrant {
-        public:
+    public:
         int grantType;
         std::string userType;
         std::string userId;
@@ -28,19 +28,19 @@ namespace Module {
     };
 
     class GetBucketACLResponse {
-        public:
+    public:
         std::string ownerId;
         std::string ownerDisplayName;
         std::vector<ACLGrant> aclGrants;
     };
 
     class ListBucketsResponse {
-        public:
+    public:
         std::vector<std::string> bucketList;
     };
 
     class ListObjectsContent {
-        public:
+    public:
         std::string key;
         uint64_t lastModified;
         std::string etag;
@@ -52,7 +52,7 @@ namespace Module {
     };
 
     class ListObjectsResponse {
-        public:
+    public:
         bool isTruncated = false;
         std::string nextMarker;
         std::vector<ListObjectsContent> contents;
@@ -60,7 +60,7 @@ namespace Module {
     };
 
     class GetObjectMetaDataResponse {
-        public:
+    public:
         uint64_t lastModified;
         std::string etag;
         uint64_t size;
@@ -69,14 +69,14 @@ namespace Module {
     };
 
     class GetObjectACLResponse {
-        public:
+    public:
         std::string ownerId;
         std::string ownerDisplayName;
         std::vector<ACLGrant> aclGrants;
     };
 
     class DownloadObjectPartInfo {
-        public:
+    public:
         uint64_t partId;
         uint64_t startByte;
         uint64_t partSize;
@@ -87,7 +87,7 @@ namespace Module {
     };
 
     class MultiPartDownloadObjectResponse {
-        public:
+    public:
         std::vector<DownloadObjectPartInfo> downloadObjectPartInfo;
     };
 
@@ -98,12 +98,12 @@ namespace Module {
     };
 
     class HeadBucketResponse {
-        public:
+    public:
         bool isExist;
     };
 
     class UploadObjectPartInfo {
-        public:
+    public:
         uint64_t partId;
         uint64_t startByte;
         uint64_t partSize;
@@ -111,17 +111,17 @@ namespace Module {
     };
 
     class MultiPartUploadObjectResponse {
-        public:
+    public:
         std::vector<UploadObjectPartInfo> uploadObjectPartInfo;
     };
 
     class GetUploadIdResponse {
-        public:
+    public:
         std::string uploadId;
     };
 
     class PutObjectPartResponse {
-        public:
+    public:
         uint64_t startByte;
         std::string etag;
     };

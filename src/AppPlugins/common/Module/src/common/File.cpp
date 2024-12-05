@@ -28,7 +28,7 @@
 #include <fstream>
 #if defined(LINUX)
 #include "common/File.h"
-#include<dirent.h>
+#include <dirent.h>
 #include <cstring>
 #include <fstream>
 #elif defined(AIX)
@@ -130,16 +130,23 @@ int CFile::CreateDir(const char* pszDirPath)
 
 void CFile::Getfilepath(const char* path, const char* filename, char* filepath, int strfileLen)
 {
+    if (path == nullptr) {
+        ERRLOG("path is  nullptr");
+        return;
+    }
     if (strcpy_s(filepath, VM_UUDI_FILELEN, path) != 0) {
         ERRLOG("strcpy_s failed!");
+        return;
     }
     if (filepath[strlen(path) - 1] != '/') {
         if (strcat_s(filepath, VM_UUDI_FILELEN, "/") != 0) {
             ERRLOG("strcat_s failed!");
+            return;
         }
     }
     if (strcat_s(filepath, VM_UUDI_FILELEN, filename) != 0) {
         ERRLOG("strcat_s failed!");
+        return;
     }
 }
 

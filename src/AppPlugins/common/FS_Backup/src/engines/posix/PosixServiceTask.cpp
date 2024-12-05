@@ -322,30 +322,39 @@ void PosixServiceTask::HandleReadData()
     ssize_t cnt = pread(m_fileHandle.m_file->srcIOHandle.posixFd, (void *)(m_fileHandle.m_block.m_buffer),
         m_fileHandle.m_block.m_size, m_fileHandle.m_block.m_offset);
     if (cnt != static_cast<ssize_t>(m_fileHandle.m_block.m_size)) {
-        uint32_t errcode = (errno == 0 ? E_BACKUP_READ_LESS_THAN_EXPECTED : errno);
-        m_errDetails = {srcFile, errcode};
-        ERRLOG("pread failed %s, cnt %d, size %d, errno %d, err message %s",
-            srcFile.c_str(), cnt, m_fileHandle.m_block.m_size, m_errDetails.second, strerror(m_errDetails.second));
-        SetCriticalErrorInfo(m_errDetails.second);
-        if (m_params.discardReadError) {
+        // pread返回-1时，errno才会设置成对应的错误码，其他返回值都是成功；注意errno在没有发生新的错误时不会重置
+        if (cnt != -1 && m_params.discardReadError) {
+            WARNLOG("%s read(%d) less than expected(%lu). discardReadError is true, ignore it.",
+                srcFile.c_str(), cnt, m_fileHandle.m_block.m_size);
+            m_errDetails = {srcFile, E_BACKUP_READ_LESS_THAN_EXPECTED};
             m_fileHandle.m_file->SetFlag(READ_FAILED_DISCARD);
+            // 继续走成功流程，因为discardReadError为true
         } else {
+            uint32_t errcode = (cnt == -1 ? errno : E_BACKUP_READ_LESS_THAN_EXPECTED);
+            m_errDetails = {srcFile, errcode};
+            ERRLOG("pread failed %s, cnt %d, size %lu, errno %lu, err message %s",
+                srcFile.c_str(), cnt, m_fileHandle.m_block.m_size, errcode, strerror(errcode));
+            SetCriticalErrorInfo(errcode);
             m_result = FAILED;
+            CloseSmallFileSrcFd();
             return;
         }
     }
     DBGLOG("read %s blockInfo %llu %llu %u success!", srcFile.c_str(),
         m_fileHandle.m_block.m_seq, m_fileHandle.m_block.m_offset, m_fileHandle.m_block.m_size);
     m_result = SUCCESS;
+    CloseSmallFileSrcFd();
+    return;
+}
 
+void PosixServiceTask::CloseSmallFileSrcFd()
+{
     if (m_fileHandle.m_file->m_size <= m_params.blockSize) {
         close(m_fileHandle.m_file->srcIOHandle.posixFd);
         m_fileHandle.m_file->srcIOHandle.posixFd = -1;
-        DBGLOG("close small file %s size %llu blockSize %d",
+        DBGLOG("close src small file %s size %llu blockSize %d",
             m_fileHandle.m_file->m_fileName.c_str(), m_fileHandle.m_file->m_size, m_params.blockSize);
     }
-
-    return;
 }
 
 void PosixServiceTask::HandleWriteData()
@@ -377,9 +386,9 @@ void PosixServiceTask::HandleWriteData()
         m_result = FAILED;
         return;
     }
-    ssize_t cnt = pwrite(m_fileHandle.m_file->dstIOHandle.posixFd, (const void *)(m_fileHandle.m_block.m_buffer),
-        m_fileHandle.m_block.m_size, m_fileHandle.m_block.m_offset);
-    if (cnt != static_cast<ssize_t>(m_fileHandle.m_block.m_size)) {
+    ssize_t cnt = PwriteWithRetry(m_fileHandle.m_file->dstIOHandle.posixFd,
+        m_fileHandle.m_block.m_buffer, m_fileHandle.m_block.m_size, m_fileHandle.m_block.m_offset);
+    if (cnt < 0) {
         m_errDetails = {dstFile, errno};
         ERRLOG("pwrite failed %s size %u cnt %d errno %d",
             dstFile.c_str(), m_fileHandle.m_block.m_size, cnt, m_errDetails.second);
@@ -392,6 +401,43 @@ void PosixServiceTask::HandleWriteData()
     m_result = SUCCESS;
     CloseSmallFileDstFd();
     return;
+}
+
+ssize_t PosixServiceTask::PwriteWithRetry(const int fd, const uint8_t *buf, const size_t size, const off_t offset)
+{
+    // 先只写，完成或出错外部处理
+    ssize_t cnt = pwrite(fd, static_cast<const void *>(buf), size, offset);
+    if (cnt == size || cnt < 0) {
+        return cnt;
+    }
+    WARNLOG("pwrite partly succeed, try to finish it, total size %u cnt %d total cnt %d", size, cnt);
+    // 部分写入则追加写
+    ssize_t totalCnt = cnt;
+    int retryCount = 0;
+    // 只要能写入且无异常，就一直尝试，指导完成
+    // hint: 极端情况下每次写入1字节，会导致循环写入size次，异常才提前退出
+    while (totalCnt >= 0 && (static_cast<size_t>(totalCnt) < size)) {
+        cnt = pwrite(fd, static_cast<const void *>(buf + totalCnt), size - totalCnt, offset + totalCnt);
+        // 再处理响应
+        if (cnt < 0) {
+            ERRLOG("pwrite failed, total size %u cnt %d total cnt %d", size, cnt, totalCnt);
+            return cnt;
+        }
+        if (cnt == 0) {
+            // pwrite无内容写入，默认重试3次
+            if (retryCount > DEFAULT_ERROR_SINGLE_FILE_CNT) {
+                ERRLOG("pwrite failed, cannot write file to disk, total size %u cnt %d total cnt %d, retry count %d",
+                    size, cnt, totalCnt, retryCount);
+                return -1;
+            }
+            retryCount++;
+            continue;
+        }
+        // pwrite 写入成功, 重置retry次数
+        retryCount = 0;
+        totalCnt += cnt;
+    }
+    return totalCnt;
 }
 
 int PosixServiceTask::ProcessWriteSoftLinkData()
@@ -569,6 +615,13 @@ void PosixServiceTask::HandleWriteMeta()
 
 void PosixServiceTask::HandleLink()
 {
+    // 特殊文件备份时会跳过，所以也不需要link
+    if ((m_params.backupType == BackupType::BACKUP_FULL || m_params.backupType == BackupType::BACKUP_INC) &&
+        (S_ISBLK(m_fileHandle.m_file->m_mode) || S_ISCHR(m_fileHandle.m_file->m_mode))) {
+        DBGLOG("skip special file %s", m_fileHandle.m_file->m_fileName.c_str());
+        m_result = SUCCESS;
+        return;
+    }
     std::string dstFile = PathConcat(m_params.dstRootPath, m_fileHandle.m_file->m_fileName, m_params.dstTrimPrefix);
     std::string target = m_params.linkTarget;
     DBGLOG("link file %s target %s", dstFile.c_str(), target.c_str());

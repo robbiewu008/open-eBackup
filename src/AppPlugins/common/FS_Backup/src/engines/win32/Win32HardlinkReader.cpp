@@ -72,8 +72,8 @@ int Win32HardlinkReader::ReadSymlinkData(FileHandle& fileHandle)
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
  
@@ -92,9 +92,9 @@ int Win32HardlinkReader::ReadNormalData(FileHandle& fileHandle)
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_readTaskProduce;
+    ++m_controlInfo->m_readTaskProduce;
  
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
  

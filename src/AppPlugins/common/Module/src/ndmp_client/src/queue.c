@@ -145,10 +145,6 @@ int BuildParamForFhAddDir(ndmp_fh_add_dir_request_v4 *dstReq, ndmp_fh_add_dir_re
         CHECK_RESULT_GOTO(ret, 0, ERR);
     
         dirs[i].names.names_val[0].ndmp_file_name_v3_u.unix_name = unix_name;
-        DBGLOG("parse one file dst name:%s, src name:%s, unix name:%s, strlen(%d), arr:%p",
-                dirs[i].names.names_val[0].ndmp_file_name_v3_u.unix_name,
-                srcDirs[i].names.names_val[0].ndmp_file_name_v3_u.unix_name, unix_name, nameLen,
-                dirs[i].names.names_val[0].ndmp_file_name_v3_u.unix_name);
     }
  
     dstReq->dirs.dirs_val = dirs;
@@ -205,7 +201,6 @@ enqueue(MsgQueue* head, MsgData* data)
  
         newdata->body = (void *)newDataReq;
     }
-
     if (*head == NULL)
     {
         *head = newdata;

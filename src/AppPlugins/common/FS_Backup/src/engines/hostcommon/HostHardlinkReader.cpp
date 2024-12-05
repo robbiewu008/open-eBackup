@@ -14,11 +14,9 @@
 #include "ThreadPoolFactory.h"
 #include "log/Log.h"
 #include "FSBackupUtils.h"
-
 using namespace std;
 using namespace Module;
 using namespace FS_Backup;
- 
 namespace {
     const int QUEUE_TIMEOUT_MILLISECOND = 200;
     const int OOM_SLEEP_SECOND = 1;
@@ -123,7 +121,7 @@ bool HostHardlinkReader::IsComplete()
             "(readTaskProduce %llu readTaskConsume %llu) "
             "(readedFiles %llu readFailedFiles %llu skipFiles %llu) (total %llu)",
             m_controlInfo->m_controlReaderPhaseComplete.load(), m_readQueue->GetSize(), m_timer.GetCount(),
-            m_readTaskProduce.load(), m_readTaskConsume.load(),
+            m_controlInfo->m_readTaskProduce.load(), m_controlInfo->m_readTaskConsume.load(),
             m_controlInfo->m_noOfFilesRead.load(), m_controlInfo->m_noOfFilesReadFailed.load(),
             m_controlInfo->m_skipFileCnt.load(),
             m_controlInfo->m_noOfFilesToBackup.load());
@@ -131,13 +129,13 @@ bool HostHardlinkReader::IsComplete()
     if (m_controlInfo->m_controlReaderPhaseComplete &&
         m_readQueue->Empty() &&
         (m_timer.GetCount() == 0) &&
-        (m_readTaskProduce == m_readTaskConsume)) {
+        (m_controlInfo->m_readTaskProduce == m_controlInfo->m_readTaskConsume)) {
         INFOLOG("HardlinkReader complete: "
             "controlReaderComplete %d readQueueSize %llu timerSize %llu "
             "(readTaskProduce %llu readTaskConsume %llu) "
             "(readedFiles %llu readFailedFiles %llu skipFiles %llu) (total %llu)",
             m_controlInfo->m_controlReaderPhaseComplete.load(), m_readQueue->GetSize(), m_timer.GetCount(),
-            m_readTaskProduce.load(), m_readTaskConsume.load(),
+            m_controlInfo->m_readTaskProduce.load(), m_controlInfo->m_readTaskConsume.load(),
             m_controlInfo->m_noOfFilesRead.load(), m_controlInfo->m_noOfFilesReadFailed.load(),
             m_controlInfo->m_skipFileCnt.load(),
             m_controlInfo->m_noOfFilesToBackup.load());
@@ -156,8 +154,8 @@ int HostHardlinkReader::OpenFile(FileHandle& fileHandle)
         ERRLOG("put open file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -191,8 +189,8 @@ int HostHardlinkReader::CloseFile(FileHandle& fileHandle)
         ERRLOG("put close file task %s failed", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
  
@@ -271,8 +269,8 @@ void HostHardlinkReader::PollReadTask()
             } else {
                 HandleFailedEvent(task);
             }
-            ++m_readTaskConsume;
-            DBGLOG("read tasks consume cnt for now %llu", m_readTaskConsume.load());
+            ++m_controlInfo->m_readTaskConsume;
+            DBGLOG("read tasks consume cnt for now %llu", m_controlInfo->m_readTaskConsume.load());
         }
     }
     INFOLOG("Finish HostHardlinkReader PollReadTask thread");

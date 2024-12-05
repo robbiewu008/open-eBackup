@@ -97,6 +97,7 @@ void ArchiveDirReader::HandleComplete() const
 
 void ArchiveDirReader::ThreadFunc()
 {
+    HCPTSP::getInstance().reset(m_backupParams.commonParams.reqID);
     INFOLOG("Start ArchiveDirReader main thread!");
     while (true) {
         if (m_abort) {

@@ -69,7 +69,7 @@ namespace Win32BackupEngineUtils {
     {
         return writeSparseFile &&
             FileHandleHasAttribute(fileHandle, FILE_ATTRIBUTE_SPARSE_FILE) &&
-            fileHandle.m_block.m_size != 0;
+            fileHandle.m_file->m_size != 0;
     }
  
     inline bool IsEmptySparseFile(const FileHandle& fileHandle)
