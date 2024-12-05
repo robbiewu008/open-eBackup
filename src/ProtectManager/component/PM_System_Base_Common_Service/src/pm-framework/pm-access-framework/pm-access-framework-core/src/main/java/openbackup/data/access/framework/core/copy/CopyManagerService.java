@@ -131,10 +131,17 @@ public interface CopyManagerService {
      * 查询副本数量
      *
      * @param resourceId    @NotNull 资源ID
-     * @param esn           esn
      * @param storageUnitId 存储单元id
      * @param backupTypes   备份类型
      * @return 副本数量
      */
-    Long queryCopyCounts(String resourceId, String esn, String storageUnitId, List<Integer> backupTypes);
+    Long queryCopyCounts(String resourceId, String storageUnitId, List<Integer> backupTypes);
+
+    /**
+     * 批量更新副本用户Id
+     *
+     * @param copyIdList    副本Idlist
+     * @param userId 需要修改成的用户id
+     */
+    void updateCopiesUserId(List<String> copyIdList, String userId);
 }

@@ -87,4 +87,12 @@ public interface CopyMapper extends BaseMapper<CopiesEntity> {
      * @param currentTime 当前时间
      */
     void updateWormCopyExpiredStatus(@Param("current_time") String currentTime);
+
+    /**
+     * 更新副本所属用户
+     *
+     * @param copyIdList 副本ID列表
+     * @param userId 用户信息
+     */
+    void updateCopyUserId(@Param("copy_id_list") List<String> copyIdList, @Param("userId") String userId);
 }

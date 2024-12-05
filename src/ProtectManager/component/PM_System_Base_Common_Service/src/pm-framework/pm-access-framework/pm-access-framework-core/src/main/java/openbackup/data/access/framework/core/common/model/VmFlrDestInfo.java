@@ -33,4 +33,6 @@ public class VmFlrDestInfo {
     private String password;
 
     private String targetPath;
+
+    private String port;
 }
