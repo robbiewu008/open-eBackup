@@ -111,4 +111,9 @@ public class PostgreConstants {
      * CLup集群离线状态码
      */
     public static final String CLUP_CLUSTER_OFFLINE = "0";
+
+    /**
+     * CLup数据库的默认安装目录
+     */
+    public static final String CLUP_INSTALL_PATH = "/home/csumdb/pgsql-12";
 }

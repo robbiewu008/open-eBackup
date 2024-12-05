@@ -19,6 +19,7 @@ import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHe
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.service.ClusterEnvironmentService;
 import openbackup.database.base.plugin.service.InstanceResourceService;
@@ -58,8 +59,10 @@ public class PostgreClusterProviderTest {
 
     private final AgentUnifiedService agentUnifiedService = PowerMockito.mock(AgentUnifiedService.class);
 
+    private final ResourceService resourceService = PowerMockito.mock(ResourceService.class);
+
     private final PostgreClusterProvider postgreClusterProvider = new PostgreClusterProvider(clusterEnvironmentService,
-        environmentService, instanceResourceService, agentUnifiedService);
+        environmentService, instanceResourceService, agentUnifiedService, resourceService);
 
     /**
      * 用例场景：框架调 applicable接口

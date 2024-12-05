@@ -207,7 +207,6 @@ public class Db2CopyDeleteInterceptorProvider extends AbstractDbCopyDeleteInterc
 
     @Override
     protected void handleTask(DeleteCopyTask task, CopyInfoBo copy) {
-        task.setIsForceDeleted(true);
         if (!super.isResourceExists(task)) {
             return;
         }

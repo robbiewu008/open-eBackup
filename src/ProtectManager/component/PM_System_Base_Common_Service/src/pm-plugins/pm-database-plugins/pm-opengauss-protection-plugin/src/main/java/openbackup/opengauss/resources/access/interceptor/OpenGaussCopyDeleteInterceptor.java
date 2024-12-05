@@ -59,6 +59,5 @@ public class OpenGaussCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercep
 
     @Override
     protected void handleTask(DeleteCopyTask task, CopyInfoBo copy) {
-        task.setIsForceDeleted(true);
     }
 }

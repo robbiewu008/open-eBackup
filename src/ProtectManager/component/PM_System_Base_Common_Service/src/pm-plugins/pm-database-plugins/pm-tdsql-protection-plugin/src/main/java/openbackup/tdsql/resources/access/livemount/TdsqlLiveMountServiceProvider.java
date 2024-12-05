@@ -66,4 +66,9 @@ public class TdsqlLiveMountServiceProvider extends DefaultLiveMountServiceProvid
         entity.setFileSystemShareInfo(JSONArray.fromObject(fileSystemShareInfoList).toString());
         return entity;
     }
+
+    @Override
+    public boolean isSupportLogCopy() {
+        return false;
+    }
 }

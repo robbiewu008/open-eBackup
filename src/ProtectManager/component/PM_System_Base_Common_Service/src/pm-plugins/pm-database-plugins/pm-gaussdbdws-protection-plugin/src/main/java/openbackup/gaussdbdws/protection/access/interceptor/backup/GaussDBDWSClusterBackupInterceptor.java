@@ -76,7 +76,7 @@ public class GaussDBDWSClusterBackupInterceptor extends AbstractDbBackupIntercep
     public BackupTask supplyBackupTask(BackupTask backupTask) {
         gaussDBBaseService.checkLinkStatus(backupTask.getProtectEnv().getUuid());
         if (!deployTypeService.isE1000()) {
-            DwsBuildRepositoryUtil.addRepositoryEsnAndRole(backupTask.getRepositories().get(0),
+            DwsBuildRepositoryUtil.addRepositoryEsnAndRole(backupTask.getRepositories(),
                 clusterBasicService.getCurrentClusterEsn());
         }
         gaussDBBaseService.modifyBackupTaskParam(backupTask);

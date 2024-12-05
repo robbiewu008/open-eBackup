@@ -13,6 +13,7 @@
 package openbackup.mysql.resources.access.interceptor;
 
 import static openbackup.data.access.framework.copy.mng.util.CopyUtil.getCopiesBetweenTwoCopy;
+import static openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants.LOG;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
@@ -30,8 +31,10 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +49,7 @@ public class MysqlCopyDeleteInterceptor extends AbstractDbCopyDeleteInterceptor 
     /**
      * Constructor
      *
-     * @param copyRestApi copyRestApi
+     * @param copyRestApi     copyRestApi
      * @param resourceService resourceService
      */
     public MysqlCopyDeleteInterceptor(CopyRestApi copyRestApi, ResourceService resourceService) {
@@ -71,45 +74,84 @@ public class MysqlCopyDeleteInterceptor extends AbstractDbCopyDeleteInterceptor 
         if (isEAppCopy(thisCopy)) {
             return Lists.newArrayList(thisCopy.getUuid());
         }
-        if (isContainsMorePreviousFullCopy(thisCopy)) {
+        if (isContainsMorePreviousCopy(thisCopy, BackupTypeConstants.FULL.getAbBackupType())) {
             return Lists.newArrayList(thisCopy.getUuid());
         }
         return getCopiesBetweenTwoCopy(copies, thisCopy, nextFullCopy).stream()
-            .map(Copy::getUuid)
-            .collect(Collectors.toList());
+                .map(Copy::getUuid)
+                .collect(Collectors.toList());
     }
 
-    private boolean isContainsMorePreviousFullCopy(Copy thisCopy) {
+    private boolean isContainsMorePreviousCopy(Copy thisCopy, int backupType) {
         List<Copy> copies = copyRestApi.queryCopiesByResourceId(thisCopy.getResourceId());
         return copies.stream()
-            .anyMatch(copy -> copy.getBackupType() == BackupTypeConstants.FULL.getAbBackupType()
-                && copy.getGn() < thisCopy.getGn());
+                .anyMatch(copy -> copy.getBackupType() == backupType
+                        && copy.getGn() < thisCopy.getGn());
     }
 
     /**
      * 删除增量副本时，要删除此副本到下一个全量副本之间的所有副本
      *
-     * @param copies 本个副本之后的所有备份副本
-     * @param thisCopy 本个副本
+     * @param copies       本个副本之后的所有备份副本
+     * @param thisCopy     本个副本
      * @param nextFullCopy 下个全量副本
      * @return 需要删除的集合
      */
     @Override
     protected List<String> getCopiesCopyTypeIsDifferenceIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
-        return Lists.newArrayList(thisCopy.getUuid());
+        if (isEAppCopy(thisCopy)) {
+            return Lists.newArrayList(thisCopy.getUuid());
+        }
+        if (isContainsMorePreviousCopy(thisCopy, BackupTypeConstants.DIFFERENCE_INCREMENT.getAbBackupType())) {
+            return Lists.newArrayList(thisCopy.getUuid());
+        }
+        List<Copy> copiesBetweenTwoCopy = getCopiesBetweenTwoCopy(copies, thisCopy, nextFullCopy);
+        log.info("copiesBetweenTwoCopy:  {}", copiesBetweenTwoCopy);
+        List<Copy> associatedLogs = getAssociatedLogs(copiesBetweenTwoCopy);
+        log.info("associatedLogs:  {}", associatedLogs);
+        return associatedLogs.stream()
+                .map(Copy::getUuid)
+                .collect(Collectors.toList());
+    }
+
+    private static List<Copy> getAssociatedLogs(List<Copy> copies) {
+        copies.sort((copy1, copy2) -> Integer.compare(copy1.getGn(), copy2.getGn()));
+        List<Copy> logs = new ArrayList<>();
+        for (Copy copy : copies) {
+            BackupTypeConstants copyBackupType = BackupTypeConstants.getBackupTypeByAbBackupType(
+                    copy.getBackupType());
+            if (StringUtils.equals(copyBackupType.getBackupType(), LOG.getBackupType())) {
+                logs.add(copy);
+                continue;
+            }
+            break;
+        }
+        return logs;
     }
 
     /**
      * 删除差异副本时，要删除此副本到下一个全量副本之间的所有副本
      *
-     * @param copies 本个副本之后的所有备份副本
-     * @param thisCopy 本个副本
+     * @param copies       本个副本之后的所有备份副本
+     * @param thisCopy     本个副本
      * @param nextFullCopy 下个全量副本
      * @return 需要删除的集合
      */
     @Override
     protected List<String> getCopiesCopyTypeIsCumulativeIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
-        return Lists.newArrayList(thisCopy.getUuid());
+        if (isEAppCopy(thisCopy)) {
+            return Lists.newArrayList(thisCopy.getUuid());
+        }
+        if (isContainsMorePreviousCopy(thisCopy, BackupTypeConstants.CUMULATIVE_INCREMENT.getAbBackupType())) {
+            return Lists.newArrayList(thisCopy.getUuid());
+        }
+        List<Copy> copiesBetweenTwoCopy = getCopiesBetweenTwoCopy(copies, thisCopy, nextFullCopy);
+        log.info("copiesBetweenTwoCopy:  {}", copiesBetweenTwoCopy);
+        List<Copy> associatedLogs = getAssociatedLogs(copiesBetweenTwoCopy);
+        log.info("associatedLogs:  {}", associatedLogs);
+        return associatedLogs.stream()
+                .map(Copy::getUuid)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -131,6 +173,6 @@ public class MysqlCopyDeleteInterceptor extends AbstractDbCopyDeleteInterceptor 
             return false;
         }
         return MapUtils.isNotEmpty(extendInfo) && MysqlConstants.EAPP.equals(
-            extendInfo.getString(DatabaseConstants.CLUSTER_TYPE));
+                extendInfo.getString(DatabaseConstants.CLUSTER_TYPE));
     }
 }

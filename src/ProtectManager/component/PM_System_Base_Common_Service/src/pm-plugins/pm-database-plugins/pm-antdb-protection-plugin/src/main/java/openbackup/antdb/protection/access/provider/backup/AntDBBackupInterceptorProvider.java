@@ -60,6 +60,11 @@ public class AntDBBackupInterceptorProvider extends AbstractDbBackupInterceptor 
 
     @Override
     public BackupTask supplyBackupTask(BackupTask backupTask) {
+        Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams()).orElse(new HashMap<>());
+        // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        backupTask.setAdvanceParams(advanceParams);
+
         // 设置部署类型
         setDeployType(backupTask);
 

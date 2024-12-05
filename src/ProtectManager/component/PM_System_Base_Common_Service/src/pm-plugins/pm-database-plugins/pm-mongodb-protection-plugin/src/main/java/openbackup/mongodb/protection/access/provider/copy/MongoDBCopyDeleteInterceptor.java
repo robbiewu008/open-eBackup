@@ -60,7 +60,6 @@ public class MongoDBCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercepto
 
     @Override
     protected void handleTask(DeleteCopyTask task, CopyInfoBo copy) {
-        task.setIsForceDeleted(true);
         if (!super.isResourceExists(task)) {
             return;
         }

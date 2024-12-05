@@ -81,7 +81,6 @@ public class SqlServerCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercep
 
     @Override
     protected void handleTask(DeleteCopyTask task, CopyInfoBo copy) {
-        task.setIsForceDeleted(true);
         if (!super.isResourceExists(task)) {
             return;
         }

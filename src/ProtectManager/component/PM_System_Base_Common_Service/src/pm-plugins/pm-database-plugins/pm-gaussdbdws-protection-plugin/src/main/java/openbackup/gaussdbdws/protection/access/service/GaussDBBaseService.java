@@ -435,6 +435,20 @@ public class GaussDBBaseService {
     }
 
     /**
+     * 查询资源的rootUuid;
+     *
+     * @param resourceId 资源id
+     * @return rootUuid
+     */
+    public String getResourceRootUuid(String resourceId) {
+        Optional<ProtectedResource> resource = resourceService.getResourceById(resourceId);
+        if (!resource.isPresent()) {
+            throw new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Resource is not exist.");
+        }
+        return resource.get().getRootUuid();
+    }
+
+    /**
      * 校验应用集群是否在线;
      *
      * @param uuid 集群uuid

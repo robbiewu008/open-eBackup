@@ -21,10 +21,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
-import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.enums.MountTypeEnum;
-import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreModeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
 import openbackup.data.protection.access.provider.sdk.lock.LockResourceBo;
@@ -43,18 +41,15 @@ import openbackup.gaussdbt.protection.access.provider.constant.GaussDBTConstant;
 import openbackup.gaussdbt.protection.access.provider.util.GaussDBTClusterUtil;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.OptionalUtil;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -105,9 +100,6 @@ public class GaussDBTRestoreInterceptorProvider extends AbstractDbRestoreInterce
         // 回填GaussDBT环境的agents
         buildRestoreAgents(task);
 
-        // 如果是任意时间带点恢复，需要下发日志仓：3-LOG_REPOSITORY
-        buildRestoreRepositories(task);
-
         // 设置高级参数：targetLocation、
         buildRestoreAdvanceParams(task);
 
@@ -143,25 +135,6 @@ public class GaussDBTRestoreInterceptorProvider extends AbstractDbRestoreInterce
             task.setRestoreMode(RestoreModeEnum.LOCAL_RESTORE.getMode());
         }
         log.info("build GaussDBT copy restore mode. copy id: {}, mode: {}", task.getCopyId(), task.getRestoreMode());
-    }
-
-    /**
-     * 任意时间点恢复，下发日志仓
-     *
-     * @param task 恢复任务
-     */
-    private void buildRestoreRepositories(RestoreTask task) {
-        Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElse(new HashMap<>());
-        String restoreTimestamp = advanceParams.get(GaussDBTConstant.RESTORE_TIME_STAMP_KEY);
-        if (!VerifyUtil.isEmpty(restoreTimestamp)) {
-            log.info("restore type is timestamp restore, add a LOG_REPOSITORY");
-            List<StorageRepository> repositories = Optional.ofNullable(task.getRepositories())
-                .orElse(new ArrayList<>());
-            StorageRepository logRepository = BeanTools.copy(repositories.get(0), StorageRepository::new);
-            logRepository.setType(RepositoryTypeEnum.LOG.getType());
-            repositories.add(logRepository);
-            task.setRepositories(repositories);
-        }
     }
 
     /**
