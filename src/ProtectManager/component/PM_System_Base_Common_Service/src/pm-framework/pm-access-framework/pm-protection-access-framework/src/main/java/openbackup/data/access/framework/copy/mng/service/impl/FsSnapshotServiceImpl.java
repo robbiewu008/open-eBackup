@@ -94,9 +94,11 @@ public class FsSnapshotServiceImpl implements FsSnapshotService {
         String policy = redisValue.get(CopyConstants.POLICY);
         PolicyBo policyBo = JSONObject.fromObject(policy).toBean(PolicyBo.class);
         if (policyBo != null && policyBo.getRetention() != null) {
-            createFsSnapshotRequest.setRetentionDuration(policyBo.getRetention().getRetentionDuration());
             createFsSnapshotRequest.setRetentionType(policyBo.getRetention().getRetentionType());
             createFsSnapshotRequest.setDurationUnit(policyBo.getRetention().getDurationUnit());
+            if (policyBo.getRetention().getRetentionDuration() != null) {
+                createFsSnapshotRequest.setRetentionDuration(policyBo.getRetention().getRetentionDuration());
+            }
         }
 
         String slaString = redisValue.get(CopyConstants.SLA);

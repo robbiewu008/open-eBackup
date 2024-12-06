@@ -31,7 +31,6 @@ import java.util.UUID;
  * Message Template
  *
  * @param <K> template K
- *
  */
 @Component
 @Slf4j

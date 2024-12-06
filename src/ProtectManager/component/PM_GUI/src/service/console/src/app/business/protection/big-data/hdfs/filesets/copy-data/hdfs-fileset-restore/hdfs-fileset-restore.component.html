@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup main-container" lvKeepRequiredWidth>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup main-container" lvKeepRequiredWidth>
     <lv-form-item>
         <lv-form-label>
             {{'protection_restore_to_label' | i18n}}
@@ -53,10 +53,10 @@
             </lv-form-label>
             <lv-form-control class="control-container">
                 <div class="tree-container">
-                    <lv-tree [lvData]='filesData' #tree lvSelectionMode='single' [(lvSelection)]='fileSelection'
-                        (lvSelectionChange)="selectionChange()" (lvExpandedChange)="expandedChange($event)"
-                        (lvCheck)="nodeCheck($event)" lvShowContentIcon lvShowLine lvAsync lvVirtualScroll
-                        [lvNodeTemplate]='nodeTpl'>
+                    <lv-tree [lvData]='filesData' #tree lvSelectionMode='single' lvSelectionAssociate="false"
+                        [(lvSelection)]='fileSelection' (lvSelectionChange)="selectionChange()"
+                        (lvExpandedChange)="expandedChange($event)" (lvCheck)="nodeCheck($event)" lvShowContentIcon
+                        lvShowLine lvAsync lvVirtualScroll [lvNodeTemplate]='nodeTpl'>
                     </lv-tree>
                     <ng-template #nodeTpl let-item>
                         <div style="width: 400px;" lv-overflow>
@@ -108,14 +108,13 @@
             <lv-form-item>
                 <lv-form-label>
                     {{'protection_vmware_capacity_threshold_label' | i18n}}
-                    <i lv-icon="aui-icon-help" [lv-tooltip]="capacityThresholdToolTip"
-                       lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
-                       lvColorState='true'></i>
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="capacityThresholdToolTip" lvTooltipPosition="rightTop"
+                        lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
                 </lv-form-label>
                 <lv-form-control [lvErrorTip]="capacityThresholdErrorTip">
                     <lv-group lvGutter='8px' class="lv-group-flex-start">
                         <input lv-input formControlName="available_capacity_threshold" type="text"
-                               placeholder="1-100"/>
+                            placeholder="1-100" />
                         <span class="configform-constraint">%</span>
                     </lv-group>
                 </lv-form-control>

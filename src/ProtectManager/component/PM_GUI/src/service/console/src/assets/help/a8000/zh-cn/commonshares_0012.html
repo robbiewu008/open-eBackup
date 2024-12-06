@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
@@ -20,9 +20,9 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤2：创建限速策略">
+<meta name="DC.Title" content="步骤1：创建通用共享">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="commonshares_0010.html">
+<meta name="DC.Relation" scheme="URI" content="commonshares_0011.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
@@ -33,46 +33,83 @@
 <meta name="DC.Identifier" content="commonshares_0012">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤2：创建限速策略</title>
+<title>步骤1：创建通用共享</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="commonshares_0012"></a><a name="commonshares_0012"></a>
 
-<h1 class="topictitle1">步骤2：创建限速策略</h1>
-<div><p id="commonshares_0012__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_p31441444174712">如果需要限制保护任务的最大带宽以保证关键业务的性能时请参考本节配置限速策略。</p>
-<div class="section" id="commonshares_0012__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_section354917289471"><h4 class="sectiontitle">操作步骤</h4><ol id="commonshares_0012__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_ol1149154116466"><li id="commonshares_0012__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_li18388120104717"><span>选择<span class="uicontrol" id="commonshares_0012__zh-cn_topic_0000001839143197_zh-cn_topic_0000001839142377_uicontrol185917396272">“<span id="commonshares_0012__zh-cn_topic_0000001839143197_zh-cn_topic_0000001839142377_text659183972712">保护</span> &gt; 保护策略 &gt; 限速策略”</span>。</span></li><li id="commonshares_0012__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_li1438918203475"><span>单击<span class="uicontrol" id="commonshares_0012__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_uicontrol12389192016473">“<span id="commonshares_0012__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_text1214017349462">创建</span>”</span>。</span></li><li id="commonshares_0012__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_li117481133134716"><span>配置限速策略参数。</span><p><div class="p" id="commonshares_0012__zh-cn_topic_0000001839143197_p1897612503615">相关参数说明如<a href="#commonshares_0012__zh-cn_topic_0000001839143197_table12170124133619">表1</a>。
-<div class="tablenoborder"><a name="commonshares_0012__zh-cn_topic_0000001839143197_table12170124133619"></a><a name="zh-cn_topic_0000001839143197_table12170124133619"></a><table cellpadding="4" cellspacing="0" summary="" id="commonshares_0012__zh-cn_topic_0000001839143197_table12170124133619" frame="border" border="1" rules="all"><caption><b>表1 </b>限速策略参数说明</caption><colgroup><col style="width:32.269999999999996%"><col style="width:67.73%"></colgroup><thead align="left"><tr id="commonshares_0012__zh-cn_topic_0000001839143197_row716912241366"><th align="left" class="cellrowborder" valign="top" width="32.269999999999996%" id="mcps1.3.2.2.3.2.1.2.2.3.1.1"><p id="commonshares_0012__zh-cn_topic_0000001839143197_p5169524153616">参数</p>
+<h1 class="topictitle1">步骤1：创建通用共享</h1>
+<div><p>执行通用共享资源保护前请先创建通用共享。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>登录OceanProtect管理界面，具体操作请参见<a href="commonshares_0068.html">登录OceanProtect管理界面</a>。</span></li><li><span>选择<span class="uicontrol" id="commonshares_0012__zh-cn_topic_0000001839142377_uicontrol1103154941514">“<span id="commonshares_0012__zh-cn_topic_0000001839142377_text121031749181515">保护</span> &gt; 文件系统 &gt; 通用共享”</span>。</span></li><li><span>单击<span class="uicontrol">“<span>创建</span>”</span>，创建通用共享。</span><p><p>相关参数说明如<a href="#commonshares_0012__zh-cn_topic_0000001172683312_table635115223177">表1</a>。</p>
+
+<div class="tablenoborder"><a name="commonshares_0012__zh-cn_topic_0000001172683312_table635115223177"></a><a name="zh-cn_topic_0000001172683312_table635115223177"></a><table cellpadding="4" cellspacing="0" summary="" id="commonshares_0012__zh-cn_topic_0000001172683312_table635115223177" frame="border" border="1" rules="all"><caption><b>表1 </b>创建通用共享参数</caption><colgroup><col style="width:23.189999999999998%"><col style="width:76.81%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="23.189999999999998%" id="mcps1.3.2.2.3.2.2.2.3.1.1"><p>参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="67.73%" id="mcps1.3.2.2.3.2.1.2.2.3.1.2"><p id="commonshares_0012__zh-cn_topic_0000001839143197_p6169124103613">说明</p>
+<th align="left" class="cellrowborder" valign="top" width="76.81%" id="mcps1.3.2.2.3.2.2.2.3.1.2"><p>说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr id="commonshares_0012__zh-cn_topic_0000001839143197_row7169112416367"><td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="commonshares_0012__zh-cn_topic_0000001839143197_p1916911248367"><span id="commonshares_0012__zh-cn_topic_0000001839143197_text161691424153611">名称</span></p>
+<tbody><tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>资源名称</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="commonshares_0012__zh-cn_topic_0000001839143197_p9169924133613">自定义限速策略名称。</p>
-</td>
-</tr>
-<tr id="commonshares_0012__zh-cn_topic_0000001839143197_row7169182416362"><td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="commonshares_0012__zh-cn_topic_0000001839143197_p8169924113611"><span id="commonshares_0012__zh-cn_topic_0000001839143197_text12169424203614">最大带宽</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="commonshares_0012__zh-cn_topic_0000001839143197_p1981116133814">保护任务平均每秒最大传输的数据量。</p>
-<p id="commonshares_0012__zh-cn_topic_0000001839143197_p816992415362">默认值：1024<span style="color:#282B33;">MB/s</span>。</p>
-<p id="commonshares_0012__zh-cn_topic_0000001839143197_p61691524113616">取值范围：10MB/s~5120MB/s</p>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>通用共享资源名称。</p>
 </td>
 </tr>
-<tr id="commonshares_0012__zh-cn_topic_0000001839143197_row0169524103620"><td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="commonshares_0012__zh-cn_topic_0000001839143197_p2169424133612"><span id="commonshares_0012__zh-cn_topic_0000001839143197_text1516915245366">描述</span></p>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>文件系统名称</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="commonshares_0012__zh-cn_topic_0000001839143197_p51691624103615">描述限速策略信息。</p>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p><span style="color:#282B33;">文件系统名称，系统将在DeviceManager界面创建该文件系统，用于存放备份数据。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>备份存储单元</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>对应备份集群节点。选择备份存储单元后，副本将存储至该存储单元。存储单元容量不足时，备份任务将会失败。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>限速策略</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>备份任务平均每秒最大传输的数据量。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>共享协议</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>通用共享资源协议，支持设置NFS协议和CIFS协议。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>设置了CIFS协议后，如果已挂载到文件系统的用户或用户组已被删除，请手动解挂载该用户或用户组。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>共享路径</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>选择NFS协议时展示该参数，文件系统挂载的路径。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>共享客户端</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p><span style="color:#282B33;">选择NFS协议时展示该参数，输入共享客户端业务IP地址、共享客户端业务IP地址段或使用“*”表示全部共享客户端业务IP地址。IP地址支持IPv4、IPv6地址或者两者的混合IP地址。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>共享名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>选择CIFS协议时展示该参数，自定义CIFS共享名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>选择CIFS协议时展示该参数，访问CIFS共享的用户类型。</p>
+<ul><li>Everyone</li><li>Windows本地认证用户</li><li>Windows本地认证用户组</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>用户</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>CIFS共享的用户类型选择为Windows本地认证用户或Windows本地认证用户组时展示该参数，请选择用户名或选择本地用户组。如果不存在需要的用户或用户组，请到DeviceManager管理界面创建。</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
+</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
 </div>
-</p></li><li id="commonshares_0012__zh-cn_topic_0000001839143197_li18215153613714"><span>单击<span class="uicontrol" id="commonshares_0012__zh-cn_topic_0000001839143197_uicontrol1756934320715">“<span id="commonshares_0012__zh-cn_topic_0000001839143197_text1686961087">确定</span>”</span>。</span></li></ol>
-</div>
+<p></p>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="commonshares_0010.html">备份通用共享资源数据</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="commonshares_0011.html">备份通用共享资源数据</a></div>
 </div>
 </div>
 

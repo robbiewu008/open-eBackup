@@ -14,8 +14,7 @@ import {
   AbstractControl,
   FormBuilder,
   FormControl,
-  FormGroup,
-  ValidatorFn
+  FormGroup
 } from '@angular/forms';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
@@ -25,20 +24,16 @@ import {
   eq,
   find,
   get,
-  isEmpty,
   isUndefined,
   map,
-  set,
-  tail
+  set
 } from 'lodash';
 import { DatePipe } from '@angular/common';
 import {
   BaseUtilService,
   CommonConsts,
-  DataMap,
   DetectReportAPIService,
   I18NService,
-  ProtectedResourceApiService,
   extendSlaInfo
 } from 'app/shared';
 import { SystemTimeService } from 'app/shared/services/system-time.service';
@@ -50,6 +45,7 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'app-add-report',
@@ -79,10 +75,10 @@ export class AddReportComponent implements OnInit {
     private fb: FormBuilder,
     private datePipe: DatePipe,
     private i18n: I18NService,
+    private appUtilsService: AppUtilsService,
     private baseUtilService: BaseUtilService,
     private detectReportApi: DetectReportAPIService,
-    private systemTimeService: SystemTimeService,
-    private protectedResourceApiService: ProtectedResourceApiService
+    private systemTimeService: SystemTimeService
   ) {}
 
   ngOnInit() {
@@ -134,45 +130,23 @@ export class AddReportComponent implements OnInit {
 
   getData(filters: Filters, args) {
     const params = {
-      pageNo: filters.paginator.pageIndex,
+      startPage: filters.paginator.pageIndex,
       pageSize: filters.paginator.pageSize,
+      deviceId: this.formGroup.value.storage,
+      tenantId: this.formGroup.value.vStore,
       akLoading:
         !isUndefined(args) && args.isAutoPolling ? !args.isAutoPolling : true
     };
-    let tenantName = find(this.vStoreOptions, {
-      value: this.formGroup.value.vStore
-    });
-    let parentName = find(this.storageOptions, {
-      uuid: this.formGroup.value.storage
-    });
-
-    const defaultConditions = {
-      subType: [
-        DataMap.Resource_Type.LocalFileSystem.value,
-        DataMap.Job_Target_Type.fileSystem.value
-      ],
-      environment: {
-        name: parentName.name
-      },
-      tenantName: tenantName.name
-    };
-    if (!isEmpty(filters.conditions_v2)) {
-      const conditions = JSON.parse(filters.conditions_v2);
-      if (conditions.parentName) {
-        assign(defaultConditions, {
-          environment: {
-            name: tail(conditions.parentName)
-          }
-        });
-        delete conditions.parentName;
-      }
-      assign(defaultConditions, conditions);
+    if (filters.conditions) {
+      const conditions = JSON.parse(filters.conditions);
+      assign(params, {
+        searchName: conditions.name
+      });
     }
-    assign(params, { conditions: JSON.stringify(defaultConditions) });
-    this.protectedResourceApiService
-      .ListResources(params)
+    this.detectReportApi
+      .ListQueryResources(params)
       .pipe(
-        _map(res => {
+        _map((res: any) => {
           each(res.records, item => {
             assign(item, {
               tenantName: item.extendInfo?.tenantName
@@ -228,19 +202,24 @@ export class AddReportComponent implements OnInit {
   }
 
   loadStorageOptions() {
-    this.detectReportApi.ListQueryResources({}).subscribe(res =>
-      set(
-        this,
-        'storageOptions',
-        map(res, item => ({
-          label: `${item.name} (${item.endpoint})`,
-          value: item.uuid,
-          key: item.uuid,
-          isLeaf: true,
-          ...item
-        }))
-      )
-    );
+    this.detectReportApi
+      .ListQueryResources({
+        startPage: CommonConsts.PAGE_START,
+        pageSize: CommonConsts.PAGE_SIZE
+      })
+      .subscribe((res: any) =>
+        set(
+          this,
+          'storageOptions',
+          map(res.records, item => ({
+            label: `${item.name} (${item.endpoint})`,
+            value: item.uuid,
+            key: item.uuid,
+            isLeaf: true,
+            ...item
+          }))
+        )
+      );
     return this;
   }
 
@@ -254,21 +233,23 @@ export class AddReportComponent implements OnInit {
       this.selectionData = [];
       this.dataTable.setSelections([]);
       this.formGroup.get('vStore').setValue('', { emitEvent: false });
-      this.detectReportApi
-        .ListQueryResources({ deviceId: value })
-        .subscribe(res =>
+      this.appUtilsService.getResourceByRecursion(
+        { deviceId: value },
+        params => this.detectReportApi.ListQueryResources(params),
+        resource => {
           set(
             this,
             'vStoreOptions',
-            map(res, item => ({
+            map(resource, item => ({
               label: item.name,
               value: item.uuid,
               key: item.uuid,
               isLeaf: true,
               ...item
             }))
-          )
-        );
+          );
+        }
+      );
     });
     this.formGroup.get('vStore')?.valueChanges.subscribe(value => {
       this.tableData = {

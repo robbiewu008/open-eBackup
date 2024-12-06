@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -34,27 +34,22 @@
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="tdsql_gud_013"></a><a name="tdsql_gud_013"></a>
-  <h1 class="topictitle1">Step 5: (Optional) Enabling Backup Link Encryption<span></span></h1>
+  <h1 class="topictitle1">Step 5: (Optional) Enabling Backup Link Encryption</h1>
   <div>
    <p>You need to enable backup link encryption if required.</p>
    <div class="section">
     <h4 class="sectiontitle">Prerequisites</h4>
-    <p>Ensure that the NFS Kerberos service has been configured for the storage system. Otherwise, backup jobs may fail after backup link encryption is enabled. <span>For details about how to configure the NFS Kerberos service, see "(Optional) Configuring the NFS Kerberos Service" in the <em id="tdsql_gud_013__en-us_topic_0000001839143225_i10207188469">Installation Guide</em>. </span>When adding users to the AD domain, add users <strong>rdadmin</strong>, and <strong>root</strong> and <strong>tdsql</strong> of the TDSQL database. You can contact the application administrator to obtain the OS username and ID. If the user already exists in the AD domain, you do not need to add it.</p>
+    <p>Ensure that the NFS Kerberos service has been configured for the storage system and user <strong>rdadmin</strong> and users <strong>root</strong> and <strong>tdsql</strong> of the TDSQL database have been added to the AD domain. Otherwise, the backup job may fail after backup link encryption is enabled. <span>For details about how to configure the NFS Kerberos service, see "(Optional) Configuring the NFS Kerberos Service" in the <i><cite id="tdsql_gud_013__en-us_topic_0000001839143225_cite5907115716400">Installation Guide</cite></i> specific to your product model.</span></p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Precautions</h4>
-    <p id="tdsql_gud_013__en-us_topic_0000001839143225_p1854315715349">After backup link encryption is enabled, the ticket between the agent host and the KDC domain server has a validity period. If the ticket expires, backup jobs may fail. You are advised to prolong the validity period of the ticket in the Kerberos policy on the KDC domain server or configure the ticket to never expire. If the permanent validity period is not configured, you must run the <strong id="tdsql_gud_013__en-us_topic_0000001839143225_b152622189614">kinit</strong> or <strong id="tdsql_gud_013__en-us_topic_0000001839143225_b82633181265">net</strong> command on the agent host to re-obtain tickets for users added to the AD domain before the tickets are about to expire. For details, see "Configuring the Client" in the <em id="tdsql_gud_013__en-us_topic_0000001839143225_i8540135312610">Installation Guide</em>.</p>
+    <p id="tdsql_gud_013__en-us_topic_0000001839143225_p1854315715349">After backup link encryption is enabled, the ticket between the agent host and the KDC domain server has a validity period. If the ticket expires, backup jobs may fail. You are advised to prolong the validity period of the ticket in the Kerberos policy on the KDC domain server or configure the ticket to never expire. If the ticket is not configured to never expire, you must run the <strong id="tdsql_gud_013__en-us_topic_0000001839143225_b195916246015">kinit</strong> or <strong id="tdsql_gud_013__en-us_topic_0000001839143225_b1659142413011">net</strong> command on the agent host to renew the ticket for each user added to the AD domain before it expires. For details, see "Configuring the Client" in the <i><cite id="tdsql_gud_013__en-us_topic_0000001839143225_cite890601917412">Installation Guide</cite></i> specific to your product model.</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Creating a Local UNIX Authentication User Group</h4>
-    <p>Before enabling backup link encryption, if the current environment is not added to any domain environment, you need to add the user group to the local authentication user group.</p>
+    <p>Before enabling backup link encryption, you need to add the user group to a local authentication user group if the current environment is not added to any domain environment.</p>
     <ol>
-     <li><span>Log in to DeviceManager.</span><p></p>
-      <ol type="a">
-       <li>Choose <span class="uicontrol" id="tdsql_gud_013__en-us_topic_0000001839143213_en-us_topic_0000001311295305_en-us_topic_0000001149078659_uicontrol1098185683619"><b><span id="tdsql_gud_013__en-us_topic_0000001839143213_text157651936143415"><strong>System</strong></span> &gt; <span id="tdsql_gud_013__en-us_topic_0000001839143213_text49601653123416"><strong>Infrastructure</strong></span> &gt; <span id="tdsql_gud_013__en-us_topic_0000001839143213_text112401684352"><strong>Cluster Management</strong></span></b></span>.</li>
-       <li>In the <span class="uicontrol" id="tdsql_gud_013__en-us_topic_0000001839143213_uicontrol1050641575312"><b><span id="tdsql_gud_013__en-us_topic_0000001839143213_text133861121163513"><strong>Local Cluster Nodes</strong></span></b></span> area of the <span class="uicontrol" id="tdsql_gud_013__en-us_topic_0000001839143213_uicontrol13691645105219"><b><span id="tdsql_gud_013__en-us_topic_0000001839143213_text1763193125313"><strong>Backup Cluster</strong></span></b></span> tab page, click the node name.</li>
-       <li>In the <span class="uicontrol" id="tdsql_gud_013__en-us_topic_0000001839143213_uicontrol1144724616332"><b><span id="tdsql_gud_013__en-us_topic_0000001839143213_text51761646203516"><strong>Node detail</strong></span></b></span> dialog box that is displayed, click <span class="uicontrol" id="tdsql_gud_013__en-us_topic_0000001839143213_uicontrol1544714611335"><b><span id="tdsql_gud_013__en-us_topic_0000001839143213_text1624910583612"><strong>Open the device management platform</strong></span></b></span> to go to DeviceManager.</li>
-      </ol> <p></p></li>
+     <li><span>Log in to DeviceManager.</span></li>
      <li><span>Choose <span class="uicontrol"><b>Services &gt; File Service &gt; Authentication Users</b></span>.</span></li>
      <li><span>On the <span class="uicontrol"><b>UNIX Users</b></span> tab page, select <span class="uicontrol"><b>Local Authentication User Groups</b></span>.</span></li>
      <li><span>Click <span class="uicontrol"><b>Create</b></span>.</span></li>
@@ -77,7 +72,7 @@
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>Parent topic:</strong> <a href="tdsql_gud_009.html">Backing Up TDSQL Databases</a>
+     <strong>Parent topic:</strong> <a href="tdsql_gud_009.html">Backing Up a TDSQL Database</a>
     </div>
    </div>
   </div>

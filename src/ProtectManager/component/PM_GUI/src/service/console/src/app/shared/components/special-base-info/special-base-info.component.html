@@ -1,4 +1,3 @@
-<lv-form [lvLabelColon]="false" class="resource-summary" lvLayout="vertical">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [lvLabelColon]="false" class="resource-summary" lvLayout="vertical">
   <lv-form-column style="height:100%" *ngFor="let column of formItems; index as i" [ngClass]="{'summary-container': i === 0}">
     <table style="height:100%" class="summary-icon" [ngClass]="{ 'summary-info-border': i !== 0 }">
       <tr>

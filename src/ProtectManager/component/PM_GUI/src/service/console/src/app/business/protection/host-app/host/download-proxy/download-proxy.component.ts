@@ -174,8 +174,7 @@ export class DownloadProxyComponent implements OnInit {
               DataMap.OS_Type.Windows.value,
               DataMap.OS_Type.Linux.value,
               DataMap.OS_Type.Unix.value,
-              DataMap.OS_Type.solaris.value,
-              DataMap.OS_Type.hpux.value
+              DataMap.OS_Type.solaris.value
             ],
             item.value
           )

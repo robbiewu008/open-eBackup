@@ -317,6 +317,16 @@ public class Constants {
     public static final int ERROR_CODE_OK = 0;
 
     /**
+     * 性能监控删除历史记录
+     */
+    public static final int HAS_REMOVE_HISTORY_DATA = 1;
+
+    /**
+     * 性能监控未删除历史记录
+     */
+    public static final int NO_REMOVE_HISTORY_DATA = 2;
+
+    /**
      * Builtin
      *
      */

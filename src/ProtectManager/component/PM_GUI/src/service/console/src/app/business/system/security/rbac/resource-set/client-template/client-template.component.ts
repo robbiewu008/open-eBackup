@@ -87,6 +87,7 @@ export class ClientTemplateComponent {
   @Input() data;
   @Input() isDetail;
   @Output() allSelectChange = new EventEmitter<any>();
+  @Output() onNumChange = new EventEmitter<any>();
 
   NumberToFixed = NumberToFixed;
   formGroup: FormGroup;
@@ -252,7 +253,7 @@ export class ClientTemplateComponent {
   isHcsEnvir =
     this.cookieService.get('serviceProduct') === CommonConsts.serviceProduct;
   azOptions = [];
-
+  hasEmitNum = false;
   tableData;
 
   @ViewChild(DatatableComponent, { static: false }) lvTable: DatatableComponent;
@@ -424,6 +425,11 @@ export class ClientTemplateComponent {
         });
         this.total = res.totalCount;
         this.tableData = res.records;
+        if (this.isDetail && !this.tableData?.data && !this.hasEmitNum) {
+          this.onNumChange.emit({ num: res.totalCount });
+          this.hasEmitNum = true;
+        }
+
         if (!isEmpty(this.allSelectionMap[ResourceSetType.Agent]?.data)) {
           // 重新进入时回显选中的数据
           this.selection = this.allSelectionMap[ResourceSetType.Agent]?.data;

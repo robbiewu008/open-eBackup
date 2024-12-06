@@ -22,9 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
 /**
  * rsa公私钥对生成控制层
  *
@@ -39,15 +36,13 @@ public class RsaController {
      * rsa公私钥对生成入口函数
      *
      * @return 公钥
-     * @throws NoSuchAlgorithmException 异常
-     * @throws IOException IO异常
      */
     @ExterAttack
     @GetMapping("/v1/rsa")
-    public PublicKeyResponse getPublicKey() throws NoSuchAlgorithmException, IOException {
-        String publicKey = rsaService.generateKeyPair();
+    public PublicKeyResponse getPublicKey() {
+        String publicKey = rsaService.queryPublicKey();
         return PublicKeyResponse.builder()
-            .publicKey(publicKey)
+            .publicKey(publicKey != null ? publicKey : "")
             .build();
     }
 }

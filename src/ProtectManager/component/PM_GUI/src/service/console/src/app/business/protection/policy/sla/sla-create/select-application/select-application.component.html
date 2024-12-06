@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
     <ng-container *ngIf="!cookieService.isCloudBackup">
         <lv-radio-group formControlName="type" [lvGroupName]="'applicationTypeGroup'" class="application-type-group"
             [ngClass]="{'mgb-specified': formGroup.value.type === applicationTypeView.Specified}">

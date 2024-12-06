@@ -66,13 +66,21 @@ public class DwsBuildRepositoryUtil {
     /**
      * 给Repository修改 角色和添加 esn
      *
-     * @param repository repository
+     * @param repositories repository列表
      * @param esn esn号
      */
-    public static void addRepositoryEsnAndRole(StorageRepository repository, String esn) {
-        repository.setRole(DwsConstant.MASTER_ROLE);
-        repository.setId(esn);
-        addRepositoryEsn(repository, esn);
+    public static void addRepositoryEsnAndRole(List<StorageRepository> repositories, String esn) {
+        for (StorageRepository repository : repositories) {
+            if (esn.equals(repository.getId())) {
+                repository.setRole(DwsConstant.MASTER_ROLE);
+                repository.setId(esn);
+                addRepositoryEsn(repository, esn);
+                return;
+            }
+        }
+        repositories.get(0).setRole(DwsConstant.MASTER_ROLE);
+        repositories.get(0).setId(esn);
+        addRepositoryEsn(repositories.get(0), esn);
     }
 
     /**

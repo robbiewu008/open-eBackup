@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,9 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="TiDB_00044">
 <meta name="DC.Language" content="en-us">
@@ -42,7 +44,7 @@
 <div class="section" id="TiDB_00044__section1756842892313"><h4 class="sectiontitle">Prerequisites</h4><ul id="TiDB_00044__ul132661420141115"><li id="TiDB_00044__li762383391617">Before the restoration, ensure that the restoration target location is correct.</li><li id="TiDB_00044__li7712113644310">Before the restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction.</li><li id="TiDB_00044__li5441111618120">Before executing the restoration job, disable the TiDB log backup function. After the restoration job is complete, enable the function again. For details about how to enable and disable the function, see <a href="TIDB_00072.html">Function Overview</a>.</li><li id="TiDB_00044__li16230658087">The clock source configuration of clusters must be the same.</li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="TiDB_00044__tidb_00040_en-us_topic_0000001839142377_uicontrol548619473589"><b><span id="TiDB_00044__tidb_00040_en-us_topic_0000001839142377_text44861447115812"><strong>Explore</strong></span> &gt; <span id="TiDB_00044__tidb_00040_en-us_topic_0000001839142377_text2048614765813"><strong>Copy Data</strong></span> &gt; <span id="TiDB_00044__tidb_00040_en-us_topic_0000001839142377_text163101122194918"><strong>Databases</strong></span> &gt; TiDB</b></span>.</span></li><li><span>You can search for copies by TiDB backup resource or copy. This section describes how to search for copies by resource.</span><p><p>On the <strong>Resources</strong> tab page, locate the backup resource to be restored based on the backup resource name and click the backup resource name.</p>
-</p></li><li><span>Click the <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> tab and select the year, month, and day in sequence to locate the copy.</span><p><p>If <span><img src="en-us_image_0000001792504822.png"></span> is displayed below a month or day, a copy is generated in that month or day.</p>
+</p></li><li><span>Click the <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> tab and select the year, month, and day in sequence to locate the copy.</span><p><p>If <span><img src="en-us_image_0000001792504822.png"></span> is displayed below a month or day, copies exist in the month or on the day.</p>
 </p></li><li><span>Specify a copy or point in time for restoration.</span><p><div class="p">You can either restore data to a specified point in time or using a specific copy.<ol type="a"><li>Restoring data to a specified point in time or using a specific copy<ul><li>Restoring data using a specific copy<p><span><img class="eddx" src="en-us_image_0000001792504830.png"></span></p>
 </li><li>Restoring data to a specified point in time<p><span><img class="eddx" src="en-us_image_0000001839224165.png"></span></p>
 <p></p>

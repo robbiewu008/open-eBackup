@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -39,7 +39,7 @@
 
 <h1 class="topictitle1">查看对象存储副本信息</h1>
 <div><p>参考本节查看对象存储副本的详细信息。</p>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="object-0059__zh-cn_topic_0000001839142377_uicontrol11629101161212">“<span id="object-0059__zh-cn_topic_0000001839142377_text1629611111214">数据利用</span> &gt; <span id="object-0059__zh-cn_topic_0000001839142377_text562901114126">副本数据</span> &gt; 文件系统 &gt; <span id="object-0059__zh-cn_topic_0000001839142377_text518282701311">对象存储</span>”</span>。</span></li><li><span>选择副本浏览方式浏览副本信息。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>复制副本仅支持在复制到的目标集群查看。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="object-0059__zh-cn_topic_0000001839142377_uicontrol11629101161212">“<span id="object-0059__zh-cn_topic_0000001839142377_text1629611111214">数据利用</span> &gt; <span id="object-0059__zh-cn_topic_0000001839142377_text562901114126">副本数据</span> &gt; 文件系统 &gt; <span id="object-0059__zh-cn_topic_0000001839142377_text518282701311">对象存储</span>”</span>。</span></li><li><span>选择副本浏览方式浏览副本信息。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="object-0059__zh-cn_topic_0000001792503826_p189141741162012">复制副本仅支持在复制到的目标集群查看。</p>
 </div></div>
 <ul><li>选择“资源”页签：以资源维度查看对象存储副本信息。当对象存储中的数据丢失，您需要恢复该对象存储时，建议从该入口进入查找相应时间点副本。<p>参数说明如<a href="#object-0059__Files-0064_table20406195873110">表1</a>所示。</p>
 
@@ -82,7 +82,7 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.2.2.4.1.1 "><p><span>复制副本保护状态</span></p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.2.2.4.1.1 "><div class="p">复制副本当前是否被保护。<ul id="object-0059__zh-cn_topic_0000001792503826_ul161172118317"><li id="object-0059__zh-cn_topic_0000001792503826_li11611621173118"><span id="object-0059__zh-cn_topic_0000001792503826_text16611162123119">未保护</span>：复制副本未关联SLA，或者复制副本已关联SLA但已禁用保护。</li><li id="object-0059__zh-cn_topic_0000001792503826_li761111211312"><span id="object-0059__zh-cn_topic_0000001792503826_text161192116317">已保护</span>：复制副本已关联SLA，且已激活保护。</li><li id="object-0059__zh-cn_topic_0000001792503826_li2088261163715"><span id="object-0059__zh-cn_topic_0000001792503826_text12602914182118">创建中</span>：复制副本已关联SLA，正在创建保护。仅1.5.0及之前版本存在该状态。</li></ul>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.2.2.4.1.1 "><div class="p">复制副本当前是否被保护。<ul id="object-0059__foc_gud_0064_zh-cn_topic_0000001792503826_ul161172118317"><li id="object-0059__foc_gud_0064_zh-cn_topic_0000001792503826_li11611621173118"><span id="object-0059__foc_gud_0064_zh-cn_topic_0000001792503826_text16611162123119">未保护</span>：复制副本未关联SLA，或者复制副本已关联SLA但已禁用保护。</li><li id="object-0059__foc_gud_0064_zh-cn_topic_0000001792503826_li761111211312"><span id="object-0059__foc_gud_0064_zh-cn_topic_0000001792503826_text161192116317">已保护</span>：复制副本已关联SLA，且已激活保护。</li><li id="object-0059__foc_gud_0064_zh-cn_topic_0000001792503826_li2088261163715"><span id="object-0059__foc_gud_0064_zh-cn_topic_0000001792503826_text12602914182118">创建中</span>：复制副本已关联SLA，正在创建保护。仅1.5.0及之前版本存在该状态。</li></ul>
 </div>
 </td>
 </tr>
@@ -152,7 +152,9 @@
 </div></div>
 </div>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>当副本为WORM副本时，则显示WORM过期的具体时间。否则，显示为“--”。</p>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><div class="p">当副本为WORM副本时，则显示WORM过期的具体时间。否则，显示为“--”。<div class="note" id="object-0059__zh-cn_topic_0000001792503826_note173611252434"><span class="notetitle"> 说明： </span><div class="notebody"><p id="object-0059__zh-cn_topic_0000001792503826_p10361192510430">WORM过期时间以WORM文件系统法规时钟为基准。如果WORM文件系统法规时钟与系统时间不一致，请等待WORM文件系统法规时钟到达当前设置的过期时间后，再查看WORM状态。</p>
+</div></div>
+</div>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>ACL备份</p>

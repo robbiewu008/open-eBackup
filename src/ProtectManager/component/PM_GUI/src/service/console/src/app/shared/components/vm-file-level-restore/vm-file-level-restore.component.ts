@@ -25,13 +25,11 @@ import {
   CAPACITY_UNIT,
   CommonConsts,
   DataMap,
-  FilterType,
   MODAL_COMMON,
   NodeType,
   ResourceType,
   RestoreLocationType,
   RestoreType,
-  SYSTEM_TIME,
   VmFileReplaceStrategy
 } from 'app/shared/consts';
 import {
@@ -63,6 +61,7 @@ import {
   unionBy
 } from 'lodash';
 import { finalize } from 'rxjs/operators';
+import { FileTreeComponent } from '../file-tree/file-tree.component';
 
 @Component({
   selector: 'aui-vm-file-level-restore',
@@ -129,14 +128,31 @@ export class VmFileLevelRestoreComponent implements OnInit {
   pageSize = 50;
   searchByKeyFlag = false;
 
+  // 虚拟机IP类型
+  vmIpTypeOptions = {
+    exist: '1',
+    custom: '2'
+  };
+
   requiredErrorTip = {
     ...this.baseUtilService.requiredErrorTip
+  };
+  ipErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    ...this.baseUtilService.ipErrorTip
+  };
+  portErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    invalidInteger: this.i18n.get('common_valid_integer_label'),
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 65535])
   };
 
   @ViewChild(FileRestoreComponent, { static: false })
   FileRestoreComponent: FileRestoreComponent;
   @ViewChild('footerTpl', { static: true }) footerTpl: TemplateRef<any>;
   @ViewChild('keyPopover', { static: false }) keyPopover;
+  @ViewChild('fileTree', { static: false })
+  fileTreeComponent: FileTreeComponent;
 
   constructor(
     private fb: FormBuilder,
@@ -801,6 +817,21 @@ export class VmFileLevelRestoreComponent implements OnInit {
     );
   }
 
+  setPortValid() {
+    if (this.showPort()) {
+      this.formGroup
+        .get('port')
+        ?.addValidators([
+          this.baseUtilService.VALID.required(),
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(1, 65535)
+        ]);
+    } else {
+      this.formGroup.get('port')?.clearValidators();
+    }
+    this.formGroup.get('port')?.updateValueAndValidity();
+  }
+
   initFormGroup() {
     if (this.rowCopy.isSearchRestore) {
       this.restorePath = [this.rowCopy.searchRestorePath];
@@ -814,14 +845,18 @@ export class VmFileLevelRestoreComponent implements OnInit {
         this.rowCopy?.generated_by
       ) ||
       this.rowCopy?.resource_status === DataMap.Resource_Status.notExist.value;
+    this.resourceProperties = JSON.parse(this.rowCopy.resource_properties);
     this.formGroup = this.fb.group({
       restoreLocation: [RestoreLocationType.ORIGIN],
       location: new FormControl(''),
       environment: new FormControl(''),
       vm: new FormControl([]),
+      vmIpType: new FormControl(this.vmIpTypeOptions.exist),
       vmIp: new FormControl('', {
         validators: [this.baseUtilService.VALID.required()]
       }),
+      customIp: new FormControl(''),
+      port: new FormControl('22'),
       userName: new FormControl('', {
         validators: [this.baseUtilService.VALID.required()]
       }),
@@ -860,6 +895,15 @@ export class VmFileLevelRestoreComponent implements OnInit {
       );
     }
 
+    // 端口校验
+    this.formGroup
+      .get('osType')
+      ?.valueChanges.subscribe(() => defer(() => this.setPortValid()));
+
+    this.formGroup
+      .get('vmIpType')
+      .valueChanges.subscribe(res => this.listenVmIpType(res));
+
     this.listenForm();
 
     if (this.childResType === DataMap.Resource_Type.HCSCloudHost.value) {
@@ -873,6 +917,8 @@ export class VmFileLevelRestoreComponent implements OnInit {
     defer(() => {
       if (this.disableOriginLocation) {
         this.formGroup.get('restoreLocation').setValue(RestoreLocationType.NEW);
+      } else {
+        this.setPortValid();
       }
     });
   }
@@ -882,6 +928,25 @@ export class VmFileLevelRestoreComponent implements OnInit {
     this.vmIpOptions = [];
     this.cacheNewVmIpOptions = [];
     this.formGroup.get('vmIp').setValue('', { emitEvent: false });
+  }
+
+  listenVmIpType(res) {
+    if (res === this.vmIpTypeOptions.exist) {
+      this.formGroup
+        .get('vmIp')
+        .setValidators([this.baseUtilService.VALID.required()]);
+      this.formGroup.get('customIp').clearValidators();
+    } else {
+      this.formGroup
+        .get('customIp')
+        .setValidators([
+          this.baseUtilService.VALID.required(),
+          this.baseUtilService.VALID.ip()
+        ]);
+      this.formGroup.get('vmIp').clearValidators();
+    }
+    this.formGroup.get('customIp').updateValueAndValidity();
+    this.formGroup.get('vmIp').updateValueAndValidity();
   }
 
   listenForm() {
@@ -993,6 +1058,7 @@ export class VmFileLevelRestoreComponent implements OnInit {
           .updateValueAndValidity({ emitEvent: false });
         this.formGroup.get('vm').updateValueAndValidity({ emitEvent: false });
       }
+      this.setPortValid();
     });
 
     this.vmValueChanged('targetServer');
@@ -1040,6 +1106,7 @@ export class VmFileLevelRestoreComponent implements OnInit {
         : [];
       this.cacheNewVmIpOptions = cloneDeep(this.vmIpOptions);
       this.formGroup.get('vmIp').setValue('', { emitEvent: false });
+      this.setPortValid();
     });
   }
 
@@ -1104,6 +1171,7 @@ export class VmFileLevelRestoreComponent implements OnInit {
         : [];
       this.cacheNewVmIpOptions = cloneDeep(this.vmIpOptions);
       this.formGroup.get('vmIp').setValue('', { emitEvent: false });
+      this.setPortValid();
     });
   }
 
@@ -1256,7 +1324,15 @@ export class VmFileLevelRestoreComponent implements OnInit {
   }
 
   tableSelectionChange(selection) {
-    this.restorePath = this.getFilePath(selection);
+    if (
+      this.fileTreeComponent?.pathMode ===
+      this.fileTreeComponent?.modeMap?.fromTag
+    ) {
+      this.restorePath = [...selection];
+    } else {
+      this.restorePath = this.getFilePath(selection);
+    }
+
     this.getOkDisabled();
   }
 
@@ -1371,6 +1447,37 @@ export class VmFileLevelRestoreComponent implements OnInit {
     };
   }
 
+  getVmIp(): string {
+    return this.formGroup.get('vmIpType')?.value === this.vmIpTypeOptions.exist
+      ? this.formGroup.get('vmIp')?.value
+      : this.formGroup.get('customIp')?.value;
+  }
+
+  showPort(): boolean {
+    if (
+      includes(
+        [
+          DataMap.Resource_Type.openStackCloudServer.value,
+          DataMap.Resource_Type.hyperVVm.value
+        ],
+        this.childResType
+      )
+    ) {
+      return this.formGroup.value.osType === DataMap.OS_Type.Linux.value;
+    }
+    if (this.formGroup.value.restoreLocation === RestoreLocationType.ORIGIN) {
+      return includes(
+        [DataMap.Os_Type.linux.value, DataMap.vmwareOsType.linux.value],
+        this.resourceProperties?.extendInfo?.os_type
+      );
+    }
+    const vm: any = this.getVm();
+    return includes(
+      [DataMap.Os_Type.linux.value, DataMap.vmwareOsType.linux.value],
+      vm?.extendInfo?.os_type
+    );
+  }
+
   getParams() {
     let params: any = {};
     if (
@@ -1431,12 +1538,17 @@ export class VmFileLevelRestoreComponent implements OnInit {
               : vm.name,
           USER_NAME: this.formGroup.value.userName,
           PASSWORD: this.formGroup.value.password,
-          VM_IP: this.formGroup.value.vmIp,
+          VM_IP: this.getVmIp(),
           FILE_REPLACE_STRATEGY: this.formGroup.value.originalType
         }
       };
     } else {
       params = this.FileRestoreComponent.getParams();
+    }
+    if (this.showPort()) {
+      assign(params.ext_parameters, {
+        PORT: this.formGroup.get('port')?.value
+      });
     }
     return params;
   }
@@ -1468,17 +1580,25 @@ export class VmFileLevelRestoreComponent implements OnInit {
     });
   }
 
+  getVm() {
+    if (this.childResType === DataMap.Resource_Type.HCSCloudHost.value) {
+      return find(this.cloudHostOptions, {
+        value: this.formGroup.value.cloudHost
+      });
+    }
+    if (
+      this.childResType === DataMap.Resource_Type.openStackCloudServer.value
+    ) {
+      return first(this.formGroup.value.targetServer);
+    }
+    if (this.childResType === DataMap.Resource_Type.APSCloudServer.value) {
+      return this.formGroup.value.targetServer[0];
+    }
+    return first(this.formGroup.value.vm);
+  }
+
   testConnection() {
-    const vm: any =
-      this.childResType === DataMap.Resource_Type.HCSCloudHost.value
-        ? find(this.cloudHostOptions, {
-            value: this.formGroup.value.cloudHost
-          })
-        : this.childResType === DataMap.Resource_Type.openStackCloudServer.value
-        ? first(this.formGroup.value.targetServer)
-        : this.childResType === DataMap.Resource_Type.APSCloudServer.value
-        ? this.formGroup.value.targetServer[0]
-        : first(this.formGroup.value.vm);
+    const vm: any = this.getVm();
     const params = {
       username: this.formGroup.value.userName,
       password: this.formGroup.value.password,
@@ -1488,7 +1608,7 @@ export class VmFileLevelRestoreComponent implements OnInit {
           : this.formGroup.value.restoreLocation === RestoreLocationType.ORIGIN
           ? this.resourceProperties?.extendInfo?.os_type
           : vm?.extendInfo?.os_type || '',
-      vmIp: this.formGroup.value.vmIp
+      vmIp: this.getVmIp()
     };
     if (
       includes(
@@ -1513,6 +1633,11 @@ export class VmFileLevelRestoreComponent implements OnInit {
     } else if (this.childResType === DataMap.Resource_Type.hyperVVm.value) {
       assign(params, {
         osType: this.formGroup.get('osType').value
+      });
+    }
+    if (this.showPort()) {
+      assign(params, {
+        port: this.formGroup.get('port')?.value
       });
     }
     this.restoreFilesControllerService

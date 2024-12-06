@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,7 +36,7 @@
   <a name="activedirectory_00013"></a><a name="activedirectory_00013"></a>
   <h1 class="topictitle1">Step 4: Creating a Backup SLA</h1>
   <div>
-   <p>Customize an SLA to protect resources based on your requirements.</p>
+   <p>Customize an SLA to protect resources based on service requirements.</p>
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
@@ -45,11 +45,17 @@
       <div class="note">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="activedirectory_00013__en-us_topic_0000001964713008_p125947145711"><span id="activedirectory_00013__en-us_topic_0000001964713008_ph1413818422327">If a WORM policy has been configured for the resource to be protected, select an SLA without a WORM policy to create protection to avoid WORM policy conflicts.</span></p>
+        <p id="activedirectory_00013__en-us_topic_0000001964713008_p125947145711"><span id="activedirectory_00013__en-us_topic_0000001964713008_ph1413818422327">If a WORM policy has been configured for the resources to be protected, select an SLA without a WORM policy to avoid WORM policy conflicts.</span></p>
        </div>
       </div> <p></p></li>
      <li><span>Customize an SLA name.</span></li>
      <li><span>Select an application type for the SLA to be created.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="activedirectory_00013__en-us_topic_0000001839143189_p3218512141">Some models of this product support NAS file systems. For details, see the product documentation released on the technical support website or consult the product provider.</p>
+       </div>
+      </div>
       <ol type="a">
        <li>Click the <span class="uicontrol"><b>Applications</b></span> icon.</li>
        <li>Click the <span class="uicontrol"><b>Specific to application</b></span> tab.</li>
@@ -61,7 +67,7 @@
        <li>Click the <span class="uicontrol"><b><span><strong>Backup Policy</strong></span></b></span> icon.</li>
        <li>Set basic parameters for the backup policy.<p><a href="#activedirectory_00013__en-us_topic_0000001296227512_en-us_topic_0000001264095230_table2663151516335">Table 1</a> describes the related parameters.</p>
         <div class="p">
-         Set the backup frequency, copy retention period, and backup time window based on service requirements to ensure that data can be backed up in a timely manner. The recommended settings are as follows:
+         Set the backup interval, copy retention period, and backup time window based on service requirements to ensure that data can be backed up promptly. The recommended settings are as follows:
          <ul>
           <li>The backup duration must be shorter than the backup period. For example, if the backup period is 5 hours, the backup duration must be shorter than 5 hours.</li>
           <li>The copy retention period must be longer than the backup period.</li>
@@ -167,37 +173,32 @@
            </thead>
            <tbody>
             <tr>
-             <td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 ">
-              <div class="p">
-               <strong id="activedirectory_00013__en-us_topic_0000001839143189_b203081655125718">Specify Target Location</strong>
-               <div class="note" id="activedirectory_00013__en-us_topic_0000001839143189_note81807159571">
-                <span class="notetitle"> NOTE: </span>
-                <div class="notebody">
-                 <p id="activedirectory_00013__en-us_topic_0000001839143189_p5180415155714">Some models of this product do not support this parameter. For details, see the product documentation released on the technical support website or consult the product provider.</p>
-                </div>
-               </div>
-              </div></td>
+             <td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><strong id="activedirectory_00013__en-us_topic_0000001839143189_b203081655125718">Specify Target Location</strong></p></td>
              <td class="cellrowborder" valign="top" width="76.63%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 ">
               <div class="p">
                Specify the target storage location of backup copies.
-               <ul id="activedirectory_00013__en-us_topic_0000001839143189_ul3832679403">
-                <li id="activedirectory_00013__en-us_topic_0000001839143189_li178323718400">Backup storage unit: corresponds to a backup cluster node. After a backup storage unit is selected, copies are stored to the storage unit. If the capacity of the storage unit is insufficient, the backup job will fail.</li>
-                <li id="activedirectory_00013__en-us_topic_0000001839143189_li31700914016">Backup storage unit group: is a collection of backup storage units. After a backup storage unit group is selected, the system automatically selects a target backup storage unit based on the storage policy of the storage unit group.</li>
+               <ul id="activedirectory_00013__fc_gud_0018_en-us_topic_0000001839143189_ul3832679403">
+                <li id="activedirectory_00013__fc_gud_0018_en-us_topic_0000001839143189_li299019528162"><strong id="activedirectory_00013__fc_gud_0018_b88759223475">Backup Storage Units</strong>: A backup storage unit corresponds to a backup cluster node. After a backup storage unit is selected, copies are stored to the storage unit. If the capacity of the storage unit is insufficient, the backup job will fail.<p id="activedirectory_00013__fc_gud_0018_en-us_topic_0000001839143189_p36749546164">For details about how to create a backup storage unit, see "Managing Backup Storage Units" in the <em id="activedirectory_00013__fc_gud_0018_i11450390523">Cluster HA Feature Guide</em>.</p></li>
+                <li id="activedirectory_00013__fc_gud_0018_en-us_topic_0000001839143189_li168151656101610"><span class="parmvalue" id="activedirectory_00013__fc_gud_0018_en-us_topic_0000001839143189_parmvalue142224995111"><b>Backup Storage Unit Groups</b></span>: A backup storage unit group is a collection of backup storage units. After a backup storage unit group is selected, the system automatically selects a target backup storage unit based on the storage policy of the storage unit group.<p id="activedirectory_00013__fc_gud_0018_en-us_topic_0000001839143189_p15126135815168">For details about how to create a backup storage unit group, see "(Optional) Creating Backup Storage Unit Groups" in the <em id="activedirectory_00013__fc_gud_0018_en-us_topic_0000001839143189_i168179237215">Cluster HA Feature Guide</em>.</p></li>
                </ul>
-               <div class="note" id="activedirectory_00013__en-us_topic_0000001839143189_note06533915171">
-                <span class="notetitle"> NOTE: </span>
-                <div class="notebody">
-                 <ul id="activedirectory_00013__en-us_topic_0000001839143189_ul2261104811172">
-                  <li id="activedirectory_00013__en-us_topic_0000001839143189_li182618487176">For 1.5.0, this parameter is displayed only when you have deployed the cluster HA feature. You can leave the target location unspecified. If you do not specify the target location, the system automatically selects the target storage unit through intelligent balancing.</li>
-                  <li id="activedirectory_00013__en-us_topic_0000001839143189_li1025484315189">For 1.6.0 and later versions, you must specify the target location.</li>
-                 </ul>
-                </div>
-               </div>
               </div></td>
             </tr>
             <tr>
              <td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><span><strong>Rate Limiting Policies</strong></span></p></td>
-             <td class="cellrowborder" valign="top" width="76.63%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>Average maximum amount of data that can be transmitted per second by a backup job.</p></td>
+             <td class="cellrowborder" valign="top" width="76.63%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>Average maximum amount of data that can be transmitted per second in a backup job.</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 ">
+              <div class="p">
+               <strong id="activedirectory_00013__en-us_topic_0000001839143189_b693713423122">Job Timeout Alarm</strong>
+               <div class="note" id="activedirectory_00013__en-us_topic_0000001839143189_note379352823112">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p id="activedirectory_00013__en-us_topic_0000001839143189_en-us_topic_0000001839143213_p8320153562113">This parameter is available only in 1.6.0 and later versions.</p>
+                </div>
+               </div>
+              </div></td>
+             <td class="cellrowborder" valign="top" width="76.63%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>After this function is enabled, an alarm is sent if the job execution time exceeds the time window. The alarm needs to be manually cleared.</p></td>
             </tr>
             <tr>
              <td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><span><strong>Job Failure Alarm</strong></span></p></td>
@@ -213,7 +214,7 @@
         </div></li>
        <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
       </ol> <p></p></li>
-     <li><span>(Optional) Configure an archive policy.</span><p></p><p>The built-in storage space of the <span>product</span> is limited. If you need to retain copy data for a long time, you are advised to archive the copy data to external storage.</p> <p>You can configure an archive policy by clicking the <span class="uicontrol"><b><span><strong>Archive Policy</strong></span></b></span> icon or by modifying the SLA.</p> <p>For details about how to configure an archive policy, see <a href="activedirectory_00030.html">Archiving</a>.</p> <p></p></li>
+     <li><span>(Optional) Configure an archive policy.</span><p></p><p>The built-in storage space of the <span>product</span> is limited. If you need to retain copy data for a long time, archive the copy data to external storage.</p> <p>You can configure an archive policy by clicking the <span class="uicontrol"><b><span><strong>Archive Policy</strong></span></b></span> icon or by modifying the SLA.</p> <p>For details about how to configure an archive policy, see <a href="activedirectory_00030.html">Archiving</a>.</p> <p></p></li>
      <li><span>(Optional) Configure a replication policy.</span><p></p><p>The <span>product</span> allows you to replicate local data to a remote data center. If a disaster occurs, data copies in the remote data center can be used to restore production data and services can be taken over.</p> <p>You can configure a replication policy by clicking the <span class="uicontrol"><b><span><strong>Replication Policy</strong></span></b></span> icon or by modifying the SLA.</p> <p>For details about how to configure a replication policy, see <a href="activedirectory_00028.html">Step 7: Creating a Replication SLA</a>.</p>
       <div class="note">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
@@ -221,10 +222,10 @@
         <p id="activedirectory_00013__en-us_topic_0000001839143189_p187474161610">For 1.6.0 and later versions:</p>
         <ul id="activedirectory_00013__en-us_topic_0000001839143189_ul1078182475012">
          <li id="activedirectory_00013__en-us_topic_0000001839143189_li83901215999">The WORM validity period of the backup policy in the SLA must be shorter than the copy retention period in the replication policy.</li>
-         <li id="activedirectory_00013__en-us_topic_0000001839143189_li878324105017">If WORM is not configured at the local end but is configured at the target end, the WORM validity period is the same as the replication copy retention period.</li>
-         <li id="activedirectory_00013__en-us_topic_0000001839143189_li07815248507">If WORM is configured at the local end but not at the target end, the WORM validity period of the replication copy is the same as that of the WORM copy validity period at the local end. The retention period of replication copies is greater than or equal to the WORM validity period of backup copies at the local end.</li>
-         <li id="activedirectory_00013__en-us_topic_0000001839143189_li1278624195020">If WORM is configured at both the local and target ends and WORM is configured by resource granularity in the WORM configuration of <strong id="activedirectory_00013__en-us_topic_0000001839143189_b78231650163717">Data Security</strong> at the target end, all replication copies will be enabled with WORM, and the WORM validity period is the same as the retention period of replication copies.</li>
-         <li id="activedirectory_00013__en-us_topic_0000001839143189_li127819245503">At the local end, if you configure local backup copies to be retained permanently and set <strong id="activedirectory_00013__en-us_topic_0000001839143189_b19962154916464">WORM Validity Period</strong> to <strong id="activedirectory_00013__en-us_topic_0000001839143189_b127309324716">Same as the copy retention period</strong>, the WORM validity period is permanent. After a backup copy is generated, if you modify the SLA policy (by adding a replication policy and set <strong id="activedirectory_00013__en-us_topic_0000001839143189_b115122018172413">Replication and Retention Rules</strong> to <strong id="activedirectory_00013__en-us_topic_0000001839143189_b9172163882417">Replicate all copies</strong>), the WORM validity period at the target end is the same as the retention period of replication copies.</li>
+         <li id="activedirectory_00013__en-us_topic_0000001839143189_li878324105017">If WORM is not configured at the local end but configured at the target end, the WORM validity period is the same as the replication copy retention period.</li>
+         <li id="activedirectory_00013__en-us_topic_0000001839143189_li07815248507">If WORM is configured at the local end but not at the target end, the WORM validity period of replication copies is the same as that of WORM copies at the local end. The retention period of replication copies is greater than or equal to the WORM validity period of backup copies at the local end.</li>
+         <li id="activedirectory_00013__en-us_topic_0000001839143189_li1278624195020">If WORM is configured at both the local and target ends and WORM is configured by resource in the WORM configuration of <strong id="activedirectory_00013__en-us_topic_0000001839143189_b78231650163717">Data Security</strong> at the target end, all replication copies will have WORM enabled, and the WORM validity period is the same as the replication copy retention period.</li>
+         <li id="activedirectory_00013__en-us_topic_0000001839143189_li127819245503">At the local end, if you configure local backup copies to be retained permanently and set <strong id="activedirectory_00013__en-us_topic_0000001839143189_b20511104361110">WORM Validity Period</strong> to <strong id="activedirectory_00013__en-us_topic_0000001839143189_b851224341112">Same as the copy retention period</strong>, the WORM validity period is permanent. After a backup copy is generated, if you modify the SLA policy (by adding a replication policy and setting <strong id="activedirectory_00013__en-us_topic_0000001839143189_b115122018172413">Replication and Retention Rules</strong> to <strong id="activedirectory_00013__en-us_topic_0000001839143189_b9172163882417">Replicate all copies</strong>), the WORM validity period at the target end is the same as the retention period of replication copies.</li>
         </ul>
        </div>
       </div> <p></p></li>

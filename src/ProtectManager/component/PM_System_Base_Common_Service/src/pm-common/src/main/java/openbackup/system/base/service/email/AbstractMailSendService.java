@@ -24,6 +24,7 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.MimeUtility;
 import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -36,6 +37,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -191,6 +193,13 @@ public abstract class AbstractMailSendService {
                 File file = new File(path);
                 MimeBodyPart attachment = new MimeBodyPart();
                 attachment.attachFile(file);
+                // 手动指定附件编码为UTF-8 以及文件格式为zip
+                String encodedFileName = MimeUtility.encodeText(file.getName(), "UTF-8", null);
+                attachment.setFileName(encodedFileName);
+                // 手动设置 Content-Type 和 Content-Disposition
+                attachment.setHeader("Content-Type",
+                    Files.probeContentType(file.toPath()) + "; name=\"" + encodedFileName + "\"");
+                attachment.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"");
                 mp.addBodyPart(attachment);
             }
             msg.setContent(mp);

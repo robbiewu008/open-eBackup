@@ -32,7 +32,7 @@ import {
   TableCols
 } from 'app/shared/components/pro-table';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
-import { assign, find, isEmpty } from 'lodash';
+import { assign, cloneDeep, find, isEmpty } from 'lodash';
 import { CreateResourcesetComponent } from '../../../resource-set/create-resourceset/create-resourceset.component';
 
 @Component({
@@ -163,9 +163,11 @@ export class ApplyResourceComponent implements OnInit, AfterViewInit {
         lvOk: modal => {
           return new Promise(resolve => {
             const content = modal.getContentComponent() as CreateResourcesetComponent;
+            const formValue = content.formGroup.value;
             content.onOK().subscribe({
-              next: () => {
+              next: res => {
                 resolve(true);
+                res = this.selectNewResourceSet(res, formValue);
                 this.dataTable.fetchData();
               },
               error: () => {
@@ -176,6 +178,29 @@ export class ApplyResourceComponent implements OnInit, AfterViewInit {
         }
       })
     );
+  }
+
+  private selectNewResourceSet(res: any, formValue: any) {
+    res = JSON.parse(res || '{}');
+    const tmpNewResourceSet = {
+      ...res,
+      name: formValue.name,
+      description: formValue.desc
+    };
+    // 新创出来的资源集默认选中
+    if (this.resourceSetMap.has(this.selected)) {
+      this.resourceSetMap.set(this.selected, [
+        ...this.resourceSetMap.get(this.selected),
+        tmpNewResourceSet
+      ]);
+    } else {
+      this.resourceSetMap.set(this.selected, tmpNewResourceSet);
+    }
+    this.dataTable.setSelections(
+      cloneDeep(this.resourceSetMap.get(this.selected))
+    );
+    this.invalidEmit();
+    return res;
   }
 
   resetSelection() {

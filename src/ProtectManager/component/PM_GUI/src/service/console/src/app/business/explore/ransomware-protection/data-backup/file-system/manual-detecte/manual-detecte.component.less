@@ -5,3 +5,30 @@
 .switch-group-item {
   margin-top: 6px;
 }
+
+.aui-select-right {
+  padding-right: 0;
+  padding-left: 0;
+  height: 0.32rem;
+  line-height: 0.32rem;
+  & > input {
+    border-top-left-radius: 0.03rem;
+    border-bottom-left-radius: 0.03rem;
+    height: 0.32rem;
+    line-height: 0.32rem;
+    padding-left: 8px;
+  }
+}
+
+::ng-deep.aui-select-right > .lv-input-after::before {
+  margin-right: 0;
+}
+
+.aui-inner-select {
+  width: 1.3rem;
+}
+
+::ng-deep.aui-inner-select > .lv-select-wrapper {
+  border: none;
+  padding: 0;
+}

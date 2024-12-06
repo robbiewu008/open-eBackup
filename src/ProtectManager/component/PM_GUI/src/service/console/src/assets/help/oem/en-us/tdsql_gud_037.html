@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,12 +11,13 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="Step 2: Creating an Archive SLA">
+  <meta name="DC.Title" content="Step 2: Creating an Archive SLA for Backup Copies">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="tdsql_gud_033.html">
   <meta name="prodname" content="">
@@ -30,11 +30,11 @@
   <meta name="DC.Identifier" content="tdsql_gud_037">
   <meta name="DC.Language" content="en-us">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>Step 2: Creating an Archive SLA</title>
+  <title>Step 2: Creating an Archive SLA for Backup Copies</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="tdsql_gud_037"></a><a name="tdsql_gud_037"></a>
-  <h1 class="topictitle1">Step 2: Creating an Archive SLA</h1>
+  <h1 class="topictitle1">Step 2: Creating an Archive SLA for Backup Copies</h1>
   <div>
    <p>If you need to archive the generated backup copies, configure the archive SLA by referring to this section.</p>
    <div class="section">
@@ -44,10 +44,10 @@
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
-     <li><span>Choose <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_uicontrol9143133018394"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_text1093174963311"><strong>Protection</strong></span> &gt; <span id="tdsql_gud_037__en-us_topic_0000001792503806_text18596203494212"><strong>Protection Policies</strong></span> &gt; <span id="tdsql_gud_037__en-us_topic_0000001792503806_text16431530122616"><strong>SLAs</strong></span></b></span>.</span></li>
+     <li><span>Choose <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001839142377_uicontrol8111821122820"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001839142377_text71111921162814"><strong>Protection</strong></span> &gt; Protection Policies &gt; SLAs</b></span>.</span></li>
      <li><span>Locate the SLA for which you want to create an archive policy and choose <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001091370109_uicontrol577717611320"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text19646163524813"><strong>More</strong></span> &gt; <span id="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text068935811482"><strong>Modify</strong></span></b></span>.</span><p></p><p id="tdsql_gud_037__en-us_topic_0000001792503806_p1816920251869">The preset SLAs cannot be modified.</p> <p></p></li>
      <li><span>Click the <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001091370109_uicontrol12308113618612"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text95301130194917"><strong>Archive Policy</strong></span></b></span> icon.</span></li>
-     <li><span>Configure the archive policy information.</span><p></p><p>Click <span class="uicontrol"><b><span><strong>Add</strong></span></b></span> on the right of the page to create multiple archive policies. A maximum of four archive policies can be created, and data can be archived to a maximum of four archive storage devices.</p> <p><a href="#tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001091370109_table13531347181416">Table 1</a> describes the related parameters.</p>
+     <li><span>Configure the archive policy information.</span><p></p><p>Click <span class="uicontrol"><b>Add</b></span> on the right of the page to create an archive policy. A maximum of four archive policies can be created, and data can be archived to a maximum of four archive storage devices.</p> <p><a href="#tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001091370109_table13531347181416">Table 1</a> describes the related parameters.</p>
       <div class="tablenoborder">
        <a name="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001091370109_table13531347181416"></a><a name="en-us_topic_0000001792503806_en-us_topic_0000001091370109_table13531347181416"></a>
        <table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001091370109_table13531347181416" frame="border" border="1" rules="all">
@@ -71,7 +71,7 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p><span id="tdsql_gud_037__en-us_topic_0000001792503806_text1555164115417"><strong>Archive Storage Type</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p>Available options include <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_uicontrol99809551136"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_text4910101212524"><strong>Object Storage</strong></span></b></span> and <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_uicontrol165016581136"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_text16229521135217"><strong>Tape Library</strong></span></b></span>.</p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p>The type can be <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_uicontrol99809551136"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_text4910101212524"><strong>Object Storage</strong></span></b></span> or <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_uicontrol165016581136"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_text16229521135217"><strong>Tape Library</strong></span></b></span>.</p></td>
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p><span id="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text157818825116"><strong>Archive Storage</strong></span></p></td>
@@ -79,10 +79,22 @@
            <ul>
             <li id="tdsql_gud_037__en-us_topic_0000001792503806_li078744584316">If <strong id="tdsql_gud_037__en-us_topic_0000001792503806_b8815104222620">Archive Storage Type</strong> is set to <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_uicontrol816164574110"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_text1616174511413"><strong>Object Storage</strong></span></b></span>, select added object storage. You can also click <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_uicontrol1971818559393"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_text1719105510393"><strong>Add</strong></span></b></span> to add object storage.</li>
             <li id="tdsql_gud_037__en-us_topic_0000001792503806_li113522047134319">If <strong id="tdsql_gud_037__en-us_topic_0000001792503806_b260579152118">Archive Storage Type</strong> is set to <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_uicontrol17606792212"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_text1860610912219"><strong>Tape Library</strong></span></b></span>, select a node.</li>
-           </ul></td>
+           </ul>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p>Some models of this product support the <span class="uicontrol"><b><span>Tape Library</span></b></span> option. For details, see the product documentation released on the technical support website or consult the product provider.</p>
+            </div>
+           </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p><span id="tdsql_gud_037__en-us_topic_0000001792503806_text55110119106"><strong>Media Set</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p><span id="tdsql_gud_037__en-us_topic_0000001792503806_text55110119106"><strong>Media Set</strong></span></p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p><span id="tdsql_gud_037__ph47441955181310">Some models of this product support this parameter. For details, see the product documentation released on the technical support website or consult the product provider.</span></p>
+            </div>
+           </div></td>
           <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p>If <strong id="tdsql_gud_037__en-us_topic_0000001792503806_b1143191282119">Archive Storage Type</strong> is set to <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_uicontrol444612202118"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_text154441219218"><strong>Tape Library</strong></span></b></span>, select a media set. You can also click <span class="uicontrol" id="tdsql_gud_037__en-us_topic_0000001792503806_uicontrol0231114132117"><b><span id="tdsql_gud_037__en-us_topic_0000001792503806_text92304147216"><strong>Add</strong></span></b></span> to create a media set.</p></td>
          </tr>
          <tr>
@@ -108,11 +120,14 @@
          <tr>
           <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 ">
            <div class="p">
-            <strong id="tdsql_gud_037__en-us_topic_0000001792503806_b1466519130620">Drivers</strong>
-            <div class="note" id="tdsql_gud_037__en-us_topic_0000001792503806_note754320443218">
+            <strong>Drivers</strong>
+            <div class="note">
              <span class="notetitle"> NOTE: </span>
              <div class="notebody">
-              <p id="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001839143189_en-us_topic_0000001839143213_p8320153562113">This parameter is available only in 1.6.0 and later versions.</p>
+              <ul>
+               <li>Only 1.6.0 and later versions support this parameter.</li>
+               <li><span>Some models of this product support this parameter. For details, see the product documentation released on the technical support website or consult the product provider.</span></li>
+              </ul>
              </div>
             </div>
            </div></td>
@@ -129,11 +144,11 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p><span id="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text2049612209454"><strong>Rate Limiting Policies</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p>Average maximum amount of data that can be transmitted per second in an archive job. If a tape library serves as the archive storage, rate limiting policy configuration is not supported.</p> <p>Select the created rate limiting policy. For details about how to create a rate limiting policy, see <a href="tdsql_gud_012.html">Step 4: (Optional) Creating a Rate Limiting Policy</a>.</p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p>Average maximum amount of data that can be transmitted per second in an archive job. If a tape library serves as the archive storage, no rate limiting policy can be configured.</p> <p>Select the created rate limiting policy. For details about how to create a rate limiting policy, see <a href="tdsql_gud_012.html">Step 4: (Optional) Creating a Rate Limiting Policy</a>.</p></td>
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p><span id="tdsql_gud_037__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text1953715545610"><strong>Network Acceleration</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p>After this function is enabled, Bottleneck Bandwidth and Round-trip propagation time (BBR) network acceleration can be used. You are advised to enable this function when the network latency is greater than or equal to 20 ms. If a tape library serves as the archive storage, network acceleration configuration is not supported.</p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p>After this function is enabled, Bottleneck Bandwidth and Round-trip propagation time (BBR) network acceleration can be used. You are advised to enable this function when the network latency is greater than or equal to 20 ms. If a tape library serves as the archive storage, network acceleration cannot be configured.</p></td>
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 ">

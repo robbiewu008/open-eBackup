@@ -139,6 +139,8 @@ public class NdmpServerEnvironmentProvider extends DatabaseEnvironmentProvider {
                     protectedResource.setParentUuid(environment.getUuid());
                     protectedResource.setRootUuid(environment.getUuid());
                     protectedResource.setUuid(createResourceUuid(environment.getUuid(), protectedResource));
+                    protectedResource.setExtendInfoByKey(NdmpConstant.NDMP_TYPE,
+                        environment.getExtendInfoByKey(NdmpConstant.NDMP_TYPE));
                 }
                 scanResources.addAll(protectedResources);
             }

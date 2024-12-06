@@ -97,6 +97,7 @@ export class CreateReportComponent implements OnInit {
   hideDataSource = false; // 资源使用报表不需要数据源
   isDecouple =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.decouple.value; // e1000
+  isRequired = true;
 
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip,
@@ -153,6 +154,16 @@ export class CreateReportComponent implements OnInit {
           [
             DataMap.Report_Type.storageSpace.value,
             DataMap.Report_Type.tapeUsed.value
+          ],
+          item.value
+        )
+      );
+    }
+    if (this.appUtilsService.isDistributed) {
+      this.reportTypeOptions = reject(this.reportTypeOptions, item =>
+        includes(
+          [
+            DataMap.Report_Type.tapeUsed.value // e6000没有磁带库，去除磁带使用表
           ],
           item.value
         )
@@ -278,9 +289,25 @@ export class CreateReportComponent implements OnInit {
         this.formGroup.get('frequency').clearValidators();
         this.formGroup.get('cluster').clearValidators();
       } else {
-        this.formGroup
-          .get('cluster')
-          .setValidators([this.baseUtilService.VALID.required()]);
+        if (
+          includes(
+            [
+              DataMap.Report_Type.backupJob.value,
+              DataMap.Report_Type.recoveryJob.value,
+              DataMap.Report_Type.recoveryDrillJob.value,
+              DataMap.Report_Type.tapeUsed.value
+            ],
+            res
+          )
+        ) {
+          this.isRequired = false;
+          this.formGroup.get('cluster').clearValidators();
+        } else {
+          this.isRequired = true;
+          this.formGroup
+            .get('cluster')
+            .setValidators([this.baseUtilService.VALID.required()]);
+        }
       }
 
       this.formGroup.get('cluster').updateValueAndValidity();

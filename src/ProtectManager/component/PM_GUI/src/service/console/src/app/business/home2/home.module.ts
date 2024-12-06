@@ -11,6 +11,7 @@
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
 import { NgModule } from '@angular/core';
+import { BackupSoftwareManagementComponent } from 'app/business/home2/card-components/backup-software-management/backup-software-management.component';
 import { HomeComponent } from './home.component';
 import { HomeRouterModule } from './home-router.module';
 import { CommonModule } from '@angular/common';

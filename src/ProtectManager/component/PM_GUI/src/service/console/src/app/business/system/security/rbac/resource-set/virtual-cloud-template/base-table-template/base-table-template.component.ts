@@ -208,13 +208,16 @@ export class BaseTableTemplateComponent
   }
 
   private parseFetchData() {
+    let currentType = this.isVmGroup
+      ? ResourceSetType.RESOURCE_GROUP
+      : this.appType;
     this.selectionData = this.selectionData.filter(item =>
-      find(this.allSelectionMap[this.appType].data, { uuid: item.uuid })
+      find(this.allSelectionMap[currentType].data, { uuid: item.uuid })
     );
-    if (!isEmpty(this.allSelectionMap[this.appType]?.data)) {
+    if (!isEmpty(this.allSelectionMap[currentType]?.data)) {
       each(this.tableData.data, item => {
         if (
-          some(this.allSelectionMap[this.appType].data, {
+          some(this.allSelectionMap[currentType].data, {
             uuid: item.uuid
           }) &&
           !some(this.selectionData, { uuid: item.uuid })
@@ -496,7 +499,7 @@ export class BaseTableTemplateComponent
       [this.resType.cNwareHost.value]: 'cnwareLinkStatus',
       [this.resType.APSCloudServer.value]: 'ApsaraStackStatus',
       [this.resType.hyperVVm.value]: 'hypervStatus',
-      [this.resType.hyperVHost.value]: 'resource_LinkStatus_Special',
+      [this.resType.hyperVHost.value]: 'hypervHostStatus',
       [this.resType.hostSystem.value]: 'resource_LinkStatus',
       [this.resType.virtualMachine.value]: 'vm_LinkStatus',
       [this.resType.fusionComputeVirtualMachine.value]: 'fcVMLinkStatus',
@@ -706,9 +709,9 @@ export class BaseTableTemplateComponent
           visible: '1'
         });
       }
-      if (this.treeSelection.type !== ResourceType.OpenStack) {
+      if (this.treeNodeChecked.type !== ResourceType.OpenStack) {
         assign(extParams, {
-          path: [['=~'], this.treeSelection?.path + '/']
+          path: [['=~'], this.treeNodeChecked?.path + '/']
         });
       }
       return assign(extParams, {
@@ -907,6 +910,28 @@ export class BaseTableTemplateComponent
         total: res.totalCount
       };
 
+      // 云平台的服务器组不在第一层，如果修改的时候需要看有没有获取到，然后手动赋值
+      if (
+        !isEmpty(this.data) &&
+        !isEmpty(this.allSelectionMap[ResourceSetType.RESOURCE_GROUP]?.data) &&
+        [
+          ResourceSetType.HCSStack,
+          ResourceSetType.OpenStack,
+          ResourceSetType.ApsaraStack
+        ].includes(this.appType) &&
+        this.isVmGroup
+      ) {
+        this.selectionData = cloneDeep(
+          this.allSelectionMap[ResourceSetType.RESOURCE_GROUP].data
+        );
+        // 资源组由于只用scopemodule来区分，放在一个大类里，所以每次修改时展开需要存入表去在下发的时候进行比较
+        if (!!this.selectionData.length) {
+          this.resourceGroupChange.emit(this.appType);
+        }
+        this.dataTable.setSelections(cloneDeep(this.selectionData));
+        this.baseSelectChange.emit();
+      }
+
       // 如果父级被选中，则需要把子级选中并且置灰,父级被取消选中则取消置灰,全选状态下不考虑这个
       if (
         !isEmpty(this.allSelectionMap[this.appType]?.data) &&
@@ -974,7 +999,7 @@ export class BaseTableTemplateComponent
         break;
       case this.resType.hyperVHost.value:
         assign(item, {
-          status: item?.linkStatus ?? '0'
+          status: item.extendInfo?.State
         });
         break;
       case this.resType.HCSTenant.value:

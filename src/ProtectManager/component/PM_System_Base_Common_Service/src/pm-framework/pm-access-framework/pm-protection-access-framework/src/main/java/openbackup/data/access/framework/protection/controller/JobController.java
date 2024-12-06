@@ -124,7 +124,7 @@ public class JobController {
     @ExterAttack
     @PutMapping("/{jobId}/action/update-status")
     public void updateJobStatus(@PathVariable String jobId, @RequestBody @Valid UpdateJobStatusRequest request) {
-        log.info("Update job, jobId: {}, taskId: {}, status: {}, speed: {}, progress: {}", jobId,
+        log.debug("Update job, jobId: {}, taskId: {}, status: {}, speed: {}, progress: {}", jobId,
             request.getTaskId(), request.getStatus(), request.getSpeed(), request.getProgress());
         if (!jobService.isJobPresent(jobId)) {
             log.warn("Job is not found, jobId: {}", jobId);

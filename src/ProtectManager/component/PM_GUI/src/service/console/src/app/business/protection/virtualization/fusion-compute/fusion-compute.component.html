@@ -1,4 +1,3 @@
-<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-fullpage">
     <div class="aui-block vm-container">
         <lv-group class="group">
             <lv-group class="left" lvDirection='vertical'>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="tree-container">
                     <ng-container *ngIf="treeData.length;else noDataTpl">
-                        <lv-tree lvCompareWith="uuid" [lvData]='treeData' [(lvSelection)]="treeSelection"
+                        <lv-tree lvCompareWith="uuid" lvSelectionAssociate="false" [lvData]='treeData' [(lvSelection)]="treeSelection"
                             lvSelectionMode='single' [lvBeforeSelected]="beforeSelected" (lvCheck)="nodeCheck($event)"
                             lvShowContentIcon (lvExpandedChange)="expandedChange($event)" [lvNodeTemplate]='nodeTpl'>
                         </lv-tree>
@@ -86,9 +86,6 @@
                 <span>{{item.label}}</span>
             </div>
         </lv-group>
-        <i *ngIf="item.authorized_user && item.authorize_user_label" [lv-icon]="item.authorize_user_label"
-            lvTooltipPosition="right" lv-tooltip="{{'common_new_assigned_label' | i18n: [item.authorized_user]}}"></i>
-        <i *ngIf="!item.authorized_user && item.authorize_user_label" [lv-icon]="item.authorize_user_label"
-            lvTooltipPosition="right" lv-tooltip="{{'common_unassigned_label' | i18n}}"></i>
+        <lv-group></lv-group>
     </lv-group>
 </ng-template>

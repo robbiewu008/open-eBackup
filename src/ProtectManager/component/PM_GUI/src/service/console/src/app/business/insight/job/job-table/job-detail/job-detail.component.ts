@@ -615,7 +615,9 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         value = this.triggerPolicy.interval;
         break;
       case 'copyType':
-        value = this.extendObject?.backupType;
+        // 老版本为backupType
+        value =
+          this.extendObject?.sourceCopyType ?? this.extendObject.backupType;
         break;
       default:
         break;

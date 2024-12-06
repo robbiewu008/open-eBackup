@@ -236,9 +236,14 @@ public class OracleClusterProvider extends DatabaseEnvironmentProvider {
 
     @Override
     public void remove(ProtectedEnvironment environment) {
-        if (!VerifyUtil.isEmpty(getClusterDatabase(environment))) {
+        List<ProtectedResource> resources = getClusterDatabase(environment);
+        if (!VerifyUtil.isEmpty(resources)) {
+            // 如果还有关联资源 则打印日志并报错 取第一个资源uuid和type作为提示
+            ProtectedResource resource = resources.get(0);
+            log.error("Resource still have dependency, fail to delete, resource uuid:{}, total resource size:{}",
+                resource.getUuid(), resources.size());
             throw new LegoCheckedException(CommonErrorCode.RESOURCE_BE_DEPENDED_BY_OTHERS,
-                    "oracle cluster delete failed");
+                new String[] {resource.getUuid(), resource.getType()}, "oracle cluster delete failed");
         }
     }
 

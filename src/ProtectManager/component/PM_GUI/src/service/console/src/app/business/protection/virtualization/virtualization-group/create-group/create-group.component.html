@@ -1,4 +1,3 @@
-<div class="vm-group">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="vm-group">
   <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
     <lv-form-item>
       <lv-form-label lvRequired>{{groupNameLabel}}</lv-form-label>
@@ -47,7 +47,7 @@
       <lv-form-label></lv-form-label>
       <lv-form-control>
     <lv-transfer #transfer [lvSourceColumns]="sourceColumns"
-      [lvSourceData]="sourceData" [lvSourceSelection]="sourceSelection" [lvTargetColumns]="targetColumns"
+      [lvSourceData]="sourceData" [lvSourceSelection]="sourceSelection" [lvTargetColumns]="targetColumns" [lvTitles]="['common_optional_label' | i18n, 'common_selected_label' | i18n]"
       (lvStateChange)="stateChange($event)" (lvSelectionChange)="change($event)" lvAsync="true" [lvTotal]="total" [lvItemSize]="20" lvDataKey="uuid"></lv-transfer>
   </lv-form-control>
 </lv-form-item>

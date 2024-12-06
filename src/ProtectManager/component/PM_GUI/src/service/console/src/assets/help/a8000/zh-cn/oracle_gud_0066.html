@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -34,7 +34,7 @@
 <div class="section"><h4 class="sectiontitle">背景信息</h4><ul><li>支持使用备份副本、复制副本、即时挂载产生的副本进行即时挂载。</li><li>不支持挂载副本至原位置。</li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">前提条件</h4><p>挂载至的目标主机已安装ProtectAgent及其他相关软件。</p>
-<p id="oracle_gud_0066__zh-cn_topic_0000001120806607_p13193162616513">具体操作可参考<span id="oracle_gud_0066__cite574135311512">《OceanProtect <span id="oracle_gud_0066__zh-cn_topic_0000001792502994_ph19170214112011">备份一体机 1.5.0-1.6.0</span> ProtectAgent安装指南》</span>。</p>
+<p id="oracle_gud_0066__zh-cn_topic_0000001120806607_p13193162616513">具体操作可参考<span id="oracle_gud_0066__cite574135311512">《OceanProtect DataBackup 1.5.0-1.6.0 ProtectAgent安装指南》</span>。</p>
 </div>
 <div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>如果存在同名数据库，请先关闭该同名数据库再执行挂载，否则会导致挂载失败。关闭数据库操作如下：</span><p><ol type="a"><li id="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_li14647185922920">登录Oracle数据库主机。<p id="oracle_gud_0066__oracle_gud_0062_p8360011829"><a name="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_li14647185922920"></a><a name="oracle_gud_0062_zh-cn_topic_0000001656561309_li14647185922920"></a>请使用PuTTY登录Oracle数据库主机，并执行<strong id="oracle_gud_0066__oracle_gud_0062_b14760136722">su - oracle</strong>命令，切换到<strong id="oracle_gud_0066__oracle_gud_0062_b776016920">oracle</strong>账户。</p>
 </li><li id="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_li14572194814339">执行以下命令，登录Oracle数据库实例。<ul id="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_ul7420345341"><li id="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li15682124913711">OS认证：<p id="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p95148598366"><a name="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li15682124913711"></a><a name="oracle_gud_0062_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li15682124913711"></a><strong id="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_b14236563719">export ORACLE_SID=</strong><em id="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_i85144598369">数据库实例名称</em></p>
@@ -46,6 +46,10 @@
 <p id="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p159150224117">根据提示输入密码。</p>
 </li></ul>
 </li><li id="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_li198251911109">执行以下命令关闭同名数据库。<p id="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_p96841918142516"><a name="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_li198251911109"></a><a name="oracle_gud_0062_zh-cn_topic_0000001656561309_li198251911109"></a><strong id="oracle_gud_0066__oracle_gud_0062_zh-cn_topic_0000001656561309_b1025322122520">shutdown immediate;</strong></p>
+<div class="note" id="oracle_gud_0066__oracle_gud_0062_note470175616170"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="oracle_gud_0066__oracle_gud_0062_p127116565174">对于RAC集群，所有节点均需要执行该命令。</p>
+</div></div>
+<p id="oracle_gud_0066__oracle_gud_0062_p146421258946">回显如下表示数据库关闭完成。</p>
+<pre class="screen" id="oracle_gud_0066__oracle_gud_0062_screen730142119511">ORACLE instance shut down.</pre>
 </li></ol>
 </p></li><li><span>选择<span class="uicontrol" id="oracle_gud_0066__zh-cn_topic_0000001839142377_uicontrol137744685812">“<span id="oracle_gud_0066__zh-cn_topic_0000001839142377_text9893546125720">数据利用</span> &gt; <span id="oracle_gud_0066__zh-cn_topic_0000001839142377_text4550936154317">即时挂载</span> &gt; <span id="oracle_gud_0066__zh-cn_topic_0000001839142377_text1948813611581">Oracle</span>”</span>。</span></li><li><span>单击<span class="uicontrol">“<span>创建</span>”</span>。</span></li><li><span>在<span class="uicontrol">“<span>选择资源</span>”</span>页签，选择要挂载的副本对应的源数据库，单击<span class="uicontrol">“<span>下一步</span>”</span>。</span><p><ul><li>如果资源类型是集群，则此处仅展示集群的管理IP，集群成员不会展示。</li><li>如果主机或集群处于离线状态，则不会进行即时挂载，此处不展示离线状态的主机或集群。</li></ul>
 </p></li><li><span>在<span class="uicontrol">“<span>选择副本</span>”</span>页签：</span><p><ol type="a"><li>选择要挂载的副本。<p>创建即时挂载的副本必须是<span class="uicontrol">“<span>正常</span>”</span>状态。</p>

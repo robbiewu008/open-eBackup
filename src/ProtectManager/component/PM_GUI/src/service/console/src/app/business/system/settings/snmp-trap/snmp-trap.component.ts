@@ -50,6 +50,7 @@ import {
   GlobalService,
   I18NService
 } from 'app/shared/services';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { assign, isNull, isString, isUndefined, toUpper } from 'lodash';
 import { of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -209,6 +210,7 @@ export class SnmpTrapComponent implements OnInit {
     public fb: FormBuilder,
     public i18n: I18NService,
     public datePipe: DatePipe,
+    public appUtilsService: AppUtilsService,
     private sanitizer: DomSanitizer,
     public modalService: ModalService,
     public globalService: GlobalService,

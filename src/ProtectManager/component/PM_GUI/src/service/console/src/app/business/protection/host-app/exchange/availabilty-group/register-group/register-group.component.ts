@@ -158,7 +158,9 @@ export class RegisterGroupComponent implements OnInit {
       userName: get(this.rowData, 'auth.authKey', ''),
       concurrency: Number(
         get(this.rowData, 'extendInfo.maxConcurrentJobNumber', '1')
-      )
+      ),
+      compatibility_mode:
+        this.rowData?.extendInfo?.compatibility_mode === 'true'
     };
     if (this.rowData.subType === DataMap.Resource_Type.ExchangeSingle.value) {
       assign(data, {
@@ -201,7 +203,8 @@ export class RegisterGroupComponent implements OnInit {
           this.baseUtilService.VALID.integer(),
           this.baseUtilService.VALID.rangeValue(1, 10)
         ]
-      })
+      }),
+      compatibility_mode: new FormControl(false)
     });
 
     this.formGroup.get('type').valueChanges.subscribe(res => {
@@ -251,7 +254,10 @@ export class RegisterGroupComponent implements OnInit {
           DataMap.Resource_Type.ExchangeSingle.value
             ? '0'
             : '1',
-        maxConcurrentJobNumber: String(this.formGroup.value.concurrency)
+        maxConcurrentJobNumber: String(this.formGroup.value.concurrency),
+        compatibility_mode: String(
+          this.formGroup.get('compatibility_mode').value
+        )
       },
       auth: {
         authType: 2,

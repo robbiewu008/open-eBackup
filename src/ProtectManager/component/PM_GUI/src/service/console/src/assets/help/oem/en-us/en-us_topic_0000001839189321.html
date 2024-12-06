@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,52 +11,56 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="How Should I Add a Common User to sudoers?">
+  <meta name="DC.Title" content="How Can I Add a Common User to sudoers? (Applicable to the Linux OS)">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="EN-US_TOPIC_0000001839189321">
   <meta name="DC.Language" content="en-us">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>How Should I Add a Common User to sudoers?</title>
+  <title>How Can I Add a Common User to sudoers? (Applicable to the Linux OS)</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="EN-US_TOPIC_0000001839189321"></a><a name="EN-US_TOPIC_0000001839189321"></a>
-  <h1 class="topictitle1">How Should I Add a Common User to <strong>sudoers</strong>?</h1>
-  <div>
-   <p>When installing ProtectAgent in automatic push mode, if <span class="uicontrol"><b>User Type</b></span> is set to <span class="uicontrol"><b>Common User</b></span>, you need to add the common user to <strong>sudoers</strong> first. Otherwise, ProtectAgent registration will fail.</p>
-   <div class="section">
+  <h1 class="topictitle1">How Can I Add a Common User to sudoers? (Applicable to the Linux OS)</h1>
+  <div id="body0000001552733033">
+   <p id="EN-US_TOPIC_0000001839189321__p8255164735613">When installing ProtectAgent in automatic push mode, if <span class="uicontrol" id="EN-US_TOPIC_0000001839189321__uicontrol28708314569"><b>User Type</b></span> is set to <span class="uicontrol" id="EN-US_TOPIC_0000001839189321__uicontrol1160423416562"><b>Common User</b></span>, you need to add the common user to <strong id="EN-US_TOPIC_0000001839189321__b1323713103618">sudoers</strong> first. Otherwise, ProtectAgent registration will fail. This section uses EulerOS as an example.</p>
+   <div class="section" id="EN-US_TOPIC_0000001839189321__section175941115163111">
     <h4 class="sectiontitle">Procedure</h4>
-    <ol>
-     <li><span>Log in to the agent host as user <strong>root</strong>.</span></li>
-     <li><span>Run the following command to search for the directory of the <strong>sudoers</strong> configuration file:</span><p></p><pre class="screen">whereis sudoers</pre> <p></p></li>
-     <li><span>Run the following command to change the permission on the <strong>sudoers</strong> configuration file:</span><p></p><pre class="screen">chmod u+w /etc/sudoers</pre> <p></p></li>
-     <li><span>Back up the source file.</span><p></p><pre class="screen">mkdir /etc/backup_sudoers
-cp /etc/sudoers /etc/backup_sudoers</pre> <p></p></li>
-     <li id="EN-US_TOPIC_0000001839189321__li4145165012521"><a name="EN-US_TOPIC_0000001839189321__li4145165012521"></a><a name="li4145165012521"></a><span>Run the following command to open configuration file <strong>/etc/sudoers</strong>.</span><p></p><pre class="screen">vim /etc/sudoers</pre> <p></p></li>
-     <li><span>Check whether the <span class="parmname"><b>Defaults requiretty</b></span> field exists in the configuration file. If yes, delete this configuration.</span></li>
+    <ol id="EN-US_TOPIC_0000001839189321__ol122521212317">
+     <li id="EN-US_TOPIC_0000001839189321__li12252102115312"><span>Log in to the agent host as user <strong id="EN-US_TOPIC_0000001839189321__b18467142233112">root</strong>.</span></li>
+     <li id="EN-US_TOPIC_0000001839189321__li1296882714311"><span>Run the following command to search for the directory of the <strong id="EN-US_TOPIC_0000001839189321__b2025518003713">sudoers</strong> configuration file:</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001839189321__screen2925152217527">whereis sudoers</pre> <p id="EN-US_TOPIC_0000001839189321__p82051743122320">Information similar to the following is displayed. <strong id="EN-US_TOPIC_0000001839189321__b416121717375">/etc/sudoers</strong> is the directory of the <strong id="EN-US_TOPIC_0000001839189321__b138112243376">sudoers</strong> configuration file.</p> <pre class="screen" id="EN-US_TOPIC_0000001839189321__screen203173536238">sudoers: <strong id="EN-US_TOPIC_0000001839189321__b18409559152516">/etc/sudoers</strong> /etc/sudoers.d /uer/share/man/man5/sudoers.5.gz</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839189321__li1967213198527"><span>Run the following command to query the permission on the <strong id="EN-US_TOPIC_0000001839189321__b18566033153717">sudoers</strong> configuration file:</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001839189321__screen2061215122712">ll /etc/sudoers</pre> <p id="EN-US_TOPIC_0000001839189321__p1395722592712">If information similar to the following is displayed, user <strong id="EN-US_TOPIC_0000001839189321__b622024964019">root</strong> has only the read-only permission on the <strong id="EN-US_TOPIC_0000001839189321__b1248141283811">sudoers</strong> configuration file. In this case, perform <a href="#EN-US_TOPIC_0000001839189321__li45591852202917">4</a> to grant the write permission on the configuration file to user <strong id="EN-US_TOPIC_0000001839189321__b1831894716414">root</strong>. If user <strong id="EN-US_TOPIC_0000001839189321__b109551931479">root</strong> has the write permission on the configuration file, go to <a href="#EN-US_TOPIC_0000001839189321__li1783801718592">5</a>.</p> <pre class="screen" id="EN-US_TOPIC_0000001839189321__screen5894174019277">-r--r-----. 1 root root 20724 Nov 19 21:04 /etc/sudoers</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839189321__li45591852202917"><a name="EN-US_TOPIC_0000001839189321__li45591852202917"></a><a name="li45591852202917"></a><span>Run the following command to grant the write permission on the <strong id="EN-US_TOPIC_0000001839189321__b0234113215479">sudoers</strong> configuration file:</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001839189321__screen2141552105214">chmod u+w /etc/sudoers</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839189321__li1783801718592"><a name="EN-US_TOPIC_0000001839189321__li1783801718592"></a><a name="li1783801718592"></a><span>Run the following commands to back up the source file:</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001839189321__screen19630187143214">mkdir /etc/backup_sudoers</pre> <pre class="screen" id="EN-US_TOPIC_0000001839189321__screen205131331105917">cp /etc/sudoers /etc/backup_sudoers</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839189321__li4145165012521"><a name="EN-US_TOPIC_0000001839189321__li4145165012521"></a><a name="li4145165012521"></a><span>Run the following command to open the <strong id="EN-US_TOPIC_0000001839189321__b2012811556475">sudoers</strong> configuration file:</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001839189321__screen92963290535">vim /etc/sudoers</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839189321__li994215063110"><span>Check whether the <span class="parmname" id="EN-US_TOPIC_0000001839189321__parmname2586204445719"><b>Defaults requiretty</b></span> field exists in the configuration file. If yes, delete this configuration.</span></li>
      <li id="EN-US_TOPIC_0000001839189321__li188920444274"><a name="EN-US_TOPIC_0000001839189321__li188920444274"></a><a name="li188920444274"></a><span>Add the following content to the configuration file, save the modification, and exit.</span><p></p>
-      <div class="p">
-       Take common user <strong>common_user</strong> as an example. Replace it with the actual common username used for ProtectAgent installation.
-       <ul>
-        <li>If the sudo non-password-free mode is used, add the following content to the configuration file:<pre class="screen"><em>common_user</em>    ALL=(ALL)       /bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre> <p>Example:</p> <p><span><img src="en-us_image_0000001941788145.png"></span></p></li>
-        <li>If the sudo password-free mode is used, add the following content to the configuration file:<pre class="screen"><em>common_user</em>    ALL=(ALL)       NOPASSWD:/bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre></li>
-       </ul>
-       <div class="note">
-        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
-        <div class="notebody">
-         <p>The preceding added content is divided into three columns in a row. The first and second columns are separated by four characters, and the second and third columns are separated by seven characters. If the preceding content copied to the configuration file contains line feed characters, manually delete the line feed characters.</p>
+      <div class="p" id="EN-US_TOPIC_0000001839189321__p4124171235716">
+       Common user <strong id="EN-US_TOPIC_0000001839189321__b1954858191618">common_user</strong> is used as an example. Replace it with the actual common username used for ProtectAgent installation.
+       <div class="notice" id="EN-US_TOPIC_0000001839189321__note7971559542">
+        <span class="noticetitle"><img src="public_sys-resources/notice_3.0-en-us.png"> </span>
+        <div class="noticebody">
+         <ul id="EN-US_TOPIC_0000001839189321__ul1665512016445">
+          <li id="EN-US_TOPIC_0000001839189321__li116550094414">Modify the configuration file in strict compliance with the requirements. Otherwise, ProtectAgent may fail to be installed in automatic push mode or the <strong id="EN-US_TOPIC_0000001839189321__b55658472493">sudo</strong> command may fail to be executed.</li>
+          <li id="EN-US_TOPIC_0000001839189321__li13949152004418">In the configuration file, the following added content is divided into three columns in a row. The first and second columns are separated by four characters, and the second and third columns are separated by seven characters. If the following content copied to the configuration file contains line feed characters, manually delete the line feed characters.</li>
+         </ul>
         </div>
        </div>
+       <ul id="EN-US_TOPIC_0000001839189321__ul57986126495">
+        <li id="EN-US_TOPIC_0000001839189321__li5837172920504">If the sudo non-password-free mode is used, add the following content to the configuration file:<pre class="screen" id="EN-US_TOPIC_0000001839189321__screen472610712545"><em id="EN-US_TOPIC_0000001839189321__i152596386529">common_user</em>    ALL=(ALL)       /bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre> <p id="EN-US_TOPIC_0000001839189321__p13411174513564">Example:</p> <p id="EN-US_TOPIC_0000001839189321__p341144515566"><span><img id="EN-US_TOPIC_0000001839189321__image7411345165619" src="en-us_image_0000001941788145.png"></span></p></li>
+        <li id="EN-US_TOPIC_0000001839189321__li22241723144914">If the sudo password-free mode is used, add the following content to the configuration file:<pre class="screen" id="EN-US_TOPIC_0000001839189321__screen96334161516"><em id="EN-US_TOPIC_0000001839189321__i2251173135214">common_user</em>    ALL=(ALL)       NOPASSWD:/bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre></li>
+       </ul>
       </div> <p></p></li>
-     <li><span>View the configuration file to check whether the <span class="parmname"><b>Defaults requiretty</b></span> field is deleted and whether the user added in <a href="#EN-US_TOPIC_0000001839189321__li188920444274">7</a> exists.</span><p></p><pre class="screen">cat /etc/sudoers</pre>
-      <ul>
-       <li>If the modification fails, roll back the configuration file. After confirming that the rollback is successful, repeat <a href="#EN-US_TOPIC_0000001839189321__li4145165012521">5</a> to <a href="#EN-US_TOPIC_0000001839189321__li188920444274">7</a>.<pre class="screen">cp /etc/backup_sudoers/sudoers /etc/sudoers
-cat /etc/sudoers</pre></li>
-       <li>If the modification is successful, delete the backup file.<pre class="screen">rm -fr /etc/backup_sudoers</pre></li>
+     <li id="EN-US_TOPIC_0000001839189321__li11391140173419"><a name="EN-US_TOPIC_0000001839189321__li11391140173419"></a><a name="li11391140173419"></a><span>If you have performed <a href="#EN-US_TOPIC_0000001839189321__li45591852202917">4</a> to modify the permission on the <strong id="EN-US_TOPIC_0000001839189321__b11835123313511">sudoers</strong> configuration file, perform this step to delete the write permission on the file. Otherwise, skip this step.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001839189321__screen27863619358">chmod u-w /etc/sudoers</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839189321__li79011641162019"><span>View the configuration file to check whether the <span class="parmname" id="EN-US_TOPIC_0000001839189321__parmname1561165720188"><b>Defaults requiretty</b></span> field is deleted and whether the user added in <a href="#EN-US_TOPIC_0000001839189321__li188920444274">8</a> exists.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001839189321__screen83592506128">cat /etc/sudoers</pre>
+      <ul id="EN-US_TOPIC_0000001839189321__ul1215921062014">
+       <li id="EN-US_TOPIC_0000001839189321__li12370814142619">If the modification fails, roll back the configuration file. After confirming that the rollback is successful, repeat <a href="#EN-US_TOPIC_0000001839189321__li4145165012521">6</a> to <a href="#EN-US_TOPIC_0000001839189321__li11391140173419">9</a>.<pre class="screen" id="EN-US_TOPIC_0000001839189321__screen247405762119">cp /etc/backup_sudoers/sudoers /etc/sudoers</pre> <pre class="screen" id="EN-US_TOPIC_0000001839189321__screen10117950173612">cat /etc/sudoers</pre></li>
+       <li id="EN-US_TOPIC_0000001839189321__li0454155172211">If the modification is successful, delete the backup file.<pre class="screen" id="EN-US_TOPIC_0000001839189321__screen129061154233">rm -fr /etc/backup_sudoers</pre></li>
       </ul> <p></p></li>
     </ol>
    </div>

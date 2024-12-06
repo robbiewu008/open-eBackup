@@ -27,7 +27,16 @@ import {
   TableData
 } from 'app/shared/components/pro-table';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { assign, defer, each, find, includes, isArray, isEmpty } from 'lodash';
+import {
+  assign,
+  defer,
+  each,
+  find,
+  includes,
+  intersection,
+  isArray,
+  isEmpty
+} from 'lodash';
 
 @Component({
   selector: 'aui-add-drill-resource',
@@ -191,6 +200,25 @@ export class AddDrillResourceComponent implements OnInit {
     return conditions;
   }
 
+  needAddTopInstance(subTypeList: string[]): boolean {
+    return !isEmpty(
+      intersection(subTypeList, [
+        DataMap.Resource_Type.AntDBInstance.value,
+        DataMap.Resource_Type.AntDBClusterInstance.value,
+        DataMap.Resource_Type.Dameng_cluster.value,
+        DataMap.Resource_Type.Dameng_singleNode.value,
+        DataMap.Resource_Type.MySQLInstance.value,
+        DataMap.Resource_Type.MySQLClusterInstance.value,
+        DataMap.Resource_Type.PostgreSQLInstance.value,
+        DataMap.Resource_Type.PostgreSQLClusterInstance.value,
+        DataMap.Resource_Type.informixInstance.value,
+        DataMap.Resource_Type.informixClusterInstance.value,
+        DataMap.Resource_Type.KingBaseInstance.value,
+        DataMap.Resource_Type.KingBaseClusterInstance.value
+      ])
+    );
+  }
+
   getResource(filters) {
     if (isEmpty(this.selectedResoureType)) {
       return;
@@ -202,6 +230,13 @@ export class AddDrillResourceComponent implements OnInit {
         ? this.selectedResoureType
         : [this.selectedResoureType]
     };
+
+    // 一些应用需要加顶层资源标签
+    if (this.needAddTopInstance(params.subTypeList)) {
+      assign(params, {
+        isTopInstance: '1'
+      });
+    }
 
     if (!isEmpty(filters.conditions)) {
       const conditionsTemp = JSON.parse(filters.conditions);

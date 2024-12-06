@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -24,6 +24,8 @@
   <meta name="version" content="">
   <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
   <meta name="DC.Publisher" content="20241029">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="TiDB_000501">
   <meta name="DC.Language" content="en-us">
@@ -38,7 +40,7 @@
    <p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001607691460_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p0553222467">To meet enterprises' different data protection requirements for various environments, the <span id="TiDB_000501__tdsql_gud_060_text12502183914312">product</span> allows users to customize SLAs.</p>
    <div class="section" id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001607691460_en-us_topic_0000001188593208_en-us_topic_0000001170622238_section1969174516230">
     <h4 class="sectiontitle">Custom SLAs</h4>
-    <p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p118482029286">Users can customize SLAs for backup and replication jobs. In an SLA, user can customize basic parameters such as the job execution frequency, time window, and copy retention duration, and other advanced parameters for various protected resources.</p>
+    <p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p118482029286">You can customize SLAs for backup and replication jobs. In an SLA, you can define basic parameters such as the job execution interval, time window, and copy retention duration, as well as other advanced parameters specific to various resources to be protected.</p>
     <p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p1186264517237"><a href="#TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table171521524193513">Table 1</a> describes the SLAs used for different types of jobs.</p>
     <div class="tablenoborder">
      <a name="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table171521524193513"></a><a name="tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table171521524193513"></a>
@@ -52,18 +54,18 @@
       </colgroup>
       <thead align="left">
        <tr id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_row615222414352">
-        <th align="left" class="cellrowborder" valign="top" width="19.75%" id="mcps1.3.3.4.2.3.1.1"><p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p5152182416356"><strong id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_b83141864249">SLA</strong></p></th>
-        <th align="left" class="cellrowborder" valign="top" width="80.25%" id="mcps1.3.3.4.2.3.1.2"><p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p7152162483518"><strong id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_b12873191162417">Description</strong></p></th>
+        <th align="left" class="cellrowborder" valign="top" width="19.75%" id="mcps1.3.3.4.2.3.1.1"><p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p5152182416356">SLA</p></th>
+        <th align="left" class="cellrowborder" valign="top" width="80.25%" id="mcps1.3.3.4.2.3.1.2"><p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p7152162483518">Description</p></th>
        </tr>
       </thead>
       <tbody>
        <tr id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_row7152102483518">
         <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.4.2.3.1.1 "><p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p14152132413510">Backup SLA</p></td>
-        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.4.2.3.1.2 "><p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p2015222473514">Users can define the execution frequency and retention period of backup copies of a backup job.</p></td>
+        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.4.2.3.1.2 "><p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p2015222473514">Define parameters such as the backup job execution interval and backup copy retention period.</p></td>
        </tr>
        <tr id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_row61521124173515">
         <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.4.2.3.1.1 "><p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p71523242356">Replication SLA</p></td>
-        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.4.2.3.1.2 "><p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p1315215248355">Users can specify the target cluster to which the backup copy is replicated, and customize the replication job execution frequency and copy retention period.</p></td>
+        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.4.2.3.1.2 "><p id="TiDB_000501__tdsql_gud_060_en-us_topic_0000001839223149_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p1315215248355">Specify the target cluster to which a backup copy is replicated, and define parameters such as the replication job execution interval and replication copy retention period.</p></td>
        </tr>
       </tbody>
      </table>

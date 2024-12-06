@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,52 +11,56 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="添加普通用户至sudoers">
+  <meta name="DC.Title" content="添加普通用户至sudoers（适用于Linux OS）">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839189321">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>添加普通用户至sudoers</title>
+  <title>添加普通用户至sudoers（适用于Linux OS）</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="ZH-CN_TOPIC_0000001839189321"></a><a name="ZH-CN_TOPIC_0000001839189321"></a>
-  <h1 class="topictitle1">添加普通用户至sudoers</h1>
-  <div>
-   <p>通过自动推送方式安装ProtectAgent时，如果<span class="uicontrol">“用户类型”</span>配置为<span class="uicontrol">“普通用户”</span>，需要先将该普通用户添加到sudoers中，否则注册ProtectAgent将失败。</p>
-   <div class="section">
+  <h1 class="topictitle1">添加普通用户至sudoers（适用于Linux OS）</h1>
+  <div id="body0000001552733033">
+   <p id="ZH-CN_TOPIC_0000001839189321__p8255164735613">通过自动推送方式安装ProtectAgent时，如果<span class="uicontrol" id="ZH-CN_TOPIC_0000001839189321__uicontrol28708314569">“用户类型”</span>配置为<span class="uicontrol" id="ZH-CN_TOPIC_0000001839189321__uicontrol1160423416562">“普通用户”</span>，需要先将该普通用户添加到sudoers中，否则注册ProtectAgent将失败。本章节以EulerOS为例进行说明。</p>
+   <div class="section" id="ZH-CN_TOPIC_0000001839189321__section175941115163111">
     <h4 class="sectiontitle">操作步骤</h4>
-    <ol>
-     <li><span>使用<strong>root</strong>账户登录代理主机。</span></li>
-     <li><span>执行以下命令查找<span style="color:#121212;">sudoers配置文件的目录</span>。</span><p></p><pre class="screen">whereis sudoers</pre> <p></p></li>
-     <li><span><span style="color:#121212;">执行以下命令修改sudoers配置文件权限</span>。</span><p></p><pre class="screen">chmod u+w /etc/sudoers</pre> <p></p></li>
-     <li><span>备份源文件。</span><p></p><pre class="screen">mkdir /etc/backup_sudoers
-cp /etc/sudoers /etc/backup_sudoers</pre> <p></p></li>
-     <li id="ZH-CN_TOPIC_0000001839189321__li4145165012521"><a name="ZH-CN_TOPIC_0000001839189321__li4145165012521"></a><a name="li4145165012521"></a><span><span style="color:#121212;">执行以下命令打开/etc/sudoers配置文件</span>。</span><p></p><pre class="screen">vim /etc/sudoers</pre> <p></p></li>
-     <li><span>检查配置文件中是否存在<span class="parmname">“Defaults requiretty”</span>字段。如果存在，请删除该配置。</span></li>
+    <ol id="ZH-CN_TOPIC_0000001839189321__ol122521212317">
+     <li id="ZH-CN_TOPIC_0000001839189321__li12252102115312"><span>使用<strong id="ZH-CN_TOPIC_0000001839189321__b1822143116319">root</strong>账户登录代理主机。</span></li>
+     <li id="ZH-CN_TOPIC_0000001839189321__li1296882714311"><span>执行以下命令，查找sudoers配置文件的目录。</span><p></p><pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen2925152217527">whereis sudoers</pre> <p id="ZH-CN_TOPIC_0000001839189321__p82051743122320">回显类似如下，其中“/etc/sudoers”为sudoers配置文件的目录。</p> <pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen203173536238">sudoers: <strong id="ZH-CN_TOPIC_0000001839189321__b18409559152516">/etc/sudoers</strong> /etc/sudoers.d /uer/share/man/man5/sudoers.5.gz</pre> <p></p></li>
+     <li id="ZH-CN_TOPIC_0000001839189321__li1967213198527"><span>执行以下命令，查询sudoers配置文件权限。</span><p></p><pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen2061215122712">ll /etc/sudoers</pre> <p id="ZH-CN_TOPIC_0000001839189321__p1395722592712">回显类似如下，表示<strong id="ZH-CN_TOPIC_0000001839189321__b622024964019">root</strong>用户仅有sudoers配置文件的只读权限，则请执行<a href="#ZH-CN_TOPIC_0000001839189321__li45591852202917">4</a>为<strong id="ZH-CN_TOPIC_0000001839189321__b1831894716414">root</strong>用户添加该配置文件的可写权限。如已有该配置文件的可写权限，则直接执行<a href="#ZH-CN_TOPIC_0000001839189321__li1783801718592">5</a>。</p> <pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen5894174019277">-r--r-----. 1 root root 20724 Nov 19 21:04 /etc/sudoers</pre> <p></p></li>
+     <li id="ZH-CN_TOPIC_0000001839189321__li45591852202917"><a name="ZH-CN_TOPIC_0000001839189321__li45591852202917"></a><a name="li45591852202917"></a><span>执行以下命令，为sudoers配置文件添加可写权限。</span><p></p><pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen2141552105214">chmod u+w /etc/sudoers</pre> <p></p></li>
+     <li id="ZH-CN_TOPIC_0000001839189321__li1783801718592"><a name="ZH-CN_TOPIC_0000001839189321__li1783801718592"></a><a name="li1783801718592"></a><span>执行以下命令，备份源文件。</span><p></p><pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen19630187143214">mkdir /etc/backup_sudoers</pre> <pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen205131331105917">cp /etc/sudoers /etc/backup_sudoers</pre> <p></p></li>
+     <li id="ZH-CN_TOPIC_0000001839189321__li4145165012521"><a name="ZH-CN_TOPIC_0000001839189321__li4145165012521"></a><a name="li4145165012521"></a><span>执行以下命令，打开sudoers配置文件。</span><p></p><pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen92963290535">vim /etc/sudoers</pre> <p></p></li>
+     <li id="ZH-CN_TOPIC_0000001839189321__li994215063110"><span>检查配置文件中是否存在<span class="parmname" id="ZH-CN_TOPIC_0000001839189321__parmname10174344172510">“Defaults requiretty”</span>字段。如果存在，请删除该配置。</span></li>
      <li id="ZH-CN_TOPIC_0000001839189321__li188920444274"><a name="ZH-CN_TOPIC_0000001839189321__li188920444274"></a><a name="li188920444274"></a><span>增加以下内容到配置文件，修改完成后保存并退出。</span><p></p>
-      <div class="p">
-       以普通用户<strong>common_user</strong>为例，实际请根据安装ProtectAgent时的普通用户名替换。
-       <ul>
-        <li>如果采用sudo非免密方式，请增加以下内容到配置文件：<pre class="screen"><em>common_user</em>    ALL=(ALL)       /bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre> <p>示例如下：</p> <p><span><img src="zh-cn_image_0000001941788145.png"></span></p></li>
-        <li>如果采用sudo免密方式，请增加以下内容到配置文件：<pre class="screen"><em>common_user</em>    ALL=(ALL)       NOPASSWD:/bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre></li>
-       </ul>
-       <div class="note">
-        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
-        <div class="notebody">
-         <p>增加的以上内容为一整行分三列，第一列与第二列间隔4个字符，第二列与第三列间隔7个字符。如果拷贝以上内容至配置文件中存在换行时，请手动删除换行。</p>
+      <div class="p" id="ZH-CN_TOPIC_0000001839189321__p4124171235716">
+       以普通用户<strong id="ZH-CN_TOPIC_0000001839189321__b2019104718267">common_user</strong>为例，实际请根据安装ProtectAgent时的普通用户名替换。
+       <div class="notice" id="ZH-CN_TOPIC_0000001839189321__note7971559542">
+        <span class="noticetitle"><img src="public_sys-resources/notice_3.0-zh-cn.png"> </span>
+        <div class="noticebody">
+         <ul id="ZH-CN_TOPIC_0000001839189321__ul1665512016445">
+          <li id="ZH-CN_TOPIC_0000001839189321__li116550094414">请严格按照要求修改配置文件，否则可能导致自动推送安装ProtectAgent失败或sudo命令执行失败。</li>
+          <li id="ZH-CN_TOPIC_0000001839189321__li13949152004418">在配置文件中增加的以下内容为一整行分三列，第一列与第二列间隔4个字符，第二列与第三列间隔7个字符。如果拷贝以下内容至配置文件中存在换行时，请手动删除换行。</li>
+         </ul>
         </div>
        </div>
+       <ul id="ZH-CN_TOPIC_0000001839189321__ul57986126495">
+        <li id="ZH-CN_TOPIC_0000001839189321__li5837172920504">如果采用sudo非免密方式，请增加以下内容到配置文件：<pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen472610712545"><em id="ZH-CN_TOPIC_0000001839189321__i152596386529">common_user</em>    ALL=(ALL)       /bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre> <p id="ZH-CN_TOPIC_0000001839189321__p13411174513564">示例如下：</p> <p id="ZH-CN_TOPIC_0000001839189321__p341144515566"><span><img id="ZH-CN_TOPIC_0000001839189321__image7411345165619" src="zh-cn_image_0000001941788145.png"></span></p></li>
+        <li id="ZH-CN_TOPIC_0000001839189321__li22241723144914">如果采用sudo免密方式，请增加以下内容到配置文件：<pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen96334161516"><em id="ZH-CN_TOPIC_0000001839189321__i2251173135214">common_user</em>    ALL=(ALL)       NOPASSWD:/bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre></li>
+       </ul>
       </div> <p></p></li>
-     <li><span>查看配置文件，确认<span class="parmname">“Defaults requiretty”</span>字段是否删除，以及<a href="#ZH-CN_TOPIC_0000001839189321__li188920444274">7</a>中添加的用户是否存在。</span><p></p><pre class="screen">cat /etc/sudoers</pre>
-      <ul>
-       <li>如果修改失败，请回退配置文件，确认回退成功后，重新执行<a href="#ZH-CN_TOPIC_0000001839189321__li4145165012521">5</a>~<a href="#ZH-CN_TOPIC_0000001839189321__li188920444274">7</a>。<pre class="screen">cp /etc/backup_sudoers/sudoers /etc/sudoers
-cat /etc/sudoers</pre></li>
-       <li>如果修改成功，请删除备份文件。<pre class="screen">rm -fr /etc/backup_sudoers</pre></li>
+     <li id="ZH-CN_TOPIC_0000001839189321__li11391140173419"><a name="ZH-CN_TOPIC_0000001839189321__li11391140173419"></a><a name="li11391140173419"></a><span>如果执行了<a href="#ZH-CN_TOPIC_0000001839189321__li45591852202917">4</a>修改sudoers配置文件权限，则请执行本步骤，删除sudoers配置文件的可写权限。否则，请跳过本步骤。</span><p></p><pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen27863619358">chmod u-w /etc/sudoers</pre> <p></p></li>
+     <li id="ZH-CN_TOPIC_0000001839189321__li79011641162019"><span>查看配置文件，确认<span class="parmname" id="ZH-CN_TOPIC_0000001839189321__parmname1561165720188">“Defaults requiretty”</span>字段是否删除，以及<a href="#ZH-CN_TOPIC_0000001839189321__li188920444274">8</a>中添加的用户是否存在。</span><p></p><pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen83592506128">cat /etc/sudoers</pre>
+      <ul id="ZH-CN_TOPIC_0000001839189321__ul1215921062014">
+       <li id="ZH-CN_TOPIC_0000001839189321__li12370814142619">如果修改失败，请回退配置文件，确认回退成功后，重新执行<a href="#ZH-CN_TOPIC_0000001839189321__li4145165012521">6</a>~<a href="#ZH-CN_TOPIC_0000001839189321__li11391140173419">9</a>。<pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen247405762119">cp /etc/backup_sudoers/sudoers /etc/sudoers</pre> <pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen10117950173612">cat /etc/sudoers</pre></li>
+       <li id="ZH-CN_TOPIC_0000001839189321__li0454155172211">如果修改成功，请删除备份文件。<pre class="screen" id="ZH-CN_TOPIC_0000001839189321__screen129061154233">rm -fr /etc/backup_sudoers</pre></li>
       </ul> <p></p></li>
     </ol>
    </div>

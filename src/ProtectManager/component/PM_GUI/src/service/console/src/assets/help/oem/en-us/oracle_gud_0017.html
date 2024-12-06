@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -49,7 +49,7 @@
     <ol>
      <li><span>Log in to the Oracle database host.</span><p></p>
       <ul id="oracle_gud_0017__oracle_gud_0020_en-us_topic_0000001656760969_ul1983714162204">
-       <li id="oracle_gud_0017__oracle_gud_0020_en-us_topic_0000001656760969_li7258697580">If the Linux OS is used, use PuTTY to log in to the Oracle database host and run the <strong id="oracle_gud_0017__oracle_gud_0020_b168335021216">su - oracle</strong> command to switch to user <strong id="oracle_gud_0017__oracle_gud_0020_b683125031217">oracle</strong>.</li>
+       <li id="oracle_gud_0017__oracle_gud_0020_en-us_topic_0000001656760969_li7258697580">If the Linux OS is used, use PuTTY to log in to the Oracle database host and run the <strong id="oracle_gud_0017__oracle_gud_0020_b14682476107">su - oracle</strong> command to switch to user <strong id="oracle_gud_0017__oracle_gud_0020_b1646874718106">oracle</strong>.</li>
        <li id="oracle_gud_0017__oracle_gud_0020_en-us_topic_0000001656760969_li1366015032013">If the Windows OS is used, log in to the Oracle database host as the system administrator.</li>
       </ul> <p></p></li>
      <li><span>Run the following commands to log in to the Oracle database instance.</span><p></p>
@@ -80,13 +80,24 @@ Archive destination            USE_DB_RECOVERY_FILE_DEST
 Oldest online log sequence     19
 Next log sequence to archive   21
 Current log sequence           21</pre> <p></p></li>
-     <li><span>If the archive mode is not enabled, run the following commands in sequence to enable it:</span><p></p>
-      <div class="note">
-       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
-       <div class="notebody">
-        <p>The database is shut down when the database archive mode is enabled. This operation may cause service interruption. Therefore, you need to take the service interruption time into account before performing this operation.</p>
-       </div>
-      </div> <p><strong>shutdown immediate;</strong></p> <p><strong>startup mount;</strong></p> <p><strong>alter database archivelog;</strong></p> <p><strong>alter database open;</strong></p> <p></p></li>
+     <li><span>If the archive mode is not enabled, run commands to enable the archive mode.</span><p></p>
+      <ul>
+       <li>In a single-node system, run the following commands:
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>The database is shut down when the database archive mode is enabled. This operation may cause service interruption. Therefore, you need to take the service interruption time into account before performing this operation.</p>
+         </div>
+        </div> <pre class="screen"><strong>shutdown immediate;</strong>
+<strong>startup mount;</strong>
+<strong>alter database archivelog;</strong>
+<strong>alter database open;</strong></pre></li>
+       <li>In the RAC cluster scenario, run the following commands on each node. For an ASM instance, set <em>Path for storing archive logs</em> to the ASM shared disk group path.<pre class="screen">shutdown immediate;
+startup mount;
+alter system set log_archive_dest_1='location=<em>Path for storing archive logs</em>';
+alter database archivelog;
+alter database open;</pre></li>
+      </ul> <p></p></li>
     </ol>
    </div>
   </div>

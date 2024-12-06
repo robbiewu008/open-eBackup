@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,9 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="acloud_00052">
 <meta name="DC.Language" content="en-us">
@@ -39,7 +41,7 @@
 <div><p>This section describes how to restore a cloud server or cloud disk to the original or a new location after the cloud server has been backed up, when the cloud server disks are damaged.</p>
 <div class="section"><h4 class="sectiontitle">Context</h4><p>The <span>OceanProtect</span> allows you to restore cloud disks to the original or a new location using backup copies, reverse replication copies, archive copies (data cannot be restored to the original location using archive copies of replication copies), or replication copies (data cannot be restored to the original cloud server using replication copies). Cascaded replication copies and their archive copies cannot be used for restoration to the original cloud server.</p>
 <ul><li>Restoration to the original location<p>Restores data to cloud server disks on the current cloud platform, including existing disks and new disks.</p>
-</li><li>Restoration to a new location<p>Restore data to existing disks of another cloud server.</p>
+</li><li>Restoration to a new location<p>Restores data to existing disks of another cloud server.</p>
 </li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">Precautions</h4><p>A maximum of 24 disks can be mounted to an agent host. Therefore, if 24 disks have been mounted to an agent host during backup and restoration, the system performs the restoration job when there are idle slots.</p>
@@ -113,7 +115,7 @@
 <tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span><strong>Target Disk Name</strong></span></p>
 </td>
 <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>If <strong>Type</strong> is set to <strong>Existing</strong>, set <strong>Target Disk Name</strong> to the name of the disk to be restored.</p>
-<p>If <strong>Type</strong> is set to <strong>New</strong>, <strong>Target Disk Name</strong> displays the default value <strong>--</strong>.</p>
+<p>If <strong>Type</strong> is set to <strong>New</strong>, <strong>--</strong> is displayed by default.</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><strong>Password</strong></p>
@@ -128,7 +130,7 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span><strong>Power on Automatically After Restoration</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>If this option is enabled, the cloud server automatically powers on after the restoration is complete. This option is disabled by default.</p>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>If this function is enabled, the cloud server automatically powers on after the restoration is complete. This option is disabled by default.</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span><strong>Copy Verification Before Restoration</strong></span></p>

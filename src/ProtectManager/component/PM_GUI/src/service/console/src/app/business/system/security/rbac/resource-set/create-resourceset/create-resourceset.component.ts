@@ -552,16 +552,16 @@ export class CreateResourcesetComponent implements OnInit {
     });
   }
 
-  onOK(): Observable<void> {
-    return new Observable<void>((observer: Observer<void>) => {
+  onOK(): Observable<any> {
+    return new Observable<any>((observer: Observer<any>) => {
       if (!!this.data) {
         this.resourceSetService
           .modifyResourceSet({
             ResourceSetRequest: this.getParams()
           })
           .subscribe({
-            next: () => {
-              observer.next();
+            next: response => {
+              observer.next(response);
               observer.complete();
             },
             error: error => {
@@ -575,8 +575,8 @@ export class CreateResourcesetComponent implements OnInit {
             ResourceSetRequest: this.getParams()
           })
           .subscribe({
-            next: () => {
-              observer.next();
+            next: response => {
+              observer.next(response);
               observer.complete();
             },
             error: error => {

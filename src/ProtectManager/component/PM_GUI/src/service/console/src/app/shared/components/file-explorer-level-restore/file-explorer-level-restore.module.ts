@@ -15,10 +15,16 @@ import { NgModule } from '@angular/core';
 import { ObjectRestoreModule } from 'app/business/protection/storage/object/object-service/object-restore/object-restore.module';
 import { BaseModule } from 'app/shared/base.module';
 import { FileExplorerLevelRestoreComponent } from './file-explorer-level-restore.component';
+import { ManualInputPathModule } from '../manual-input-path/manual-input-path.module';
 
 @NgModule({
   declarations: [FileExplorerLevelRestoreComponent],
-  imports: [CommonModule, BaseModule, ObjectRestoreModule],
+  imports: [
+    CommonModule,
+    BaseModule,
+    ObjectRestoreModule,
+    ManualInputPathModule
+  ],
   exports: [FileExplorerLevelRestoreComponent]
 })
 export class FileExplorerLevelRestoreModule {}

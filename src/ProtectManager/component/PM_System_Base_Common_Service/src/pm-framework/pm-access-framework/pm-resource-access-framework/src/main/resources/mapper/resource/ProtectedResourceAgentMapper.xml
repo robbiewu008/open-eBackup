@@ -107,7 +107,7 @@
     </sql>
 
     <sql id="SelectFilteredAgentResourceIdByScenario">
-        select distinct resource_id from RES_EXTEND_INFO
+        select resource_id from RES_EXTEND_INFO
         <where>
             <if test="filteredByPluginTypeIds != null and filteredByPluginTypeIds.size() > 0 ">
                 and resource_id in
@@ -122,7 +122,7 @@
     </sql>
 
     <sql id="SelectFilteredAgentResourceIdByScenarioZero">
-        select distinct resource_id from RES_EXTEND_INFO
+        select resource_id from RES_EXTEND_INFO
         <where>
             <!-- vmware无scenario字段，所以这里适配，将内置agentId查出来, 查外置指查非内置 -->
             resource_id not in (select resource_id from RES_EXTEND_INFO where key = 'scenario' and value = 1)
@@ -136,7 +136,7 @@
     </sql>
 
     <sql id="SelectFilteredAgentResourceIdByScenarioOne">
-        select distinct resource_id from RES_EXTEND_INFO
+        select resource_id from RES_EXTEND_INFO
         <where>
             key = 'scenario' and value = '1'
             <if test="filteredByPluginTypeIds != null and filteredByPluginTypeIds.size() > 0 ">

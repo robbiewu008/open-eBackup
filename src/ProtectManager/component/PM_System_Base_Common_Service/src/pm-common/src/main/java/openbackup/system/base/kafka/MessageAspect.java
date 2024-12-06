@@ -205,8 +205,6 @@ public class MessageAspect {
         RMap<Object, Object> map = redissonClient.getMap(requestId, StringCodec.INSTANCE);
         if (map.containsKey(JobContextKeys.RUNNING_STATE_COUNT)) {
             map.addAndGet(JobContextKeys.RUNNING_STATE_COUNT, 1);
-            log.info("Job is running, RUNNING_STATE_COUNT: {}. JobId: {}", map.get(JobContextKeys.RUNNING_STATE_COUNT),
-                    requestId);
         }
     }
 
@@ -214,7 +212,7 @@ public class MessageAspect {
         try {
             return Optional.of(getRequestId(payload, messageListener));
         } catch (LegoCheckedException ex) {
-            log.error("get request id failed", ex);
+            log.error("get request id failed", ExceptionUtil.getErrorMessage(ex));
             return Optional.empty();
         }
     }
@@ -293,7 +291,6 @@ public class MessageAspect {
         String requestId = getRequestId(params.getJSONObject(PAYLOAD), messageListener);
         String committedMessageRedisKey = getCommittedMessageRedisKey(requestId, params, messageListener);
         RBucket<Object> bucket = getRedissonBucket(committedMessageRedisKey);
-        log.info("consume message key: {}", committedMessageRedisKey);
         if (!VerifyUtil.isEmpty(bucket.get())) {
             acknowledge(messageListener, params, args, "repeat consume message");
             return true;
@@ -366,7 +363,6 @@ public class MessageAspect {
         recordPayload(messageListener, fullPayload, "complete");
         args[index] = fullPayload.toString();
         Object result = joinPoint.proceed(args);
-        log.info("proc business result:{}", result);
         String phase;
         if (result != null) {
             phase = checkResult(result);
@@ -393,7 +389,6 @@ public class MessageAspect {
         MessageListener messageListener = messageContext.getMessageListener();
         List<Object> args = Arrays.asList(messageContext.getArgs());
         JSONObject params = messageContext.getParams();
-        log.info("messageListener.lock(): {}", Arrays.asList(messageListener.lock()));
         if (messageListener.lock().length > 0) {
             if (processLockMessage(messageListener, args, params, payload, startTime)) {
                 return true;
@@ -402,7 +397,6 @@ public class MessageAspect {
             }
         } else {
             JSONObject lock = getLockObject(params);
-            log.info("interceptMessage lock:{}", lock);
             String defaultPublishTopic = payload.getString("default_publish_topic");
             if (lock != null) {
                 if (matchResponseTopic(lock, defaultPublishTopic, UNLOCK_RESPONSE)) {
@@ -708,7 +702,6 @@ public class MessageAspect {
             Acknowledgment acknowledgment = (Acknowledgment) arg;
             acknowledgment.acknowledge();
             addCommittedMessageToRedis(params, messageListener);
-            log.info("message committed. topic: {}, messages: {}", messageListener.topics(), messages);
         }
     }
 
@@ -718,7 +711,6 @@ public class MessageAspect {
         RBucket<Object> bucket = getRedissonBucket(committedMessageRedisKey);
         bucket.set(params.getJSONObject(PAYLOAD));
         bucket.expire(20, TimeUnit.MINUTES);
-        log.info("committed message redis bucket key = {}", committedMessageRedisKey);
     }
 
     private String getCommittedMessageRedisKey(String requestId, JSONObject params, MessageListener messageListener) {
@@ -785,7 +777,6 @@ public class MessageAspect {
     private void recordPayload(MessageListener messageListener, JSONObject payload, String type) {
         JSONObject data = payload.duplicate();
         sensitiveDataEliminateService.eliminate(data, Arrays.asList(messageListener.sensitive()));
-        log.debug("{} message: {}, payload: {}", type, messageListener.topics(), data);
     }
 
     private Object parseAsJson(String content) {
@@ -1028,7 +1019,6 @@ public class MessageAspect {
         JSONObject params = messageContext.getParams();
         JSONObject payload = params.getJSONObject(PAYLOAD);
         JSONObject context = params.getJSONObject(CONTEXT);
-        log.info("processTerminatedMessage startTime: {}, phase:{}, unlocked:{}", startTime, phase, isUnlocked);
         MessageListener messageListener = messageContext.getMessageListener();
         boolean isTerminatedMessage = isTerminatedMessage(messageListener);
 
@@ -1089,7 +1079,7 @@ public class MessageAspect {
 
     private void processTerminatedMessage(MessageAspectListenerContext messageProcessContext, boolean isTerminated,
             boolean isUnlock, String phase) {
-        log.info("processTerminatedMessage terminated:{}, unlock:{}, commit msg:{}", isTerminated, isUnlock,
+        log.debug("processTerminatedMessage terminated:{}, unlock:{}, commit msg:{}", isTerminated, isUnlock,
                 messageProcessContext.isCommitMsg);
         JSONObject params = messageProcessContext.getParams();
         MessageListener messageListener = messageProcessContext.getMessageListener();
@@ -1404,7 +1394,6 @@ public class MessageAspect {
     private String getRequestId(JSONObject payload, MessageListener messageListener) {
         String requestId = payload.getString(messageListener.contextField());
         if (requestId == null) {
-            log.error("field of request id may be incorrect or request id missing");
             throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR,
                     "field of request id may be incorrect or request id missing");
         }

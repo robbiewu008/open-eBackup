@@ -89,7 +89,7 @@ public class GaussDBDWSDatabaseBackupInterceptor extends AbstractDbBackupInterce
     @Override
     public BackupTask supplyBackupTask(BackupTask backupTask) {
         if (!deployTypeService.isE1000()) {
-            DwsBuildRepositoryUtil.addRepositoryEsnAndRole(backupTask.getRepositories().get(0),
+            DwsBuildRepositoryUtil.addRepositoryEsnAndRole(backupTask.getRepositories(),
                 clusterBasicService.getCurrentClusterEsn());
         }
         gaussDBBaseService.modifyBackupTaskParam(backupTask);
@@ -118,7 +118,8 @@ public class GaussDBDWSDatabaseBackupInterceptor extends AbstractDbBackupInterce
      */
     @Override
     public Set<String> availableEsnFilter(String resourceId, Set<String> availableEsnList) {
-        return gaussDBBaseService.availableEsnFilter(resourceId, availableEsnList);
+        return gaussDBBaseService.availableEsnFilter(
+                gaussDBBaseService.getResourceRootUuid(resourceId), availableEsnList);
     }
 
     /**

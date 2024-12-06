@@ -19,7 +19,8 @@ import {
   GROUP_COMMON,
   SYSTEM_TIME,
   WormStatusEnum,
-  hasCopyDeletePermission
+  hasCopyDeletePermission,
+  OperateItems
 } from 'app/shared';
 import { CopiesService } from 'app/shared/api/services';
 import { I18NService, WarningMessageService } from 'app/shared/services';
@@ -28,6 +29,7 @@ import {
   assign,
   cloneDeep,
   find,
+  get,
   includes,
   intersection,
   isNil,
@@ -103,15 +105,18 @@ export class CopyResourceListComponent implements OnInit {
       );
     });
     this.warningMessageService.create({
+      rowData: this.copyListComponent.selection,
+      actionId: OperateItems.DeletingCopy,
       content: this.i18n.get('common_copy_delete_label', [timeArr.join(',')]),
-      onOK: () => {
+      onOK: modal => {
         this.batchOperateService.selfGetResults(
           item => {
             return this.copiesApiService.deleteCopyV1CopiesCopyIdDelete({
               copyId: item.uuid,
               akDoException: false,
               akOperationTips: false,
-              akLoading: false
+              akLoading: false,
+              isForced: get(modal, 'contentInstance.forciblyDeleteCopy', null)
             });
           },
           map(cloneDeep(this.copyListComponent.selection), item => {

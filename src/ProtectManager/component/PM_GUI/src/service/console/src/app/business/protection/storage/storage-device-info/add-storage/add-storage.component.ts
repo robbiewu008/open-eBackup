@@ -111,7 +111,9 @@ export class AddStorageComponent implements OnInit {
   isTestSevice = [
     this.deviceStorageType.DoradoV7.value,
     this.deviceStorageType.OceanStorDoradoV7.value,
-    this.deviceStorageType.OceanStorDorado_6_1_3.value
+    this.deviceStorageType.OceanStorDorado_6_1_3.value,
+    this.deviceStorageType.OceanStor_6_1_3.value,
+    this.deviceStorageType.OceanProtect.value
   ];
   isShow = false;
 

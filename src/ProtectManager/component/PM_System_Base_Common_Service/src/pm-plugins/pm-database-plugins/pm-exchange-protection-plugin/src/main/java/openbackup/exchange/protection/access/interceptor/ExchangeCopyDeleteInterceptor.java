@@ -88,4 +88,17 @@ public class ExchangeCopyDeleteInterceptor extends BaseCopyDeleteInterceptor {
         // 通过副本代数 找到(本个副本 - 本个副本之后第一次出现的永久增量或全量)之间的全部日志副本
         return CopyUtil.getCopyUuidsBetweenTwoCopy(logCopies, thisCopy, firstPermanentIncrement);
     }
+
+    /**
+     * 获取全量副本级联关系
+     *
+     * @param copies       本个副本之后的所有备份副本
+     * @param thisCopy     本个副本
+     * @param nextFullCopy 下个全量副本
+     * @return 待删除列表
+     */
+    @Override
+    protected List<String> getCopiesCopyTypeIsFull(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
+        return getCopiesCopyTypeIsPermanentIncrement(copies, thisCopy, nextFullCopy);
+        }
 }

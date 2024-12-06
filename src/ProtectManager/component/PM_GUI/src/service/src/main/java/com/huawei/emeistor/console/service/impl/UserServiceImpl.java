@@ -281,7 +281,12 @@ public class UserServiceImpl implements UserService {
             SessionInfo session = sessionService.genSession(
                 sessionService.getUserCache(Objects.requireNonNull(token).getUserId()), secBo, token);
             setSamlLoginCookie(session, response);
-            response.sendRedirect(response.encodeRedirectURL("/console/#/home"));
+            String language = request.getParameter("language");
+            if (StringUtils.isNotEmpty(language)) {
+                response.sendRedirect(response.encodeRedirectURL("/console/#/home?language=" + language));
+            } else {
+                response.sendRedirect(response.encodeRedirectURL("/console/#/home"));
+            }
         } catch (RestClientException e) {
             log.error("saml login error", e);
             response.sendRedirect(response.encodeRedirectURL("/console/#/error-page?type=LoginLimiter"));

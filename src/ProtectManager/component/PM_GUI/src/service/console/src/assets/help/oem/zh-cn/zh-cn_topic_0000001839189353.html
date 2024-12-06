@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -121,7 +121,13 @@ Please enter custom install path:</pre></li>
 Your choice:</pre></li>
              <li>当回显如下信息时，请输入<a href="#ZH-CN_TOPIC_0000001839189353__zh-cn_topic_0000001143474500_li16856140134313">1.b</a>中设置的私钥密码。<pre class="screen">Please enter the private key password set on ProtectManager, you still have 3 chances:
 Enter password:</pre></li>
-             <li>当回显如下信息时，设置<strong>rdadmin</strong>用户的密码。<pre class="screen">Add User rdadmin Enter password:</pre></li>
+             <li>当回显如下信息时，设置<strong>rdadmin</strong>用户的密码。<pre class="screen">Add User rdadmin Enter password:</pre>
+              <div class="note">
+               <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+               <div class="notebody">
+                <p>安装成功后系统会自动创建<strong>rdadmin</strong>用户的用户目录（ C:\Users\rdadmin），请勿删除或修改此用户及用户目录。</p>
+               </div>
+              </div></li>
              <li>对于1.5.0SPC19及后续版本，当回显如下信息时，请选择是否开启源端重删功能。<pre class="screen">Whether enable dataturbo service:(y|n):
 Your choice:</pre> <p>如果输入<span class="parmvalue">“y”</span>，则开启源端重删功能，请确保代理主机空闲内存大于2GB，系统会自动安装OceanStor DataTurbo客户端。支持源端重删的操作系统请查看<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect兼容性查询</a>工具。</p> <p>如果输入<span class="parmvalue">“n”</span>，则不开启源端重删功能。在ProtectAgent安装完成后也可手动安装OceanStor DataTurbo客户端，具体操作请参考<a href="zh-cn_topic_0000001936780456.html">安装OceanStor DataTurbo客户端</a>章节。</p>
               <div class="note">
@@ -184,6 +190,10 @@ Your choice:</pre>
        </div>
       </div> <p></p></li>
     </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">后续操作</h4>
+    <p>成功安装ProtectAgent后，如果您需释放系统空间，可以删除软件包存放目录。</p>
    </div>
   </div>
  </body>

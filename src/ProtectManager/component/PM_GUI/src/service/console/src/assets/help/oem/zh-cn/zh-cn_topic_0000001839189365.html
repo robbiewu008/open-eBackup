@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,26 +11,27 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="安装ProtectAgent软件（手动方式，适用于Linux OS）">
+  <meta name="DC.Title" content="安装ProtectAgent软件（手动方式，适用于Linux OS/AIX OS）">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839189365">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>安装ProtectAgent软件（手动方式，适用于Linux OS）</title>
+  <title>安装ProtectAgent软件（手动方式，适用于Linux OS/AIX OS）</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="ZH-CN_TOPIC_0000001839189365"></a><a name="ZH-CN_TOPIC_0000001839189365"></a>
-  <h1 class="topictitle1">安装ProtectAgent软件（手动方式，适用于Linux OS）</h1>
+  <h1 class="topictitle1">安装ProtectAgent软件（手动方式，适用于Linux OS/AIX OS）</h1>
   <div>
    <p id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001166356758_p77861727131820">您需要在代理主机上安装ProtectAgent软件，ProtectAgent充当<span id="ZH-CN_TOPIC_0000001839189365__text989115315218">本产品</span>与受保护资源之间的代理进行数据备份和恢复。本节介绍登录代理主机后台手动为其安装ProtectAgent。</p>
    <div class="section">
     <h4 class="sectiontitle">前提条件</h4>
-    <p id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_p11178191432914">如果在代理主机上设置了<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_b1217817142295">rm</strong>、<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_b1479094817301">cp</strong>、<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_b1646412133117">mv</strong>等命令需要交互式输入的别名（例如：<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_b2900716123516">mv=mv -i</strong>的别名，<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_b5246558114412">mv</strong>命令默认以<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_b92462058164413">-i</strong>参数执行），请先取消别名设置，否则会导致安装失败。</p>
+    <p id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_p11178191432914">如果在代理主机上设置了<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_b1217817142295">rm</strong>、<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_b1479094817301">cp</strong>、<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_b1646412133117">mv</strong>等命令需要交互式输入的别名（例如：设置<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_b12670182171315">mv=mv -i</strong>，<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_b5246558114412">mv</strong>命令默认以<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001657025025_zh-cn_topic_0000001792549964_b92462058164413">-i</strong>参数执行），请先取消别名设置，否则会导致安装失败。</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">注意事项</h4>
@@ -49,7 +49,7 @@
      <li><span>安装ProtectAgent软件。</span><p></p>
       <ol type="a">
        <li>使用PuTTY工具以<strong id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001839189401_b916917212">root</strong>账户登录需要安装ProtectAgent的代理主机。</li>
-       <li>依次执行以下命令，创建软件包的存放目录并授权。<p><strong>mkdir /opt/install</strong></p> <p><strong>chmod -R 755</strong><em> /</em><em>opt/install</em></p>
+       <li>依次执行以下命令，创建软件包的存放目录并授权。<pre class="screen">mkdir /opt/install</pre> <pre class="screen">chmod -R 755<em> /</em><em>opt/install</em></pre>
         <div class="note">
          <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
          <div class="notebody">
@@ -60,17 +60,14 @@
          </div>
         </div></li>
        <li>使用WinSCP上传软件包至<span class="filepath">“/opt/install”</span>目录。</li>
-       <li>进入<span class="filepath">“/opt/install”</span>目录后，执行以下命令解压软件包。
-        <div class="p">
-         <strong>unzip DataProtect_</strong><em>xxx</em><strong>_client_</strong><em>xxx</em><strong>.zip</strong>
-         <div class="note" id="ZH-CN_TOPIC_0000001839189365__note131823521140">
-          <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
-          <div class="notebody">
-           <p id="ZH-CN_TOPIC_0000001839189365__p1818285216413">不同的版本、代理类型、操作系统获取到的ProtectAgent软件包名可能会有差异，请以实际为准。</p>
-          </div>
+       <li>进入<span class="filepath">“/opt/install”</span>目录后，执行以下命令解压软件包。<pre class="screen">unzip DataProtect_<em>xxx</em>_client_<em>xxx</em>.zip</pre>
+        <div class="note" id="ZH-CN_TOPIC_0000001839189365__note131823521140">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="ZH-CN_TOPIC_0000001839189365__p1818285216413">不同的版本、代理类型、操作系统获取到的ProtectAgent软件包名可能会有差异，请以实际为准。</p>
          </div>
         </div></li>
-       <li>执行以下命令，进入软件包目录。<p><strong>cd /opt/install/DataProtect_</strong><em>xxx</em><strong>_client_</strong><em>xxx</em><strong>/</strong></p></li>
+       <li>执行以下命令，进入软件包目录。<pre class="screen">cd /opt/install/DataProtect_<em>xxx</em>_client_<em>xxx</em>/</pre></li>
        <li>执行以下命令，根据回显提示完成软件安装。
         <ul>
          <li>如果使用的是系统管理员账户登录的主机，请执行<strong>sh install.sh</strong>命令。</li>
@@ -88,7 +85,7 @@ Please enter the agent installation directory:</pre></li>
          <li>当回显类似如下信息时，请确认主机与<span>本产品</span>设备时间一致，并输入<span class="parmvalue">“y”</span>。<pre class="screen">The current host time and time zone are 2023/08/31-17:17:49[CST]. Check whether the time and time zone are the same as those on DataBackup time:(y/n):
 Your choice:</pre></li>
          <li>当回显如下信息时，请输入<a href="#ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001191380933_li734156194217">1</a>中设置的私钥密码。<pre class="screen">Enter password:</pre></li>
-         <li>对于1.5.0SPC19及后续版本，当回显如下信息时，请选择是否开启源端重删功能。<pre class="screen">Whether to enable the dataturbo service:(y|n), default(n)
+         <li>对于1.5.0SPC19及后续版本，当回显如下信息时，请选择是否开启源端重删功能。<pre class="screen">Whether Open Dataturbo Service:(y|n), default(n)
 Your choice:</pre>
           <ul>
            <li>如果输入<span class="parmvalue">“y”</span>，则开启源端重删功能，请确保代理主机空闲内存大于2GB，系统会自动安装OceanStor DataTurbo客户端。支持源端重删的操作系统请查看<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect兼容性查询</a>工具。</li>
@@ -98,13 +95,7 @@ Your choice:</pre>
 Your choice:</pre>
           <ul>
            <li id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001839189313_li8258810141315">如果为EIP映射到虚拟私有云（VPC）IP场景，请输入EIP。</li>
-           <li id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001839189313_li1225811101134">如果为内大网IP映射到虚拟私有云（VPC）IP场景，请输入内大网IP。
-            <div class="note" id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001839189313_note1075615426720">
-             <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
-             <div class="notebody">
-              <p id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001839189313_p77591542474"><span id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001839189313_ph163811744610">当已安装ProtectAgent，如果升级到1.5.0SPC19及后续版本且需使用映射到VPC IP的EIP或内大网IP，则请先<a href="zh-cn_topic_0000001847935170.html">卸载ProtectAgent</a>，再重新执行本章节安装1.5.0SPC19及后续版本的ProtectAgent。</span></p>
-             </div>
-            </div></li>
+           <li id="ZH-CN_TOPIC_0000001839189365__zh-cn_topic_0000001839189313_li1225811101134">如果为内大网IP映射到虚拟私有云（VPC）IP场景，请输入内大网IP。</li>
           </ul></li>
         </ol> <p>当回显如下信息时，表示ProtectAgent安装成功。</p> <pre class="screen">DataBackup ProtectAgent is successfully installed on the host. </pre>
         <div class="note">
@@ -118,6 +109,7 @@ Your choice:</pre>
              <li>当选择覆盖时，新安装的主机将继承原主机的副本信息，并且更新新主机的UUID与原主机相同。</li>
              <li>当选择不覆盖时，您需要先<a href="zh-cn_topic_0000001792549964.html#ZH-CN_TOPIC_0000001792549964__zh-cn_topic_0000001166835234_li1849451112587">在OceanProtect管理界面删除原主机</a>后，重新安装。</li>
             </ul></li>
+           <li>安装完成后系统会自动创建<strong>rdadmin</strong>用户，该用户的用户目录为“ /home/rdadmin”，请勿删除或修改此用户及用户目录。</li>
           </ul>
          </div>
         </div></li>
@@ -158,6 +150,11 @@ Your choice:</pre>
        </div>
       </div> <p></p></li>
     </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">后续操作</h4>
+    <p>成功安装ProtectAgent后，如果您需释放系统空间，可执行以下命令删除软件包存放目录。</p>
+    <pre class="screen">rm -r /opt/install</pre>
    </div>
   </div>
  </body>

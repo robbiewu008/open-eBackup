@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -40,9 +40,8 @@
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
-     <li><span></span></li>
      <li id="ES_gud_00015__li0198134611381"><span>Choose <span class="uicontrol" id="ES_gud_00015__en-us_topic_0000001839142377_uicontrol9263121219407"><b><span id="ES_gud_00015__en-us_topic_0000001839142377_text162635121401"><strong>Protection</strong></span> &gt; Big Data &gt; Elasticsearch</b></span>.</span></li>
-     <li><span>On the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> page, click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register an Elasticsearch cluster.</span><p></p><p><a href="#ES_gud_00015__table164432003147">Table 1</a> describes the Elasticsearch cluster registration information.</p>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Clusters</strong></span></b></span> page, click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register an Elasticsearch cluster.</span><p></p><p><a href="#ES_gud_00015__table164432003147">Table 1</a> describes the Elasticsearch cluster registration information.</p>
       <div class="tablenoborder">
        <a name="ES_gud_00015__table164432003147"></a><a name="table164432003147"></a>
        <table cellpadding="4" cellspacing="0" summary="" id="ES_gud_00015__table164432003147" frame="border" border="1" rules="all">
@@ -55,18 +54,18 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="25.03%" id="mcps1.3.2.2.3.2.2.2.3.1.1"><p>Parameter</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="74.97%" id="mcps1.3.2.2.3.2.2.2.3.1.2"><p>Description</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="25.03%" id="mcps1.3.2.2.2.2.2.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.97%" id="mcps1.3.2.2.2.2.2.2.3.1.2"><p>Description</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>User-defined Elasticsearch cluster name.</p></td>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>User-defined Elasticsearch cluster name.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span><strong>Client Address</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>Address used to connect the <span>product</span> to Elasticsearch.</p> <p>Set this parameter to <em>Service IP address of the node with the role as EsClient in the Elasticsearch cluster</em><strong>:</strong><em>Service port of EsClient</em>.</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span><strong>Client Address</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>Address used to connect the <span>product</span> to Elasticsearch.</p> <p>Set this parameter to <em>Service IP address of the node with the role as EsClient in the Elasticsearch cluster</em><strong>:</strong><em>Service port of EsClient</em>.</p>
            <ul>
             <li>If there are multiple nodes with the role as EsClient in the Elasticsearch cluster, you can configure multiple EsClient addresses to improve backup and restoration performance. Use commas (,) to separate multiple addresses.</li>
             <li id="ES_gud_00015__li597054171813"><a name="ES_gud_00015__li597054171813"></a><a name="li597054171813"></a>FusionInsight Manager 8.2.0 is used as an example to describe how to query the EsClient service IP address and service port. The operations vary depending on the big data platform. For details, see the product documentation of the corresponding big data platform.
@@ -79,32 +78,32 @@
            </ul></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span><strong>Authentication Mode</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>Configure the authentication mode for communication between the Elasticsearch cluster and the <span>product</span>. Set this parameter based on the authentication mode configured for the Elasticsearch cluster.</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span><strong>Authentication Mode</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>Configure the authentication mode for communication between the Elasticsearch cluster and the <span>product</span>. Set this parameter based on the authentication mode configured for the Elasticsearch cluster.</p>
            <ul>
             <li><span><strong>Simple Authentication</strong></span>: Select this authentication mode when Kerberos authentication is disabled for the Elasticsearch cluster. In this authentication mode, usernames are used for authentication, which is less secure.</li>
             <li><span><strong>Kerberos Authentication</strong></span>: Select this authentication mode when Kerberos authentication is enabled for the Elasticsearch cluster. The Kerberos protocol is used for identity authentication between the Elasticsearch cluster and the <span>product</span>.</li>
            </ul></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span><strong>Username</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Simple Authentication</strong></span></b></span>.</p> <p>The user must have the read and write permissions on the resources to be accessed.</p></td>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span><strong>Username</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Simple Authentication</strong></span></b></span>.</p> <p>The user must have the read and write permissions on the resources to be accessed.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Simple Authentication</strong></span></b></span>.</p> <p>Password of the entered username.</p></td>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Simple Authentication</strong></span></b></span>.</p> <p>Password of the entered username.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span><strong>Kerberos</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>Select the created Kerberos authentication. When you register an Elasticsearch cluster for the first time, click <span class="uicontrol"><b>Create</b></span> and configure Kerberos authentication parameters. For details about the parameters, see <a href="#ES_gud_00015__table93413354118">Table 2</a>.</p></td>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span><strong>Kerberos</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>Select the created Kerberos authentication. When you register an Elasticsearch cluster for the first time, click <span class="uicontrol"><b>Create</b></span> and configure Kerberos authentication parameters. <a href="#ES_gud_00015__table93413354118">Table 2</a> describes related parameters.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span><strong>Certificate</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>If data encryption during the communication between the <span>product</span> and the big data platform is required to ensure secure communication, you need to import the CA certificate.</p> <p>Import the CA certificate obtained in <a href="ES_gud_00013.html#ES_gud_00013__section6706354142710">Obtaining and Importing a Certificate</a>.</p></td>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span><strong>Certificate</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>If data encryption during the communication between the <span>product</span> and the big data platform is required to ensure secure communication, you need to import the CA certificate.</p> <p>Import the CA certificate obtained in <a href="ES_gud_00013.html#ES_gud_00013__section6706354142710">Obtaining and Importing a Certificate</a>.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>Select the agent host for data protection.</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>Select the agent host for data protection.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -113,24 +112,24 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span><strong>Repository Path Owner</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>Set this parameter to the owner of the repository path set during Elasticsearch cluster environment setup.</p> <p>In FusionInsight and MRS big data scenarios, the default value is <strong>omm</strong>.</p></td>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span><strong>Repository Path Owner</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>Set this parameter to the owner of the repository path set during Elasticsearch cluster environment setup.</p> <p>In FusionInsight and MRS big data scenarios, the default value is <strong>omm</strong>.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span><strong>Repository Path Owner Attribute</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>Set this parameter to the attribute of the owner of the repository path set during Elasticsearch cluster environment setup.</p> <p>In FusionInsight and MRS big data scenarios, the default value is <strong>wheel</strong>.</p></td>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span><strong>Repository Path Owner Attribute</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>Set this parameter to the attribute of the owner of the repository path set during Elasticsearch cluster environment setup.</p> <p>In FusionInsight and MRS big data scenarios, the default value is <strong>wheel</strong>.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span><strong>Security Protocol</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>Indicates whether to enable TLS security protocol.</p>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span><strong>Security Protocol</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>Indicates whether to enable TLS security protocol.</p>
            <ul>
             <li>If this function is disabled, TLS 1.2 is used by default.</li>
             <li>If this function is enabled, TLS 1.2 or later is supported.</li>
            </ul></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span><strong>Security Algorithm</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>Indicates whether to enable the secure encryption algorithm. After this function is enabled, data is encrypted only using the secure encryption algorithms during communication between the system and big data platforms.</p></td>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span><strong>Security Algorithm</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>Indicates whether to enable the secure encryption algorithm. After this function is enabled, data is encrypted only using the secure encryption algorithms during communication between the system and big data platforms.</p></td>
          </tr>
         </tbody>
        </table>
@@ -147,18 +146,18 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="23.24%" id="mcps1.3.2.2.3.2.4.2.3.1.1"><p>Parameter</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="76.75999999999999%" id="mcps1.3.2.2.3.2.4.2.3.1.2"><p>Description</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="23.24%" id="mcps1.3.2.2.2.2.4.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="76.75999999999999%" id="mcps1.3.2.2.2.2.4.2.3.1.2"><p>Description</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.3.2.4.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.3.2.4.2.3.1.2 "><p>User-defined Kerberos authentication name.</p></td>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.2.2.4.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.4.2.3.1.2 "><p>User-defined Kerberos authentication name.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.3.2.4.2.3.1.1 "><p><span><strong>Principal Name</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.3.2.4.2.3.1.2 "><p>Principal name of Kerberos authentication. The format is <em>Principal name</em><strong>@</strong><em>Local domain</em>, for example, ES1@HADOOP.COM.</p> <p>Take FusionInsight as an example. On FusionInsight Manager, choose <span class="uicontrol"><b>System &gt; Domain and Mutual Trust</b></span> to view the local domain information.</p>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.2.2.4.2.3.1.1 "><p><span><strong>Principal Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.4.2.3.1.2 "><p>Principal name of Kerberos authentication. The format is <em>Principal name</em><strong>@</strong><em>Local domain</em>, for example, ES1@HADOOP.COM.</p> <p>Take FusionInsight as an example. On FusionInsight Manager, choose <span class="uicontrol"><b>System &gt; Domain and Mutual Trust</b></span> to view the local domain information.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -167,8 +166,8 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.3.2.4.2.3.1.1 "><p><span><strong>Configuration Mode</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.3.2.4.2.3.1.2 ">
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.2.2.4.2.3.1.1 "><p><span><strong>Configuration Mode</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.4.2.3.1.2 ">
            <div class="p">
             Kerberos authentication mode, which must be the same as that configured on the Kerberos server. Two authentication modes are available:
             <ul>
@@ -178,24 +177,24 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.3.2.4.2.3.1.1 "><p><span><strong>Config File</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.3.2.4.2.3.1.2 "><p><span class="filepath"><b>.conf</b></span> configuration file used during Kerberos authentication (for example, krb5.conf). Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img src="en-us_image_0000001839233193.png"></span> to upload it to the <span>product</span>.</p>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.2.2.4.2.3.1.1 "><p><span><strong>Config File</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.4.2.3.1.2 "><p><span class="filepath"><b>.conf</b></span> configuration file used during Kerberos authentication (for example, krb5.conf). Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img src="en-us_image_0000001839233193.png"></span> to upload it to the <span>product</span>.</p>
            <div class="p">
             If <span class="uicontrol"><b>renew_lifetime</b></span> exists in the configuration file, comment it out. Otherwise, the registration may fail. For example:
             <pre class="screen">#renew_lifetime = 7d</pre>
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.3.2.4.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.3.2.4.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Password</strong></span></b></span>.</p> <p>Set this parameter to the password of <span class="uicontrol"><b><span><strong>Principal Name</strong></span></b></span>.</p></td>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.2.2.4.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.4.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Password</strong></span></b></span>.</p> <p>Set this parameter to the password of <span class="uicontrol"><b><span><strong>Principal Name</strong></span></b></span>.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.3.2.4.2.3.1.1 "><p><span><strong>Confirm Password</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.3.2.4.2.3.1.2 "><p>Confirm the password of <span class="uicontrol"><b><span><strong>Principal Name</strong></span></b></span>.</p></td>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.2.2.4.2.3.1.1 "><p><span><strong>Confirm Password</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.4.2.3.1.2 "><p>Confirm the password of <span class="uicontrol"><b><span><strong>Principal Name</strong></span></b></span>.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.3.2.4.2.3.1.1 "><p><span><strong>Keytab File</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.3.2.4.2.3.1.2 "><p>The <span class="filepath"><b>.keytab</b></span> file used during Kerberos authentication (for example, <strong>user.keytab</strong>). This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Keytab File</strong></span></b></span>.</p> <p>Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img src="en-us_image_0000001792513870.png"></span> to upload it to the <span>product</span>.</p></td>
+          <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.2.2.4.2.3.1.1 "><p><span><strong>Keytab File</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.4.2.3.1.2 "><p>The <span class="filepath"><b>.keytab</b></span> file used during Kerberos authentication (for example, <strong>user.keytab</strong>). This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Keytab File</strong></span></b></span>.</p> <p>Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img src="en-us_image_0000001792513870.png"></span> to upload it to the <span>product</span>.</p></td>
          </tr>
         </tbody>
        </table>

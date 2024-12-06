@@ -253,6 +253,7 @@ export class LiveMountCreateComponent implements OnInit {
           JSON.parse(
             this.componentData?.selectionCopy?.resource_properties || '{}'
           )['environment_os_type'] === DataMap.Os_Type.windows.value;
+        this.filesetLiveMountOptionsComponent.addHcsWindowsUser();
         this.filesetLiveMountOptionsComponent.setValidForm();
         this.filesetLiveMountOptionsComponent.hostOptions = filter(
           this.filesetLiveMountOptionsComponent.hostOptionsCache,

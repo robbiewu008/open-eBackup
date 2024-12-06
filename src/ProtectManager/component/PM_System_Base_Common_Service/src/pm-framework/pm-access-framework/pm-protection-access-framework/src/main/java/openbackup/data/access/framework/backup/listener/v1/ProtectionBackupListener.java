@@ -35,7 +35,6 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.JSONObject;
-import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.kafka.annotations.MessageListener;
 import openbackup.system.base.sdk.job.JobCenterRestApi;
@@ -163,20 +162,10 @@ public class ProtectionBackupListener {
 
     // 新老应用下发备份前校验是否能够备份及额度
     private void backupPreCheck(JobBo job) {
-        String associatedUserId = job.getUserId();
-        String resourceObjectId = job.getSourceId();
-        List<String> userIdList = userInternalService.getUserIdListByResourceObjectId(resourceObjectId);
-        if (VerifyUtil.isEmpty(userIdList)) {
-            log.error("get empty user id list by resource id:{}, will check quota with user:{}.", resourceObjectId,
-                associatedUserId);
-            userQuotaManager.checkBackupQuota(associatedUserId, null);
-            log.debug("User: {} has ability to backup.", associatedUserId);
-            return;
-        }
-        for (String userId : userIdList) {
-            userQuotaManager.checkBackupQuota(userId, null);
-        }
-        log.info("User list :{}, all have ability to backup.", userIdList);
+        String userId = job.getUserId();
+
+        log.debug("User: {} has ability to backup.", userId);
+        userQuotaManager.checkBackupQuota(userId, null);
     }
 
     private boolean isOldCopyBackup(String resourceSubType, String backupType) {

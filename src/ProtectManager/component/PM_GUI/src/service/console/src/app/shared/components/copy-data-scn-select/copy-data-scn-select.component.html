@@ -1,4 +1,3 @@
-<div class="aui-text-help-sm aui-gutter-column-sm" *ngIf="!!copyTable.renderData.length">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-text-help-sm aui-gutter-column-sm" *ngIf="!!copyTable.renderData.length">
     {{'protection_multiple_copies_exist_label' | i18n}}
 </div>
 <lv-datatable [lvData]="tableData" lvSize="small" #copyTable>

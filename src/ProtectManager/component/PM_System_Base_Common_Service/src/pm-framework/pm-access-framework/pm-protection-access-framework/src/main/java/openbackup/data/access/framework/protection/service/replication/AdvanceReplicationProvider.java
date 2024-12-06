@@ -164,6 +164,8 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
 
     private static final String ALL_COPY = "1";
 
+    private static final String NULL = "null";
+
     Set<String> dirResources = new HashSet<>(
         Arrays.asList(ResourceSubTypeEnum.SQL_SERVER.getType(), ResourceSubTypeEnum.OPENGAUSS.getType(),
             ResourceSubTypeEnum.DAMENG.getType(), ResourceSubTypeEnum.GAUSSDBT.getType(),
@@ -598,8 +600,7 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
     }
 
     private List<DmeRemoteDevice> fillDmeRemoteDeviceWhenExtraForD8(TargetClusterVo cluster, PolicyBo policy) {
-        if (!policy.getExtParameters().has(STORAGE_INFO)
-                || !policy.getExtParameters().get(STORAGE_INFO).has(STORAGE_ID)) {
+        if (isStorageInfoValid(policy)) {
             // 适配跨云复制
             List<DmeRemoteDevice> result = new ArrayList<>();
             List<StorageUnitVo> records = repCommonService.getRemoteStorageUnit(Collections.emptyMap(),
@@ -967,8 +968,7 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
     }
 
     private List<StorageUnitVo> getAllRemoteUnitByPolicy(TargetClusterVo cluster, PolicyBo policy) {
-        if (!policy.getExtParameters().has(STORAGE_INFO)
-            || !policy.getExtParameters().get(STORAGE_INFO).has(STORAGE_ID)) {
+        if (isStorageInfoValid(policy)) {
             log.info("Remote unit or group not specified. All units available.");
             return repCommonService.getRemoteStorageUnit(Collections.emptyMap(),
                 Integer.parseInt(cluster.getClusterId())).getRecords();
@@ -990,6 +990,14 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
             queryParams.put("id", storageId);
             return repCommonService.getStorageUnitVos(cluster, queryParams);
         }
+    }
+
+    private boolean isStorageInfoValid(PolicyBo policy) {
+        return !policy.getExtParameters().has(STORAGE_INFO) || !policy.getExtParameters()
+            .get(STORAGE_INFO)
+            .has(STORAGE_ID) || VerifyUtil.isEmpty(
+            policy.getExtParameters().get(STORAGE_INFO).get(STORAGE_ID).asText()) || NULL.equals(
+            policy.getExtParameters().get(STORAGE_INFO).get(STORAGE_ID).asText());
     }
 
     /**

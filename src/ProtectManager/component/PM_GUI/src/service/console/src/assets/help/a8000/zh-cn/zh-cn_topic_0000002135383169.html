@@ -1,0 +1,46 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="手动清理归档日志">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002135383169">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>手动清理归档日志</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002135383169"></a><a name="ZH-CN_TOPIC_0000002135383169"></a>
+
+<h1 class="topictitle1">手动清理归档日志</h1>
+<div><div class="section" id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_section10391546134818"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_ol017719366485"><li id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_li16713144314537"><span>使用PuTTY，登录PostgreSQL数据库主机。</span></li><li id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_li14178736154814"><span>执行以下命令创建删除过期归档日志脚本文件。</span><p><pre class="screen" id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_screen13289104219501">touch <em id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_i8485194865014">/usr/local/pg_archive_clear.sh</em> </pre>
+</p></li><li id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_li4537165055110"><span>编辑删除过期归档日志脚本文件，将手动清理日志的命令写入到脚本中。</span><p><pre class="screen" id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_screen3722162365211">source /home/<em id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_i17702729185214">pg_os_user</em>/.bashrc                    # 加载PostgreSQL数据库操作系统用户的bash配置文件，<em id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_i310983912517">pg_os_user</em>需要和<a href="zh-cn_topic_0000001607362864.html#ZH-CN_TOPIC_0000001607362864__zh-cn_topic_0000001311214069_table241515964115">表1</a>中的用户名保持一致。
+PG_ARCH=<em id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_i9859169145620">/home/postgres</em>                             # 归档目录的上一级目录，例如客户配置归档命令为：archive_command = "cp %p /home/postgres/archivedir/%f"，归档目录就是/home/postgres/archivedir，其上级目录为/home/postgres。
+<em id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_i1883019516551">reserveDay</em>=9999                                    # 保留天数为9999天。
+find \$PG_ARCH/archivedir/* -type f -mtime +$reserveDay -exec rm -f {} \;</pre>
+<div class="note" id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_note4667151125710"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_p2066812114576"><em id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_i3382147165719">reserveDay</em>根据实际备份情况而定，保留天数最小值应大于本次脚本执行时间与最近一次执行日志备份的时间间隔，否则会导致数据丢失，并影响后续备份恢复流程。例如在10号执行完日志备份，15号需要执行清理日志脚本，则保留天数应该大于6天才可以保证不会将已归档但未备份的日志文件清除。</p>
+</div></div>
+</p></li><li id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_li31401652175616"><span>执行脚本，清理归档日志。</span><p><pre class="screen" id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_screen1586613016537">sh <em id="ZH-CN_TOPIC_0000002135383169__zh-cn_topic_0000002099302634_i857419175320">/usr/local/pg_archive_clear.sh</em></pre>
+</p></li></ol>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

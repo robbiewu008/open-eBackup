@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,16 +36,16 @@
   <a name="sql-0011"></a><a name="sql-0011"></a>
   <h1 class="topictitle1">Step 2: Setting Windows PowerShell Permissions</h1>
   <div>
-   <p>Ensure that Windows PowerShell has the execute script permission (RemoteSigned, Bypass, or Unrestricted).</p>
+   <p>Ensure that Windows PowerShell has script execution permissions (controlled by <strong>RemoteSigned</strong>, <strong>Bypass</strong>, or <strong>Unrestricted</strong>).</p>
    <div class="section" id="sql-0011__section196361853169">
     <h4 class="sectiontitle">Procedure</h4>
     <ol id="sql-0011__ol3845155813619">
-     <li id="sql-0011__li1487878141211"><span>Open Windows PowerShell and run the <strong id="sql-0011__b99541622111210">Get-ExecutionPolicy</strong> command to check whether Windows PowerShell has the RemoteSigned, Bypass, or Unrestricted permission to execute scripts.</span><p></p>
+     <li id="sql-0011__li1487878141211"><span>Open Windows PowerShell and run the <strong id="sql-0011__b99541622111210">Get-ExecutionPolicy</strong> command to check whether Windows PowerShell has the <strong id="sql-0011__b1231612865819">RemoteSigned</strong>, <strong id="sql-0011__b11621181012580">Bypass</strong>, or <strong id="sql-0011__b18996121455817">Unrestricted</strong> policy to execute scripts.</span><p></p>
       <ul id="sql-0011__ul8490122691811">
        <li id="sql-0011__li9490326111815">If any of the preceding permissions exists, no further action is required.</li>
-       <li id="sql-0011__li1749052616186">If the preceding permissions do not exist, run the command in <a href="#sql-0011__li48454583610">2</a>.</li>
+       <li id="sql-0011__li1749052616186">If the preceding permissions do not exist, go to <a href="#sql-0011__li48454583610">2</a>.</li>
       </ul> <p></p></li>
-     <li id="sql-0011__li48454583610"><a name="sql-0011__li48454583610"></a><a name="li48454583610"></a><span>Run the <strong id="sql-0011__b4765171216104">Set-ExecutionPolicy RemoteSigned</strong> command to grant the RemoteSigned permission.</span></li>
+     <li id="sql-0011__li48454583610"><a name="sql-0011__li48454583610"></a><a name="li48454583610"></a><span>Run the <strong id="sql-0011__b1828154333411">Set-ExecutionPolicy RemoteSigned</strong> command to grant the <strong id="sql-0011__b4293642203618">RemoteSigned</strong> permission.</span></li>
     </ol>
    </div>
   </div>

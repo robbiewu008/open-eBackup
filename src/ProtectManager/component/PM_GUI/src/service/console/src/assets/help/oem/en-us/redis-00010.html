@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -34,16 +34,16 @@
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="redis-00010"></a><a name="redis-00010"></a>
-  <h1 class="topictitle1">Step 3: (Optional) Enabling Backup Link Encryption<span></span></h1>
+  <h1 class="topictitle1">Step 3: (Optional) Enabling Backup Link Encryption</h1>
   <div>
    <p>To ensure data security, you can enable backup link encryption. This function encrypts the data transmitted during data backup.</p>
    <div class="section">
     <h4 class="sectiontitle">Prerequisites</h4>
-    <p>Ensure that the NFS Kerberos service has been configured for the storage system. Otherwise, backup jobs may fail after backup link encryption is enabled. <span>For details about how to configure the NFS Kerberos service, see "(Optional) Configuring the NFS Kerberos Service" in the <em id="redis-00010__en-us_topic_0000001839143225_i10207188469">Installation Guide</em>. </span></p>
+    <p>Ensure that the NFS Kerberos service has been configured for the storage system. Otherwise, backup jobs may fail after backup link encryption is enabled. <span>For details about how to configure the NFS Kerberos service, see "(Optional) Configuring the NFS Kerberos Service" in the <i><cite id="redis-00010__en-us_topic_0000001839143225_cite5907115716400">Installation Guide</cite></i> specific to your product model.</span></p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Precautions</h4>
-    <p id="redis-00010__en-us_topic_0000001839143225_p1854315715349">After backup link encryption is enabled, the ticket between the agent host and the KDC domain server has a validity period. If the ticket expires, backup jobs may fail. You are advised to prolong the validity period of the ticket in the Kerberos policy on the KDC domain server or configure the ticket to never expire. If the permanent validity period is not configured, you must run the <strong id="redis-00010__en-us_topic_0000001839143225_b152622189614">kinit</strong> or <strong id="redis-00010__en-us_topic_0000001839143225_b82633181265">net</strong> command on the agent host to re-obtain tickets for users added to the AD domain before the tickets are about to expire. For details, see "Configuring the Client" in the <em id="redis-00010__en-us_topic_0000001839143225_i8540135312610">Installation Guide</em>.</p>
+    <p id="redis-00010__en-us_topic_0000001839143225_p1854315715349">After backup link encryption is enabled, the ticket between the agent host and the KDC domain server has a validity period. If the ticket expires, backup jobs may fail. You are advised to prolong the validity period of the ticket in the Kerberos policy on the KDC domain server or configure the ticket to never expire. If the ticket is not configured to never expire, you must run the <strong id="redis-00010__en-us_topic_0000001839143225_b195916246015">kinit</strong> or <strong id="redis-00010__en-us_topic_0000001839143225_b1659142413011">net</strong> command on the agent host to renew the ticket for each user added to the AD domain before it expires. For details, see "Configuring the Client" in the <i><cite id="redis-00010__en-us_topic_0000001839143225_cite890601917412">Installation Guide</cite></i> specific to your product model.</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>

@@ -36,6 +36,7 @@ import {
   ProtectedResourceApiService,
   ProtectResourceAction,
   ProtectResourceCategory,
+  RoleType,
   VirtualResourceService,
   WarningMessageService
 } from 'app/shared';
@@ -66,6 +67,7 @@ import {
 import { ManualCopyComponent } from './manual-copy/manual-copy.component';
 import { finalize } from 'rxjs/operators';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
+import { ModifyOwnedUserComponent } from 'app/shared/components/modify-owned-user/modify-owned-user.component';
 
 @Component({
   selector: 'aui-resource-replica-list',
@@ -478,6 +480,13 @@ export class ResourceReplicaListComponent implements OnInit {
         permission: OperateItems.RestoreCopy,
         label: this.i18n.get('protection_manual_copy_label'),
         onClick: () => this.manualCopy(item)
+      },
+      {
+        id: 'modifyOwnedUser',
+        disabled: this.cookieService.role !== RoleType.SysAdmin,
+        permission: OperateItems.RestoreCopy,
+        label: this.i18n.get('common_modify_owned_user_label'),
+        onClick: () => this.modifyOwnedUser(item)
       }
     ];
 
@@ -620,6 +629,38 @@ export class ResourceReplicaListComponent implements OnInit {
       lvOk: modal => {
         return new Promise(resolve => {
           const content = modal.getContentComponent() as ManualCopyComponent;
+          content.onOK().subscribe(
+            res => {
+              resolve(true);
+              this.getResource();
+            },
+            () => resolve(false)
+          );
+        });
+      }
+    });
+  }
+
+  modifyOwnedUser(data) {
+    this.drawModalService.create({
+      ...MODAL_COMMON.generateDrawerOptions(),
+      lvHeader: this.i18n.get('common_modify_owned_user_label'),
+      lvContent: ModifyOwnedUserComponent,
+      lvOkDisabled: true,
+      lvWidth: MODAL_COMMON.normalWidth,
+      lvComponentParams: {
+        rowItem: assign({}, data)
+      },
+      lvAfterOpen: modal => {
+        const content = modal.getContentComponent() as ModifyOwnedUserComponent;
+        const modalIns = modal.getInstance();
+        content.formGroup.statusChanges.subscribe(res => {
+          modalIns.lvOkDisabled = res !== 'VALID';
+        });
+      },
+      lvOk: modal => {
+        return new Promise(resolve => {
+          const content = modal.getContentComponent() as ModifyOwnedUserComponent;
           content.onOK().subscribe(
             res => {
               resolve(true);

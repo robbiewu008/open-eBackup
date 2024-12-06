@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -45,54 +45,58 @@
 </div>
 <div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>File-level restoration is supported only when the index status of a copy is <span class="uicontrol"><b><span><strong>Indexed</strong></span></b></span>.</li><li>If <span><strong>Automatic Indexing</strong></span> is enabled for the copy, the index status of the copy is <span class="uicontrol"><b><span><strong>Indexed</strong></span></b></span>. In this case, you can directly perform file-level restoration. If the <span><strong>Automatic Indexing</strong></span> is not enabled, click <span class="uicontrol"><b><span><strong>Manually Create Index</strong></span></b></span> and then perform file-level restoration.</li><li>To restore an NDMP NAS file system to a new location, a storage device residing at the new location needs to be added to the <span id="nas_s_0060_0__nas_s_0059_0_text1511818204144">OceanProtect</span>. For details about how to add a storage device, see <a href="nas_s_0013_0.html">Step 1: Adding a Storage Device</a>.</li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="nas_s_0060_0__nas_s_0059_0_en-us_topic_0000001839142377_uicontrol209301891893"><b><span id="nas_s_0060_0__nas_s_0059_0_en-us_topic_0000001839142377_text09301392911"><strong>Explore</strong></span> &gt; <span id="nas_s_0060_0__nas_s_0059_0_en-us_topic_0000001839142377_text149305915920"><strong>Copy Data</strong></span> &gt; File Systems &gt; <span id="nas_s_0060_0__nas_s_0059_0_en-us_topic_0000001839142377_text189301391992"><strong>NAS File Systems</strong></span></b></span></span></li><li><span>Copies can be searched by NDMP NAS file system resource or copy. This section uses the NDMP NAS file system resource as an example.</span><p><p id="nas_s_0060_0__nas_s_0059_0_p142551140161511">On the <span id="nas_s_0060_0__nas_s_0059_0_text6827103218214"><strong>Resources</strong></span> tab page, locate the NDMP NAS file system to be restored by file system name and click the name.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="nas_s_0060_0__en-us_topic_0000001839142377_uicontrol824614391515"><b><span id="nas_s_0060_0__en-us_topic_0000001839142377_text1324633181516"><strong>Explore</strong></span> &gt; <span id="nas_s_0060_0__en-us_topic_0000001839142377_text92466391512"><strong>Copy Data</strong></span> &gt; File Systems &gt; NDMP</b></span>.</span></li><li><span>Copies can be searched by NDMP NAS file system resource or copy. This section uses the NDMP NAS file system resource as an example.</span><p><p id="nas_s_0060_0__nas_s_0059_0_p142551140161511">On the <span id="nas_s_0060_0__nas_s_0059_0_text6827103218214"><strong>Resources</strong></span> tab page, locate the NDMP NAS file system to be restored by file system name and click the name.</p>
 </p></li><li><span>On the <span class="uicontrol" id="nas_s_0060_0__nas_s_0059_0_uicontrol1812414562220"><b><span id="nas_s_0060_0__nas_s_0059_0_text18993182162710"><strong>Copy Data</strong></span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p><p id="nas_s_0060_0__nas_s_0059_0_p9918150182310">If <span><img id="nas_s_0060_0__nas_s_0059_0_image886000161711" src="en-us_image_0000001937668641.png"></span> is displayed below a month or day, a copy is generated in the month or day.</p>
-</p></li><li><span>Locate the copy for restoration and click <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>File-level Restoration</strong></span></b></span> on the right of the row where the copy is located.</span></li><li><span>Select the object to be restored and the restoration target location.</span><p><p>The restoration target location can be <span><strong>Original location</strong></span> or <span><strong>New location</strong></span>.</p>
+</p></li><li><span>In the row of the copy for restoration, choose <span class="uicontrol"><b>More &gt; File-level Restoration</b></span>.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Linked files do not support file-level restoration.</p>
+</div></div>
+</p></li><li><span>Set <strong id="nas_s_0060_0__fc_gud_re1_b412015013135">File Obtaining Mode</strong>, which can be <strong id="nas_s_0060_0__fc_gud_re1_b1812025015135">Select file paths from the directory tree</strong> or <strong id="nas_s_0060_0__fc_gud_re1_b7120145012133">Enter file paths</strong>.</span><p><div class="note" id="nas_s_0060_0__fc_gud_re1_vmware_gud_0060_0_note1195634711290"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul id="nas_s_0060_0__fc_gud_re1_vmware_gud_0060_0_ul14956124712297"><li id="nas_s_0060_0__fc_gud_re1_vmware_gud_0060_0_li1095674772911">If the copy contains too many files, the system may time out, preventing you from selecting files to be restored from the directory tree. Therefore, you are advised to enter the paths of files to be restored.</li><li id="nas_s_0060_0__fc_gud_re1_vmware_gud_0060_0_li19956104762918">When entering a file path, enter a complete file path, for example, <strong id="nas_s_0060_0__fc_gud_re1_vmware_gud_0060_0_b745510458333">/opt/abc/efg.txt</strong> or <strong id="nas_s_0060_0__fc_gud_re1_vmware_gud_0060_0_b186591048123315">C:\abc\efg.txt</strong>. If you enter a folder path, for example, <strong id="nas_s_0060_0__fc_gud_re1_vmware_gud_0060_0_b15108423133414">/opt/abc</strong> or <strong id="nas_s_0060_0__fc_gud_re1_vmware_gud_0060_0_b13283162543410">C:\abc</strong>, all files in the folder are restored. The file name in the path is case sensitive.</li></ul>
+</div></div>
+</p></li><li><span>Select the object to be restored and the restoration target location.</span><p><p>The restoration target location can be <span><strong>Original location</strong></span> or <span><strong>New location</strong></span>.</p>
 <ul><li><span><strong>Original location</strong></span>: Restores data to the original file system.</li><li><span><strong>New location</strong></span>: Restores data to a file system of another device or another file system of the original device.</li></ul>
 <p>For details about the parameters of the original location, see <a href="#nas_s_0060_0__table1452025982813">Table 1</a>. For details about the parameters of a new location, see <a href="#nas_s_0060_0__table1248313820599">Table 2</a>.</p>
 
-<div class="tablenoborder"><a name="nas_s_0060_0__table1452025982813"></a><a name="table1452025982813"></a><table cellpadding="4" cellspacing="0" summary="" id="nas_s_0060_0__table1452025982813" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for restoring data to the original location</caption><colgroup><col style="width:13.569999999999999%"><col style="width:86.42999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.5.2.5.2.4.2.3.1.1"><p>Parameter</p>
+<div class="tablenoborder"><a name="nas_s_0060_0__table1452025982813"></a><a name="table1452025982813"></a><table cellpadding="4" cellspacing="0" summary="" id="nas_s_0060_0__table1452025982813" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for restoring data to the original location</caption><colgroup><col style="width:13.569999999999999%"><col style="width:86.42999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.5.2.6.2.4.2.3.1.1"><p>Parameter</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.5.2.5.2.4.2.3.1.2"><p>Description</p>
+<th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.5.2.6.2.4.2.3.1.2"><p>Description</p>
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p><span><strong>Location</strong></span></p>
+<tbody><tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.6.2.4.2.3.1.1 "><p><span><strong>Location</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p>Location of a file system, which cannot be modified.</p>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.6.2.4.2.3.1.2 "><p>Location of a file system, which cannot be modified.</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
 
-<div class="tablenoborder"><a name="nas_s_0060_0__table1248313820599"></a><a name="table1248313820599"></a><table cellpadding="4" cellspacing="0" summary="" id="nas_s_0060_0__table1248313820599" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Parameters for restoring data to a new location</caption><colgroup><col style="width:13.569999999999999%"><col style="width:86.42999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.5.2.5.2.5.2.3.1.1"><p>Parameter</p>
+<div class="tablenoborder"><a name="nas_s_0060_0__table1248313820599"></a><a name="table1248313820599"></a><table cellpadding="4" cellspacing="0" summary="" id="nas_s_0060_0__table1248313820599" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Parameters for restoring data to a new location</caption><colgroup><col style="width:13.569999999999999%"><col style="width:86.42999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.5.2.6.2.5.2.3.1.1"><p>Parameter</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.5.2.5.2.5.2.3.1.2"><p>Description</p>
+<th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.5.2.6.2.5.2.3.1.2"><p>Description</p>
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.5.2.3.1.1 "><p><span><strong>Storage Device</strong></span></p>
+<tbody><tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.6.2.5.2.3.1.1 "><p><span><strong>Storage Device</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.5.2.3.1.2 "><p>Select the storage device that resides at a new location.</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.5.2.3.1.1 "><p><span><strong>File Systems</strong></span></p>
-</td>
-<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.5.2.3.1.2 "><p>Select the file system to be restored.</p>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.6.2.5.2.3.1.2 "><p>Select the storage device that resides at a new location.</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.5.2.3.1.1 "><p><span><strong>FQDN/IP</strong></span></p>
+<tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.6.2.5.2.3.1.1 "><p><span><strong>File Systems</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.5.2.3.1.2 "><p>FQDN name or service IP address for accessing a NAS share.</p>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.6.2.5.2.3.1.2 "><p>Select the file system to be restored.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.6.2.5.2.3.1.1 "><p><span><strong>FQDN/IP</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.6.2.5.2.3.1.2 "><p>FQDN name or service IP address for accessing a NAS share.</p>
 <p>The FQDN format is <em id="nas_s_0060_0__nas_s_0024_i49311011216">Name of the storage device where a NAS share resides</em><strong id="nas_s_0060_0__nas_s_0024_b204885331765">.</strong><em id="nas_s_0060_0__nas_s_0024_i958914467218">Name of the domain to which the storage device is added</em>. For example, if the name of the storage device where a NAS share resides is <em id="nas_s_0060_0__nas_s_0024_i1299311513208">Huawei.Storage</em> and the name of the domain to which the storage device is added is <em id="nas_s_0060_0__nas_s_0024_i2993851132016">huawei.com</em>, the FQDN is <em id="nas_s_0060_0__nas_s_0024_i1899345112011">Huawei.Storage.huawei.com</em>.</p>
 <div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>If you need to enter an FQDN, configure the DNS service on the management page of the <span>OceanProtect</span> so that the <span>OceanProtect</span> can access external domain names. For details about how to configure the DNS service, see <a href="nas_s_0099_0.html">Configuring the DNS Service</a>.</p>
 </div></div>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.5.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p>
+<tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.6.2.5.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.5.2.3.1.2 "><p><span><strong>Replace existing files</strong></span>.</p>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.6.2.5.2.3.1.2 "><p><span><strong>Replace existing files</strong></span></p>
 <div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>If you do not select the parent directory and select only child content when selecting a copy, the permission on the parent directory is set to 777 by default after the restoration. Change the permission on the parent directory based on security requirements.</p>
 </div></div>
 </td>

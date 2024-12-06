@@ -20,7 +20,7 @@ const routes: Routes = [
     path: '',
     component: CopyFileServiceComponent,
     children: [
-      { path: '', redirectTo: 'dorado-file-system', pathMatch: 'full' },
+      { path: '', redirectTo: 'nas-shared', pathMatch: 'full' },
       {
         path: 'dorado-file-system',
         loadChildren: () =>

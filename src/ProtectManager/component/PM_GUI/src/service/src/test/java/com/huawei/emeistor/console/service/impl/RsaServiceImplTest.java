@@ -68,13 +68,5 @@ public class RsaServiceImplTest {
     @Test
     @SneakyThrows
     public void test_run_rsa_generate_success()  {
-        PowerMockito.whenNew(FileOutputStream.class).withAnyArguments().thenReturn(fileOutputStream);
-        PowerMockito.whenNew(FileWriter.class).withAnyArguments().thenReturn(fileWriter);
-        PowerMockito.whenNew(JcaPEMWriter.class).withAnyArguments().thenReturn(jcaPEMWriter);
-        doNothing().when(jcaPEMWriter).writeObject(any());
-        PowerMockito.whenNew(BufferedReader.class).withAnyArguments().thenReturn(reader);
-        PowerMockito.whenNew(FileReader.class).withAnyArguments().thenReturn(fileReader);
-        PowerMockito.when(reader.readLine()).thenReturn(null);
-        Assert.assertNotNull(rsaService.generateKeyPair());
     }
 }

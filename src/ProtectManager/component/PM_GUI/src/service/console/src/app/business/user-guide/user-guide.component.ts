@@ -113,6 +113,9 @@ export class UserGuideComponent implements OnInit {
         );
       });
     }
+    each(this.applicationConfig, (item: any) => {
+      item.apps = reject(item.apps, app => app?.hidden);
+    });
   }
 
   closeGuide() {

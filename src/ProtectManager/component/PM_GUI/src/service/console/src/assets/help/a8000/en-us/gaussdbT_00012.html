@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -39,10 +39,10 @@
 
 <h1 class="topictitle1">Step 3: Registering the GaussDB T Database</h1>
 <div><p>After ProtectAgent is installed on the host where the GaussDB T database resides, the <span>OceanProtect</span> automatically discovers the GaussDB T database host. You need to register the database instance on the host for protection or using it as the restoration target.</p>
-<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="gaussdbT_00012__li36661454141614"><span>Choose <span class="uicontrol" id="gaussdbT_00012__en-us_topic_0000001839142377_uicontrol174093353365"><b><span id="gaussdbT_00012__en-us_topic_0000001839142377_text164093351368"><strong>Protection</strong></span> &gt; Databases &gt; GaussDB T</b></span>.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register a new GaussDB T.</span></li><li><span>Configure database information.</span><p><p>In <span class="uicontrol"><b><span><strong>Type</strong></span></b></span>, select <span class="uicontrol"><b><span><strong>Single Server</strong></span></b></span> or <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span>.</p>
-<p><a href="#gaussdbT_00012__en-us_topic_0000001263936778_table741920141479">Table 1</a> describes the parameters related to the single-server system type. <a href="#gaussdbT_00012__table6175191744815">Table 2</a> describes the parameters related to the cluster type.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="gaussdbT_00012__li36661454141614"><span>Choose <span class="uicontrol" id="gaussdbT_00012__en-us_topic_0000001839142377_uicontrol174093353365"><b><span id="gaussdbT_00012__en-us_topic_0000001839142377_text164093351368"><strong>Protection</strong></span> &gt; Databases &gt; GaussDB T</b></span>.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register a new GaussDB T.</span></li><li><span>Configure database information.</span><p><p>In <span class="uicontrol"><b><span><strong>Type</strong></span></b></span>, select <span class="uicontrol"><b><span><strong>Single Server</strong></span></b></span> or <span class="uicontrol"><b><span><strong>Clusters</strong></span></b></span>.</p>
+<p><a href="#gaussdbT_00012__en-us_topic_0000001263936778_table741920141479">Table 1</a> describes the parameters related to the single-node system type. <a href="#gaussdbT_00012__table6175191744815">Table 2</a> describes the parameters related to the cluster type.</p>
 
-<div class="tablenoborder"><a name="gaussdbT_00012__en-us_topic_0000001263936778_table741920141479"></a><a name="en-us_topic_0000001263936778_table741920141479"></a><table cellpadding="4" cellspacing="0" summary="" id="gaussdbT_00012__en-us_topic_0000001263936778_table741920141479" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters of the GaussDB T single-server system</caption><colgroup><col style="width:28.799999999999997%"><col style="width:71.2%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="28.799999999999997%" id="mcps1.3.2.2.3.2.3.2.3.1.1"><p>Parameter</p>
+<div class="tablenoborder"><a name="gaussdbT_00012__en-us_topic_0000001263936778_table741920141479"></a><a name="en-us_topic_0000001263936778_table741920141479"></a><table cellpadding="4" cellspacing="0" summary="" id="gaussdbT_00012__en-us_topic_0000001263936778_table741920141479" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters of the GaussDB T single-node system</caption><colgroup><col style="width:28.799999999999997%"><col style="width:71.2%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="28.799999999999997%" id="mcps1.3.2.2.3.2.3.2.3.1.1"><p>Parameter</p>
 </th>
 <th align="left" class="cellrowborder" valign="top" width="71.2%" id="mcps1.3.2.2.3.2.3.2.3.1.2"><p>Description</p>
 </th>
@@ -55,12 +55,12 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="28.799999999999997%" headers="mcps1.3.2.2.3.2.3.2.3.1.1 "><p><span><strong>Username</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.2%" headers="mcps1.3.2.2.3.2.3.2.3.1.2 "><p>Username of the OS running the GaussDB T single-server system.</p>
+<td class="cellrowborder" valign="top" width="71.2%" headers="mcps1.3.2.2.3.2.3.2.3.1.2 "><p>Username of the OS running the GaussDB T single-node system.</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="28.799999999999997%" headers="mcps1.3.2.2.3.2.3.2.3.1.1 "><p><strong>Deployment Mode</strong></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.2%" headers="mcps1.3.2.2.3.2.3.2.3.1.2 "><p>Deployment mode of the database. The single-server system type can only be <span class="uicontrol"><b>Standalone</b></span>.</p>
+<td class="cellrowborder" valign="top" width="71.2%" headers="mcps1.3.2.2.3.2.3.2.3.1.2 "><p>Deployment mode of the database. For the single-node system, only <span class="uicontrol"><b>Standalone</b></span> is available.</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="28.799999999999997%" headers="mcps1.3.2.2.3.2.3.2.3.1.1 "><p><span><strong>Nodes</strong></span></p>
@@ -101,7 +101,7 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="28.799999999999997%" headers="mcps1.3.2.2.3.2.4.2.3.1.1 "><p><strong>Deployment Mode</strong></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.2%" headers="mcps1.3.2.2.3.2.4.2.3.1.2 "><p><strong>Standalone</strong> or <strong>Active/Standby</strong>.</p>
+<td class="cellrowborder" valign="top" width="71.2%" headers="mcps1.3.2.2.3.2.4.2.3.1.2 "><p>This parameter can be set to <strong>Standalone</strong> or <strong>Active/Standby</strong>.</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="28.799999999999997%" headers="mcps1.3.2.2.3.2.4.2.3.1.1 "><p><span><strong>Nodes</strong></span></p>

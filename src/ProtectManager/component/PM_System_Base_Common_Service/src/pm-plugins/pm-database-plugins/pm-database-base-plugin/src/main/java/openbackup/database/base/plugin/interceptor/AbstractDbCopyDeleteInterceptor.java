@@ -179,6 +179,7 @@ public abstract class AbstractDbCopyDeleteInterceptor extends BaseCopyDeleteInte
      * @param thisCopy thisCopy
      * @return List<String>
      */
+    @Override
     protected List<String> getShouldDeleteCopies(List<Copy> copies, Copy thisCopy) {
         return super.getShouldDeleteCopies(copies, thisCopy);
     }
@@ -191,6 +192,7 @@ public abstract class AbstractDbCopyDeleteInterceptor extends BaseCopyDeleteInte
      * @param nextFullCopy 下个全量副本
      * @return 需要删除的集合
      */
+    @Override
     protected List<String> getCopiesCopyTypeIsFull(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
         return CopyUtil.getCopyUuidsBetweenTwoCopy(copies, thisCopy, nextFullCopy);
     }
@@ -203,6 +205,7 @@ public abstract class AbstractDbCopyDeleteInterceptor extends BaseCopyDeleteInte
      * @param nextFullCopy 下个全量副本
      * @return 需要删除的集合
      */
+    @Override
     protected List<String> getCopiesCopyTypeIsDifferenceIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
         return Collections.emptyList();
     }
@@ -215,6 +218,7 @@ public abstract class AbstractDbCopyDeleteInterceptor extends BaseCopyDeleteInte
      * @param nextFullCopy 下个全量副本
      * @return 需要删除的集合
      */
+    @Override
     protected List<String> getCopiesCopyTypeIsCumulativeIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
         return Collections.emptyList();
     }
@@ -227,6 +231,7 @@ public abstract class AbstractDbCopyDeleteInterceptor extends BaseCopyDeleteInte
      * @param nextFullCopy 下个全量副本
      * @return 需要删除的集合
      */
+    @Override
     protected List<String> getCopiesCopyTypeIsLog(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
         return Collections.emptyList();
     }

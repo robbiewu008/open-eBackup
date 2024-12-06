@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,7 +36,7 @@
   <a name="acloud_00020"></a><a name="acloud_00020"></a>
   <h1 class="topictitle1">Step 8: Performing Backup</h1>
   <div>
-   <p>Before performing backup, you need to associate the resources to be protected with a specified SLA policy. The system protects the resources based on the SLA policy and periodically performs backup jobs based on the SLA policy. You can perform a backup job immediately through manual backup.</p>
+   <p>Before performing backup, you need to associate the resources to be protected with a specified SLA. The system protects the resources and periodically executes backup jobs based on the SLA. You can perform a backup job immediately through manual backup.</p>
    <div class="section">
     <h4 class="sectiontitle">Precautions</h4>
     <ul>
@@ -65,10 +65,10 @@
         <div class="note">
          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
          <div class="notebody">
-          <p id="acloud_00020__en-us_topic_0000001964713008_p125947145711"><span id="acloud_00020__en-us_topic_0000001964713008_ph1413818422327">If a WORM policy has been configured for the resource to be protected, select an SLA without a WORM policy to create protection to avoid WORM policy conflicts.</span></p>
+          <p id="acloud_00020__en-us_topic_0000001964713008_p125947145711"><span id="acloud_00020__en-us_topic_0000001964713008_ph1413818422327">If a WORM policy has been configured for the resources to be protected, select an SLA without a WORM policy to avoid WORM policy conflicts.</span></p>
          </div>
         </div></li>
-       <li>Select the agent host.<p>If the agent host is not selected, the system performs backup by selecting one or multiple agent hosts from the agent hosts configured during resource registration.</p></li>
+       <li>Select the agent host.<p>If no agent host is selected, the system performs backup by selecting one or multiple agent hosts from the agent hosts configured during resource registration.</p></li>
        <li>Set the parameters as follows:
         <ol class="substepthirdol">
          <li>Set <strong>SLA Overwrite Policy</strong>.
@@ -86,9 +86,9 @@
            <li>Apply the project SLA to all cloud servers that are not associated with any SLA.</li>
            <li>Apply the project SLA to newly created cloud servers.</li>
           </ul></li>
-         <li>Specify cloud servers to be excluded or included in the protection plan.<p>You can specify cloud servers to be excluded or included by cloud server name.</p> <p>Exact match and fuzzy match of cloud server names are supported. Fuzzy match rules include prefix match (for example, abc*), suffix match (for example, *abc), and middle match (for example, *abc*).</p></li>
+         <li>Specify cloud servers to be excluded or included in the protection plan.<p>You can specify cloud servers to be excluded or included by cloud server name.</p> <p>Exact match and fuzzy match of cloud server names are supported. Fuzzy match rules include prefix match (for example, abc*), suffix match (for example, *abc), and infix match (for example, *abc*).</p></li>
         </ol></li>
-       <li>Click <span class="uicontrol" id="acloud_00020__en-us_topic_0000001607841256_uicontrol196538515235"><b>OK</b></span>. <p id="acloud_00020__en-us_topic_0000001607841256_p25041111535">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p></li>
+       <li>Click <span class="uicontrol" id="acloud_00020__openstack_00023_uicontrol1627463683613"><b>OK</b></span>. <p id="acloud_00020__openstack_00023_p151591133134114">If the current system time is later than the start time of the first backup specified in the SLA, you can select <strong id="acloud_00020__openstack_00023_en-us_topic_0000001964713008_b9624185216713">Execute manual backup now</strong> in the dialog box that is displayed or choose to perform automatic backup periodically based on the backup policy set in the SLA.</p></li>
       </ol> <p></p></li>
      <li><span>Perform periodic backup of a resource set.</span><p></p>
       <ol type="a">
@@ -110,8 +110,8 @@
         </div></li>
        <li>Select a preset or user-defined SLA.<p id="acloud_00020__acloud_00021_p33248794210">You can also click <span class="uicontrol" id="acloud_00020__acloud_00021_uicontrol744210206420"><b><span id="acloud_00020__acloud_00021_text1873812341015"><strong>Create</strong></span></b></span> to create an SLA.</p></li>
        <li>Select the agent host.<p id="acloud_00020__acloud_00021_p13689185885118">If the agent host is not selected, the system performs backup by selecting one or multiple agent hosts from the agent hosts configured during resource registration.</p></li>
-       <li>Set <strong id="acloud_00020__openstack_00023_b17805121410159">Auto Indexing of Backup Copies</strong>. (This parameter is supported only in 1.6.0 and later versions.)<p id="acloud_00020__openstack_00023_p8415451315">If a VM or VM group is selected for protection and the disks to be backed up contain the system disk, the system automatically creates an index for the backup copy after this function is enabled. When using the copy for restoration, you can select one or more files in the copy for restoration and search for files, directories, or links in the copy.</p></li>
-       <li>Click <span class="uicontrol" id="acloud_00020__en-us_topic_0000001607841256_uicontrol196538515235_1"><b>OK</b></span>. <p id="acloud_00020__en-us_topic_0000001607841256_p25041111535_1">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p></li>
+       <li>Set <strong id="acloud_00020__openstack_00023_b17805121410159">Auto Indexing of Backup Copies</strong>. (This parameter is supported only in 1.6.0 and later versions.)<p id="acloud_00020__openstack_00023_p8415451315">If a VM or VM group is selected for protection and the disks to be backed up contain system disks, the system automatically creates an index for the backup copy after this function is enabled. When using the copy for restoration, you can select one or more files in the copy for restoration and search for files, directories, or links in the copy.</p></li>
+       <li>Click <span class="uicontrol" id="acloud_00020__openstack_00023_uicontrol1627463683613_1"><b>OK</b></span>. <p id="acloud_00020__openstack_00023_p151591133134114_1">If the current system time is later than the start time of the first backup specified in the SLA, you can select <strong id="acloud_00020__openstack_00023_en-us_topic_0000001964713008_b9624185216713_1">Execute manual backup now</strong> in the dialog box that is displayed or choose to perform automatic backup periodically based on the backup policy set in the SLA.</p></li>
       </ol> <p></p></li>
      <li><strong>Optional: </strong><span>Perform manual backup.</span><p></p><p>If you want to execute a backup job immediately, perform manual backup through the following operations. Otherwise, skip this step.</p>
       <ol type="a">
@@ -134,7 +134,7 @@
         <div class="note">
          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
          <div class="notebody">
-          <p id="acloud_00020__en-us_topic_0000001964713008_p13522118194919"><span id="acloud_00020__en-us_topic_0000001964713008_ph19374310343">For 1.6.0 and later versions: If the selected protection policy is different from that configured in the associated SLA, the WORM configuration does not take effect.</span></p>
+          <p id="acloud_00020__en-us_topic_0000001964713008_p13522118194919"><span id="acloud_00020__en-us_topic_0000001964713008_ph19374310343">For 1.6.0 and later versions, if the selected protection policy is different from that configured in the associated SLA, the WORM configuration does not take effect.</span></p>
          </div>
         </div></li>
        <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</li>

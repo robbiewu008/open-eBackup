@@ -57,5 +57,6 @@
   "e6000_network_type_init_by_lld_system_label": "Service Network Type",
   "e6000_ip_address_init_by_lld_system_label": "IP Address/Mask",
   "e6000_ifacename_init_by_lld_system_label": "Port Name",
-  "unlimited_quota": "Unlimited quota"
+  "unlimited_quota": "Unlimited quota",
+  "index_scan_file_out_of_limit": "The number of files in the copy exceeds the maximum number of indexes allowed in a single copy."
 }

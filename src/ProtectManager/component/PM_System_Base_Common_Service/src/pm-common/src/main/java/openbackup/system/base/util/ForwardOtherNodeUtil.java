@@ -60,9 +60,10 @@ public class ForwardOtherNodeUtil {
 
     // PM SystemBase微服务监听的端口
     private static final int PM_BASE_PORT = 30081;
+
     private static final Set<Long> networkErrorCodes = ImmutableSet.of(CommonErrorCode.CONNECT_LDAP_SERVER_FAILED,
-        CommonErrorCode.ALARM_SMTP_CONNECT_FAILED, CommonErrorCode.CONNECT_ADFS_SERVER_TIMEOUT,
-        CommonErrorCode.ALARM_CONNECT_PROXY_FAILED);
+        CommonErrorCode.DOMAIN_NAME_RESOLVED_FAILED, CommonErrorCode.ALARM_SMTP_CONNECT_FAILED,
+        CommonErrorCode.CONNECT_ADFS_SERVER_TIMEOUT, CommonErrorCode.ALARM_CONNECT_PROXY_FAILED);
 
     @Qualifier("pmSystemBaseRestTemplate")
     @Autowired

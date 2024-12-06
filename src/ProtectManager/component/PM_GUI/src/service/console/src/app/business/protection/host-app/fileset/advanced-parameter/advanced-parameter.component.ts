@@ -10,7 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -23,6 +23,7 @@ import {
   BaseUtilService,
   CommonConsts,
   DataMap,
+  GlobalService,
   I18NService,
   ProtectResourceAction
 } from 'app/shared';
@@ -36,14 +37,14 @@ import {
   toNumber,
   trim
 } from 'lodash';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'aui-advanced-parameter',
   templateUrl: './advanced-parameter.component.html',
   styleUrls: ['./advanced-parameter.component.less']
 })
-export class AdvancedParameterComponent implements OnInit {
+export class AdvancedParameterComponent implements OnInit, OnDestroy {
   resourceData;
   resourceType;
   formGroup: FormGroup;
@@ -74,17 +75,25 @@ export class AdvancedParameterComponent implements OnInit {
   isExpanded = false;
   batchModify = false;
   extParams;
+  hasRansomware = false; // 用于判断是否有已创建的防勒索策略
+  ransomwareStatus$: Subscription = new Subscription();
 
   constructor(
     public fb: FormBuilder,
     private i18n: I18NService,
+    private globalService: GlobalService,
     private baseUtilService: BaseUtilService,
     private messageService: MessageService
   ) {}
 
   ngOnInit() {
     this.getOsType();
+    this.getRansomwareStatus();
     this.initForm();
+  }
+
+  ngOnDestroy() {
+    this.ransomwareStatus$.unsubscribe();
   }
 
   initDetailData(data) {
@@ -113,6 +122,15 @@ export class AdvancedParameterComponent implements OnInit {
         this.resourceData.environment_os_type ||
         this.resourceData?.environment?.osType;
     }
+  }
+
+  getRansomwareStatus() {
+    // 开启了防勒索策略的资源是不能开小文件聚合的
+    this.ransomwareStatus$ = this.globalService
+      .getState('syncRansomwareStatus')
+      .subscribe(res => {
+        this.hasRansomware = res;
+      });
   }
 
   initForm() {

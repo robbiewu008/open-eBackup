@@ -1,0 +1,118 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: dme-api
+paths:
+  /v1/servicization-nms/dme:
+    get:
+      tags:
+        - dme-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 获取dme服务化网管配置信息
+      description: 获取dme服务化网管配置信息。
+      operationId: getDmeConfigUsingGET
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              nbiScUrl:
+                type: string
+                description: 多租北向网关
+              sbiScUrl:
+                type: string
+                description: 多租南向网关
+              serviceUserName:
+                type: string
+                description: 机机账户用户名
+              isVerifyCert:
+                type: boolean
+                description: 是否校验证书
+          examples:
+            application/json: |-
+              {
+              “nbiScUrl”:”https://x.x.x.x:27335”,
+              “sbiScUrl”:”https://x.x.x.x:27336”,
+              “serviceUserName”:”dme_oceanprotect11111”,
+              “isVerifyCert”：true
+              }
+    post:
+      tags:
+        - dme-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 用于设置dme服务化网管配置
+      description: 设置dme服务化网管配置
+      operationId: setDmeConfigUsingPOST
+      parameters:
+        - name: DmeInitConfigReq
+          in: body
+          required: false
+          description: dme服务化网管配置参数请求体
+          schema:
+            $ref: '#/definitions/SetDmeConfigUsingPOSTRequestBody'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+definitions:
+  SetDmeConfigUsingPOSTRequestBody:
+    type: object
+    properties:
+      nbiScUrl:
+        type: string
+        description: 多租北向接口
+        maxLength: 256
+        minLength: 10
+      sbiScUrl:
+        type: string
+        description: 多租南向接口
+        maxLength: 256
+        minLength: 10
+      serviceUserName:
+        type: string
+        description: 机机账户用户名
+        maxLength: 256
+        minLength: 6
+      serviceUserPassWord:
+        type: string
+        description: 机机账户密码
+        maxLength: 2048
+        minLength: 6
+      isVerifyCert:
+        type: boolean
+        description: 是否校验证书
+    required:
+      - nbiScUrl
+      - sbiScUrl
+      - serviceUserName
+      - serviceUserPassWord
+      - isVerifyCert

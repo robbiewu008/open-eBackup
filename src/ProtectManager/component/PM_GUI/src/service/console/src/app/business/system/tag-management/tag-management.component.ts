@@ -39,7 +39,8 @@ import {
   isEmpty,
   isUndefined,
   map,
-  size
+  size,
+  remove
 } from 'lodash';
 import { CreateTagComponent } from './create-tag/create-tag.component';
 
@@ -173,7 +174,9 @@ export class TagManagementComponent {
         }
       }
     ];
-
+    if (this.cookieService.role === RoleType.Auditor) {
+      remove(cols, { key: 'operation' });
+    }
     this.tableConfig = {
       table: {
         autoPolling: CommonConsts.TIME_INTERVAL,

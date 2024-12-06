@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -50,6 +50,12 @@
       </div> <p></p></li>
      <li><span>自定义SLA的名称。</span></li>
      <li><span>选择需要创建SLA的应用类型。</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="ActiveDirectory-00016__zh-cn_topic_0000001839143189_p3218512141">本产品部分型号支持选择NAS文件系统，详细支持信息请参考技术支持网站发布的产品文档或咨询产品提供商。</p>
+       </div>
+      </div>
       <ol type="a">
        <li>单击<span class="uicontrol">“应用”</span>图标。</li>
        <li>单击<span class="uicontrol">“指定应用”</span>页签。</li>
@@ -167,37 +173,32 @@
            </thead>
            <tbody>
             <tr>
-             <td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 ">
-              <div class="p">
-               指定目标位置
-               <div class="note" id="ActiveDirectory-00016__zh-cn_topic_0000001839143189_note81807159571">
-                <span class="notetitle"> 说明： </span>
-                <div class="notebody">
-                 <p id="ActiveDirectory-00016__zh-cn_topic_0000001839143189_p5180415155714">本产品部分型号支持此参数，详细的功能支持信息请参考技术支持网站发布的产品文档或咨询产品提供商。</p>
-                </div>
-               </div>
-              </div></td>
+             <td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p>指定目标位置</p></td>
              <td class="cellrowborder" valign="top" width="76.63%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 ">
               <div class="p">
                请指定备份副本的目标存储位置。
-               <ul id="ActiveDirectory-00016__zh-cn_topic_0000001839143189_ul3832679403">
-                <li id="ActiveDirectory-00016__zh-cn_topic_0000001839143189_li178323718400">备份存储单元：对应于备份集群节点。选择备份存储单元后，副本将存储至该存储单元。存储单元容量不足时，备份任务将会失败。</li>
-                <li id="ActiveDirectory-00016__zh-cn_topic_0000001839143189_li31700914016">备份存储单元组：是备份存储单元的集合。选择备份存储单元组后，系统根据存储单元组的存储策略自动选择备份目标存储单元。</li>
+               <ul id="ActiveDirectory-00016__foc_gud_0019_zh-cn_topic_0000001839143189_ul3832679403">
+                <li id="ActiveDirectory-00016__foc_gud_0019_zh-cn_topic_0000001839143189_li299019528162">备份存储单元：对应于备份集群节点。选择备份存储单元后，副本将存储至该存储单元。存储单元容量不足时，备份任务将会失败。<p id="ActiveDirectory-00016__foc_gud_0019_zh-cn_topic_0000001839143189_p36749546164"><a name="ActiveDirectory-00016__foc_gud_0019_zh-cn_topic_0000001839143189_li299019528162"></a><a name="foc_gud_0019_zh-cn_topic_0000001839143189_li299019528162"></a>创建备份存储单元的操作请参考《集群高可用特性指南》中的“管理备份存储单元”章节。</p></li>
+                <li id="ActiveDirectory-00016__foc_gud_0019_zh-cn_topic_0000001839143189_li168151656101610"><span class="parmvalue" id="ActiveDirectory-00016__foc_gud_0019_zh-cn_topic_0000001839143189_parmvalue142224995111">“备份存储单元组”</span>：是备份存储单元的集合。选择备份存储单元组后，系统根据存储单元组的存储策略自动选择备份目标存储单元。<p id="ActiveDirectory-00016__foc_gud_0019_zh-cn_topic_0000001839143189_p15126135815168">创建备份存储单元组的操作请参考《集群高可用特性指南》中的“（可选）创建备份存储单元组”章节。</p></li>
                </ul>
-               <div class="note" id="ActiveDirectory-00016__zh-cn_topic_0000001839143189_note06533915171">
-                <span class="notetitle"> 说明： </span>
-                <div class="notebody">
-                 <ul id="ActiveDirectory-00016__zh-cn_topic_0000001839143189_ul2261104811172">
-                  <li id="ActiveDirectory-00016__zh-cn_topic_0000001839143189_li182618487176">对于1.5.0版本，如果您部署了集群高可用特性，该参数才显示。您也可以不指定目标位置，如不指定，则系统通过智能均衡自动选择备份目标存储单元。</li>
-                  <li id="ActiveDirectory-00016__zh-cn_topic_0000001839143189_li1025484315189">对于1.6.0及后续版本，则必须指定目标位置。</li>
-                 </ul>
-                </div>
-               </div>
               </div></td>
             </tr>
             <tr>
              <td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><span>限速策略</span></p></td>
              <td class="cellrowborder" valign="top" width="76.63%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>备份任务平均每秒最大传输的数据量。</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 ">
+              <div class="p">
+               任务超过时间窗告警
+               <div class="note" id="ActiveDirectory-00016__zh-cn_topic_0000001839143189_note379352823112">
+                <span class="notetitle"> 说明： </span>
+                <div class="notebody">
+                 <p id="ActiveDirectory-00016__zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143213_p8320153562113">仅1.6.0及后续版本支持设置该参数。</p>
+                </div>
+               </div>
+              </div></td>
+             <td class="cellrowborder" valign="top" width="76.63%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>开启后任务执行超过时间窗将发送告警，告警需手动清除。</p></td>
             </tr>
             <tr>
              <td class="cellrowborder" valign="top" width="23.369999999999997%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><span>任务失败告警</span></p></td>

@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
     <lv-form-item>
         <lv-form-label>
             {{ 'common_bindwidth_label' | i18n }}
@@ -115,7 +115,7 @@
         </lv-form-control>
     </lv-form-item>
     <ng-container
-        *ngIf="(formGroup.value.iopsStatus && formGroup.value.burst_iops) || (formGroup.value.bindWidthStatus && formGroup.value.burst_bandwidth)">
+        *ngIf="(formGroup.value.iopsStatus && formGroup.value.burst_iops && formGroup.value.iopsBurst) || (formGroup.value.bindWidthStatus && formGroup.value.burst_bandwidth && formGroup.value.bindWidthBurst)">
         <lv-form-item>
             <lv-form-label lvRequired> {{'explore_max_burst_label' | i18n}}</lv-form-label>
             <lv-form-control [lvErrorTip]='burstTimeErrorTip'>

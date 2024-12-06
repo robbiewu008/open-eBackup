@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -84,7 +84,7 @@
       <ol type="a">
        <li>登录Oracle数据库主机。
         <ul id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_ul1983714162204">
-         <li id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_li7258697580">如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行<strong id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_b119369483451">su - oracle</strong>命令，切换到<strong id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_b2486163014495">oracle</strong>帐户。</li>
+         <li id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_li7258697580">如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行<strong id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_b119369483451">su - oracle</strong>命令，切换到<strong id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_b2486163014495">oracle</strong>账户。</li>
          <li id="oracle_gud_0058__oracle_gud_0020_zh-cn_topic_0000001656760969_li1366015032013">如果是Windows操作系统，请使用系统管理员登录Oracle数据库主机。</li>
         </ul></li>
        <li>执行以下命令，登录Oracle数据库实例。
@@ -108,7 +108,13 @@
             </ol></li>
           </ul></li>
         </ul></li>
-       <li>执行以下命令关闭同名数据库。<p><strong>shutdown immediate;</strong></p></li>
+       <li>执行以下命令关闭同名数据库。<p><strong>shutdown immediate;</strong></p>
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>对于RAC集群，所有节点均需要执行该命令。</p>
+         </div>
+        </div> <p>回显如下表示数据库关闭完成。</p> <pre class="screen">ORACLE instance shut down.</pre></li>
       </ol> <p></p></li>
      <li id="oracle_gud_0058__li17844445165619"><a name="oracle_gud_0058__li17844445165619"></a><a name="li17844445165619"></a><span>恢复至原位置时，要求目标主机的空闲内存大小必须大于数据库的SGA（<span style="color:#4D4D4D;">System Global Area</span>）和PGA（Process Global Area）的大小总和，否则可能导致恢复失败。</span><p></p>
       <ol type="a">
@@ -169,12 +175,15 @@ Swap:           99G          0B         99G</pre></li>
        <li>对于ASM实例：
         <ul>
          <li>如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行以下操作。
-          <div class="p">
-           执行以下命令，解挂载非OCR和表决磁盘数据所在的ASM磁盘组。其中<strong>DATA</strong>为磁盘组名称。
-           <pre class="screen">su - grid</pre>
-           <pre class="screen">asmcmd</pre>
-           <pre class="screen">ASMCMD&gt; umount -f DATA</pre>
-          </div></li>
+          <ol type="a">
+           <li>关闭ASM实例或者解挂载ASM磁盘组。
+            <ul>
+             <li>如果是单机场景，执行以下命令关闭ASM实例。<pre class="screen">su - grid
+srvctl stop asm -force</pre></li>
+             <li>如果是RAC集群场景，执行以下命令，解挂载非OCR和表决磁盘数据所在的ASM磁盘组，其中<em>DATA</em>为磁盘组名称。<pre class="screen">su - grid</pre> <pre class="screen">asmcmd</pre> <pre class="screen">ASMCMD&gt; umount -f <em>DATA</em></pre></li>
+            </ul></li>
+           <li><span id="oracle_gud_0058__ph1373181923716">对于恢复Oracle集群场景下的日志副本，请执行以下操作。否则，请跳过该步骤。</span><p id="oracle_gud_0058__p7416617181812">执行以下命令，关闭crs服务。</p> <pre class="screen">su - grid</pre> <pre class="screen">cd $ORACLE_HOME/bin</pre> <pre class="screen" id="oracle_gud_0058__screen18913141015199">crsctl stop res ora.crsd -init</pre></li>
+          </ol></li>
          <li>如果是Windows操作系统，请使用系统管理员登录Oracle数据库主机，并执行以下操作。
           <ol type="a">
            <li>指定“ORACLE_HOME”的路径。以Oracle 19c为例。
@@ -189,13 +198,12 @@ Swap:           99G          0B         99G</pre></li>
              <li>在键盘上按<span class="uicontrol">“Win+R”</span>，打开运行窗口。</li>
              <li>输入<span class="parmvalue">“cmd”</span>，执行以下命令，指定“ORACLE_HOME”的路径。<pre class="screen">set ORACLE_HOME=<em>查询到的ORACLE_HOME路径</em></pre></li>
             </ol></li>
-           <li>解挂载非OCR和表决磁盘数据所在的ASM磁盘组。
-            <div class="p">
-             在键盘上按“Win+R”，输入“cmd”，执行以下命令。其中<em>DATA</em>为磁盘组名称。
-             <pre class="screen">set ORACLE_SID<strong>=</strong><em>ASM实例名</em></pre>
-             <pre class="screen">asmcmd</pre>
-             <pre class="screen">ASMCMD&gt; umount -f <em>DATA</em></pre>
-            </div></li>
+           <li>在键盘上按“Win+R”，输入“cmd”，执行命令关闭ASM实例或者解挂载ASM磁盘组。
+            <ul>
+             <li>如果是单机场景，执行以下命令关闭ASM实例。<pre class="screen">srvctl stop asm -force</pre></li>
+             <li>如果是RAC集群场景，执行以下命令，解挂载非OCR和表决磁盘数据所在的ASM磁盘组，其中<em>DATA</em>为磁盘组名称。<pre class="screen">set ORACLE_SID<strong>=</strong><em>ASM实例名</em></pre> <pre class="screen">asmcmd</pre> <pre class="screen">ASMCMD&gt; umount -f <em>DATA</em></pre></li>
+            </ul></li>
+           <li><span>对于恢复Oracle集群场景下的日志副本，请执行以下操作。否则，请跳过该步骤。</span><p>执行以下命令，关闭crs服务。</p> <pre class="screen">crsctl stop res ora.crsd -init</pre></li>
           </ol></li>
         </ul></li>
        <li>对于非ASM实例：

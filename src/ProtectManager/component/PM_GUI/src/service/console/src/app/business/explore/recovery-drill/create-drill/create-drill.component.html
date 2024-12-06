@@ -1,4 +1,3 @@
-<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-fullpage">
     <div class="aui-header-1">
         <lv-group lvGutter="8px">
             <i lv-icon="aui-widget-datepicker-previous" [lvColorState]="true" (click)="gotoRecoveryDrill()"></i>
@@ -71,7 +71,7 @@
                         {{'explore_drill_plan_name_label' | i18n}}
                     </lv-form-label>
                     <lv-form-control [lvErrorTip]="nameErrorTip">
-                        <input lv-input type="text" formControlName="name" />
+                        <input lv-input type="text" formControlName="name" class="form-control-input" />
                     </lv-form-control>
                 </lv-form-item>
                 <ng-container *ngIf="formGroup.value.type === dataMap.drillType.period.value; else elseTemplate">
@@ -80,20 +80,19 @@
                             {{'explore_drill_period_label' | i18n}}
                         </lv-form-label>
                         <lv-form-control [lvErrorTip]="retentionDurationErrorTip">
-                            <lv-group lvGutter="8px">
-                                <input lv-input formControlName="retentionDuration" type="text" placeholder="{{
-                                    formGroup.value.durationUnit === dataMap.recoveryDrillUnit.hour.value
-                                      ? '1~23'
-                                      : formGroup.value.durationUnit === dataMap.recoveryDrillUnit.day.value
-                                      ? '1~365'
-                                      : formGroup.value.durationUnit == dataMap.recoveryDrillUnit.month.value
-                                      ? '1~24'
-                                      : '1~10'
-                                  }}" />
+                            <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right form-control-input">
+                                <input lv-input formControlName="retentionDuration" placeholder="{{formGroup.value.durationUnit === dataMap.recoveryDrillUnit.hour.value
+                                        ? '1~23'
+                                        : formGroup.value.durationUnit === dataMap.recoveryDrillUnit.day.value
+                                        ? '1~365'
+                                        : formGroup.value.durationUnit == dataMap.recoveryDrillUnit.month.value
+                                        ? '1~24'
+                                        : '1~10'}}" />
+                            </lv-input-group>
+                            <ng-template #unitTpl>
                                 <lv-select [lvOptions]="durationUnitOptions" formControlName="durationUnit"
-                                    lvValueKey="value" class="unit-select">
-                                </lv-select>
-                            </lv-group>
+                                    class="unit-inner-select" lvValueKey="value"></lv-select>
+                            </ng-template>
                         </lv-form-control>
                     </lv-form-item>
                     <lv-form-item>
@@ -101,7 +100,7 @@
                             {{'protection_last_time_label' | i18n}}
                         </lv-form-label>
                         <lv-form-control>
-                            <lv-date-picker formControlName="startTime" lvShowTime="true">
+                            <lv-date-picker formControlName="startTime" lvShowTime="true" class="form-control-input">
                             </lv-date-picker>
                         </lv-form-control>
                     </lv-form-item>
@@ -127,7 +126,7 @@
                     <lv-form-item *ngIf="formGroup.value.executeType === drillExecuteType.Specified">
                         <lv-form-label></lv-form-label>
                         <lv-form-control [lvErrorTip]="timeErrorTip">
-                            <lv-date-picker formControlName="executeTime" lvShowTime="true">
+                            <lv-date-picker formControlName="executeTime" lvShowTime="true" class="form-control-input">
                             </lv-date-picker>
                         </lv-form-control>
                     </lv-form-item>
@@ -248,9 +247,11 @@
                 <th><span lv-overflow>{{'explore_drill_resource_name_label' | i18n}}</span></th>
                 <th><span lv-overflow>{{'common_resource_type_label' | i18n}}</span></th>
                 <th><span lv-overflow>{{'common_location_label' | i18n}}</span></th>
-                <th><span lv-overflow>{{'explore_drill_type_label' | i18n}}</span></th>
-                <th><span lv-overflow>{{'common_system_type_label' | i18n}}</span></th>
                 <th width="250px">
+                    <span lv-overflow>{{'explore_drill_type_label' | i18n}}</span>
+                </th>
+                <th><span lv-overflow>{{'common_system_type_label' | i18n}}</span></th>
+                <th>
                     <span lv-overflow>{{'explore_destroy_drill_label' | i18n}}</span>
                 </th>
                 <th width="250px" *ngIf="formGroup.value.type === dataMap.drillType.single.value">
@@ -300,9 +301,9 @@
         <span lv-overflow>{{item.path}}</span>
     </td>
     <td>
-        <!-- 周期演练可以支持选择挂载或者恢复 -->
+        <!-- 演练可以支持选择挂载或者恢复 -->
         <ng-container
-            *ngIf="isConfigTable && formGroup.value.type === dataMap.drillType.period.value && isSupportMount(item.subType); else elseDrillTypeTemplate">
+            *ngIf="isConfigTable && isSupportMount(item.subType) && !isLogCopy(item); else elseDrillTypeTemplate">
             <lv-select [lvOptions]="mountTypeOptions" lvValueKey="value" [(ngModel)]="item.mountType"
                 (ngModelChange)='mountTypeChange(item)' class="table-item">
             </lv-select>
@@ -319,8 +320,7 @@
     <td>
         <ng-container *ngIf="isUseLivemountType(item); else elseEmptyTemplate">
             <ng-container *ngIf="isConfigTable; else elseMountTemplate">
-                <lv-select [lvOptions]="mountOptions" lvValueKey="value" [(ngModel)]="item.mountConfig"
-                    class="table-item">
+                <lv-select [lvOptions]="mountOptions" lvValueKey="value" [(ngModel)]="item.mountConfig">
                 </lv-select>
             </ng-container>
             <ng-template #elseMountTemplate>

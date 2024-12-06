@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup">
     <lv-form-item>
         <lv-form-label lvRequired>
             {{'protection_archive_storage_type_label' | i18n}}
@@ -28,7 +28,7 @@
         <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
             <lv-group [lvColumns]='["auto", "100px"]' lvRowGutter="12px">
                 <lv-select [lvOptions]="s3StorageNames" lvShowFilter lvFilterKey='label' lvFilterMode='contains'
-                    lvVirtualScroll formControlName="storage_id" lvValueKey='value' lvMode="multiple" lvShowCheckAll>
+                    lvVirtualScroll formControlName="storage_id" lvValueKey='value' lvMode="multiple">
                 </lv-select>
                 <button lv-button (click)="addStorage(formGroup.get('protocol').value)" class="backup-time-unit-text">
                     {{'common_add_label'|i18n}}
@@ -55,7 +55,7 @@
         <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
             <lv-group [lvColumns]='["auto", "100px"]' lvRowGutter="12px">
                 <lv-select [lvOptions]="mediaSetOptions[formGroup.get('node_id').value]" formControlName="mediaSet"
-                    lvValueKey='value' [lvContentTemplate]="tapeTpl" lvMode="multiple" lvShowCheckAll>
+                    lvValueKey='value' [lvContentTemplate]="tapeTpl" lvMode="multiple">
                 </lv-select>
                 <ng-template #tapeTpl let-item>
                     <lv-group lvGutter="4px" lvDirection="vertical">

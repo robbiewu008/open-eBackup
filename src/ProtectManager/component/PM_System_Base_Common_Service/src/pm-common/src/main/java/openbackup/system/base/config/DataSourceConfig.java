@@ -15,12 +15,8 @@ package openbackup.system.base.config;
 import com.zaxxer.hikari.HikariDataSource;
 
 import feign.FeignException;
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.LegoCheckedException;
-import openbackup.system.base.common.utils.JSONArray;
-import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
-import openbackup.system.base.config.datasource.DataSourceConfigService;
+import openbackup.system.base.service.ConfigMapServiceImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +60,7 @@ public class DataSourceConfig {
     private int maximumPoolSizeValue;
 
     @Autowired
-    private DataSourceConfigService dataSourceConfigService;
+    private ConfigMapServiceImpl configMapService;
 
     private void getConnectionInformation() {
         // 方便本地调试优先从环境变量中获取
@@ -73,24 +69,9 @@ public class DataSourceConfig {
             return;
         }
         try {
-            JSONArray dataSourceConfig = dataSourceConfigService.getDataSourceConfigSecreteMap().getData();
             LOGGER.info("get gauss information from infra.");
-            for (final Object obj : dataSourceConfig) {
-                if (!(obj instanceof JSONObject)) {
-                    throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, "obj is not instance of JSONObject");
-                }
-                JSONObject object = (JSONObject) obj;
-                if (!object.containsKey("database.generalPassword")) {
-                    continue;
-                }
-                final Object pwd = object.get("database.generalPassword");
-                if (!(pwd instanceof String)) {
-                    throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, "pwd is not instance of String");
-                }
-                password = (String) pwd;
-                LOGGER.info("set password success.");
-                return;
-            }
+            password = configMapService.getValueFromSecretByKey("database.generalPassword", Boolean.FALSE);
+            LOGGER.info("set password success.");
         } catch (FeignException.FeignClientException exception) {
             LOGGER.error("wrong with get password from inf.");
         }

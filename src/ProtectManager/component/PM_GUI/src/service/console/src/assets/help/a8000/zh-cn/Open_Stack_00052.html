@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -44,36 +44,76 @@
 </li><li>恢复至新位置<p>恢复到其他云平台、其他项目的其他云服务器或新建云服务器。</p>
 </li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">注意事项</h4><p>由于代理主机最多允许挂载16块磁盘，因此在做备份恢复时，如果代理主机已挂载了16块磁盘，系统将等待有空闲槽位时再执行恢复任务。</p>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><p>由于代理主机最多允许挂载24块磁盘，因此在做备份恢复时，如果代理主机已挂载了24块磁盘，系统将等待有空闲槽位时再执行恢复任务。</p>
 </div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="Open_Stack_00052__open_stack_00048_zh-cn_topic_0000001839142377_uicontrol743231135612">“<span id="Open_Stack_00052__open_stack_00048_zh-cn_topic_0000001839142377_text943133112569">数据利用</span> &gt; <span id="Open_Stack_00052__open_stack_00048_zh-cn_topic_0000001839142377_text20436317563">副本数据</span> &gt; <span id="Open_Stack_00052__open_stack_00048_zh-cn_topic_0000001839142377_text114463112568">云平台</span> &gt; 阿里云”</span>。</span></li><li><span>支持以资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在“资源”页签，根据云服务器名称查找到需要恢复的云服务器，并单击云服务器名称。</p>
-</p></li><li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页面，依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000001861487865.png"></span>，即表示该月、该天存在副本。</p>
-</p></li><li><span>找到要恢复的副本，单击其右侧的“<span>更多</span> &gt; <span>恢复</span>”。</span></li><li><span>选择需要恢复的云磁盘，进行恢复配置。</span></li><li><span>恢复到原位置或新位置。</span><p><ul><li>恢复到原位置<p>相关参数说明如<a href="#Open_Stack_00052__table1081611084918">表1</a>所示。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="Open_Stack_00052__open_stack_00048_zh-cn_topic_0000001839142377_uicontrol1717665184916">“<span id="Open_Stack_00052__open_stack_00048_zh-cn_topic_0000001839142377_text61762584912">数据利用</span> &gt; <span id="Open_Stack_00052__open_stack_00048_zh-cn_topic_0000001839142377_text101769504917">副本数据</span> &gt; <span id="Open_Stack_00052__open_stack_00048_zh-cn_topic_0000001839142377_text368193113219">云平台</span> &gt; OpenStack”</span>。</span></li><li><span>支持以资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在“资源”页签，根据云服务器名称查找到需要恢复的云服务器，并单击云服务器名称。</p>
+</p></li><li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页面，依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000001839143153.png"></span>，即表示该月、该天存在副本。</p>
+</p></li><li><span>找到要恢复的副本，单击其右侧的“<span>更多</span> &gt; <span>恢复</span>”。</span></li><li><span>恢复到原位置或新位置。</span><p><ul><li>恢复到原位置<p>相关参数说明如<a href="#Open_Stack_00052__table1081611084918">表1</a>所示。</p>
 
-<div class="tablenoborder"><a name="Open_Stack_00052__table1081611084918"></a><a name="table1081611084918"></a><table cellpadding="4" cellspacing="0" summary="" id="Open_Stack_00052__table1081611084918" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复到原位置参数说明</caption><colgroup><col style="width:29.87%"><col style="width:70.13000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.4.2.6.2.1.1.2.2.3.1.1"><p>参数</p>
+<div class="tablenoborder"><a name="Open_Stack_00052__table1081611084918"></a><a name="table1081611084918"></a><table cellpadding="4" cellspacing="0" summary="" id="Open_Stack_00052__table1081611084918" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复到原位置参数说明</caption><colgroup><col style="width:29.87%"><col style="width:70.13000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.4.2.5.2.1.1.2.2.3.1.1"><p>参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.4.2.6.2.1.1.2.2.3.1.2"><p>说明</p>
+<th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.4.2.5.2.1.1.2.2.3.1.2"><p>说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p>密码</p>
+<tbody><tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p id="Open_Stack_00052__p1889814412537">可用分区</p>
 </td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>待恢复虚拟机的密码，选择系统盘时会出现该参数。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span>代理主机</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p id="Open_Stack_00052__p881612010499">选择恢复任务的执行代理主机。</p>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p id="Open_Stack_00052__p188986420537">选择目标位置所在的可用分区。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span>恢复后自动开机</span></p>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p>云服务器类型</p>
 </td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p id="Open_Stack_00052__p1993984724917">开启后，恢复任务完成后云服务器将自动开机。默认关闭。</p>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p>选择备份副本恢复到的云服务器类型。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>目标云服务器与原云服务器的操作系统类型必须相同，如：同是Windows OS或同是Linux OS。</p>
+</div></div>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span>恢复前执行副本校验</span></p>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><div class="p" id="Open_Stack_00052__p19362125112712"><span id="Open_Stack_00052__text446319422347">原机IP</span><div class="note" id="Open_Stack_00052__note74035335417"><span class="notetitle"> 说明： </span><div class="notebody"><p id="Open_Stack_00052__p140419339417">仅1.6.0及后续版本支持设置该参数。</p>
+</div></div>
+</div>
 </td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p id="Open_Stack_00052__p178712291218">开启后，副本恢复前将执行副本校验，校验副本的完整性。该操作将影响恢复性能。默认关闭。当未生成副本校验文件时，不支持开启。</p>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p id="Open_Stack_00052__p136210256270">原云服务器的IP地址。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p><span>网络</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p>选择备份副本恢复到的云服务器网络，可以选择一个或者多个。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><div class="p" id="Open_Stack_00052__p9793165113275"><span id="Open_Stack_00052__text738131319352">指定网络的IP</span><div class="note" id="Open_Stack_00052__note19715144416519"><span class="notetitle"> 说明： </span><div class="notebody"><p id="Open_Stack_00052__p18717114412515">仅1.6.0及后续版本支持设置该参数。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p id="Open_Stack_00052__p1079313514273">为云服务器分配特定网络的IP地址，默认勾选，不勾选则随机分配IP。上下拖动可以改变虚拟机内的网卡顺序。</p>
+<p id="Open_Stack_00052__p191767304209">当指定网络的IP失败时，云服务器恢复任务也会失败。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p><span>磁盘类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p>选择备份副本恢复到的云服务器下的磁盘类型。</p>
+<div class="note" id="Open_Stack_00052__note17590616132118"><span class="notetitle"> 说明： </span><div class="notebody"><p id="Open_Stack_00052__p1486181812212">当选中的磁盘类型和原磁盘类型不一致，可能导致创建磁盘失败，请谨慎操作。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p><span>新虚拟机名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p>自定义备份副本恢复到的云服务器名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p><span>覆盖原虚拟机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p>开启后，恢复任务完成后将删除原虚拟机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p id="Open_Stack_00052__p773985413557">代理主机</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p>选择副本恢复使用的代理主机。</p>
+<p>当用户未选择时，系统会从注册资源时配置的代理主机中选择1到多个代理主机执行恢复。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p><span>恢复前执行副本校验</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p id="Open_Stack_00052__p178712291218">开启后，副本恢复前将执行副本校验，校验副本的完整性。该操作将影响恢复性能。默认关闭。当未生成副本校验文件时，不支持开启。</p>
 </td>
 </tr>
 </tbody>
@@ -81,56 +121,76 @@
 </div>
 </li><li>恢复到新位置<p>相关参数说明如<a href="#Open_Stack_00052__table5561141145116">表2</a>所示。</p>
 
-<div class="tablenoborder"><a name="Open_Stack_00052__table5561141145116"></a><a name="table5561141145116"></a><table cellpadding="4" cellspacing="0" summary="" id="Open_Stack_00052__table5561141145116" frame="border" border="1" rules="all"><caption><b>表2 </b>恢复到新位置参数说明</caption><colgroup><col style="width:29.87%"><col style="width:70.13000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.4.2.6.2.1.2.2.2.3.1.1"><p>参数</p>
+<div class="tablenoborder"><a name="Open_Stack_00052__table5561141145116"></a><a name="table5561141145116"></a><table cellpadding="4" cellspacing="0" summary="" id="Open_Stack_00052__table5561141145116" frame="border" border="1" rules="all"><caption><b>表2 </b>恢复到新位置参数说明</caption><colgroup><col style="width:29.87%"><col style="width:70.13000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.4.2.5.2.1.2.2.2.3.1.1"><p>参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.4.2.6.2.1.2.2.2.3.1.2"><p>说明</p>
+<th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.4.2.5.2.1.2.2.2.3.1.2"><p>说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p>目标组织</p>
+<tbody><tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p><span style="color:#6C7280;">位置</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>选择备份副本恢复到的云平台。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p>目标可用区</p>
-</td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>选择备份副本恢复到的目标可用区名称。</p>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>选择备份副本恢复到的云平台。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>云服务器</span></p>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p>可用分区</p>
 </td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>选择备份副本恢复到的目标云服务器名。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p>目标资源集</p>
-</td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>选择备份副本恢复到的目标资源集。</p>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>选择目标位置所在的可用分区。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p>密码</p>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p>云服务器类型</p>
 </td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>待恢复虚拟机的密码，选择系统盘时会出现该参数。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>代理主机</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>选择恢复任务的执行代理主机。</p>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>选择备份副本恢复到的云服务器类型</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>恢复后自动开机</span></p>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><div class="p"><span id="Open_Stack_00052__open_stack_00052_text446319422347">原机IP</span><div class="note" id="Open_Stack_00052__open_stack_00052_note74035335417"><span class="notetitle"> 说明： </span><div class="notebody"><p id="Open_Stack_00052__open_stack_00052_p140419339417">仅1.6.0及后续版本支持设置该参数。</p>
+</div></div>
+</div>
 </td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>开启后，恢复任务完成后云服务器将自动开机。默认关闭。</p>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>原云服务器的IP地址。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>恢复前执行副本校验</span></p>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p><span>网络</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>开启后，副本恢复前将执行副本校验，校验副本的完整性。该操作将影响恢复性能。默认关闭。当未生成副本校验文件时，不支持开启。</p>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>选择备份副本恢复到的云服务器网络，可以选择一个或者多个。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><div class="p"><span id="Open_Stack_00052__open_stack_00052_text738131319352">指定网络的IP</span><div class="note" id="Open_Stack_00052__open_stack_00052_note19715144416519"><span class="notetitle"> 说明： </span><div class="notebody"><p id="Open_Stack_00052__open_stack_00052_p18717114412515">仅1.6.0及后续版本支持设置该参数。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>为云服务器分配特定网络的IP地址，默认勾选，不勾选则随机分配IP。上下拖动可以改变虚拟机内的网卡顺序。</p>
+<p>当指定网络的IP失败时，云服务器恢复任务也会失败。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p><span>磁盘类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>选择备份副本恢复到的云服务器下的磁盘类型。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="Open_Stack_00052__open_stack_00052_p1486181812212">当选中的磁盘类型和原磁盘类型不一致，可能导致创建磁盘失败，请谨慎操作。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p><span>新虚拟机名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>自定义备份副本恢复到的云服务器名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p>代理主机</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>选择副本恢复使用的代理主机。</p>
+<p>当用户未选择时，系统会从注册资源时配置的代理主机中选择1到多个代理主机执行恢复。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p><span>恢复前执行副本校验</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>开启后，副本恢复前将执行副本校验，校验副本的完整性。该操作将影响恢复性能。默认关闭。当未生成副本校验文件时，不支持开启。</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
 </li></ul>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li><li><span>为每个待恢复的云磁盘选择恢复到的目标云磁盘。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>数据盘的数据不能恢复至系统盘，系统盘的数据可以恢复到数据盘。</li><li><span style="color:#333333;">目标云磁盘必须在挂载中</span><span style="color:#333333;">且容量大于等于待恢复的云磁盘才能恢复成功。</span></li></ul>
+</div></div>
 </p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
 </div>
 </div>

@@ -279,11 +279,11 @@ export class NormalResourcesetTemplateComponent
           type: 'select',
           isMultiple: true,
           showCheckAll: true,
-          options: this.dataMapService.toArray('resource_LinkStatus_Special')
+          options: this.getLinkStatusOption()
         },
         cellRender: {
           type: 'status',
-          config: this.dataMapService.toArray('resource_LinkStatus_Special')
+          config: this.getLinkStatusOption()
         }
       },
       status: {
@@ -657,6 +657,14 @@ export class NormalResourcesetTemplateComponent
         key: 'esn',
         name: this.i18n.get('common_serial_number_label')
       },
+      region: {
+        key: 'region',
+        name: this.i18n.get('Region'),
+        filter: {
+          type: 'search',
+          filterMode: 'contains'
+        }
+      },
       // sla三剑客
       sla: {
         key: 'sla_name',
@@ -848,6 +856,17 @@ export class NormalResourcesetTemplateComponent
     } else if (this.appType === ResourceSetType.GaussDB_T) {
       return this.dataMapService.toArray('gaussDBT_Resource_LinkStatus');
     }
+  }
+
+  getLinkStatusOption() {
+    if (
+      this.resourceType ===
+      DataMap.Resource_Type.gaussdbForOpengaussInstance.value
+    ) {
+      return this.dataMapService.toArray('gaussDBInstance');
+    }
+
+    return this.dataMapService.toArray('resource_LinkStatus_Special');
   }
 
   getEnvironmentEndpointName() {
@@ -1189,6 +1208,17 @@ export class NormalResourcesetTemplateComponent
         return [cols.name, cols.path, cols.linkStatus, cols.authType];
       case resType.Hive.value:
         return [cols.name, cols.linkStatus, cols.path, cols.authType];
+      case resType.gaussdbForOpengaussProject.value:
+        return [...nameCols, cols.linkStatus];
+      case resType.gaussdbForOpengaussInstance.value:
+        return [
+          ...nameCols,
+          cols.linkStatus,
+          cols.parentName,
+          cols.region,
+          cols.version,
+          ...slaCols
+        ];
       default:
         return nameCols;
     }
@@ -1259,6 +1289,7 @@ export class NormalResourcesetTemplateComponent
         // 所属数据库
         return this.i18n.get('protection_host_database_name_label');
       case DataMap.Resource_Type.lightCloudGaussdbInstance.value:
+      case DataMap.Resource_Type.gaussdbForOpengaussInstance.value:
         // 所属项目
         return this.i18n.get('commom_owned_project_label');
       case DataMap.Resource_Type.SQLServerGroup.value:
@@ -1303,6 +1334,24 @@ export class NormalResourcesetTemplateComponent
           conditionsTemp.isAllowRestore[0] = ['!='];
           conditionsTemp.isAllowRestore[1] = 'true';
         }
+      }
+      if (conditionsTemp.auth_status) {
+        assign(conditionsTemp, {
+          linkStatus: conditionsTemp.auth_status
+        });
+        delete conditionsTemp.auth_status;
+      }
+      if (
+        conditionsTemp.linkStatus &&
+        includes(
+          [DataMap.Resource_Type.gaussdbForOpengaussInstance.value],
+          this.resourceType
+        )
+      ) {
+        assign(conditionsTemp, {
+          status: conditionsTemp.linkStatus
+        });
+        delete conditionsTemp.linkStatus;
       }
       if (
         conditionsTemp.osType &&
@@ -1392,7 +1441,8 @@ export class NormalResourcesetTemplateComponent
               ResourceSetType.PostgreSQL,
               ResourceSetType.Informix,
               ResourceSetType.KingBase,
-              ResourceSetType.MySQL
+              ResourceSetType.MySQL,
+              ResourceSetType.DB2
             ],
             this.appType
           ) &&
@@ -1507,7 +1557,39 @@ export class NormalResourcesetTemplateComponent
       this.dataTable.setSelections(cloneDeep(this.selectionData));
       this.allSelectChange.emit();
       this.parentSelectChild();
+      if (
+        includes([DataMap.Resource_Type.dbTwoInstance.value], this.resourceType)
+      ) {
+        this.removeChildInstance();
+      }
     });
+  }
+
+  removeChildInstance() {
+    // 用于移除不在界面上存在的资源
+    const extParams = {
+      conditions: JSON.stringify({
+        ...this.getDefaultConditions(),
+        isTopInstance: InstanceType.NotTopinstance
+      })
+    };
+    if (this.appType === ResourceSetType.DB2) {
+      this.appUtilsService.getResourceByRecursion(
+        extParams,
+        params => this.protectedResourceApiService.ListResources(params),
+        resource => {
+          this.allSelectionMap[this.appType].data = this.allSelectionMap[
+            this.appType
+          ].data.filter(item => !find(resource, { uuid: item.uuid }));
+          this.selectionData = cloneDeep(
+            this.allSelectionMap[this.appType].data
+          );
+          this.dataTable.setSelections(cloneDeep(this.selectionData));
+          this.allSelectChange.emit();
+          this.parentSelectChild();
+        }
+      );
+    }
   }
 
   getDefaultConditions() {
@@ -1665,6 +1747,12 @@ export class NormalResourcesetTemplateComponent
     // 名字太长了简化一下，搞一个resType
     const resType = DataMap.Resource_Type;
     switch (this.resourceType) {
+      case resType.gaussdbForOpengaussInstance.value:
+        assign(item, {
+          linkStatus: item.extendInfo?.status,
+          region: item.extendInfo.region
+        });
+        break;
       case DataMap.Resource_Type.saphanaInstance.value:
         assign(item, {
           enableLogBackup: item?.extendInfo?.enableLogBackup

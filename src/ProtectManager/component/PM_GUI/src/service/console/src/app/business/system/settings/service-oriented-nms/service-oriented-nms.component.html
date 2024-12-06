@@ -1,0 +1,112 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+  <div class="aui-header-1">
+    <lv-group lvGutter='8px'>
+      <h1>{{ 'system_dme_access_setting_label' | i18n }}</h1>
+    </lv-group>
+  </div>
+  <div class="aui-block  aui-gutter-column-md">
+    <div class="aui-header-2">
+      <lv-group lvGutter='10px'>
+        <h2>{{ 'system_access_setting_label' | i18n }}</h2>
+        <lv-switch [(ngModel)]="dmeServiceStatus" [lvControl]="true" (click)="dmeServiceChange()" pmpermission pmOperation='ModifyLdapConfig'></lv-switch>
+      </lv-group>
+      <div pmpermission pmOperation='ModifyLdapConfig'>
+        <lv-group lvGutter='10px' *ngIf="!viewSettingFlag">
+          <span [ngClass]="{'aui-link': formGroup.valid, 'aui-link-disabled': !formGroup.valid}"
+                (click)="save()">
+                        {{ 'common_save_label' | i18n }}
+                    </span>
+          <span class="aui-link" (click)="cancel()">
+                        {{ 'common_cancel_label' | i18n }}
+                    </span>
+        </lv-group>
+        <span *ngIf="viewSettingFlag"
+              [ngClass]="{'aui-link': dmeServiceStatus, 'aui-link-disabled': !dmeServiceStatus}"
+              (click)="modify()">
+                    {{ 'common_modify_label' | i18n }}
+                </span>
+      </div>
+    </div>
+    <div class="dashed-line"></div>
+    <ng-container *ngIf="dmeServiceStatus; else elseTemplate">
+      <div *ngIf="viewSettingFlag">
+        <lv-form>
+          <lv-form-column lvWidth="50%">
+            <lv-form-item *ngFor='let item of serviceItems'>
+                <lv-form-label>{{item.label}}</lv-form-label>
+                <lv-form-control>
+                  <span lv-overflow class="widthMax">{{item.content | nil}}</span>
+                </lv-form-control>
+            </lv-form-item>
+          </lv-form-column>
+        </lv-form>
+      </div>
+      <div *ngIf="!viewSettingFlag">
+        <lv-form [formGroup]="formGroup">
+          <lv-form-column>
+            <lv-form-item>
+              <lv-form-label lvRequired>
+                {{'system_north_dem_label' | i18n}}
+              </lv-form-label>
+              <lv-form-control [lvErrorTip]="portErrorTip" class="dn-form-control">
+                <input lv-input type="text" formControlName="north" class="form-control-input" placeholder="{{'system_north_tips_label'|i18n}}"/>
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label lvRequired>
+                {{'system_south_dem_label' | i18n}}
+              </lv-form-label>
+              <lv-form-control [lvErrorTip]="portErrorTip">
+                <input lv-input type="text" formControlName="south"  class="form-control-input"  placeholder="{{'system_south_tips_label'|i18n}}"/>
+              </lv-form-control>
+            </lv-form-item>
+            <ng-container>
+              <lv-form-item>
+                <lv-form-label lvRequired>
+                  {{'common_username_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="usernameErrorTip">
+                  <input lv-input type="text" formControlName="username" class="form-control-input" placeholder="{{'system_name_tips_label'|i18n}}" />
+                </lv-form-control>
+              </lv-form-item>
+            </ng-container>
+            <lv-form-item>
+              <lv-form-label lvRequired>
+                {{'common_password_label' | i18n}}
+              </lv-form-label>
+              <lv-form-control [lvErrorTip]="passwordErrorTip">
+                <aui-inupt-with-eye formControlName="password"
+                                    class="form-control-input" placeholder="{{'system_password_tips_label'|i18n}}"></aui-inupt-with-eye>
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>
+                {{'protection_register_vm_cert_label'| i18n}}
+              </lv-form-label>
+              <lv-switch formControlName="verify">
+              </lv-switch>
+            </lv-form-item>
+          </lv-form-column>
+        </lv-form>
+      </div>
+    </ng-container>
+    <ng-template #elseTemplate>
+      <div class="no-ldap">
+        <lv-empty lvDescription="{{'system_no_dme_access_label' |i18n}}"></lv-empty>
+      </div>
+    </ng-template>
+  </div>
+</div>

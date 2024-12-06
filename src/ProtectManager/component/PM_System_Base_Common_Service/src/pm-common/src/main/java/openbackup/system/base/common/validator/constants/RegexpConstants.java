@@ -260,6 +260,11 @@ public final class RegexpConstants {
      */
     public static final String WEB_URL = "^([hH]{1}[tT]{2}[pP]{1}[sS]?):\\/\\/[\\s\\S]*$";
 
+    /**
+     * 安装路径
+     */
+    public static final String INSTALL_PATH = "^[^|;&$><`!]*$";
+
     private RegexpConstants() {
     }
 }

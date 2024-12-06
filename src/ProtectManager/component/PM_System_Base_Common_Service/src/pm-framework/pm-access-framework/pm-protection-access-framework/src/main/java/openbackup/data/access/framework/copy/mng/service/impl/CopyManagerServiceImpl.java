@@ -324,13 +324,10 @@ public class CopyManagerServiceImpl implements CopyManagerService {
     }
 
     @Override
-    public Long queryCopyCounts(String resourceId, String esn, String storageUnitId, List<Integer> backupTypes) {
+    public Long queryCopyCounts(String resourceId, String storageUnitId, List<Integer> backupTypes) {
         QueryWrapper<CopiesEntity> wrapper = new QueryWrapper<>();
         if (!VerifyUtil.isEmpty(resourceId)) {
             wrapper.eq("resource_id", resourceId);
-        }
-        if (!VerifyUtil.isEmpty(esn)) {
-            wrapper.eq("device_esn", esn);
         }
         if (!VerifyUtil.isEmpty(storageUnitId)) {
             wrapper.eq("storage_unit_id", storageUnitId);
@@ -339,5 +336,14 @@ public class CopyManagerServiceImpl implements CopyManagerService {
             wrapper.in("backup_type", backupTypes);
         }
         return copyMapper.selectCount(wrapper);
+    }
+
+    @Override
+    public void updateCopiesUserId(List<String> copyIdList, String userId) {
+        if (VerifyUtil.isEmpty(copyIdList)) {
+            log.warn("updateCopiesUserId the copyIdList is empty, userid: {}", userId);
+            return;
+        }
+        copyMapper.updateCopyUserId(copyIdList, userId);
     }
 }

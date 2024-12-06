@@ -1,0 +1,51 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Manually Deleting Archive Logs">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002135383169">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Manually Deleting Archive Logs</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002135383169"></a><a name="EN-US_TOPIC_0000002135383169"></a>
+  <h1 class="topictitle1">Manually Deleting Archive Logs</h1>
+  <div>
+   <div class="section" id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_section10391546134818">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_ol017719366485">
+     <li id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_li16713144314537"><span>Use PuTTY to log in to the PostgreSQL database host.</span></li>
+     <li id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_li14178736154814"><span>Run the following command to create a script file for deleting expired archive logs.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_screen13289104219501">touch <em id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_i8485194865014">/usr/local/pg_archive_clear.sh</em> </pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_li4537165055110"><span>Edit the script file for deleting expired archive logs and input the command for manually deleting logs to the script.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_screen3722162365211">source /home/<em id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_i17702729185214">pg_os_user</em>/.bashrc                    # Load the <strong id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_b1348853592914">bash</strong> configuration file of the PostgreSQL database OS user. The value of <em id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_i310983912517">pg_os_user</em> must be the same as the username in <a href="en-us_topic_0000001607362864.html#EN-US_TOPIC_0000001607362864__en-us_topic_0000001311214069_table241515964115">Table 1</a>.
+PG_ARCH = <em id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_i9859169145620">/home/postgres</em>                             # Upper-level directory of the archive directory. For example, if the archive command is <strong id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_b1062664974618">archive_command = "cp %p /home/postgres/archivedir/%f"</strong>, the archive directory is <strong id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_b1464714654714">/home/postgres/archivedir</strong>, and the upper-level directory is <strong id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_b2261171011476">/home/postgres</strong>.
+<em id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_i1883019516551">reserveDay</em>=9999                                    # The number of days for retention is 9999.
+find \$PG_ARCH/archivedir/* -type f -mtime +$reserveDay -exec rm -f {} \;</pre>
+      <div class="note" id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_note4667151125710">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_p2066812114576">The value of <em id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_i3382147165719">reserveDay</em> depends on the actual backup situation. The minimum value must be greater than the interval between the current script execution time and the latest log backup time. Otherwise, data will be lost and subsequent backups and restoration processes will be affected. For example, if a log backup job is completed on the 10th day of a month and the log deletion script is to be executed on the 15th day of the month, set the number of days for retention to more than six days so that the log files that have been archived but not yet backed up will not be deleted.</p>
+       </div>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_li31401652175616"><span>Run the script to delete archive logs.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_screen1586613016537">sh <em id="EN-US_TOPIC_0000002135383169__en-us_topic_0000002099302634_i857419175320">/usr/local/pg_archive_clear.sh</em></pre> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

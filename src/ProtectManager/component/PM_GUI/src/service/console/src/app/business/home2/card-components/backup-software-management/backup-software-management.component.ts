@@ -20,6 +20,7 @@ import {
 import { each, toNumber, toUpper } from 'lodash';
 import { finalize } from 'rxjs/operators';
 import ShowExternalSystemInfoParams = ExternalSystemService.ShowExternalSystemInfoParams;
+import GetAllStatusParams = ExternalSystemService.GetAllStatusParams;
 
 @Component({
   selector: 'aui-backup-software-management',
@@ -38,8 +39,16 @@ export class BackupSoftwareManagementComponent {
 
   ngOnInit(): void {
     this.cardInfo.loading = true;
+    this.refreshData();
+  }
+
+  refreshData() {
     this.getExternalSystemList();
   }
+
+  trackByUuid = (index, item) => {
+    return item.id;
+  };
 
   jumpToDPA(data) {
     // DPA跳转用ip+端口跳转
@@ -48,7 +57,11 @@ export class BackupSoftwareManagementComponent {
   }
 
   getExternalSystemList() {
-    const params: ShowExternalSystemInfoParams = { akLoading: false };
+    this.cardInfo.loading = true;
+    const params: GetAllStatusParams = {
+      akLoading: false,
+      limitTime: this.cardInfo?.selectTime
+    };
     this.externalSystemService
       .getAllStatus(params)
       .pipe(
@@ -60,6 +73,10 @@ export class BackupSoftwareManagementComponent {
         each(res, item => {
           item.usedSize = toNumber(item.usedSize);
           item.totalSize = toNumber(item.totalSize);
+          item.succeedJobs = toNumber(item.totalJobs - item.failedJobs);
+          item.successRate = Math.round(
+            ((item.succeedJobs || 0) / (item.totalJobs || 1)) * 100
+          );
           item.tagLabel = [
             {
               label: item.status
@@ -72,7 +89,7 @@ export class BackupSoftwareManagementComponent {
             Math.round((item.usedSize / (item.totalSize || 1)) * 100 * 100) /
             100;
         });
-        this.externalSystemList = res.slice(0, 2);
+        this.externalSystemList = res;
         this.cardInfo.title = res?.length
           ? `${this.i18n.get('common_external_associated_systems_label')}(${
               res.length

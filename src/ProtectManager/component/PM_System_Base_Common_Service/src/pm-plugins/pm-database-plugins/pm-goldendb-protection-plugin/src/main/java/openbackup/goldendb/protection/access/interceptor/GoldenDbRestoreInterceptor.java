@@ -108,6 +108,8 @@ public class GoldenDbRestoreInterceptor extends AbstractDbRestoreInterceptorProv
         Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElse(Maps.newHashMap());
         advanceParams.put(DatabaseConstants.MULTI_POST_JOB, Boolean.TRUE.toString());
         advanceParams.put(DatabaseConstants.TARGET_LOCATION_KEY, task.getTargetLocation().getLocation());
+        // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
         task.setAdvanceParams(advanceParams);
 
         // 设置部署类型

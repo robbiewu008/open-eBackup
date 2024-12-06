@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -39,7 +39,6 @@
    <p id="kubernetes_CSI_00078__en-us_topic_0000001779829653_p536332173720">This section describes how to obtain the <strong id="kubernetes_CSI_00078__en-us_topic_0000001779829653_b495442363718">kubeconfig</strong> configuration file when you need to register a cluster in kubeconfig authentication mode.</p>
    <div class="section" id="kubernetes_CSI_00078__en-us_topic_0000001779829653_section174892715611">
     <h4 class="sectiontitle">Procedure</h4>
-    <p id="kubernetes_CSI_00078__en-us_topic_0000001779829653_p431012210477"><strong id="kubernetes_CSI_00078__en-us_topic_0000001779829653_b866111114470">Obtaining the kubeconfig configuration file</strong></p>
     <ol id="kubernetes_CSI_00078__en-us_topic_0000001779829653_ol178313466564">
      <li id="kubernetes_CSI_00078__en-us_topic_0000001779829653_li1982204711151"><span>Before querying the <strong id="kubernetes_CSI_00078__en-us_topic_0000001779829653_b1610215468017">kubeconfig</strong> configuration file, check whether the control plane of the current cluster is connected through the address of the application scenario. Use PuTTY to log in to the Kubernetes cluster management node whose configuration file is to be obtained.</span></li>
      <li id="kubernetes_CSI_00078__en-us_topic_0000001779829653_li12832650151712"><span>Run the <strong id="kubernetes_CSI_00078__en-us_topic_0000001779829653_b1112132302918">kubectl cluster-info</strong> command to query the current cluster control plane.</span><p></p><p id="kubernetes_CSI_00078__en-us_topic_0000001779829653_p1750172941910"><span><img id="kubernetes_CSI_00078__en-us_topic_0000001779829653_image2167195018217" src="en-us_image_0000001736110414.png"></span></p> <p></p></li>
@@ -64,8 +63,8 @@
         <li id="kubernetes_CSI_00078__en-us_topic_0000001779829653_li18848195304">If yes, go to the next step.</li>
        </ul>
       </div> <p></p></li>
-     <li id="kubernetes_CSI_00078__en-us_topic_0000001779829653_li3171177208"><span>On the Kubernetes cluster management node, run the following command to query the configuration file information:</span><p></p><pre class="screen" id="kubernetes_CSI_00078__en-us_topic_0000001779829653_screen16171137132010">kubectl config view --flatten &gt; kubeconfig.yaml</pre> <p></p></li>
-     <li id="kubernetes_CSI_00078__en-us_topic_0000001779829653_li159819349216"><span>Use a transfer tool (such as SFTP) to download the <strong id="kubernetes_CSI_00078__en-us_topic_0000001779829653_b127828816564">kubeconfig.yaml</strong> file in the current command execution directory.</span></li>
+     <li id="kubernetes_CSI_00078__en-us_topic_0000001779829653_li3171177208"><a name="kubernetes_CSI_00078__en-us_topic_0000001779829653_li3171177208"></a><a name="en-us_topic_0000001779829653_li3171177208"></a><span>On the Kubernetes cluster management node, run the following command to query information and generate a configuration file:</span><p></p><pre class="screen" id="kubernetes_CSI_00078__en-us_topic_0000001779829653_screen16171137132010">kubectl config view --flatten &gt; kubeconfig.yaml</pre> <p></p></li>
+     <li id="kubernetes_CSI_00078__en-us_topic_0000001779829653_li159819349216"><span>Use a transfer tool (such as SFTP) to download the <strong id="kubernetes_CSI_00078__en-us_topic_0000001779829653_b127828816564">kubeconfig.yaml</strong> file in the directory where the command executed in <a href="#kubernetes_CSI_00078__en-us_topic_0000001779829653_li3171177208">6</a> is located.</span></li>
     </ol>
    </div>
   </div>

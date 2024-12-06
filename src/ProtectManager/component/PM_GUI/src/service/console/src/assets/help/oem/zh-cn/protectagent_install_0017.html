@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -43,12 +43,20 @@
      <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001166356758_li1561615565417">已获取登录代理主机的用户及其密码。</li>
      <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li1195035115362">部署<span id="protectagent_install_0017__zh-cn_topic_0000001839189313_text186959520137">本产品</span>时，系统会预置相应版本的ProtectAgent软件包至管理界面。如果预置的ProtectAgent软件包版本不满足您的需求，那么安装ProtectAgent前请先参考<a href="zh-cn_topic_0000001839189393.html">上传ProtectAgent软件包</a>上传其他版本的ProtectAgent软件包。</li>
      <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li448413124302">对于代理主机为Linux OS或Unix OS时，如果用户修改了<span class="uicontrol" id="protectagent_install_0017__zh-cn_topic_0000001839189313_uicontrol07811648173219">“/etc/ssh/sshd_config”</span>配置文件中的<span class="uicontrol" id="protectagent_install_0017__zh-cn_topic_0000001839189313_uicontrol03096514327">“ListenAddress”</span>参数的值，请确保配置值中包含代理主机的备份网络IP地址，否则检查连通性失败，无法推送安装。即：<span class="uicontrol" id="protectagent_install_0017__zh-cn_topic_0000001839189313_uicontrol64171351193312">“ListenAddress”</span>的值要么是系统默认值，要么是用户自行设置的IP地址+代理主机的备份网络IP地址。</li>
-     <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li96507810360">对于代理主机为Linux OS时，如果在代理主机上设置了<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001607864814_b1217817142295">rm</strong>、<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001607864814_b1479094817301">cp</strong>、<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001607864814_b1646412133117">mv</strong>等命令需要交互式输入的别名（例如：<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001607864814_b2900716123516">mv=mv -i</strong>的别名，<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001607864814_b5246558114412">mv</strong>命令默认以<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001607864814_b92462058164413">-i</strong>参数执行），请先取消别名设置，否则会导致安装失败。</li>
+     <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li96507810360">对于代理主机为Linux OS时，如果在代理主机上设置了<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001607864814_b1217817142295">rm</strong>、<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001607864814_b1479094817301">cp</strong>、<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001607864814_b1646412133117">mv</strong>等命令需要交互式输入的别名（例如：设置<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001607864814_b12670182171315">mv=mv -i</strong>，<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001607864814_b5246558114412">mv</strong>命令默认以<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001607864814_b92462058164413">-i</strong>参数执行），请先取消别名设置，否则会导致安装失败。</li>
     </ul>
    </div>
    <div class="section" id="protectagent_install_0017__zh-cn_topic_0000001839189313_section4249452185218">
     <h4 class="sectiontitle">注意事项</h4>
-    <p id="protectagent_install_0017__zh-cn_topic_0000001839189313_p9844135515524">受保护资源为GaussDB(DWS)时，如果您不需要配置防火墙，可以执行<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_b380613802412">systemctl stop SuSEfirewall2.service</strong>命令关闭防火墙。</p>
+    <ul id="protectagent_install_0017__zh-cn_topic_0000001839189313_ul3695154054716">
+     <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li5695134010473">受保护资源为GaussDB(DWS)时，如果您不需要配置防火墙，可以执行<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_b380613802412">systemctl stop SuSEfirewall2.service</strong>命令关闭防火墙。</li>
+     <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li1480134224711">ProtectAgent安装完成后系统会自动创建<strong id="protectagent_install_0017__zh-cn_topic_0000001839189313_b13908312162918">rdadmin</strong>用户及用户目录，请勿删除或修改此用户及用户目录。
+      <ul id="protectagent_install_0017__zh-cn_topic_0000001839189313_ul0373201764816">
+       <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li1457021510484">对于Linux OS、AIX OS，该用户的用户目录为“ /home/rdadmin”。</li>
+       <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li714633415481">对于Solaris OS，该用户的用户目录为“ /export/home/rdadmin”。</li>
+       <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li268314154813">对于Windows OS，该用户的用户目录为“C:\Users\rdadmin”。</li>
+      </ul></li>
+    </ul>
    </div>
    <div class="section" id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001166356758_section12661410181917">
     <h4 class="sectiontitle">操作步骤</h4>
@@ -132,14 +140,14 @@
          </tr>
          <tr id="protectagent_install_0017__zh-cn_topic_0000001839189313_row5946161118327">
           <td class="cellrowborder" valign="top" width="28.12%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="protectagent_install_0017__zh-cn_topic_0000001839189313_p49461711203212">源端重删</p></td>
-          <td class="cellrowborder" valign="top" width="71.88%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="protectagent_install_0017__zh-cn_topic_0000001839189313_p0946011123212">源端重删是删除源端数据中的冗余数据后再进行传输，可以减少传输的数据量，但会增加客户端的资源占用。</p>
+          <td class="cellrowborder" valign="top" width="71.88%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="protectagent_install_0017__zh-cn_topic_0000001839189313_p0946011123212">源端重删是删除源端数据中的冗余数据后再进行传输，可以减少传输的数据量，但会增加客户端的资源占用。源端重删功能的详细信息可参考对应版本的<a href="https://support.huawei.com/enterprise/zh/flash-storage/oceanprotect-x8000-pid-251807257?category=configuration-commissioning&amp;subcategory=configuration-guide" target="_blank" rel="noopener noreferrer">《源端重删用户指南》</a>。</p>
            <div class="p" id="protectagent_install_0017__zh-cn_topic_0000001839189313_p1091583016254">
-            如需开启，请确保代理主机空闲内存大于2GB。支持源端重删的操作系统请查看<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect兼容性查询</a>工具。
+            如需开启，请确保代理主机空闲内存大于2GB。
             <div class="note" id="protectagent_install_0017__zh-cn_topic_0000001839189313_note201921842115416">
              <span class="notetitle"> 说明： </span>
              <div class="notebody">
               <ul id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001792390264_ul117577420321">
-               <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001792390264_li175714133215"><span id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001792390264_ph1343712386551">当代理主机操作系统为Linux时，开启源端重删功能后，请在首次备份前将源端重删用户加到sudoers中，具体操作请参见<a href="zh-cn_topic_0000001792390228.html#ZH-CN_TOPIC_0000001792390228">添加源端重删用户到sudoers（适用于Linux OS）</a>。</span></li>
+               <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001792390264_li175714133215"><span id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001792390264_ph1343712386551">当代理主机操作系统为Linux时，开启源端重删功能后，请在首次备份前将源端重删用户加到sudoers中，具体操作请参见<a href="zh-cn_topic_0000001792390228.html">添加源端重删用户到sudoers（适用于Linux OS）</a>。</span></li>
                <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li154351142012">如果安装ProtectAgent时未开启源端重删功能，在ProtectAgent安装完成后也可手动安装OceanStor DataTurbo客户端，具体操作请参考<a href="zh-cn_topic_0000001936780456.html">安装OceanStor DataTurbo客户端</a>。</li>
               </ul>
              </div>
@@ -148,17 +156,20 @@
          </tr>
          <tr id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001166356758_row155512323315">
           <td class="cellrowborder" valign="top" width="28.12%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001166356758_p3555183143317"><span id="protectagent_install_0017__zh-cn_topic_0000001839189313_text1950933211162">IP地址</span>（地址段）</p></td>
-          <td class="cellrowborder" valign="top" width="71.88%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001166356758_p155515320337">请输入代理主机的IP地址或地址段。支持配置代理主机的备份网络IP，对于1.5.0SPC19及后续版本还支持配置EIP（Elastic IP）或内大网IP。</p>
-           <ul id="protectagent_install_0017__zh-cn_topic_0000001839189313_ul1225881051311">
-            <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li8258810141315">如果为EIP映射到虚拟私有云（VPC）IP场景，请输入EIP。</li>
-            <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li1225811101134">如果为内大网IP映射到虚拟私有云（VPC）IP场景，请输入内大网IP。
-             <div class="note" id="protectagent_install_0017__zh-cn_topic_0000001839189313_note1075615426720">
-              <span class="notetitle"> 说明： </span>
-              <div class="notebody">
-               <p id="protectagent_install_0017__zh-cn_topic_0000001839189313_p77591542474"><span id="protectagent_install_0017__zh-cn_topic_0000001839189313_ph163811744610">当已安装ProtectAgent，如果升级到1.5.0SPC19及后续版本且需使用映射到VPC IP的EIP或内大网IP，则请先<a href="zh-cn_topic_0000001847935170.html">卸载ProtectAgent</a>，再重新执行本章节安装1.5.0SPC19及后续版本的ProtectAgent。</span></p>
-              </div>
-             </div></li>
-           </ul></td>
+          <td class="cellrowborder" valign="top" width="71.88%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 ">
+           <div class="p" id="protectagent_install_0017__zh-cn_topic_0000001839189313_zh-cn_topic_0000001166356758_p155515320337">
+            请输入代理主机的IP地址或地址段。支持配置代理主机的备份网络IP，对于1.5.0SPC19及后续版本还支持配置EIP（Elastic IP）或内大网IP。
+            <ul id="protectagent_install_0017__zh-cn_topic_0000001839189313_ul1225881051311">
+             <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li8258810141315">如果为EIP映射到虚拟私有云（VPC）IP场景，请输入EIP。</li>
+             <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li1225811101134">如果为内大网IP映射到虚拟私有云（VPC）IP场景，请输入内大网IP。</li>
+            </ul>
+           </div>
+           <div class="note" id="protectagent_install_0017__zh-cn_topic_0000001839189313_note1075615426720">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p id="protectagent_install_0017__zh-cn_topic_0000001839189313_p77591542474"><span id="protectagent_install_0017__zh-cn_topic_0000001839189313_ph163811744610">当已安装ProtectAgent，如果升级到1.5.0SPC19及后续版本且需使用映射到VPC IP的EIP或内大网IP，则请先<a href="zh-cn_topic_0000001847935170.html">卸载ProtectAgent</a>，再重新执行本章节安装1.5.0SPC19及后续版本的ProtectAgent。</span></p>
+            </div>
+           </div></td>
          </tr>
          <tr id="protectagent_install_0017__zh-cn_topic_0000001839189313_row13751036323">
           <td class="cellrowborder" valign="top" width="28.12%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="protectagent_install_0017__zh-cn_topic_0000001839189313_p15758312324"><span id="protectagent_install_0017__zh-cn_topic_0000001839189313_text158241138143219">端口</span></p></td>
@@ -188,7 +199,7 @@
               <div class="note" id="protectagent_install_0017__zh-cn_topic_0000001839189313_note3238291397">
                <span class="notetitle"> 说明： </span>
                <div class="notebody">
-                <p id="protectagent_install_0017__zh-cn_topic_0000001839189313_p1483584425119">当<span class="uicontrol" id="protectagent_install_0017__zh-cn_topic_0000001839189313_uicontrol123091151202016">“<span id="protectagent_install_0017__zh-cn_topic_0000001839189313_text16309185115205">用户类型</span>”</span>为<span class="uicontrol" id="protectagent_install_0017__zh-cn_topic_0000001839189313_uicontrol3309205118208">“<span id="protectagent_install_0017__zh-cn_topic_0000001839189313_text2309145122012">普通用户</span>”</span>时，需要先将该普通用户添加到sudoers中，否则注册ProtectAgent将失败，具体操作步骤可参考<a href="zh-cn_topic_0000001839189321.html">添加普通用户至sudoers</a>。</p>
+                <p id="protectagent_install_0017__zh-cn_topic_0000001839189313_p1483584425119">当<span class="uicontrol" id="protectagent_install_0017__zh-cn_topic_0000001839189313_uicontrol123091151202016">“<span id="protectagent_install_0017__zh-cn_topic_0000001839189313_text16309185115205">用户类型</span>”</span>为<span class="uicontrol" id="protectagent_install_0017__zh-cn_topic_0000001839189313_uicontrol3309205118208">“<span id="protectagent_install_0017__zh-cn_topic_0000001839189313_text2309145122012">普通用户</span>”</span>时，需要先将该普通用户添加到sudoers中，否则注册ProtectAgent将失败，具体操作步骤可参考<a href="zh-cn_topic_0000001839189321.html">添加普通用户至sudoers（适用于Linux OS）</a>。</p>
                </div>
               </div></li>
             </ul>
@@ -230,7 +241,7 @@
           <td class="cellrowborder" valign="top" width="28.12%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="protectagent_install_0017__zh-cn_topic_0000001839189313_p18279102353111"><span id="protectagent_install_0017__zh-cn_topic_0000001839189313_text29193331704">安装目录</span></p></td>
           <td class="cellrowborder" valign="top" width="71.88%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="protectagent_install_0017__zh-cn_topic_0000001839189313_p2021392535">代理主机安装的目录。</p>
            <ul id="protectagent_install_0017__zh-cn_topic_0000001839189313_ul136897143531">
-            <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li97591618165310">操作系统为Linux、AIX、HP-UX或Solaris时，默认安装在“/opt”目录下。不支持安装在/tmp、/dev、/bin、/usr及根目录下，不能有[|;&amp;$&gt;&lt;`\!]特殊字符。</li>
+            <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li97591618165310">操作系统为Linux、AIX或Solaris时，默认安装在“/opt”目录下。不支持安装在/tmp、/dev、/bin、/usr及根目录下，不能有[|;&amp;$&gt;&lt;`\!]特殊字符。</li>
             <li id="protectagent_install_0017__zh-cn_topic_0000001839189313_li9689114125316">操作系统为Windows时，默认安装在“C:\”目录下。</li>
            </ul>
            <div class="note" id="protectagent_install_0017__zh-cn_topic_0000001839189313_note121249582327">

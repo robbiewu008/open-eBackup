@@ -1,4 +1,3 @@
-<div class="aui-header-2 alarm-dump-operation">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-header-2 alarm-dump-operation">
     <h2>
         {{'system_dump_sftp_label' | i18n}}
     </h2>
@@ -34,9 +34,9 @@
         </lv-group>
     </div>
 </div>
-<div class="alarm-dump-operation">
-    <p class="aui-text-help-sm">{{'system_sftp_desc_label' | i18n}}</p>
-</div>
+<lv-alert lvType="info" [lvClosable]="false">
+    {{'system_sftp_desc_label' | i18n}}
+</lv-alert>
 <div class="dashed-line"></div>
 <ng-container *ngIf="!isModify">
     <lv-form [lvLabelColon]='false'>

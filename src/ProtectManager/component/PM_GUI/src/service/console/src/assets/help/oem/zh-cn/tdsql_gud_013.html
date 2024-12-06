@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -34,27 +34,22 @@
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="tdsql_gud_013"></a><a name="tdsql_gud_013"></a>
-  <h1 class="topictitle1">步骤5：（可选）开启备份链路加密开关<span></span></h1>
+  <h1 class="topictitle1">步骤5：（可选）开启备份链路加密开关</h1>
   <div>
    <p>您需要开启备份链路加密开关，备份链路加密功能才会生效。</p>
    <div class="section">
     <h4 class="sectiontitle">前提条件</h4>
-    <p>请确保已为存储系统配置NFS Kerberos服务，否则开启备份链路加密开关后，可能导致备份任务失败。<span>配置NFS Kerberos服务的操作请参见《安装指南》中的“（可选）配置NFS Kerberos服务”章节。</span>在AD域中添加用户时，添加三个用户，分别为<strong>rdadmin</strong>、TDSQL数据库的<strong>root</strong>和<strong>tdsql</strong>用户。可联系应用管理员获取操作系统用户名和ID。如果AD域中已存在此用户，无需添加。</p>
+    <p>请确保已为存储系统配置NFS Kerberos服务，并已在AD域中添加<strong>rdadmin</strong>、TDSQL数据库的<strong>root</strong>和<strong>tdsql</strong>用户。否则开启备份链路加密开关后，可能导致备份任务失败。<span>配置NFS Kerberos服务的操作请参见产品对应型号的<span id="tdsql_gud_013__zh-cn_topic_0000001839143225_cite5907115716400">《安装指南》</span>中的“（可选）配置NFS Kerberos服务”章节。</span></p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">注意事项</h4>
-    <p id="tdsql_gud_013__zh-cn_topic_0000001839143225_p1854315715349">开启备份链路加密后，代理主机与KDC域服务器之间的票证存在有效期，票证过期之后可能导致备份任务失败。建议延长KDC域服务器上Kerberos策略中票证的过期时间或者配置为永不过期。如果未配置永不过期，需要在票证即将过期前，在代理主机上，对添加到AD域中的用户，通过<strong id="tdsql_gud_013__zh-cn_topic_0000001839143225_b3195122210175">kinit</strong>命令或<strong id="tdsql_gud_013__zh-cn_topic_0000001839143225_b185942242179">net</strong>命令重新获取票证，具体操作请参见《安装指南》中的“配置客户端”章节。</p>
+    <p id="tdsql_gud_013__zh-cn_topic_0000001839143225_p1854315715349">开启备份链路加密后，代理主机与KDC域服务器之间的票证存在有效期，票证过期之后可能导致备份任务失败。建议延长KDC域服务器上Kerberos策略中票证的过期时间或者配置为永不过期。如果未配置永不过期，需要在票证即将过期前，在代理主机上，对添加到AD域中的用户，通过<strong id="tdsql_gud_013__zh-cn_topic_0000001839143225_b3195122210175">kinit</strong>命令或<strong id="tdsql_gud_013__zh-cn_topic_0000001839143225_b185942242179">net</strong>命令重新获取票证，具体操作请参见产品对应型号的<span id="tdsql_gud_013__zh-cn_topic_0000001839143225_cite890601917412">《安装指南》</span>中的“配置客户端”章节。</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">创建UNIX本地认证用户组</h4>
     <p>开启备份链路加密前，如果当前环境未加入域环境，需要将用户组添加到本地认证用户组。</p>
     <ol>
-     <li><span>登录DeviceManager。</span><p></p>
-      <ol type="a">
-       <li>选择<span class="uicontrol" id="tdsql_gud_013__zh-cn_topic_0000001839143213_zh-cn_topic_0000001311295305_zh-cn_topic_0000001149078659_uicontrol1098185683619">“<span id="tdsql_gud_013__zh-cn_topic_0000001839143213_text157651936143415">系统</span> &gt; <span id="tdsql_gud_013__zh-cn_topic_0000001839143213_text49601653123416">基础设施</span> &gt; <span id="tdsql_gud_013__zh-cn_topic_0000001839143213_text112401684352">集群管理</span>”</span>。</li>
-       <li>在<span class="uicontrol" id="tdsql_gud_013__zh-cn_topic_0000001839143213_uicontrol13691645105219">“<span id="tdsql_gud_013__zh-cn_topic_0000001839143213_text1763193125313">备份集群</span>”</span>页签的<span class="uicontrol" id="tdsql_gud_013__zh-cn_topic_0000001839143213_uicontrol1050641575312">“<span id="tdsql_gud_013__zh-cn_topic_0000001839143213_text133861121163513">本地集群节点</span>”</span>区域，单击节点名称。</li>
-       <li>在弹出的<span class="uicontrol" id="tdsql_gud_013__zh-cn_topic_0000001839143213_uicontrol1144724616332">“<span id="tdsql_gud_013__zh-cn_topic_0000001839143213_text51761646203516">节点详情</span>”</span>对话框中，单击<span class="uicontrol" id="tdsql_gud_013__zh-cn_topic_0000001839143213_uicontrol1544714611335">“<span id="tdsql_gud_013__zh-cn_topic_0000001839143213_text1624910583612">打开设备管理</span>”</span>，进入DeviceManager。</li>
-      </ol> <p></p></li>
+     <li><span>登录DeviceManager管理界面。</span></li>
      <li><span>选择<span class="uicontrol">“服务 &gt; 文件服务 &gt; 认证用户”</span>。</span></li>
      <li><span>在<span class="uicontrol">“UNIX用户”</span>页签下选择<span class="uicontrol">“本地认证用户组”</span>。</span></li>
      <li><span>单击<span class="uicontrol">“创建”</span>。</span></li>

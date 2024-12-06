@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="documenttype" content="usermanual">
 <meta name="prodname" content="csbs">
 <meta name="DC.Format" content="XHTML">
@@ -39,7 +39,7 @@
 
 <h1 class="topictitle1">Adding an Internal Communication Network for the Active Node (Applicable to 1.6.0 and Later Versions)</h1>
 <div><p>If you want to use cluster HA, perform operations in this section to add an internal communication network for the active node for communication among nodes in the backup cluster.</p>
-<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before configuring cluster HA, ensure that Network Time Protocol (NTP) automatic synchronization has been configured for each node on DeviceManager. For details, see "Setting the Device Time" in the <i><cite id="HA00017__ha00016_cite4124117153610">OceanProtect <span id="HA00017__ha00016_en-us_topic_0000001792502994_ph14959193919202">Appliance 1.5.0-1.6.0</span> Administrator Guide</cite></i>.</li><li>At least two IP addresses have been reserved for the internal communication network of the active node.</li></ul>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before configuring cluster HA, ensure that Network Time Protocol (NTP) automatic synchronization has been configured for each node on DeviceManager. For details, see "Setting the Device Time" in the <i><cite id="HA00017__ha00016_cite4124117153610">OceanProtect DataBackup 1.5.0-1.6.0 Administrator Guide</cite></i>.</li><li>At least two IP addresses have been reserved for the internal communication network of the active node.</li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">Precautions</h4><ul><li>After the internal communication network of the active node is added, the system restarts and backup jobs may fail.</li><li id="HA00017__HA00016_li982210101820">After the internal communication network is added and member nodes are added, the internal communication network cannot be modified. Exercise caution when performing this operation.</li></ul>
 </div>
@@ -108,6 +108,8 @@
 </div>
 </p></li><li id="HA00017__li74221437101513"><span>After selecting <strong id="HA00017__b1364717387011">Port Type</strong>, select service ports in the <span class="uicontrol" id="HA00017__uicontrol299760201715"><b>Available Ports</b></span> area. You can select one or more ports to configure service ports. In the <span class="uicontrol" id="HA00017__uicontrol4460153101611"><b>Selected Ports</b></span> area, click <span><img id="HA00017__image12321110183" src="en-us_image_0000001959449433.png"></span> in the row where the port to be removed resides to remove it from the <span class="uicontrol" id="HA00017__uicontrol1816013477188"><b>Selected Ports</b></span> area, or click <span class="uicontrol" id="HA00017__uicontrol197077118194"><b>Delete All</b></span> to remove all ports from the <span class="uicontrol" id="HA00017__uicontrol682619781918"><b>Selected Ports</b></span> area.</span><p><p id="HA00017__p154109180412">After selecting <strong id="HA00017__b544813511174">Port Type</strong>, you can perform the following operations:</p>
 <ul id="HA00017__ul4168101284719"><li id="HA00017__li161691123478">Port selection: You can select <span class="uicontrol" id="HA00017__uicontrol1843105516496"><b>Creating a port</b></span> or <span class="uicontrol" id="HA00017__uicontrol239791105017"><b>Reusing the configured port</b></span>.</li><li id="HA00017__li6280184155013"><strong id="HA00017__b458011617451">Port Sharing</strong> (optional): This option is available when <span class="uicontrol" id="HA00017__uicontrol225594865817"><b>Port Type</b></span> is set to <span class="uicontrol" id="HA00017__uicontrol089964425819"><b>Bond Port</b></span>. If <span class="uicontrol" id="HA00017__uicontrol756410491518"><b>Port Sharing</b></span> is enabled, the number of required ports can be reduced, but the reliability of the internal communication network decreases.</li></ul>
+<div class="note" id="HA00017__note89765103387"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="HA00017__p4727041145210">If multiple sets of the <span id="HA00017__text1278956184819">OceanProtect</span> form a cluster, reserve two additional IP addresses for each node to synchronize configuration information in the cluster.</p>
+</div></div>
 </p></li><li id="HA00017__li16902184110158"><span>(Optional) In the <strong id="HA00017__b20216112113214">Advanced</strong> area, select <span class="uicontrol" id="HA00017__uicontrol1417910172019"><b>Configure Route</b></span> to configure a route for the internal communication network. Choose <span class="uicontrol" id="HA00017__uicontrol13785123742017"><b>Add</b></span> to add the corresponding route. The route type can be <span class="uicontrol" id="HA00017__uicontrol45422057811331"><b>Network segment route</b></span>, <span class="uicontrol" id="HA00017__uicontrol213070986411331"><b>Host route</b></span>, or <span class="uicontrol" id="HA00017__uicontrol205092273511331"><b>Default route</b></span>.</span><p><p id="HA00017__p1302194392420"></p>
 <div class="p" id="HA00017__p1676518467244"><div class="note" id="HA00017__note1176813248236"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="HA00017__p1076862410236">If a gateway has been configured for the logical port, default routes cannot be added.</p>
 </div></div>

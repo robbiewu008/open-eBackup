@@ -216,12 +216,12 @@ export class TableRestoreComponent implements OnInit {
           this.rowCopy.resource_sub_type ===
           DataMap.Resource_Type.DWS_Schema.value
         ) {
-          // 表级恢复的新位置恢复：目标集群只展示版本号大于等于9.1.0版本的，且过滤掉原集群
+          // 表级恢复的新位置恢复：目标集群只展示版本号大于等于9.1.0版本的，且保留原集群因为需要能新建schema恢复
           recordsTemp = filter(
             recordsTemp,
             item =>
-              compareVersion(item?.version, '9.1.0') !== -1 &&
-              item.uuid !== get(this.resourceData, 'root_uuid')
+              compareVersion(item?.version, '9.1.0') !== -1 ||
+              item.uuid === get(this.resourceData, 'root_uuid')
           );
         } else {
           recordsTemp = filter(recordsTemp, item => item?.version === version);

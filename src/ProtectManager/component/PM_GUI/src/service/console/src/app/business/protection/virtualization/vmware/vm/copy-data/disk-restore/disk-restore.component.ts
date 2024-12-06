@@ -248,7 +248,7 @@ export class DiskRestoreComponent implements OnInit {
       datastoreCapacity: '',
       guid: [item.GUID],
       options: [[]],
-      diskType: [item.DISKTYPE],
+      diskType: [item.DISKTYPE || 'normal'],
       diskDatastore: new FormControl(
         null,
         this.restoreToNewLocationOnly ||
@@ -396,6 +396,7 @@ export class DiskRestoreComponent implements OnInit {
     this.selectedHost = event.parent ? event.parent.uuid : '';
     if (
       event.parent &&
+      event.subType === DataMap.Resource_Type.virtualMachine.value &&
       event.parent.subType ===
         DataMap.Resource_Type.clusterComputeResource.value
     ) {

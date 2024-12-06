@@ -62,8 +62,10 @@ RUN mkdir -p /img/agent/client/ \
     && echo "nobody  ALL=(root)      NOPASSWD:/usr/bin/python3 /script/delete_hosts.py *" >> /etc/sudoers \
     && echo "nobody  ALL=(root)      NOPASSWD:/script/sync_time.sh" >> /etc/sudoers \
     && echo "nobody  ALL=(root)      NOPASSWD:/script/change_dns.sh *" >> /etc/sudoers \
+    && echo "nobody  ALL=(root)      NOPASSWD:/script/check_internal_netplane.sh * *" >> /etc/sudoers \
     && mv "/app/change_permission.sh" "/script" \
     && mv "/app/change_dns.sh" "/script" \
+    && mv "/app/check_internal_netplane.sh" "/script" \
     && mv "/app/curl_dorado_timezone.sh" "/script" \
     && mv "/app/mount_oper.sh" "/script" \
     && mv "/app/sync_time.sh" "/script" \
@@ -72,6 +74,7 @@ RUN mkdir -p /img/agent/client/ \
     && mv "/app/delete_hosts.py" "/script" \
     && chmod 550 "/script/change_permission.sh" \
     && chmod 550 "/script/change_dns.sh" \
+    && chmod 550 "/script/check_internal_netplane.sh" \
     && chmod 550 "/script/curl_dorado_timezone.sh" \
     && chmod 550 "/script/mount_oper.sh" \
     && chmod 550 "/script/sync_time.sh" \
@@ -80,6 +83,7 @@ RUN mkdir -p /img/agent/client/ \
     && chmod 550 "/script/delete_hosts.py" \
     && chown root:root "/script/change_permission.sh" \
     && chown root:root "/script/change_dns.sh" \
+    && chown root:root "/script/check_internal_netplane.sh" \
     && chown root:root "/script/curl_dorado_timezone.sh" \
     && chown root:root "/script/mount_oper.sh" \
     && chown root:root "/script/sync_time.sh" \

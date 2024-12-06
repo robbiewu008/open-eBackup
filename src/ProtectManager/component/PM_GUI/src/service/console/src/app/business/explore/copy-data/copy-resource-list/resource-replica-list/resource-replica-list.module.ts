@@ -17,6 +17,7 @@ import { ProtectModule } from 'app/shared/components/protect/protect.module';
 import { ManualCopyModule } from './manual-copy/manual-copy.module';
 import { ResourceReplicaListComponent } from './resource-replica-list.component';
 import { CustomTableSearchModule } from 'app/shared/components/custom-table-search/custom-table-search.module';
+import { ModifyOwnedUserModule } from 'app/shared/components/modify-owned-user/modify-owned-user.module';
 
 @NgModule({
   declarations: [ResourceReplicaListComponent],
@@ -25,7 +26,8 @@ import { CustomTableSearchModule } from 'app/shared/components/custom-table-sear
     BaseModule,
     ProtectModule,
     ManualCopyModule,
-    CustomTableSearchModule
+    CustomTableSearchModule,
+    ModifyOwnedUserModule
   ],
   exports: [ResourceReplicaListComponent]
 })

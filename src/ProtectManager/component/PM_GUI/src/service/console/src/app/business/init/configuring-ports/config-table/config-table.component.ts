@@ -22,7 +22,7 @@ import { DatatableComponent } from '@iux/live';
 import { CommonConsts, DataMap, I18NService, MODAL_COMMON } from 'app/shared';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { RememberColumnsService } from 'app/shared/services/remember-columns.service';
-import { assign, join, map } from 'lodash';
+import { assign, get, join, map } from 'lodash';
 import { RouteTableComponent } from '../route-table/route-table.component';
 
 @Component({
@@ -42,6 +42,7 @@ export class ConfigTableComponent implements OnInit {
   pageIndex = CommonConsts.PAGE_START;
   pageSizeOptions = CommonConsts.PAGE_SIZE_OPTIONS;
   columnStatus;
+  _get = get;
 
   @ViewChild('lvTable', { static: false }) lvTable: DatatableComponent;
 

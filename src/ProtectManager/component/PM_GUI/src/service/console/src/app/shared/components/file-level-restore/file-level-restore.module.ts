@@ -17,6 +17,7 @@ import { LocalFileSystemRestoreModule } from 'app/business/protection/storage/lo
 import { BaseModule } from 'app/shared/base.module';
 import { ProTableModule } from '../pro-table';
 import { FileLevelRestoreComponent } from './file-level-restore.component';
+import { ManualInputPathModule } from '../manual-input-path/manual-input-path.module';
 
 @NgModule({
   declarations: [FileLevelRestoreComponent],
@@ -25,7 +26,8 @@ import { FileLevelRestoreComponent } from './file-level-restore.component';
     CommonModule,
     LocalFileSystemRestoreModule,
     BackupSetRestoreModule,
-    ProTableModule
+    ProTableModule,
+    ManualInputPathModule
   ],
   exports: [FileLevelRestoreComponent]
 })

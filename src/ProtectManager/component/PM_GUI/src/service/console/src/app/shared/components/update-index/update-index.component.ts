@@ -195,10 +195,7 @@ export class UpdateIndexComponent implements OnInit, OnDestroy {
     }
 
     // 磁带库归档自动索引，暂时屏蔽
-    this.hasArchiveForTape =
-      this.autoIndexForTape &&
-      !isEmpty(archivePolicyForTape) &&
-      !isUndefined(archivePolicyForTape.ext_parameters.auto_index);
+    this.hasArchiveForTape = false;
     if (this.hasArchiveForTape) {
       if (!this.formGroup?.get('tape_archive_auto_index')) {
         this.formGroup.addControl(

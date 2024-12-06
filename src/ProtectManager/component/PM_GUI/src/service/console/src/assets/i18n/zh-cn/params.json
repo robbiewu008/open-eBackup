@@ -57,5 +57,6 @@
   "e6000_network_type_init_by_lld_system_label": "业务网络类型",
   "e6000_ip_address_init_by_lld_system_label": "IP地址/掩码",
   "e6000_ifacename_init_by_lld_system_label": "端口名称",
-  "unlimited_quota": "不限制配额"
+  "unlimited_quota": "不限制配额",
+  "index_scan_file_out_of_limit": "副本中文件数量超过单副本索引条数规格上限。"
 }

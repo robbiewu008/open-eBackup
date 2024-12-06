@@ -476,4 +476,9 @@ public class DatabaseConstants {
      * 存储资源信息
      */
     public static final String STORAGES = "storages";
+
+    /**
+     * 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True。该字段默认为 False，字段不存在也为 False。
+     */
+    public static final String IS_COPY_RESTORE_NEED_WRITABLE = "isCopyRestoreNeedWritable";
 }

@@ -13,10 +13,10 @@
 package openbackup.system.base.config;
 
 import lombok.extern.slf4j.Slf4j;
-import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.infrastructure.InfrastructureService;
 import openbackup.system.base.service.ConfigMapServiceImpl;
+import openbackup.system.base.util.ConfigMapUtil;
 import openbackup.system.base.util.KeyToolUtil;
 
 import org.redisson.Redisson;
@@ -40,7 +40,6 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -126,7 +125,7 @@ public class RedissonClientConfig {
     private RedissonClient redissonClient(Codec codec) throws InterruptedException, MalformedURLException {
         String password;
         do {
-            password = configMapService.getValueFromSecretByKey(REDIS_AUTH_KEY);
+            password = configMapService.getValueFromSecretByKey(REDIS_AUTH_KEY, Boolean.FALSE);
             if (VerifyUtil.isEmpty(password)) {
                 log.error("NA. with redis auth info.");
                 Thread.sleep(SLEEP_TIME); // 死循环中降低CPU占用
@@ -152,10 +151,12 @@ public class RedissonClientConfig {
     }
 
     private boolean isRedisCluster() {
-        Optional<JSONObject> redisCluster = infrastructureService.getConfigMapValue(CLUSTER_CONFIG_MAP,
-            REDIS_CLUSTER_KEY);
-        log.info("get redis cluster established: {}", redisCluster.map(JSONObject::toString).orElse("null"));
-        return redisCluster.map(jsonObject -> jsonObject.getBoolean(REDIS_CLUSTER_KEY, false)).orElse(false);
+        String redisCluster = ConfigMapUtil.getValueInConfigMap(CLUSTER_CONFIG_MAP, REDIS_CLUSTER_KEY);
+        if (VerifyUtil.isEmpty(redisCluster)) {
+            return false;
+        }
+        log.info("get redis cluster established: {}", redisCluster);
+        return Boolean.valueOf(redisCluster);
     }
 
     private void setCommonServerConfig(BaseConfig<?> serverConfig, String password) throws MalformedURLException {

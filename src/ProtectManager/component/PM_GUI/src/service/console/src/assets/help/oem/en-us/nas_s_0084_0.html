@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -37,9 +37,9 @@
   <h1 class="topictitle1">Managing Copies of an NDMP NAS File System</h1>
   <div>
    <p>This section describes operations on copy data.</p>
-   <p>Choose <span class="uicontrol"><b><span id="nas_s_0084_0__en-us_topic_0000001839142377_text79731210144915"><strong>Explore</strong></span> &gt; <span id="nas_s_0084_0__en-us_topic_0000001839142377_text797381084918"><strong>Copy Data</strong></span> &gt; File Systems &gt; <span id="nas_s_0084_0__en-us_topic_0000001839142377_text75601138121416"><strong>NAS File Systems</strong></span></b></span> to go to the NDMP NAS file system copy page.</p>
+   <p>Choose <span class="uicontrol"><b><span id="nas_s_0084_0__en-us_topic_0000001839142377_text1324633181516"><strong>Explore</strong></span> &gt; <span id="nas_s_0084_0__en-us_topic_0000001839142377_text92466391512"><strong>Copy Data</strong></span> &gt; File Systems &gt; NDMP</b></span> to go to the NDMP NAS file system copy page.</p>
    <ul>
-    <li>Click <span><strong>Copy</strong></span> to perform operations by copy.<p><a href="#nas_s_0084_0__table51069596392">Table 1</a> describes the related operations.</p>
+    <li>Click <span><strong>Copies</strong></span> to perform operations by copy.<p><a href="#nas_s_0084_0__table51069596392">Table 1</a> describes the related operations.</p>
      <div class="tablenoborder">
       <a name="nas_s_0084_0__table51069596392"></a><a name="table51069596392"></a>
       <table cellpadding="4" cellspacing="0" summary="" id="nas_s_0084_0__table51069596392" frame="border" border="1" rules="all">
@@ -70,7 +70,7 @@
             </div>
            </div>
           </div></td>
-         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to manually archive copies to the archive storage.</p> <p><strong>Note</strong></p> <p>Only full or incremental backup copies can be manually archived.</p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to manually archive copies to the archive storage.</p> <p><strong>Note</strong></p> <p>Only full backup copies and forever incremental (synthetic full) backup copies, as well as their replication copies and cascaded replication copies can be manually archived.</p></td>
          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>In the row of the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; Manual Archive</b></span>.</p></td>
         </tr>
         <tr>
@@ -88,7 +88,16 @@
            <li>If a resource has multiple copies among which only one copy is the full replication copy, the full replication copy cannot be deleted.</li>
            <li>Copies in ransomware detection cannot be deleted.</li>
           </ul></td>
-         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>In the row of the target copy, choose <strong id="nas_s_0084_0__en-us_topic_0000001839143185_b1834211431759">More</strong> &gt; <span id="nas_s_0084_0__en-us_topic_0000001839143185_text1659218118342"><strong>Delete</strong></span>. Alternatively, select the copies to be deleted and click <span id="nas_s_0084_0__en-us_topic_0000001839143185_text7770103919243"><strong>Delete</strong></span> above the table.</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 ">
+          <div class="p">
+           In the row of the target copy, choose <strong id="nas_s_0084_0__fc_gud_0059_b69891969419">More</strong> &gt; <span id="nas_s_0084_0__fc_gud_0059_en-us_topic_0000001839143185_text1659218118342"><strong>Delete</strong></span>. Alternatively, select the copies to be deleted and click <span id="nas_s_0084_0__fc_gud_0059_en-us_topic_0000001839143185_text7770103919243"><strong>Delete</strong></span> above the table.
+           <div class="note" id="nas_s_0084_0__fc_gud_0059_en-us_topic_0000001839143185_note172661250175414">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="nas_s_0084_0__fc_gud_0059_en-us_topic_0000001839143185_p15266165085416">To forcibly delete the copy data in the database after copy deletion fails, select <strong id="nas_s_0084_0__fc_gud_0059_b1453142517416">Forcibly delete the copy data upon deletion failure</strong> in the displayed dialog box.</p>
+            </div>
+           </div>
+          </div></td>
         </tr>
        </tbody>
       </table>

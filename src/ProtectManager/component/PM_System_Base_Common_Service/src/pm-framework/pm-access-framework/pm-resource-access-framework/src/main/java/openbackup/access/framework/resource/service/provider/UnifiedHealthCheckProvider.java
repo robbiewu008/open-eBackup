@@ -63,15 +63,10 @@ public class UnifiedHealthCheckProvider implements EnvironmentHealthCheckProvide
 
     @Override
     public void healthCheck(ProtectedEnvironment environment) {
-        log.info("Health check start, name: {}, uuid: {}", environment.getName(), environment.getUuid());
-
         boolean isConnectSuccess = checkConnectivity(environment);
         if (!isConnectSuccess) {
             throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Health check failed");
         }
-
-        log.info("Health check finish, name: {}, uuid: {}, status: {}.",
-                environment.getName(), environment.getUuid(), environment.getLinkStatus());
     }
 
     private boolean checkConnectivity(ProtectedEnvironment environment) {
@@ -83,7 +78,6 @@ public class UnifiedHealthCheckProvider implements EnvironmentHealthCheckProvide
                 .filter(resource -> resource instanceof ProtectedEnvironment)
                 .map(resource -> (ProtectedEnvironment) resource)
                 .collect(Collectors.toList());
-        log.info("Prepare to health check, agent num:{}.", agentEnvList.size());
         for (ProtectedEnvironment agent : agentEnvList) {
             if (!EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(agent)
                     .equals(LinkStatusEnum.ONLINE.getStatus().toString())) {

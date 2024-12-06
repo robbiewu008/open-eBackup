@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,7 +36,7 @@
   <a name="Files-0014"></a><a name="Files-0014"></a>
   <h1 class="topictitle1">步骤6：执行备份</h1>
   <div>
-   <p>执行备份前将需要保护的资源关联到指定SLA策略，系统将对这些资源按照SLA策略进行保护，并根据SLA策略周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+   <p>执行备份前将需要保护的资源关联到指定SLA，系统将对这些资源按照SLA进行保护，并根据SLA周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
    <div class="section">
     <h4 class="sectiontitle">注意事项</h4>
     <ul>
@@ -54,7 +54,7 @@
         <p id="Files-0014__zh-cn_topic_0000001839142377_p370854395513">对于1.5.0版本，请选择<span class="uicontrol" id="Files-0014__zh-cn_topic_0000001839142377_uicontrol117931445568">“<span id="Files-0014__zh-cn_topic_0000001839142377_text197938425615">保护</span> &gt; 裸机 &gt; 文件集”</span>。</p>
        </div>
       </div> <p></p></li>
-     <li><span>勾选需要保护的文件集，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p></p><p>您也可以勾选多个文件集进行批量保护。</p>
+     <li><span>在“文件集”页签下，勾选需要保护的文件集，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p></p><p>您也可以勾选多个文件集进行批量保护。</p>
       <div class="note">
        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
        <div class="notebody">
@@ -111,6 +111,16 @@
             </div></td>
           </tr>
           <tr>
+           <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span>快照预留空间百分比</span></p>
+            <div class="note">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p>仅1.6.0及后续版本支持设置该参数。</p>
+             </div>
+            </div></td>
+           <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>数据备份时给快照预留的空间占保护路径所在卷空间的百分比。</p></td>
+          </tr>
+          <tr>
            <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span>跨文件系统备份</span></p></td>
            <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p><span style="color:#282B33;">开启后，文件集目录下挂载的多个文件系统（除CIFS共享文件系统）数据均会被备份，否则仅并备份当前目录所在文件系统的数据。</span></p></td>
           </tr>
@@ -163,7 +173,7 @@
              <div class="note" id="Files-0014__fc_gud_0019_note1550211211513">
               <span class="notetitle"> 说明： </span>
               <div class="notebody">
-               <p id="Files-0014__fc_gud_0019_p10502162125111"><span style="color:#1A1A1A;">如果SLA归档策略中“归档时间”未选择“备份成功后立即执行归档”或“归档策略”未选择“仅归档最新的副本”，以及并未设置防勒索策略时，</span>请单击“前往配置”为待保护资源设置防勒索策略。具体操作请参考<span id="Files-0014__fc_gud_0019_cite15733201398">《OceanProtect <span id="Files-0014__fc_gud_0019_zh-cn_topic_0000001792502994_ph662613174472">备份一体机 1.5.0-1.6.0</span> 数据备份特性指南(副本防勒索)》</span>中的“创建防勒索&amp;WORM策略”章节。</p>
+               <p id="Files-0014__fc_gud_0019_p10502162125111"><span style="color:#1A1A1A;">如果SLA归档策略中“归档时间”未选择“备份成功后立即执行归档”或“归档策略”未选择“仅归档最新的副本”，以及并未设置防勒索策略时，</span>请单击“前往配置”为待保护资源设置防勒索策略。具体操作请参考<span id="Files-0014__fc_gud_0019_cite191322555252">《数据备份特性指南(副本防勒索)》</span>中的“创建防勒索&amp;WORM策略”章节。</p>
               </div>
              </div>
             </div></td>
@@ -212,7 +222,7 @@
             <div class="note">
              <span class="notetitle"> 说明： </span>
              <div class="notebody">
-              <p>关闭磁带归档副本自动索引，磁带副本将无法直接恢复到生产存储，会额外在<span>本产品</span>创建临时文件系统，占用备份存储空间，当恢复任务结束后，该临时文件系统会被自动清理回收。</p>
+              <p>关闭磁带归档副本自动索引，磁带归档副本将无法直接恢复到生产存储，会额外在<span>本产品</span>创建临时文件系统，占用备份存储空间，当恢复任务结束后，该临时文件系统会被自动清理回收。</p>
              </div>
             </div></td>
           </tr>
@@ -220,14 +230,14 @@
         </table>
        </div>
       </div> <p></p></li>
-     <li><span>单击<span class="uicontrol" id="Files-0014__zh-cn_topic_0000001607841256_uicontrol471113581111">“确定”</span>。</span><p></p><p id="Files-0014__zh-cn_topic_0000001607841256_p25041111535">如果当前系统时间已晚于该SLA首次备份的开始时间，则关联备份SLA后可以选择在当前立即执行备份或者根据SLA中设置的备份策略等待下次调度。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol" id="Files-0014__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p></p><p id="Files-0014__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p> <p></p></li>
      <li><span>执行手动备份。</span><p></p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
       <ol type="a">
        <li>选择<span class="uicontrol">“<span>保护</span> &gt; 文件系统 &gt; 文件集”</span>。
         <div class="note">
          <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
          <div class="notebody">
-          <p>对于1.5.0版本，请选择<span class="uicontrol">“<span>保护</span> &gt; 裸机 &gt; 文件集”</span>。</p>
+          <p>对于1.5.0版本，请选择<span class="uicontrol">“<span>保护</span>应用备份 &gt; 裸机 &gt; 文件集”</span>。</p>
          </div>
         </div></li>
        <li>在需要备份的文件集所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。
@@ -238,11 +248,14 @@
          </div>
         </div></li>
        <li>设置手动备份产生的副本名称。<p>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p></li>
-       <li>选择保护策略：全量备份或永久增量（合成全量）备份。
+       <li>选择保护策略：全量备份、增量备份或永久增量（合成全量）备份。
         <div class="note">
          <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
          <div class="notebody">
-          <p><span id="Files-0014__zh-cn_topic_0000001964713008_ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
+          <ul>
+           <li>永久增量（合成全量）备份仅在创建增量备份策略时，勾选了<span>“<span>设置为永久增量（合成全量）备份</span>”时展示。</span></li>
+           <li><span>对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></li>
+          </ul>
          </div>
         </div></li>
        <li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li>

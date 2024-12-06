@@ -447,7 +447,7 @@ public class ProtectedEnvironmentListener implements InitializingBean {
                 DateFormatUtil.format(Constants.SIMPLE_DATE_FORMAT, new Date()),
                 Duration.ofSeconds(UPDATE_RESOURCE_STATUS_REDIS_EXPIRED_TIME));
         if (!isSuccess) {
-            log.info("Other Node executed.");
+            log.debug("Other Node executed.");
             releaseAbnormalRedisLock();
             return;
         }
@@ -465,11 +465,8 @@ public class ProtectedEnvironmentListener implements InitializingBean {
     }
 
     private void triggerEnvironmentHealthCheck() {
-        log.info("resource thread num:{}, queue num:{}",
-            ResourceThreadPoolTool.getThreadNum(),
-            ResourceThreadPoolTool.getQueueSzie());
         if (ResourceThreadPoolTool.isBusy()) {
-            log.info("ResourceThreadPool is too busy, do not trigger environment health check this time!");
+            log.debug("ResourceThreadPool is too busy, do not trigger environment health check this time!");
             return;
         }
 
@@ -485,7 +482,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
                     null);
             BasePage<String> page = protectedResourceRepository.queryResourceUuids(pagination);
             items = page.getItems();
-            log.info("trigger environment check, size:{}", items.size());
             for (String item : items) {
                 messageTemplate.send(ENVIRONMENT_HEALTH_CHECK, new JSONObject().set(ENV_ID, item));
             }
@@ -504,7 +500,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
     @MessageListener(topics = ENVIRONMENT_HEALTH_CHECK, groupId = MessageDrivenSchedule.MESSAGE_DRIVEN_SCHEDULE_GROUP)
     public void handleEnvironmentHealthCheck(String message, Acknowledgment acknowledgment) {
         String envId = JSONObject.fromObject(message).getString(ENV_ID);
-        log.info("kafka consumer environment health check, envId:{}", envId);
         ResourceThreadPoolTool.getPool().execute(() -> doEnvironmentHealthCheck(envId));
     }
 
@@ -515,7 +510,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
             providerManager.findProvider(EnvironmentProvider.class, environment.getSubType(), null);
         String linkStatus = EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(environment);
         if (StringUtils.isBlank(linkStatus) || !NEED_TO_HEALTH_CHECK_TYPES.contains(Integer.valueOf(linkStatus))) {
-            log.info("Environment({}) status({}) can not health check.", envId, linkStatus);
             return;
         }
         if (provider == null) {
@@ -561,7 +555,7 @@ public class ProtectedEnvironmentListener implements InitializingBean {
             statusSet.add(status.getStatus());
             summaryAndUpdateLinkStatus(environment, statusSet);
         }
-        log.info("Update connect status success. envId:{}, status:{}, result:{}.",
+        log.debug("Update connect status success. envId:{}, status:{}, result:{}.",
                 envId, status.name(), connectionResult);
     }
 
@@ -630,7 +624,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
         List<LinkStatusEnum> linkStatusOrderList = provider.getLinkStatusOrderList();
         for (LinkStatusEnum linkStatus : linkStatusOrderList) {
             if (agentStatusSet.contains(linkStatus.getStatus())) {
-                log.info("update env link status, envId: {}, status :{}", envId, linkStatus);
                 updateEnvironmentLinkStatus(envId, linkStatus);
                 return;
             }
@@ -682,8 +675,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
 
     private void generateHealthCheckAlarm(ProtectedEnvironment environment) {
         if (!canSendHealthAlarm(environment)) {
-            log.info("Current node won't send alarm to DM. Env id : {}, env type: {}, current node role: {}",
-                environment.getUuid(), environment.getType(), memberClusterService.getCurrentClusterRole());
             return;
         }
         commonAlarmService.generateAlarm(genHealthAlarm(environment));

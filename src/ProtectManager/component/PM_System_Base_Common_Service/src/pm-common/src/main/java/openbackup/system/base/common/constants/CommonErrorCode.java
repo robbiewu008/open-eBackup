@@ -83,6 +83,16 @@ public final class CommonErrorCode {
     public static final long USER_OR_STORAGE_UNIT_NOT_EXIST = 1677930077L;
 
     /**
+     * 执行取消存储单元授权时，由于用户资源绑定的SLA中有策略关联到存储单元，操作失败。
+     */
+    public static final long USER_RESOURCE_SLA_POLICY_RELATED_TO_STORAGE = 1677930089L;
+
+    /**
+     * 执行取消存储单元授权时，由于用户SLA中有策略关联到存储单元，操作失败。
+     */
+    public static final long USER_SLA_POLICY_RELATED_TO_STORAGE = 1677930090L;
+
+    /**
      * UNKNOWN_USER
      */
     public static final long UNKNOWN_USER = 1677929477L;
@@ -1802,11 +1812,11 @@ public final class CommonErrorCode {
     public static final long CONNECT_LDAP_SERVER_FAILED = 1677929481L;
 
     /**
-     * 错误场景：执行VMware备份操作时，由于虚拟机正在迁移，无法创建快照，操作失败。
-     * 原因：虚拟机正在迁移，无法创建快照。
-     * 建议：请等待虚拟机完成迁移，重新进行资源扫描后重试。
+     * 错误场景：执行测试连接LDAP服务操作时，由于域名解析失败，操作失败。
+     * 原因：域名（{0}）解析失败。
+     * 建议：请前往DeviceManager设置DNS域名服务器，并确保DNS服务器上已配置域名（{0}）。
      */
-    public static final long VM_IS_BEING_MIGRATED = 1677931473L;
+    public static final long DOMAIN_NAME_RESOLVED_FAILED = 1677935647L;
 
     /**
      * ADFS链接网络超时
@@ -1880,6 +1890,20 @@ public final class CommonErrorCode {
      * 建议：请在“ProtectAgent安装指南”中搜索“安装目录”进行处理。
      */
     public static final long CLIENT_REGISTER_FAILED = 1677873409L;
+
+    /**
+     * 错误场景：执行更换资源所属用户时，由于所修改用户配额不足，操作失败。
+     * 原因：当前用户的用户类型为（{0}），该用户的（{1}）配额不足导致操作失败。
+     * 建议：具体操作请参见“管理员指南”中的“设置配额”章节。
+     */
+    public static final long USER_QUOTA_NOT_ENOUGH = 1677931479L;
+
+    /**
+     * 错误场景：执行更换资源所属用户时，由于待更换的用户不是数据保护管理员，操作失败。
+     * 原因：待更换的用户不是数据保护管理员。
+     * 建议：选择其他用户后重试。
+     */
+    public static final long USER_NOT_DP_ADMIN = 1677931480L;
 
     private CommonErrorCode() {
     }

@@ -44,6 +44,8 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping(ConfigConstant.CONSOLE)
 class AlarmController {
+    private static final String ALARMS_EXPORT = "/v1/alarms/action/export";
+
     private static final String EVENTS_EXPORT = "/v1/events/action/export";
 
     private static final String ALARM_DUMP = "/v1/alarms/dump/files";
@@ -62,6 +64,17 @@ class AlarmController {
 
     @Autowired
     private RequestUtil requestUtil;
+
+    /**
+     * 功能描述
+     *
+     * @param requestEntity RequestEntity
+     * @return byte[]
+     */
+    @PostMapping("/v1/alarms/action/export")
+    public byte[] exportAlarm(RequestEntity requestEntity) {
+        return getBytes(alarmApi + ALARMS_EXPORT + "?" + request.getQueryString(), requestEntity);
+    }
 
     /**
      * 功能描述

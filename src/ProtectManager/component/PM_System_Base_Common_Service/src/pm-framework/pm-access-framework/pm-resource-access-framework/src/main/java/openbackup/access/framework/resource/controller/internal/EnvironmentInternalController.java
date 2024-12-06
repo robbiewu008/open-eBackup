@@ -223,6 +223,11 @@ public class EnvironmentInternalController {
         } finally {
             StringUtil.clean(hcsToken);
         }
+        // hcs多朵云场景临时规避 当agent处于不通的云时 此处查不到agent内大网 故直接用agent上报的ip (针对手动安装场景 填写了eip)
+        if (VerifyUtil.isEmpty(queryIpResponse) || VerifyUtil.isEmpty(queryIpResponse.getObjList())) {
+            log.error("Fail to query ip from environment, will use endpoint reported from agent!");
+            return;
+        }
         String ip = queryIpResponse.getObjList().get(0).getExternalRelayIpAddress();
         log.info("Set agent environment for hcs. The ip is {}, id:{}", ip, environment.getUuid());
 

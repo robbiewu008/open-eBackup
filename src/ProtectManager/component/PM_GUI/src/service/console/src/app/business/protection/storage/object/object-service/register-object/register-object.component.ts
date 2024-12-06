@@ -22,8 +22,8 @@ import {
   ProtectedResourceApiService
 } from 'app/shared';
 import {
-  USER_GUIDE_CACHE_DATA,
-  cacheGuideResource
+  cacheGuideResource,
+  USER_GUIDE_CACHE_DATA
 } from 'app/shared/consts/guide-config';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
@@ -31,7 +31,6 @@ import {
   filter,
   find,
   includes,
-  isNumber,
   isUndefined,
   map,
   reject,
@@ -68,8 +67,12 @@ export class RegisterObjectComponent implements OnInit {
   prefixTipLabel = this.i18n.get(
     'protection_object_bucket_prefix_all_tip_label'
   );
+  prefixTipApsLabel = this.i18n.get(
+    'protection_object_bucket_prefix_ali_all_tip_label'
+  );
   error = false;
   isSearch = false;
+  isAps = false; // 用于判断所选的对象存储是否为阿里云
 
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip
@@ -90,10 +93,10 @@ export class RegisterObjectComponent implements OnInit {
 
   constructor(
     public modal: ModalRef,
+    public i18n: I18NService,
     public messageService: MessageService,
     public baseUtilService: BaseUtilService,
     private fb: FormBuilder,
-    private i18n: I18NService,
     private cdr: ChangeDetectorRef,
     private appUtilsService: AppUtilsService,
     private protectedResourceApiService: ProtectedResourceApiService,
@@ -129,6 +132,14 @@ export class RegisterObjectComponent implements OnInit {
     });
 
     this.formGroup.get('objectStorage').valueChanges.subscribe(res => {
+      const tmpRes = find(this.objectOptions, { uuid: res });
+      if (res && tmpRes) {
+        this.isAps =
+          Number(tmpRes?.extendInfo?.storageType) ===
+          DataMap.objectStorageType.ali.value;
+      } else {
+        this.isAps = false;
+      }
       this.selectedTableData = [];
       this.tableData = [];
       this.selectionTable = [];
@@ -141,7 +152,14 @@ export class RegisterObjectComponent implements OnInit {
         name: this.rowData.name,
         objectStorage: this.rowData.environment.uuid
       });
+      this.isAps =
+        Number(this.rowData.extendInfo.storageType) ===
+        DataMap.objectStorageType.ali.value;
     }
+
+    this.formGroup.statusChanges.subscribe(res => {
+      this.disableBtn();
+    });
   }
 
   getObjectStorage() {
@@ -320,25 +338,39 @@ export class RegisterObjectComponent implements OnInit {
     let prefixLetterValid = false;
     let prefixHeadValid = false;
     let prefixNearValid = false;
+    let prefixNameValid = false;
     const reg1 = /[|:*?<>"\\]+/;
     if (find(e, item => reg1.test(item))) {
       prefixLetterValid = true;
     }
-    if (find(e, item => item.startsWith('/'))) {
+    if (find(e, item => item.startsWith('/') || item.startsWith('\\'))) {
       prefixHeadValid = true;
     }
     if (find(e, item => item.indexOf('//') !== -1)) {
       prefixNearValid = true;
+    }
+    if (
+      find(e, item => {
+        const tmpItem = item.split('/');
+        return !!find(tmpItem, val => val === '..');
+      })
+    ) {
+      prefixNameValid = true;
     }
     if (overlength || overAllLength) {
       item.error = true;
       item.errorTip = this.i18n.get(
         'protection_object_bucket_prefix_info_label'
       );
-    } else if (prefixLetterValid) {
+    } else if (prefixLetterValid && !this.isAps) {
       item.error = true;
       item.errorTip = this.i18n.get(
         'protection_object_bucket_prefix_letter_tip_label'
+      );
+    } else if (prefixNameValid && this.isAps) {
+      item.error = true;
+      item.errorTip = this.i18n.get(
+        'protection_object_bucket_prefix_name_ali_tip_label'
       );
     } else if (prefixNearValid) {
       item.error = true;
@@ -348,7 +380,9 @@ export class RegisterObjectComponent implements OnInit {
     } else if (prefixHeadValid) {
       item.error = true;
       item.errorTip = this.i18n.get(
-        'protection_object_bucket_prefix_head_tip_label'
+        this.isAps
+          ? 'protection_object_bucket_prefix_head_ali_tip_label'
+          : 'protection_object_bucket_prefix_head_tip_label'
       );
     } else {
       item.error = false;

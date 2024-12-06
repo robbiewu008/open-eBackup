@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -38,11 +38,12 @@
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="vmware_gud_0016"></a><a name="vmware_gud_0016"></a>
 
 <h1 class="topictitle1">步骤1：检查并安装VMware Tools</h1>
-<div><p>执行应用一致性备份或文件级恢复时，需要在受保护虚拟机或目标虚拟机安装VMware Tools。</p>
-<div class="section"><h4 class="sectiontitle">背景信息</h4><p>当存在以下场景时需要为VMware虚拟机安装VMware Tools：</p>
+<div><p id="vmware_gud_0016__zh-cn_topic_0000001656861689_p9906477612">执行应用一致性备份或文件级恢复时，需要在受保护虚拟机或目标虚拟机安装VMware Tools。以下以vSphere Client 8.0版本为例进行说明。</p>
+<div class="section" id="vmware_gud_0016__zh-cn_topic_0000001656861689_section207951333741"><h4 class="sectiontitle">背景信息</h4><p id="vmware_gud_0016__zh-cn_topic_0000001656861689_p1933383516410">当存在以下场景时需要为VMware虚拟机安装VMware Tools：</p>
 </div>
-<ul><li>如果需要执行应用一致性备份，那么要为受保护的VMware虚拟机安装VMware Tools。</li><li>如果需要执行文件级恢复，那么要为目标VMware虚拟机安装VMware Tools。</li></ul>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>使用<span style="color:#454545;">管理员账号</span>登录<span style="color:#454545;">vCenter Server或ESXi主机</span>。</span></li><li><span>展开左侧导航栏，查看所有已创建的虚拟机。</span></li><li><span>在虚拟机列表中，找到需要安装VMware Tools的虚拟机，单击该虚拟机的名称。</span></li><li><span>在弹出的虚拟机详情页面，查看VMware Tools是否已安装。<span>如果未安装，请参考<a href="https://docs.vmware.com/cn/VMware-Tools/index.html" target="_blank" rel="noopener noreferrer">安装VMware Tools</a>进行安装。</span></span><p><ul><li>如果是<span style="color:#454545;">vCenter Server</span>，请在客户机操作系统区域中查看。</li><li>如果是<span style="color:#454545;">ESXi</span>主机，请在一般信息区域中查看。</li></ul>
+<ul id="vmware_gud_0016__zh-cn_topic_0000001656861689_ul174487351031"><li id="vmware_gud_0016__zh-cn_topic_0000001656861689_li24541939933">如果需要执行应用一致性备份，那么要为受保护的VMware虚拟机安装VMware Tools。</li><li id="vmware_gud_0016__zh-cn_topic_0000001656861689_li7448635539">如果需要执行文件级恢复，那么要为目标VMware虚拟机安装VMware Tools。</li></ul>
+<div class="section" id="vmware_gud_0016__zh-cn_topic_0000001656861689_section116317914548"><h4 class="sectiontitle">操作步骤</h4><ol id="vmware_gud_0016__zh-cn_topic_0000001656861689_ol116538545515"><li id="vmware_gud_0016__zh-cn_topic_0000001656861689_li2024144995218"><span>使用浏览器，登录vCenter Server或ESXi。</span><p><p id="vmware_gud_0016__zh-cn_topic_0000001656861689_p14208857125212">登录地址：<strong id="vmware_gud_0016__zh-cn_topic_0000001656861689_b3208205755214">https://</strong><em id="vmware_gud_0016__zh-cn_topic_0000001656861689_i1750152611591">vCenter Server或ESXi的管理IP地址</em></p>
+</p></li><li id="vmware_gud_0016__zh-cn_topic_0000001656861689_li1684173195916"><span>展开左侧导航栏，查看所有已创建的虚拟机。</span></li><li id="vmware_gud_0016__zh-cn_topic_0000001656861689_li1616715451540"><span>在虚拟机列表中，找到需要执行应用一致性备份或文件级恢复的虚拟机，单击该虚拟机的名称。</span></li><li id="vmware_gud_0016__zh-cn_topic_0000001656861689_li4536165031019"><span>在虚拟机详情页面，查看是否已安装10.2及以上版本的VMware Tools。<span id="vmware_gud_0016__zh-cn_topic_0000001656861689_ph1853719421136">如果未安装或为10.2之前的版本，请参考<a href="https://docs.vmware.com/cn/VMware-Tools/index.html" target="_blank" rel="noopener noreferrer">VMware Tools文档</a>安装或升级VMware Tools。</span></span><p><ul id="vmware_gud_0016__zh-cn_topic_0000001656861689_ul39551712172819"><li id="vmware_gud_0016__zh-cn_topic_0000001656861689_li43772045172816">如果登录vCenter Server，请在“虚拟机详细信息”区域中查看。</li><li id="vmware_gud_0016__zh-cn_topic_0000001656861689_li13955191292815">如果登录ESXi，请在“一般信息”区域中查看。</li></ul>
 </p></li></ol>
 </div>
 </div>

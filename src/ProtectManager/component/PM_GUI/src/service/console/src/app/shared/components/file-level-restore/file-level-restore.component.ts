@@ -178,6 +178,15 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
     this.i18n.get('deploy_type')
   );
 
+  // 文件系统类
+  isFileSystemApp = false;
+  modeMap = {
+    fromTree: '1',
+    fromTag: '2'
+  };
+  pathMode = this.modeMap.fromTree;
+  manualInputPath = [];
+
   rowCopyResPro;
   @ViewChild('searchPopover', { static: false }) searchPopover;
 
@@ -211,6 +220,17 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
         DataMap.Resource_Type.NASFileSystem.value,
         DataMap.Resource_Type.ndmp.value,
         DataMap.Resource_Type.fileset.value
+      ],
+      this.childResType
+    );
+    this.isFileSystemApp = includes(
+      [
+        DataMap.Resource_Type.NASShare.value,
+        DataMap.Resource_Type.NASFileSystem.value,
+        DataMap.Resource_Type.ndmp.value,
+        DataMap.Resource_Type.fileset.value,
+        DataMap.Resource_Type.volume.value,
+        DataMap.Resource_Type.HDFSFileset.value
       ],
       this.childResType
     );
@@ -270,6 +290,9 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
         return 'name';
       case DataMap.Resource_Type.tidbCluster.value:
       case DataMap.Resource_Type.tidbDatabase.value:
+      case DataMap.Resource_Type.DWS_Cluster.value:
+      case DataMap.Resource_Type.DWS_Table.value:
+      case DataMap.Resource_Type.DWS_Schema.value:
         return 'rootPath';
       default:
         return null;
@@ -394,7 +417,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getSchema(opt, recordsTemp?, startPage?) {
+  getSchema(opt, isSearch = false, recordsTemp?, startPage?) {
     this.name = '';
     this.copyControllerService
       .ListCopyCatalogs({
@@ -435,15 +458,17 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
           ) {
             this.selectFileData = [];
           }
-          this.selectedLength = 0;
-          this.originalSelection = [];
+          if (!isSearch) {
+            this.originalSelection = [];
+            this.selectedLength = 0;
+          }
           this.modal.getInstance().lvOkDisabled = true;
           this.originalFileData = [...recordsTemp];
           this.total = res.totalCount;
           this.cdr.detectChanges();
           return;
         }
-        this.getSchema(opt, recordsTemp, startPage);
+        this.getSchema(opt, isSearch, recordsTemp, startPage);
       });
   }
 
@@ -537,7 +562,9 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
         compareWith: 'path',
         virtualScroll: true,
         scrollFixed: true,
-        scroll: this.virtualScroll.scrollParam,
+        scroll: {
+          y: '684px'
+        },
         rows: {
           selectionMode: 'multiple',
           selectionTrigger: 'selector',
@@ -836,7 +863,10 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
       ![
         DataMap.Resource_Type.ElasticsearchBackupSet.value,
         DataMap.Resource_Type.tidbCluster.value,
-        DataMap.Resource_Type.tidbDatabase.value
+        DataMap.Resource_Type.tidbDatabase.value,
+        DataMap.Resource_Type.DWS_Cluster.value,
+        DataMap.Resource_Type.DWS_Schema.value,
+        DataMap.Resource_Type.DWS_Table.value
       ].includes(this.rowCopy.resource_sub_type)
     ) {
       this.originalSelection = [];
@@ -854,7 +884,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
       if (
         includes([DataMap.Resource_Type.DWS_Cluster.value], this.childResType)
       ) {
-        this.getSchema(this.database);
+        this.getSchema(this.database, true);
       } else {
         this.getTables();
       }
@@ -1071,6 +1101,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
       this.dwsNotAllowedSchemaOption = [];
       this.getNewLocationSchema();
       this.disabledOkbtn();
+      this.cdr.detectChanges();
       return;
     }
 
@@ -2147,8 +2178,25 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
     } else {
       this.modal.getInstance().lvOkDisabled = this.rowCopy.isSearchRestore
         ? !this.mountedSelection
-        : !size(this.originalSelection) || !this.mountedSelection;
+        : this.originalSelectionInvalid() || !this.mountedSelection;
     }
+  }
+
+  originalSelectionInvalid() {
+    return this.isFileSystemApp && this.pathMode === this.modeMap.fromTag
+      ? !size(this.manualInputPath)
+      : !size(this.originalSelection);
+  }
+
+  getOriginalSelection() {
+    return this.isFileSystemApp && this.pathMode === this.modeMap.fromTag
+      ? this.manualInputPath
+      : this.getPath(cloneDeep(this.originalSelection));
+  }
+
+  pathModeChange() {
+    this.manualInputPath = [];
+    this.disabledOkbtn();
   }
 
   validTenantName(name: string) {
@@ -2211,6 +2259,11 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
         return item.rootPath;
       });
     }
+  }
+
+  pathChange(path) {
+    this.manualInputPath = [...path];
+    this.disabledOkbtn();
   }
 
   onOK(): Observable<void> {
@@ -2358,7 +2411,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
           assign(params, {
             subObjects: this.rowCopy.isSearchRestore
               ? [this.rowCopy.searchRestorePath]
-              : this.getPath(cloneDeep(this.originalSelection))
+              : this.getOriginalSelection()
           });
         }
 

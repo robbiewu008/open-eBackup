@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
@@ -20,9 +20,9 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤4：创建限速策略">
+<meta name="DC.Title" content="步骤1：配置XBSA库路径">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="informix-0008.html">
+<meta name="DC.Relation" scheme="URI" content="informix-0010.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
@@ -33,45 +33,39 @@
 <meta name="DC.Identifier" content="informix-0011">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤4：创建限速策略</title>
+<title>步骤1：配置XBSA库路径</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="informix-0011"></a><a name="informix-0011"></a>
 
-<h1 class="topictitle1">步骤4：创建限速策略</h1>
-<div><p>如果需要限制保护任务的最大带宽以保证关键业务的性能时请参考本节配置限速策略。</p>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="informix-0011__zh-cn_topic_0000001839142377_uicontrol185917396272">“<span id="informix-0011__zh-cn_topic_0000001839142377_text659183972712">保护</span> &gt; 保护策略 &gt; 限速策略”</span>。</span></li><li><span>单击<span class="uicontrol">“<span>创建</span>”</span>。</span></li><li><span>配置限速策略参数。</span><p><div class="p">相关参数说明如<a href="#informix-0011__zh-cn_topic_0000001506160633_table12170124133619">表1</a>。
-<div class="tablenoborder"><a name="informix-0011__zh-cn_topic_0000001506160633_table12170124133619"></a><a name="zh-cn_topic_0000001506160633_table12170124133619"></a><table cellpadding="4" cellspacing="0" summary="" id="informix-0011__zh-cn_topic_0000001506160633_table12170124133619" frame="border" border="1" rules="all"><caption><b>表1 </b>限速策略参数说明</caption><colgroup><col style="width:32.269999999999996%"><col style="width:67.73%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.269999999999996%" id="mcps1.3.2.2.3.2.1.2.2.3.1.1"><p>参数</p>
-</th>
-<th align="left" class="cellrowborder" valign="top" width="67.73%" id="mcps1.3.2.2.3.2.1.2.2.3.1.2"><p>说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p><span>名称</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p>自定义限速策略名称。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p><span>最大带宽</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p>保护任务平均每秒最大传输的数据量。</p>
-<p>取值范围：[10MB/s,5120MB/s]</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p><span>描述</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p>描述限速策略信息。</p>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+<h1 class="topictitle1">步骤1：配置XBSA库路径</h1>
+<div><p>备份Informix/GBase 8s数据库前，需配置XBSA共享库指定路径和文件名。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>使用PuTTY工具，以root用户登录Informix/GBase 8s数据库所在的主机。</span></li><li><span>Informix数据库执行<strong>su - informix</strong>命令切换为Informix数据库用户，GBase 8s数据库执行<strong>su - gbasedbt</strong>命令切换为GBase 8s数据库用户。</span></li><li><span>执行以下命令，查询是否配置实例。</span><p><pre class="screen">cat<strong> </strong>/<em>数据库安装目录</em>/etc/onconfig |grep ^BAR_BSALIB_PATH</pre>
+<p>若出现以下回显则表示已配置，操作结束，否则需要继续执行后续操作配置实例。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p><strong>onconfig</strong>为实例配置文件名，具体以实际为准。</p>
+</div></div>
+<p><span style="color:#3D4757;">对于1.5.0版本，回显类似如下信息：</span></p>
+<pre class="screen">BAR_BSALIB_PATH /usr/openv/lib/libxbsa64iif.so</pre>
+<p><span style="color:#3D4757;">对于1.6.0版本及之后版本，回显类似如下信息</span>：</p>
+<pre class="screen">BAR_BSALIB_PATH /<em>代理安装的父目录</em>/DataBackup/ProtectClient/interfaces/xbsa/lib/libxbsa64iif.so</pre>
+</p></li><li><span>执行以下命令，进入实例配置文件，配置数据库实例。</span><p><pre class="screen">vi /<em>数据库安装目录</em>/etc/onconfig</pre>
+</p></li><li><span>修改<em>BAR_BSALIB_PATH</em>参数取值。</span><p><ul><li><span style="color:#3D4757;">对于1.5.0版本</span>：修改<strong>BAR_BSALIB_PATH</strong>参数取值为/usr/openv/lib/libxbsa64iif.so。<p>例如：BAR_BSALIB_PATH /usr/openv/lib/libxbsa64iif.so。</p>
+</li><li><span style="color:#3D4757;">对于1.6.0</span>及之后版本，修改<strong>BAR_BSALIB_PATH</strong>参数取值为/<em>代理安装的父目录</em>/DataBackup/ProtectClient/interfaces/xbsa/lib/libxbsa64iif.so。<p>例如：BAR_BSALIB_PATH /opt/DataBackup/ProtectClient/interfaces/xbsa/lib/libxbsa64iif.so。</p>
+</li></ul>
+</p></li><li><span><span style="color:#3D4757;">如果为GBase 8s数据库，请执行本步骤。否则，请跳过</span>.</span><p><ol type="a"><li>执行以下命令，查看服务器编号。<pre class="screen">cat <strong>/</strong><em>数据库安装目录</em>/etc/onconfig |grep SERVERNUM</pre>
+<p><span><img src="zh-cn_image_0000002121246957.png"></span></p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p><strong>onconfig</strong>为实例配置文件名，具体以实际为准。</p>
+</div></div>
+</li><li id="informix-0011__li68634264103"><a name="informix-0011__li68634264103"></a><a name="li68634264103"></a>执行以下命令，查询是否配置实例。<pre class="screen">cat<strong> /</strong><em>数据库安装目录</em>/etc/onconfig |grep ^BAR_IXBAR_PATH</pre>
+<p>若出现以下回显则表示已配置，操作结束，否则需要继续执行后续操作配置实例。</p>
+<pre class="screen">BAR_IXBSA_PATH /<em>数据库安装目录</em>/backups/ixbar.<em>服务器编号</em></pre>
+</li><li>执行以下命令配置数据库实例。<pre class="screen">mkdir /<em>数据库安装目录</em>/backups; onmode -wf BAR_IXBAR_PATH=/数据库安装目录/backups/ixbar.<em>服务器编号</em></pre>
+</li><li>执行<a href="#informix-0011__li68634264103">6.b</a>，查询实例是否配置成功。</li></ol>
+</p></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="informix-0008.html">备份Informix/GBase 8s</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="informix-0010.html">备份Informix/GBase 8s</a></div>
 </div>
 </div>
 

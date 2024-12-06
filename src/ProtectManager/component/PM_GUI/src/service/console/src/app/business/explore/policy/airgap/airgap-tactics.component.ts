@@ -89,7 +89,7 @@ export class AirgapTactisComponent implements OnInit, AfterViewInit {
   groupCommon = GROUP_COMMON;
 
   constructor(
-    private i18n: I18NService,
+    public i18n: I18NService,
     private dataMapService: DataMapService,
     private appUtilsService: AppUtilsService,
     private drawModalService: DrawModalService,

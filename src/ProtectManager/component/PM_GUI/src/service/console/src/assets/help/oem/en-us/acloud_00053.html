@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -38,10 +38,6 @@
   <div>
    <p>This section describes how to restore files on a VM by using the file-level restoration function.</p>
    <div class="section">
-    <h4 class="sectiontitle">Prerequisites</h4>
-    <p>File-level restoration is supported only when the index status of the copy is <strong>Indexed</strong>.</p>
-   </div>
-   <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
      <li><span>Choose <span class="uicontrol" id="acloud_00053__acloud_00047_en-us_topic_0000001839142377_uicontrol743231135612"><b><span id="acloud_00053__acloud_00047_en-us_topic_0000001839142377_text943133112569"><strong>Explore</strong></span> &gt; <span id="acloud_00053__acloud_00047_en-us_topic_0000001839142377_text20436317563"><strong>Copy Data</strong></span> &gt; <span id="acloud_00053__acloud_00047_en-us_topic_0000001839142377_text114463112568"><strong>Cloud Platforms</strong></span> &gt; Alibaba Cloud</b></span>.</span></li>
@@ -55,7 +51,18 @@
         <p>Linked files do not support file-level restoration.</p>
        </div>
       </div> <p></p></li>
-     <li><span>Select the file to be restored and configure the restoration. File-level restoration supports only restoration to a new location.</span><p></p><p><a href="#acloud_00053__table1413423417495">Table 1</a> describes the related parameters.</p> <p></p> <p></p>
+     <li><span>On the displayed page, click the <span class="wintitle" id="acloud_00053__vmware_gud_0060_0_wintitle15956154715296"><b><span id="acloud_00053__vmware_gud_0060_0_text10956184782910"><strong>File</strong></span></b></span> tab.</span></li>
+     <li><span>Set <strong>File Obtaining Mode</strong>, which can be <strong>Select file paths from the directory tree</strong> or <strong>Enter file paths</strong>.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="acloud_00053__vmware_gud_0060_0_ul14956124712297">
+         <li id="acloud_00053__vmware_gud_0060_0_li1095674772911">If the copy contains too many files, the system may time out, preventing you from selecting files to be restored from the directory tree. Therefore, you are advised to enter the paths of files to be restored.</li>
+         <li id="acloud_00053__vmware_gud_0060_0_li19956104762918">When entering a file path, enter a complete file path, for example, <strong id="acloud_00053__vmware_gud_0060_0_b745510458333">/opt/abc/efg.txt</strong> or <strong id="acloud_00053__vmware_gud_0060_0_b186591048123315">C:\abc\efg.txt</strong>. If you enter a folder path, for example, <strong id="acloud_00053__vmware_gud_0060_0_b15108423133414">/opt/abc</strong> or <strong id="acloud_00053__vmware_gud_0060_0_b13283162543410">C:\abc</strong>, all files in the folder are restored. The file name in the path is case sensitive.</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li><span>On the displayed <strong>Restore File</strong> page, select <strong>Original location</strong> or <strong>New location</strong> for <strong>Restore To</strong> and set restoration parameters.</span><p></p><p><a href="#acloud_00053__table1413423417495">Table 1</a> describes the related parameters.</p> <p></p> <p></p>
       <div class="tablenoborder">
        <a name="acloud_00053__table1413423417495"></a><a name="table1413423417495"></a>
        <table cellpadding="4" cellspacing="0" summary="" id="acloud_00053__table1413423417495" frame="border" border="1" rules="all">
@@ -68,14 +75,14 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="29.9%" id="mcps1.3.3.2.6.2.4.2.3.1.1"><p>Parameter</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="70.1%" id="mcps1.3.3.2.6.2.4.2.3.1.2"><p>Description</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="29.9%" id="mcps1.3.2.2.8.2.4.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="70.1%" id="mcps1.3.2.2.8.2.4.2.3.1.2"><p>Description</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.6.2.4.2.3.1.1 "><p><span><strong>Target Location</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.6.2.4.2.3.1.2 "><p>Location of the VM to which the file is restored.</p>
+          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.2.2.8.2.4.2.3.1.1 "><p><span><strong>Target Location</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.2.2.8.2.4.2.3.1.2 "><p>Location of the VM to which the file is restored.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -84,12 +91,12 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.6.2.4.2.3.1.1 "><p><span><strong>Cloud Server IP Address</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.6.2.4.2.3.1.2 "><p>Select the IP address of the target VM.</p></td>
+          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.2.2.8.2.4.2.3.1.1 "><p><span><strong>Cloud Server IP Address</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.2.2.8.2.4.2.3.1.2 "><p>Select or manually enter the IP address of the target VM.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.6.2.4.2.3.1.1 "><p><span><strong>Cloud Server Username</strong></span></p></td>
-          <td class="cellrowborder" rowspan="2" valign="top" width="70.1%" headers="mcps1.3.3.2.6.2.4.2.3.1.2 ">
+          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.2.2.8.2.4.2.3.1.1 "><p><span><strong>Cloud Server Username</strong></span></p></td>
+          <td class="cellrowborder" rowspan="2" valign="top" width="70.1%" headers="mcps1.3.2.2.8.2.4.2.3.1.2 ">
            <div class="p">
             During file-level restoration, the target VM needs to verify the login credential of the <span>product</span>. Enter a username and its password for logging in to the target VM.
             <ul>
@@ -108,15 +115,15 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.4.2.3.1.1 "><p><span><strong>Cloud Server Password</strong></span></p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.8.2.4.2.3.1.1 "><p><span><strong>Cloud Server Password</strong></span></p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.6.2.4.2.3.1.1 "><p><span><strong>OS</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.6.2.4.2.3.1.2 "><p>Select the OS of the target VM. The options are <strong>Linux</strong> and <strong>Windows</strong>.</p></td>
+          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.2.2.8.2.4.2.3.1.1 "><p><span><strong>OS</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.2.2.8.2.4.2.3.1.2 "><p>Select the OS of the target VM. The options are <strong>Linux</strong> and <strong>Windows</strong>.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.6.2.4.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.6.2.4.2.3.1.2 "><p>If files with the same names exist in the restoration path, you can choose to replace or skip existing files.</p>
+          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.2.2.8.2.4.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.2.2.8.2.4.2.3.1.2 "><p>If files with the same names exist in the restoration path, you can choose to replace or skip existing files.</p>
            <ul>
             <li><strong>Replace existing files</strong></li>
             <li><strong>Skip existing files</strong></li>

@@ -1,4 +1,3 @@
-<div class="copy-data-list">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="copy-data-list">
   <lv-datatable
     [lvData]="tableData"
     (lvSortChange)="sortChange($event)"
@@ -108,8 +108,8 @@
                   <i
                     lv-icon="aui-icon-help"
                     lv-tooltip="{{
-                        'common_worm_expiration_time_tips_label' | i18n
-                      }}"
+                      'common_worm_expiration_time_tips_label' | i18n
+                    }}"
                     lvTooltipTheme="light"
                     lvTooltipPosition="top"
                     lvColorState="true"
@@ -324,16 +324,8 @@
                       </ng-container>
                       <ng-container *ngSwitchCase="'system_backup_flag'">
                         {{
-                          (item.resource_properties
-                            ? childResourceType.includes(
-                                dataMap.Resource_Type.fileset.value
-                              )
-                              ? _parse(item.resource_properties).extendInfo
-                                  ?.is_OS_backup === 'true' || false
-                              : _parse(item.resource_properties).ext_parameters
-                                  .system_backup_flag
-                            : ''
-                          ) | textMap: 'copyDataVolume'
+                          getSystemBackupStatus(item)
+                            | textMap: 'copyDataVolume'
                         }}
                       </ng-container>
                       <ng-container *ngSwitchCase="'isBackupAcl'">

@@ -59,16 +59,14 @@ public class ZKDistributeLockAspect {
         try {
             canAcquireLock = zkLock.tryLock(tryLockTime, timeUnit);
             if (!canAcquireLock) {
-                log.info("zk distributed lock : {} is occupied by others.", lockName);
+                log.debug("zk distributed lock : {} is occupied by others.", lockName);
                 if (errorCode > 0L) {
                     throw new LegoCheckedException(errorCode);
                 }
                 return result;
             }
-            log.info("acquire zk distributed lock : {} success.", lockName);
             Object[] args = joinPoint.getArgs();
             result = joinPoint.proceed(args);
-            log.info("exec task end, lock : {}.", lockName);
         } finally {
             if (canAcquireLock && isNeedRelease) {
                 zkLock.unlock();

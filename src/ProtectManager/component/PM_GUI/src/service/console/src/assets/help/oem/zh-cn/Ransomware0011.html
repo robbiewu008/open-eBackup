@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -63,14 +63,20 @@
       <ul>
        <li>设置单次演练计划。
         <ol type="a">
-         <li>演练类型选择为<span class="uicontrol">“单次演练”</span>。</li>
-         <li>填写演练名称。</li>
+         <li>演练计划类型选择为<span class="uicontrol">“单次演练”</span>。</li>
+         <li>填写演练计划名称。</li>
          <li>选择执行时间，支持<span class="uicontrol">“创建完立即执行”</span>或<span class="uicontrol">“指定时间执行”</span>。选择<span class="uicontrol">“指定时间执行”</span>时，需设置一个时间点。</li>
         </ol></li>
        <li>设置周期性演练计划
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>周期性演练方式为恢复类型的，用户可在演练前或者演练结束后执行自定义脚本关闭数据库（TDSQL除外），否则会导致恢复失败。</p>
+         </div>
+        </div>
         <ol type="a">
-         <li>演练类型选择为<span class="uicontrol">“周期性演练”</span>。</li>
-         <li>填写演练名称。</li>
+         <li>演练计划类型选择为<span class="uicontrol">“周期性演练”</span>。</li>
+         <li>填写演练计划名称。</li>
          <li>设置演练周期。支持按小时、按天、按月、按年进行周期性演练。</li>
          <li>设置首次执行时间。首次执行时间为首次执行演练计划的开始时间。<p>如果<span>首次执行时间</span>晚于当前时间，则按照<span>首次执行时间</span>开始演练；如果<span>首次执行时间</span>早于当前时间，则等待下次演练周期到达后进行演练。</p></li>
         </ol></li>
@@ -79,7 +85,7 @@
       <ul>
        <li>对于演练类型为<span class="uicontrol">“即时挂载”</span>的应用。
         <ol type="a">
-         <li>设置演练后是否销毁即时挂载副本。可以选择<span class="uicontrol">“销毁”</span>或<span class="uicontrol">“不销毁”</span>。如果选择<span class="uicontrol">“不销毁”</span>，请在下次演练前手动销毁挂载，如不销毁会导致下次演练失败。</li>
+         <li>设置演练后是否销毁挂载副本。可以选择<span class="uicontrol">“销毁”</span>或<span class="uicontrol">“不销毁”</span>。如果选择<span class="uicontrol">“不销毁”</span>，请在下次演练前手动销毁挂载，如不销毁会导致下次演练失败。</li>
          <li>演练设置。
           <ol class="substepthirdol">
            <li>单击<span class="uicontrol">“去设置”</span>，系统右侧弹出<span class="uicontrol">“即时挂载”</span>窗口。</li>

@@ -154,7 +154,7 @@ export class ReductionRateComponent implements OnInit {
             akLoading: false
           })
           .subscribe(res => {
-            this.enableMonitor = res === 'true';
+            this.enableMonitor = res.isPerformanceConfigOpen;
             resolve(true);
           });
       } else {

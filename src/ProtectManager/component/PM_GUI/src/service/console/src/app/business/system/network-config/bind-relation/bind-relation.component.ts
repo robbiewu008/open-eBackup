@@ -21,6 +21,7 @@ import {
   CommonConsts,
   DataMap
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { assign, each, filter, trim } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -47,6 +48,7 @@ export class BindRelationComponent implements OnInit {
   constructor(
     public i18n: I18NService,
     private fb: FormBuilder,
+    private appUtilsService: AppUtilsService,
     private antiRansomwareNetworkApiService: AntiRansomwareNetworkApiService,
     private detectReportApiService: DetectReportAPIService,
     private baseUtilService: BaseUtilService,
@@ -131,13 +133,12 @@ export class BindRelationComponent implements OnInit {
   }
 
   getTenant(data) {
-    this.detectReportApiService
-      .ListQueryResources({
-        deviceId: data
-      })
-      .subscribe(res => {
+    this.appUtilsService.getResourceByRecursion(
+      { deviceId: data },
+      params => this.detectReportApiService.ListQueryResources(params),
+      resource => {
         const tenantArray = [];
-        each(res, item => {
+        each(resource, item => {
           tenantArray.push({
             ...item,
             key: item.uuid,
@@ -147,7 +148,8 @@ export class BindRelationComponent implements OnInit {
           });
         });
         this.tenantOptions = tenantArray;
-      });
+      }
+    );
   }
 
   modify(): Observable<void> {

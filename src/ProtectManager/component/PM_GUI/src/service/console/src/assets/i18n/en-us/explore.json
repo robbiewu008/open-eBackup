@@ -537,7 +537,7 @@
   "explore_associated_snapshot_time_label": "Copy Associated",
   "explore_associated_file_count_label": "Internal Files",
   "explore_infected_file_count_label": "Internal Suspicious Files",
-  "explore_latest_snapshot_detect_report_label": "Latest Infected Snapshots",
+  "explore_latest_snapshot_detect_report_label": "Latest Infected Snapshot Files",
   "explore_detect_infected_result_report_label": "The system performed intelligent detection (detection model: {3}) for snapshot ({2}) of file system ({1}) at {0}. The total file data volume is {4}, and {5} suspicious files were found.",
   "explore_io_detect_infected_result_report_label": "At {0}, exceptions were detected during real-time detection using detection model ({3}) on file system ({1}), and secure snapshot ({2}) with a total file size of {4} was generated. Number of detected suspicious files: {5}.",
   "explore_infected_file_report_label": "{0} suspicious files were found.",
@@ -720,6 +720,7 @@
   "explore_honeypot_abnormal_header_label": "Error",
   "explore_honeypot_exceed_limit_label": "The number of file systems for which you want to enable honeypot detection has exceeded the upper limit.",
   "explore_honeypot_start_detection_tip_label": "Before enabling the honeypot detection function, ensure that NFS sharing has been enabled for file systems. Otherwise, the function will fail to be enabled.",
+  "explore_honeypot_last_update_time_label": "Honeyfile Updated",
   "explore_target_object_storage_label": "Target Object Storage",
   "explore_target_bucket_label": "Target Bucket",
   "explore_choose_exist_bucket_label": "Select an existing bucket",
@@ -867,10 +868,12 @@
   "explore_no_worm_label": "The ransomware protection policy is not configured.",
   "explore_go_set_label": "Configure",
   "explore_honeypot_file_label": "Honeyfile",
-  "explore_antiransomware_switch_tip_label": "The ransomware protection policy supports only the following resource types:\n{0}",
+  "explore_antiransomware_switch_tip_label": "If small file aggregation is enabled for a resource, ransomware protection policies cannot be created for the resource.\nThe ransomware protection policy supports only the following resource types:\n{0}",
   "explore_drill_plan_type_label": "Drill Plan Type",
   "explore_drill_plan_name_label": "Drill Plan Name",
   "explore_drill_resource_name_label": "Resource Name",
   "explore_drill_perid_tip_label": "For resources that support live mount, you can select Restore or Live mount for Drill Type. By default, the latest copy is selected for periodic drills. If Live mount is selected for Drill Type, log copies cannot be selected.",
-  "explore_drill_single_tip_label": "For copies that support live mount, you can select Restore or Live mount for Drill Type."
+  "explore_drill_single_tip_label": "For copies that support live mount, you can select Restore or Live mount for Drill Type.",
+  "explore_latest_snapshot_detect_report_help_label": "Displays information only for files in the latest infected snapshots of the device whose Detection Type is OceanCyber Detection.",
+  "explore_snapshot_restore_tips_label": "Check whether infected snapshots exist in the snapshot you select and snapshots generated before that snapshot:<ul><li> If no, you can perform restoration directly.</li><li>If yes, check whether infected files in the file system have been handled before the selected snapshot is generated. If they have not been handled, you are advised not to use the snapshot for restoration.</li></ul>"
 }

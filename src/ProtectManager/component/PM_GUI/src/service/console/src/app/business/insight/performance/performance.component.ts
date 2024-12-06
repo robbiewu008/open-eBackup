@@ -10,7 +10,6 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-import { InfoMessageService } from 'app/shared/services/info-message.service';
 import { DatePipe } from '@angular/common';
 import {
   Component,
@@ -20,50 +19,51 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
+import { MessageboxService } from '@iux/live';
 import {
-  CommonConsts,
-  I18NService,
-  WarningMessageService,
-  CapacityCalculateLabel,
   CAPACITY_UNIT,
+  CapacityCalculateLabel,
+  CommonConsts,
   CookieService,
   DataMap,
-  MODAL_COMMON,
-  isRBACDPAdmin,
-  SYSTEM_TIME,
   getAppTheme,
-  ThemeEnum,
   GlobalService,
-  THEME_TRIGGER_ACTION
+  I18NService,
+  isRBACDPAdmin,
+  MODAL_COMMON,
+  SYSTEM_TIME,
+  THEME_TRIGGER_ACTION,
+  ThemeEnum,
+  WarningMessageService
 } from 'app/shared';
 import {
   ClustersApiService,
   PerformanceApiDescService
 } from 'app/shared/api/services';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
+import { DrawModalService } from 'app/shared/services/draw-modal.service';
+import { InfoMessageService } from 'app/shared/services/info-message.service';
+import { SystemTimeService } from 'app/shared/services/system-time.service';
 import * as echarts from 'echarts';
 import {
+  assign,
+  defer,
   each,
   filter,
+  find,
   first,
+  flatten,
+  get,
+  includes,
   isEmpty,
   isNaN,
-  map,
-  zip,
-  find,
-  includes,
-  set,
   isUndefined,
-  get,
-  defer,
-  assign,
-  flatten
+  map,
+  set,
+  zip
 } from 'lodash';
 import { combineLatest, Subject, Subscription, takeUntil, timer } from 'rxjs';
-import { SystemTimeService } from 'app/shared/services/system-time.service';
-import { MessageboxService } from '@iux/live';
 import { MultiSettingComponent } from './multi-setting/multi-setting.component';
-import { DrawModalService } from 'app/shared/services/draw-modal.service';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'aui-performance',
@@ -132,7 +132,7 @@ export class PerformanceComponent implements OnInit, OnDestroy {
   startTime: number;
   endTime: number;
   isDeleteHistory = false;
-  hasRemoveHistoryData = true;
+  hasRemoveHistoryData;
   performanceMonitorLabel = this.i18n.get('insight_performance_monitor_label');
   maxLabel = this.i18n.get('common_max_label');
   avgLabel = this.i18n.get('common_avg_label');
@@ -287,7 +287,7 @@ export class PerformanceComponent implements OnInit, OnDestroy {
               if (this.isDataBackupOrDecouple) {
                 setTimeout(() => {
                   this.queryAllConfig();
-                }, 1000);
+                }, 2000);
               }
             });
         },
@@ -326,7 +326,18 @@ export class PerformanceComponent implements OnInit, OnDestroy {
   }
 
   reloadView(mask = true) {
-    if (!this.showMonitor) return;
+    if (!this.showMonitor) {
+      if (this.hasRemoveHistoryData) {
+        this.chartInstanceMap?.forEach((item, key) => {
+          if (!item.isDisposed()) {
+            item.dispose();
+          }
+        });
+        this.chartInstanceMap?.clear();
+        return;
+      }
+    }
+
     this.systemTimeService.getSystemTime(false).subscribe(res => {
       this.endTime = this.appUtilsService.toSystemTimeLong(res.time);
       if (!this.endTime) {
@@ -412,10 +423,13 @@ export class PerformanceComponent implements OnInit, OnDestroy {
     }
     let capacityChart = this.chartInstanceMap.get(dom);
     if (isEmpty(capacityChart)) {
-      capacityChart = echarts.init(
-        this.el.nativeElement.querySelector(`#${dom}`)
-      );
-      this.chartInstanceMap.set(dom, capacityChart);
+      // map里没取到不代表chart没有实例化
+      let chart = echarts.getInstanceByDom(node);
+      if (!chart) {
+        chart = echarts.init(this.el.nativeElement.querySelector(`#${dom}`));
+      }
+      this.chartInstanceMap.set(dom, chart);
+      capacityChart = chart;
     } else {
       this.resizeChart(capacityChart);
     }
@@ -766,11 +780,7 @@ export class PerformanceComponent implements OnInit, OnDestroy {
       set(capacityOption, 'series', storagePoolSeries);
     }
     // 第二个参数为true时，切换图表不会合并配置项
-
-    setTimeout(() => {
-      capacityChart.clear();
-      capacityChart.setOption(capacityOption, true);
-    }, 0);
+    capacityChart?.setOption(capacityOption, true);
   }
 
   private resizeChart(capacityChart) {
@@ -781,9 +791,8 @@ export class PerformanceComponent implements OnInit, OnDestroy {
     if (!canvasHeight) {
       // 延迟resize
       setTimeout(() => {
-        if (!capacityChart.isDisposed()) {
-          capacityChart.resize();
-        }
+        capacityChart.clear();
+        capacityChart?.resize();
       }, 100);
     }
     // 这里也可以立即resize,出于性能考虑，只有在渲染异常时进行resize()
@@ -802,7 +811,7 @@ export class PerformanceComponent implements OnInit, OnDestroy {
     }
   }
 
-  getPerformanceConfig() {
+  getPerformanceConfig(isModify = false) {
     const params = {
       memberEsn: this.currentCluster
     };
@@ -814,7 +823,12 @@ export class PerformanceComponent implements OnInit, OnDestroy {
     this.performanceApiService
       .getPerformanceConfigUsingGET(params)
       .subscribe(res => {
-        this.showMonitor = res === 'true';
+        this.showMonitor = isModify
+          ? find(this.configData, { esn: this.currentCluster }).open
+          : res.isPerformanceConfigOpen;
+        this.hasRemoveHistoryData = isModify
+          ? this.hasRemoveHistoryData
+          : res.hasRemoveHistoryData === 1;
         this.autoReload();
       });
   }
@@ -828,7 +842,6 @@ export class PerformanceComponent implements OnInit, OnDestroy {
   }
 
   processEchartData(res) {
-    this.hasRemoveHistoryData = false;
     this.showIops = true;
     this.showLatency = true;
     this.showBindwidth = true;
@@ -836,14 +849,19 @@ export class PerformanceComponent implements OnInit, OnDestroy {
     this.showCopyLatency = true;
     this.showCopyBindwidth = !this.storagePoolHiddenChart;
     this.showNasBindwidth = !this.storagePoolHiddenChart;
+
+    // 备份/恢复：IOPS、I/O响应时间、带宽性能数据
     const iopsData = find(res, { indicator: 1 }) as any;
     const latencyData = find(res, { indicator: 2 }) as any;
     const bindwidthData = find(res, { indicator: 3 }) as any;
+
+    // 复制：I/O响应时间、IOPS、带宽性能数据
     const copyLatencyData = find(res, { indicator: 4 }) as any;
     const copyIopsData = find(res, { indicator: 5 }) as any;
     const copyBindwidthData = find(res, { indicator: 6 }) as any;
     const copyNasBindwidthData = find(res, { indicator: 7 }) as any;
 
+    // 重绘图表
     this.createChartWithData(res, iopsData, 'iops-chart', 'IO/s');
     this.createChartWithData(res, bindwidthData, 'bindwidth-chart', 'KB');
     if (isEmpty(res) || isEmpty(latencyData)) {
@@ -1145,7 +1163,8 @@ export class PerformanceComponent implements OnInit, OnDestroy {
         lvContent: MultiSettingComponent,
         lvComponentParams: {
           data: this.configData,
-          performanceSub: this.performanceSub
+          performanceSub: this.performanceSub,
+          updateLoad: options => this.updateLoad(options)
         },
         lvFooter: [
           {
@@ -1153,13 +1172,20 @@ export class PerformanceComponent implements OnInit, OnDestroy {
             label: this.i18n.get('common_close_label'),
             onClick: modal => {
               modal.close();
-              this.getPerformanceConfig();
-              this.queryAllConfig(false);
-              this.hasRemoveHistoryData = true;
             }
           }
         ]
       }
     });
+  }
+
+  updateLoad(options: any) {
+    this.hasRemoveHistoryData = isUndefined(options.hasRemoveHistoryData)
+      ? this.hasRemoveHistoryData
+      : options.hasRemoveHistoryData;
+    setTimeout(() => {
+      this.getPerformanceConfig(true);
+      this.queryAllConfig(false);
+    }, 3000);
   }
 }

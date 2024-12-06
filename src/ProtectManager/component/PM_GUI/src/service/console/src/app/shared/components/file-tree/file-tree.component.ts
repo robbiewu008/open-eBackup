@@ -31,6 +31,7 @@ import {
 import { MenuItem, TreeNode } from '@iux/live';
 import {
   cloneDeep,
+  defer,
   each,
   first,
   includes,
@@ -88,6 +89,13 @@ export class FileTreeComponent implements OnInit {
   // 索引失败和未索引提示
   showIndexTip = false;
 
+  // 路径选择方式
+  modeMap = {
+    fromTree: '1',
+    fromTag: '2'
+  };
+  pathMode = this.modeMap.fromTree;
+
   @ViewChild('input', { static: false }) pathInput: ElementRef<
     HTMLIFrameElement
   >;
@@ -118,6 +126,21 @@ export class FileTreeComponent implements OnInit {
       ],
       this.copy?.indexed
     );
+  }
+
+  pathModeChange() {
+    if (this.pathMode === this.modeMap.fromTree) {
+      this.tableSelectionChange.emit(
+        cloneDeep(this.selectTableData?.data) || []
+      );
+      defer(() => this.dataTable?.setSelections(this.selectionTableData));
+    } else {
+      this.tableSelectionChange.emit([]);
+    }
+  }
+
+  pathChange(path) {
+    this.tableSelectionChange.emit([...path]);
   }
 
   getFilePathItems(node) {

@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
@@ -20,32 +20,31 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="Step 3: (Optional) Enabling Backup Link Encryption (Applicable to X Series Backup Appliances)">
+<meta name="DC.Title" content="Step 3: (Optional) Enabling Backup Link Encryption">
 <meta name="product" content="">
 <meta name="DC.Relation" scheme="URI" content="volume-0010.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="volume-0013">
 <meta name="DC.Language" content="en-us">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>Step 3: (Optional) Enabling Backup Link Encryption (Applicable to X Series Backup Appliances)</title>
+<title>Step 3: (Optional) Enabling Backup Link Encryption</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="volume-0013"></a><a name="volume-0013"></a>
 
-<h1 class="topictitle1">Step 3: (Optional) Enabling Backup Link Encryption<span> (Applicable to X Series Backup Appliances)</span></h1>
-<div><p>To ensure data security, you can enable backup link encryption. This function encrypts the data transmitted during data backup.</p>
-<div class="section"><h4 class="sectiontitle">Prerequisites</h4><p>Ensure that the NFS Kerberos service has been configured for the storage system. Otherwise, backup jobs may fail after backup link encryption is enabled. <span>For details about how to configure the NFS Kerberos service, see "(Optional) Configuring the NFS Kerberos Service" in the <i><cite id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001317048053_cite16297113083411">OceanProtect <span id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001792502994_ph3400123014611">Appliance 1.5.0-1.6.0</span> Installation Guide</cite></i>. </span></p>
+<h1 class="topictitle1">Step 3: (Optional) Enabling Backup Link Encryption</h1>
+<div><p id="volume-0013__en-us_topic_0000001839143225_p105016314451">To ensure data security, you can enable backup link encryption. This function encrypts the data transmitted during data backup.</p>
+<div class="section" id="volume-0013__en-us_topic_0000001839143225_section41258319515"><h4 class="sectiontitle">Prerequisites</h4><p id="volume-0013__en-us_topic_0000001839143225_p13640951351">Ensure that the NFS Kerberos service has been configured for the storage system and user <strong id="volume-0013__en-us_topic_0000001839143225_b1264194445814">rdadmin</strong> has been added to the AD domain. Otherwise, the backup job may fail after backup link encryption is enabled. <span id="volume-0013__en-us_topic_0000001839143225_ph527185394510">For details about how to configure the NFS Kerberos service, see "(Optional) Configuring the NFS Kerberos Service" in the <i><cite id="volume-0013__en-us_topic_0000001839143225_cite5907115716400">Installation Guide</cite></i> specific to your product model.</span></p>
 </div>
-<div class="section"><h4 class="sectiontitle">Precautions</h4><p id="volume-0013__en-us_topic_0000001839143225_p1854315715349">After backup link encryption is enabled, the ticket between the agent host and the KDC domain server has a validity period. If the ticket expires, backup jobs may fail. You are advised to prolong the validity period of the ticket in the Kerberos policy on the KDC domain server or configure the ticket to never expire. If the permanent validity period is not configured, you must run the <strong id="volume-0013__en-us_topic_0000001839143225_b152622189614">kinit</strong> or <strong id="volume-0013__en-us_topic_0000001839143225_b82633181265">net</strong> command on the agent host to re-obtain tickets for users added to the AD domain before the tickets are about to expire. For details, see "Configuring the Client" in the <i><cite id="volume-0013__en-us_topic_0000001839143225_cite7202174519620">OceanProtect <span id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001792502994_ph3400123014611_1">Appliance 1.5.0-1.6.0</span> Installation Guide</cite></i>.</p>
+<div class="section" id="volume-0013__en-us_topic_0000001839143225_section1376817483418"><h4 class="sectiontitle">Precautions</h4><p id="volume-0013__en-us_topic_0000001839143225_p1854315715349">After backup link encryption is enabled, the ticket between the agent host and the KDC domain server has a validity period. If the ticket expires, backup jobs may fail. You are advised to prolong the validity period of the ticket in the Kerberos policy on the KDC domain server or configure the ticket to never expire. If the ticket is not configured to never expire, you must run the <strong id="volume-0013__en-us_topic_0000001839143225_b195916246015">kinit</strong> or <strong id="volume-0013__en-us_topic_0000001839143225_b1659142413011">net</strong> command on the agent host to renew the ticket for each user added to the AD domain before it expires. For details, see "Configuring the Client" in the <i><cite id="volume-0013__en-us_topic_0000001839143225_cite890601917412">Installation Guide</cite></i> specific to your product model.</p>
 </div>
-<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001102065552_en-us_topic_0000001085869992_en-us_topic_0000001092505479_uicontrol123381932135316"><b><span id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001102065552_en-us_topic_0000001085869992_en-us_topic_0000001092505479_text113848306235"><span id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001102065552_text8949174614917"><strong>System</strong></span></span> &gt; <span id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001102065552_en-us_topic_0000001085869992_text484521122916"><span id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001102065552_text2943115917492"><strong>Security</strong></span></span> &gt; <span id="volume-0013__en-us_topic_0000001839143225_text6472734351"><strong>Data Security</strong></span></b></span>.</span></li><li><span>In the <strong id="volume-0013__en-us_topic_0000001839143225_b538931191418">Encryption Settings</strong> area, click <span class="uicontrol" id="volume-0013__en-us_topic_0000001839143225_uicontrol851575420436"><b><span id="volume-0013__en-us_topic_0000001839143225_text2172104153514"><strong>Modify</strong></span></b></span> on the right of the page and enable <span class="uicontrol" id="volume-0013__en-us_topic_0000001839143225_uicontrol13743170204412"><b><span id="volume-0013__en-us_topic_0000001839143225_text451824814419"><strong>Backup Link Encryption</strong></span></b></span>.</span></li><li><span>Click <span class="uicontrol" id="volume-0013__en-us_topic_0000001839143225_uicontrol1839019167443"><b><span id="volume-0013__en-us_topic_0000001839143225_text1418318566358"><strong>Save</strong></span></b></span>.</span></li></ol>
+<div class="section" id="volume-0013__en-us_topic_0000001839143225_section4718134149"><h4 class="sectiontitle">Procedure</h4><ol id="volume-0013__en-us_topic_0000001839143225_ol171184511428"><li id="volume-0013__en-us_topic_0000001839143225_li185661554204220"><span>Choose <span class="uicontrol" id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001102065552_en-us_topic_0000001085869992_en-us_topic_0000001092505479_uicontrol123381932135316"><b><span id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001102065552_en-us_topic_0000001085869992_en-us_topic_0000001092505479_text113848306235"><span id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001102065552_text8949174614917"><strong>System</strong></span></span> &gt; <span id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001102065552_en-us_topic_0000001085869992_text484521122916"><span id="volume-0013__en-us_topic_0000001839143225_en-us_topic_0000001102065552_text2943115917492"><strong>Security</strong></span></span> &gt; <span id="volume-0013__en-us_topic_0000001839143225_text6472734351"><strong>Data Security</strong></span></b></span>.</span></li><li id="volume-0013__en-us_topic_0000001839143225_li109511195437"><span>In the <strong id="volume-0013__en-us_topic_0000001839143225_b538931191418">Encryption Settings</strong> area, click <span class="uicontrol" id="volume-0013__en-us_topic_0000001839143225_uicontrol851575420436"><b><span id="volume-0013__en-us_topic_0000001839143225_text2172104153514"><strong>Modify</strong></span></b></span> on the right of the page and enable <span class="uicontrol" id="volume-0013__en-us_topic_0000001839143225_uicontrol13743170204412"><b><span id="volume-0013__en-us_topic_0000001839143225_text451824814419"><strong>Backup Link Encryption</strong></span></b></span>.</span></li><li id="volume-0013__en-us_topic_0000001839143225_li178813714443"><span>Click <span class="uicontrol" id="volume-0013__en-us_topic_0000001839143225_uicontrol1839019167443"><b><span id="volume-0013__en-us_topic_0000001839143225_text1418318566358"><strong>Save</strong></span></b></span>.</span></li></ol>
 </div>
-<p></p>
 </div>
 <div>
 <div class="familylinks">

@@ -3,13 +3,14 @@
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
   If a copy of the MPL was not distributed with this file, You can obtain one at
   http://mozilla.org/MPL/2.0/.
-
+  
   Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-
+  
   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 <div
   class="aui-gutter-column-md"
   *ngIf="(!isModify || (isModify && modifying)) && !isLLD"
@@ -127,7 +128,10 @@
                 {{ item.role | textMap: 'initRoleTable' }}
               </ng-container>
               <ng-container *ngSwitchCase="'dmExists'">
-                {{ item.dmExists | textMap: 'initLogicPortExistStatus' }}
+                {{
+                  _get(item, 'dmExists', true)
+                    | textMap: 'initLogicPortExistStatus'
+                }}
               </ng-container>
               <ng-container *ngSwitchCase="'portType'">
                 <span lv-overflow>{{
@@ -174,11 +178,13 @@
                         ? ('common_reuse_dm_port_modify_tip_label' | i18n)
                         : ''
                     "
+                    *ngIf="_get(item, 'dmExists', true)"
                     >{{ 'common_modify_label' | i18n }}</span
                   >
                   <span
                     class="aui-link"
                     (click)="operationCallBack('routeConfig', null, item, null)"
+                    *ngIf="_get(item, 'dmExists', true)"
                   >
                     {{ 'common_config_route_label' | i18n }}
                   </span>

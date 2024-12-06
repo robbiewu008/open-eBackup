@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,7 +36,7 @@
   <a name="opengauss-0126"></a><a name="opengauss-0126"></a>
   <h1 class="topictitle1">(Optional) Step 2: Creating an IPsec Policy</h1>
   <div>
-   <p id="opengauss-0126__en-us_topic_0000001792344098_p618831644613">After IPsec policies are created for replication network logical ports on the storage devices at both ends of a replication link, data to be transmitted is encrypted during remote replication to ensure data security. To create such IPsec policies, the following operations must be performed on the storage devices at both ends of the replication link.</p>
+   <p id="opengauss-0126__en-us_topic_0000001792344098_p618831644613">After IPsec policies are created for replication network logical ports on the storage devices at both ends of a replication link, data to be transmitted is encrypted during remote replication to ensure data security. To create such IPsec policies, you must perform the following operations on the storage devices at both ends of the replication link.</p>
    <div class="section" id="opengauss-0126__en-us_topic_0000001792344098_section387343573110">
     <h4 class="sectiontitle">Prerequisites</h4>
     <ul id="opengauss-0126__en-us_topic_0000001792344098_ul1614193821113">
@@ -44,17 +44,13 @@
      <li id="opengauss-0126__en-us_topic_0000001792344098_li17586815116">You can create an IPsec policy only when the replication network IP address is an IPv4 address.</li>
      <li id="opengauss-0126__en-us_topic_0000001792344098_li82609552112">You cannot create an IPsec policy if the logical port of the replication network is created on a bond port containing members from different interface modules.</li>
      <li id="opengauss-0126__en-us_topic_0000001792344098_li169781538433">Only SmartIO interface modules (10 Gbit/s) support IPsec policies.</li>
+     <li id="opengauss-0126__en-us_topic_0000001792344098_li7365115692115">To ensure that a remote device can be added normally after an IPsec policy is created, the maximum transmission unit (MTU) of the switch ports must be greater than that of the storage ports at both ends.</li>
     </ul>
    </div>
    <div class="section" id="opengauss-0126__en-us_topic_0000001792344098_section135599911160">
     <h4 class="sectiontitle">Procedure</h4>
     <ol id="opengauss-0126__en-us_topic_0000001792344098_ol65154559312">
-     <li id="opengauss-0126__en-us_topic_0000001792344098_li48818642118"><span>Log in to DeviceManager.</span><p></p>
-      <ol type="a" id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001149078659_ol8463855369">
-       <li id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001607531760_en-us_topic_0000001311295305_en-us_topic_0000001149078659_li929117916361">Choose <span class="uicontrol" id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001839143213_en-us_topic_0000001311295305_en-us_topic_0000001149078659_uicontrol1098185683619"><b><span id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text157651936143415"><strong>System</strong></span> &gt; <span id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text49601653123416"><strong>Infrastructure</strong></span> &gt; <span id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text112401684352"><strong>Cluster Management</strong></span></b></span>.</li>
-       <li id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_li19932939164117">In the <span class="uicontrol" id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol1050641575312"><b><span id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text133861121163513"><strong>Local Cluster Nodes</strong></span></b></span> area of the <span class="uicontrol" id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol13691645105219"><b><span id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text1763193125313"><strong>Backup Cluster</strong></span></b></span> tab page, click the node name.</li>
-       <li id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_li1115217015589">In the <span class="uicontrol" id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol1144724616332"><b><span id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text51761646203516"><strong>Node detail</strong></span></b></span> dialog box that is displayed, click <span class="uicontrol" id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol1544714611335"><b><span id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text1624910583612"><strong>Open the device management platform</strong></span></b></span> to go to DeviceManager.</li>
-      </ol> <p></p></li>
+     <li id="opengauss-0126__en-us_topic_0000001792344098_li48818642118"><span>Log in to DeviceManager of the primary and secondary storage systems separately.</span></li>
      <li id="opengauss-0126__en-us_topic_0000001792344098_li0209128194"><span>Set the security type of the interface module to IPsec.</span><p></p>
       <ol type="a" id="opengauss-0126__en-us_topic_0000001792344098_ol1788419251018">
        <li id="opengauss-0126__en-us_topic_0000001792344098_en-us_topic_0145458794_en-us_topic_0127771727_li24773389">Choose <strong id="opengauss-0126__en-us_topic_0000001792344098_b14952673065248">System</strong> &gt; <strong id="opengauss-0126__en-us_topic_0000001792344098_b1347745485248">Hardware</strong> &gt; <strong id="opengauss-0126__en-us_topic_0000001792344098_b21007130715248">Devices</strong>.</li>
@@ -91,7 +87,7 @@
          </tr>
          <tr id="opengauss-0126__en-us_topic_0000001792344098_row1330314544416">
           <td class="cellrowborder" valign="top" width="24.07%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="opengauss-0126__en-us_topic_0000001792344098_p19786124711440">Remote IP Address</p></td>
-          <td class="cellrowborder" valign="top" width="75.92999999999999%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="opengauss-0126__en-us_topic_0000001792344098_p748615262717">Replication network IP address of the remote storage device in the replication link.</p> <p id="opengauss-0126__en-us_topic_0000001792344098_p1776619474444">Only IPv4 addresses are supported. A maximum of 32 IP addresses can be entered. Use semicolons (;) or spaces, or press <strong id="opengauss-0126__en-us_topic_0000001792344098_b10609882735248">Enter</strong> to separate multiple IP addresses.</p>
+          <td class="cellrowborder" valign="top" width="75.92999999999999%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="opengauss-0126__en-us_topic_0000001792344098_p748615262717">Replication network IP address of the secondary storage device over the replication link.</p> <p id="opengauss-0126__en-us_topic_0000001792344098_p1776619474444">Only IPv4 addresses are supported. A maximum of 32 IP addresses can be entered. Use semicolons (;) or spaces, or press <strong id="opengauss-0126__en-us_topic_0000001792344098_b10609882735248">Enter</strong> to separate multiple IP addresses.</p>
            <div class="note" id="opengauss-0126__en-us_topic_0000001792344098_note08068289815">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -101,7 +97,7 @@
          </tr>
          <tr id="opengauss-0126__en-us_topic_0000001792344098_row12535134518443">
           <td class="cellrowborder" valign="top" width="24.07%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="opengauss-0126__en-us_topic_0000001792344098_p3535154584414">Encryption Algorithm</p></td>
-          <td class="cellrowborder" valign="top" width="75.92999999999999%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="opengauss-0126__en-us_topic_0000001792344098_p1536445194420">Encryption algorithm used for data transmission. The encryption algorithms at both ends of a replication link must be the same.</p>
+          <td class="cellrowborder" valign="top" width="75.92999999999999%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="opengauss-0126__en-us_topic_0000001792344098_p1536445194420">Encryption algorithm used for data transmission. The encryption algorithms at both ends of a replication link must be the same. Data encryption algorithms include AES and SM4.</p>
            <div class="note" id="opengauss-0126__en-us_topic_0000001792344098_note717731711919">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -111,7 +107,11 @@
          </tr>
          <tr id="opengauss-0126__en-us_topic_0000001792344098_row1267015458442">
           <td class="cellrowborder" valign="top" width="24.07%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="opengauss-0126__en-us_topic_0000001792344098_p56701145124418">Pre-shared Key</p></td>
-          <td class="cellrowborder" valign="top" width="75.92999999999999%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="opengauss-0126__en-us_topic_0000001792344098_p84261148269">User-defined pre-shared key. The pre-shared keys at both ends of a replication link must be the same.</p></td>
+          <td class="cellrowborder" valign="top" width="75.92999999999999%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="opengauss-0126__en-us_topic_0000001792344098_p84261148269">User-defined pre-shared key. The pre-shared keys at both ends of a replication link must be the same.</p> <p id="opengauss-0126__en-us_topic_0000001792344098_p14670650612">[Value range]</p>
+           <ul id="opengauss-0126__en-us_topic_0000001792344098_ul567085762">
+            <li id="opengauss-0126__en-us_topic_0000001792344098_li76705510612">The value contains 16 to 127 characters.</li>
+            <li id="opengauss-0126__en-us_topic_0000001792344098_li196701553613">The value must contain at least two of the following types: special characters, uppercase letters, lowercase letters, and digits. Special characters include !"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^`{_|}~ and spaces.</li>
+           </ul></td>
          </tr>
         </tbody>
        </table>
@@ -120,7 +120,7 @@
       <div class="note" id="opengauss-0126__en-us_topic_0000001792344098_note12248146121112">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="opengauss-0126__en-us_topic_0000001792344098_p158764861113">If an IPsec policy is no longer needed, delete it from both storage devices. When you delete it on one storage device, the replication service will be interrupted. After you delete it on the other storage device, the replication service will recover automatically. Therefore, you are advised to delete an IPsec policy when no replication service exists and delete it from both storage devices at a short interval.</p>
+        <p id="opengauss-0126__en-us_topic_0000001792344098_p15167204592113">If an IPsec policy is no longer needed, delete it from both storage devices. When you delete it on one storage device, the replication service will be interrupted. After you delete it on the other storage device, the replication service will recover automatically. Therefore, you are advised to delete an IPsec policy when no replication service exists and delete it from both storage devices at a short interval.</p>
        </div>
       </div> <p></p></li>
     </ol>
@@ -129,7 +129,7 @@
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>Parent topic:</strong> <a href="opengauss-0122.html">Replicating openGauss/CMDB Database Copies</a>
+     <strong>Parent topic:</strong> <a href="opengauss-0122.html">Replicating openGauss Database Copies</a>
     </div>
    </div>
   </div>

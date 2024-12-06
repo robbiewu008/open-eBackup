@@ -1,0 +1,137 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="实现原理">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ransome_0009">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>实现原理</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ransome_0009"></a><a name="ransome_0009"></a>
+  <h1 class="topictitle1">实现原理</h1>
+  <div>
+   <p>本节介绍勒索软件检测的实现原理。系统对于备份副本/复制副本的勒索软件检测，有两种模式：静态检测和动态检测。</p>
+   <div class="section">
+    <h4 class="sectiontitle">检测模式</h4>
+    <p><strong>静态检测</strong></p>
+    <p>基于单副本的已知勒索特征检测。</p>
+    <p>勒索软件通常有两种常见行为：</p>
+    <ul>
+     <li>在加密文件后添加后缀。</li>
+     <li>留下勒索提示信息文件（勒索邮件）。</li>
+    </ul>
+    <p>对于已知的勒索软件，可以通过后缀和勒索邮件两种类型的特征来发现副本是否被勒索软件感染。</p>
+    <p><strong>动态检测</strong></p>
+    <p>基于前后副本数据变化行为的检测。</p>
+    <p>基于副本的元数据特征 ，快速提取若干基础变化特征，判断当前副本的变化是否可疑。若被判断为疑似感染，再进一步提取可疑副本的全量变化特征，使用机器学习算法检测副本是否被勒索软件感染。基础变化特征如<a href="#ransome_0009__zh-cn_topic_0000001263776234_table371419306541">表1</a>所示。</p>
+    <div class="tablenoborder">
+     <a name="ransome_0009__zh-cn_topic_0000001263776234_table371419306541"></a><a name="zh-cn_topic_0000001263776234_table371419306541"></a>
+     <table cellpadding="4" cellspacing="0" summary="" id="ransome_0009__zh-cn_topic_0000001263776234_table371419306541" frame="border" border="1" rules="all">
+      <caption>
+       <b>表1 </b>基础变化特征
+      </caption>
+      <colgroup>
+       <col style="width:22.85%">
+       <col style="width:29.880000000000003%">
+       <col style="width:47.260000000000005%">
+      </colgroup>
+      <thead align="left">
+       <tr>
+        <th align="left" class="cellrowborder" valign="top" width="22.852285228522852%" id="mcps1.3.2.10.2.4.1.1"><p>特征</p></th>
+        <th align="left" class="cellrowborder" valign="top" width="29.882988298829883%" id="mcps1.3.2.10.2.4.1.2"><p>描述</p></th>
+        <th align="left" class="cellrowborder" valign="top" width="47.26472647264727%" id="mcps1.3.2.10.2.4.1.3"><p>说明</p></th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr>
+        <td class="cellrowborder" valign="top" width="22.852285228522852%" headers="mcps1.3.2.10.2.4.1.1 "><p>修改文件比例</p></td>
+        <td class="cellrowborder" valign="top" width="29.882988298829883%" headers="mcps1.3.2.10.2.4.1.2 "><p>修改文件数/原始文件总数</p></td>
+        <td class="cellrowborder" valign="top" width="47.26472647264727%" headers="mcps1.3.2.10.2.4.1.3 "><p>表明系统中是否存在大量文件修改事件。</p></td>
+       </tr>
+       <tr>
+        <td class="cellrowborder" valign="top" width="22.852285228522852%" headers="mcps1.3.2.10.2.4.1.1 "><p>后缀种类变化比例</p></td>
+        <td class="cellrowborder" valign="top" width="29.882988298829883%" headers="mcps1.3.2.10.2.4.1.2 "><p>（发生变化的文件在变化前后后缀的并集-交集的数量）/ 变化文件在变化前的后缀种类数量</p></td>
+        <td class="cellrowborder" valign="top" width="47.26472647264727%" headers="mcps1.3.2.10.2.4.1.3 "><p>正常的文件变化通常较少修改文件后缀，而勒索软件通常会增加特定的后缀，或者增加随机后缀，所以若出现大比例的后缀种类数量发生变化，则很可能是勒索软件加密导致。</p></td>
+       </tr>
+       <tr>
+        <td class="cellrowborder" valign="top" width="22.852285228522852%" headers="mcps1.3.2.10.2.4.1.1 "><p>变化后文件头种类和后缀种类比例</p></td>
+        <td class="cellrowborder" valign="top" width="29.882988298829883%" headers="mcps1.3.2.10.2.4.1.2 "><p>变化后的文件头种类数量/变化后的后缀数量</p></td>
+        <td class="cellrowborder" valign="top" width="47.26472647264727%" headers="mcps1.3.2.10.2.4.1.3 "><p>通常相同后缀的文件使用相同的文件头来表示类型，所以文件头的种类并不多，但大部分勒索软件也会加密文件头，导致原本相同的文件头也变得不同了。所以可通过变化后文件头种类与后缀的比例来判断是否可能存在勒索软件入侵。</p></td>
+       </tr>
+       <tr>
+        <td class="cellrowborder" valign="top" width="22.852285228522852%" headers="mcps1.3.2.10.2.4.1.1 "><p>文件类型变化比例</p></td>
+        <td class="cellrowborder" valign="top" width="29.882988298829883%" headers="mcps1.3.2.10.2.4.1.2 "><p>变化文件中文件类型发生变化的数量/总文件变化数量</p></td>
+        <td class="cellrowborder" valign="top" width="47.26472647264727%" headers="mcps1.3.2.10.2.4.1.3 "><p>勒索软件加密文件后，文件类型发生变化。正常文件系统变化很少会修改文件类型，当变化文件中大部分文件的文件类型发生变化，则很可能是勒索软件加密导致。</p></td>
+       </tr>
+       <tr>
+        <td class="cellrowborder" valign="top" width="22.852285228522852%" headers="mcps1.3.2.10.2.4.1.1 "><p>变化文件中熵值增加比例</p></td>
+        <td class="cellrowborder" valign="top" width="29.882988298829883%" headers="mcps1.3.2.10.2.4.1.2 "><p>变化文件中熵值增加1以上的数量/总文件变化数量</p></td>
+        <td class="cellrowborder" valign="top" width="47.26472647264727%" headers="mcps1.3.2.10.2.4.1.3 "><p>勒索软件加密文件通常会导致文件熵值的增加，若变化文件中熵值增加超过1的占比较大，则很可能是勒索软件加密导致。</p></td>
+       </tr>
+       <tr>
+        <td class="cellrowborder" valign="top" width="22.852285228522852%" headers="mcps1.3.2.10.2.4.1.1 "><p>新增文件比例</p></td>
+        <td class="cellrowborder" valign="top" width="29.882988298829883%" headers="mcps1.3.2.10.2.4.1.2 "><p>新增文件数/原始文件总数</p></td>
+        <td class="cellrowborder" valign="top" width="47.26472647264727%" headers="mcps1.3.2.10.2.4.1.3 "><p>表明系统中是否存在大量新增文件事件。</p></td>
+       </tr>
+       <tr>
+        <td class="cellrowborder" valign="top" width="22.852285228522852%" headers="mcps1.3.2.10.2.4.1.1 "><p>新增文件的文件头种类和后缀种类比例</p></td>
+        <td class="cellrowborder" valign="top" width="29.882988298829883%" headers="mcps1.3.2.10.2.4.1.2 "><p>新增文件的文件头种类/后缀种类</p></td>
+        <td class="cellrowborder" valign="top" width="47.26472647264727%" headers="mcps1.3.2.10.2.4.1.3 "><p>原理同“变化后文件头种类和后缀种类比例”，可通过新增文件的文件头种类和后缀的比例来判断是否存在勒索软件入侵。</p></td>
+       </tr>
+       <tr>
+        <td class="cellrowborder" valign="top" width="22.852285228522852%" headers="mcps1.3.2.10.2.4.1.1 "><p>新增高熵值文件比例</p></td>
+        <td class="cellrowborder" valign="top" width="29.882988298829883%" headers="mcps1.3.2.10.2.4.1.2 "><p>新增高熵值（超过6）的文件/新增文件数量</p></td>
+        <td class="cellrowborder" valign="top" width="47.26472647264727%" headers="mcps1.3.2.10.2.4.1.3 "><p>勒索加密文件的熵值通常大于6，而正常文件的熵值通常小于6，所以可通过新增文件中高熵值文件的比例来判断是否存在勒索软件入侵。</p></td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">约束与限制</h4>
+    <ul>
+     <li>静态检测的约束与限制如下：
+      <ul>
+       <li>不支持检测未知类型的勒索软件。</li>
+       <li>不支持导出感染文件列表。</li>
+      </ul></li>
+     <li>多副本动态检测的约束与限制如下：
+      <ul>
+       <li>不支持检测资源的首个副本。</li>
+       <li>不支持检测具体文件是否被感染。</li>
+      </ul></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">检测流程</h4>
+    <p>系统默认执行动态检测，可以选择开启或关闭动态检测。</p>
+    <ul>
+     <li>如果开启动态检测，系统将先对副本执行静态检测，静态检测识别到副本已感染时，停止检测。静态检测未识别到副本感染时，将执行动态检测。</li>
+     <li>如果关闭动态检测，系统将对副本执行静态检测。</li>
+    </ul>
+    <p>检测的流程如<a href="#ransome_0009__zh-cn_topic_0000001263776234_fig25709330223">图1</a>所示。</p>
+    <div class="fignone" id="ransome_0009__zh-cn_topic_0000001263776234_fig25709330223">
+     <a name="ransome_0009__zh-cn_topic_0000001263776234_fig25709330223"></a><a name="zh-cn_topic_0000001263776234_fig25709330223"></a><span class="figcap"><b>图1 </b>勒索软件检测流程</span><br><span><img class="eddx" src="zh-cn_image_0000001792545456.png"></span>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

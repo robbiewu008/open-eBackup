@@ -230,7 +230,8 @@ export class RegisterService {
         };
       case DataMap.Resource_Type.ObjectSet.value:
         return {
-          lvWidth: MODAL_COMMON.largeWidth + 100
+          lvWidth: MODAL_COMMON.largeWidth + 100,
+          lvAfterOpen: modal => {}
         };
       case DataMap.Resource_Type.commonShare.value:
         return {

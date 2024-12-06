@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -32,12 +32,11 @@
    <div class="section">
     <h4 class="sectiontitle">Prerequisites</h4>
     <p>ProtectAgent and other related software have been installed on the target host to which the copy is mounted.</p>
-    <p>For details, see <a href="en-us_topic_0000001839269369.html">Installation Process</a><i><cite>OceanProtect <span id="Files-0049__en-us_topic_0000001792502994_ph19170214112011">Appliance 1.5.0-1.6.0</span> ProtectAgent Installation Guide</cite></i>.</p>
+    <p>For details, see <i><cite>OceanProtect DataBackup 1.5.0-1.6.0 ProtectAgent Installation Guide</cite></i>.</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
-     <li><span></span></li>
      <li><span>Choose <span class="uicontrol" id="Files-0049__en-us_topic_0000001839142377_uicontrol81551121183717"><b><span id="Files-0049__en-us_topic_0000001839142377_text91553217374"><strong>Explore</strong></span> &gt; <span id="Files-0049__en-us_topic_0000001839142377_text101552021103718"><strong>Live Mount</strong></span> &gt; <span id="Files-0049__en-us_topic_0000001839142377_text42471249173719"><strong>Filesets</strong></span></b></span>.</span></li>
      <li><span>Click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span>.</span></li>
      <li><span>On the <span class="uicontrol"><b><span><strong>Select Resource</strong></span></b></span> tab page, search for or select the resource corresponding to the copy to be mounted, and click <span class="uicontrol"><b><span><strong>Next</strong></span></b></span>.</span></li>
@@ -79,18 +78,18 @@
            </colgroup>
            <thead align="left">
             <tr>
-             <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.6.2.1.1.1.3.2.4.1.1"><p>Parameter</p></th>
-             <th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.6.2.1.1.1.3.2.4.1.2"><p>Description</p></th>
+             <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.1"><p>Parameter</p></th>
+             <th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.2"><p>Description</p></th>
             </tr>
            </thead>
            <tbody>
             <tr>
-             <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.6.2.1.1.1.3.2.4.1.1 "><p><span><strong>Target Host</strong></span></p></td>
-             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.1.1.1.3.2.4.1.2 "><p>Target host to which the copy is mounted.</p> <p>You can search for a host name or IP address to select the host.</p></td>
+             <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.1 "><p><span><strong>Target Host</strong></span></p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.2 "><p>Target host to which the copy is mounted.</p> <p>You can search for a host name or IP address to select the host.</p></td>
             </tr>
             <tr>
-             <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.6.2.1.1.1.3.2.4.1.1 "><p><strong>CIFS Share Name</strong></p> <p></p></td>
-             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.1.1.1.3.2.4.1.2 "><p>Share name that accesses a file system.</p> <p>The default share name is <strong>mount_</strong><em>timestamp</em>. You can also change the share name.</p> <p>Ensure that the backup resource supports the CIFS share protocol. Otherwise, the CIFS file permission information will not be contained during the mounting.</p>
+             <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.1 "><p><strong>CIFS Share Name</strong></p> <p></p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.2 "><p>Share name that accesses a file system.</p> <p>The default share name is <strong>mount_</strong><em>timestamp</em>. You can also change the share name.</p> <p>Ensure that the backup resource supports the CIFS share protocol. Otherwise, the CIFS file permission information will not be contained during the mounting.</p>
               <div class="note">
                <span class="notetitle"> NOTE: </span>
                <div class="notebody">
@@ -99,8 +98,8 @@
               </div></td>
             </tr>
             <tr>
-             <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.6.2.1.1.1.3.2.4.1.1 "><p><strong>Type</strong></p></td>
-             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.1.1.1.3.2.4.1.2 "><p>Type of the user who accesses a CIFS share.</p>
+             <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.1 "><p><strong>Type</strong></p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.2 "><p>Type of the user who accesses a CIFS share.</p>
               <ul>
                <li><span><strong>Everyone</strong></span></li>
                <li><span><strong>Windows Local Authentication User</strong></span></li>
@@ -114,8 +113,8 @@
               </div></td>
             </tr>
             <tr>
-             <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.6.2.1.1.1.3.2.4.1.1 "><p><strong>Users</strong></p></td>
-             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.1.1.1.3.2.4.1.2 "><p>Select the required users or user groups.</p>
+             <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.1 "><p><strong>Users</strong></p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.3.2.4.1.2 "><p>Select the required users or user groups.</p>
               <div class="note">
                <span class="notetitle"> NOTE: </span>
                <div class="notebody">

@@ -1,4 +1,3 @@
-<div class="aui-operation">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,12 +11,15 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-operation">
   <lv-group [lvGutter]="groupCommon.middleRowGutter"> 
     <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData" [maxDisplayItems]="5">
     </lv-pro-button-group>
   </lv-group>
   <lv-group [lvGutter]="groupCommon.middleRowGutter">
     <lv-search
+      [ngClass]="{'input-width-en':i18n.isEn}"
+      class="input-width"
       [lvFocus]="true"
       lvPlaceHolder="{{ 'common_search_device_name_label' | i18n }}"
       (lvSearch)="search($event)"
@@ -26,8 +28,7 @@
     <button
       class="aui-button-icon"
       lv-button
-      l
-      vSize="auto"
+      lvSize="auto"
       (click)="refresh()"
     >
       <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>

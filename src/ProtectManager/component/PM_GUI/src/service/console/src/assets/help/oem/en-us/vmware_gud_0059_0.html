@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -47,7 +47,7 @@
    </div>
    <div class="section">
     <h4 class="sectiontitle">Prerequisites</h4>
-    <p>For 1.6.0 and later versions: If the disks to be restored contain RDM disks, ensure that valid connections, such as iSCSI and Fibre Channel connections, have been established between the target ESXi host and the production storage where the RDM disks reside. For details, see "Configuring Connectivity" in the <a href="https://support.huawei.com/enterprise/en/doc/EDOC1100116456/772ffe7f/configuring-connectivity?idPath=7919749|251366268|250389224|261066246|250662070" target="_blank" rel="noopener noreferrer">OceanStor Dorado 6.x and OceanStor 6.x Host Connectivity Guide for VMware ESXi</a>.</p>
+    <p>For 1.6.0 and later versions, if the disks to be restored contain RDM disks, ensure that valid connections, such as iSCSI and Fibre Channel connections, have been established between the target ESXi host and the production storage where the RDM disks reside. For details, see "Configuring Connectivity" in the <a href="https://support.huawei.com/enterprise/en/doc/EDOC1100116456/772ffe7f/configuring-connectivity?idPath=7919749|251366268|250389224|261066246|250662070" target="_blank" rel="noopener noreferrer">OceanStor Dorado 6.x and OceanStor 6.x Host Connectivity Guide for VMware ESXi</a>.</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
@@ -56,7 +56,7 @@
      <li><span>You can search for a copy by VM or copy. This section uses a VM as an example.</span><p></p><p>Click <strong>Resources</strong> to switch to the corresponding page, search for the VM to be restored by name, and click the VM name.</p> <p></p></li>
      <li><span>Click <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> and select the year, month, and day in sequence to find the copy.</span><p></p><p>If <span><img src="en-us_image_0000001839267101.png"></span> is displayed below a month or day, a copy is generated in the month or on the day.</p> <p></p></li>
      <li><span>In the row of the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Disk Restoration</strong></span></b></span>.</span></li>
-     <li><span>Select the disk to be restored and click <span class="uicontrol"><b>Restore</b></span>.</span></li>
+     <li><span>On the <strong>Disks</strong> tab page, select the disks to be restored and click <span class="uicontrol"><b>Restore</b></span>.</span></li>
      <li><span>Restore the VM disk to the original VM or a new VM.</span><p></p>
       <ul>
        <li>If you select <strong>Original VM</strong>, the compute location of the original VM is displayed.</li>
@@ -112,14 +112,14 @@
         <li id="vmware_gud_0059_0__vmware_gud_0058_0_li1365234645115">After this function is disabled, the SAN mode is used for restoration using backup copies.</li>
        </ul>
       </div> <p></p></li>
-     <li><span>For 1.6.0 and later versions: Choose whether to enable <strong id="vmware_gud_0059_0__vmware_gud_0058_0_b877015150377">Snapshot Generation</strong>, which is enabled by default.</span><p></p><p id="vmware_gud_0059_0__vmware_gud_0058_0_p188232028217">If this function is enabled, operations on VMs during restoration will not affect the restoration result. If this function is disabled, the restoration speed will be improved.</p> <p></p></li>
-     <li><span>For 1.6.0 and later versions: You can specify an agent host for executing restoration jobs. If no agent host is specified, the system automatically allocates an agent host.</span></li>
+     <li><span>For 1.6.0 and later versions, choose whether to enable <strong id="vmware_gud_0059_0__vmware_gud_0058_0_b877015150377">Snapshot Generation</strong>, which is enabled by default.</span><p></p><p id="vmware_gud_0059_0__vmware_gud_0058_0_p188232028217">If this function is enabled, operations on VMs during restoration will not affect the restoration result. If this function is disabled, the restoration speed will be improved.</p> <p></p></li>
+     <li><span>For 1.6.0 and later versions, you can specify an agent host for executing restoration jobs. If no agent host is specified, the system automatically allocates an agent host.</span></li>
      <li><span>Click <span class="uicontrol" id="vmware_gud_0059_0__vmware_gud_0058_0_uicontrol183011741155012"><b>OK</b></span>.</span></li>
     </ol>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Follow-up Procedure</h4>
-    <p id="vmware_gud_0059_0__vmware_gud_0058_0_p171491160561">For 1.6.0 and later versions: If a restoration job fails, perform the job again by referring to <a href="vmware_gud_0099_2.html">How Do I Retry a Failed VMware Restoration Job? (Applicable to 1.6.0 and Later Versions)</a>.</p>
+    <p id="vmware_gud_0059_0__vmware_gud_0058_0_p171491160561">For 1.6.0 and later versions, if a restoration job fails, execute the job again by referring to <a href="vmware_gud_0099_2.html">How Do I Retry a Failed VMware Restoration Job? (Applicable to 1.6.0 and Later Versions)</a>.</p>
    </div>
   </div>
   <div>

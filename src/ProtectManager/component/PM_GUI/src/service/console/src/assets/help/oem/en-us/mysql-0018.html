@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -65,7 +65,7 @@
         <p>Instances in the MySQL/GreatSQL cluster environment cannot be used for single-instance registration.</p>
        </div>
       </div> <p></p></li>
-     <li><span>Select <span class="uicontrol"><b><span><strong>Type</strong></span></b></span> as <span class="uicontrol"><b><span><strong>Single instance</strong></span></b></span>.</span></li>
+     <li><span>Set <span class="uicontrol"><b><span><strong>Type</strong></span></b></span> to <span class="uicontrol"><b><span><strong>Single instance</strong></span></b></span>.</span></li>
      <li><span>Configure the database instance and its authentication information.</span><p></p><p><a href="#mysql-0018__en-us_topic_0000001311214069_table241515964115">Table 1</a> describes the related parameters.</p>
       <div class="tablenoborder">
        <a name="mysql-0018__en-us_topic_0000001311214069_table241515964115"></a><a name="en-us_topic_0000001311214069_table241515964115"></a>
@@ -119,7 +119,7 @@
           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.5.2.2.2.3.1.2 "><p>Database character set.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.5.2.2.2.3.1.1 "><p>MySQL Configuration File Path</p>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.5.2.2.2.3.1.1 "><p><strong>MySQL Configuration File Path</strong></p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -143,7 +143,7 @@
     <ol>
      <li><span>Register a cluster.</span><p></p>
       <ol type="a">
-       <li>On the MySQL/MariaDB/GreatSQL page, click the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab.</li>
+       <li>On the MySQL/MariaDB/GreatSQL page, click the <span class="uicontrol"><b><span><strong>Clusters</strong></span></b></span> tab.</li>
        <li>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</li>
        <li>On the <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> page, customize the cluster name and select the type and cluster node.
         <div class="p">
@@ -206,7 +206,7 @@
       <ol type="a">
        <li>On the MySQL/MariaDB/GreatSQL page, click the <span class="uicontrol"><b><span><strong>Instance</strong></span></b></span> tab.</li>
        <li>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</li>
-       <li>Select <span class="uicontrol"><b><span><strong>Type</strong></span></b></span> as <span class="uicontrol"><b><span><strong>Cluster instance</strong></span></b></span>.</li>
+       <li>Set <span class="uicontrol"><b><span><strong>Type</strong></span></b></span> to <span class="uicontrol"><b><span><strong>Cluster instance</strong></span></b></span>.</li>
        <li>Enter an instance name and select a cluster.</li>
        <li>Click <strong>Add</strong>. In the displayed <strong>Add</strong> dialog box, add all nodes in the cluster instance.<p><a href="#mysql-0018__table1412426182113">Table 3</a> describes the related parameters.</p>
         <div class="tablenoborder">
@@ -231,7 +231,7 @@
             <td class="cellrowborder" valign="top" width="71.36%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.2 "><p>Select a host node in the cluster.</p></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p>eAppMySQL Address</p></td>
+            <td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p><strong>eAppMySQL Address</strong></p></td>
             <td class="cellrowborder" valign="top" width="71.36%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.2 "><p>IP address for accessing the eAppMySQL service.</p>
              <div class="note">
               <span class="notetitle"> NOTE: </span>
@@ -258,7 +258,7 @@ flush privileges;</pre>
             <td class="cellrowborder" valign="top" width="71.36%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.2 "><p>Password of the database.</p></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p>Character Set</p>
+            <td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p><strong>Character Set</strong></p>
              <div class="note">
               <span class="notetitle"> NOTE: </span>
               <div class="notebody">
@@ -268,7 +268,7 @@ flush privileges;</pre>
             <td class="cellrowborder" valign="top" width="71.36%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.2 "><p>Database character set.</p></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p>MySQL Configuration File Path</p>
+            <td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p><strong>MySQL Configuration File Path</strong></p>
              <div class="note">
               <span class="notetitle"> NOTE: </span>
               <div class="notebody">

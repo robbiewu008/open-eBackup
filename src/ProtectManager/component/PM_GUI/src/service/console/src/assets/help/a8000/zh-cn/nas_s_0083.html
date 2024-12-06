@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -41,7 +41,7 @@
 <div><p>本节介绍NAS文件系统副本的详细信息。</p>
 <div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="nas_s_0083__zh-cn_topic_0000001839142377_uicontrol097351016491">“<span id="nas_s_0083__zh-cn_topic_0000001839142377_text79731210144915">数据利用</span> &gt; <span id="nas_s_0083__zh-cn_topic_0000001839142377_text797381084918">副本数据</span> &gt; 文件系统 &gt; <span id="nas_s_0083__zh-cn_topic_0000001839142377_text75601138121416">NAS文件系统</span>”</span>。</span><p><div class="note" id="nas_s_0083__zh-cn_topic_0000001839142377_note414014816184"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="nas_s_0083__zh-cn_topic_0000001839142377_p15140194811813">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0083__zh-cn_topic_0000001839142377_uicontrol117221257171816">“<span id="nas_s_0083__zh-cn_topic_0000001839142377_text1772265701816">数据利用</span> &gt; <span id="nas_s_0083__zh-cn_topic_0000001839142377_text1272245713186">副本数据</span> &gt; 文件服务 &gt; <span id="nas_s_0083__zh-cn_topic_0000001839142377_text2072255721815">NAS文件系统</span>”</span>。</p>
 </div></div>
-</p></li><li><span>选择副本浏览方式浏览副本信息。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>复制副本仅支持在复制到的目标集群查看。</p>
+</p></li><li><span>选择副本浏览方式浏览副本信息。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="nas_s_0083__zh-cn_topic_0000001792503826_p189141741162012">复制副本仅支持在复制到的目标集群查看。</p>
 </div></div>
 <ul><li>选择“<span>资源</span>”页签：以文件系统维度查看文件系统的副本信息。当文件系统数据丢失，您需要恢复该文件系统时，建议从该入口进入查找相应时间点副本。<p>相关参数说明如<a href="#nas_s_0083__table20406195873110">表1</a>所示。</p>
 
@@ -138,7 +138,7 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span>生成方式</span></p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><div class="p" id="nas_s_0083__p1481189102512">副本的生成方式。<ul id="nas_s_0083__ul1253333020263"><li id="nas_s_0083__li10533143015265"><span id="nas_s_0083__zh-cn_topic_0000001792503826_text1541813249203">复制</span>：由复制任务产生的副本。</li></ul>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><div class="p" id="nas_s_0083__p1481189102512">副本的生成方式。<ul id="nas_s_0083__ul1253333020263"><li id="nas_s_0083__li10533143015265"><span id="nas_s_0083__zh-cn_topic_0000001792503826_text124238155813">复制</span>：由复制任务产生的副本。</li></ul>
 <ul id="nas_s_0083__ul7180329202617"><li id="nas_s_0083__li91801629122617"><span id="nas_s_0083__zh-cn_topic_0000001792503826_text9418524142014">备份</span>：由备份任务产生的副本。</li></ul>
 <ul id="nas_s_0083__zh-cn_topic_0000001142182746_ul1418122432016"><li id="nas_s_0083__zh-cn_topic_0000001142182746_li97286542112"><span id="nas_s_0083__zh-cn_topic_0000001792503826_text171691481756">对象存储归档</span>：由归档任务（归档存储为对象存储）产生的副本。</li><li id="nas_s_0083__zh-cn_topic_0000001142182746_li535831918216"><span id="nas_s_0083__zh-cn_topic_0000001792503826_text1762165620514">磁带归档</span>：由归档任务（归档存储为磁带库）产生的副本。</li><li id="nas_s_0083__li14573412399"><span id="nas_s_0083__text315180103015">即时挂载</span>：由即时挂载任务产生的副本。</li><li id="nas_s_0083__zh-cn_topic_0000001142182746_li1418122482020"><span id="nas_s_0083__zh-cn_topic_0000001792503826_text2041815242204">导入</span>：由归档存储导入至<span id="nas_s_0083__zh-cn_topic_0000001792503826_text1546918420312">OceanProtect</span>的归档副本。</li><li id="nas_s_0083__li73501241103310"><span id="nas_s_0083__text1953520228352">级联复制</span>：由级联复制任务产生的副本。</li><li id="nas_s_0083__li16216124413332"><span id="nas_s_0083__text1942253020356">反向复制</span>：由反向复制任务产生的副本。</li></ul>
 </div>
@@ -167,6 +167,8 @@
 </div>
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p>如果为WORM副本，则显示WORM过期的具体时间。否则，显示为“--”</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="nas_s_0083__zh-cn_topic_0000001792503826_p10361192510430">WORM过期时间以WORM文件系统法规时钟为基准。如果WORM文件系统法规时钟与系统时间不一致，请等待WORM文件系统法规时钟到达当前设置的过期时间后，再查看WORM状态。</p>
+</div></div>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="7.76%" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span>副本</span></p>

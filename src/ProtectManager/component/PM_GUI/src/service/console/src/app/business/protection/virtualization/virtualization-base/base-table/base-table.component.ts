@@ -64,7 +64,6 @@ import { SlaService } from 'app/shared/services/sla.service';
 import { TakeManualBackupService } from 'app/shared/services/take-manual-backup.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
-  map as _map,
   assign,
   cloneDeep,
   each,
@@ -73,6 +72,7 @@ import {
   includes,
   isEmpty,
   isUndefined,
+  map as _map,
   mapValues,
   reject,
   remove,
@@ -83,8 +83,8 @@ import {
 } from 'lodash';
 import { combineLatest, Observable } from 'rxjs';
 import { SummaryComponent } from '../../cnware/summary/summary.component';
-import { CreateGroupComponent } from '../../virtualization-group/create-group/create-group.component';
 import { SummaryComponent as nutanixSummaryComponent } from '../../nutanix/summary/summary.component';
+import { CreateGroupComponent } from '../../virtualization-group/create-group/create-group.component';
 
 @Component({
   selector: 'aui-vir-base-table',
@@ -501,7 +501,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         return {
           cellRender: {
             type: 'status',
-            config: this.dataMapService.toArray('resource_LinkStatus_Special')
+            config: this.dataMapService.toArray('hypervHostStatus')
           },
           filter: {
             type: 'select',
@@ -1227,7 +1227,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         break;
       case DataMap.Resource_Type.hyperVHost.value:
         assign(item, {
-          status: item?.linkStatus ?? '0'
+          status: item.extendInfo?.State
         });
         break;
       case DataMap.Resource_Type.nutanixVm.value:
@@ -1554,7 +1554,9 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
       ...{
         lvWidth: MODAL_COMMON.largeWidth + 200,
         lvOkDisabled: datas ? false : true,
-        lvHeader: this.i18n.get('common_create_label'),
+        lvHeader: datas
+          ? this.i18n.get('common_modify_label')
+          : this.i18n.get('common_create_label'),
         lvContent: CreateGroupComponent,
         lvComponentParams: {
           rowData: datas,

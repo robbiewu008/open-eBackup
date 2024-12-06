@@ -1,4 +1,3 @@
-<div class="aui-operation" [ngClass]="{'checkbox-job': !i18n.isEn,'checkbox-job-en':i18n.isEn}" *ngIf="!selectedResource">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-operation" [ngClass]="{'checkbox-job': !i18n.isEn,'checkbox-job-en':i18n.isEn}" *ngIf="!selectedResource">
     <label lv-checkbox [ngModel]='showExpiredCopy' [lvControl]="true" [lvDisabled]="disableCheckBox"
         (click)="showCopyExpired()">
         {{ 'insight_show_expired_copy_label' | i18n }}

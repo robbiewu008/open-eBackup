@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -41,7 +41,7 @@
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
      <li id="kubernetes_CSI_00011__li0198134611381"><span>Choose <span class="uicontrol" id="kubernetes_CSI_00011__en-us_topic_0000001839142377_uicontrol846217343614"><b><span id="kubernetes_CSI_00011__en-us_topic_0000001839142377_text1046212303610"><strong>Protection</strong></span> &gt; Containers &gt; <span id="kubernetes_CSI_00011__en-us_topic_0000001839142377_text149606591485"><strong>Kubernetes CSI</strong></span></b></span>.</span></li>
-     <li><span>Click the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab, and then click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</span><p></p>
+     <li><span>Click the <span class="uicontrol"><b><span><strong>Clusters</strong></span></b></span> tab, and then click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</span><p></p>
       <div class="note">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
@@ -104,7 +104,7 @@
           </tr>
           <tr>
            <td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.1 "><p><strong>Backup Image Name and Tag</strong></p></td>
-           <td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.2 "><p id="kubernetes_CSI_00011__p25013413491">Image name and tag of the pod that performs PVC backup. Before the backup, upload the image file of the backup software to the image repository of the Kubernetes cluster. For details about how to upload the image file, see <a href="kubernetes_CSI_00069.html">Uploading the Kubernetes Installation Package to the Image Repository</a>, <a href="kubernetes_CSI_00102.html">Uploading and Updating the Kubernetes Image Package</a> and <a href="kubernetes_CSI_00078_7.html">Uploading the Kubernetes Installation Package to the Kubernetes Cluster</a>.</p> <p id="kubernetes_CSI_00011__p48051330164511">After uploading an image file, you can obtain the image name and tag value in the following ways:</p>
+           <td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.2 "><p id="kubernetes_CSI_00011__p25013413491">Image name and tag of the pod that performs PVC backup. Before the backup, upload the image file of the backup software to the image repository of the Kubernetes cluster. For details about how to upload the image file, see <a href="kubernetes_CSI_00069.html">Uploading the Kubernetes Installation Package to the Image Repository</a>, <a href="kubernetes_CSI_00102.html">Uploading and Updating the Kubernetes Installation Package</a> and <a href="kubernetes_CSI_00078_7.html">Uploading the Kubernetes Installation Package to the Kubernetes Cluster</a>.</p> <p id="kubernetes_CSI_00011__p48051330164511">After uploading an image file, you can obtain the image name and tag value in the following ways:</p>
             <ul id="kubernetes_CSI_00011__ul105295215419">
              <li id="kubernetes_CSI_00011__li195293284118">If FusionCompute is used as the management platform, choose <strong id="kubernetes_CSI_00011__b5965136156">Container Images</strong> &gt; <strong id="kubernetes_CSI_00011__b1996611362055">Local Repositories</strong> &gt; <strong id="kubernetes_CSI_00011__b49661361056">library</strong> on the <strong id="kubernetes_CSI_00011__b199672362050">Container Management</strong> page, and click the name of the uploaded image file. On the displayed <strong id="kubernetes_CSI_00011__b16967736853">Image Version</strong> tab page, in the row of the target image version, click <strong id="kubernetes_CSI_00011__b10968123611514">Copy Pull Command</strong> on the right. In the copied command, the information similar to the following (the x86 image file is used as an example) refers to the backup image name and tag value:<pre class="screen" id="kubernetes_CSI_00011__screen1712962513211">192.168.1.1:7443/library/k8s_backup_image_x86:latest</pre></li>
              <li id="kubernetes_CSI_00011__li56261561908">If CCE is used as the management platform, log in to the CCE console and choose <span class="uicontrol" id="kubernetes_CSI_00011__uicontrol119970145513"><b>Cloud Container Engine &gt; SoftWare Repository for Container &gt; Images</b></span>. Click the name of the uploaded image file and view the image name and tag value in the <span class="uicontrol" id="kubernetes_CSI_00011__uicontrol5997171410517"><b>Image Pull Command</b></span> column of the corresponding image version.</li>
@@ -174,7 +174,7 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><strong>Backup Image Name and Tag</strong></p></td>
-          <td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>Image name and tag of the pod that performs PVC backup. Before the backup, upload the image file of the backup software to the image repository of the Kubernetes cluster. For details about how to upload the image file, see <a href="kubernetes_CSI_00069.html">Uploading the Kubernetes Installation Package to the Image Repository</a>, <a href="kubernetes_CSI_00102.html">Uploading and Updating the Kubernetes Image Package</a> and <a href="kubernetes_CSI_00078_7.html">Uploading the Kubernetes Installation Package to the Kubernetes Cluster</a>.</p> <p>After uploading an image file, you can obtain the image name and tag value in the following ways:</p>
+          <td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>Image name and tag of the pod that performs PVC backup. Before the backup, upload the image file of the backup software to the image repository of the Kubernetes cluster. For details about how to upload the image file, see <a href="kubernetes_CSI_00069.html">Uploading the Kubernetes Installation Package to the Image Repository</a>, <a href="kubernetes_CSI_00102.html">Uploading and Updating the Kubernetes Installation Package</a> and <a href="kubernetes_CSI_00078_7.html">Uploading the Kubernetes Installation Package to the Kubernetes Cluster</a>.</p> <p>After uploading an image file, you can obtain the image name and tag value in the following ways:</p>
            <ul>
             <li id="kubernetes_CSI_00011__kubernetes_csi_00011_li195293284118">If FusionCompute is used as the management platform, choose <strong id="kubernetes_CSI_00011__kubernetes_csi_00011_b5965136156">Container Images</strong> &gt; <strong id="kubernetes_CSI_00011__kubernetes_csi_00011_b1996611362055">Local Repositories</strong> &gt; <strong id="kubernetes_CSI_00011__kubernetes_csi_00011_b49661361056">library</strong> on the <strong id="kubernetes_CSI_00011__kubernetes_csi_00011_b199672362050">Container Management</strong> page, and click the name of the uploaded image file. On the displayed <strong id="kubernetes_CSI_00011__kubernetes_csi_00011_b16967736853">Image Version</strong> tab page, in the row of the target image version, click <strong id="kubernetes_CSI_00011__kubernetes_csi_00011_b10968123611514">Copy Pull Command</strong> on the right. In the copied command, the information similar to the following (the x86 image file is used as an example) refers to the backup image name and tag value:<pre class="screen" id="kubernetes_CSI_00011__kubernetes_csi_00011_screen1712962513211">192.168.1.1:7443/library/k8s_backup_image_x86:latest</pre></li>
             <li id="kubernetes_CSI_00011__kubernetes_csi_00011_li56261561908">If CCE is used as the management platform, log in to the CCE console and choose <span class="uicontrol" id="kubernetes_CSI_00011__kubernetes_csi_00011_uicontrol119970145513"><b>Cloud Container Engine &gt; SoftWare Repository for Container &gt; Images</b></span>. Click the name of the uploaded image file and view the image name and tag value in the <span class="uicontrol" id="kubernetes_CSI_00011__kubernetes_csi_00011_uicontrol5997171410517"><b>Image Pull Command</b></span> column of the corresponding image version.</li>
@@ -211,7 +211,7 @@
         </tbody>
        </table>
       </div> <p></p></li>
-     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span><p></p><p>After the registration is successful, the registered Kubernetes CSI information is displayed on the <span><strong>Cluster</strong></span> tab page. The system automatically discovers namespaces in the Kubernetes cluster and displays them on the <span><strong>Namespace</strong></span> tab page.</p> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span><p></p><p>After the registration is successful, the registered Kubernetes CSI information is displayed on the <span><strong>Clusters</strong></span> tab page. The system automatically discovers namespaces in the Kubernetes cluster and displays them on the <span><strong>Namespace</strong></span> tab page.</p> <p></p></li>
     </ol>
    </div>
   </div>

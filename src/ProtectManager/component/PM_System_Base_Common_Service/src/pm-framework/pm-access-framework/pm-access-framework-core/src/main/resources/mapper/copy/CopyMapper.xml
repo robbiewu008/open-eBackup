@@ -234,4 +234,11 @@
         where worm_expiration_time &lt; #{current_time}
           and worm_status = 3
     </update>
+
+    <update id="updateCopyUserId">
+        UPDATE COPIES SET user_id=#{userId} where UUID IN
+        <foreach collection="copy_id_list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
 </mapper>

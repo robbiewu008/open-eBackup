@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,12 +36,12 @@
   <a name="tdsql_gud_011"></a><a name="tdsql_gud_011"></a>
   <h1 class="topictitle1">Step 3: Registering a TDSQL Database</h1>
   <div>
-   <p>After ProtectAgent is installed on the host where the TDSQL database resides, the <span>product</span> automatically discovers the TDSQL database host. Register TDSQL clusters and instances of the host on the management page to protect the database or use the database as the restoration target.</p>
+   <p>After ProtectAgent is installed on the host where the TDSQL database resides, the <span>product</span> automatically discovers the TDSQL database host. You need to register TDSQL clusters and instances of the host on the management page to protect the database or use the database as the restoration target.</p>
    <div class="section">
     <h4 class="sectiontitle">Context</h4>
     <ul>
      <li>The <span>product</span> can back up non-distributed and distributed instances of a TDSQL database.</li>
-     <li><span>Unless otherwise specified, the operations in this section use TDSQL 10.3.22.1 as an example. The operations may vary depending on the version.</span></li>
+     <li><span>Unless otherwise specified, the operations in this section use TDSQL 10.3.22.1 as an example. The operations may vary depending on the actual version.</span></li>
     </ul>
    </div>
    <div class="section">
@@ -59,7 +59,7 @@
     <h4 class="sectiontitle">Registering a Cluster</h4>
     <ol>
      <li><span>Choose <span class="uicontrol" id="tdsql_gud_011__en-us_topic_0000001839142377_uicontrol123821426193719"><b><span id="tdsql_gud_011__en-us_topic_0000001839142377_text3382726113718"><strong>Protection</strong></span> &gt; Databases &gt; TDSQL</b></span>.</span></li>
-     <li><span>On the TDSQL page, click the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab.</span></li>
+     <li><span>On the TDSQL page, click the <span class="uicontrol"><b><span><strong>Clusters</strong></span></b></span> tab.</span></li>
      <li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</span></li>
      <li><span>On the <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> page, customize a cluster name.</span></li>
      <li><span>Add an OSS management node.</span><p></p>
@@ -90,7 +90,7 @@
           <tbody>
            <tr>
             <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.1 "><p><span><strong>Username</strong></span></p></td>
-            <td class="cellrowborder" rowspan="2" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.2 "><p>Contact database vendor to obtain the OSS interface authentication username and password.</p></td>
+            <td class="cellrowborder" rowspan="2" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.2 "><p>Contact the database vendor to obtain the username and password for OSS interface authentication.</p></td>
            </tr>
            <tr>
             <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
@@ -183,7 +183,7 @@
           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>Name of an instance, which can be customized.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span><strong>Cluster</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span><strong>Clusters</strong></span></p></td>
           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>Select the cluster where the instance to be registered resides.</p></td>
          </tr>
          <tr>
@@ -199,7 +199,7 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span><strong>tdsqlsys_repl User Password</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>Contact the database vendor or run the <strong>select * from mysql.slave_master_info</strong><strong>;</strong> command on the standby database node to obtain the value of <span class="parmname"><b>User_password</b></span> in the command output.</p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>Contact the database vendor to obtain the value, or run the <strong>select * from mysql.slave_master_info</strong><strong>;</strong> command on the standby database node to obtain the value of <span class="parmname"><b>User_password</b></span> in the command output.</p></td>
          </tr>
         </tbody>
        </table>
@@ -239,7 +239,7 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span><strong>Parameter File Path</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>Enter the parameter file path of this node. You can log in to the data node where the instance resides and run the <strong>ps -ef | grep mysqld | grep </strong><em>{Instance port}</em> command to obtain the path following <span class="parmvalue"><b>defaults-file</b></span>.</p>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>Enter the parameter file path of this node. You can log in to the data node where the instance resides and run the <strong>ps -ef | grep mysql | grep </strong><em>Instance port</em> command to obtain the path following <span class="parmvalue"><b>defaults-file</b></span>.</p>
            <div class="note" id="tdsql_gud_011__note195316305250">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -249,7 +249,7 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span><strong>Socket File Path</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>Enter the socket file path of the node. You can log in to the data node where the instance resides and run the <strong>ps -ef | grep mysqld | grep </strong><em>{Instance port}</em> command to obtain the path following <span class="parmvalue"><b>socket</b></span>.</p>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>Enter the socket file path of the node. You can log in to the data node where the instance resides and run the <strong>ps -ef | grep mysql | grep </strong><em>Instance port</em> command to obtain the path following <span class="parmvalue"><b>socket</b></span>.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -300,7 +300,7 @@
           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.7.2.4.2.1.2.3.1.2 "><p>Name of an instance, which can be customized.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.7.2.4.2.1.2.3.1.1 "><p><span><strong>Cluster</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.7.2.4.2.1.2.3.1.1 "><p><span><strong>Clusters</strong></span></p></td>
           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.7.2.4.2.1.2.3.1.2 "><p>Select the cluster where the instance to be registered resides.</p></td>
          </tr>
          <tr>
@@ -319,7 +319,7 @@
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>Parent topic:</strong> <a href="tdsql_gud_009.html">Backing Up TDSQL Databases</a>
+     <strong>Parent topic:</strong> <a href="tdsql_gud_009.html">Backing Up a TDSQL Database</a>
     </div>
    </div>
   </div>

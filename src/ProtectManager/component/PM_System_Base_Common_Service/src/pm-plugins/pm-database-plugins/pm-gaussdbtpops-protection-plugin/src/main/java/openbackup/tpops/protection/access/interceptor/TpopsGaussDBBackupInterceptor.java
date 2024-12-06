@@ -135,12 +135,20 @@ public class TpopsGaussDBBackupInterceptor extends AbstractDbBackupInterceptor {
         String copyPropertiesStr = postBackupTask.getCopyInfo().getProperties();
         JSONObject copyProperties = JSONObject.fromObject(copyPropertiesStr);
         String canRestore = copyProperties.getString(TpopsGaussDBConstant.CAN_RESTORE);
-        if (BackupTypeEnum.LOG.getAbbreviation() == postBackupTask.getBackupType().getAbbreviation()
-            && TpopsGaussDBConstant.FALSE.equals(canRestore)) {
-            log.warn("The canRestore is false.");
-            // 资源（[实例名]）运行[0-备份]任务[1-部分成功]
-            String[] alarmParams = new String[] {postBackupTask.getProtectedObject().getName(), "0", "1"};
-            commonAlarmService.generateAlarm(genLogBackupFailedAlarmParam(alarmParams));
+        if (BackupTypeEnum.LOG.getAbbreviation() == postBackupTask.getBackupType().getAbbreviation()) {
+            if (TpopsGaussDBConstant.FALSE.equals(canRestore)) {
+                log.warn("The canRestore is false. add alarm");
+
+                // 资源（[实例名]）运行[0-备份]任务[1-部分成功]
+                String[] alarmParams = new String[] {postBackupTask.getProtectedObject().getName(), "0", "1", "--"};
+                commonAlarmService.generateAlarm(genLogBackupFailedAlarmParam(alarmParams));
+            } else {
+                log.info("The canRestore is true. remove alarm");
+
+                // 资源（[实例名]）运行[0-备份]任务[1-部分成功]
+                String[] alarmParams = new String[] {postBackupTask.getProtectedObject().getName(), "0", "1", "--"};
+                commonAlarmService.clearAlarm(genLogBackupFailedAlarmParam(alarmParams));
+            }
         }
     }
 

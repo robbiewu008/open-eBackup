@@ -44,6 +44,7 @@ import {
   find,
   findKey,
   isArray,
+  isEmpty,
   isNumber,
   isUndefined,
   map,
@@ -325,6 +326,25 @@ export class TakeManualArchiveComponent implements OnInit {
         nodeName: cluster?.clusterName
       };
       this.formGroup.get('esn').setValue(cluster?.storageEsn);
+    });
+
+    this.formGroup.get('mediaSet').valueChanges.subscribe(res => {
+      if (isEmpty(res)) {
+        return;
+      }
+      each(this.mediaSetOptions[this.formGroup.get('node_id').value], item => {
+        item.disabled = !find(res, val => val === item.value) && size(res) >= 4;
+      });
+      this.mediaSetOptions[this.formGroup.get('node_id').value] = [
+        ...this.mediaSetOptions[this.formGroup.get('node_id').value]
+      ];
+    });
+
+    this.formGroup.get('storage_id').valueChanges.subscribe(res => {
+      each(this.s3StorageNames, item => {
+        item.disabled = !find(res, val => val === item.value) && size(res) >= 4;
+      });
+      this.s3StorageNames = [...this.s3StorageNames];
     });
   }
 

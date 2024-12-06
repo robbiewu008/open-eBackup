@@ -488,8 +488,7 @@ export class HostRegisterComponent implements OnInit {
               DataMap.OS_Type.Windows.value,
               DataMap.OS_Type.Linux.value,
               DataMap.OS_Type.Unix.value,
-              DataMap.OS_Type.solaris.value,
-              DataMap.OS_Type.hpux.value
+              DataMap.OS_Type.solaris.value
             ],
             item.value
           )
@@ -590,6 +589,9 @@ export class HostRegisterComponent implements OnInit {
           return !includes(shareApplications, item.appValue);
         }
       });
+      if (this.shareDisabled) {
+        this.formGroup.get('isShared')?.setValue('false');
+      }
     });
   }
 
