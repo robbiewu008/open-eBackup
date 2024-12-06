@@ -328,7 +328,7 @@ spec:
             - name: DEPLOY_TYPE
               value: d8
             - name: VERSION
-              value: { { .Values.global.version } }
+              value: {{ .Values.global.version }}
             {{- if .Values.global.region_id }}
             - name: REGION_ID
               value: {{ .Values.global.region_id }}
