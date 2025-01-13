@@ -1,0 +1,11 @@
+# collections/ansible_collections/ns/coll/meta/runtime.yml
+action_groups:
+  session:
+    - install_agent
+    - create_sla
+    - register_archive
+    - register_vmware
+    - register_fileset
+    - create_protection
+    - backup
+    - restore
