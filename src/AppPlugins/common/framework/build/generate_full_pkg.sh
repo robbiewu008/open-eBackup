@@ -7,6 +7,11 @@ LCRP_CONFIG_PATH=${SCRIPT_PATH}/LCRP/conf
 source ${SCRIPT_PATH}/common/common.sh
 SCRIPT_NAME="${BASH_SOURCE[0]##*/}"
 EXT_PKG_DOWNLOAD_PATH=${PLUGIN_ROOT_DIR}/ext_pkg
+OBLIGATION_ROOT=${binary_path}
+if [ -z "$OBLIGATION_ROOT" ]; then
+    log_echo "ERROR" "Please export binary_path={open-source-obligation path}"
+    exit 1
+fi
 
 function uncompress_pkg()
 {
@@ -59,7 +64,10 @@ function main()
     rm -rf ${EXT_PKG_DOWNLOAD_PATH}/
     log_echo "Begin pack plugin"
     mkdir -p ${EXT_PKG_DOWNLOAD_PATH}/Plugins
+    # 从编译输出位置拷贝arrch包
     cp -rf ${PLUGIN_ROOT_DIR}/output_pkg/${PLUGIN_NAME}*.tar.xz ${EXT_PKG_DOWNLOAD_PATH}/Plugins
+    # 从open-eBackup-bin中拷贝x86的包
+    cp -rf ${OBLIGATION_ROOT}/Plugins/Linux/x86_64/${PLUGIN_NAME}_x86_64.tar.xz ${EXT_PKG_DOWNLOAD_PATH}/Plugins
     if [ $? -ne 0 ]; then
         log_echo "pack plugin error"
         continue
