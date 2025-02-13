@@ -125,11 +125,9 @@ fi
 
 # download fileclient
 echo "start download fileclient"
-if [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "aarch64" ]; then
+if [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
     MakeDir ${BASE_PATH}/FileClient
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/fileClient_aarch64.tar.gz ${BASE_PATH}/FileClient/
-elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "x86_64" ]; then
-    MakeDir ${BASE_PATH}/FileClient
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/fileClient_x86_64.tar.gz ${BASE_PATH}/FileClient/
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" != "aix" ] && [ "$BUILD_OS_TYPE" != "solaris" ]; then
     MakeDir ${BASE_PATH}/FileClient
