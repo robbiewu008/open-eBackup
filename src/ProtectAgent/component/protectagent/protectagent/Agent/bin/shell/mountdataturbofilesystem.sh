@@ -139,6 +139,7 @@ MountFileClientFs()
         if [ -d "${AGENT_ROOT_PATH}/../../FileClient/bin" ]; then
             cd "${AGENT_ROOT_PATH}/../../FileClient/bin"
         else
+            Log "No FileClient ${AGENT_ROOT_PATH}/../../FileClient/bin exist."
             return 1
         fi
         if [ $IsLinkEncryption -eq 1 ]; then 
@@ -317,6 +318,7 @@ if [ "${StorageName}" = "FileClient" ]; then
     fi
     MountFileClientFs
     if [ $? -ne 0 ]; then
+        Log "ERROR: Mount fileclient error."
         exit ${ERROR_MOUNT_FS}
     fi
     RealMountPath="${HostMountPath}${FileSystemMountPath}"
@@ -401,6 +403,7 @@ if [ $? -ne 0 ]; then
         MountDataturboFs "${StorageName}" "${rootFs}" "${prefixHost}"
         if [ $? -ne 0 ]; then
             chattr -i ${prefixHost}
+            Log "ERROR: Mount dataturbo fail."
             exit ${ERROR_MOUNT_FS}
         fi
         suffixHostList=`echo "${HostMountPath#*${rootFs}}" | sed 's#/# #g'`
@@ -437,6 +440,7 @@ if [ $? -ne 0 ]; then
     else
         chattr -i ${HostMountPath}
         chattr -i ${prefixHost}
+        Log "Mount dataturbo fail."
         exit ${ERROR_MOUNT_FS}
     fi
 fi
