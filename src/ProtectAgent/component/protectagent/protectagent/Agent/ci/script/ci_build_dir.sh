@@ -71,6 +71,7 @@ CpFile()
         return 1
     fi
     cp "$1" "$2"
+    echo "copy file $1 to $2"
 }
 
 cd ${BASE_PATH}/
@@ -149,6 +150,7 @@ if [ "$BUILD_PKG_TYPE" = "OceanCyber" ]; then
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
     cp -rf ${BASE_PATH}/Plugins/*.tar.gz ${BASE_PATH}/final_pkg/Plugins
     cp -rf ${BASE_PATH}/Plugins/*.tar.xz ${BASE_PATH}/final_pkg/Plugins
+    cp -rf ${BASE_PATH}/Plugins/*.zip ${BASE_PATH}/final_pkg/Plugins
 else
     cp -rf ${BASE_PATH}/Plugins/*.tar.gz ${BASE_PATH}/final_pkg/Plugins
     cp -rf ${BASE_PATH}/Plugins/*.tar.xz ${BASE_PATH}/final_pkg/Plugins
@@ -160,9 +162,11 @@ cd tmp_zip
 find ${BASE_PATH}/Agent/bin/install/ -maxdepth 1 \( -name "*sh" -o -name "*txt*" \)  -exec cp -f "{}" "." \;
 zip -r ${BASE_PATH}/final_pkg/PackageScript/package-like-unix.zip .
 rm -rf ${BASE_PATH}/tmp_zip/*
+
 find ${BASE_PATH}/Agent/bin/install/ -maxdepth 1 \( -name "*bat" -o -name "*txt*" \)  -exec cp -f "{}" "." \;
 zip -r ${BASE_PATH}/final_pkg/PackageScript/package-windows.zip .
 rm -rf ${BASE_PATH}/tmp_zip/*
+
 cp ${BASE_PATH}/Agent/bin/bat/push_install_check.bat ${BASE_PATH}/final_pkg/PackageScript/windows
 cp ${BASE_PATH}/Agent/bin/shell/push_install_check.sh ${BASE_PATH}/final_pkg/PackageScript/like-unix
 cd ${BASE_PATH}/
