@@ -111,6 +111,7 @@ if [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
 
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/FilePlugin.zip ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/VirtualizationPlugin.zip ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/GeneralDBPlugin.zip ${BASE_PATH}/Plugins
 
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/FilePlugin_ppc_64.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/cppframework-AIX_ppc_64.tar.xz ${BASE_PATH}/Plugins
