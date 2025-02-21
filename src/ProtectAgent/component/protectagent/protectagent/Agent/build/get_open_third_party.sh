@@ -150,7 +150,6 @@ get_platform()
 
         mv ${pkg_name} ${platform_map[${pkg_name}]}
 
-        rm -f ${compressPkg}
         echo "Prepare platform pkg ${pkg_name} of ${platform_map[${pkg_name}]} finish."
     } done
 
