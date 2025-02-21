@@ -99,17 +99,21 @@ copy_opensource()
 
 get_platform()
 {
+    if [ -d "${PLATFORM_PKG_WORK_PATH}" ]; then
+        rm -rf ${PLATFORM_PKG_WORK_PATH}/*
+    fi
+
     PLATFORM_PKG_TMP_PATH=$PLATFORM_PKG_WORK_PATH/tmp
     if [ ! -d $PLATFORM_PKG_TMP_PATH ]; then
         mkdir -p $PLATFORM_PKG_TMP_PATH
-        echo "mkdir $PLATFORM_PKG_TMP_PATH"
+        echo "mkdir $PLATFORM_PKG_TMP_PATH"    
     fi
 
     platform_pkg="OceanProtect_X8000_${Version}_Platform_SDK_${SYS_NAME}_${SYS_ARCH}.tar.gz"
 
     cp -rf ${OPENSOURCE_REPOSITORY_DIR}/${SYS_NAME}/${SYS_ARCH}/platform/${platform_pkg} ${PLATFORM_PKG_TMP_PATH}
 
-    echo "cp ${OPENSOURCE_REPOSITORY_DIR}/${SYS_NAME}/${SYS_ARCH}/platform to ${PLATFORM_PKG_TMP_PATH} finish"
+    echo "cp ${OPENSOURCE_REPOSITORY_DIR}/${SYS_NAME}/${SYS_ARCH}/platform/${platform_pkg} to ${PLATFORM_PKG_TMP_PATH} finish"
 
     if [ ! -f "${OPENSOURCE_REPOSITORY_DIR}/${SYS_NAME}/${SYS_ARCH}/platform/${platform_pkg}" ]; then
         echo "The platform package does not exist."
@@ -122,22 +126,37 @@ get_platform()
         exit 1
     fi
 
-    platform_map["SecureCLib_rel.tar.gz"]="securec"
-    platform_map["KMCV3_rel.tar.gz"]="kmc"
+    platform_map["SecureCLib_rel"]="securec"
+    platform_map["KMCV3_rel"]="kmc"
+
+    cd ${PLATFORM_PKG_WORK_PATH}
 
     for pkg_name in "${!platform_map[@]}"
     do
     {
-        if [ ! -f "${PLATFORM_PKG_TMP_PATH}/${pkg_name}" ]; then
-            echo "Packege ${PLATFORM_PKG_TMP_PATH}/${pkg_name} not exist."
+        sPkg=${PLATFORM_PKG_TMP_PATH}/${pkg_name}.tar.gz
+        if [ ! -f "${sPkg}" ]; then
+            echo "Packege ${sPkg} not exist."
+            exit 1
+        fi
+        cp -rf ${sPkg} $PLATFORM_PKG_WORK_PATH
+        compressPkg=${PLATFORM_PKG_WORK_PATH}/${pkg_name}.tar.gz
+
+        tar zxvf "${compressPkg}" > /dev/null
+        if [ $? -ne 0 ]; then
+            echo "Failed to decompress the package ${compressPkg}."
             exit 1
         fi
 
-        cp -rf ${PLATFORM_PKG_TMP_PATH}/${pkg_name} $PLATFORM_PKG_WORK_PATH
-        echo "Copy platform pkg ${pkg_name} of ${platform_map[${pkg_name}]} finish."
+        mv ${pkg_name} ${platform_map[${pkg_name}]}
+
+        rm -f ${compressPkg}
+        echo "Prepare platform pkg ${pkg_name} of ${platform_map[${pkg_name}]} finish."
     } done
 
     rm -rf $PLATFORM_PKG_TMP_PATH
+
+    cd -
 }
 
 decompress_opensource()
