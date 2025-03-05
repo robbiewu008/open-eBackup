@@ -16,7 +16,7 @@ import { I18NService } from 'app/shared';
 import { LabelApiService } from 'app/shared/api/services';
 import { CommonConsts } from 'app/shared/consts';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { size } from 'lodash';
+import { assign, each, includes, map, size } from 'lodash';
 
 @Component({
   selector: 'aui-select-tag',
@@ -30,7 +30,7 @@ export class SelectTagComponent {
   @Output() updateTable = new EventEmitter();
 
   labelOptions;
-
+  tagLoading = true;
   constructor(
     private i18n: I18NService,
     private labelApiService: LabelApiService,
@@ -49,6 +49,12 @@ export class SelectTagComponent {
 
   listenChanges() {
     this.formGroup.get('selectTag').valueChanges.subscribe(res => {
+      each(this.labelOptions, label => {
+        assign(label, {
+          disabled: size(res) >= 100 && !includes(res, label.id)
+        });
+      });
+      this.labelOptions = [...this.labelOptions];
       if (size(res)) {
         if (this.isAgentTag) {
           this.updateTable.emit({
@@ -67,7 +73,7 @@ export class SelectTagComponent {
   getLabelOptions() {
     const extParams = {
       startPage: CommonConsts.PAGE_START_EXTRA,
-      akLoading: true
+      akLoading: false
     };
     this.appUtilsService.getResourceByRecursion(
       extParams,
@@ -81,6 +87,7 @@ export class SelectTagComponent {
             isLeaf: true
           };
         });
+        this.tagLoading = false;
         this.labelOptions = arr;
       }
     );

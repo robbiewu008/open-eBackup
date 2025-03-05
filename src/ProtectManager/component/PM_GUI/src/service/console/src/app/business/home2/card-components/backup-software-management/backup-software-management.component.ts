@@ -17,9 +17,8 @@ import {
   ExternalSystemService,
   I18NService
 } from 'app/shared';
-import { each, toNumber, toUpper } from 'lodash';
+import { each, toNumber, toUpper, toString } from 'lodash';
 import { finalize } from 'rxjs/operators';
-import ShowExternalSystemInfoParams = ExternalSystemService.ShowExternalSystemInfoParams;
 import GetAllStatusParams = ExternalSystemService.GetAllStatusParams;
 
 @Component({
@@ -50,10 +49,32 @@ export class BackupSoftwareManagementComponent {
     return item.id;
   };
 
+  jump(data) {
+    if (data.type === 'dpa') {
+      this.jumpToDPA(data);
+    } else {
+      this.jumpToEBackup(data);
+    }
+  }
+
   jumpToDPA(data) {
     // DPA跳转用ip+端口跳转
     const url = `https://${encodeURI(data.endpoint)}`;
     window.open(url, '_blank');
+  }
+
+  jumpToEBackup(data) {
+    this.externalSystemService
+      .GenerateExternalSystemToken({ uuid: data.systemId })
+      .subscribe(res => {
+        const language = this.i18n.isEn ? 'en' : 'zh';
+        const url = `https://${encodeURI(res.ip)}:${encodeURI(
+          toString(res.port)
+        )}/eBackup/#/login?token=${encodeURIComponent(
+          res.token
+        )}&language=${encodeURIComponent(language)}`;
+        window.open(url, '_blank');
+      });
   }
 
   getExternalSystemList() {

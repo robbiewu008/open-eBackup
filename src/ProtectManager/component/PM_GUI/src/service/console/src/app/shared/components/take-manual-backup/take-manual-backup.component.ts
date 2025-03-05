@@ -69,8 +69,15 @@ export class TakeManualBackupComponent implements OnInit {
   formGroup: FormGroup;
   dataMap = DataMap;
   policyAction = PolicyAction;
+  disableDiffAction = false;
+  disableIncrementAction = false;
   disableLogAction = false;
   concurrentNumber = 10;
+  actionDisabledMap = new Map([
+    [PolicyAction.LOG, 'disableLogAction'],
+    [PolicyAction.INCREMENT, 'disableIncrementAction'],
+    [PolicyAction.DIFFERENCE, 'disableDiffAction']
+  ]);
   tipMap = {
     [PolicyAction.FULL]: this.i18n.get('common_full_backup_tips_label'),
     [PolicyAction.LOG]: this.i18n.get('common_log_backup_tips_label'),
@@ -868,6 +875,14 @@ export class TakeManualBackupComponent implements OnInit {
         label: this.i18n.get('common_full_backup_label')
       },
       {
+        id: PolicyAction.INCREMENT,
+        label: this.i18n.get('common_incremental_backup_label')
+      },
+      {
+        id: PolicyAction.DIFFERENCE,
+        label: this.i18n.get('common_diff_backup_label')
+      },
+      {
         id: PolicyAction.LOG,
         label: this.i18n.get('common_log_backup_label')
       }
@@ -951,6 +966,8 @@ export class TakeManualBackupComponent implements OnInit {
         : this.isBatched
         ? this.i18n.get('protection_copy_name_prefix_label')
         : this.i18n.get('protection_copy_name_label');
+    this.getDisabledDiffAction();
+    this.getDisabledIncrementalAction();
     this.getDisableLogAction();
     this.initForm();
     this.initItems();
@@ -1006,6 +1023,35 @@ export class TakeManualBackupComponent implements OnInit {
 
       return null;
     };
+  }
+
+  goldenDBLogFilter(): boolean {
+    if (
+      !includes(
+        [DataMap.Resource_Type.goldendbInstance.value],
+        this.params.resource_type
+      )
+    ) {
+      return false;
+    }
+    if (isArray(this.params)) {
+      return !isEmpty(
+        find(
+          this.params,
+          param =>
+            compareVersion(
+              param.environment?.version?.replace(/V/gi, ''),
+              '6.1.01'
+            ) < 1
+        )
+      );
+    }
+    return (
+      compareVersion(
+        this.params?.environment?.version?.replace(/V/gi, ''),
+        '6.1.01'
+      ) < 1
+    );
   }
 
   initItems() {
@@ -1065,6 +1111,23 @@ export class TakeManualBackupComponent implements OnInit {
       !this.params?.extendInfo?.clusterVersion.includes('PanWeiDB')
     ) {
       this.items = reject(this.items, item => item.id === PolicyAction.LOG);
+    }
+
+    // DB2 RHEL HA集群不支持增量、差异
+    if (
+      includes(
+        [DataMap.Resource_Type.dbTwoDatabase.value],
+        this.params.resource_type
+      ) &&
+      this.params?.extendInfo.clusterType === DataMap.dbTwoType.standby.value &&
+      this.params?.extendInfo?.deployOperatingSystem === 'Red Hat'
+    ) {
+      this.items = reject(
+        this.items,
+        item =>
+          item.id === PolicyAction.INCREMENT ||
+          item.id === PolicyAction.DIFFERENCE
+      );
     }
 
     // Mysql EAPP集群不支持日志备份
@@ -1130,6 +1193,11 @@ export class TakeManualBackupComponent implements OnInit {
         label: this.i18n.get('common_incremental_backup_label')
       });
     }
+
+    // goldenDB 6.1.01及以下版本不支持日志备份
+    if (this.goldenDBLogFilter()) {
+      this.items = reject(this.items, item => item.id === PolicyAction.LOG);
+    }
   }
 
   // 判断当前版本是否支持添加存储资源
@@ -1155,10 +1223,7 @@ export class TakeManualBackupComponent implements OnInit {
         akOperationTips: false
       })
       .subscribe(res => {
-        if (res?.LogBackup) {
-          this.items = this.actions[this.params.resource_type];
-        } else {
-          // 若不支持就去除日志备份选项
+        if (!res?.LogBackup) {
           this.items = reject(this.items, item => item.id === PolicyAction.LOG);
         }
       });
@@ -1191,17 +1256,54 @@ export class TakeManualBackupComponent implements OnInit {
     });
   }
 
+  getDisableActionByActionId(id) {
+    // 检查 id 是否存在于 Map 中
+    if (!this.actionDisabledMap.has(id)) {
+      return false;
+    }
+    return this[this.actionDisabledMap.get(id)];
+  }
+
+  getDisabledDiffAction() {
+    if (
+      includes(
+        [DataMap.Resource_Type.saphanaDatabase.value],
+        this.params.resource_type
+      )
+    ) {
+      this.disableDiffAction =
+        get(this.params, 'environment.extendInfo.enableLogBackup', 'false') ===
+        'false';
+    }
+  }
+
+  getDisabledIncrementalAction() {
+    if (
+      includes(
+        [DataMap.Resource_Type.saphanaDatabase.value],
+        this.params.resource_type
+      )
+    ) {
+      this.disableIncrementAction =
+        get(this.params, 'environment.extendInfo.enableLogBackup', 'false') ===
+        'false';
+    }
+  }
+
   getDisableLogAction() {
-    this.disableLogAction =
+    if (
       includes(
         [
           DataMap.Resource_Type.oracle.value,
           DataMap.Resource_Type.oracleCluster.value
         ],
         this.params.resource_type
-      ) &&
-      !isEmpty(this.params.policy_list) &&
-      isEmpty(find(this.params.policy_list, { action: PolicyAction.LOG }));
+      )
+    ) {
+      this.disableLogAction =
+        !isEmpty(this.params.policy_list) &&
+        isEmpty(find(this.params.policy_list, { action: PolicyAction.LOG }));
+    }
 
     // TiDB集群版本低于6.2的不支持日志备份
     if (
@@ -1212,6 +1314,17 @@ export class TakeManualBackupComponent implements OnInit {
       const originVersion = this.params.version.replace('v', '');
       this.disableLogAction =
         compareVersion(originVersion, targetVersion) === -1;
+    }
+
+    if (
+      includes(
+        [DataMap.Resource_Type.saphanaDatabase.value],
+        this.params.resource_type
+      )
+    ) {
+      this.disableLogAction =
+        get(this.params, 'environment.extendInfo.enableLogBackup', 'false') ===
+        'false';
     }
   }
 

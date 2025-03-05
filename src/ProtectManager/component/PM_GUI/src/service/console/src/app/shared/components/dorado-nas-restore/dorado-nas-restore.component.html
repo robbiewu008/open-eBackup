@@ -255,7 +255,7 @@
         <ng-container *ngIf="exterAgent">
             <lv-form-item>
                 <lv-form-label lvRequired>
-                    {{'protection_proxy_host_label' | i18n}}
+                    {{'protection_clients_label' | i18n}}
                 </lv-form-label>
                 <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
                     <aui-agent-select [lvOptions]="hostOptions" formControlName="proxyHost" lvValueKey="value"
@@ -318,5 +318,28 @@
                 </lv-radio-group>
             </lv-form-control>
         </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="rowCopy.resource_sub_type === dataMap.Resource_Type.NASShare.value && restoreType === restoreTypeEnum.CommonRestore">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_nas_file_restore_order_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_nas_file_restore_order_tip_label' | i18n}}" lvTooltipTheme="light"
+                        class="configform-constraint" lvColorState="true"></i>
+            </lv-form-label>
+            <lv-form-control>
+                <lv-switch formControlName="restoreOrder"></lv-switch>
+            </lv-form-control>
+        </lv-form-item>
+       <lv-form-item *ngIf="formGroup.value.restoreOrder">
+        <lv-form-label></lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="orderBy">
+                <lv-group [lvGutter]="'20px'" lvDirection='vertical' class="mgt-8">
+                    <lv-radio [lvValue]="1">{{'protection_lexicographical_order_label' | i18n}}</lv-radio>
+                    <lv-radio [lvValue]="2">{{'protection_reverse_lexicographical_order_label' | i18n}}</lv-radio>
+                </lv-group>
+                </lv-radio-group>
+        </lv-form-control>
+       </lv-form-item>
     </ng-container>
 </lv-form>

@@ -77,6 +77,7 @@ export class StartSftpComponent implements OnInit {
   data;
   activeNode;
   isModify;
+  hasStarted = false; // 用于判断是否开启过
   dataMap = DataMap;
   formGroup: FormGroup;
   wormGroup: FormGroup;
@@ -194,6 +195,9 @@ export class StartSftpComponent implements OnInit {
   updateData() {
     if (this.isModify && isEmpty(this.data?.poolId)) {
       this.data.poolId = '0';
+    }
+    if (!isEmpty(this.data?.poolId)) {
+      this.hasStarted = true;
     }
     this.formGroup.patchValue(this.data);
     this.wormGroup.patchValue(this.data);
@@ -505,6 +509,9 @@ export class StartSftpComponent implements OnInit {
               ...item,
               value: item.poolId,
               label: item.name,
+              disabled:
+                item.runningStatus !==
+                DataMap.StoragePoolRunningStatus.online.value,
               isLeaf: true
             });
           }

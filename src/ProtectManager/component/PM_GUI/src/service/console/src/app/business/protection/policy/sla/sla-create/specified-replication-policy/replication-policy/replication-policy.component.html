@@ -34,6 +34,30 @@
           {{ item.get('name').value }}
         </div>
       </ng-template>
+      <lv-form-item *ngIf="!isHcsUser && !isDmeUser && !isDistributed">
+        <lv-form-label>
+          {{ 'protection_sla_rep_type_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <lv-radio-group formControlName="action">
+            <lv-group lvGutter="20px">
+              <lv-radio
+                [lvValue]="dataMap.replicationAction.data.value"
+                [lvDisabled]="
+                  dataNum === 4 || item.value.disableOriginalStorage
+                "
+                >{{ 'protection_sla_rep_type_data_label' | i18n }}</lv-radio
+              >
+              <lv-radio
+                [lvValue]="dataMap.replicationAction.log.value"
+                [lvDisabled]="logNum === 4 || item.value.disableOriginalStorage"
+                *ngIf="!isDisableLog"
+                >{{ 'protection_sla_rep_type_log_label' | i18n }}</lv-radio
+              >
+            </lv-group>
+          </lv-radio-group>
+        </lv-form-control>
+      </lv-form-item>
       <lv-form-item>
         <lv-form-label lvRequired>
           {{ 'common_name_label' | i18n }}
@@ -177,6 +201,7 @@
               <lv-group [lvColumns]="['auto', '100px']" lvRowGutter="12px">
                 <aui-inupt-with-eye
                   formControlName="vdc_password"
+                  (keyup.enter)="testPassword(item)"
                 ></aui-inupt-with-eye>
                 <button
                   lv-button
@@ -260,6 +285,7 @@
             >
               <aui-inupt-with-eye
                 formControlName="authPassword"
+                (keyup.enter)="authPassword(item)"
               ></aui-inupt-with-eye>
               <button
                 lv-button
@@ -308,22 +334,24 @@
                 formControlName="replication_storage_type"
                 lvValueKey="value"
                 class="storage-input"
-                [lvDisabled]="!isAuth || item.value.disableOriginalStorage"
+                [lvDisabled]="!item.value.isAuth || item.value.disableOriginalStorage"
               ></lv-select>
-              <!-- 远端存储类型 -->
+              <!-- 远端存储类型,当前不支持选择OceanProtectX以外的存储单元所以暂时隐藏 -->
               <lv-select
                 [lvOptions]="deviceTypeUseOption"
                 formControlName="remote_storage_type"
                 lvValueKey="value"
                 class="storage-input"
-                [lvDisabled]="!isAuth || item.value.disableOriginalStorage"
+                [lvDisabled]="!item.value.isAuth || item.value.disableOriginalStorage"
+                *ngIf="false"
               >
               </lv-select>
               <!--指定备份存储单元组-->
               <lv-select
                 *ngIf="
                   item.value.replication_storage_type ===
-                  dataMap.backupStorageTypeSla.group.value
+                    dataMap.backupStorageTypeSla.group.value &&
+                  !!item.value.remote_storage_type
                 "
                 [lvOptions]="
                   externalStorageMap[
@@ -337,13 +365,14 @@
                 lvFilterKey="label"
                 lvFilterMode="contains"
                 lvShowClear
-                [lvDisabled]="!isAuth || item.value.disableOriginalStorage"
+                [lvDisabled]="!item.value.isAuth || item.value.disableOriginalStorage"
               ></lv-select>
               <!--指定备份存储单元-->
               <lv-select
                 *ngIf="
                   item.value.replication_storage_type ===
-                  dataMap.backupStorageTypeSla.unit.value
+                    dataMap.backupStorageTypeSla.unit.value &&
+                  !!item.value.remote_storage_type
                 "
                 [lvOptions]="
                   externalStorageUnitMap[
@@ -357,7 +386,8 @@
                 lvFilterKey="label"
                 lvFilterMode="contains"
                 lvShowClear
-                [lvDisabled]="!isAuth || item.value.disableOriginalStorage"
+                [lvDisabled]="!item.value.isAuth || item.value.disableOriginalStorage"
+                [lvContentTemplate]="contentTpl"
               ></lv-select>
             </lv-group>
           </lv-form-control>
@@ -402,7 +432,7 @@
         *ngIf="item.value.replicationMode === replicationModeType.INTRA_DOMAIN"
       >
         <lv-form-item>
-          <lv-form-label>
+          <lv-form-label lvRequired>
             {{ 'specify_the_destination_location_label' | i18n }}
           </lv-form-label>
           <lv-form-control>
@@ -443,6 +473,7 @@
                 lvFilterMode="contains"
                 lvShowClear
                 [lvDisabled]="item.value.disableOriginalStorage"
+                [lvContentTemplate]="contentTpl"
               ></lv-select>
             </lv-group>
           </lv-form-control>
@@ -490,7 +521,7 @@
                   {{ 'common_every_label' | i18n }}
                 </span>
                 <span *ngIf="i18n.isEn">
-                  {{'protection_replicate_interval_label' | i18n}}
+                  {{ 'protection_replicate_interval_label' | i18n }}
                 </span>
                 <lv-input-group
                   [lvAddAfter]="unitTpl"
@@ -546,7 +577,13 @@
               <lv-radio [lvValue]="dataMap.slaReplicationRule.all.value">
                 {{ dataMap.slaReplicationRule.all.label | i18n }}
               </lv-radio>
-              <lv-radio [lvValue]="dataMap.slaReplicationRule.specify.value">
+              <lv-radio
+                [lvValue]="dataMap.slaReplicationRule.specify.value"
+                [lvDisabled]="
+                  item.get('action').value ===
+                  dataMap.replicationAction.log.value
+                "
+              >
                 {{ dataMap.slaReplicationRule.specify.label | i18n }}
                 <i
                   lv-icon="aui-icon-help"
@@ -612,6 +649,7 @@
                     ? ''
                     : '1~70'
                 }}"
+                [lvDisabled]="item.get('duration_unit').value == 'p'"
               />
             </lv-input-group>
             <ng-template #durationUnitTpl>
@@ -853,7 +891,7 @@
             {{ 'common_limit_rate_policy_single_label' | i18n }}
             <i
               lv-icon="aui-icon-help"
-              lv-tooltip="{{ 'common_limit_rate_policy_tip_label' | i18n }}"
+              [lv-tooltip]="limitTooltip"
               lvTooltipTheme="light"
               lvTooltipPosition="right"
               class="configform-constraint"
@@ -874,23 +912,15 @@
 
       <!-- 数据重删、数据压缩 -->
       <lv-form-item
-        *ngIf="item.get('local_storage_type').value !== 'BasicDisk'"
+        *ngIf="
+          item.get('local_storage_type').value !== 'BasicDisk' && !isDistributed
+        "
       >
         <lv-form-label
-          >{{
-            (isDataBackup
-              ? 'protection_link_redelete_label'
-              : 'protection_data_redelete_label'
-            ) | i18n
-          }}
+          >{{ 'protection_link_redelete_label' | i18n }}
           <i
             lv-icon="aui-icon-help"
-            lv-tooltip="{{
-              (isDataBackup
-                ? 'protection_link_redelete_tips_label'
-                : 'protection_redelete_tips_label'
-              ) | i18n
-            }}"
+            lv-tooltip="{{ 'protection_link_redelete_tips_label' | i18n }}"
             lvTooltipPosition="rightTop"
             lvTooltipTheme="light"
             class="configform-constraint"
@@ -903,10 +933,7 @@
       </lv-form-item>
       <lv-form-item>
         <lv-form-label>{{
-          (isDataBackup
-            ? 'system_link_compression_label'
-            : 'system_data_compression_label'
-          ) | i18n
+          'system_link_compression_label' | i18n
         }}</lv-form-label>
         <lv-form-control>
           <lv-switch formControlName="link_compression"></lv-switch>
@@ -945,9 +972,15 @@
 <ng-template #extraTpl let-item>
   <span
     [ngClass]="{
-      'aui-link': formGroup.get('replicationTeams')?.controls?.length !== 4,
+      'aui-link':
+        (formGroup.get('replicationTeams')?.controls?.length < 8 &&
+          !isDisableLog) ||
+        (formGroup.get('replicationTeams')?.controls?.length < 4 &&
+          isDisableLog),
       'aui-link-disabled':
-        formGroup.get('replicationTeams')?.controls?.length === 4
+        formGroup.get('replicationTeams')?.controls?.length === 8 ||
+        (formGroup.get('replicationTeams')?.controls?.length === 4 &&
+          isDisableLog)
     }"
     (click)="
       addReplicationTeam(
@@ -964,4 +997,19 @@
   <div class="lv-date-picker-cell lv-date-picker-footer">
     <aui-current-system-time></aui-current-system-time>
   </div>
+</ng-template>
+
+<ng-template #contentTpl let-item>
+  <div class="unit-content">
+    <span lv-overflow>{{ item.label }}</span>
+    <aui-status
+      [value]="item.runningStatus"
+      type="StoragePoolRunningStatus"
+      *ngIf="!!item?.runningStatus"
+    ></aui-status>
+  </div>
+</ng-template>
+
+<ng-template #limitTooltip>
+  <span [innerHTML]="limitRatePolicyTip"></span>
 </ng-template>

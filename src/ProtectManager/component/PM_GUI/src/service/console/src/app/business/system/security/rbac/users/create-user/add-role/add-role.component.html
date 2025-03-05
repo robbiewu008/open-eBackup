@@ -26,7 +26,6 @@
 </div>
 
 <div [hidden]="type !== 'old'">
-  <lv-alert lvType="info">{{'system_default_add_role_label' | i18n}}</lv-alert>
   <lv-pro-table #roleDataTable [config]="roleTableConfig" [data]="roleTableData"></lv-pro-table>
   <ng-template #treeTableTpl let-item>
     <aui-role-auth-tree [data]="item"></aui-role-auth-tree>

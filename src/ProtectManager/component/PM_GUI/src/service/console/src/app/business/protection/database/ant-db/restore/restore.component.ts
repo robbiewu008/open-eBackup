@@ -27,16 +27,7 @@ import {
   RestoreApiV2Service
 } from 'app/shared/api/services';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import {
-  assign,
-  defer,
-  each,
-  find,
-  includes,
-  isEmpty,
-  isString,
-  map
-} from 'lodash';
+import { assign, find, includes, isEmpty, isString, map } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 @Component({
   selector: 'aui-restore',
@@ -76,9 +67,6 @@ export class RestoreComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.isClusterInstance =
-      this.rowCopy.resource_sub_type ===
-      DataMap.Resource_Type.AntDBClusterInstance.value;
     this.getResourceData();
     this.initForm();
   }
@@ -149,17 +137,19 @@ export class RestoreComponent implements OnInit {
   }
 
   getResourceData() {
+    this.isClusterInstance =
+      this.rowCopy.resource_sub_type ===
+      DataMap.Resource_Type.AntDBClusterInstance.value;
     this.resourceData = isString(this.rowCopy.resource_properties)
       ? JSON.parse(this.rowCopy.resource_properties)
       : {};
   }
 
   getInstanceOptions(event?) {
-    let conditions = {
-      subType: [
-        DataMap.Resource_Type.AntDBInstance.value,
-        DataMap.Resource_Type.AntDBClusterInstance.value
-      ],
+    const conditions = {
+      subType: this.isClusterInstance
+        ? [DataMap.Resource_Type.AntDBClusterInstance.value]
+        : [DataMap.Resource_Type.AntDBInstance.value],
       isTopInstance: InstanceType.TopInstance
     };
     extendParams(conditions, event);
@@ -171,7 +161,10 @@ export class RestoreComponent implements OnInit {
     this.appUtilsService.getResourceByRecursion(
       params,
       param => this.protectedResourceApiService.ListResources(param),
-      resource => {
+      res => {
+        const resource = res.filter(
+          item => item.uuid !== this.resourceData.uuid
+        ); // 新位置不允许选择副本原实例
         this.instanceOptions = map(resource, item => {
           return {
             ...item,

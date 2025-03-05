@@ -45,7 +45,7 @@
             </tbody>
         </lv-datatable>
         <ng-container *ngIf="totalTable>0">
-          <lv-paginator #pageA lvMode='simple' class="table-paginator" lvShowPageSizeOptions="false"
+          <lv-paginator #pageA lvMode='simple' lvShowPageSizeOptions="false"
                         [lvPageSize]="pageSize" [lvPageIndex]="pageIndex" [lvTotal]="totalTable"
                         (lvPageChange)="pageChange($event)">
           </lv-paginator>

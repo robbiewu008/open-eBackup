@@ -27,6 +27,7 @@ import {
   DataMapService,
   I18NService
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { assign, isEmpty, isUndefined } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -92,7 +93,8 @@ export class AddTargetClusterComponent implements OnInit {
     public cookieService: CookieService,
     public clusterApiService: ClustersApiService,
     public baseUtilService: BaseUtilService,
-    public dataMapService: DataMapService
+    public dataMapService: DataMapService,
+    public appUtilsService: AppUtilsService
   ) {}
 
   validLength(min, max): ValidatorFn {

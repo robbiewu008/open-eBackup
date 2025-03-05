@@ -387,11 +387,93 @@ paths:
           required: true
           type: string
           description: 资源id
+          maxLength: 128
       responses:
         '200':
           description: 返回worm开发的状态
           schema:
             type: boolean
+  /v1/anti-ransomware/action/get-fs-worm-clock-time:
+    get:
+      tags:
+        - anti-ransomware-policy-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,HyperDetect
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 根据文件系统名查询底座文件系统worm时钟
+      operationId: getWormClockTime
+      parameters:
+        - name: fileSystemName
+          in: query
+          required: true
+          description: 文件系统名
+          type: string
+        - name: isSnapshot
+          in: query
+          required: true
+          description: 是否快照
+          type: boolean
+        - name: deviceEsn
+          in: query
+          required: false
+          description: 设备编号
+          type: string
+        - name: snapshotName
+          in: query
+          required: false
+          description: 快照名
+          type: string
+        - name: vStoreId
+          in: query
+          required: false
+          description: 租户id
+          type: string
+        - name: wormExpireTime
+          in: query
+          required: false
+          description: 副本过期时间
+          type: number
+        - name: storageUnitId
+          in: query
+          required: false
+          description: 存储单元ID
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v1/anti/ransomware/handle-realtime-false-alarm:
+    put:
+      tags:
+        - anti-ransomware-policy-api
+      operationId: HandleRealtimeAlarm
+      parameters:
+        - name: vStoreName
+          in: query
+          required: true
+          type: string
+        - name: filesystem
+          in: query
+          required: true
+          type: string
+        - name: alarmEntityId
+          in: query
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
 securityDefinitions:
   Authorization:
     type: apiKey

@@ -12,12 +12,12 @@
   -->
 
 <lv-collapse [lvType]="'simple'">
-    <lv-collapse-panel [lvTitle]="'common_advanced_label'|i18n" [lvExpanded]="false">
+    <lv-collapse-panel [lvTitle]="advanceTpl" [lvExpanded]="false">
         <lv-form [formGroup]="formGroup" [lvLabelColon]="isSlaDetail">
             <lv-form-item>
                 <lv-form-label>
                     {{'common_limit_rate_policy_single_label' | i18n}}
-                    <i lv-icon="aui-icon-help" lv-tooltip="{{'common_limit_rate_policy_tip_label' | i18n}}"
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="limitTooltip"
                     lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint" lvColorState='true'></i>
                 </lv-form-label>
                 <lv-form-control>
@@ -150,3 +150,10 @@
         </lv-form>
     </lv-collapse-panel>
 </lv-collapse>
+<ng-template #advanceTpl>
+  <h2>{{'common_advanced_label'|i18n}}</h2>
+</ng-template>
+
+<ng-template #limitTooltip>
+    <span [innerHTML]="'common_limit_rate_policy_tip_label' | i18n"></span>
+</ng-template>

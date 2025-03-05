@@ -78,6 +78,7 @@ import { combineLatest } from 'rxjs';
 import { ResourceDetailService } from 'app/shared/services/resource-detail.service';
 import { MessageService } from '@iux/live';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
+import { GetLabelOptionsService } from 'app/shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-clusters',
@@ -86,7 +87,7 @@ import { SetResourceTagService } from 'app/shared/services/set-resource-tag.serv
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClustersComponent implements OnInit, AfterViewInit {
-  @Input() resSubType;
+  @Input() resSubType = DataMap.Resource_Type.HBase.value;
   name;
   tableConfig: TableConfig;
   tableData: TableData;
@@ -99,7 +100,14 @@ export class ClustersComponent implements OnInit, AfterViewInit {
   @ViewChild('esAddressTpl', { static: true }) esAddressTpl: TemplateRef<any>;
   @ViewChild('resourceTagTpl', { static: true })
   resourceTagTpl: TemplateRef<any>;
-
+  resourceTypeMap = {
+    [DataMap.Resource_Type.HBase.value]:
+      DataMap.Resource_Type.HBaseBackupSet.value,
+    [DataMap.Resource_Type.Hive.value]:
+      DataMap.Resource_Type.HiveBackupSet.value,
+    [DataMap.Resource_Type.Elasticsearch.value]:
+      DataMap.Resource_Type.ElasticsearchBackupSet.value
+  };
   groupCommon = GROUP_COMMON;
 
   constructor(
@@ -114,7 +122,8 @@ export class ClustersComponent implements OnInit, AfterViewInit {
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
     private exceptionService: ExceptionService,
     private message: MessageService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit() {
@@ -142,9 +151,10 @@ export class ClustersComponent implements OnInit, AfterViewInit {
     if (!isEmpty(filters.conditions_v2)) {
       const conditionsTemp = JSON.parse(filters.conditions_v2);
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -326,12 +336,15 @@ export class ClustersComponent implements OnInit, AfterViewInit {
         name: this.i18n.get('protection_auth_mode_label'),
         cellRender: {
           type: 'status',
-          config: this.dataMapService.toArray('HDFS_Clusters_Auth_Type')
+          config:
+            this.resSubType === DataMap.Resource_Type.Elasticsearch.value
+              ? this.dataMapService.toArray('ElasticSearch_Clusters_Auth_Type')
+              : this.dataMapService.toArray('HDFS_Clusters_Auth_Type')
         }
       },
       {
         key: 'agents',
-        name: this.i18n.get('protection_proxy_host_label'),
+        name: this.i18n.get('protection_client_label'),
         hidden: includes(
           [
             DataMap.Resource_Type.Elasticsearch.value,
@@ -345,8 +358,11 @@ export class ClustersComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -580,7 +596,13 @@ export class ClustersComponent implements OnInit, AfterViewInit {
         pageSize: 200,
         pageNo: startPage || 0,
         conditions: JSON.stringify({
-          subType: [`${DataMap.Resource_Type.HBaseBackupSet.value}Plugin`]
+          subType: [
+            `${get(
+              this.resourceTypeMap,
+              this.resSubType,
+              DataMap.Resource_Type.HBaseBackupSet.value
+            )}Plugin`
+          ]
         })
       })
       .subscribe(res => {

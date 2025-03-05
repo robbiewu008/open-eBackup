@@ -12,7 +12,7 @@
   -->
 
 <ng-container *ngIf="isDetail; else elseTemplate">
-    <lv-form *ngIf="_isBoolean(protectData?.enable_security_archive)">
+    <lv-form *ngIf="_isBoolean(protectData?.enable_security_archive) && !isDistributed">
         <lv-form-item>
             <lv-form-label>
                 {{'explore_security_replication_archive_label' | i18n}}
@@ -24,7 +24,7 @@
     </lv-form>
 </ng-container>
 <ng-template #elseTemplate>
-    <lv-form [formGroup]="formGroup" [ngClass]="{'formGroup': !data?.resourceId}" *ngIf="hasArchive">
+    <lv-form [formGroup]="formGroup" [ngClass]="{'formGroup': !data?.resourceId}" *ngIf="hasArchive && !isDistributed">
         <lv-form-item>
             <lv-form-control>
                 <lv-group lvGutter="16px">

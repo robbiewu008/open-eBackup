@@ -340,7 +340,7 @@ export class MysqlRestoreComponent implements OnInit {
             ...item,
             key: item.uuid,
             value: item.uuid,
-            label: item.name,
+            label: item.path ? `${item.name}(${item.path})` : item.name,
             isLeaf: true
           };
         });

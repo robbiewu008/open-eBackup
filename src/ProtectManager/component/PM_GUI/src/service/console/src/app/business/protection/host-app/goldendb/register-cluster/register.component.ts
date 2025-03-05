@@ -206,7 +206,7 @@ export class RegisterComponent implements OnInit {
     const cols: TableCols[] = [
       {
         key: 'parentName',
-        name: this.i18n.get('protection_proxy_host_label'),
+        name: this.i18n.get('protection_clients_label'),
         filter: {
           type: 'search',
           filterMode: 'contains'

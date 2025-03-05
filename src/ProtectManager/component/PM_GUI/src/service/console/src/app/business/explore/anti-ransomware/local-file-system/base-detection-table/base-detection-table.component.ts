@@ -82,7 +82,15 @@ export class BaseDetectionTableComponent implements OnInit, AfterViewInit {
     };
 
     if (!isEmpty(filters.conditions)) {
+      const conditionsTemp = JSON.parse(filters.conditions);
+      if (isUndefined(conditionsTemp.name)) {
+        this.name = '';
+      } else {
+        this.name = conditionsTemp.name;
+      }
       assign(params, { conditions: filters.conditions });
+    } else {
+      this.name = '';
     }
 
     if (!!size(filters.sort)) {
@@ -280,18 +288,11 @@ export class BaseDetectionTableComponent implements OnInit, AfterViewInit {
   }
 
   search(value) {
-    assign(this.dataTable.filterMap, {
-      filters: trim(value)
-        ? [
-            {
-              filterMode: 'contains',
-              caseSensitive: false,
-              key: 'name',
-              value: [trim(value)]
-            }
-          ]
-        : []
+    this.dataTable.filterChange({
+      filterMode: 'contains',
+      caseSensitive: false,
+      key: 'name',
+      value: [trim(value)]
     });
-    this.dataTable.fetchData();
   }
 }

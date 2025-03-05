@@ -25,6 +25,7 @@ import {
   I18NService,
   CookieService
 } from 'app/shared/services';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { RestoreService } from 'app/shared/services/restore.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { assign, size, first, each, includes } from 'lodash';
@@ -57,7 +58,8 @@ export class CopyDataScnComponent implements OnInit {
     private drawModalService: DrawModalService,
     private copiesApiService: CopiesService,
     private cookieService: CookieService,
-    private copyService: CopyService
+    private copyService: CopyService,
+    private appUtilService: AppUtilsService
   ) {}
 
   ngOnInit() {
@@ -96,7 +98,8 @@ export class CopyDataScnComponent implements OnInit {
           disabled: true,
           hidden:
             this.rowData.version?.substring(0, 2) === '11' ||
-            this.hideOracleOpt(),
+            this.hideOracleOpt() ||
+            this.appUtilService.isDistributed,
           onClick: () => {
             this.scnRestore(RestoreType.InstanceRestore);
           }

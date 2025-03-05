@@ -187,6 +187,13 @@ export class ClusterDetailComponent implements OnInit, AfterViewInit {
       .NasDistributionStorageInfo(params)
       .subscribe(res => {
         each(res.unitList, item => {
+          if (
+            item.deviceType ===
+            DataMap.poolStorageDeviceType.OceanProtectX.value
+          ) {
+            item.usedCapacity = item.usedCapacity / 2;
+            item.totalCapacity = item.totalCapacity / 2;
+          }
           assign(item, {
             usedPercent: (item.usedCapacity * 100) / item.totalCapacity
           });

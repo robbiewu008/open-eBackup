@@ -69,6 +69,7 @@ import { combineLatest } from 'rxjs';
 import { ClusterDetailComponent } from './cluster-detail/cluster-detail.component';
 import { RegisterClusterComponent } from './register-cluster/register-cluster.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-clusters',
@@ -102,7 +103,8 @@ export class ClustersComponent implements OnInit, AfterViewInit {
     private warningMessageService: WarningMessageService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit() {
@@ -130,9 +132,10 @@ export class ClustersComponent implements OnInit, AfterViewInit {
     if (!isEmpty(filters.conditions_v2)) {
       const conditionsTemp = JSON.parse(filters.conditions_v2);
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -278,15 +281,18 @@ export class ClustersComponent implements OnInit, AfterViewInit {
       },
       {
         key: 'agents',
-        name: this.i18n.get('protection_proxy_host_label'),
+        name: this.i18n.get('protection_client_label'),
         cellRender: this.agentsTpl
       },
       {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },

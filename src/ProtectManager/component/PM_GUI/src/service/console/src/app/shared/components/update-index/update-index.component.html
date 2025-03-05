@@ -34,7 +34,7 @@
     </lv-form>
 </ng-container>
 <ng-template #elseTemplate>
-    <div class="update-index-container" *ngIf="initSla && !isHcsUser && (hasBackup || hasArchive)">
+    <div [ngClass]="{'update-index-container': !noNeedMgt}" *ngIf="initSla && !isHcsUser && (hasBackup || hasArchive)">
         <lv-alert lvType="warning" lvClosable="false" *ngIf="false">
             <h2 class="lv-alert-title">
                 {{'protection_modify_index_warn_label' | i18n}}

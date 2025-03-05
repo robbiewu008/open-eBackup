@@ -43,6 +43,9 @@ export class AdvancedParameterComponent implements OnInit {
     this.formGroup = this.fb.group({
       delete_archived_log: new FormControl(
         extParameters.delete_archived_log ?? false
+      ),
+      archive_res_auto_index: new FormControl(
+        extParameters.archive_res_auto_index ?? false
       )
     });
     this.formGroup.statusChanges.subscribe(() => {
@@ -61,7 +64,8 @@ export class AdvancedParameterComponent implements OnInit {
       : this.resourceData;
     return assign(resourceData, {
       ext_parameters: {
-        delete_archived_log: this.formGroup.value.delete_archived_log
+        delete_archived_log: this.formGroup.value.delete_archived_log,
+        archive_res_auto_index: this.formGroup.value.archive_res_auto_index
       }
     });
   }

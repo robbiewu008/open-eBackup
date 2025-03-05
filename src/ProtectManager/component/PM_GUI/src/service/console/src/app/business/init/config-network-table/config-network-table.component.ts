@@ -25,6 +25,7 @@ import {
   each,
   every,
   find,
+  includes,
   isArray,
   isEmpty,
   size,
@@ -43,6 +44,7 @@ export class ConfigNetworkTableComponent implements OnInit {
   @Input() lldTableData;
   componentData = {};
   isCertify = true;
+  includes = includes;
   dataMap = DataMap;
   isEverySelect = false;
   activeIndex = 0;
@@ -71,7 +73,10 @@ export class ConfigNetworkTableComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.appUtilsService.isDistributed && this.serviceType === 'archived') {
+    if (
+      this.appUtilsService.isDistributed &&
+      includes(['replication', 'archived'], this.serviceType)
+    ) {
       this.isEverySelect = true;
       assign(this.selectionData, {
         [this.serviceType]: [],
@@ -131,7 +136,7 @@ export class ConfigNetworkTableComponent implements OnInit {
       );
     } else if (
       this.appUtilsService.isDistributed &&
-      this.serviceType === 'archived'
+      includes(['replication', 'archived'], this.serviceType)
     ) {
       this.isEverySelect =
         every(this.tableData, item => {

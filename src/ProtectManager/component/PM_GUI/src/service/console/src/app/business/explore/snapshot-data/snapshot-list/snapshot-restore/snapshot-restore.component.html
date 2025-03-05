@@ -198,3 +198,15 @@
     </div>
   </div>
 </ng-template>
+
+<ng-template #statusTpl let-item>
+  <ng-container
+    *ngIf="!_includes([copyStatus.normal.value,copyStatus.invalid.value,copyStatus.verifying.value],item.status); else elseTemplate">
+    <aui-status [value]="item.status" type="snapshotCopyStatus">
+    </aui-status>
+  </ng-container>
+  <ng-template #elseTemplate>
+    <aui-status [value]="item.anti_status" type="detectionSnapshotStatus">
+    </aui-status>
+  </ng-template>
+</ng-template>

@@ -31,7 +31,6 @@ import {
   TableCols,
   Filters
 } from 'app/shared/components/pro-table';
-import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import { size, map, assign, isEmpty, isNumber, includes } from 'lodash';
 import { Subject, Observable, Observer } from 'rxjs';
 
@@ -55,7 +54,6 @@ export class SetFileBlockingComponent implements OnInit, AfterViewInit {
     private i18n: I18NService,
     private cdr: ChangeDetectorRef,
     private dataMapService: DataMapService,
-    private virtualScroll: VirtualScrollService,
     private fileExtensionFilterManagementService: FileExtensionFilterManagementService
   ) {}
 
@@ -135,9 +133,7 @@ export class SetFileBlockingComponent implements OnInit, AfterViewInit {
           selectionTrigger: 'selector',
           showSelector: true
         },
-        virtualScroll: true,
         scrollFixed: true,
-        scroll: this.virtualScroll.scrollParam,
         fetchData: (filter: Filters) => {
           this.getData(filter);
         },
@@ -236,16 +232,16 @@ export class SetFileBlockingComponent implements OnInit, AfterViewInit {
       };
       this.fileExtensionFilterManagementService
         .updateFileExtensionFilterUsingPUT(params)
-        .subscribe(
-          res => {
+        .subscribe({
+          next: () => {
             observer.next();
             observer.complete();
           },
-          err => {
+          error: err => {
             observer.error(err);
             observer.complete();
           }
-        );
+        });
     });
   }
 }

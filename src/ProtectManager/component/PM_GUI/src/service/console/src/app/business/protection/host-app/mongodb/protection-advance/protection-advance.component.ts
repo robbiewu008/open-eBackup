@@ -74,7 +74,8 @@ export class ProtectionAdvanceComponent implements OnInit {
           this.baseUtilService.VALID.integer(),
           this.baseUtilService.VALID.rangeValue(10, 50)
         ]
-      })
+      }),
+      archive_res_auto_index: new FormControl(false)
     });
     this.formGroup.get('lvmPercentSlider').valueChanges.subscribe(res => {
       this.formGroup.get('lvmPercent').setValue(res, { emitEvent: false });
@@ -107,6 +108,11 @@ export class ProtectionAdvanceComponent implements OnInit {
         this.resourceData[0],
         'protectedObject.extParameters.create_lvm_percent',
         ''
+      ),
+      archive_res_auto_index: get(
+        this.resourceData[0],
+        'protectedObject.extParameters.archive_res_auto_index',
+        false
       )
     });
   }
@@ -122,7 +128,8 @@ export class ProtectionAdvanceComponent implements OnInit {
       : this.resourceData;
     return assign(resourceData, {
       ext_parameters: {
-        create_lvm_percent: Number(this.formGroup.value.lvmPercent)
+        create_lvm_percent: Number(this.formGroup.value.lvmPercent),
+        archive_res_auto_index: this.formGroup.value.archive_res_auto_index
       }
     });
   }

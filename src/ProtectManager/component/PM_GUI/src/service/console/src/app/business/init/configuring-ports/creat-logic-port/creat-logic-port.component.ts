@@ -49,6 +49,7 @@ import {
   includes,
   intersection,
   map,
+  now,
   nth,
   size,
   some,
@@ -101,6 +102,8 @@ export class CreatLogicPortComponent implements OnInit {
   };
   quaDrantTable = quaDrantTable;
   quaDrantTableOther = quaDrantTableOther;
+  failoverGroupOptions = [];
+  encoder = new TextEncoder();
 
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
   @ViewChild('logicDataTable', { static: false })
@@ -157,9 +160,15 @@ export class CreatLogicPortComponent implements OnInit {
     invalidInput: this.i18n.get('common_valid_integer_label')
   };
 
+  bondPortNameErrorTip = {
+    invalidLength: this.i18n.get('common_valid_length_rang_label', [1, 31]),
+    invalidName: this.i18n.get('common_bongding_port_name_tips_label')
+  };
+
   vlanErrorTip = {
     ...this.baseUtilService.requiredErrorTip,
-    invalidName: this.i18n.get('common_config_vlan_id_error_tip_label')
+    invalidExistName: this.i18n.get('common_config_vlan_id_error_tip_label'),
+    invalidName: this.i18n.get('common_config_vlan_input_error_tip_label')
   };
 
   constructor(
@@ -183,6 +192,7 @@ export class CreatLogicPortComponent implements OnInit {
     this.initRoles();
     this.initBondingportOptions();
     this.initConfig();
+    this.getFailOverGroup();
     if (this.modifyData) {
       this.updateData();
     }
@@ -371,6 +381,8 @@ export class CreatLogicPortComponent implements OnInit {
       ipType: this.modifyData.ipType,
       mask: this.modifyData?.mask,
       gateWay: this.modifyData?.gateWay,
+      isFailOver: this.modifyData?.isFailOver,
+      failoverGroupId: this.modifyData?.failoverGroupId,
       homePortType:
         this.modifyData.homePortType === DataMap.initHomePortType.vlan.value
           ? this.modifyData.vlan.portType
@@ -388,6 +400,11 @@ export class CreatLogicPortComponent implements OnInit {
     this.vlan = !!this.modifyData?.vlan;
     this.modal.getInstance().lvOkDisabled = false;
     if (this.modifyData?.bondPort) {
+      if (!!this.modifyData?.bondPort?.name) {
+        this.formGroup
+          .get('bondPortName')
+          .setValue(this.modifyData.bondPort.name);
+      }
       defer(() => {
         let tmpData = filter(this.tableData.data, item => {
           return this.modifyData?.bondPort.portNameList.includes(item.location);
@@ -417,7 +434,7 @@ export class CreatLogicPortComponent implements OnInit {
       ip: new FormControl('', {
         validators: [
           this.baseUtilService.VALID.required(),
-          this.baseUtilService.VALID.ip(),
+          this.baseUtilService.VALID.ipv4(),
           this.validSameIp()
         ]
       }),
@@ -433,11 +450,19 @@ export class CreatLogicPortComponent implements OnInit {
       gateWay: new FormControl('', {
         validators: this.baseUtilService.VALID.ip()
       }),
+      isFailOver: [true],
+      failoverGroupId: [''],
       vlanId: new FormControl({ value: '', disabled: !!this.modifyData }),
       homePortType: new FormControl('7', {
         validators: [this.baseUtilService.VALID.required()]
       }),
       portChoice: new FormControl('1'),
+      bondPortName: new FormControl(
+        !!this.modifyData ? '' : `op_bond_port${now()}`,
+        {
+          validators: [this.validBondPort()]
+        }
+      ),
       ethPort: new FormControl(),
       mtu: new FormControl(
         { value: 1500, disabled: !!this.modifyData },
@@ -484,6 +509,28 @@ export class CreatLogicPortComponent implements OnInit {
       );
   }
 
+  validBondPort(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (!control.value) {
+        return;
+      }
+
+      const value = control.value;
+      const reg1 = /^[\u4e00-\u9fa5a-zA-Z_0-9-.]+$/;
+      const length = this.encoder.encode(value).length;
+
+      if (!reg1.test(value)) {
+        return { invalidName: { value: control.value } };
+      }
+
+      if (length > 31) {
+        return { invalidLength: { value: control.value } };
+      }
+
+      return null;
+    };
+  }
+
   validVlan(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       if (!control.value || !this.vlan) {
@@ -500,6 +547,17 @@ export class CreatLogicPortComponent implements OnInit {
             !!this.logicSelectionData.length &&
             value !== this.logicSelectionData[0]?.vlanId))
       ) {
+        return { invalidExistName: { value: control.value } };
+      }
+
+      if (
+        value.includes(' ') ||
+        Number(value) > 4094 ||
+        Number(value) < 1 ||
+        (!/^[1-9]\d*$/.test(value) &&
+          !/^-[1-9]{1}\d*$/.test(value) &&
+          '0' !== control.value)
+      ) {
         return { invalidName: { value: control.value } };
       }
     };
@@ -510,6 +568,9 @@ export class CreatLogicPortComponent implements OnInit {
       // 根据角色默认赋值名字
       if (!this.modifyData) {
         this.nameChange(res);
+      }
+      if (res !== DataMap.initRole.data.value) {
+        this.formGroup.get('isFailOver').setValue(false);
       }
     });
     this.formGroup.get('homePortType').valueChanges.subscribe(res => {
@@ -708,6 +769,23 @@ export class CreatLogicPortComponent implements OnInit {
       this.formGroup.get('mask').updateValueAndValidity();
       this.formGroup.get('mask').markAsDirty();
     });
+  }
+
+  private getFailOverGroup() {
+    this.systemApiService
+      .getFailoverGroupGET({ memberEsn: this.memberEsn || '' })
+      .subscribe(result => {
+        const failArray = [];
+        each(result, (item: any) => {
+          failArray.push({
+            ...item,
+            value: item.ID,
+            label: item.NAME,
+            isLeaf: true
+          });
+        });
+        this.failoverGroupOptions = failArray;
+      });
   }
 
   validSameIp(): ValidatorFn {
@@ -1050,7 +1128,9 @@ export class CreatLogicPortComponent implements OnInit {
         ip: this.formGroup.value.ip,
         mask: this.formGroup.value.mask,
         gateWay: this.formGroup.value.gateWay || '',
-        addressFamily: this.formGroup.value.ipType === 'IPV4' ? '0' : '1'
+        addressFamily: this.formGroup.value.ipType === 'IPV4' ? '0' : '1',
+        role: String(this.formGroup.value.role),
+        isFailOver: this.formGroup.value.isFailOver
       });
     } else {
       assign(params, {
@@ -1063,7 +1143,8 @@ export class CreatLogicPortComponent implements OnInit {
         homePortId: '',
         homeControllerId: this.controlType,
         currentControllerId: this.controlType,
-        role: String(this.formGroup.value.role)
+        role: String(this.formGroup.value.role),
+        isFailOver: this.formGroup.value.isFailOver
       });
       if (
         this.formGroup.get('homePortType').value ===
@@ -1099,7 +1180,8 @@ export class CreatLogicPortComponent implements OnInit {
           params.bondPort = {
             id: params.homePortId,
             portNameList: bondPort.portNameList,
-            mtu: bondPort.mtu
+            mtu: bondPort.mtu,
+            name: bondPort.name
           };
           if (this.vlan) {
             params.homePortType = '8';
@@ -1138,7 +1220,8 @@ export class CreatLogicPortComponent implements OnInit {
           params.bondPort = {
             id: '',
             portNameList: map(this.selectionData, item => item.location),
-            mtu: this.formGroup.get('mtu').value
+            mtu: this.formGroup.get('mtu').value,
+            name: this.formGroup.get('bondPortName').value
           };
           if (this.vlan) {
             params.homePortType = '8';
@@ -1153,6 +1236,11 @@ export class CreatLogicPortComponent implements OnInit {
           }
         }
       }
+    }
+    if (params.isFailOver && !this.vlan) {
+      assign(params, {
+        failoverGroupId: this.formGroup.value.failoverGroupId
+      });
     }
     return params;
   }

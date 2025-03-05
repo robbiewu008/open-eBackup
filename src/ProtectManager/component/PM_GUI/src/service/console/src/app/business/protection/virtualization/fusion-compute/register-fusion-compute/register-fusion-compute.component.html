@@ -32,7 +32,12 @@
       >{{ 'common_username_label' | i18n }}
       <i
         lv-icon="aui-icon-help"
-        lv-tooltip="{{ 'common_fc_user_name_tips_label' | i18n }}"
+        lv-tooltip="{{
+          (resType === DataMap.Resource_Type.fusionOne.value
+            ? 'common_fco_user_name_tips_label'
+            : 'common_fc_user_name_tips_label'
+          ) | i18n
+        }}"
         lvTooltipTheme="light"
         class="configform-constraint"
         lvColorState="true"
@@ -72,7 +77,7 @@
 
   <lv-form-item>
     <lv-form-label lvRequired>
-      {{ 'protection_proxy_host_label' | i18n }}
+      {{ 'protection_clients_label' | i18n }}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
       <aui-agent-select
@@ -146,9 +151,15 @@
     </lv-group>
   </h2>
   <div class="aui-operation">
-    <button lvType="primary" lv-button (click)="addStorage()" auiRolePermission
-    [rolePermission]="roleOperationMap.manageResource" [disabled]='tableData?.total === 32 || !isSupport'>
-      {{'common_add_label' | i18n}}
+    <button
+      lvType="primary"
+      lv-button
+      (click)="addStorage()"
+      auiRolePermission
+      [rolePermission]="roleOperationMap.manageResource"
+      [disabled]="tableData?.total === 32 || !isSupport"
+    >
+      {{ 'common_add_label' | i18n }}
     </button>
   </div>
   <span class="show-tips">

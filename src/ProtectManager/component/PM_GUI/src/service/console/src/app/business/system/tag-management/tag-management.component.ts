@@ -11,7 +11,12 @@
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {
   CommonConsts,
   CookieService,
@@ -21,7 +26,8 @@ import {
   OperateItems,
   WarningMessageService,
   getPermissionMenuItem,
-  RoleType
+  RoleType,
+  SYSTEM_TIME
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
 import {
@@ -57,9 +63,11 @@ export class TagManagementComponent {
   selectionData = [];
   optItems = [];
   visible;
-  timeZone;
+  timeZone = SYSTEM_TIME.timeZone;
 
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
+  @ViewChild('createdTimeTpl', { static: true })
+  createdTimeTpl: TemplateRef<any>;
 
   constructor(
     private i18n: I18NService,
@@ -137,8 +145,9 @@ export class TagManagementComponent {
         name: this.i18n.get('common_create_user_label')
       },
       {
-        key: 'createTime',
-        name: this.i18n.get('common_create_time_label')
+        key: 'createdTime',
+        name: this.i18n.get('common_create_time_label'),
+        cellRender: this.createdTimeTpl
       },
       {
         key: 'operation',
@@ -228,10 +237,6 @@ export class TagManagementComponent {
       const newArr = res?.records.map(item => {
         return {
           ...item,
-          createTime: this.datePipe.transform(
-            item.createdTime,
-            'yyyy/MM/dd HH:mm:ss'
-          ),
           disabled: !item.isBuilt
         };
       });

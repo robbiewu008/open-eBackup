@@ -425,7 +425,15 @@ export class LocalLunComponent {
     };
 
     if (!isEmpty(filters.conditions_v2)) {
+      const tmpConditions = JSON.parse(filters.conditions_v2);
+      if (isUndefined(tmpConditions.name)) {
+        this.name = '';
+      } else {
+        this.name = tmpConditions.name[1];
+      }
       assign(defaultConditions, JSON.parse(filters.conditions_v2));
+    } else {
+      this.name = '';
     }
 
     assign(params, { conditions: JSON.stringify(defaultConditions) });
@@ -557,16 +565,11 @@ export class LocalLunComponent {
   }
 
   search() {
-    assign(this.dataTable.filterMap, {
-      filters: [
-        {
-          filterMode: 'contains',
-          caseSensitive: false,
-          key: 'name',
-          value: trim(this.name)
-        }
-      ]
+    this.dataTable.filterChange({
+      filterMode: 'contains',
+      caseSensitive: false,
+      key: 'name',
+      value: trim(this.name)
     });
-    this.dataTable.fetchData();
   }
 }

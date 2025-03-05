@@ -37,9 +37,10 @@
                 </div>
                 <div class="tree-container">
                     <ng-container *ngIf="treeData.length;else noDataTpl">
-                        <lv-tree lvCompareWith="uuid" lvSelectionAssociate="false" [lvData]='treeData' [(lvSelection)]="treeSelection"
-                            lvSelectionMode='single' [lvBeforeSelected]="beforeSelected" (lvCheck)="nodeCheck($event)"
-                            lvShowContentIcon (lvExpandedChange)="expandedChange($event)" [lvNodeTemplate]='nodeTpl'>
+                        <lv-tree lvCompareWith="uuid" lvSelectionAssociate="false" [lvData]='treeData'
+                            [(lvSelection)]="treeSelection" lvSelectionMode='single' [lvBeforeSelected]="beforeSelected"
+                            (lvCheck)="nodeCheck($event)" lvShowContentIcon (lvExpandedChange)="expandedChange($event)"
+                            [lvNodeTemplate]='nodeTpl'>
                         </lv-tree>
                     </ng-container>
                 </div>
@@ -63,8 +64,14 @@
                         *ngIf="(treeSelection.length && treeSelection[0]?.type === ResourceType.PLATFORM) || !treeSelection.length"
                         lvTitle="{{'protection_vm_groups_label' | i18n}} ({{cloudGroupTotal}})"
                         [lvId]="ResourceType.VM_GROUP">
-                        <aui-virtualization-group [treeSelection]="treeSelection[0] || []" [subUnitType]="resType"
-                            (updateTable)="updateGroupTotal($event)"></aui-virtualization-group>
+                        <ng-template lv-tab-lazy>
+                            <aui-virtualization-group [treeSelection]="treeSelection[0] || []" [subUnitType]="resType"
+                                (updateTable)="updateGroupTotal($event)"></aui-virtualization-group>
+                        </ng-template>
+                        <div style="visibility: hidden;">
+                            <aui-virtualization-group [treeSelection]="treeSelection[0] || []" [subUnitType]="resType"
+                                (updateTable)="updateGroupTotal($event)"></aui-virtualization-group>
+                        </div>
                     </lv-tab>
                 </lv-tabs>
             </lv-group>

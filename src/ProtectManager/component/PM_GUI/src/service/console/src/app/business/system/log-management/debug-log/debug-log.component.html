@@ -62,6 +62,20 @@
                     </lv-form-control>
                 </lv-form-item>
             </ng-container>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'common_job_id_label' | i18n}}
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="idTipTpl" (mouseenter)="helpHover()"
+                       lvTooltipTheme="light" class="configform-constraint" lvColorState='true'>
+                    </i>
+                    <ng-template #idTipTpl>
+                        <span [innerHTML]="'protection_export_log_id_tips_label'|i18n"></span>
+                    </ng-template>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="customTimeRangeErrorTip">
+                    <input lv-input type="text" formControlName="taskID"/>
+                </lv-form-control>
+            </lv-form-item>
             <lv-form-item *ngIf="(includes(exportLogFormGroup.value.type, dataMap.Export_Query_Type.log.value) || includes(exportLogFormGroup.value.type, dataMap.Export_Query_Type.config.value))">
                 <lv-form-label lvRequired>{{'system_node_id_label' | i18n}}</lv-form-label>
                 <lv-form-control>
@@ -90,25 +104,41 @@
                         {{ 'insight_log_export_range_label' | i18n }}
                     </lv-form-label>
                     <lv-form-control>
-                        <lv-select class="form-control-input" formControlName="timeRange" [lvOptions]="periodOptions" lvValueKey="value">
+                        <lv-select class="form-control-input" formControlName="exportTimeType" [lvOptions]="periodOptions" lvValueKey="value">
                         </lv-select>
                     </lv-form-control>
                 </lv-form-item>
-                <ng-container *ngIf="exportLogFormGroup.get('timeRange').value === dataMap.exportLogRange.customRange.value">
-                    <lv-form-item>
-                        <lv-form-label></lv-form-label>
-                        <lv-form-control [lvErrorTip]="customTimeRangeErrorTip">
-                            <lv-group lvGutter="4px">
-                                <span class="text-no-wrap">{{'common_last_label'|i18n}}</span>
-                                <lv-input-group [lvAddAfter]="daysTpl">
-                                    <input lv-input type='text' formControlName='customTimeRange'>
-                                </lv-input-group>
-                            </lv-group>
-                            <ng-template #daysTpl>
-                                <div class="select-right-suffix">{{'common_days_label'|i18n}}</div>
-                            </ng-template>
-                        </lv-form-control>
-                    </lv-form-item>
+                <ng-container *ngIf="exportLogFormGroup.get('exportTimeType').value === dataMap.exportLogRange.customRange.value">
+                    <lv-radio-group formControlName="selectTimeRangeType" class="mgb-8">
+                        <lv-group [lvGutter]="'48px'">
+                            <lv-radio [lvValue]="selectTimeRangeType.custom">{{ 'common_customize_label'|i18n }}</lv-radio>
+                            <lv-radio [lvValue]="selectTimeRangeType.day">{{ 'common_specify_days_label'|i18n }}</lv-radio>
+                        </lv-group>
+                    </lv-radio-group>
+                    <ng-container *ngIf="exportLogFormGroup.get('selectTimeRangeType').value === selectTimeRangeType.custom else specifyDayTpl">
+                        <lv-form-item>
+                            <lv-form-label></lv-form-label>
+                            <lv-form-control [lvErrorTip]="customTimeRangeErrorTip">
+                                <lv-date-range-picker formControlName="customRangeDate" [lvShowTime]="true"></lv-date-range-picker>
+                            </lv-form-control>
+                        </lv-form-item>
+                    </ng-container>
+                    <ng-template #specifyDayTpl>
+                        <lv-form-item >
+                            <lv-form-label></lv-form-label>
+                            <lv-form-control [lvErrorTip]="customTimeRangeErrorTip">
+                                <lv-group lvGutter="4px">
+                                    <span class="text-no-wrap">{{'common_last_label'|i18n}}</span>
+                                    <lv-input-group [lvAddAfter]="daysTpl">
+                                        <input lv-input type='text' formControlName='specifyDay'>
+                                    </lv-input-group>
+                                </lv-group>
+                                <ng-template #daysTpl>
+                                    <div class="select-right-suffix">{{'common_days_label'|i18n}}</div>
+                                </ng-template>
+                            </lv-form-control>
+                        </lv-form-item>
+                    </ng-template>
                 </ng-container>
                 <lv-form-item>
                     <lv-form-label lvRequired>{{'system_log_file_name_label' | i18n}}</lv-form-label>
@@ -139,6 +169,11 @@
     <span innerHTML="{{'system_sub_module_help_label' | i18n}}"></span>
 </ng-template>
 
-<div *ngIf="isOceanProtect">
+<div *ngIf="isOceanProtect && !isCyberEngine">
     <aui-multi-log></aui-multi-log>
+</div>
+
+<!--安全一体机23B不需要导出名称、导出范围，所以单独区分文件。24B需要放开此限制。-->
+<div *ngIf="isCyberEngine">
+    <aui-cyber-debug-log></aui-cyber-debug-log>
 </div>

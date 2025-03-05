@@ -379,9 +379,7 @@ export class CreateFileSystemComponent implements OnInit {
             shareName: `Restore_${this.formGroup.value.name}`,
             clientType: _toString(DataMap.Nfs_Share_Client_Type.host.value),
             client: this.formGroup.value.client,
-            accessVal: _toString(
-              DataMap.Livemount_Filesystem_Authority_Level.readonly.value
-            ),
+            accessVal: this.formGroup.get('unixType').value,
             squash: _toString(PermissonLimitation.Retained),
             rootSquash: _toString(RootPermisson.Enable),
             secure: _toString(PortPermisson.Arbitrary)
@@ -401,9 +399,7 @@ export class CreateFileSystemComponent implements OnInit {
                   DataMap.Cifs_Domain_Client_Type.windowsGroup.value
                 ? `@${this.formGroup.value.userName}`
                 : this.formGroup.value.userName,
-            permission: _toString(
-              DataMap.Livemount_Filesystem_Authority_Level.readonly.value
-            )
+            permission: this.formGroup.get('permissionType').value
           }
         });
       }

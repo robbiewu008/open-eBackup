@@ -17,6 +17,7 @@ tags:
   - name: Fs_File_Extension_Filter_Management
   - name: NAS_Abnormal_Files
   - name: San Config Management
+  - name: BackupCopyWhitelist Management
 paths:
   /v1/anti/ransomware/config:
     get:
@@ -1611,6 +1612,279 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/SanIoReport'
+  /v1/anti/ransomware/detect/copy/backup/whitelist:
+    post:
+      x-request-examples-url-1: https://8.40.145.238:25081/v1/anti/ransomware/detect/copy/backup/whitelist
+      x-request-examples-text-1:
+        content: .*src3.*
+        type: REGEX
+      x-request-examples-1:
+        content: .*src3.*
+        type: REGEX
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - BackupCopyWhitelist Management
+      operationId: createWhiteListItem
+      parameters:
+        - name: createWhiteListRequest
+          in: body
+          required: true
+          description: 增加白名单请求
+          schema:
+            $ref: '#/definitions/OCBCWhiteListReq'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+    delete:
+      x-request-examples-url-1: /v1/anti/ransomware/detect/copy/backup/whitelist
+      x-request-examples-text-1:
+        whitelistIds:
+          - 08a15d7f-59cf-4468-a9fd-749d95913cb7
+      x-request-examples-1:
+        whitelistIds:
+          - 08a15d7f-59cf-4468-a9fd-749d95913cb7
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - BackupCopyWhitelist Management
+      description: 删除显式白名单项
+      operationId: deleteWhiteListItem
+      parameters:
+        - name: deleteWhiteListRequest
+          in: body
+          required: true
+          description: 待删除的白名单ID列表
+          schema:
+            $ref: '#/definitions/OCBCDelWhitelistReq'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+    get:
+      x-request-examples-url-1: https://8.40.145.238:25081/v1/anti/ransomware/detect/copy/backup/whitelist?pageNum=1&pageSize=10
+      x-request-examples-text-1:
+        pageNum: 1
+        pageSize: 10
+      x-request-examples-1:
+        pageNum: 1
+        pageSize: 10
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - BackupCopyWhitelist Management
+      description: 查询白名单项列表
+      operationId: listWhiteListItem
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: pageNum
+          in: query
+          required: true
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          type: integer
+          format: int32
+        - name: whitelistItemName
+          in: query
+          required: false
+          type: string
+        - name: whitelistItemType
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/BackupWhiteListItemResponse'
+  /v1/anti/ransomware/detect/copy/backup/whitelist-assoc:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - BackupCopyWhitelist Management
+      description: 查询白名单项关联的文件系统列表查询白名单项关联的文件系统列表
+      operationId: getFsInfoByWhiteListItemId
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: 白名单项id
+          type: array
+          items:
+            type: string
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: pageNum
+          in: query
+          required: true
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/BackupWhitelistItemAssocFsInfoResponse'
+    post:
+      x-request-examples-url-1: https://8.40.145.238:25081/v1/anti/ransomware/detect/copy/backup/whitelist-assoc
+      x-request-examples-text-1:
+        ocWhiteListFilesystemInfos:
+          - resourceId: 9fe88613-a6ff-3731-950f-e996daf9b963
+            deviceName: testDev
+            vstoreName: testVstore
+            fsName: testFs
+        whitelistIds:
+          - ad4f26cc-1d75-4737-9be7-7cfac976dbe4
+      x-request-examples-1:
+        ocWhiteListFilesystemInfos:
+          - resourceId: 9fe88613-a6ff-3731-950f-e996daf9b963
+            deviceName: testDev
+            vstoreName: testVstore
+            fsName: testFs
+        whitelistIds:
+          - ad4f26cc-1d75-4737-9be7-7cfac976dbe4
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - BackupCopyWhitelist Management
+      operationId: createWhitelistAssoc
+      parameters:
+        - name: createWhiteListAssociationReq
+          in: body
+          required: true
+          description: 增加白名单关联请求
+          schema:
+            $ref: '#/definitions/OCBCWhiteListAssocReq'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+    delete:
+      x-request-examples-url-1: https://8.40.145.238:25081/v1/anti/ransomware/detect/copy/backup/whitelist-assoc
+      x-request-examples-text-1:
+        whitelistIds:
+          - 08a15d7f-59cf-4468-a9fd-749d95913cb7
+        resourceIds:
+          - id1
+          - id2
+      x-request-examples-1:
+        whitelistIds:
+          - 08a15d7f-59cf-4468-a9fd-749d95913cb7
+        resourceIds:
+          - id1
+          - id2
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - BackupCopyWhitelist Management
+      operationId: delWhitelistAssoc
+      parameters:
+        - name: delWhitelistAssocReq
+          in: body
+          required: true
+          description: 删除白名单关联请求
+          schema:
+            $ref: '#/definitions/OCBCWhiteListAssocReq'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -2372,6 +2646,182 @@ definitions:
         type: integer
         format: int64
         description: 总数
+  OCBCWhiteListReq:
+    type: object
+    description: 创建智能侦测-备份副本侦测白名单项请求
+    required:
+      - content
+      - type
+    properties:
+      content:
+        type: string
+        description: 白名单内容
+      type:
+        type: string
+        description: 白名单类型
+        example: SUFFIX|PATH|REGEX
+  OCBCWhitelistQueryFsReq:
+    type: object
+    description: 查询智能侦测-备份副本侦测白名单项请求
+    properties:
+      pageNum:
+        type: integer
+        format: int64
+        description: 页的编号
+      pageSize:
+        type: integer
+        format: int64
+        description: 每页数量
+      whiteListItemId:
+        type: string
+        description: 按白名单id精确匹配
+  OCBCWhiteListFsInfo:
+    type: object
+    required:
+      - resourceId
+      - deviceName
+      - vstoreName
+      - fsName
+    properties:
+      resourceId:
+        type: string
+        description: 一体机文件系统id
+      deviceName:
+        type: string
+        description: 设备名称
+      vstoreName:
+        type: string
+        description: 租户名称
+      fsName:
+        type: string
+        description: 文件系统名称
+      deviceId:
+        type: string
+        description: 设备id
+      vstoreId:
+        type: string
+        description: 租户id
+      fsId:
+        type: string
+        description: 文件系统id
+      deviceType:
+        type: string
+        description: 设备类型
+  OCBCWhiteListAssocReq:
+    type: object
+    description: 查询智能侦测-备份副本侦测白名单项-文件系统关联请求
+    properties:
+      ocWhiteListFilesystemInfos:
+        type: array
+        items:
+          $ref: '#/definitions/OCBCWhiteListFsInfo'
+        description: 关联的文件系统信息
+      whitelistIds:
+        type: array
+        items:
+          type: string
+        description: 白名单项id
+      resourceIds:
+        type: array
+        items:
+          type: string
+        description: 文件系统id
+  OCBCQueryWhitelistItemReq:
+    type: object
+    description: 查询智能侦测-备份副本侦测白名单项请求
+    properties:
+      pageNum:
+        type: integer
+        format: int64
+        description: 页的编号
+        minimum: 1
+        maximum: 1001
+      pageSize:
+        type: integer
+        format: int64
+        description: 每页数量
+      whitelistItemName:
+        type: string
+        description: 按白名单项模糊匹配
+      whitelistItemType:
+        type: array
+        items:
+          type: string
+        description: 按白名单类型查询信息
+      orderBy:
+        type: string
+        description: 排序名称
+      orderType:
+        type: string
+        description: 排序方式
+      resourceId:
+        type: string
+        description: 按关联的文件系统名模糊匹配
+  OCBCDelWhitelistReq:
+    type: object
+    description: 删除智能侦测-备份副本侦测白名单项请求
+    properties:
+      whitelistIds:
+        type: array
+        items:
+          type: string
+        description: 待删除的白名单ID列表
+  OCBCWhitelistItemResp:
+    type: object
+    description: 查询智能侦测-备份副本侦测白名单项返回体
+    properties:
+      id:
+        type: string
+        description: 白名单项id
+      assocFsNumber:
+        type: integer
+        format: int32
+        description: 白名单项关联的文件系统数量
+      whitelistItemContent:
+        type: string
+        description: 白名单项内容
+      whitelistItemType:
+        type: string
+        description: 白名单项类型
+      createTime:
+        type: string
+        description: 创建时间
+  BackupWhiteListItemResponse:
+    type: object
+    description: 查询智能侦测-备份副本侦测白名单项返回体
+    properties:
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/OCBCWhitelistItemResp'
+        description: 本次查询结果集
+      totalCount:
+        type: integer
+        format: int64
+        description: 总记录
+      errorCode:
+        type: integer
+        format: int64
+        description: 错误编码
+      errorMessage:
+        type: string
+        description: 错误参数
+  BackupWhitelistItemAssocFsInfoResponse:
+    type: object
+    description: 查询白名单项关联的文件系统列表返回体
+    properties:
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/OCBCWhiteListFsInfo'
+      totalCount:
+        type: integer
+        format: int64
+      errorCode:
+        type: integer
+        format: int64
+      errorMessage:
+        type: string
   BaseSanDetectSwitchResponse:
     type: object
     required:

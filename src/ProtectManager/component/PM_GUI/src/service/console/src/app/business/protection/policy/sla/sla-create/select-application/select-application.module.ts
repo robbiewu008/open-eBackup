@@ -14,10 +14,11 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BaseModule } from 'app/shared';
 import { SelectApplicationComponent } from './select-application.component';
+import { AutocompleteModule } from '@iux/live';
 
 @NgModule({
   declarations: [SelectApplicationComponent],
-  imports: [CommonModule, BaseModule],
+  imports: [CommonModule, BaseModule, AutocompleteModule],
   exports: [SelectApplicationComponent]
 })
 export class SelectApplicationModule {}

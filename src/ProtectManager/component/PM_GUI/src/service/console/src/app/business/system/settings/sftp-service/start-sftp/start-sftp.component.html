@@ -14,13 +14,30 @@
 <lv-form [formGroup]="formGroup" class="formGroup">
   <lv-form-item>
     <lv-form-label lvRequired>
-      {{'system_sftp_target_storage_unit_label' | i18n}}
+      {{ 'system_sftp_target_storage_unit_label' | i18n }}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
-      <lv-select [lvOptions]="storageUnitOptions" lvValueKey="value" formControlName="poolId" lvShowFilter lvFilterKey="label"
-        lvFilterMode="contains" [lvDisabled]="isModify"></lv-select>
+      <lv-select
+        [lvOptions]="storageUnitOptions"
+        lvValueKey="value"
+        formControlName="poolId"
+        lvShowFilter
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        [lvDisabled]="hasStarted"
+        [lvContentTemplate]="contentTpl"
+      ></lv-select>
+      <ng-template #contentTpl let-item>
+        <div class="unit-content">
+          <span>{{ item.label }}</span>
+          <aui-status
+            [value]="item.runningStatus"
+            type="StoragePoolRunningStatus"
+          ></aui-status>
+        </div>
+      </ng-template>
     </lv-form-control>
-</lv-form-item>
+  </lv-form-item>
   <lv-form-item>
     <lv-form-label>
       {{ 'common_ip_address_type_label' | i18n }}
@@ -29,10 +46,10 @@
       <lv-radio-group formControlName="ipType">
         <lv-group lvGutter="16px">
           <lv-radio [lvValue]="'IPV4'">
-            IPV4
+            IPv4
           </lv-radio>
           <lv-radio [lvValue]="'IPV6'">
-            IPV6
+            IPv6
           </lv-radio>
         </lv-group>
       </lv-radio-group>

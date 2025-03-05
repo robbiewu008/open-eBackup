@@ -57,6 +57,7 @@ export class NodeNetworkEditDistributedComponent
   implements OnInit, AfterViewInit {
   activeIndex = 'backup';
   tableDataBackup;
+  tableDataCopy;
   tableDataArchived;
   selectionData = {
     backupNetWorkInfoList: [],
@@ -86,6 +87,8 @@ export class NodeNetworkEditDistributedComponent
   }
 
   validSelection() {
+    const copyZeroCount = filter(this.tableDataCopy, item => item.port === 0)
+      .length;
     const archiveZeroCount = filter(
       this.tableDataArchived,
       item => item.port === 0
@@ -93,13 +96,15 @@ export class NodeNetworkEditDistributedComponent
     this.selectionInvalid.emit(
       some(this.tableDataBackup, item => item.port === 0) ||
         (archiveZeroCount > 0 &&
-          archiveZeroCount < this.tableDataArchived.length)
+          archiveZeroCount < this.tableDataArchived.length) ||
+        (copyZeroCount > 0 && copyZeroCount < this.tableDataCopy.length)
     );
   }
 
   getData() {
     this.clustersApiService.getPacificNetworkInfo({}).subscribe(res => {
       const arrBackup = [];
+      const arrCopy = [];
       const arrArchive = [];
       each(res, item => {
         arrBackup.push({
@@ -108,6 +113,13 @@ export class NodeNetworkEditDistributedComponent
           expand: false,
           selection: item.usedNetworkInfo.backupIpInfoList,
           ipPoolDtoList: item.allNetworkInfo.backupIpInfoList
+        });
+        arrCopy.push({
+          manageIp: item.pacificNodeInfoVo.manageIp,
+          port: item.usedNetworkInfo.replicationIpInfoList?.length,
+          expand: false,
+          selection: item.usedNetworkInfo.replicationIpInfoList,
+          ipPoolDtoList: item.allNetworkInfo.replicationIpInfoList
         });
         arrArchive.push({
           manageIp: item.pacificNodeInfoVo.manageIp,
@@ -118,6 +130,7 @@ export class NodeNetworkEditDistributedComponent
         });
       });
       this.tableDataBackup = arrBackup;
+      this.tableDataCopy = arrCopy;
       this.tableDataArchived = arrArchive;
       this.validSelection();
     });
@@ -132,6 +145,17 @@ export class NodeNetworkEditDistributedComponent
         };
       })
     };
+    if (!isEmpty(this.tableDataCopy[0].selection)) {
+      assign(request, {
+        copyNetWorkInfoList: map(this.tableDataCopy, item => {
+          return {
+            manageIp: item.manageIp,
+            ipInfoList: item.selection
+          };
+        })
+      });
+    }
+
     if (!isEmpty(this.tableDataArchived[0].selection)) {
       assign(request, {
         archiveNetWorkInfoList: map(this.tableDataArchived, item => {

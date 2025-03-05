@@ -223,9 +223,16 @@ export class CreateTablesetComponent implements OnInit {
             isLeaf: true
           });
         });
-
+        // 原有过滤HADR类型，新增过滤RHEL HA创建表级
         this.clusterOptions = filter(clusterArray, item => {
-          return item.extendInfo?.clusterType !== DataMap.dbTwoType.hadr.value;
+          return (
+            item.extendInfo?.clusterType !== DataMap.dbTwoType.hadr.value &&
+            !(
+              item.extendInfo?.clusterType ===
+                DataMap.dbTwoType.standby.value &&
+              item.extendInfo?.deployOperatingSystem === 'Red Hat'
+            )
+          );
         });
 
         return;

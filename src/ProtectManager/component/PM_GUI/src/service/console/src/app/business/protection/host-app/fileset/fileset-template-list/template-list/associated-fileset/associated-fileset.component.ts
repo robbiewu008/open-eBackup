@@ -42,7 +42,7 @@ export class AssociatedFilesetComponent implements OnInit {
       key: 'name'
     },
     {
-      label: this.i18n.get('protection_host_name_label'),
+      label: this.i18n.get('protection_client_name_label'),
       key: 'environment_name'
     },
     {

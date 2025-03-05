@@ -112,7 +112,9 @@ export class SQLServerAlwaysOnComponent implements OnInit {
       instance: new FormControl(this.rowCopy.resource_id, {
         validators: [this.baseUtilService.VALID.required()]
       }),
-      path: new FormControl('')
+      path: new FormControl('', {
+        validators: [this.validPath()]
+      })
     });
 
     this.watch();
@@ -432,7 +434,7 @@ export class SQLServerAlwaysOnComponent implements OnInit {
 
     if (this.formGroup.value.restoreTo === RestoreV2LocationType.NEW) {
       set(params, 'targetObject', this.formGroup.value.instance);
-      if (!this.isSupport) {
+      if (this.formGroup.value.path) {
         set(params, 'extendInfo.newDatabasePath', this.formGroup.value.path);
       }
     }
@@ -467,7 +469,7 @@ export class SQLServerAlwaysOnComponent implements OnInit {
       .subscribe(res => {
         this.isSupport = res?.newDatabasePath;
         if (res?.newDatabasePath) {
-          this.formGroup.get('path').clearValidators();
+          this.formGroup.get('path').setValidators([this.validPath()]);
         } else {
           this.formGroup
             .get('path')
@@ -482,8 +484,8 @@ export class SQLServerAlwaysOnComponent implements OnInit {
 
   validPath(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      if (!trim(control.value)) {
-        return { required: { value: control.value } };
+      if (!control.value) {
+        return null;
       }
 
       if (!CommonConsts.REGEX.windowsPath.test(control.value)) {

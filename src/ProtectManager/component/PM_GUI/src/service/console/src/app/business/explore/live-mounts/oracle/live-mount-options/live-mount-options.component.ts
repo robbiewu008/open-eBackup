@@ -220,6 +220,7 @@ export class LiveMountOptionsComponent implements OnInit {
   ];
 
   labelOptions = [];
+  labelLoading = true;
 
   @ViewChildren('selectHost')
   selectHost: QueryList<SelectComponent>;
@@ -246,7 +247,7 @@ export class LiveMountOptionsComponent implements OnInit {
   getLabelOptions() {
     const extParams = {
       startPage: CommonConsts.PAGE_START_EXTRA,
-      akLoading: true
+      akLoading: false
     };
 
     this.appUtilsService.getResourceByRecursion(
@@ -261,6 +262,7 @@ export class LiveMountOptionsComponent implements OnInit {
             isLeaf: true
           };
         });
+        this.labelLoading = false;
         this.labelOptions = arr;
       }
     );
@@ -986,6 +988,18 @@ export class LiveMountOptionsComponent implements OnInit {
               'protection_oracle_target_host_offline_db_label',
               [hostName, this.componentData.selectionResource?.resource_name]
             );
+
+            if (
+              this.appUtilsService.isDistributed &&
+              this.componentData?.rowCopy?.geneated_by ===
+                DataMap.CopyData_generatedType.replicate.value
+            ) {
+              this.oracleOfflineWarnTip =
+                this.oracleOfflineWarnTip +
+                `<br>${this.i18n.get(
+                  'explore_distributed_live_mount_tip_label'
+                )}`;
+            }
 
             if (normalDB) {
               this.targetHostErrorTip = assign({}, this.targetHostErrorTip, {

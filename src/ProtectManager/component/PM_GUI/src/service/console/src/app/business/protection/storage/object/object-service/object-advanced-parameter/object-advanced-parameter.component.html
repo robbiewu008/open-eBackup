@@ -49,7 +49,7 @@
           </lv-group>
         </lv-form-control>
       </lv-form-item>
-      <lv-form-item  *ngIf="isHCS && false">
+      <lv-form-item  *ngIf="isHCS">
         <lv-form-label>
           {{ 'protection_bucket_log_scan_label' | i18n }}
           <i lv-icon="aui-icon-help" [lv-tooltip]="warningContentTpl" lvTooltipTheme="light"
@@ -116,17 +116,6 @@
                     [lvDisabled]="isModified"
                   >
                     <lv-group>
-                      <lv-radio
-                        [lvViewType]="'button'"
-                        [lvValue]="dataMap.Small_File_Size.small.value"
-                        >{{ dataMap.Small_File_Size.small.label }}</lv-radio
-                      >
-                      <lv-radio
-                        [lvViewType]="'button'"
-                        [lvValue]="dataMap.Small_File_Size.normal.value"
-                      >
-                        {{ dataMap.Small_File_Size.normal.label }}</lv-radio
-                      >
                       <lv-radio
                         [lvViewType]="'button'"
                         [lvValue]="dataMap.Small_File_Size.large.value"

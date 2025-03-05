@@ -19,7 +19,8 @@ import {
   CopiesDetectReportService,
   DataMap,
   DataMapService,
-  RouterUrl
+  RouterUrl,
+  SYSTEM_TIME
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { each } from 'lodash';
@@ -56,7 +57,7 @@ export class AntiRansomwareComponent implements OnInit, OnDestroy {
   }
   DataMap = DataMap;
   RouterUrl = RouterUrl;
-  queryTime = Date.now();
+  queryTime;
   totalCount = 0;
   resourceType = this.dataMapService
     .toArray('Detecting_Resource_Type')
@@ -78,6 +79,7 @@ export class AntiRansomwareComponent implements OnInit, OnDestroy {
   timeSub$: Subscription;
   destroy$ = new Subject();
   isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
+  timeZone = SYSTEM_TIME.timeZone;
 
   constructor(
     public router: Router,
@@ -131,19 +133,19 @@ export class AntiRansomwareComponent implements OnInit, OnDestroy {
           }),
           takeUntil(this.destroy$)
         )
-        .subscribe(
-          res => {
+        .subscribe({
+          next: res => {
             this.detectResourceCount = res.resourceSummary.total;
             this.handleDetectionData(res.detectionSummary);
             resolve(true);
           },
-          () => {
+          error: () => {
             this.detectResourceCount = 0;
             this.resetDetectionData();
             this.completeFlag = true;
             resolve(true);
           }
-        );
+        });
     });
   }
 
@@ -163,7 +165,7 @@ export class AntiRansomwareComponent implements OnInit, OnDestroy {
 
   handleDetectionData(res) {
     this.resetDetectionData();
-    this.queryTime = Date.now();
+    this.queryTime = this.appUtilsService.getCurrentSysTime();
     this.completeFlag = false;
     each(res, item => this.initCountData(item));
     this.completeFlag = true;

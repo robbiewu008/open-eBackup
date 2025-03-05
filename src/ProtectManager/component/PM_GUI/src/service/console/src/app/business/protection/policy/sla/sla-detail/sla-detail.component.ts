@@ -29,9 +29,9 @@ export class SlaDetailComponent implements OnInit {
   activeIndex = '0';
   slaIcon = '';
   slaIconMap = {
-    Gold: 'aui-sla-gold',
-    Silver: 'aui-sla-silver-medium',
-    Bronze: 'aui-sla-bronze'
+    Gold: 'aui-sla-icon-gold',
+    Silver: 'aui-sla-icon-silver',
+    Bronze: 'aui-sla-icon-bronze'
   };
 
   @ViewChild('headerTpl', { static: true }) headerTpl: TemplateRef<any>;
@@ -54,7 +54,8 @@ export class SlaDetailComponent implements OnInit {
   }
 
   getSlaIcon() {
-    this.slaIcon = this.slaIconMap[this.sla?.name] || 'aui-sla-myvmprotect';
+    this.slaIcon =
+      this.slaIconMap[this.sla?.name] || 'aui-sla-icon-user-define';
   }
 
   getModalHeader() {

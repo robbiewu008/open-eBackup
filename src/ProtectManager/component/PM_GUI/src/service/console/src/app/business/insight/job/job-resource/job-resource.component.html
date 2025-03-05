@@ -11,18 +11,21 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-operation" [ngClass]="{'checkbox-job': !i18n.isEn,'checkbox-job-en':i18n.isEn}" *ngIf="!selectedResource">
+<div class="aui-operation" [ngClass]="{'checkbox-job': !i18n.isEn,'checkbox-job-en':i18n.isEn}"
+    *ngIf="!selectedResource">
     <label lv-checkbox [ngModel]='showExpiredCopy' [lvControl]="true" [lvDisabled]="disableCheckBox"
         (click)="showCopyExpired()">
         {{ 'insight_show_expired_copy_label' | i18n }}
     </label>
-    <i *ngIf="disableCheckBox" lv-icon="aui-icon-help" lv-tooltip="{{ 'insight_show_copy_expired_tips_label' | i18n }}" lvTooltipTheme="light"
-        class="configform-constraint" lvColorState="true"></i>
+    <i *ngIf="disableCheckBox" lv-icon="aui-icon-help" lv-tooltip="{{ 'insight_show_copy_expired_tips_label' | i18n }}"
+        lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
 </div>
-<lv-tabs [(lvActiveIndex)]="activeIndex" [lvAfterChange]="afterChange">
+<lv-tabs [(lvActiveIndex)]="activeIndex" [lvAfterChange]="afterChange"
+    lvType="{{!!selectedResource ? 'underline' : 'default'}}">
     <lv-tab *ngFor="let tab of tabs" [lvTitle]="tab.label" [lvId]="tab.id">
         <ng-template lv-tab-lazy>
-            <aui-job-table [activeIndex]="tab.id" [statusList]="tab.statusList" [selectedResource]="selectedResource" [subType]="detailSubType">
+            <aui-job-table [activeIndex]="tab.id" [statusList]="tab.statusList" [selectedResource]="selectedResource"
+                [subType]="detailSubType">
             </aui-job-table>
         </ng-template>
     </lv-tab>

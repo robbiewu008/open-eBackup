@@ -121,7 +121,7 @@ export class FilesetComponent implements OnInit, OnDestroy {
       isShow: true
     },
     {
-      label: this.i18n.get('protection_host_name_label'),
+      label: this.i18n.get('protection_client_name_label'),
       key: 'environment_name',
       isShow: true
     },
@@ -419,13 +419,13 @@ export class FilesetComponent implements OnInit, OnDestroy {
     });
   }
 
-  getFilesets(refreshData?, name?, keepSelection?) {
+  getFilesets(refreshData?, keepSelection?) {
     if (!keepSelection) {
       each(this.moreMenus, item => {
         item.disabled = true;
       });
     }
-    const params = this.getParams(name);
+    const params = this.getParams();
     if (this.filesetListSub$) {
       this.filesetListSub$.unsubscribe();
     }
@@ -486,9 +486,6 @@ export class FilesetComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchFilesets(name) {
-    this.getFilesets(null, name);
-  }
   // 刷新资源详情
   refreshDetail(target, tableData) {
     if (find(tableData, { uuid: target.uuid })) {
@@ -498,17 +495,11 @@ export class FilesetComponent implements OnInit, OnDestroy {
     }
   }
 
-  getParams(name?) {
+  getParams() {
     const params = {
       pageNo: this.pageIndex,
       pageSize: this.pageSize
     };
-    if (!isUndefined(name)) {
-      this.queryName = name;
-      assign(this.filterParams, {
-        name: [['~~'], trim(this.queryName)]
-      });
-    }
     each(this.filterParams, (value, key) => {
       if (isEmpty(value)) {
         delete this.filterParams[key];
@@ -778,9 +769,10 @@ export class FilesetComponent implements OnInit, OnDestroy {
   }
 
   searchByLabel(label) {
+    label = label.map(e => e.value);
     assign(this.filterParams, {
       labelCondition: {
-        labelName: trim(label)
+        labelList: label
       }
     });
     this.getFilesets();
@@ -859,10 +851,16 @@ export class FilesetComponent implements OnInit, OnDestroy {
                 hasProtectPermission(val)
               );
             })
-          ) !== size(this.selection);
+          ) !== size(this.selection) ||
+          size(this.selection) > CommonConsts.DEACTIVE_PROTECTION_MAX;
         item.tips = item.disabled
           ? this.i18n.get('protection_partial_resources_deactive_label')
           : '';
+        if (size(this.selection) > CommonConsts.DEACTIVE_PROTECTION_MAX) {
+          item.tips = this.i18n.get(
+            'protection_max_deactivate_protection_label'
+          );
+        }
       }
     });
     // 批量删除按钮
@@ -904,7 +902,7 @@ export class FilesetComponent implements OnInit, OnDestroy {
   pageChange(page) {
     this.pageSize = page.pageSize;
     this.pageIndex = page.pageIndex;
-    this.getFilesets('', '', true);
+    this.getFilesets('', true);
   }
 
   manualBackup(datas) {

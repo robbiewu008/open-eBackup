@@ -154,7 +154,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.appUtilsService.isDistributed) {
       // 分布式不支持数据缩减
       this.cardList = this.cardList.filter(
-        (item: any) => ![8, 5].includes(item.index)
+        (item: any) => ![8, 7, 5].includes(item.index)
       );
     }
     if (this.i18n.get('deploy_type') === DataMap.Deploy_Type.x3000.value) {
@@ -213,7 +213,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             ...this.clusterOption
           ];
           this.cardList.find(item => {
-            return (item.name = 'missionOverview');
+            return item.name === 'missionOverview';
           }).selectcluster = this.clusterOption[0]?.value;
         })
       )
@@ -255,7 +255,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       });
       let capacityDiction = this.cardList.find(item => {
         return item.name === 'capacityDiction';
-      });
+      }) || {
+        selectNode: [],
+        clusterNodesOptions: [],
+        clusterType: undefined
+      };
       performance.clusterNodesOptions = this.clusterNodesOption; // 将节点值在card中存一份
       capacityDiction.clusterNodesOptions = this.clusterNodesOption;
       const defaultNode = this.clusterNodesOption[0];
@@ -281,7 +285,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
 
       this.refresh('performance');
-      this.refresh('capacityDiction');
+      if (!this.appUtilsService.isDistributed) {
+        this.refresh('capacityDiction');
+      }
     });
   }
 

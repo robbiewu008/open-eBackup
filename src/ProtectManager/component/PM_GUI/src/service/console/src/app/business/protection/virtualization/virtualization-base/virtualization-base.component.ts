@@ -301,8 +301,11 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
             subType: DataMap.Resource_Type.hyperVVm.value,
             label: this.i18n.get('common_virtual_machine_label'),
             hidden: false,
-            hiddenFn: () => {
-              return false;
+            hiddenFn: (node: any) => {
+              return (
+                node.subType === DataMap.Resource_Type.hyperVCluster.value &&
+                !!node?.parentUuid
+              ); // SCVMM下面的集群隐藏虚拟机页签
             },
             resourceTotal: 0
           },
@@ -746,7 +749,7 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
             DataMap.hypervHostStatus.Up.value,
             DataMap.hypervHostStatus.Ok.value
           ],
-          node.extendInfo.State
+          node.extendInfo.status
         ) ||
           node.linkStatus === DataMap.resource_LinkStatus_Special.normal.value // 单主机有linkStatus，主机在集群下走extendInfo
           ? 'aui-host-online-16'
@@ -855,6 +858,7 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
               });
             }
           }
+          this.showGuideTab();
           this.virtualScroll.getScrollParam(
             260,
             Page_Size_Options.Three,

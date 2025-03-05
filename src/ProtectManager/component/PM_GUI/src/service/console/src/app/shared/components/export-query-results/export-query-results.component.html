@@ -19,11 +19,9 @@
     </lv-group>
   </div>
   <div class="aui-block aui-paginator-container">
-      <lv-alert lvType="info" [lvClosable]="false">
-          {{
-              (isDataBackup ? 'common_export_query_desc_label':'common_export_query_special_desc_label' )| i18n
-          }}
-      </lv-alert>
+    <lv-alert lvType="info" [lvClosable]="false" *ngIf="!!exportQueryTips">
+      {{exportQueryTips}}
+    </lv-alert>
     <div class="aui-operation">
       <button lv-button [disabled]="disableBtn" (click)="batchDelete()">
         {{ 'common_delete_label' | i18n }}

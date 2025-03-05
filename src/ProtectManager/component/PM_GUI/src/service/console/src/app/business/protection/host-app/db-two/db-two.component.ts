@@ -58,6 +58,7 @@ export class DbTwoComponent implements OnInit, OnDestroy {
         'name',
         'linkStatus',
         'clusterOrHostName',
+        'instanceType',
         'version',
         'operation'
       ],

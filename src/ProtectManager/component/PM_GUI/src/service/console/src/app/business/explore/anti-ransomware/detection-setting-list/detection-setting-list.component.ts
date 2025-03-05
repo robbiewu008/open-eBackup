@@ -41,9 +41,9 @@ import {
 } from 'app/shared/components/pro-table';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
-import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
   assign,
+  cloneDeep,
   each,
   filter,
   find,
@@ -95,7 +95,6 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
     private dataMapService: DataMapService,
     private honeypotService: HoneypotService,
     private drawModalService: DrawModalService,
-    private virtualScroll: VirtualScrollService,
     private warningMessageService: WarningMessageService,
     private configManagementService: ConfigManagementService,
     private fileExtensionFilterManagementService: FileExtensionFilterManagementService,
@@ -130,7 +129,7 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
       },
       {
         id: 'enable-blocking',
-        label: this.i18n.get('explore_enable_blocking_files_label'),
+        label: this.i18n.get('explore_enable_ransom_blocking_files_label'),
         disableCheck: data => {
           return (
             !size(data) ||
@@ -207,7 +206,7 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
       },
       {
         id: 'disable-blocking',
-        label: this.i18n.get('explore_disable_blocking_files_label'),
+        label: this.i18n.get('explore_disable_ransom_blocking_files_label'),
         divide: true,
         disableCheck: data => {
           return (
@@ -475,6 +474,29 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
           };
           this.configManagementService
             .updateVstoreDetectConfigs(params)
+            .subscribe(() => {
+              this.selectionData = [];
+              this.dataTable.setSelections([]);
+              this.dataTable.fetchData();
+            });
+        }
+      });
+    } else if (configField === DetectionConfigField.FileExtensionFilter) {
+      this.messageBox.confirm({
+        lvHeader: this.i18n.get('explore_enable_ransom_blocking_files_label'),
+        lvWidth: this.i18n.isEn ? 480 : 400,
+        lvContent: this.i18n.get('explore_blocking_files_confirm_label'),
+        lvOk: () => {
+          const params = {
+            vstoreCopyDetectConfig: {
+              configField,
+              isEnabled: true,
+              vstoreIds: map(data, 'vstoreId'),
+              isEnhancedDetect: false
+            }
+          };
+          this.configManagementService
+            .updateVstoreDetectConfigs(params)
             .subscribe(res => {
               this.selectionData = [];
               this.dataTable.setSelections([]);
@@ -548,12 +570,17 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
                 })
               );
           },
-          data,
+          map(cloneDeep(data), item => {
+            assign(item, { uuid: item.vstoreId });
+            return item;
+          }),
           () => {
             this.selectionData = [];
             this.dataTable.setSelections([]);
             this.dataTable.fetchData();
-          }
+          },
+          '',
+          true
         );
       }
     });
@@ -578,12 +605,17 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
               akLoading: false
             });
           },
-          data,
+          map(cloneDeep(data), item => {
+            assign(item, { uuid: item.vstoreId });
+            return item;
+          }),
           () => {
             this.selectionData = [];
             this.dataTable.setSelections([]);
             this.dataTable.fetchData();
-          }
+          },
+          '',
+          true
         );
       }
     });

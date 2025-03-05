@@ -38,8 +38,10 @@ import {
   last,
   map,
   reject,
+  set,
   size,
-  split
+  split,
+  uniqueId
 } from 'lodash';
 
 @Component({
@@ -56,7 +58,7 @@ export class AddHostIngfoComponent implements OnInit {
   ipData;
   rowData;
 
-  isDistributed = this.appUtilsService.isDistributed;
+  isDistributed = false;
   isWindows = false;
   includes = includes;
   dataMap = DataMap;
@@ -74,6 +76,9 @@ export class AddHostIngfoComponent implements OnInit {
     .filter(v => {
       return (v.isLeaf = true);
     });
+  networkOptions = this.dataMapService.toArray('networkPlaneType').filter(v => {
+    return (v.isLeaf = true);
+  });
 
   ipsErrorTip = assign({}, this.baseUtilService.ipErrorTip, {
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [1024]),
@@ -124,14 +129,17 @@ export class AddHostIngfoComponent implements OnInit {
     this.isWindows =
       this.formGroup.value.osType === DataMap.OS_Type.Windows.value;
     this.hostFormGroup = this.fb.group({
+      networkType: new FormControl(DataMap.networkPlaneType.backup.value),
       ip: new FormControl('', {
         validators: [
           this.baseUtilService.VALID.required(),
           this.baseUtilService.VALID.maxLength(1024),
           this.validIps(),
-          this.validReatIp()
+          this.validReatIp('ip')
         ]
       }),
+      manageIp: new FormControl(''),
+      businessIp: new FormControl(''),
       port: new FormControl(this.isWindows ? '5985' : '22', {
         validators: [
           this.baseUtilService.VALID.required(),
@@ -245,6 +253,46 @@ export class AddHostIngfoComponent implements OnInit {
         );
       }
     });
+
+    this.hostFormGroup.get('networkType').valueChanges.subscribe(res => {
+      if (res === DataMap.networkPlaneType.management.value) {
+        this.hostFormGroup
+          .get('manageIp')
+          .setValidators([this.baseUtilService.VALID.required()]);
+        this.setIpTypeValidator();
+        this.hostFormGroup.get('ip').clearValidators();
+        this.hostFormGroup.get('ip').setValue('');
+      } else {
+        this.hostFormGroup
+          .get('ip')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.maxLength(1024),
+            this.validIps(),
+            this.validReatIp('ip')
+          ]);
+        this.hostFormGroup.get('manageIp').clearValidators();
+        this.hostFormGroup.get('businessIp').clearValidators();
+        this.hostFormGroup.get('manageIp').setValue('');
+        this.hostFormGroup.get('businessIp').setValue('');
+      }
+      this.hostFormGroup.get('ip').updateValueAndValidity();
+      this.hostFormGroup.get('manageIp').updateValueAndValidity();
+      this.hostFormGroup.get('businessIp').updateValueAndValidity();
+    });
+  }
+
+  // 根据IP类型对IP地址做校验
+  setIpTypeValidator() {
+    const ipTypeValidator =
+      this.formGroup.get('ipType').value === DataMap.IP_Type.ipv4.value
+        ? this.baseUtilService.VALID._ipv4()
+        : this.baseUtilService.VALID._ipv6();
+    ['manageIp', 'businessIp'].forEach(item => {
+      this.hostFormGroup
+        .get(item)
+        .addValidators([ipTypeValidator, this.validReatIp(item)]);
+    });
   }
 
   get networkInfo() {
@@ -357,22 +405,25 @@ export class AddHostIngfoComponent implements OnInit {
     }
   }
 
-  validReatIp(): ValidatorFn {
+  validReatIp(keyId): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       if (isEmpty(control.value)) {
         return null;
       }
-      let ips = [...this.ipData, { ip: control.value }];
+      // 对同类型Ip做重复校验
+      const obj = {};
+      set(obj, keyId, control.value);
+      let ips = [
+        ...reject(
+          this.ipData,
+          v => v?.networkType !== this.hostFormGroup.get('networkType').value
+        ),
+        obj
+      ];
       if (!isEmpty(this.rowData)) {
-        ips = [
-          ...reject(
-            this.ipData,
-            v => v.ip === this.rowData.ip && v.port === this.rowData.port
-          ),
-          { ip: control.value }
-        ];
+        ips = [...reject(ips, v => v?.infoId === this.rowData.infoId)];
       }
-      const ipLists = map(map(ips, 'ip'), val => {
+      const ipLists = map(map(ips, keyId), val => {
         if (includes(val, '-')) {
           return split(val, '-');
         } else {
@@ -443,6 +494,9 @@ export class AddHostIngfoComponent implements OnInit {
   }
 
   onOk() {
-    return { ...this.hostFormGroup.value };
+    return {
+      ...this.hostFormGroup.value,
+      infoId: uniqueId()
+    };
   }
 }

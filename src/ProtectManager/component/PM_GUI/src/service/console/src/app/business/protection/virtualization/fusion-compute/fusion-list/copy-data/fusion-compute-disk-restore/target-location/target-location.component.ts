@@ -22,7 +22,8 @@ import {
   LANGUAGE,
   I18NService,
   DataMap,
-  AppService
+  AppService,
+  filterVersion
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
@@ -31,14 +32,13 @@ import {
   each,
   filter,
   find,
+  get,
   includes,
   isEmpty,
   isNumber,
   last,
   map
 } from 'lodash';
-import { forkJoin, Observable, of } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'aui-target-location',
@@ -268,7 +268,7 @@ export class TargetLocationComponent implements OnInit {
             });
           }
         });
-        this.proxyOptions = hostArray;
+        this.proxyOptions = filterVersion(hostArray, this.verifyStatus);
       }
     );
   }
@@ -426,7 +426,8 @@ export class TargetLocationComponent implements OnInit {
             isLeaf: item.type === ResourceType.VM,
             moReference: item.extendInfo?.moReference,
             location: item.extendInfo?.location,
-            expanded: this.getExpandedIndex(item.uuid) !== -1
+            expanded: this.getExpandedIndex(item.uuid) !== -1,
+            extendInfo: get(item, 'extendInfo', null)
           };
         if (node.expanded) {
           this.getExpandedChangeData(CommonConsts.PAGE_START, node);
@@ -459,80 +460,25 @@ export class TargetLocationComponent implements OnInit {
   }
 
   getDataStores() {
-    const params = {
-      pageNo: CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE,
-      queryDependency: true,
-      conditions: JSON.stringify({
-        subType:
-          this.rowCopy.resource_sub_type ||
-          DataMap.Resource_Type.FusionCompute.value,
-        uuid: this.formGroup.value.environment
-      })
+    const resource = {
+      rootUuid: this.formGroup.value.environment,
+      uuid: this.formGroup.value.host[0]?.parentUuid
     };
-    this.protectedResourceApiService
-      .ListResources(params)
-      .subscribe((res: any) => {
-        if (res.records?.length) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            this.dataStoreOptions = [];
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getShowData(agentsId).subscribe(response => {
-            const totalData = [];
-            for (const item of response) {
-              totalData.push(...item.records);
-            }
-            each(totalData, (item: any) => {
-              assign(item, {
-                key: item.uuid,
-                value: item.uuid,
-                label: item.name,
-                isLeaf: true,
-                moReference: item?.extendInfo?.datastoreUri
-              });
-            });
-            this.dataStoreOptions = totalData;
+    this.appUtilsService
+      .getResourcesDetails(resource, '', {}, {}, false)
+      .subscribe(res => {
+        const totalData = [...res];
+        each(totalData, (item: any) => {
+          assign(item, {
+            key: item.uuid,
+            value: item.uuid,
+            label: item.name,
+            isLeaf: true,
+            moReference: item?.extendInfo?.datastoreUri
           });
-        }
+        });
+        this.dataStoreOptions = totalData;
       });
-  }
-
-  getShowData(agentsId): Observable<any> {
-    const params = {
-      agentId: agentsId,
-      envId: this.formGroup.value.environment,
-      pageNo: 1,
-      pageSize: CommonConsts.PAGE_SIZE * 10,
-      resourceIds: [this.formGroup.value?.host[0]?.parentUuid]
-    };
-    let curData = [];
-    return this.appService.ListResourcesDetails(params).pipe(
-      mergeMap((response: any) => {
-        curData = [of(response)];
-
-        const totalCount = response.totalCount;
-        const pageCount = Math.ceil(totalCount / (CommonConsts.PAGE_SIZE * 10));
-        for (let i = 2; i <= pageCount; i++) {
-          curData.push(
-            this.appService.ListResourcesDetails({
-              agentId: agentsId,
-              envId: this.formGroup.value.environment,
-              pageNo: i,
-              pageSize: CommonConsts.PAGE_SIZE * 10,
-              resourceIds: [this.formGroup.value?.host[0]?.parentUuid]
-            })
-          );
-        }
-        return forkJoin(curData);
-      })
-    );
   }
 
   getTargetParams() {
@@ -555,6 +501,7 @@ export class TargetLocationComponent implements OnInit {
         environment: find(this.environmentOptions, {
           uuid: this.formGroup.value.environment
         }),
+        bootType: this.formGroup.value.host[0]?.extendInfo?.bootType,
         vm: this.formGroup.value.host[0],
         extendInfo: {
           power_on: this.formGroup.value.power_on ? 'true' : 'false',

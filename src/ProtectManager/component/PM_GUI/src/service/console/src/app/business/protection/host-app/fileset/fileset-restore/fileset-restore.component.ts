@@ -10,7 +10,13 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -21,6 +27,8 @@ import {
 import { ModalRef } from '@iux/live';
 import {
   BaseUtilService,
+  CapacityCalculateLabel,
+  CAPACITY_UNIT,
   CommonConsts,
   CookieService,
   DataMap,
@@ -37,6 +45,12 @@ import {
   ProtectedResourceApiService,
   RestoreApiV2Service
 } from 'app/shared/api/services';
+import {
+  TableCols,
+  TableConfig,
+  TableData
+} from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
   cloneDeep,
@@ -65,7 +79,8 @@ import { Observable, Observer, Subject } from 'rxjs';
 @Component({
   selector: 'aui-fileset-restore',
   templateUrl: './fileset-restore.component.html',
-  styleUrls: ['./fileset-restore.component.less']
+  styleUrls: ['./fileset-restore.component.less'],
+  providers: [CapacityCalculateLabel]
 })
 export class FilesetRestoreComponent implements OnInit {
   @Input() rowCopy;
@@ -76,6 +91,11 @@ export class FilesetRestoreComponent implements OnInit {
   fileReplaceStrategy = VmFileReplaceStrategy;
   hostOptions = [];
   metadataPathData = [];
+  tableData: TableData;
+  tableConfig: TableConfig;
+  selectionData = [];
+  unitconst = CAPACITY_UNIT;
+  diskOptions = [];
   hostUuid: any;
   fileValid$ = new Subject<boolean>();
   originalHost;
@@ -92,6 +112,9 @@ export class FilesetRestoreComponent implements OnInit {
   scriptPlaceholder = this.i18n.get('common_script_linux_placeholder_label');
   scriptTips = this.i18n.get('protection_fileset_restore_advance_params_label');
   disableOriginLocation = false;
+  disableOriginTip = this.i18n.get(
+    'protection_cloud_origin_restore_disabled_label'
+  );
   scriptErrorTip = {
     invalidName: this.i18n.get('common_script_error_label'),
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [8192])
@@ -101,7 +124,13 @@ export class FilesetRestoreComponent implements OnInit {
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 40])
   };
   isIncremental: boolean;
+  @ViewChild('capacityTpl', { static: true })
+  capacityTpl: TemplateRef<any>;
+  @ViewChild('selectDiskTpl', { static: true }) selectDiskTpl: TemplateRef<any>;
+  @ViewChild('starTpl', { static: true }) starTpl: TemplateRef<any>;
+
   constructor(
+    public appUtilsService: AppUtilsService,
     private fb: FormBuilder,
     private modal: ModalRef,
     private i18n: I18NService,
@@ -114,7 +143,10 @@ export class FilesetRestoreComponent implements OnInit {
 
   ngOnInit() {
     // 判断副本是否是磁带归档，且已开启索引
-    this.tapeCopy = false;
+    this.tapeCopy =
+      this.rowCopy?.generated_by ===
+        DataMap.CopyData_generatedType.tapeArchival.value &&
+      this.rowCopy?.indexed === DataMap.CopyData_fileIndex.indexed.value;
     this.isVolume =
       this.rowCopy.resource_sub_type === DataMap.Resource_Type.volume.value;
     this.disableOriginLocation =
@@ -131,6 +163,16 @@ export class FilesetRestoreComponent implements OnInit {
       !this.isVolume &&
       JSON.parse(this.rowCopy.resource_properties)?.extendInfo?.is_OS_backup ===
         'true';
+    if (this.isOsBackup && !this.disableOriginLocation) {
+      // 原位置不存在的话还是展示原位置不存在
+      this.disableOriginTip = this.i18n.get(
+        'explore_fileset_os_backup_origin_restore_tip_label'
+      );
+      this.disableOriginLocation = true;
+    }
+    if (this.isOsBackup) {
+      this.initConfig();
+    }
     this.isWindows =
       this.osType === DataMap.Fileset_Template_Os_Type.windows.value;
     this.initForm();
@@ -321,6 +363,9 @@ export class FilesetRestoreComponent implements OnInit {
 
       this.metadataPathData = [selectHost];
       this.hostUuid = selectHost?.environment?.uuid;
+      if (this.formGroup.get('is_OS_restore').value) {
+        this.getHostDisks();
+      }
     });
 
     this.formGroup.get('is_OS_restore').valueChanges.subscribe(res => {
@@ -333,9 +378,79 @@ export class FilesetRestoreComponent implements OnInit {
           this.formGroup.get('metadataPath').enable();
         }
       } else {
+        this.formGroup
+          .get('overwriteType')
+          .setValue(VmFileReplaceStrategy.Overwriting);
+        this.formGroup.get('incrementalRestore').setValue(false);
         this.formGroup.get('metadataPath').disable();
+        if (this.formGroup.get('host').value) {
+          this.getHostDisks();
+        }
       }
     });
+
+    this.formGroup.get('incrementalRestore').valueChanges.subscribe(res => {
+      // 增量与操作系统恢复开关互斥
+      if (res) {
+        this.formGroup.get('is_OS_restore').setValue(false);
+      }
+    });
+  }
+
+  initConfig() {
+    const cols: TableCols[] = [
+      {
+        key: 'diskName',
+        name: this.i18n.get('common_restore_disk_name_label')
+      },
+      {
+        key: 'diskSize',
+        name: this.i18n.get('common_size_label'),
+        cellRender: this.capacityTpl
+      },
+      {
+        key: 'targetName',
+        name: this.i18n.get('common_target_disk_label'),
+        thExtra: this.starTpl,
+        cellRender: this.selectDiskTpl
+      }
+    ];
+
+    this.tableConfig = {
+      table: {
+        colDisplayControl: false,
+        compareWith: 'diskName',
+        async: false,
+        columns: cols
+      },
+      pagination: {
+        mode: 'simple',
+        showPageSizeOptions: false,
+        winTablePagination: true,
+        pageSize: CommonConsts.PAGE_SIZE_SMALL,
+        showTotal: true
+      }
+    };
+
+    const properties = JSON.parse(this.rowCopy.properties);
+
+    const diskArray = properties.diskInfoSet;
+    this.tableData = {
+      data: diskArray,
+      total: size(diskArray)
+    };
+  }
+
+  targetDiskChange(e) {
+    each(this.diskOptions, item => {
+      item.disabled = !!find(this.tableData.data, { targetDisk: item.value });
+    });
+    each(this.tableData.data, item => {
+      item.diskOptions = this.diskOptions.filter(
+        val => val.size >= item.diskSize
+      );
+    });
+    this.disableOkBtn();
   }
 
   getHosts(recordsTemp?, startPage?) {
@@ -479,6 +594,43 @@ export class FilesetRestoreComponent implements OnInit {
       });
   }
 
+  getHostDisks() {
+    this.diskOptions = [];
+    each(this.tableData.data, item => {
+      item.diskOptions = [];
+      item.targetDisk = '';
+    });
+    const extParameters = {
+      envId: this.hostUuid,
+      resourceType: DataMap.Resource_Type.fileset.value,
+      conditions: JSON.stringify({
+        is_OS_restore: true
+      })
+    };
+    this.appUtilsService.getResourceByRecursion(
+      extParameters,
+      params =>
+        this.protectedEnvironmentApiService.ListEnvironmentResource(params),
+      resource => {
+        this.diskOptions = resource.map(item => {
+          return assign(item, {
+            value: item.extendInfo.diskName,
+            label: item.extendInfo.diskName,
+            size: item.extendInfo.diskSize,
+            id: item.extendInfo.diskId,
+            isLeaf: true
+          });
+        });
+        each(this.tableData.data, item => {
+          item.diskOptions = this.diskOptions.filter(
+            val => val.size >= item.diskSize
+          );
+        });
+        this.disableOkBtn();
+      }
+    );
+  }
+
   getParams() {
     const tempPath: any = first(this.formGroup.value.metadataPath) || {};
     const params = {
@@ -530,6 +682,23 @@ export class FilesetRestoreComponent implements OnInit {
       assign(params, {
         restoreType: RestoreV2Type.FileRestore,
         subObjects: ['/']
+      });
+    }
+    if (this.formGroup.get('is_OS_restore').value) {
+      assign(params.extendInfo, {
+        diskMap: JSON.stringify(
+          this.tableData.data.map(item => {
+            const tmpTargetDisk = find(item.diskOptions, {
+              value: item.targetDisk
+            });
+            return {
+              sourceDiskName: item.diskName,
+              sourceDiskSize: item.diskSize,
+              targetDiskName: item.targetDisk,
+              targetDiskSize: Number(tmpTargetDisk.size)
+            };
+          })
+        )
       });
     }
     return params;
@@ -604,6 +773,9 @@ export class FilesetRestoreComponent implements OnInit {
   }
 
   disableOkBtn() {
-    this.modal.getInstance().lvOkDisabled = this.formGroup.invalid;
+    this.modal.getInstance().lvOkDisabled =
+      this.formGroup.invalid ||
+      (this.formGroup.get('is_OS_restore').value &&
+        !!find(this.tableData.data, item => !item.targetDisk));
   }
 }

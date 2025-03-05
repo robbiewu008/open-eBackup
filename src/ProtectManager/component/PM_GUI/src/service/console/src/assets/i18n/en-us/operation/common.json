@@ -5,7 +5,7 @@
   "operation_target_job_label": "Job",
   "operation_target_performance_true_label": "On",
   "operation_target_performance_false_label": "Close",
-  "operation_target_agent_manager_label": "ProtectAgent",
+  "operation_target_agent_manager_label": "Client",
   "operation_target_anonymization_label": "Anonymization",
   "operation_target_user_label": "User",
   "operation_target_@user_label": "User",
@@ -57,5 +57,8 @@
   "operation_target_ibmc_label": "iBMC",
   "operation_target_externalsystem_label": "External System",
   "operation_target_resourceset_label": "ResourceSet",
-  "operation_target_role_label": "Role"
+  "operation_target_role_label": "Role",
+  "operation_target_vmware_label": "VMware",
+  "operation_delete_label": "Delete",
+  "operation_force_delete_label": "Force Delete"
 }

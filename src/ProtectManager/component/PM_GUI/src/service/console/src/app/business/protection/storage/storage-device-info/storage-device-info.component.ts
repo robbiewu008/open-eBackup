@@ -66,6 +66,7 @@ import { map } from 'rxjs/operators';
 import { AddStorageComponent } from './add-storage/add-storage.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
 import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
+import { GetLabelOptionsService } from '../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-storage-device-info',
@@ -83,6 +84,14 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
 
   groupCommon = GROUP_COMMON;
 
+  isNasSupportType = [
+    DataMap.Device_Storage_Type.DoradoV7.value,
+    DataMap.Device_Storage_Type.OceanStorDoradoV7.value,
+    DataMap.Device_Storage_Type.OceanStorDorado_6_1_3.value,
+    DataMap.Device_Storage_Type.OceanStor_6_1_3.value,
+    DataMap.Device_Storage_Type.OceanProtect.value
+  ];
+
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
   @ViewChild('resourceTagTpl', { static: true })
   resourceTagTpl: TemplateRef<any>;
@@ -98,6 +107,7 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
     private globalService: GlobalService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
+    private getLabelOptionsService: GetLabelOptionsService,
     private setResourceTagService: SetResourceTagService
   ) {}
 
@@ -236,6 +246,20 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
             .filter(item => {
               return item.value !== DataMap.Device_Storage_Type.Other.value;
             })
+            .filter(item => {
+              if (
+                includes(
+                  [
+                    DataMap.Deploy_Type.e6000.value,
+                    DataMap.Deploy_Type.decouple.value
+                  ],
+                  this.i18n.get('deploy_type')
+                )
+              ) {
+                return !includes(this.isNasSupportType, item.value);
+              }
+              return true;
+            })
         },
         cellRender: {
           type: 'status',
@@ -274,8 +298,11 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: true,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -369,9 +396,10 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
     if (!isEmpty(filters.conditions_v2)) {
       const conditionsTemp = JSON.parse(filters.conditions_v2);
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;

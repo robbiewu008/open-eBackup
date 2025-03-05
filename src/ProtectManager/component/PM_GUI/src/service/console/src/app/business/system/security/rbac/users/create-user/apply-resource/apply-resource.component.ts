@@ -20,10 +20,10 @@ import {
   ViewChild
 } from '@angular/core';
 import {
-  DefaultRoles,
   I18NService,
   MODAL_COMMON,
-  ResourceSetApiService
+  ResourceSetApiService,
+  SpecialRoleIds
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
 import {
@@ -67,12 +67,13 @@ export class ApplyResourceComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.defaultRoleId = this.formGroup.get('roleId').value;
+    this.selected = this.roleList[0].roleId;
+    this.isNotLoginRole = SpecialRoleIds.includes(this.selected);
     this.initConfig();
   }
 
   ngAfterViewInit() {
     this.dataTable.fetchData();
-    this.selected = this.roleList[0].roleId;
     this.resetSelection();
     this.invalidEmit();
   }
@@ -83,6 +84,9 @@ export class ApplyResourceComponent implements OnInit, AfterViewInit {
         id: 'create',
         label: this.i18n.get('system_create_resource_set_label'),
         type: 'primary',
+        disableCheck: () => {
+          return this.isNotLoginRole;
+        },
         onClick: () => this.create()
       }
     ];
@@ -204,12 +208,6 @@ export class ApplyResourceComponent implements OnInit, AfterViewInit {
   }
 
   resetSelection() {
-    this.isNotLoginRole = [
-      DefaultRoles.rdAdmin.roleId,
-      DefaultRoles.drAdmin.roleId,
-      DefaultRoles.audit.roleId,
-      DefaultRoles.sysAdmin.roleId
-    ].includes(this.selected);
     this.tableData.data.forEach(item => (item.disabled = this.isNotLoginRole));
     this.dataTable.setSelections(this.resourceSetMap.get(this.selected));
     const roleName = find(this.roleList, { roleId: this.selected }).roleName;
@@ -229,12 +227,7 @@ export class ApplyResourceComponent implements OnInit, AfterViewInit {
       !this.roleList.every(
         item =>
           item.roleId === this.defaultRoleId ||
-          [
-            DefaultRoles.rdAdmin.roleId,
-            DefaultRoles.drAdmin.roleId,
-            DefaultRoles.audit.roleId,
-            DefaultRoles.sysAdmin.roleId
-          ].includes(item.roleId) ||
+          SpecialRoleIds.includes(item.roleId) ||
           this.resourceSetMap.get(item.roleId).length
       )
     );

@@ -135,7 +135,7 @@ export class BackupClusterDistributedComponent
         roleList: [7]
       })
       .subscribe(res => {
-        this.clusterName = res.records[0].clusterName;
+        this.clusterName = 'OceanProtect E6000';
         this.status = res.records[0].status;
       });
   }

@@ -26,6 +26,9 @@
         <span class="icon" *ngIf="cardInfo.slaTooltip">
             <aui-sla-compliance-tooltip></aui-sla-compliance-tooltip>
         </span>
+        <span class="icon" *ngIf="cardInfo.capacityTooltip">
+            <aui-capacity-tooltip></aui-capacity-tooltip>
+        </span>
         </div>
         <div class="select-box" lv-overflow>
           <ng-content select="[header]"></ng-content>

@@ -26,12 +26,14 @@ import { CopyDataModule as VmwareCopyDataModule } from 'app/business/protection/
 import { SummaryModule as VMSummaryModule } from 'app/business/protection/virtualization/vmware/vm/summary/summary.module';
 import { SummaryModule as VmwareSummaryModule } from 'app/business/protection/virtualization/vmware/summary/summary.module';
 import { SummaryModule as HyperVSummaryModule } from 'app/business/protection/virtualization/hyper-v/summary/summary.module';
+import { SummaryModule as NutanixSumarryModule } from 'app/business/protection/virtualization/nutanix/summary/summary.module';
 import { FileListModule } from './file-list/file-list.module';
 import { ResourceListModule } from './resource-list/resource-list.module';
 import { SearchRoutingModule } from './search-routing.module';
 import { SearchComponent } from './search.component';
 import { CopyDataDetailModule } from 'app/shared/components/copy-data-detail/copy-data-detail.module';
 import { CnwareModule } from '../protection/virtualization/cnware/cnware.module';
+import { GetLabelOptionsService } from '../../shared/services/get-labels.service';
 
 const HostModules = [HostSummaryModule, HostCopyDataModule];
 const VMwareModules = [
@@ -62,8 +64,9 @@ const OracleModules = [
     ...OracleModules,
     ...VMwareModules,
     CnwareModule,
-    HyperVSummaryModule
+    HyperVSummaryModule,
+    NutanixSumarryModule
   ],
-  providers: [ResourceDetailService]
+  providers: [ResourceDetailService, GetLabelOptionsService]
 })
 export class GlobalSearchModule {}

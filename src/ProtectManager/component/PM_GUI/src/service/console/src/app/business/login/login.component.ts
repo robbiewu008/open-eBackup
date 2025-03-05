@@ -32,7 +32,8 @@ import {
   RESET_PSWD_NAVIGATE_STATUS,
   DataMapService,
   timeZones,
-  ExceptionService
+  ExceptionService,
+  SYSTEM_TIME
 } from 'app/shared';
 import {
   SecurityApiService,
@@ -816,18 +817,17 @@ export class LoginComponent implements OnInit, OnDestroy {
                 find(currentTimeZones, ['value', lastLoginInfo.lastLoginZone]),
                 'label'
               );
-            const timeZone = !isEmpty(lastLoginZone)
-              ? lastLoginZone.split(' ')[0]
+            const timeZoneArea = !isEmpty(lastLoginZone)
+              ? lastLoginZone.split(' ')[1]
               : '';
-            const lastLoginTimeContent = isNil(lastLoginZone)
-              ? lastLoginInfo.lastLoginTime
-              : this.datePipe.transform(
-                  lastLoginInfo.lastLoginTime,
-                  'yyyy-MM-dd HH:mm:ss',
-                  timeZone
-                ) +
-                ' ' +
-                lastLoginZone;
+            const loginTime = this.datePipe.transform(
+              lastLoginInfo.lastLoginTime,
+              'yyyy-MM-dd HH:mm:ss',
+              SYSTEM_TIME.timeZone
+            );
+            const lastLoginTimeContent = isEmpty(lastLoginZone)
+              ? loginTime
+              : `${loginTime} ${SYSTEM_TIME.timeZone} ${timeZoneArea}`;
             let loginInfoContent = `${this.i18n.get(
               'common_last_login_time_label'
             )}: ${lastLoginTimeContent}\n${this.i18n.get(

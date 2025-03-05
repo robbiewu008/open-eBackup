@@ -16,11 +16,11 @@ import { RegisterNasShareComponent } from 'app/business/protection/storage/nas-s
 import { KerberosComponent } from 'app/business/system/security/kerberos/kerberos.component';
 import {
   ApiStorageBackupPluginService,
+  BackupClustersApiService,
   BaseUtilService,
   DataMapService,
   KerberosAPIService,
-  ProtectedResourceApiService,
-  BackupClustersApiService
+  ProtectedResourceApiService
 } from 'app/shared';
 import {
   ClientManagerApiService,
@@ -38,13 +38,14 @@ import {
   RestoreV2Type
 } from 'app/shared/consts';
 import { I18NService } from 'app/shared/services';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import {
   assign,
+  cloneDeep,
   each,
   filter,
   find,
-  get,
   includes,
   isEmpty,
   isFunction,
@@ -60,7 +61,6 @@ import {
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 import { CreateFileSystemComponent } from './create-file-system/create-file-system.component';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
 @Component({
   selector: 'aui-dorado-nas-restore',
   templateUrl: './dorado-nas-restore.component.html',
@@ -116,7 +116,9 @@ export class DoradoNasRestoreComponent implements OnInit {
       DataMap.Deploy_Type.x3000.value,
       DataMap.Deploy_Type.x8000.value,
       DataMap.Deploy_Type.x6000.value,
-      DataMap.Deploy_Type.x9000.value
+      DataMap.Deploy_Type.x9000.value,
+      DataMap.Deploy_Type.e6000.value,
+      DataMap.Deploy_Type.decouple.value
     ],
     this.i18n.get('deploy_type')
   );
@@ -124,8 +126,9 @@ export class DoradoNasRestoreComponent implements OnInit {
     ...this.baseUtilService.rangeErrorTip,
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 40])
   };
-  tipsLabel = this.i18n.get('protection_fileset_channels_tips_label');
+  tipsLabel = this.i18n.get('protection_nasshare_channels_tips_label');
   hostOptions = [];
+  cacheOptions = [];
   poxyOptions = [];
   isShowChannels = false;
   tapeCopy = false;
@@ -157,7 +160,10 @@ export class DoradoNasRestoreComponent implements OnInit {
 
   ngOnInit() {
     // 判断副本是否是磁带归档，且已开启索引
-    this.tapeCopy = false;
+    this.tapeCopy =
+      this.rowCopy?.generated_by ===
+        DataMap.CopyData_generatedType.tapeArchival.value &&
+      this.rowCopy?.indexed === DataMap.CopyData_fileIndex.indexed.value;
     this.isNdmp =
       this.rowCopy.resource_sub_type === DataMap.Resource_Type.ndmp.value;
     this.initForm();
@@ -239,7 +245,9 @@ export class DoradoNasRestoreComponent implements OnInit {
             isLeaf: true
           });
         });
-        this.hostOptions = hostArray;
+
+        this.cacheOptions = cloneDeep(hostArray);
+        this.filterHostOps(this.formGroup.value.restoreLocation);
         each(hostArray, item => {
           if (
             item.extendInfo.scenario === DataMap.proxyHostType.builtin.value
@@ -247,9 +255,28 @@ export class DoradoNasRestoreComponent implements OnInit {
             this.poxyOptions.push(item.rootUuid || item.parentUuid);
           }
         });
+
         this.formGroup.get('proxyHost').setValue(this.poxyOptions);
       }
     );
+  }
+
+  filterHostOps(restoreLocation) {
+    if (
+      includes(
+        [DataMap.Resource_Type.NASFileSystem.value],
+        this.rowCopy.resource_sub_type
+      ) &&
+      this.restoreType === this.restoreTypeEnum.CommonRestore &&
+      restoreLocation === this.restoreLocationType.ORIGIN
+    ) {
+      this.hostOptions = this.cacheOptions.filter(
+        item =>
+          item.extendInfo.scenario !== DataMap.proxyHostType.external.value
+      );
+    } else {
+      this.hostOptions = this.cacheOptions;
+    }
   }
 
   getEquipmentOptions(recordsTemp?, startPage?) {
@@ -822,7 +849,9 @@ export class DoradoNasRestoreComponent implements OnInit {
       channels: new FormControl(10),
       proxyMode: new FormControl(ProxyHostSelectMode.Auto),
       proxyHost: new FormControl([]),
-      originalType: new FormControl(NasFileReplaceStrategy.Replace)
+      originalType: new FormControl(NasFileReplaceStrategy.Replace),
+      restoreOrder: new FormControl(false),
+      orderBy: new FormControl(1)
     });
     // NAS文件级或归档到云的副本
     if (
@@ -897,6 +926,7 @@ export class DoradoNasRestoreComponent implements OnInit {
     }
 
     this.formGroup.get('restoreLocation').valueChanges.subscribe(res => {
+      this.filterHostOps(res);
       this.formGroup.patchValue({
         equipment: '',
         share: '',
@@ -967,6 +997,7 @@ export class DoradoNasRestoreComponent implements OnInit {
     this.formGroup.get('equipment').valueChanges.subscribe(res => {
       this.formGroup.patchValue({
         share: '',
+        shareIp: '',
         fileSystem: ''
       });
 
@@ -1369,7 +1400,11 @@ export class DoradoNasRestoreComponent implements OnInit {
               DataMap.Nas_Share_Auth_Mode.kerberos.value
                 ? this.formGroup.value.kerberos
                 : ''
-          }
+          },
+          shareIp: this.formGroup.value.shareIp
+            ? this.formGroup.value.shareIp
+            : find(this.shareOptions, { key: this.formGroup.value.share })
+                ?.extendInfo?.ip
         });
       } else {
         assign(mountRequestParams, {
@@ -1431,8 +1466,13 @@ export class DoradoNasRestoreComponent implements OnInit {
             this.restoreType === this.restoreTypeEnum.FileRestore &&
             this.formGroup.value.restoreLocation ===
               RestoreV2LocationType.NATIVE &&
-            this.rowCopy.resource_sub_type ===
-              DataMap.Resource_Type.NASFileSystem.value
+            includes(
+              [
+                DataMap.Resource_Type.NASFileSystem.value,
+                DataMap.Resource_Type.NASShare.value
+              ],
+              this.rowCopy.resource_sub_type
+            )
           ? 'local'
           : this.resourceObj.environment_uuid,
       restoreType: this.restoreType,
@@ -1480,6 +1520,17 @@ export class DoradoNasRestoreComponent implements OnInit {
     ) {
       assign(extendInfo, {
         channels: Number(this.formGroup.get('channels').value) || ''
+      });
+    }
+
+    if (
+      this.rowCopy.resource_sub_type === DataMap.Resource_Type.NASShare.value &&
+      this.restoreType === this.restoreTypeEnum.CommonRestore
+    ) {
+      assign(extendInfo, {
+        orderOfRestore: this.formGroup.get('restoreOrder').value
+          ? this.formGroup.get('orderBy').value
+          : 0
       });
     }
 
@@ -1548,7 +1599,11 @@ export class DoradoNasRestoreComponent implements OnInit {
           DataMap.Resource_Type.NASShare.value ||
         this.restoreType === RestoreV2Type.FileRestore
       ? assign(params, {
-          extendInfo: pick(extendInfo, ['fileReplaceStrategy', 'channels'])
+          extendInfo: pick(extendInfo, [
+            'fileReplaceStrategy',
+            'channels',
+            'orderOfRestore'
+          ])
         })
       : assign(params, { extendInfo: pick(extendInfo, ['channels']) });
   }

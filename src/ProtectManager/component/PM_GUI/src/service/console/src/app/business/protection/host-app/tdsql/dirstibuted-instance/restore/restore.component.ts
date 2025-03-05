@@ -67,7 +67,7 @@ export class RestoreComponent implements OnInit {
   originalMachineOptions = [];
   originalDataNodes;
   proxyOptions = []; // 代理主机
-  cacheProxyOptions; // 代理主机选线的备份；
+  cacheProxyOptions = []; // 代理主机选线的备份；
   originalEnvId;
   originalDRNode;
   constructor(
@@ -129,15 +129,6 @@ export class RestoreComponent implements OnInit {
       this.rowCopy?.resource_status === DataMap.Resource_Status.notExist.value
     ) {
       this.formGroup.get('restoreLocation').setValue(RestoreV2LocationType.NEW);
-    }
-    if (
-      this.formGroup.get('restoreLocation').value ===
-      RestoreV2LocationType.ORIGIN
-    ) {
-      this.getMachineAndHostById(
-        this.originalEnvId,
-        RestoreV2LocationType.ORIGIN
-      );
     }
   }
 
@@ -356,6 +347,15 @@ export class RestoreComponent implements OnInit {
         });
         this.proxyOptions = [...hostArray];
         this.cacheProxyOptions = [...hostArray];
+        if (
+          this.formGroup.get('restoreLocation').value ===
+          RestoreV2LocationType.ORIGIN
+        ) {
+          this.getMachineAndHostById(
+            this.originalEnvId,
+            RestoreV2LocationType.ORIGIN
+          );
+        }
       }
     );
   }

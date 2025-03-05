@@ -20,7 +20,7 @@ const routes: Routes = [
     path: '',
     component: DatabaseComponent,
     children: [
-      { path: '', redirectTo: 'oracle', pathMatch: 'full' },
+      { path: '', redirectTo: 'ant-db', pathMatch: 'full' },
       {
         path: 'ant-db',
         loadChildren: () =>

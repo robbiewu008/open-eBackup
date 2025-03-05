@@ -31,6 +31,10 @@
   <aui-status [value]="item.extendInfo?.State" type="hypervStatus"></aui-status>
 </ng-template>
 
+<ng-template #nutanixStatusTpl let-item>
+  <aui-status [value]="item.extendInfo?.status" [type]="subType === resType.nutanixHost.value ? 'nutanixHostStatus' : 'nutanixVmStatus'"></aui-status>
+</ng-template>
+
 <ng-template #rhvVersionTpl let-item>
   <span lv-overflow>{{item.extendInfo?.version || item.extendInfo?.Version | nil}}</span>
 </ng-template>

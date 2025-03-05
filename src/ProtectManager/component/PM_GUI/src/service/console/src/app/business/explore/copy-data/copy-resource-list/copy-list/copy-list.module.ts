@@ -21,6 +21,7 @@ import { ManualIndexModule } from 'app/shared/components/manual-index/manual-ind
 import { CopyActionModule } from 'app/shared/services/copy-action.service';
 import { CopyVerifyModule } from 'app/shared/components/copy-verify-proxy/copy-verify.module';
 import { CustomTableSearchModule } from 'app/shared/components/custom-table-search/custom-table-search.module';
+import { CustomTableFilterModule } from '../../../../../shared/components/custom-table-filter/custom-table-filter.module';
 
 @NgModule({
   declarations: [CopyListComponent, FilterPipe],
@@ -33,7 +34,8 @@ import { CustomTableSearchModule } from 'app/shared/components/custom-table-sear
     ManualIndexModule,
     CopyActionModule,
     CopyVerifyModule,
-    CustomTableSearchModule
+    CustomTableSearchModule,
+    CustomTableFilterModule
   ],
   exports: [CopyListComponent]
 })

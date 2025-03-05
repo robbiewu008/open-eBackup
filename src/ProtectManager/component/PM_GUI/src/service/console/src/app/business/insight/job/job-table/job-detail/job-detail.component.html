@@ -182,13 +182,16 @@
                                       }}
                                     </ng-template>
                                   </ng-container>
-                                  <ng-container *ngSwitchCase="'jobId'">
+                                <ng-container *ngSwitchCase="'jobId'">
                                     <lv-group lvGutter="4px" class="copy-container">
                                         <div lv-overflow class='value'>
                                             {{item.value | nil}}
                                         </div>
                                         <i lv-icon="aui-icon-copy" class="copy-btn" (click)="copyJobId(item.value)"></i>
                                     </lv-group>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'restoreTimestamp'">
+                                    <span lv-overflow>{{item.value | date : 'yyyy-MM-dd HH:mm:ss':timeZone}}</span>
                                 </ng-container>
                                 <ng-container *ngSwitchDefault>
                                     <div lv-overflow class='value'>

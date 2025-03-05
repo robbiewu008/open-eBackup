@@ -34,9 +34,11 @@ import {
   I18NService,
   MountTargetLocation,
   ProtectedResourceApiService,
+  ResourceDetailType,
   ResourceType,
   TargetCPU,
-  TargetMemory
+  TargetMemory,
+  isJson
 } from 'app/shared';
 import { TableConfig, TableData } from 'app/shared/components/pro-table';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
@@ -67,6 +69,7 @@ export class LiveMountOptionsComponent implements OnInit {
   @Input() componentData;
   @Input() activeIndex;
   @Output() selectMountOptionChange = new EventEmitter<any>();
+  @Input() isHidden;
 
   formGroup: FormGroup;
   mountTargetLocation = MountTargetLocation;
@@ -111,7 +114,7 @@ export class LiveMountOptionsComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private i18n: I18NService,
+    public i18n: I18NService,
     private appService: AppService,
     private appUtilsService: AppUtilsService,
     private baseUtilService: BaseUtilService,
@@ -435,6 +438,29 @@ export class LiveMountOptionsComponent implements OnInit {
     });
   }
 
+  getDefaultPortGroup(item): string {
+    // cnware原位置挂载，默认选中原端口
+    if (
+      this.formGroup.value.target_location ===
+        this.mountTargetLocation.Original &&
+      isJson(item.metaData)
+    ) {
+      const metaData = JSON.parse(item.metaData);
+      if (find(this.targetPortGroupOptions, { uuid: metaData?.portGroupId })) {
+        return metaData?.portGroupId;
+      }
+    }
+    return '';
+  }
+
+  setDefaultPortGroup() {
+    if (!isEmpty(this.networkTableData?.data)) {
+      each(this.networkTableData?.data, item => {
+        item.recoveryPortGroup = this.getDefaultPortGroup(item);
+      });
+    }
+  }
+
   getOriginalNetworkCard() {
     const properties = JSON.parse(this.selectCopy?.properties || '{}');
     const networks = properties.interfaceList || [];
@@ -444,39 +470,14 @@ export class LiveMountOptionsComponent implements OnInit {
     };
   }
 
-  getPortGroup(
-    targetServer,
-    agentsId,
-    recordsTemp?: any[],
-    startPage?: number
-  ) {
-    const params = {
-      agentId: agentsId,
-      envId: targetServer.rootUuid || targetServer.root_uuid,
-      resourceIds: [targetServer.uuid || targetServer.root_uuid],
-      pageNo: startPage || 1,
-      pageSize: 200,
-      akDoException: false,
-      conditions: JSON.stringify({
-        resourceType: 'PortGroup',
-        uuid: targetServer.uuid
-      })
-    };
-
-    this.appService.ListResourcesDetails(params).subscribe(res => {
-      if (!recordsTemp) {
-        recordsTemp = [];
-      }
-      if (!isNumber(startPage)) {
-        startPage = 1;
-      }
-      recordsTemp = [...recordsTemp, ...res.records];
-      if (
-        startPage === Math.ceil(res.totalCount / 200) ||
-        res.totalCount === 0
-      ) {
+  getPortGroupOptions(targetServer) {
+    if (isEmpty(targetServer)) {
+      return;
+    }
+    this.appUtilsService
+      .getResourcesDetails(targetServer, ResourceDetailType.portGroup)
+      .subscribe(recordsTemp => {
         this.targetPortGroupOptions = map(recordsTemp, item => {
-          const details = JSON.parse(item.extendInfo?.details || '{}');
           return assign(item, {
             label: item.parentName
               ? `${item.name} (${item.parentName})`
@@ -484,41 +485,8 @@ export class LiveMountOptionsComponent implements OnInit {
             isLeaf: true
           });
         });
+        this.setDefaultPortGroup();
         this.emitFormValid();
-        return;
-      }
-      startPage++;
-      this.getPortGroup(targetServer, agentsId, recordsTemp, startPage);
-    });
-  }
-
-  getPortGroupOptions(targetServer) {
-    if (isEmpty(targetServer)) {
-      return;
-    }
-    this.protectedResourceApiService
-      .ListResources({
-        pageNo: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE,
-        queryDependency: true,
-        akDoException: false,
-        conditions: JSON.stringify({
-          uuid: targetServer.rootUuid || targetServer.root_uuid
-        })
-      })
-      .subscribe((res: any) => {
-        if (first(res.records)) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getPortGroup(targetServer, agentsId);
-        }
       });
   }
 

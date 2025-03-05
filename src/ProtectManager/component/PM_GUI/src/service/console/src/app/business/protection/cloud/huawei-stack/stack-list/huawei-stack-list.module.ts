@@ -23,6 +23,7 @@ import { ProjectSummaryModule } from './project-summary/project-summary.module';
 import { TenantDetailModule } from './tenant-detail/tenant-detail.module';
 import { HCSCopyDataModule } from './copy-data/hcs-copy-data.module';
 import { CustomTableSearchModule } from 'app/shared/components/custom-table-search/custom-table-search.module';
+import { CustomTableFilterModule } from '../../../../../shared/components/custom-table-filter/custom-table-filter.module';
 
 @NgModule({
   declarations: [HuaWeiStackListComponent],
@@ -37,7 +38,8 @@ import { CustomTableSearchModule } from 'app/shared/components/custom-table-sear
     HCSCopyDataModule,
     ProjectSummaryModule,
     TenantDetailModule,
-    CustomTableSearchModule
+    CustomTableSearchModule,
+    CustomTableFilterModule
   ],
   exports: [HuaWeiStackListComponent]
 })

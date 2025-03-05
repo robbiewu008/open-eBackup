@@ -94,10 +94,7 @@ export class ClusterDetailComponent implements OnInit {
         },
         {
           key: 'authType',
-          value: this.dataMap.getLabel(
-            'HDFS_Clusters_Auth_Type',
-            this.data?.authType
-          ),
+          value: this.getAuthTypeLabel(),
           label: this.i18n.get('protection_auth_mode_label')
         }
       ],
@@ -148,6 +145,14 @@ export class ClusterDetailComponent implements OnInit {
       },
       pagination: null
     };
+  }
+
+  getAuthTypeLabel() {
+    let configKey =
+      this.data?.subType === DataMap.Resource_Type.Elasticsearch.value
+        ? 'ElasticSearch_Clusters_Auth_Type'
+        : 'HDFS_Clusters_Auth_Type';
+    return this.dataMap.getLabel(configKey, this.data?.authType);
   }
 
   getAgents(recordsTemp?, startPage?) {

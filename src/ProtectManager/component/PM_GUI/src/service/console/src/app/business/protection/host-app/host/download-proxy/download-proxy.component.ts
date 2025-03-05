@@ -51,6 +51,7 @@ import {
   isUndefined,
   map,
   reverse,
+  set,
   some,
   sortBy
 } from 'lodash';
@@ -74,13 +75,9 @@ export class DownloadProxyComponent implements OnInit {
   agentTableConfig: TableConfig;
   valid$ = new Subject<boolean>();
   downloadProxyOptions = this.dataMapService
-    .toArray('Proxy_Type_Options')
+    .toArray('softwarePackageType')
     .filter(v => {
-      v.isLeaf = true;
-      return !includes(
-        [DataMap.Proxy_Type_Options.hostAgentOracle.value],
-        v.value
-      );
+      return (v.isLeaf = true);
     });
   backupProxyTypeOptions = this.dataMapService
     .toArray('Backup_Proxy_File')
@@ -157,43 +154,33 @@ export class DownloadProxyComponent implements OnInit {
       isShared: new FormControl('false')
     });
 
+    this.listenForm();
+  }
+
+  listenForm() {
     this.formGroup.get('proxyType').valueChanges.subscribe(res => {
-      if (res === DataMap.Proxy_Type_Options.hostAgentOracle.value) {
-        this.osTypeOptions = this.osTypes.filter(item =>
-          includes(
-            [DataMap.OS_Type.Linux.value, DataMap.OS_Type.Unix.value],
-            item.value
-          )
-        );
-      } else if (
-        includes([DataMap.Proxy_Type_Options.remoteAgent.value], res)
-      ) {
+      if (includes([DataMap.softwarePackageType.remoteAgent.value], res)) {
         this.osTypeOptions = this.osTypes.filter(item =>
           includes(
             [
               DataMap.OS_Type.Windows.value,
               DataMap.OS_Type.Linux.value,
               DataMap.OS_Type.Unix.value,
-              DataMap.OS_Type.solaris.value
+              DataMap.OS_Type.solaris.value,
+              DataMap.OS_Type.hpux.value
             ],
             item.value
           )
         );
       } else if (
-        includes([DataMap.Proxy_Type_Options.remoteAgentVmware.value], res)
-      ) {
-        this.osTypeOptions = this.osTypes.filter(item =>
-          includes([DataMap.OS_Type.Linux.value], item.value)
-        );
-      } else if (
-        includes([DataMap.Proxy_Type_Options.sanclientAgent.value], res)
+        includes([DataMap.softwarePackageType.sanclientAgent.value], res)
       ) {
         this.osTypeOptions = this.osTypes.filter(item =>
           includes([DataMap.OS_Type.Linux.value], item.value)
         );
       }
 
-      if (res === DataMap.Proxy_Type_Options.remoteAgent.value) {
+      if (res === DataMap.softwarePackageType.remoteAgent.value) {
         this.formGroup
           .get('applications')
           .setValidators([this.baseUtilService.VALID.required()]);
@@ -211,7 +198,7 @@ export class DownloadProxyComponent implements OnInit {
       this.formGroup.get('applications').setValue([]);
       if (
         this.formGroup.value.proxyType ===
-        DataMap.Proxy_Type_Options.remoteAgent.value
+        DataMap.softwarePackageType.remoteAgent.value
       ) {
         this.queryApplicationList(res);
       }
@@ -230,26 +217,79 @@ export class DownloadProxyComponent implements OnInit {
     });
 
     this.formGroup.get('applications').valueChanges.subscribe(res => {
-      if (isEmpty(res)) return;
+      if (this.isEmptyFunc(res)) return;
       if (this.isHcsUser) return;
+      this.changeShareDisable(res);
+      this.changeSelectDisable(res);
+    });
+  }
 
-      // HDFS HBASE  HIVE HCS_gauss  DWS ECS
-      const shareApplications = [
-        'HDFSFileset',
-        'HBaseBackupSet',
-        'HiveBackupSet',
-        'HCSGaussDBProject,HCSGaussDBInstance',
-        'DWS-cluster,DWS-database,DWS-schema,DWS-table',
-        'HCScontainer,HCSCloudHost,HCSProject,HCSTenant',
-        'ObjectStorage'
-      ];
-      this.shareDisabled = some(res, item => {
-        if (item.level === 0) {
-          return item.applications.some(
-            v => !includes(shareApplications, v.appValue)
-          );
-        } else {
-          return !includes(shareApplications, item.appValue);
+  isEmptyFunc(res) {
+    if (isEmpty(res)) {
+      each(this.treeData, item => {
+        set(item, 'disabled', false);
+        each(item?.children, v => {
+          set(v, 'disabled', false);
+        });
+      });
+      this.shareDisabled = true;
+      this.formGroup.get('isShared')?.setValue('false');
+      return true;
+    }
+    return false;
+  }
+
+  changeShareDisable(res) {
+    // HDFS HBASE  HIVE HCS_gauss  DWS ECS
+    const shareApplications = [
+      'HDFSFileset',
+      'HBaseBackupSet',
+      'HiveBackupSet',
+      'HCSGaussDBProject,HCSGaussDBInstance',
+      'DWS-cluster,DWS-database,DWS-schema,DWS-table',
+      'HCScontainer,HCSCloudHost,HCSProject,HCSTenant',
+      'ObjectStorage'
+    ];
+    this.shareDisabled = some(res, item => {
+      if (item.level === 0) {
+        return item.applications.some(
+          v => !includes(shareApplications, v.appValue)
+        );
+      } else {
+        return !includes(shareApplications, item.appValue);
+      }
+    });
+    if (this.shareDisabled) {
+      this.formGroup.get('isShared')?.setValue('false');
+    }
+  }
+
+  changeSelectDisable(res) {
+    // 客户端且操作系统为linux情况下，需要区分选择的是vmware还是其他，做互斥选择判断
+    if (
+      this.formGroup.value.proxyType ===
+        DataMap.softwarePackageType.remoteAgent.value &&
+      this.formGroup.value.osType === DataMap.OS_Type.Linux.value
+    ) {
+      const targetValue = 'VMware';
+
+      // 选中vmware--将其他置灰,否则将vmware置灰
+      const isVmare = find(res, item => includes([targetValue], item.value));
+      if (isVmare) {
+        this.setSelectDisable(targetValue);
+      } else {
+        const vmwareApp = find(this.treeData, { value: targetValue });
+        set(vmwareApp, 'disabled', true);
+      }
+    }
+  }
+
+  setSelectDisable(targetValue) {
+    this.treeData = each(this.treeData, item => {
+      each(item?.children, v => {
+        if (v.value !== targetValue) {
+          set(item, 'disabled', true);
+          set(v, 'disabled', true);
         }
       });
     });
@@ -348,7 +388,7 @@ export class DownloadProxyComponent implements OnInit {
       .queryAgentEntitiesUsingGET(params)
       .subscribe(res => {
         const sortItems = sortBy(res.items, item => {
-          return +item.uploadTime;
+          return Number(item.uploadTime);
         });
         reverse(sortItems);
         this.agentTableData = {
@@ -379,7 +419,7 @@ export class DownloadProxyComponent implements OnInit {
         ) {
           const agentArr = [];
           recordsTemp = sortBy(recordsTemp, item => {
-            return +item.uploadTime;
+            return Number(item.uploadTime);
           });
           reverse(recordsTemp);
           each(recordsTemp, item => {
@@ -434,10 +474,16 @@ export class DownloadProxyComponent implements OnInit {
   }
 
   download() {
+    const isVmware = find(this.formGroup.get('applications').value, item =>
+      includes(['VMware'], item.value)
+    );
+
     const param = {
-      agentID: first(this.agentFileOptions)['value'],
-      agentName: first(this.agentFileOptions)['label'],
-      type: this.formGroup.value.proxyType,
+      agentID: first(this.agentFileOptions)?.value,
+      agentName: first(this.agentFileOptions)?.value,
+      type: isVmware
+        ? DataMap.Proxy_Type_Options.remoteAgentVmware.value
+        : this.formGroup.value.proxyType,
       privateKey: this.formGroup.value.privateKeyPwd,
       osType: this.formGroup.value.osType,
       compressedPackageType: this.formGroup.value.packageType,
@@ -455,7 +501,8 @@ export class DownloadProxyComponent implements OnInit {
     let applicationsArr = [];
     if (
       this.formGroup.value.proxyType ===
-      DataMap.Proxy_Type_Options.remoteAgent.value
+        DataMap.softwarePackageType.remoteAgent.value &&
+      !isVmware
     ) {
       applicationsArr = this.getApplicationsInfo();
       assign(param, {
@@ -563,7 +610,7 @@ export class DownloadProxyComponent implements OnInit {
   }
 
   private formatApplicationData(res) {
-    const resourceArr = [];
+    let resourceArr = [];
     each(res as any, item => {
       resourceArr.push({
         ...item,
@@ -583,6 +630,13 @@ export class DownloadProxyComponent implements OnInit {
           };
         })
       });
+      const vmwareApp = find(resourceArr, { value: 'VMware' });
+      if (vmwareApp) {
+        vmwareApp.isLeaf = true;
+      }
+      resourceArr = resourceArr.filter(
+        item => item.children.length > 0 || item.value === 'VMware'
+      );
       this.treeData = resourceArr;
     });
   }

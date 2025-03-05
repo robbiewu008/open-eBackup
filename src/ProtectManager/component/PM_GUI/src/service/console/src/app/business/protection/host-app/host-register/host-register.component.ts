@@ -49,6 +49,7 @@ import {
   find,
   get,
   includes,
+  indexOf,
   isArray,
   isEmpty,
   isNumber,
@@ -58,6 +59,7 @@ import {
   omit,
   pick,
   reject,
+  set,
   size,
   some
 } from 'lodash';
@@ -94,12 +96,8 @@ export class HostRegisterComponent implements OnInit {
       return (item.isLeaf = true);
     });
   vmHelp = this.i18n.get('protection_agent_register_vm_help_label');
-  typeOptions = this.dataMapService.toArray('Proxy_Type_Options').filter(v => {
-    v.isLeaf = true;
-    return !includes(
-      [DataMap.Proxy_Type_Options.hostAgentOracle.value],
-      v.value
-    );
+  typeOptions = this.dataMapService.toArray('softwarePackageType').filter(v => {
+    return (v.isLeaf = true);
   });
   osTypes = this.dataMapService.toArray('OS_Type').filter(v => {
     return (v.isLeaf = true);
@@ -156,7 +154,7 @@ export class HostRegisterComponent implements OnInit {
   selectionAgents = [];
   userFormGroup: FormGroup;
 
-  isDistributed = this.appUtilsService.isDistributed;
+  isDistributed = false;
 
   userGuideCache = USER_GUIDE_CACHE_DATA;
 
@@ -350,7 +348,10 @@ export class HostRegisterComponent implements OnInit {
                 assign(item, {
                   floating_endpoint: floatingIp.addr,
                   fixed_endpoint: find(item.addresses[key], addr => {
-                    return addr['OS-EXT-IPS:type'] === 'fixed';
+                    return (
+                      addr['OS-EXT-IPS:type'] === 'fixed' &&
+                      indexOf(addr.addr, ':') === -1
+                    );
                   })?.addr
                 });
               }
@@ -468,27 +469,24 @@ export class HostRegisterComponent implements OnInit {
         }
       });
     }
+
+    this.listenForm();
+  }
+
+  listenForm() {
     this.formGroup.valueChanges.subscribe(res => {
       this.isTest = false;
     });
     this.formGroup.get('type').valueChanges.subscribe(res => {
-      if (res === DataMap.Proxy_Type_Options.hostAgentOracle.value) {
-        this.osTypeOptions = this.osTypes.filter(item =>
-          includes(
-            [DataMap.OS_Type.Linux.value, DataMap.OS_Type.Unix.value],
-            item.value
-          )
-        );
-      } else if (
-        includes([DataMap.Proxy_Type_Options.remoteAgent.value], res)
-      ) {
+      if (includes([DataMap.softwarePackageType.remoteAgent.value], res)) {
         this.osTypeOptions = this.osTypes.filter(item =>
           includes(
             [
               DataMap.OS_Type.Windows.value,
               DataMap.OS_Type.Linux.value,
               DataMap.OS_Type.Unix.value,
-              DataMap.OS_Type.solaris.value
+              DataMap.OS_Type.solaris.value,
+              DataMap.OS_Type.hpux.value
             ],
             item.value
           )
@@ -499,20 +497,14 @@ export class HostRegisterComponent implements OnInit {
           this.formGroup.get('applications').setValue([]);
         }
       } else if (
-        includes([DataMap.Proxy_Type_Options.remoteAgentVmware.value], res)
-      ) {
-        this.osTypeOptions = this.osTypes.filter(item =>
-          includes([DataMap.OS_Type.Linux.value], item.value)
-        );
-      } else if (
-        includes([DataMap.Proxy_Type_Options.sanclientAgent.value], res)
+        includes([DataMap.softwarePackageType.sanclientAgent.value], res)
       ) {
         this.osTypeOptions = this.osTypes.filter(item =>
           includes([DataMap.OS_Type.Linux.value], item.value)
         );
       }
 
-      if (res === DataMap.Proxy_Type_Options.remoteAgent.value) {
+      if (res === DataMap.softwarePackageType.remoteAgent.value) {
         this.formGroup
           .get('applications')
           .setValidators([this.baseUtilService.VALID.required()]);
@@ -554,7 +546,7 @@ export class HostRegisterComponent implements OnInit {
 
       if (
         this.formGroup.value.type ===
-        DataMap.Proxy_Type_Options.remoteAgent.value
+        DataMap.softwarePackageType.remoteAgent.value
       ) {
         this.treeData = [];
         this.queryApplicationList(res);
@@ -567,31 +559,81 @@ export class HostRegisterComponent implements OnInit {
         res,
         item => item?.value === DataMap.Resource_Type.ActiveDirectory.value
       );
-      if (isEmpty(res)) return;
+      if (this.isEmptyFunc(res)) return;
       if (this.isHcsUser) return;
+      this.changeShareDisable(res);
+      this.changeSelectDisable(res);
+    });
+  }
 
-      // HDFS HBASE  HIVE HCS_gauss  DWS ECS
-      const shareApplications = [
-        'HDFSFileset',
-        'HBaseBackupSet',
-        'HiveBackupSet',
-        'HCSGaussDBProject,HCSGaussDBInstance',
-        'DWS-cluster,DWS-database,DWS-schema,DWS-table',
-        'HCScontainer,HCSCloudHost,HCSProject,HCSTenant',
-        'ObjectStorage'
-      ];
-      this.shareDisabled = some(res, item => {
-        if (item.level === 0) {
-          return item.applications.some(
-            v => !includes(shareApplications, v.appValue)
-          );
-        } else {
-          return !includes(shareApplications, item.appValue);
+  isEmptyFunc(res) {
+    if (isEmpty(res)) {
+      each(this.treeData, item => {
+        set(item, 'disabled', false);
+        each(item?.children, v => {
+          set(v, 'disabled', false);
+        });
+      });
+      this.shareDisabled = true;
+      this.formGroup.get('isShared')?.setValue('false');
+      return true;
+    }
+    return false;
+  }
+
+  changeShareDisable(res) {
+    // HDFS HBASE  HIVE HCS_gauss  DWS ECS
+    const shareApplications = [
+      'HDFSFileset',
+      'HBaseBackupSet',
+      'HiveBackupSet',
+      'HCSGaussDBProject,HCSGaussDBInstance',
+      'DWS-cluster,DWS-database,DWS-schema,DWS-table',
+      'HCScontainer,HCSCloudHost,HCSProject,HCSTenant',
+      'ObjectStorage'
+    ];
+    this.shareDisabled = some(res, item => {
+      if (item.level === 0) {
+        return item.applications.some(
+          v => !includes(shareApplications, v.appValue)
+        );
+      } else {
+        return !includes(shareApplications, item.appValue);
+      }
+    });
+    if (this.shareDisabled) {
+      this.formGroup.get('isShared')?.setValue('false');
+    }
+  }
+
+  changeSelectDisable(res) {
+    // 客户端且操作系统为linux情况下，需要区分选择的是vmware还是其他，做互斥选择判断
+    if (
+      this.formGroup.value.type ===
+        DataMap.softwarePackageType.remoteAgent.value &&
+      this.formGroup.value.osType === DataMap.OS_Type.Linux.value
+    ) {
+      const targetValue = 'VMware';
+
+      // 选中vmware--将其他置灰,否则将vmware置灰
+      const isVmare = find(res, item => includes([targetValue], item.value));
+      if (isVmare) {
+        this.setSelectDisable(targetValue);
+      } else {
+        const vmwareApp = find(this.treeData, { value: targetValue });
+        set(vmwareApp, 'disabled', true);
+      }
+    }
+  }
+
+  setSelectDisable(targetValue) {
+    this.treeData = each(this.treeData, item => {
+      each(item?.children, v => {
+        if (v.value !== targetValue) {
+          set(item, 'disabled', true);
+          set(v, 'disabled', true);
         }
       });
-      if (this.shareDisabled) {
-        this.formGroup.get('isShared')?.setValue('false');
-      }
     });
   }
 
@@ -612,6 +654,33 @@ export class HostRegisterComponent implements OnInit {
           this.baseUtilService.VALID.maxLength(255)
         ]
       })
+    });
+
+    this.userFormGroup.get('userType').valueChanges.subscribe(res => {
+      if (
+        res === DataMap.userType.common.value &&
+        !this.userFormGroup.get('passwordType').value
+      ) {
+        this.userFormGroup
+          .get('sudoPassword')
+          .setValidators([this.baseUtilService.VALID.required()]);
+      } else {
+        this.userFormGroup.get('sudoPassword').clearValidators();
+      }
+      this.userFormGroup.get('sudoPassword').updateValueAndValidity();
+    });
+    this.userFormGroup.get('passwordType').valueChanges.subscribe(res => {
+      if (
+        !res &&
+        this.userFormGroup.value.userType === DataMap.userType.common.value
+      ) {
+        this.userFormGroup
+          .get('sudoPassword')
+          .setValidators([this.baseUtilService.VALID.required()]);
+      } else {
+        this.userFormGroup.get('sudoPassword').clearValidators();
+      }
+      this.userFormGroup.get('sudoPassword').updateValueAndValidity();
     });
   }
 
@@ -641,7 +710,7 @@ export class HostRegisterComponent implements OnInit {
           const content = modal.getContentComponent() as AddHostIngfoComponent;
           if (row) {
             each(this.ipData, item => {
-              if (item.ip === row.ip && item.port === row.port) {
+              if (item.infoId === row.infoId) {
                 assign(item, content.onOk());
               }
             });
@@ -660,10 +729,7 @@ export class HostRegisterComponent implements OnInit {
   }
 
   removeRow(row) {
-    this.ipData = reject(
-      this.ipData,
-      item => item.ip === row.ip && item.port === row.port
-    );
+    this.ipData = reject(this.ipData, item => item.infoId === row.infoId);
   }
 
   getStorageFrontIp(item): string {
@@ -770,7 +836,10 @@ export class HostRegisterComponent implements OnInit {
         if (this.formGroup.value.osType !== DataMap.OS_Type.Windows.value) {
           assign(item, {
             userType: this.userFormGroup.value.userType,
-            passwordType: this.userFormGroup.value.passwordType,
+            passwordType:
+              this.userFormGroup.value.userType === DataMap.userType.admin.value
+                ? false
+                : this.userFormGroup.value.passwordType,
             sudoPassword: this.userFormGroup.value.sudoPassword,
             validSudoPwd: true,
             focusedSudoPwd: true
@@ -786,7 +855,10 @@ export class HostRegisterComponent implements OnInit {
         if (this.formGroup.value.osType !== DataMap.OS_Type.Windows.value) {
           assign(item, {
             userType: this.userFormGroup.value.userType,
-            passwordType: this.userFormGroup.value.passwordType,
+            passwordType:
+              this.userFormGroup.value.userType === DataMap.userType.admin.value
+                ? false
+                : this.userFormGroup.value.passwordType,
             sudoPassword: this.userFormGroup.value.sudoPassword
           });
         }
@@ -907,6 +979,14 @@ export class HostRegisterComponent implements OnInit {
         'isEnableDataturbo'
       ])
     );
+
+    const isVmware = find(this.formGroup.get('applications').value, item =>
+      includes(['VMware'], item.value)
+    );
+    if (isVmware) {
+      set(params, 'type', DataMap.Proxy_Type_Options.remoteAgentVmware.value);
+    }
+
     params.isEnableDataturbo = this.hideSourceDuplication
       ? false
       : this.formGroup.get('isEnableDataturbo').value;
@@ -916,7 +996,12 @@ export class HostRegisterComponent implements OnInit {
     for (let i = 0; i < this.ipData.length; i++) {
       const ipInfo = this.ipData[i];
       const tempObj = {
-        ip: ipInfo.ip,
+        networkPlaneType: ipInfo.networkType,
+        ip:
+          ipInfo.networkType === DataMap.networkPlaneType.backup.value
+            ? ipInfo?.ip
+            : ipInfo?.manageIp,
+        exceptedBackupIp: ipInfo?.businessIp,
         port: ipInfo.port,
         sftpPort: ipInfo.sftpPort,
         username: ipInfo.username,
@@ -1014,7 +1099,9 @@ export class HostRegisterComponent implements OnInit {
     }
     let applicationsArr = [];
     if (
-      this.formGroup.value.type === DataMap.Proxy_Type_Options.remoteAgent.value
+      this.formGroup.value.type ===
+        DataMap.softwarePackageType.remoteAgent.value &&
+      !isVmware
     ) {
       applicationsArr = this.getApplicationsInfo();
       assign(params, {
@@ -1024,7 +1111,14 @@ export class HostRegisterComponent implements OnInit {
       });
     }
     if (isTest) {
-      params = pick(params, ['ips', 'osType', 'ipType', 'macs', 'installPath']);
+      params = pick(params, [
+        'ips',
+        'osType',
+        'ipType',
+        'macs',
+        'installPath',
+        'isEnableDataturbo'
+      ]);
       if (
         !includes(
           [
@@ -1161,7 +1255,7 @@ export class HostRegisterComponent implements OnInit {
         akLoading: false
       })
       .subscribe(res => {
-        const resourceArr = [];
+        let resourceArr = [];
         each(res as any, item => {
           resourceArr.push({
             ...item,
@@ -1181,6 +1275,15 @@ export class HostRegisterComponent implements OnInit {
               };
             })
           });
+
+          const vmwareApp = find(resourceArr, { value: 'VMware' });
+          if (vmwareApp) {
+            vmwareApp.isLeaf = true;
+          }
+
+          resourceArr = resourceArr.filter(
+            item => item.children.length > 0 || item.value === 'VMware'
+          );
           this.treeData = resourceArr;
         });
       });
@@ -1190,12 +1293,8 @@ export class HostRegisterComponent implements OnInit {
     if (!this.userGuideCache.active) {
       return false;
     }
-    if (item.value === DataMap.Proxy_Type_Options.remoteAgent.value) {
-      return this.userGuideCache.appType !== DataMap.Resource_Type.vmware.value;
-    } else if (
-      item.value === DataMap.Proxy_Type_Options.remoteAgentVmware.value
-    ) {
-      return this.userGuideCache.appType === DataMap.Resource_Type.vmware.value;
+    if (item.value === DataMap.softwarePackageType.remoteAgent.value) {
+      return true;
     } else {
       return false;
     }

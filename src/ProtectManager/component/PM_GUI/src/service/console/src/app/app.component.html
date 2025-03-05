@@ -25,44 +25,46 @@
   <lv-layout lvMinWidth="1110px" style="overflow: auto;" [ngClass]="{'collapsed-main': collapsed}">
     <lv-header *ngIf="!isLogin && !isReportDetail && !isErrorPage && !isHcsUser && !isDmeUser" lvFixed="true"
       class="aui-header-icon" [ngClass]="{'cyber-home-header':cyberDarkHeader}">
-        <div class="aui-header-log" *ngIf="collapsed">
-          <div (click)="collapsed = false" style="margin-right: 8px;cursor: pointer;margin-top: 5px;">
-            <svg width=" 24px" height=" 24px" fill="#6c7280" viewBox="0 0 24 24" version="1.1"
-              xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M3,4 L21,4 C21.5522847,4 22,4.44771525 22,5 C22,5.55228475 21.5522847,6 21,6 L3,6 C2.44771525,6 2,5.55228475 2,5 C2,4.44771525 2.44771525,4 3,4 Z M3,18 L17,18 C17.5522847,18 18,18.4477153 18,19 C18,19.5522847 17.5522847,20 17,20 L3,20 C2.44771525,20 2,19.5522847 2,19 C2,18.4477153 2.44771525,18 3,18 Z M3,11 L14,11 C14.5522847,11 15,11.4477153 15,12 C15,12.5522847 14.5522847,13 14,13 L3,13 C2.44771525,13 2,12.5522847 2,12 C2,11.4477153 2.44771525,11 3,11 Z">
-              </path>
-            </svg>
-          </div>
-          <div class="collapsed-container">
-            <aui-logo-title [tinySizeFont]="true" [cyberDarkHeader]="cyberDarkHeader"></aui-logo-title>
-          </div>
+      <div class="aui-header-log" *ngIf="collapsed">
+        <div (click)="collapsed = false" style="margin-right: 8px;cursor: pointer;margin-top: 5px;">
+          <svg width=" 24px" height=" 24px" fill="#6c7280" viewBox="0 0 24 24" version="1.1"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M3,4 L21,4 C21.5522847,4 22,4.44771525 22,5 C22,5.55228475 21.5522847,6 21,6 L3,6 C2.44771525,6 2,5.55228475 2,5 C2,4.44771525 2.44771525,4 3,4 Z M3,18 L17,18 C17.5522847,18 18,18.4477153 18,19 C18,19.5522847 17.5522847,20 17,20 L3,20 C2.44771525,20 2,19.5522847 2,19 C2,18.4477153 2.44771525,18 3,18 Z M3,11 L14,11 C14.5522847,11 15,11.4477153 15,12 C15,12.5522847 14.5522847,13 14,13 L3,13 C2.44771525,13 2,12.5522847 2,12 C2,11.4477153 2.44771525,11 3,11 Z">
+            </path>
+          </svg>
         </div>
-        <!-- 初始化logo -->
-        <div class="aui-header-log collapsed-container" *ngIf="!cookieService.isInited">
-          <aui-logo-title [tinySizeFont]="true"></aui-logo-title>
+        <div class="collapsed-container">
+          <aui-logo-title [tinySizeFont]="true" [cyberDarkHeader]="cyberDarkHeader"></aui-logo-title>
         </div>
-        <lv-group *ngIf="!collapsed">
-          <i class="aui-collapsed-logo" style="width: 0px;"></i>
-        </lv-group>
-        <!-- 全局检索 -->
-        <lv-group lvGutter='4px'
-          *ngIf="cookieService.isInited && !isHyperdetect && !isCyberEngine && router.url !== '/search'"
-          (click)="toggleSearch()" class="global-search">
-          <i lv-icon="aui-menu-search-dark" [lvColorState]="true"></i>
-          <span class="search-label">{{'common_search_copy_resource_label' | i18n}}</span>
-        </lv-group>
-        <div class="aui-header-operation">
+      </div>
+      <!-- 初始化logo -->
+      <div class="aui-header-log collapsed-container" *ngIf="!cookieService.isInited">
+        <aui-logo-title [tinySizeFont]="true"></aui-logo-title>
+      </div>
+      <lv-group *ngIf="!collapsed">
+        <i class="aui-collapsed-logo" style="width: 0px;"></i>
+      </lv-group>
+      <!-- 全局检索 -->
+      <lv-group lvGutter='4px'
+        *ngIf="cookieService.isInited && !isHyperdetect && !isCyberEngine && router.url !== '/search'"
+        (click)="toggleSearch()" class="global-search" #globalSearchTpl>
+        <i lv-icon="aui-menu-search-dark" [lvColorState]="true"></i>
+        <span class="search-label">{{'common_search_copy_resource_label' | i18n}}</span>
+      </lv-group>
+      <div class="aui-header-operation">
+        <!-- 备份向导 -->
+        <span class="aui-gutter-row-md" lv-tooltip="{{'protection_guide_title_label' | i18n}}" (click)="toggleGuide()"
+          *ngIf="cookieService.isInited && needGuideProduct" lv-popover [lvPopoverClosable]="false"
+          [lvPopoverContent]="guideContent" lvPopoverPosition="bottomRight" lvPopoverTrigger="customize"
+          [(lvPopoverVisible)]="guideTipShow">
+          <i lv-icon="aui-guide-small" #intelliMateIconTpl></i>
+        </span>
+        <!--    新人引导需要给多个图标操作加提示，所以需要单独成组    -->
+        <div class="aui-header-operation shortcut-op-container" #shortcutOpTpl>
           <ng-container *ngIf="cookieService.isInited">
-            <!-- 备份向导 -->
-            <span class="aui-gutter-row-md" lv-tooltip="{{'protection_guide_title_label' | i18n}}"
-              (click)="toggleGuide()" *ngIf="needGuideProduct" lv-popover [lvPopoverClosable]="false"
-              [lvPopoverContent]="guideContent" lvPopoverPosition="bottomRight" lvPopoverTrigger="customize"
-              [(lvPopoverVisible)]="guideTipShow">
-              <i lv-icon="aui-guide-small"></i>
-            </span>
             <!-- 集群 -->
-            <lv-group *ngIf="!cookieService.isCloudBackup && !isCyberEngine && !appUtilsService.isDecouple"
+            <lv-group *ngIf="!cookieService.isCloudBackup && !isCyberEngine && !appUtilsService.isDecouple && !appUtilsService.isDistributed"
               class="aui-gutter-row-md" lv-popover [lvPopoverContent]="clustersPopTemplate" [lvPopoverTrigger]="'click'"
               lvPopoverBlockPageScroll="true" lvPopoverMaskTransparent="true" lvPopoverPosition="bottomLeft"
               lvPopoverClassName="customer-cluster">
@@ -104,13 +106,14 @@
           <!-- 帮助 -->
           <span class="top-help" lv-popover [lvPopoverTrigger]="'click'" [lvPopoverPosition]="'bottom'"
             [lvPopoverHeader]="helpHeaderTpl" [lvPopoverContent]="helpContentTpl"
-            [lvPopoverClassName]="taskPopoverClass" lvTooltipPosition="bottom">
+            [lvPopoverClassName]="taskPopoverClass">
             <i lv-icon="aui-icon-menu-help-dark" class="aui-icon-large"></i>
           </span>
         </div>
+      </div>
 
     </lv-header>
-    
+
     <!-- DME用户的header -->
     <lv-header *ngIf="!isLogin && !isReportDetail && !isErrorPage && !isHcsUser && isDmeUser" lvFixed="true"
       class="aui-header-icon" [ngClass]="{'cyber-home-header':cyberDarkHeader}">
@@ -140,7 +143,9 @@
 <ng-template #titleTpl>
   <div *ngIf="cookieService.isInited" class="aui-menu-header">
     <aui-logo-title [isMenu]="true" [isWhiteColor]="true"></aui-logo-title>
-    <i lv-icon="aui-icon-menu-unfold" lvColorState="true" (click)="collapsed = true"></i>
+    <div #menuIconTpl class="menu-icon-container">
+      <i lv-icon="aui-icon-menu-unfold" lvColorState="true" (click)="collapsed = true"></i>
+    </div>
   </div>
 </ng-template>
 
@@ -233,10 +238,9 @@
                       ],
                       task.status
                     )" [lv-tooltip]="
-                      dataMapService.getLabel('Job_status', task.status)"                              
-                  lv-icon="aui-icon-job-status-pending">
+                      dataMapService.getLabel('Job_status', task.status)" lv-icon="aui-icon-job-status-pending">
                 </i>
-                </lv-group>
+              </lv-group>
               <lv-group lvDirection="vertical">
                 <span class="task-type-container">
                   <ng-container *ngIf="
@@ -315,7 +319,7 @@
                 </span>
                 <span class="alarm-time">
                   {{ isCyberEngine || isV1Alarm ? alarm.alarmTimeStr : (alarm.alarmTime * 1000 | date: 'yyyy-MM-dd
-                  HH:mm:ss': timeZone) }}
+                  HH:mm:ss': SYSTEM_TIME.timeZone) }}
                 </span>
                 <span class="alarm-link">></span>
               </div>
@@ -348,7 +352,7 @@
       {{'common_account_manage_label' | i18n}}
     </div>
     <section class="help-menu-section" [ngClass]="{'aui-gutter-column-sm': supportChangeTheme}">
-      <div class="n-help-link" (click)="modifyPwd()">
+      <div *ngIf="!_includes(notsupportModifyPwd,userType)" class="n-help-link" (click)="modifyPwd()">
         <div class="help-wrapper">
           <span>{{ 'common_update_password_label' | i18n }}</span>
         </div>
@@ -439,3 +443,51 @@
     {{'protection_guide_pop_know_label' | i18n}}
   </span>
 </ng-template>
+
+<lv-popover *ngIf="isDataBackup" #guidePopoverComponent lvClassName="new-comer-guidance-popover"
+  [lvHeader]="guideHeaderTpl" [lvContent]="guideContentTpl" [lvFooter]="guideFooterTpl" [lvVisible]="popoverShow"
+  [lvBackdrop]="true" [lvOrigin]="originEle" lvTrigger="customize" [lvOuterClosable]="false"
+  lvPosition="leftBottom"></lv-popover>
+
+<ng-template #guideHeaderTpl>
+  <div class="new-comer-guidance-header">
+    <span>{{ this.guideService.getGuideStep().name }}</span>
+    <span>{{ this.guideService.getGuideCurrentStep() }} / {{ this.guideService.getGuideStepSize() }}</span>
+  </div>
+</ng-template>
+<ng-template #guideContentTpl>
+  <div class="new-comer-guidance-content">
+    <!--  单项展示  -->
+    <span *ngIf="!this.guideService.getGuideStep()?.isGroup" class="new-comer-guidance-content-single">{{
+      this.guideService.getGuideStep().description }}</span>
+    <!--  分组多项展示  -->
+    <ng-container *ngIf="!!this.guideService.getGuideStep()?.isGroup">
+      <lv-group lvDirection="vertical" lvGutter="16px" class="new-comer-guidance-content-group">
+        <ng-container *ngFor="let item of this.guideService.getGuideStep().description">
+          <lv-group *ngIf="!!item.icon" lvDirection="vertical">
+            <div style="display: flex;align-items: center">
+              <i [lv-icon]="item.icon"></i>
+              <span class="bold-text icon-description">{{item.name|nil}}</span>
+            </div>
+            <span class="icon-description">
+              {{item.description|nil}}
+            </span>
+          </lv-group>
+          <lv-group *ngIf="!item.icon" lvDirection="vertical">
+            <span class="bold-text">{{item.name|nil}}</span>
+            <span>{{item.description|nil}}</span>
+          </lv-group>
+        </ng-container>
+      </lv-group>
+    </ng-container>
+  </div>
+</ng-template>
+<ng-template #guideFooterTpl>
+  <lv-group class="new-comer-guidance-footer-container" lvGutter="16px">
+    <button lv-button (click)="hideNewComerGuidance()" id="endGuideBtn">{{ 'protection_guide_end_label'|i18n }}</button>
+    <button lv-button (click)="nextStep()" id="nextGuideBtn"
+      *ngIf="guideService.getGuideCurrentStep() !== guideService.getGuideStepSize()">{{'common_next_label'|i18n}}</button>
+  </lv-group>
+</ng-template>
+
+<div *ngIf="cookieService.isInited" class="custom-overlay" #overlay></div>

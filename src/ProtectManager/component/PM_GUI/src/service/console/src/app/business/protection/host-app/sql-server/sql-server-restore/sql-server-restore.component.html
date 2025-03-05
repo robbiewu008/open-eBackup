@@ -94,9 +94,9 @@
         </lv-select>
       </lv-form-control>
     </lv-form-item>
-    <ng-container *ngIf="!isSupport">
+    <ng-container>
       <lv-form-item>
-        <lv-form-label lvRequired>
+        <lv-form-label [lvRequired]="!isSupport">
           {{ 'common_destination_path_label' | i18n }}
           <i
             lv-icon="aui-icon-help"

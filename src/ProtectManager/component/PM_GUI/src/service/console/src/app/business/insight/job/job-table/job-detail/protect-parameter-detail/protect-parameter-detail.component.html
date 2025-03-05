@@ -298,6 +298,14 @@
                 {{!!data?.backup_cold_data | textMap: 'Switch_Status'}}
             </lv-form-control>
         </lv-form-item>
+        <lv-form-item *ngIf="shareMode === dataMap.Shared_Mode.cifs.value">
+            <lv-form-label>
+                {{ 'protection_sparse_file_detect_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.sparse_file_detection | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
         <lv-form-item>
             <lv-form-label>
                 {{ 'protection_small_file_aggregation_label' | i18n }}
@@ -337,7 +345,7 @@
     <!-- 代理主机 -->
     <lv-form-item *ngIf="isProxy">
         <lv-form-label>
-            {{'protection_proxy_host_label' | i18n}}
+            {{'protection_client_label' | i18n}}
         </lv-form-label>
         <lv-form-control>
             <span class="flow-agent" [lv-tooltip]="agentName" lvTooltipPosition="bottom"

@@ -648,7 +648,7 @@ export class InstanceRegisterComponent implements OnInit {
       })
       .subscribe(res => {
         const result = res;
-        const scriptArray = [];
+        let scriptArray = [];
         const scripts = keys(result);
 
         each(scripts, item => {
@@ -664,6 +664,20 @@ export class InstanceRegisterComponent implements OnInit {
             supportType: get(result, `${item}.resource.auth.supportType`)
           });
         });
+        if (
+          this.formGroup.get('databaseType').value ===
+          DataMap.generalDbClusterType.sharding.value
+        ) {
+          scriptArray = filter(scriptArray, item => {
+            return item.value !== 'saphana';
+          });
+        }
+        // E6000不支持Gbase8a
+        if (this.appUtilsService.isDistributed) {
+          scriptArray = filter(scriptArray, item => {
+            return item.value !== 'gbase8a';
+          });
+        }
         this.scriptOptions = scriptArray;
 
         if (!isEmpty(this.item)) {

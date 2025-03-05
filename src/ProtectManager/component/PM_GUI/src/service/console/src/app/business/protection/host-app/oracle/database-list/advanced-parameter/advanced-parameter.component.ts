@@ -23,6 +23,7 @@ import {
   PolicyAction,
   ProtectedResourceApiService
 } from 'app/shared';
+import { PolicyActionEnum } from 'app/shared/api/models/policy-action-enum';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { InfoMessageService } from 'app/shared/services/info-message.service';
 import {
@@ -48,6 +49,11 @@ import { distinctUntilChanged } from 'rxjs/operators';
 })
 export class AdvancedParameterComponent implements OnInit {
   _isEmpty = isEmpty;
+  isCluster = false;
+  disableStorage = false; // 存储资源为空时，禁用存储层快照备份
+  disableStorageLabel = this.i18n.get(
+    'protection_oracle_storage_resource_empty_disable_label'
+  );
   osType;
   resourceData;
   resourceType;
@@ -124,8 +130,10 @@ export class AdvancedParameterComponent implements OnInit {
       this.osType = this.resourceData[0].environment?.osType;
     } else {
       this.osType = this.resourceData.environment?.osType;
-      this.showProxyHost =
+      this.isCluster =
         this.resourceData.subType === DataMap.Resource_Type.oracleCluster.value;
+      this.showProxyHost = this.isCluster;
+      this.disableStorage = isEmpty(this.resourceData.extendInfo.storages);
     }
     this.isWindows = this.osType === DataMap.Os_Type.windows.value;
     this.hiddenStorage =
@@ -141,9 +149,7 @@ export class AdvancedParameterComponent implements OnInit {
         ? 'common_script_agent_windows_position_label'
         : 'common_script_oracle_linux_help_label'
     );
-    if (
-      this.resourceData.subType === DataMap.Resource_Type.oracleCluster.value
-    ) {
+    if (this.isCluster) {
       this.unsupportedLabel = this.i18n.get(
         'protection_oracle_snapshot_storage_diff_replicate_label'
       );
@@ -214,13 +220,17 @@ export class AdvancedParameterComponent implements OnInit {
   initForm() {
     const { protectedObject } = this.resourceData;
     const extParameters = protectedObject?.extParameters || {};
+    // 集群需要限制差异和复制 单机需要限制差异
+    const unSupportStorageArr = this.isCluster
+      ? [PolicyAction.DIFFERENCE, PolicyActionEnum.REPLICATION]
+      : [PolicyAction.DIFFERENCE];
     this.globalService.getState('slaObjectUpdated').subscribe(res => {
       // 进入高级参数组件是无法获取到slaList的，因为slaObject是异步更新的
       // 查询完sla后select-sla会发送更新消息，然后这里就能取到所有的slaList
       if (res) {
         this.unsupportStorage = some(
           this.resourceData?.slaObject?.policy_list,
-          item => item.action === PolicyAction.DIFFERENCE
+          item => unSupportStorageArr.includes(item.action)
         );
       }
     });

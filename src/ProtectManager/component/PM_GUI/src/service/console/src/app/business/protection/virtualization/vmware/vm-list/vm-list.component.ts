@@ -126,6 +126,8 @@ export class VmListComponent implements OnInit, OnChanges {
 
   currentDetailItemUuid;
 
+  tdAlign: boolean | string = false;
+
   @Output() updateTable = new EventEmitter();
 
   @ViewChild(DatatableComponent, { static: false }) lvTable: DatatableComponent;
@@ -248,6 +250,7 @@ export class VmListComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this.tdAlign = this.tab.id === ResourceType.VM ? '0px' : false;
     if (changes.tab) {
       this.columns = [
         {
@@ -307,7 +310,7 @@ export class VmListComponent implements OnInit, OnChanges {
         },
         {
           key: 'tags',
-          label: this.i18n.get('common_mark_label'),
+          label: this.i18n.get('common_vm_tag_label'),
           hidden: !(
             this.tab.id === ResourceType.VM &&
             this.tab.resType === ResourceType.VM
@@ -426,7 +429,8 @@ export class VmListComponent implements OnInit, OnChanges {
                 (!isEmpty(val.sla_id) ||
                   val.protection_status ===
                     DataMap.Protection_Status.protected.value) &&
-                hasProtectPermission(val)
+                hasProtectPermission(val) &&
+                val.in_group !== 'True'
               );
             })
           ) !== size(this.selection) || !size(this.selection);
@@ -437,7 +441,8 @@ export class VmListComponent implements OnInit, OnChanges {
               return (
                 !isEmpty(val.sla_id) &&
                 !val.sla_status &&
-                hasProtectPermission(val)
+                hasProtectPermission(val) &&
+                val.in_group !== 'True'
               );
             })
           ) !== size(this.selection);
@@ -451,13 +456,20 @@ export class VmListComponent implements OnInit, OnChanges {
               return (
                 !isEmpty(val.sla_id) &&
                 val.sla_status &&
-                hasProtectPermission(val)
+                hasProtectPermission(val) &&
+                val.in_group !== 'True'
               );
             })
-          ) !== size(this.selection);
+          ) !== size(this.selection) ||
+          size(this.selection) > CommonConsts.DEACTIVE_PROTECTION_MAX;
         item.tips = item.disabled
           ? this.i18n.get('protection_partial_resources_deactive_label')
           : '';
+        if (size(this.selection) > CommonConsts.DEACTIVE_PROTECTION_MAX) {
+          item.tips = this.i18n.get(
+            'protection_max_deactivate_protection_label'
+          );
+        }
       } else if (item.id === 'addTag') {
         item.disabled =
           !size(this.selection) ||
@@ -697,8 +709,9 @@ export class VmListComponent implements OnInit, OnChanges {
   }
 
   searchByLabel(label) {
+    label = label.map(e => e.value);
     assign(this.filterParams.source, {
-      labelName: trim(label)
+      labelList: label
     });
     this.refresh();
   }

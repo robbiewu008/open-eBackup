@@ -144,6 +144,9 @@ export class PerformanceComponent implements OnInit, OnDestroy {
   noData = this.i18n.get('common_no_data_label');
   switchHelp = this.i18n.get('insight_performance_switch_help_label');
   switchOffContent = this.i18n.get('insight_performance_switch_off_label');
+  e1000ViewHelp = this.i18n.get(
+    'insight_decouple_performance_no_data_tip_label'
+  );
   isCloudbackup = includes(
     [
       DataMap.Deploy_Type.cloudbackup.value,

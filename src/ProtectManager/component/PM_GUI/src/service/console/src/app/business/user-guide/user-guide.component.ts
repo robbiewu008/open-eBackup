@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 import {
   ApplicationType,
   DataMap,
+  E6000SupportApplication,
   GlobalService,
   I18NService,
   SUB_APP_REFRESH_FLAG
@@ -33,8 +34,10 @@ import {
   includes,
   omit,
   reject,
+  remove,
   values
 } from 'lodash';
+import { TagItem } from '@iux/live';
 
 @Component({
   selector: 'aui-user-guide',
@@ -48,13 +51,31 @@ export class UserGuideComponent implements OnInit {
     main: 'main',
     backup: 'backup',
     replication: 'replication',
-    archive: 'archive'
+    archive: 'archive',
+    comerGuide: 'comerGuide'
   };
+  // 特殊类型map表
+  clientMap = {
+    SAN: 'SAN',
+    HotADD: 'HotADD',
+    NBD: 'NBD',
+    Storage: 'Storage',
+    RMAN: 'RMAN',
+    Windows: 'Windows',
+    Linux: 'Linux'
+  };
+  // tag需要的数组
+  tagData: TagItem[] = [{ label: '' }];
   guideSteps = [
     {
       id: this.guideMap.backup,
       title: this.i18n.get('protection_guide_backup_title_label'),
       desc: this.i18n.get('protection_guide_backup_desc_label')
+    },
+    {
+      id: this.guideMap.comerGuide,
+      title: this.i18n.get('common_comer_guidance_label'),
+      desc: this.i18n.get('common_comer_guidance_tips_label')
     }
   ];
   applicationConfig = cloneDeep(USER_GUIDE_APPLICATION_CONFIG);
@@ -63,6 +84,10 @@ export class UserGuideComponent implements OnInit {
   currentGuide = this.guideMap.main;
 
   activeStep = 1;
+  firstSelect;
+  childSelect;
+  childOptions = [];
+  includes = includes;
 
   // 当前激活的资源类型
   activeAppId: string;
@@ -98,8 +123,8 @@ export class UserGuideComponent implements OnInit {
   }
 
   initApplicationConfig() {
-    // E1000和E6000没有NAS文件系统和通用共享
-    if (this.appUtilsService.isDecouple || this.appUtilsService.isDistributed) {
+    // E1000没有NAS文件系统和通用共享
+    if (this.appUtilsService.isDecouple) {
       each(this.applicationConfig, (item: any) => {
         item.apps = reject(item.apps, app =>
           includes(
@@ -112,6 +137,20 @@ export class UserGuideComponent implements OnInit {
           )
         );
       });
+      // E1000暂时不支持新人指引
+      remove(this.guideSteps, { id: this.guideMap.comerGuide });
+    }
+
+    // E6000屏蔽不支持的应用
+    if (this.appUtilsService.isDistributed) {
+      each(this.applicationConfig, (item: any) => {
+        item.apps = reject(
+          item.apps,
+          app => !includes(E6000SupportApplication, app.subType)
+        );
+      });
+      // E6000暂时不支持新人指引
+      remove(this.guideSteps, { id: this.guideMap.comerGuide });
     }
     each(this.applicationConfig, (item: any) => {
       item.apps = reject(item.apps, app => app?.hidden);
@@ -123,6 +162,14 @@ export class UserGuideComponent implements OnInit {
   }
 
   toGuide(step: string) {
+    if (step === this.guideMap.comerGuide) {
+      this.endGuide();
+      localStorage.setItem('new_comer_guider', 'true');
+      this.globalService.emitStore({
+        action: 'new_comer_guider',
+        state: localStorage.getItem('new_comer_guider')
+      });
+    }
     this.currentGuide = step;
   }
 
@@ -200,6 +247,13 @@ export class UserGuideComponent implements OnInit {
       this.modeClick();
     } else {
       this.backupSteps = values(backupSteps);
+    }
+    // 初始化选项label
+    if (this.activeApp?.options) {
+      this.activeApp.options.map(e => {
+        e.label = this.i18n.get(e.label);
+        return e;
+      });
     }
 
     each(this.backupSteps, item => {
@@ -279,7 +333,21 @@ export class UserGuideComponent implements OnInit {
     }
   }
 
-  continnue() {
+  continue() {
     this.currentGuide = this.guideMap.backup;
   }
+  firstChange(e) {
+    if (e === 'snapshotBackup') {
+      this.childOptions = this.activeApp.options.find(item => {
+        return item.key === e;
+      }).children;
+    } else {
+      this.childOptions = [];
+      this.childSelect = '';
+    }
+  }
+  // select绑定函数
+  childChange(e) {}
+
+  protected readonly ApplicationType = ApplicationType;
 }

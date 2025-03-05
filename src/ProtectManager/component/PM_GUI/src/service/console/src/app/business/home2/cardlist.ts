@@ -32,7 +32,8 @@ export const cardlist = [
     name: 'capacity',
     title: 'common_home_capacity_label',
     subtitle: 'common_home_physical_label',
-    index: 2
+    index: 2,
+    capacityTooltip: true
   },
   {
     name: 'alarm',

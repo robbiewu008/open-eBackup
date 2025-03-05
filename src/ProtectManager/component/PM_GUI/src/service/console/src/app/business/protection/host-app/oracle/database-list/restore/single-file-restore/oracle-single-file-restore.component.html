@@ -59,7 +59,7 @@
                 <button lv-button (click)="resetAllRestoreLocation(i)">
                   {{'common_reset_label' | i18n}}
                 </button>
-                  <button lv-button (click)="selectAllFilesChange(i)" [disabled]="!_isNil(selectingIndex) && i!==selectingIndex">
+                  <button lv-button (click)="selectAllFilesChange(i)">
                       {{(isAllCheck(i) ? 'system_resourceset_cancel_all_select_label':'system_resourceset_all_select_label') | i18n}}
                   </button>
               </lv-group>

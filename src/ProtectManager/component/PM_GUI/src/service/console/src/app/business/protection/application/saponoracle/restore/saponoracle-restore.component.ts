@@ -183,12 +183,18 @@ export class SaponoracleRestoreComponent implements OnInit {
     });
   }
   getParams() {
+    const targetEnvironmentOption = this.targetOptions.find(element => {
+      return element.key === this.formGroup.value.target;
+    });
+    const targetEnvironment =
+      targetEnvironmentOption?.parentUuid ||
+      targetEnvironmentOption?.parent_uuid;
     const params = {
       copyId: this.rowCopy.uuid,
       targetEnv:
         this.formGroup.value.restoreLocation === RestoreV2LocationType.ORIGIN
           ? this.resourceData?.parentUuid || this.resourceData?.parent_uuid
-          : this.resourceData?.parentUuid || this.resourceData?.parent_uuid,
+          : targetEnvironment,
       restoreType:
         this.restoreType === RestoreV2Type.CommonRestore
           ? RestoreV2Type.CommonRestore
@@ -209,6 +215,9 @@ export class SaponoracleRestoreComponent implements OnInit {
     if (this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value) {
       assign(params, {
         extendInfo: {
+          CHANNELS: this.formGroup.get('numberOfChannelOpen').value
+            ? this.formGroup.get('numberOfChannels').value
+            : '',
           restoreTimestamp: this.rowCopy.restoreTimeStamp
         }
       });

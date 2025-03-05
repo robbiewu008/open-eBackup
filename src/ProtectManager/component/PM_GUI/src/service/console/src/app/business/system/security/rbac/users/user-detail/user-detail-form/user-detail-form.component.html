@@ -30,7 +30,8 @@
         {{data.userName}}
       </lv-form-control>
     </lv-form-item>
-    <lv-form-item *ngIf="data.userType === dataMap.loginUserType.local.value">
+    <lv-form-item
+      *ngIf="includes([dataMap.loginUserType.local.value,dataMap.loginUserType.ldap.value,dataMap.loginUserType.ldapGroup.value],data.userType)">
       <lv-form-label>
         {{ 'common_login_method_label' | i18n }}
       </lv-form-label>
@@ -58,6 +59,13 @@
       </lv-form-control>
     </lv-form-item>
   </div>
+  <ng-container *ngIf="isShowStorage">
+    <div class="formGroup-h1">{{'system_auth_storage_label' | i18n}}</div>
+    <ng-container *ngIf="isShowUnit">
+      <aui-distributed-nas-list [isRbac]="true" [data]="data" [isDetail]="!!data" [isGeneral]="!data"
+        [resourceSetMap]="resourceSetMap"></aui-distributed-nas-list>
+    </ng-container>
+  </ng-container>
   <div class="formGroup-h1">{{'system_associated_role_and_resource_label' | i18n}}</div>
   <div class="formGroup-h2">{{'common_role_label' | i18n}}</div>
   <!--角色下展表及树表-->
@@ -66,7 +74,11 @@
     <aui-role-auth-tree [data]="item"></aui-role-auth-tree>
   </ng-template>
   <div class="formGroup-h2">{{'common_resource_set_label' | i18n}}</div>
-  <lv-pro-table #resourceDataTable [config]="resourceTableConfig" [data]="resourceData.tableData"></lv-pro-table>
+  <lv-pro-table *ngIf="isShowResourceSet" #resourceDataTable
+    [config]="resourceTableConfig" [data]="resourceData.tableData"></lv-pro-table>
+  <lv-alert lvType="info"
+    *ngIf="!isShowResourceSet">{{'system_built_in_role_resourceset_tip_label' |
+    i18n}}</lv-alert>
 </lv-form>
 
 <ng-template #roleNameTpl let-item>

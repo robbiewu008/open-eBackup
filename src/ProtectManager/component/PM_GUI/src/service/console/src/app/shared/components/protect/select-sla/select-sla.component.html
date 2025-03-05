@@ -58,47 +58,24 @@
             <lv-radio [lvViewType]="'custom'" [lvValue]="item.uuid" [lvDisabled]="disableSLA || item.disabled">
               <div lvTooltipClassName="card-tip" lvTooltipPosition="bottom" (mouseenter)="cardEnter(item)"
                 [lv-tooltip]="cardTipTemplate" class="card" [ngClass]="{'select': group.isChecked(item.uuid)}">
-                <ng-container [ngSwitch]="item.name">
+                <ng-container>
                   <div class="sla-status-container">
-                    <ng-container *ngIf="!['Gold','Silver','Bronze'].includes(item.name); else elseTemplate">
-                      <i class="sla-icon user-define"
-                        [ngClass]="{'user-define-disabled':disableSLA || item.disabled}"></i>
-                      <span class="sla-name" [ngClass]="{'sla-disabled':disableSLA || item.disabled}"
-                        (click)="getDetail($event, item)" lv-overflow lvTooltipTheme="light"
-                        lvTooltipPosition="topLeft">{{item.name}}</span>
-                      <span class="guide-recommend-label mgt-8" *ngIf="showGuideNew(item)">
+                    <div>
+                        <ng-container *ngIf="!['Gold','Silver','Bronze'].includes(item.name); else elseTemplate">
+                            <i class="sla-icon" lv-icon="aui-sla-icon-user-define"
+                               [ngClass]="{'user-define-disabled':disableSLA || item.disabled}"></i>
+                            <span class="sla-name" [ngClass]="{'sla-disabled':disableSLA || item.disabled}" lv-overflow lvTooltipTheme="light"
+                                  lvTooltipPosition="topLeft">{{item.name}}</span>
+                            <span class="guide-recommend-label mgt-8" *ngIf="showGuideNew(item)">
                         {{'protection_guide_new_resource_label' | i18n}}
                       </span>
-                    </ng-container>
-                    <ng-template #elseTemplate>
-                      <i class="sla-icon"
-                        [ngClass]="{'gold': item.name === 'Gold', 'silver': item.name === 'Silver', 'bronze': item.name === 'Bronze'}"></i>
-                      <span class="sla-name" (click)="getDetail($event, item)" lv-overflow>{{item.name}}</span>
-                    </ng-template>
-                  </div>
-                  <div class="sla-icon-container">
-                    <ng-container *ngSwitchCase="'Gold'">
-                      <img src="assets/img/sla-gold.png">
-                    </ng-container>
-                    <ng-container *ngSwitchCase="'Silver'">
-                      <img src="assets/img/sla-silver.png">
-                    </ng-container>
-                    <ng-container *ngSwitchCase="'Bronze'">
-                      <img src="assets/img/sla-bronze.png">
-                    </ng-container>
-                    <ng-container *ngSwitchDefault>
-                      <ng-container *ngIf="isCyberEngine; else elseImgTemplate">
-                        <img src="assets/img/detection_policy.svg">
-                      </ng-container>
-                      <ng-template #elseImgTemplate>
-                        <ng-container *ngIf="(!disableSLA && !item.disabled) else disableSlaTpl">
-                          <img src="assets/img/sla-user_defined.png">
                         </ng-container>
-                        <ng-template #disableSlaTpl>
-                          <img src="assets/img/replication-sla-disabled.svg">
+                        <ng-template #elseTemplate>
+                            <i class="sla-icon" [lv-icon]="getIconIdByAction(item.name)"></i>
+                            <span class="sla-name" (click)="getDetail($event, item)" lv-overflow>{{item.name}}</span>
                         </ng-template>
-                      </ng-template>
-                    </ng-container>
+                    </div>
+                   <span class="aui-link" (click)="getDetail($event, item)">{{'common_view_label'|i18n}}</span>
                   </div>
                 </ng-container>
               </div>
@@ -108,8 +85,8 @@
       </lv-radio-group>
       <div class="aui-paginator-wrap">
         <lv-paginator lvMode="simple" [lvPageSize]="pageSize" [lvPageIndex]="pageIndex1" [lvTotal]="total"
-          (lvPageChange)="slaListpageChange($event)" [lvPageSizeOptions]="sizeOptions" [lvShowPageSizeOptions]="false"
-          [hidden]="!total">
+                      (lvPageChange)="slaListPageChange($event)" [lvPageSizeOptions]="sizeOptions" [lvShowPageSizeOptions]="false"
+                      [hidden]="!total">
         </lv-paginator>
       </div>
     </div>
@@ -235,7 +212,7 @@
           <tbody>
             <tr *ngFor='let item of lvTable.renderData'>
               <td width="40px" (click)='selectionRow(item.uuid)' [ngClass]="{'disable-click':disableSLA}">
-                <label lv-radio [ngModel]='lvTable.isSelected(item) || resourceData.sla_id == item.uuid'
+                <label style="margin-top: 6px" lv-radio [ngModel]='lvTable.isSelected(item) || resourceData.sla_id == item.uuid'
                   [lvDisabled]="disableSLA || item.disabled"></label>
               </td>
               <td>
@@ -262,8 +239,8 @@
       </ng-template>
       <div class="aui-paginator-wrap sla-paginator-padding">
         <lv-paginator lvMode="simple" [lvPageSize]="pageSize" [lvPageIndex]="pageIndex2" [lvTotal]="total"
-          (lvPageChange)="slaDatasPageChange($event)" [lvPageSizeOptions]="sizeOptions" [lvShowPageSizeOptions]="false"
-          [hidden]="!total">
+                      (lvPageChange)="slaDataPageChange($event)" [lvPageSizeOptions]="sizeOptions" [lvShowPageSizeOptions]="false"
+                      [hidden]="!total">
         </lv-paginator>
       </div>
     </div>

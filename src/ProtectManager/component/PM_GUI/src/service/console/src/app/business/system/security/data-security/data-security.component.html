@@ -38,7 +38,7 @@
         <div class="dashed-line"></div>
         <div *ngIf="viewSettingFlag">
             <lv-form>
-                <ng-container *ngIf="!isX3000">
+                <ng-container>
                     <lv-form-item>
                         <lv-form-label>
                             {{ 'system_replication_encryption_label' | i18n }}
@@ -65,7 +65,7 @@
         </div>
         <div *ngIf="!viewSettingFlag">
             <lv-form [formGroup]="formGroup">
-                <ng-container *ngIf="!isX3000 && !appUtilsService.isDistributed">
+                <ng-container>
                     <lv-form-item>
                         <lv-form-label>
                             {{ 'system_replication_encryption_label' | i18n }}

@@ -19,6 +19,7 @@ import {
   CookieService,
   DataMap,
   DataMapService,
+  E6000SupportAppValue,
   FileLevelSearchManagementService,
   GlobalService,
   I18NService,
@@ -85,6 +86,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       item.isLeaf = true;
       return item;
     });
+  tagLoading = false;
   nodeTypeOptions = this.dataMapService
     .toArray('Global_Search_Node_Type')
     .map(item => {
@@ -132,8 +134,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       },
       {
         value: `${FilterType.NutanixVm}`,
-        label: this.i18n.get('common_nutanix_label'),
-        hidden: true
+        label: this.i18n.get('common_nutanix_label')
       },
       {
         value: `${FilterType.HDFSFileset}`,
@@ -193,11 +194,10 @@ export class SearchComponent implements OnInit, OnDestroy {
       },
       {
         value: `${DataMap.Resource_Type.AntDB.value},${DataMap.Resource_Type.AntDBInstance.value},${DataMap.Resource_Type.AntDBClusterInstance.value}`,
-        label: this.i18n.get('common_antdb_label'),
-        hidden: true
+        label: this.i18n.get('common_antdb_label')
       },
       {
-        value: DataMap.Resource_Type.oracle.value,
+        value: `${DataMap.Resource_Type.oracle.value},${DataMap.Resource_Type.oracleCluster.value}`,
         label: this.i18n.get('common_oracle_label')
       },
       {
@@ -238,7 +238,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       },
       {
         value: `${DataMap.Resource_Type.ExchangeSingle.value},${DataMap.Resource_Type.ExchangeGroup.value},${DataMap.Resource_Type.ExchangeDataBase.value},${DataMap.Resource_Type.ExchangeDataBase.value},${DataMap.Resource_Type.ExchangeEmail.value}`,
-        label: this.i18n.get('common_exchange_label')
+        label: this.i18n.get('common_exchange_label'),
+        hidden: this.appUtilsService.isDistributed
       },
       {
         value: `${DataMap.Resource_Type.KingBaseCluster.value},${DataMap.Resource_Type.KingBaseInstance.value},${DataMap.Resource_Type.KingBaseClusterInstance.value}`,
@@ -278,8 +279,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       },
       {
         value: `${DataMap.Resource_Type.Saponoracle.value},${DataMap.Resource_Type.saponoracleDatabase.value}`,
-        label: this.i18n.get('common_sap_on_oracle_label'),
-        hidden: true
+        label: this.i18n.get('common_sap_on_oracle_label')
       },
       {
         value: `${DataMap.Resource_Type.generalDatabase.value}`,
@@ -307,8 +307,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       },
       {
         value: `${DataMap.Resource_Type.nutanixCluster.value},${DataMap.Resource_Type.nutanixHost.value},${DataMap.Resource_Type.nutanixVm.value}`,
-        label: this.i18n.get('common_nutanix_label'),
-        hidden: true
+        label: this.i18n.get('common_nutanix_label')
       },
       {
         value: `${DataMap.Resource_Type.Kubernetes.value},${DataMap.Resource_Type.KubernetesNamespace.value},${DataMap.Resource_Type.KubernetesStatefulset.value}`,
@@ -434,6 +433,37 @@ export class SearchComponent implements OnInit, OnDestroy {
         v => v.value === SearchRange.LABELS
       );
     }
+
+    if (this.appUtilsService.isDistributed) {
+      this.resourceTypeFilters[
+        this.searchOptions.RESOURCES
+      ] = this.resourceTypeFilters[
+        this.searchOptions.RESOURCES
+      ].filter(resource =>
+        E6000SupportAppValue.some(item =>
+          resource.value.split(',').includes(item)
+        )
+      );
+
+      const supprotFilterType = [
+        FilterType.Fileset,
+        FilterType.VimVirtualMachine,
+        FilterType.NasShare,
+        FilterType.FusionCompute,
+        FilterType.FusionOneCompute,
+        FilterType.OpenstackCloudServer,
+        FilterType.HCSCloudHost
+      ];
+      this.resourceTypeFilters[
+        this.searchOptions.COPIES
+      ] = this.resourceTypeFilters[this.searchOptions.COPIES].filter(resource =>
+        supprotFilterType.some(item =>
+          resource.value.split(',').includes(String(item))
+        )
+      );
+      this.resourceTypeOption = this.resourceTypeFilters[this.activeIndex];
+    }
+
     assign(this.resourceTypeFilters, {
       [this.searchOptions.LABELS]: this.resourceTypeFilters[
         this.searchOptions.RESOURCES
@@ -455,7 +485,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.initForm();
     this.initResValues();
     this.getAdvanceParams();
-    this.getLabelOptions(true);
+    this.getLabelOptions(false);
   }
 
   getLabelOptions(akLoading?) {
@@ -463,7 +493,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       startPage: CommonConsts.PAGE_START_EXTRA,
       akLoading: akLoading
     };
-
+    this.tagLoading = true;
     this.appUtilsService.getResourceByRecursion(
       extParams,
       params => this.labelApiService.queryLabelUsingGET(params),
@@ -476,6 +506,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             isLeaf: true
           };
         });
+        this.tagLoading = false;
         this.labelOptions = arr;
       }
     );

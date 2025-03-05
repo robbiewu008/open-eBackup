@@ -34,4 +34,14 @@ export class RoleDetailComponent implements OnInit {
   back() {
     this.openPage.emit();
   }
+  modify() {
+    this.openPage.emit({
+      name: 'createRole',
+      data: {
+        rowData: this.data,
+        isModify: true,
+        isClone: false
+      }
+    });
+  }
 }

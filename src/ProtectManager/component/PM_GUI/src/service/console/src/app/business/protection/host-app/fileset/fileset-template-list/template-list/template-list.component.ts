@@ -376,9 +376,10 @@ export class TemplateListComponent implements OnInit, OnDestroy {
   }
 
   searchByLabel(label) {
+    label = label.map(e => e.value);
     assign(this.filterParams, {
       labelCondition: {
-        labelName: trim(label)
+        labelList: label
       }
     });
     this.getTemplates();

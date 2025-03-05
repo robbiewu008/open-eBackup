@@ -20,6 +20,10 @@
     <ng-container *ngTemplateOutlet="expandTableTpl; context: { $implicit: tableDataBackup }">
     </ng-container>
   </lv-tab>
+  <lv-tab lvTitle="{{'common_replication_network_label' | i18n}}" lvId='replication'>
+    <ng-container *ngTemplateOutlet="expandTableTpl; context: { $implicit: tableDataCopy }">
+    </ng-container>
+  </lv-tab>
   <lv-tab lvTitle="{{'common_archived_network_config_label' | i18n}}" lvId='archived'>
     <ng-container *ngTemplateOutlet="expandTableTpl; context: { $implicit: tableDataArchived }">
     </ng-container>

@@ -241,10 +241,13 @@ export class DistributedInitComponent implements OnInit {
         initNetworkBody: {
           storageAuth: get(this.componentData, 'storageAuth'),
           backupNetworkConfig: {
-            pacificInitNetWorkInfoList: this.selectedData['backup']
+            pacificInitNetWorkInfoList: this.selectedData?.backup
+          },
+          copyNetworkConfig: {
+            pacificInitNetWorkInfoList: this.selectedData?.replication
           },
           archiveNetworkConfig: {
-            pacificInitNetWorkInfoList: this.selectedData['archived']
+            pacificInitNetWorkInfoList: this.selectedData?.archived
           }
         },
         akOperationTips: false

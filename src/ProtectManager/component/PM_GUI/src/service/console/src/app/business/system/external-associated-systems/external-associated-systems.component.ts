@@ -21,6 +21,7 @@ import {
 } from '@angular/core';
 import {
   CookieService,
+  DataMapService,
   ExternalSystemService,
   getPermissionMenuItem,
   I18NService,
@@ -60,6 +61,7 @@ export class ExternalAssociatedSystemsComponent
 
   constructor(
     public i18n: I18NService,
+    public dataMapService: DataMapService,
     public drawModalService: DrawModalService,
     public externalSystemService: ExternalSystemService,
     public cdr?: ChangeDetectorRef,
@@ -133,12 +135,22 @@ export class ExternalAssociatedSystemsComponent
         name: this.i18n.get('common_ip_label')
       },
       {
+        key: 'status',
+        name: this.i18n.get('common_status_label'),
+        cellRender: {
+          type: 'status',
+          config: this.dataMapService.toArray('resource_LinkStatus')
+        }
+      },
+      {
         key: 'uuid',
-        name: this.i18n.get('common_uuid_label')
+        name: this.i18n.get('common_uuid_label'),
+        width: 300
       },
       {
         key: 'port',
-        name: this.i18n.get('common_port_label')
+        name: this.i18n.get('common_port_label'),
+        width: 150
       },
       {
         key: 'username',

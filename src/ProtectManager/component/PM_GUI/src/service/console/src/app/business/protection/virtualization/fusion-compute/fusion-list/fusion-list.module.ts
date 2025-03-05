@@ -23,6 +23,7 @@ import { FusionListComponent } from './fusion-list.component';
 import { FusionSummaryModule } from './fusion-summary/fusion-summary.module';
 import { SelectDatabaseListModule } from './select-database-list/select-database-list.module';
 import { CustomTableSearchModule } from 'app/shared/components/custom-table-search/custom-table-search.module';
+import { CustomTableFilterModule } from '../../../../../shared/components/custom-table-filter/custom-table-filter.module';
 
 @NgModule({
   declarations: [FusionListComponent],
@@ -37,7 +38,8 @@ import { CustomTableSearchModule } from 'app/shared/components/custom-table-sear
     SelectInstanceDatabaseModule,
     FusionAdvancedParameterModule,
     FusionComputeCopyDataModule,
-    CustomTableSearchModule
+    CustomTableSearchModule,
+    CustomTableFilterModule
   ],
   exports: [FusionListComponent]
 })

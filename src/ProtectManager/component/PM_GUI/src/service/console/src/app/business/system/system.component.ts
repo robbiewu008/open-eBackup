@@ -237,7 +237,11 @@ export class SystemComponent implements OnInit {
           {
             id: 'alarm-notify-settings',
             hidden: !includes(
-              [DataMap.Deploy_Type.cyberengine.value],
+              [
+                DataMap.Deploy_Type.cyberengine.value,
+                DataMap.Deploy_Type.decouple.value,
+                DataMap.Deploy_Type.e6000.value
+              ],
               this.i18n.get('deploy_type')
             ),
             label: this.i18n.get('system_alarm_term_notify_label'),

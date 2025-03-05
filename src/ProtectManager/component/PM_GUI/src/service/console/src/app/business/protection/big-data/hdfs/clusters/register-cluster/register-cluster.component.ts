@@ -619,6 +619,7 @@ export class RegisterClusterComponent implements OnInit {
   }
 
   onOK(): Observable<void> {
+    const isHDFS = !this.data?.isHbase;
     if (this.formGroup.invalid) {
       return;
     }
@@ -672,8 +673,13 @@ export class RegisterClusterComponent implements OnInit {
           : 'false'
       });
     }
+    // 只有HDFS修改场景才特殊提示
+    const warningLabel =
+      this.data?.uuid && isHDFS
+        ? 'protection_hdfs_register_warn_label'
+        : 'protection_hbase_register_warn_label';
     this.warningMessageService.create({
-      content: this.i18n.get('protection_hdfs_hbase_register_warn_label'),
+      content: this.i18n.get(warningLabel),
       onOK: () => {
         !isEmpty(omit(this.data, 'isHbase'))
           ? this.onModify(body).subscribe(() => {

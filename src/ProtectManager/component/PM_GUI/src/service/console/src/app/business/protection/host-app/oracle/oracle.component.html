@@ -24,6 +24,11 @@
           <aui-database-list></aui-database-list>
         </ng-template>
       </lv-tab>
+        <lv-tab lvTitle="{{'protection_pdb_set_label' | i18n}}" [lvId]="dataMap.Resource_Type.oraclePDB.value">
+            <ng-template lv-tab-lazy>
+                <aui-pdb-set-list></aui-pdb-set-list>
+            </ng-template>
+        </lv-tab>
     </lv-tabs>
   </div>
 </div>

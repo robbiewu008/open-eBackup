@@ -34,6 +34,7 @@ import {
   I18NService,
   MODAL_COMMON,
   RoleType,
+  VirtualResourceService,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -126,6 +127,7 @@ export class ResourceStatisticComponent
     private detailService: ResourceDetailService,
     private warningMessageService: WarningMessageService,
     private copyControllerService: CopyControllerService,
+    private virtualResourceService: VirtualResourceService,
     private copiesDetectReportService: CopiesDetectReportService,
     private antiRansomwarePolicyApiService: AntiRansomwarePolicyApiService
   ) {}
@@ -191,6 +193,23 @@ export class ResourceStatisticComponent
   }
 
   getResourceDetail(item) {
+    // vmware单独处理
+    if (item.resource_sub_type === DataMap.Resource_Type.virtualMachine.value) {
+      this.virtualResourceService
+        .queryResourcesV1VirtualResourceGet({
+          pageSize: CommonConsts.PAGE_SIZE,
+          pageNo: CommonConsts.PAGE_START,
+          conditions: JSON.stringify({
+            uuid: item.resource_id
+          })
+        })
+        .subscribe(vmRes =>
+          this.detailService.openDetailModal(item.resource_sub_type, {
+            data: first(vmRes.items)
+          })
+        );
+      return;
+    }
     const params = {
       pageSize: CommonConsts.PAGE_SIZE,
       pageNo: CommonConsts.PAGE_START,
@@ -442,7 +461,7 @@ export class ResourceStatisticComponent
     const cols: TableCols[] = [
       {
         key: 'name',
-        name: this.i18n.get('common_name_label'),
+        name: this.i18n.get('protection_resource_name_label'),
         filter: {
           type: 'search',
           filterMode: 'contains'
@@ -515,18 +534,11 @@ export class ResourceStatisticComponent
         cellRender: this.repicasTpl
       },
       {
-        key: 'prepare_copy_num',
-        name: this.i18n.get('common_ready_label'),
+        key: 'infected_copy_num',
+        name: this.i18n.get('explore_infected_label'),
         thAlign: 'right',
         sort: true,
-        cellRender: this.prepareRepicasTpl
-      },
-      {
-        key: 'detecting_copy_num',
-        name: this.i18n.get('explore_detecting_label'),
-        thAlign: 'right',
-        sort: true,
-        cellRender: this.detectingRepicasTpl
+        cellRender: this.infectedRepicasTpl
       },
       {
         key: 'uninfected_copy_num',
@@ -536,18 +548,25 @@ export class ResourceStatisticComponent
         cellRender: this.uninfectedRepicasTpl
       },
       {
-        key: 'infected_copy_num',
-        name: this.i18n.get('explore_infected_label'),
-        thAlign: 'right',
-        sort: true,
-        cellRender: this.infectedRepicasTpl
-      },
-      {
         key: 'abnormal_copy_num',
-        name: this.i18n.get('common_status_exception_label'),
+        name: this.i18n.get('explore_detecte_fail_label'),
         thAlign: 'right',
         sort: true,
         cellRender: this.abnormalRepicasTpl
+      },
+      {
+        key: 'detecting_copy_num',
+        name: this.i18n.get('explore_detecting_label'),
+        thAlign: 'right',
+        sort: true,
+        cellRender: this.detectingRepicasTpl
+      },
+      {
+        key: 'prepare_copy_num',
+        name: this.i18n.get('common_ready_label'),
+        thAlign: 'right',
+        sort: true,
+        cellRender: this.prepareRepicasTpl
       },
       {
         key: 'uninspected_copy_num',

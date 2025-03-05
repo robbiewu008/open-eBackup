@@ -86,7 +86,6 @@
       <ng-template #pwdSuffixTpl>
         <i
           [lv-icon]="pwdVisible ? 'aui-icon-eye-open' : 'aui-icon-eye-close'"
-          [class]="{ 'pos-polyfill': pwdVisible }"
           lvColorState="true"
           (click)="pwdVisible = !pwdVisible"
         ></i>
@@ -96,7 +95,7 @@
 
   <lv-form-item>
     <lv-form-label lvRequired>
-      {{ 'protection_proxy_host_label' | i18n }}
+      {{ 'protection_clients_label' | i18n }}
       <i
         lv-icon="aui-icon-help"
         [lv-tooltip]="agentTipsTpl"

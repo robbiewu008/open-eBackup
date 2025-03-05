@@ -97,10 +97,6 @@ import {
       .max-content {
         max-width: 420px;
       }
-      .icon-eye-open {
-        position: relative;
-        top: 2px;
-      }
       .table-email-label {
         max-width: 80%;
       }

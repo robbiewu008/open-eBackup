@@ -14,9 +14,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
   BaseUtilService,
-  ClientManagerApiService,
   DataMap,
-  DataMapService,
   I18NService,
   ProtectedEnvironmentApiService,
   ProtectedResourceApiService,
@@ -50,25 +48,6 @@ export class RegisterGroupComponent implements OnInit {
   dataMap = DataMap;
   singleAgentsOptions = [];
   groupAgentOptions = [];
-
-  constructor(
-    private fb: FormBuilder,
-    private i18n: I18NService,
-    private dataMapService: DataMapService,
-    private appUtilsService: AppUtilsService,
-    private clientManagerApiService: ClientManagerApiService,
-    public baseUtilService: BaseUtilService,
-    private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
-    private protectedResourceApiService: ProtectedResourceApiService
-  ) {}
-
-  ngOnInit(): void {
-    this.isModify = !!this.rowData;
-    this.initForm();
-    this.getProxyOptions();
-    this.updateData();
-  }
-
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip,
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
@@ -88,6 +67,21 @@ export class RegisterGroupComponent implements OnInit {
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 10])
   };
 
+  constructor(
+    private fb: FormBuilder,
+    private i18n: I18NService,
+    private appUtilsService: AppUtilsService,
+    public baseUtilService: BaseUtilService,
+    private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
+    private protectedResourceApiService: ProtectedResourceApiService
+  ) {}
+
+  ngOnInit(): void {
+    this.isModify = !!this.rowData;
+    this.initForm();
+    this.getProxyOptions();
+    this.updateData();
+  }
   getProxyOptions() {
     const extParams = {
       conditions: JSON.stringify({

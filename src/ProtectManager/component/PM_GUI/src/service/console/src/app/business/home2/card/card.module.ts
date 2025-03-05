@@ -16,6 +16,7 @@ import { ButtonModule, SelectModule } from '@iux/live';
 import { SlaComplianceTooltipModule } from 'app/shared/components/sla-compliance-tooltip/sla-compliance-tooltip.module';
 import { CardComponent } from './card.component';
 import { BaseModule } from 'app/shared';
+import { CapacityTooltipModule } from '../../../shared/components/capacity-tooltip/capacity-tooltip.module';
 
 @NgModule({
   declarations: [CardComponent],
@@ -24,7 +25,8 @@ import { BaseModule } from 'app/shared';
     CommonModule,
     ButtonModule,
     SlaComplianceTooltipModule,
-    SelectModule
+    SelectModule,
+    CapacityTooltipModule
   ],
   exports: [CardComponent]
 })

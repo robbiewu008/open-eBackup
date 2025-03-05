@@ -24,9 +24,16 @@
 }
 
 .insight-refresh .lv-icon-host,
-.insight-export .lv-icon-host {
+.insight-export .lv-icon-host,
+.insight-export-alarm .lv-icon-host {
   width: 0.24rem;
   height: 0.24rem;
+}
+
+.insight-refresh:hover,
+.insight-export:hover,
+.insight-export-alarm:hover {
+  border-color: var(--live-angular-color-primary-hover);
 }
 
 .insight-export {
@@ -38,6 +45,19 @@
   padding-top: 4px;
   margin-right: 16px !important;
   border-radius: 4px;
+}
+
+.insight-export-alarm {
+  width: 32px;
+  height: 32px;
+  border: solid 1px var(--live-angular-color-border-secondary);
+  display: inline-block;
+  text-align: center;
+  border-radius: 4px;
+
+  i {
+    margin-top: 4px;
+  }
 }
 
 .insight-severity-control {

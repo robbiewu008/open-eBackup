@@ -102,15 +102,11 @@
       }}</span>
   </div>
   <ng-container
-    *ngIf="
-      formGroup.value.restoreTo === restoreLocationType.NEW &&
-      isFileLevelRestore &&
-      rowCopy.resource_sub_type !==
-        dataMap.Resource_Type.SQLServerInstance.value
-    "
-  >
+    *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
     <lv-form-item>
-      <lv-form-label lvRequired>
+      <lv-form-label [lvRequired]="isFileLevelRestore &&
+      rowCopy.resource_sub_type !==
+        dataMap.Resource_Type.SQLServerInstance.value">
         {{ 'common_destination_path_label' | i18n }}
         <i
           lv-icon="aui-icon-help"

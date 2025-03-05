@@ -35,6 +35,7 @@ import { ModifyResourceModule } from './modify-resource/modify-resource.module';
 import { ModifyAzModule } from './modify-az/modify-az.module';
 import { CustomTableSearchModule } from 'app/shared/components/custom-table-search/custom-table-search.module';
 import { LinkModule } from '@iux/live';
+import { CustomTableFilterModule } from '../../../../shared/components/custom-table-filter/custom-table-filter.module';
 
 @NgModule({
   declarations: [HostComponent],
@@ -60,7 +61,8 @@ import { LinkModule } from '@iux/live';
     ModifyResourceModule,
     ModifyAzModule,
     CustomTableSearchModule,
-    LinkModule
+    LinkModule,
+    CustomTableFilterModule
   ],
   providers: [ResourceDetailService]
 })

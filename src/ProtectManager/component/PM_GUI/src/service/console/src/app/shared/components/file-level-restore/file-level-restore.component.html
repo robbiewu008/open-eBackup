@@ -74,7 +74,7 @@
       </div>
       <!-- 恢复目标位置 -->
       <h3 class="aui-gutter-column-sm target-title">{{'protection_recovery_target_label' | i18n}}</h3>
-      <lv-form class="aui-gutter-column-md">
+      <lv-form [ngClass]="{'aui-gutter-column-md': !isShowTrim}">
         <lv-form-item>
           <lv-form-label lvRequired>
             {{'protection_restore_target_label' | i18n}}
@@ -89,7 +89,23 @@
             </lv-group>
           </lv-form-control>
         </lv-form-item>
+        <lv-form-item *ngIf="isShowTrim">
+          <lv-form-label>
+            {{'common_destination_path_label' | i18n}}
+          </lv-form-label>
+          <lv-form-control>
+            {{targetParams?.requestParams
+            ?.targetObject}}
+          </lv-form-control>
+        </lv-form-item>
       </lv-form>
+      <lv-group *ngIf="isShowTrim" class="aui-gutter-column-md" lvGutter="4px">
+        <lv-checkbox [(ngModel)]="isTrimPrefix">
+          {{'explore_fileset_keep_original_path_label' | i18n}}
+        </lv-checkbox>
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_fileset_file_level_restore_trim_tip_label' | i18n}}"
+          lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+      </lv-group>
       <!-- 恢复目标表格 -->
       <div class="target-table file-level-restore-tree">
         <ng-container *ngTemplateOutlet="selectedFileTreeData"></ng-container>
@@ -217,7 +233,12 @@
           </ng-container>
 
 
-          <lv-group lvGutter="8px" class="select-count" *ngIf="mountedSelection">
+          <lv-group lvGutter="8px" class="select-count" *ngIf="mountedSelection && ![
+          dataMap.Resource_Type.DWS_Cluster.value,
+          dataMap.Resource_Type.DWS_Database.value,
+          dataMap.Resource_Type.DWS_Schema.value,
+          dataMap.Resource_Type.DWS_Table.value
+        ].includes(childResType)">
             <span class="aui-text-label">{{
               'common_selected_label' | i18n: []:true
               }}</span>
@@ -282,7 +303,8 @@
                       dataMap.Resource_Type.DWS_Table.value,
                       dataMap.Resource_Type.ElasticsearchBackupSet.value,
                       dataMap.Resource_Type.tidbCluster.value,
-                      dataMap.Resource_Type.tidbDatabase.value
+                      dataMap.Resource_Type.tidbDatabase.value,
+                      dataMap.Resource_Type.OceanBaseCluster.value
                     ].includes(childResType)"></i>
         </th>
       </tr>
@@ -503,20 +525,20 @@
                   <lv-group [lvColumns]="['auto', '130px']" lvGutter="8px" class="tree-group">
                     <div lv-overflow class="file-container" [ngClass]="{ 'row-checked': rowChecked(item) }">
                       <i lv-icon="{{ item.icon }}" [lvColorState]="true"
-                        *ngIf="rowCopy.resource_sub_type !== dataMap.Resource_Type.HiveBackupSet.value"></i>
+                        *ngIf="rowCopy.resource_sub_type !== dataMap.Resource_Type.HiveBackupSet.value && !!item?.icon"></i>
                       {{
                       childResType ===
                       dataMap.Resource_Type.HBaseBackupSet.value
                       ? item.label
+                      : isDwsNew
+                      ? getDwsDisplayName(item)
                       : item.name
                       }}
                     </div>
-                    <div class="file-info-container" *ngIf="item.path !== '/'">
-                      <p *ngIf="
-                          item.type === restoreFileType.File ||
-                          item.type === restoreFileType.Link ||
-                          item.type === 'table'
-                        ">
+                    <div class="file-info-container" *ngIf="item.path !== '/' && item.type === restoreFileType.File ||
+                    item.type === restoreFileType.Link ||
+                    item.type === 'table'">
+                      <p>
                         {{
                         item.size
                         | capacityCalculateLabel
@@ -525,11 +547,7 @@
                         : true
                         }}
                       </p>
-                      <p class="aui-text-desc" *ngIf="
-                          item.type === restoreFileType.File ||
-                          item.type === restoreFileType.Link ||
-                          item.type === 'table'
-                        ">
+                      <p class="aui-text-desc">
                         {{ item.modifyTime }}
                       </p>
                     </div>

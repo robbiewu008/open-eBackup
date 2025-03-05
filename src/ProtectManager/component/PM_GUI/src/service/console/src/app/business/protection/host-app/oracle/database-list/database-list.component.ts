@@ -41,6 +41,7 @@ import {
   RoleOperationMap,
   SetTagType,
   WarningMessageService,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -650,9 +651,10 @@ export class DatabaseListComponent implements OnInit, OnDestroy {
   }
 
   searchByLabel(label) {
+    label = label.map(e => e.value);
     assign(this.filterParams, {
       labelCondition: {
-        labelName: trim(label)
+        labelList: label
       }
     });
     if (!trim(label)) {
@@ -722,10 +724,17 @@ export class DatabaseListComponent implements OnInit, OnDestroy {
                 hasProtectPermission(val)
               );
             })
-          ) !== size(this.selection) || !size(this.selection);
+          ) !== size(this.selection) ||
+          !size(this.selection) ||
+          size(this.selection) > CommonConsts.DEACTIVE_PROTECTION_MAX;
         item.tips = item.disabled
           ? this.i18n.get('protection_partial_resources_deactive_label')
           : '';
+        if (size(this.selection) > CommonConsts.DEACTIVE_PROTECTION_MAX) {
+          item.tips = this.i18n.get(
+            'protection_max_deactivate_protection_label'
+          );
+        }
       } else if (item.id === 'manualBackup') {
         item.disabled =
           size(
@@ -778,17 +787,6 @@ export class DatabaseListComponent implements OnInit, OnDestroy {
       each(source.value, (v, index) => {
         source.value[index] = trim(v);
       });
-    }
-
-    if (source.key === 'labelList') {
-      assign(this.filterParams, {
-        labelCondition: {
-          labelName: source.value
-        }
-      });
-      if (isEmpty(source.value)) {
-        delete this.filterParams.labelCondition;
-      }
     }
 
     if (source.key === 'sla_compliance') {

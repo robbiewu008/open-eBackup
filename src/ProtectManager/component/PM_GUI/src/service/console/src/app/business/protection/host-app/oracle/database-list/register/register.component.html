@@ -248,7 +248,8 @@
          lvColorState='true'></i>
     </lv-group>
   </h2>
-  <div class="aui-operation">
+  <lv-alert class="storage-resource-alert" lvType="info" lvClosable="false">{{'protection_oracle_storage_resource_storage_snapshot_tips_label'|i18n}}</lv-alert>
+  <div class="storage-resource-alert">
     <button lvType="primary" lv-button (click)="addStorage()" auiRolePermission
     [rolePermission]="roleOperationMap.manageResource" [disabled]='tableData?.total === MAX_STORAGE_RESOURCES || !isSupport'>
       {{'common_add_label' | i18n}}

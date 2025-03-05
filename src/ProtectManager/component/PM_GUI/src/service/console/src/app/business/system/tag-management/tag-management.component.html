@@ -20,7 +20,7 @@
     <!-- 总览 -->
     <lv-group lvGutter="24px" class="overview-tag">
         <lv-group lvGutter="24px">
-            <img src="assets/img/distributed_backup_storage.png" class="overview-img">
+            <img src="assets/img/tag.svg" class="overview-img">
             <span>{{ 'system_tag_overview_tip_label' | i18n}}</span>
         </lv-group>
     </lv-group>
@@ -43,4 +43,10 @@
         </div>
     </div>
 </div>
+
+<ng-template #createdTimeTpl let-item>
+    <span lv-overflow>
+      {{ item.createdTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil }}
+    </span>
+  </ng-template>
 

@@ -5,7 +5,7 @@
   "operation_target_job_label": "任务",
   "operation_target_performance_true_label": "开启",
   "operation_target_performance_false_label": "关闭",
-  "operation_target_agent_manager_label": "数据保护代理",
+  "operation_target_agent_manager_label": "客户端",
   "operation_target_anonymization_label": "数据脱敏",
   "operation_target_user_label": "用户",
   "operation_target_@user_label": "用户",
@@ -57,5 +57,8 @@
   "operation_target_ibmc_label": "iBMC",
   "operation_target_externalsystem_label": "外部系统",
   "operation_target_resourceset_label": "资源集",
-  "operation_target_role_label": "角色"
+  "operation_target_role_label": "角色",
+  "operation_target_vmware_label": "VMware",
+  "operation_delete_label": "删除",
+  "operation_force_delete_label": "强制删除"
 }

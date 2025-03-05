@@ -156,7 +156,9 @@ export class RegisterComponent implements OnInit {
                 userName: res['auth']['authKey'],
                 port: res?.extendInfo?.instancePort,
                 charset: res?.extendInfo?.charset,
-                configPath: res?.extendInfo?.myCnfPath
+                configPath: res?.extendInfo?.myCnfPath,
+                toolPath: res?.extendInfo?.toolPath,
+                libraryPath: res?.extendInfo?.libraryPath
               }
             : {
                 name: res.name,
@@ -231,6 +233,24 @@ export class RegisterComponent implements OnInit {
         ]
       }),
       configPath: new FormControl('', {
+        validators: [
+          this.baseUtilService.VALID.name(
+            CommonConsts.REGEX.templatLinuxPath,
+            false
+          ),
+          this.baseUtilService.VALID.maxLength(2048)
+        ]
+      }),
+      toolPath: new FormControl('', {
+        validators: [
+          this.baseUtilService.VALID.name(
+            CommonConsts.REGEX.templatLinuxPath,
+            false
+          ),
+          this.baseUtilService.VALID.maxLength(2048)
+        ]
+      }),
+      libraryPath: new FormControl('', {
         validators: [
           this.baseUtilService.VALID.name(
             CommonConsts.REGEX.templatLinuxPath,
@@ -605,7 +625,9 @@ export class RegisterComponent implements OnInit {
             instanceIp: this.formGroup.value.instanceIp,
             // 如果输入为空 说明用户想删除字符集 传null接口会报错只能改为''
             charset: this.formGroup.value.charset,
-            myCnfPath: this.formGroup.value.configPath
+            myCnfPath: this.formGroup.value.configPath,
+            toolPath: this.formGroup.value.toolPath,
+            libraryPath: this.formGroup.value.libraryPath
           },
           dependencies: {
             agents: [{ uuid: this.formGroup.value.agents }]

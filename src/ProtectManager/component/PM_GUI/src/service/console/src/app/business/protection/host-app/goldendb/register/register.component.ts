@@ -17,8 +17,14 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MessageService, SelectComponent, UploadFile } from '@iux/live';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidatorFn
+} from '@angular/forms';
+import { MessageService, UploadFile } from '@iux/live';
 import {
   BaseUtilService,
   CommonConsts,
@@ -105,6 +111,7 @@ export class RegisterComponent implements OnInit {
   usernameErrorTip = {
     ...this.baseUtilService.requiredErrorTip,
     ...this.baseUtilService.lengthErrorTip,
+    spaceErrorTip: this.i18n.get('common_valid_space_label'),
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [32])
   };
 
@@ -247,11 +254,11 @@ export class RegisterComponent implements OnInit {
       !(
         some(
           this.gtmTableData.data,
-          item => isEmpty(item.parentUuid) || isEmpty(item.osUser)
+          item => isEmpty(item.parentUuid) || item.osUserControl.invalid
         ) ||
         some(
           this.dataTableData.data,
-          item => isEmpty(item.parentUuid) || isEmpty(item.osUser)
+          item => isEmpty(item.parentUuid) || item.osUserControl.invalid
         )
       )
     );
@@ -279,7 +286,7 @@ export class RegisterComponent implements OnInit {
       },
       {
         key: 'dataNodeParentName',
-        name: this.i18n.get('protection_proxy_host_label'),
+        name: this.i18n.get('protection_client_label'),
         width: 270,
         thExtra: this.customRequiredTHTpl,
         cellRender: this.dataNodeProxyHostExtraTpl
@@ -324,7 +331,7 @@ export class RegisterComponent implements OnInit {
       },
       {
         key: 'dataNodeParentName',
-        name: this.i18n.get('protection_proxy_host_label'),
+        name: this.i18n.get('protection_clients_label'),
         thExtra: this.customRequiredTHTpl,
         cellRender: this.dataNodeProxyHostExtraTpl
       },
@@ -585,6 +592,7 @@ export class RegisterComponent implements OnInit {
         }),
         osUserControl: new FormControl(item?.osUser || '', {
           validators: [
+            this.validSpace(),
             this.baseUtilService.VALID.required(),
             this.baseUtilService.VALID.maxLength(32)
           ]
@@ -601,6 +609,16 @@ export class RegisterComponent implements OnInit {
         this.setValid();
       });
     });
+  }
+
+  validSpace(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const spaceReg = /\s/;
+      if (spaceReg.test(control.value)) {
+        return { spaceErrorTip: { value: control.value } };
+      }
+      return null;
+    };
   }
 
   // 定义一个函数来递归地删除指定的属性

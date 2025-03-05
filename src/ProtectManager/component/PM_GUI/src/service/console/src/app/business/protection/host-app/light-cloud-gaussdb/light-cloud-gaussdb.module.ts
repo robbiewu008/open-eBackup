@@ -20,6 +20,7 @@ import { LightCloudGaussdbComponent } from './light-cloud-gaussdb.component';
 import { SummaryModule } from './summary/summary.module';
 import { SummaryModule as ProjectSummaryModule } from './project-summary/summary.module';
 import { RegisterModule } from './register/register.module';
+import { AdvancedParameterModule } from './advanced-parameter/advanced-parameter.module';
 
 @NgModule({
   declarations: [LightCloudGaussdbComponent],
@@ -31,7 +32,8 @@ import { RegisterModule } from './register/register.module';
     SummaryModule,
     ProjectSummaryModule,
     MultiClusterSwitchModule,
-    RegisterModule
+    RegisterModule,
+    AdvancedParameterModule
   ]
 })
 export class LightCloudGaussdbModule {}

@@ -43,10 +43,6 @@ export const RESOURCE_CATALOGS = [
         show: true
       },
       {
-        catalog_name: DataMap.Resource_Type.SQLServer.value,
-        show: false
-      },
-      {
         catalog_name: DataMap.Resource_Type.MySQL.value,
         show: true
       },
@@ -77,10 +73,6 @@ export const RESOURCE_CATALOGS = [
       {
         catalogName: DataMap.Resource_Type.OceanBaseCluster.value,
         show: true
-      },
-      {
-        catalog_name: DataMap.Resource_Type.GBase.value,
-        show: false
       },
       {
         catalog_name: DataMap.Resource_Type.MongoDB.value,

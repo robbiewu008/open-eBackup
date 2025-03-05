@@ -21,13 +21,14 @@ import { Injectable } from '@angular/core';
 import { assign, each, find, includes, isEmpty, map } from 'lodash';
 import { finalize, mergeMap, Observable, Observer } from 'rxjs';
 import { RoleAuthApiService } from '../api/services';
-import { DataMap } from '../consts';
-import { I18NService } from '../services';
+import { DataMap, RoleType } from '../consts';
+import { CookieService, I18NService } from '../services';
 
 @Injectable()
 export class PermissionInterceptor implements HttpInterceptor {
   constructor(
     private i18n: I18NService,
+    private cookieService: CookieService,
     private roleAuthApiService: RoleAuthApiService
   ) {}
 
@@ -124,7 +125,11 @@ export class PermissionInterceptor implements HttpInterceptor {
         event instanceof HttpResponse &&
         includes(this.RESOURCE_URL, req.url) &&
         this.isResourceSetRequest(req) &&
-        !isEmpty(resources)
+        !isEmpty(resources) &&
+        !includes(
+          [RoleType.SysAdmin, RoleType.Auditor],
+          this.cookieService.role
+        )
       ) {
         this.roleAuthApiService
           .queryRoleAuthSetByResourceIds({

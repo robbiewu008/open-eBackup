@@ -12,7 +12,7 @@
   -->
 
 <div>
-  <div class="aui-operation">
+  <div class="aui-operation" *ngIf="!isRbac">
     <lv-group>
       <lv-pro-button-group [config]="unitOptsConfig" [bindData]="selectionData">
       </lv-pro-button-group>
@@ -54,7 +54,7 @@
 </ng-template>
 <ng-template #capacityTpl let-item >
   <div class='percent-bar'>
-    <lv-progress [lvValue]="Math.round (item.usedCapacity / item.totalCapacity * 10000) / 100" [lvSize]="'small'" [lvColors]='progressBarColor'
+    <lv-progress [lvValue]="item.capacity" [lvSize]="'small'" [lvColors]='item.progressBarColor'
                  [lvLabel]="progressLabelTpl" lvDecimals="3"></lv-progress>
     <div class='size-percent' *ngIf="item.deviceType === dataMap.poolStorageDeviceType.OceanProtectX.value">
       {{item.usedCapacity * 512 | capacityCalculateLabel:'1.1-3':unitconst.BYTE:
@@ -75,6 +75,29 @@
 
 <ng-template #thresholdTpl let-item>
   {{ item.threshold | nil }}%
+</ng-template>
+<ng-template #usedCapacityTPl let-item>
+  <div lv-overflow *ngIf="item.deviceType === dataMap.poolStorageDeviceType.OceanProtectX.value">
+    {{item.usedCapacity * 512 | capacityCalculateLabel:'1.1-3':unitconst.BYTE:
+    true}}
+  </div>
+  <div lv-overflow *ngIf="item.deviceType !== dataMap.poolStorageDeviceType.OceanProtectX.value">
+    {{item.usedCapacity | capacityCalculateLabel:'1.1-3':unitconst.KB:
+    true}}
+  </div>
+</ng-template>
+<ng-template #spaceReductionRateTPl let-item>
+  {{ item.spaceReductionRate | nil }}:1
+</ng-template>
+<ng-template #usedLogicCapacityTPl let-item>
+  <div lv-overflow *ngIf="item.deviceType === dataMap.poolStorageDeviceType.OceanProtectX.value">
+    {{item.usedLogicCapacity * 512 | capacityCalculateLabel:'1.1-3':unitconst.BYTE:
+    true}}
+  </div>
+  <div lv-overflow *ngIf="item.deviceType !== dataMap.poolStorageDeviceType.OceanProtectX.value">
+    {{item.usedLogicCapacity | capacityCalculateLabel:'1.1-3':unitconst.KB:
+    true}}
+  </div>
 </ng-template>
 
 <ng-template #deviceTypeTPl let-item>

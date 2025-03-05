@@ -58,6 +58,7 @@ export class PostgreProxyHostComponent implements OnInit, AfterViewInit {
 
   initConfig() {
     const installDeployType = this.data.extendInfo?.installDeployType;
+    const subType = this.data.sub_type;
     const cols: TableCols[] = [
       {
         key: 'name',
@@ -69,6 +70,7 @@ export class PostgreProxyHostComponent implements OnInit, AfterViewInit {
       },
       {
         key: 'endpoint',
+        width: 130,
         name: this.i18n.get('common_ip_address_label'),
         filter: {
           type: 'search',
@@ -84,6 +86,15 @@ export class PostgreProxyHostComponent implements OnInit, AfterViewInit {
         }
       },
       {
+        key: 'archiveDir',
+        name: this.i18n.get('common_database_archive_path_label'),
+        filter: {
+          type: 'search',
+          filterMode: 'contains'
+        },
+        hidden: this.getArchiveDirHidden(subType)
+      },
+      {
         key: 'pgpoolClientPath',
         name: this.getClientPathName(installDeployType),
         hidden: this.getClientPathHidden(installDeployType),
@@ -93,7 +104,19 @@ export class PostgreProxyHostComponent implements OnInit, AfterViewInit {
         }
       },
       {
+        key: 'adbhamgrPath',
+        name: this.i18n.get('common_config_file_full_path_label'),
+        hidden:
+          this.data.sub_type !==
+          DataMap.Resource_Type.AntDBClusterInstance.value,
+        filter: {
+          type: 'search',
+          filterMode: 'contains'
+        }
+      },
+      {
         key: 'serviceIp',
+        width: 180,
         name: this.i18n.get('common_dataplane_ip_label'),
         filter: {
           type: 'search',
@@ -102,6 +125,7 @@ export class PostgreProxyHostComponent implements OnInit, AfterViewInit {
       },
       {
         key: 'port',
+        width: 125,
         name: this.i18n.get('common_database_port_label'),
         filter: {
           type: 'search',
@@ -130,6 +154,13 @@ export class PostgreProxyHostComponent implements OnInit, AfterViewInit {
       DataMap.PostgreSqlDeployType.Pgpool.value,
       DataMap.PostgreSqlDeployType.Patroni.value
     ].includes(installDeployType);
+  }
+
+  private getArchiveDirHidden(subType) {
+    return ![
+      DataMap.Resource_Type.PostgreSQLInstance.value,
+      DataMap.Resource_Type.PostgreSQLClusterInstance.value
+    ].includes(subType);
   }
 
   private getClientPathName(installDeployType) {
@@ -162,7 +193,9 @@ export class PostgreProxyHostComponent implements OnInit, AfterViewInit {
                 serviceIp: get(item, 'extendInfo.serviceIp', ''),
                 port: get(item, 'extendInfo.instancePort', ''),
                 clientPath: get(item, 'extendInfo.clientPath', ''),
+                archiveDir: get(item, 'extendInfo.archiveDir', ''),
                 pgpoolClientPath: get(item, 'extendInfo.pgpoolClientPath', ''),
+                adbhamgrPath: get(item, 'extendInfo.adbhamgrPath', ''),
                 endpoint: get(item, 'dependencies.agents.0.endpoint', ''),
                 name: get(item, 'dependencies.agents.0.name', '')
               });

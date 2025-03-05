@@ -56,6 +56,9 @@
                 <ng-container *ngIf="sourceType === resourceType.hyperVHost.value">
                   <aui-status [value]="item.content" type="resource_LinkStatus_Special"></aui-status>
                 </ng-container>
+                <ng-container *ngIf="sourceType === resourceType.nutanixHost.value">
+                  <aui-status [value]="item.content" type="nutanixHostStatus"></aui-status>
+                </ng-container>
               </span>
               <span *ngIf="'protect_activation' === item.key">
                 <aui-status [value]="item.content" type="Protection_Status"></aui-status>

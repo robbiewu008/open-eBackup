@@ -151,6 +151,9 @@
         </lv-form-item>
     </ng-container>
     <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW">
+        <lv-alert lvType="warning" lvClosable="false" *ngIf="bootOptionsWarnTip">
+            <span>{{bootOptionsWarnTip}}</span>
+        </lv-alert>
         <lv-form-item>
             <lv-form-label lvRequired>{{'protection_storage_location_label' | i18n}}</lv-form-label>
             <lv-form-control>
@@ -358,12 +361,12 @@
                 lvColorState='true'></i>
         </lv-form-label>
         <lv-form-control>
-            <lv-switch formControlName="isStartupSnapGen"></lv-switch>
+            <lv-switch formControlName="isStartupSnapGen" [lvDisabled]="!isSupport"></lv-switch>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item>
         <lv-form-label>
-            {{'protection_proxy_host_label' | i18n}}
+            {{'protection_clients_label' | i18n}}
             <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_proxy_host_help_label' | i18n}}"
                 lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
                 lvColorState='true'></i>

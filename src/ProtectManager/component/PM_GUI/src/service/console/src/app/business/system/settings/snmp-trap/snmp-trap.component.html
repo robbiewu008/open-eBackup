@@ -212,7 +212,12 @@
                 </lv-form-control>
               </lv-form-item>
               <lv-form-item>
-                <lv-form-label lvRequired>{{communityLabel}}</lv-form-label>
+                <lv-form-label lvRequired>
+                    {{communityLabel}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{ 'common_community_tips_label'|i18n }}"
+                       lvTooltipPosition="topLeft" lvTooltipTheme="light" class="configform-constraint"
+                       lvColorState='true'></i>
+                </lv-form-label>
                 <lv-form-control [lvErrorTip]='securityNameV2CErrorTip'>
                   <div class="form-control-input">
                     <aui-inupt-with-eye formControlName="securityNameV2C" [lvPasteAllowed]="false"

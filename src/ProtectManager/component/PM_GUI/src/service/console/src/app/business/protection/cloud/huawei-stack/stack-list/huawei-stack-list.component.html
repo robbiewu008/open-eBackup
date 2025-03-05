@@ -44,14 +44,14 @@
         [lvScroll]="{ x: '100%' }">
         <thead>
             <tr>
-                <th lvShowCheckbox width="40px" [lvRowsData]="lvTable.renderData"></th>
+                <th lvShowCheckbox width="40px" [lvRowsData]="lvTable.renderData" [lvLeft]="tdAlign"></th>
                 <ng-container *ngFor="let col of columns">
                     <th *ngIf="!col.hidden && col.isShow" [lvShowFilter]="col.showFilter"
                         (lvFilterChange)="filterChange($event)" [(lvFilters)]="col.filterMap" [lvCellKey]="col.key"
-                        [lvAlign]="col.align" [lvShowSort]="col.showSort" [width]="col.width" lvShowCustom
-                        lvFilterCheckAll>
+                        [lvAlign]="col.align" [lvShowSort]="col.showSort" [width]="col.width" [lvLeft]="col.lvLeft"
+                        lvShowCustom lvFilterCheckAll>
                         <div lv-overflow>
-                            {{col.label}}
+                            <span>{{col.label}}</span>
                             <div lvCustom *ngIf="col.key === 'sla_compliance'" class="resource-sla-help">
                                 <aui-sla-compliance-tooltip margin="true"></aui-sla-compliance-tooltip>
                             </div>
@@ -86,15 +86,19 @@
                                 [filterTitle]="col.label"></aui-custom-table-search>
                         </div>
                         <div lvCustom *ngIf="col.key === 'labelList'">
-                            <aui-custom-table-search (search)="searchByLabel($event)"
+                            <aui-custom-table-filter (filter)="searchByLabel($event)"
+                                [filterTitle]="col.label"></aui-custom-table-filter>
+                        </div>
+                        <div lvCustom *ngIf="col.key === 'vm_ip'">
+                            <aui-custom-table-search (search)="searchByIp($event)"
                                 [filterTitle]="col.label"></aui-custom-table-search>
                         </div>
                     </th>
                 </ng-container>
-                <th width='144px'>
+                <th width='144px' [lvRight]="tdAlign">
                     {{'common_operation_label' | i18n}}
                 </th>
-                <th width='16px' style="padding: 0;" lvResizable="false">
+                <th width='16px' style="padding: 0;" lvResizable="false" [lvRight]="tdAlign">
                     <i lv-icon='lv-icon-col-setting' #colPopover='lvPopover' lv-popover lvPopoverPosition='bottomRight'
                         [lvPopoverContent]='colSelectTp' lvPopoverTheme='light' lvPopoverTrigger='click'
                         style="cursor: pointer;">
@@ -105,9 +109,9 @@
         <tbody>
             <ng-container *ngFor="let item of lvTable.renderData;trackBy:trackByUuid">
                 <tr [ngClass]="{ 'lv-table-row-highlight': isActive(item) }">
-                    <td lvShowCheckbox [lvRowData]="item" width="40px"></td>
+                    <td lvShowCheckbox [lvRowData]="item" width="40px" [lvLeft]="tdAlign"></td>
                     <ng-container *ngFor="let col of columns">
-                        <td *ngIf="!col.hidden && col.isShow" [lvAlign]="col.align">
+                        <td *ngIf="!col.hidden && col.isShow" [lvAlign]="col.align" [lvLeft]="col.lvLeft">
                             <ng-container [ngSwitch]="col.key">
                                 <ng-container *ngSwitchCase="'name'">
                                     <span class="aui-link" (click)="viewDetail(item)" id="outerClosable" lv-overflow>
@@ -166,6 +170,11 @@
                                         </ng-template>
                                     </ng-container>
                                 </ng-container>
+                                <ng-container *ngSwitchCase="'vm_ip'">
+                                    <span lv-overflow>
+                                        {{parseVmIp(item.extendInfo?.vm_ip) | nil}}
+                                    </span>
+                                </ng-container>
                                 <ng-container *ngSwitchDefault>
                                     <span lv-overflow>
                                         {{item[col.key] | nil}}
@@ -174,11 +183,11 @@
                             </ng-container>
                         </td>
                     </ng-container>
-                    <td width='144px'>
+                    <td width='144px' [lvRight]="tdAlign">
                         <lv-operation-menu [lvData]="item" [lvItemsFn]="optsCallback">
                         </lv-operation-menu>
                     </td>
-                    <td></td>
+                    <td [lvRight]="tdAlign"></td>
                 </tr>
             </ng-container>
         </tbody>

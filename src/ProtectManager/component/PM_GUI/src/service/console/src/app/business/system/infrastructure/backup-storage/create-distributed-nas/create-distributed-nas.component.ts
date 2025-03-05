@@ -112,6 +112,8 @@ export class CreateDistributedNasComponent implements OnInit {
       );
     });
 
+  maxSelectedUnit = 3968;
+
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip,
     invalidName: this.i18n.get('common_valid_distributed_nas_name_label'),
@@ -219,6 +221,23 @@ export class CreateDistributedNasComponent implements OnInit {
     });
   }
 
+  getSourceData(cluster) {
+    if (this.rowData && this.isDistributed) {
+      return cluster.filter(item => {
+        return (
+          item.deviceType === this.rowData.deviceType ||
+          (this.rowData.deviceType ===
+            DataMap.poolStorageDeviceType.Server.value &&
+            item.deviceType === 'BasicDisk')
+        );
+      });
+    }
+    return cluster.filter(
+      item =>
+        item.generatedType === DataMap.backupStorageGeneratedType.local.value
+    );
+  }
+
   getCluster(recordsTemp?: any[], startPage?: number) {
     this.storageUnitService
       .queryBackUnitGET({
@@ -253,12 +272,7 @@ export class CreateDistributedNasComponent implements OnInit {
           if (this.appUtilsService.isDecouple) {
             this.sourceData = cluster;
           } else {
-            this.sourceData = cluster.filter(item => {
-              return (
-                item.generatedType ===
-                DataMap.backupStorageGeneratedType.local.value
-              );
-            });
+            this.sourceData = this.getSourceData(cluster);
           }
           this.localSourceData = cluster.filter(item => {
             return (
@@ -378,7 +392,7 @@ export class CreateDistributedNasComponent implements OnInit {
         validators: [
           this.baseUtilService.VALID.required(),
           this.baseUtilService.VALID.minLength(1),
-          this.baseUtilService.VALID.maxLength(32)
+          this.baseUtilService.VALID.maxLength(this.maxSelectedUnit)
         ]
       }),
       localSelected: new FormControl([]),
@@ -387,7 +401,7 @@ export class CreateDistributedNasComponent implements OnInit {
     });
 
     this.formGroup.valueChanges.subscribe(res => {
-      if (this.formGroup.value.selected.length > 32) {
+      if (this.formGroup.value.selected.length > this.maxSelectedUnit) {
         this.messageService.error(
           this.i18n.get('protection_distributed_nas_limit_label'),
           {
@@ -421,11 +435,13 @@ export class CreateDistributedNasComponent implements OnInit {
               .setValidators([
                 this.baseUtilService.VALID.required(),
                 this.validLocalSelection(),
-                this.baseUtilService.VALID.maxLength(32)
+                this.baseUtilService.VALID.maxLength(this.maxSelectedUnit)
               ]);
             this.formGroup
               .get('nonLocalSelected')
-              .setValidators([this.baseUtilService.VALID.maxLength(32)]);
+              .setValidators([
+                this.baseUtilService.VALID.maxLength(this.maxSelectedUnit)
+              ]);
             this.formGroup.get('selected').clearValidators();
           } else {
             this.formGroup
@@ -433,7 +449,7 @@ export class CreateDistributedNasComponent implements OnInit {
               .setValidators([
                 this.baseUtilService.VALID.required(),
                 this.baseUtilService.VALID.minLength(1),
-                this.baseUtilService.VALID.maxLength(32)
+                this.baseUtilService.VALID.maxLength(this.maxSelectedUnit)
               ]);
             this.formGroup.get('localSelected').clearValidators();
             this.formGroup.get('nonLocalSelected').clearValidators();
@@ -601,16 +617,16 @@ export class CreateDistributedNasComponent implements OnInit {
           id: this.rowData.uuid,
           UpdateClusterRepositoryRequestBody: params as any
         })
-        .subscribe(
-          res => {
+        .subscribe({
+          next: res => {
             observer.next();
             observer.complete();
           },
-          err => {
+          error: err => {
             observer.error(err);
             observer.complete();
           }
-        );
+        });
     });
   }
 
@@ -621,16 +637,16 @@ export class CreateDistributedNasComponent implements OnInit {
         .CreateNasDistributionStorage({
           CreateNasDistributionStorageRequestBody: params as any
         })
-        .subscribe(
-          res => {
+        .subscribe({
+          next: res => {
             observer.next();
             observer.complete();
           },
-          err => {
+          error: err => {
             observer.error(err);
             observer.complete();
           }
-        );
+        });
     });
   }
 }

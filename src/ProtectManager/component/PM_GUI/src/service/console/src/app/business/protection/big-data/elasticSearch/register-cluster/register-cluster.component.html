@@ -89,34 +89,34 @@
         </lv-group>
       </lv-form-control>
     </lv-form-item>
-    <lv-form-item>
-      <lv-form-label>
-        {{ 'insight_certificate_label' | i18n }}
-        <i
-          lv-icon="aui-icon-help"
-          lv-tooltip="{{
-            'protection_es_kerberos_certificate_tips_label' | i18n
-          }}"
-          lvTooltipTheme="light"
-          class="configform-constraint"
-          lvColorState="true"
-        ></i>
-      </lv-form-label>
-      <lv-form-control>
-        <lv-upload
-          lvAccept=".crt"
-          lvShowUpload="false"
-          (lvFilesChange)="filesChange($event, 'cert')"
-          [lvFilters]="fileFilters"
-        ></lv-upload>
-      </lv-form-control>
-    </lv-form-item>
   </ng-container>
+    <ng-container *ngIf="[clusterAuthType.kerberos.value,clusterAuthType.xpack.value].includes(formGroup.get('loginMode').value)">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'insight_certificate_label' | i18n }}
+                <i
+                        lv-icon="aui-icon-help"
+                        [lv-tooltip]="certificationTips"
+                        lvTooltipTheme="light"
+                        class="configform-constraint"
+                        lvColorState="true"
+                ></i>
+            </lv-form-label>
+            <lv-form-control>
+                <lv-upload
+                        lvAccept=".crt"
+                        lvShowUpload="false"
+                        (lvFilesChange)="filesChange($event, 'cert')"
+                        [lvFilters]="fileFilters"
+                ></lv-upload>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
   <ng-container
-    *ngIf="clusterAuthType.system.value === formGroup.value.loginMode"
+    *ngIf="clusterAuthType.xpack.value === formGroup.get('loginMode').value"
   >
     <lv-form-item>
-      <lv-form-label>
+      <lv-form-label lvRequired>
         {{ 'common_username_label' | i18n }}
         <i
           lv-icon="aui-icon-help"
@@ -131,7 +131,7 @@
       </lv-form-control>
     </lv-form-item>
     <lv-form-item>
-      <lv-form-label>
+      <lv-form-label lvRequired>
         {{ 'common_password_label' | i18n }}
         <i
           lv-icon="aui-icon-help"
@@ -148,7 +148,7 @@
   </ng-container>
   <lv-form-item>
     <lv-form-label lvRequired>
-      {{ 'protection_proxy_host_label' | i18n }}
+      {{ 'protection_clients_label' | i18n }}
     </lv-form-label>
     <lv-form-control>
       <aui-agent-select

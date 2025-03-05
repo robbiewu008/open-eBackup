@@ -52,7 +52,6 @@ import { FormsModule } from '@angular/forms';
 export class ColumnFilterTplComponent implements OnInit {
   @Input() tableKey: string;
   @Input() columns;
-  @Output() columnsStatusChange = new EventEmitter();
 
   constructor(private rememberColumnsService: RememberColumnsService) {}
 
@@ -67,7 +66,6 @@ export class ColumnFilterTplComponent implements OnInit {
       });
     });
     this.rememberColumnsService.setColumnsStatus(this.tableKey, columnsStatus);
-    this.columnsStatusChange.emit(columnsStatus);
   }
 
   ngOnInit() {}

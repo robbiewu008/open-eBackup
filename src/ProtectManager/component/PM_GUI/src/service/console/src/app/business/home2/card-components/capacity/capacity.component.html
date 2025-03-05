@@ -19,7 +19,7 @@
     >
       <div class="icon"></div>
       <div class="title navigator">
-        {{ 'common_home_backup_storage_unit_label' | i18n }}
+        {{ 'system_backup_storage_unit_label' | i18n }}
         <span>({{ backupStorageUnits.storageNum }}) </span>
       </div>
       <svg width="16" height="16" style="fill:#808080">
@@ -67,7 +67,7 @@
     >
       <div class="icon"></div>
       <div class="title navigator">
-        {{ 'common_home_replication_cluster_label' | i18n }}
+        {{ 'system_replication_cluster_label' | i18n }}
         <span>({{ copyList.total }})</span>
       </div>
       <svg width="16" height="16" style="fill:#808080">
@@ -135,9 +135,9 @@
           <span class="title">{{
             'common_home_object_storage_label' | i18n
           }}</span>
-          <span class="percent">{{ cloudStorageInfo.percent || 0 }}%</span>
+          <span class="percent" *ngIf="isShowOBS">{{ cloudStorageInfo.percent || 0 }}%</span>
         </div>
-        <div class="chart">
+        <div class="chart" *ngIf="isShowOBS">
           <div
             class="used-chart"
             [ngStyle]="{width: cloudStorageInfo.percent + '%'}"

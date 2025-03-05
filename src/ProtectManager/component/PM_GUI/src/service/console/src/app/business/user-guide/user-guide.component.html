@@ -51,7 +51,7 @@
                 <span class="aui-link" (click)="closeGuide()">
                     {{'protection_guide_end_label' | i18n}}
                 </span>
-                <span class="aui-link" (click)="continnue()">
+                <span class="aui-link" (click)="continue()">
                     {{'protection_resume_label' | i18n}}
                 </span>
             </lv-group>
@@ -158,6 +158,144 @@
                                                     <span class="step-desc" *ngIf="item.desc">
                                                         {{item.desc | i18n}}
                                                     </span>
+                                                  <div *ngIf="item.select&&activeApp.clientDeployType" class="select-client">
+                                                    <strong>{{'common_client_deployment_label'|i18n}}</strong>
+                                                    <div *ngIf="activeApp.options">
+                                                      <lv-form-label *ngIf="activeApp.id===ApplicationType.Oracle">
+                                                        {{'common_oracle_select_type_label'|i18n}}
+                                                      </lv-form-label>
+                                                      <lv-form-label *ngIf="activeApp.id===ApplicationType.Vmware">
+                                                        {{'common_vmware_select_type_label'|i18n}}
+                                                      </lv-form-label>
+                                                      <lv-select
+                                                        [lvOptions]="activeApp.options"
+                                                        [(ngModel)]="firstSelect"
+                                                        lvValueKey="value"
+                                                        (ngModelChange)="firstChange($event)"
+                                                        lvShowClear
+                                                      ></lv-select>
+                                                      <ng-container *ngIf="childOptions.length>0">
+                                                        <lv-form-label>
+                                                          {{'common_select_os_type_label'|i18n}}
+                                                        </lv-form-label>
+                                                        <lv-select
+                                                          [lvOptions]="childOptions"
+                                                          [(ngModel)]="childSelect"
+                                                          lvValueKey="value"
+                                                          (ngModelChange)="childChange($event)"
+                                                          lvShowClear
+                                                        ></lv-select>
+                                                      </ng-container>
+                                                       <ng-content select=".specialHost"></ng-content>
+                                                      <div *ngIf="childSelect===clientMap.Windows" class="specialHost">
+                                                        <span class="wrap-text">
+                                                          {{'common_windows_os_oracle_label'|i18n}}
+                                                        </span>
+                                                        <div class="flex-box">
+                                                          <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyHost" lvMaxWidth="300"></lv-tag>
+                                                          {{'common_mast_select_label'|i18n}}
+                                                        </div>
+                                                        {{'common_one_of_those_label'|i18n}}
+                                                        <div class="flex-box">
+                                                          <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyInnerHost" lvMaxWidth="300"></lv-tag>
+                                                          <span class="margin-right">{{'common_or_label'|i18n}}</span>
+                                                          <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyPhysicHost" lvMaxWidth="300"></lv-tag>
+                                                        </div>
+                                                      </div>
+                                                      <div *ngIf="childSelect===clientMap.Linux" class="specialHost">
+                                                         <span class="wrap-text">
+                                                          {{'common_linux_os_oracle_label'|i18n}}
+                                                         </span>
+                                                        <div class="flex-box">
+                                                          <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyHost" lvMaxWidth="300"></lv-tag>
+                                                          {{'common_mast_select_label'|i18n}}
+                                                        </div>
+                                                        {{'common_can_select_label'|i18n}}
+                                                        <div class="flex-box">
+                                                          <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyInnerHost" lvMaxWidth="300"></lv-tag>
+                                                          <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyPhysicHost" lvMaxWidth="300"></lv-tag>
+                                                          <span class="margin-right">{{'common_or_label'|i18n}}</span>
+                                                          <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyVmHost" lvMaxWidth="300"></lv-tag>
+                                                        </div>
+                                                      </div>
+                                                      <div *ngIf="firstSelect===clientMap.SAN" class="specialHost">
+                                                        <span class="wrap-text">
+                                                          {{'common_vm_san_client_label'|i18n}}
+                                                        </span>
+                                                        <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyPhysicHost" lvMaxWidth="300"></lv-tag>
+                                                      </div>
+                                                      <div *ngIf="includes([clientMap.Storage,clientMap.NBD],firstSelect)" class="specialHost">
+                                                        <span class="wrap-text" *ngIf="firstSelect===clientMap.Storage">
+                                                          {{'common_vm_storage_client_label'|i18n}}
+                                                        </span>
+                                                        <span class="wrap-text" *ngIf="firstSelect===clientMap.NBD">
+                                                          {{'common_vm_ndb_client_label'|i18n}}
+                                                        </span>
+                                                        <div class="flex-box">
+                                                          <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyPhysicHost" lvMaxWidth="300"></lv-tag>
+                                                          <span class="margin-right">{{'common_or_label'|i18n}}</span>
+                                                          <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyVmHost" lvMaxWidth="300"></lv-tag>
+                                                        </div>
+                                                      </div>
+                                                      <div *ngIf="firstSelect===clientMap.HotADD" class="specialHost">
+                                                        <span class="wrap-text">
+                                                          {{'common_vm_hot_add_client_label'|i18n}}
+                                                        </span>
+                                                        <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyVmHost" lvMaxWidth="300"></lv-tag>
+                                                      </div>
+                                                    </div>
+                                                   <div *ngIf="activeApp.clientDeployType===dataMap.clientDeployType.onlyHost||firstSelect===clientMap.RMAN">
+                                                     <lv-form-label>
+                                                       {{'common_client_deploy_to_label'|i18n}}
+                                                     </lv-form-label>
+                                                     <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyHost" lvMaxWidth="300"></lv-tag>
+                                                   </div>
+                                                   <div *ngIf="activeApp.clientDeployType===dataMap.clientDeployType.onlyVmHost">
+                                                     <lv-form-label>
+                                                       {{'common_client_deploy_to_label'|i18n}}
+                                                     </lv-form-label>
+                                                     <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyVmHost" lvMaxWidth="300"></lv-tag>
+                                                    </div>
+                                                   <div *ngIf="activeApp.clientDeployType===dataMap.clientDeployType.standaloneHost">
+                                                     <lv-form-label>
+                                                       {{'common_client_deploy_to_label'|i18n}}
+                                                     </lv-form-label>
+                                                    <div class="flex-box">
+                                                      <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyPhysicHost" lvMaxWidth="300"></lv-tag>
+                                                      <span class="margin-right">{{'common_or_label'|i18n}}</span>
+                                                      <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyVmHost" lvMaxWidth="300"></lv-tag>
+                                                    </div>
+                                                    </div>
+                                                    <div *ngIf="activeApp.clientDeployType===dataMap.clientDeployType.nasFileSystem">
+                                                      <lv-form-label>
+                                                        {{'common_client_deploy_to_label'|i18n}}
+                                                      </lv-form-label>
+                                                      <div class="flex-box">
+                                                        <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyInnerHost" lvMaxWidth="300"></lv-tag>
+                                                      </div>
+                                                    </div>
+                                                    <div *ngIf="activeApp.clientDeployType===dataMap.clientDeployType.nasShare">
+                                                      <lv-form-label>
+                                                        {{'common_client_deploy_to_label'|i18n}}
+                                                      </lv-form-label>
+                                                      <div class="flex-box">
+                                                        <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyInnerHost" lvMaxWidth="300"></lv-tag>
+                                                        <span class="margin-right">{{'common_or_label'|i18n}}</span>
+                                                        <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyPhysicHost" lvMaxWidth="300"></lv-tag>
+                                                      </div>
+                                                    </div>
+                                                    <div *ngIf="activeApp.clientDeployType===dataMap.clientDeployType.object">
+                                                      <lv-form-label>
+                                                        {{'common_client_deploy_to_label'|i18n}}
+                                                      </lv-form-label>
+                                                      <div class="flex-box">
+                                                        <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyInnerHost" lvMaxWidth="300"></lv-tag>
+                                                        <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyPhysicHost" lvMaxWidth="300"></lv-tag>
+                                                        <span class="margin-right">{{'common_or_label'|i18n}}</span>
+                                                        <lv-tag [ngModel]="tagData" [lvTagTemplate]="onlyVmHost" lvMaxWidth="300"></lv-tag>
+                                                      </div>
+                                                    </div>
+                                                  </div>
                                                 </lv-group>
                                                 <!-- 联机帮助 -->
                                                 <span *ngIf="item.link" class="aui-link align-r"
@@ -218,4 +356,32 @@
         </div>
         <i lv-icon="lv-icon-close" class="close-link" (click)="closeGuide()"></i>
     </lv-group>
+</ng-template>
+<!--独立虚拟机-->
+<ng-template #onlyVmHost>
+  <div class="lv-tag-text flex-box">
+    <i lv-icon="aui-client-vm" [lvColorState]="true"></i>
+    <span>{{'common_client_vm_host_label'|i18n}}</span>
+  </div>
+</ng-template>
+<!--独立物理机-->
+<ng-template #onlyPhysicHost>
+  <div class="lv-tag-text flex-box">
+    <i lv-icon="aui-client-host" [lvColorState]="true"></i>
+    <span>{{'common_client_physic_host_label'|i18n}}</span>
+  </div>
+</ng-template>
+<!--生产主机-->
+<ng-template #onlyHost>
+  <div class="lv-tag-text flex-box">
+    <i lv-icon="aui-client-host" [lvColorState]="true"></i>
+    <span>{{'common_client_host_label'|i18n}}</span>
+  </div>
+</ng-template>
+<!--内置客户端-->
+<ng-template #onlyInnerHost>
+  <div class="lv-tag-text flex-box">
+    <i lv-icon="aui-client-proxy" [lvColorState]="true"></i>
+    <span>{{'common_client_inner_label'|i18n}}</span>
+  </div>
 </ng-template>

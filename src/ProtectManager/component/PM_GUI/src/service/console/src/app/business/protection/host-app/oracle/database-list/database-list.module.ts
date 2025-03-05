@@ -24,6 +24,7 @@ import { TakeManualBackupServiceModule } from 'app/shared/services/take-manual-b
 import { WarningBatchConfirmModule } from 'app/shared/components/warning-batch-confirm/warning-batch-confirm.module';
 import { RegisterModule } from './register/register.module';
 import { CustomTableSearchModule } from 'app/shared/components/custom-table-search/custom-table-search.module';
+import { CustomTableFilterModule } from '../../../../../shared/components/custom-table-filter/custom-table-filter.module';
 
 @NgModule({
   declarations: [DatabaseListComponent],
@@ -39,7 +40,8 @@ import { CustomTableSearchModule } from 'app/shared/components/custom-table-sear
     RegisterModule,
     CustomTableSearchModule,
     OracleSingleFileRestoreModule,
-    OracleTableLevelRestoreModule
+    OracleTableLevelRestoreModule,
+    CustomTableFilterModule
   ],
   exports: [DatabaseListComponent]
 })

@@ -69,7 +69,7 @@ export class SummaryClusterComponent implements OnInit {
     const clientCols: TableCols[] = [
       {
         key: 'name',
-        name: this.i18n.get('protection_proxy_host_label')
+        name: this.i18n.get('protection_clients_label')
       },
       {
         key: 'linkStatus',
@@ -87,7 +87,7 @@ export class SummaryClusterComponent implements OnInit {
       },
       {
         key: 'name',
-        name: this.i18n.get('protection_proxy_host_label')
+        name: this.i18n.get('protection_clients_label')
       },
       {
         key: 'port',

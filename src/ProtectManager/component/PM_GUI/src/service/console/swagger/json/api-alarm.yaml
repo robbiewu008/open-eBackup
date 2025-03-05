@@ -2480,9 +2480,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/syslog/oceancyber/addip:
+  /v1/syslog/addip:
     post:
-      x-request-examples-url-1: https://8.40.162.63:25081/v1/syslog/oceancyber/addip
+      x-request-examples-url-1: https://8.40.162.63:25081/v1/syslog/addip
       x-request-examples-text-1:
         ip: 50.64.158.111
         port: 1023
@@ -2527,7 +2527,7 @@ paths:
           description: ''
           schema:
             type: string
-  /v1/syslog/oceancyber/ip:
+  /v1/syslog/ip:
     get:
       x-dr-role: 'N'
       x-product: OceanCyber
@@ -2553,24 +2553,24 @@ paths:
             type: array
           examples:
             application/json:
-              - id: "1811225617064853500"
-                ip: "50.64.158.104"
+              - id: 1811225617064853500
+                ip: 50.64.158.104
                 port: 1023
                 protocol: 2
-                component_id: "test"
-              - id: "1811293504953737200"
-                ip: "111.64.158.104"
+                component_id: test
+              - id: 1811293504953737200
+                ip: 111.64.158.104
                 port: 1023
                 protocol: 2
-                component_id: "test"
-              - id: "1811237340773724200"
-                ip: "50.64.158.106"
+                component_id: test
+              - id: 1811237340773724200
+                ip: 50.64.158.106
                 port: 1023
                 protocol: 2
-                component_id: "test2"
-  /v1/syslog/oceancyber/removeip:
+                component_id: test2
+  /v1/syslog/removeip:
     delete:
-      x-request-examples-url-1: https://8.40.162.63:25081/v1/syslog/oceancyber/removeip?id=102
+      x-request-examples-url-1: https://8.40.162.63:25081/v1/syslog/removeip?id=102
       x-dr-role: 'N'
       x-product: OceanCyber
       x-dm-role: 'N'
@@ -2592,14 +2592,19 @@ paths:
           required: true
           description: 服务器地址
           type: string
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
       responses:
         '200':
           description: ''
           schema:
             type: string
-  /v1/syslog/oceancyber/modip:
+  /v1/syslog/modip:
     put:
-      x-request-examples-url-1: https://8.40.162.63:25081/v1/syslog/oceancyber/modip
+      x-request-examples-url-1: https://8.40.162.63:25081/v1/syslog/modip
       x-request-examples-text-1:
         id: 1811385539027079200
         ip: 50.64.158.115
@@ -2635,12 +2640,17 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/SyslogIpParam'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
       responses:
         '200':
           description: ''
           schema:
             type: string
-  /v1/syslog/oceancyber:
+  /v1/syslog:
     get:
       x-dr-role: 'N'
       x-product: OceanCyber
@@ -2680,7 +2690,7 @@ paths:
               enable_send_device_name: true
               user_def_device_name: te1111222st
     put:
-      x-request-examples-url-1: /v1/syslog/oceancyber
+      x-request-examples-url-1: /v1/syslog
       x-request-examples-text-1:
         enable_syslog_cfg: true
         enable_send_device_name: true
@@ -3948,6 +3958,9 @@ definitions:
       is_test_server:
         type: boolean
         description: 是否测试连通性
+      id:
+        type: string
+        description: id
   SyslogIpResponse:
     type: object
     description: 查询Syslog 服务器ip 响应

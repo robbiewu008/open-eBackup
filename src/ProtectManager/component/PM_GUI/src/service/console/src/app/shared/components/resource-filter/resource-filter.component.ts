@@ -57,6 +57,7 @@ export class ResourceFilterComponent implements OnInit, OnChanges {
   @Input() filterParams;
   @Input() osType;
   @Input() subType;
+  @Input() isOsBackup = false;
   formGroup: FormGroup;
   resourceType = DataMap.Resource_Type;
   fileSetFilterType = FileSetFilterType;

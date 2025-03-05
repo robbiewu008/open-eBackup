@@ -105,7 +105,7 @@ export class InitConfigProcessComponent implements OnInit, OnDestroy {
       this.baseUtilService,
       this.infoMessageService,
       this.logManagerApiService,
-      this.exportFilesService
+      this.appUtilsService
     );
     this.debugLogComponent.fileDownloadCompletedTpl = this.fileDownloadCompletedTpl;
     this.init_running_label =

@@ -500,6 +500,63 @@ export class VirtualCloudTemplateComponent
           }
         ];
         break;
+      case ResourceType.NUTANIX:
+        this.tabs = [
+          {
+            id: 'cluster',
+            subType: DataMap.Resource_Type.nutanixCluster.value,
+            label: this.i18n.get('common_clusters_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return includes(
+                [
+                  DataMap.Resource_Type.nutanixHost.value,
+                  DataMap.Resource_Type.nutanixCluster.value
+                ],
+                node.subType
+              );
+            },
+            resourceTotal: 0
+          },
+          {
+            id: 'host',
+            subType: DataMap.Resource_Type.nutanixHost.value,
+            label: this.i18n.get('common_host_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return includes(
+                [DataMap.Resource_Type.nutanixHost.value],
+                node.subType
+              );
+            },
+            resourceTotal: 0
+          },
+          {
+            id: 'vm',
+            subType: DataMap.Resource_Type.nutanixVm.value,
+            label: this.i18n.get('common_virtual_machine_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return false;
+            },
+            resourceTotal: 0
+          },
+          {
+            id: 'group',
+            subType: DataMap.Resource_Type.vmGroup.value,
+            subUnitType: DataMap.Resource_Type.nutanixVm.value,
+            label: this.i18n.get('protection_vm_groups_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return !includes(
+                [DataMap.Resource_Type.nutanix.value],
+                node.subType
+              );
+            },
+            resourceTotal: 0
+          }
+        ];
+        break;
       case ResourceType.ApsaraStack:
         this.tabs = [
           {
@@ -597,8 +654,11 @@ export class VirtualCloudTemplateComponent
             subType: DataMap.Resource_Type.hyperVVm.value,
             label: this.i18n.get('common_virtual_machine_label'),
             hidden: false,
-            hiddenFn: () => {
-              return false;
+            hiddenFn: (node: any) => {
+              return (
+                node.subType === DataMap.Resource_Type.hyperVCluster.value &&
+                !!node?.parentUuid
+              );
             },
             resourceTotal: 0
           },
@@ -624,9 +684,10 @@ export class VirtualCloudTemplateComponent
   getConditions() {
     switch (this.resourceType) {
       case ResourceType.CNWARE:
+      case ResourceType.NUTANIX:
         return {
           subType: this.resourceType,
-          type: ResourceType.CNWARE
+          type: this.resourceType
         };
       case ResourceType.ApsaraStack:
         return {
@@ -722,6 +783,12 @@ export class VirtualCloudTemplateComponent
               this.getExpandedChangeData(CommonConsts.PAGE_START, node);
             }
           });
+          if (this.resourceType === ResourceType.NUTANIX) {
+            recordsTemp = recordsTemp.filter(
+              item =>
+                !includes([DataMap.Resource_Type.nutanixVm.value], item.subType)
+            );
+          }
           this.treeData = recordsTemp;
           if (this.treeData.length) {
             if (!this.treeNodeChecked) {
@@ -845,6 +912,7 @@ export class VirtualCloudTemplateComponent
     }
     switch (node.subType) {
       case ResourceType.CNWARE:
+      case ResourceType.NUTANIX:
         return node.linkStatus ===
           DataMap.resource_LinkStatus_Special.normal.value
           ? 'aui-icon-vCenter'
@@ -854,8 +922,10 @@ export class VirtualCloudTemplateComponent
       case DataMap.Resource_Type.cNwareHostPool:
         return 'aui-icon-dataCenter';
       case DataMap.Resource_Type.cNwareCluster.value:
+      case DataMap.Resource_Type.nutanixCluster.value:
         return 'aui-icon-cluster';
       case DataMap.Resource_Type.cNwareHost.value:
+      case DataMap.Resource_Type.nutanixHost.value:
         return 'aui-icon-host';
       case DataMap.Resource_Type.APSRegion.value:
         return 'aui-icon-hcs-region';
@@ -873,8 +943,9 @@ export class VirtualCloudTemplateComponent
             DataMap.hypervHostStatus.Up.value,
             DataMap.hypervHostStatus.Ok.value
           ],
-          node.extendInfo.State
-        )
+          node.extendInfo.status
+        ) ||
+          node.linkStatus === DataMap.resource_LinkStatus_Special.normal.value // 单主机有linkStatus，主机在集群下走extendInfo
           ? 'aui-host-online-16'
           : 'aui-host-offline-16';
       case DataMap.Resource_Type.HCSRegion.value:
@@ -1019,6 +1090,7 @@ export class VirtualCloudTemplateComponent
       includes(
         [
           DataMap.Resource_Type.cNwareHost.value,
+          DataMap.Resource_Type.nutanixHost.value,
           DataMap.Resource_Type.APSZone.value,
           DataMap.Resource_Type.HCSProject.value,
           DataMap.Resource_Type.openStackProject.value,
@@ -1115,6 +1187,14 @@ export class VirtualCloudTemplateComponent
         });
       }
       res.records.forEach(item => {
+        if (
+          item.subType === DataMap.Resource_Type.hyperVCluster.value &&
+          item.linkStatus === null &&
+          event.subType === DataMap.Resource_Type.hyperVScvmm.value
+        ) {
+          // SCVMM下面的集群没有linkstatus，集群使用SCVMM的状态
+          item.linkStatus = event.linkStatus;
+        }
         if (item.type !== ResourceType.VM) {
           const isParentSelected =
             !isEmpty(this.allSelectionMap[this.appType]?.data) &&
@@ -1153,7 +1233,11 @@ export class VirtualCloudTemplateComponent
           if (node.expanded) {
             this.getExpandedChangeData(CommonConsts.PAGE_START, node);
           }
-          event.children.push(node);
+          if (
+            !includes([DataMap.Resource_Type.nutanixVm.value], node.subType)
+          ) {
+            event.children.push(node);
+          }
         }
       });
       if (!!this.data && !this.isDetail) {

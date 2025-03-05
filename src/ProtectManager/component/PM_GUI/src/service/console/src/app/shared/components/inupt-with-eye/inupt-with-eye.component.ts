@@ -19,9 +19,7 @@ import {
   Output
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ThemeEnum } from 'app/shared/consts';
 import { I18NService } from 'app/shared/services';
-import { getAppTheme } from 'app/shared/utils';
 
 const CUSTOM_NG_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
@@ -106,17 +104,5 @@ export class InuptWithEyeComponent implements OnInit, ControlValueAccessor {
 
   copy() {
     return false;
-  }
-
-  getInputEye(): string {
-    if (this.coverPwd) {
-      return getAppTheme(this.i18n) === ThemeEnum.light
-        ? 'aui-icon-eye-hide-light'
-        : 'aui-icon-eye-hide-dark';
-    } else {
-      return getAppTheme(this.i18n) === ThemeEnum.light
-        ? 'aui-icon-eye-view-light'
-        : 'aui-icon-eye-view-dark';
-    }
   }
 }

@@ -30,7 +30,12 @@
             ></i>
         </lv-form-label>
         <lv-form-control [lvErrorTip]="bandwidthErrorTip">
-            <input class="qos-input" lv-input formControlName='speed_limit' />&nbsp;MB/s
+            <lv-input-group [lvSuffix]="limitUnitSuffixTpl">
+            <input class="qos-input" lv-input formControlName='speed_limit' />
+            </lv-input-group>
+            <ng-template #limitUnitSuffixTpl>
+                <span class="qos-input-unit">MB/s</span>
+            </ng-template>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item>

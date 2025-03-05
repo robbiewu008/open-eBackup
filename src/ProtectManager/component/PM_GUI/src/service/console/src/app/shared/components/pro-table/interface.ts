@@ -91,6 +91,7 @@ export interface TableConfig {
       | {
           /* 被忽略的列在下拉列表中的处理方式 */
           ignoringColsType: 'hide' | 'disable';
+          tdAlign?: string | boolean;
         }
       | boolean;
     /* 获取列表数据 */
@@ -101,6 +102,8 @@ export interface TableConfig {
     colDisplayChange?: (displayCols: string[]) => any;
     /* 表头搜索下发前函数 */
     filterChangeBefore?: () => any;
+    // 滚动回调事件
+    scrollEnd?: () => any;
   };
 }
 
@@ -115,8 +118,8 @@ export interface TableCols {
   width?: number | string;
   /* 列名称对齐方式 */
   thAlign?: 'left' | 'right' | 'center';
-  // fixLeft?: string | boolean;
-  // fixRight?: string | boolean;
+  fixLeft?: string | boolean;
+  fixRight?: string | boolean;
   /* 列显示/隐藏初始化配置，'ignoring'为排除项 */
   hidden?: boolean | 'ignoring';
   /* 列过滤器配置 */
@@ -270,6 +273,7 @@ export interface Filters {
 export interface TableData {
   data: any[];
   total: number;
+  keepScroll?: boolean;
 }
 
 export type CellRenderType =

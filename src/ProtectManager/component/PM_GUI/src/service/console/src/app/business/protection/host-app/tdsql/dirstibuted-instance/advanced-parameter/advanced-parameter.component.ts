@@ -41,7 +41,10 @@ export class AdvancedParameterComponent implements OnInit {
     const { protectedObject } = this.resourceData;
     const extParameters = protectedObject?.extParameters || {};
     this.formGroup = this.fb.group({
-      backup_zkmeta: new FormControl(extParameters.backup_zkmeta ?? false)
+      backup_zkmeta: new FormControl(extParameters.backup_zkmeta ?? false),
+      archive_res_auto_index: new FormControl(
+        extParameters.archive_res_auto_index ?? false
+      )
     });
     this.formGroup.statusChanges.subscribe(() => {
       this.valid$.next(this.formGroup.value);
@@ -59,7 +62,8 @@ export class AdvancedParameterComponent implements OnInit {
       : this.resourceData;
     return assign(resourceData, {
       ext_parameters: {
-        backup_zkmeta: this.formGroup.value.backup_zkmeta
+        backup_zkmeta: this.formGroup.value.backup_zkmeta,
+        archive_res_auto_index: this.formGroup.value.archive_res_auto_index
       }
     });
   }

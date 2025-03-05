@@ -60,6 +60,7 @@ export class CreateFilesetTemplateComponent implements OnInit {
   rowItem;
   queryName;
   formGroup: FormGroup;
+  dataMap = DataMap;
   isEn = this.i18n.language === LANGUAGE.EN;
   hostOptions = [];
   templateOptions = [];
@@ -143,6 +144,7 @@ export class CreateFilesetTemplateComponent implements OnInit {
       template_id: new FormControl('', {
         validators: [this.baseUtilService.VALID.required()]
       }),
+      is_OS_backup: new FormControl(false),
       sla: new FormControl(false),
       sla_id: new FormControl('')
     });
@@ -161,8 +163,14 @@ export class CreateFilesetTemplateComponent implements OnInit {
         name: this.rowItem ? this.rowItem.name || '' : '',
         template_id: this.rowItem
           ? this.rowItem.extendInfo?.templateId || ''
-          : ''
+          : '',
+        is_OS_backup: this.rowItem
+          ? get(this.rowItem.extendInfo, 'is_OS_backup', 'false') === 'true'
+          : false
       });
+      if (this.rowItem) {
+        this.osType = this.rowItem.environment?.osType;
+      }
     }, 5);
   }
 
@@ -346,6 +354,9 @@ export class CreateFilesetTemplateComponent implements OnInit {
       if (currentOsType !== this.osType) {
         this.formGroup.get('sla').setValue(false);
       }
+      if (currentOsType !== DataMap.Os_Type.linux.value) {
+        this.formGroup.get('is_OS_backup').setValue(false);
+      }
       this.osType = currentOsType;
       this.parameterComponent.updateForm(this.osType);
 
@@ -474,7 +485,8 @@ export class CreateFilesetTemplateComponent implements OnInit {
           type: DataMap.Resource_Type.fileset.value,
           subType: DataMap.Resource_Type.fileset.value,
           extendInfo: {
-            templateId: this.formGroup.value.template_id
+            templateId: this.formGroup.value.template_id,
+            is_OS_backup: this.formGroup.get('is_OS_backup').value
           }
         };
 
@@ -610,7 +622,8 @@ export class CreateFilesetTemplateComponent implements OnInit {
           type: DataMap.Resource_Type.fileset.value,
           subType: DataMap.Resource_Type.fileset.value,
           extendInfo: {
-            templateId: this.formGroup.value.template_id
+            templateId: this.formGroup.value.template_id,
+            is_OS_backup: this.formGroup.get('is_OS_backup').value
           }
         };
         this.protectedResourceApiService

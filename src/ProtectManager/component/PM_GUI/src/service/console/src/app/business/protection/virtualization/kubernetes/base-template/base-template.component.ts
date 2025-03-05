@@ -25,6 +25,7 @@ import {
   DataMap,
   DataMapService,
   DATE_PICKER_MODE,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -76,6 +77,7 @@ import {
   tail,
   trim
 } from 'lodash';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-base-template',
@@ -118,7 +120,8 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
     private warningMessageService: WarningMessageService,
     private takeManualBackupService: TakeManualBackupService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit() {
@@ -255,9 +258,13 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
                   hasProtectPermission(val)
                 );
               })
-            ) !== size(data) || !size(data)
+            ) !== size(data) ||
+            !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
         },
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         permission: OperateItems.DeactivateProtection,
         label: this.i18n.get('protection_deactive_protection_label'),
         onClick: data => {
@@ -496,8 +503,11 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -758,9 +768,10 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
         }
       }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -801,7 +812,8 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
               item.extendInfo?.status ||
               JSON.parse(item.extendInfo?.host || '{}')?.status,
             isWorkspace: item.extendInfo?.isWorkspace || '0',
-            computerName: item.extendInfo?.computerName
+            computerName: item.extendInfo?.computerName,
+            vm_ip: item.extendInfo?.vm_ip
           });
         }
       });

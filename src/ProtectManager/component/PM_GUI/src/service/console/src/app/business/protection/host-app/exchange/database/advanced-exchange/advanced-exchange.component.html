@@ -28,6 +28,9 @@
           <lv-form-item *ngIf="showDAGBackUp">
             <lv-form-label>
               {{'protection_exchange_dag_backup_label'|i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_exchange_dag_backup_tips_label' | i18n}}"
+                   lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
+                   lvColorState='true'></i>
             </lv-form-label>
             <lv-form-control>
               <lv-select [lvOptions]="dagBackUpOpts" lvValueKey="value" formControlName="dagBackup">

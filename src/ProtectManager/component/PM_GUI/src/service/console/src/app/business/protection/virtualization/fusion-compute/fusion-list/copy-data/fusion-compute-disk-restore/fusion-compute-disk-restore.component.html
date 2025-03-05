@@ -39,6 +39,9 @@
             </lv-form-control>
         </lv-form-item>
     </lv-form>
+    <lv-alert lvType="warning" lvClosable="false" *ngIf="!isOriginPosition && !_isEmpty(bootOptionsWarnTip)">
+        <span>{{bootOptionsWarnTip}}</span>
+    </lv-alert>
     <lv-group class="grid-position">
         <div class="file-level-restore-tree hcs-restore-list-tree margin-space restore-lv-paginator-simple">
             <ng-container *ngTemplateOutlet="allFileData">
