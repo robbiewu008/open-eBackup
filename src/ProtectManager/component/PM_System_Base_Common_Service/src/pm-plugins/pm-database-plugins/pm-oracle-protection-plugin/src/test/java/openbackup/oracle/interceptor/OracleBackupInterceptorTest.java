@@ -40,6 +40,7 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -64,9 +65,10 @@ public class OracleBackupInterceptorTest {
     private final EncryptorService encryptorService = Mockito.mock(EncryptorService.class);
     private final ResourceService resourceService = Mockito.mock(ResourceService.class);
     private final OracleAgentProvider oracleAgentProvider = Mockito.mock(OracleAgentProvider.class);
+    private final DeployTypeService deployTypeService = Mockito.mock(DeployTypeService.class);
     private final JobService jobService = Mockito.mock(JobService.class);
     private final OracleBackupInterceptor oracleBackupInterceptor = new OracleBackupInterceptor(oracleBaseService,
-            agentUnifiedService, copyRestApi, encryptorService, resourceService, oracleAgentProvider, jobService);
+            agentUnifiedService, copyRestApi, encryptorService, resourceService, oracleAgentProvider, jobService, deployTypeService);
 
     /**
      * 用例场景：下发全量备份时，经过应用拦截器后的备份任务

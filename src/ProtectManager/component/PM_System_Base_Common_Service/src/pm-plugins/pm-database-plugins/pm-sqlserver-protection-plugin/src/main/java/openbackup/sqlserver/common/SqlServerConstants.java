@@ -116,6 +116,12 @@ public class SqlServerConstants {
      */
     public static final List<String> SUPPORT_OLD_VERSION = Collections.unmodifiableList(Arrays.asList("1.5", "1.3"));
 
+
+    /**
+     * SQL Server恢复目标位置的key
+     */
+    public static final String IS_RESTORE_LOCATION = "isRestoreNew";
+
     private SqlServerConstants() {
     }
 }

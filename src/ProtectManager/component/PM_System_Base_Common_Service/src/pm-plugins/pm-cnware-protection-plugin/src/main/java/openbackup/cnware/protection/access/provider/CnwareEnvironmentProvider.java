@@ -39,6 +39,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceBase;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
@@ -74,6 +75,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -465,6 +468,11 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
         List<ProtectedResource> cnwareVmResources = doScanResources(endpoint, Lists.newArrayList(),
             CnwareConstant.RES_TYPE_CNWARE_VM, environment);
 
+        // 扫描虚拟机tag信息
+        List<ProtectedResource> cnwareTagResources = doScanResources(endpoint, Lists.newArrayList(),
+            CnwareConstant.RES_TYPE_TAG, environment);
+        addCnwareTagIntoVmResources(cnwareVmResources, cnwareTagResources);
+
         List<ProtectedResource> resources = Lists.newArrayList();
         resources.addAll(cnwareHostPoolResources);
         resources.addAll(cnwareClusterResources);
@@ -474,6 +482,56 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
         resources = updateVmCountInClusterAndHost(resources);
         log.info("finish scan CNware environment, agentId:{}, envId:{}", endpoint.getId(), environment.getUuid());
         return resources;
+    }
+
+    private void addCnwareTagIntoVmResources(List<ProtectedResource> cnwareVmResources,
+        List<ProtectedResource> cnwareTagResources) {
+        if (cnwareVmResources.size() == 0 || cnwareTagResources.size() == 0) {
+            log.info("No need add tag info into cnware vm, vm size:{}, tag size:{}",
+                cnwareVmResources.size(), cnwareTagResources.size());
+            return;
+        }
+        for (ProtectedResource cnwareTagResource : cnwareTagResources) {
+            for (ProtectedResource cnwareVmResource : cnwareVmResources) {
+                updateTagsInExtendInfo(cnwareTagResource, cnwareVmResource);
+            }
+        }
+        log.info("Add tag info into cnware vm success, vm size:{}, tag size:{}",
+            cnwareVmResources.size(), cnwareTagResources.size());
+    }
+
+    private void updateTagsInExtendInfo(ProtectedResource cnwareTagResource, ProtectedResource cnwareVmResource) {
+        if (cnwareVmResource.getUuid().equals(cnwareTagResource.getUuid())
+            && cnwareVmResource.getName().equals(cnwareTagResource.getName())) {
+            String tags = cnwareTagResource.getExtendInfo().get(CnwareConstant.TAGS);
+            if (!VerifyUtil.isEmpty(tags)) {
+                String cnwareVmTags = decodeTags(tags);
+                Map<String, String> extendInfo = cnwareVmResource.getExtendInfo();
+                extendInfo.put(CnwareConstant.TAGS, cnwareVmTags);
+                cnwareVmResource.setExtendInfo(extendInfo);
+            }
+        }
+    }
+
+    private String decodeTags(String tags) {
+        Pattern pattern = CnwareConstant.UNICODE_REGEX;
+        Matcher matcher = pattern.matcher(tags);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            String hexStr = matcher.group(IsmNumberConstant.ONE);
+            try {
+                // 将十六进制字符串转换为整数再将整数转换为对应的Unicode字符
+                char ch = (char) Integer.parseInt(hexStr, IsmNumberConstant.SIXTTEEN);
+
+                // 将转换后的字符替换到结果中
+                matcher.appendReplacement(sb, String.valueOf(ch));
+            } catch (NumberFormatException e) {
+                // 未匹配到Unicode转义序列，将原始的十六进制字符串作为Unicode转义序列追加到StringBuffer对象
+                matcher.appendReplacement(sb, "\\u" + hexStr);
+            }
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 
     private List<ProtectedResource> doScanResources(Endpoint endpoint, List<Application> applications,
@@ -493,13 +551,13 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
         PageListResponse<ProtectedResource> response;
         List<ProtectedResource> scanResources = Lists.newArrayList();
         do {
+            page++;
             request.setPageNo(page);
             response = agentService.getDetailPageList(env.getSubType(), endpoint.getIp(), endpoint.getPort(), request);
             List<ProtectedResource> protectedResources = response.getRecords();
             if (CollectionUtils.isEmpty(protectedResources)) {
                 break;
             }
-            page++;
             scanResources.addAll(protectedResources);
 
             // 将最后一条记录id作为下次查询的标记
@@ -508,7 +566,7 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
                     protectedResources.get(protectedResources.size() - 1).getUuid());
                 request.setConditions(JSON.toJSONString(conditions));
             }
-        } while (response.getRecords().size() == size);
+        } while (response.getTotalCount() >= size * page);
 
         // 根据uuid去重
         scanResources = scanResources.stream()

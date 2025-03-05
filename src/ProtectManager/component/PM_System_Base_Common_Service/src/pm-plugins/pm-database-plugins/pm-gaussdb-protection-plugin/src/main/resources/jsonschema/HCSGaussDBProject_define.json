@@ -44,8 +44,7 @@
         "pmAddress": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 32,
-          "pattern": "://([\\w-]+\\.)+[\\w-]+:",
+          "maxLength": 100,
           "description": "管控面地址"
         },
         "businessAddr": {

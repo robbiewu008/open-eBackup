@@ -85,14 +85,16 @@ public class MysqlSlaValidator implements SlaValidateProvider {
 
         // Mysql共需要配置四种备份类型（全量，差异增量，累积增量，日志）/复制/归档
         slaValidateConfig.getSpecificationConfig()
-            .setLimit(PolicyLimitConfig.of(PolicyAction.FULL, SlaConstants.FULL_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
-            .setLimit(PolicyLimitConfig.of(PolicyAction.DIFFERENCE_INCREMENT,
-                SlaConstants.DIFFERENCE_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
-            .setLimit(PolicyLimitConfig.of(PolicyAction.CUMULATIVE_INCREMENT,
-                SlaConstants.CUMULATIVE_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
-            .setLimit(PolicyLimitConfig.of(PolicyAction.LOG, SlaConstants.LOG_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
-            .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION, SlaConstants.REPLICATION_POLICY_COUNT_LIMIT))
-            .setLimit(PolicyLimitConfig.of(PolicyAction.ARCHIVING, SlaConstants.ARCHIVE_POLICY_COUNT_LIMIT));
+                .setLimit(PolicyLimitConfig.of(PolicyAction.FULL, SlaConstants.FULL_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.DIFFERENCE_INCREMENT,
+                        SlaConstants.DIFFERENCE_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.CUMULATIVE_INCREMENT,
+                        SlaConstants.CUMULATIVE_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.LOG, SlaConstants.LOG_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION_LOG,
+                        SlaConstants.REPLICATION_LOG_POLICY_COUNT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION, SlaConstants.REPLICATION_POLICY_COUNT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.ARCHIVING, SlaConstants.ARCHIVE_POLICY_COUNT_LIMIT));
         log.info("set MySQL sla PolicyLimitConfig success.");
         return slaValidateConfig;
     }

@@ -113,4 +113,10 @@ public class TidbDatabaseProvider implements ResourceProvider {
     public void beforeUpdate(ProtectedResource resource) {
         beforeCreate(resource);
     }
+
+    @Override
+    public boolean isSupportIndex() {
+        // Tidb数据库 支持索引
+        return true;
+    }
 }

@@ -95,9 +95,6 @@ public class PostgreClusterProvider implements EnvironmentProvider {
         List<ProtectedEnvironment> agentList = queryEnvironments(agents);
         clusterEnvironmentService.checkClusterNodeStatus(agentList);
         clusterEnvironmentService.checkClusterNodeOsType(agentList);
-        if (VerifyUtil.isEmpty(environment.getUuid())) {
-            environment.setUuid(UUIDGenerator.getUUID());
-        }
         if (StringUtils.equals(environment.getExtendInfo().get(PostgreConstants.INSTALL_DEPLOY_TYPE),
             PostgreConstants.CLUP)) {
             List<ProtectedResource> clupServers = environment.getDependencies().get(PostgreConstants.CLUP_SERVERS);
@@ -107,6 +104,16 @@ public class PostgreClusterProvider implements EnvironmentProvider {
             checkClupServerCluster(clupServerList, environment);
         }
         environment.setLinkStatus(LinkStatusEnum.ONLINE.getStatus().toString());
+        if (VerifyUtil.isEmpty(environment.getUuid())) {
+            environment.setUuid(UUIDGenerator.getUUID());
+        } else {
+            List<ProtectedResource> children = resourceService.getResourceByParentId(environment.getUuid());
+            for (ProtectedResource child : children) {
+                child.setPath(environment.getEndpoint());
+                child.getExtendInfo().put(DatabaseConstants.VIRTUAL_IP, environment.getEndpoint());
+            }
+            resourceService.updateSourceDirectly(children);
+        }
         log.info("End check postgre cluster. name: {}", environment.getName());
     }
 
@@ -200,14 +207,19 @@ public class PostgreClusterProvider implements EnvironmentProvider {
             } while (data.getRecords().size() >= IsmNumberConstant.HUNDRED);
             updateResourceStatus(resources);
             List<ProtectedResource> agents = environment.getDependencies().get(DatabaseConstants.AGENTS);
-            for (ProtectedResource agent : agents) {
-                if (!(agent instanceof ProtectedEnvironment)) {
+            List<ProtectedResource> clupServers = environment.getDependencies().get(PostgreConstants.CLUP_SERVERS);
+            List<ProtectedResource> clupNodes = new ArrayList<>();
+            clupNodes.addAll(agents);
+            clupNodes.addAll(clupServers);
+            for (ProtectedResource clupNode : clupNodes) {
+                if (!(clupNode instanceof ProtectedEnvironment)) {
                     continue;
                 }
-                ProtectedEnvironment agentEnvironment = (ProtectedEnvironment) agent;
+                ProtectedEnvironment agentEnvironment = (ProtectedEnvironment) clupNode;
                 if (StringUtils.equals(LinkStatusEnum.OFFLINE.getStatus().toString(),
                     agentEnvironment.getLinkStatus())) {
                     log.error("Postgre cluster health check fail. uuid: {}", environment.getUuid());
+                    environment.setLinkStatus(LinkStatusEnum.OFFLINE.getStatus().toString());
                     throw new LegoCheckedException(CommonErrorCode.HOST_OFFLINE, "Select host is offLine.");
                 }
             }
@@ -222,6 +234,7 @@ public class PostgreClusterProvider implements EnvironmentProvider {
                     .equals(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(childNode)));
             if (isOffline) {
                 log.error("Postgre cluster health check fail. uuid: {}", environment.getUuid());
+                environment.setLinkStatus(LinkStatusEnum.OFFLINE.getStatus().toString());
                 throw new LegoCheckedException(CommonErrorCode.HOST_OFFLINE, "Select host is offLine.");
             }
         }
@@ -274,9 +287,9 @@ public class PostgreClusterProvider implements EnvironmentProvider {
                     errorNodeNumber++;
                 }
             }
-            if (errorNodeNumber == clupServers.size()) {
-                status = LinkStatusEnum.OFFLINE.getStatus().toString();
-            }
+        }
+        if (errorNodeNumber == clupServers.size()) {
+            status = LinkStatusEnum.OFFLINE.getStatus().toString();
         }
         return status;
     }

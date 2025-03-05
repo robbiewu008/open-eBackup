@@ -204,4 +204,43 @@ public class SqlServerCopyDeleteInterceptorTest {
         copyInfoBo.setResourceId("this_resource_id");
         return copyInfoBo;
     }
+
+    /**
+     * 用例场景：SQL Server删除全量副本时查找需要关联删除的副本
+     * 前置条件：副本资源存在，副本数据存在，
+     * 检查点：是否成功回填agents
+     */
+    @Test
+    public void test_get_copies_copy_type_is_full_success() {
+        // 副本顺序：全(归档)全(备份)差日
+        List<Copy> copies = generateBackupCopiesWithArchive();
+        PowerMockito.when(copyRestApi.queryCopiesByResourceId(anyString())).thenReturn(copies);
+        List<String> processedCopies = copyDeleteInterceptor.getCopiesCopyTypeIsFull(copies, copies.get(1), null);
+        Assert.assertEquals(2, processedCopies.size());
+    }
+
+    private List<Copy> generateBackupCopiesWithArchive() {
+        // 副本顺序：全(归档)全(备份)差日
+        Copy fullCopy1 = generateResourceCopy();
+        fullCopy1.setGn(1);
+        fullCopy1.setUuid("full_01");
+        fullCopy1.setBackupType(BackupTypeConstants.FULL.getAbBackupType());
+        fullCopy1.setGeneratedBy(CopyGeneratedByEnum.BY_CLOUD_ARCHIVE.value());
+        Copy fullCopy2 = BeanTools.copy(fullCopy1, Copy::new);
+        fullCopy2.setGn(2);
+        fullCopy2.setUuid("full_02");
+        fullCopy2.setGeneratedBy(CopyGeneratedByEnum.BY_BACKUP.value());
+        Copy cumulativeCopy1 = generateResourceCopy();
+        cumulativeCopy1.setGn(3);
+        cumulativeCopy1.setUuid("cumulative_01");
+        cumulativeCopy1.setBackupType(BackupTypeConstants.CUMULATIVE_INCREMENT.getAbBackupType());
+        cumulativeCopy1.setGeneratedBy(CopyGeneratedByEnum.BY_BACKUP.value());
+        Copy logCopy1 = BeanTools.copy(cumulativeCopy1, Copy::new);
+        logCopy1.setGn(4);
+        logCopy1.setUuid("log_01");
+        logCopy1.setBackupType(BackupTypeConstants.LOG.getAbBackupType());
+        logCopy1.setGeneratedBy(CopyGeneratedByEnum.BY_BACKUP.value());
+
+        return Arrays.asList(fullCopy1, fullCopy2, cumulativeCopy1, logCopy1);
+    }
 }

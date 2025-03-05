@@ -152,6 +152,7 @@ public class GeneralDbBackupInterceptor extends AbstractDbBackupInterceptor {
         Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams())
             .orElse(Maps.newHashMap());
         advanceParams.put(DatabaseConstants.MULTI_POST_JOB, String.valueOf(isMultiPostJob));
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
         backupTask.setAdvanceParams(advanceParams);
     }
 

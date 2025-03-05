@@ -66,4 +66,15 @@ public class NdmpResourceProviderTest {
     public void getResourceFeature() {
         Assert.assertFalse(ndmpResourceProvider.getResourceFeature().isSupportedLanFree());
     }
+
+    @Test
+    public void test_clean_unmodifiable_fields_when_update_success() {
+        ProtectedResource protectedResource = new ProtectedResource();
+        protectedResource.setPath("22b219d46c1a4ef3a608d912c5cad035");
+        String parentName = "ndmp_test";
+        protectedResource.setParentName(parentName);
+        ndmpResourceProvider.cleanUnmodifiableFieldsWhenUpdate(protectedResource);
+        Assert.assertEquals(protectedResource.getParentName(), parentName);
+        Assert.assertNull(protectedResource.getParentUuid());
+    }
 }

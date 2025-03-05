@@ -50,6 +50,7 @@ import openbackup.mysql.resources.access.service.MysqlBaseService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -91,6 +92,9 @@ public class MysqlDbBackupInterceptor extends AbstractDbBackupInterceptor {
 
     @Autowired
     private ResourceService resourceService;
+
+    @Autowired
+    private DeployTypeService deployTypeService;
 
     /**
      * mysql备份拦截器构造方法
@@ -152,6 +156,7 @@ public class MysqlDbBackupInterceptor extends AbstractDbBackupInterceptor {
      */
     @Override
     public BackupTask supplyBackupTask(BackupTask backupTask) {
+        log.info("mysql supplyBackupTask begin");
         updateRepositories(backupTask);
         Map<String, String> envExtendInfo = backupTask.getProtectEnv().getExtendInfo();
         envExtendInfo.put(DatabaseConstants.DEPLOY_TYPE, DatabaseDeployTypeEnum.SINGLE.getType());
@@ -173,9 +178,24 @@ public class MysqlDbBackupInterceptor extends AbstractDbBackupInterceptor {
         // 设置速度统计方式为UBC
         TaskUtil.setBackupTaskSpeedStatisticsEnum(backupTask, SpeedStatisticsEnum.UBC);
 
+        set_is_copy_restore_need_writable(backupTask);
+
         // 设置副本格式
         ProtectionTaskUtils.setCopyFormat(backupTask);
+        log.info("mysql backupTask:{}", backupTask);
         return backupTask;
+    }
+
+    private void set_is_copy_restore_need_writable(BackupTask backupTask) {
+        log.info("mysql backup isPacific:{}", deployTypeService.isPacific());
+        if (deployTypeService.isPacific()) {
+            Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams())
+                    .orElse(new HashMap<>());
+            // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+            advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+            backupTask.setAdvanceParams(advanceParams);
+        }
+        log.info("mysql backupTask:{}", backupTask);
     }
 
     /**
@@ -270,13 +290,6 @@ public class MysqlDbBackupInterceptor extends AbstractDbBackupInterceptor {
             backupTask.getProtectObject().getUuid());
         // 遍历子实例信息
         for (ProtectedResource singleInstanceResource : singleInstanceResources) {
-            // 如果是日志备份，则只能在主节点备份
-            if (DatabaseConstants.LOG_BACKUP_TYPE.equals(backupTask.getBackupType())) {
-                final String role = singleInstanceResource.getExtendInfo().get(DatabaseConstants.ROLE);
-                if (!(MysqlRoleEnum.MASTER.getRole().equals(role))) {
-                    continue;
-                }
-            }
             // 从子实例的dependency里，获取子实例对应的Agent主机
             ProtectedEnvironment agentEnv = mysqlBaseService.getAgentBySingleInstanceUuid(
                 singleInstanceResource.getUuid());

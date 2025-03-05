@@ -175,9 +175,9 @@ public abstract class AbstractDbCopyDeleteInterceptor extends BaseCopyDeleteInte
     /**
      * getShouldDeleteCopies
      *
-     * @param copies copies
-     * @param thisCopy thisCopy
-     * @return List<String>
+     * @param copies copies 本个副本之后的所有备份副本
+     * @param thisCopy thisCopy 本个副本
+     * @return List<String> 需要删除的集合
      */
     @Override
     protected List<String> getShouldDeleteCopies(List<Copy> copies, Copy thisCopy) {

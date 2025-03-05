@@ -227,8 +227,6 @@ public class AntDBInstanceRestoreProvider extends AbstractDbRestoreInterceptorPr
         // 添加恢复目标类型（targetLocation）参数 注：普通恢复框架默认不会带targetLocation参数到dme
         advancedParams.put(AntDBConstants.TARGET_LOCATION_KEY, task.getTargetLocation().getLocation());
         advancedParams.put(AntDBConstants.RESTORE_TYPE_KEY, task.getRestoreType());
-        // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
-        advancedParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, task.getRestoreMode());
 
         Copy copy = copyRestApi.queryCopyByID(task.getCopyId());
         ResourceEntity resource = JSONObject.fromObject(copy.getResourceProperties()).toBean(ResourceEntity.class);

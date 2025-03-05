@@ -115,6 +115,8 @@ public class InformixBackupInterceptorProvider extends AbstractDbBackupIntercept
         // 设置agents
         List<Endpoint> agentsByInstanceResource = informixService.getAgentsByInstanceResource(resource);
         backupTask.setAgents(agentsByInstanceResource);
+        setBackupAdvanceParams(backupTask);
+        log.info("End to set parameters for backup interceptor, task id: {}", backupTask.getTaskId());
         return backupTask;
     }
 
@@ -238,6 +240,12 @@ public class InformixBackupInterceptorProvider extends AbstractDbBackupIntercept
         }
         List<String> sanclientResourceIds = agentLanFreeAixViewDTO.getSanclientResourceIds();
         return !Collections.isEmpty(sanclientResourceIds);
+    }
+
+    private void setBackupAdvanceParams(BackupTask task) {
+        Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElseGet(HashMap::new);
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        task.setAdvanceParams(advanceParams);
     }
 
     @Override

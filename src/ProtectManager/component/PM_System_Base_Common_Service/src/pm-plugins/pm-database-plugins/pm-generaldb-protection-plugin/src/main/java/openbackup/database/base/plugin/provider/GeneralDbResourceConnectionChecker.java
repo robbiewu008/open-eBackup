@@ -21,11 +21,13 @@ import openbackup.data.protection.access.provider.sdk.resource.CheckReport;
 import openbackup.data.protection.access.provider.sdk.resource.CheckResult;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.AppConf;
 import openbackup.database.base.plugin.common.GeneralDbConstant;
 import openbackup.database.base.plugin.util.GeneralDbUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
+import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import org.springframework.beans.BeanUtils;
@@ -38,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 通用数据库健康检查
@@ -46,9 +50,45 @@ import java.util.Optional;
 @Component
 @Slf4j
 public class GeneralDbResourceConnectionChecker extends UnifiedResourceConnectionChecker {
+    private final ResourceService resourceService;
+
     public GeneralDbResourceConnectionChecker(ProtectedEnvironmentRetrievalsService environmentRetrievalsService,
-        AgentUnifiedService agentUnifiedService) {
+        AgentUnifiedService agentUnifiedService, ResourceService resourceService) {
         super(environmentRetrievalsService, agentUnifiedService);
+        this.resourceService = resourceService;
+    }
+
+    /**
+     * 增加应用的校验逻辑
+     *
+     * @param protectedResource 受保护资源
+     * @return boolean 连通性校验的结果
+     */
+    @Override
+    public CheckResult<Object> generateCheckResult(ProtectedResource protectedResource) {
+        CheckResult<Object> checkResult = super.generateCheckResult(protectedResource);
+        // 根据结果更新资源状态
+        updateResourceStatus(protectedResource.getUuid(), checkResult.getResults().getCode());
+        return checkResult;
+    }
+
+    private void updateResourceStatus(String resourceId, long returnCode) {
+        if (returnCode == ActionResult.SUCCESS_CODE) {
+            log.info("Start to update GeneralDbResource Online after connection check, resource id: {}", resourceId);
+            updateEnvStatus(resourceId, LinkStatusEnum.ONLINE.getStatus().toString());
+        } else {
+            log.info("Start to update GeneralDbResource OFFLINE after connection check, resource id: {}", resourceId);
+            updateEnvStatus(resourceId, LinkStatusEnum.OFFLINE.getStatus().toString());
+        }
+        log.info("Finished update GeneralDbResource status after connection check, resource id: {}", resourceId);
+    }
+
+    private void updateEnvStatus(String resourceId, String status) {
+        ProtectedEnvironment resource = new ProtectedEnvironment();
+        resource.setUuid(resourceId);
+        resource.setLinkStatus(status);
+        // 直接将环境的状态同步到数据库，不走update的重接口，避免两次检查连通性而导致同步数据库失败
+        resourceService.updateSourceDirectly(Stream.of(resource).collect(Collectors.toList()));
     }
 
     @Override

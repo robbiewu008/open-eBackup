@@ -107,9 +107,9 @@ public abstract class AbstractMysqlRestoreProvider extends AbstractDbRestoreInte
         JSONObject resourceJson = JSONObject.fromObject(copy.getResourceProperties());
         Map<String, String> extendInfo = Optional.ofNullable(
                 resourceJson.getJSONObject(DatabaseConstants.EXTEND_INFO).toMap(String.class))
-                .orElse(Collections.emptyMap());
+            .orElse(Collections.emptyMap());
         Map<String, String> targetResourceExtendInfo = Optional.ofNullable(targetResource.getExtendInfo())
-                .orElse(Collections.emptyMap());
+            .orElse(Collections.emptyMap());
 
         // 拦截MySQL部署的操作系统
         mysqlBaseService.checkDeployOperatingSystem(extendInfo, targetResourceExtendInfo);

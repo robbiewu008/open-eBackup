@@ -28,6 +28,7 @@ import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
 import openbackup.database.base.plugin.utils.ProtectionTaskUtils;
+import openbackup.postgre.protection.access.common.PostgreConstants;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -74,6 +75,9 @@ public class PostgreBackupInterceptorProvider extends AbstractDbBackupIntercepto
 
         // 设置速度统计方式为UBC
         TaskUtil.setBackupTaskSpeedStatisticsEnum(backupTask, SpeedStatisticsEnum.UBC);
+
+        // 日志备份加上检查任务类型校验
+        checkIsLogBackup(backupTask);
         return backupTask;
     }
 
@@ -187,5 +191,12 @@ public class PostgreBackupInterceptorProvider extends AbstractDbBackupIntercepto
     public boolean applicable(String resourceSubType) {
         return Arrays.asList(ResourceSubTypeEnum.POSTGRE_INSTANCE.getType(),
             ResourceSubTypeEnum.POSTGRE_CLUSTER_INSTANCE.getType()).contains(resourceSubType);
+    }
+
+    private void checkIsLogBackup(BackupTask backupTask) {
+        if (DatabaseConstants.LOG_BACKUP_TYPE.equals(backupTask.getBackupType())) {
+            Map<String, String> advanceParams = backupTask.getAdvanceParams();
+            advanceParams.put(PostgreConstants.IS_CHECK_BACKUP_JOB_TYPE, "true");
+        }
     }
 }

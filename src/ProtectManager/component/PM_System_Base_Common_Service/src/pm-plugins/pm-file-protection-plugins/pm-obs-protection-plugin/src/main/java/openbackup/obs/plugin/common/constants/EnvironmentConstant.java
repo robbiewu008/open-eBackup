@@ -127,4 +127,14 @@ public class EnvironmentConstant {
      * IP:PORT正则
      */
     public static final Pattern IP_PORT_PATTERN = Pattern.compile(RegexpConstants.IP_PORT);
+
+    /**
+     * 桶名
+     */
+    public static final String BUCKET_NAME = "bucketName";
+
+    /**
+     * 前缀
+     */
+    public static final String PREFIX = "prefix";
 }

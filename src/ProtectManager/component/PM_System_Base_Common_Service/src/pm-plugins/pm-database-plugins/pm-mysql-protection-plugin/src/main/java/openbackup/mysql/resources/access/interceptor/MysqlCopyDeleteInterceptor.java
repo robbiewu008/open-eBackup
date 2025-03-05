@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,19 +72,30 @@ public class MysqlCopyDeleteInterceptor extends AbstractDbCopyDeleteInterceptor 
 
     @Override
     protected List<String> getCopiesCopyTypeIsFull(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
+        log.info("mysql full copies:{}, thisCopy:{}, nextFullCopy:{}", copies, thisCopy, nextFullCopy);
         if (isEAppCopy(thisCopy)) {
             return Lists.newArrayList(thisCopy.getUuid());
         }
-        if (isContainsMorePreviousCopy(thisCopy, BackupTypeConstants.FULL.getAbBackupType())) {
-            return Lists.newArrayList(thisCopy.getUuid());
-        }
-        return getCopiesBetweenTwoCopy(copies, thisCopy, nextFullCopy).stream()
-                .map(Copy::getUuid)
-                .collect(Collectors.toList());
+        List<Copy> copyList = copyRestApi.queryCopiesByResourceId(thisCopy.getResourceId());
+        log.info("copyList:{}", copyList);
+        List<String> filterCopyUuids = copyList.stream()
+            .filter(copy -> StringUtils.equals(copy.getGeneratedBy(), thisCopy.getGeneratedBy()))
+            .filter(copy -> {
+                if (nextFullCopy == null) {
+                    return copy.getGn() > thisCopy.getGn();
+                }
+                return copy.getGn() > thisCopy.getGn() && copy.getGn() < nextFullCopy.getGn();
+            })
+            .sorted(Comparator.comparingInt(Copy::getGn))
+            .map(Copy::getUuid)
+            .collect(Collectors.toList());
+        log.info("filterCopies:{}", filterCopyUuids);
+        return filterCopyUuids;
     }
 
     private boolean isContainsMorePreviousCopy(Copy thisCopy, int backupType) {
         List<Copy> copies = copyRestApi.queryCopiesByResourceId(thisCopy.getResourceId());
+        log.info("queryCopies:{}", copies);
         return copies.stream()
                 .anyMatch(copy -> copy.getBackupType() == backupType
                         && copy.getGn() < thisCopy.getGn());
@@ -99,6 +111,7 @@ public class MysqlCopyDeleteInterceptor extends AbstractDbCopyDeleteInterceptor 
      */
     @Override
     protected List<String> getCopiesCopyTypeIsDifferenceIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
+        log.info("mysql incr copies:{}, thisCopy:{}, nextFullCopy:{}", copies, thisCopy, nextFullCopy);
         if (isEAppCopy(thisCopy)) {
             return Lists.newArrayList(thisCopy.getUuid());
         }
@@ -115,7 +128,7 @@ public class MysqlCopyDeleteInterceptor extends AbstractDbCopyDeleteInterceptor 
     }
 
     private static List<Copy> getAssociatedLogs(List<Copy> copies) {
-        copies.sort((copy1, copy2) -> Integer.compare(copy1.getGn(), copy2.getGn()));
+        copies.sort(Comparator.comparingInt(Copy::getGn));
         List<Copy> logs = new ArrayList<>();
         for (Copy copy : copies) {
             BackupTypeConstants copyBackupType = BackupTypeConstants.getBackupTypeByAbBackupType(
@@ -139,6 +152,7 @@ public class MysqlCopyDeleteInterceptor extends AbstractDbCopyDeleteInterceptor 
      */
     @Override
     protected List<String> getCopiesCopyTypeIsCumulativeIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
+        log.info("mysql diff copies:{}, thisCopy:{}, nextFullCopy:{}", copies, thisCopy, nextFullCopy);
         if (isEAppCopy(thisCopy)) {
             return Lists.newArrayList(thisCopy.getUuid());
         }

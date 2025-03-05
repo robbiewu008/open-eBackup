@@ -268,6 +268,11 @@ public class DatabaseConstants {
     public static final String VERSION = "version";
 
     /**
+     * 实例名
+     */
+    public static final String INST_NAME = "inst_name";
+
+    /**
      * 版本
      */
     public static final String ORACLE_VERSION = "database_version";
@@ -446,6 +451,11 @@ public class DatabaseConstants {
      * 日志副本开始时间的健值
      */
     public static final String LOG_COPY_BEGIN_TIME_KEY = "beginTime";
+
+    /**
+     * 日志副本结束时间的健值
+     */
+    public static final String LOG_COPY_END_TIME_KEY = "endTime";
 
     /**
      * 数据库模式key

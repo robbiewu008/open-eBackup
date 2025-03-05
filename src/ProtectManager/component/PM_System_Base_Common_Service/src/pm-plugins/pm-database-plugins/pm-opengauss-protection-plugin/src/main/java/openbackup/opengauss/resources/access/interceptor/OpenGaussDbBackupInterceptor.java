@@ -12,6 +12,8 @@
 */
 package openbackup.opengauss.resources.access.interceptor;
 
+import com.google.common.collect.Maps;
+
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -32,6 +34,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * openGauss环境注册提供者
@@ -59,6 +63,14 @@ public class OpenGaussDbBackupInterceptor extends AbstractDbBackupInterceptor {
         updateRepositories(backupTask);
         // 副本格式：0-快照格式（原生格式） 1-目录格式（非原生） openGauss为非原生
         backupTask.setCopyFormat(CopyFormatEnum.INNER_DIRECTORY.getCopyFormat());
+
+        Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams())
+            .orElse(Maps.newHashMap());
+
+        // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+        log.info("Opengauss db set restore need writable is True");
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        backupTask.setAdvanceParams(advanceParams);
 
         // 更新环境中的node信息
         backupTask.setProtectEnv(openGaussAgentService.buildEnvironmentNodes(backupTask.getProtectEnv()));

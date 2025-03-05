@@ -14,8 +14,11 @@ package openbackup.postgre.protection.access.provider.resource;
 
 import static openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants.LOG;
 
+import com.alibaba.fastjson.JSONObject;
+
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
+import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
 import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
 import openbackup.data.protection.access.provider.sdk.copy.DeleteCopyTask;
 import openbackup.data.protection.access.provider.sdk.enums.BackupTypeEnum;
@@ -74,10 +77,32 @@ public class PostgreCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercepto
         Optional<Copy> latestLogBackupCopy = copyRestApi.queryLatestFullBackupCopies(thisCopy.getResourceId(),
             thisCopy.getGn(), BackupTypeEnum.LOG.getAbbreviation());
         if (latestLogBackupCopy.isPresent()) {
-            log.warn("exist log copy before this copy, uuid is {}", latestLogBackupCopy.get().getUuid());
-            return Collections.emptyList();
+            Optional<Copy> nextLogBackupCopy = Optional.ofNullable(
+                CopyUtil.getNextCopyByType(copies, BackupTypeConstants.LOG, thisCopy.getGn()));
+            if (nextLogBackupCopy.isPresent()) {
+                JSONObject resourcePropertiesOne = JSONObject.parseObject(latestLogBackupCopy.get().getProperties());
+                String endtime = resourcePropertiesOne.getString("endTime");
+                log.info("latestLogBackupCopy endtime: {}, uuid is {}", endtime, latestLogBackupCopy.get().getUuid());
+                JSONObject resourcePropertiesTwo = JSONObject.parseObject(nextLogBackupCopy.get().getProperties());
+                String begintime = resourcePropertiesTwo.getString("beginTime");
+                log.info("nextLogBackupCopy begintime: {}, uuid is {}", begintime, nextLogBackupCopy.get().getUuid());
+                if (endtime.equals(begintime)) {
+                    log.warn("Logs should be continuous; only the current full copy should be deleted.");
+                    return Collections.emptyList();
+                } else {
+                    log.warn("Delete the current full copy and the associated log copies.");
+                    return getCopy(copies, thisCopy, nextFullCopy);
+                }
+            } else {
+                log.warn("only the current full copy should be deleted.");
+                return Collections.emptyList();
+            }
         }
 
+        return getCopy(copies, thisCopy, nextFullCopy);
+    }
+
+    private List<String> getCopy(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
         int format = CopyUtil.getFormat(thisCopy).orElse(CopyFormatEnum.INNER_SNAPSHOT.getCopyFormat());
         if (Objects.equals(format, CopyFormatEnum.INNER_DIRECTORY.getCopyFormat())) {
             return CopyUtil.getCopyUuidsBetweenTwoCopy(copies, thisCopy, nextFullCopy);

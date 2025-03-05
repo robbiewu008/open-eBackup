@@ -12,6 +12,8 @@
 */
 package openbackup.opengauss.resources.access.interceptor;
 
+import static openbackup.data.access.framework.copy.mng.util.CopyUtil.getCopiesBetweenTwoCopy;
+
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
@@ -19,6 +21,7 @@ import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
 import openbackup.data.protection.access.provider.sdk.copy.DeleteCopyTask;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.interceptor.AbstractDbCopyDeleteInterceptor;
+import openbackup.opengauss.resources.access.constants.OpenGaussConstants;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
@@ -26,7 +29,10 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * OpenGauss副本删除Provider
@@ -58,6 +64,31 @@ public class OpenGaussCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercep
     }
 
     @Override
+    protected List<String> getCopiesCopyTypeIsFull(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
+        if (isContainsMorePreviousFullCopy(thisCopy)) {
+            return getCopiesBetweenTwoCopy(copies, thisCopy, nextFullCopy).stream()
+                .filter(copy -> copy.getBackupType() != BackupTypeConstants.LOG.getAbBackupType())
+                .map(Copy::getUuid)
+                .collect(Collectors.toList());
+        }
+        log.info("delete log, copyid: {}", thisCopy.getUuid());
+        return getCopiesBetweenTwoCopy(copies, thisCopy, nextFullCopy).stream()
+            .map(Copy::getUuid)
+            .collect(Collectors.toList());
+    }
+
+    private boolean isContainsMorePreviousFullCopy(Copy thisCopy) {
+        List<Copy> copies = copyRestApi.queryCopiesByResourceId(thisCopy.getResourceId());
+        return copies.stream()
+            .anyMatch(copy -> copy.getBackupType() == BackupTypeConstants.FULL.getAbBackupType()
+                && copy.getGn() < thisCopy.getGn() && thisCopy.getGeneratedBy().equals(copy.getGeneratedBy()));
+    }
+
+    @Override
     protected void handleTask(DeleteCopyTask task, CopyInfoBo copy) {
+        // 不需要UBC后置任务删除日志备份副本，设置为false
+        Map<String, String> map = new HashMap<>(1);
+        map.put(OpenGaussConstants.IS_DELETE_RELATIVE_COPIES, String.valueOf(false));
+        task.addParameters(map);
     }
 }

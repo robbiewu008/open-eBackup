@@ -68,6 +68,11 @@ public class PostgreConstants {
     public static final String PG_DATA = "pgdata";
 
     /**
+     * 数据库归档目录
+     */
+    public static final String ARCHIVE_DIR = "archiveDir";
+
+    /**
      * 备节点
      */
     public static final String SLAVE = "2";
@@ -116,4 +121,14 @@ public class PostgreConstants {
      * CLup数据库的默认安装目录
      */
     public static final String CLUP_INSTALL_PATH = "/home/csumdb/pgsql-12";
+
+    /**
+     * 前端下发给PM的扩展字段，用于判断日志备份是否需要转全量
+     */
+    public static final String AUTO_FULL_BACKUP = "autoFullBackup";
+
+    /**
+     * PM下发给agent的扩展字段，用于判断日志备份是否需要转全量
+     */
+    public static final String IS_CHECK_BACKUP_JOB_TYPE = "isCheckBackupJobType";
 }

@@ -110,6 +110,8 @@ public class DamengBackupInterceptor extends AbstractDbBackupInterceptor {
         Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams()).orElse(new HashMap<>());
         advanceParams.put(MULTI_FILE_SYSTEM, FALSE);
         advanceParams.put(DamengConstant.MULTI_POST_JOB, TRUE);
+        // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
         backupTask.setAdvanceParams(advanceParams);
 
         // 设置部署类型

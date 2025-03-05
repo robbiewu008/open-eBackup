@@ -23,6 +23,7 @@ import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
 import openbackup.ndmp.protection.access.constant.NdmpConstant;
 import openbackup.ndmp.protection.access.service.NdmpService;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 
 import org.apache.commons.collections.MapUtils;
 import org.springframework.stereotype.Component;
@@ -44,15 +45,20 @@ public class NdmpBackupInterceptor extends AbstractDbBackupInterceptor {
 
     private final NdmpService ndmpService;
 
+    private final DeployTypeService deployTypeService;
+
     /**
      * 构造器
      *
      * @param localStorageService localStorageService
      * @param ndmpService ndmpService
+     * @param deployTypeService deployTypeService
      */
-    public NdmpBackupInterceptor(LocalStorageService localStorageService, NdmpService ndmpService) {
+    public NdmpBackupInterceptor(LocalStorageService localStorageService, NdmpService ndmpService,
+        DeployTypeService deployTypeService) {
         this.localStorageService = localStorageService;
         this.ndmpService = ndmpService;
+        this.deployTypeService = deployTypeService;
     }
 
     @Override
@@ -99,10 +105,12 @@ public class NdmpBackupInterceptor extends AbstractDbBackupInterceptor {
         TaskResource taskResource = backupTask.getProtectObject();
         taskResource.setName(fullName);
         StorageRepository storageRepository = backupTask.getRepositories().get(0);
-        storageRepository.setId(localStorageService.getStorageInfo().getEsn());
-        storageRepository.setRole(NdmpConstant.MASTER_ROLE);
         Map<String, Object> extendInfo = Optional.ofNullable(storageRepository.getExtendInfo()).orElse(new HashMap<>());
-        extendInfo.put(NdmpConstant.REPOSITORIES_KEY_ENS, localStorageService.getStorageInfo().getEsn());
+        if (!deployTypeService.isE1000()) {
+            storageRepository.setId(localStorageService.getStorageInfo().getEsn());
+            extendInfo.put(NdmpConstant.REPOSITORIES_KEY_ENS, localStorageService.getStorageInfo().getEsn());
+        }
+        storageRepository.setRole(NdmpConstant.MASTER_ROLE);
         storageRepository.setExtendInfo(extendInfo);
 
         // 更新环境中的信息

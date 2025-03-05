@@ -12,8 +12,11 @@
 */
 package openbackup.mongodb.protection.access.provider.copy;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
@@ -23,13 +26,16 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 
 import openbackup.system.base.sdk.copy.CopyRestApi;
+import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 public class MongoDBCopyDeleteInterceptorTest {
@@ -38,7 +44,7 @@ public class MongoDBCopyDeleteInterceptorTest {
     private final ResourceService resourceService = Mockito.mock(ResourceService.class);
 
     private final MongoDBCopyDeleteInterceptor mongoDBCopyDeleteInterceptor = new MongoDBCopyDeleteInterceptor(
-        copyRestApi, resourceService);
+            copyRestApi, resourceService);
 
     /**
      * 用例场景：MongoDB单机和集群注册下发provider过滤
@@ -79,5 +85,58 @@ public class MongoDBCopyDeleteInterceptorTest {
         given(resourceService.getBasicResourceById(any())).willReturn(Optional.of(new ProtectedResource()));
         mongoDBCopyDeleteInterceptor.handleTask(deleteCopyTask, new CopyInfoBo());
         Assert.assertTrue(true);
+    }
+
+
+    @Test
+    public void test_getCopiesCopyTypeIsFull2_should_return_not_null_when_condition() throws Exception {
+        // setup
+        Copy copy = new Copy();
+        copy.setUuid("string");
+        copy.setGn(0);
+        copy.setResourceId("string");
+        Optional<Copy> optional = Optional.of(copy);
+        when(copyRestApi.queryLatestFullBackupCopies(anyString(), anyInt(), anyInt())).thenReturn(optional);
+
+        List<Copy> copies = new ArrayList<>();
+        Copy copy1 = new Copy();
+        copy1.setUuid("string");
+        copy1.setGn(0);
+        copy1.setResourceId("string");
+        copies.add(copy1);
+
+        Copy thisCopy = new Copy();
+        thisCopy.setUuid("string");
+        thisCopy.setGn(0);
+        thisCopy.setResourceId("string");
+
+        Copy nextFullCopy = new Copy();
+        nextFullCopy.setUuid("string");
+        nextFullCopy.setGn(0);
+        nextFullCopy.setResourceId("string");
+
+        // run the test
+        List<String> result = mongoDBCopyDeleteInterceptor.getCopiesCopyTypeIsFull(copies, thisCopy, nextFullCopy);
+
+        // verify the results
+        assertNotNull(result);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_getCopiesCopyTypeIsFull2_should_throws_null_pointer_exception_when_objects_is_null()
+            throws Exception {
+        // setup
+        when(copyRestApi.queryLatestFullBackupCopies(anyString(), anyInt(), anyInt())).thenReturn(null);
+
+        // run the test
+        List<String> result = mongoDBCopyDeleteInterceptor.getCopiesCopyTypeIsFull((List) null, (Copy) null, (Copy) null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_getCopiesCopyTypeIsFull2_should_throws_null_pointer_exception_when_objects_is_null1()
+            throws Exception {
+
+        // run the test
+        List<String> result = mongoDBCopyDeleteInterceptor.getCopiesCopyTypeIsFull((List) null, (Copy) null, (Copy) null);
     }
 }

@@ -110,8 +110,8 @@ public class GoldenDbClusterInstanceConnectionChecker extends UnifiedResourceCon
         collectComputeResource(auth, nodeHostMap, computeNodes);
         collectGtmResource(auth, nodeHostMap, gtms);
         ProtectedEnvironment cluster = goldenDbService.getEnvironmentById(environment.getParentUuid());
-        Map<ProtectedResource, List<ProtectedEnvironment>> clusterMap =
-            goldenDbClusterConnectionChecker.collectConnectableResources(cluster);
+        Map<ProtectedResource, List<ProtectedEnvironment>> clusterMap
+            = goldenDbClusterConnectionChecker.collectConnectableResources(cluster);
         nodeHostMap.putAll(clusterMap);
         return nodeHostMap;
     }
@@ -177,16 +177,21 @@ public class GoldenDbClusterInstanceConnectionChecker extends UnifiedResourceCon
     @Override
     public List<ActionResult> collectActionResults(List<CheckReport<Object>> checkReport, Map<String, Object> context) {
         log.info("To deal with goldenDB collectActionResults");
-
         // 父类获得的结果
         List<ActionResult> results = super.collectActionResults(checkReport, context);
         AtomicBoolean managerFlag = new AtomicBoolean(false);
         for (ActionResult result : results) {
-            Map agentPluginMsg = JsonUtil.read(result.getMessage(), Map.class);
-            String nodeType = String.valueOf(agentPluginMsg.get(GoldenDbConstant.NODE_TYPE));
-            if (nodeType.equals("managerNode") && result.getCode() == 0) {
-                managerFlag.set(true);
-                log.info("check manager node success {}", result.getMessage());
+            try {
+                Map agentPluginMsg = JsonUtil.read(result.getMessage(), Map.class);
+                String nodeType = String.valueOf(agentPluginMsg.get(GoldenDbConstant.NODE_TYPE));
+                if (nodeType.equals("managerNode") && result.getCode() == 0) {
+                    managerFlag.set(true);
+                    log.info("check manager node success {}", result.getMessage());
+                }
+            } catch (Exception e) {
+                managerFlag.set(false);
+                log.error("can not get result, {}", e);
+                break;
             }
         }
         // 插件指定要处理的异常
@@ -220,6 +225,11 @@ public class GoldenDbClusterInstanceConnectionChecker extends UnifiedResourceCon
             .collect(Collectors.toList());
         log.info("goldenDB node type misComponent size is {}", missComponentResult.size());
 
+        return getCommonResults(results, mismatchResult, managerFlag, missComponentResult);
+    }
+
+    private static List<ActionResult> getCommonResults(List<ActionResult> results, List<ActionResult> mismatchResult,
+        AtomicBoolean managerFlag, List<ActionResult> missComponentResult) {
         // 插件没有指定要处理的异常
         List<ActionResult> commonResults = results.stream()
             .filter(it -> it.getCode() != GoldenDbConstant.NODE_TYPE_MISMATCH
@@ -230,6 +240,7 @@ public class GoldenDbClusterInstanceConnectionChecker extends UnifiedResourceCon
             log.error("no available goldenDB manager node.");
             commonResults.addAll(missComponentResult);
         }
+        log.info("goldenDB commonResults size is {}", commonResults.size());
         return commonResults;
     }
 
