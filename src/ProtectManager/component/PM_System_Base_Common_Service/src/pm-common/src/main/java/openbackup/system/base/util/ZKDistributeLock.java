@@ -34,4 +34,10 @@ public @interface ZKDistributeLock {
     long errorCode() default -1L;
 
     boolean needRelease() default true;
+
+    /**
+     * 映射入参对应的位置
+     * @return null
+     */
+    String lockIdIndex() default "";
 }

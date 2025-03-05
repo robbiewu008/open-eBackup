@@ -60,6 +60,8 @@ public enum ResourceTypeEnum {
     PLATFORM("Platform"),
     // 集群
     CLUSTER("Cluster"),
+    // 系统
+    SYSTEM("System"),
     // 磁盘
     DISK("Disk"),
 

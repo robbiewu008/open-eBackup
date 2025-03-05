@@ -108,7 +108,8 @@ public class FeignBuilder extends Feign.Builder {
         TimeUnit.MILLISECONDS, true);
 
     private static Request.Options fastFailTimeoutOptions = new Request.Options(
-        FeignClientConstant.CONNECT_TIMEOUT, TimeUnit.MILLISECONDS, FeignClientConstant.FAST_FAIL_READ_TIMEOUT,
+        FeignClientConstant.FAST_FAIL_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS,
+        FeignClientConstant.FAST_FAIL_READ_TIMEOUT,
         TimeUnit.MILLISECONDS, true);
 
     /**
@@ -124,6 +125,13 @@ public class FeignBuilder extends Feign.Builder {
     private static final Request.Options MEMBER_DEFAULT_TIMEOUT_OPTIONS =
         new Request.Options(FeignClientConstant.CONNECT_TIMEOUT, TimeUnit.MILLISECONDS,
             FeignClientConstant.MEMBER_READ_TIMEOUT, TimeUnit.MILLISECONDS, true);
+
+    /**
+     * 默认连接超时配置：连接超时时间30s，读取超时时间10秒。
+     */
+    private static final Request.Options BACKUP_CLUSTER_JOB_DEFAULT_TIMEOUT_OPTIONS =
+        new Request.Options(FeignClientConstant.CONNECT_TIMEOUT, TimeUnit.MILLISECONDS,
+            FeignClientConstant.BACKUP_CLUSTER_JOB_CLIENT_READ_TIMEOUT, TimeUnit.MILLISECONDS, true);
 
     /**
      * 路由服务连接超时配置；连接超时时间5s, 读取超时时间10s
@@ -190,7 +198,7 @@ public class FeignBuilder extends Feign.Builder {
      * @return fast fail FeignBuilder
      */
     public static Feign.Builder getFastFailFeignBuilder() {
-        return new FeignBuilder().options(fastFailTimeoutOptions).retryer(Retryer.NEVER_RETRY);
+        return new FeignBuilder().options(fastFailTimeoutOptions);
     }
 
     /**
@@ -440,6 +448,26 @@ public class FeignBuilder extends Feign.Builder {
      */
     public static <T> T buildMemberClusterClient(Class<T> type, Encoder encoder, Proxy proxy) {
         return new FeignBuilder().options(MEMBER_DEFAULT_TIMEOUT_OPTIONS)
+            .retryer(Retryer.NEVER_RETRY)
+            .encoder(getEncoder(encoder))
+            .decoder(CommonDecoder.decoder())
+            .errorDecoder(CommonDecoder::errorDecode)
+            .contract(new Contract.Default())
+            .client(buildTrustManagerClient(false, proxy, getKeyStore()))
+            .target(Target.EmptyTarget.create(type));
+    }
+
+    /**
+     * 构造访问备份成员节点的客户端，设置超时时间为10秒
+     *
+     * @param type type
+     * @param encoder encoder
+     * @param proxy proxy
+     * @param <T> template type
+     * @return target
+     */
+    public static <T> T buildBackupClusterJobClient(Class<T> type, Encoder encoder, Proxy proxy) {
+        return new FeignBuilder().options(BACKUP_CLUSTER_JOB_DEFAULT_TIMEOUT_OPTIONS)
             .retryer(Retryer.NEVER_RETRY)
             .encoder(getEncoder(encoder))
             .decoder(CommonDecoder.decoder())

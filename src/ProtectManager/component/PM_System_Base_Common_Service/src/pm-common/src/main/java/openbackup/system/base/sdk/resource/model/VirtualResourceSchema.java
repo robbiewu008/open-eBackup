@@ -42,6 +42,9 @@ public class VirtualResourceSchema extends ResourceEntity {
     @JsonProperty("alias_value")
     private String aliasValue;
 
+    @JsonProperty("firmware")
+    private String firmware;
+
     @JsonProperty("capacity")
     private String capacity;
 

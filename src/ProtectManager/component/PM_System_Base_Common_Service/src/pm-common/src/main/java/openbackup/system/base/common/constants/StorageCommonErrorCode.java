@@ -121,4 +121,15 @@ public class StorageCommonErrorCode {
      * 消息超时
      */
     public static final long MESSAGE_TIME_OUT = 1077949001L;
+
+    /**
+     * 登陆请求发起ip和cookie ip不一致
+     */
+    public static final long THE_IP_ADDRESS_IS_DIFFERENT = 1073793620L;
+
+
+    /**
+     * 设备管理平台开工失败
+     */
+    public static final long PWRON_SLFCHK_EMP_DEVIN_FAIL = 1077942277L;
 }

@@ -73,6 +73,12 @@ public class DeviceUser {
     private boolean isDefaultUser = false;
 
     /**
+     * 是否可用，密码错误时不可用
+     */
+    @JsonProperty("is_useful")
+    private boolean isUseful = true;
+
+    /**
      * 最后更新时间
      */
     @JsonProperty("last_update_time")

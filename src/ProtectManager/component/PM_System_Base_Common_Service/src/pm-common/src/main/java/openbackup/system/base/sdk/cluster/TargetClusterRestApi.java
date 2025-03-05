@@ -16,6 +16,7 @@ import feign.Headers;
 import feign.Param;
 import feign.QueryMap;
 import feign.RequestLine;
+import openbackup.system.base.bean.CopiesEntity;
 import openbackup.system.base.common.annotation.Routing;
 import openbackup.system.base.common.constants.BackupBaseClusterInfo;
 import openbackup.system.base.common.model.PageListResponse;
@@ -29,6 +30,7 @@ import openbackup.system.base.sdk.alarm.model.AlarmInfo;
 import openbackup.system.base.sdk.alarm.model.ClusterAlarmsInfo;
 import openbackup.system.base.sdk.alarm.model.NodeAlarmInfo;
 import openbackup.system.base.sdk.alarm.model.PerAlarmQueryParam;
+import openbackup.system.base.sdk.anti.model.CopyDetectionTaskRequest;
 import openbackup.system.base.sdk.archive.model.ArchiveMsg;
 import openbackup.system.base.sdk.auth.UserAuthRequest;
 import openbackup.system.base.sdk.auth.UserDetail;
@@ -52,12 +54,13 @@ import openbackup.system.base.sdk.cluster.model.DmeRemovePairRequest;
 import openbackup.system.base.sdk.cluster.model.LocalClusterRequest;
 import openbackup.system.base.sdk.cluster.model.MemberClusterInfo;
 import openbackup.system.base.sdk.cluster.model.OperateComponentRequest;
+import openbackup.system.base.sdk.cluster.model.PerformanceConfigInfo;
 import openbackup.system.base.sdk.cluster.model.ProductStorageInfo;
 import openbackup.system.base.sdk.cluster.model.SetupConfigMapRequest;
 import openbackup.system.base.sdk.cluster.model.SoftwareVersion;
 import openbackup.system.base.sdk.cluster.model.StorageCapacitySummaryVo;
 import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
-import openbackup.system.base.sdk.cluster.model.StorageUserAuthRelationStorageVo;
+import openbackup.system.base.sdk.cluster.model.StorageUserAuthRelationVo;
 import openbackup.system.base.sdk.cluster.model.SyncComponentInfoRequest;
 import openbackup.system.base.sdk.cluster.model.SyncComponentIpRequest;
 import openbackup.system.base.sdk.cluster.model.TargetClusterInfoVo;
@@ -74,6 +77,7 @@ import openbackup.system.base.sdk.cluster.netplane.NetworkPlane;
 import openbackup.system.base.sdk.cluster.request.BackupTaskRequest;
 import openbackup.system.base.sdk.cluster.request.RecentJobQueryReq;
 import openbackup.system.base.sdk.cluster.request.RecoveryTaskRequest;
+import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.dee.model.FineGrainedRestore;
 import openbackup.system.base.sdk.dee.model.ModifyEsClusterReq;
 import openbackup.system.base.sdk.exportfile.model.LogLevelDto;
@@ -129,6 +133,48 @@ public interface TargetClusterRestApi {
     @RequestLine("POST /v1/users")
     @Headers({"x-auth-token: {token}"})
     UserDetail createClusterUser(URI uri, @Param("token") String token, @RequestBody UserRequest user);
+
+    /**
+     * 查询是否存在worm策略
+     *
+     * @param uri uri
+     * @param token token
+     * @param resourceId resourceId
+     * @return 是否存在
+     */
+    @ExterAttack
+    @RequestLine("GET /v1/anti-ransomware/{resource_id}/is-exist-worm-policy")
+    @Headers({"x-auth-token: {token}"})
+    boolean isExistWormPolicyByResourceId(URI uri, @Param("token") String token,
+        @Param("resource_id") String resourceId);
+
+    /**
+     * 创建worm任务
+     *
+     * @param uri uri
+     * @param token token
+     * @param copyDetectionTaskRequest copyDetectionTaskRequest
+     * @param copyId copyId
+     * @return Void obj
+     */
+    @ExterAttack
+    @RequestLine("POST /v1/copies/{copy_id}/action/update-worm-setting")
+    @Headers({"x-auth-token: {token}"})
+    Void createCopyWormTask(URI uri, @Param("token") String token,
+        @RequestBody CopyDetectionTaskRequest copyDetectionTaskRequest, @Param(value = "copy_id") String copyId);
+
+    /**
+     * 根据对端副本ID（复制副本）查询本端副本ID（备份副本）
+     *
+     * @param uri uri
+     * @param token token
+     * @param copyId copyId
+     * @return id
+     */
+    @ExterAttack
+    @RequestLine("GET /v2/copies/{copy_id}")
+    @Headers({"x-auth-token: {token}"})
+    CopiesEntity queryBackUpIdByCopyId(URI uri, @Param("token") String token, @Param(value = "copy_id") String copyId);
 
     /**
      * Get target cluster info
@@ -304,6 +350,30 @@ public interface TargetClusterRestApi {
     @Headers({"x-auth-token: {token}"})
     PageListResponse<FineGrainedRestore> listCopyCatalogsName(URI uri, @Param("token") String token,
             @Param("copyId") String copyId, @QueryMap Map<String, Object> queryParams);
+
+    /**
+     * 开启副本guest system
+     *
+     * @param uri uri
+     * @param token token
+     * @param copyId copy id
+     */
+    @ExterAttack
+    @RequestLine("PUT /v2/copies/{copyId}/open/guest-system")
+    @Headers({"x-auth-token: {token}"})
+    void openCopyGuestSystem(URI uri, @Param("token") String token, @Param("copyId") String copyId);
+
+    /**
+     * 关闭副本guest system
+     *
+     * @param uri uri
+     * @param token token
+     * @param copyId copy id
+     */
+    @ExterAttack
+    @RequestLine("PUT /v2/copies/{copyId}/close/guest-system")
+    @Headers({"x-auth-token: {token}"})
+    void closeCopyGuestSystem(URI uri, @Param("token") String token, @Param("copyId") String copyId);
 
     /**
      * 获取目标集群任务信息
@@ -640,7 +710,7 @@ public interface TargetClusterRestApi {
     String getCollectNetPlaneInfo(URI uri, @Param("token") String token, @Param("appName") String appName);
 
     /**
-     * 查询网络平面信息
+     * 查询内部网络平面信息
      *
      * @param uri 目标url地址
      * @param token token
@@ -967,7 +1037,7 @@ public interface TargetClusterRestApi {
     @ExterAttack
     @RequestLine("GET /v1/cluster/performance/config")
     @Headers({"x-auth-token: {token}"})
-    boolean getPerformanceConfig(URI uri, @Param("token") String token);
+    PerformanceConfigInfo getPerformanceConfig(URI uri, @Param("token") String token);
 
     /**
      * 转发
@@ -982,7 +1052,7 @@ public interface TargetClusterRestApi {
     void createIndex(URI uri, @Param("token") String token, @Param("copyId") String copyId);
 
     /**
-     * 备节点上报es IP
+     * 主/备节点上报es IP
      *
      * @param uri uri
      * @param token token
@@ -992,7 +1062,7 @@ public interface TargetClusterRestApi {
     @ExterAttack
     @RequestLine("PUT /v1/clusters/ha/elasticsearch/config")
     @Headers({"x-auth-token: {token}"})
-    boolean standbyReportEsIp(URI uri, @Param("token") String token, @RequestBody ModifyEsClusterReq request);
+    boolean haReportEsIp(URI uri, @Param("token") String token, @RequestBody ModifyEsClusterReq request);
 
     /**
      * 获取目标集群备份存储容量统计信息
@@ -1117,7 +1187,7 @@ public interface TargetClusterRestApi {
     @ExterAttack
     @RequestLine("GET /v1/storage-user-auths/users/{userId}?authType={authType}")
     @Headers({"x-auth-token: {token}"})
-    PageListResponse<StorageUserAuthRelationStorageVo> getRemoteStorageUnitInfo(URI uri, @Param("token") String token,
+    PageListResponse<StorageUserAuthRelationVo> getRemoteStorageUnitInfo(URI uri, @Param("token") String token,
             @Param("userId") String userId, @Param("authType") int authType);
 
     /**
@@ -1135,6 +1205,23 @@ public interface TargetClusterRestApi {
     @Headers({"x-auth-token: {token}"})
     PageListResponse<StorageUnitVo> getStorageUnitInfo(URI uri, @Param("token") String token,
             @QueryMap Map<String, String> queryParam, @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+
+    /**
+     * 查询指定目标集群的存储单元信息
+     *
+     * @param uri uri
+     * @param token token
+     * @param originBackupId originBackupId
+     * @param esn esn
+     * @param generatedByList generatedByList
+     * @return Copy 返回结果
+     */
+    @ExterAttack
+    @RequestLine("GET /v1/copies/backup-id?" +
+        "origin_backup_id={originBackupId}&esn={esn}&generated_by_list={generatedByList}")
+    @Headers({"x-auth-token: {token}"})
+    Copy getCopyByBackupId(URI uri, @Param("token") String token, @Param("originBackupId") String originBackupId,
+        @Param("esn") String esn, @Param("generatedByList") List<String> generatedByList);
 
     /**
      * 查询指定复制目标集群所有数据保护管理员列表

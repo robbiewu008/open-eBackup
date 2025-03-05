@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -84,6 +85,11 @@ public class LockServiceImpl implements LockService {
     public Lock createSQLDistributeLock(String key) {
         boolean isObtained = sqlLockService.createLock(key);
         return new SQLDistributeLock(key, isObtained, sqlLockService);
+    }
+
+    @Override
+    public void batchUnlockSqlLock(List<String> keyList) {
+        sqlLockService.batchUnlockSqlLock(keyList);
     }
 
     /**

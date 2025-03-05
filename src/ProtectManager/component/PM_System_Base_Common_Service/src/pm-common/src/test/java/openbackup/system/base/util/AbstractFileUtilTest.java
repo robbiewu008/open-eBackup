@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -84,5 +85,15 @@ public class AbstractFileUtilTest {
         String[] split1 = split[4].split(",");
         Assert.assertEquals(3, split1.length);
         Assert.assertEquals("\"\"\"\t=1+3\"\"\"", split1[1]);
+    }
+
+    @Test
+    public void write_excel_file_with_keep_index() {
+        AbstractFileUtil fileUtil = FileFactory.getFileUtil("excel");
+        List<List<String>> dataList = new ArrayList<>();
+        dataList.add(Arrays.asList("12345", "12345", "12345"));
+        dataList.add(Arrays.asList("12345", "12345", "12345"));
+        dataList.add(Arrays.asList("12345", "12345", "12345"));
+        fileUtil.writeFile(dataList, Collections.singleton(5));
     }
 }

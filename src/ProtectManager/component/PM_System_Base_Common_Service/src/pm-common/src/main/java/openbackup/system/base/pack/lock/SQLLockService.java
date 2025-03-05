@@ -18,19 +18,27 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.cluster.BackupClusterConfigUtil;
+import openbackup.system.base.common.constants.StatefulsetConstants;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.UUIDGenerator;
+import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.pack.lock.entity.LockEntity;
 import openbackup.system.base.pack.lock.mapper.LockMapper;
+import openbackup.system.base.sdk.infrastructure.InfrastructureRestApi;
+import openbackup.system.base.sdk.infrastructure.model.InfraResponseWithError;
+import openbackup.system.base.sdk.infrastructure.model.beans.NodeDetail;
+import openbackup.system.base.sdk.infrastructure.model.beans.NodePodInfo;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.CannotSerializeTransactionException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.UncategorizedSQLException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.NoTransactionException;
 import org.springframework.transaction.SavepointManager;
@@ -39,9 +47,11 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 /**
  * 基于数据库的分布式锁服务
@@ -55,6 +65,14 @@ public class SQLLockService extends ServiceImpl<LockMapper, LockEntity> implemen
      */
     private static final int DEFAULT_LOCK_TIME = 1;
 
+    /**
+     * 分批处理时每批次的大小
+     */
+    private static final int BATCH_SIZE = 100;
+
+    /**
+     * 服务名称
+     */
     private static final String SERVICE_NAME = "protectmanager-system-base";
 
     /**
@@ -63,6 +81,9 @@ public class SQLLockService extends ServiceImpl<LockMapper, LockEntity> implemen
     private final Set<String> lockRecords = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
 
     private final LockMapper lockMapper;
+
+    @Autowired
+    private InfrastructureRestApi infraRestApi;
 
     @Value("${NODE_NAME}")
     private String nodeName;
@@ -74,6 +95,47 @@ public class SQLLockService extends ServiceImpl<LockMapper, LockEntity> implemen
      */
     public SQLLockService(LockMapper lockMapper) {
         this.lockMapper = lockMapper;
+    }
+
+    /**
+     * 每5分钟检查锁的占用情况，owner的节点不存在时释放锁
+     */
+    @Scheduled(cron = "0 0/5 * * * ?")
+    public void unlockNotExistsLock() {
+        log.info("start check lock which owner hostname not exist.");
+        InfraResponseWithError<List<NodeDetail>> infraNodeInfos = infraRestApi.getInfraNodeInfo();
+        InfraResponseWithError<List<NodePodInfo>> systemBaseNodeInfos = infraRestApi
+                .getInfraPodInfo(StatefulsetConstants.PMSYSTEMBASE);
+        if (!VerifyUtil.isEmpty(infraNodeInfos.getData()) && infraNodeInfos.getData().size() > 0) {
+            List<String> allNodes = infraNodeInfos.getData().stream().map(NodeDetail::getHostName)
+                    .collect(Collectors.toList());
+            List<String> pmNodes = systemBaseNodeInfos.getData().stream().map(NodePodInfo::getNodeName)
+                    .collect(Collectors.toList());
+            allNodes.removeAll(pmNodes);
+            for (String hostName : allNodes) {
+                String owner = BackupClusterConfigUtil.getBackupClusterEsn() + "_" + SERVICE_NAME + "_" + hostName;
+                LambdaUpdateWrapper<LockEntity> wrapper = new LambdaUpdateWrapper<LockEntity>()
+                        .set(LockEntity::getUnlockTime, new Date()).eq(LockEntity::getOwner, owner);
+                this.update(wrapper);
+            }
+        }
+    }
+
+    /**
+     * 释放锁列表
+     *
+     * @param keyList 锁key列表
+     */
+    public void batchUnlockSqlLock(List<String> keyList) {
+        String owner = ownerName();
+        for (int i = 0; i < keyList.size(); i += BATCH_SIZE) {
+            List<String> keys = keyList.subList(i, Math.min(i + BATCH_SIZE, keyList.size()));
+            LambdaUpdateWrapper<LockEntity> wrapper = new LambdaUpdateWrapper<LockEntity>()
+                    .set(LockEntity::getUnlockTime, new Date())
+                    .in(LockEntity::getKey, keys)
+                    .eq(LockEntity::getOwner, owner);
+            this.update(wrapper);
+        }
     }
 
     /**

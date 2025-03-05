@@ -31,4 +31,5 @@ public class VMWareDetailInfo {
     private VMWareSettingDataStore vmWareSettingDataStore;
 
     private VMWareRuntime runtime;
+    private String firmware;
 }

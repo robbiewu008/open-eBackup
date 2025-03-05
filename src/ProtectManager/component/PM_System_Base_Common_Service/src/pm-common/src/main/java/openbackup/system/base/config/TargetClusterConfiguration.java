@@ -97,7 +97,7 @@ public class TargetClusterConfiguration {
     }
 
     /**
-     * 生成 BackupClusterJobClient, 添加超时时间为5分钟
+     * 生成 BackupClusterJobClient, 添加超时时间为10秒
      *
      * @param proxyProperties dme代理，域名和端口
      * @return BackupClusterJobClient
@@ -105,7 +105,7 @@ public class TargetClusterConfiguration {
     @Bean("backupClusterJobClient")
     @Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
     public BackupClusterJobClient createBackupClusterJobClient(DmaProxyProperties proxyProperties) {
-        return FeignBuilder.buildMemberClusterClient(BackupClusterJobClient.class, encoder,
+        return FeignBuilder.buildBackupClusterJobClient(BackupClusterJobClient.class, encoder,
                 RequestUriUtil.getDmaProxy(proxyProperties));
     }
 }

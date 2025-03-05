@@ -34,20 +34,21 @@ public interface IpRuleService {
      */
     void deleteIpRule(String destinationIp, String taskType);
 
-
     /**
      * 只在本控上添加路由
      *
      * @param destinationIp 目的地ip
+     * @param port 目的地端口
      * @param taskType 任务类型
      */
-    void addIpRuleLocal(String destinationIp, String taskType);
+    void addIpRuleLocal(String destinationIp, int port, String taskType);
 
     /**
      * 只在本控上删除路由
      *
      * @param destinationIp 目的地ip
+     * @param port 目的地端口
      * @param taskType 任务类型
      */
-    void deleteIpRuleLocal(String destinationIp, String taskType);
+    void deleteIpRuleLocal(String destinationIp, int port, String taskType);
 }

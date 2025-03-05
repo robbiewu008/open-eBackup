@@ -13,8 +13,8 @@
 package openbackup.system.base.config;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
-import openbackup.system.base.sdk.infrastructure.InfrastructureService;
 import openbackup.system.base.service.ConfigMapServiceImpl;
 import openbackup.system.base.util.ConfigMapUtil;
 import openbackup.system.base.util.KeyToolUtil;
@@ -39,10 +39,10 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * RedissonClient https config
@@ -55,8 +55,6 @@ public class RedissonClientConfig {
      * Redis密码在secret中的key
      */
     private static final String REDIS_AUTH_KEY = "redis.password";
-
-    private static final String CLUSTER_CONFIG_MAP = "multicluster-conf";
 
     private static final String REDIS_CLUSTER_KEY = "REDIS_CLUSTER";
 
@@ -95,9 +93,6 @@ public class RedissonClientConfig {
     @Autowired
     private ConfigMapServiceImpl configMapService;
 
-    @Autowired
-    private InfrastructureService infrastructureService;
-
     /**
      * 注册 RedissonClient
      *
@@ -135,8 +130,7 @@ public class RedissonClientConfig {
         config.setCodec(codec);
         if (isRedisCluster()) {
             ClusterServersConfig serverConfig = config.useClusterServers();
-            serverConfig.setNodeAddresses(
-                clusterServerAddress.stream().map(this::convertServerAddress).collect(Collectors.toList()));
+            serverConfig.setNodeAddresses(getNodeAddresses());
             serverConfig.setMasterConnectionPoolSize(100);
             serverConfig.setMasterConnectionMinimumIdleSize(50);
             setCommonServerConfig(serverConfig, password);
@@ -151,12 +145,12 @@ public class RedissonClientConfig {
     }
 
     private boolean isRedisCluster() {
-        String redisCluster = ConfigMapUtil.getValueInConfigMap(CLUSTER_CONFIG_MAP, REDIS_CLUSTER_KEY);
+        String redisCluster = ConfigMapUtil.getValueInConfigMap(ConfigMapUtil.MULTI_CLUSTER_CONF, REDIS_CLUSTER_KEY);
         if (VerifyUtil.isEmpty(redisCluster)) {
             return false;
         }
-        log.info("get redis cluster established: {}", redisCluster);
-        return Boolean.valueOf(redisCluster);
+        log.info("get redis cluster established: {}", redisCluster.trim());
+        return Boolean.parseBoolean(redisCluster);
     }
 
     private void setCommonServerConfig(BaseConfig<?> serverConfig, String password) throws MalformedURLException {
@@ -172,6 +166,19 @@ public class RedissonClientConfig {
         serverConfig.setPassword(password);
         serverConfig.setPingConnectionInterval(30000);
         serverConfig.setTimeout(10000);
+    }
+
+    private List<String> getNodeAddresses() {
+        List<String> result = new ArrayList<>();
+        for (String nodeAddress : clusterServerAddress) {
+            try {
+                String convertNodeAddress = convertServerAddress(nodeAddress);
+                result.add(convertNodeAddress);
+            } catch (Exception exception) {
+                log.error("Get address fail for: {}.", nodeAddress, ExceptionUtil.getErrorMessage(exception));
+            }
+        }
+        return result;
     }
 
     /**

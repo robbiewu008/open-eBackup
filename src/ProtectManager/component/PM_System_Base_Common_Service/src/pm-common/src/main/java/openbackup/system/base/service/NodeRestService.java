@@ -39,6 +39,7 @@ import java.net.URL;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * k8s集群节点间通信服务
@@ -47,6 +48,8 @@ import java.util.List;
 @Service
 @Slf4j
 public class NodeRestService {
+    private static final long WAIT_TIME = 3 * 1000L;
+
     @Autowired
     private InfrastructureRestApi infrastructureRestApi;
 
@@ -65,8 +68,7 @@ public class NodeRestService {
      * @param filePath filePath 带文件名的文件路径
      * @param endPointName endPointName
      */
-    public void syncAlarmDumpFile(MultipartFile multipartFile, String filePath,
-        String endPointName) {
+    public void syncAlarmDumpFile(MultipartFile multipartFile, String filePath, String endPointName) {
         List<String> ipList = getIpListByEndPointName(endPointName);
         for (String ip : ipList) {
             try {
@@ -148,6 +150,59 @@ public class NodeRestService {
         }
         return false;
     }
+
+    /**
+     * 集群转发请求通用方法
+     *
+     * @param message 消息内容
+     * @param ip 待转发的节点 IP
+     * @param apiMethod 转发调用的 API 方法
+     * @param action 描述当前操作的日志
+     */
+    private void forwardAgentRequest(String message, String ip, Consumer<URI> apiMethod, String action) {
+        try {
+            String nodeUri = Constants.HTTP_URL_SCHEME + ip + ":" + getPortByEndPointName(Constants.PM_ENDPOINT_NAME);
+            log.info("Current uri for {} is: {}.", action, nodeUri);
+            URI uri = new URL(normalizeForString(nodeUri)).toURI();
+            apiMethod.accept(uri);
+        } catch (Exception e) {
+            log.error("{} failed, fail ip is: {}.", action, ip, ExceptionUtil.getErrorMessage(e));
+        }
+    }
+
+    /**
+     * 集群转发注册 agent 请求
+     *
+     * @param message 消息内容
+     * @param ip 待转发的节点 IP
+     */
+    public void forwardRegisterHostAgent(String message, String ip) {
+        forwardAgentRequest(message, ip, uri -> defaultNodeRestApi.registerHostAgent(uri, message),
+            "forwardRegisterHostAgent");
+    }
+
+    /**
+     * 集群转发更新 agent 请求
+     *
+     * @param message 消息内容
+     * @param ip 待转发的节点 IP
+     */
+    public void forwardUpdateAgentClient(String message, String ip) {
+        forwardAgentRequest(message, ip, uri -> defaultNodeRestApi.updateAgentClient(uri, message),
+            "forwardUpdateAgentClient");
+    }
+
+    /**
+     * 集群转发修改 agent 资源类型请求
+     *
+     * @param message 消息内容
+     * @param ip 待转发的节点 IP
+     */
+    public void forwardUpdateAgentClientPluginType(String message, String ip) {
+        forwardAgentRequest(message, ip, uri -> defaultNodeRestApi.updateAgentClientPluginType(uri, message),
+            "forwardUpdateAgentClientPluginType");
+    }
+
 
     /**
      * 获取每个node下能通agent的备份网络平面ip列表

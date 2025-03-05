@@ -26,9 +26,21 @@ import lombok.NoArgsConstructor;
 public class StoragePoolParm {
     private static final int ENDING_UP_THRESHOLD = 95;
 
+    /**
+     * 容量告警阈值
+     */
     @JsonProperty("USERCONSUMEDCAPACITYTHRESHOLD")
     private int userConsumedCapacityThreshold;
 
+    /**
+     * 容量严重不足告警阈值
+     */
+    @JsonProperty("MAJORTHRESHOLD")
+    private int majorThreshold;
+
+    /**
+     * 即将耗尽容量阈值
+     */
     @JsonProperty("ENDINGUPTHRESHOLD")
     private int endingUpThreshold = ENDING_UP_THRESHOLD;
 

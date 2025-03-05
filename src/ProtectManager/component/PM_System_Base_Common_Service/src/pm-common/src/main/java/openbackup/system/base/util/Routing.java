@@ -27,6 +27,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -215,7 +216,8 @@ public class Routing {
      * @return result
      */
     public <T> T call(Function<URI, T> function) {
-        for (URI target : targets) {
+        List<URI> clone = new ArrayList<>(targets);
+        for (URI target : clone) {
             try {
                 T result = function.apply(target);
                 optimizeOrderOfTargets(target);

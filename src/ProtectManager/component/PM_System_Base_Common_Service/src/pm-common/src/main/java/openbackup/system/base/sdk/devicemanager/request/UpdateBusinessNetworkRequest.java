@@ -35,4 +35,7 @@ public class UpdateBusinessNetworkRequest {
 
     @Valid
     private List<NodeNetworkInfoRequest> archiveNetWorkInfoList;
+
+    @Valid
+    private List<NodeNetworkInfoRequest> copyNetWorkInfoList;
 }

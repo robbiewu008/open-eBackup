@@ -23,7 +23,6 @@ import openbackup.system.base.sdk.infrastructure.model.beans.NodeDetail;
 import openbackup.system.base.service.DeployTypeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -43,17 +42,9 @@ public class SystemSpecificationServiceImpl implements SystemSpecificationServic
      * 节点数量更新时间周期：3分钟
      */
     private static final long NODE_COUNT_UPDATE_PERIOD = IsmNumberConstant.THREE * IsmNumberConstant.MINUTES_SECONDS
-            * IsmNumberConstant.THOUSAND;
+        * IsmNumberConstant.THOUSAND;
 
     private final AtomicInteger nodeCount = new AtomicInteger();
-
-    private final Object nodeCountLock = new Object();
-
-    @Value("${RUNNING_JOB_LIMIT_COUNT_ONE_NODE:20}")
-    private int singleNodeJobMaximumConcurrency;
-
-    @Value("${TOTAL_JOB_LIMIT_COUNT_ONE_NODE:10000}")
-    private int singleNodeJobMaximumLimit;
 
     @Autowired
     private ClusterNativeApi clusterNativeApi;
@@ -63,6 +54,9 @@ public class SystemSpecificationServiceImpl implements SystemSpecificationServic
 
     @Autowired
     private DeployTypeService deployTypeService;
+
+    @Autowired
+    private SystemConfigMapManager systemConfigMapManager;
 
     /**
      * 获取集群节点数量
@@ -120,7 +114,8 @@ public class SystemSpecificationServiceImpl implements SystemSpecificationServic
      */
     @Override
     public int getSingleNodeJobMaximumConcurrency() {
-        return singleNodeJobMaximumConcurrency;
+        return Integer.parseInt(
+            systemConfigMapManager.getSystemConfig(SystemConfigConstant.RUNNING_JOB_LIMIT_COUNT_ONE_NODE));
     }
 
     /**
@@ -130,6 +125,7 @@ public class SystemSpecificationServiceImpl implements SystemSpecificationServic
      */
     @Override
     public int getSingleNodeJobMaximumLimit() {
-        return singleNodeJobMaximumLimit;
+        return Integer.parseInt(
+            systemConfigMapManager.getSystemConfig(SystemConfigConstant.TOTAL_JOB_LIMIT_COUNT_ONE_NODE));
     }
 }

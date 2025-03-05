@@ -14,6 +14,8 @@ package openbackup.system.base.sdk.dee.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 副本相关的信息
  *
@@ -31,5 +33,7 @@ public class CopyCatalogsRequest {
     private Integer pageNum;
 
     private String conditions;
+
+    private List<Object> searchAfter;
 }
 

@@ -14,6 +14,7 @@ package openbackup.system.base.common.model.storage;
 
 import lombok.Data;
 import openbackup.system.base.common.constants.IsmNumberConstant;
+import openbackup.system.base.common.enums.CloudCheckTypeEnum;
 import openbackup.system.base.common.enums.StorageConnectTypeEnum;
 import openbackup.system.base.common.enums.StorageTypeEnum;
 
@@ -89,6 +90,13 @@ public class StorageRequest {
      * 兼容以前的设计，这个字段可以为空
      */
     private Integer connectType;
+
+    /**
+     * 检查类型，默认为0
+     * 0 - 定时任务检查对象存储连通性
+     * 1 - 添加或修改时检查对象存储连通性
+     */
+    private Integer cloudCheckType = CloudCheckTypeEnum.CLOUD_STORAGE_SCHEDULE_CHECK.getType();
 
     /**
      * 是否是Azure Blob类型

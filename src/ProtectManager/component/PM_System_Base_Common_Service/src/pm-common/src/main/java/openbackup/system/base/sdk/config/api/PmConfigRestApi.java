@@ -12,6 +12,7 @@
 */
 package openbackup.system.base.sdk.config.api;
 
+import feign.Param;
 import feign.RequestLine;
 import openbackup.system.base.security.exterattack.ExterAttack;
 
@@ -32,4 +33,36 @@ public interface PmConfigRestApi {
     @ExterAttack
     @RequestLine("GET /v1/internal/pm-config/network/local-network")
     List<String> getLocalNetwork(URI uri);
+
+    /**
+     * 检查ntp 服务器
+     *
+     * @param uri uri
+     * @param ntpServerAddress ntp服务器地址
+     * @return 是否检查通过
+     */
+    @ExterAttack
+    @RequestLine("PUT /v1/internal/pm-config/system/ntp/check?server_ip={server_ip}")
+    Boolean checkNtpConfig(URI uri, @Param("server_ip") String ntpServerAddress);
+
+    /**
+     * 保存ntp配置
+     *
+     * @param uri uri
+     * @param ntpServerAddress ntp服务器地址
+     * @return 是否同步成功
+     */
+    @ExterAttack
+    @RequestLine("PUT /v1/internal/pm-config/system/ntp/update?server_ip={server_ip}")
+    Boolean syncNtpConfig(URI uri, @Param("server_ip") String ntpServerAddress);
+
+    /**
+     * 回退ntp配置
+     *
+     * @param uri uri
+     * @return 回退是否成功
+     */
+    @ExterAttack
+    @RequestLine("PUT /v1/internal/pm-config/system/ntp/rollback")
+    Boolean fallbackNtpConfig(URI uri);
 }

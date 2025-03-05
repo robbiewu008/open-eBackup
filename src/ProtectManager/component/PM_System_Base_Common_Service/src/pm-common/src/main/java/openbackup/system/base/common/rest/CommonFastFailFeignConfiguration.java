@@ -18,6 +18,7 @@ import feign.RequestTemplate;
 import feign.codec.Decoder;
 import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.constants.FeignClientConstant;
 import openbackup.system.base.config.FeignClientConfig;
 import openbackup.system.base.service.SensitiveDataEliminateService;
 
@@ -73,7 +74,10 @@ public class CommonFastFailFeignConfiguration implements RequestInterceptor {
      */
     @Bean
     public CommonRetryer<Long> retryer() {
-        return CommonRetryer.create();
+        CommonRetryPolicy policy = new CommonRetryPolicy();
+        policy.setAttempts(FeignClientConstant.FAST_FAIL_MAX_ATTEMPTS);
+        policy.setWaitTime(FeignClientConstant.FAST_FAIL_PERIOD);
+        return CommonRetryer.create(policy);
     }
 
     @Override
