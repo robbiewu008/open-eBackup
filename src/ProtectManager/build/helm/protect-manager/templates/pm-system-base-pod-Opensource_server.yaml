@@ -136,6 +136,7 @@ spec:
           image: pm-nginx:{{ .Values.global.version }}
           ports:
             - containerPort: 30093
+            - containerPort: 30094
           env:
             - name: NODE_NAME
               valueFrom:
@@ -177,6 +178,8 @@ spec:
               name: nas-path
             - mountPath: /opt/ProtectManager/
               name: pm-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
             - mountPath: /tmp
               name: pm-nginx-tmp
             - mountPath: /kmc_conf
@@ -185,11 +188,11 @@ spec:
           {{- if eq $environment "Dorado" }}
           resources:
             requests:
-              memory: "100Mi"
-              cpu: "0.1"
+              memory: "200Mi"
+              cpu: "0.5"
             limits:
               memory: "100Mi"
-              cpu: "0.3"
+              cpu: "0.5"
           {{- end }}
         - name: pm-system-base
           image: pm-system-base:{{ .Values.global.version }}
@@ -209,7 +212,7 @@ spec:
                 - check_health.sh
             initialDelaySeconds: 300
             periodSeconds: 25
-            timeoutSeconds: 10
+            timeoutSeconds: 35
           securityContext:
             {{- if eq $environment "Dorado" }}
             seccompProfile:
@@ -256,17 +259,22 @@ spec:
             - mountPath: /opt/multicluster_conf
               name: multicluster-volume
               readOnly: true
+            - mountPath: /opt/network_config
+              name: network-volume
+              readOnly: true
+            - mountPath: /opt/pm_variable_parameter_config
+              name: pm-variable-parameter-volume
           envFrom:
               - configMapRef:
                   name: protect-manager-conf
           {{- if eq $environment "Dorado" }}
           resources:
             requests:
-              memory: "3.5Gi"
-              cpu: "0.4"
+              memory: "4.5Gi"
+              cpu: "2.0"
             limits:
               memory: "4.5Gi"
-              cpu: "1"
+              cpu: "2.0"
           {{- end }}
           env:
             - name: NODE_NAME
@@ -337,6 +345,10 @@ spec:
             - name: GLOBAL_DOMAIN_NAME
               value: {{ .Values.global.domain_name }}
             {{- end }}
+            {{- if .Values.global.external_domain_name }}
+            - name: EXTERNAL_GLOBAL_DOMAIN_NAME
+              value: {{ .Values.global.external_domain_name }}
+            {{- end }}
       volumes:
         - name: pm-nginx-tmp
           emptyDir: {}
@@ -380,6 +392,12 @@ spec:
           configMap:
             name: protect-manager-conf
             defaultMode: 0640
+        - name: network-volume
+          configMap:
+            name: network-conf
+        - name: pm-variable-parameter-volume
+          configMap:
+            name: pm-variable-parameter-conf
         - name: multicluster-volume
           configMap:
             name: multicluster-conf

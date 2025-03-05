@@ -3,7 +3,7 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: ingress-route-pm-live-mount
+  name: ingress-route-protectengine-search
   namespace: dpa
 spec:
   entryPoints:
@@ -12,7 +12,7 @@ spec:
     - third_node
     - internal
   routes:
-    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/live-mount`) && !Path(`/v1/live-mount/cyber`)
+    - match: Method(`POST`) && Path(`/v1/search/file`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -22,7 +22,23 @@ spec:
       middlewares:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
-    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/livemount-policies`)
+  tls:
+    secretName: secret-pm-tls
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-route-dataenableengine-server-flr
+  namespace: dpa
+spec:
+  entryPoints:
+    - third
+    - third6
+    - third_node
+    - internal
+  routes:
+    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/flr`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -32,6 +48,21 @@ spec:
       middlewares:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
+  tls:
+    secretName: secret-pm-tls
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-route-dataenableengine-server-anti
+  namespace: dpa
+spec:
+  entryPoints:
+    - third
+    - third6
+    - third_node
+    - internal
   tls:
     secretName: secret-pm-tls
 {{- end }}

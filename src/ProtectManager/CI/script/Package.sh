@@ -15,22 +15,12 @@ BASE_PATH=${CUR_PATH}/../..
 PRODUCT=$1
 CODE_BRANCH=$2
 Service_Name=$3
-STEP_LEVEL=$4
-BUILD_PKG_TYPE=$5
-PRODUCT_IMAGE_PATH=$6
+BUILD_PKG_TYPE=$4
+PRODUCT_IMAGE_PATH=$5
 
 if [ -z ${PRODUCT} ]; then
 	echo "No product parameter, please specify"
 	exit 1
-fi
-
-if [ -z ${CODE_BRANCH} ]; then
-	echo "No branch parameter, please specify"
-	exit 1
-fi
-
-if [ -z ${AGENT_BRANCH} ]; then
-	AGENT_BRANCH=${CODE_BRANCH}
 fi
 
 #set bep
@@ -57,7 +47,7 @@ function compile() {
 		echo "start compile ${pmservice}!"
 		cd ${BASE_PATH}/component/${pmservice}/CI
 		if [ "${pmservice}" == "PM_System_Base_Common_Service" ]; then
-			sh build.sh "${AGENT_BRANCH}" "${STEP_LEVEL}" "${BUILD_PKG_TYPE}"
+			sh build.sh "${BUILD_PKG_TYPE}"
 			if [ $? -ne 0 ]; then
 				echo "${pmservice} compile failed"
 				exit 1
@@ -74,19 +64,6 @@ function compile() {
 
 function compile_base_images() {
   echo "start compile PM_System_Base_Common_Service"
-  if [ "${STEP_LEVEL}" == "step1" ]; then
-    echo "=========== compile_base_images start to exec step1 ========="
-    # 编译大包前置流程
-    ms_compile_base_pre
-    ms_compile_base
-  elif [ "${STEP_LEVEL}" == "step2" ]; then
-    echo "=========== compile_base_images start to exec step2 ========="
-    # 编译大包protect_agent_Package_all 执行完后执行后置步骤
-    ms_compile_base
-		NAME=$(ls "${BASE_PATH}/component/${Service_Name}/pkg")
-		MS_NAME=$(basename $NAME .tar.gz)
-		compile_image "${MS_NAME}" "${BUILD_PKG_TYPE}" "${PRODUCT_IMAGE_PATH}"
-  else
     # 单独编译不影响
     echo "=========== compile_base_images start to exec all ========="
     ms_compile_base_pre
@@ -94,7 +71,6 @@ function compile_base_images() {
 		NAME=$(ls "${BASE_PATH}/component/${Service_Name}/pkg")
 		MS_NAME=$(basename $NAME .tar.gz)
 		compile_image "${MS_NAME}" "${BUILD_PKG_TYPE}" "${PRODUCT_IMAGE_PATH}"
-  fi
 }
 
 function ms_compile_base_pre() {
@@ -114,7 +90,7 @@ function ms_compile_base_pre() {
 
 function ms_compile_base() {
 		cd ${BASE_PATH}/component/${Service_Name}/CI
-		sh build.sh "${AGENT_BRANCH}" "${STEP_LEVEL}" "${BUILD_PKG_TYPE}"
+		sh build.sh "${BUILD_PKG_TYPE}"
 		if [ $? -ne 0 ]; then
 			echo "${Service_Name} compile failed"
 			exit 1

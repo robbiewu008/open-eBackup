@@ -12,20 +12,8 @@
 
 CUR_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 BASE_PATH=${CUR_PATH}/../..
-CODE_BRANCH=${PM_BRANCH}
 REPO_PATH=$1
-STEP_LEVEL=$2
-BUILD_PKG_TYPE=$3
-PRODUCT_IMAGE_PATH=$4
-
-if [ -z ${CODE_BRANCH} ]; then
-	echo "No branch parameter, please specify"
-	exit 1
-fi
-
-if [ -z ${AGENT_BRANCH} ]; then
-	AGENT_BRANCH=${CODE_BRANCH}
-fi
+BUILD_PKG_TYPE=$2
 
 #set bep
 if [ "${BEP}" == "YES" ]; then
@@ -47,7 +35,7 @@ function compile() {
 		echo "start compile ${pmservice}!"
 		cd ${BASE_PATH}/component/${pmservice}/CI
 		if [ "${pmservice}" == "PM_System_Base_Common_Service" ]; then
-			sh copy_bin.sh "${AGENT_BRANCH}" "${STEP_LEVEL}" "${BUILD_PKG_TYPE}" "${REPO_PATH}"
+			sh copy_bin.sh "${BUILD_PKG_TYPE}" "${REPO_PATH}"
 			if [ $? -ne 0 ]; then
 				echo "${pmservice} compile failed"
 				exit 1

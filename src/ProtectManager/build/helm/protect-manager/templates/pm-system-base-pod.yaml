@@ -159,6 +159,11 @@ spec:
             - mountPath: /kmc_conf
               name: kmc-conf
               readOnly: true
+            {{- if eq $deploytype "d0" }}
+            - mountPath: /opt/cluster_config
+              name: cluster-volume
+              readOnly: true
+            {{- end }}
       containers:
         - name: pm-nginx
           command: [ "/bin/sh", "-c", "sh script/start.sh && chmod 550 /usr/local/nginx/nginx && chmod 440 /usr/local/nginx/conf/nginx.conf && rm -rf /tmp/nginx"]
@@ -204,6 +209,8 @@ spec:
               name: nas-path
             - mountPath: /opt/ProtectManager/
               name: pm-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
             - mountPath: /tmp
               name: pm-nginx-tmp
             - mountPath: /kmc_conf
@@ -240,7 +247,7 @@ spec:
                 - check_health.sh
             initialDelaySeconds: 300
             periodSeconds: 35
-            timeoutSeconds: 30
+            timeoutSeconds: 35
           securityContext:
             {{- if eq $environment "Dorado" }}
             seccompProfile:
@@ -278,6 +285,11 @@ spec:
             - mountPath: /opt/cluster_config
               name: cluster-volume
               readOnly: true
+            - mountPath: /opt/network_config
+              name: network-volume
+              readOnly: true
+            - mountPath: /opt/pm_variable_parameter_config
+              name: pm-variable-parameter-volume
             {{- end }}
             - mountPath: /OSM/conf
               name: dorado-config-dir
@@ -297,6 +309,8 @@ spec:
             - mountPath: /etc/adjtime
               name: adjtime-path
             {{- end }}
+            - mountPath: /var/run/cgroup2
+              name: cgroup2
           envFrom:
               - configMapRef:
                   name: protect-manager-conf
@@ -376,6 +390,8 @@ spec:
               value: "8094"
             - name: DEPLOY_TYPE
               value: {{$deploytype}}
+            - name: VERSION
+              value: {{ .Values.global.version }}
             {{- if .Values.global.region_id }}
             - name: REGION_ID
               value: {{ .Values.global.region_id }}
@@ -472,5 +488,15 @@ spec:
         - name: cluster-volume
           configMap:
             name: cluster-conf
+        - name: network-volume
+          configMap:
+            name: network-conf
+        - name: pm-variable-parameter-volume
+          configMap:
+            name: pm-variable-parameter-conf
         {{- end }}
+        - name: cgroup2
+          hostPath:
+            path: /var/run/cgroup2
+            type: Directory
 {{- end }}

@@ -66,27 +66,13 @@ function compile() {
 
 function compile_base_images() {
   echo "start compile PM_System_Base_Common_Service"
-  if [ "${STEP_LEVEL}" == "step1" ]; then
-    echo "=========== compile_base_images start to exec step1 ========="
-    # 编译大包前置流程
-    ms_compile_base_pre
-    ms_compile_base
-  elif [ "${STEP_LEVEL}" == "step2" ]; then
-    echo "=========== compile_base_images start to exec step2 ========="
-    # 编译大包protect_agent_Package_all 执行完后执行后置步骤
-    ms_compile_base
-		NAME=$(ls "${BASE_PATH}/component/${Service_Name}/pkg")
-		MS_NAME=$(basename $NAME .tar.gz)
-		compile_image "${MS_NAME}" "${BUILD_PKG_TYPE}" "${PRODUCT_IMAGE_PATH}"
-  else
-    # 单独编译不影响
-    echo "=========== compile_base_images start to exec all ========="
-    ms_compile_base_pre
-    ms_compile_base
-		NAME=$(ls "${BASE_PATH}/component/${Service_Name}/pkg")
-		MS_NAME=$(basename $NAME .tar.gz)
-		compile_image "${MS_NAME}" "${BUILD_PKG_TYPE}" "${PRODUCT_IMAGE_PATH}"
-  fi
+  # 单独编译不影响
+  echo "=========== compile_base_images start to exec all ========="
+  ms_compile_base_pre
+  ms_compile_base
+  NAME=$(ls "${BASE_PATH}/component/${Service_Name}/pkg")
+  MS_NAME=$(basename $NAME .tar.gz)
+  compile_image "${MS_NAME}" "${BUILD_PKG_TYPE}" "${PRODUCT_IMAGE_PATH}"
 }
 
 function ms_compile_base_pre() {
