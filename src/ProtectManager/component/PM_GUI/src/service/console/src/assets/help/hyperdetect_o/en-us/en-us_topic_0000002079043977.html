@@ -1,0 +1,128 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Managing File Systems">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002042804916.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="Online Help for Ransomware Protection-Dorado V700R001C00">
+<meta name="DC.Publisher" content="20241226">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002079043977">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Managing File Systems</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002079043977"></a><a name="EN-US_TOPIC_0000002079043977"></a>
+
+<h1 class="topictitle1">Managing File Systems</h1>
+<div><p>ProtectManager allows you to modify, remove, activate, or disable protection plans for local file systems.</p>
+<p>You need to log in to ProtectManager, choose <span class="uicontrol"><b>Protection</b></span> &gt; <span class="uicontrol"><b>Storage</b></span> &gt; <span class="uicontrol"><b>Local Resources</b></span> &gt; <span class="uicontrol"><b>Local File Systems</b></span>, and locate the desired local file system.</p>
+<p><a href="#EN-US_TOPIC_0000002079043977__table1882741584910">Table 1</a> describes the related operations.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002079043977__table1882741584910"></a><a name="table1882741584910"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002079043977__table1882741584910" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Operations related to protection plans for local file systems</caption><colgroup><col style="width:16.580000000000002%"><col style="width:50.080000000000005%"><col style="width:33.33%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="16.58165816581658%" id="mcps1.3.4.2.4.1.1"><p>Operation</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="50.085008500850094%" id="mcps1.3.4.2.4.1.2"><p>Description</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="33.33333333333333%" id="mcps1.3.4.2.4.1.3"><p>Navigation Path</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="16.58165816581658%" headers="mcps1.3.4.2.4.1.1 "><p>Scanning resources</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.085008500850094%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Context</strong></p>
+<p>File systems added to or deleted from a storage system can be discovered by ProtectManager after about 1 minute. You can manually scan for file systems in the current storage system.</p>
+</td>
+<td class="cellrowborder" valign="top" width="33.33333333333333%" headers="mcps1.3.4.2.4.1.3 "><p>Click <strong>Resource Scan</strong> in the upper right corner of the page.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="16.58165816581658%" headers="mcps1.3.4.2.4.1.1 "><p>Modifying protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.085008500850094%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Context</strong></p>
+<p>You can modify the protection plan of a file system to change its associated SLA. After the modification, the next backup will be executed based on the new protection plan.</p>
+<p><strong>Precautions</strong></p>
+<p>The modification does not affect ongoing protection jobs. The modified protection plan will apply to the next protection period.</p>
+</td>
+<td class="cellrowborder" valign="top" width="33.33333333333333%" headers="mcps1.3.4.2.4.1.3 "><p>Locate the row that contains the desired file system and choose <strong>More</strong> &gt; <strong>Modify Protection</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="16.58165816581658%" headers="mcps1.3.4.2.4.1.1 "><p>Removing protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.085008500850094%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Context</strong></p>
+<p>This operation enables you to remove protection for a file system when it does not need to be protected. After the removal, the system cannot execute protection jobs for the file system. To protect the file system again, associate an SLA with the file system again.</p>
+<p><strong>Precautions</strong></p>
+<p>When a protection job of the file system is running, protection cannot be removed.</p>
+</td>
+<td class="cellrowborder" valign="top" width="33.33333333333333%" headers="mcps1.3.4.2.4.1.3 "><p>Locate the row that contains the desired file system and choose <strong>More</strong> &gt; <strong>Remove Protection</strong> or click <strong>Remove Protection</strong> above the list.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="16.58165816581658%" headers="mcps1.3.4.2.4.1.1 "><p>Activating protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.085008500850094%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Context</strong></p>
+<p>This operation enables you to activate a disabled protection plan of a file system to make the protection plan take effect again. After the protection plan is activated, the system backs up the file system based on the protection plan.</p>
+<p><strong>Precautions</strong></p>
+<p>This operation can be performed only for a file system that has been associated with an SLA and is in the <strong>Unprotected</strong> state.</p>
+</td>
+<td class="cellrowborder" valign="top" width="33.33333333333333%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <strong>More</strong> &gt; <strong>Activate Protection</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="16.58165816581658%" headers="mcps1.3.4.2.4.1.1 "><p>Disabling protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.085008500850094%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Context</strong></p>
+<p>This operation enables you to disable the protection plan of a file system for which periodic protection is not required. After the protection plan is disabled, the system does not perform automatic backup jobs for the file system.</p>
+<p><strong>Precautions</strong></p>
+<p>Disabling protection does not affect ongoing backup jobs.</p>
+</td>
+<td class="cellrowborder" valign="top" width="33.33333333333333%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <strong>More</strong> &gt; <strong>Disable Protection</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="16.58165816581658%" headers="mcps1.3.4.2.4.1.1 "><p>Restoration</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.085008500850094%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Context</strong></p>
+<p>This operation enables you to use a ransomware detection snapshot to restore data.</p>
+</td>
+<td class="cellrowborder" valign="top" width="33.33333333333333%" headers="mcps1.3.4.2.4.1.3 "><p>Locate the row that contains the desired file system and choose <strong>More</strong> &gt; <strong>Restore</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="16.58165816581658%" headers="mcps1.3.4.2.4.1.1 "><p>Manual backup</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.085008500850094%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Context</strong></p>
+<p>This operation enables you to perform a backup immediately.</p>
+<p><strong>Precautions</strong></p>
+<p>Copies generated by manual backup are retained for the duration defined in the SLA.</p>
+</td>
+<td class="cellrowborder" valign="top" width="33.33333333333333%" headers="mcps1.3.4.2.4.1.3 "><p>Locate the row that contains the desired file system and choose <strong>More</strong> &gt; <strong>Manual Backup</strong>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002042804916.html">Local File System</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -1,0 +1,55 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Creating a Real-Time Detection Policy">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200876261.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="00-OceanCyber 300 1.2.0 Online Help">
+<meta name="DC.Publisher" content="20250228">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200761801">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Creating a Real-Time Detection Policy</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200761801"></a><a name="EN-US_TOPIC_0000002200761801"></a>
+
+<h1 class="topictitle1">Creating a Real-Time Detection Policy</h1>
+<div id="body0000001856698993"><p id="EN-US_TOPIC_0000002200761801__p8060118">This section describes how to create a real-time detection policy.</p>
+<div class="section" id="EN-US_TOPIC_0000002200761801__section79121917135118"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002200761801__ol13790921131411"><li id="EN-US_TOPIC_0000002200761801__en-us_topic_0000001166366216_en-us_topic_0000001091431193_li1570821013536"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200761801__uicontrol1013362616330"><b>Data Security &gt; Real-Time Detection</b></span>.</span></li><li id="EN-US_TOPIC_0000002200761801__li146593571486"><span>Click the <span class="uicontrol" id="EN-US_TOPIC_0000002200761801__uicontrol9284192912210"><b>Real-Time Detection Policies</b></span> tab.</span></li><li id="EN-US_TOPIC_0000002200761801__li32591945115114"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002200761801__uicontrol453103192214"><b>Create</b></span>.</span></li><li id="EN-US_TOPIC_0000002200761801__li69763543511"><span>Enter the name of the real-time detection policy.</span></li><li id="EN-US_TOPIC_0000002200761801__li10882141512523"><span>Configure a snapshot locking policy. The default snapshot locking duration is 2 days. The value ranges from 1 to 14 days. Snapshots generated during real-time detection are secure snapshots. During the snapshot lock period, you cannot perform operations on the snapshot. After the lock period ends, you can manually delete the snapshot on the <span class="uicontrol" id="EN-US_TOPIC_0000002200761801__uicontrol080163717224"><b>Snapshot Data</b></span> page.</span></li><li id="EN-US_TOPIC_0000002200761801__li14569112365718"><span>Determine whether to enable <span class="uicontrol" id="EN-US_TOPIC_0000002200761801__uicontrol16371333155816"><b>False Alarm Analysis</b></span>. <strong id="EN-US_TOPIC_0000002200761801__b108621510145612">False Alarm Analysis</strong> is enabled by default. Enabling this function improves the detection accuracy but prolongs the detection duration.</span><p><ul id="EN-US_TOPIC_0000002200761801__en-us_topic_0000001335629021_ul111283417372"><li id="EN-US_TOPIC_0000002200761801__en-us_topic_0000001335629021_li2027514160382">If you have higher requirements on the detection accuracy, you are advised to enable <strong id="EN-US_TOPIC_0000002200761801__b173741645155718">False Alarm Analysis</strong>.</li><li id="EN-US_TOPIC_0000002200761801__en-us_topic_0000001335629021_li14128441163716">If you have higher requirements on the detection duration, you are advised to disable <strong id="EN-US_TOPIC_0000002200761801__b9828105195819">False Alarm Analysis</strong>.</li></ul>
+</p></li><li id="EN-US_TOPIC_0000002200761801__li18813173105414"><span>(Optional) Enable honeypot detection. After the honeypot detection function is enabled, honeyfiles are generated in the directory of the selected file system. When an exception is detected, the system analyzes the honeyfiles to determine whether the file system is under ransomware attacks or the exception is caused by misoperations of users, to detect ransomware attacks in real time and reduce false detections.</span><p><p id="EN-US_TOPIC_0000002200761801__p3443161417572">Set the honeyfile update frequency.</p>
+<ul id="EN-US_TOPIC_0000002200761801__ul16631239155719"><li id="EN-US_TOPIC_0000002200761801__li463153945716"><strong id="EN-US_TOPIC_0000002200761801__b17566154172211">Periodic update</strong>: Set the frequency for updating the honeyfile. The value ranges from 1 to 30 days. When <strong id="EN-US_TOPIC_0000002200761801__b16701244122214">Periodic update</strong> is selected, honeyfiles can be adaptively updated based on the latest file system information, improving effectiveness in ransomware detection of honeyfiles.</li><li id="EN-US_TOPIC_0000002200761801__li12704164115815"><strong id="EN-US_TOPIC_0000002200761801__b11924845162212">No update</strong>: honeyfiles cannot be adaptively updated, which may reduce effectiveness in ransomware detection of honeyfiles. You are advised to update the honeyfile periodically.<div class="note" id="EN-US_TOPIC_0000002200761801__note93251614132720"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul id="EN-US_TOPIC_0000002200761801__ul63175180364"><li id="EN-US_TOPIC_0000002200761801__li9285152416365">After the honeypot detection function is enabled, a small number of honeyfiles are placed in the shared directory for ransomware detection. Do not encrypt or delete these honeyfiles, or change their file name extensions. Otherwise, false detection may occur.</li><li id="EN-US_TOPIC_0000002200761801__li13301034153610">The honeyfile detection function scans the metadata of files in the shared directory.</li><li id="EN-US_TOPIC_0000002200761801__li4756142432911">After the WORM function of the storage device is enabled, there may be residual honeyfiles in the shared directory. Honeypot detection is not recommended when WORM is enabled because WORM provides a strict data protection mechanism.</li><li id="EN-US_TOPIC_0000002200761801__li97191439161618">After the ransomware protection alarm <strong id="EN-US_TOPIC_0000002200761801__b0159487235">0x5F025D000F</strong> is cleared, the system automatically redeploys honeyfiles to ensure that there are available honeyfiles.</li><li id="EN-US_TOPIC_0000002200761801__li12521625164813">During real-time detection, honeypot detection can be enabled for both the primary and secondary file systems with HyperMetro in active-active mode. Due to storage device restrictions, file systems with HyperMetro in active-passive mode or synchronous mode are read-only at the secondary site, and honeypot detection cannot be enabled for file systems at the secondary site.</li></ul>
+</div></div>
+</li></ul>
+</p></li><li id="EN-US_TOPIC_0000002200761801__li5362122616287"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002200761801__uicontrol19595189152314"><b>OK</b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200876261.html">Configuring Real-Time Detection (In-event Interception)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

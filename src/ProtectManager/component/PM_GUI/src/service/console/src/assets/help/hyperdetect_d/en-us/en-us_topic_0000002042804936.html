@@ -1,0 +1,124 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Enabling File Interception">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002042963200.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="Online Help for Ransomware Protection-Dorado V700R001C00">
+  <meta name="DC.Publisher" content="20241226">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002042804936">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Enabling File Interception</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002042804936"></a><a name="EN-US_TOPIC_0000002042804936"></a>
+  <h1 class="topictitle1">Enabling File Interception</h1>
+  <div id="body0000001283108982">
+   <p id="EN-US_TOPIC_0000002042804936__p8060118">This section describes how to enable file interception.</p>
+   <div class="section" id="EN-US_TOPIC_0000002042804936__section195772489558">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p id="EN-US_TOPIC_0000002042804936__p203681751135519">NFS or CIFS sharing has been enabled for a file system.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002042804936__section72952052836">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p id="EN-US_TOPIC_0000002042804936__p135157571637">File name extension filtering rules do not take effect on the secondary file system of a HyperMetro domain or remote replication vStore pair.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002042804936__section03756345134">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="EN-US_TOPIC_0000002042804936__ol1498311525414">
+     <li id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001166366216_en-us_topic_0000001091431193_li1570821013536"><span>On the navigation pane, choose <strong id="EN-US_TOPIC_0000002042804936__b28221110114113">Data Security</strong> &gt; <strong id="EN-US_TOPIC_0000002042804936__b98221310104120">Ransomware Protection</strong> &gt; <strong id="EN-US_TOPIC_0000002042804936__b48227106414">Ransomware Detection Settings</strong>.</span></li>
+    </ol>
+    <ol start="2" id="EN-US_TOPIC_0000002042804936__ol13790921131411">
+     <li id="EN-US_TOPIC_0000002042804936__li5362122616287"><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000002042804936__uicontrol4419558419"><b>NAS Ransomware Detection</b></span> tab page, locate the row that contains the vStore for which you want to enable file interception and choose <strong id="EN-US_TOPIC_0000002042804936__b16411455194113">More</strong> &gt; <strong id="EN-US_TOPIC_0000002042804936__b1741135510418">Enable File Interception</strong>.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000002042804936__note751754763520">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="EN-US_TOPIC_0000002042804936__ul2045311719102">
+         <li id="EN-US_TOPIC_0000002042804936__li163418810101">You can also select multiple vStores for which you want to enable file interception and click <span class="uicontrol" id="EN-US_TOPIC_0000002042804936__uicontrol1155885215407"><b>Enable File Interception</b></span> above the vStore list.</li>
+         <li id="EN-US_TOPIC_0000002042804936__li84532771015">If file interception is not required, choose <strong id="EN-US_TOPIC_0000002042804936__b97811956184317">More</strong> &gt; <strong id="EN-US_TOPIC_0000002042804936__b478125613438">Disable File Interception</strong>. Alternatively, select multiple vStores for which you want to disable file interception and choose <strong id="EN-US_TOPIC_0000002042804936__b101811523446">More</strong> &gt; <strong id="EN-US_TOPIC_0000002042804936__b11181105284413">Disable File Interception</strong> above the vStore list.</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002042804936__li3647205162"><span>Click the number in the column of <span class="uicontrol" id="EN-US_TOPIC_0000002042804936__uicontrol1860834182214"><b>Number of File Name Extension Filtering Rules</b></span> of the vStore to view the association status of the file name extension filtering rules. <a href="#EN-US_TOPIC_0000002042804936__table450913122183">Table 1</a> describes the association status. If the association status is <span class="uicontrol" id="EN-US_TOPIC_0000002042804936__uicontrol05423514280"><b>Applied</b></span>, the file name extension filtering rule has taken effect.</span><p></p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002042804936__table450913122183"></a><a name="table450913122183"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002042804936__table450913122183" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Association status of file name extension filtering rules
+        </caption>
+        <colgroup>
+         <col style="width:22.06%">
+         <col style="width:77.94%">
+        </colgroup>
+        <thead align="left">
+         <tr id="EN-US_TOPIC_0000002042804936__row17509181216189">
+          <th align="left" class="cellrowborder" valign="top" width="22.06%" id="mcps1.3.4.3.2.2.1.2.3.1.1"><p id="EN-US_TOPIC_0000002042804936__p350910127186">Association Status</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="77.94%" id="mcps1.3.4.3.2.2.1.2.3.1.2"><p id="EN-US_TOPIC_0000002042804936__p12509201261818">Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="EN-US_TOPIC_0000002042804936__row750918121189">
+          <td class="cellrowborder" valign="top" width="22.06%" headers="mcps1.3.4.3.2.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p10509412191810">Associated</p></td>
+          <td class="cellrowborder" valign="top" width="77.94%" headers="mcps1.3.4.3.2.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p450911215181">The file name extension filtering rule has been associated with the vStore.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002042804936__row950931215184">
+          <td class="cellrowborder" valign="top" width="22.06%" headers="mcps1.3.4.3.2.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p18509131212182">Applied</p></td>
+          <td class="cellrowborder" valign="top" width="77.94%" headers="mcps1.3.4.3.2.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p8509181214182">The file name extension filtering rule has been applied to the vStore's file system. You are not allowed to create, open, and rename files with the same extension in the file system.</p>
+           <div class="note" id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_note156481438182119">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p1430704116224">When accessing a file system through a CIFS share, you must open a file before deleting it. Therefore, the deletion operation on files with the same extension in the file system is also intercepted.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002042804936__row14509712111814">
+          <td class="cellrowborder" valign="top" width="22.06%" headers="mcps1.3.4.3.2.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p11509161215186">Applying</p></td>
+          <td class="cellrowborder" valign="top" width="77.94%" headers="mcps1.3.4.3.2.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p350911218189">The file name extension filtering rule is being applied to the vStore's file system.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002042804936__row1450961212189">
+          <td class="cellrowborder" valign="top" width="22.06%" headers="mcps1.3.4.3.2.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p151010122187">Disassociating</p></td>
+          <td class="cellrowborder" valign="top" width="77.94%" headers="mcps1.3.4.3.2.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p155107126186">The file name extension filtering rule is being disassociated from the vStore. Its application to the file system will also be canceled.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002042804936__row1551021217184">
+          <td class="cellrowborder" valign="top" width="22.06%" headers="mcps1.3.4.3.2.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p451091213189">Canceling Application</p></td>
+          <td class="cellrowborder" valign="top" width="77.94%" headers="mcps1.3.4.3.2.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p95109126186">The application of the file name extension filtering rule to the vStore's file system is being canceled.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002042804936__row14053817198">
+          <td class="cellrowborder" valign="top" width="22.06%" headers="mcps1.3.4.3.2.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p440515811193">Exception</p></td>
+          <td class="cellrowborder" valign="top" width="77.94%" headers="mcps1.3.4.3.2.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002042804936__en-us_topic_0000001283108982_p440511812194">The applied file name extension filtering rule does not take effect for some file system shares.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002042963200.html">Using Ransomware File Interception (Applicable to File Services)</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

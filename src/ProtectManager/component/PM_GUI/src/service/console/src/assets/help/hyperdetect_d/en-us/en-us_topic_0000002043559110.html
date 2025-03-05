@@ -1,0 +1,97 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Configuring Honeypot Detection">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002043400826.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="Online Help for Ransomware Protection-Dorado V700R001C00">
+  <meta name="DC.Publisher" content="20241226">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002043559110">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Configuring Honeypot Detection</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002043559110"></a><a name="EN-US_TOPIC_0000002043559110"></a>
+  <h1 class="topictitle1">Configuring Honeypot Detection</h1>
+  <div id="body8662426">
+   <p id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_p1660231131116">After the honeypot detection function is enabled, honeyfiles are generated in the directory of the selected file system. When an exception is detected, the system analyzes the honeyfiles to determine whether the file system is under ransomware attacks or the exception is caused by misoperations of users, so as to detect ransomware attacks in real time and reduce false detections.</p>
+   <div class="section" id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_section1065318112248">
+    <h4 class="sectiontitle">Precautions</h4>
+    <ul id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_ul63175180364">
+     <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li9285152416365">After the honeypot detection function is enabled, a small number of honeyfiles are placed in the shared directory for ransomware detection. Do not encrypt or delete these honeyfiles, or change their file name extensions. Otherwise, false detection may occur.</li>
+     <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li13301034153610">The honeypot detection function scans the metadata of files in the shared directory.</li>
+     <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li2317918193618">After the WORM function is enabled, there may be residual honeyfiles in the shared directory. Honeypot detection is not recommended when WORM is enabled because WORM provides a stricter data protection mechanism.</li>
+     <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li7879204017820">For file systems with HyperMetro in active-active mode configured, honeypot detection must be enabled on both the primary and secondary storage systems.</li>
+     <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li144981042410">For file systems with HyperMetro in active-passive mode or synchronous mode configured or with remote replication configured, honeypot detection can be enabled only on the primary storage system.</li>
+     <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li97191439161618">After the ransomware protection alarm <strong id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_b4962219171817">0x5F025D0004</strong> is cleared, the system automatically redeploys honeyfiles to ensure that there are available honeyfiles.</li>
+    </ul>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_section101266542134">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_p582604010235">The real-time ransomware detection function has been enabled. For details, see <a href="en-us_topic_0000002079639853.html">Enabling Real-Time Ransomware Detection</a>.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_en-us_topic_0000001335597804_section15832163516466">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_en-us_topic_0000001335597804_ol13790921131411">
+     <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li1060312313402"><span>Log in to ProtectManager.</span></li>
+     <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_en-us_topic_0000001335597804_en-us_topic_0000001166366216_en-us_topic_0000001091431193_li1570821013536"><span>On the navigation pane, choose <span class="menucascade" id="EN-US_TOPIC_0000002043559110__en-us_topic_0000001909017928_menucascade195361334202516"><b><span class="uicontrol" id="EN-US_TOPIC_0000002043559110__en-us_topic_0000001909017928_uicontrol145361934152511">Data Security</span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002043559110__en-us_topic_0000001909017928_uicontrol753633411251">Ransomware Protection</span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002043559110__en-us_topic_0000001909017928_uicontrol1653663492516">Real-Time Ransomware Detection</span></b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_en-us_topic_0000001335597804_li146593571486"><span>Click the <span class="uicontrol" id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_en-us_topic_0000001335597804_uicontrol1366015794815"><b>Honeypot Detection</b></span> tab.</span></li>
+     <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_en-us_topic_0000001335597804_li5362122616287"><span>Select the file system for which you want to enable honeypot detection and choose <strong id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_b145219106310">More</strong> &gt; <strong id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_b14184142422016">Enable Honeypot Detection</strong> in the <strong id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_b132001928202013">Operation</strong> column.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_note35451819560">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_ul155418172920">
+         <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li1520561932915">You can also select multiple file systems and click <span class="uicontrol" id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_en-us_topic_0000001335629021_uicontrol187491158181618"><b>Enable Honeypot Detection</b></span> above the file system list.</li>
+         <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li2551812291">Honeypot detection can be enabled for up to 10 file systems.</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li442115961920"><span>On the <strong id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_b940234912416">Enable Honeypot Detection</strong> page that is displayed, set the honeyfile update frequency. You are advised to update the honeyfiles periodically.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_note793415121555">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_ul20156301688">
+         <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li1515640486">When <strong id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_b4749024111712">Periodic update</strong> is selected, honeyfiles can be adaptively updated based on the latest file system information, improving effectiveness in ransomware detection of honeyfiles.</li>
+         <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li41561406810">When <strong id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_b85401637121715">No update</strong> is selected, honeyfiles cannot be adaptively updated, which may reduce effectiveness in ransomware detection of honeyfiles.</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_li57011156192417"><span>Click <strong id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_b169231017761">OK</strong>.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_note102105192519">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_p23890342514">After honeypot detection is configured, you can choose <strong id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_b5921195373116">More</strong> &gt; <strong id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_b7921105319318">View Honeyfile</strong> in the <strong id="EN-US_TOPIC_0000002043559110__en-us_topic_0000002019583881_en-us_topic_0000001943457061_b1692117530311">Operation</strong> column of the specific file system to view the path, quantity, and name of honeyfiles.</p>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002043400826.html">Using Real-Time Ransomware Detection (Applicable to File Services)</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

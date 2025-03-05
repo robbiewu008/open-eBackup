@@ -1,0 +1,102 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Viewing File System Information">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002042804916.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="Online Help for Ransomware Protection-Dorado V700R001C00">
+<meta name="DC.Publisher" content="20241226">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002042963148">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Viewing File System Information</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002042963148"></a><a name="EN-US_TOPIC_0000002042963148"></a>
+
+<h1 class="topictitle1">Viewing File System Information</h1>
+<div><div class="section"><h4 class="sectiontitle">Prerequisites</h4><p>File system resources on the storage system have been discovered on ProtectManager.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>File systems created on the storage system can be automatically discovered by ProtectManager and displayed on the <strong>Local File Systems</strong> page.</p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>When ProtectManager scans for a file system that is newly created on the storage system, it may take some time for ProtectManager to discover it.</li><li>File systems discovered by ProtectManager cannot be deleted on ProtectManager.</li><li>Clone file systems are not displayed on ProtectManager.</li><li>File systems whose names start with <strong>pvc_</strong> created through HyperDetect are not displayed on ProtectManager.</li></ul>
+</div></div>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span><strong>Protection</strong></span> &gt; <span><strong>Storage</strong></span> &gt; <span class="uicontrol"><b>Local Resources</b></span>.</span></li><li><span>Click the <strong>Local File Systems</strong> tab. In the local file system list, view file system information.</span><p><ol type="a"><li><a href="#EN-US_TOPIC_0000002042963148__table157333333311">Table 1</a> describes the parameters related to a file system.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002042963148__table157333333311"></a><a name="table157333333311"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002042963148__table157333333311" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters related to a file system</caption><colgroup><col style="width:27.41%"><col style="width:72.59%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="27.41%" id="mcps1.3.3.2.2.2.1.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="72.59%" id="mcps1.3.3.2.2.2.1.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p>Resource ID</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p>ID of a local file system.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p>Name</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p>Name of a local file system.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p>vStore</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p>vStore to which a file system belongs. The default value is <span class="uicontrol"><b>System_vStore</b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p>SLAs</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p>If a local file system has been associated with an SLA, the SLA name is displayed. Otherwise, <span class="uicontrol"><b>--</b></span> is displayed.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p>SLA Compliance</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p>Indicates whether a backup job is successfully executed in compliance with the specified backup interval or backup time window. For example, if the backup time of a backup job (except the first backup) meets the backup time window or backup interval requirements and the backup job is executed successfully, SLA compliance is met. If the backup interval set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p>Protection Status</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p>Indicates whether a local file system is protected.</p>
+<ul><li><strong>Unprotected</strong>: The local file system is not associated with an SLA, or it is associated with an SLA but protection is disabled.</li><li><strong>Protected</strong>: The local file system is associated with an SLA and protection is activated.</li><li><strong>Creating</strong>: The local file system is associated with an SLA and protection is being created.</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Click the name of a local file system to view its overview, copy data, and related jobs.<ul><li>Overview of the local file system<p>Displays the name, SLA information, job execution time, and total number of copies of the local file system.</p>
+</li><li>Snapshot data of a local file system<p>Allows you to search for copies by year, month, and day.</p>
+<p>If <span><img src="en-us_image_0000002079043981.png"></span> is displayed below the time, a copy at that time exists.</p>
+</li><li>Jobs related to the local file system<p>Displays all jobs related to the local file system, including ransomware detection snapshot backup and restoration jobs.</p>
+</li></ul>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002042804916.html">Local File System</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

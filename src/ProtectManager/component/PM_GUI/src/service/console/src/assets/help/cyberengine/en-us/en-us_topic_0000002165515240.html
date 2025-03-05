@@ -1,0 +1,112 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Configuring Management Data Backup">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200876317.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="00-OceanCyber 300 1.2.0 Online Help">
+<meta name="DC.Publisher" content="20250228">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002165515240">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Configuring Management Data Backup</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002165515240"></a><a name="EN-US_TOPIC_0000002165515240"></a>
+
+<h1 class="topictitle1">Configuring Management Data Backup</h1>
+<div id="body8662426"><p class="msonormal" id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0219008867_en-us_topic_0171822343_p34341134">Before performing an upgrade or adjusting key data, you can back up management data on the OceanCyber WebUI. The system then can use the backup data to restore configuration data (such as user, SLA, resource, and alarm notification data) in a timely manner if the data is deleted due to misoperations.</p>
+<div class="section" id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0219008867_section19325121814565"><h4 class="sectiontitle">Precautions</h4><ul id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0219008867_ul914784413561"><li id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_li144713543477">If a job is being executed on the OceanCyber WebUI, you are advised not to initiate management data backup.</li><li id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_li1383111372003">If a management data backup or restoration job is being executed, you are not allowed to execute the job again. If a manual task is being executed, the scheduled management data backup task will be canceled.</li><li id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_li13910343192817">Backup can be performed only after a backup policy is configured.</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_section1636356804"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0219008867_ol463515012542"><li id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_li154741229205311"><span>Choose <span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_text75036811493"><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_text16524186134813"><strong id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_b1068374010715">System</strong> &gt; </span><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_text1752411644817"><strong id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_b172361500719">Settings</strong><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_text1117142520482"> &gt; <strong id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_b1656716568716">Management Data Backup</strong></span></span></span>.</span></li><li id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_li12607758203511"><span>Configure the management data backup policy.</span><p><div class="p" id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p4124851122713">In the <span class="wintitle" id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_wintitle1385737115519"><b><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_text7385113755511">Management Data Backup</span></b></span> area, click <span class="uicontrol" id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_uicontrol1838553717554"><b><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_text538573711558">Backup Policy</span></b></span>. On the <span class="uicontrol" id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_uicontrol6267430112514"><b><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_text226773019258">Backup Policy</span></b></span> page, set the backup policy information. <a href="#EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_table1444913416580">Table 1</a> describes the parameters. After the configuration is complete, click <strong id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_b79199917104">OK</strong>.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_table1444913416580"></a><a name="en-us_topic_0000001829902729_en-us_topic_0000001506153941_table1444913416580"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_table1444913416580" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Backup policy parameters</caption><colgroup><col style="width:33.050000000000004%"><col style="width:66.95%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_row134507445811"><th align="left" class="cellrowborder" valign="top" width="33.050000000000004%" id="mcps1.3.3.2.2.2.1.6.2.3.1.1"><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p945014445814">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="66.95%" id="mcps1.3.3.2.2.2.1.6.2.3.1.2"><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p1845017425817">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_row134507495810"><td class="cellrowborder" valign="top" width="33.050000000000004%" headers="mcps1.3.3.2.2.2.1.6.2.3.1.1 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p31571742105813"><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_text19607132312364">Backup Time</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.3.3.2.2.2.1.6.2.3.1.2 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p9127121416115">Time for backing up data by day.</p>
+<p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p41231654141018">If a manual backup job is being executed at the specified time, the automatic backup job will be automatically canceled.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_row44501243588"><td class="cellrowborder" valign="top" width="33.050000000000004%" headers="mcps1.3.3.2.2.2.1.6.2.3.1.1 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p1045004105811"><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_text10705501192">Retained Backups</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.3.3.2.2.2.1.6.2.3.1.2 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p884616199298">Number of latest available management data backup.</p>
+<p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p144501445816">The value must range from <strong id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_b391312611196">3</strong> to <strong id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_b1491392691913">20</strong>.</p>
+<p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p15200351111">Default value: <strong id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_b84241632141912">7</strong>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_row20450646586"><td class="cellrowborder" valign="top" width="33.050000000000004%" headers="mcps1.3.3.2.2.2.1.6.2.3.1.1 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p184501949586"><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_text19134175325813">SFTP IP Address</span></p>
+</td>
+<td class="cellrowborder" rowspan="4" valign="top" width="66.95%" headers="mcps1.3.3.2.2.2.1.6.2.3.1.2 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p28061237698">Information about the SFTP server for storing backup files.</p>
+<p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p16351103820252">Ensure that the SFTP user has the permission to read and write the <strong id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_b1287895692420">/var</strong> directory.</p>
+<p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p11412045113417">After the SFTP IP address is changed, the backup records of the original SFTP server become invalid.</p>
+<p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p1099210421111">Default SFTP port: <strong id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_b10583544192517">22</strong>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_row24505410584"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.6.2.3.1.1 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p61500014594"><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_text17638720599">SFTP User Name</span></p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_row215016018591"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.6.2.3.1.1 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p15450164125817"><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_text2641457185816">SFTP Password</span></p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_row41501307595"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.6.2.3.1.1 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p1746310568320"><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_text8515173185918">SFTP Port</span></p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_row6882185917194"><td class="cellrowborder" valign="top" width="33.050000000000004%" headers="mcps1.3.3.2.2.2.1.6.2.3.1.1 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p108832599197"><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_text1583735617348">Backup Path</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.3.3.2.2.2.1.6.2.3.1.2 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p20883459191910">Path for management data backup. After a backup path is set, the path is automatically generated on the SFTP server. If this parameter is not set, the default value is <strong id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_b1910154615265">/var/sysbackup</strong>.</p>
+<div class="note" id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_note168367919445"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p1183729184414">Ensure that the SFTP user has the execute permission on the backup path.</p>
+</div></div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_row689471111593"><td class="cellrowborder" valign="top" width="33.050000000000004%" headers="mcps1.3.3.2.2.2.1.6.2.3.1.1 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p17895811195917"><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_text4261151112815">Data Encryption Password</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.3.3.2.2.2.1.6.2.3.1.2 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p669281915177">Enter a password. The password is used to encrypt the system management data and ensure backup data security. This password is also used for encryption in manual backup. Keep this password secure. When the system configurations need to be restored after a system fault, the password needs to be used to decrypt the backup system management data.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_row3895611175915"><td class="cellrowborder" valign="top" width="33.050000000000004%" headers="mcps1.3.3.2.2.2.1.6.2.3.1.1 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p3895111165920"><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_text1525823619296">Confirm Data Encryption Password</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.3.3.2.2.2.1.6.2.3.1.2 "><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p2895711185912">Enter the data encryption password again.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_li957018972813"><span>Click <span class="parmvalue" id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_parmvalue660716235368"><b><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_text3607172311365">Manual Backup</span></b></span> to manually back up the management data immediately.</span><p><div class="note" id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_note161401422103318"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_p7233218342">During manual backup, the system also uses the <strong id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_b76957104307"><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_text322132193418">Data Encryption Password</span></strong> set in the backup policy to encrypt and store management data. When the system recovers from a fault, the data encryption password is also required for decryption.</p>
+</div></div>
+</p></li><li id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_li1552629123110"><span>On the <span class="parmvalue" id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_parmvalue112285283013"><b><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_text81221252153011">Manual Backup</span></b></span> page, enter the description information and click <strong id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_b9369359203016"><span id="EN-US_TOPIC_0000002165515240__en-us_topic_0000001829902729_en-us_topic_0000001506153941_text13148165616208">OK</span></strong>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200876317.html">Management System Data Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>
