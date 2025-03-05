@@ -24,17 +24,27 @@ RUN groupadd -g 1000 dbgrp \
     && usermod -a -G dbgrp GaussDB \
     && mv script /opt/ \
     && chown -R root:root /opt/script \
+    && python3 -m pip install --no-cache-dir /opt/script/requirements/* \
+    && rm -rf /opt/script/requirements \
     && python3 -m compileall -b /opt/script/ \
     && find /opt/script/ -name "*.py" | xargs -i rm -rf '{}' \
     && chown GaussDB:dbgrp /usr/local/gaussdb -R \
+    && chown GaussDB:nobody /usr/local/gaussdb/install_ha.sh \
     && chown GaussDB:nobody /usr/local/gaussdb/gaussdb_kmc.py \
+    && chown GaussDB:nobody /usr/local/gaussdb/gaussdb_data_mv.sh \
+    && chown GaussDB:nobody /usr/local/gaussdb/auto_password_input.sh \
     && chown GaussDB:nobody /usr/local/gaussdb/gaussdb_common.py \
+    && chown GaussDB:nobody /usr/local/gaussdb/gsjdbc4.jar \
+    && chown -R GaussDB:nobody /usr/local/gaussdb/GaussDB_T_1.9.0-DATASYNC \
     && chown GaussDB:dbgrp /usr/bin/get.sh \
     && echo 'Defaults    env_keep += "NODE_NAME"' >> /etc/sudoers \
     && echo 'Defaults    env_keep += "POD_IP"' >> /etc/sudoers \
     && echo 'Defaults    env_keep += "DEPLOY_TYPE"' >> /etc/sudoers \
     && echo 'Defaults    env_keep += "POD_NAME"' >> /etc/sudoers \
     && echo "GaussDB ALL=(root)      NOPASSWD:/opt/script/change_permission.sh" >> /etc/sudoers \
+    && echo "GaussDB ALL=(root)      NOPASSWD:/opt/script/manage_data.sh" >> /etc/sudoers \
+    && echo "GaussDB ALL=(root)      NOPASSWD:/opt/script/ha_sudo.sh" >> /etc/sudoers \
+    && echo "nobody ALL=(root)       NOPASSWD:/opt/script/ha_sudo.sh" >> /etc/sudoers \
     && echo "GaussDB ALL=(root)      NOPASSWD:/usr/sbin/ntpd" >> /etc/sudoers \
     && echo "nobody ALL=(root)   NOPASSWD:/usr/sbin/ip" >> /etc/sudoers \
     && echo "interface ignore wildcard" >> /etc/ntp.conf \
@@ -52,6 +62,7 @@ RUN sh /usr/local/gaussdb/install.sh --mode single -D /usr/local/gaussdb/data  -
     && chmod 750 /usr/local/gaussdb/app/lib/libcrypto.so \
     && chmod 750 /usr/local/gaussdb/app/lib/libcjson.so.1 \
     && chmod 750 /usr/local/gaussdb/app
+
 USER root
 
 # 添加运维账户
@@ -66,19 +77,56 @@ RUN sed -i '2a\auth       sufficient   pam_succeed_if.so use_uid user ingroup Ga
     && sed -i 's/interface listen eth0/interface listen cbri1601/' /etc/ntp.conf \
     && usermod -aG GaussOp GaussDB
 
-RUN rpm -qa | grep ^libxcrypt-devel-[0-9] | xargs -i rpm -e {} --nodeps \
-    && rpm -qa | grep ^glibc-devel-[0-9] | xargs -i rpm -e {} --nodeps \
-    && rpm -qa | grep ^binutils-devel-[0-9] | xargs -i rpm -e {} --nodeps \
-    && rpm -qa | grep ^binutils-extra-[0-9] | xargs -i rpm -e {} --nodeps \
-    && rpm -qa | grep ^binutils-[0-9] | xargs -i rpm -e {} --nodeps \
-    && rpm -qa | grep ^cpp-[0-9] | xargs -i rpm -e {} --nodeps \
-    && rpm -qa | grep ^make-[0-9] | xargs -i rpm -e {} --nodeps \
-    && mkdir /opt/HA
+RUN mkdir /opt/HA
+
+COPY --chown=1000:99 HA-*-aarch64 /opt/HA
+
+RUN ls -lR /opt/HA \
+    && /opt/HA/install.sh -p /usr/local/ -u nobody -g nobody \
+    && mv /opt/HA/script /usr/local/ha/ \
+    && rm -rf /opt/HA \
+    && mkdir /usr/local/ha/local/tmp \
+    && mv /usr/local/ha/script/conf/floatIp.xml /usr/local/ha/module/harm/plugin/conf/ \
+    && mv /usr/local/ha/script/conf/gaussdb.xml /usr/local/ha/module/harm/plugin/conf/ \
+    && mv /usr/local/ha/script/floatIp.sh /usr/local/ha/module/harm/plugin/script/ \
+    && mv /usr/local/ha/script/gaussdb.sh /usr/local/ha/module/harm/plugin/script/ \
+    && mv /usr/local/ha/script/send_alarm.sh /usr/local/ha/module/hacom/plugin/script/ \
+    && mv /usr/local/ha/script/conf/agent-file.xml /usr/local/ha/module/hasync/plugin/conf/ \
+    && chown nobody:nobody /usr/local/ha -R \
+    && chmod 750 /usr/local/ha -R \
+    && chmod 550 /usr/local/ha/script -R \
+    && chmod 550 /usr/local/ha/module/haarb/script -R \
+    && chmod 550 /usr/local/ha/module/haarb/plugin/script -R \
+    && chmod 550 /usr/local/ha/module/hacom/script -R \
+    && chmod 550 /usr/local/ha/module/hacom/plugin/script -R \
+    && chmod 550 /usr/local/ha/module/hacom/tools -R \
+    && chmod 550 /usr/local/ha/module/hacom/bin -R \
+    && chmod 550 /usr/local/ha/module/hacom/lib -R \
+    && chmod 550 /usr/local/ha/module/hamon/script -R \
+    && chmod 550 /usr/local/ha/module/hamon/plugin/script -R \
+    && chmod 550 /usr/local/ha/module/hamon/bin -R \
+    && chmod 550 /usr/local/ha/module/harm/script -R \
+    && chmod 550 /usr/local/ha/module/harm/plugin/script -R \
+    && chmod 550 /usr/local/ha/module/hasync/script -R \
+    && chmod 550 /usr/local/ha/module/hasync/plugin/script -R \
+    && chmod 550 /usr/local/ha/uninstall.sh \
+    && chmod 640 /usr/local/ha/module/haarb/conf/haarb.xml \
+    && chmod 640 /usr/local/ha/module/harm/conf/harm.xml \
+    && chmod 640 /usr/local/ha/module/harm/plugin/conf/* \
+    && chmod 640 /usr/local/ha/module/hasync/conf/hasync.xml \
+    && chmod 640 /usr/local/ha/module/hasync/plugin/conf/* \
+    && chmod 640 /usr/local/ha/version \
+    && chmod 750 /usr/local/ha/script/conf \
+    && chmod 640 /usr/local/ha/script/conf/* \
+    && chmod 750 `find /usr/local/ha/module -type d` \
+    && rm -f /root/.config/pip/pip.conf
 
 ENV GAUSSDATA=/usr/local/gaussdb/data
 ENV PATH=/usr/local/gaussdb/app/bin:$PATH
 ENV GAUSSHOME=/usr/local/gaussdb/app
 ENV GAUSSLOG=/usr/local/gaussdb/data/pg_log
+# 配置MALLOC_CONF 环境变量
+ENV MALLOC_CONF="dirty_decay_ms:0,muzzy_decay_ms:0,lg_tcache_max:15"
 # 指定端口号
 EXPOSE gaussdb_port
 CMD [ "sh", "install_opengauss.sh" ]
