@@ -175,7 +175,7 @@ public class TpopsGaussDBRestoreInterceptor extends AbstractDbRestoreInterceptor
         Copy copy = copyRestApi.queryCopyByID(task.getCopyId());
         String generatedBy = copy.getGeneratedBy();
         if (CopyGeneratedByEnum.BY_CLOUD_ARCHIVE.value().equals(generatedBy)) {
-            task.setRestoreMode(RestoreModeEnum.REMOTE_RESTORE.getMode());
+            task.setRestoreMode(RestoreModeEnum.DOWNLOAD_RESTORE.getMode());
         } else if (CopyGeneratedByEnum.BY_TAPE_ARCHIVE.value().equals(generatedBy)) {
             task.setRestoreMode(RestoreModeEnum.DOWNLOAD_RESTORE.getMode());
         } else {

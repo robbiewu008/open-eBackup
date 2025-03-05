@@ -18,22 +18,10 @@ ACTION=$1
 PRIVATE_KEY_PATH=/app/agent/keyfile/privatekey/privateKey_encrypt.pem
 PUBLIC_KEY_PATH=/app/agent/keyfile/publickey/upgrade_public_key.pem
 
-# 特殊字符转义，防止send命令注入
-transfor_special_characters() {
-  local input_params=$1
-  out_params=$input_params
-  for((i=0;i<${#COMMON_PARAMS[@]};i++))
-  do
-      out_params=${out_params//${COMMON_PARAMS[i]}/\\${COMMON_PARAMS[i]}}
-  done
-  out_params=${out_params//\?/\\?}
-  echo "${out_params}"
-}
-
 # generate private key
 if [ "$ACTION" = "generatePrivateKey" ]; then
   read -s -n 384 password
-  pass=$(transfor_special_characters "${password}")
+  printf -v pass '%q' "$password"
 expect <<EOF
   spawn openssl genrsa -aes256 -out ${PRIVATE_KEY_PATH} 3072
   expect {
@@ -51,7 +39,7 @@ fi
 # generate public key
 if [ "$ACTION" = "generatePublicKey" ]; then
   read -s -n 384 password;
-  pass=$(transfor_special_characters "${password}")
+  printf -v pass '%q' "$password"
 expect <<EOF
   spawn openssl rsa -pubout -in ${PRIVATE_KEY_PATH} -out ${PUBLIC_KEY_PATH}
   expect {
@@ -70,7 +58,7 @@ if [ "$ACTION" = "sign" ]; then
   read -rs PARAM_1
   read -rs PARAM_2
   read -s -n 384 password;
-  pass=$(transfor_special_characters "${password}")
+  printf -v pass '%q' "$password"
   SIGN_FILE=${PARAM_1}
   SIGN_RESULT_FILE=${PARAM_2}
 expect <<EOF
@@ -94,7 +82,7 @@ if [ "$ACTION" = "signOld" ]; then
   SIGN_FILE=${PARAM_1}
   SIGN_RESULT_FILE=${PARAM_2}
   PRIVATE_KEY_PKCS8_PATH=${PARAM_3}
-  pass=$(transfor_special_characters "${password}")
+  printf -v pass '%q' "$password"
 expect <<EOF
   spawn openssl dgst -sign ${PRIVATE_KEY_PKCS8_PATH} -out ${SIGN_RESULT_FILE} ${SIGN_FILE}
   expect {

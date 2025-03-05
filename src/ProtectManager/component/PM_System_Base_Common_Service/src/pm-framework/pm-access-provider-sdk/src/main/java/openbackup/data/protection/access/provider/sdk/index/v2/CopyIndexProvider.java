@@ -25,4 +25,11 @@ public interface CopyIndexProvider extends DataProtectionProvider<String> {
      * @return 支持返回true，不支持返回false
      */
     boolean isSupportIndex();
+
+    /**
+     * 索引初始化
+     *
+     * @param indexTask 索引任务
+     */
+    default void initialize(CopyIndexTask indexTask) {}
 }

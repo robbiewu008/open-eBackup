@@ -71,6 +71,7 @@ import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
 
 import org.apache.logging.log4j.util.Strings;
@@ -131,6 +132,8 @@ public class OracleBackupInterceptor extends AbstractDbBackupInterceptor {
 
     private JobService jobService;
 
+    private DeployTypeService deployTypeService;
+
     /**
      * Oracle数据库拦截器操作实现
      * <p>
@@ -150,6 +153,11 @@ public class OracleBackupInterceptor extends AbstractDbBackupInterceptor {
         checkIsLogBackup(backupTask);
 
         checkStorageSnapshotBackupType(backupTask);
+
+        // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+        if (deployTypeService.isPacific()) {
+            backupTask.getAdvanceParams().put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        }
 
         // 填充auth信息和副本密码
         fillBackupParams(backupTask);

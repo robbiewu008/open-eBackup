@@ -24,9 +24,11 @@ import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.service.InstanceResourceService;
 import openbackup.postgre.protection.access.common.PostgreConstants;
+import openbackup.postgre.protection.access.service.PostgreInstanceService;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
@@ -60,8 +62,13 @@ public class PostgreClusterInstanceConnectionCheckerTest {
 
     private final AgentUnifiedService agentUnifiedService = Mockito.mock(AgentUnifiedService.class);
 
+    private final PostgreInstanceService postgreInstanceService = Mockito.mock(PostgreInstanceService.class);
+
+    private final ResourceService resourceService = Mockito.mock(ResourceService.class);
+
     private PostgreClusterInstanceConnectionChecker connectionChecker = new PostgreClusterInstanceConnectionChecker(
-        environmentRetrievalsService, agentUnifiedService, environmentService, instanceResourceService);
+        environmentRetrievalsService, agentUnifiedService, environmentService, instanceResourceService,
+        postgreInstanceService, resourceService);
 
     @Before
     public void init() {

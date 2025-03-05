@@ -12,11 +12,13 @@
 */
 package openbackup.system.base.sdk.copy.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Data;
+import openbackup.system.base.common.typehandler.TimeStringTypeHandler;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,6 +37,7 @@ public class CopyInfo {
 
     private String timestamp;
 
+    @TableField(typeHandler = TimeStringTypeHandler.class)
     private String displayTimestamp;
 
     @JsonProperty("deletable")
@@ -42,14 +45,18 @@ public class CopyInfo {
 
     private String status; // 副本状态
 
+    private int storageUnitStatus; // 副本所在的存储单元状态
+
     private String location;
 
     private int backupType; // 1：完全备份 2：增量备份 3：差异备份 4：日志备份
 
     private String generatedBy; // 生成方式
 
+    @TableField(typeHandler = TimeStringTypeHandler.class)
     private String generatedTime;
 
+    @TableField(typeHandler = TimeStringTypeHandler.class)
     private String originCopyTimeStamp; // 副本备份时间
 
     private String generationType;
@@ -156,6 +163,11 @@ public class CopyInfo {
      * worm过期时间
      */
     private Date wormExpirationTime;
+
+    /**
+     * 浏览挂载状态
+     */
+    private String browseMounted;
 
     // DP中originCopyTimeStamp类型为datetime,不能传空字符串
     public void setOriginCopyTimeStamp(String originCopyTimeStamp) {

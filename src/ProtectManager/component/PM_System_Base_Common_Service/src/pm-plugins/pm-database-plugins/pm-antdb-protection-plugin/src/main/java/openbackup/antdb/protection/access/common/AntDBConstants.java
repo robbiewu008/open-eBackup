@@ -51,4 +51,24 @@ public class AntDBConstants {
      * 主节点
      */
     public static final String PRIMARY = "1";
+
+    /**
+     * postgres版本
+     */
+    public static final String PG_VERSION = "pg_version";
+
+    /**
+     * antdb版本
+     */
+    public static final String ANTDB_VERSION = "antdb_version";
+
+    /**
+     * 前端下发给PM的扩展字段，用于判断日志备份是否需要转全量
+     */
+    public static final String AUTO_FULL_BACKUP = "autoFullBackup";
+
+    /**
+     * PM下发给agent的扩展字段，用于判断日志备份是否需要转全量
+     */
+    public static final String IS_CHECK_BACKUP_JOB_TYPE = "isCheckBackupJobType";
 }

@@ -154,7 +154,7 @@ public class GaussDBDWSClusterEnvironmentProvider extends DatabaseEnvironmentPro
         protectedResource.setType(ResourceTypeEnum.DATABASE.getType());
         protectedResource.setSubType(ResourceSubTypeEnum.GAUSSDB_DWS_DATABASE.getType());
         protectedResource.setUuid(UUID.nameUUIDFromBytes(
-            (environment.getUuid() + environment.getName() + database).getBytes(StandardCharsets.UTF_8)).toString());
+            (environment.getUuid() + database).getBytes(StandardCharsets.UTF_8)).toString());
         protectedResource.setVersion(environment.getVersion());
         protectedResource.setParentName(environment.getName());
         protectedResource.setParentUuid(environment.getUuid());
@@ -265,8 +265,8 @@ public class GaussDBDWSClusterEnvironmentProvider extends DatabaseEnvironmentPro
             .map(gaussDBBaseService::getEnvironmentById)
             .collect(Collectors.toList());
         clusterUuidList.forEach(uuid -> DwsValidator.checkExistUuid(hostUuidList, uuid));
-        clusterUuidList.addAll(hostUuidList);
         DwsValidator.checkDwsExistSameClusterOrHost(existingEnvironmentList, clusterUuidList);
+        DwsValidator.checkDwsExistSameHostAsCluster(existingEnvironmentList, hostUuidList);
     }
 
     private List<ProtectedResource> getAgentResourcesByKey(ProtectedEnvironment environment, String agentKey) {

@@ -83,4 +83,9 @@ public class JobReportBo {
      * 任务持续时间
      */
     private String duration;
+
+    /**
+     * 任务事件失败或告警详情
+     */
+    private String labelDetailedDescription;
 }

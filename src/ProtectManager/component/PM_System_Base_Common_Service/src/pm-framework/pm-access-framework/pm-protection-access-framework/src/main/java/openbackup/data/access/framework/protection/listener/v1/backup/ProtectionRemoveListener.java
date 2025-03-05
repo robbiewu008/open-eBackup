@@ -22,6 +22,7 @@ import com.huawei.oceanprotect.repository.repository.NasDistributionStorageRepos
 import com.huawei.oceanprotect.repository.service.impl.NasDistributionStorageServiceImpl;
 import com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants;
 import com.huawei.oceanprotect.sla.common.constants.SlaConstants;
+import com.huawei.oceanprotect.sla.sdk.enums.BackupStorageTypeEnum;
 import com.huawei.oceanprotect.sla.sdk.enums.ReplicationMode;
 import com.huawei.oceanprotect.system.base.sdk.devicemanager.ability.session.IStorageDeviceRepository;
 import com.huawei.oceanprotect.system.base.sdk.devicemanager.model.StorageDevice;
@@ -68,7 +69,6 @@ import openbackup.system.base.sdk.resource.model.ResourceEntity;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.DeployTypeService;
 
-import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
@@ -99,8 +99,6 @@ public class ProtectionRemoveListener {
     private static final String EXTERNAL_SYSTEM_ID = "external_system_id";
 
     private static final String REPLICATION_TARGET_MODE = "replication_target_mode";
-
-    private static final String EXTERNAL_STORAGE_ID = "external_storage_id";
 
     private static final String NEW_SLA_KEY = "new_sla";
 
@@ -183,6 +181,11 @@ public class ProtectionRemoveListener {
         // 域内复制删除复制链路
         JSONObject data = JSONObject.fromObject(payload);
         String slaId = data.getString(SLA_ID_KEY);
+        boolean isRemoveLine = data.getBoolean("is_remove_line");
+        if (!isRemoveLine) {
+            log.info("Create protection not remote intra remote link");
+            return;
+        }
         SlaBo slaBo = slaRestApi.querySlaById(slaId);
         List<PolicyBo> policyBos = getIntraReplicationPolicies(slaBo);
         int size = policyBos.size();
@@ -294,6 +297,10 @@ public class ProtectionRemoveListener {
         JSONObject data = JSONObject.fromObject(payload);
         String resourceId = data.getString(RESOURCE_ID_KEY);
         ResourceEntity resourceEntity = resourceRestApi.queryResource(resourceId);
+        if (resourceEntity == null) {
+            log.info("resourceEntity not found, no need to do anything.");
+            return;
+        }
         BackupProvider protectionProvider = providerManager.findProvider(BackupProvider.class,
             resourceEntity.getSubType(), null);
         if (protectionProvider != null) {
@@ -309,10 +316,14 @@ public class ProtectionRemoveListener {
         String slaId = data.getString(SLA_ID_KEY);
         SlaBo slaBo = slaRestApi.querySlaById(slaId);
         ResourceEntity resourceEntity = resourceRestApi.queryResource(resourceId);
+        if (resourceEntity == null) {
+            log.info("resourceEntity not found, no need to do anything.");
+            return;
+        }
         ReplicationProtectionRemoveProcessor processor = providerManager.findProviderOrDefault(
             ReplicationProtectionRemoveProcessor.class, resourceEntity.getSubType(), unifiedReplicationRemoveProcessor);
         if (processor == null) {
-            log.info("not found ProtectionRemoveProcessor, no need to do anything.");
+            log.info("ProtectionRemoveProcessor not found, no need to do anything.");
             return;
         }
 
@@ -332,13 +343,13 @@ public class ProtectionRemoveListener {
         ReplicationProtectionRemoveProcessor processor, PolicyBo policy) {
         log.info("policy id:{}", policy.getUuid());
         Integer mode = policy.getIntegerFormExtParameters(REPLICATION_TARGET_MODE, ReplicationMode.EXTRA.getValue());
+        JsonNode storageInfo = policy.getExtParameters().get(ExtParamsConstants.STORAGE_INFO);
         // 移除保护，域外
         if (SlaConstants.EXTRA_REPLICATION_MODE.contains(mode)) {
             Optional<TargetClusterVo> targetClusterVo = getReplicationTargetCluster(policy);
             if (targetClusterVo.isPresent()) {
                 TargetClusterVo targetCluster = targetClusterVo.get();
                 if (deployTypeService.isE1000()) {
-                    JsonNode storageInfo = policy.getExtParameters().get(ExtParamsConstants.STORAGE_INFO);
                     String storageId = storageInfo.get(ExtParamsConstants.STORAGE_ID).asText();
                     Map<String, String> queryParams = new HashMap<>();
                     queryParams.put("id", storageId);
@@ -360,8 +371,16 @@ public class ProtectionRemoveListener {
                 processor.process(resourceEntity, targetCluster);
             }
         } else {
-            Optional<NasDistributionStorageDetail> replicationStorage = getReplicationStorage(policy);
-            replicationStorage.ifPresent(detail -> processor.process(resourceEntity, detail));
+            String storageType = storageInfo.get(ExtParamsConstants.STORAGE_TYPE).asText();
+            String storageId = storageInfo.get(ExtParamsConstants.STORAGE_ID).asText();
+            if (BackupStorageTypeEnum.BACKUP_STORAGE_UNIT_GROUP.getValue().equals(storageType)) {
+                Optional<NasDistributionStorageDetail> replicationStorage =
+                    Optional.ofNullable(nasDistributionStorageService.getDetail(storageId));
+                replicationStorage.ifPresent(detail -> processor.process(resourceEntity, detail));
+            } else {
+                Optional<StorageUnitVo> storageUnitVo = repCommonService.getStorageUnitVo(storageId);
+                storageUnitVo.ifPresent(unit -> processor.process(resourceEntity, unit));
+            }
         }
     }
 
@@ -372,15 +391,6 @@ public class ProtectionRemoveListener {
         } else {
             return Optional.of(clusterInternalApi.queryTargetClusterDetailsByClusterId(externalSystemIdNode.asInt()));
         }
-    }
-
-    private Optional<NasDistributionStorageDetail> getReplicationStorage(PolicyBo policy) {
-        JsonNode storageIdNode = policy.getExtParameters().findPath(EXTERNAL_STORAGE_ID);
-        if (storageIdNode.isMissingNode() || StringUtils.isBlank(storageIdNode.asText())) {
-            return Optional.empty();
-        }
-        NasDistributionStorageDetail detail = nasDistributionStorageService.getDetail(storageIdNode.asText());
-        return Optional.of(detail);
     }
 
     /**

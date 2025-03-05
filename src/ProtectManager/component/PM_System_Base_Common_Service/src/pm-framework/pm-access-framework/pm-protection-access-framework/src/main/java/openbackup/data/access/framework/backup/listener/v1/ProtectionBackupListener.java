@@ -31,8 +31,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.sla.Policy;
 import openbackup.data.protection.access.provider.sdk.sla.Sla;
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.json.JsonUtil;
@@ -134,7 +132,12 @@ public class ProtectionBackupListener {
             return;
         }
 
-        BackupObject backupObject = toBackupObject(consumerString);
+        Optional<BackupObject> backupObjectOpt = toBackupObject(consumerString);
+        if (!backupObjectOpt.isPresent()) {
+            log.error("Task is already be stopped or failed!");
+            return;
+        }
+        BackupObject backupObject = backupObjectOpt.get();
         if (!jobService.isJobPresent(backupObject.getRequestId())) {
             log.info("Job({}) not exist, no need to process", backupObject.getRequestId());
             return;
@@ -183,7 +186,7 @@ public class ProtectionBackupListener {
     }
 
     @ExterAttack
-    private BackupObject toBackupObject(String consumerString) {
+    private Optional<BackupObject> toBackupObject(String consumerString) {
         // 从消息体中取出request_id
         Map map = JsonUtil.read(consumerString, Map.class);
         String requestId = String.valueOf(map.get("request_id"));
@@ -195,7 +198,7 @@ public class ProtectionBackupListener {
         // 从redis中读取转换为protectedObject
         String jsonStr = redis.get("protected_object");
         if (StringUtil.isEmpty(jsonStr)) {
-            throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR, "Task already be stopped or failed!");
+            return Optional.empty();
         }
         ProtectedObject protectedObject = JSONObject.toBean(jsonStr, ProtectedObject.class);
 
@@ -222,6 +225,6 @@ public class ProtectionBackupListener {
 
         Policy policy = JSONObject.fromObject(redis.get("policy")).toBean(Policy.class);
         backupObject.setPolicy(policy);
-        return backupObject;
+        return Optional.of(backupObject);
     }
 }

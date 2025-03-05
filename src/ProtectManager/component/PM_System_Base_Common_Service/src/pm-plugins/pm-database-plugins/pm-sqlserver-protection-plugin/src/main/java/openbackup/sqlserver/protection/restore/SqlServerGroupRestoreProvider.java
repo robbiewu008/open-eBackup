@@ -125,6 +125,7 @@ public class SqlServerGroupRestoreProvider extends AbstractDbRestoreInterceptorP
             && RestoreLocationEnum.ORIGINAL.equals(task.getTargetLocation())) {
             task.getAdvanceParams().put("multiPostJob", "true");
         }
+        setCopyRestoreNeedWritable(task);
         return task;
     }
 

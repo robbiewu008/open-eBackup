@@ -35,6 +35,8 @@ import openbackup.data.protection.access.provider.sdk.verify.CopyVerifyTask;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.json.JSONObjectCovert;
 import openbackup.system.base.common.utils.json.JsonUtil;
+import openbackup.data.protection.access.provider.sdk.retry.JobRetryConstant;
+import openbackup.data.protection.access.provider.sdk.retry.JobRetryEnum;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyStatus;
 import openbackup.system.base.sdk.copy.model.CopyStatusUpdateParam;
@@ -267,13 +269,18 @@ public abstract class RestoreTaskHelper {
 
         setRestoreTargetLocation(request, restoreTask, jobRequest, copy);
         // 根据副本生成类型判断当前资源的恢复任务是否支持停止
-        jobRequest.setEnableStop(Boolean.FALSE);
+        jobRequest.setEnableStop(context.getInterceptorProvider().enableStop());
         // 设置恢复任务目标对象消息
         // 设置任务消息数据，JobCenter处理任务限流之后，会按照消息中的topic,
         // 把消息中的数据作为kafka消息体发出来
         jobRequest.setMessage(buildRestoreStartMessage(restoreTask));
         jobRequest.setExtendField(
             buildRestoreExtendField(restoreTask, copy.getProperties(), copy.getStatus(), request));
+
+        JSONObject data = new JSONObject();
+        data.set(JobRetryConstant.TASK_GUI_REQUEST, JsonUtil.json(context.getTaskRequest()));
+        data.set(JobRetryConstant.TASK_TYPE, JobRetryEnum.JobRetryTaskTypeEnum.RESTORE_V2.getType());
+        jobRequest.setData(data);
         return jobRequest;
     }
 

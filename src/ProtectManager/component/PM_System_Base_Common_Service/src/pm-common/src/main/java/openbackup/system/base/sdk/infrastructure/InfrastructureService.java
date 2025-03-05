@@ -18,7 +18,6 @@ import openbackup.system.base.sdk.infrastructure.model.beans.NodePodInfo;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * 功能描述: 基础设施查询逻辑
@@ -39,13 +38,6 @@ public interface InfrastructureService {
      * @return 基础设施返回的原生 POD 信息，未对其进行解析
      */
     List<NodePodInfo> queryInfraContainerInfo();
-
-    /**
-     * 查询节点网络信息，包括数据备份引擎IP、数据利用引擎IP、数据归档引擎IP、复制网络IP
-     *
-     * @return 节点网络信息，包括数据备份引擎IP、数据利用引擎IP、数据归档引擎IP、复制网络IP
-     */
-    Map<String, NodePodInfo> queryNodeNetInfo();
 
     /**
      *
@@ -125,8 +117,7 @@ public interface InfrastructureService {
      * 获取configMap中的值
      *
      * @param configMap configmap
-     * @param key key
      * @return value
      */
-    Optional<JSONObject> getConfigMapValue(String configMap, String key);
+    Map<String, String> getConfigMapValue(String configMap);
 }

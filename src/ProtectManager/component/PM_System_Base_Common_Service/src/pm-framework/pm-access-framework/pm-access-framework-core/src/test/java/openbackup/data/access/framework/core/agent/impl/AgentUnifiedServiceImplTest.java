@@ -13,15 +13,23 @@
 package openbackup.data.access.framework.core.agent.impl;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 import openbackup.data.access.client.sdk.api.framework.agent.AgentUnifiedRestApi;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentIqnValidateRequest;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentWwpnInfo;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AppResource;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AsyncListResourceReq;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AsyncListResourceV2Req;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CleanAgentLogReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CollectAgentLogRsp;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.GetAgentLogCollectStatusRsp;
@@ -30,6 +38,7 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.HostDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceV2Req;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceV2Rsp;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.PluginsDto;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.ResourceListDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.SupportApplicationDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.SupportPluginDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.UpdateAgentLevelReq;
@@ -38,6 +47,7 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.model.AgentUpda
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.access.framework.core.agent.mock.MockEntity;
 
+import openbackup.data.access.framework.core.model.AgentCommonParam;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
@@ -47,6 +57,8 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.rest.FeignBuilder;
+import openbackup.system.base.common.utils.CommonUtil;
+import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.agent.model.AgentUpdateResponse;
 import openbackup.system.base.sdk.cert.request.PushUpdateCertToAgentReq;
@@ -61,6 +73,7 @@ import feign.RequestTemplate;
 import feign.Response;
 import feign.codec.Encoder;
 
+import openbackup.system.base.util.BeanTools;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -69,8 +82,12 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -88,8 +105,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * AgentUnifiedServiceImplTest 测试类
@@ -98,7 +119,7 @@ import java.util.UUID;
 @SpringBootTest(classes = {AgentUnifiedServiceImpl.class, FeignBuilder.class})
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest({FeignBuilder.class, Response.class})
+@PrepareForTest({FeignBuilder.class, Response.class, CommonUtil.class})
 public class AgentUnifiedServiceImplTest {
     @Mock
     private static AgentUnifiedRestApi agentUnifiedRestApi;
@@ -118,13 +139,21 @@ public class AgentUnifiedServiceImplTest {
     @MockBean
     private DeployTypeService deployTypeService;
 
+    @Mock
+    private AgentCommonParam agentCommonParam;
+
+//    @InjectMocks
+//    private ResourceQueryService resourceQueryService;
+
+    private ListResourceV2Req listResourceV2Req;
+
     @Before
     public void init() throws Exception {
         PowerMockito.mockStatic(FeignBuilder.class);
-        PowerMockito.when(
+        when(
                 FeignBuilder.buildHttpsTarget(any(), any(), anyBoolean(), anyBoolean(), any()))
             .thenReturn(agentUnifiedRestApi);
-        PowerMockito.when(domainService.getDmeProxy(any()))
+        when(domainService.getDmeProxy(any()))
             .thenReturn(Optional.of(new Proxy(Proxy.Type.HTTP,
                 new InetSocketAddress("127.0.0.1", 8088))));
     }
@@ -137,34 +166,64 @@ public class AgentUnifiedServiceImplTest {
     @Test
     public void test_getDetailPageList() {
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
-        PowerMockito.when(deployTypeService.isHyperDetectDeployType()).thenReturn(true);
+        when(deployTypeService.isHyperDetectDeployType()).thenReturn(true);
         // 无数据的返回
-        PowerMockito.when(agentUnifiedRestApi.listResourceDetailV2(any(), any(), any())).thenReturn(null);
+        when(agentUnifiedRestApi.listResourceDetailV2(any(), any(), any())).thenReturn(null);
 
         PageListResponse<ProtectedResource> response = agentUnifiedService.getDetailPageList("", "127.0.0.1", 25080,
             new ListResourceV2Req());
-        Assert.assertEquals(response.getTotalCount(), 0);
+        assertEquals(response.getTotalCount(), 0);
 
         // 无数据的返回：有total
         String resultJson2
             = "{\"errorCode\":\"0\",\"errorMessage\":\"\",\"resourceList\":{\"items\":,\"pageNo\":0,\"pageSize\":100,\"pages\":0,\"total\":23}}";
         ListResourceV2Rsp resourceV2Rsp2 = JSONObject.toBean(resultJson2, ListResourceV2Rsp.class);
-        PowerMockito.when(agentUnifiedRestApi.listResourceDetailV2(any(), any(), any())).thenReturn(resourceV2Rsp2);
+        when(agentUnifiedRestApi.listResourceDetailV2(any(), any(), any())).thenReturn(resourceV2Rsp2);
 
         PageListResponse<ProtectedResource> response2 = agentUnifiedService.getDetailPageList("", "127.0.0.1", 25080,
             new ListResourceV2Req());
-        Assert.assertEquals(response2.getTotalCount(), 23);
+        assertEquals(response2.getTotalCount(), 23);
 
         // 有数据的返回
         String resultJson
             = "{\"errorCode\": \"0\",\"errorMessage\": \"\",\"resourceList\": {\"items\": [{\"extendInfo\": {\"hasChildren\": true,\"modifyTime\": \"2020-01-19 09:31:15\",\"path\": \"/lost+found\",\"size\": 16384,\"type\": \"d\"},\"name\": \"\",\"parentName\": \"\",\"parentUuid\": \"\",\"subType\": \"\",\"type\": \"\",\"uuid\": \"23\"}],\"pageNo\": 0,\"pageSize\": 100,\"pages\": 0,\"total\": 23}}";
         ListResourceV2Rsp resourceV2Rsp = JSONObject.toBean(resultJson, ListResourceV2Rsp.class);
-        PowerMockito.when(agentUnifiedRestApi.listResourceDetailV2(any(), any(), any())).thenReturn(resourceV2Rsp);
+        when(agentUnifiedRestApi.listResourceDetailV2(any(), any(), any())).thenReturn(resourceV2Rsp);
 
         PageListResponse<ProtectedResource> response3 = agentUnifiedService.getDetailPageList("", "127.0.0.1", 25080,
             new ListResourceV2Req());
-        Assert.assertEquals(response3.getTotalCount(), 23);
-        Assert.assertEquals(response3.getRecords().get(0).getExtendInfo().get("path"), "/lost+found");
+        assertEquals(response3.getTotalCount(), 23);
+        assertEquals(response3.getRecords().get(0).getExtendInfo().get("path"), "/lost+found");
+    }
+
+    /**
+     * 用例场景：agent正常返回数据
+     * 前置条件：agent正常返回数据(无数据的返回, )
+     * 检查点：agent正常返回数据，接收正常、转换正常
+     */
+    @Test
+    public void test_getAsyncDetailPageList() throws Exception {
+        AsyncListResourceV2Req req;
+        String dtoStr = "{\"code\":200,\"id\":\"6d5b1d6e-4678-337a-8a69-5d732b094a27\",\"results\":{\"items\":[{\"name\":\"ns000000000000000000001\",\"parentName\":\"\",\"parentUuid\":\"6d5b1d6e-4678-337a-8a69-5d732b094a27\",\"subType\":\"KubernetesNamespace\",\"type\":\"Namespace\",\"uuid\":\"4fe3a579-9c8d-472a-a82a-f9b61664a143\"}],\"pageNo\":1,\"pageSize\":0,\"pages\":1,\"total\":1}}\n";
+        req = JSONObject.toBean(dtoStr, AsyncListResourceV2Req.class);
+
+        AsyncListResourceReq request = new AsyncListResourceReq("123", "", new ListResourceV2Req());
+
+        PageListResponse<ProtectedResource> pageListResponse = new PageListResponse<>(0, new ArrayList<>());
+        ResourceListDto resourceListDto = req.getResults();
+        pageListResponse.setTotalCount(resourceListDto.getTotal());
+        List<AppResource> appResources = resourceListDto.getItems();
+        List<ProtectedResource> records = appResources.stream()
+                .map(appResource -> BeanTools.copy(appResource, ProtectedResource::new)).collect(Collectors.toList());
+        pageListResponse.setRecords(records);
+
+        Map<String, Boolean> mockMap = mock(Map.class);
+        PowerMockito.when(mockMap.getOrDefault(anyString(), eq(false))).thenReturn(true);
+        ConcurrentHashMap<String, Boolean> mockConcurrentMap = mock(ConcurrentHashMap.class);
+        PowerMockito.when(mockConcurrentMap.getOrDefault(anyString(), eq(false))).thenReturn(true);
+
+        PageListResponse<ProtectedResource> list = agentUnifiedService.getAsyncDetailPageList("127.0.0.1", 25080, request);
+        Assert.assertEquals(list.getTotalCount(), 0);
     }
 
     /**
@@ -175,13 +234,13 @@ public class AgentUnifiedServiceImplTest {
     @Test
     public void test_getDetailPageList_error() {
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
-        PowerMockito.when(deployTypeService.isHyperDetectDeployType()).thenReturn(false);
+        when(deployTypeService.isHyperDetectDeployType()).thenReturn(false);
         expectedException.expect(LegoCheckedException.class);
         expectedException.expectMessage("error test");
 
         String resultJson2 = "{\"errorCode\": 1577209919,\"errorMessage\": \"error test\"}";
         ListResourceV2Rsp resourceV2Rsp = JSONObject.toBean(resultJson2, ListResourceV2Rsp.class);
-        PowerMockito.when(agentUnifiedRestApi.listResourceDetailV2(any(), any(), any())).thenReturn(resourceV2Rsp);
+        when(agentUnifiedRestApi.listResourceDetailV2(any(), any(), any())).thenReturn(resourceV2Rsp);
         PageListResponse<ProtectedResource> response = agentUnifiedService.getDetailPageList("", "127.0.0.1", 25080,
             new ListResourceV2Req());
         System.out.println(JSONObject.writeValueAsString(response));
@@ -200,12 +259,12 @@ public class AgentUnifiedServiceImplTest {
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
         String endpoint = "127.0.0.1";
         Integer port = 8080;
-        PowerMockito.when(agentUnifiedRestApi.getPlugins(any())).thenReturn(pluginsDto).thenReturn(pluginsDto);
+        when(agentUnifiedRestApi.getPlugins(any())).thenReturn(pluginsDto).thenReturn(pluginsDto);
         List<ProtectedResource> plugins = agentUnifiedService.getPlugins(endpoint, port);
-        Assert.assertEquals(5, plugins.size());
+        assertEquals(5, plugins.size());
         endpoint = "2017:8:40:96:c12::51";
         List<ProtectedResource> ipv6Plugins = agentUnifiedService.getPlugins(endpoint, port);
-        Assert.assertEquals(5, ipv6Plugins.size());
+        assertEquals(5, ipv6Plugins.size());
     }
 
     /**
@@ -222,7 +281,7 @@ public class AgentUnifiedServiceImplTest {
 
         Assert.assertTrue(protectedResources instanceof List);
         List resources = (List) protectedResources;
-        Assert.assertEquals(5, resources.size());
+        assertEquals(5, resources.size());
     }
 
     /**
@@ -250,10 +309,10 @@ public class AgentUnifiedServiceImplTest {
     public void test_get_agent_host_success() throws Exception {
         HostDto hostDto = MockEntity.mockHostDto();
 
-        PowerMockito.when(agentUnifiedRestApi.getHost(any())).thenReturn(hostDto);
+        when(agentUnifiedRestApi.getHost(any())).thenReturn(hostDto);
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
         HostDto host = agentUnifiedService.getHost("127.0.0.1", 8080);
-        Assert.assertEquals("host dto", host.getName());
+        assertEquals("host dto", host.getName());
     }
 
     /**
@@ -265,10 +324,10 @@ public class AgentUnifiedServiceImplTest {
     public void test_get_agent_host_new_success() throws Exception {
         HostDto hostDto = MockEntity.mockHostDto();
 
-        PowerMockito.when(agentUnifiedRestApi.getAgentHost(any())).thenReturn(hostDto);
+        when(agentUnifiedRestApi.getAgentHost(any())).thenReturn(hostDto);
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
         HostDto host = agentUnifiedService.getAgentHost("127.0.0.1", 8080);
-        Assert.assertEquals("host dto", host.getName());
+        assertEquals("host dto", host.getName());
     }
 
     /**
@@ -303,11 +362,11 @@ public class AgentUnifiedServiceImplTest {
 
         AgentBaseDto mockAgentBaseDto = new AgentBaseDto();
         mockAgentBaseDto.setErrorCode("0");
-        PowerMockito.when(agentUnifiedRestApi.check(any(), any(), any())).thenReturn(mockAgentBaseDto);
+        when(agentUnifiedRestApi.check(any(), any(), any())).thenReturn(mockAgentBaseDto);
 
         AgentBaseDto agentBaseDto = agentUnifiedService.checkApplication(protectedResource, protectedEnvironment);
 
-        Assert.assertEquals("0", agentBaseDto.getErrorCode());
+        assertEquals("0", agentBaseDto.getErrorCode());
     }
 
     /**
@@ -345,14 +404,14 @@ public class AgentUnifiedServiceImplTest {
 
         ActionResult actionResult = new ActionResult();
         actionResult.setCode(1);
-        PowerMockito.when(agentUnifiedRestApi.check(any(), any(), any()))
+        when(agentUnifiedRestApi.check(any(), any(), any()))
             .thenThrow(new LegoCheckedException(CommonErrorCode.OPERATION_FAILED,
                 JSONObject.writeValueAsString(actionResult)));
 
         AgentBaseDto agentBaseDto = agentUnifiedService.checkApplication(protectedResource, protectedEnvironment);
 
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
-        Assert.assertEquals(1, JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
+        assertEquals(1, JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
     }
 
     /**
@@ -394,14 +453,14 @@ public class AgentUnifiedServiceImplTest {
             "Connect Timeout",
             Request.create(Request.HttpMethod.GET, "", Collections.emptyMap(), new byte[0], StandardCharsets.UTF_8,
                 new RequestTemplate()), new byte[0], new HashMap<>());
-        PowerMockito.when(agentUnifiedRestApi.check(any(), any(), any())).thenThrow(connectTimeoutException);
+        when(agentUnifiedRestApi.check(any(), any(), any())).thenThrow(connectTimeoutException);
 
         AgentBaseDto agentBaseDto = agentUnifiedService.checkApplication(protectedResource, protectedEnvironment);
 
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR,
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR,
             JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
-        Assert.assertEquals("Connect Timeout",
+        assertEquals("Connect Timeout",
             JSONObject.fromObject(agentBaseDto.getErrorMessage()).getString("message"));
     }
 
@@ -415,9 +474,9 @@ public class AgentUnifiedServiceImplTest {
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
         CollectAgentLogRsp mockRsp = new CollectAgentLogRsp();
         mockRsp.setId("123");
-        PowerMockito.when(agentUnifiedRestApi.collectAgentLog(any())).thenReturn(mockRsp);
+        when(agentUnifiedRestApi.collectAgentLog(any())).thenReturn(mockRsp);
         CollectAgentLogRsp rsp = agentUnifiedService.collectAgentLog("1.1.1.1", 430);
-        Assert.assertEquals("123", rsp.getId());
+        assertEquals("123", rsp.getId());
     }
 
     /**
@@ -433,7 +492,7 @@ public class AgentUnifiedServiceImplTest {
             "Connect Timeout",
             Request.create(Request.HttpMethod.GET, "", Collections.emptyMap(), new byte[0], StandardCharsets.UTF_8,
                 new RequestTemplate()), new byte[0], new HashMap<>());
-        PowerMockito.when(agentUnifiedRestApi.collectAgentLog(any())).thenThrow(connectTimeoutException);
+        when(agentUnifiedRestApi.collectAgentLog(any())).thenThrow(connectTimeoutException);
         Assertions.assertThrows(LegoCheckedException.class, () -> agentUnifiedService.collectAgentLog("1.1.1.1", 430));
     }
 
@@ -447,9 +506,9 @@ public class AgentUnifiedServiceImplTest {
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
         GetAgentLogCollectStatusRsp mockRsp = new GetAgentLogCollectStatusRsp();
         mockRsp.setStatus("completed");
-        PowerMockito.when(agentUnifiedRestApi.getCollectAgentLogStatus(any())).thenReturn(mockRsp);
+        when(agentUnifiedRestApi.getCollectAgentLogStatus(any())).thenReturn(mockRsp);
         GetAgentLogCollectStatusRsp rsp = agentUnifiedService.getCollectAgentLogStatus("1.1.1.1", 430);
-        Assert.assertEquals("completed", rsp.getStatus());
+        assertEquals("completed", rsp.getStatus());
     }
 
     /**
@@ -465,7 +524,7 @@ public class AgentUnifiedServiceImplTest {
             "Connect Timeout",
             Request.create(Request.HttpMethod.GET, "", Collections.emptyMap(), new byte[0], StandardCharsets.UTF_8,
                 new RequestTemplate()), new byte[0], new HashMap<>());
-        PowerMockito.when(agentUnifiedRestApi.getCollectAgentLogStatus(any())).thenThrow(connectTimeoutException);
+        when(agentUnifiedRestApi.getCollectAgentLogStatus(any())).thenThrow(connectTimeoutException);
         Assertions.assertThrows(LegoCheckedException.class,
             () -> agentUnifiedService.getCollectAgentLogStatus("1.1.1.1", 430));
     }
@@ -479,9 +538,9 @@ public class AgentUnifiedServiceImplTest {
     public void test_export_agent_log_success() {
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
         Response response = PowerMockito.mock(Response.class);
-        PowerMockito.when(agentUnifiedRestApi.exportAgentLog(any(), anyString(), anyLong())).thenReturn(response);
+        when(agentUnifiedRestApi.exportAgentLog(any(), anyString(), anyLong())).thenReturn(response);
         Response rsp = agentUnifiedService.exportAgentLog("1.1.1.1", 430, "123", 300);
-        Assert.assertNotNull(rsp);
+        assertNotNull(rsp);
     }
 
     /**
@@ -563,9 +622,9 @@ public class AgentUnifiedServiceImplTest {
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
         AgentWwpnInfo wwpnInfo = new AgentWwpnInfo();
         wwpnInfo.setUuid("12313");
-        PowerMockito.when(agentUnifiedRestApi.listWwpn(any())).thenReturn(wwpnInfo);
+        when(agentUnifiedRestApi.listWwpn(any())).thenReturn(wwpnInfo);
         AgentWwpnInfo res = agentUnifiedService.listWwpn("1.1.1.1", 430, null);
-        Assert.assertEquals("12313", res.getUuid());
+        assertEquals("12313", res.getUuid());
     }
 
     /**
@@ -582,7 +641,7 @@ public class AgentUnifiedServiceImplTest {
             agentUnifiedService.listWwpn("1.1.1.1", 430, null);
             Assert.fail();
         } catch (LegoCheckedException e) {
-            Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, e.getErrorCode());
+            assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, e.getErrorCode());
         }
     }
 
@@ -597,9 +656,9 @@ public class AgentUnifiedServiceImplTest {
         AgentWwpnInfo wwpnInfo = new AgentWwpnInfo();
         wwpnInfo.setUuid("123123");
         AgentIqnValidateRequest agentIqnValidateRequest = new AgentIqnValidateRequest();
-        PowerMockito.when(agentUnifiedRestApi.getIqnInfoList(any(), any())).thenReturn(wwpnInfo);
+        when(agentUnifiedRestApi.getIqnInfoList(any(), any())).thenReturn(wwpnInfo);
         AgentWwpnInfo res = agentUnifiedService.getIqnInfoList("1.1.1.1", 430, agentIqnValidateRequest);
-        Assert.assertEquals("123123", res.getUuid());
+        assertEquals("123123", res.getUuid());
     }
 
     /**
@@ -614,9 +673,9 @@ public class AgentUnifiedServiceImplTest {
         List<String> iqns = new ArrayList<>();
         iqns.add("iqn");
         agentWwpnInfo.setWwpns(iqns);
-        PowerMockito.when(agentUnifiedRestApi.scanSanClientIqnInfo(any())).thenReturn(agentWwpnInfo);
+        when(agentUnifiedRestApi.scanSanClientIqnInfo(any())).thenReturn(agentWwpnInfo);
         AgentWwpnInfo res = agentUnifiedService.scanSanClientIqnInfo("1.1.1.1", 430);
-        Assert.assertEquals("iqn", res.getWwpns().get(0));
+        assertEquals("iqn", res.getWwpns().get(0));
     }
 
     /**
@@ -629,9 +688,9 @@ public class AgentUnifiedServiceImplTest {
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
         AgentBaseDto agentBaseDto = new AgentBaseDto();
         agentBaseDto.setErrorCode("111");
-        PowerMockito.when(agentUnifiedRestApi.reScan(any())).thenReturn(agentBaseDto);
+        when(agentUnifiedRestApi.reScan(any())).thenReturn(agentBaseDto);
         AgentBaseDto res = agentUnifiedService.reScan("1.1.1.1", 430);
-        Assert.assertEquals("111", res.getErrorCode());
+        assertEquals("111", res.getErrorCode());
     }
 
     /**
@@ -648,7 +707,7 @@ public class AgentUnifiedServiceImplTest {
             agentUnifiedService.reScan("1.1.1.1", 430);
             Assert.fail();
         } catch (LegoCheckedException e) {
-            Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, e.getErrorCode());
+            assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, e.getErrorCode());
         }
     }
 
@@ -662,9 +721,9 @@ public class AgentUnifiedServiceImplTest {
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
         GetClusterEsnReq mockRsp = new GetClusterEsnReq();
         mockRsp.setEsn("esn");
-        PowerMockito.when(agentUnifiedRestApi.getClusterEsn(any())).thenReturn(mockRsp);
+        when(agentUnifiedRestApi.getClusterEsn(any())).thenReturn(mockRsp);
         String esn = agentUnifiedService.queryRelatedClusterEsnByAgent("1.1.1.1", 430);
-        Assert.assertEquals("esn", esn);
+        assertEquals("esn", esn);
     }
 
     /**
@@ -680,7 +739,7 @@ public class AgentUnifiedServiceImplTest {
                 "Connect Timeout",
                 Request.create(Request.HttpMethod.GET, "", Collections.emptyMap(), new byte[0],
                         StandardCharsets.UTF_8, new RequestTemplate()), new byte[0], new HashMap<>());
-        PowerMockito.when(agentUnifiedRestApi.getClusterEsn(any())).thenThrow(connectTimeoutException);
+        when(agentUnifiedRestApi.getClusterEsn(any())).thenThrow(connectTimeoutException);
         Assertions.assertThrows(LegoCheckedException.class,
                 () -> agentUnifiedService.queryRelatedClusterEsnByAgent("1.1.1.1", 430));
     }
@@ -695,7 +754,7 @@ public class AgentUnifiedServiceImplTest {
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
         AgentUpdateResponse response = new AgentUpdateResponse();
         response.setRevStatus(1);
-        PowerMockito.when(agentUnifiedRestApi.modifyPlugin(any(), any())).thenReturn(response);
+        when(agentUnifiedRestApi.modifyPlugin(any(), any())).thenReturn(response);
         UpdateAgentPluginTypeReq req = buildUpdatePluginTypeRequest();
         assertThatNoException().isThrownBy(() -> agentUnifiedService.modifyPluginType("1.1.1.1", 430, req));
     }
@@ -723,7 +782,7 @@ public class AgentUnifiedServiceImplTest {
         UpdateAgentPluginTypeReq req = buildUpdatePluginTypeRequest();
         LegoCheckedException exception = Assert.assertThrows(LegoCheckedException.class,
             () -> agentUnifiedService.modifyPluginType("1.1.1.1", 430, req));
-        Assert.assertEquals(exception.getMessage(), errorMsg);
+        assertEquals(exception.getMessage(), errorMsg);
         PowerMockito.doThrow(FeignException.errorStatus("modifyPluginType", Response.builder()
             .status(500)
             .reason("message error")
@@ -734,7 +793,7 @@ public class AgentUnifiedServiceImplTest {
             .build())).when(agentUnifiedRestApi).modifyPlugin(any(), any());
         exception = Assert.assertThrows(LegoCheckedException.class,
             () -> agentUnifiedService.modifyPluginType("1.1.1.1", 430, req));
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, exception.getErrorCode());
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, exception.getErrorCode());
     }
 
     /**
@@ -747,7 +806,7 @@ public class AgentUnifiedServiceImplTest {
         ReflectionTestUtils.setField(agentUnifiedService, "agentUnifiedRestApi", agentUnifiedRestApi);
         AgentUpdatePluginTypeResult response = new AgentUpdatePluginTypeResult();
         response.setModifyStatus(1);
-        PowerMockito.when(agentUnifiedRestApi.getModifyPluginTypeResult(any())).thenReturn(response);
+        when(agentUnifiedRestApi.getModifyPluginTypeResult(any())).thenReturn(response);
         assertThatNoException().isThrownBy(() -> agentUnifiedService.getModifyPluginTypeResult("1.1.1.1", 430));
     }
 
@@ -764,7 +823,7 @@ public class AgentUnifiedServiceImplTest {
         PowerMockito.doThrow(new LegoCheckedException(errorMsg)).when(agentUnifiedRestApi).getModifyPluginTypeResult(any());
         LegoCheckedException exception = Assert.assertThrows(LegoCheckedException.class,
             () -> agentUnifiedService.getModifyPluginTypeResult("1.1.1.1", 430));
-        Assert.assertEquals(exception.getMessage(), errorMsg);
+        assertEquals(exception.getMessage(), errorMsg);
         PowerMockito.doThrow(FeignException.errorStatus("modifyPluginType", Response.builder()
             .status(500)
             .reason("message error")
@@ -775,7 +834,7 @@ public class AgentUnifiedServiceImplTest {
             .build())).when(agentUnifiedRestApi).getModifyPluginTypeResult(any());
         exception = Assert.assertThrows(LegoCheckedException.class,
             () -> agentUnifiedService.getModifyPluginTypeResult("1.1.1.1", 430));
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, exception.getErrorCode());
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, exception.getErrorCode());
     }
 
     /**
@@ -814,9 +873,9 @@ public class AgentUnifiedServiceImplTest {
         supportPluginDto.setPluginName("VirtualizationPlugin");
         supportPluginDto.setPluginVersion("1.0.0");
         supportPlugins.add(supportPluginDto);
-        PowerMockito.when(agentUnifiedRestApi.getPlugins(any())).thenReturn(plugins);
+        when(agentUnifiedRestApi.getPlugins(any())).thenReturn(plugins);
         List<ProtectedResource> resources = agentUnifiedService.getPlugins("127.0.0.1", 5985);
-        Assert.assertEquals(resources.size(), 1);
+        assertEquals(resources.size(), 1);
     }
 
     /**
@@ -842,11 +901,11 @@ public class AgentUnifiedServiceImplTest {
 
         AgentBaseDto mockAgentBaseDto = new AgentBaseDto();
         mockAgentBaseDto.setErrorCode("0");
-        PowerMockito.when(agentUnifiedRestApi.pushCertToAgent(any(), any())).thenReturn(mockAgentBaseDto);
+        when(agentUnifiedRestApi.pushCertToAgent(any(), any())).thenReturn(mockAgentBaseDto);
 
         AgentBaseDto agentBaseDto = agentUnifiedService.pushCertToAgent(protectedEnvironment, any());
 
-        Assert.assertEquals("0", agentBaseDto.getErrorCode());
+        assertEquals("0", agentBaseDto.getErrorCode());
     }
 
     /**
@@ -875,14 +934,14 @@ public class AgentUnifiedServiceImplTest {
 
         ActionResult actionResult = new ActionResult();
         actionResult.setCode(1);
-        PowerMockito.when(agentUnifiedRestApi.pushCertToAgent(any(), any()))
+        when(agentUnifiedRestApi.pushCertToAgent(any(), any()))
             .thenThrow(new LegoCheckedException(CommonErrorCode.OPERATION_FAILED,
             JSONObject.writeValueAsString(actionResult)));
 
         AgentBaseDto agentBaseDto = agentUnifiedService.pushCertToAgent(protectedEnvironment, any());
 
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
-        Assert.assertEquals(1, JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
+        assertEquals(1, JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
     }
 
     /**
@@ -917,15 +976,15 @@ public class AgentUnifiedServiceImplTest {
             Request.create(Request.HttpMethod.GET, "", Collections.emptyMap(), new byte[0], StandardCharsets.UTF_8,
                 new RequestTemplate()), new byte[0], new HashMap<>());
 
-        PowerMockito.when(agentUnifiedRestApi.pushCertToAgent(any(), any()))
+        when(agentUnifiedRestApi.pushCertToAgent(any(), any()))
             .thenThrow(connectTimeoutException);
 
         AgentBaseDto agentBaseDto = agentUnifiedService.pushCertToAgent(protectedEnvironment, any());
 
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR,
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR,
             JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
-        Assert.assertEquals("Connect Timeout",
+        assertEquals("Connect Timeout",
             JSONObject.fromObject(agentBaseDto.getErrorMessage()).getString("message"));
     }
 
@@ -952,12 +1011,12 @@ public class AgentUnifiedServiceImplTest {
 
         AgentBaseDto mockAgentBaseDto = new AgentBaseDto();
         mockAgentBaseDto.setErrorCode("0");
-        PowerMockito.when(agentUnifiedRestApi.notifyAgentUpdateCert(any(), any())).thenReturn(mockAgentBaseDto);
+        when(agentUnifiedRestApi.notifyAgentUpdateCert(any(), any())).thenReturn(mockAgentBaseDto);
 
         AgentBaseDto agentBaseDto = agentUnifiedService.notifyAgentUpdateCert(protectedEnvironment,
             new PushUpdateCertToAgentReq());
 
-        Assert.assertEquals("0", agentBaseDto.getErrorCode());
+        assertEquals("0", agentBaseDto.getErrorCode());
     }
 
     /**
@@ -986,15 +1045,15 @@ public class AgentUnifiedServiceImplTest {
 
         ActionResult actionResult = new ActionResult();
         actionResult.setCode(1);
-        PowerMockito.when(agentUnifiedRestApi.notifyAgentUpdateCert(any(), any()))
+        when(agentUnifiedRestApi.notifyAgentUpdateCert(any(), any()))
             .thenThrow(new LegoCheckedException(CommonErrorCode.OPERATION_FAILED,
                 JSONObject.writeValueAsString(actionResult)));
 
         AgentBaseDto agentBaseDto = agentUnifiedService.notifyAgentUpdateCert(protectedEnvironment,
             new PushUpdateCertToAgentReq());
 
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
-        Assert.assertEquals(1, JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
+        assertEquals(1, JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
     }
 
     /**
@@ -1029,16 +1088,16 @@ public class AgentUnifiedServiceImplTest {
             Request.create(Request.HttpMethod.GET, "", Collections.emptyMap(), new byte[0], StandardCharsets.UTF_8,
                 new RequestTemplate()), new byte[0], new HashMap<>());
 
-        PowerMockito.when(agentUnifiedRestApi.notifyAgentUpdateCert(any(), any()))
+        when(agentUnifiedRestApi.notifyAgentUpdateCert(any(), any()))
             .thenThrow(connectTimeoutException);
 
         AgentBaseDto agentBaseDto = agentUnifiedService.notifyAgentUpdateCert(protectedEnvironment,
             new PushUpdateCertToAgentReq());
 
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR,
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR,
             JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
-        Assert.assertEquals("Connect Timeout",
+        assertEquals("Connect Timeout",
             JSONObject.fromObject(agentBaseDto.getErrorMessage()).getString("message"));
     }
 
@@ -1065,12 +1124,12 @@ public class AgentUnifiedServiceImplTest {
 
         AgentBaseDto mockAgentBaseDto = new AgentBaseDto();
         mockAgentBaseDto.setErrorCode("0");
-        PowerMockito.when(agentUnifiedRestApi.notifyAgentDeleteOldCert(any(), any())).thenReturn(mockAgentBaseDto);
+        when(agentUnifiedRestApi.notifyAgentDeleteOldCert(any(), any())).thenReturn(mockAgentBaseDto);
 
         AgentBaseDto agentBaseDto = agentUnifiedService.notifyAgentDeleteOldCert(protectedEnvironment,
             new PushUpdateCertToAgentReq());
 
-        Assert.assertEquals("0", agentBaseDto.getErrorCode());
+        assertEquals("0", agentBaseDto.getErrorCode());
     }
 
     /**
@@ -1099,15 +1158,15 @@ public class AgentUnifiedServiceImplTest {
 
         ActionResult actionResult = new ActionResult();
         actionResult.setCode(1);
-        PowerMockito.when(agentUnifiedRestApi.notifyAgentDeleteOldCert(any(), any()))
+        when(agentUnifiedRestApi.notifyAgentDeleteOldCert(any(), any()))
             .thenThrow(new LegoCheckedException(CommonErrorCode.OPERATION_FAILED,
                 JSONObject.writeValueAsString(actionResult)));
 
         AgentBaseDto agentBaseDto = agentUnifiedService.notifyAgentDeleteOldCert(protectedEnvironment,
             new PushUpdateCertToAgentReq());
 
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
-        Assert.assertEquals(1, JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
+        assertEquals(1, JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
     }
 
     /**
@@ -1142,16 +1201,16 @@ public class AgentUnifiedServiceImplTest {
             Request.create(Request.HttpMethod.GET, "", Collections.emptyMap(), new byte[0], StandardCharsets.UTF_8,
                 new RequestTemplate()), new byte[0], new HashMap<>());
 
-        PowerMockito.when(agentUnifiedRestApi.notifyAgentDeleteOldCert(any(), any()))
+        when(agentUnifiedRestApi.notifyAgentDeleteOldCert(any(), any()))
             .thenThrow(connectTimeoutException);
 
         AgentBaseDto agentBaseDto = agentUnifiedService.notifyAgentDeleteOldCert(protectedEnvironment,
             new PushUpdateCertToAgentReq());
 
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR,
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR,
             JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
-        Assert.assertEquals("Connect Timeout",
+        assertEquals("Connect Timeout",
             JSONObject.fromObject(agentBaseDto.getErrorMessage()).getString("message"));
     }
 
@@ -1178,12 +1237,12 @@ public class AgentUnifiedServiceImplTest {
 
         AgentBaseDto mockAgentBaseDto = new AgentBaseDto();
         mockAgentBaseDto.setErrorCode("0");
-        PowerMockito.when(agentUnifiedRestApi.notifyAgentFallbackCert(any(), any())).thenReturn(mockAgentBaseDto);
+        when(agentUnifiedRestApi.notifyAgentFallbackCert(any(), any())).thenReturn(mockAgentBaseDto);
 
         AgentBaseDto agentBaseDto = agentUnifiedService.notifyAgentFallbackCert(protectedEnvironment,
             new PushUpdateCertToAgentReq());
 
-        Assert.assertEquals("0", agentBaseDto.getErrorCode());
+        assertEquals("0", agentBaseDto.getErrorCode());
     }
 
     /**
@@ -1212,15 +1271,15 @@ public class AgentUnifiedServiceImplTest {
 
         ActionResult actionResult = new ActionResult();
         actionResult.setCode(1);
-        PowerMockito.when(agentUnifiedRestApi.notifyAgentFallbackCert(any(), any()))
+        when(agentUnifiedRestApi.notifyAgentFallbackCert(any(), any()))
             .thenThrow(new LegoCheckedException(CommonErrorCode.OPERATION_FAILED,
                 JSONObject.writeValueAsString(actionResult)));
 
         AgentBaseDto agentBaseDto = agentUnifiedService.notifyAgentFallbackCert(protectedEnvironment,
             new PushUpdateCertToAgentReq());
 
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
-        Assert.assertEquals(1, JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
+        assertEquals(1, JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
     }
 
     /**
@@ -1255,16 +1314,16 @@ public class AgentUnifiedServiceImplTest {
             Request.create(Request.HttpMethod.GET, "", Collections.emptyMap(), new byte[0], StandardCharsets.UTF_8,
                 new RequestTemplate()), new byte[0], new HashMap<>());
 
-        PowerMockito.when(agentUnifiedRestApi.notifyAgentFallbackCert(any(), any()))
+        when(agentUnifiedRestApi.notifyAgentFallbackCert(any(), any()))
             .thenThrow(connectTimeoutException);
 
         AgentBaseDto agentBaseDto = agentUnifiedService.notifyAgentFallbackCert(protectedEnvironment,
             new PushUpdateCertToAgentReq());
 
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
-        Assert.assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR,
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR, Long.parseLong(agentBaseDto.getErrorCode()));
+        assertEquals(CommonErrorCode.AGENT_NETWORK_ERROR,
             JSONObject.fromObject(agentBaseDto.getErrorMessage()).getLong("code"));
-        Assert.assertEquals("Connect Timeout",
+        assertEquals("Connect Timeout",
             JSONObject.fromObject(agentBaseDto.getErrorMessage()).getString("message"));
     }
 }

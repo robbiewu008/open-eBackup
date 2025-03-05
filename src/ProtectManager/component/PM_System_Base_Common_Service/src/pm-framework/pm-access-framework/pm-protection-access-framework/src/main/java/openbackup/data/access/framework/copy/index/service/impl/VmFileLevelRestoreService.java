@@ -185,6 +185,7 @@ public class VmFileLevelRestoreService implements IvmFileLevelRestoreService {
         destInfo.setVmIp(parameterMap.get("VM_IP"));
         destInfo.setPassword(parameterMap.get("PASSWORD"));
         destInfo.setPort(parameterMap.get("PORT"));
+        destInfo.setTargetPath(parameterMap.get("TARGET_PATH"));
         return destInfo;
     }
 

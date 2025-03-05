@@ -204,7 +204,12 @@ public enum JobTypeEnum {
     /**
      * agent修改容器前端地址
      */
-    PROTECT_AGENT_UPDATE_CONTAINER_IP("protect_agent_update_backup_service_ip");
+    PROTECT_AGENT_UPDATE_CONTAINER_IP("protect_agent_update_backup_service_ip"),
+
+    /**
+     * 保存ntp服务器地址的任务的type
+     */
+    UPDATE_NTP_CONFIG("UpdateNTPConfig");
 
     private final String value;
 

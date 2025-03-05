@@ -26,4 +26,9 @@ public final class ResourceGroupConstant {
      * 每种资源类型资源组数量上限
      */
     public static final int EACH_SUBTYPE_RESOURCE_GROUP_COUNT_MAX_LIMIT = 2000;
+
+    /**
+     * 按规则过滤类型资源组数量上限
+     */
+    public static final int RULE_RESOURCE_GROUP_COUNT_MAX_LIMIT = 100;
 }

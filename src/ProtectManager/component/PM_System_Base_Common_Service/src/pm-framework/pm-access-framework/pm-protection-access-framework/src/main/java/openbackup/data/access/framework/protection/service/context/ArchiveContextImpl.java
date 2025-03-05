@@ -12,6 +12,9 @@
 */
 package openbackup.data.access.framework.protection.service.context;
 
+import com.huawei.oceanprotect.sla.sdk.api.SlaQueryService;
+import com.huawei.oceanprotect.sla.sdk.dto.SlaDto;
+
 import openbackup.data.access.framework.protection.service.archive.ArchiveContext;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -31,8 +34,11 @@ import java.util.Optional;
 public class ArchiveContextImpl implements ArchiveContext {
     private final Map<String, String> contextMap;
 
-    public ArchiveContextImpl(Map<String, String> contextMap) {
+    private final SlaQueryService slaQueryService;
+
+    public ArchiveContextImpl(Map<String, String> contextMap, SlaQueryService slaQueryService) {
         this.contextMap = contextMap;
+        this.slaQueryService = slaQueryService;
     }
 
     @Override
@@ -59,12 +65,13 @@ public class ArchiveContextImpl implements ArchiveContext {
 
     @Override
     public String getSlaJson() {
-        return getContextValue(contextMap, ArchiveContext.SLA_KEY, "sla can not find in context");
+        SlaDto sla = slaQueryService.querySlaByName(getSlaName());
+        return JSONObject.writeValueAsString(sla);
     }
 
     @Override
     public String getSlaName() {
-        return JSONObject.fromObject(this.getSlaJson()).getString(ArchiveContext.SLA_NAME_KEY);
+        return getContextValue(contextMap, ArchiveContext.SLA_NAME_KEY, "sla name can not find in context");
     }
 
     @Override

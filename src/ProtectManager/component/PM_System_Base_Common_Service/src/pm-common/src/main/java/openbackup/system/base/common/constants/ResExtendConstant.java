@@ -16,7 +16,7 @@ package openbackup.system.base.common.constants;
  * Resources 扩展表常量
  *
  */
-public class ResExtendConstant {
+public class ResExtendConstant extends Constants {
     /**
      * 可用的代理domain的ip
      */
@@ -46,4 +46,10 @@ public class ResExtendConstant {
      * agent可连通的IP
      */
     public static final String AGENT_CONNECTED_IP = "agent_connected_ip";
+
+
+    /**
+     * agent是否开启源端重删
+     */
+    public static final String SRC_DEDUPTION = "src_deduption";
 }

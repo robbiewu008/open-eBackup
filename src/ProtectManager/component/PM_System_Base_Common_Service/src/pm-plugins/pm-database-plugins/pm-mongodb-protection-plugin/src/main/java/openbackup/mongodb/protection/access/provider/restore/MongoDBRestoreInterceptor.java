@@ -108,7 +108,8 @@ public class MongoDBRestoreInterceptor extends AbstractDbRestoreInterceptorProvi
         setTargetObject(task);
         // 设置速度统计方式为UBC
         TaskUtil.setRestoreTaskSpeedStatisticsEnum(task, SpeedStatisticsEnum.UBC);
-
+        // e6000适配
+        setCopyRestoreNeedWritable(task);
         // 设置恢复模式
         ProtectionTaskUtils.setRestoreMode(task, copyRestApi);
         // 设置目标环境扩展参数

@@ -109,6 +109,11 @@ public class CreateValidatorTest {
                 return false;
             }
 
+            @Override
+            public boolean isEnableCustomRole() {
+                return false;
+            }
+
             {
 
             }},expression,standardEvaluationContext);

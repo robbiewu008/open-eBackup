@@ -37,6 +37,11 @@ public final class CopyIndexConstants {
     public static final String SUCCESS = "success";
 
     /**
+     * response flag of abort
+     */
+    public static final String ABORT = "abort";
+
+    /**
      * index json file path
      */
     public static final String COPY_INDEX_FILE_PATH = "/tmp/share/rfi_files/";

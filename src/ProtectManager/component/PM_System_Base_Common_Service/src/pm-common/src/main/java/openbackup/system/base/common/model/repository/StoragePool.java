@@ -67,6 +67,13 @@ public class StoragePool {
     private BigDecimal userConsumedCapacity;
 
     /**
+     * 已使用订阅容量。
+     * 单位：sectors
+     */
+    @JsonProperty("USEDSUBSCRIBEDCAPACITY")
+    private BigDecimal userSubScribedCapacity;
+
+    /**
      * 父对象ID
      */
     @JsonProperty("PARENTID")
@@ -91,10 +98,22 @@ public class StoragePool {
     private String useRconsumedCapacityPercentage;
 
     /**
-     * 已用容量阈值
+     * 容量告警阈值
      */
     @JsonProperty("USERCONSUMEDCAPACITYTHRESHOLD")
     private String useRconsumedCapacityThreshold;
+
+    /**
+     * 容量严重不足告警阈值
+     */
+    @JsonProperty("MAJORTHRESHOLD")
+    private int majorThreshold;
+
+    /**
+     * 即将耗尽容量阈值
+     */
+    @JsonProperty("ENDINGUPTHRESHOLD")
+    private int endingUpThreshold;
 
     /**
      * 数据缩减比

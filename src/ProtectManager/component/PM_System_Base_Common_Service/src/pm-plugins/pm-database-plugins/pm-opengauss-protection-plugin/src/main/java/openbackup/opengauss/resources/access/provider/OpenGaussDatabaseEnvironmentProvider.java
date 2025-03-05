@@ -12,7 +12,10 @@
 */
 package openbackup.opengauss.resources.access.provider;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.util.EnvironmentParamCheckUtil;
@@ -28,6 +31,7 @@ import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
+import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
@@ -35,6 +39,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceBase;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceCheckContext;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConnectionCheckProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceQueryParams;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.util.ResourceCheckContextUtil;
 import openbackup.database.base.plugin.common.DatabaseConstants;
@@ -45,10 +50,18 @@ import openbackup.opengauss.resources.access.constants.OpenGaussConstants;
 import openbackup.opengauss.resources.access.enums.OpenGaussClusterStateEnum;
 import openbackup.opengauss.resources.access.util.OpenGaussClusterUtil;
 import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.model.PagingParamRequest;
+import openbackup.system.base.common.model.SortingParamRequest;
+import openbackup.system.base.common.model.job.JobBo;
+import openbackup.system.base.common.model.job.request.QueryJobRequest;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
+import openbackup.system.base.query.PageQueryOperator;
+import openbackup.system.base.sdk.job.model.JobStatusEnum;
+import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
@@ -58,6 +71,7 @@ import openbackup.system.base.util.StreamUtil;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.curator.shaded.com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -65,6 +79,7 @@ import org.springframework.util.CollectionUtils;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +97,10 @@ import java.util.stream.Stream;
 @Component
 @Slf4j
 public class OpenGaussDatabaseEnvironmentProvider extends DatabaseEnvironmentProvider {
+    private static final int PAGE_SIZE = 100;
+
+    private static final String COMMA = ",";
+
     private final ResourceService resourceService;
 
     private final JsonSchemaValidator jsonSchemaValidator;
@@ -89,6 +108,9 @@ public class OpenGaussDatabaseEnvironmentProvider extends DatabaseEnvironmentPro
     private ProtectedEnvironmentService environmentService;
 
     private final AgentUnifiedService agentUnifiedService;
+
+    @Autowired
+    private JobService jobService;
 
     /**
      * 构造器注入
@@ -165,7 +187,52 @@ public class OpenGaussDatabaseEnvironmentProvider extends DatabaseEnvironmentPro
         String appType = ResourceSubTypeEnum.OPENGAUSS.getType();
         AgentDetailDto response = agentUnifiedService.getDetail(appType, endpoint.getIp(), endpoint.getPort(),
             openGaussRequest);
-        return convertProtectedResources(agentResource, requestUri, response, environment.getPath());
+        List<ProtectedResource> protectedResources = convertProtectedResources(agentResource, requestUri, response,
+            environment.getPath());
+        confirmDelete(protectedResources);
+        return protectedResources;
+    }
+
+    private void confirmDelete(List<ProtectedResource> protectedResources) {
+        List<String> uuids = protectedResources.stream().map(ProtectedResource::getUuid).collect(Collectors.toList());
+        log.info("query resource id: {}", String.join(COMMA, uuids));
+
+        // 查询恢复中资源ID
+        QueryJobRequest queryJobRequest = new QueryJobRequest();
+        queryJobRequest.setTypes(Collections.singletonList(JobTypeEnum.RESTORE.getValue()));
+        queryJobRequest.setStatusList(Collections.singletonList(JobStatusEnum.RUNNING.name()));
+        queryJobRequest.setSourceTypes(Arrays.asList(ResourceSubTypeEnum.OPENGAUSS_INSTANCE.getType(),
+            ResourceSubTypeEnum.OPENGAUSS_DATABASE.getType()));
+        PagingParamRequest pagingParamRequest = new PagingParamRequest();
+        pagingParamRequest.setPageSize(PAGE_SIZE);
+        SortingParamRequest sortingParamRequest = new SortingParamRequest();
+        List<JobBo> jobs = jobService.queryJobs(queryJobRequest, pagingParamRequest, sortingParamRequest).getRecords();
+        // 恢复中资源ID
+        List<String> restoringUuids = jobs.stream().map(JobBo::getSourceId).distinct().collect(Collectors.toList());
+        for (String restoringUuid : restoringUuids) {
+            // 如果恢复中资源id，不在扫描到的插件中，加回来
+            if (!uuids.contains(restoringUuid)) {
+                log.info("restoring resource {} not in scan results", restoringUuid);
+                addBack(restoringUuid, protectedResources);
+            }
+        }
+    }
+
+    private void addBack(String uuid, List<ProtectedResource> protectedResources) {
+        Optional<ProtectedResource> restoringResource = resourceService.getResourceById(uuid);
+        restoringResource.ifPresent(protectedResources::add);
+
+        // 根据id查询出文件系统的真实id
+        Map<String, Object> conditions = ImmutableMap.of("uuid",
+            Lists.newArrayList(Collections.singletonList(PageQueryOperator.EQ.getValue()), uuid));
+        ResourceQueryParams context = new ResourceQueryParams();
+        context.setConditions(conditions);
+        PageListResponse<ProtectedResource> protectedResourcePageRes = resourceService.query(context);
+        List<ProtectedResource> records = protectedResourcePageRes.getRecords();
+        if (!CollectionUtils.isEmpty(records)) {
+            ProtectedResource protectedResource = records.get(0);
+            protectedResources.add(protectedResource);
+        }
     }
 
     private List<ProtectedResource> convertProtectedResources(ProtectedResource agent, URI requestUri,
@@ -233,15 +300,6 @@ public class OpenGaussDatabaseEnvironmentProvider extends DatabaseEnvironmentPro
 
         // uuid为空，注册集群
         if (StringUtils.isEmpty(environment.getUuid())) {
-            String environmentId = generateUniqueUuid(clusterInfo, environment.getAuth().getAuthKey(),
-                environment.getDependencies().get(DatabaseConstants.AGENTS));
-            log.info("open gauss environment name: {}, environmentId :{}", environment.getName(), environmentId);
-            Optional<ProtectedResource> resourceCluster = resourceService.getResourceById(environmentId);
-            if (resourceCluster.isPresent()) {
-                throw new LegoCheckedException(CommonErrorCode.CLUSTER_NODE_IS_REGISTERED,
-                    "The selected node has been registered.");
-            }
-            environment.setUuid(environmentId);
             List<String> endpoints = clusterInfo.getNodes()
                 .stream()
                 .filter(Objects::nonNull)
@@ -252,6 +310,22 @@ public class OpenGaussDatabaseEnvironmentProvider extends DatabaseEnvironmentPro
                 throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR,
                     "The cluster endpoint address does not exist.");
             }
+            // 检查endpoint是否被其他集群注册过
+            if (checkEndpointRegistered(endpoints)) {
+                log.error("open gauss environment name: {} have endpoints registered", environment.getName());
+                throw new LegoCheckedException(CommonErrorCode.CLUSTER_NODE_IS_REGISTERED,
+                        "The selected node has been registered.");
+            }
+
+            String environmentId = generateUniqueUuid(clusterInfo, environment.getAuth().getAuthKey(),
+                    environment.getDependencies().get(DatabaseConstants.AGENTS));
+            log.info("open gauss environment name: {}, environmentId :{}", environment.getName(), environmentId);
+            Optional<ProtectedResource> resourceCluster = resourceService.getResourceById(environmentId);
+            if (resourceCluster.isPresent()) {
+                throw new LegoCheckedException(CommonErrorCode.CLUSTER_NODE_IS_REGISTERED,
+                        "The selected node has been registered.");
+            }
+            environment.setUuid(environmentId);
             // 设置环境的endpoint，创建保保护的时候，会校验环境的ip信息，不传会报错。
             environment.setEndpoint(endpoints.get(0));
             String clusterEndpoint = endpoints.stream().sorted().collect(Collectors.joining(","));
@@ -261,6 +335,8 @@ public class OpenGaussDatabaseEnvironmentProvider extends DatabaseEnvironmentPro
         environment.setLinkStatus(String.valueOf(LinkStatusEnum.ONLINE.getStatus()));
         // 更新环境的扩展信息
         OpenGaussClusterUtil.buildProtectedEnvironment(environment, clusterInfo);
+        // 更新环境扫描资源频率
+        environment.setScanInterval(OpenGaussConstants.OPENGAUSS_SCAN_INTERVAL);
     }
 
     private void checkClusterCount() {
@@ -359,6 +435,7 @@ public class OpenGaussDatabaseEnvironmentProvider extends DatabaseEnvironmentPro
 
     private void checkHostStatus(ProtectedEnvironment environment) {
         // 获取离线的主机信息
+        log.info("Check Host Status, uuid: {},", environment.getUuid());
         List<ProtectedEnvironment> offlineAgentsEnvironments = environment.getDependencies()
             .get(DatabaseConstants.AGENTS)
             .stream()
@@ -403,5 +480,21 @@ public class OpenGaussDatabaseEnvironmentProvider extends DatabaseEnvironmentPro
         newProtectedEnv.setUuid(environment.getUuid());
         newProtectedEnv.setExtendInfo(extendInfo);
         resourceService.updateSourceDirectly(Stream.of(newProtectedEnv).collect(Collectors.toList()));
+    }
+
+    private boolean checkEndpointRegistered(List<String> endpoints) {
+        Map<String, Object> filter = new HashMap<>();
+        filter.put("type", ResourceTypeEnum.DATABASE.getType());
+        filter.put("subType", ResourceSubTypeEnum.OPENGAUSS.getType());
+        filter.put("sourceType", "register");
+        String clusterEndpoint = endpoints.stream().sorted().collect(Collectors.joining(","));
+        filter.put("path", clusterEndpoint);
+        List<ProtectedResource> existingResources = resourceService.query(0, LegoNumberConstant.TWENTY, filter)
+                .getRecords();
+        if (!existingResources.isEmpty()) {
+            log.warn("Exists opengauss environment with endpoint: {}", endpoints);
+            return true;
+        }
+        return false;
     }
 }

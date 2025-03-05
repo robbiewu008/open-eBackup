@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.bean.NetWorkRouteInfo;
 
 /**
  * 绑定端口
@@ -77,4 +78,18 @@ public class PortRouteInfo {
      */
     @JsonProperty("TYPE")
     private RouteType routeType;
+
+    /**
+     * 转换成 NetWorkRouteInfo 对象
+     *
+     * @return 转换后的 NetWorkRouteInfo 对象
+     */
+    public NetWorkRouteInfo convertToNetWorkRouteInfo() {
+        NetWorkRouteInfo info = new NetWorkRouteInfo();
+        info.setMask(mask);
+        info.setDestination(destination);
+        info.setType(routeType.getRouteType());
+        info.setGateway(gateway);
+        return info;
+    }
 }

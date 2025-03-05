@@ -201,4 +201,14 @@ public class TpopsGaussDBConstant {
      * FALSE字符串
      */
     public static final String FALSE = "false";
+
+    /**
+     * 纳管GaussDb的TPOPS版本
+     */
+    public static final String TPOPS_VERSION = "tpopsVersion";
+
+    /**
+     * 注册项目信息时，密码错误
+     */
+    public static final String TPOPS_PASSWORD_ERROR = "tpops_password_error";
 }

@@ -42,6 +42,7 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.MessageTemplate;
 
 import com.alibaba.fastjson.JSON;
@@ -67,6 +68,7 @@ public class OracleRestoreProviderTest {
     private final OracleSingleRestoreProvider singleProvider = Mockito.mock(OracleSingleRestoreProvider.class);
     private final OracleClusterRestoreProvider clusterProvider = Mockito.mock(OracleClusterRestoreProvider.class);
     private final ResourceService resourceService = Mockito.mock(ResourceService.class);
+    private final DeployTypeService deployTypeService = Mockito.mock(DeployTypeService.class);
 
     private MessageTemplate messageTemplate = Mockito.mock(MessageTemplate.class);
     private EncryptorService encryptorService = Mockito.mock(EncryptorService.class);
@@ -76,7 +78,7 @@ public class OracleRestoreProviderTest {
     @Before
     public void init() {
         provider = new OracleRestoreProvider(copyRestApi, oracleBaseService, singleProvider, clusterProvider,
-                resourceService);
+                resourceService, deployTypeService);
         provider.setEncryptorService(encryptorService);
         provider.setMessageTemplate(messageTemplate);
         provider.setAgentUnifiedService(agentUnifiedService);

@@ -45,9 +45,11 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.OptionalUtil;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -73,6 +75,9 @@ public class GaussDBTRestoreInterceptorProvider extends AbstractDbRestoreInterce
     private final CopyRestApi copyRestApi;
 
     private final SlaQueryService slaQueryService;
+
+    @Autowired
+    private DeployTypeService deployTypeService;
 
     /**
      * Constructor
@@ -152,6 +157,11 @@ public class GaussDBTRestoreInterceptorProvider extends AbstractDbRestoreInterce
         advanceParams.put(GaussDBTConstant.MOUNT_TYPE_KEY, MountTypeEnum.FULL_PATH_MOUNT.getMountType());
         // 支持多任务
         advanceParams.put(DatabaseConstants.MULTI_POST_JOB, Boolean.TRUE.toString());
+        log.info("gaussDBT restore isPacific:{}", deployTypeService.isPacific());
+        if (deployTypeService.isPacific()) {
+            // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+            advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        }
         Optional<ProtectedResource> protectedResourceOptional = resourceService.getResourceById(
             task.getTargetObject().getUuid());
         if (protectedResourceOptional.isPresent()) {

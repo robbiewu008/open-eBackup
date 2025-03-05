@@ -19,6 +19,35 @@ CREATE TABLE if not exists PUBLIC."RESOURCES"
     CONSTRAINT "RESOURCES_pkey" PRIMARY KEY (UUID)
 );
 
+CREATE TABLE public.virtual_resource (
+                                         uuid VARCHAR(64) NOT NULL,
+                                         vm_ip VARCHAR(4096),
+                                         env_ip VARCHAR(256),
+                                         link_status INT,
+                                         capacity INT,
+                                         free_space VARCHAR(32),
+                                         uncommitted VARCHAR(32),
+                                         mo_id VARCHAR(32),
+                                         children VARCHAR(32),
+                                         is_template BOOLEAN,
+                                         alias_type VARCHAR(64),
+                                         alias_value VARCHAR(64),
+                                         os_type VARCHAR(64),
+                                         tags TEXT,
+                                         instance_id VARCHAR(64),
+                                         firmware VARCHAR(64),
+                                         PRIMARY KEY (uuid),
+                                         FOREIGN KEY (uuid) REFERENCES resources(uuid) ON DELETE CASCADE
+);
+
+CREATE TABLE public.t_resource_group_member (
+                                                uuid VARCHAR(64) NOT NULL,
+                                                resource_group_id VARCHAR(64) NOT NULL,
+                                                source_id VARCHAR(64),
+                                                source_sub_type VARCHAR(128),
+                                                PRIMARY KEY (uuid)
+);
+
 CREATE TABLE IF NOT EXISTS PUBLIC."RES_EXTEND_INFO"
 (
     UUID        VARCHAR(64)  NOT NULL,
@@ -68,6 +97,7 @@ CREATE TABLE if not exists PUBLIC."PROTECTED_OBJECT"
     CHAIN_ID VARCHAR(128) NOT NULL,
     CONSISTENT_STATUS VARCHAR(64),
     CONSISTENT_RESULTS VARCHAR(64),
+    RESOURCE_GROUP_ID VARCHAR(64),
     CONSTRAINT "PROTECTED_OBJECT_pkey" PRIMARY KEY (UUID)
 );
 

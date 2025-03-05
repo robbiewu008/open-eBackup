@@ -24,6 +24,7 @@ import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.enums.CopyFormatEnum;
+import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
@@ -49,11 +50,12 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
+import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -113,6 +115,8 @@ public class Db2BackupInterceptorProvider extends AbstractDbBackupInterceptor {
     public BackupTask initialize(BackupTask backupTask) {
         backupTask.setBackupType(getBackupType(backupTask));
 
+        super.setCopyRestoreNeedWritable(backupTask);
+
         // 设置保护环境扩展参数deployType
         setProtectEnvExtendInfo(backupTask);
 
@@ -132,6 +136,9 @@ public class Db2BackupInterceptorProvider extends AbstractDbBackupInterceptor {
 
         // 设置agents
         backupTask.setAgents(getAgentsByInstanceResource(resource));
+
+        // 日志备份加上检查任务类型校验
+        checkIsLogBackup(backupTask);
 
         // 检查所有Agent的状态
         checkAgentsStatus(backupTask);
@@ -182,11 +189,6 @@ public class Db2BackupInterceptorProvider extends AbstractDbBackupInterceptor {
                 backupTask.getTaskId(), backupTask.getProtectObject().getUuid(), backupTask.getBackupType());
             return DatabaseConstants.FULL_BACKUP_TYPE;
         }
-        if (checkBackupTypeIsIntersect(backupTask)) {
-            log.info("Db2 increment and diff backup is intersect. task id: {}, resource id: {}, backup type: {}.",
-                backupTask.getTaskId(), backupTask.getProtectObject().getUuid(), backupTask.getBackupType());
-            return DatabaseConstants.FULL_BACKUP_TYPE;
-        }
         return backupTask.getBackupType();
     }
 
@@ -215,25 +217,6 @@ public class Db2BackupInterceptorProvider extends AbstractDbBackupInterceptor {
             .getString(DatabaseConstants.TABLESPACE_KEY);
         List<String> beforeTablespaceList = Arrays.asList(beforeTable.split(DatabaseConstants.SPLIT_CHAR));
         return !(tablespaceList.containsAll(beforeTablespaceList) && beforeTablespaceList.containsAll(tablespaceList));
-    }
-
-    private boolean checkBackupTypeIsIntersect(BackupTask backupTask) {
-        if (!NOT_INTERSECT_BACKUP_TYPES.contains(backupTask.getBackupType())) {
-            return false;
-        }
-        List<JobBo> resourceJobs = queryProtectionObjectJobs(backupTask);
-        JobBo latestFullBackupJob = getLatestFullBackupJob(resourceJobs);
-        if (latestFullBackupJob == null) {
-            return false;
-        }
-        List<String> backupJobsAfterLatestFull = getBackupJobsAfterLatestFull(resourceJobs, latestFullBackupJob);
-        if (!CollectionUtils.isEmpty(backupJobsAfterLatestFull) && !backupJobsAfterLatestFull.contains(
-            backupTask.getBackupType())) {
-            log.info("db2 backup getBackupType job id: {}, backup type: {}", backupTask.getTaskId(),
-                backupTask.getBackupType());
-            return true;
-        }
-        return false;
     }
 
     private QueryJobRequest buildQueryJobRequest(String resourceId) {
@@ -359,6 +342,50 @@ public class Db2BackupInterceptorProvider extends AbstractDbBackupInterceptor {
                 () -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Protected resource not exist."));
         db2Service.updateHadrDatabaseStatus(BeanTools.copy(protectedResource, TaskResource::new),
             Db2ResourceStatusEnum.NORMAL.getStatus());
+
+        // 如果后置任务失败，不执行删除归档日志
+        if (!ProviderJobStatusEnum.SUCCESS.equals(postBackupTask.getJobStatus())) {
+            log.info("finalize backup job not success");
+            return;
+        }
+        // 获取副本信息
+        CopyInfo copyInfoStr = postBackupTask.getCopyInfo();
+        String copyPropertiesStr = copyInfoStr.getProperties();
+        JSONObject copyProperties = JSONObject.fromObject(copyPropertiesStr);
+        String resourcePropertiesStr = copyInfoStr.getResourceProperties();
+        JSONObject resourceProperties = JSONObject.fromObject(resourcePropertiesStr);
+        // 判断是否开启了归档日志
+        String deleteLog = copyProperties.getString(Db2Constants.DELETELOG);
+        if (VerifyUtil.isEmpty(deleteLog) || Db2Constants.FALSE.equals(deleteLog)) {
+            log.info("finalize delete archive log is false");
+            return;
+        }
+
+        // 获取agent资源id
+        String agent_id = copyProperties.getString(Db2Constants.UUID);
+        // 获取数据库资源id
+        String resourceId = postBackupTask.getProtectedObject().getResourceId();
+        // 组装参数
+        String resource_extendInfoStr = resourceProperties.getString(Db2Constants.EXTENDINFO);
+        JSONObject resource_extendInfo = JSONObject.fromObject(resource_extendInfoStr);
+        String clusterType = resource_extendInfo.getString(Db2Constants.CLUSTERTYPE);
+        String databaseName = copyProperties.getString(Db2Constants.DATABASENAME);
+        String userName = copyProperties.getString(Db2Constants.USERNAME);
+        String cachePath = copyProperties.getString(Db2Constants.CACHEPATH);
+        String sinceTimeStamp = copyProperties.getString(Db2Constants.SINCETIMESTAMP);
+        String endTime = copyProperties.getString(Db2Constants.END_TIME);
+        String beginTime = copyProperties.getString(Db2Constants.BEGIN_TIME);
+
+        HashMap<String, String> extendInfo = new HashMap<>();
+        extendInfo.put(Db2Constants.END_TIME, endTime);
+        extendInfo.put(Db2Constants.BEGIN_TIME, beginTime);
+        extendInfo.put(Db2Constants.DATABASENAME, databaseName);
+        extendInfo.put(Db2Constants.USERNAME, userName);
+        extendInfo.put(Db2Constants.CLUSTERTYPE, clusterType);
+        extendInfo.put(Db2Constants.CACHEPATH, cachePath);
+        extendInfo.put(Db2Constants.SINCETIMESTAMP, sinceTimeStamp);
+        db2Service.deleteLogFromProductEnv(protectedResource, extendInfo, agent_id);
+        log.info("delete archivelog end");
     }
 
     @Override
@@ -370,5 +397,14 @@ public class Db2BackupInterceptorProvider extends AbstractDbBackupInterceptor {
     @Override
     public boolean isSupportDataAndLogParallelBackup(ProtectedResource resource) {
         return true;
+    }
+
+    private void checkIsLogBackup(BackupTask backupTask) {
+        if (DatabaseConstants.LOG_BACKUP_TYPE.equals(backupTask.getBackupType())) {
+            Map<String, String> advanceParams = backupTask.getAdvanceParams();
+            if (MapUtils.getBooleanValue(advanceParams, Db2Constants.AUTO_FULL_BACKUP, false)) {
+                advanceParams.put(Db2Constants.IS_CHECK_BACKUP_JOB_TYPE, "true");
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.copy.mng.util;
 
+import openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
 import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
 import openbackup.system.base.common.utils.JSONObject;
@@ -19,6 +20,8 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -224,6 +227,25 @@ public class CopyUtil {
             return OptionalInt.empty();
         }
         return OptionalInt.of(Integer.parseInt(format.toString()));
+    }
+
+    /**
+     * 根据副本properties获取副本校验状态
+     *
+     * @param copy 副本
+     * @return 副本校验状态
+     */
+    public static String getVerifyStatus(Copy copy) {
+        String properties = copy.getProperties();
+        if (VerifyUtil.isEmpty(properties)) {
+            return StringUtils.EMPTY;
+        }
+        JSONObject jsonObject = JSONObject.fromObject(properties);
+        Object verifyStatus = jsonObject.get(CopyPropertiesKeyConstant.KEY_VERIFY_STATUS);
+        if (verifyStatus == null) {
+            return StringUtils.EMPTY;
+        }
+        return verifyStatus.toString();
     }
 
     /**

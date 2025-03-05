@@ -13,6 +13,7 @@
 package openbackup.antdb.protection.access.provider.backup;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.antdb.protection.access.common.AntDBConstants;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
@@ -60,11 +61,6 @@ public class AntDBBackupInterceptorProvider extends AbstractDbBackupInterceptor 
 
     @Override
     public BackupTask supplyBackupTask(BackupTask backupTask) {
-        Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams()).orElse(new HashMap<>());
-        // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
-        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
-        backupTask.setAdvanceParams(advanceParams);
-
         // 设置部署类型
         setDeployType(backupTask);
 
@@ -79,6 +75,9 @@ public class AntDBBackupInterceptorProvider extends AbstractDbBackupInterceptor 
 
         // 设置速度统计方式为UBC
         TaskUtil.setBackupTaskSpeedStatisticsEnum(backupTask, SpeedStatisticsEnum.UBC);
+
+        // 日志备份加上检查任务类型校验
+        checkIsLogBackup(backupTask);
         return backupTask;
     }
 
@@ -192,5 +191,12 @@ public class AntDBBackupInterceptorProvider extends AbstractDbBackupInterceptor 
     public boolean applicable(String resourceSubType) {
         return Arrays.asList(ResourceSubTypeEnum.ANT_DB_INSTANCE.getType(),
             ResourceSubTypeEnum.ANT_DB_CLUSTER_INSTANCE.getType()).contains(resourceSubType);
+    }
+
+    private void checkIsLogBackup(BackupTask backupTask) {
+        if (DatabaseConstants.LOG_BACKUP_TYPE.equals(backupTask.getBackupType())) {
+            Map<String, String> advanceParams = backupTask.getAdvanceParams();
+            advanceParams.put(AntDBConstants.IS_CHECK_BACKUP_JOB_TYPE, "true");
+        }
     }
 }

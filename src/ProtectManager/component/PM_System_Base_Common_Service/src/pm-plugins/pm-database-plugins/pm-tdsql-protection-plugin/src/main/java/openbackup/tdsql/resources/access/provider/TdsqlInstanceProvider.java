@@ -300,4 +300,10 @@ public class TdsqlInstanceProvider implements ResourceProvider {
         throw new LegoCheckedException(CommonErrorCode.CLUSTER_LINK_STATUS_ERROR,
             "tdsql instance cluster " + clusterEnvironment.getName() + " not online");
     }
+
+    @Override
+    public boolean isSupportIndex() {
+        // Tdsql 支持索引
+        return true;
+    }
 }

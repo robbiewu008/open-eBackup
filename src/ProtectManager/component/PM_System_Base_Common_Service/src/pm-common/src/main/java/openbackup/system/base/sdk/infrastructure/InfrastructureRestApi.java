@@ -196,7 +196,7 @@ public interface InfrastructureRestApi {
             @RequestParam("configMap") String configMap, @RequestParam("configKey") String configKey);
 
     /**
-     * 调用基础设施接口查询configMap中某个key的value信息
+     * 调用基础设施接口查询configMap中所有的value信息
      *
      * @param nameSpace 命令空间
      * @param configMap configMap

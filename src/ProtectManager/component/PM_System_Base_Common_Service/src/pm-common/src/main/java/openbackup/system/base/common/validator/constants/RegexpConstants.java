@@ -265,6 +265,11 @@ public final class RegexpConstants {
      */
     public static final String INSTALL_PATH = "^[^|;&$><`!]*$";
 
+    /**
+     * 只能由字母、数字、中文字符、-、.、_（下划线）组成，不能为空字符串
+     */
+    public static final String BOND_PORT_NAME_REGEXP_PATTERN = "^[\\u4e00-\\u9fa5_a-zA-Z0-9_\\.-]+$";
+
     private RegexpConstants() {
     }
 }

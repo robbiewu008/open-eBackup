@@ -42,8 +42,8 @@ import javax.net.ssl.TrustManagerFactory;
 @Slf4j
 @Component
 public class InternalSslSocketFactory {
-    private static SSLSocketFactory internalTrustingSslSocketFactory;
-    private static final Object LOCK = new Object();
+    private SSLSocketFactory internalTrustingSslSocketFactory;
+    private final Object LOCK = new Object();
 
     /**
      * KeyStore密钥文件

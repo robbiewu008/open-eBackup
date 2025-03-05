@@ -14,6 +14,7 @@ package openbackup.system.base.sdk.job.model;
 
 import com.google.common.collect.Lists;
 
+import lombok.Getter;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.util.EnumUtil;
 
@@ -26,6 +27,7 @@ import java.util.List;
  * 功能描述
  *
  */
+@Getter
 public enum JobStatusEnum {
     /**
      * be queuing
@@ -179,10 +181,6 @@ public enum JobStatusEnum {
      */
     public static JobStatusEnum get(String str, boolean isSilent) {
         return EnumUtil.get(JobStatusEnum.class, JobStatusEnum::name, str, false, isSilent);
-    }
-
-    public int getIndex() {
-        return index;
     }
 
     /**

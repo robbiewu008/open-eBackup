@@ -76,9 +76,6 @@ public class EccOracleSingleRestoreProvider extends AbstractDbRestoreInterceptor
 
         fillDeployType(task);
         fillAdvanceParams(task);
-
-        // 设置仓库
-        updateRepositories(task);
         log.info("End SAP_ON_ORACLE_SINGLE restore interceptor set parameters. Task id: {}.", task.getTaskId());
         return task;
     }

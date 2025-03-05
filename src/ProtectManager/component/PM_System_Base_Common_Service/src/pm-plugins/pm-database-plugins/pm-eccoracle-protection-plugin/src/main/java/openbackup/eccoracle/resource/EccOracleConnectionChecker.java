@@ -86,6 +86,7 @@ public class EccOracleConnectionChecker extends UnifiedResourceConnectionChecker
             }
 
             actionResult = JSONObject.toBean(agentBaseDto.getErrorMessage(), ActionResult.class);
+            actionResult.setCode(Long.parseLong(actionResult.getBodyErr()));
         } catch (LegoCheckedException e) {
             log.error("EccOracleConnectionChecker Fail to generateCheckResult checkApplication.", e);
             actionResult.setCode(CommonErrorCode.NETWORK_CONNECTION_TIMEOUT);

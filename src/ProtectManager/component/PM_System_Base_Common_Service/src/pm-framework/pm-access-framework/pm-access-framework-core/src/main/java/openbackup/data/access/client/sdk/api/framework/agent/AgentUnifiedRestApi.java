@@ -20,6 +20,7 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentIqnValidateRequest;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentWwpnInfo;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AsyncNotifyScanRes;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CheckAppReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CleanAgentLogReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CollectAgentLogRsp;
@@ -37,7 +38,9 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.UpdateAgentPlug
 import openbackup.data.access.client.sdk.api.framework.agent.dto.model.AgentUpdatePluginTypeResult;
 import openbackup.system.base.common.model.host.ManagementIp;
 import openbackup.system.base.sdk.agent.model.AgentSupportCompressedPackageType;
+import openbackup.system.base.sdk.agent.model.AgentUpdateRequest;
 import openbackup.system.base.sdk.agent.model.AgentUpdateResponse;
+import openbackup.system.base.sdk.agent.model.AgentUpdateResultResponse;
 import openbackup.system.base.sdk.cert.request.PushUpdateCertToAgentReq;
 import openbackup.system.base.security.exterattack.ExterAttack;
 
@@ -63,6 +66,20 @@ public interface AgentUnifiedRestApi {
     @RequestLine("POST /v2/agent/{appType}/detail")
     ListResourceV2Rsp listResourceDetailV2(URI uri, @Param("appType") String appType,
         @RequestBody ListResourceV2Req listResourceV2Req);
+
+    /**
+     * 向Agent查询应用详细信息
+     *
+     * @param id 资源扫描的任务id
+     * @param uri agent接口访问地址
+     * @param appType 应用类型
+     * @param listResourceV2Req 查询app list的参数
+     * @return agent主机信息
+     */
+    @ExterAttack
+    @RequestLine("POST /v2/agent/{appType}/asyncdetail?id={id}")
+    AsyncNotifyScanRes asyncListResourceDetailV2(URI uri, @Param("appType") String appType, @Param("id") String id,
+                                                 @RequestBody ListResourceV2Req listResourceV2Req);
 
     /**
      * 获取agent主机信息
@@ -302,11 +319,32 @@ public interface AgentUnifiedRestApi {
      * query compress tool
      *
      * @param uri 用户指定的请求前缀
-     * @return AgentUpdateResponse-agent响应
+     * @return 检查agent包支持类型请求体
      */
     @ExterAttack
     @RequestLine("GET /v1/agent/host/action/compresstool")
     AgentSupportCompressedPackageType queryCompressedPackageType(URI uri);
+
+    /**
+     * 执行客户端升级
+     *
+     * @param uri 用户指定的请求前缀
+     * @param agentUpdateRequest agent更新请求体
+     * @return AgentUpdateResultResponse-agent响应
+     */
+    @ExterAttack
+    @RequestLine("POST /agent/host/action/agent/upgrade")
+    AgentUpdateResponse updateAgent(URI uri, AgentUpdateRequest agentUpdateRequest);
+
+    /**
+     * 查询客户端升级状态
+     *
+     * @param uri 用户指定的请求前缀
+     * @return AgentUpdateResponse-agent响应
+     */
+    @ExterAttack
+    @RequestLine("GET /agent/host/action/check/status/upgrade")
+    AgentUpdateResultResponse queryAgentUpdateResult(URI uri);
 
     /**
      * agent解挂载

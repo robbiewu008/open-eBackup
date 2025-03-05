@@ -74,6 +74,16 @@ public class CommonRetryer<T> implements Retryer {
     }
 
     /**
+     * retry on special policy
+     *
+     * @param policy policy
+     * @return retryer
+     */
+    public static CommonRetryer<Long> create(CommonRetryPolicy policy) {
+        return new CommonRetryer<>(policy, (items, error) -> true);
+    }
+
+    /**
      * continue or propagate
      *
      * @param ex exception

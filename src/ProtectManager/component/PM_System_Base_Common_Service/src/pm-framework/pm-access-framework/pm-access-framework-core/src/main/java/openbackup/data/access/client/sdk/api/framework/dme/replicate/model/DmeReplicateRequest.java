@@ -84,4 +84,9 @@ public class DmeReplicateRequest {
      */
     @JsonProperty("intra")
     private boolean isIntra = false;
+
+    /**
+     * 复制类型:"0"日志复制,"1"数据复制
+     */
+    private String repType;
 }

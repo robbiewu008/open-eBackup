@@ -12,6 +12,7 @@
 */
 package openbackup.opengauss.resources.access.provider;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.access.framework.resource.service.provider.UnifiedResourceConnectionChecker;
@@ -21,12 +22,18 @@ import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
 import openbackup.data.protection.access.provider.sdk.resource.CheckReport;
 import openbackup.data.protection.access.provider.sdk.resource.CheckResult;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.opengauss.resources.access.enums.OpenGaussClusterStateEnum;
+import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.opengauss.resources.access.constants.OpenGaussConstants;
 import openbackup.opengauss.resources.access.constants.OpenGaussErrorCode;
 import openbackup.opengauss.resources.access.service.OpenGaussAgentService;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
+import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.StreamUtil;
 
@@ -34,8 +41,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * openGauss环境连通性检测提供者
@@ -48,17 +57,22 @@ public class OpenGaussResourceConnectionChecker extends UnifiedResourceConnectio
 
     private final OpenGaussAgentService openGaussAgentService;
 
+    private final ResourceService resourceService;
+
     /**
      * 有参构造
      *
      * @param environmentRetrievalsService 环境服务
      * @param agentUnifiedService agent接口实现
      * @param openGaussAgentService openGauss业务接口
+     * @param resourceService openGauss资源调度接口
      */
     public OpenGaussResourceConnectionChecker(ProtectedEnvironmentRetrievalsService environmentRetrievalsService,
-        AgentUnifiedService agentUnifiedService, OpenGaussAgentService openGaussAgentService) {
+        AgentUnifiedService agentUnifiedService, OpenGaussAgentService openGaussAgentService,
+        ResourceService resourceService) {
         super(environmentRetrievalsService, agentUnifiedService);
         this.openGaussAgentService = openGaussAgentService;
+        this.resourceService = resourceService;
     }
 
     /**
@@ -69,9 +83,22 @@ public class OpenGaussResourceConnectionChecker extends UnifiedResourceConnectio
      */
     @Override
     public CheckResult<Object> generateCheckResult(ProtectedResource protectedResource) {
-        CheckResult<Object> checkResult = super.generateCheckResult(protectedResource);
-        AppEnvResponse appEnvResponse = openGaussAgentService.getClusterNodeStatus(protectedResource);
-        checkResult.setData(appEnvResponse);
+        CheckResult<Object> checkResult;
+        try {
+            checkResult = super.generateCheckResult(protectedResource);
+            AppEnvResponse appEnvResponse = openGaussAgentService.getClusterNodeStatus(protectedResource);
+            checkResult.setData(appEnvResponse);
+        } catch (LegoCheckedException | NullPointerException e) {
+            // 当发生异常时将environment往下传
+            ActionResult actionResult = new ActionResult();
+            actionResult.setCode(CommonErrorCode.AGENT_NETWORK_ERROR);
+            actionResult.setBodyErr(String.valueOf(CommonErrorCode.AGENT_NETWORK_ERROR));
+            actionResult.setMessage("OpenGauss connection check failed: agent network error");
+            ProtectedEnvironment agentEnv = protectedResource.getEnvironment();
+            checkResult = new CheckResult<>();
+            checkResult.setEnvironment(agentEnv);
+            checkResult.setResults(actionResult);
+        }
         return checkResult;
     }
 
@@ -84,10 +111,64 @@ public class OpenGaussResourceConnectionChecker extends UnifiedResourceConnectio
      */
     @Override
     public List<ActionResult> collectActionResults(List<CheckReport<Object>> checkReports,
-        Map<String, Object> context) {
-        checkClusterUnique(checkReports);
-        context.put(OpenGaussConstants.CLUSTER_INFO, checkReports.get(0).getResults().get(0).getData());
-        return super.collectActionResults(checkReports, context);
+                                                   Map<String, Object> context) {
+        boolean isSuccess = true;
+        try {
+            checkClusterUnique(checkReports);
+            context.put(OpenGaussConstants.CLUSTER_INFO, checkReports.get(0).getResults().get(0).getData());
+        } catch (LegoCheckedException | NullPointerException e) {
+            isSuccess = false;
+            log.error("Failed to check cluster unique.");
+        }
+        return super.collectActionResults(updateLinkStatus(checkReports, isSuccess), context);
+    }
+
+    private List<CheckReport<Object>> updateLinkStatus(List<CheckReport<Object>> checkReports, boolean isSuccess) {
+        log.info("Try to update cluster status");
+        // 主机离线，更新集群状态为离线
+        ProtectedResource source = Optional.ofNullable(checkReports.get(0))
+                .map(CheckReport::getResource)
+                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR,
+                        "not find opengauss cluster resource"));
+
+        if (source.getUuid() == null) {
+            log.info("Resource uuid is null, maybe register");
+            return checkReports;
+        }
+
+        // 取得集群的extendInfo
+        Map<String, String> extendInfo = source.getExtendInfo();
+        ProtectedEnvironment newProtectedEnv = new ProtectedEnvironment();
+        newProtectedEnv.setUuid(source.getUuid());
+
+        if (!isSuccess) {
+            log.error("Fail to check opengauss application");
+            // 将数据库信息更新为离线
+            extendInfo.put(OpenGaussConstants.CLUSTER_STATE, OpenGaussClusterStateEnum.UNAVAILABLE.getState());
+            List<NodeInfo> nodeInfos = JsonUtil.read(extendInfo.get(OpenGaussConstants.NODES),
+                    new TypeReference<List<NodeInfo>>() {
+                    });
+            // 主机离线，更新对应的主机状态为离线
+            nodeInfos.forEach(
+                    nodeInfo -> {
+                        Map<String, String> nodeExtendInfo = nodeInfo.getExtendInfo();
+                        nodeExtendInfo.put(OpenGaussConstants.STATUS, OpenGaussClusterStateEnum.UNAVAILABLE.getState());
+                        nodeInfo.setExtendInfo(nodeExtendInfo);
+                    }
+            );
+            extendInfo.put(OpenGaussConstants.NODES, JSONObject.writeValueAsString(nodeInfos));
+        } else {
+            // 打印集群信息 连通测试成功时将集群信息更新
+            AppEnvResponse appEnvResponse = (AppEnvResponse) checkReports.get(0).getResults().get(0).getData();
+            Map<String, String> clusterInfo = appEnvResponse.getExtendInfo();
+            extendInfo.put(OpenGaussConstants.CLUSTER_STATE, clusterInfo.get(OpenGaussConstants.CLUSTER_STATE));
+            extendInfo.put(OpenGaussConstants.NODES, JSONObject.writeValueAsString(appEnvResponse.getNodes()));
+            log.debug("Successfully check opengauss application");
+        }
+        newProtectedEnv.setExtendInfo(extendInfo);
+        resourceService.updateSourceDirectly(Stream.of(newProtectedEnv).collect(Collectors.toList()));
+
+        return checkReports;
     }
 
     private void checkClusterUnique(List<CheckReport<Object>> checkReports) {
@@ -110,7 +191,9 @@ public class OpenGaussResourceConnectionChecker extends UnifiedResourceConnectio
         log.info("clusterNodesSystemIds : {}", clusterNodesSystemIds);
         for (ActionResult actionResult : checkResultList) {
             String bodyErrCode = actionResult.getBodyErr();
-            if (!VerifyUtil.isEmpty(bodyErrCode) && Long.parseLong(bodyErrCode) != OpenGaussErrorCode.SUCCESS) {
+            long errCode = (VerifyUtil.isEmpty(bodyErrCode)) ? OpenGaussErrorCode.SUCCESS : Long.parseLong(bodyErrCode);
+            // 健康检查时发现集群状态不正常不立即抛出错误以便更新集群状态
+            if (errCode != OpenGaussErrorCode.ERR_DATABASE_STATUS && errCode != OpenGaussErrorCode.SUCCESS) {
                 log.error("ActionResult message: {}", actionResult.getMessage());
                 throw new LegoCheckedException(Long.parseLong(bodyErrCode), actionResult.getMessage());
             }

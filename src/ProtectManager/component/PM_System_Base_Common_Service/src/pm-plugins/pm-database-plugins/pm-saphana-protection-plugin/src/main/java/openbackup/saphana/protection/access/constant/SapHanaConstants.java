@@ -33,6 +33,11 @@ public class SapHanaConstants {
     public static final long CHECK_DB_TIMEOUT = 300L;
 
     /**
+     * 资源扫描时间间隔
+     */
+    public static final int SAP_HANA_SCAN_INTERVAL = 300;
+
+    /**
      * SAP HANA检查数据库状态线程池工作队列大小
      */
     public static final int WORK_QUEUE_SIZE = 200;

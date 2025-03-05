@@ -16,6 +16,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 /**
  * NetWorkRouteInfo
  *
@@ -31,4 +33,22 @@ public class NetWorkRouteInfo {
     private String mask;
 
     private String gateway;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        NetWorkRouteInfo routeInfo = (NetWorkRouteInfo) obj;
+        return Objects.equals(destination, routeInfo.destination) && Objects.equals(gateway, routeInfo.gateway)
+            && Objects.equals(mask, routeInfo.mask) && Objects.equals(type, routeInfo.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(destination, gateway, mask, type);
+    }
 }

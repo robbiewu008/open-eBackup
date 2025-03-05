@@ -12,6 +12,8 @@
 */
 package openbackup.database.base.plugin.interceptor;
 
+import com.google.common.collect.Maps;
+
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.agent.DataBaseAgentSelector;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
@@ -33,6 +35,7 @@ import openbackup.database.base.plugin.utils.AgentDtoUtil;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.security.exterattack.ExterAttack;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
 
 import org.redisson.api.RMap;
@@ -44,6 +47,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -81,6 +85,9 @@ public abstract class AbstractDbBackupInterceptor implements BackupInterceptorPr
     @Autowired
     private DataBaseAgentSelector dataBaseAgentSelector;
 
+    @Autowired
+    private DeployTypeService deployTypeService;
+
     /**
      * intercept
      *
@@ -92,6 +99,7 @@ public abstract class AbstractDbBackupInterceptor implements BackupInterceptorPr
     public BackupTask initialize(BackupTask backupTask) {
         // format
         obtainFormat(backupTask).ifPresent(backupTask::setCopyFormat);
+        setCopyRestoreNeedWritable(backupTask);
         // agent
         supplyAgent(backupTask);
         // 连通性
@@ -201,5 +209,19 @@ public abstract class AbstractDbBackupInterceptor implements BackupInterceptorPr
             return;
         }
         backupTask.getProtectEnv().setNodes(hostList);
+    }
+
+    /**
+     * 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+     *
+     * @param backupTask 备份任务
+     */
+    protected void setCopyRestoreNeedWritable(BackupTask backupTask) {
+        if (deployTypeService.isPacific()) {
+            Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams())
+                .orElseGet(Maps::newHashMap);
+            advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+            backupTask.setAdvanceParams(advanceParams);
+        }
     }
 }

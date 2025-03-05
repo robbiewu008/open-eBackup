@@ -59,6 +59,11 @@ public final class TopicConstants {
     public static final String INDEX_RESPONSE = "IndexResponse";
 
     /**
+     * 虚拟化副本细粒度挂载返回
+     */
+    public static final String VM_BROWSE_MOUNT_RESPONSE = "vmBrowseMountResponse";
+
+    /**
      * Delete Index Request
      */
     public static final String DELETE_INDEX_REQUEST = "IndexDeleteRequest";

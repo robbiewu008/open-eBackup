@@ -12,6 +12,8 @@
 */
 package openbackup.data.access.framework.protection.service.context;
 
+import com.huawei.oceanprotect.sla.sdk.api.SlaQueryService;
+
 import openbackup.data.access.framework.protection.service.archive.ArchiveContext;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -31,13 +33,17 @@ import org.springframework.stereotype.Component;
 public class ContextManager {
     private final RedissonClient redissonClient;
 
+    private final SlaQueryService slaRepository;
+
     /**
      * 上下文管理器的构造函数
      *
      * @param redissonClient redisson客户端
+     * @param slaRepository slaRepository
      */
-    public ContextManager(RedissonClient redissonClient) {
+    public ContextManager(RedissonClient redissonClient, SlaQueryService slaRepository) {
         this.redissonClient = redissonClient;
+        this.slaRepository = slaRepository;
     }
 
     /**
@@ -52,6 +58,6 @@ public class ContextManager {
             throw new LegoCheckedException(CommonErrorCode.ERR_PARAM, "requestId is empty, can not get context.");
         }
         final RMap<String, String> contextMap = redissonClient.getMap(requestId, StringCodec.INSTANCE);
-        return new ArchiveContextImpl(contextMap);
+        return new ArchiveContextImpl(contextMap, slaRepository);
     }
 }

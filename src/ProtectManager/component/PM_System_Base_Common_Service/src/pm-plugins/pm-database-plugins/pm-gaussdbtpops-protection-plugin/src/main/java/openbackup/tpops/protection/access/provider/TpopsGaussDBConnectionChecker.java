@@ -14,6 +14,7 @@ package openbackup.tpops.protection.access.provider;
 
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.access.framework.resource.service.provider.UnifiedResourceConnectionChecker;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
 import openbackup.data.protection.access.provider.sdk.resource.CheckReport;
@@ -24,6 +25,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConstants;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.tpops.protection.access.constant.TpopsGaussDBConstant;
 
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -47,8 +50,14 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class TpopsGaussDBConnectionChecker extends UnifiedResourceConnectionChecker {
+    private static final long SUCCESS_CODE = 0L;
+
     @Autowired
     private ProtectedEnvironmentService protectedEnvironmentService;
+
+    @Autowired
+    private AgentUnifiedService agentUnifiedService;
+
 
     /**
      * 有参构造
@@ -82,6 +91,36 @@ public class TpopsGaussDBConnectionChecker extends UnifiedResourceConnectionChec
         addAgentIp(protectedResource);
         return super.generateCheckResult(protectedResource);
     }
+
+    @Override
+    public Map<ProtectedResource, List<ProtectedEnvironment>> collectConnectableResources(ProtectedResource resource) {
+        log.info("start to collect connectable resources.");
+        AtomicBoolean shouldBreak = new AtomicBoolean(false);
+        Map<ProtectedResource, List<ProtectedEnvironment>> protectedResourceListMap =
+                super.collectConnectableResources(resource);
+        protectedResourceListMap.forEach((checkingResource, value) -> value.removeIf(environment -> {
+            if (shouldBreak.get()) {
+                return false;
+            }
+            try {
+                AgentBaseDto agentBaseDto = agentUnifiedService.checkApplicationNoRetry(checkingResource, environment);
+                String message = JSONObject.fromObject(agentBaseDto.getErrorMessage()).getString("message");
+                if (message.equals(TpopsGaussDBConstant.TPOPS_PASSWORD_ERROR)) {
+                    shouldBreak.set(true);
+                }
+                return false;
+            } catch (Exception e) {
+                log.error("check application fail. exception:{}, environment:{}", e, environment);
+                return true;
+            }
+        }));
+        if (shouldBreak.get()) {
+            throw new LegoCheckedException("Scan tpops resource failed " +
+                    "because of wrong tpops password");
+        }
+        return protectedResourceListMap;
+    }
+
 
     private void addAgentIp(ProtectedResource protectedResource) {
         // cluster_ip

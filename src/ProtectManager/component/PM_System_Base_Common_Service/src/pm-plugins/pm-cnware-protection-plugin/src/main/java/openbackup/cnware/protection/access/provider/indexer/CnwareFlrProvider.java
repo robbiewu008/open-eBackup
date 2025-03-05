@@ -10,14 +10,16 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-package openbackup.openstack.protection.access.provider;
+package openbackup.cnware.protection.access.provider.indexer;
 
-import openbackup.openstack.protection.access.dto.CopyVolInfo;
 import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
 
+import com.google.common.collect.ImmutableList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedResourceMonitorService;
+import openbackup.cnware.protection.access.dto.CnwareVolInfo;
 import openbackup.data.access.framework.copy.index.provider.AbstractVmFileLevelRestoreProvider;
 import openbackup.data.access.framework.copy.index.service.IvmFileLevelRestoreService;
 import openbackup.data.protection.access.provider.sdk.job.Task;
@@ -27,23 +29,22 @@ import openbackup.data.protection.access.provider.sdk.restore.RestoreProvider;
 import openbackup.data.protection.access.provider.sdk.restore.RestoreRequest;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.copy.CopyRestApi;
-import openbackup.system.base.sdk.copy.model.Copy;
-import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * OpenstackFirProvider
+ * CnwareFirProvider CNware细粒度恢复
  *
  */
 @Component
-public class OpenstackFirProvider extends AbstractVmFileLevelRestoreProvider implements RestoreProvider {
-    private static final List<String> SUPPORT_GENERATE_TYPE =
-        Arrays.asList(CopyGeneratedByEnum.BY_BACKUP.value(), CopyGeneratedByEnum.BY_REPLICATED.value());
+@Slf4j
+public class CnwareFlrProvider extends AbstractVmFileLevelRestoreProvider implements RestoreProvider {
+    private static final List<String> SUPPORTED_SUB_TYPE = ImmutableList.of(
+            ResourceSubTypeEnum.CNWARE_VM.getType()
+    );
 
     /**
      * 构造注入
@@ -54,39 +55,60 @@ public class OpenstackFirProvider extends AbstractVmFileLevelRestoreProvider imp
      * @param flrService flrService
      * @param resourceSetApi resourceSetApi
      */
-    public OpenstackFirProvider(CopyRestApi copyRestApi, ResourceService resourceService,
-        ProtectedResourceMonitorService protectedResourceMonitorService, IvmFileLevelRestoreService flrService,
-        ResourceSetApi resourceSetApi) {
+    public CnwareFlrProvider(CopyRestApi copyRestApi, ResourceService resourceService,
+                             ProtectedResourceMonitorService protectedResourceMonitorService,
+                             IvmFileLevelRestoreService flrService,
+                             ResourceSetApi resourceSetApi) {
         super(copyRestApi, resourceService, protectedResourceMonitorService, flrService, resourceSetApi);
     }
 
+    /**
+     * 生成快照元数据信息
+     *
+     * @param properties 配置信息
+     * @return 元数据信息
+     */
+    @Override
+    protected String buildSnapMetadata(JSONObject properties) {
+        return CnwareVolInfo.convert2IndexDiskInfos(properties);
+    }
+
+    /**
+     * detect object applicable
+     *
+     * @param restoreObject object
+     * @return detect result
+     */
     @Override
     public boolean applicable(RestoreObject restoreObject) {
         if (restoreObject == null) {
             return false;
         }
-        return ResourceSubTypeEnum.OPENSTACK_CLOUD_SERVER.equalsSubType(restoreObject.getObjectType())
-            && (SUPPORT_GENERATE_TYPE.contains(restoreObject.getCopyGeneratedBy()));
+        String resourceSubType = restoreObject.getObjectType();
+        return SUPPORTED_SUB_TYPE.contains(resourceSubType) && checkGeneratedType(restoreObject);
     }
 
+    /**
+     * restore methods that need to be implemented by specific providers, This method is responsible for the business
+     * logic of copy restore.
+     *
+     * @param restoreObject the restore object
+     * @return the restore task
+     */
     @Override
     public Task restore(RestoreObject restoreObject) {
         return doRestore(restoreObject);
     }
 
+    /**
+     * 生成恢复任务
+     *
+     * @param restoreRequest 恢复请求
+     * @return 任务json
+     * @throws JsonProcessingException json转换异常
+     */
     @Override
     public String createRestoreTask(RestoreRequest restoreRequest) throws JsonProcessingException {
         return doCreateRestoreTask(restoreRequest);
-    }
-
-    @Override
-    protected boolean checkIfEnableStop(Copy copy) {
-        return SUPPORT_GENERATE_TYPE
-            .contains(copy == null ? CopyGeneratedByEnum.BY_BACKUP.value() : copy.getGeneratedBy());
-    }
-
-    @Override
-    protected String buildSnapMetadata(JSONObject properties) {
-        return CopyVolInfo.convert2IndexDiskInfos(properties);
     }
 }

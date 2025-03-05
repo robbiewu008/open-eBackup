@@ -232,7 +232,9 @@ public class DamengClusterProvider extends DatabaseEnvironmentProvider {
         updateRole(environment, nodeInfoList);
         ProtectedEnvironment newEnv = new ProtectedEnvironment();
         newEnv.setUuid(environment.getUuid());
-        newEnv.setExtendInfo(environment.getExtendInfo());
+        Map<String, String> extendInfo = new HashMap<>();
+        extendInfo.put(DamengConstant.NODES, environment.getExtendInfo().get(DamengConstant.NODES));
+        newEnv.setExtendInfo(extendInfo);
         resourceService.updateSourceDirectly(Collections.singletonList(newEnv));
         log.info("end DamengClusterProvider scan");
         return Collections.emptyList();
@@ -277,7 +279,9 @@ public class DamengClusterProvider extends DatabaseEnvironmentProvider {
         ProtectedEnvironment newEnv = new ProtectedEnvironment();
         newEnv.setUuid(environment.getUuid());
         newEnv.setLinkStatus(linkStatus);
-        newEnv.setExtendInfo(environment.getExtendInfo());
+        Map<String, String> extendInfo = new HashMap<>();
+        extendInfo.put(DamengConstant.NODES, environment.getExtendInfo().get(DamengConstant.NODES));
+        newEnv.setExtendInfo(extendInfo);
         resourceService.updateSourceDirectly(Collections.singletonList(newEnv));
         return linkStatus;
     }

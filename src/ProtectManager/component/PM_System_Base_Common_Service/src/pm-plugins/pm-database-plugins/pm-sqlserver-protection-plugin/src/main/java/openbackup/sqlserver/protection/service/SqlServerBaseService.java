@@ -412,9 +412,13 @@ public class SqlServerBaseService {
     public void checkRestoreTaskParam(RestoreTask restoreTask) {
         // 新位置恢复校验目标路径合法性
         if (RestoreLocationEnum.NEW.getLocation().equals(restoreTask.getTargetLocation().getLocation())) {
-            restoreTask.getAdvanceParams().put(SqlServerConstants.KEY_RESTORE_NEW_LOCATION_PATH, "true");
+            if (StringUtils.isNotEmpty(
+                restoreTask.getAdvanceParams().getOrDefault(SqlServerConstants.KEY_RESTORE_NEW_LOCATION_PATH, null))) {
+                oldVersionCheckRestoreTaskParam(restoreTask);
+            }
+            restoreTask.getAdvanceParams().put(SqlServerConstants.IS_RESTORE_LOCATION, String.valueOf(true));
         } else {
-            restoreTask.getAdvanceParams().put(SqlServerConstants.KEY_RESTORE_NEW_LOCATION_PATH, "false");
+            restoreTask.getAdvanceParams().put(SqlServerConstants.IS_RESTORE_LOCATION, String.valueOf(false));
         }
     }
 
@@ -472,6 +476,11 @@ public class SqlServerBaseService {
     public List<String> findAssociatedResourcesToSetNextFull(RestoreTask task) {
         ProtectedResource resource = getResourceByUuid(task.getTargetObject().getUuid());
         String subType = resource.getSubType();
+        // 实例恢复到新位置，给新位置下实例级加锁
+        if (StringUtils.equals(task.getTargetLocation().getLocation(), RestoreLocationEnum.NEW.getLocation())
+            && ResourceSubTypeEnum.SQL_SERVER_INSTANCE.getType().equals(subType)) {
+            return Collections.singletonList(resource.getUuid());
+        }
         if (!StringUtils.equals(task.getTargetLocation().getLocation(), RestoreLocationEnum.ORIGINAL.getLocation())) {
             return Collections.emptyList();
         }

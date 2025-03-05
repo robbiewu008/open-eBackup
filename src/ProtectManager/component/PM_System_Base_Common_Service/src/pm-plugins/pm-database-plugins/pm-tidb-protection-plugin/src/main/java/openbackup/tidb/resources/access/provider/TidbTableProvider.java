@@ -160,4 +160,10 @@ public class TidbTableProvider implements ResourceProvider {
             throw new LegoCheckedException(CommonErrorCode.ERR_PARAM);
         }
     }
+
+    @Override
+    public boolean isSupportIndex() {
+        // Tidb数据库 支持索引
+        return true;
+    }
 }

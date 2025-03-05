@@ -13,34 +13,12 @@
 CUR_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PM_MS_DIR=${CUR_PATH}/..
 BASE_PATH=${PM_MS_DIR}/../..
-AGENT_BRANCH=$1
-STEP_LEVEL="$2"
-BUILD_PKG_TYPE=$3
+BUILD_PKG_TYPE="$1"
 
 if [ -z "${componentVersion}" ]; then
 	componentVersion="1.1.0"
 fi
 
-function download_agent(){
-    echo "=========== Start download agent ==========="
-  	# 下载agent安装包
-  	cd ${PM_MS_DIR}/CI/conf/
-  	mkdir -p ${PM_MS_DIR}/AGENT
-    echo "Using ProtectAgent-Client version is: ${Version}       (from pipeline parameter)"
-  	artget pull -d agent_dependency.xml \
-      -p "{'componentVersion':'${componentVersion}','AGENT_BRANCH':'${AGENT_BRANCH}','PMClientVersion':'${Version}'}" \
-      -ap ${PM_MS_DIR}/AGENT/ \
-      -user ${cmc_user} -pwd ${cmc_pwd}
-  	if [ $? -ne 0 ]; then
-  		echo "download agent failed!"
-  		exit 1
-  	fi
-
-    # 拷贝agent_client文件
-    cp -rf ${PM_MS_DIR}/AGENT/*.zip  ${PM_MS_DIR}/tmp
-    ls ${PM_MS_DIR}/tmp/
-    echo "=========== Download agent success ==========="
-}
 
 function borrow_package(){
     # 解压PM_System_Base_Service.tar.gz
@@ -100,27 +78,13 @@ function build_base(){
 }
 
 function main(){
-  echo "=========== start to PM_System_Base_Service.tar.gz , STEP_LEVEL=(${STEP_LEVEL})========="
-   if [ "${STEP_LEVEL}" == "step1" ]; then
-     # 编译大包前置流程
-     echo "=========== start to exec step1 ========="
-     build_base
-     borrow_package
-     download_kmc
-   elif [ "${STEP_LEVEL}" == "step2" ]; then
-     # 编译大包protect_agent_Package_all 执行完后执行后置步骤
-     echo "=========== start to exec step2 ========="
-     download_agent
-     build_package
-   else
+  echo "=========== start to PM_System_Base_Service.tar.gz ========="
      # 单独编译不影响
      echo "=========== start to exec all ========="
      build_base
      borrow_package
      download_kmc
-     download_agent
      build_package
-   fi
    echo "=========== build PM_System_Base_Service.tar.gz success ========="
 }
 

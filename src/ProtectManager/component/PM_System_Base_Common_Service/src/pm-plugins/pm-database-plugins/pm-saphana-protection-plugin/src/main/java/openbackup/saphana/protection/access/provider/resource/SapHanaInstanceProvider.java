@@ -125,6 +125,7 @@ public class SapHanaInstanceProvider extends DatabaseEnvironmentProvider {
         setSapHanaInstance(environment, checkResult);
         SapHanaUtil.removeExtendInfoByKey(environment, SapHanaConstants.OPERATION_TYPE);
         environment.setLinkStatus(LinkStatusEnum.ONLINE.getStatus().toString());
+        environment.setScanInterval(SapHanaConstants.SAP_HANA_SCAN_INTERVAL);
         log.info("End check SAP HANA instance, name: {}, uuid: {}.", environment.getName(), environment.getUuid());
     }
 

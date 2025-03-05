@@ -10,14 +10,17 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-package openbackup.data.access.framework.core.entity;
+package openbackup.system.base.bean;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import openbackup.system.base.common.typehandler.TimestampTypeHandler;
 
 import java.sql.Timestamp;
 
@@ -27,6 +30,8 @@ import java.sql.Timestamp;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("COPIES")
 public class CopiesEntity {
     /**
@@ -49,7 +54,8 @@ public class CopiesEntity {
     /**
      * 副本时间戳
      */
-    @TableField("display_timestamp")
+    @TableField(value = "display_timestamp",
+                typeHandler = TimestampTypeHandler.class)
     private Timestamp displayTimestamp;
 
     /**
@@ -81,9 +87,16 @@ public class CopiesEntity {
     private String generatedBy;
 
     /**
+     * 原副本ID，复制前
+     */
+    @TableField("origin_backup_id")
+    private String originBackupId;
+
+    /**
      * 副本时间戳
      */
-    @TableField("generated_time")
+    @TableField(value = "generated_time",
+                typeHandler = TimestampTypeHandler.class)
     private Timestamp generatedTime;
 
     /**
@@ -128,7 +141,8 @@ public class CopiesEntity {
     /**
      * 副本过期时间
      */
-    @TableField("expiration_time")
+    @TableField(value = "expiration_time",
+                typeHandler = TimestampTypeHandler.class)
     private Timestamp expirationTime;
 
     /**
@@ -251,7 +265,7 @@ public class CopiesEntity {
     /**
      * worm过期时间
      */
-    @TableField("worm_expiration_time")
+    @TableField(value = "worm_expiration_time", typeHandler = TimestampTypeHandler.class)
     private Timestamp wormExpirationTime;
 
     /**
@@ -265,4 +279,10 @@ public class CopiesEntity {
      */
     @TableField("gn")
     private String gn;
+
+    /**
+     * copy storage unit status
+     */
+    @TableField("storage_unit_status")
+    private Integer storageUnitStatus;
 }

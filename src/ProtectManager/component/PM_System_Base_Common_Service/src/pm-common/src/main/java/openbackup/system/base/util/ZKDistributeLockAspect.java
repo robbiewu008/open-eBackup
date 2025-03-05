@@ -49,7 +49,18 @@ public class ZKDistributeLockAspect {
     public Object execTaskWithZKLock(ProceedingJoinPoint joinPoint, ZKDistributeLock zkDistributeLock)
             throws Throwable {
         Object result = new Object();
-        String lockName = zkDistributeLock.lockName();
+        String lockNamePrefix = zkDistributeLock.lockName();
+        String lockIdIndex = zkDistributeLock.lockIdIndex();
+        String lockId = "";
+        if (lockIdIndex != null && !lockIdIndex.isEmpty()) {
+            // 获取方法参数并查找uuid的值
+            Object[] args = joinPoint.getArgs();
+            lockId = (String) args[Integer.parseInt(lockIdIndex)];
+        }
+        String lockName = lockNamePrefix;
+        if (lockId != null && !lockId.isEmpty()) {
+            lockName += "/" + lockId;
+        }
         long tryLockTime = zkDistributeLock.tryLockTime();
         TimeUnit timeUnit = zkDistributeLock.timeUnit();
         long errorCode = zkDistributeLock.errorCode();

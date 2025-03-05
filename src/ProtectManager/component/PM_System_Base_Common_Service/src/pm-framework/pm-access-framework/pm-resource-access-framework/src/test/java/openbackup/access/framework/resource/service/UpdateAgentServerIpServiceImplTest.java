@@ -12,7 +12,8 @@
 */
 package openbackup.access.framework.resource.service;
 
-import openbackup.access.framework.resource.service.UpdateAgentServerIpServiceImpl;
+import com.huawei.oceanprotect.system.base.cert.service.CertPushUpdateService;
+
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
@@ -26,8 +27,12 @@ import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.support.membermodification.MemberModifier;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,14 +44,20 @@ import java.util.Map;
  * 更新AgentServerIp 测试类
  *
  */
+@RunWith(PowerMockRunner.class)
 public class UpdateAgentServerIpServiceImplTest {
 
-    private final ResourceService resourceService = Mockito.mock(ResourceService.class);
+ @InjectMocks
+ private UpdateAgentServerIpServiceImpl updateAgentServerIpService;
 
-    private final AgentUnifiedService agentUnifiedService = Mockito.mock(AgentUnifiedService.class);
+ @Mock
+ private CertPushUpdateService certPushUpdateService;
 
-    private final UpdateAgentServerIpServiceImpl updateAgentServerIpService = new UpdateAgentServerIpServiceImpl(
-        resourceService, agentUnifiedService);
+ @Mock
+ private AgentUnifiedService agentUnifiedService;
+
+ @Mock
+ private ResourceService resourceService;
 
     /**
      * 用例场景：测试更新server ip成功

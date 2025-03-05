@@ -163,7 +163,6 @@ public class TpopsGaussDBServiceImpl implements TpopsGaussDBService {
      */
     @Override
     public List<ProtectedResource> getExistingGaussDbResources(String subType, Map<String, Object> filter) {
-        log.info("query the existing gaussDb resources");
         filter.put("type", ResourceTypeEnum.DATABASE.getType());
         filter.put("subType", subType);
         List<ProtectedResource> existingResources = new ArrayList<>();
@@ -204,6 +203,8 @@ public class TpopsGaussDBServiceImpl implements TpopsGaussDBService {
         advanceParams.put(TpopsGaussDBConstant.SPEED_STATISTICS, SpeedStatisticsEnum.APPLICATION.getType());
 
         advanceParams.put(DatabaseConstants.FORBID_WORM_FILE_SYSTEM, Boolean.TRUE.toString());
+        // 后置任务所有任务节点都执行
+        advanceParams.put(DatabaseConstants.MULTI_POST_JOB, Boolean.TRUE.toString());
         TpopsGaussDBClusterUtils.modifyAdvanceParam(advanceParams,
             TpopsGaussDBConstant.ADVANCE_PARAMS_KEY_BACKUP_METADATA_PATH,
             TpopsGaussDBConstant.ADVANCE_PARAMS_KEY_METADATA_PATH);

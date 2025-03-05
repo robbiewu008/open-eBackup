@@ -47,7 +47,7 @@
                (
                    array_agg(
                            COPIES.resource_name ORDER BY COPIES.display_timestamp DESC
-                       )
+                   )
                    ) [1] AS resource_name,
             (
                 array_agg(
@@ -117,8 +117,8 @@
     <sql id="SelectCopySummaryResourceCountBase">
         SELECT COUNT(DISTINCT resource_id)
         FROM COPIES
-            LEFT OUTER JOIN COPIES_PROTECTION
-        ON COPIES_PROTECTION.protected_resource_id = COPIES.resource_id
+                 LEFT OUTER JOIN COPIES_PROTECTION
+                                 ON COPIES_PROTECTION.protected_resource_id = COPIES.resource_id
     </sql>
 
     <sql id="SelectCopySummaryResourceCondition">
@@ -183,11 +183,22 @@
     </sql>
 
     <sql id="SelectCopySummaryResourceLimit">
-        LIMIT #{query.pageSize} OFFSET #{query.pageNo} * #{query.pageSize}
+        LIMIT
+        #{query.pageSize} OFFSET
+        #{query.pageNo}
+        *
+        #{query.pageSize}
     </sql>
 
     <update id="updateCopyStatus">
         UPDATE COPIES SET STATUS=#{status} where UUID IN
+        <foreach collection="copy_id_list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>;
+    </update>
+
+    <update id="updateCopyStorageUnitStatus">
+        UPDATE COPIES SET STORAGE_UNIT_STATUS=#{storage_unit_status} where UUID IN
         <foreach collection="copy_id_list" item="item" separator="," open="(" close=")">
             #{item}
         </foreach>;
@@ -209,7 +220,18 @@
     <select id="selectCopyDeviceEsnByResourceId" resultType="java.lang.String">
         SELECT device_esn
         FROM COPIES
-        WHERE resource_id = #{resource_id} group by device_esn
+        WHERE resource_id = #{resource_id}
+        group by device_esn
+    </select>
+
+    <select id="selectCopyIdByStorageUnitId" resultType="java.lang.String">
+        SELECT UUID
+        FROM COPIES
+        WHERE generated_by IN
+        <foreach collection="generated_type_list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        and storage_unit_id = #{storage_unit_id}
     </select>
 
     <select id="queryCopyCount"
@@ -217,15 +239,17 @@
         SELECT resource_sub_type, resource_type, count(1) as copy_count
         FROM COPIES
         WHERE deleted = false
---         此处适配rbac 要根据domainId来过滤列表 如果domainId不存在则查全部
+        -- 此处适配rbac 要根据domainId来过滤列表 如果domainId不存在则查全部
         <if test="domain_id != null and domain_id != ''">
-            AND (uuid in (select resource_object_id from  T_DOMAIN_R_RESOURCE_OBJECT where domain_id = #{domain_id}))
+            AND (uuid in (select resource_object_id from T_DOMAIN_R_RESOURCE_OBJECT where domain_id = #{domain_id}))
         </if>
         group by resource_type, resource_sub_type
     </select>
 
     <update id="updateCopyResourceName">
-        update copies set resource_name = #{new_resource_name} where resource_id = #{resource_id}
+        update copies
+        set resource_name = #{new_resource_name}
+        where resource_id = #{resource_id}
     </update>
 
     <update id="updateWormCopyExpiredStatus">
@@ -241,4 +265,112 @@
             #{item}
         </foreach>
     </update>
+
+    <sql id="selectCopySummaryResourceListBaseV2">
+        WITH t_filtered_infos AS (SELECT *
+        FROM copies c
+        <if test="query.condition != null and query.condition.domainId != null and !query.condition.domainId.isEmpty()">
+        JOIN t_domain_r_resource_object dro ON dro.resource_object_id = c.uuid
+        </if>
+        LEFT OUTER JOIN copies_protection cp ON cp.protected_resource_id = c.resource_id
+        WHERE c.deleted = false
+        <if test="query.condition != null">
+            <if test="query.condition.resourceName != null and !query.condition.resourceName.isEmpty()">
+                AND c.resource_name like CONCAT('%', #{query.condition.resourceName},'%')
+            </if>
+            <if test="query.condition.resourceLocation != null and !query.condition.resourceLocation.isEmpty()">
+                AND c.resource_location like CONCAT('%', #{query.condition.resourceLocation},'%')
+            </if>
+            <if test="query.condition.resourceSubType != null and !query.condition.resourceSubType.isEmpty()">
+                AND c.resource_sub_type IN
+                <foreach collection="query.condition.resourceSubType" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="query.condition.resourceStatus != null and !query.condition.resourceStatus.isEmpty()">
+                AND c.resource_status IN
+                <foreach collection="query.condition.resourceStatus" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="query.condition.resourceEnvironmentIp != null and !query.condition.resourceEnvironmentIp.isEmpty()">
+                AND c.resource_environment_ip like CONCAT('%', #{query.condition.resourceEnvironmentIp},'%')
+            </if>
+            <if test="query.condition.resourceEnvironmentName != null and !query.condition.resourceEnvironmentName.isEmpty()">
+                AND c.resource_environment_name like CONCAT('%', #{query.condition.resourceEnvironmentName},'%')
+            </if>
+            <if test="query.condition.resourceIds != null and !query.condition.resourceIds.isEmpty()">
+                AND c.resource_id IN
+                <foreach collection="query.condition.resourceIds" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="query.condition.indexed != null and !query.condition.indexed.isEmpty()">
+                AND c.indexed = #{query.condition.indexed}
+            </if>
+            <if test="query.condition.gnLte != null and !query.condition.gnLte.isEmpty() and query.condition.gnGte != null and !query.condition.gnGte.isEmpty()">
+                AND (c.gn BETWEEN #{query.condition.gnLte} AND #{query.condition.gnGte})
+            </if>
+            <if test="query.condition.deviceEsn != null and !query.condition.deviceEsn.isEmpty()">
+                AND c.device_esn = #{query.condition.deviceEsn}
+            </if>
+            <if test="query.condition.chainId != null and !query.condition.chainId.isEmpty()">
+                AND c.chain_id = #{query.condition.chainId}
+            </if>
+            <if test="query.condition.generatedBy != null and !query.condition.generatedBy.isEmpty()">
+                AND c.generated_by IN
+                <foreach collection="query.condition.generatedBy" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="query.condition.domainId != null and !query.condition.domainId.isEmpty()">
+                AND dro.domain_id = #{query.condition.domainId}
+                AND dro.type = 'COPY'
+            </if>
+            <if test="query.condition.protectedSlaId != null and !query.condition.protectedSlaId.isEmpty()">
+                AND cp.protected_sla_id = #{query.condition.protectedSlaId}
+            </if>
+            <if test="query.condition.protectedSlaName != null and !query.condition.protectedSlaName.isEmpty()">
+                AND cp.protected_sla_name like CONCAT('%', #{query.condition.protectedSlaName},'%')
+            </if>
+            <if test="query.condition.protectedStatus != null and !query.condition.protectedStatus.isEmpty()">
+                AND (cp.protected_status IN
+                <foreach collection="query.condition.protectedStatus" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+                <if test="query.condition.protectedStatus != null and query.condition.protectedStatus.contains(false)">
+                    OR cp.protected_status IS NULL
+                </if>
+                )
+            </if>
+        </if>
+        )
+        SELECT t.resource_id AS resource_id,
+        t.copy_count AS copy_count,
+        fi.resource_name AS resource_name,
+        fi.resource_type AS resource_type,
+        fi.resource_sub_type AS resource_sub_type,
+        fi.resource_location AS resource_location,
+        fi.resource_status AS resource_status,
+        fi.properties AS properties,
+        fi.resource_properties AS resource_properties,
+        fi.resource_environment_ip AS resource_environment_ip,
+        fi.resource_environment_name AS resource_environment_name,
+        fi.sla_name AS sla_name,
+        fi.protected_resource_id AS protected_resource_id,
+        fi.protected_object_uuid AS protected_object_uuid,
+        fi.protected_sla_id AS protected_sla_id,
+        fi.protected_sla_name AS protected_sla_name,
+        fi.protected_status AS protected_status
+        FROM (SELECT resource_id, (array_agg(uuid ORDER BY display_timestamp DESC)) [1] AS uuid, count(uuid) AS
+        copy_count
+        FROM t_filtered_infos
+        GROUP BY resource_id) t
+        JOIN t_filtered_infos fi ON fi.resource_id = t.resource_id AND fi.uuid = t.uuid
+    </sql>
+
+    <select id="selectCopySummaryResourceListV2" resultMap="BaseResultMap" parameterType="map">
+        <include refid="selectCopySummaryResourceListBaseV2"/>
+        <include refid="SelectCopySummaryResourceOrderBy"/>
+    </select>
 </mapper>

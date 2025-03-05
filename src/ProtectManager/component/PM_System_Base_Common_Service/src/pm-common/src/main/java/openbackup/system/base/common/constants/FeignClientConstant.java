@@ -33,9 +33,14 @@ public class FeignClientConstant {
     public static final int READ_TIMEOUT = 2 * 60 * 1000; // 2分钟
 
     /**
-     * FeignClient读取默认超时(ms)
+     * FeignClient快速失败连接超时时间(ms)
      */
-    public static final int FAST_FAIL_READ_TIMEOUT = 30 * 1000; // 30s
+    public static final int FAST_FAIL_CONNECT_TIMEOUT = 5 * 1000; // 5s
+
+    /**
+     * FeignClient快速失败读取超时(ms)
+     */
+    public static final int FAST_FAIL_READ_TIMEOUT = 5 * 1000; // 5s
 
     /**
      * FeignClient读取默认超时(s)
@@ -53,6 +58,11 @@ public class FeignClientConstant {
     public static final int MEMBER_READ_TIMEOUT = 5 * 60 * 1000; // 5分钟
 
     /**
+     * Member Cluster Client FeignClient读取默认超时(ms)
+     */
+    public static final int BACKUP_CLUSTER_JOB_CLIENT_READ_TIMEOUT = 10 * 1000; // 10秒
+
+    /**
      * Dme FeignClient读取默认超时(ms)
      */
     public static final int DME_READ_TIMEOUT = 5 * 60 * 1000; // 5分钟
@@ -68,6 +78,16 @@ public class FeignClientConstant {
     public static final int DME_PERIOD = 5 * 1000; // 5秒钟
 
     /**
+     * FeignClient Retry 快速失败间隔周期(ms)
+     */
+    public static final int FAST_FAIL_PERIOD = 1;
+
+    /**
+     * FeignClient Retry 快速失败最大间隔周期(ms)
+     */
+    public static final int FAST_FAIL_MAX_PERIOD = 1;
+
+    /**
      * FeignClient Retry 最大间隔周期(ms)
      */
     public static final int MAX_PERIOD = 60 * 1000; // 1分钟
@@ -76,6 +96,11 @@ public class FeignClientConstant {
      * DME Retry 最大间隔周期(ms)
      */
     public static final int DME_MAX_PERIOD = 5 * 1000; // 5秒钟
+
+    /**
+     * FeignClient Retry 快速失败重试次数
+     */
+    public static final int FAST_FAIL_MAX_ATTEMPTS = 2;
 
     /**
      * FeignClient Retry 重试次数

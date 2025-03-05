@@ -211,4 +211,10 @@ public class TdsqlClusterGroupProvider implements ResourceProvider {
         log.info("Execute umount repo task completed, resource id: {}.", resource.getUuid());
         return ResourceDeleteContext.defaultValue();
     }
+
+    @Override
+    public boolean isSupportIndex() {
+        // Tdsql 支持索引
+        return true;
+    }
 }

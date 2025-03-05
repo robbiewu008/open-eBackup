@@ -12,9 +12,12 @@
 */
 package openbackup.data.access.framework.restore.service;
 
+import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
 import com.huawei.oceanprotect.exercise.service.ExerciseQueryService;
 import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.repository.tapelibrary.client.DmeTapeRestApi;
+import com.huawei.oceanprotect.repository.tapelibrary.client.response.DmeResponse;
 import com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants;
 import com.huawei.oceanprotect.system.base.user.service.UserService;
 
@@ -38,6 +41,7 @@ import openbackup.data.access.framework.protection.service.job.JobLogRecorder;
 import openbackup.data.access.framework.protection.service.repository.TaskRepositoryManager;
 import openbackup.data.access.framework.restore.constant.RestoreConstant;
 import openbackup.data.access.framework.restore.constant.RestoreJobLabelConstant;
+import openbackup.data.access.framework.restore.constant.RestoreTaskErrorCode;
 import openbackup.data.access.framework.restore.controller.req.CreateRestoreTaskRequest;
 import openbackup.data.access.framework.restore.converter.RestoreTaskConverter;
 import openbackup.data.access.framework.restore.dto.RestoreTaskContext;
@@ -64,11 +68,14 @@ import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.job.JobBo;
+import openbackup.system.base.common.model.repository.tape.TapeStatus;
 import openbackup.system.base.common.utils.ExceptionUtil;
+import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.auth.UserInnerResponse;
 import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
+import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.job.model.JobLogLevelEnum;
@@ -93,11 +100,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * 恢复任务工作流管理类，负责恢复任务中各个步骤的执行，控制整个恢复任务流程<br>
@@ -134,6 +143,8 @@ import java.util.UUID;
 @Slf4j
 @Component
 public class RestoreTaskManager {
+    private static final String DEFAULT_STORAGE_POOL = "0";
+
     private final ProviderManager providerManager;
     private final RestoreTaskService restoreTaskService;
     private final JobLogRecorder jobLogRecorder;
@@ -156,6 +167,14 @@ public class RestoreTaskManager {
     private BackupFeatureService backupFeatureService;
 
     private StorageUnitService storageUnitService;
+
+    private MemberClusterService memberClusterService;
+
+    @Autowired
+    private DmeTapeRestApi dmeTapeRestApi;
+
+    @Autowired
+    private CopyRestApi copyRestApi;
 
     /**
      * 恢复任务流程管理构造函数
@@ -227,6 +246,11 @@ public class RestoreTaskManager {
         this.storageUnitService = storageUnitService;
     }
 
+    @Autowired
+    public void setMemberClusterService(MemberClusterService memberClusterService) {
+        this.memberClusterService = memberClusterService;
+    }
+
     /**
      * 初始化恢复任务流程
      * <p>
@@ -237,6 +261,7 @@ public class RestoreTaskManager {
      * @return jobId 任务id
      */
     public String init(CreateRestoreTaskRequest request) {
+        checkTapeStatus(request);
         checkSubObjectSize(request.getSubObjects());
         // 初始化恢复上下文
         final RestoreTaskContext context = this.initContext(request);
@@ -249,6 +274,62 @@ public class RestoreTaskManager {
         // 创建恢复任务
         return restoreTaskService.createJob(context);
     }
+
+    private void checkTapeStatus(CreateRestoreTaskRequest request) {
+        Copy copy = copyRestApi.queryCopyByID(request.getCopyId(), false);
+        if (!StringUtils.equals(copy.getGeneratedBy(), CopyGeneratedByEnum.BY_TAPE_ARCHIVE.value())) {
+            log.info("Copy:{} is not tape generated, skip!", request.getCopyId());
+            return;
+        }
+        DmeResponse<JSONObject> jsonObjectDmeResponse = dmeTapeRestApi.queryTapeStatus(request.getCopyId());
+        JSONObject data = jsonObjectDmeResponse.getData();
+        if (VerifyUtil.isEmpty(data)) {
+            return;
+        }
+        JSONObject remoteLocation = Optional.ofNullable(data.getJSONObject("RemoteLocation"))
+            .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST));
+        JSONArray medias = Optional.ofNullable(remoteLocation.getJSONArray("Medias"))
+            .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR));
+        Iterator iterator = medias.iterator();
+        Map<String, List<String>> map = new HashMap<>();
+        while (iterator.hasNext()) {
+            Object next = iterator.next();
+            fillTapeMap(map, next);
+        }
+        if (!VerifyUtil.isEmpty(map)) {
+            String codeParam = convertMapToString(map);
+            throw new LegoCheckedException(RestoreTaskErrorCode.RESTORE_TAPE_OFFLINE, new String[] {codeParam},
+                "Tape status offline!");
+        }
+    }
+
+    private void fillTapeMap(Map<String, List<String>> map, Object next) {
+        String tapeName;
+        if (next instanceof JSONObject) {
+            JSONObject n = ((JSONObject) next);
+            int status = n.getInt("Status");
+            String tapeID = n.getString("TapeID");
+            if (status == TapeStatus.NOT_IN_LIBRARY.getValue() && !VerifyUtil.isEmpty(tapeID)) {
+                tapeName = n.getString("TapeSetName");
+                List<String> offlineTapeList = map.get(tapeName);
+                if (VerifyUtil.isEmpty(offlineTapeList)) {
+                    offlineTapeList = new ArrayList<>();
+                    offlineTapeList.add(tapeID);
+                    map.put(tapeName, offlineTapeList);
+                } else {
+                    offlineTapeList.add(tapeID);
+                }
+            }
+        }
+    }
+
+    private String convertMapToString(Map<String, List<String>> map) {
+        // 使用Stream API转换Map为字符串形式:带库名称：磁带序号；带库名称：磁带序号
+        return map.entrySet().stream()
+                .map(entry -> entry.getKey() + ":" + entry.getValue())
+                .collect(Collectors.joining("; "));
+    }
+
 
     private void checkSubObjectSize(List<String> subObjects) {
         if (VerifyUtil.isEmpty(subObjects)) {
@@ -546,7 +627,16 @@ public class RestoreTaskManager {
             Optional<StorageUnitVo> storageUnit = storageUnitService.getStorageUnitById(copy.getStorageUnitId());
             String importEsn = storageUnit.map(StorageUnitVo::getDeviceId)
                 .orElse(findEsnInRepo(restoreTask.getRepositories()));
-            restoreTask.getAdvanceParams().put(RestoreConstant.IMPORT_RESTORE_ESN, importEsn);
+            restoreTask.getAdvanceParams().put(RestoreConstant.CERTAIN_DEVICE_RESTORE_ESN, importEsn);
+            restoreTask.getAdvanceParams().put(RestoreConstant.CERTAIN_DEVICE_RESTORE_POOL,
+                    storageUnit.map(StorageUnitVo::getPoolId).orElse(getStorageRestorePool(importEsn)));
+        }
+        if (CopyGeneratedByEnum.BY_TAPE_ARCHIVE.value().equals(copy.getGeneratedBy())
+            && memberClusterService.clusterEstablished()) {
+            String currentEsn = memberClusterService.getCurrentClusterEsn();
+            restoreTask.getAdvanceParams().put(RestoreConstant.CERTAIN_DEVICE_RESTORE_ESN, currentEsn);
+            restoreTask.getAdvanceParams()
+                .put(RestoreConstant.CERTAIN_DEVICE_RESTORE_POOL, getStorageRestorePool(currentEsn));
         }
         restoreTask.setAgents(
             restoreResourceService.queryEndpoints(restoreTask.getAdvanceParams(), copy.getResourceSubType(),
@@ -557,6 +647,11 @@ public class RestoreTaskManager {
         RestoreTask task = provider.initialize(restoreTask);
         paramCorrection(task);
         opServiceHelper.injectVpcInfoForRestore(restoreTask);
+    }
+
+    private String getStorageRestorePool(String importEsn) {
+        List<StorageUnitVo> storageUnits = storageUnitService.getStorageUnitByEsn(importEsn);
+        return VerifyUtil.isEmpty(storageUnits) ? DEFAULT_STORAGE_POOL : storageUnits.get(0).getPoolId();
     }
 
     private String findEsnInRepo(List<StorageRepository> storageRepositories) {

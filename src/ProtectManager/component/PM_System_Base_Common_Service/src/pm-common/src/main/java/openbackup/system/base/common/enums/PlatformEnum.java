@@ -21,7 +21,7 @@ import lombok.Getter;
 @Getter
 public enum PlatformEnum {
     OCEAN_PROTECT("OceanProtect"),
-    CYBER_ENGINE("CyberEngine"),
+    CYBER_ENGINE("OceanCyber"),
     HUAWEI_CLOUD_STACK("HuaweiCloudStack");
     private final String name;
 

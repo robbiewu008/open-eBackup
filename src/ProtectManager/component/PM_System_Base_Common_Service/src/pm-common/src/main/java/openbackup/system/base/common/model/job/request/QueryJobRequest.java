@@ -12,7 +12,6 @@
 */
 package openbackup.system.base.common.model.job.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -30,11 +29,8 @@ import javax.validation.constraints.Size;
 @Data
 @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class QueryJobRequest {
-    @Size(max = 32)
+    @Size(max = 256)
     private List<String> types;
-
-    @JsonProperty("excludeTypes")
-    private boolean isExcludeTypes;
 
     @Size(max = 1024)
     private List<String> sourceTypes;
@@ -69,7 +65,7 @@ public class QueryJobRequest {
     @Size(max = 1024)
     private String sourceLocation;
 
-    @Size(max = 64)
+    @Size(max = 256)
     private String sourceId;
 
     @Size(max = 256)
@@ -151,4 +147,9 @@ public class QueryJobRequest {
      * 是否用于恢复演练报表
      */
     private boolean isForExerciseReport;
+
+    /**
+     * 国际化所用语言
+     */
+    private String lang = "EN";
 }

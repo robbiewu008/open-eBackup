@@ -23,6 +23,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConstants;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.redis.plugin.constant.RedisConstant;
@@ -66,6 +67,8 @@ public class RedisConnectionCheckerTest {
 
     private EncryptorService encryptorService;
 
+    private ResourceService resourceService;
+
     @Before
     public void setUp() {
         ProtectedEnvironmentRetrievalsService environmentRetrievalsService = PowerMockito.mock(
@@ -74,8 +77,9 @@ public class RedisConnectionCheckerTest {
         redisService = PowerMockito.mock(RedisService.class);
         kerberosService = PowerMockito.mock(KerberosService.class);
         encryptorService = PowerMockito.mock(EncryptorService.class);
+        resourceService = PowerMockito.mock(ResourceService.class);
         redisConnectionChecker = new RedisConnectionChecker(environmentRetrievalsService, agentUnifiedService,
-            redisService, kerberosService, encryptorService);
+            redisService, kerberosService, encryptorService, resourceService);
     }
 
     /**

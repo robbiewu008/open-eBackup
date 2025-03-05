@@ -17,10 +17,6 @@ import lombok.Setter;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 /**
  * pacific节点业务网络信息
  *
@@ -29,14 +25,11 @@ import javax.validation.constraints.Size;
 @Setter
 public class PacificNodeNetworkInfo {
     // 备份业务网络信息
-    @NotNull
-    @Size(min = 1)
     private List<PacificIpInfo> backupIpInfoList;
 
-    @NotNull
     // 归档业务网络信息
     private List<PacificIpInfo> archiveIpInfoList;
 
-    @Nullable
+    // 复制业务网络信息
     private List<PacificIpInfo> replicationIpInfoList;
 }

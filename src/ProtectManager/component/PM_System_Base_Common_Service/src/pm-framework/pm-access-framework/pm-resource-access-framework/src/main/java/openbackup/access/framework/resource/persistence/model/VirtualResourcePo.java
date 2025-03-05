@@ -101,4 +101,9 @@ public class VirtualResourcePo {
      * 虚拟机instance Id
      */
     private String instanceId;
+
+    /**
+     * 虚拟机设置中引导选项中的固件信息，如"bios"
+     */
+    private String firmware;
 }

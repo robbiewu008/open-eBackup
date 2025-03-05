@@ -331,4 +331,9 @@ public class OpenstackConstant {
      * 生产存储剩余容量阈值
      */
     public static final String AVAILABLE_CAPACITY_THRESHOLD = "available_capacity_threshold";
+
+    /**
+     * appLabel Type OpenStack
+     */
+    public static final String APPLABEL_OPENSTACK = "\"appLabel\":\"OpenStack\"";
 }

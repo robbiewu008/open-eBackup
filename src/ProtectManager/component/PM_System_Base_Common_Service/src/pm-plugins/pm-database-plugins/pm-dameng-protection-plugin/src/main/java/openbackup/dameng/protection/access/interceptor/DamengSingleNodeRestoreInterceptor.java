@@ -12,6 +12,8 @@
 */
 package openbackup.dameng.protection.access.interceptor;
 
+import com.google.common.collect.Maps;
+
 import lombok.extern.slf4j.Slf4j;
 import openbackup.dameng.protection.access.constant.DamengConstant;
 import openbackup.dameng.protection.access.service.DamengService;
@@ -79,6 +81,10 @@ public class DamengSingleNodeRestoreInterceptor extends AbstractDbRestoreInterce
 
     @Override
     public RestoreTask initialize(RestoreTask task) {
+        Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElse(Maps.newHashMap());
+        // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        task.setAdvanceParams(advanceParams);
         // 新位置恢复高级参数校验
         checkAdvanceParams(task);
         // 归档副本恢复校验

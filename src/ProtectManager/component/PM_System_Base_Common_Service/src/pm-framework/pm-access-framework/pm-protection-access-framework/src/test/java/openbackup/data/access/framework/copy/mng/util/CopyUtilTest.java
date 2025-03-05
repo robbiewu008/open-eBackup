@@ -18,6 +18,7 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.util.BeanTools;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -199,5 +200,23 @@ public class CopyUtilTest {
         copy3.setProperties(properties3);
         OptionalInt format3 = CopyUtil.getFormat(copy3);
         Assert.assertEquals(format3.getAsInt(), 1);
+    }
+
+    /**
+     * 用例场景：获取副本校验状态
+     * 前置条件：无
+     * 检查点：从副本properties属性中获取副本校验状态，若无则返回empty
+     */
+    @Test
+    public void get_verify_status_success_from_copy() {
+        Copy copy1 = new Copy();
+        String verifyStatus1 = CopyUtil.getVerifyStatus(copy1);
+        Assert.assertTrue(StringUtils.isBlank(verifyStatus1));
+
+        Copy copy2 = new Copy();
+        String properties3 = "{\"verifyStatus\":1}";
+        copy2.setProperties(properties3);
+        String verifyStatus = CopyUtil.getVerifyStatus(copy2);
+        Assert.assertEquals(verifyStatus, "1");
     }
 }
