@@ -171,6 +171,8 @@ spec:
               name: nas-path
             - mountPath: /opt/ProtectManager/
               name: pm-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
             - mountPath: /tmp
               name: pm-nginx-tmp
             - mountPath: /kmc_conf
@@ -203,7 +205,7 @@ spec:
                 - check_health.sh
             initialDelaySeconds: 300
             periodSeconds: 35
-            timeoutSeconds: 30
+            timeoutSeconds: 35
           securityContext:
             {{- if eq $environment "Dorado" }}
             seccompProfile:
@@ -238,6 +240,11 @@ spec:
             - mountPath: /opt/cluster_config
               name: cluster-volume
               readOnly: true
+            - mountPath: /opt/network_config
+              name: network-volume
+              readOnly: true
+            - mountPath: /opt/pm_variable_parameter_config
+              name: pm-variable-parameter-volume
             - mountPath: /OSM/conf
               name: dorado-config-dir
               readOnly: true
@@ -408,6 +415,12 @@ spec:
         - name: cluster-volume
           configMap:
             name: cluster-conf
+        - name: network-volume
+          configMap:
+            name: network-conf
+        - name: pm-variable-parameter-volume
+          configMap:
+            name: pm-variable-parameter-conf
         - name: config-volume
           configMap:
             name: protect-manager-conf

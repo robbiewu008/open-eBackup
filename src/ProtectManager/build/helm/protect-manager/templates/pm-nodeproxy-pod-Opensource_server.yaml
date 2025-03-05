@@ -190,6 +190,9 @@ spec:
         - name: network-conf
           configMap:
             name: network-conf
+        - name: pm-variable-parameter-volume
+          configMap:
+            name: pm-variable-parameter-conf
         - name: cluster-conf
           configMap:
             name: cluster-conf
