@@ -353,7 +353,9 @@ export const allAppType = {
     ApplicationType.NASFileSystem,
     ApplicationType.NASShare,
     ApplicationType.CommonShare,
-    ApplicationType.Volume
+    ApplicationType.Volume,
+    ApplicationType.AntDB,
+    ApplicationType.Saponoracle
   ],
   virtualCloudApp: [
     ApplicationType.Vmware,
@@ -815,3 +817,11 @@ export enum ClusterEnvironment {
 export const MultiClusterStatus = {
   nodeStatus: []
 };
+
+export enum ResourceDetailType {
+  nutanixNetwork = 'NutanixNetwork',
+  portGroup = 'PortGroup',
+  nutanixStorageContainer = 'NutanixStorageContainer',
+  storagePool = 'StoragePool',
+  apsDisk = 'APS-disk'
+}

@@ -10,15 +10,16 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FilesetRestoreComponent } from './fileset-restore.component';
+import { NgModule } from '@angular/core';
 import { BaseModule } from 'app/shared';
+import { ProTableModule } from 'app/shared/components/pro-table';
 import { ResourceFilterModule } from 'app/shared/components/resource-filter/resource-filter.module';
+import { FilesetRestoreComponent } from './fileset-restore.component';
 
 @NgModule({
   declarations: [FilesetRestoreComponent],
-  imports: [CommonModule, BaseModule, ResourceFilterModule],
+  imports: [CommonModule, BaseModule, ResourceFilterModule, ProTableModule],
   exports: [FilesetRestoreComponent]
 })
 export class FilesetRestoreModule {}

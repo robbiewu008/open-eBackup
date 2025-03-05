@@ -45,7 +45,8 @@
 
 
 <ng-template #nutanixStatusTpl let-item>
-    <aui-status [value]="item.extendInfo?.state" [type]="subType === dataMap.Resource_Type.nutanixHost.value ? 'nutanixHostStatus' : 'nutanixVmStatus'"></aui-status>
+    <aui-status [value]="item.extendInfo?.status"
+        [type]="subType === dataMap.Resource_Type.nutanixHost.value ? 'nutanixHostStatus' : 'nutanixVmStatus'"></aui-status>
 </ng-template>
 
 <ng-template #rhvVersionTpl let-item>
@@ -57,6 +58,25 @@
         <lv-tag [ngModel]="item?.showLabelList" [lv-tooltip]="TagTpl"></lv-tag>
         <ng-template #TagTpl>
             <lv-tag [ngModel]="item?.hoverLabelList"></lv-tag>
+        </ng-template>
+    </ng-container>
+</ng-template>
+
+<ng-template #cnwareTagTpl let-item>
+    <ng-container *ngIf="item.allTags?.length; else emptyTpl">
+        <lv-tag [ngModel]="item.showTagList" [lvExtraContent]="extTpl"
+            lvMaxWidth="{{item.allTags.length > 1 ? 100 : 140}}"></lv-tag>
+        <ng-template #extTpl>
+            <lv-tag [ngModel]="item.tagNumList" [lvTagTemplate]="customTpl"></lv-tag>
+            <ng-template #customTpl let-tag>
+                <span lv-overflow [lv-tooltip]="allTagTpl" class="aui-link" lvTooltipPosition="right"
+                    lvTooltipTrigger="click" lvTooltipClassName="cnware-tag-tip">
+                    {{tag.label}}
+                </span>
+            </ng-template>
+        </ng-template>
+        <ng-template #allTagTpl>
+            <lv-tag [ngModel]="item.allTags"></lv-tag>
         </ng-template>
     </ng-container>
 </ng-template>

@@ -95,7 +95,7 @@ export class ModifyResourceComponent implements OnInit {
         hostId: this.data.uuid
       })
       .subscribe(res => {
-        const resourceArr = [];
+        let resourceArr = [];
         each(res as any, item => {
           resourceArr.push({
             ...item,
@@ -115,6 +115,9 @@ export class ModifyResourceComponent implements OnInit {
               };
             })
           });
+          resourceArr = resourceArr.filter(
+            item => item.value !== 'VMware' && item.children.length > 0
+          );
           this.treeData = resourceArr;
           this.updateData();
         });

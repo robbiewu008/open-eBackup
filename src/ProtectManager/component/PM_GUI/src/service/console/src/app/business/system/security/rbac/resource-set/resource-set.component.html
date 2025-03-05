@@ -53,21 +53,22 @@
 
 <ng-template #nameTpl let-item>
   <lv-group lvGutter="8px">
-    <span
-      class="aui-link"
-      (click)="getDetail(item)"
-      lv-overflow
-      >{{ item.name }}</span
-    >
+    <span class="aui-link" (click)="getDetail(item)" lv-overflow>{{
+      item.name
+    }}</span>
     <lv-tag
       *ngIf="item?.isDefault && !item?.isPublic"
       [ngModel]="[{ label: i18n.get('system_default_label') }]"
+      lv-tooltip="{{ 'system_resourceset_default_tip_label' | i18n }}"
+      lvTooltipTheme="light"
     ></lv-tag>
     <lv-tag
       *ngIf="item?.isDefault && item?.isPublic"
       [ngModel]="[
         { label: i18n.get('system_resourceset_default_public_label') }
       ]"
+      lv-tooltip="{{ 'system_resourceset_default_public_tip_label' | i18n }}"
+      lvTooltipTheme="light"
     ></lv-tag>
   </lv-group>
 </ng-template>

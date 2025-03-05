@@ -42,7 +42,7 @@
     <lv-form-item>
         <lv-form-label>
             {{'common_limit_rate_policy_single_label' | i18n}}
-            <i lv-icon="aui-icon-help" lv-tooltip="{{'common_limit_rate_policy_tip_label' | i18n}}"
+            <i lv-icon="aui-icon-help" [lv-tooltip]="limitTooltip"
             lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint" lvColorState='true'></i>
         </lv-form-label>
         <lv-form-control>
@@ -156,4 +156,8 @@
 
 <ng-template #clientNetworkGroupTipTpl>
     <span [innerHTML]="clientNetworkGroupTipLabel"></span>
+</ng-template>
+
+<ng-template #limitTooltip>
+    <span [innerHTML]="'common_limit_rate_policy_tip_label' | i18n"></span>
 </ng-template>

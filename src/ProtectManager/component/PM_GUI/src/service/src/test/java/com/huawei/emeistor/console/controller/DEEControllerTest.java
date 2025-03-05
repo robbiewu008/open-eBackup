@@ -15,6 +15,7 @@ package com.huawei.emeistor.console.controller;
 import java.io.IOException;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -24,10 +25,12 @@ import static org.mockito.Mockito.verify;
 
 import com.huawei.emeistor.console.controller.request.DownloadAbnormalRequest;
 import com.huawei.emeistor.console.controller.request.ExportSuspectFileReportRequest;
+import com.huawei.emeistor.console.dao.RedisExpireDao;
 import com.huawei.emeistor.console.service.impl.CaptchaServiceImpl;
 import com.huawei.emeistor.console.service.impl.SecurityPolicyServiceImpl;
 import com.huawei.emeistor.console.service.impl.SessionServiceImpl;
 import com.huawei.emeistor.console.service.impl.UserServiceImpl;
+import com.huawei.emeistor.console.util.DownloadUtil;
 import com.huawei.emeistor.console.util.EncryptorRestClient;
 import com.huawei.emeistor.console.util.RequestUtil;
 import com.huawei.emeistor.console.util.SHA256Encryptor;
@@ -39,12 +42,14 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
+import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
@@ -57,7 +62,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {
     DEEController.class, SessionServiceImpl.class, SecurityPolicyServiceImpl.class, RestTemplate.class,
-    RequestUtil.class, UserServiceImpl.class, CaptchaServiceImpl.class, TimeoutUtils.class
+    RequestUtil.class, UserServiceImpl.class, CaptchaServiceImpl.class, TimeoutUtils.class, DownloadUtil.class
 })
 public class DEEControllerTest {
     /**
@@ -86,6 +91,9 @@ public class DEEControllerTest {
 
     @MockBean(name = "response")
     private HttpServletResponse response;
+
+    @MockBean
+    private RedisExpireDao redisExpireDao;
 
     @Test
     public void create_model_info_success() throws IOException {
@@ -165,6 +173,22 @@ public class DEEControllerTest {
         DownloadAbnormalRequest request = new DownloadAbnormalRequest();
         request.setCopyId("c524");
         deeController.downloadAbnormalReport(request, response);
+        verify(restTemplate).execute(anyString(), any(), any(), any());
+        Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
+    /**
+     * 用例场景：下载rfi
+     * 前置条件：
+     * 检查点：状态码200
+     */
+    @Test
+    public void download_rfi_success() {
+        RBucket rBucket = PowerMockito.mock(RBucket.class);
+        PowerMockito.when(redissonClient.getBucket(any())).thenReturn(rBucket);
+        HttpServletResponse response = new MockHttpServletResponse();
+        HttpServletRequest request = new MockHttpServletRequest();
+        deeController.downloadRfiFile(request, response);
         verify(restTemplate).execute(anyString(), any(), any(), any());
         Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
     }

@@ -25,6 +25,7 @@ import {
   DataMap,
   DataMapService,
   DATE_PICKER_MODE,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -87,6 +88,7 @@ import {
   values
 } from 'lodash';
 import { map } from 'rxjs/operators';
+import { GetLabelOptionsService } from 'app/shared/services/get-labels.service';
 
 export interface TemplateParams {
   activeIndex: string; // 资源类型
@@ -133,6 +135,10 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
   resourceTagTpl: TemplateRef<any>;
   @ViewChild('directoryTpl', { static: true })
   directoryTpl: TemplateRef<any>;
+  @ViewChild('tpopsVersionTpl', { static: true })
+  tpopsVersionTpl: TemplateRef<any>;
+  @ViewChild('specialVersionTpl', { static: true })
+  specialVersionTpl: TemplateRef<any>;
 
   constructor(
     private i18n: I18NService,
@@ -151,7 +157,8 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
     private warningMessageService: WarningMessageService,
     private takeManualBackupService: TakeManualBackupService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit() {
@@ -351,13 +358,17 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
                   hasProtectPermission(val)
                 );
               })
-            ) !== size(data) || !size(data)
+            ) !== size(data) ||
+            !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
         },
         permission: OperateItems.DeactivateProtection,
         disabledTips: this.i18n.get(
           'protection_partial_resources_deactive_label'
         ),
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         label: this.i18n.get('protection_deactive_protection_label'),
         onClick: data => {
           this.protectService
@@ -373,11 +384,17 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
         id: 'recovery',
         disableCheck: data => {
           return (
-            !size(data) || some(data, item => !hasRecoveryPermission(item))
+            !size(data) ||
+            some(data, item => !hasRecoveryPermission(item)) ||
+            this.specialDisableConditions(data)
           );
         },
         permission: OperateItems.RestoreCopy,
-        label: this.i18n.get('common_restore_label'),
+        label:
+          this.configParams.activeIndex ===
+          DataMap.Resource_Type.oraclePDB.value
+            ? this.i18n.get('common_pdb_set_restore_label')
+            : this.i18n.get('common_restore_label'),
         onClick: data =>
           this.getResourceDetail({
             ...data[0],
@@ -413,7 +430,8 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
                   item.linkStatus !==
                   DataMap.resource_LinkStatus_Special.normal.value
               )) ||
-            this.getProtectionLinkCheck(data)
+            this.getProtectionLinkCheck(data) ||
+            this.specialDisableConditions(data)
           );
         },
         permission: OperateItems.ManualBackup,
@@ -471,7 +489,8 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
               data,
               item =>
                 item.isAllowRestore === 'true' || !hasResourcePermission(item)
-            )
+            ) ||
+            this.specialDisableConditions(data)
           );
         },
         permission: OperateItems.Protection,
@@ -534,10 +553,7 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
             size(
               _filter(data, val => {
                 return (
-                  isEmpty(val.sla_id) &&
-                  val.protection_status !==
-                    DataMap.Protection_Status.creating.value &&
-                  hasResourcePermission(val)
+                  this.disableConditions(val) && hasResourcePermission(val)
                 );
               })
             ) !== size(data) || !size(data)
@@ -659,6 +675,15 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
         }
       },
       {
+        key: 'tpopsVersion',
+        name: this.i18n.get('protection_project_version_label'),
+        cellRender: this.tpopsVersionTpl,
+        filter: {
+          type: 'search',
+          filterMode: 'contains'
+        }
+      },
+      {
         key: 'status',
         name: this.i18n.get('common_status_label'),
         filter: {
@@ -672,6 +697,7 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
           config: this.dataMapService.toArray('gaussDBInstance')
         }
       },
+
       {
         key: 'clusterType',
         name: this.i18n.get('protection_cluster_type_label')
@@ -753,7 +779,7 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
       },
       {
         key: 'sapsid',
-        name: this.i18n.get('protection_sap_instance_id_label'), // 待翻译
+        name: this.i18n.get('protection_sap_instance_id_label'),
         filter: {
           type: 'search',
           filterMode: 'contains'
@@ -884,7 +910,8 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
         filter: {
           type: 'search',
           filterMode: 'contains'
-        }
+        },
+        cellRender: this.specialVersionTpl
       },
       {
         key: 'sla_name',
@@ -956,8 +983,11 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -1045,6 +1075,43 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
     };
   }
 
+  disableConditions(val) {
+    let conditions =
+      isEmpty(val.sla_id) &&
+      val?.protection_status !== DataMap.Protection_Status.creating.value;
+    if (
+      val?.subType === DataMap.Resource_Type.lightCloudGaussdbInstance.value
+    ) {
+      conditions =
+        isEmpty(val.sla_id) &&
+        val?.protectionStatus !== DataMap.Protection_Status.creating.value &&
+        val?.instanceStatus === DataMap.gaussDBInstanceStatus.removed.value;
+    }
+    return conditions;
+  }
+
+  specialDisableConditions(data) {
+    if (
+      includes(
+        [DataMap.Resource_Type.lightCloudGaussdbInstance.value],
+        data[0].subType
+      ) &&
+      some(data, item =>
+        includes(
+          [
+            DataMap.gaussDBInstanceStatus.offline.value,
+            DataMap.gaussDBInstanceStatus.removed.value
+          ],
+          item?.instanceStatus
+        )
+      )
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   addTag(data) {
     this.setResourceTagService.setTag({
       isAdd: true,
@@ -1123,8 +1190,7 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
         sourceId: item.uuid,
         types: [DataMap.Job_type.backup_job.value],
         orderType: 'desc',
-        orderBy: 'startTime',
-        excludeTypes: false
+        orderBy: 'startTime'
       };
       this.jobApiService.queryJobsUsingGET(params).subscribe(res => {
         this.parseVolumeRegister(res, item);
@@ -1259,16 +1325,17 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
       if (conditionsTemp.isAllowRestore) {
         if (conditionsTemp.isAllowRestore.length === 3) {
           delete conditionsTemp.isAllowRestore;
-        } else if (conditionsTemp.isAllowRestore.includes('false')) {
+        } else if (conditionsTemp.isAllowRestore.includes('true')) {
           conditionsTemp.isAllowRestore[0] = ['!='];
-          conditionsTemp.isAllowRestore[1] = 'true';
+          conditionsTemp.isAllowRestore[1] = 'false';
         }
       }
 
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -1546,7 +1613,6 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
       case DataMap.Resource_Type.volume.value:
       case DataMap.Resource_Type.commonShare.value:
       case DataMap.Resource_Type.ndmp.value:
-      case DataMap.Resource_Type.oraclePDB.value:
         return this.i18n.get('common_create_label');
       default:
         return this.i18n.get('common_register_label');
@@ -1585,7 +1651,7 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
       }
       case DataMap.Resource_Type.volume.value:
       case DataMap.Resource_Type.ActiveDirectory.value:
-        return this.i18n.get('protection_host_name_label');
+        return this.i18n.get('protection_client_name_label');
       case DataMap.Resource_Type.SQLServerClusterInstance.value:
       case DataMap.Resource_Type.SQLServerInstance.value:
       case DataMap.Resource_Type.SQLServerDatabase.value:
@@ -1795,14 +1861,23 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
         assign(item, {
           linkStatus: item.extendInfo?.linkStatus,
           parentName: item.environment?.name,
-          mysql_version: item.extendInfo?.mysql_version
+          mysql_version: item.extendInfo?.mysql_version,
+          incompatibleVersion:
+            !isEmpty(item.extendInfo?.mysql_version) &&
+            item.extendInfo?.mysql_version === 'mysql-server-8.0.33'
         });
         break;
       case DataMap.Resource_Type.tidbDatabase.value:
-      case DataMap.Resource_Type.AntDB.value:
         assign(item, {
           linkStatus: item.extendInfo?.linkStatus,
           parentName: item.environment?.name
+        });
+        break;
+      case DataMap.Resource_Type.AntDB.value:
+        assign(item, {
+          linkStatus: item.extendInfo?.linkStatus,
+          parentName: item.environment?.name,
+          version: item.extendInfo?.antdb_version
         });
         break;
       case DataMap.Resource_Type.tidbCluster.value:
@@ -1826,7 +1901,7 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
           status: item.extendInfo?.status,
           region: item.extendInfo?.region,
           pmAddress: item.extendInfo?.pmAddress,
-          isAllowRestore: get(item, 'extendInfo.isAllowRestore', 'false'),
+          isAllowRestore: get(item, 'extendInfo.isAllowRestore', 'true'),
           instanceStatus: get(item, 'extendInfo.instanceStatus', '1')
         });
         break;
@@ -1887,6 +1962,7 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
         return ProtectResourceCategory.SQLServer;
       case DataMap.Resource_Type.tidbCluster.value:
       case DataMap.Resource_Type.tidbDatabase.value:
+      case DataMap.Resource_Type.tidbTable.value:
       case DataMap.Resource_Type.volume.value:
       case DataMap.Resource_Type.ActiveDirectory.value:
       case DataMap.Resource_Type.ObjectSet.value:
@@ -1896,6 +1972,7 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
       case DataMap.Resource_Type.tdsqlInstance.value:
       case DataMap.Resource_Type.tdsqlDistributedInstance.value:
       case DataMap.Resource_Type.ndmp.value:
+      case DataMap.Resource_Type.lightCloudGaussdbInstance.value:
         return this.configParams.activeIndex;
       default:
         return ProtectResourceCategory.GeneralDB;

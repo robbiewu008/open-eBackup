@@ -30,6 +30,7 @@ import {
   DataMap,
   DataMapService,
   DATE_PICKER_MODE,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -79,6 +80,7 @@ import {
 } from 'lodash';
 import { SetQuotaComponent } from './set-quota/set-quota.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-openstack-list',
@@ -127,7 +129,8 @@ export class OpenstackListComponent
     private detailService: ResourceDetailService,
     private takeManualBackupService: TakeManualBackupService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit(): void {
@@ -290,9 +293,12 @@ export class OpenstackListComponent
               })
             ) !== size(data) ||
             !isUndefined(find(data, v => v.inGroup)) ||
-            this.disableProtectStatus(data)
+            this.disableProtectStatus(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
         },
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         onClick: data => {
           this.protectService
             .deactiveProtection(_map(data, 'uuid'), _map(data, 'name'))
@@ -409,6 +415,8 @@ export class OpenstackListComponent
             )
           );
 
+    const tdAlign =
+      this.resType === ResourceType.OpenStackCloudServer ? '0px' : false;
     let cols: TableCols[] = [
       {
         key: 'uuid',
@@ -511,8 +519,11 @@ export class OpenstackListComponent
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -521,6 +532,7 @@ export class OpenstackListComponent
         width: 130,
         hidden: 'ignoring',
         name: this.i18n.get('common_operation_label'),
+        fixRight: tdAlign,
         cellRender: {
           type: 'operation',
           config: {
@@ -558,7 +570,8 @@ export class OpenstackListComponent
         autoPolling: CommonConsts.TIME_INTERVAL_RESOURCE,
         scrollFixed: true,
         colDisplayControl: {
-          ignoringColsType: 'hide'
+          ignoringColsType: 'hide',
+          tdAlign: tdAlign
         },
         fetchData: (filter: Filters, args: {}) => {
           this.getData(filter, args);
@@ -681,9 +694,10 @@ export class OpenstackListComponent
         delete conditionsTemp.endpoint;
       }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;

@@ -18,6 +18,8 @@ import { CustomModalOperateModule } from 'app/shared/components';
 import { MultiClusterSwitchModule } from 'app/shared/components/multi-cluster-switch/multi-cluster-switch.module';
 import { ProButtonModule } from 'app/shared/components/pro-button';
 import { ProTableModule } from 'app/shared/components/pro-table';
+import { BackupStorageUnitModule } from '../../infrastructure/backup-storage/backup-storage-unit/backup-storage-unit.module';
+import { DistributedNasListModule } from '../../infrastructure/backup-storage/distributed-nas-list.module';
 import { RbacOverviewTagComponent } from './rbac-overview-tag/rbac-overview-tag.component';
 import { RbacRoutingModule } from './rbac-routing.module';
 import { RbacComponent } from './rbac.component';
@@ -66,7 +68,9 @@ import { UsersComponent } from './users/users.component';
     ResourceSetDetailModule,
     CardModule,
     AlertModule,
-    LinkModule
+    LinkModule,
+    DistributedNasListModule,
+    BackupStorageUnitModule
   ]
 })
 export class RbacModule {}

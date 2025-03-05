@@ -71,20 +71,16 @@
                                 replicationItem.qos_id})['name']: '--':'--'}}
                             </lv-form-control>
                         </lv-form-item>
-                        <lv-form-item>
-                            <lv-form-label>{{(isDataBackup
-                                ? 'protection_link_redelete_label'
-                                : 'protection_data_redelete_label'
-                                ) | i18n}}</lv-form-label>
+                        <lv-form-item *ngIf="!isDistributed">
+                            <lv-form-label>{{'protection_link_redelete_label'
+                                | i18n}}</lv-form-label>
                             <lv-form-control>
                                 {{replicationItem.link_deduplication | textMap: 'Switch_Status'}}
                             </lv-form-control>
                         </lv-form-item>
                         <lv-form-item>
-                            <lv-form-label>{{(isDataBackup
-                                ? 'system_link_compression_label'
-                                : 'system_data_compression_label'
-                                ) | i18n}}</lv-form-label>
+                            <lv-form-label>{{ 'system_link_compression_label'
+                                | i18n}}</lv-form-label>
                             <lv-form-control>
                                 {{replicationItem.link_compression | textMap: 'Switch_Status'}}
                             </lv-form-control>

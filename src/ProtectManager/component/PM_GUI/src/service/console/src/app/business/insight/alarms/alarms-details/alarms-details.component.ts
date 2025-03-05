@@ -21,7 +21,6 @@ import {
   DataMap,
   MODAL_COMMON,
   ProtectedResourceApiService,
-  SanConfigManagementService,
   SYSTEM_TIME
 } from 'app/shared';
 import { ExportFilesService } from 'app/shared/components/export-files/export-files.component';
@@ -124,7 +123,7 @@ export class AlarmsDetailsComponent implements OnInit {
         label: this.occurred,
         value: this.isAlarm
           ? this.getAlarmTimeStr(this.data.alarmTime)
-          : this.data.alarmTimeStr
+          : this.data.firstTimeStr
       },
       {
         label: this.i18n.get('protection_equipment_name_label'),

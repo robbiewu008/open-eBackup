@@ -78,6 +78,7 @@ export class RestoreComponent implements OnInit {
   @Input() rowCopy: any;
   @Input() childResType: string;
   @Input() restoreType: string;
+  _isEmpty = isEmpty;
   formGroup: FormGroup;
   isDrill;
   restoreLocationType = RestoreV2LocationType;
@@ -88,8 +89,11 @@ export class RestoreComponent implements OnInit {
   sourceSelection = [];
   targetData = [];
   logCopyTimeStamp = [];
-  isExchangeDatabaseAndLogCopy = false; // Exchange数据库的日志副本需要查询sqlite
+  isExchangeDatabase = false;
+  isSingleAndDag = false;
+  isLogCopy = false; // Exchange单机/DAG/数据库的日志副本从时间线点进来需要查询sqlite
   isNeedSelectTimeStamp = false; // 接口正常返回时，才能手动选择时间
+  logCopyTimeStampCacheData = []; // 缓存接口返回的结果，单机和可用性组需要使用
   pageSizeS = CommonConsts.PAGE_SIZE;
   pageIndexS = CommonConsts.PAGE_START;
   pageSizeT = CommonConsts.PAGE_SIZE; // target pageSize
@@ -162,7 +166,7 @@ export class RestoreComponent implements OnInit {
     this.initConfig();
     this.initForm();
     this.getTargetHosts();
-    if (this.isExchangeDatabaseAndLogCopy) {
+    if (this.isLogCopy) {
       this.getLogCopyRestoreTimeStamp();
     }
   }
@@ -199,6 +203,18 @@ export class RestoreComponent implements OnInit {
     this.rowCopyProperties = isString(this.rowCopy.properties)
       ? JSON.parse(this.rowCopy.properties)
       : {};
+    if (
+      [DataMap.Resource_Type.ExchangeDataBase.value].includes(this.childResType)
+    ) {
+      this.isExchangeDatabase = true;
+    } else if (
+      [
+        DataMap.Resource_Type.ExchangeSingle.value,
+        DataMap.Resource_Type.ExchangeGroup.value
+      ].includes(this.childResType)
+    ) {
+      this.isSingleAndDag = true;
+    }
     this.hiddenDatabase =
       includes(
         [
@@ -208,7 +224,7 @@ export class RestoreComponent implements OnInit {
         this.rowCopy.generated_by
       ) ||
       this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value ||
-      DataMap.Resource_Type.ExchangeDataBase.value === this.childResType;
+      this.isExchangeDatabase;
     // restore.service里根据类型给不同宽度 这里进行限制
     this.limitWidth =
       get(this.modal, 'lvWidth', MODAL_COMMON.normalWidth) >
@@ -227,7 +243,7 @@ export class RestoreComponent implements OnInit {
     if (!this.hiddenDatabase) {
       this.getDatabases();
     }
-    if (this.childResType === DataMap.Resource_Type.ExchangeDataBase.value) {
+    if (this.isExchangeDatabase) {
       this.dbFilePathPlaceholder = this.i18n.get(
         'protection_exchange_restore_database_file_path_db_placeholder_label'
       );
@@ -242,8 +258,7 @@ export class RestoreComponent implements OnInit {
       this.childResType === DataMap.Resource_Type.ExchangeGroup.value ||
       this.rowCopyResourceProperties?.environment_sub_type ===
         DataMap.Resource_Type.ExchangeGroup.value;
-    this.isExchangeDatabaseAndLogCopy =
-      this.childResType === DataMap.Resource_Type.ExchangeDataBase.value &&
+    this.isLogCopy =
       this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value &&
       !isEmpty(get(this.rowCopy, 'restoreTimeStamp', ''));
   }
@@ -292,7 +307,7 @@ export class RestoreComponent implements OnInit {
       executeScript: ['', scriptValidator]
     });
     this.listenForm();
-    if (this.childResType === DataMap.Resource_Type.ExchangeDataBase.value) {
+    if (this.isExchangeDatabase) {
       this.formGroup
         .get('new_db_name')
         .setValidators([
@@ -527,44 +542,91 @@ export class RestoreComponent implements OnInit {
         ];
   }
 
+  getTimestampsByDatabaseName(data) {
+    return get(JSON.parse(get(data, 'extendInfo', '{}')), 'logtimes', []);
+  }
+
   getLogCopyRestoreTimeStamp() {
     const params = {
       parentPath: `/logtime`, // 固定的请求名
       copyId: this.rowCopy.uuid,
       pageNo: CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE,
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
       akDoException: false,
       akOperationTips: false
     };
-    this.copyControllerService.ListCopyCatalogs(params).subscribe({
-      next: res => {
-        const data = first(res.records);
-        const timestamps = get(
-          JSON.parse(get(data, 'extendInfo', '{}')),
-          'logtimes',
-          []
-        );
-        if (isEmpty(timestamps)) {
+    this.appUtilsService.getResourceByRecursion(
+      params,
+      (param: ListCopyCatalogsParams) =>
+        this.copyControllerService.ListCopyCatalogs(param),
+      resource => {
+        this.logCopyTimeStampCacheData = resource;
+        if (isEmpty(resource)) {
           this.isNeedSelectTimeStamp = false;
           return;
         }
         this.isNeedSelectTimeStamp = true;
+        this.sourceData = map(resource, item => {
+          return {
+            key: item.path,
+            value: item.path,
+            label: item.path,
+            isLeaf: true
+          };
+        });
         this.cdr.markForCheck();
-        this.formGroup.addControl(
-          'log_copy_restore_time_stamp',
-          new FormControl('', {
-            validators: [this.baseUtilService.VALID.required()]
-          })
-        );
-        this.findClosestTimestamps(
-          timestamps,
-          Number(get(this.rowCopy, 'restoreTimeStamp'))
-        );
-      },
-      error: err => {
-        this.isNeedSelectTimeStamp = false;
+        this.addFormControlToLogCopy();
       }
-    });
+    );
+  }
+
+  private addFormControlToLogCopy() {
+    // 单机/DAG/数据库的日志副本都需要选择日志文件时间
+    this.formGroup.addControl(
+      'log_copy_restore_time_stamp',
+      new FormControl('', {
+        validators: [this.baseUtilService.VALID.required()]
+      })
+    );
+    if (this.isExchangeDatabase) {
+      // 数据库恢复的是单库。所以是直接选择日志文件时间
+      const timestamps = this.getTimestampsByDatabaseName(
+        first(this.logCopyTimeStampCacheData)
+      );
+      this.findClosestTimestamps(
+        timestamps,
+        Number(get(this.rowCopy, 'restoreTimeStamp'))
+      );
+    } else if (this.isSingleAndDag) {
+      // 单机/DAG恢复的是多库，所以日志副本需要先指定数据库，才能选择日志文件时间
+      this.formGroup.addControl(
+        'log_copy_restore_database',
+        new FormControl('', {
+          validators: [this.baseUtilService.VALID.required()]
+        })
+      );
+      this.formGroup
+        .get('log_copy_restore_database')
+        .valueChanges.subscribe(res => {
+          this.formGroup.get('log_copy_restore_time_stamp').setValue('');
+          this.sourceSelection = [];
+          if (!isEmpty(res)) {
+            this.sourceSelection = [
+              {
+                name: res,
+                new_db_name: res
+              }
+            ];
+            const timestamps = this.getTimestampsByDatabaseName(
+              find(this.logCopyTimeStampCacheData, { path: res })
+            );
+            this.findClosestTimestamps(
+              timestamps,
+              Number(get(this.rowCopy, 'restoreTimeStamp'))
+            );
+          }
+        });
+    }
   }
 
   // 辅助函数，用于在数组中找到更接近给定时间戳的时间戳
@@ -667,7 +729,7 @@ export class RestoreComponent implements OnInit {
         failPostScript: trim(this.formGroup.value.executeScript)
       }
     };
-    if (this.childResType === DataMap.Resource_Type.ExchangeDataBase.value) {
+    if (this.isExchangeDatabase) {
       assign(params, {
         targetObject:
           restoreLocation === RestoreV2LocationType.ORIGIN
@@ -677,15 +739,7 @@ export class RestoreComponent implements OnInit {
       assign(params.extendInfo, {
         new_db_name: trim(this.formGroup.value.new_db_name)
       });
-    } else if (
-      includes(
-        [
-          DataMap.Resource_Type.ExchangeSingle.value,
-          DataMap.Resource_Type.ExchangeGroup.value
-        ],
-        this.childResType
-      )
-    ) {
+    } else if (this.isSingleAndDag) {
       assign(params, {
         subObjects: map(this.sourceSelection, item =>
           JSON.stringify({
@@ -708,7 +762,7 @@ export class RestoreComponent implements OnInit {
       assign(params.extendInfo, {
         restoreTimestamp: timeStamp
       });
-      if (this.isExchangeDatabaseAndLogCopy && this.isNeedSelectTimeStamp) {
+      if (this.isLogCopy && this.isNeedSelectTimeStamp) {
         set(
           params,
           'extendInfo.restoreTimestamp',

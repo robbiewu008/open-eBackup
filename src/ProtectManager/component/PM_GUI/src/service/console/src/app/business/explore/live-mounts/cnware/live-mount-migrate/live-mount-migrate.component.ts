@@ -23,6 +23,7 @@ import {
   I18NService,
   LiveMountApiService,
   ProtectedResourceApiService,
+  ResourceDetailType,
   ResourceType,
   StorageLocation
 } from 'app/shared';
@@ -329,64 +330,13 @@ export class LiveMountMigrateComponent implements OnInit {
   }
 
   getResourceAgents(host) {
-    this.protectedResourceApiService
-      .ListResources({
-        pageNo: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE,
-        queryDependency: true,
-        conditions: JSON.stringify({
-          uuid: host.rootUuid
-        })
-      })
-      .subscribe((res: any) => {
-        if (first(res.records)) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getStoragePool(host.rootUuid, agentsId);
-        }
-      });
-  }
-
-  setTableDatastore() {
-    if (!isEmpty(this.tableData?.data)) {
-      each(this.tableData?.data, item => {
-        item.recoveryDatastore = '';
-      });
-      this.setDiskDatastoreOptions();
-    }
-  }
-
-  getStoragePool(envId, agentsId, recordsTemp?: any[], startPage?: number) {
-    const params = {
-      agentId: agentsId,
-      envId: envId,
-      resourceIds: [this.item?.target_resource_id],
-      pageNo: startPage || 1,
-      pageSize: 200,
-      conditions: JSON.stringify({
-        resourceType: 'StoragePool',
-        uuid: this.item?.target_resource_id
-      })
+    const targetServer = {
+      rootUuid: host.rootUuid,
+      uuid: this.item?.target_resource_id
     };
-    this.appService.ListResourcesDetails(params).subscribe(res => {
-      if (!recordsTemp) {
-        recordsTemp = [];
-      }
-      if (!isNumber(startPage)) {
-        startPage = 1;
-      }
-      recordsTemp = [...recordsTemp, ...res.records];
-      if (
-        startPage === Math.ceil(res.totalCount / 200) ||
-        res.totalCount === 0
-      ) {
+    this.appUtilsService
+      .getResourcesDetails(targetServer, ResourceDetailType.storagePool)
+      .subscribe(recordsTemp => {
         const datastores = map(recordsTemp, item => {
           const details = JSON.parse(item.extendInfo?.details || '{}');
           return assign(item, {
@@ -401,11 +351,16 @@ export class LiveMountMigrateComponent implements OnInit {
         this.cacheSelectedDatastore = [];
         this.setTableDatastore();
         this.validCheck();
-        return;
-      }
-      startPage++;
-      this.getStoragePool(envId, agentsId, recordsTemp, startPage);
-    });
+      });
+  }
+
+  setTableDatastore() {
+    if (!isEmpty(this.tableData?.data)) {
+      each(this.tableData?.data, item => {
+        item.recoveryDatastore = '';
+      });
+      this.setDiskDatastoreOptions();
+    }
   }
 
   validCheck() {

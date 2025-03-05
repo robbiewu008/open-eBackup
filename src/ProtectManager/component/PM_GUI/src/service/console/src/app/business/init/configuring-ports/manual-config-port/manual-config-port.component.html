@@ -17,6 +17,8 @@
   </div>
 </div>
 
+<lv-alert lvType="warning" *ngIf="isModify && !isWorked">{{(modifying ?
+  'common_config_logical_port_unsaved_modifying_label':'common_config_logical_port_unsaved_label')| i18n}}</lv-alert>
 <lv-alert lvType="info" *ngIf="!(isModify && !modifying)">
   {{ 'common_config_logical_port_tip_label' | i18n }}
 </lv-alert>

@@ -26,10 +26,11 @@
                 </div>
                 <div class="tree-container">
                     <ng-container *ngIf="treeData.length;else noDataTpl">
-                        <lv-tree lvCompareWith="uuid" lvSelectionAssociate="false" [lvData]='treeData' [(lvSelection)]="treeSelection"
-                            lvSelectionMode='single' [lvBeforeSelected]="beforeSelected" (lvCheck)="nodeCheck($event)"
-                            lvShowContentIcon (lvExpandedChange)="expandedChange($event)" [lvNodeTemplate]='nodeTpl'
-                            [lvScroll]='virtualScroll.scrollParamMap["cnware-tree"]' lvVirtualScroll lvShowLine>
+                        <lv-tree lvCompareWith="uuid" lvSelectionAssociate="false" [lvData]='treeData'
+                            [(lvSelection)]="treeSelection" lvSelectionMode='single' [lvBeforeSelected]="beforeSelected"
+                            (lvCheck)="nodeCheck($event)" lvShowContentIcon (lvExpandedChange)="expandedChange($event)"
+                            [lvNodeTemplate]='nodeTpl' [lvScroll]='virtualScroll.scrollParamMap["cnware-tree"]'
+                            lvVirtualScroll lvShowLine>
                         </lv-tree>
                     </ng-container>
                 </div>
@@ -39,10 +40,20 @@
                 <lv-tabs [(lvActiveIndex)]="activeIndex" class="right-tab aui-tab">
                     <ng-container *ngFor="let tab of tabs">
                         <lv-tab *ngIf="!tab.hidden" lvTitle='{{tab.label}}({{tab.resourceTotal || 0}})' [lvId]="tab.id">
-                            <aui-vir-base-table [subType]="tab.subType" [subUnitType]="tab?.subUnitType"
-                                [treeSelection]="treeSelection[0]" [extParams]="extParams"
-                                (updateTable)="updateProjectTotal($event, tab)">
-                            </aui-vir-base-table>
+                            <!-- 懒加载解决扩展列宽度问题 -->
+                            <ng-template lv-tab-lazy>
+                                <aui-vir-base-table [subType]="tab.subType" [subUnitType]="tab?.subUnitType"
+                                    [treeSelection]="treeSelection[0]" [extParams]="extParams"
+                                    (updateTable)="updateProjectTotal($event, tab)">
+                                </aui-vir-base-table>
+                            </ng-template>
+                            <!-- 目的查询所有页签总数 -->
+                            <div style="visibility: hidden;">
+                                <aui-vir-base-table [subType]="tab.subType" [subUnitType]="tab?.subUnitType"
+                                    [treeSelection]="treeSelection[0]" [extParams]="extParams"
+                                    (updateTable)="updateProjectTotal($event, tab)">
+                                </aui-vir-base-table>
+                            </div>
                         </lv-tab>
                     </ng-container>
                 </lv-tabs>
@@ -63,7 +74,8 @@
             <span class="aui-gutter-row-sm">
                 <i [lv-icon]="item.contentToggleIcon"></i>
             </span>
-            <span [ngClass]="{'tree-node-offline': item.rootNodeLinkStatus === 0}" style="margin-right:0.01rem">{{item.label}}</span>
+            <span [ngClass]="{'tree-node-offline': item.rootNodeLinkStatus === 0}"
+                style="margin-right:0.01rem">{{item.label}}</span>
         </div>
     </lv-group>
 </ng-template>

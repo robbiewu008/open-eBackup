@@ -51,6 +51,7 @@ export class ModifyRetentionPolicyComponent implements OnInit {
   isCyberEngine =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.cyberengine.value;
   helpTipsLabel = this.i18n.get('common_retention_worm_label');
+  retainedTipLabel = '';
   // 保留70年
   repOrArchiveUnitMap = {
     d: 25550,
@@ -99,6 +100,11 @@ export class ModifyRetentionPolicyComponent implements OnInit {
           ) +
           ')';
       }
+    }
+    if (this.data?.backup_type === DataMap.CopyData_Backup_Type.log.value) {
+      this.retainedTipLabel = this.i18n.get(
+        'protection_log_retention_policy_tip_label'
+      );
     }
   }
 

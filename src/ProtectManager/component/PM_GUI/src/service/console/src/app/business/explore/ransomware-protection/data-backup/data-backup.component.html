@@ -52,6 +52,18 @@
                     <aui-ransomware-backup-policy (refreshPolicy)="refreshPolicy()"></aui-ransomware-backup-policy>
                 </ng-template>
             </lv-tab>
+            <lv-tab [lvTitle]="titleTpl" [lvId]="'whiteList'">
+                <ng-template lv-tab-lazy>
+                    <aui-data-backup-white-list></aui-data-backup-white-list>
+                </ng-template>
+            </lv-tab>
         </lv-tabs>
     </div>
 </div>
+
+<ng-template #titleTpl>
+    <lv-group lvGutter="2">
+        <span>{{'explore_whitelist_label' | i18n}}</span>
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_whitelist_help_label' | i18n}}" lvColorState='true'></i>
+    </lv-group>
+</ng-template>

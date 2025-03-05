@@ -129,6 +129,9 @@
                                         </span>
                                     </lv-group>
                                 </ng-container>
+                                <lv-alert class="alertClass" *ngIf="formGroup.value.protocol === dataMap.ldapProtocol.ldaps.value" lvType="info" lvClosable="false">
+                                    <div class="form-control-input" [innerHTML]="openCertificateTip"></div>
+                                </lv-alert>
                             </lv-form-control>
                         </lv-form-item>
                         <lv-form-item>

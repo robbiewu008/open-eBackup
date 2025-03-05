@@ -36,6 +36,9 @@
 <div class="aui-header-1 aui-gutter-column-md">
     <h2>{{'common_disk_label' | i18n}}</h2>
 </div>
+<lv-alert lvType="info" lvClosable="false">
+    {{'protection_openstack_disk_tip_label' | i18n}}
+</lv-alert>
 <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
 
 <ng-template #sizeTpl let-item>

@@ -22,10 +22,10 @@
         <lv-form-control>
             <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
                 <lv-group [lvGutter]="'20px'">
-                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="disabledOrigin" [lv-tooltip]="!resourceIsExist ? 
-                        ('protection_cloud_origin_restore_disabled_label' | i18n) : 
-                        restoreToNewLocationOnly ? 
-                        ('protection_origin_restore_disabled_label'| i18n) : 
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="disabledOrigin" [lv-tooltip]="!resourceIsExist ?
+                        ('protection_cloud_origin_restore_disabled_label' | i18n) :
+                        restoreToNewLocationOnly ?
+                        ('protection_origin_restore_disabled_label'| i18n) :
                         ''">
                         {{ 'common_restore_to_origin_location_label' | i18n }}
                     </lv-radio>
@@ -50,7 +50,7 @@
         <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'cluster'" [isAgentTag]="true"></aui-select-tag>
         <lv-form-item>
             <lv-form-label lvRequired>
-                {{ 'common_target_host_label' | i18n }}
+             {{targetLabel}}
             </lv-form-label>
             <lv-form-control>
                 <lv-select formControlName="cluster" [lvOptions]="clusterOptions" lvValueKey="key" lvShowFilter

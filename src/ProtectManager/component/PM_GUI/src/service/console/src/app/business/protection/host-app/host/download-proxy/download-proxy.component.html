@@ -25,7 +25,7 @@
   </lv-form-item>
   <ng-container *ngIf="formGroup.value.backupProxyFile === dataMap.Backup_Proxy_File.DownLoad.value">
     <lv-form-item>
-      <lv-form-label lvRequired>{{'protection_proxy_type_label' | i18n}}</lv-form-label>
+      <lv-form-label lvRequired>{{'protection_software_package_type_label' | i18n}}</lv-form-label>
       <lv-form-control>
         <lv-select formControlName="proxyType" lvValueKey="value" [lvOptions]="downloadProxyOptions">
         </lv-select>
@@ -47,7 +47,7 @@
         </lv-select>
       </lv-form-control>
     </lv-form-item>
-    <ng-container *ngIf="formGroup.value.proxyType === dataMap.Proxy_Type_Options.remoteAgent.value">
+    <ng-container *ngIf="formGroup.value.proxyType === dataMap.softwarePackageType.remoteAgent.value">
       <lv-form-item>
         <lv-form-label lvRequired>
           {{'protection_host_applications_label' | i18n}}
@@ -60,7 +60,7 @@
     </ng-container>
     <!-- 共享 -->
     <ng-container
-    *ngIf="!isHcsUser && (formGroup.value.proxyType === dataMap.Proxy_Type_Options.remoteAgent.value) && formGroup.value.osType === dataMap.OS_Type.Linux.value">
+    *ngIf="!isHcsUser && (formGroup.value.proxyType === dataMap.softwarePackageType.remoteAgent.value) && formGroup.value.osType === dataMap.OS_Type.Linux.value">
         <lv-form-item>
             <lv-form-label>{{'protection_multi-tenant_sharing_label' | i18n}}
                 <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_multi-tenant_sharing_tips_label' | i18n}}" lvTooltipTheme="light"

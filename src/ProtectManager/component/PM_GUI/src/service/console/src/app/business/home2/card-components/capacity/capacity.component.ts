@@ -81,7 +81,7 @@ export class CapacityComponent implements OnInit {
   showTape = !(
     this.appUtilsService.isDistributed || this.appUtilsService.isDecouple
   );
-
+  isShowOBS = true; // 是否显示对象存储百分比条
   constructor(
     private i18n: I18NService,
     public baseUtilService: BaseUtilService,
@@ -262,37 +262,38 @@ export class CapacityComponent implements OnInit {
         })
         .subscribe(res => {
           const { records, totalCount } = res;
-          const usedCapacity = records.reduce(
-            (acc, item) => acc + Number(item.usedCapacity),
-            0
-          );
-          const totalCapacity = records.reduce(
-            (acc, item) => acc + Number(item.totalCapacity),
-            0
+          const { usedCapacity, totalCapacity } = records.reduce(
+            (acc: { usedCapacity; totalCapacity }, item) => {
+              if (
+                item.deviceType ===
+                DataMap.poolStorageDeviceType.OceanProtectX.value
+              ) {
+                acc.usedCapacity =
+                  acc.usedCapacity + Number(item.usedCapacity) / 2; // X系列容量相关要除以2
+                acc.totalCapacity =
+                  acc.totalCapacity + Number(item.totalCapacity) / 2;
+              } else {
+                acc.usedCapacity = acc.usedCapacity + Number(item.usedCapacity);
+                acc.totalCapacity =
+                  acc.totalCapacity + Number(item.totalCapacity);
+              }
+              return {
+                usedCapacity: acc.usedCapacity,
+                totalCapacity: acc.totalCapacity
+              };
+            },
+            { usedCapacity: 0, totalCapacity: 0 }
           );
           const freeCapacity = totalCapacity - usedCapacity;
-          const unit =
-            this.appUtilsService.isDistributed ||
-            this.appUtilsService.isDecouple
-              ? CAPACITY_UNIT.KB
-              : CAPACITY_UNIT.BYTE;
+          const unit = CAPACITY_UNIT.KB;
           const percent =
             totalCapacity && ((usedCapacity * 100) / totalCapacity).toFixed(0);
           const { backupStorageUnits } = this;
           assign(backupStorageUnits, {
             storageNum: totalCount,
-            totalCapacity: this.transformCapacity(
-              unit === CAPACITY_UNIT.KB ? totalCapacity : totalCapacity * 512,
-              unit
-            ),
-            usedCapacity: this.transformCapacity(
-              unit === CAPACITY_UNIT.KB ? usedCapacity : usedCapacity * 512,
-              unit
-            ),
-            freeCapacity: this.transformCapacity(
-              unit === CAPACITY_UNIT.KB ? freeCapacity : freeCapacity * 512,
-              unit
-            ),
+            totalCapacity: this.transformCapacity(totalCapacity, unit),
+            usedCapacity: this.transformCapacity(usedCapacity, unit),
+            freeCapacity: this.transformCapacity(freeCapacity, unit),
             percent
           });
           resolve(true);
@@ -376,6 +377,16 @@ export class CapacityComponent implements OnInit {
           freeCapacity: this.transformCapacity(item.freeCapacity),
           totalCapacity: this.transformCapacity(item.totalCapacity)
         });
+        if (item.totalCapacity === '-1 KB') {
+          // -1情况是az或s3云无法读取容量，且没有其他可读取云
+          this.isShowOBS = false;
+          this.cloudStorageInfo = Object.assign(item, {
+            label: this.i18n.get('common_object_storage_label'),
+            usedCapacity: '--',
+            freeCapacity: '--',
+            totalCapacity: '--'
+          });
+        }
       }
     });
   }

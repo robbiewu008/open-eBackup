@@ -15,10 +15,13 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MessageService } from '@iux/live';
 import {
   BaseUtilService,
+  ClientManagerApiService,
   DataMap,
+  Features,
   I18NService,
   ProtectedResourceApiService,
-  ResourceType
+  ResourceType,
+  Scene
 } from 'app/shared';
 import { ProtectFilterComponent } from 'app/shared/components/protect-filter/protect-filter.component';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
@@ -54,6 +57,7 @@ export class FusionAdvancedParameterComponent implements OnInit {
   @ViewChild(ProtectFilterComponent, { static: false })
   ProtectFilterComponent: ProtectFilterComponent;
   extParams;
+  isSupport = true;
 
   isFusionOne = false;
 
@@ -68,7 +72,8 @@ export class FusionAdvancedParameterComponent implements OnInit {
     private i18n: I18NService,
     public message: MessageService,
     public baseUtilService: BaseUtilService,
-    private protectedResourceApiService: ProtectedResourceApiService
+    private protectedResourceApiService: ProtectedResourceApiService,
+    private clientManagerApiService: ClientManagerApiService
   ) {}
 
   ngOnInit() {
@@ -186,13 +191,42 @@ export class FusionAdvancedParameterComponent implements OnInit {
     this.formGroup.statusChanges.subscribe(res => {
       this.valid$.next(this.formGroup.valid);
     });
+    this.listenForm();
+  }
+
+  listenForm() {
+    this.formGroup.get('proxyHost').valueChanges.subscribe(res => {
+      if (isEmpty(res)) {
+        this.isSupport = true;
+        return;
+      }
+
+      const params = {
+        hostUuidsAndIps: res,
+        applicationType: 'FusionCompute',
+        scene: Scene.Protect,
+        buttonNames: [Features.ConsistencySnapshot]
+      };
+      this.clientManagerApiService
+        .queryAgentApplicationUsingPOST({
+          AgentCheckSupportParam: params,
+          akOperationTips: false
+        })
+        .subscribe(res => {
+          this.isSupport = res?.ConsistencySnapshot;
+          if (!this.isSupport) {
+            this.formGroup.get('isConsistent').setValue(false);
+          }
+        });
+    });
   }
 
   initData(data: any, resourceType: string) {
     this.resourceData = isArray(data) ? data[0] : data;
     this.resourceType = resourceType;
     this.isFusionOne =
-      this.resourceData?.subType === DataMap.Resource_Type.fusionOne.value;
+      this.resourceData?.subType === DataMap.Resource_Type.fusionOne.value ||
+      this.resourceData?.sub_type === DataMap.Resource_Type.fusionOne.value;
   }
 
   onOK() {
@@ -225,27 +259,20 @@ export class FusionAdvancedParameterComponent implements OnInit {
       });
     }
 
-    if (
-      includes(
-        [DataMap.Resource_Type.fusionComputeVirtualMachine.value],
-        this.resourceType
-      )
-    ) {
-      each(
-        [
-          'backup_res_auto_index',
-          'archive_res_auto_index',
-          'enable_security_archive'
-        ],
-        key => {
-          if (this.formGroup.get(key)) {
-            assign(ext_parameters, {
-              [key]: this.formGroup.get(key).value
-            });
-          }
+    each(
+      [
+        'backup_res_auto_index',
+        'archive_res_auto_index',
+        'enable_security_archive'
+      ],
+      key => {
+        if (this.formGroup.get(key)) {
+          assign(ext_parameters, {
+            [key]: this.formGroup.get(key).value
+          });
         }
-      );
-    }
+      }
+    );
 
     return {
       ext_parameters

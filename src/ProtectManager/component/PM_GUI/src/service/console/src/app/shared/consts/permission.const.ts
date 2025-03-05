@@ -52,6 +52,13 @@ export const DefaultRoles = {
   }
 };
 
+export const SpecialRoleIds = [
+  DefaultRoles.rdAdmin.roleId,
+  DefaultRoles.drAdmin.roleId,
+  DefaultRoles.audit.roleId,
+  DefaultRoles.sysAdmin.roleId
+];
+
 // 角色权限映射
 export const RoleOperationMap = {
   manageClient: 'manageClient', // 管理客户端
@@ -1093,6 +1100,7 @@ export const URL_PERMISSION = {
     RouterUrl.SystemSettingsSystemBackup,
     RouterUrl.SystemSettingsAlarmNotify,
     RouterUrl.SystemSettingsAlarmSettings,
+    RouterUrl.SystemSettingsAlarmNotifySettings,
     RouterUrl.SystemSettingsAlarmDump,
     RouterUrl.SystemSettingsSnmpTrap,
     RouterUrl.SystemDeviceTime,
@@ -1537,6 +1545,7 @@ export const URL_PERMISSION = {
     RouterUrl.SystemSettings,
     RouterUrl.SystemSettingsSystemBackup,
     RouterUrl.SystemSettingsAlarmNotify,
+    RouterUrl.SystemSettingsAlarmNotifySettings,
     RouterUrl.SystemSettingsAlarmSettings,
     RouterUrl.SystemSettingsAlarmDump,
     RouterUrl.SystemDeviceTime,

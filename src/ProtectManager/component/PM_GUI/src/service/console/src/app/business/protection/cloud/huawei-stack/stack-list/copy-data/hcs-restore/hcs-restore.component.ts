@@ -27,11 +27,9 @@ import {
   CommonConsts,
   DataMap,
   LANGUAGE,
-  ResourceType,
   RestoreFileType,
   RestoreLocationType,
-  RestoreV2LocationType,
-  SYSTEM_TIME
+  RestoreV2LocationType
 } from 'app/shared/consts';
 import {
   CookieService,
@@ -492,6 +490,11 @@ export class HCSRestoreComponent
               ''
             );
             this.inputTarget = path + this.targetParams.cloudHost?.label;
+            // 新位置
+            if (this.selectedLocation === RestoreV2LocationType.NEW) {
+              this.inputTarget = this.targetParams.cloudHost?.path;
+            }
+
             defer(() => this.initDeskDeviceTargetDisk(true));
 
             if (
@@ -540,7 +543,7 @@ export class HCSRestoreComponent
         copyId: this.rowCopy.uuid,
         agents: this.targetParams.agents,
         targetEnv:
-          this.inputTarget === this.resourceProp.path
+          this.selectedLocation === RestoreV2LocationType.ORIGIN
             ? this.resourceProp?.environment_uuid
             : this.targetParams.cloudHost.rootUuid,
         restoreType: this.restoreType,
@@ -563,7 +566,7 @@ export class HCSRestoreComponent
           });
         }),
         targetObject:
-          this.inputTarget === this.resourceProp.path
+          this.selectedLocation === RestoreV2LocationType.ORIGIN
             ? this.resourceProp?.uuid
             : this.targetParams.cloudHost.uuid,
         extendInfo: {
@@ -578,16 +581,16 @@ export class HCSRestoreComponent
 
       this.restoreV2Service
         .CreateRestoreTask({ CreateRestoreTaskRequestBody: params })
-        .subscribe(
-          res => {
+        .subscribe({
+          next: res => {
             observer.next();
             observer.complete();
           },
-          err => {
+          error: err => {
             observer.error(err);
             observer.complete();
           }
-        );
+        });
     });
   }
 

@@ -29,8 +29,8 @@ import { ModalRef, OptionItem } from '@iux/live';
 import {
   AppService,
   BaseUtilService,
-  CAPACITY_UNIT,
   CapacityCalculateLabel,
+  CAPACITY_UNIT,
   ClientManagerApiService,
   CommonConsts,
   CopiesService,
@@ -47,8 +47,7 @@ import {
   RestoreApiV2Service,
   RestoreType,
   RestoreV2LocationType,
-  RestoreV2Type,
-  SYSTEM_TIME
+  RestoreV2Type
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
 import { TableConfig, TableData } from 'app/shared/components/pro-table';
@@ -77,8 +76,7 @@ import {
   toLower,
   toString,
   trim,
-  uniq,
-  uniqBy
+  uniq
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -181,7 +179,7 @@ export class OracleRestoreComponent implements OnInit {
     private restoreV2Service: RestoreApiV2Service,
     private protectedResourceApiService: ProtectedResourceApiService,
     public capacityCalculateLabel: CapacityCalculateLabel,
-    private appUtilsService: AppUtilsService,
+    public appUtilsService: AppUtilsService,
     private clientManagerApiService: ClientManagerApiService,
     private cdr: ChangeDetectorRef,
     private copiesService: CopiesService,
@@ -784,7 +782,6 @@ export class OracleRestoreComponent implements OnInit {
           startPage === Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE) ||
           res.totalCount === 0
         ) {
-          recordsTemp = uniqBy(recordsTemp, 'rootUuid');
           // 过滤离线主机
           recordsTemp = filter(recordsTemp, item => {
             return (
@@ -805,7 +802,7 @@ export class OracleRestoreComponent implements OnInit {
               assign(item, {
                 isLeaf: true,
                 value: item.rootUuid || item.parentUuid,
-                label: `${item.environment?.name}(${item.environment?.endpoint})`,
+                label: `${item?.name}(${item.environment?.endpoint})`,
                 disabled: this.disableHost(item)
               })
             );

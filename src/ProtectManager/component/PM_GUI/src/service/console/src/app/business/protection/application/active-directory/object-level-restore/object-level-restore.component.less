@@ -1,5 +1,5 @@
 .tree-table-container {
-  border: 1px solid #e6e6e6;
+  border: 1px solid var(--live-angular-color-divider-secondary);
   width: 100%;
 }
 
@@ -8,7 +8,7 @@
   line-height: 40px;
   padding-left: 8px;
   box-sizing: border-box;
-  background: #f7f7f7ff;
+  background: var(--live-angular-color-header-background);
 }
 
 .search-path-container {
@@ -18,7 +18,7 @@
 
 .tree-table {
   align-items: flex-start;
-  border-top: 1px solid #e6e6e6;
+  border-top: 1px solid var(--live-angular-color-divider-secondary);
 }
 
 .tree-container {
@@ -29,7 +29,7 @@
 
 .table-container {
   height: 600px;
-  border-left: 1px solid #e6e6e6;
+  border-left: 1px solid var(--live-angular-color-divider-secondary);
 }
 
 .dash-line {
@@ -46,7 +46,7 @@
   line-height: 18px;
   border-radius: 10px;
   color: #ffffff;
-  border: 1px solid #ffffff;
+  border: 1px solid var(--live-angular-color-steps-icon-background);
   background: rgb(128, 128, 128);
   padding: 0 4px;
 }
@@ -57,4 +57,17 @@
 
 .directory-color {
   color: #2673e5ff;
+}
+
+.object-name-label {
+  vertical-align: center;
+}
+
+.object-input-group {
+  .object-name-input {
+    width: 400px;
+  }
+  lv-select {
+    width: 285px;
+  }
 }

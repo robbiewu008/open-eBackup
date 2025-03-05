@@ -61,7 +61,7 @@ export class ConfigTableComponent implements OnInit {
   getMtu(item) {
     switch (item.homePortType) {
       case DataMap.initHomePortType.ethernet.value:
-        return '--';
+        return item?.mtu || '--';
       case DataMap.initHomePortType.bonding.value:
         return item?.bondPort?.mtu || '--';
       case DataMap.initHomePortType.vlan.value:
@@ -78,6 +78,15 @@ export class ConfigTableComponent implements OnInit {
       case DataMap.initHomePortType.vlan.value:
         return item.vlan.portNameList.join(',');
     }
+  }
+
+  getMainPort(item) {
+    let failOverName = '';
+    if (item.currentPortName !== item.homePortName) {
+      failOverName = '/' + item.currentPortName;
+      item.isFailing = true;
+    }
+    return (item?.homePortName || '--') + failOverName;
   }
 
   getRoute(item) {

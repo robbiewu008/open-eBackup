@@ -16,10 +16,10 @@ import {
   EventEmitter,
   OnInit,
   Output,
+  TemplateRef,
   ViewChild
 } from '@angular/core';
 import {
-  CommonConsts,
   CookieService,
   DataMap,
   DataMapService,
@@ -58,10 +58,20 @@ export class UsersComponent implements OnInit, AfterViewInit {
   tableData;
   selectionData = [];
   isSysAdmin = this.cookieService.role === RoleType.SysAdmin;
+  neverExpireFilterMap = this.dataMapService
+    .toArray('passwordType')
+    .map(item => {
+      return assign(item, {
+        isLeaf: true
+      });
+    });
 
   @Output() openPage = new EventEmitter();
 
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
+  @ViewChild('sessionLimitTpl', { static: true }) sessionLimitTpl: TemplateRef<
+    any
+  >;
 
   constructor(
     public i18n: I18NService,
@@ -293,6 +303,29 @@ export class UsersComponent implements OnInit, AfterViewInit {
         name: this.i18n.get('common_desc_label')
       },
       {
+        key: 'sessionLimit',
+        name: this.i18n.get('system_user_maxconnections_label'),
+        sort: this.cookieService.role !== RoleType.DataProtectionAdmin,
+        cellRender: this.sessionLimitTpl
+      },
+      {
+        key: 'neverExpire',
+        name: this.i18n.get('system_password_never_expire_label'),
+        filter:
+          this.cookieService.role !== RoleType.DataProtectionAdmin
+            ? {
+                type: 'select',
+                isMultiple: true,
+                showCheckAll: true,
+                options: this.neverExpireFilterMap
+              }
+            : null,
+        cellRender: {
+          type: 'status',
+          config: this.neverExpireFilterMap
+        }
+      },
+      {
         key: 'operation',
         name: this.i18n.get('common_operation_label'),
         hidden: !this.isSysAdmin,
@@ -414,7 +447,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
         content: this.i18n.get('system_user_delete_label', [
           map(datas, 'userName').join(this.i18n.get('common_comma_label'))
         ]),
-        userRole: datas[0]?.rolesSet[0]?.roleName
+        userRole: map(datas, item => item?.rolesSet[0]?.roleName)
       },
       lvWidth: MODAL_COMMON.normalWidth,
       lvOkType: 'primary',

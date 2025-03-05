@@ -49,32 +49,32 @@
     >
       {{ location }}
     </lv-form-label>
-    <lv-select
-      formControlName="host"
-      [lvOptions]="options"
-      lvValueKey="key"
-      lvShowFilter
-      lvFilterKey="label"
-      lvFilterMode="contains"
-      [lvDisabled]="formGroup.value.restoreTo === restoreLocationType.ORIGIN"
-    >
-    </lv-select>
+    <lv-form-control>
+      <lv-select
+        formControlName="host"
+        [lvOptions]="options"
+        lvValueKey="key"
+        lvShowFilter
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        [lvDisabled]="formGroup.value.restoreTo === restoreLocationType.ORIGIN"
+      >
+      </lv-select>
+    </lv-form-control>
   </lv-form-item>
-  <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW &&!isSupport" >
-    <lv-form-item>
-      <lv-form-label lvRequired>
-        {{ 'common_destination_path_label' | i18n }}
-        <i
-          lv-icon="aui-icon-help"
-          lv-tooltip="{{ 'protection_target_path_tips_label' | i18n }}"
-          lvTooltipTheme="light"
-          class="configform-constraint"
-          lvColorState="true"
-        ></i>
-      </lv-form-label>
-      <lv-form-control [lvErrorTip]="pathErrorTip">
-        <input lv-input type="text" formControlName="path" />
-      </lv-form-control>
-    </lv-form-item>
-  </ng-container>
+  <lv-form-item *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+    <lv-form-label [lvRequired]="!isSupport">
+      {{ 'common_destination_path_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ 'protection_target_path_tips_label' | i18n }}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="pathErrorTip">
+      <input lv-input type="text" formControlName="path" />
+    </lv-form-control>
+  </lv-form-item>
 </lv-form>

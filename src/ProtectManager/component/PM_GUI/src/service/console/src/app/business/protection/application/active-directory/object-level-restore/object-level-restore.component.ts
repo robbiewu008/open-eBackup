@@ -75,6 +75,9 @@ export class ObjectLevelRestoreComponent implements OnInit {
   @Input() childResType;
   @Input() restoreType;
   valid$ = new Subject<boolean>();
+  objectTypeOptions = [];
+  objectTypeMap: Map<string, Set<string>> = new Map();
+  specialSplitStr = ': ';
   title = this.i18n.get('explore_object_need_restore_label');
   formGroup: FormGroup;
   pathView = 'all';
@@ -101,6 +104,7 @@ export class ObjectLevelRestoreComponent implements OnInit {
   @ViewChild('clearAllPathPopover', { static: false }) clearAllPathPopover;
 
   pathErrorTip = {
+    nameError: this.i18n.get('protection_invalid_nasshare_name_label'),
     invalidPath: this.i18n.get('common_incorrect_format_label'),
     invalidMaxLength: this.i18n.get('common_valid_length_rang_label', [1, 2048])
   };
@@ -137,6 +141,62 @@ export class ObjectLevelRestoreComponent implements OnInit {
     this.properties = isJson(this.rowCopy.properties)
       ? JSON.parse(this.rowCopy.properties)
       : {};
+    const objectTypeArr = [
+      'user',
+      'group',
+      'rIDSet',
+      'dnsZone',
+      'dnsNode',
+      'contact',
+      'computer',
+      'ipsecNFA',
+      'container',
+      'domainDNS',
+      'samServer',
+      'classStore',
+      'rIDManager',
+      'ipsecPolicy',
+      'ipsecFilter',
+      'lostAndFound',
+      'rpcContainer',
+      'domainPolicy',
+      'nTFRSSettings',
+      'builtinDomain',
+      'msDFSR-Member',
+      'msImaging-PSPs',
+      'msDFSR-Content',
+      'msDFSR-Topology',
+      'fileLinkTracking',
+      'dfsConfiguration',
+      'ipsecISAKMPPolicy',
+      'msDFSR-ContentSet',
+      'msDFSR-Subscriber',
+      'organizationalUnit',
+      'msDS-QuotaContainer',
+      'msDFSR-Subscription',
+      'infrastructureUpdate',
+      'linkTrackVolumeTable',
+      'groupPolicyContainer',
+      'msDFSR-LocalSettings',
+      'msDFSR-GlobalSettings',
+      'msMQ-Custom-Recipient',
+      'ipsecNegotiationPolicy',
+      'msDFSR-ReplicationGroup',
+      'linkTrackObjectMoveTable',
+      'foreignSecurityPrincipal',
+      'msDS-ShadowPrincipalContainer',
+      'msDS-PasswordSettingsContainer',
+      'msTPM-InformationObjectsContainer'
+    ];
+    this.objectTypeOptions = objectTypeArr.map(item => {
+      this.objectTypeMap.set(item, new Set());
+      return {
+        key: item,
+        value: item,
+        label: item,
+        isLeaf: true
+      };
+    });
   }
 
   initForm() {
@@ -153,9 +213,13 @@ export class ObjectLevelRestoreComponent implements OnInit {
           disabled: true
         },
         {
-          validators: [this.baseUtilService.VALID.maxLength(2048)]
+          validators: [
+            this.validPath(),
+            this.baseUtilService.VALID.maxLength(2048)
+          ]
         }
-      )
+      ),
+      objectNameType: new FormControl(this.objectTypeOptions[0].value)
     });
     this.formGroup.get('objectMode').valueChanges.subscribe(res => {
       res === this.modeMap.fromInput
@@ -164,6 +228,16 @@ export class ObjectLevelRestoreComponent implements OnInit {
       this.setValid();
     });
     this.modal.getInstance().lvOkDisabled = true;
+  }
+
+  validPath(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const paths = control.value;
+      if (CommonConsts.REGEX.winInvalidFileName.test(paths)) {
+        return { nameError: { value: control.value } };
+      }
+      return null;
+    };
   }
 
   initFirstTreeNode() {
@@ -266,24 +340,38 @@ export class ObjectLevelRestoreComponent implements OnInit {
   }
 
   add() {
-    const path = this.formGroup.value.objectPath;
+    const objectName = this.formGroup.value.objectPath;
+    const objectType = this.formGroup.value.objectNameType;
     if (
-      find(this.customInputSelection, item => item.label === path) ||
-      !path ||
+      this.objectTypeMap.get(objectType).has(objectName) ||
+      !objectName ||
       this.formGroup.get('objectPath').invalid
     ) {
       return;
     }
+    this.objectTypeMap.get(objectType).add(objectName);
     this.customInputSelection.push({
-      label: path,
+      label: `${objectName}${this.specialSplitStr}${objectType}`,
       removable: true
     });
     this.customInputSelection = [...this.customInputSelection];
     this.setValid();
   }
 
+  removeSingle(data) {
+    const [objectName, objectType] = data.label?.split(this.specialSplitStr);
+    if (
+      this.objectTypeMap.has(objectType) &&
+      this.objectTypeMap.get(objectType).has(objectName)
+    ) {
+      this.objectTypeMap.get(objectType).delete(objectName);
+    }
+    this.setValid();
+  }
+
   clearAll() {
     this.customInputSelection = [];
+    this.objectTypeMap.forEach(item => item.clear());
     this.clearAllPathPopover?.hide();
     this.setValid();
   }
@@ -597,7 +685,13 @@ export class ObjectLevelRestoreComponent implements OnInit {
     if (objectFromTree) {
       objectInfo = map(this.selectTableData.data, 'extendInfo');
     } else {
-      objectInfo = map(this.customInputSelection, 'label');
+      this.objectTypeMap.forEach((item, objectType) => {
+        item.forEach(objectName => {
+          objectInfo.push(
+            JSON.stringify({ name: objectName, type: objectType })
+          );
+        });
+      });
     }
     return {
       copyId: this.rowCopy.uuid,

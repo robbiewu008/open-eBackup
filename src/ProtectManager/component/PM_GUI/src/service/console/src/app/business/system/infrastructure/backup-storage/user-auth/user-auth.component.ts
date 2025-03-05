@@ -24,7 +24,6 @@ import {
   DataMap,
   DataMapService,
   I18NService,
-  NasDistributionStoragesApiService,
   StorageUserAuthService
 } from 'app/shared';
 import {
@@ -33,7 +32,6 @@ import {
   TableCols,
   TableConfig
 } from 'app/shared/components/pro-table';
-import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import { assign, each, isEmpty, isUndefined } from 'lodash';
 
 @Component({
@@ -60,9 +58,6 @@ export class UserAuthComponent implements OnInit {
   constructor(
     private i18n: I18NService,
     private cdr: ChangeDetectorRef,
-    private dataMap: DataMapService,
-    private nasDistributionStoragesApiService: NasDistributionStoragesApiService,
-    private virtualScroll: VirtualScrollService,
     private storageUserAuthService: StorageUserAuthService,
     public dataMapService: DataMapService
   ) {}
@@ -169,16 +164,15 @@ export class UserAuthComponent implements OnInit {
           selectionTrigger: 'selector',
           showSelector: true
         },
-        scroll: this.virtualScroll.scrollParam,
         colDisplayControl: false,
         fetchData: (filter: Filters, args) => {
           this.getData(filter, args);
         },
-        selectionChange: (renderSelection, selection) => {
+        selectionChange: selection => {
           this.selectionData = selection;
         },
         trackByFn: (index, item) => {
-          return item.uuid;
+          return item?.userId || item.uuid;
         }
       }
     };

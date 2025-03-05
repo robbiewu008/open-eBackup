@@ -51,6 +51,7 @@ import {
 } from 'lodash';
 import { Subject } from 'rxjs';
 import { AddDiskComponent } from './add-disk/add-disk.component';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'aui-select-database-list',
@@ -87,6 +88,7 @@ export class SelectDatabaseListComponent implements OnInit, AfterViewInit {
   constructor(
     private i18n: I18NService,
     private appService: AppService,
+    private appUtilsService: AppUtilsService,
     private drawModalService: DrawModalService,
     private protectedResourceApiService: ProtectedResourceApiService
   ) {}
@@ -149,28 +151,10 @@ export class SelectDatabaseListComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // 查询当前虚拟机磁盘信息
-  getDisk(agentsId, vmData, recordsTemp?, startPage?) {
-    const extParams = {
-      agentId: agentsId,
-      envId: this.source.environment.uuid,
-      pageNo: startPage || 1,
-      pageSize: CommonConsts.MAX_PAGE_SIZE,
-      resourceIds: [this.source.uuid]
-    };
-    this.appService.ListResourcesDetails(extParams).subscribe(res => {
-      if (!recordsTemp) {
-        recordsTemp = [];
-      }
-      if (!isNumber(startPage)) {
-        startPage = 1;
-      }
-      recordsTemp = [...recordsTemp, ...res.records];
-      if (
-        startPage === Math.ceil(res.totalCount / CommonConsts.MAX_PAGE_SIZE) ||
-        res.totalCount === 0 ||
-        isEmpty(recordsTemp)
-      ) {
+  getVmDisk(vmData) {
+    this.appUtilsService
+      .getResourcesDetails(this.source, '', {}, {}, false)
+      .subscribe(recordsTemp => {
         each(vmData, item => {
           const uuidMap = map(recordsTemp, 'uuid');
           assign(item, {
@@ -185,48 +169,7 @@ export class SelectDatabaseListComponent implements OnInit, AfterViewInit {
             )
           });
         });
-        return;
-      }
-      startPage++;
-      this.getDisk(agentsId, vmData, recordsTemp, startPage);
-    });
-  }
-
-  getVmDisk(vmData) {
-    const params = {
-      pageNo: CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE,
-      queryDependency: true,
-      conditions: JSON.stringify({
-        subType:
-          this.source?.subType || DataMap.Resource_Type.FusionCompute.value,
-        uuid: this.source.environment.uuid
-      })
-    };
-    this.protectedResourceApiService
-      .ListResources(params)
-      .subscribe((res: any) => {
-        if (res.records?.length) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            each(vmData, item => {
-              assign(item, {
-                enableSelectAll: isEmpty(
-                  item.protectedObject?.extParameters?.disk_info
-                ),
-                diskInfo: []
-              });
-            });
-            this.setValid();
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getDisk(agentsId, vmData);
-        }
+        this.setValid();
       });
   }
 

@@ -157,6 +157,18 @@
               <ng-container *ngSwitchCase="'ethernetPort'">
                 <span lv-overflow>{{ getPort(item) }}</span>
               </ng-container>
+              <ng-container *ngSwitchCase="'currentPortName'">
+                <span lv-overflow
+                  ><i
+                    lv-icon="lv-icon-status-info"
+                    lvColorState="true"
+                    class="icon"
+                    style="margin-right:4px"
+                    *ngIf="item?.isFailing"
+                  ></i
+                  >{{ getMainPort(item) }}</span
+                >
+              </ng-container>
               <ng-container *ngSwitchCase="'operation'">
                 <lv-group lvGutter="16px">
                   <span

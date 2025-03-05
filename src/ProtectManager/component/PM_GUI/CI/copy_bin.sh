@@ -15,7 +15,8 @@ CUR_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PM_MS_DIR=${CUR_PATH}/..
 BASE_PATH=${PM_MS_DIR}/../..
 
-merge_id=$1
+merge_id=$2
+BIN_PATH=$1
 
 function build_npm(){
 	cd ${PM_MS_DIR}/src/service/console/
@@ -30,16 +31,10 @@ function build_npm(){
         echo [INFO] Install Dependences for Frontend Project Failed.
         exit 1
     fi
-    npm run build
-    if [[ $? -ne 0 ]]; then
-        echo [INFO] Compile Frontend Project Failed.
-        exit 1
-    fi
-
-    echo "[INFO] Move dependence files"
-    mv ${PM_MS_DIR}/src/service/console/node_modules  /devcloud/
-    cp -r dist/pm-gui/* ${PM_MS_DIR}/src/service/console
-    rm -rf dist
+    cd ${PM_MS_DIR}/src/service/console/
+    cat /dev/null > node_modules/apib2swagger/bin/apib2swagger.js
+    tar -zcvf PM_GUI.tar.gz node_modules/
+    cp -rf PM_GUI.tar.gz ${BIN_PATH}/
 }
 
 function build_maven(){
@@ -56,6 +51,7 @@ function copy_pkgs() {
 	cp -f ${PM_MS_DIR}/src/service/target/PM_GUI.tar.gz ${PM_MS_DIR}/pkg/
 	find  ${PM_MS_DIR}/pkg/ -type d | xargs chmod 700
 	find ${PM_MS_DIR}/pkg/ -type f | xargs chmod 550
+	cp -f ${PM_MS_DIR}/pkg/PM_GUI.tar.gz ${BIN_PATH}
 	if [ $? -ne 0 ]; then
 		echo [INFO] copy pkg Failed.
 		exit 1
@@ -152,8 +148,6 @@ function main(){
 
 	if [ $# = 0 ]; then
 		build_npm
-		build_maven
-		copy_pkgs
 	else
 		build_private
 		if [ $? -ne 0 ]; then    

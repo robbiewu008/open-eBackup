@@ -24,7 +24,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'N'
       x-sysadmin-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       tags:
         - health-controller
       summary: 检查服务启动的健康状态
@@ -50,7 +50,7 @@ paths:
   /v1/inspect/service/status:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -115,7 +115,7 @@ paths:
     post:
       x-dr-role: 'N'
       x-dm-role: 'Y'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -167,7 +167,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'Y'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -208,7 +208,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'Y'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -249,7 +249,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -289,7 +289,7 @@ paths:
     post:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -341,7 +341,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -382,7 +382,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'Y'
-      x-product: OceanCyber,OceanProtect X
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -423,7 +423,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 30081
       x-auth-required: 'N'
@@ -461,10 +461,51 @@ paths:
         - Authorization:
             - global
       x-order: 9
+  /v1/system/status-info:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${system-api}
+      summary: 根据当前系统信息更新系统初始化状态
+      description: 根据当前系统信息更新系统初始化状态
+      operationId: updateSystemStatusInfoUsingPUT
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: CurrentSystemTime
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      x-order: 13
   /v2/system/ports:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -513,7 +554,7 @@ paths:
             $ref: '#/definitions/AllPortListResponseDto'
     delete:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -546,7 +587,7 @@ paths:
       tags:
         - ${system-api}
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -578,7 +619,7 @@ paths:
             type: string
     post:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -612,7 +653,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect for HCS
       x-impact-subsystem: 不影响
       x-access-port: 30081
       x-auth-required: 'N'
@@ -655,7 +696,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'Y'
-      x-product: OceanCyber,OceanProtect X
+      x-product: OceanProtect E6000,OceanProtect DataBackup
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -704,7 +745,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'Y'
-      x-product: OceanCyber,OceanProtect X
+      x-product: OceanProtect E6000,OceanProtect DataBackup
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -766,7 +807,7 @@ paths:
   /v1/system/auth:
     post:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -799,7 +840,7 @@ paths:
   /v2/system/ports/route:
     post:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -831,7 +872,7 @@ paths:
         - ${system-api}
       summary: 删除端口路由
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -856,7 +897,7 @@ paths:
   /v2/system/ports/routes:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -888,7 +929,7 @@ paths:
   /v2/system/lld/action/upload:
     post:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -924,6 +965,253 @@ paths:
           description: Unauthorized
           schema:
             type: string
+  /v1/system/initConfig/manual:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${system-api}
+      summary: 手动创建x系列初始化网络
+      operationId: createManualInitConfig
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: manualInitNetworkBody
+          in: body
+          required: true
+          description: 初始化配置请求体
+          schema:
+            $ref: '#/definitions/ManualInitNetworkBody'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ConfigStatus'
+      security:
+        - Authorization: []
+  /v1/system/initConfig/lld:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${system-api}
+      summary: 创建初始化网络
+      operationId: createLldInitConfig
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: lldInitNetworkBody
+          in: body
+          required: true
+          description: 初始化配置请求体
+          schema:
+            $ref: '#/definitions/LldInitNetworkBody'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ConfigStatus'
+  /v1/system/initConfig/pacific:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect E6000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${system-api}
+      summary: 创建初始化网络
+      operationId: createPacificInitConfig
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: pacificInitNetworkBody
+          in: body
+          required: true
+          description: 初始化配置请求体
+          schema:
+            $ref: '#/definitions/PacificInitNetworkBody'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ConfigStatus'
+  /v1/system/initConfig/dependent:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect DataBackup
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${system-api}
+      summary: 创建初始化网络
+      operationId: createDependentInitConfig
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: dependentInitNetworkBody
+          in: body
+          required: true
+          description: 初始化配置请求体
+          schema:
+            $ref: '#/definitions/DependentInitNetworkBody'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ConfigStatus'
+  /v1/internal/health/kafka:
+    get:
+      x-dr-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - health-controller
+      description: kafka服务健康状态
+      operationId: getKafkaHealth
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: string
+  /v1/internal/service/float-ip:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect E6000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${system-api}
+      description: 获取pacific的浮动ip
+      operationId: getFloatIp
+      responses:
+        '200':
+          description: 浮动ip
+          schema:
+            type: string
+  /v1/system/timeline:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${system-api}
+      summary: 查询系统时区某天的时间戳信息
+      description: 查询系统时区某天的时间戳信息
+      operationId: getSystemTimelineUsingGET
+      parameters:
+        - name: date
+          in: query
+          required: true
+          description: 查询时间戳的日期年月日
+          type: string
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /v2/system/failover-group:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${system-api}
+      summary: 获取所有漂移组
+      description: 获取所有漂移组信息
+      operationId: getFailoverGroupGET
+      responses:
+        '200':
+          description: 获取所有漂移组
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/FailoverGroupResponse'
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -1455,6 +1743,11 @@ definitions:
         items:
           $ref: '#/definitions/LogicPortDto'
         description: 逻辑端口列表
+      vlanPortDtoList:
+        type: array
+        items:
+          $ref: '#/definitions/VlanInfo'
+        description: vlan端口列表
   AddLogicPortRequest:
     type: object
     description: 添加逻辑端口请求参数
@@ -1720,3 +2013,282 @@ definitions:
       error:
         description: 错误信息
         $ref: '#/definitions/InfraResponseErrorInfo'
+  ManualInitPortDto:
+    type: object
+    description: 手动初始化端口信息
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: 逻辑端口名称
+  ManualBackupNetworkConfig:
+    type: object
+    description: 手动初始化备份配置
+    required:
+      - logicPorts
+    properties:
+      logicPorts:
+        type: array
+        items:
+          $ref: '#/definitions/ManualInitPortDto'
+        description: 备份逻辑端口
+  ManualArchiveNetworkConfig:
+    type: object
+    description: 归档网络
+    properties:
+      logicPorts:
+        type: array
+        items:
+          $ref: '#/definitions/ManualInitPortDto'
+        description: 归档逻辑端口
+  ManualCopyNetworkConfig:
+    type: object
+    properties:
+      logicPorts:
+        type: array
+        items:
+          $ref: '#/definitions/ManualInitPortDto'
+        description: 复制逻辑端口
+  ManualInitNetworkBody:
+    type: object
+    description: x系列手动初始化参数
+    required:
+      - storageAuth
+      - backupNetworkConfig
+      - initType
+    properties:
+      configLanguage:
+        description: 存储爱数安装语言
+        $ref: '#/definitions/ConfigLanguage'
+      storageAuth:
+        description: 存储用户名、密码
+        $ref: '#/definitions/StorageAuth'
+      backupNetworkConfig:
+        description: 备份网络
+        $ref: '#/definitions/ManualBackupNetworkConfig'
+      archiveNetworkConfig:
+        description: 归档网络
+        $ref: '#/definitions/ManualArchiveNetworkConfig'
+      copyNetworkConfig:
+        description: 复制网络
+        $ref: '#/definitions/ManualCopyNetworkConfig'
+      initType:
+        type: string
+        description: 初始化类型：0，手动初始化；1，lld初始化
+  LldBackupNetworkConfig:
+    type: object
+    description: 备份网络
+    properties:
+      logicPorts:
+        type: array
+        items:
+          $ref: '#/definitions/LogicPortDto'
+  LldArchiveNetworkConfig:
+    type: object
+    description: 归档网络
+    properties:
+      logicPorts:
+        type: array
+        items:
+          $ref: '#/definitions/LogicPortDto'
+        description: 归档逻辑端口
+  LldCopyNetworkConfig:
+    type: object
+    description: 复制网络
+    properties:
+      logicPorts:
+        type: array
+        items:
+          $ref: '#/definitions/LogicPortDto'
+        description: 复制逻辑端口
+  LldInitNetworkBody:
+    type: object
+    description: lld初始化参数
+    required:
+      - storageAuth
+      - backupNetworkConfig
+      - initType
+    properties:
+      configLanguage:
+        description: 存储爱数安装语言
+        $ref: '#/definitions/ConfigLanguage'
+      storageAuth:
+        description: 存储用户名、密码
+        $ref: '#/definitions/StorageAuth'
+      backupNetworkConfig:
+        description: 备份网络
+        $ref: '#/definitions/LldBackupNetworkConfig'
+      archiveNetworkConfig:
+        description: 归档网络
+        $ref: '#/definitions/LldArchiveNetworkConfig'
+      copyNetworkConfig:
+        description: 复制网络
+        $ref: '#/definitions/LldCopyNetworkConfig'
+      initType:
+        type: string
+        description: 初始化类型，0：手动初始化；1：lld初始化
+  PacificBackupNetworkConfig:
+    type: object
+    description: 备份网络
+    required:
+      - pacificInitNetWorkInfoList
+    properties:
+      pacificInitNetWorkInfoList:
+        type: array
+        items:
+          $ref: '#/definitions/PacificInitNetWorkInfo'
+        description: 分布式初始化备份网络配置
+  PacificArchiveNetworkConfig:
+    type: object
+    description: 归档网络
+    properties:
+      pacificInitNetWorkInfoList:
+        type: array
+        items:
+          $ref: '#/definitions/PacificInitNetWorkInfo'
+        description: 分布式初始化归档网络配置
+  PacificCopyNetworkConfig:
+    type: object
+    description: 复制网络
+    properties:
+      pacificInitNetWorkInfoList:
+        type: array
+        items:
+          $ref: '#/definitions/PacificInitNetWorkInfo'
+        description: 分布式初始化复制网络配置
+  PacificInitNetworkBody:
+    type: object
+    description: 分布式初始化参数
+    required:
+      - storageAuth
+      - backupNetworkConfig
+    properties:
+      configLanguage:
+        description: 存储爱数安装语言
+        $ref: '#/definitions/ConfigLanguage'
+      storageAuth:
+        description: 存储用户名、密码
+        $ref: '#/definitions/StorageAuth'
+      backupNetworkConfig:
+        description: 备份网络
+        $ref: '#/definitions/PacificBackupNetworkConfig'
+      archiveNetworkConfig:
+        description: 归档网络
+        $ref: '#/definitions/PacificArchiveNetworkConfig'
+      copyNetworkConfig:
+        description: 复制网络
+        $ref: '#/definitions/PacificCopyNetworkConfig'
+  DependentBackupNetworkConfig:
+    type: object
+    description: 备份网络
+    required:
+      - dependentInitNetWorkInfoList
+    properties:
+      dependentInitNetWorkInfoList:
+        type: array
+        items:
+          $ref: '#/definitions/PacificInitNetWorkInfo'
+        description: 软硬解耦初始化备份网络配置
+  DependentArchiveNetworkConfig:
+    type: object
+    description: 归档网络
+    properties:
+      dependentInitNetWorkInfoList:
+        type: array
+        items:
+          $ref: '#/definitions/PacificInitNetWorkInfo'
+        description: 软硬解耦初始化归档网络配置
+  DependentCopyNetworkConfig:
+    type: object
+    description: 软硬解耦初始化复制网络配置
+    properties:
+      dependentInitNetWorkInfoList:
+        type: array
+        items:
+          $ref: '#/definitions/PacificInitNetWorkInfo'
+        description: 软硬解耦初始化复制网络配置
+  DependentInitNetworkBody:
+    type: object
+    description: 软硬解耦初始化参数
+    required:
+      - backupNetworkConfig
+    properties:
+      configLanguage:
+        description: 存储爱数安装语言
+        $ref: '#/definitions/ConfigLanguage'
+      storageAuth:
+        description: 存储用户名、密码
+        $ref: '#/definitions/StorageAuth'
+      backupNetworkConfig:
+        description: 备份网络
+        $ref: '#/definitions/DependentBackupNetworkConfig'
+      archiveNetworkConfig:
+        description: 归档网络
+        $ref: '#/definitions/DependentArchiveNetworkConfig'
+      copyNetworkConfig:
+        description: 复制网络
+        $ref: '#/definitions/DependentCopyNetworkConfig'
+  VlanInfo:
+    type: object
+    properties:
+      PORTID:
+        type: string
+        description: 端口ID
+      PORTTYPE:
+        type: string
+        description: 端口类型
+      TAG:
+        type: string
+        description: tag
+      MTU:
+        type: string
+        description: mtu
+      TYPE:
+        type: string
+        description: 类型
+      ID:
+        type: string
+        description: id
+      NAME:
+        type: string
+        description: 名称
+      PARENTTYPE:
+        type: string
+        description: 父类型
+      PARENTID:
+        type: string
+        description: 父ID
+      LOCATION:
+        type: string
+        description: 位置
+      HEALTHSTATUS:
+        type: string
+        description: 健康状态
+      RUNNINGSTATUS:
+        type: string
+        description: 运行状态
+      DESCRIPTION:
+        type: string
+        description: 描述
+  FailoverGroupResponse:
+    type: object
+    description: 漂移组响应
+    properties:
+      type:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      failoverGroupType:
+        type: integer
+        format: int32
+      failoverGroupServiceType:
+        type: integer
+        format: int32
+      failoverGroupIpType:
+        type: integer
+        format: int32

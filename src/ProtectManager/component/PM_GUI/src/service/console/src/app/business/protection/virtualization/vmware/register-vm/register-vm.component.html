@@ -50,7 +50,7 @@
   </lv-form-item>
   <lv-form-item *ngIf="includes([ResourceType.CNWARE, ResourceType.NUTANIX], resourceType)">
     <lv-form-label lvRequired>
-      {{ 'protection_proxy_host_label' | i18n }}
+      {{ 'protection_clients_label' | i18n }}
     </lv-form-label>
     <lv-form-control>
       <aui-agent-select [lvOptions]="proxyOptions" formControlName="agents" lvValueKey="value" lvMode="multiple">
@@ -121,7 +121,7 @@
     </lv-form-control>
   </lv-form-item>
   <!-- cnware过滤虚拟机 -->
-  <ng-container *ngIf="includes([ResourceType.CNWARE, ResourceType.NUTANIX], resourceType)">
+  <ng-container *ngIf="includes([ResourceType.CNWARE], resourceType)">
     <lv-form-item>
       <lv-form-label>
         {{'protection_vm_filter_label' | i18n}}
@@ -156,7 +156,7 @@
     </div>
     <span class="show-tips">
       <i lv-icon="lv-icon-status-info" class="icon-info" lvColorState="true"></i>
-      {{ 'common_fc_add_data_store_label' | i18n }}
+      {{ 'common_vmware_add_data_store_label' | i18n }}
     </span>
     <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
   </div>

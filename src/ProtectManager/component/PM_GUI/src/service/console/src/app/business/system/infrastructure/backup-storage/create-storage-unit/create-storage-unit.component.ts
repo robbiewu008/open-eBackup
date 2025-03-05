@@ -92,13 +92,22 @@ export class CreateStorageUnitComponent implements OnInit {
     ...this.baseUtilService.requiredErrorTip,
     invalidNameLength: this.i18n.get('common_valid_length_rang_label', [8, 64])
   };
+  maxThreshold = 95;
   thresholdErrorTip = {
     ...this.baseUtilService.rangeErrorTip,
-    invalidRang: this.i18n.get('common_valid_rang_label', [1, 95])
+    invalidRang: this.i18n.get('common_valid_rang_label', [
+      1,
+      this.maxThreshold
+    ])
   };
+  thresholdTipLabel = this.i18n.get('system_op_threshold_tip_label');
 
   ngOnInit(): void {
     this.isAutoAdded = this.isEdit && this.drawData.isAutoAdded;
+    if (this?.drawData) {
+      this.changeMaxthreshold();
+    }
+
     this.initForm();
     this.initOptionItems();
     this.initUsedDevice();
@@ -137,7 +146,7 @@ export class CreateStorageUnitComponent implements OnInit {
       threshold: new FormControl(get(this.drawData, 'threshold', ''), {
         validators: [
           this.baseUtilService.VALID.required(),
-          this.baseUtilService.VALID.rangeValue(1, 95),
+          this.baseUtilService.VALID.rangeValue(1, this.maxThreshold),
           this.baseUtilService.VALID.integer()
         ]
       })
@@ -174,6 +183,35 @@ export class CreateStorageUnitComponent implements OnInit {
       this.formGroup
         .get('deviceType')
         .setValue(DataMap.poolStorageDeviceType.Server.value);
+    }
+  }
+
+  changeMaxthreshold() {
+    if (
+      this.drawData?.deviceType ===
+      DataMap.poolStorageDeviceType.OceanProtectX.value
+    ) {
+      this.maxThreshold = this.drawData?.endingUpThreshold - 1;
+      this.thresholdErrorTip.invalidRang = this.i18n.get(
+        'common_valid_rang_label',
+        [1, this.maxThreshold]
+      );
+      this.thresholdTipLabel = this.i18n.get(
+        'system_pacific_threshold_tip_label'
+      );
+    }
+
+    if (
+      this.drawData?.deviceType ===
+      DataMap.poolStorageDeviceType.OceanPacific.value
+    ) {
+      this.maxThreshold = this.drawData?.majorThreshold - 1;
+      this.thresholdErrorTip.invalidRang = this.i18n.get(
+        'common_valid_rang_label',
+        [1, this.maxThreshold]
+      );
+
+      this.thresholdTipLabel = this.i18n.get('system_op_threshold_tip_label');
     }
   }
 

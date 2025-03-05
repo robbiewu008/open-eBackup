@@ -57,6 +57,16 @@
                 </ng-template>
             </lv-form-control>
         </lv-form-item>
+        <ng-container *ngIf="osType === dataMap.Os_Type.linux.value">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_volume_advanced_backup_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="is_OS_backup"></lv-switch>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
         <lv-form-item *ngIf="!rowItem">
             <lv-form-label lvRequired>
                 {{'common_host_label' | i18n}}

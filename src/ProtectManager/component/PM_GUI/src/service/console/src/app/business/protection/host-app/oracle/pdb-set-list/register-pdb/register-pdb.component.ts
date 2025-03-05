@@ -29,7 +29,6 @@ import {
   BaseUtilService,
   CommonConsts,
   DataMap,
-  DataMapService,
   I18NService,
   ProtectedResourceApiService,
   ResourceType
@@ -43,10 +42,8 @@ import {
   get,
   isEmpty,
   map,
-  remove,
   trim,
-  uniqBy,
-  uniqueId
+  uniqBy
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -194,6 +191,7 @@ export class RegisterPdbComponent implements OnInit {
 
   selectionChange(event) {
     this.formGroup.get('pdb_s').setValue(event.sourceSelection);
+    this.source.selection = event.sourceSelection;
   }
 
   selectCurrentPage(selected, panel: TransferTableComponent): void {
@@ -255,6 +253,8 @@ export class RegisterPdbComponent implements OnInit {
           key: item.uuid,
           value: item.uuid,
           label: `${item.name}(${item.environment.endpoint})`,
+          disabled:
+            get(item, 'environment.osType') === DataMap.Os_Type.aix.value,
           isLeaf: true
         }));
         if (!!this.data) {
@@ -291,7 +291,7 @@ export class RegisterPdbComponent implements OnInit {
         );
         const pdbs = get(tableSpaceInfo, 'pdb_names', []);
         this.source.data = pdbs.map(item => ({
-          key: uniqueId(),
+          key: item,
           value: item,
           label: item
         }));
@@ -333,7 +333,7 @@ export class RegisterPdbComponent implements OnInit {
       parentUuid: this.formGroup.value.database,
       extendInfo: {
         dbUuid: this.formGroup.value.database,
-        isPdb: this.source.selection?.length === this.source.data.length,
+        isPdb: this.source.selection?.length !== this.source.data.length,
         pdb: JSON.stringify(this.source.selection.map(item => item.label)),
         hostId: this.isCluster
           ? this.formGroup.value.host

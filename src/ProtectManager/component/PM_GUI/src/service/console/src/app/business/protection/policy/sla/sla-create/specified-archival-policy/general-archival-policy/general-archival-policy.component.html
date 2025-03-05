@@ -208,11 +208,13 @@
                         <lv-form-control [lvErrorTip]="retentionDurationErrorTip" class="groupInControl">
                             <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right">
                                 <input lv-input formControlName="retention_duration"
-                                    placeholder="{{item.get('duration_unit').value=='d'?'1~25550':item.get('duration_unit').value=='w'?'1~3650':item.get('duration_unit').value=='MO'?'1~840': item.get('duration_unit').value=='p'?'':'1~70'}}" />
+                                    placeholder="{{item.get('duration_unit').value=='d'?'1~25550':item.get('duration_unit').value=='w'?'1~3650':item.get('duration_unit').value=='MO'?'1~840': item.get('duration_unit').value=='p'?'':'1~70'}}"
+                                    [lvDisabled]="item.get('duration_unit').value=='p'" />
                             </lv-input-group>
                             <ng-template #unitTpl>
                                 <lv-select [lvOptions]="retentionDurationUnit" formControlName="duration_unit"
-                                    class="unit-inner-select" [ngClass]="{'unit-inner-select-en':i18n.isEn}" lvValueKey="value"
+                                    class="unit-inner-select" [ngClass]="{'unit-inner-select-en':i18n.isEn}"
+                                    lvValueKey="value"
                                     (ngModelChange)="changeTimeUnits(item, $event, 'retention_duration')"></lv-select>
                             </ng-template>
                         </lv-form-control>
@@ -357,9 +359,8 @@
                 <lv-form-item>
                     <lv-form-label>
                         {{'common_limit_rate_policy_single_label' | i18n}}
-                        <i lv-icon="aui-icon-help" lv-tooltip="{{'common_limit_rate_policy_tip_label' | i18n}}"
-                            lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
-                            lvColorState='true'></i>
+                        <i lv-icon="aui-icon-help" [lv-tooltip]="limitTooltip" lvTooltipTheme="light"
+                            lvTooltipPosition="right" class="configform-constraint" lvColorState='true'></i>
                     </lv-form-label>
                     <lv-form-control>
                         <lv-select [lvOptions]="qosNames" formControlName="qos_id" lvValueKey="uuid" lvShowClear>
@@ -491,4 +492,8 @@
     <div class="lv-date-picker-cell lv-date-picker-footer">
         <aui-current-system-time></aui-current-system-time>
     </div>
+</ng-template>
+
+<ng-template #limitTooltip>
+    <span [innerHTML]="'common_limit_rate_policy_tip_label' | i18n"></span>
 </ng-template>

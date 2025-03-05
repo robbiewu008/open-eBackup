@@ -79,6 +79,14 @@ export class CloudServerComponent implements OnInit {
       }
     },
     {
+      key: 'vm_ip',
+      name: this.i18n.get('common_ip_address_label'),
+      filter: {
+        type: 'search',
+        filterMode: 'contains'
+      }
+    },
+    {
       key: 'isWorkspace',
       name: this.i18n.get('protection_hcs_workspace_label'),
       filter: {

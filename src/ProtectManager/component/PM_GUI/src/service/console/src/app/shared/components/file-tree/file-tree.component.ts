@@ -15,14 +15,15 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { I18NService } from 'app/shared/services';
+import { GlobalService, I18NService } from 'app/shared/services';
+import { Subject, timer } from 'rxjs';
 import {
-  Filters,
   ProTableComponent,
   TableCols,
   TableConfig,
@@ -30,28 +31,37 @@ import {
 } from '../pro-table';
 import { MenuItem, TreeNode } from '@iux/live';
 import {
+  assign,
   cloneDeep,
   defer,
   each,
   first,
+  get,
   includes,
   isEmpty,
   map,
   reject,
+  set,
   size,
   take,
   trim
 } from 'lodash';
-import { CopyControllerService } from 'app/shared/api/services';
-import { CAPACITY_UNIT, DataMap, RestoreFileType } from 'app/shared/consts';
+import { CopiesService, CopyControllerService } from 'app/shared/api/services';
+import {
+  CAPACITY_UNIT,
+  CommonConsts,
+  DataMap,
+  RestoreFileType
+} from 'app/shared/consts';
 import { extendNodeParams } from 'app/shared';
+import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'aui-file-tree',
   templateUrl: './file-tree.component.html',
   styleUrls: ['./file-tree.component.less']
 })
-export class FileTreeComponent implements OnInit {
+export class FileTreeComponent implements OnInit, OnDestroy {
   @Input() copy;
   @Input() treeData: TreeNode[];
   @Output() tableSelectionChange = new EventEmitter<any>();
@@ -60,12 +70,17 @@ export class FileTreeComponent implements OnInit {
   title = this.i18n.get('explore_object_need_restore_label');
   unitconst = CAPACITY_UNIT;
   restoreFileType = RestoreFileType;
+  protected readonly DataMap = DataMap;
+  timeSub$;
+  destroy$ = new Subject<boolean>();
   _includes = includes;
 
-  pathView = 'all';
+  totalView = 'all';
+  selectedView = 'selected';
+  pathView = this.totalView;
   total = 0;
   selectedTotal = 0;
-
+  queryTaskTimeout = CommonConsts.TIME_INTERVAL / 2;
   filePathItems: MenuItem[] = [];
 
   selectionTree = [];
@@ -95,6 +110,16 @@ export class FileTreeComponent implements OnInit {
     fromTag: '2'
   };
   pathMode = this.modeMap.fromTree;
+  tableLoading = false;
+  // 修改表格实现，只能一页一页查，不能跳过页码查询，通过滚动鼠标滑轮加载下一页
+  // 初始页
+  startPage = CommonConsts.PAGE_START;
+  // 是否已查询完毕的标识
+  hasQueryAll = false;
+  // 查询下一页需要上一页最后一条数据的sort值
+  searchAfter = [];
+  // 接口锁定，锁定时不再触发同一接口
+  lockFileRequest = false;
 
   @ViewChild('input', { static: false }) pathInput: ElementRef<
     HTMLIFrameElement
@@ -108,6 +133,8 @@ export class FileTreeComponent implements OnInit {
 
   constructor(
     private i18n: I18NService,
+    private globalService: GlobalService,
+    private copiesApiService: CopiesService,
     private copyControllerService: CopyControllerService
   ) {}
 
@@ -198,7 +225,7 @@ export class FileTreeComponent implements OnInit {
   }
 
   tabChange() {
-    if (this.pathView === 'all') {
+    if (this.pathView === this.totalView) {
       setTimeout(() => {
         this.dataTable?.setSelections(this.selectionTableData);
       });
@@ -228,6 +255,7 @@ export class FileTreeComponent implements OnInit {
     };
     this.tableConfig = {
       table: {
+        async: false,
         compareWith: 'absolutePath',
         columns: cols,
         rows: {
@@ -235,20 +263,19 @@ export class FileTreeComponent implements OnInit {
           selectionTrigger: 'selector',
           showSelector: true
         },
-        scroll: { y: '520px' },
+        scroll: { y: '530px' },
+        virtualScroll: true,
         colDisplayControl: false,
-        fetchData: (filters: Filters, args) => {
-          this.getTableData(filters, args);
-        },
         selectionChange: selection => {
           this.selectionTableData = selection;
           this.setSelection();
         },
+        scrollEnd: () => this.scrollEnd(),
         trackByFn: (_, item) => {
           return item.absolutePath;
         }
       },
-      pagination: page
+      pagination: null
     };
     this.selectTableConfig = {
       table: {
@@ -324,11 +351,13 @@ export class FileTreeComponent implements OnInit {
 
   // 获取指定路径下的文件
   pathSearch(): void {
+    // 重置页码和状态
+    this.resetQueryStatus();
     this.isPathSearchFlag = false;
     const path = this.currentPath.replace(this.copy?.resource_name, '');
     const pathArr = path.split('/');
     const nodeName = pathArr.pop();
-    this.dataTable.fetchData({
+    this.getTableData({
       isLeaf: false,
       absolutePath: path,
       formPath: true,
@@ -339,10 +368,21 @@ export class FileTreeComponent implements OnInit {
 
   // 通过名称搜索文件
   searchName($event): void {
-    this.dataTable.fetchData({
-      ...first(this.selectionTree),
-      searrchByName: $event
-    });
+    // 重置页码和状态
+    this.resetQueryStatus();
+    if (this.pathView === this.totalView) {
+      this.getTableData({
+        ...first(this.selectionTree),
+        searrchByName: $event
+      });
+    } else {
+      this.dataSelectTable.filterChange({
+        caseSensitive: false,
+        filterMode: 'contains',
+        key: 'name',
+        value: trim($event)
+      });
+    }
   }
 
   // 叶子节点展开
@@ -352,15 +392,27 @@ export class FileTreeComponent implements OnInit {
 
   // 点击左树节点
   pathNodeCheck($event) {
+    if (
+      [
+        DataMap.Browse_LiveMount_Status.unmount.value,
+        DataMap.Browse_LiveMount_Status.mounting.value,
+        DataMap.Browse_LiveMount_Status.mountFail.value
+      ].includes(this.copy.browse_mounted) &&
+      this.copy.indexed !== DataMap.CopyData_fileIndex.indexed.value
+    ) {
+      return;
+    }
     const node = $event.node;
     this.getFilePathItems(node);
+    // 重置页码和状态
+    this.resetQueryStatus();
     // 获取右边表格数据，当前路径下子路径
-    if (this.pathView === 'all') {
-      this.dataTable.fetchData(node);
+    if (this.pathView === this.totalView) {
+      this.getTableData(node);
     } else {
-      this.pathView = 'all';
+      this.pathView = this.totalView;
       setTimeout(() => {
-        this.dataTable?.fetchData(node);
+        this.getTableData(node);
         this.dataTable?.setSelections(this.selectionTableData);
       });
     }
@@ -398,14 +450,24 @@ export class FileTreeComponent implements OnInit {
     }
   }
 
-  updateTable(res, node) {
+  updateTable(res, node, byScroll = false) {
     each(res.records, (item: any) => {
       item = extendNodeParams(node, item);
     });
-    this.tableData = {
-      data: res.records,
-      total: res.totalCount
-    };
+
+    // 如果是通过滚动加载，需要把数据合并，否则不用
+    if (byScroll) {
+      this.tableData = {
+        data: [...this.tableData.data, ...res.records],
+        total: res.totalCount,
+        keepScroll: true
+      };
+    } else {
+      this.tableData = {
+        data: res.records,
+        total: res.totalCount
+      };
+    }
     this.total = res.totalCount;
     // 通过输入路径来搜索
     if (node.formPath) {
@@ -414,7 +476,7 @@ export class FileTreeComponent implements OnInit {
   }
 
   // 获取指定路径下的文件
-  getTableData(filters: Filters, node) {
+  getTableData(node, byScroll = false) {
     if (!node) {
       node = first(this.selectionTree);
     }
@@ -429,28 +491,164 @@ export class FileTreeComponent implements OnInit {
     if (trim(node.searrchByName) || trim(this.searcKey)) {
       const params = {
         copyId: this.copy.uuid,
-        pageNum: filters.paginator.pageIndex,
-        pageSize: filters.paginator.pageSize,
+        pageNum: this.startPage,
+        pageSize: CommonConsts.PAGE_SIZE_MAX,
         parentPath: node.absolutePath || '/',
-        name: trim(this.searcKey)
+        name: trim(this.searcKey),
+        akLoading: false
       };
+      // 已索引的副本翻页时需要传上一条的sort
+      if (byScroll && !isEmpty(this.searchAfter)) {
+        assign(params, {
+          searchAfter: this.searchAfter
+        });
+      }
+      this.tableLoading = true;
       this.copyControllerService
         .ListCopyCatalogsByName(params)
+        .pipe(
+          finalize(() => {
+            this.tableLoading = false;
+            this.lockFileRequest = false;
+          })
+        )
         .subscribe(res => {
           this.searchMax = res.totalCount >= 1000;
-          this.updateTable(res, node);
+          // 更新查询滚动查询状态
+          this.updateSort(res.records, res.totalCount);
+          this.updateTable(res, node, byScroll);
         });
     } else {
       this.searchMax = false;
       const params = {
         copyId: this.copy.uuid,
-        pageNo: filters.paginator.pageIndex,
-        pageSize: filters.paginator.pageSize,
-        parentPath: node.absolutePath || '/'
+        pageNo: this.startPage,
+        pageSize: CommonConsts.PAGE_SIZE_MAX,
+        parentPath: node.absolutePath || '/',
+        akLoading: false
       };
+      // 已索引的副本翻页时需要传上一条的sort
+      if (byScroll && !isEmpty(this.searchAfter)) {
+        assign(params, {
+          searchAfter: this.searchAfter
+        });
+      }
+      this.tableLoading = true;
       this.copyControllerService
         .ListCopyCatalogs(params)
-        .subscribe(res => this.updateTable(res, node));
+        .pipe(
+          finalize(() => {
+            this.tableLoading = false;
+            this.lockFileRequest = false;
+          })
+        )
+        .subscribe(res => {
+          // 更新查询滚动查询状态
+          this.updateSort(res.records, res.totalCount);
+          this.updateTable(res, node, byScroll);
+        });
+    }
+  }
+
+  // 更新标记和查询状态
+  updateSort(records, totalCount) {
+    // 记录最后一条数据的sort
+    this.searchAfter = records[records.length - 1]?.sort;
+    // 记录是否已经查询完，滚动是否还需要查询
+    this.hasQueryAll =
+      this.startPage === Math.floor(totalCount / CommonConsts.PAGE_SIZE_MAX);
+  }
+
+  // 重置标记和查询状态
+  resetQueryStatus() {
+    this.searchAfter = [];
+    this.startPage = CommonConsts.PAGE_START;
+    this.hasQueryAll = false;
+    this.lockFileRequest = false;
+  }
+
+  // 滚动到底部，触发查询下一页
+  scrollEnd() {
+    if (!this.hasQueryAll && !this.lockFileRequest) {
+      this.startPage++;
+      this.lockFileRequest = true;
+      this.getTableData(first(this.selectionTree), true);
+    }
+  }
+
+  fileLevelExploreMount() {
+    this.copy.browse_mounted = DataMap.Browse_LiveMount_Status.mounting.value; // 点击创建时，手动设置为挂载中
+    this.copyControllerService
+      .OpenCopyGuestSystem({
+        copyId: this.copy.uuid,
+        akLoading: false
+      })
+      .subscribe();
+    this.globalService.emitStore({
+      action: 'fileLevelExploreMount',
+      state: 'mount'
+    });
+    setTimeout(() => this.pollQueryCopy(), this.queryTaskTimeout);
+  }
+
+  pollQueryCopy() {
+    this.timeSub$ = timer(0, CommonConsts.TIME_INTERVAL)
+      .pipe(
+        takeUntil(this.destroy$),
+        switchMap(index => {
+          const params = {
+            pageSize: 1,
+            pageNo: 0,
+            conditions: JSON.stringify({
+              uuid: this.copy.uuid
+            })
+          };
+          return this.copiesApiService.queryResourcesV1CopiesGet({
+            ...params,
+            akLoading: false
+          });
+        })
+      )
+      .subscribe(res => {
+        const copy = first(res.items);
+        if (
+          get(copy, 'browse_mounted') !==
+          DataMap.Browse_LiveMount_Status.mounting.value
+        ) {
+          // 非挂载中，说明挂载操作已经结束。
+          this.destroy$.next(true);
+          this.destroy$.complete();
+          this.globalService.emitStore({
+            // 发布消息更新副本列表
+            action: 'fileLevelExploreMount',
+            state: 'mount'
+          });
+          setTimeout(() => {
+            this.pathNodeCheck({ node: this.selectionTree[0] });
+          });
+        }
+        set(
+          this.copy,
+          'browse_mounted',
+          get(
+            copy,
+            'browse_mounted',
+            DataMap.Browse_LiveMount_Status.unmount.value
+          )
+        );
+      });
+  }
+
+  ngOnDestroy() {
+    setTimeout(() => {
+      if (this.timeSub$) {
+        this.timeSub$.unsubscribe();
+      }
+    }, this.queryTaskTimeout);
+    this.destroy$.next(true);
+    this.destroy$.complete();
+    if (this.timeSub$) {
+      this.timeSub$.unsubscribe();
     }
   }
 }

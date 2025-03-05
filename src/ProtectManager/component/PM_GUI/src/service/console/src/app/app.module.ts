@@ -10,6 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
+import { CdkConnectedOverlay } from '@angular/cdk/overlay';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -46,7 +47,8 @@ import { ConfigProviderModule } from '@iux/live';
     ExportQueryResultsModule,
     UserGuideModule,
     ConfigProviderModule,
-    ApiModule.forRoot({ rootUrl: '/console/rest' })
+    ApiModule.forRoot({ rootUrl: '/console/rest' }),
+    CdkConnectedOverlay
   ],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent]

@@ -325,9 +325,7 @@ export class HoneyPotComponent implements OnInit, AfterViewInit, OnDestroy {
         colDisplayControl: {
           ignoringColsType: 'hide'
         },
-        virtualScroll: true,
         scrollFixed: true,
-        scroll: { y: '770px' },
         fetchData: (filter: Filters, args) => {
           this.getData(filter, args);
         },
@@ -385,6 +383,11 @@ export class HoneyPotComponent implements OnInit, AfterViewInit, OnDestroy {
       if (conditionsTemp.resourceId) {
         assign(params, { fsId: conditionsTemp.resourceId });
       }
+      if (isUndefined(conditionsTemp.name)) {
+        this.name = '';
+      } else {
+        this.name = conditionsTemp.name;
+      }
       if (conditionsTemp.name) {
         assign(params, { fsName: conditionsTemp.name });
       }
@@ -394,6 +397,8 @@ export class HoneyPotComponent implements OnInit, AfterViewInit, OnDestroy {
       if (!isEmpty(conditionsTemp.status)) {
         assign(params, { honeypotModes: conditionsTemp.status });
       }
+    } else {
+      this.name = '';
     }
 
     this.honeypotService

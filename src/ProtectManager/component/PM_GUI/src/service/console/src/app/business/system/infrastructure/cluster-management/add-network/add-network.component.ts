@@ -361,6 +361,11 @@ export class AddNetworkComponent implements OnInit {
           this.target.cols = this.source.cols;
         }
       }
+      if (this.enableVlan && this.formGroup.get('reuse').value) {
+        defer(() => {
+          this.switchOldCols();
+        });
+      }
       this.source.selection = [];
       this.targetData = [];
       defer(() => this.tipChange());
@@ -612,32 +617,34 @@ export class AddNetworkComponent implements OnInit {
   }
 
   updateData() {
-    this.backupClusterNetplaneService.getNetPlane({}).subscribe((res: any) => {
-      this.selectedPort = res.portList;
-      this.formGroup.patchValue(res);
-      if (res.homePortType === DataMap.initHomePortType.vlan.value) {
-        this.enableVlan = true;
-        this.formGroup.get('homePortType').setValue(res.vlanPort.portType);
-        defer(() => this.vlanChange(true));
-        if (!res.reuse) {
-          // 复用时不回显vlanId
-          this.formGroup.get('vlanID').setValue(res.vlanPort.tags.join(','));
+    this.backupClusterNetplaneService
+      .getNetPlane({ memberEsn: this.drawData.storageEsn })
+      .subscribe((res: any) => {
+        this.selectedPort = res.portList;
+        this.formGroup.patchValue(res);
+        if (res.homePortType === DataMap.initHomePortType.vlan.value) {
+          this.enableVlan = true;
+          this.formGroup.get('homePortType').setValue(res.vlanPort.portType);
+          defer(() => this.vlanChange(true));
+          if (!res.reuse) {
+            // 复用时不回显vlanId
+            this.formGroup.get('vlanID').setValue(res.vlanPort.tags.join(','));
+          }
         }
-      }
 
-      if (res.ipType === '0') {
-        this.formGroup.get('mask').setValue(res.mask);
-      } else {
-        this.formGroup.get('prefix').setValue(res.mask);
-      }
+        if (res.ipType === '0') {
+          this.formGroup.get('mask').setValue(res.mask);
+        } else {
+          this.formGroup.get('prefix').setValue(res.mask);
+        }
 
-      this.routeData = res.portRoutes;
-      if (!!res.portRoutes.length) {
-        this.enableRoute = true;
-      }
+        this.routeData = res.portRoutes;
+        if (!!res.portRoutes.length) {
+          this.enableRoute = true;
+        }
 
-      defer(() => this.updatePort(res));
-    });
+        defer(() => this.updatePort(res));
+      });
   }
 
   updatePort(res) {
@@ -895,7 +902,8 @@ export class AddNetworkComponent implements OnInit {
       if (this.isModify) {
         this.backupClusterNetplaneService
           .updateInternalNetPlaneRelationUsingPut({
-            request: this.getParams()
+            request: this.getParams(),
+            memberEsn: this.drawData?.storageEsn
           })
           .subscribe({
             next: () => {

@@ -74,6 +74,8 @@ export class AddTelnetComponent implements OnInit {
   managerLabel: string;
   showTips = false;
 
+  PASSWORD_MAX_LENGTH = 256;
+
   nameErrorTip = assign(this.baseUtilService.nameErrorTip, {
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [
       this.MAX_LENGTH
@@ -81,7 +83,7 @@ export class AddTelnetComponent implements OnInit {
   });
   pwdErrorTip = assign(this.baseUtilService.pwdErrorTip, {
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [
-      this.MAX_LENGTH
+      this.PASSWORD_MAX_LENGTH
     ])
   });
 
@@ -146,7 +148,7 @@ export class AddTelnetComponent implements OnInit {
       password: new FormControl('', {
         validators: [
           this.baseUtilService.VALID.required(),
-          this.baseUtilService.VALID.maxLength(this.MAX_LENGTH)
+          this.baseUtilService.VALID.maxLength(this.PASSWORD_MAX_LENGTH)
         ]
       })
     });

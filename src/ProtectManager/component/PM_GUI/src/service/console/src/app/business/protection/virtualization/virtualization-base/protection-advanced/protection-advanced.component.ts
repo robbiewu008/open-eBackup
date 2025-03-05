@@ -65,6 +65,16 @@ export class ProtectionAdvancedComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.hiddenProxy =
+      includes(
+        [
+          DataMap.Resource_Type.hyperVVm.value,
+          DataMap.Resource_Type.hyperVHost.value
+        ],
+        this.resourceType
+      ) ||
+      (this.resourceType === DataMap.Resource_Type.vmGroup.value &&
+        this?.resourceData?.sourceType === ResourceType.HYPERV);
     this.getLabel();
     this.initForm();
     this.getProxyOptions();
@@ -72,10 +82,15 @@ export class ProtectionAdvancedComponent implements OnInit {
   }
 
   getProxyOptions() {
+    if (this.hiddenProxy) return;
+
     const extParams = {
       conditions: JSON.stringify({
         type: 'Plugin',
-        subType: [`${this?.resourceData?.type}Plugin`]
+        subType:
+          this.resourceType === DataMap.Resource_Type.vmGroup.value
+            ? [`${this?.resourceData?.sourceType}Plugin`]
+            : [`${this?.resourceData?.type}Plugin`]
       })
     };
     this.appUtilsService.getResourceByRecursion(
@@ -159,13 +174,6 @@ export class ProtectionAdvancedComponent implements OnInit {
     this.formGroup.statusChanges.subscribe(() => {
       this.valid$.next(this.formGroup.valid);
     });
-    this.hiddenProxy = includes(
-      [
-        DataMap.Resource_Type.hyperVVm.value,
-        DataMap.Resource_Type.hyperVHost.value
-      ],
-      this.resourceType
-    );
   }
 
   updateData() {
@@ -219,22 +227,20 @@ export class ProtectionAdvancedComponent implements OnInit {
     }
 
     // 索引
-    if (!this.vmFilterShow) {
-      each(
-        [
-          'backup_res_auto_index',
-          'archive_res_auto_index',
-          'enable_security_archive'
-        ],
-        key => {
-          if (this.formGroup.get(key)) {
-            assign(ext_parameters, {
-              [key]: this.formGroup.get(key).value
-            });
-          }
+    each(
+      [
+        'backup_res_auto_index',
+        'archive_res_auto_index',
+        'enable_security_archive'
+      ],
+      key => {
+        if (this.formGroup.get(key)) {
+          assign(ext_parameters, {
+            [key]: this.formGroup.get(key).value
+          });
         }
-      );
-    }
+      }
+    );
 
     return {
       ext_parameters

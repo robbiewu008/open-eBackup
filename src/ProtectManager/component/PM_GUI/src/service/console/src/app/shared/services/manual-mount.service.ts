@@ -36,6 +36,7 @@ import {
   VirtualResourceService,
   WarningMessageService
 } from '..';
+import { AppUtilsService } from './app-utils.service';
 import { DrawModalService } from './draw-modal.service';
 
 export interface Params {
@@ -50,6 +51,7 @@ export interface Params {
 })
 export class ManualMountService {
   constructor(
+    public appUtilsService: AppUtilsService,
     private i18n: I18NService,
     private globalService: GlobalService,
     private drawModalService: DrawModalService,
@@ -136,17 +138,7 @@ export class ManualMountService {
               this.warningMessageService.create({
                 content: component.oracleOfflineWarnTip,
                 onOK: () => {
-                  this.liveMountApiService
-                    .createLiveMountUsingPOST({
-                      liveMountObject: componentData.requestParams
-                    })
-                    .subscribe(
-                      res => {
-                        resolve(true);
-                        param.onOk();
-                      },
-                      error => resolve(false)
-                    );
+                  this.executeLiveMount(componentData, resolve, param);
                 },
                 onCancel: () => resolve(false),
                 lvAfterClose: result => {
@@ -156,22 +148,64 @@ export class ManualMountService {
                 }
               });
             } else {
-              this.liveMountApiService
-                .createLiveMountUsingPOST({
-                  liveMountObject: componentData.requestParams
-                })
-                .subscribe(
-                  res => {
-                    resolve(true);
-                    param.onOk();
+              if (
+                this.appUtilsService.isDistributed &&
+                param.item.generated_by ===
+                  DataMap.CopyData_generatedType.replicate.value &&
+                [
+                  DataMap.Resource_Type.MySQL.value,
+                  DataMap.Resource_Type.MySQLInstance.value,
+                  DataMap.Resource_Type.MySQLClusterInstance.value,
+                  DataMap.Resource_Type.MySQLDatabase.value,
+                  DataMap.Resource_Type.virtualMachine.value,
+                  DataMap.Resource_Type.oracle.value,
+                  DataMap.Resource_Type.oracleCluster.value
+                ].includes(param.item.resource_sub_type)
+              ) {
+                this.warningMessageService.create({
+                  header: this.i18n.get(
+                    'explore_distributed_live_mount_header_label'
+                  ),
+                  width: MODAL_COMMON.normalWidth,
+                  content: this.i18n.get(
+                    'explore_distributed_live_mount_tip_label'
+                  ),
+                  onOK: () => {
+                    this.executeLiveMount(componentData, resolve, param);
                   },
-                  error => resolve(false)
-                );
+                  onCancel: () => resolve(false),
+                  lvAfterClose: result => {
+                    if (result && result.trigger === 'close') {
+                      resolve(false);
+                    }
+                  }
+                });
+              } else {
+                this.executeLiveMount(componentData, resolve, param);
+              }
             }
           });
         }
       });
     });
+  }
+
+  private executeLiveMount(
+    componentData: any,
+    resolve: (value: unknown) => void,
+    param: Params
+  ) {
+    this.liveMountApiService
+      .createLiveMountUsingPOST({
+        liveMountObject: componentData.requestParams
+      })
+      .subscribe(
+        res => {
+          resolve(true);
+          param.onOk();
+        },
+        error => resolve(false)
+      );
   }
 
   getVirtualResource(resource) {

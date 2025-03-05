@@ -164,6 +164,10 @@ export class CreateDrillComponent implements OnInit {
     this.getDrillDetail();
   }
 
+  setSysTime(control) {
+    this.appUtilsService.setTimePickerCurrent(this.formGroup.get(control));
+  }
+
   getDrill() {
     if (!this.isModify) {
       return;

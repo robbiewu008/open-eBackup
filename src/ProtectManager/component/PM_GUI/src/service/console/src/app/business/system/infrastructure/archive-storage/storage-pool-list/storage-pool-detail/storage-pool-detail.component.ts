@@ -102,8 +102,8 @@ export class StoragePoolDetailComponent implements OnInit {
         name: this.i18n.get('system_archive_write_status_label'),
         filter: {
           type: 'select',
-          isMultiple: false,
-          showCheckAll: false,
+          isMultiple: true,
+          showCheckAll: true,
           options: this.dataMapService.toArray('Tape_Write_Status')
         },
         cellRender: {
@@ -116,8 +116,8 @@ export class StoragePoolDetailComponent implements OnInit {
         name: this.i18n.get('common_status_label'),
         filter: {
           type: 'select',
-          isMultiple: false,
-          showCheckAll: false,
+          isMultiple: true,
+          showCheckAll: true,
           options: this.dataMapService.toArray('Library_Tape_Status')
         },
         cellRender: {
@@ -221,10 +221,10 @@ export class StoragePoolDetailComponent implements OnInit {
         assign(params, { tapeLabel: conditions.tapeLabel });
       }
       if (conditions.writeStatus) {
-        assign(params, { writeStatus: conditions.writeStatus[0] });
+        assign(params, { writeStatuses: conditions.writeStatus });
       }
       if (conditions.status) {
-        assign(params, { status: conditions.status[0] });
+        assign(params, { statuses: conditions.status });
       }
     }
 

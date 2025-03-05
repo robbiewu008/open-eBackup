@@ -18,6 +18,7 @@ import {
   BaseUtilService,
   CommonConsts,
   DataMap,
+  filterVersion,
   I18NService,
   ProtectedResourceApiService,
   RestoreApiV2Service,
@@ -582,7 +583,7 @@ export class KubernetesRestoreComponent implements OnInit {
             });
           }
         });
-        this.proxyOptions = hostArray;
+        this.proxyOptions = filterVersion(hostArray, this.verifyStatus);
       }
     );
   }

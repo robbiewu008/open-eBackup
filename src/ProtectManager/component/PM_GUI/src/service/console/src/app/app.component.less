@@ -299,6 +299,16 @@ span.source-conainer {
   padding: 0.08rem 0.24rem;
   font-size: 0.16rem;
   line-height: 0.32rem;
+
+  .menu-icon-container {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    left: 8px;
+  }
 }
 
 .aui-logo {
@@ -459,4 +469,100 @@ span.source-conainer {
 
 .menu-label {
   color: var(--live-angular-color-text-hint);
+}
+
+.shortcut-op-container {
+  left: 0;
+}
+
+.new-comer-guidance-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: normal;
+}
+
+.new-comer-guidance-content-single {
+  font-weight: 400;
+}
+
+.new-comer-guidance-content {
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.new-comer-guidance-content-group {
+  padding: 8px 0;
+  i {
+    width: 24px;
+    height: 24px;
+  }
+  .bold-text {
+    font-weight: bold;
+  }
+  .icon-description {
+    display: inline-block;
+    height: 24px;
+    line-height: 24px;
+    margin-left: 4px;
+  }
+}
+
+.new-comer-guidance-footer-container {
+  padding-left: 32px;
+  justify-content: flex-end;
+  #endGuideBtn {
+    color: var(--live-angular-color-text-white) !important;
+    border: 1px solid var(--live-angular-color-text-white);
+    &:hover {
+      color: 1px solid var(--live-angular-color-text-white) !important;
+    }
+  }
+
+  #nextGuideBtn {
+    color: rgb(110, 110, 255);
+    background-color: var(--live-angular-color-text-white);
+    border: 1px solid var(--live-angular-color-text-white);
+  }
+}
+
+.custom-overlay {
+  content: '';
+  box-sizing: content-box;
+  position: absolute; /* 绝对定位 */
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 4px;
+  width: 0;
+  height: 0;
+  top: 0;
+  left: 0;
+  display: none;
+  z-index: 99999;
+  pointer-events: none; /* 防止影响原始元素的交互 */
+}
+
+.custom-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: inset 0 0 0 1px var(--new-comer-guidance-bg-color); /* 第一个边框，使用 inset 使其看起来像内边框 */
+  border-radius: 5px;
+  pointer-events: none; /* 防止伪元素影响交互 */
+}
+
+.custom-overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 1px;
+  right: 1px;
+  bottom: 1px;
+  box-shadow: 0 0 0 3px rgba(110, 110, 255, 0.5); /* 第二个边框，使用 inset 和 rgba 调整透明度 */
+  border-radius: 5px;
+  pointer-events: none; /* 防止伪元素影响交互 */
 }

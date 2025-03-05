@@ -110,6 +110,12 @@ export class CopyVerifyComponent implements OnInit {
       assign(conditions, {
         subType: [`${ResourceType.FUSION_ONE}Plugin`]
       });
+    } else if (
+      this.rowCopy.resource_sub_type === DataMap.Resource_Type.nutanixVm.value
+    ) {
+      assign(conditions, {
+        subType: [`${ResourceType.NUTANIX}Plugin`]
+      });
     }
 
     const extParams = {

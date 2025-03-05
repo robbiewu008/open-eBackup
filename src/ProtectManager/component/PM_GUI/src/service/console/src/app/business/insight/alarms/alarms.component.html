@@ -89,15 +89,16 @@
                 >
                   <span>{{ clear }}</span>
                 </button>
-                  <div class="insight-export">
-                      <i
-                              lv-icon="{{
-                      isThemeLight()
-                        ? 'aui-icon-export-extra'
-                        : 'aui-icon-export-extra-dark'
-                    }}" [lvColorState]='true' (click)="exportCurrentAlarms()"
-                         lv-tooltip="{{exportAlarmTipLabel}}" lvTooltipPosition="bottom" lvTooltipTheme="light"></i>
-                  </div>
+                <div class="insight-export-alarm">
+                  <i
+                    lv-icon="aui-icon-export-extra"
+                    [lvColorState]="true"
+                    (click)="exportCurrentAlarms()"
+                    lv-tooltip="{{ exportAlarmTipLabel }}"
+                    lvTooltipPosition="bottom"
+                    lvTooltipTheme="light"
+                  ></i>
+                </div>
               </div>
               <div class="list-container">
                 <div class="tags-container" *ngIf="apiFilters?.length">
@@ -364,6 +365,16 @@
                 </button>
               </lv-group>
               <lv-group>
+                <div class="insight-export" *ngIf="isDecouple || isDistributed">
+                  <i
+                    lv-icon="aui-icon-export-extra"
+                    [lvColorState]="true"
+                    (click)="exportCurrentAlarms()"
+                    lv-tooltip="{{ exportAlarmTipLabel }}"
+                    lvTooltipPosition="bottom"
+                    lvTooltipTheme="light"
+                  ></i>
+                </div>
                 <div class="insight-refresh">
                   <i
                     lv-icon="lv-icon-refresh"
@@ -632,11 +643,7 @@
               <lv-group>
                 <div class="insight-export">
                   <i
-                    lv-icon="{{
-                      isThemeLight()
-                        ? 'aui-icon-export-extra'
-                        : 'aui-icon-export-extra-dark'
-                    }}"
+                    lv-icon="aui-icon-export-extra"
                     [lvColorState]="true"
                     (click)="exportHistoryAlarms()"
                     lv-tooltip="{{ exportEventTipLabel }}"
@@ -687,7 +694,7 @@
                           item.key != 'type' &&
                           item.key != 'confirmStatus' &&
                           item.key != 'sourceType' &&
-                          item.key != 'alarmTimeStr' &&
+                          item.key != 'firstTimeStr' &&
                           item.key != 'deviceName' &&
                           item.key != 'nodeName' &&
                           item.key != 'alarmId'
@@ -747,7 +754,7 @@
                       </th>
                       <!-- 发生时间过滤  -->
                       <th
-                        *ngIf="item.isShow && item.key === 'alarmTimeStr'"
+                        *ngIf="item.isShow && item.key === 'firstTimeStr'"
                         lvCellKey="{{ item.key }}"
                         lvShowCustom
                       >

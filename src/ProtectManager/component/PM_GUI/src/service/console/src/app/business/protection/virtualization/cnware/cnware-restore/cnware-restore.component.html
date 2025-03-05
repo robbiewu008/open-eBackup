@@ -16,6 +16,13 @@
         {{'protection_invalid_recovery_label' | i18n }}
     </lv-alert>
 </div>
+<div
+    *ngIf="!i18n.isEn && rowCopy?.resource_type === dataMap.Resource_Type.cNware.value && restoreType === restoreV2Type.InstanceRestore">
+    <lv-alert lvType="warning" lvClosable="false">
+        {{'common_cnware_restore_or_livemount_tip_label' | i18n }}
+    </lv-alert>
+</div>
+
 <ng-container *ngIf="isDiskRestore">
     <h3 class="aui-gutter-column-md">{{'protection_recovery_selected_disk_label' | i18n}}</h3>
     <div class="recovery-table aui-gutter-column-xl">
@@ -59,6 +66,9 @@
         </lv-form-control>
     </lv-form-item>
     <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+        <lv-alert lvType="warning" lvClosable="false" *ngIf="!_isEmpty(bootOptionsWarnTip) && isDiskRestore">
+            <span>{{bootOptionsWarnTip}}</span>
+        </lv-alert>
         <ng-container *ngIf="rowCopy?.resource_type === dataMap.Resource_Type.cNware.value">
             <lv-form-item>
                 <lv-form-label lvRequired>
@@ -68,7 +78,8 @@
                     <lv-tree-select [lvTreeData]="serverTreeData" lvTreeSelectionMode="single"
                         lvPlaceholder="{{(isDiskRestore ? 'common_select_vm_label' : 'protection_select_host_placeholder_label') | i18n}}"
                         formControlName="targetServer" lvShowClear lvTreeShowLine lvTreeShowContentIcon
-                        (lvExpandedChange)="expandedChange($event)" lvShowFilter lvFilterKey="label" lvFilterMode="contains">
+                        (lvExpandedChange)="expandedChange($event)" (lvFilterChange)="filterChange($event)" lvShowFilter
+                        lvFilterKey="label" lvFilterMode="contains">
                         <lv-treeselect-trigger>
                             <span>{{ formGroup.value.targetServer[0]?.path }}</span>
                         </lv-treeselect-trigger>
@@ -79,16 +90,26 @@
         <ng-container *ngIf="rowCopy?.resource_type === dataMap.Resource_Type.nutanix.value">
             <lv-form-item>
                 <lv-form-label lvRequired>
+                    {{'common_target_to_cluster_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>
+                    <lv-select [lvOptions]="nutaniClusterOptions" lvValueKey='value'
+                    formControlName="targetCluster"
+                    lvShowFilter lvFilterKey='label' lvFilterMode='contains'></lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
                     {{'protection_volume_restore_target_label' | i18n}}
                 </lv-form-label>
-                <lv-form-control>
+                <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>
                     <lv-select [lvOptions]="nutaniHostOptions" lvValueKey='value'
                     formControlName="targetServer" lvShowClear lvMode="multiple"
                     lvShowFilter lvFilterKey='label' lvFilterMode='contains'></lv-select>
                 </lv-form-control>
             </lv-form-item>
         </ng-container>
-        
+
         <ng-container *ngIf="restoreType === restoreV2Type.InstanceRestore">
             <lv-form-item>
                 <lv-form-label lvRequired>
@@ -151,10 +172,8 @@
         <lv-form-item>
             <lv-form-label>
                 {{'protection_startup_network_adaptor_label' | i18n}}
-                <i lv-icon="aui-icon-help"
-                    lv-tooltip="{{'protection_cnware_restore_network_help_label' | i18n}}"
-                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
-                    lvColorState='true'></i>
+                <i lv-icon="aui-icon-help" [lv-tooltip]="networkHelpLabel" lvTooltipPosition="rightTop"
+                    lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
             </lv-form-label>
             <lv-form-control>
                 <lv-switch formControlName="openInterface"></lv-switch>
@@ -169,7 +188,7 @@
             <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="true">
                 <lv-form-item>
                     <lv-form-label>
-                        {{'protection_proxy_host_label' | i18n}}
+                        {{'protection_clients_label' | i18n}}
                     </lv-form-label>
                     <lv-form-control>
                         <lv-select [lvOptions]="proxyOptions" formControlName="proxyHost" lvValueKey='value'
@@ -250,7 +269,7 @@
         <lv-group [lvColumns]='["auto", "16px", "260px"]' lvRowGutter="4px">
             <input lv-input type="text" [(ngModel)]="item.targetDiskName"
                 placeholder="{{'protection_recovery_new_disk_placeholder_label' | i18n}}"
-                (ngModelChange)="diskNameChange($event, item)" [ngClass]="{'error-status': item.nameInvalid}"/>
+                (ngModelChange)="diskNameChange($event, item)" [ngClass]="{'error-status': item.nameInvalid}" />
             <div class="error-tip">
                 <i *ngIf="item.nameInvalid" [lv-tooltip]="item.nameErrorTip" [lvTooltipVisible]="true"
                     lvTooltipPosition="right" lv-icon="lv-icon-status-failed"></i>
@@ -285,6 +304,11 @@
         (ngModelChange)='portGroupChange()' lvValueKey='uuid' lvShowClear lvShowFilter lvFilterKey='label'
         lvFilterMode='contains'>
     </lv-select>
+</ng-template>
+
+<ng-template #targetIpHeaderTpl>
+    <i style="margin-left:4px;margin-top:-2px;" lv-icon="aui-icon-help"
+        lv-tooltip="{{'protection_nutanix_target_ip_tip_label' | i18n}}" lvTooltipTheme="light" lvColorState='true'></i>
 </ng-template>
 
 <ng-template #targetIpTpl let-item>

@@ -35,6 +35,8 @@ export class GeneralAdvancedParameterComponent implements OnInit {
   @Input() data: any;
   @Input() formGroup: FormGroup;
   @Input() isUsed: boolean;
+  @Input() hasArchival: boolean;
+  @Input() hasReplication: boolean;
   @Output() isDisableBasicDiskWorm = new EventEmitter<any>();
   retryTimesErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 5])
@@ -61,6 +63,7 @@ export class GeneralAdvancedParameterComponent implements OnInit {
 
   updateForm() {
     this.formGroup.addControl('storage_type', new FormControl(''));
+    this.formGroup.addControl('device_type', new FormControl(''));
     this.formGroup.addControl('storage_id', new FormControl(''));
     this.formGroup.addControl('alarm_over_time_window', new FormControl(false));
     this.formGroup.addControl('alarm_after_failure', new FormControl(true));

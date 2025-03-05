@@ -85,21 +85,13 @@ export class ExportQueryResultsComponent implements OnInit, OnDestroy {
   ].includes(this.i18n.get('deploy_type'));
   isCyberEngine =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.cyberengine.value;
-  isDataBackup = includes(
-    [
-      DataMap.Deploy_Type.a8000.value,
-      DataMap.Deploy_Type.x3000.value,
-      DataMap.Deploy_Type.x6000.value,
-      DataMap.Deploy_Type.x8000.value,
-      DataMap.Deploy_Type.x9000.value
-    ],
-    this.i18n.get('deploy_type')
-  );
+  isDataBackup = this.appUtilsService.isDataBackup;
+  exportQueryTips: string;
 
   columns = [
     {
       key: 'nodeName',
-      label: this.i18n.get('system_servers_label'),
+      label: this.i18n.get('common_home_node_name_label'),
       hidden: !this.isDataBackup
     },
     {
@@ -141,6 +133,11 @@ export class ExportQueryResultsComponent implements OnInit, OnDestroy {
                   DataMap.exportLogType.agentLog.value,
                   DataMap.exportLogType.config.value
                 ],
+                item.value
+              );
+            } else if (this.appUtilsService.isDecouple) {
+              return !includes(
+                [DataMap.exportLogType.config.value],
                 item.value
               );
             } else {
@@ -197,8 +194,23 @@ export class ExportQueryResultsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.initExportQueryTips();
     this.getDatas();
     this.initTable();
+  }
+
+  initExportQueryTips() {
+    if (this.isDataBackup || this.appUtilsService.isDistributed) {
+      this.exportQueryTips = this.i18n.get('common_export_query_desc_label');
+    } else if (this.appUtilsService.isDecouple) {
+      this.exportQueryTips = this.i18n.get(
+        'common_export_query_other_desc_label'
+      );
+    } else {
+      this.exportQueryTips = this.i18n.get(
+        'common_export_query_special_desc_label'
+      );
+    }
   }
 
   initTable() {
@@ -512,12 +524,41 @@ export class ExportQueryResultsComponent implements OnInit, OnDestroy {
     const fileName = data?.agentEndpoint
       ? `${data.agentEndpoint}_${data.uuid}`
       : `${data.uuid}`;
-    this.appUtilsService.downloadUseAElement(
-      `/v1/export-files/${encodeURIComponent(
-        data?.parentId
-      )}/action/download?subId=${data?.uuid}`,
-      `${fileName}.zip`
-    );
+    const parentNode = find(this.data, item => item.id === data.parentId);
+    if (MultiCluster.isMulti && parentNode?.esn) {
+      this.messageService.info(
+        this.i18n.get('common_file_download_processing_label'),
+        {
+          lvDuration: 0,
+          lvShowCloseButton: true,
+          lvMessageKey: 'downloadKey'
+        }
+      );
+      this.exportFilesApi
+        .DownloadExportFile({
+          id: data?.parentId,
+          subId: data?.uuid,
+          memberEsn: parentNode?.esn,
+          akLoading: false
+        })
+        .pipe(finalize(() => this.messageService.destroy('downloadKey')))
+        .subscribe((res: any) => {
+          const bf = new Blob([res], {
+            type: 'application/zip'
+          });
+          const fileName = data?.agentEndpoint
+            ? `${data.agentEndpoint}_${data.uuid}`
+            : `${data.uuid}`;
+          this.appUtilsService.downloadFile(`${fileName}.zip`, bf);
+        });
+    } else {
+      this.appUtilsService.downloadUseAElement(
+        `/v1/export-files/${encodeURIComponent(
+          data?.parentId
+        )}/action/download?subId=${data?.uuid}`,
+        `${fileName}.zip`
+      );
+    }
   }
 
   trackById = (index, item) => {

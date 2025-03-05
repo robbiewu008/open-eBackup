@@ -27,7 +27,10 @@ import {
   VmRestoreOptionType,
   VmwareService,
   LANGUAGE,
-  ResourceType
+  ResourceType,
+  Scene,
+  ClientManagerApiService,
+  Features
 } from 'app/shared';
 import {
   assign,
@@ -123,6 +126,7 @@ export class VmRestoreComponent implements OnInit {
   isEn = this.i18n.language.toLowerCase() === LANGUAGE.EN;
   proxyHostOptions = [];
   showRdmRecoveryTip = false;
+  isSupport = true;
 
   constructor(
     private fb: FormBuilder,
@@ -131,7 +135,8 @@ export class VmRestoreComponent implements OnInit {
     private virtualResourceService: VirtualResourceService,
     private restoreService: RestoreService,
     private vmwareService: VmwareService,
-    private i18n: I18NService
+    private i18n: I18NService,
+    private clientManagerApiService: ClientManagerApiService
   ) {}
 
   ngOnInit() {
@@ -397,6 +402,34 @@ export class VmRestoreComponent implements OnInit {
       if (this.formGroup.value.storage === DatastoreType.SAME) {
         this.computeSameSpace(res);
       }
+    });
+
+    this.listenForm();
+  }
+
+  listenForm() {
+    this.formGroup.get('proxyHost').valueChanges.subscribe(res => {
+      if (isEmpty(res)) {
+        this.isSupport = true;
+        return;
+      }
+      const params = {
+        hostUuidsAndIps: res,
+        applicationType: 'VMware',
+        scene: Scene.Restore,
+        buttonNames: [Features.SnapshotGeneration]
+      };
+      this.clientManagerApiService
+        .queryAgentApplicationUsingPOST({
+          AgentCheckSupportParam: params,
+          akOperationTips: false
+        })
+        .subscribe(res => {
+          this.isSupport = res?.SnapshotGeneration;
+          if (!this.isSupport) {
+            this.formGroup.get('isStartupSnapGen').setValue(false);
+          }
+        });
     });
   }
 

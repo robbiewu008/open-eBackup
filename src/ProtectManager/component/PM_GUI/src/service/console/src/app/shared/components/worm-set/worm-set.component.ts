@@ -60,7 +60,6 @@ export class WormSetComponent implements OnInit {
   isCyberEngine =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.cyberengine.value;
   dataMap = DataMap;
-  isSQLServerAndHbase = false;
   constructor(
     public fb: FormBuilder,
     public i18n: I18NService,
@@ -72,23 +71,6 @@ export class WormSetComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.isSQLServerAndHbase = includes(
-      [
-        DataMap.Resource_Type.SQLServerInstance.value,
-        DataMap.Resource_Type.SQLServer.value,
-        DataMap.Resource_Type.SQLServerDatabase.value,
-        DataMap.Resource_Type.SQLServerCluster.value,
-        DataMap.Resource_Type.SQLServerClusterInstance.value,
-        DataMap.Resource_Type.SQLServerGroup.value,
-        DataMap.Resource_Type.HBase.value,
-        DataMap.Resource_Type.HBaseBackupSet.value,
-        DataMap.Resource_Type.HBaseNameSpace.value,
-        DataMap.Resource_Type.HBaseTable.value,
-        DataMap.Resource_Type.HBaseBackupSet.value,
-        DataMap.Resource_Type.HBaseTable.value
-      ],
-      this.data.resource_sub_type
-    );
   }
 
   initForm() {
@@ -96,7 +78,9 @@ export class WormSetComponent implements OnInit {
       worm_validity_type: new FormControl(1),
       retention_duration: new FormControl(''),
       duration_unit: new FormControl(''),
-      convert_worm_switch: new FormControl(false)
+      convert_worm_switch: new FormControl(false, [
+        this.baseUtilService.VALID.required()
+      ])
     });
     this.formGroup.patchValue({
       worm_validity_type: this.data.worm_validity_type || 1,
@@ -129,13 +113,7 @@ export class WormSetComponent implements OnInit {
     });
     this.formGroup.get('convert_worm_switch').valueChanges.subscribe(res => {
       // 开启时，如果是SQLServer或HBASE的日志副本，拨到自定义
-      if (
-        res &&
-        this.data.source_copy_type === DataMap.CopyData_Backup_Type.log.value &&
-        this.isSQLServerAndHbase
-      ) {
-        this.formGroup.get('worm_validity_type').setValue(2);
-      } else if (res) {
+      if (res) {
         this.formGroup.get('worm_validity_type').setValue(1);
         this.formGroup.get('duration_unit').clearValidators();
         this.formGroup.get('retention_duration').clearValidators();
@@ -229,7 +207,13 @@ export class WormSetComponent implements OnInit {
   }
   // worm时间小于等于副本保留时间
   validproTime() {
-    return (control: AbstractControl): { invalidTime: { value: any } } => {
+    let rowWormDate =
+      this.unitTranslateMap[this.data.worm_duration_unit] *
+      this.data.worm_retention_duration;
+    if (this.data.worm_validity_type === 1 && this.data.retention_type === 1) {
+      rowWormDate = Infinity;
+    }
+    return (control: AbstractControl): { [key: string]: { value: any } } => {
       const wormSetUnit = this.formGroup.get('duration_unit').value;
       const copyDurationUnit = this.data.duration_unit;
       const wormDate = this.unitTranslateMap[wormSetUnit] * control.value;
@@ -238,6 +222,13 @@ export class WormSetComponent implements OnInit {
         toNumber(this.data.retention_duration);
       if (wormDate > copyDate) {
         return { invalidTime: { value: control.value } };
+      }
+      if (wormDate < rowWormDate) {
+        return {
+          [this.i18n.get('common_worm_shorten_label')]: {
+            value: control.value
+          }
+        };
       }
       return null;
     };
@@ -256,39 +247,21 @@ export class WormSetComponent implements OnInit {
 
   onOK(): Observable<void> {
     return new Observable<void>((observer: Observer<void>) => {
-      if (this.isCyberEngine) {
-        this.copiesApiService
-          .updateCopyRetentionV1CopiesCopyIdActionUpdateRetentionCyberPost({
-            copyId: this.data.uuid,
-            body: this.getParams()
-          })
-          .subscribe({
-            next: () => {
-              observer.next();
-              observer.complete();
-            },
-            error: error => {
-              observer.error(error);
-              observer.complete();
-            }
-          });
-      } else {
-        this.copiesApiService
-          .updateWormSettingV1CopiesCopyIdActionUpdateWormSettingPost({
-            copyId: this.data.uuid,
-            wormSetting: this.getParams()
-          })
-          .subscribe({
-            next: () => {
-              observer.next();
-              observer.complete();
-            },
-            error: error => {
-              observer.error(error);
-              observer.complete();
-            }
-          });
-      }
+      this.copiesApiService
+        .updateWormSettingV1CopiesCopyIdActionUpdateWormSettingPost({
+          copyId: this.data.uuid,
+          wormSetting: this.getParams()
+        })
+        .subscribe({
+          next: () => {
+            observer.next();
+            observer.complete();
+          },
+          error: error => {
+            observer.error(error);
+            observer.complete();
+          }
+        });
     });
   }
 }

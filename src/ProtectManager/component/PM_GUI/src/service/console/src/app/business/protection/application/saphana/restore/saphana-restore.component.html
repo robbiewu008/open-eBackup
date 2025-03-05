@@ -85,4 +85,14 @@
       </lv-form-control>
     </lv-form-item>
   </ng-container>
+    <ng-container *ngIf="isLogCopy">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_saphana_restore_log_copy_use_delta_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-switch formControlName="usingDelta"></lv-switch>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
 </lv-form>

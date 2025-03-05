@@ -63,6 +63,7 @@ import {
 } from 'lodash';
 import { AddTelnetComponent } from '../../huawei-stack/stack-list/add-telnet/add-telnet.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
+import { GetLabelOptionsService } from 'app/shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-domain-list',
@@ -97,7 +98,8 @@ export class DomainListComponent implements OnInit, AfterViewInit, OnChanges {
     private batchOperateService: BatchOperateService,
     private warningMessageService: WarningMessageService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -179,8 +181,11 @@ export class DomainListComponent implements OnInit, AfterViewInit, OnChanges {
             key: 'labelList',
             name: this.i18n.get('common_tag_label'),
             filter: {
-              type: 'search',
-              filterMode: 'contains'
+              type: 'select',
+              isMultiple: true,
+              showCheckAll: false,
+              showSearch: true,
+              options: () => this.getLabelOptionsService.getLabelOptions()
             },
             cellRender: this.resourceTagTpl
           },
@@ -288,9 +293,10 @@ export class DomainListComponent implements OnInit, AfterViewInit, OnChanges {
     if (!isEmpty(filters.conditions_v2)) {
       const conditionsTemp = JSON.parse(filters.conditions_v2);
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;

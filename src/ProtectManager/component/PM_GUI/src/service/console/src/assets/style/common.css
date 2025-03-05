@@ -559,14 +559,6 @@ input::-ms-reveal {
   font-size: 0.12rem;
 }
 
-.register-nas-zh .lv-form-label-box {
-  width: 90px !important;
-}
-
-.register-nas-en .lv-form-label-box {
-  width: 145px !important;
-}
-
 .daysOfMonthGroup .lv-input:disabled,
 .daysOfMonthGroup .lv-input[disabled] {
   border-color: #b8becc !important;
@@ -1079,6 +1071,7 @@ lv-layout > lv-header > div {
   position: relative;
   left: 24px;
   top: 40px;
+  opacity: 0;
 }
 
 .report-time-picker-current {
@@ -1114,4 +1107,41 @@ lv-layout > lv-header > div {
   > .lv-treenode-content-label {
   color: #1a1a1a !important;
   cursor: pointer !important;
+}
+
+.new-comer-guidance-popover {
+  .lv-popover-container {
+    min-width: 272px;
+    min-height: 142px;
+  }
+
+  .lv-popover-inner {
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 22px;
+    letter-spacing: 0;
+    text-align: left;
+    color: var(--live-angular-color-text-white) !important;
+    background-color: var(--new-comer-guidance-bg-color) !important;
+    > div {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+  &.lv-popover-position-bottom .lv-popover-arrow {
+    border-bottom-color: var(--new-comer-guidance-bg-color) !important;
+  }
+  &.lv-popover-position-right .lv-popover-arrow {
+    border-right-color: var(--new-comer-guidance-bg-color) !important;
+  }
+}
+
+.cnware-tag-tip .lv-tooltip-inner {
+  max-height: 400px;
+}
+
+.eye-input input {
+  padding-right: 40px !important;
 }

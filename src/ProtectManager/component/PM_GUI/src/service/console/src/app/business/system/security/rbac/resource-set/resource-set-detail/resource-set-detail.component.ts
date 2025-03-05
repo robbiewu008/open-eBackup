@@ -128,7 +128,17 @@ export class ResourceSetDetailComponent implements OnInit {
       protectionUrl: RouterUrl.ProtectionStorageDeviceInfo,
       copyUrl: RouterUrl.ProtectionStorageDeviceInfo,
       resType: DataMap.Resource_Type.NASFileSystem.value,
-      resourceSetType: ResourceSetType.StorageEquipment
+      resourceSetType: ResourceSetType.StorageEquipment,
+      jobTargetType: [
+        DataMap.Job_Target_Type.DoradoV7.value,
+        DataMap.Job_Target_Type.OceanStorDoradoV7.value,
+        DataMap.Job_Target_Type.OceanStorDorado_6_1_3.value,
+        DataMap.Job_Target_Type.OceanStor_6_1_3.value,
+        DataMap.Job_Target_Type.OceanStor_v5.value,
+        DataMap.Job_Target_Type.OceanStorPacific.value,
+        DataMap.Job_Target_Type.OceanStorDorado.value,
+        DataMap.Job_Target_Type.OceanProtect.value
+      ]
     });
     let otherApp = [
       ResourceSetType.Agent,

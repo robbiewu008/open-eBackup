@@ -14,6 +14,7 @@ import { Injectable } from '@angular/core';
 import {
   CookieService,
   DataMap,
+  E6000SupportApplication,
   I18NService,
   hcsNoSupportApplication
 } from 'app/shared';
@@ -174,6 +175,10 @@ export class ResourceCatalogsService {
 
     if (this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE) {
       return reject(items, item => includes(hcsNoSupportApplication, item));
+    }
+
+    if (this.i18n.get('deploy_type') === DataMap.Deploy_Type.e6000.value) {
+      return reject(items, item => !includes(E6000SupportApplication, item));
     }
 
     if (

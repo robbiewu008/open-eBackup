@@ -43,6 +43,7 @@ import {
   filter,
   find,
   includes,
+  isEmpty,
   isNil,
   isNumber,
   isUndefined,
@@ -51,6 +52,7 @@ import {
   set,
   size
 } from 'lodash';
+import { distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'aui-general-archival-policy',
@@ -254,8 +256,6 @@ export class GeneralArchivalPolicyComponent implements OnInit {
       .getClustersInfoUsingGET(params)
       .subscribe((res: any) => {
         const nodes = map(res.records, item => {
-          this.getTapeStorageNames(item);
-
           return {
             ...item,
             key: item.clusterId,
@@ -477,26 +477,33 @@ export class GeneralArchivalPolicyComponent implements OnInit {
   }
 
   checkClusterNode(archiveTeam: FormGroup) {
-    archiveTeam.get('node_id').valueChanges.subscribe(res => {
-      if (!res) {
-        this.curNodeInfo = {
-          esn: '',
-          clusterId: '',
-          nodeName: ''
-        };
-        return;
-      }
+    archiveTeam
+      .get('node_id')
+      .valueChanges.pipe(distinctUntilChanged())
+      .subscribe(res => {
+        if (!res) {
+          this.curNodeInfo = {
+            esn: '',
+            clusterId: '',
+            nodeName: ''
+          };
+          return;
+        }
 
-      archiveTeam.get('mediaSet').setValue('');
-      archiveTeam.get('mediaSet').updateValueAndValidity();
-      const cluster = find(this.clusterNodeNames, { value: res });
-      this.curNodeInfo = {
-        esn: cluster?.storageEsn,
-        clusterId: cluster?.clusterId,
-        nodeName: cluster?.clusterName
-      };
-      archiveTeam.get('esn').setValue(cluster?.storageEsn);
-    });
+        archiveTeam.get('mediaSet').setValue('');
+        archiveTeam.get('mediaSet').updateValueAndValidity();
+        const cluster = find(this.clusterNodeNames, { value: res });
+        this.curNodeInfo = {
+          esn: cluster?.storageEsn,
+          clusterId: cluster?.clusterId,
+          nodeName: cluster?.clusterName
+        };
+        archiveTeam.get('esn').setValue(cluster?.storageEsn);
+        if (res && isEmpty(this.mediaSetOptions[res])) {
+          const tmpNode = find(this.clusterNodeNames, { value: res });
+          this.getTapeStorageNames(tmpNode);
+        }
+      });
   }
 
   checkTrigger(archiveTeam: FormGroup) {

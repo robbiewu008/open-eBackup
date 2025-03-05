@@ -51,7 +51,6 @@ import {
   includes,
   indexOf,
   isEmpty,
-  isNil,
   map,
   remove,
   some
@@ -68,8 +67,6 @@ export class OracleSingleFileRestoreComponent {
   formGroup: FormGroup;
   selectTableConfig: TableConfig;
   selectedTableConfig: TableConfig;
-  selectingIndex = null;
-  _isNil = isNil;
   resourceEnvPro;
   resourcePro;
   activeIndex = 'selecting';
@@ -373,16 +370,6 @@ export class OracleSingleFileRestoreComponent {
   getSelectionData() {
     this.selectingTableList.forEach((component: ProTableComponent, index) => {
       const selection = component.getAllSelections();
-      // selectingIndex用于标记当前是哪一个pro-table
-      if (!isEmpty(selection)) {
-        this.selectingIndex = index;
-      } else if (
-        isEmpty(selection) &&
-        !isNil(this.selectingIndex) &&
-        this.selectingIndex === index
-      ) {
-        this.selectingIndex = null;
-      }
       // 只有日志副本需要对所有的文件目标路径做校验
       if (this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value) {
         this.addControlToLogCopy(index, selection);
@@ -392,19 +379,6 @@ export class OracleSingleFileRestoreComponent {
         total: selection.length
       };
       this.tableDataArr[index].selectedLength = selection.length;
-    });
-    this.disableOtherTypes();
-  }
-
-  private disableOtherTypes() {
-    each(this.tableDataArr, (item, index) => {
-      item.data = {
-        total: item.data.total,
-        data: map(item.data.data, item => ({
-          ...item,
-          disabled: !isNil(this.selectingIndex) && index !== this.selectingIndex
-        }))
-      };
     });
   }
 

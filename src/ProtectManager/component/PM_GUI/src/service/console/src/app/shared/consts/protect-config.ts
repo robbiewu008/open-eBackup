@@ -89,7 +89,10 @@ import { SelectSlaComponent } from '../components/protect/select-sla/select-sla.
 import { SelectSlaModule } from '../components/protect/select-sla/select-sla.module';
 import { ReplicaAdvancedParameterComponent } from '../components/replica-advanced-parameter/replica-advanced-parameter.component';
 import { ReplicaAdvancedParameterModule } from '../components/replica-advanced-parameter/replica-advanced-parameter.module';
+import { AdvancedParameterComponent as GaussDBInstanceAdvancedParameterComponent } from 'app/business/protection/host-app/light-cloud-gaussdb/advanced-parameter/advanced-parameter.component';
 import { DataMap } from './data-map.config';
+import { AdvancedParameterComponent as TidbAdvancedParameterComponent } from '../../business/protection/host-app/tidb/advanced-parameter/advanced-parameter.component';
+import { AdvancedParameterModule as TidbAdvancedParameterModule } from '../../business/protection/host-app/tidb/advanced-parameter/advanced-parameter.module';
 
 const modules = [
   SelectSlaModule,
@@ -126,7 +129,8 @@ const modules = [
   AdvancedEmailModule,
   TDSQLAdvancedParameterModule,
   ReplicaAdvancedParameterModule,
-  TDSQLDistributedAdvancedParameterModule
+  TDSQLDistributedAdvancedParameterModule,
+  TidbAdvancedParameterModule
 ];
 
 const BASIC_CONFIG = [
@@ -206,7 +210,10 @@ export const PROTECTION_CONFIG: any = {
       {
         component: SelectInstanceDatabaseComponent
       },
-      ...BASIC_CONFIG
+      ...BASIC_CONFIG,
+      {
+        component: TidbAdvancedParameterComponent
+      }
     ]
   },
   [DataMap.Resource_Type.tidbDatabase.value]: {
@@ -214,7 +221,21 @@ export const PROTECTION_CONFIG: any = {
       {
         component: SelectInstanceDatabaseComponent
       },
-      ...BASIC_CONFIG
+      ...BASIC_CONFIG,
+      {
+        component: TidbAdvancedParameterComponent
+      }
+    ]
+  },
+  [DataMap.Resource_Type.tidbTable.value]: {
+    steps: [
+      {
+        component: SelectInstanceDatabaseComponent
+      },
+      ...BASIC_CONFIG,
+      {
+        component: TidbAdvancedParameterComponent
+      }
     ]
   },
   [ProtectResourceCategory.GeneralDB]: {
@@ -820,6 +841,17 @@ export const PROTECTION_CONFIG: any = {
       ...BASIC_CONFIG,
       {
         component: NasSharedAdvancedParameterComponent
+      }
+    ]
+  },
+  [DataMap.Resource_Type.lightCloudGaussdbInstance.value]: {
+    steps: [
+      {
+        component: SelectInstanceDatabaseComponent
+      },
+      ...BASIC_CONFIG,
+      {
+        component: GaussDBInstanceAdvancedParameterComponent
       }
     ]
   }

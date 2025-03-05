@@ -60,11 +60,13 @@ export class AdvancedComponent implements OnInit {
   resourceType: string;
   concurrentErrorTip = {
     ...this.baseUtilService.rangeErrorTip,
-    invalidRang: this.i18n.get('common_valid_rang_label', [1, 10])
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 99999999])
   };
   extParams;
   isSingleHostClusterProtect = false;
   belongTag = [];
+
+  isGroupRule = false;
 
   @ViewChild(ProtectFilterComponent, { static: false })
   ProtectFilterComponent: ProtectFilterComponent;
@@ -123,6 +125,10 @@ export class AdvancedComponent implements OnInit {
         ? 'protection_cluster_label'
         : 'common_host_label'
     );
+
+    this.isGroupRule =
+      type === DataMap.Resource_Type.vmGroup.value &&
+      this.resourceData.groupType === DataMap.vmGroupType.rule.value;
   }
 
   initForm() {
@@ -173,7 +179,7 @@ export class AdvancedComponent implements OnInit {
         {
           validators: [
             this.baseUtilService.VALID.integer(),
-            this.baseUtilService.VALID.rangeValue(1, 10)
+            this.baseUtilService.VALID.rangeValue(1, 99999999)
           ]
         }
       ),
@@ -357,22 +363,21 @@ export class AdvancedComponent implements OnInit {
         })
       });
     }
-    if (this.isVirtualMachine) {
-      each(
-        [
-          'backup_res_auto_index',
-          'archive_res_auto_index',
-          'enable_security_archive'
-        ],
-        key => {
-          if (this.formGroup.get(key)) {
-            assign(ext, {
-              [key]: this.formGroup.get(key).value
-            });
-          }
+
+    each(
+      [
+        'backup_res_auto_index',
+        'archive_res_auto_index',
+        'enable_security_archive'
+      ],
+      key => {
+        if (this.formGroup.get(key)) {
+          assign(ext, {
+            [key]: this.formGroup.get(key).value
+          });
         }
-      );
-    }
+      }
+    );
 
     if (!this.isVirtualMachine) {
       const vmFilters = this.ProtectFilterComponent.getAllFilters();
@@ -394,6 +399,12 @@ export class AdvancedComponent implements OnInit {
         concurrent_requests: this.formGroup.value.concurrent
           ? `${this.formGroup.value.concurrent}`
           : '0'
+      });
+    }
+
+    if (this.isGroupRule) {
+      assign(ext, {
+        overwrite: this.formGroup.value.slaOverwrite
       });
     }
     return {

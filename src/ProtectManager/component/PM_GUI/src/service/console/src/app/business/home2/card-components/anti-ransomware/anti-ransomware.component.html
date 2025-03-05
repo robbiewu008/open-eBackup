@@ -24,7 +24,7 @@
     </div>
     <div class="refresh-box">
       <div>{{ 'common_home_latest_detection_result_label' | i18n }}</div>
-      <div>{{ queryTime | date: 'yyyy-MM-dd HH:mm:ss' }}</div>
+      <div>{{ queryTime | date: 'yyyy-MM-dd HH:mm:ss': timeZone }}</div>
     </div>
 
     <div class="detection-resource jumpable" (click)="navigate()">

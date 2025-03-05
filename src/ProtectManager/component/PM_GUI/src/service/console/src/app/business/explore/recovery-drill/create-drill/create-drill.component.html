@@ -100,7 +100,8 @@
                             {{'protection_last_time_label' | i18n}}
                         </lv-form-label>
                         <lv-form-control>
-                            <lv-date-picker formControlName="startTime" lvShowTime="true" class="form-control-input">
+                            <lv-date-picker formControlName="startTime" lvShowTime="true" class="form-control-input"
+                                [lvFooterExtra]="startTimeDateTpl">
                             </lv-date-picker>
                         </lv-form-control>
                     </lv-form-item>
@@ -126,7 +127,8 @@
                     <lv-form-item *ngIf="formGroup.value.executeType === drillExecuteType.Specified">
                         <lv-form-label></lv-form-label>
                         <lv-form-control [lvErrorTip]="timeErrorTip">
-                            <lv-date-picker formControlName="executeTime" lvShowTime="true" class="form-control-input">
+                            <lv-date-picker formControlName="executeTime" lvShowTime="true" class="form-control-input"
+                                [lvFooterExtra]="executeTimeDateTpl">
                             </lv-date-picker>
                         </lv-form-control>
                     </lv-form-item>
@@ -310,7 +312,7 @@
         </ng-container>
         <ng-template #elseDrillTypeTemplate>
             <span lv-overflow>
-                {{(isUseLivemountType(item) ? 'common_live_mount_label' : 'common_restore_label') | i18n}}
+                {{(isUseLivemountType(item) ? 'common_live_mount_lower_label' : 'common_restore_label') | i18n}}
             </span>
         </ng-template>
     </td>
@@ -391,4 +393,16 @@
 
 <ng-template #elseEmptyTemplate>
     --
+</ng-template>
+
+<ng-template #startTimeDateTpl>
+    <button lv-button lvType="link" class="time-picker-current" (click)="setSysTime('startTime')">
+        {{ 'common_current_time_label' | i18n }}
+    </button>
+</ng-template>
+
+<ng-template #executeTimeDateTpl>
+    <button lv-button lvType="link" class="time-picker-current" (click)="setSysTime('executeTime')">
+        {{ 'common_current_time_label' | i18n }}
+    </button>
 </ng-template>

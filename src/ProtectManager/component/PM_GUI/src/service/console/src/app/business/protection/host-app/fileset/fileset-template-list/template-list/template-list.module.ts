@@ -19,6 +19,7 @@ import { TemplateDetailModule } from './template-detail/template-detail.module';
 import { AssociatedFilesetModule } from './associated-fileset/associated-fileset.module';
 import { ModifyTemplateInfoModule } from './modify-template-info/modify-template-info.module';
 import { CustomTableSearchModule } from 'app/shared/components/custom-table-search/custom-table-search.module';
+import { CustomTableFilterModule } from '../../../../../../shared/components/custom-table-filter/custom-table-filter.module';
 
 @NgModule({
   declarations: [TemplateListComponent],
@@ -29,7 +30,8 @@ import { CustomTableSearchModule } from 'app/shared/components/custom-table-sear
     TemplateDetailModule,
     AssociatedFilesetModule,
     ModifyTemplateInfoModule,
-    CustomTableSearchModule
+    CustomTableSearchModule,
+    CustomTableFilterModule
   ],
   exports: [TemplateListComponent]
 })

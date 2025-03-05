@@ -20,7 +20,7 @@
                         <lv-group lvGutter="4px">
                         <span lv-overflow class="system-name">
                             {{item.name |nil}}
-                            <i lv-icon="lv-icon-link" class="lv-link-icon" (click)="jumpToDPA(item)"></i>
+                            <i lv-icon="lv-icon-link" class="lv-link-icon" (click)="jump(item)"></i>
                         </span>
                         </lv-group>
                         <lv-tag [ngModel]="item.tagLabel" [lvTagTemplate]="tagTpl"></lv-tag>
@@ -71,7 +71,7 @@
 </div>
 
 <ng-template #emptyTpl>
-    <div class="empty">
+    <div class="empty-container">
         <lv-empty [lvDescription]="'common_home_no_data_label'|i18n"></lv-empty>
     </div>
 </ng-template>

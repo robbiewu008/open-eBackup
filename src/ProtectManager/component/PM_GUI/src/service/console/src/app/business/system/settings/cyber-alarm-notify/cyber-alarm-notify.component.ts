@@ -73,6 +73,8 @@ export class CyberAlarmNotifyComponent implements OnInit {
   optsConfig: ProButton[];
   selectionData = [];
   isLoaded = false;
+  isCyberEngine =
+    this.i18n.get('deploy_type') === DataMap.Deploy_Type.cyberengine.value;
 
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
 

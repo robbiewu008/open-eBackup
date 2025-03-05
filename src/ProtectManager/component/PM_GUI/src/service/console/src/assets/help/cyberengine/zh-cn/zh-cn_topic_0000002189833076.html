@@ -1,0 +1,119 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Syslog通知">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002189673436.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="00-OceanCyber 300 1.2.0 联机帮助">
+<meta name="DC.Publisher" content="20250228">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002189833076">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Syslog通知</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002189833076"></a><a name="ZH-CN_TOPIC_0000002189833076"></a>
+
+
+  <h1 class="topictitle1">Syslog通知</h1>
+
+  <div id="body0000002189833076"><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p19643133215713">用户可以根据实际情况调整接收Syslog通知的服务器地址、接收通知类型及告警级别，产生的告警事件会上报到Splunk等第三方告警平台。</p>
+<div class="section" id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_section6286842121514"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_ol61721291281"><li id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0000001123352597_li31809451213"><span>选择<span id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_text75036811493">“<span id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_text16524186134813">系统 &gt;</span><span id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_text1752411644817"> 设置<span id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_text1117142520482"> &gt; 告警通知</span></span>”</span>。</span></li><li id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_li4100162184716"><span>开启<span class="uicontrol" id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_uicontrol1618085910472">“Syslog通知”</span>，单击<span class="uicontrol" id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_uicontrol113601717481">“<span id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_text3953154161518">修改</span>”</span>，修改Syslog通知的级别、通知类型、语言类型或发送设备名称。具体参数配置请参见<a href="#ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_table6375102318188">表1</a>。</span><p>
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_table6375102318188"></a><a name="zh-cn_topic_0000002165515952_table6375102318188"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_table6375102318188" frame="border" border="1" rules="all"><caption><b>表1 </b>Syslog通知参数设置</caption><colgroup><col style="width:22.08%"><col style="width:77.92%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_row937542351819"><th align="left" class="cellrowborder" valign="top" width="22.08%" id="mcps1.3.2.2.2.2.1.2.3.1.1"><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p737517233182">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="77.92%" id="mcps1.3.2.2.2.2.1.2.3.1.2"><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p1037582310181">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_row1375152331818"><td class="cellrowborder" valign="top" width="22.08%" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p18375723191810">级别</p>
+</td>
+<td class="cellrowborder" valign="top" width="77.92%" headers="mcps1.3.2.2.2.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p19375122341811">发送Syslog告警所要求的最低告警级别，包含“提示”、“警告”、“重要”和“紧急”。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_row1837522321820"><td class="cellrowborder" valign="top" width="22.08%" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p18375152391817">通知类型</p>
+</td>
+<td class="cellrowborder" valign="top" width="77.92%" headers="mcps1.3.2.2.2.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p1537513237182">Syslog通知的类型包含“告警”、“告警恢复”和“事件”。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_row237582311815"><td class="cellrowborder" valign="top" width="22.08%" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p143753233182">语言类型</p>
+</td>
+<td class="cellrowborder" valign="top" width="77.92%" headers="mcps1.3.2.2.2.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p537518232187">发送Syslog通知的语言类型包含“简体中文”和“English”。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_row1437512311188"><td class="cellrowborder" valign="top" width="22.08%" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p17375023121819">发送设备名称</p>
+</td>
+<td class="cellrowborder" valign="top" width="77.92%" headers="mcps1.3.2.2.2.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p19375323101817">是否需要将设备名称发送给Syslog服务器。</p>
+<p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p11431111420297">勾选“启用”，系统将会把设备名称发送给Syslog服务器。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_zh-cn_topic_0000001456473992_zh-cn_topic_0000001349070253_zh-cn_topic_0000001254813470_zh-cn_topic_0223232402_li2489145201717"><span>单击“保存”，完成Syslog通知设置。</span></li><li id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_li1513087163018"><span>配置接收服务器地址。</span><p><ol type="a" id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_ol4950417113118"><li id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_li149507173314">单击“添加”，在弹出的对话框中新增接收服务器地址。具体配置参数配置请参见<a href="#ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_table416712504339">表2</a>
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_table416712504339"></a><a name="zh-cn_topic_0000002165515952_table416712504339"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_table416712504339" frame="border" border="1" rules="all"><caption><b>表2 </b>接收服务器地址参数设置</caption><colgroup><col style="width:22.78%"><col style="width:77.22%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_row316785018336"><th align="left" class="cellrowborder" valign="top" width="22.78%" id="mcps1.3.2.2.4.2.1.1.2.2.3.1.1"><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p316705093315">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="77.22%" id="mcps1.3.2.2.4.2.1.1.2.2.3.1.2"><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p10167165017337">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_row101671350123318"><td class="cellrowborder" valign="top" width="22.78%" headers="mcps1.3.2.2.4.2.1.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p4167175033311">服务器地址</p>
+</td>
+<td class="cellrowborder" valign="top" width="77.22%" headers="mcps1.3.2.2.4.2.1.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p141671350183319">请输入用于接收设备告警通知的服务器IP地址。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_row20167105018338"><td class="cellrowborder" valign="top" width="22.78%" headers="mcps1.3.2.2.4.2.1.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p1916725093311">端口</p>
+</td>
+<td class="cellrowborder" valign="top" width="77.22%" headers="mcps1.3.2.2.4.2.1.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p1116765023319">Syslog通知的端口号，默认值为514。</p>
+<div class="note" id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_note0397124473616"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_ul107655486361"><li id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_li177655486364">端口号的取值范围为：1～65535。</li><li id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_li5765948143613">存储系统上配置的端口号必须与Syslog服务器配置的端口号保持一致。</li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_row81670505334"><td class="cellrowborder" valign="top" width="22.78%" headers="mcps1.3.2.2.4.2.1.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p15167105013335">协议</p>
+</td>
+<td class="cellrowborder" valign="top" width="77.22%" headers="mcps1.3.2.2.4.2.1.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p11167185010333">Syslog通知的发送通道，包含“UDP”、“TCP”和“TCP+SSL/TLS”，默认为“TCP+SSL/TLS”。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_row91671050183314"><td class="cellrowborder" valign="top" width="22.78%" headers="mcps1.3.2.2.4.2.1.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p10167350183317">证书</p>
+</td>
+<td class="cellrowborder" valign="top" width="77.22%" headers="mcps1.3.2.2.4.2.1.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_p51675507334">选择已添加到<span id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_text1623985193">OceanCyber 300 数据安全一体机</span>的Syslog类型的外部证书，添加外部证书的详细操作请参见<span id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_cite8323105202710">《OceanCyber 300 1.2.0 安全配置指南》</span>中的<span class="uicontrol" id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_uicontrol15190594273">“添加外部证书”</span>章节。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_li12722102019463">单击“确定”。</li><li id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_li10111212478">（可选）<strong id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_b863081854711">: </strong>单击“测试”，验证存储系统与Syslog服务器间的连通性。</li></ol>
+<div class="note" id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_note472692019461"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_ul13499256185211"><li id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_li349917563527">最多支持4个接收服务器地址。</li><li id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_li8499156115215">若需要修改已添加的接收服务器地址配置，请在待修改的服务器所在行，单击“更多 &gt; 修改”。</li><li id="ZH-CN_TOPIC_0000002189833076__zh-cn_topic_0000002165515952_li18499135675215">若需要删除已添加的接收服务器地址配置，请在待删除的服务器所在行，单击“更多 &gt; 删除”，或者勾选待删除的接收服务器地址，单击“删除”，删除已添加的接收服务器地址。</li></ul>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000002189673436.html">管理告警通知</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

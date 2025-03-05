@@ -82,9 +82,11 @@
       <lv-collapse-panel [lvTitle]="labelTitleTpl" [lvExpanded]="true" *ngIf="searchType === searchRange.RESOURCES && !isCloudBackup">
         <lv-form-item>
           <lv-form-control>
+            <lv-loading [lvLoading]="tagLoading">
             <lv-select [lvOptions]="labelOptions" lvValueKey="value" formControlName="labelList" lvMode="multiple"
-              lvShowFilter lvShowCheckAll lvFilterKey="label" lvFilterMode="contains">
+              lvShowFilter  lvFilterKey="label" lvFilterMode="contains" [lvVirtualScroll]="labelOptions?.length > 10">
             </lv-select>
+          </lv-loading>
           </lv-form-control>
         </lv-form-item>
       </lv-collapse-panel>

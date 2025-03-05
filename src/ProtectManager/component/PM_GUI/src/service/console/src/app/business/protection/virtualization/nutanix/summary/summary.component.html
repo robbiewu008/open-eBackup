@@ -16,14 +16,14 @@
 </div>
 <ng-container *ngIf="isVm; else elseTemplate">
     <resoure-base-info [source]="source" [sourceType]="sourceType"></resoure-base-info>
-    <div class="mgt-20">
+    <div class="mgt-20 tabDiv">
         <h2 class="aui-gutter-column-md">{{'common_disk_label' | i18n}}</h2>
         <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
     </div>
 </ng-container>
 <ng-template #elseTemplate>
     <aui-special-base-info [source]="source" [sourceType]="sourceType"></aui-special-base-info>
-    <div class="mgt-20">
+    <div class="mgt-20 tabDiv">
         <ng-container *ngIf="sourceType === dataMap.Resource_Type.nutanixHost.value; else elseHostTemplate">
             <h2 class="aui-gutter-column-md">{{'common_virtual_machine_label' | i18n}}</h2>
             <aui-vir-base-table [subType]="dataMap.Resource_Type.nutanixVm.value" [treeSelection]="source"

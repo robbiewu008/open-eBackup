@@ -85,8 +85,10 @@ export class ObjectAdvancedParameterComponent implements OnInit {
         ]
       }),
       smallFile: new FormControl(false),
-      maxSizeAfterAggregate: new FormControl(128),
-      maxSizeToAggregate: new FormControl(128)
+      maxSizeAfterAggregate: new FormControl(
+        DataMap.Small_File_Size.xlarge.value
+      ),
+      maxSizeToAggregate: new FormControl(DataMap.Small_File_Size.small.value)
     });
     this.listenForm();
   }

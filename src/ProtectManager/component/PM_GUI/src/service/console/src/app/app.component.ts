@@ -11,17 +11,24 @@
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
 import {
+  AfterViewChecked,
+  ChangeDetectorRef,
   Component,
+  ElementRef,
   NgZone,
   OnDestroy,
   OnInit,
   TemplateRef,
-  ViewChild,
-  ViewContainerRef
+  ViewChild
 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { MessageboxService, MessageService, ModalService } from '@iux/live';
+import {
+  MenuComponent,
+  MessageboxService,
+  MessageService,
+  ModalService
+} from '@iux/live';
 import {
   ALARM_NAVIGATE_STATUS,
   BaseUtilService,
@@ -45,6 +52,7 @@ import {
   ThemeEnum,
   THEME_TRIGGER_ACTION
 } from 'app/shared';
+import { GuideService } from 'app/shared/services/new-comer-guidance.service';
 import {
   IMAGE_PATH_PREFIX,
   IoemInfo,
@@ -57,12 +65,15 @@ import {
   find,
   get,
   includes,
+  isArray,
   isEmpty,
+  isUndefined,
   set,
+  size,
   toString
 } from 'lodash';
-import { Observable, Observer } from 'rxjs';
-import { finalize, map, switchMap } from 'rxjs/operators';
+import { Observable, Observer, Subject } from 'rxjs';
+import { distinctUntilChanged, finalize, map, switchMap } from 'rxjs/operators';
 import { JobTableComponent } from './business/insight/job/job-table/job-table.component';
 import { GROUP_COMMON, I18NService, MODAL_COMMON } from './shared';
 import {
@@ -92,14 +103,16 @@ import { ResourceCatalogsService } from './shared/services/resource-catalogs.ser
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.less']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   isZh: boolean;
   isLogin = true;
   isErrorPage = true;
   isReportDetail = false;
   isMultiCluster = true;
+  popoverShow = false;
+  guideTipsMenu = [];
+  ulElementRefArray: HTMLLIElement[];
   menus = [];
-  optMenus = [];
   jobsData = [];
   taskData = [];
   alarmData = [];
@@ -108,6 +121,10 @@ export class AppComponent implements OnInit, OnDestroy {
   runningTaskCount = 0;
   runningTotal = 0;
   criticalAlarmCount = 0;
+  MENU_BOTTOM_HEIGHT = 48; // 菜单栏底部高度
+  MENU_HEADER_HEIGHT = 64; // 菜单栏顶部高度
+  SCROLL_WIDTH = 16; // 菜单栏滚动条高度
+  originScrollHeight; // 记录激活的菜单节点
   taskBadgeVisible = true;
   alarmBadgeVisible = true;
   alarmSeverityType = DataMap.Alarm_Severity_Type;
@@ -124,7 +141,6 @@ export class AppComponent implements OnInit, OnDestroy {
   criticalAlarmTimeout;
   recentjobTimeout;
   SESSION_TIMER = CommonConsts.TIME_INTERVAL_SESSION_OUT;
-  SESSION_START_TIME = new Date().getTime();
   versionLabel = this.whitebox.isWhitebox
     ? this.i18n.get('common_version_label', [], true) +
       this.i18n.get('common_whitebox_product_version_label', [
@@ -165,6 +181,13 @@ export class AppComponent implements OnInit, OnDestroy {
   isV1Alarm =
     this.appUtilsService.isDecouple || this.appUtilsService.isDistributed;
   clusterOptions;
+  notsupportModifyPwd = [
+    DataMap.loginUserType.saml.value,
+    DataMap.loginUserType.ldap.value,
+    DataMap.loginUserType.ldapGroup.value,
+    DataMap.loginUserType.hcs.value,
+    DataMap.loginUserType.adfs.value
+  ];
 
   collapsed = false;
   title = this.baseUtilService.getProductName();
@@ -180,9 +203,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   cyberDarkHeader = false;
   customVeriosnLoaded = false;
-
-  timeZone = SYSTEM_TIME.timeZone;
-
   supportChangeTheme =
     this.appUtilsService.isDataBackup ||
     this.appUtilsService.isDecouple ||
@@ -221,6 +241,9 @@ export class AppComponent implements OnInit, OnDestroy {
     RouterUrl.ProtectionBareMetal
   ];
 
+  // 同一地址开启多个页签，只操作其中一个，另外页签超时退出，导致正在操作的页面也超时退出。不能通过变量判断，通过存入cookie来判断。
+  TIMEOUT_STATUS_KEY = `random_key_timeout`;
+
   @ViewChild('taskPopover', { static: false }) taskPopover;
   @ViewChild('alarmPopover', { static: false }) alarmPopover;
   @ViewChild('aboutHeaderTpl', { static: false })
@@ -229,15 +252,28 @@ export class AppComponent implements OnInit, OnDestroy {
   aboutContentTpl: TemplateRef<any>;
   @ViewChild('aboutFooterTpl', { static: false })
   aboutFooterTpl: TemplateRef<any>;
-
+  @ViewChild('menu', { static: false, read: ElementRef })
+  lvMenuElementRef: ElementRef; // 获取lv-menu整个DOM树
+  @ViewChild('menu', { static: false, read: MenuComponent })
+  lvMenuComponent: MenuComponent; // lv-menu组件，需要使用到里面的方法
+  @ViewChild('menuIconTpl', { static: false, read: ElementRef })
+  menuIconTpl: ElementRef;
+  @ViewChild('globalSearchTpl', { static: false, read: ElementRef })
+  globalSearchTpl: ElementRef;
+  @ViewChild('intelliMateIconTpl', { static: false, read: ElementRef })
+  intelliMateIconTpl: ElementRef;
+  @ViewChild('shortcutOpTpl', { static: false, read: ElementRef })
+  shortcutOpTpl: ElementRef;
+  @ViewChild('overlay', { static: false }) overlayTemplate: ElementRef<any>; // 被激活的元素顶层的div，激活效果通过修改div实现
+  originEle: ElementRef; // 新人指引气泡窗挂载源
   constructor(
+    private cdr: ChangeDetectorRef,
     public i18n: I18NService,
     public router: Router,
     private route: ActivatedRoute,
     private messageBox: MessageboxService,
     private messageService: MessageService,
     public appUtilsService: AppUtilsService,
-    private viewContainerRef: ViewContainerRef,
     private drawModalService: DrawModalService,
     private authApiService: AuthApiService,
     private usersApiService: UsersApiService,
@@ -249,6 +285,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public dataMapService: DataMapService,
     public securityApiService: SecurityApiService,
     public slaApiService: SlaApiService,
+    public guideService: GuideService,
     private resourceCatalogsService: ResourceCatalogsService,
     private rememberColumnsService: RememberColumnsService,
     private modalService: ModalService,
@@ -275,6 +312,19 @@ export class AppComponent implements OnInit, OnDestroy {
     this.globalService
       .getState('queryExportFilesResult')
       .subscribe(res => this.exportQuery());
+    // 监听智能助手中点击'新手指引'
+    this.globalService
+      .getState('new_comer_guider')
+      .pipe(distinctUntilChanged())
+      .subscribe(res => {
+        this.popoverShow = res === 'true';
+        if (this.popoverShow) {
+          this.startGuide();
+          this.getLiElementArray();
+        } else {
+          this.endGuide();
+        }
+      });
     this.globalService
       .getState(EMIT_TASK)
       .subscribe(() => this.runningTaskPolling());
@@ -304,6 +354,187 @@ export class AppComponent implements OnInit, OnDestroy {
     this.setFavicon();
     this.listenStoragechange();
     this.getAppThemeKey();
+  }
+
+  ngAfterViewChecked() {
+    if (this.isDataBackup && this.menuIconTpl && !this.originEle) {
+      // 这里的代码只会进入一次
+      const needShowGuide = localStorage.getItem('new_comer_guider');
+      if (!isUndefined(needShowGuide)) {
+        if (needShowGuide === 'false') {
+          return;
+        }
+      }
+      this.processMenuGuideData(); // 获取需要展示的菜单
+      this.popoverShow = true;
+      this.initHeaderTips();
+      this.startGuide();
+    }
+  }
+
+  private initHeaderTips() {
+    const iconTplArr = [
+      'menuIconTpl',
+      'globalSearchTpl',
+      'intelliMateIconTpl',
+      'shortcutOpTpl'
+    ];
+    iconTplArr.forEach(item =>
+      this.guideService.setGuideMountOriginById(item, this[item])
+    );
+  }
+
+  startGuide() {
+    this.collapsed = false; // 展开菜单栏
+    this.guideService.startGuide();
+    this.overlayTemplate.nativeElement.style.display = 'block';
+    this.originEle = this.guideService.getGuideStep()?.mountOrigin;
+    this.updateOverlayProperty();
+    this.originScrollHeight = this.lvMenuElementRef.nativeElement.scrollTop; // 记住原始滚动条高度
+    if (isEmpty(this.guideTipsMenu)) {
+      this.processMenuGuideData(); // 获取需要展示的菜单
+    }
+  }
+
+  updateOverlayProperty() {
+    this.cdr.detectChanges();
+    const overlayElement = this.overlayTemplate.nativeElement; // 高亮凸出效果，使用了一个div覆盖在上方。
+    if (isUndefined(this.originEle)) {
+      this.initHeaderTips();
+      this.originEle = this.guideService.getGuideStep().mountOrigin;
+    }
+    const originElement = this.originEle.nativeElement;
+    const style = overlayElement.style;
+    const originElementInfo = originElement.getBoundingClientRect();
+    // 设置custom-overlay的宽高与挂载源相同
+    const targetElemParam = {
+      width: originElement.offsetWidth,
+      height: originElement.offsetHeight,
+      top: Math.floor(originElementInfo.top - 4),
+      left: Math.floor(originElementInfo.left - 4)
+    };
+    if (this.guideService.getGuideCurrentStep() > 4) {
+      // 左侧菜单栏固定宽度220px
+      targetElemParam.width = 220;
+      targetElemParam.left = this.SCROLL_WIDTH;
+    }
+    if (targetElemParam.top + targetElemParam.height > window.innerHeight) {
+      targetElemParam.height =
+        window.innerHeight -
+        (this.MENU_HEADER_HEIGHT + this.MENU_BOTTOM_HEIGHT);
+    }
+    // 参数设置完后，统一更新
+    each(targetElemParam, (value, key) => (style[key] = `${value}px`));
+  }
+
+  nextStep() {
+    this.guideService.nextStep();
+    this.expandMenu(); // 展开单
+    if (isEmpty(this.ulElementRefArray)) {
+      this.getLiElementArray(); // 获取菜单li节点
+    }
+    this.originEle = this.guideService.getGuideStep()?.mountOrigin;
+    this.autoScrollToTop(); // 自动滚动
+    this.updateOverlayProperty(); // 更新overlay的样式和位置
+  }
+
+  private expandMenu() {
+    // 提前展开菜单
+    const stepIndex = this.guideService.getGuideCurrentStep();
+    if (stepIndex === 4) {
+      // 进入菜单引导之前需要提前展开所有菜单，否则渲染比代码执行慢导致气泡窗错位
+      this.lvMenuComponent.lvMultiExpansion = true;
+      this.menus = this.menus.map(item => {
+        if (item?.items?.length > 0) {
+          item.expanded = true;
+        }
+        return item;
+      });
+      this.menus = [...this.menus];
+      this.cdr.detectChanges();
+    }
+  }
+
+  private collapseMenu() {
+    this.menus = this.menus.map(item => {
+      if (item?.items?.length) {
+        item.expanded = item.items.find(
+          child => child.id === this.lvMenuComponent.lvActiveItemId
+        );
+      }
+      return item;
+    });
+  }
+
+  private autoScrollToTop() {
+    if (this.guideService.getGuideCurrentStep() < 5) {
+      return;
+    }
+    const liElement = this.originEle?.nativeElement;
+    const scrollContainer = this.lvMenuElementRef?.nativeElement;
+    // 自动将元素滚动到顶部
+    if (
+      liElement?.nodeName === 'LI' &&
+      liElement?.parentElement ===
+        this.lvMenuElementRef.nativeElement.children[0]
+    ) {
+      if (this.originEle.nativeElement.offsetTop > this.MENU_BOTTOM_HEIGHT) {
+        scrollContainer.scrollTo(
+          0,
+          Math.floor(this.originEle.nativeElement.offsetTop) -
+            this.MENU_HEADER_HEIGHT
+        );
+      }
+    }
+  }
+
+  hideNewComerGuidance() {
+    localStorage.setItem('new_comer_guider', 'false');
+    this.globalService.emitStore({
+      action: 'new_comer_guider',
+      state: 'false'
+    });
+  }
+
+  endGuide() {
+    this.popoverShow = false;
+    this.lvMenuComponent.lvMultiExpansion = false; // 设置菜单展开互斥
+    this.collapseMenu();
+    this.overlayTemplate.nativeElement.style.display = 'none';
+    setTimeout(() => {
+      this.messageService.info(
+        this.i18n.get('common_comer_guidance_close_tips_label'),
+        {
+          lvDuration: 10 * 1e3,
+          lvShowCloseButton: true,
+          lvMessageKey: 'guidanceCloseKey'
+        }
+      );
+      this.lvMenuElementRef.nativeElement.scrollTo(
+        0,
+        this.originScrollHeight || 0
+      ); // 滚动到之前记录的位置
+    }, 100);
+  }
+
+  private getLiElementArray() {
+    // lvMenuElementRef获取到的是lv-menu标签，需要先查询下面的ul节点才能正确找到li列表
+    const ulElementRefArray: HTMLLIElement[] = Array.from(
+      this.lvMenuElementRef.nativeElement.querySelector('ul').children
+    );
+    // 首页不需要提示
+    ulElementRefArray.shift();
+    this.ulElementRefArray = Array.from(ulElementRefArray);
+    // lv-menu中新增了id，这里使用id去匹配对应的li原生dom节点
+    if (isEmpty(this.guideTipsMenu)) {
+      this.processMenuGuideData();
+    }
+    this.ulElementRefArray.forEach((item, index) => {
+      this.guideService.setGuideMountOriginById(
+        find(this.guideTipsMenu, { id: item.id }).id,
+        new ElementRef(item) // lvPopover的origin参数需要传递一个ElementRef
+      );
+    });
   }
 
   getAppThemeKey() {
@@ -358,7 +589,7 @@ export class AppComponent implements OnInit, OnDestroy {
       !this.hasGuideTipShow
     ) {
       setTimeout(() => {
-        this.guideTipShow = true;
+        this.guideTipShow = !this.isDataBackup;
         this.hasGuideTipShow = true;
       }, 500);
     }
@@ -419,6 +650,9 @@ export class AppComponent implements OnInit, OnDestroy {
               id: 'resource',
               label: this.i18n.get('common_resource_label'),
               type: 'group',
+              description: this.i18n.get(
+                'common_comer_guidance_resource_tips_label'
+              ),
               items: [
                 {
                   id: 'summary',
@@ -482,6 +716,7 @@ export class AppComponent implements OnInit, OnDestroy {
                   id: 'container',
                   label: this.i18n.get('common_container_label'),
                   routerLink: RouterUrl.ProtectionContainer,
+                  hidden: this.appUtilsService.isDistributed,
                   childrenLink: [
                     RouterUrl.ProtectionVirtualizationKubernetes,
                     RouterUrl.ProtectionVirtualizationKubernetesContainer
@@ -502,6 +737,7 @@ export class AppComponent implements OnInit, OnDestroy {
                   id: 'application',
                   label: this.i18n.get('common_application_label'),
                   routerLink: RouterUrl.ProtectionApplication,
+                  hidden: this.appUtilsService.isDistributed,
                   childrenLink: [
                     RouterUrl.ProtectionActiveDirectory,
                     RouterUrl.ProtectionHostAppExchange,
@@ -530,6 +766,9 @@ export class AppComponent implements OnInit, OnDestroy {
               id: 'client-group',
               label: this.i18n.get('protection_clients_label'),
               type: 'group',
+              description: this.i18n.get(
+                'common_comer_guidance_client_tips_label'
+              ),
               items: [
                 {
                   id: 'client',
@@ -581,6 +820,9 @@ export class AppComponent implements OnInit, OnDestroy {
               id: 'protection-policy',
               label: this.i18n.get('protection_policy_label'),
               type: 'group',
+              description: this.i18n.get(
+                'common_comer_guidance_protection_policy_tips_label'
+              ),
               items: [
                 {
                   id: 'sla',
@@ -604,6 +846,9 @@ export class AppComponent implements OnInit, OnDestroy {
             {
               id: 'copy-data',
               label: this.i18n.get('common_copy_data_label'),
+              description: this.i18n.get(
+                'common_comer_guidance_copy_data_tips_label'
+              ),
               hidden: includes(
                 [
                   DataMap.Deploy_Type.hyperdetect.value,
@@ -671,6 +916,7 @@ export class AppComponent implements OnInit, OnDestroy {
                   id: 'copy-container',
                   label: this.i18n.get('common_container_label'),
                   routerLink: '/explore/copy-data/container',
+                  hidden: this.appUtilsService.isDistributed,
                   childrenLink: [
                     RouterUrl.ExploreCopyDataKubernetes,
                     RouterUrl.ExploreCopyDataKubernetesContainer
@@ -691,6 +937,7 @@ export class AppComponent implements OnInit, OnDestroy {
                   id: 'copy-application',
                   label: this.i18n.get('common_application_label'),
                   routerLink: '/explore/copy-data/application',
+                  hidden: this.appUtilsService.isDistributed,
                   childrenLink: [
                     RouterUrl.ExploreCopyDataActiveDirectory,
                     RouterUrl.ExploreCopyDataDatabaseExchange,
@@ -737,6 +984,9 @@ export class AppComponent implements OnInit, OnDestroy {
               id: 'live-mount',
               label: this.i18n.get('common_live_mount_label'),
               type: 'group',
+              description: this.i18n.get(
+                'common_comer_guidance_live_mount_tips_label'
+              ),
               items: [
                 {
                   id: 'live-mount-app',
@@ -771,6 +1021,9 @@ export class AppComponent implements OnInit, OnDestroy {
                 !this.appUtilsService.isOpenOem &&
                 !this.appUtilsService.isOpenServer,
               type: 'group',
+              description: this.i18n.get(
+                'common_comer_guidance_recovery_drill_tips_label'
+              ),
               items: [
                 {
                   id: 'recovery-drill',
@@ -825,29 +1078,6 @@ export class AppComponent implements OnInit, OnDestroy {
               routerLink: RouterUrl.ExploreAntiRansomwareProtectionModel
             },
             {
-              id: 'data-desensitization',
-              label: this.i18n.get('common_data_desensitization_label'),
-              hidden:
-                this.i18n.get('deploy_type') ===
-                DataMap.Deploy_Type.x3000.value,
-              type: 'group',
-              items: [
-                {
-                  id: 'data-desensitization-oracle',
-                  label: this.i18n.get('common_oracle_label'),
-                  routerLink: RouterUrl.ExploreDataDesensitizationOracle
-                },
-                {
-                  id: 'policy-desensitization-policy',
-                  label: this.i18n.get('common_desensitization_policy_label'),
-                  hidden:
-                    this.i18n.get('deploy_type') ===
-                    DataMap.Deploy_Type.x3000.value,
-                  routerLink: RouterUrl.ExplorePolicyDesensitizationPolicy
-                }
-              ]
-            },
-            {
               id: 'anti-ransomware',
               label:
                 this.i18n.get('deploy_type') === DataMap.Deploy_Type.x3000.value
@@ -857,6 +1087,14 @@ export class AppComponent implements OnInit, OnDestroy {
                 DataMap.Deploy_Type.cloudbackup.value,
                 DataMap.Deploy_Type.cloudbackup2.value
               ].includes(this.i18n.get('deploy_type')),
+              description:
+                this.i18n.get('deploy_type') === DataMap.Deploy_Type.x3000.value
+                  ? this.i18n.get(
+                      'common_comer_guidance_worm_policy_tips_label'
+                    )
+                  : this.i18n.get(
+                      'common_comer_guidance_anti-ransomware_tips_label'
+                    ),
               type: 'group',
               items: [
                 {
@@ -946,12 +1184,41 @@ export class AppComponent implements OnInit, OnDestroy {
               label: this.i18n.get('Air Gap'),
               hidden: this.isCyberEngine, // OceanCyber的AirGap独立成一级菜单了
               type: 'group',
+              description: this.i18n.get(
+                'common_comer_guidance_air_gap_tips_label'
+              ),
               items: [
                 {
                   id: 'airgap',
                   label: this.i18n.get('Air Gap'),
                   hidden: this.isCyberEngine,
                   routerLink: RouterUrl.ExplorePolicyAirgap
+                }
+              ]
+            },
+            {
+              id: 'data-desensitization',
+              label: this.i18n.get('common_data_desensitization_label'),
+              description: this.i18n.get(
+                'common_comer_guidance_data_desensitization_tips_label'
+              ),
+              hidden:
+                this.i18n.get('deploy_type') ===
+                DataMap.Deploy_Type.x3000.value,
+              type: 'group',
+              items: [
+                {
+                  id: 'data-desensitization-oracle',
+                  label: this.i18n.get('common_oracle_label'),
+                  routerLink: RouterUrl.ExploreDataDesensitizationOracle
+                },
+                {
+                  id: 'policy-desensitization-policy',
+                  label: this.i18n.get('common_desensitization_policy_label'),
+                  hidden:
+                    this.i18n.get('deploy_type') ===
+                    DataMap.Deploy_Type.x3000.value,
+                  routerLink: RouterUrl.ExplorePolicyDesensitizationPolicy
                 }
               ]
             }
@@ -982,19 +1249,28 @@ export class AppComponent implements OnInit, OnDestroy {
           id: 'jobs',
           icon: 'aui-menu-job',
           label: this.i18n.get('common_jobs_label'),
-          routerLink: '/insight/jobs'
+          routerLink: '/insight/jobs',
+          description: this.i18n.get(
+            'common_comer_guidance_menu_job_tips_label'
+          )
         },
         {
           id: 'alarms',
           icon: 'aui-menu-alarm',
           label: this.i18n.get('common_alarms_events_label'),
-          routerLink: '/insight/alarms'
+          routerLink: '/insight/alarms',
+          description: this.i18n.get(
+            'common_comer_guidance_menu_alarm_tips_label'
+          )
         },
         {
           id: 'reports',
           icon: 'aui-menu-report',
           label: this.i18n.get('common_report_label'),
           routerLink: '/insight/reports',
+          description: this.i18n.get(
+            'common_comer_guidance_menu_report_tips_label'
+          ),
           hidden: !includes(
             [
               DataMap.Deploy_Type.x3000.value,
@@ -1015,6 +1291,9 @@ export class AppComponent implements OnInit, OnDestroy {
           label: this.i18n.get('common_performance_label'),
           icon: 'aui-menu-performance',
           routerLink: '/insight/performance',
+          description: this.i18n.get(
+            'common_comer_guidance_performance_tips_label'
+          ),
           hidden:
             this.i18n.get('deploy_type') ===
             DataMap.Deploy_Type.hyperdetect.value
@@ -1035,6 +1314,9 @@ export class AppComponent implements OnInit, OnDestroy {
               id: 'infrastructure',
               label: this.i18n.get('common_infrastructure_label'),
               type: 'group',
+              description: this.i18n.get(
+                'common_comer_guidance_infrastructure_tips_label'
+              ),
               items: [
                 {
                   id: 'cluster-management',
@@ -1085,6 +1367,9 @@ export class AppComponent implements OnInit, OnDestroy {
               id: 'security',
               label: this.i18n.get('common_security_label'),
               type: 'group',
+              description: this.i18n.get(
+                'common_comer_guidance_security_tips_label'
+              ),
               items: [
                 {
                   id: 'rbac',
@@ -1121,6 +1406,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 {
                   id: 'dataSecurity',
                   label: this.i18n.get('system_data_security_label'),
+                  hidden: this.appUtilsService.isDistributed,
                   routerLink: '/system/security/dataSecurity'
                 },
                 {
@@ -1169,6 +1455,9 @@ export class AppComponent implements OnInit, OnDestroy {
               id: 'log-management-group',
               label: this.i18n.get('common_log_label'),
               type: 'group',
+              description: this.i18n.get(
+                'common_comer_guidance_log_management_tips_label'
+              ),
               items: [
                 {
                   id: 'log-management',
@@ -1186,6 +1475,9 @@ export class AppComponent implements OnInit, OnDestroy {
               id: 'settings',
               label: this.i18n.get('common_setting_label'),
               type: 'group',
+              description: this.i18n.get(
+                'common_comer_guidance_settings_tips_label'
+              ),
               items: [
                 {
                   id: 'cyber-license-management',
@@ -1217,7 +1509,11 @@ export class AppComponent implements OnInit, OnDestroy {
                 {
                   id: 'alarm-notify-settings',
                   hidden: !includes(
-                    [DataMap.Deploy_Type.cyberengine.value],
+                    [
+                      DataMap.Deploy_Type.cyberengine.value,
+                      DataMap.Deploy_Type.decouple.value,
+                      DataMap.Deploy_Type.e6000.value
+                    ],
                     this.i18n.get('deploy_type')
                   ),
                   label: this.i18n.get('system_alarm_term_notify_label'),
@@ -1346,6 +1642,9 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.appUtilsService.isOpenServer
               ),
               type: 'group',
+              description: this.i18n.get(
+                'common_comer_guidance_external_associated_systems_tips_label'
+              ),
               items: [
                 {
                   id: 'external-associated-systems',
@@ -1361,29 +1660,63 @@ export class AppComponent implements OnInit, OnDestroy {
       ];
       this.menus = getAccessibleMenu(menus, this.cookieService, this.i18n);
     });
+  }
 
-    this.optMenus = [
-      {
-        id: 'modifyPwd',
-        label: this.i18n.get('common_update_password_label'),
-        hidden: includes(
-          [
-            DataMap.loginUserType.saml.value,
-            DataMap.loginUserType.ldap.value,
-            DataMap.loginUserType.ldapGroup.value,
-            DataMap.loginUserType.hcs.value,
-            DataMap.loginUserType.adfs.value
-          ],
-          this.userType
-        ),
-        onClick: () => this.modifyPwd()
-      },
-      {
-        id: 'logout',
-        label: this.i18n.get('common_logout_label'),
-        onClick: () => this.logout()
+  private processMenuGuideData() {
+    if (!isEmpty(this.guideTipsMenu)) {
+      return;
+    }
+    let currentStepIndex = this.guideService.getGuideStepSize() + 1;
+    const createGuideItem = (
+      id: string,
+      step: number,
+      name: string,
+      description: string | any[]
+    ) => {
+      let tempName = name;
+      if (id === 'external-associated-systems-group') {
+        // 外部关联系统虽然单独是一个分组，但是没有设置分组标题，所以需要特殊处理一下
+        tempName = this.i18n.get('common_external_associated_systems_label');
       }
-    ];
+      return {
+        id,
+        step,
+        name: tempName,
+        description,
+        isGroup: isArray(description)
+      };
+    };
+    const menus = this.menus.filter(item => !item?.hidden);
+    menus.forEach(menu => {
+      if (menu?.description) {
+        this.guideTipsMenu.push(
+          createGuideItem(
+            menu.id,
+            currentStepIndex++,
+            menu.label,
+            menu.description
+          )
+        );
+      } else if (menu?.items?.length) {
+        const childItems = menu.items
+          .filter(
+            childItem =>
+              !isUndefined(childItem.description) && !childItem?.hidden
+          )
+          .map(child =>
+            createGuideItem(
+              child.id,
+              currentStepIndex,
+              child.label,
+              child.description
+            )
+          );
+        this.guideTipsMenu.push(
+          createGuideItem(menu.id, currentStepIndex++, menu.label, childItems)
+        );
+      }
+    });
+    this.guideService.addStepData(this.guideTipsMenu);
   }
 
   setPollingFn() {
@@ -1600,7 +1933,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   calculatTimeout(sessionTime) {
     const SESSION_TIME_OUT = sessionTime * 60 * 1e3;
-    const startTime = this.SESSION_START_TIME;
+    const startTime = Number(this.cookieService.get(this.TIMEOUT_STATUS_KEY));
     const endTime = new Date().getTime();
     if (endTime - startTime > SESSION_TIME_OUT) {
       clearTimeout(this.sessionTimeout);
@@ -1613,9 +1946,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   getSessionOut() {
     window.addEventListener('mousedown', e => {
-      this.SESSION_START_TIME = new Date().getTime();
+      this.cookieService.set(
+        this.TIMEOUT_STATUS_KEY,
+        `${new Date().getTime()}`
+      );
     });
-    this.SESSION_START_TIME = new Date().getTime();
+    this.cookieService.set(this.TIMEOUT_STATUS_KEY, `${new Date().getTime()}`);
     this.getSessionTime();
   }
 
@@ -1630,8 +1966,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
     this.securityApiService
       .getUsingGET1({ akLoading: false, akDoException: false })
-      .subscribe(
-        res => {
+      .subscribe({
+        next: res => {
           this.calculatTimeout(res.sessionTime);
           this.seesionTimeOut = res.sessionTime;
           this.sessionTimeout = setTimeout(() => {
@@ -1639,14 +1975,14 @@ export class AppComponent implements OnInit, OnDestroy {
             this.getSessionTime();
           }, this.SESSION_TIMER);
         },
-        () => {
+        error: () => {
           this.calculatTimeout(this.seesionTimeOut);
           this.sessionTimeout = setTimeout(() => {
             clearTimeout(this.sessionTimeout);
             this.getSessionTime();
           }, this.SESSION_TIMER);
         }
-      );
+      });
   }
 
   toLogin() {
@@ -1881,6 +2217,9 @@ export class AppComponent implements OnInit, OnDestroy {
           )
         )
         .subscribe(res => {
+          if (isArray(res?.records) && size(res.records) > 10) {
+            res.records = res.records.slice(0, 10);
+          }
           this.alarmData = res.records || [];
         });
     }
@@ -1999,8 +2338,8 @@ export class AppComponent implements OnInit, OnDestroy {
       })
       .subscribe(res => {
         if (this.userType === DataMap.loginUserType.adfs.value) {
-          this.adfsService.adfsLoginForward({}).subscribe(
-            (resData: any) => {
+          this.adfsService.adfsLoginForward({}).subscribe({
+            next: (resData: any) => {
               window.open(
                 resData?.logoutForwardUrl,
                 '_blank',
@@ -2008,10 +2347,10 @@ export class AppComponent implements OnInit, OnDestroy {
               );
               this.rediectLoginPage();
             },
-            () => {
+            error: () => {
               this.rediectLoginPage();
             }
-          );
+          });
         } else {
           this.rediectLoginPage();
         }
@@ -2152,7 +2491,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.i18n.get('deploy_type')
       )
     ) {
-      return 'hyperdetect';
+      return SupportLicense.isSan ? 'hyperdetect_d' : 'hyperdetect_o';
     } else if (
       includes(
         [DataMap.Deploy_Type.cyberengine.value],
@@ -2200,4 +2539,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.showGuide = false;
     clearUserGuideCache();
   }
+
+  protected readonly SYSTEM_TIME = SYSTEM_TIME;
 }

@@ -18,7 +18,7 @@
       <input lv-input type="text" formControlName="clusterName" />
     </lv-form-control>
   </lv-form-item>
-  <ng-container *ngIf=" !isEdit || (isEdit && [1, 2].includes(drawData.generatedType))">
+  <ng-container *ngIf=" !isEdit || (isEdit && [1].includes(drawData.generatedType))">
     <lv-form-item>
       <lv-form-label lvRequired>{{
         'common_equipment_type_label' | i18n

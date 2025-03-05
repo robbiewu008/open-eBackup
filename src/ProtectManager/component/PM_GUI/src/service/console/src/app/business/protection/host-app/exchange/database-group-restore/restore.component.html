@@ -113,18 +113,30 @@
     </lv-form-item>
   </ng-container>
 
-  <!--  日志副本选择恢复的时间范围  -->
-  <lv-form-item *ngIf="isExchangeDatabaseAndLogCopy && isNeedSelectTimeStamp">
-      <lv-form-label lvRequired>
-          {{'protection_exchange_database_log_restore_time_label'|i18n}}
-          <i lv-icon="aui-icon-help" [lv-tooltip]="'protection_exchange_database_log_restore_time_tips_label'|i18n"
-             lvTooltipPosition="top" lvTooltipTheme="light" class="configform-constraint"
-             lvColorState='true'></i>
-      </lv-form-label>
-      <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
-          <lv-select [lvOptions]="logCopyTimeStamp" lvValueKey="value" formControlName="log_copy_restore_time_stamp"></lv-select>
-      </lv-form-control>
-  </lv-form-item>
+<ng-container *ngIf="isLogCopy && isNeedSelectTimeStamp">
+    <!--  单机/DAG日志副本先选数据库  -->
+    <lv-form-item *ngIf="isSingleAndDag">
+        <lv-form-label lvRequired>
+            {{'common_target_to_database_label'|i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select [lvOptions]="sourceData" lvValueKey="value" formControlName="log_copy_restore_database" lvShowClear lvShowFilter lvFilterKey="label" lvFilterMode="contains"></lv-select>
+        </lv-form-control>
+    </lv-form-item>
+
+    <!--  日志副本选择恢复的时间范围  -->
+    <lv-form-item *ngIf="isExchangeDatabase || isSingleAndDag && !_isEmpty(this.formGroup.get('log_copy_restore_database').value)">
+        <lv-form-label lvRequired>
+            {{'protection_exchange_database_log_restore_time_label'|i18n}}
+            <i lv-icon="aui-icon-help" [lv-tooltip]="'protection_exchange_database_log_restore_time_tips_label'|i18n"
+               lvTooltipPosition="top" lvTooltipTheme="light" class="configform-constraint"
+               lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select [lvOptions]="logCopyTimeStamp" lvValueKey="value" formControlName="log_copy_restore_time_stamp" lvShowClear></lv-select>
+        </lv-form-control>
+    </lv-form-item>
+</ng-container>
 
   <!-- 恢复前自动卸除数据库 -->
   <lv-form-item>

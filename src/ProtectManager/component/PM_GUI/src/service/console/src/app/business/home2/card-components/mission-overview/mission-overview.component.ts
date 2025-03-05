@@ -26,7 +26,7 @@ import {
 } from 'app/shared/api/services';
 import { DataMap, JOB_ORIGIN_TYPE } from 'app/shared/consts';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { assign, toString } from 'lodash';
+import { assign, isNil, toString } from 'lodash';
 
 @Component({
   selector: 'mission-overview',
@@ -295,7 +295,10 @@ export class MissionOverviewComponent implements OnInit {
   initAsyncData() {
     return new Promise(resolve => {
       // clusterOption为任务卡片的集群节点，其中'所有集群'的value = -1，此时需要走multi接口
-      if (this.cardInfo.selectcluster === -1) {
+      if (
+        isNil(this.cardInfo.selectcluster) ||
+        this.cardInfo.selectcluster === -1
+      ) {
         const multiParams = {
           akLoading: false,
           jobPeriod: this.getTimeRange().jobPeriod

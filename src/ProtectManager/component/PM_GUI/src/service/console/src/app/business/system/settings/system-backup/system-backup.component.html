@@ -117,7 +117,7 @@
               <td>
                 <ng-container [ngSwitch]="col.key">
                   <ng-container *ngSwitchCase="'backupTime'">
-                    {{item.backupTime | date: 'yyyy-MM-dd HH:mm:ss'}}
+                    {{item.backupTime | date: 'yyyy-MM-dd HH:mm:ss': timeZone}}
                   </ng-container>
                   <ng-container *ngSwitchCase="'backupType'">
                     {{item.backupType | textMap: 'System_Backup_Type'}}

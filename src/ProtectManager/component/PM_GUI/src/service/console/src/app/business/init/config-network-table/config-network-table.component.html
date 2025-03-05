@@ -15,13 +15,6 @@
   <lv-alert
     lvType="info"
     lvClosable="false"
-    *ngIf="appUtilsService.isDistributed"
-  >
-    {{ 'common_config_service_network_tip_label' | i18n }}
-  </lv-alert>
-  <lv-alert
-    lvType="info"
-    lvClosable="false"
     *ngIf="appUtilsService.isDecouple && serviceType === 'backup'"
   >
     {{ 'common_config_decouple_service_network_tip_label' | i18n }}
@@ -68,7 +61,7 @@
                 *ngIf="
                   (item.port === 0 && serviceType === 'backup') ||
                   (appUtilsService.isDistributed &&
-                    serviceType === 'archived' &&
+                  includes(['replication','archived'],serviceType) &&
                     !isEverySelect &&
                     item.port === 0)
                 "

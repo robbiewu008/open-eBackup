@@ -41,7 +41,7 @@ export class PdbSetSummaryComponent implements OnInit {
   initDetailData(data) {
     this.type = data.subType || data.resourceType;
     this.source = data;
-    this.source.linkStatus = data.extendInfo?.linkStatus;
+    this.source.linkStatus = data.environment.linkStatus;
     const cols: TableCols[] = [
       {
         key: 'name',

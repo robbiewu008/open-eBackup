@@ -60,7 +60,7 @@ export class PostgreSqlRestoreComponent implements OnInit {
   disabledOrigin;
   restoreToNewLocationOnly = false;
   resourceIsExist = true;
-
+  targetLabel;
   scriptErrorTip = {
     invalidName: this.i18n.get('common_script_error_label'),
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [8192])
@@ -374,6 +374,9 @@ export class PostgreSqlRestoreComponent implements OnInit {
     DataMap.Resource_Type.PostgreSQLClusterInstance.value
       ? (this.isClusterInstance = true)
       : (this.isClusterInstance = false);
+    this.targetLabel = this.isClusterInstance
+      ? this.i18n.get('common_target_to_cluster_label')
+      : this.i18n.get('common_target_host_label');
     this.getResourceData();
     this.initForm();
 

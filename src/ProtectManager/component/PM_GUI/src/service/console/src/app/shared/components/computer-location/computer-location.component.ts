@@ -158,7 +158,7 @@ export class ComputerLocationComponent implements OnInit {
         })
       })
       .subscribe(res => {
-        each(res.items, item => {
+        each(res.items, (item: any) => {
           if (
             this.vmRestoreOptionType === VmRestoreOptionType.VM &&
             item.type === ResourceType.VM
@@ -209,6 +209,7 @@ export class ComputerLocationComponent implements OnInit {
             path: item.path,
             subType: item.sub_type,
             version: item.version,
+            firmware: item.firmware,
             environmentSubType: item.environment_sub_type,
             children: [],
             unselected: nodeUnselected,

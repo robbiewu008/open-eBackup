@@ -15,15 +15,14 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
 import {
   BaseUtilService,
-  CommonConsts,
+  ClientManagerApiService,
   DataMap,
+  getMultiHostOps,
   I18NService,
+  MultiCluster,
   ProtectedEnvironmentApiService,
   ProtectedResourceApiService,
-  ResourceType,
-  MultiCluster,
-  ClientManagerApiService,
-  getMultiHostOps
+  ResourceType
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
@@ -34,13 +33,9 @@ import {
   find,
   get,
   has,
-  isNumber,
   map,
   set,
-  size,
-  toString as _toString,
-  isUndefined,
-  isEmpty
+  size
 } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
 
@@ -144,9 +139,6 @@ export class RegisterClusterComponent implements OnInit {
 
           if (has(res, 'dependencies.clusterAgent')) {
             agents = [...get(res, 'dependencies.clusterAgent')];
-          }
-          if (has(res, 'dependencies.hostAgent')) {
-            agents = [...get(res, 'dependencies.hostAgent'), ...agents];
           }
 
           each(agents, item => {

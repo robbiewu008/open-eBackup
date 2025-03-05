@@ -26,6 +26,7 @@ import {
   DataMap,
   DataMapService,
   DATE_PICKER_MODE,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -52,6 +53,7 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ProtectService } from 'app/shared/services/protect.service';
@@ -82,6 +84,7 @@ import {
 import { map } from 'rxjs/operators';
 import { RegisterRedisComponent } from '../register-redis/register-redis.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-redis-show',
@@ -97,7 +100,7 @@ export class RedisShowComponent implements OnInit, AfterViewInit {
   selectionData = [];
   optItems = [];
   dataMap = DataMap;
-
+  currentDetailUuid = '';
   groupCommon = GROUP_COMMON;
 
   @Input() subType = DataMap.Resource_Type.Redis.value;
@@ -124,7 +127,9 @@ export class RedisShowComponent implements OnInit, AfterViewInit {
     private batchOperateService: BatchOperateService,
     private takeManualBackupService: TakeManualBackupService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService,
+    private appUtilsService: AppUtilsService
   ) {}
 
   ngAfterViewInit() {
@@ -269,9 +274,13 @@ export class RedisShowComponent implements OnInit, AfterViewInit {
                   hasProtectPermission(val)
                 );
               })
-            ) !== size(data) || !size(data)
+            ) !== size(data) ||
+            !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
         },
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         permission: OperateItems.DeactivateProtection,
         label: this.i18n.get('protection_deactive_protection_label'),
         onClick: data => {
@@ -539,8 +548,11 @@ export class RedisShowComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl,
         extendParameter: [DataMap.Resource_Type.Redis.value]
@@ -776,9 +788,10 @@ export class RedisShowComponent implements OnInit, AfterViewInit {
         delete conditionsTemp.equipmentType;
       }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -813,6 +826,13 @@ export class RedisShowComponent implements OnInit, AfterViewInit {
         })
       )
       .subscribe(res => {
+        this.appUtilsService.openDetailModalAfterQueryData(
+          {
+            autoPolling: args?.isAutoPolling,
+            records: res.records
+          },
+          this
+        );
         this.tableData = {
           total: res.totalCount,
           data: res.records
@@ -823,6 +843,7 @@ export class RedisShowComponent implements OnInit, AfterViewInit {
 
   // 点击名称获取详情
   getResourceDetail(res) {
+    this.currentDetailUuid = res.uuid;
     const params = {
       resourceId: res.uuid
     };
@@ -864,7 +885,8 @@ export class RedisShowComponent implements OnInit, AfterViewInit {
                 return getTableOptsItems(cloneDeep(this.optItems), v, this);
               }
             }
-          )
+          ),
+          lvHeader: item?.name
         });
       });
   }
@@ -878,8 +900,7 @@ export class RedisShowComponent implements OnInit, AfterViewInit {
         this.selectionData = [];
         this.dataTable?.setSelections([]);
         this.dataTable?.fetchData();
-      },
-      restoreWidth: params => this.getResourceDetail(params)
+      }
     });
   }
 
@@ -888,22 +909,28 @@ export class RedisShowComponent implements OnInit, AfterViewInit {
       .CheckProtectedResource({
         resourceId: data[0].uuid
       })
-      .subscribe((res: any) => {
-        const returnRes = JSON.parse(res);
-        const idx = returnRes.findIndex(item => item.code !== 0);
-        if (idx !== -1) {
-          this.messageService.error(this.i18n.get(returnRes[idx].code), {
-            lvMessageKey: 'errorKey',
-            lvShowCloseButton: true
-          });
-        } else {
-          this.messageService.success(
-            this.i18n.get('common_operate_success_label'),
-            {
-              lvMessageKey: 'successKey',
+      .subscribe({
+        next: (res: any) => {
+          const returnRes = JSON.parse(res);
+          const idx = returnRes.findIndex(item => item.code !== 0);
+          if (idx !== -1) {
+            this.messageService.error(this.i18n.get(returnRes[idx].code), {
+              lvMessageKey: 'errorKey',
               lvShowCloseButton: true
-            }
-          );
+            });
+          } else {
+            this.messageService.success(
+              this.i18n.get('common_operate_success_label'),
+              {
+                lvMessageKey: 'successKey',
+                lvShowCloseButton: true
+              }
+            );
+          }
+          this.dataTable.fetchData();
+        },
+        error: error => {
+          this.dataTable.fetchData();
         }
       });
   }

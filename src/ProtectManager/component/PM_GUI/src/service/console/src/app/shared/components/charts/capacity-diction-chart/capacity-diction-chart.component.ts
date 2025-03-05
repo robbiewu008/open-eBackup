@@ -10,6 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, ElementRef, Input, OnDestroy } from '@angular/core';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import * as echarts from 'echarts';
@@ -19,7 +20,8 @@ import {
   GlobalService,
   THEME_TRIGGER_ACTION,
   ThemeEnum,
-  getAppTheme
+  getAppTheme,
+  SYSTEM_TIME
 } from 'app/shared';
 import {
   filter,
@@ -41,7 +43,8 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'capacity-diction-chart',
   templateUrl: './capacity-diction-chart.component.html',
-  styleUrls: ['./capacity-diction-chart.component.less']
+  styleUrls: ['./capacity-diction-chart.component.less'],
+  providers: [DatePipe]
 })
 export class CapacityDictionChartComponent implements OnInit, OnDestroy {
   @Input() cardInfo: any = {};
@@ -59,6 +62,7 @@ export class CapacityDictionChartComponent implements OnInit, OnDestroy {
   constructor(
     private i18n: I18NService,
     public el: ElementRef,
+    private datePipe: DatePipe,
     public capacityApiService: CapacityApiService,
     private appUtilsService: AppUtilsService,
     private globalService: GlobalService
@@ -218,11 +222,11 @@ export class CapacityDictionChartComponent implements OnInit, OnDestroy {
   }
 
   formatTime(value) {
-    const date = new Date(Number(value));
-    var year = date.getFullYear();
-    var month = String(date.getMonth() + 1).padStart(2, '0');
-    var day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return this.datePipe.transform(
+      new Date(Number(value)),
+      'yyyy-MM-dd HH:mm:ss',
+      SYSTEM_TIME.timeZone
+    );
   }
 
   refreshData() {
@@ -249,7 +253,13 @@ export class CapacityDictionChartComponent implements OnInit, OnDestroy {
           boundaryGap: false,
           axisLabel: {
             color: this.getAxisLabelColor(),
-            showMaxLabel: true
+            showMaxLabel: true,
+            formatter: value => {
+              return value
+                .split(' ')
+                .reverse()
+                .join('\n');
+            }
           }
         },
         yAxis: {

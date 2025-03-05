@@ -72,7 +72,7 @@
         <ng-container *ngIf="exterAgent && [deviceStorageType.ndmp.value].includes(formGroup.value.type)">
             <lv-form-item>
                 <lv-form-label lvRequired>
-                    {{'protection_proxy_host_label' | i18n}}
+                    {{'protection_clients_label' | i18n}}
                 </lv-form-label>
                 <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
                     <aui-agent-select [lvOptions]="hostOptions" formControlName="proxyHost" lvValueKey="value"
@@ -82,12 +82,19 @@
             </lv-form-item>
         </ng-container>
         <!-- 任务并发数 -->
-        <lv-form-item *ngIf="[deviceStorageType.ndmp.value].includes(formGroup.value.type)">
-            <lv-form-label>
+        <lv-form-item *ngIf="[
+                    deviceStorageType.DoradoV7.value,
+                    deviceStorageType.OceanStorDoradoV7.value,
+                    deviceStorageType.OceanStorDorado_6_1_3.value,
+                    deviceStorageType.OceanStor_6_1_3.value,
+                    deviceStorageType.OceanProtect.value,
+                    deviceStorageType.ndmp.value,
+                ].includes(formGroup.value.type)">
+            <lv-form-label lvRequired>
                 {{'protection_number_concurrent_task_label' | i18n}}
             </lv-form-label>
             <lv-form-control [lvErrorTip]="taskErrorTip">
-                <input lv-input type="text" formControlName="taskNum" placeholder='1~64' />
+                <input lv-input type="text" formControlName="taskNum" [placeholder]='placeholderLabel' />
             </lv-form-control>
         </lv-form-item>
         <lv-form-item *ngIf="formGroup.value.type !== deviceStorageType.ndmp.value">

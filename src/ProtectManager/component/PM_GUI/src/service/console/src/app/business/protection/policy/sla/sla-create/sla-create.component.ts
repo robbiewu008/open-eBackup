@@ -24,6 +24,7 @@ import {
   DataMap,
   DataMapService,
   deepEqualObject,
+  getAppTheme,
   I18NService,
   MODAL_COMMON,
   NasDistributionStoragesApiService,
@@ -31,13 +32,13 @@ import {
   PolicyType,
   ProjectedObjectApiService,
   ProtectResourceAction,
+  RetentionType,
   SlaApiService,
   SlaType,
   SLA_BACKUP_NAME,
   SupportLicense,
-  WarningMessageService,
-  getAppTheme,
-  ThemeEnum
+  ThemeEnum,
+  WarningMessageService
 } from 'app/shared';
 import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
@@ -58,7 +59,6 @@ import {
   isUndefined,
   keys,
   map as _map,
-  now,
   omit,
   pick,
   reject,
@@ -84,6 +84,7 @@ export class SlaCreateComponent implements OnInit {
   isDisabled = false;
   sla;
   action;
+  _isEmpty = isEmpty;
   backupModes = [];
   valid$ = new Subject<boolean>();
   policy_list = [];
@@ -97,6 +98,8 @@ export class SlaCreateComponent implements OnInit {
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.hyperdetect.value;
   isEnglish = this.i18n.language !== 'zh-cn';
   isHcsUser = false;
+  isBasicDisk = false; // 判断备份策略的存储单元是不是本地盘
+  isDisableRep = false; // E1000判断是否禁用复制策略
   dwsGroup = false;
   dwsParallel = false;
   application = {
@@ -148,6 +151,14 @@ export class SlaCreateComponent implements OnInit {
     checked: false,
     url: 'assets/img/up_curved_disabled.png'
   };
+  timeTable = {
+    [DataMap.Interval_Unit.hour.value]: 60,
+    [DataMap.Interval_Unit.day.value]: 24 * 60,
+    [DataMap.Interval_Unit.week.value]: 7 * 24 * 60,
+    [DataMap.Interval_Unit.month.value]: 30 * 24 * 60,
+    [DataMap.Interval_Unit.year.value]: 365 * 24 * 60
+  };
+
   constructor(
     public fb: FormBuilder,
     public modal: ModalRef,
@@ -172,6 +183,7 @@ export class SlaCreateComponent implements OnInit {
     this.initIcons();
     this.initForm();
     this.initSla();
+    this.transLabel();
   }
 
   initHcsUser() {
@@ -205,8 +217,24 @@ export class SlaCreateComponent implements OnInit {
     }
   }
 
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = this.pad(date.getMonth() + 1); // getMonth() 返回的月份从0开始，所以需要+1
+    const day = this.pad(date.getDate());
+    const hours = this.pad(date.getHours());
+    const minutes = this.pad(date.getMinutes());
+    const seconds = this.pad(date.getSeconds());
+
+    return `${year}${month}${day}${hours}${minutes}${seconds}`;
+  }
+
+  private pad(value: number): string {
+    return value < 10 ? '0' + value : value.toString();
+  }
+
   initForm() {
-    const defaultName = `SLA_${now()}`;
+    const now = new Date();
+    const defaultName = `SLA_${this.formatDate(now)}`;
 
     this.formGroup = this.fb.group({
       uuid: new FormControl(''),
@@ -258,6 +286,23 @@ export class SlaCreateComponent implements OnInit {
       this.slaParseService.getBackupPolicy(this.sla, this.policy_list)
     );
 
+    // E系列在修改的情况下直接校验一下备份存储单元的类型看是否支持归档
+    if (
+      this.appUtilsService.isDecouple ||
+      (this.appUtilsService.isDistributed &&
+        !isEmpty(this.backupPolicy.policyList))
+    ) {
+      this.isBasicDisk = [
+        'BasicDisk',
+        DataMap.poolStorageDeviceType.Server.value
+      ].includes(this.backupPolicy.policyList[0].ext_parameters?.device_type);
+      this.isDisableRep =
+        this.isBasicDisk &&
+        ((this.application.value !== ApplicationType.HCSCloudHost &&
+          this.appUtilsService.isDecouple) ||
+          this.appUtilsService.isDistributed);
+    }
+
     // Archival
     assign(
       this.archival,
@@ -308,26 +353,7 @@ export class SlaCreateComponent implements OnInit {
               checkedUrl: res.checkedUrl,
               value: res.applicationType
             });
-            this.slaBackupName.difference_increment = includes(
-              [
-                ApplicationType.NASFileSystem,
-                ApplicationType.NASShare,
-                ApplicationType.HBase,
-                ApplicationType.Hive,
-                ApplicationType.HDFS,
-                ApplicationType.KubernetesStatefulSet,
-                ApplicationType.Vmware,
-                ApplicationType.HCSCloudHost,
-                ApplicationType.FusionCompute,
-                ApplicationType.FusionOne,
-                ApplicationType.TDSQL,
-                ApplicationType.Volume,
-                ApplicationType.HyperV
-              ],
-              this.application.value
-            )
-              ? 'common_permanent_backup_label'
-              : 'common_incremental_backup_label';
+            this.transLabel();
             assign(this.backupPolicy, {
               tooltip: this.i18n.get('protection_sla_backup_tooltip_label'),
               checkedUrl: this.isThemeLight()
@@ -351,6 +377,31 @@ export class SlaCreateComponent implements OnInit {
         }
       })
     );
+  }
+
+  transLabel() {
+    this.slaBackupName.difference_increment = includes(
+      [
+        ApplicationType.NASFileSystem,
+        ApplicationType.NASShare,
+        ApplicationType.HBase,
+        ApplicationType.Hive,
+        ApplicationType.HDFS,
+        ApplicationType.KubernetesStatefulSet,
+        ApplicationType.KubernetesDatasetCommon,
+        ApplicationType.Vmware,
+        ApplicationType.HCSCloudHost,
+        ApplicationType.FusionCompute,
+        ApplicationType.FusionOne,
+        ApplicationType.TDSQL,
+        ApplicationType.Volume,
+        ApplicationType.HyperV,
+        ApplicationType.Nutanix
+      ],
+      this.application.value
+    )
+      ? 'common_permanent_backup_label'
+      : 'common_incremental_backup_label';
   }
 
   selectSpecifiedBackupPolicy(item?) {
@@ -382,7 +433,7 @@ export class SlaCreateComponent implements OnInit {
           action: this.action,
           applicationData: this.application.value,
           backupData: this.backupPolicy.policyList,
-          archvieDataList: this.archival.policyList,
+          archivalDataList: this.archival.policyList,
           replicationData: this.replication
         },
         lvOkDisabled: true,
@@ -404,6 +455,19 @@ export class SlaCreateComponent implements OnInit {
                   reject(this.policy_list, { type: PolicyType.BACKUP }),
                   res.newData
                 );
+
+                this.isBasicDisk =
+                  (this.appUtilsService.isDecouple ||
+                    this.appUtilsService.isDistributed) &&
+                  [
+                    'BasicDisk',
+                    DataMap.poolStorageDeviceType.Server.value
+                  ].includes(content?.formGroup.get('device_type').value);
+                this.isDisableRep =
+                  this.isBasicDisk &&
+                  ((this.application.value !== ApplicationType.HCSCloudHost &&
+                    this.appUtilsService.isDecouple) ||
+                    this.appUtilsService.isDistributed);
 
                 this.archival.tooltip = this.i18n.get(
                   this.appUtilsService.isDistributed
@@ -524,7 +588,8 @@ export class SlaCreateComponent implements OnInit {
     ) {
       return false;
     }
-    if (this.isDisabled || this.isHcsUser) {
+
+    if (this.isDisabled || this.isHcsUser || this.isBasicDisk) {
       return false;
     }
 
@@ -619,7 +684,8 @@ export class SlaCreateComponent implements OnInit {
     ) {
       return false;
     }
-    return true;
+
+    return !this.isDisableRep;
   }
 
   onCreate(): Observable<any> {
@@ -634,6 +700,11 @@ export class SlaCreateComponent implements OnInit {
       }
 
       if (!this.validLinkRedelete()) {
+        observer.error(null);
+        return;
+      }
+
+      if (!this.validFrequencyAndRetention()) {
         observer.error(null);
         return;
       }
@@ -840,6 +911,11 @@ export class SlaCreateComponent implements OnInit {
       }
 
       if (!this.validLinkRedelete()) {
+        observer.error(null);
+        return;
+      }
+
+      if (!this.validFrequencyAndRetention()) {
         observer.error(null);
         return;
       }
@@ -1148,11 +1224,7 @@ export class SlaCreateComponent implements OnInit {
       !isEmpty(hasLinkDeduplicationReplica)
     ) {
       this.messageService.error(
-        this.i18n.get(
-          this.appUtilsService.isDataBackup
-            ? 'protection_link_redelete_tips_label'
-            : 'protection_redelete_tips_label'
-        ),
+        this.i18n.get('protection_link_redelete_error_tip_label'),
         {
           lvMessageKey: 'lvMsg_key_link_deduplication_error_label',
           lvShowCloseButton: true
@@ -1160,6 +1232,69 @@ export class SlaCreateComponent implements OnInit {
       );
       return false;
     }
+    return true;
+  }
+
+  getActualMinutes(duration, unit) {
+    return Number(duration) * this.timeTable[unit];
+  }
+
+  validFrequencyAndRetention() {
+    const backupPolicy = filter(
+      this.policy_list,
+      item => item.type === PolicyType.BACKUP
+    );
+    const repPolicy = filter(
+      this.policy_list,
+      item => item.type === PolicyType.REPLICATION
+    );
+    if (isEmpty(repPolicy) || isEmpty(backupPolicy)) {
+      return true;
+    }
+    // 时间为永久的时候直接用一个超大值替代了
+    const tmpPermanentNum = 10 * 365 * 24 * 60;
+    let minBackupRetentionValue = backupPolicy.reduce(
+      (min, obj) => {
+        let tmpValue;
+        if (
+          obj.retention.retention_type === RetentionType.PERMANENTLY_RETAINED
+        ) {
+          tmpValue = tmpPermanentNum;
+        } else {
+          tmpValue = this.getActualMinutes(
+            obj.retention.retention_duration,
+            obj.retention.duration_unit
+          );
+        }
+
+        return tmpValue < min ? tmpValue : min;
+      },
+      backupPolicy[0].retention.retention_type ===
+        RetentionType.PERMANENTLY_RETAINED
+        ? tmpPermanentNum
+        : this.getActualMinutes(
+            backupPolicy[0].retention.retention_duration,
+            backupPolicy[0].retention.duration_unit
+          )
+    );
+    let maxFrequency = repPolicy.reduce((max, obj) => {
+      const tmpValue = this.getActualMinutes(
+        obj.schedule.interval,
+        obj.schedule.interval_unit
+      );
+      return tmpValue > max ? tmpValue : max;
+    }, this.getActualMinutes(repPolicy[0].schedule.interval, repPolicy[0].schedule.interval_unit));
+    if (minBackupRetentionValue <= maxFrequency) {
+      this.messageService.error(
+        this.i18n.get('protection_sla_frequency_retention_tip_label'),
+        {
+          lvMessageKey: 'lvMsg_key_frequency_retention_error_label',
+          lvShowCloseButton: true
+        }
+      );
+      return false;
+    }
+
     return true;
   }
 
@@ -1257,6 +1392,9 @@ export class SlaCreateComponent implements OnInit {
 
   // 获取复制图片
   getReplicationImg(): string {
+    if (this.isDisableRep) {
+      return 'assets/img/replication_disabled.svg';
+    }
     if (
       (this.backupPolicy.newData !== '' &&
         this.replication.policyList.length > 0) ||

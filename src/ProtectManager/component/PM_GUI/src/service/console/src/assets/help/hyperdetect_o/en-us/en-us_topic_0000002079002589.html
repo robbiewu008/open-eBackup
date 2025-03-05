@@ -1,0 +1,54 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Enabling Intelligent Ransomware Detection">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002079002573.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="Online Help for Ransomware Protection-Dorado V700R001C00">
+<meta name="DC.Publisher" content="20241226">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002079002589">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Enabling Intelligent Ransomware Detection</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002079002589"></a><a name="EN-US_TOPIC_0000002079002589"></a>
+
+<h1 class="topictitle1">Enabling Intelligent Ransomware Detection</h1>
+<div><p>The system detects known ransomware attack signatures to identify whether file systems are infected by ransomware. If no ransomware infection is identified, the system analyzes and compares file system snapshot changes, and uses machine learning algorithms to further check whether the file systems are infected by ransomware. This section describes how to enable intelligent ransomware detection.</p>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><p>During intelligent ransomware detection, if the file system snapshot directory corresponding to the ransomware detection snapshot being checked is invisible, the system will create a clone file system whose name starts with <strong>DEE-ANTI-CLONE</strong> based on the ransomware detection snapshot to generate metadata features of the snapshot. During the detection, do not delete or rename the clone file system whose name starts with this prefix. Otherwise, the detection may fail. After the intelligent ransomware detection, the system automatically deletes the clone file system whose name starts with this prefix.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>On the navigation pane, choose <strong>Data Security</strong> &gt; <strong>Ransomware Protection</strong> &gt; <strong>Ransomware Detection Settings</strong>.</span></li><li><span>On the <span class="uicontrol"><b>NAS Ransomware Detection</b></span> tab page, select the vStore for which you want to enable intelligent ransomware detection and choose <strong>More</strong> &gt; <strong>Enable Intelligent Ransomware Detection</strong>. After intelligent ransomware detection is enabled, you need to create a ransomware detection snapshot by following the instructions in <a href="en-us_topic_0000002079043893.html">Creating a Ransomware Detection Snapshot</a>. After the snapshot is generated, the system immediately performs ransomware detection on the snapshot.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>You can also select multiple vStores for which you want to enable intelligent ransomware detection and click <span class="menucascade"><b><span class="uicontrol">Enable Intelligent Ransomware Detection</span></b></span> above the list.</li><li>If intelligent ransomware detection is not required, locate the row that contains the vStore for which you want to disable intelligent ransomware detection, and choose <strong>More</strong> &gt; <strong>Disable Intelligent Ransomware Detection</strong>. Alternatively, select multiple vStores for which you want to disable intelligent ransomware detection and choose <strong>More</strong> &gt; <strong>Disable Intelligent Ransomware Detection</strong> above the list.</li></ul>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002079002573.html">Using Intelligent Ransomware Detection</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

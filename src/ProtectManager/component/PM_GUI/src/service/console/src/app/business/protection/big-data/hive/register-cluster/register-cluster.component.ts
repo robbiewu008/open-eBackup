@@ -418,7 +418,9 @@ export class RegisterClusterComponent implements OnInit {
       this.formGroup.value.serverLink.split(',').length > 1 &&
       !this.formGroup.value.zookeeperNamespace
     ) {
-      this.message.error(this.i18n.get('protection_zk_mode_tip_label'));
+      this.message.error(this.i18n.get('protection_zk_mode_tip_label'), {
+        lvMessageKey: 'serverLinkInvalidMessageKey'
+      });
       highAvailability = false;
     } else {
       highAvailability = true;
@@ -595,7 +597,7 @@ export class RegisterClusterComponent implements OnInit {
   getAgents(recordsTemp?, startPage?) {
     this.clientManagerApiService
       .queryAgentListInfoUsingGET({
-        pageSize: 200,
+        pageSize: CommonConsts.PAGE_SIZE_MAX,
         pageNo: startPage || 0,
         conditions: JSON.stringify({
           pluginType: `${DataMap.Resource_Type.HiveBackupSet.value}Plugin`
@@ -611,7 +613,8 @@ export class RegisterClusterComponent implements OnInit {
         startPage++;
         recordsTemp = [...recordsTemp, ...res.records];
         if (
-          startPage === Math.ceil(res.totalCount / 200) ||
+          startPage ===
+            Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE_MAX) ||
           res.totalCount === 0
         ) {
           const agentArr = [];

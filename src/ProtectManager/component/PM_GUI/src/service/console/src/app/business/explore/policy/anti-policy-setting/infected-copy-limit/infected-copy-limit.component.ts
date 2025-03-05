@@ -11,14 +11,7 @@
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
 import { DatePipe } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import { Router } from '@angular/router';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from '@iux/live';
 import {
   CommonConsts,
@@ -33,6 +26,8 @@ import {
   ProtectedResourceApiService,
   RoleOperationMap,
   RoleType,
+  SYSTEM_TIME,
+  VirtualResourceService,
   WarningMessageService
 } from 'app/shared';
 import { AntiRansomwareInfectConfigApiService } from 'app/shared/api/services/anti-ransomware-infect-config-api.service';
@@ -46,12 +41,12 @@ import {
 } from 'app/shared/components/pro-table';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ResourceDetailService } from 'app/shared/services/resource-detail.service';
-import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
   assign,
   cloneDeep,
   each,
   filter,
+  first,
   includes,
   isEmpty,
   isUndefined,
@@ -78,17 +73,15 @@ export class InfectedCopyLimitComponent implements OnInit, AfterViewInit {
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
 
   constructor(
-    private router: Router,
     private i18n: I18NService,
     private datePipe: DatePipe,
-    private cdr: ChangeDetectorRef,
     private cookieService: CookieService,
     private messageService: MessageService,
     private dataMapService: DataMapService,
     private drawModalService: DrawModalService,
-    private virtualScroll: VirtualScrollService,
     private detailService: ResourceDetailService,
     private warningMessageService: WarningMessageService,
+    private virtualResourceService: VirtualResourceService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private antiRansomwareInfectedCopyService: AntiRansomwareInfectConfigApiService
   ) {}
@@ -339,7 +332,8 @@ export class InfectedCopyLimitComponent implements OnInit, AfterViewInit {
             operations: tmpOps.join(','),
             createTime: this.datePipe.transform(
               item.createTime,
-              'yyyy/MM/dd HH:mm:ss'
+              'yyyy/MM/dd HH:mm:ss',
+              SYSTEM_TIME.timeZone
             )
           });
         });
@@ -410,33 +404,54 @@ export class InfectedCopyLimitComponent implements OnInit, AfterViewInit {
     });
   }
 
+  openDetailWin(res, item) {
+    if (!item || isEmpty(item)) {
+      this.messageService.error(
+        this.i18n.get('common_resource_not_exist_label'),
+        {
+          lvShowCloseButton: true,
+          lvMessageKey: 'resNotExistMesageKey'
+        }
+      );
+      return;
+    }
+    if (
+      includes(
+        mapValues(this.drawModalService.modals, 'key'),
+        'slaDetailModalKey'
+      )
+    ) {
+      this.drawModalService.destroyModal('slaDetailModalKey');
+    }
+    if (
+      !includes(
+        [DataMap.Resource_Type.virtualMachine.value],
+        res.resourceSubType
+      )
+    ) {
+      extendSlaInfo(item);
+    }
+    this.detailService.openDetailModal(res.resourceSubType, {
+      data: assign(omit(cloneDeep(res), ['sla_id', 'sla_name']), item)
+    });
+  }
+
   getDetail(res) {
+    if (res.resourceSubType === DataMap.Resource_Type.virtualMachine.value) {
+      this.virtualResourceService
+        .queryResourcesV1VirtualResourceGet({
+          pageSize: CommonConsts.PAGE_SIZE,
+          pageNo: CommonConsts.PAGE_START,
+          conditions: JSON.stringify({
+            uuid: res.resourceId
+          })
+        })
+        .subscribe(vmRes => this.openDetailWin(res, first(vmRes.items)));
+      return;
+    }
     this.protectedResourceApiService
       .ShowResource({ resourceId: res.resourceId })
-      .subscribe(item => {
-        if (!item || isEmpty(item)) {
-          this.messageService.error(
-            this.i18n.get('common_resource_not_exist_label'),
-            {
-              lvShowCloseButton: true,
-              lvMessageKey: 'resNotExistMesageKey'
-            }
-          );
-          return;
-        }
-        if (
-          includes(
-            mapValues(this.drawModalService.modals, 'key'),
-            'slaDetailModalKey'
-          )
-        ) {
-          this.drawModalService.destroyModal('slaDetailModalKey');
-        }
-        extendSlaInfo(item);
-        this.detailService.openDetailModal(res.resourceSubType, {
-          data: assign(omit(cloneDeep(res), ['sla_id', 'sla_name']), item)
-        });
-      });
+      .subscribe(item => this.openDetailWin(res, item));
   }
 
   deleteLimit(data) {

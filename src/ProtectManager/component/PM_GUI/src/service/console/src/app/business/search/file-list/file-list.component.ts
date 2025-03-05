@@ -97,6 +97,7 @@ import {
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FileDetailComponent } from './file-detail/file-detail.component';
+import { GetLabelOptionsService } from '../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-file-list',
@@ -171,7 +172,9 @@ export class FileListComponent implements OnInit, OnDestroy {
     [DataMap.Global_Search_Resource_Type.CnwareVm.value]:
       DataMap.Resource_Type.cNwareVm.value,
     [DataMap.Global_Search_Resource_Type.HypervVm.value]:
-      DataMap.Resource_Type.hyperVVm.value
+      DataMap.Resource_Type.hyperVVm.value,
+    [DataMap.Global_Search_Resource_Type.NutanixVm.value]:
+      DataMap.Resource_Type.nutanixVm.value
   };
 
   constructor(
@@ -206,6 +209,7 @@ export class FileListComponent implements OnInit, OnDestroy {
     private exportFilesService: ExportFilesService,
     public appUtilsService: AppUtilsService,
     private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService,
     private jobApiService?: JobAPIService
   ) {}
 
@@ -284,7 +288,8 @@ export class FileListComponent implements OnInit, OnDestroy {
                   DataMap.Global_Search_Resource_Type.ApsaraStack.value,
                   DataMap.Global_Search_Resource_Type.CnwareVm.value,
                   DataMap.Global_Search_Resource_Type.HypervVm.value,
-                  DataMap.Global_Search_Resource_Type.Volume.value
+                  DataMap.Global_Search_Resource_Type.Volume.value,
+                  DataMap.Global_Search_Resource_Type.NutanixVm.value
                 ],
                 item.resourceType
               )
@@ -407,12 +412,8 @@ export class FileListComponent implements OnInit, OnDestroy {
       pageSize: this.pageSize
     };
 
-    if (!!this.orderBy) {
-      extend(params, { orderBy: this.orderBy });
-    }
-
-    if (!!this.orderType) {
-      extend(params, { orderType: this.orderType });
+    if (!!this.orderBy && !!this.orderType) {
+      extend(params, { sort: { [this.orderBy]: this.orderType } });
     }
 
     each(this.filterParams, (value, key) => {
@@ -479,7 +480,8 @@ export class FileListComponent implements OnInit, OnDestroy {
           DataMap.Global_Search_Resource_Type.OpenStack.value,
           DataMap.Global_Search_Resource_Type.ApsaraStack.value,
           DataMap.Global_Search_Resource_Type.CnwareVm.value,
-          DataMap.Global_Search_Resource_Type.HypervVm.value
+          DataMap.Global_Search_Resource_Type.HypervVm.value,
+          DataMap.Global_Search_Resource_Type.NutanixVm.value
         ],
         node.resourceType
       )
@@ -601,7 +603,8 @@ export class FileListComponent implements OnInit, OnDestroy {
           DataMap.Resource_Type.openStackCloudServer.value,
           DataMap.Resource_Type.cNwareVm.value,
           DataMap.Resource_Type.fileset.value,
-          DataMap.Resource_Type.hyperVVm.value
+          DataMap.Resource_Type.hyperVVm.value,
+          DataMap.Resource_Type.nutanixVm.value
         ],
         params.childResType
       )
@@ -764,6 +767,18 @@ export class FileListComponent implements OnInit, OnDestroy {
             this.baseTableComponent.getResourceDetail(res);
           });
         break;
+      case DataMap.Resource_Type.nutanixVm.value:
+        this.protectedResourceApiService
+          .ShowResource({
+            resourceId: item.resourceId
+          })
+          .subscribe(res => {
+            this.baseTableComponent.subType =
+              DataMap.Resource_Type.nutanixVm.value;
+            this.baseTableComponent.initConfig();
+            this.baseTableComponent.getResourceDetail(res);
+          });
+        break;
       default:
         break;
     }
@@ -921,6 +936,9 @@ export class FileListComponent implements OnInit, OnDestroy {
       case FilterType.HyperV:
         resourceType = DataMap.Resource_Type.hyperVVm.value;
         break;
+      case FilterType.NutanixVm:
+        resourceType = DataMap.Resource_Type.nutanixVm.value;
+        break;
       default:
         break;
     }
@@ -953,7 +971,8 @@ export class FileListComponent implements OnInit, OnDestroy {
             DataMap.Global_Search_Resource_Type.OpenStack.value,
             DataMap.Global_Search_Resource_Type.ApsaraStack.value,
             DataMap.Global_Search_Resource_Type.CnwareVm.value,
-            DataMap.Global_Search_Resource_Type.HypervVm.value
+            DataMap.Global_Search_Resource_Type.HypervVm.value,
+            DataMap.Global_Search_Resource_Type.NutanixVm.value
           ],
           data.resourceType
         ),
@@ -975,12 +994,16 @@ export class FileListComponent implements OnInit, OnDestroy {
               DataMap.Global_Search_Resource_Type.ApsaraStack.value,
               DataMap.Global_Search_Resource_Type.CnwareVm.value,
               DataMap.Global_Search_Resource_Type.HypervVm.value,
-              DataMap.Global_Search_Resource_Type.Ndmp.value
+              DataMap.Global_Search_Resource_Type.Ndmp.value,
+              DataMap.Global_Search_Resource_Type.NutanixVm.value
             ],
             data.resourceType
           ) ||
           includes(
-            [DataMap.CopyData_generatedType.cloudArchival.value],
+            [
+              DataMap.CopyData_generatedType.cloudArchival.value,
+              DataMap.CopyData_generatedType.tapeArchival.value
+            ],
             data.generatedBy
           ),
         label: this.i18n.get('common_download_label'),
@@ -1023,6 +1046,7 @@ export class FileListComponent implements OnInit, OnDestroy {
             FilterType.OpenstackCloudServer,
             FilterType.APSCloudServer,
             FilterType.CnwareVm,
+            FilterType.NutanixVm,
             FilterType.HyperV
           ].filter(item => {
             return (
@@ -1080,7 +1104,8 @@ export class FileListComponent implements OnInit, OnDestroy {
       this.takeManualBackupService,
       this.protectedResourceApiService,
       this.protectedEnvironmentApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
 
     this.nasSharedComponent = new NasSharedComponent(
@@ -1097,7 +1122,9 @@ export class FileListComponent implements OnInit, OnDestroy {
       this.batchOperateService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService,
+      this.appUtilsService
     );
 
     this.filesetsComponent = new FilesetsComponent(
@@ -1114,7 +1141,9 @@ export class FileListComponent implements OnInit, OnDestroy {
       this.warningMessageService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService,
+      this.appUtilsService
     );
 
     this.filesetComponent = new FilesetComponent(
@@ -1192,7 +1221,8 @@ export class FileListComponent implements OnInit, OnDestroy {
       this.warningMessageService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
 
     this.baseTableComponent = new BaseTableComponent(
@@ -1209,7 +1239,8 @@ export class FileListComponent implements OnInit, OnDestroy {
       this.warningMessageService,
       this.batchOperateService,
       this.globalService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
   }
 }

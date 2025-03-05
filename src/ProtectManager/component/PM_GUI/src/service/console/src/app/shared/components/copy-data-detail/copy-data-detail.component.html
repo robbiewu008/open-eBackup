@@ -179,6 +179,16 @@
                   }" style="width:20px;height:20px"></i>
               </lv-form-control>
             </ng-container>
+            <ng-container *ngSwitchCase="'worm_expiration_time'">
+              <lv-form-control>
+                {{
+                item.value
+                ? (item.value
+                | date: 'yyyy-MM-dd HH:mm:ss':timeZone)
+                : '--'
+                }}
+              </lv-form-control>
+            </ng-container>
             <ng-container *ngSwitchCase="'indexed'">
               <lv-form-control>
                 <ng-container *ngIf="isIndexCreating">

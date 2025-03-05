@@ -67,7 +67,7 @@ export class KingBaseProxyHostComponent implements OnInit, AfterViewInit {
     const cols: TableCols[] = [
       {
         key: 'name',
-        name: this.i18n.get('protection_host_name_label'),
+        name: this.i18n.get('protection_client_name_label'),
         filter: {
           type: 'search',
           filterMode: 'contains'

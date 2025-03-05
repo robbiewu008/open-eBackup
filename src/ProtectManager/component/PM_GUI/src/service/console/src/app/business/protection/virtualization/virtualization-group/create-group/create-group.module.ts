@@ -15,9 +15,10 @@ import { CommonModule } from '@angular/common';
 import { CreateGroupComponent } from './create-group.component';
 import { BaseModule } from 'app/shared';
 import { TransferModule } from '@iux/live';
+import { ProtectFilterModule } from 'app/shared/components/protect-filter/protect-filter.module';
 
 @NgModule({
   declarations: [CreateGroupComponent],
-  imports: [CommonModule, BaseModule, TransferModule]
+  imports: [CommonModule, BaseModule, TransferModule, ProtectFilterModule]
 })
 export class CreateGroupModule {}

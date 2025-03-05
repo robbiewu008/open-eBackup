@@ -141,8 +141,7 @@ export const EXCLUDE_RESOURCE_TYPES: ExcludeItem[] = [
   DataMap.Job_Target_Type.APSZone,
   DataMap.Job_Target_Type.nutanix,
   DataMap.Job_Target_Type.nutanixCluster,
-  DataMap.Job_Target_Type.nutanixHost,
-  DataMap.Job_Target_Type.nutanixVm
+  DataMap.Job_Target_Type.nutanixHost
 ];
 
 /**
@@ -1191,5 +1190,9 @@ export class CreateAntiPolicyComponent implements OnInit {
       return 'afterTaskCompleteSet';
     }
     return this.formGroup.value.schedulePolicy;
+  }
+
+  setSysTime(formItem: string) {
+    this.appUtilsService.setTimePickerCurrent(this.formGroup.get(formItem));
   }
 }

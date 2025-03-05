@@ -46,8 +46,7 @@
             {{'common_protocol_label' | i18n}}
         </lv-form-label>
         <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
-            <lv-select [lvOptions]="protocolOptions" formControlName="protocol" lvValueKey="value" lvMode="single"
-                [lvDisabled]="rowData">
+            <lv-select [lvOptions]="protocolOptions" formControlName="protocol" lvValueKey="value" lvMode="single">
             </lv-select>
         </lv-form-control>
     </lv-form-item>
@@ -81,7 +80,7 @@
     </lv-form-item>
     <lv-form-item>
         <lv-form-label>
-            {{'protection_proxy_host_label' | i18n}}
+            {{'protection_clients_label' | i18n}}
             <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_object_storage_proxy_tip_label' | i18n}}"
                 lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
         </lv-form-label>

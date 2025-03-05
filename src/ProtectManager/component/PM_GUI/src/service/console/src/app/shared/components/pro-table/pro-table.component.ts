@@ -25,11 +25,13 @@ import {
   DatatableService,
   DateService,
   FilterConfig,
+  FilterItem,
   I18NService,
   LvConfig,
   SortDirective,
   TableFilterConfig,
   TagItem,
+  ThComponent,
   TypeUtils
 } from '@iux/live';
 import { CommonConsts, GlobalService } from 'app/shared';
@@ -40,6 +42,8 @@ import {
   cloneDeep as _cloneDeep,
   each,
   filter as _filter,
+  find,
+  get,
   includes,
   isArray,
   isEmpty,
@@ -47,6 +51,7 @@ import {
   isString,
   map,
   merge as _merge,
+  set,
   size,
   toString,
   trim
@@ -207,7 +212,7 @@ export class ProTableComponent implements OnInit, OnDestroy {
           }
 
           // 手动更新数据时列表定位到第一条数据
-          if (!this._isAutoPolling) {
+          if (!this._isAutoPolling && !changes.data.currentValue.keepScroll) {
             this._scrollToTop();
           }
 
@@ -320,6 +325,14 @@ export class ProTableComponent implements OnInit, OnDestroy {
 
     const doChange = this.initConfig.table.selectionChange;
     doChange && doChange(selection, renderSelection);
+  }
+
+  /**
+   * 滚动到底部时回调事件
+   */
+  _scrollEnd() {
+    const scrollEnd = this.initConfig.table.scrollEnd;
+    scrollEnd && scrollEnd();
   }
 
   /**
@@ -1086,6 +1099,35 @@ export class ProTableComponent implements OnInit, OnDestroy {
       USER_GUIDE_CACHE_DATA.active &&
       (includes(USER_GUIDE_CACHE_DATA.resource, item?.rootUuid) ||
         includes(USER_GUIDE_CACHE_DATA.resource, item?.uuid))
+    );
+  }
+  filterVirtualSearchChange(event) {
+    // 虚拟滚动情况，搜索框变化回调
+    const targetValue = event.toString().trim();
+    const labelComponent: ThComponent = this.table.thComponents.find(
+      (component: ThComponent) => component.lvCellKey === 'labelList'
+    );
+    const virtualSelectedArr = get(
+      labelComponent,
+      'virtualSelectedValue',
+      []
+    ).map(item => item.key);
+    each(get(this.casheFilterSelectMap, 'labelList', []), (item): any => {
+      item.selected = includes(virtualSelectedArr, item.key);
+    });
+    const filters: FilterItem[] = _cloneDeep(
+      get(this.casheFilterSelectMap, 'labelList', [])
+    );
+    // 虚拟滚动视图更新会清空已选内容，模糊搜索时将已选择保留到待选内容
+    set(
+      this.filterSelectMap,
+      'labelList',
+      _filter(
+        filters,
+        (item): boolean =>
+          item.label.toLowerCase().includes(targetValue.toLowerCase()) ||
+          includes(virtualSelectedArr, item.key)
+      )
     );
   }
 }

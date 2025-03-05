@@ -32,6 +32,7 @@ import {
   ProtectedResourceApiService,
   ProxyHostSelectMode
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   each,
   filter,
@@ -79,7 +80,8 @@ export class AdvancedParameterComponent implements OnInit, OnDestroy {
       DataMap.Deploy_Type.x8000.value,
       DataMap.Deploy_Type.x6000.value,
       DataMap.Deploy_Type.x9000.value,
-      DataMap.Deploy_Type.e6000.value
+      DataMap.Deploy_Type.e6000.value,
+      DataMap.Deploy_Type.decouple.value
     ],
     this.i18n.get('deploy_type')
   );
@@ -95,7 +97,7 @@ export class AdvancedParameterComponent implements OnInit, OnDestroy {
     ...this.baseUtilService.rangeErrorTip,
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 40])
   };
-  tipsLabel = this.i18n.get('protection_fileset_channels_tips_label');
+  tipsLabel = this.i18n.get('protection_nasshare_channels_tips_label');
 
   unitOptions: OptionItem[] = [
     {
@@ -149,7 +151,8 @@ export class AdvancedParameterComponent implements OnInit, OnDestroy {
     public baseUtilService: BaseUtilService,
     private messageService: MessageService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private clientManagerApiService: ClientManagerApiService
+    private clientManagerApiService: ClientManagerApiService,
+    public appUtilsService: AppUtilsService
   ) {}
 
   ngOnInit() {
@@ -247,8 +250,7 @@ export class AdvancedParameterComponent implements OnInit, OnDestroy {
         pluginType:
           this.subResourceType === DataMap.Resource_Type.NASFileSystem.value
             ? AgentsSubType.NasFileSystem
-            : AgentsSubType.Ndmp,
-        linkStatus: [DataMap.resource_LinkStatus_Special.normal.value]
+            : AgentsSubType.Ndmp
       })
     };
     this.clientManagerApiService
@@ -266,6 +268,16 @@ export class AdvancedParameterComponent implements OnInit, OnDestroy {
           startPage === Math.ceil(res.totalCount / 200) ||
           res.totalCount === 0
         ) {
+          recordsTemp = filter(recordsTemp, item => {
+            return (
+              item.linkStatus ===
+                DataMap.resource_LinkStatus_Special.normal.value ||
+              includes(
+                this.resourceData.protectedObject?.extParameters?.agents,
+                item.rootUuid
+              )
+            );
+          });
           const hostArray = [];
           each(recordsTemp, item => {
             hostArray.push({
@@ -389,6 +401,7 @@ export class AdvancedParameterComponent implements OnInit, OnDestroy {
       aggregation_mode: new FormControl(DataMap.Aggregation_Mode.disable.value),
       permissons_attributes: new FormControl(PermissonsAttributes.FolderOnly),
       protocol: new FormControl(''),
+      sparseFileDetect: new FormControl(false),
       smallFile: new FormControl(false),
       fileSize: new FormControl(4096),
       maxFileSize: new FormControl(1024),
@@ -538,6 +551,7 @@ export class AdvancedParameterComponent implements OnInit, OnDestroy {
         .setValue(extParameters.permissions_and_attributes);
 
       this.formGroup.patchValue({
+        sparseFileDetect: extParameters.sparse_file_detection,
         smallFile:
           extParameters?.small_file_aggregation ===
           DataMap.Aggregation_Mode.enable.value,
@@ -594,6 +608,7 @@ export class AdvancedParameterComponent implements OnInit, OnDestroy {
         }
       : {
           channels: toNumber(this.formGroup.get('channels').value),
+          sparse_file_detection: this.formGroup.get('sparseFileDetect').value,
           small_file_aggregation: this.formGroup.value.smallFile
             ? DataMap.Aggregation_Mode.enable.value
             : DataMap.Aggregation_Mode.disable.value,

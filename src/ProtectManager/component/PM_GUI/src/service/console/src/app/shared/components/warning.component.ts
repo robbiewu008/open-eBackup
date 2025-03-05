@@ -36,6 +36,15 @@ import { NgIf, NgTemplateOutlet } from '@angular/common';
         i18n.get('common_forcibly_delete_copy_label')
       }}</label>
     </div>
+    <div
+      *ngIf="showForciblyDelete"
+      class="warning-checkbox force-delete-checkbox"
+    >
+      <label lv-checkbox [(ngModel)]="forciblyDelete">{{
+        i18n.get('common_force_delete_label')
+      }}</label>
+      <div>{{ i18n.get('common_force_delete_tip_label') }}</div>
+    </div>
     <div class="warning-checkbox">
       <label
         lv-checkbox
@@ -66,7 +75,9 @@ export class WarningComponent implements OnInit {
   actionId;
   isChecked$ = new Subject<boolean>();
   forciblyDeleteCopy = null; // 默认为null，接口判断为null时不会下发该字段
+  forciblyDelete = null;
   showForciblyDeleteCopy = false;
+  showForciblyDelete = false;
   contentIsString = false;
   contentIsTemplateRef = false;
 
@@ -76,6 +87,7 @@ export class WarningComponent implements OnInit {
     this.contentIsString = typeof this.content === 'string';
     this.contentIsTemplateRef = this.content instanceof TemplateRef;
     this.showForciblyDeleteCopy = this.checkDeleteCopyOpts();
+    this.showForciblyDelete = this.checkForceDelete();
   }
 
   warningConfirmChange(e) {
@@ -103,6 +115,31 @@ export class WarningComponent implements OnInit {
     // 对象
     return (
       this.rowData?.status === DataMap.copydata_validStatus.deleteFailed.value
+    );
+  }
+
+  /**
+   * 判断是否满足强制删除备份存储单元的条件
+   * 1、操作为'删除备份存储单元'
+   * 2、备份存储单元运行状态为'离线'
+   * 满足以上条件才会展示强制删除选项
+   */
+  checkForceDelete(): boolean {
+    if (this.actionId !== OperateItems.DeleteBackupStorageUnit) {
+      return false;
+    }
+    // 数组
+    if (isArray(this.rowData)) {
+      return every(
+        this.rowData,
+        item =>
+          item?.runningStatus === DataMap.StoragePoolRunningStatus.offline.value
+      );
+    }
+    // 对象
+    return (
+      this.rowData?.runningStatus ===
+      DataMap.StoragePoolRunningStatus.offline.value
     );
   }
 }

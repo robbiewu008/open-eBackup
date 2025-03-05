@@ -119,6 +119,27 @@
                 </span>
             </lv-form-control>
         </lv-form-item>
+      <!-- MySQL工具箱-->
+      <lv-form-item>
+        <lv-form-label>
+          {{'protection_mysql_tool_path_label' | i18n}}
+          <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_mysql_tool_path_tips_label' | i18n}}" lvTooltipTheme="light"
+             class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="confPathErrorTip">
+          <input  lv-input type="text" formControlName="toolPath"/>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>
+          {{'protection_mysql_library_path_label' | i18n}}
+          <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_mysql_library_path_tips_label' | i18n}}" lvTooltipTheme="light"
+             class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="confPathErrorTip">
+          <input lv-input type="text" formControlName="libraryPath"/>
+        </lv-form-control>
+      </lv-form-item>
     </ng-container>
 
     <lv-form-item *ngIf="formGroup.value.type === dataMap.Instance_Type.cluster.value">

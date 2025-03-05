@@ -60,7 +60,7 @@ export class ClusterDetailComponent implements OnInit {
         {
           key: 'proxyHosts',
           value: this.data.proxyHosts,
-          label: this.i18n.get('protection_proxy_host_label')
+          label: this.i18n.get('protection_client_label')
         }
       ]
     ];

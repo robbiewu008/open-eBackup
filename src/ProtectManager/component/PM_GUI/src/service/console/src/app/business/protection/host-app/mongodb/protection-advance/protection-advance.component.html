@@ -35,6 +35,20 @@
                     </div>
                 </lv-form-control>
             </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_archive_index_set_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="archive_res_auto_index"></lv-switch>
+                    <div *ngIf="formGroup.value.archive_res_auto_index">
+                        <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                        <span>
+                            {{'protection_sla_index_enable_label' | i18n}}
+                        </span>
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
         </lv-form>
     </lv-collapse-panel>
 </lv-collapse>

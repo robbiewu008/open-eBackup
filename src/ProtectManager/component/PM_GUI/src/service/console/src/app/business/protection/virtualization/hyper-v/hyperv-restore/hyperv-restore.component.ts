@@ -532,20 +532,20 @@ export class HypervRestoreComponent implements OnInit {
 
   getTargetParams() {
     const params = this.getParams();
+    const targetVm =
+      find(this.targetVmOptions, {
+        uuid: this.formGroup.value?.targetVm
+      }) || {};
     assign(params, {
       targetObject:
         this.formGroup.value.restoreTo === RestoreV2LocationType.ORIGIN
           ? this.resourceProp?.uuid
-          : find(this.targetVmOptions, { uuid: this.formGroup.value.targetVm })
-              ?.uuid
+          : targetVm?.uuid
     });
     assign(params.extendInfo, {
       restoreLevel: '1'
     });
     if (this.formGroup.value.restoreTo === RestoreV2LocationType.NEW) {
-      const targetVm = find(this.targetVmOptions, {
-        uuid: this.formGroup.value.targetVm
-      });
       assign(params.extendInfo, {
         restoreTargetPath: targetVm?.extendInfo?.ConfigurationLocation,
         restoreLocation: targetVm?.path
@@ -555,7 +555,7 @@ export class HypervRestoreComponent implements OnInit {
         restoreLocation: this.originalResource?.path
       });
     }
-    return {
+    const targetParams = {
       formGroupValue: cloneDeep(this.formGroup.value),
       requestParams: params,
       targetLoacetionPath:
@@ -575,12 +575,12 @@ export class HypervRestoreComponent implements OnInit {
       targetDisk:
         this.formGroup.value.restoreTo === RestoreV2LocationType.ORIGIN
           ? JSON.parse(this.originalResource.extendInfo?.disks || '[]')
-          : JSON.parse(
-              find(this.targetVmOptions, {
-                uuid: this.formGroup.value.targetVm
-              })?.extendInfo?.disks || '[]'
-            )
+          : JSON.parse(targetVm?.extendInfo?.disks || '[]')
     };
+    if (this.formGroup.value.restoreTo === RestoreV2LocationType.NEW) {
+      set(targetParams, 'bootType', targetVm.extendInfo?.Generation);
+    }
+    return targetParams;
   }
 
   getParams() {

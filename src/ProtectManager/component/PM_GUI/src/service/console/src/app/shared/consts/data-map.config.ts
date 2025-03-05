@@ -816,7 +816,18 @@ export const DataMap = {
       label: 'noGenerate'
     }
   },
-
+  storageUnitStatus: {
+    online: {
+      value: 1,
+      label: 'common_online_label',
+      color: ColorConsts.NORMAL
+    },
+    offline: {
+      value: 0,
+      label: 'common_off_label',
+      color: ColorConsts.OFFLINE
+    }
+  },
   copydata_validStatus: {
     normal: {
       value: 'Normal',
@@ -992,7 +1003,7 @@ export const DataMap = {
     },
     liveMount: {
       value: 'live_mount',
-      label: 'common_live_mount_label'
+      label: 'common_live_mount_lower_label'
     },
     download: {
       value: 'Download',
@@ -1204,7 +1215,7 @@ export const DataMap = {
     },
     live_mount_job: {
       value: 'live_mount',
-      label: 'common_live_mount_label'
+      label: 'common_live_mount_lower_label'
     },
     unmout: {
       value: 'unmount',
@@ -2318,7 +2329,7 @@ export const DataMap = {
     },
     ldapGroup: {
       value: 'LDAPGROUP',
-      label: 'system_ldap_service_user_group_label'
+      label: 'system_ldap_service_user_group_type_label'
     },
     saml: {
       value: 'SAML',
@@ -2326,7 +2337,7 @@ export const DataMap = {
     },
     ProtectAgent: {
       value: 'ProtectAgent',
-      label: 'protection_backup_proxy_label'
+      label: 'protection_client_label'
     },
     DBBackupAgent: {
       value: 'DBBackupAgent',
@@ -2364,6 +2375,14 @@ export const DataMap = {
       value: 'ADDS',
       label: 'Active Directory'
     },
+    AntDBInstance: {
+      value: 'AntDBInstance',
+      label: 'resource_sub_type_ant_db_instance_label'
+    },
+    AntDBClusterInstance: {
+      value: 'AntDBClusterInstance',
+      label: 'resource_sub_type_ant_db_cluster_instance_label'
+    },
     volume: {
       value: 'Volume',
       label: 'protection_volume_label'
@@ -2375,6 +2394,10 @@ export const DataMap = {
     oracleCluster: {
       value: 'Oracle-cluster',
       label: 'common_oracle_cluster_database_label'
+    },
+    oraclePdbSet: {
+      value: 'Oracle-pdb',
+      label: 'common_oracle_pdb_label'
     },
     dbTwoCluster: {
       value: 'DB2-cluster',
@@ -2698,11 +2721,11 @@ export const DataMap = {
     },
     DoradoV7: {
       value: 'DoradoV7',
-      label: 'OceanStor Dorado V7'
+      label: 'OceanStor Dorado V700R001'
     },
     OceanStorDoradoV7: {
       value: 'OceanStorV7',
-      label: 'OceanStor V7'
+      label: 'OceanStor V700R001'
     },
     OceanStorDorado_6_1_3: {
       value: 'DoradoV6',
@@ -2891,6 +2914,10 @@ export const DataMap = {
     saphanaDatabase: {
       value: 'SAPHANA-database',
       label: 'protection_saphana_database_label'
+    },
+    saponoracleDatabase: {
+      value: 'SAP_ON_ORACLE_SINGLE',
+      label: 'protection_saponoracle_database_label'
     }
   },
   globalResourceType: {
@@ -3052,7 +3079,7 @@ export const DataMap = {
     },
     ProtectAgent: {
       value: 'ProtectAgent',
-      label: 'protection_backup_proxy_label'
+      label: 'protection_client_label'
     },
     DBBackupAgent: {
       value: 'DBBackupAgent',
@@ -3081,6 +3108,10 @@ export const DataMap = {
     oracle: {
       value: 'Oracle',
       label: 'common_oracle_database_label'
+    },
+    oracleCluster: {
+      value: 'Oracle-cluster',
+      label: 'common_oracle_cluster_database_label'
     },
     SQLServerCluster: {
       value: 'SQLServer-cluster',
@@ -4527,10 +4558,6 @@ export const DataMap = {
       value: ApplicationType.Nutanix,
       label: 'common_nutanix_label'
     },
-    ABBackupClient: {
-      value: ApplicationType.Volume,
-      label: 'common_host_label'
-    },
     Replica: {
       value: ApplicationType.Replica,
       label: 'common_copy_a_copy_label'
@@ -4738,6 +4765,10 @@ export const DataMap = {
     CnwareVm: {
       value: FilterType.CnwareVm,
       label: 'common_cnware_vm_label'
+    },
+    NutanixVm: {
+      value: FilterType.NutanixVm,
+      label: 'common_nutanix_vm_label'
     },
     HypervVm: {
       value: FilterType.HyperV,
@@ -4949,6 +4980,38 @@ export const DataMap = {
       color: ColorConsts.ABNORMAL
     }
   },
+  Browse_LiveMount_Status: {
+    mounted: {
+      value: 'Mounted',
+      label: 'common_mounted_label',
+      color: ColorConsts.NORMAL
+    },
+    unmount: {
+      value: 'Umount',
+      label: 'common_un_mount_label',
+      color: ColorConsts.OFFLINE
+    },
+    mounting: {
+      value: 'Mounting',
+      label: 'common_status_mounting_label',
+      color: ColorConsts.RUNNING
+    },
+    mountFail: {
+      value: 'Mount_fail',
+      label: 'common_status_mount_failed_label',
+      color: ColorConsts.ABNORMAL
+    },
+    unmounting: {
+      value: 'Mount_deleting',
+      label: 'common_status_deleting_mount_label',
+      color: ColorConsts.RUNNING
+    },
+    unmountFail: {
+      value: 'Mount_delete_fail',
+      label: 'common_status_delete_mount_failed_label',
+      color: ColorConsts.ABNORMAL
+    }
+  },
   Instance_Type: {
     single: {
       value: 0,
@@ -5015,6 +5078,18 @@ export const DataMap = {
     file: {
       value: 'FILE',
       label: 'explore_file_name_extension_label'
+    }
+  },
+  dataBackupWhitelistType: {
+    dir: {
+      value: 'PATH',
+      label: 'explore_directory_name_label',
+      tip: 'protection_linux_path_backup_label'
+    },
+    file: {
+      value: 'SUFFIX',
+      label: 'explore_file_name_extension_label',
+      tip: 'explore_whitelist_file_extension_valid_label'
     }
   },
   Dameng_Auth_Method: {
@@ -5122,7 +5197,7 @@ export const DataMap = {
   Desensitization_generatedType: {
     desensitized: {
       value: 'livemount',
-      label: 'common_live_mount_label'
+      label: 'common_live_mount_lower_label'
     },
     unDesensitized: {
       value: 'restore',
@@ -5727,7 +5802,7 @@ export const DataMap = {
     },
     exception: {
       value: 4,
-      label: 'common_status_exception_label',
+      label: 'explore_detecte_fail_label',
       color: ColorConsts.WARN,
       resultIcon: 'aui-icon-detection-abnormal'
     }
@@ -5767,7 +5842,7 @@ export const DataMap = {
     },
     exception: {
       value: 'abnormal_copy_num',
-      label: 'common_status_exception_label',
+      label: 'explore_detecte_fail_label',
       color: ColorConsts.WARN,
       isLeaf: true,
       resultIcon: 'aui-icon-detection-abnormal'
@@ -6577,11 +6652,11 @@ export const DataMap = {
   Device_Storage_Type: {
     DoradoV7: {
       value: 'DoradoV7',
-      label: 'OceanStor Dorado V7'
+      label: 'OceanStor Dorado V700R001'
     },
     OceanStorDoradoV7: {
       value: 'OceanStorV7',
-      label: 'OceanStor V7'
+      label: 'OceanStor V700R001'
     },
     OceanStorDorado_6_1_3: {
       value: 'DoradoV6',
@@ -6730,6 +6805,24 @@ export const DataMap = {
     kerberos: {
       value: '0',
       label: 'protection_kerberos_auth_label'
+    }
+  },
+  ElasticSearch_Clusters_Auth_Type: {
+    system: {
+      value: 0,
+      label: 'protection_simple_auth_label'
+    },
+    ldap: {
+      value: 3,
+      label: 'protection_ldap_auth_label'
+    },
+    kerberos: {
+      value: 5,
+      label: 'protection_kerberos_auth_label'
+    },
+    xpack: {
+      value: 7,
+      label: 'protection_xpack_auth_label'
     }
   },
   HDFS_Clusters_Auth_Type: {
@@ -7408,6 +7501,16 @@ export const DataMap = {
       label: 'protection_sbackupagent_native_label'
     }
   },
+  softwarePackageType: {
+    remoteAgent: {
+      value: 'REMOTE_AGENT',
+      label: 'protection_client_label'
+    },
+    sanclientAgent: {
+      value: 'SAN_CLIENT_AGENT',
+      label: 'protection_sbackupagent_native_label'
+    }
+  },
   Global_Search_Type: {
     [SearchRange.COPIES]: {
       value: SearchRange.COPIES,
@@ -8006,7 +8109,7 @@ export const DataMap = {
     },
     standby: {
       value: 'powerHA',
-      label: 'powerHA'
+      label: 'PowerHA/RHEL HA'
     },
     hadr: {
       value: 'hadr',
@@ -9070,6 +9173,24 @@ export const DataMap = {
       label: 'USB'
     }
   },
+  nutanixDiskType: {
+    scsi: {
+      value: 'scsi',
+      label: 'SCSI'
+    },
+    PCI: {
+      value: 'pci',
+      label: 'PCI'
+    },
+    ide: {
+      value: 'ide',
+      label: 'IDE'
+    },
+    sata: {
+      value: 'sata',
+      label: 'SATA'
+    }
+  },
   hypervStatus: {
     running: {
       value: 'Running',
@@ -9144,6 +9265,11 @@ export const DataMap = {
       value: '2',
       label: 'common_status_abnormal_label',
       color: ColorConsts.ABNORMAL
+    },
+    removed: {
+      value: '5',
+      label: 'common_status_delete_label',
+      color: ColorConsts.OFFLINE
     }
   },
   fileReplaceType: {
@@ -9550,11 +9676,42 @@ export const DataMap = {
   recoveryDrillType: {
     liveMount: {
       value: 'live_mount',
-      label: 'common_live_mount_label'
+      label: 'common_live_mount_lower_label'
     },
     restore: {
       value: 'RESTORE',
       label: 'common_restore_label'
+    }
+  },
+  networkPlaneType: {
+    management: {
+      value: 'MANAGEMENT',
+      label: 'protection_manage_network_label'
+    },
+    backup: {
+      value: 'BACKUP',
+      label: 'protection_backup_network_label'
+    }
+  },
+  clientDeployType: {
+    // 默认客户端部署方式
+    onlyHost: 'onlyHost',
+    onlyVmHost: 'onlyVmHost',
+    standaloneHost: 'standaloneHost',
+    vmWare: 'vmWare',
+    oracle: 'oracle',
+    nasFileSystem: 'nasFileSystem',
+    nasShare: 'nasShare',
+    object: 'object'
+  },
+  vmGroupType: {
+    manual: {
+      value: 'manual',
+      label: 'protection_select_manual_label'
+    },
+    rule: {
+      value: 'rule',
+      label: 'protection_select_rules_label'
     }
   }
 };

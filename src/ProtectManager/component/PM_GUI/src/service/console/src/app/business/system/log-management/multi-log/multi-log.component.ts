@@ -16,9 +16,15 @@ import {
   OnInit,
   TemplateRef,
   ViewChild,
-  AfterViewInit
+  AfterViewInit,
+  ViewEncapsulation
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from '@iux/live';
 import {
@@ -31,7 +37,8 @@ import {
   ApiLogApiService,
   CookieService,
   BackupClustersApiService,
-  ApiExportFilesApiService as ExportFileApiService
+  ApiExportFilesApiService as ExportFileApiService,
+  RouterUrl
 } from 'app/shared';
 import { ExportFilesService } from 'app/shared/components/export-files/export-files.component';
 import {
@@ -41,6 +48,7 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { InfoMessageService } from 'app/shared/services/info-message.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
@@ -48,12 +56,17 @@ import {
   assign,
   cloneDeep,
   each,
+  every,
   includes,
   isEmpty,
+  isNil,
   isUndefined,
   map,
   now,
+  set,
   size,
+  some,
+  toNumber,
   union,
   uniq
 } from 'lodash';
@@ -61,7 +74,8 @@ import {
 @Component({
   selector: 'aui-multi-log',
   templateUrl: './multi-log.component.html',
-  styleUrls: ['./multi-log.component.less']
+  styleUrls: ['./multi-log.component.less'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MultiLogComponent implements OnInit, AfterViewInit {
   includes = includes;
@@ -98,13 +112,17 @@ export class MultiLogComponent implements OnInit, AfterViewInit {
     ...this.baseUtilService.rangeErrorTip,
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 10000])
   };
-
+  selectTimeRangeType = {
+    custom: 'custom',
+    day: 'day'
+  };
   @ViewChild('logLevelTpl', { static: true }) logLevelTpl: TemplateRef<any>;
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
 
   constructor(
     private fb: FormBuilder,
     private i18n: I18NService,
+    private appUtilsService: AppUtilsService,
     private dataMapService: DataMapService,
     private baseUtilService: BaseUtilService,
     private cdr: ChangeDetectorRef,
@@ -146,6 +164,15 @@ export class MultiLogComponent implements OnInit, AfterViewInit {
       type: new FormControl([DataMap.Export_Query_Type.log.value], {
         validators: [this.baseUtilService.VALID.required()]
       }),
+      taskID: new FormControl('', {
+        validators: [
+          this.baseUtilService.VALID.name(
+            CommonConsts.REGEX.UUID,
+            false,
+            'invalidInput'
+          )
+        ]
+      }),
       clusterNodeName: new FormControl('', {
         validators: [
           this.baseUtilService.VALID.required(),
@@ -158,7 +185,17 @@ export class MultiLogComponent implements OnInit, AfterViewInit {
       componentName: new FormControl([], {
         validators: [this.baseUtilService.VALID.minLength(1)]
       }),
-      customTimeRange: new FormControl(
+      selectTimeRangeType: new FormControl(this.selectTimeRangeType.custom),
+      customRangeDate: new FormControl(
+        {
+          value: [],
+          disabled: true
+        },
+        {
+          validators: [this.checkDateValid()]
+        }
+      ),
+      specifyDay: new FormControl(
         {
           value: 1,
           disabled: true
@@ -171,7 +208,7 @@ export class MultiLogComponent implements OnInit, AfterViewInit {
           ]
         }
       ),
-      timeRange: new FormControl(null, {
+      exportTimeType: new FormControl(DataMap.exportLogRange.all.value, {
         validators: [this.baseUtilService.VALID.required()]
       }), // 接口默认不下发timeRange，此时等价于恢复全部日志
       logName: new FormControl(`Logfile_${year}${month}${date}_${now()}`, {
@@ -190,6 +227,15 @@ export class MultiLogComponent implements OnInit, AfterViewInit {
     });
 
     this.listenForm();
+  }
+
+  checkDateValid() {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (some(control.value, isNil) || isEmpty(control.value)) {
+        return { required: { value: control.value } };
+      }
+      return null;
+    };
   }
 
   listenForm() {
@@ -249,14 +295,19 @@ export class MultiLogComponent implements OnInit, AfterViewInit {
           .get('componentName')
           .setValidators([this.baseUtilService.VALID.minLength(1)]);
         this.exportLogFormGroup
-          .get('timeRange')
+          .get('exportTimeType')
           .setValidators([this.baseUtilService.VALID.required()]);
+        this.enableFormGroupByTimeType(
+          this.exportLogFormGroup.get('exportTimeType').value
+        );
       }
       if (!includes(res, DataMap.Export_Query_Type.log.value)) {
         this.exportLogFormGroup.get('logName').clearValidators();
         this.exportLogFormGroup.get('controllerName').clearValidators();
         this.exportLogFormGroup.get('componentName').clearValidators();
-        this.exportLogFormGroup.get('timeRange').clearValidators();
+        this.exportLogFormGroup.get('exportTimeType').clearValidators();
+        this.exportLogFormGroup.get('customRangeDate').disable();
+        this.exportLogFormGroup.get('specifyDay').disable();
       }
 
       if (includes(res, DataMap.Export_Query_Type.config.value)) {
@@ -269,19 +320,52 @@ export class MultiLogComponent implements OnInit, AfterViewInit {
         .get('controllerName')
         .updateValueAndValidity({ emitEvent: false });
       this.exportLogFormGroup.get('componentName').updateValueAndValidity();
-      this.exportLogFormGroup.get('timeRange').updateValueAndValidity();
+      this.exportLogFormGroup.get('exportTimeType').updateValueAndValidity();
       this.exportLogFormGroup.get('configName').updateValueAndValidity();
     });
   }
 
   listenExportRange() {
-    this.exportLogFormGroup.get('timeRange').valueChanges.subscribe(res => {
-      if (res === DataMap.exportLogRange.customRange.value) {
-        this.exportLogFormGroup.get('customTimeRange').enable();
-      } else {
-        this.exportLogFormGroup.get('customTimeRange').disable();
-      }
-    });
+    this.exportLogFormGroup
+      .get('exportTimeType')
+      .valueChanges.subscribe(res => {
+        if (
+          !includes(
+            this.exportLogFormGroup.get('type').value,
+            DataMap.Export_Query_Type.log.value
+          )
+        ) {
+          return;
+        }
+        this.enableFormGroupByTimeType(res);
+      });
+
+    this.exportLogFormGroup
+      .get('selectTimeRangeType')
+      .valueChanges.subscribe(res => {
+        this.selectTimeRangeTypeChange(res);
+      });
+  }
+
+  private selectTimeRangeTypeChange(res) {
+    if (res === this.selectTimeRangeType.custom) {
+      this.exportLogFormGroup.get('customRangeDate').enable();
+      this.exportLogFormGroup.get('specifyDay').disable();
+    } else {
+      this.exportLogFormGroup.get('specifyDay').enable();
+      this.exportLogFormGroup.get('customRangeDate').disable();
+    }
+  }
+
+  private enableFormGroupByTimeType(res) {
+    if (res === DataMap.exportLogRange.customRange.value) {
+      this.selectTimeRangeTypeChange(
+        this.exportLogFormGroup.get('selectTimeRangeType').value
+      );
+    } else {
+      this.exportLogFormGroup.get('specifyDay').disable();
+      this.exportLogFormGroup.get('customRangeDate').disable();
+    }
   }
 
   initConfig() {
@@ -511,22 +595,30 @@ export class MultiLogComponent implements OnInit, AfterViewInit {
 
   // 导出
   export() {
+    const isSpecifyDay =
+      this.exportLogFormGroup.get('exportTimeType').value ===
+        DataMap.exportLogRange.customRange.value &&
+      this.exportLogFormGroup.get('selectTimeRangeType').value ===
+        this.selectTimeRangeType.day;
     const isCustom =
-      this.exportLogFormGroup.get('timeRange').value ===
-      DataMap.exportLogRange.customRange.value;
+      this.exportLogFormGroup.get('exportTimeType').value ===
+        DataMap.exportLogRange.customRange.value &&
+      this.exportLogFormGroup.get('selectTimeRangeType').value ===
+        this.selectTimeRangeType.custom;
     if (
       includes(
         this.exportLogFormGroup.value.type,
         DataMap.Export_Query_Type.log.value
       )
     ) {
-      this.dealExport({
+      const params = {
         request: {
           params: {
             nodeName: this.exportLogFormGroup.get('controllerName').value,
             componentName: this.exportLogFormGroup.get('componentName').value,
-            timeRange: isCustom
-              ? +this.exportLogFormGroup.get('customTimeRange').value
+            taskId: this.exportLogFormGroup.get('taskID').value,
+            timeRange: isSpecifyDay
+              ? toNumber(this.exportLogFormGroup.get('specifyDay').value)
               : DataMap.exportLogRange.all.value
           },
           type: DataMap.Export_Query_Type.log.value,
@@ -534,7 +626,22 @@ export class MultiLogComponent implements OnInit, AfterViewInit {
         },
         akOperationTips: false,
         memberEsn: this.exportLogFormGroup.value.clusterNodeName
-      });
+      };
+      if (isCustom) {
+        const rangeDate = this.exportLogFormGroup.get('customRangeDate').value;
+        delete params.request.params.timeRange;
+        set(
+          params,
+          'request.params.startTimestamp',
+          Math.floor(new Date(rangeDate[0]).getTime() / 1e3)
+        );
+        set(
+          params,
+          'request.params.endTimestamp',
+          Math.floor(new Date(rangeDate[1]).getTime() / 1e3)
+        );
+      }
+      this.dealExport(params);
     }
 
     if (
@@ -577,5 +684,9 @@ export class MultiLogComponent implements OnInit, AfterViewInit {
         });
       });
     }
+  }
+
+  helpHover() {
+    this.appUtilsService.openRouter(RouterUrl.InsightJobs);
   }
 }

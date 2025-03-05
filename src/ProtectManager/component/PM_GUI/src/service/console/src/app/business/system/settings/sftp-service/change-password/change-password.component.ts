@@ -35,14 +35,16 @@ export class ChangePasswordComponent implements OnInit {
   user;
   node;
   formGroup: FormGroup;
-  passLenVal = 8;
+  passLenVal = 12;
   passComplexVal = 3;
   maxLenVal = 64;
   passContiunVal = 3;
   passRepeatVal = 3;
   nameRepeatVal = 3;
 
-  pwdComplexTipLabel = this.i18n.get('system_sftp_pwdtip_label');
+  pwdComplexTipLabel = `${this.i18n.get(
+    'system_sftp_password_history_tip_label'
+  )}\n${this.i18n.get('system_sftp_pwdtip_label')}`;
 
   constructor(
     public fb: FormBuilder,
@@ -69,7 +71,9 @@ export class ChangePasswordComponent implements OnInit {
     ]);
     this.formGroup.controls['newPassword'].updateValueAndValidity();
     this.formGroup.controls['confirmPassword'].updateValueAndValidity();
-    this.pwdComplexTipLabel = this.i18n.get('system_sftp_pwdtip_label', [
+    this.pwdComplexTipLabel = `${this.i18n.get(
+      'system_sftp_password_history_tip_label'
+    )}\n${this.i18n.get('system_sftp_pwdtip_label', [
       this.passLenVal,
       this.maxLenVal,
       this.passComplexVal === 4
@@ -82,7 +86,7 @@ export class ChangePasswordComponent implements OnInit {
         .split(',')
         .map((item, idex) => (idex === 0 ? item : ' ' + item))
         .join()
-    ]);
+    ])}`;
   }
 
   validSftpPwd(): ValidatorFn {

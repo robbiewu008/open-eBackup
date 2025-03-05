@@ -43,7 +43,7 @@ import {
   isArray
 } from 'lodash';
 import { Subject } from 'rxjs';
-
+import { map as _map } from 'rxjs/operators';
 @Component({
   selector: 'aui-tables',
   templateUrl: './tables.component.html',
@@ -159,13 +159,13 @@ export class TablesComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  getTables(recordsTemp?, startPage?) {
+  getTables(node, startPage?) {
     let params;
 
     if (this.source?.subType === DataMap.Resource_Type.HiveBackupSet.value) {
       params = {
         pageNo: startPage || CommonConsts.PAGE_START + 1,
-        pageSize: CommonConsts.PAGE_SIZE * 10,
+        pageSize: CommonConsts.PAGE_SIZE_MAX,
         envId: this.source.environment.uuid,
         parentId: this.source.extendInfo?.databaseName,
         resourceType: 'HiveTable'
@@ -177,7 +177,7 @@ export class TablesComponent implements OnInit {
     ) {
       params = {
         pageNo: startPage || CommonConsts.PAGE_START + 1,
-        pageSize: CommonConsts.PAGE_SIZE * 10,
+        pageSize: CommonConsts.PAGE_SIZE_MAX,
         envId: this.source.environment.uuid,
         parentId: '',
         resourceType: 'ElasticsearchIndex'
@@ -186,36 +186,45 @@ export class TablesComponent implements OnInit {
 
     this.protectedEnvironmentApiService
       .ListEnvironmentResource(params)
+      .pipe(
+        _map(res => {
+          res.records = res.records.map(item => {
+            return {
+              ...item,
+              label: item.name,
+              isLeaf: true,
+              contentToggleIcon: 'aui-icon-file'
+            };
+          });
+          return res;
+        })
+      )
       .subscribe(res => {
-        if (!recordsTemp) {
-          recordsTemp = [];
-        }
         if (!isNumber(startPage)) {
           startPage = CommonConsts.PAGE_START + 1;
         }
         startPage++;
-        recordsTemp = [...recordsTemp, ...res.records];
-        if (
-          startPage ===
-            Math.ceil(res.totalCount / (CommonConsts.PAGE_SIZE * 10)) + 1 ||
-          res.totalCount === 0
-        ) {
-          set(
-            first(this.tableData),
-            'children',
-            map(recordsTemp, item => {
-              return {
-                label: item.name,
-                isLeaf: true,
-                contentToggleIcon: 'aui-icon-file'
-              };
-            })
-          );
-          this.tableData = [...this.tableData];
-          this.cdr.detectChanges();
-          return;
+        if (isArray(node.children) && !isEmpty(node.children)) {
+          node.children = [
+            ...reject(node.children, n => !!n.isMoreBtn),
+            ...res.records
+          ];
+        } else {
+          node.children = [...res.records];
         }
-        this.getTables(recordsTemp, startPage);
+        if (res.totalCount > size(node.children)) {
+          const moreClickNode = {
+            label: `${this.i18n.get('common_more_label')}...`,
+            isMoreBtn: true,
+            isLeaf: true,
+            disabled: true,
+            startPage:
+              Math.floor(size(node.children) / CommonConsts.PAGE_SIZE_MAX) + 1
+          };
+          node.children = [...node.children, moreClickNode];
+        }
+        this.tableData = [...this.tableData];
+        this.cdr.detectChanges();
       });
   }
 
@@ -249,7 +258,15 @@ export class TablesComponent implements OnInit {
     this.selectionChange();
   }
 
-  expandedChange(node) {
+  expandedChange(node, startPage?) {
+    if (!isEmpty(node?.children)) {
+      // 如果children已经有值，反复展开折叠不应该触发查询
+      return;
+    }
+    this.getTreeNode(node, startPage);
+  }
+
+  getTreeNode(node, startPage) {
     if (
       includes(
         [
@@ -259,19 +276,19 @@ export class TablesComponent implements OnInit {
         this.source?.subType
       )
     ) {
-      this.getTables();
+      this.getTables(node, startPage);
       return;
     }
     if (this.isSummary || !node.expanded || !!size(node.children)) {
       return;
     }
-    this.getResource(node);
+    this.getResource(node, startPage);
   }
 
   getResource(node, startPage?) {
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START,
-      pageSize: 100,
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
       envId: node.rootUuid,
       parentId: node.uuid,
       resourceType: DataMap.Resource_Type.HBaseTable.value
@@ -311,7 +328,9 @@ export class TablesComponent implements OnInit {
             isMoreBtn: true,
             isLeaf: true,
             disabled: true,
-            startPage: Math.floor(size(node.children) / 100)
+            startPage: Math.floor(
+              size(node.children) / CommonConsts.PAGE_SIZE_MAX
+            )
           };
           node.children = [...node.children, moreClickNode];
         }

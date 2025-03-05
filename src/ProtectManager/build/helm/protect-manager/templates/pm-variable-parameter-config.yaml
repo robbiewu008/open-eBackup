@@ -1,0 +1,423 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pm-variable-parameter-conf
+  namespace: dpa
+data:
+  # Replication module: Read timeout configuration
+  Replication_NO_RETRY_READ_TIMEOUT: ""
+  # Replication module: Connection timeout configuration
+  Replication_NO_RETRY_CONNECT_TIMEOUT: ""
+
+  # VMware plugin: Retry times configuration
+  VMWARE_PLUGIN_RETRY_TIMES: ""
+
+  # ApsaraStack plugin: Domain name max length configuration
+  APSARASTACK_PLUGIN_DOMAINNAME_MAX_LENGTH: ""
+  # ApsaraStack plugin: Certificate max byte size configuration
+  APSARASTACK_PLUGIN_CERT_MAX_BYTE_SIZE: ""
+  # ApsaraStack plugin: CRL max byte size configuration
+  APSARASTACK_PLUGIN_CRL_MAX_BYTE_SIZE: ""
+
+  # Cnware plugin: Certificate max byte size configuration
+  CnwarePlugin_CERT_MAX_BYTE_SIZE: ""
+  # Cnware plugin: CRL max byte size configuration
+  CnwarePlugin_CRL_MAX_BYTE_SIZE: ""
+  # Cnware plugin: Domain name max length configuration
+  CnwarePlugin_CNWARE_DOMAINNAME_MAX_LENGTH: ""
+  # Cnware plugin: Max count configuration
+  CnwarePlugin_CNWARE_MAX_COUNT: ""
+
+  # FusionCompute plugin: Certificate max byte size configuration
+  FusionCompute_CERT_MAX_BYTE_SIZE: ""
+  # FusionCompute plugin: CRL max byte size configuration
+  FusionCompute_CRL_MAX_BYTE_SIZE: ""
+  # FusionCompute plugin: Storage max count configuration
+  FusionCompute_STORAGE_MAX_COUNT: ""
+
+  # HCS plugin: Storage max count configuration
+  HCSPlugin_STORAGE_MAX_COUNT: ""
+  # HCS plugin: Parameter max length configuration
+  HCSPlugin_PARAM_MAX_LENGTH: ""
+  # HCS plugin: Max servers single project configuration
+  HCSPlugin_MAX_SERVERS_SINGLE_PROJECT: ""
+
+  # Hyper-V plugin: Max name length configuration
+  HypervPlugin_MAX_NAME_LENGTH: ""
+  # Hyper-V plugin: SCVMM upper limit configuration
+  HypervPlugin_SCVMM_UPPER_LIMIT: ""
+  # Hyper-V plugin: Cluster upper limit configuration
+  HypervPlugin_CLUSTER_UPPER_LIMIT: ""
+  # Hyper-V plugin: Host upper limit configuration
+  HypervPlugin_HOST_UPPER_LIMIT: ""
+
+  # k8s csi plugin: Dataset max count in namespace configuration
+  K8sCsiPlugin_DATASET_MAX_COUNT_IN_NAMESPACE: ""
+  # k8s csi plugin: Advanced config max size configuration
+  K8sCsiPlugin_ADVANCED_CONFIG_MAX_SIZE: ""
+  # k8s csi plugin: Advanced config param max size configuration
+  K8sCsiPlugin_ADVANCED_CONFIG_PARAM_MAX_SIZE: ""
+  # k8s csi plugin: K8s cluster max count configuration
+  K8sCsiPlugin_K8S_CLUSTER_MAX_COUNT: ""
+  # k8s csi plugin: Max job number configuration
+  K8sCsiPlugin_MAX_JOB_NUMBER: ""
+
+  # k8s flexvolume plugin: K8s storage max count configuration
+  K8sFlexVolumePlugin_K8S_STORAGE_MAX_COUNT: ""
+
+  # Nutanix plugin: Certificate max byte size configuration
+  NutanixPlugin_CERT_MAX_BYTE_SIZE: ""
+  # Nutanix plugin: CRL max byte size configuration
+  NutanixPlugin_CRL_MAX_BYTE_SIZE: ""
+  # Nutanix plugin: Domain name max length configuration
+  NutanixPlugin_DOMAIN_NAME_MAX_LENGTH: ""
+  # Nutanix plugin: Max env count configuration
+  NutanixPlugin_MAX_ENV_COUNT: ""
+
+  # OpenStack plugin: Max wait time configuration
+  OpenStackPlugin_MAX_WAIT_TIME: ""
+  # OpenStack plugin: Max OpenStack count configuration
+  OpenStackPlugin_MAX_OPENSTACK_COUNT: ""
+  # OpenStack plugin: Max domain count configuration
+  OpenStackPlugin_MAX_DOMAIN_COUNT: ""
+  # OpenStack plugin: Connect timeout configuration
+  OpenStackPlugin_CONNECT_TIMEOUT: ""
+  # OpenStack plugin: Read timeout configuration
+  OpenStackPlugin_READ_TIMEOUT: ""
+  # OpenStack plugin: Call timeout configuration
+  OpenStackPlugin_CALL_TIMEOUT: ""
+
+  # Task module: Running job limit count per node configuration
+  Task_RUNNING_JOB_LIMIT_COUNT_ONE_NODE: ""
+  # Task module: Anti-ransomware job limit count per node configuration
+  Task_ANTI_RANSOMWARE_JOB_LIMIT_COUNT_ONE_NODE: ""
+  # Task module: Backup job limit count configuration
+  Task_backup_job_limit_count: ""
+  # Task module: Archive job limit count configuration
+  Task_archive_job_limit_count: ""
+  # Task module: Restore job limit count configuration
+  Task_restore_job_limit_count: ""
+  # Task module: Exercise job limit count configuration
+  Task_exercise_job_limit_count: ""
+  # Task module: Copy delete job limit count configuration
+  Task_copy_delete_job_limit_count: ""
+  # Task module: Copy expire job limit count configuration
+  Task_copy_expire_job_limit_count: ""
+  # Task module: Copy verify job limit count configuration
+  Task_copy_verify_job_limit_count: ""
+  # Task module: Copy import job limit count configuration
+  Task_copy_import_job_limit_count: ""
+  # Task module: Desensitization import job limit count configuration
+  Task_desensitization_import_job_limit_count: ""
+  # Task module: Identification import job limit count configuration
+  Task_identification_import_job_limit_count: ""
+  # Task module: Live mount job limit count configuration
+  Task_live_mount_job_limit_count: ""
+  # Task module: Cancel live mount job limit count configuration
+  Task_cancel_live_mount_job_limit_count: ""
+  # Task module: Agent install job limit count configuration
+  Task_agent_install_job_limit_count: ""
+  # Task module: Agent update job limit count configuration
+  Task_agent_update_job_limit_count: ""
+  # Task module: Agent change app update job limit count configuration
+  Task_agent_change_app_update_job_limit_count: ""
+  # Task module: Resource scan job limit count configuration
+  Task_resource_scan_job_limit_count: ""
+  # Task module: Resource rescan job limit count configuration
+  Task_resource_rescan_job_limit_count: ""
+  # Task module: Resource protect job limit count configuration
+  Task_resource_protect_job_limit_count: ""
+  # Task module: Modify protect job limit count configuration
+  Task_modify_protect_job_limit_count: ""
+
+  # UBC module: Active thread pool number configuration
+  UBC_ACTIVE_THREAD_POOL_NUM: ""
+  # UBC module: Agent heartbeat timeout configuration
+  UBC_AGENT_HEARTBEAT_TIMEOUT: ""
+  # UBC module: Annotations config path configuration
+  UBC_ANNOTATIONS_CONFIG_PATH: ""
+  # UBC module: Backup KS path configuration
+  UBC_BACKUP_KS_PATH: ""
+  # UBC module: Bind agent pool number configuration
+  UBC_BIND_AGENT_POOL_NUM: ""
+  # UBC module: Cache repository distribution algorithm configuration
+  UBC_CACHE_REPOSITORY_DIST_ALG: ""
+  # UBC module: Clean thread pool number configuration
+  UBC_CLEAN_THREAD_POOL_NUM: ""
+  # UBC module: Data repository distribution algorithm configuration
+  UBC_DATA_REPOSITORY_DIST_ALG: ""
+  # UBC module: Database max overflow configuration
+  UBC_DATABASE_MAX_OVERFLOW: ""
+  # UBC module: Database pool pre-ping configuration
+  UBC_DATABASE_POOL_PRE_PING: ""
+  # UBC module: Database pool recycle configuration
+  UBC_DATABASE_POOL_RECYCLE: ""
+  # UBC module: Database pool size configuration
+  UBC_DATABASE_POOL_SIZE: ""
+  # UBC module: Database pool timeout configuration
+  UBC_DATABASE_POOL_TIMEOUT: ""
+  # UBC module: DB retry interval configuration
+  UBC_DB_RETRY_INTERVAL: ""
+  # UBC module: DB retry times configuration
+  UBC_DB_RETRY_TIMES: ""
+  # UBC module: DEE indexer port configuration
+  UBC_DEE_INDEXER_PORT: ""
+  # UBC module: DME archive host configuration
+  UBC_DME_ARCHIVE_HOST: ""
+  # UBC module: DME archive service port configuration
+  UBC_DME_ARCHIVE_SRV_PORT: ""
+  # UBC module: External CA configuration
+  UBC_EXTERNAL_CA_DIR: ""
+  # UBC module: External certificate directory configuration
+  UBC_EXTERNAL_CERT_DIR: ""
+  # UBC module: External config directory configuration
+  UBC_EXTERNAL_CNF_DIR: ""
+  # UBC module: External key directory configuration
+  UBC_EXTERNAL_KEY_DIR: ""
+  # UBC module: Finished task expire percent configuration
+  UBC_FINISHED_TASK_EXPIRE_PERCENT: ""
+  # UBC module: Finished task max keep quantity configuration
+  UBC_FINISHED_TASK_MAX_KEEP_QUANTITY: ""
+  # UBC module: Global thread pool number configuration
+  UBC_GLOBAL_THREAD_POOL_NUM: ""
+  # UBC module: HTTP timeout configuration
+  UBC_HTTP_TIME_OUT: ""
+  # UBC module: Infra DB host configuration
+  UBC_INFRA_DB_HOST: ""
+  # UBC module: Infra DB port configuration
+  UBC_INFRA_DB_PORT: ""
+  # UBC module: Infra host configuration
+  UBC_INFRA_HOST: ""
+  # UBC module: Infra HTTP port configuration
+  UBC_INFRA_HTTP_PORT: ""
+  # UBC module: Infra HTTP retry interval configuration
+  UBC_INFRA_HTTP_RETRY_INTERVAL: ""
+  # UBC module: Infra HTTP retry times configuration
+  UBC_INFRA_HTTP_RETRY_TIMES: ""
+  # UBC module: Infra retry interval configuration
+  UBC_INFRA_RETRY_INTERVAL: ""
+  # UBC module: Infra retry interval for network error configuration
+  UBC_INFRA_RETRY_INTERVAL_FOR_NETWORK_ERROR: ""
+  # UBC module: Infra retry times configuration
+  UBC_INFRA_RETRY_TIMES: ""
+  # UBC module: Infra retry times for network error configuration
+  UBC_INFRA_RETRY_TIMES_FOR_NETWORK_ERROR: ""
+  # UBC module: Internal CA directory configuration
+  UBC_INTERNAL_CA_DIR: ""
+  # UBC module: Internal certificate directory configuration
+  UBC_INTERNAL_CERT_DIR: ""
+  # UBC module: Internal config directory configuration
+  UBC_INTERNAL_CNF_DIR: ""
+  # UBC module: Internal key directory configuration
+  UBC_INTERNAL_KEY_DIR: ""
+  # UBC module: LibKMCv3 library path configuration
+  UBC_LIBKMCV3_SO_PATH: ""
+  # UBC module: Log repository distribution algorithm configuration
+  UBC_LOG_REPOSITORY_DIST_ALG: ""
+  # UBC module: Main task expire interval configuration
+  UBC_MAIN_TASK_EXPIRE_INTERVAL: ""
+  # UBC module: Main task schedule timeout configuration
+  UBC_MAIN_TASK_SCHEDULE_TIMEOUT: ""
+  # UBC module: Master KS path configuration
+  UBC_MASTER_KS_PATH: ""
+  # UBC module: Max cache connection configuration
+  UBC_MAX_CACHE_CONNECTION: ""
+  # UBC module: Max HTTP retries configuration
+  UBC_MAX_HTTP_RETRIES: ""
+
+  # Report module: PM resource manager URL configuration
+  Report_pm-resource-manager.url: ""
+  # Report module: Core pool size configuration
+  Report_CORE_POOL_SIZE: ""
+  # Report module: Maximum pool size configuration
+  Report_MAXIMUM_POOL_SIZE: ""
+  # Report module: Keep alive time configuration
+  Report_KEEP_ALIVE_TIME: ""
+  # Report module: Work queue size configuration
+  Report_WORK_QUEUE_SIZE: ""
+  # Report module: Max retry times configuration
+  Report_MAX_RETRY_TIMES: ""
+  # Report module: Max report file count configuration
+  Report_MAX_REPORT_FILE_COUNT: ""
+  # Report module: Max email size configuration
+  Report_MAX_EMAIL_SIZE: ""
+  # Report module: Max report file size configuration
+  Report_MAX_REPORT_FILE_SIZE: ""
+  # Report module: Time interval configuration
+  Report_TIME_INTERVAL: ""
+  # Report module: Create timeout interval configuration
+  Report_CREATE_TIMEOUT_INTERVAL: ""
+  # Report module: Report folder lock wait time configuration
+  Report_REPORT_FOLDER_LOCK_WAIT_TIME: ""
+
+  # Tag module: Maximum label size configuration
+  Tag_MAXIMUM_LABEL_SIZE: ""
+  # Tag module: Maximum label resource size configuration
+  Tag_MAXIMUM_LABEL_RESOURCE_SIZE: ""
+
+  # Log export module: Number of export file status configuration
+  LogExport_NUMBER_OF_EXPORT_FILE_STATUS: ""
+  # Log export module: Number of export file type configuration
+  LogExport_NUMBER_OF_EXPORT_FILE_TYPE: ""
+  # Log export module: Max length of export file ID configuration
+  LogExport_MAX_LENGTH_OF_EXPORT_FILE_ID: ""
+  # Log export module: Initial delay configuration
+  LogExport_INITIAL_DELAY: ""
+  # Log export module: Fixed rate configuration
+  LogExport_FIXED_RATE: ""
+  # Log export module: Timeout loop time configuration
+  LogExport_TIME_OUT_LOOP_TIME: ""
+  # Log export module: Max length of file name configuration
+  LogExport_MAX_LENGTH_OF_FILE_NAME: ""
+  # Log export module: Max length of node name configuration
+  LogExport_MAX_LENGTH_OF_NODE_NAME: ""
+  # Log export module: Two hours configuration
+  LogExport_TWO_HOURS: ""
+  # Log export module: Expire time configuration
+  LogExport_EXPIRE_TIME: ""
+  # Log export module: Per controller download thread number configuration
+  LogExport_PER_CONTROLLER_DOWNLOAD_THREAD_NUM: ""
+  # Log export module: Redis lock time configuration
+  LogExport_REDIS_LOCK_TIME: ""
+  # Log export module: Redis lock timeout configuration
+  LogExport_REDIS_LOCK_TIMEOUT: ""
+  # Log export module: Max agent log export number configuration
+  LogExport_MAX_AGENT_LOG_EXPORT_NUM: ""
+  # Log export module: Export file instances configuration
+  LogExport_exportfile.instances: ""
+
+  # Cluster module: Fixed rate configuration
+  Cluster_FIXED_RATE: ""
+  # Cluster module: Heartbeat fixed rate configuration
+  Cluster_HEARTBEAT_FIXED_RATE: ""
+  # Cluster module: Clear fixed rate configuration
+  Cluster_CLEAR_FIXED_RATE: ""
+  # Cluster module: Status fixed rate configuration
+  Cluster_STATUS_FIXED_RATE: ""
+  # Cluster module: Offline time configuration
+  Cluster_OFF_LINE_TIME: ""
+  # Cluster module: Update member device secret rate configuration
+  Cluster_UPDATE_MEMBER_DEVICE_SECRET_RATE: ""
+  # Cluster module: Fixed delay configuration
+  Cluster_FIXED_DELAY: ""
+  # Cluster module: Fixed clean rate configuration
+  Cluster_FIXED_CLEAN_RATE: ""
+  # Cluster module: Heartbeat loss second configuration
+  Cluster_HEARTBEAT_LOSS_SECOND: ""
+  # Cluster module: Heartbeat check interval configuration
+  Cluster_HEARTBEAT_CHECK_INTERVAL: ""
+  # Cluster module: Cluster status cache expire time configuration
+  Cluster_CLUSTER_STATUS_CACHE_EXPIRE_TIME: ""
+  # Cluster module: Initial delay configuration
+  Cluster_INITIAL_DELAY: ""
+
+  # Agent module: Register expire configuration
+  Agent_REGISTER_EXPIRE: ""
+  # Agent module: Register max number configuration
+  Agent_REGISTER_MAX_NUM: ""
+  # Agent module: Register check max number configuration
+  Agent_REGISTER_CHECK_MAX_NUMS: ""
+  # Agent module: Max agent directory number configuration
+  Agent_MAX_AGENT_DIR_NUM: ""
+  # Agent module: Fifteen minutes configuration
+  Agent_FIFTEEN_MINUTES: ""
+  # Agent module: Log collect timeout configuration
+  Agent_LOG_COLLECT_TIME_OUT: ""
+  # Agent module: Log status sleep time configuration
+  Agent_LOG_STATUS_SLEEP_TIME: ""
+  # Agent module: Log max size configuration
+  Agent_LOG_MAX_SIZE: ""
+  # Agent module: Log timeout configuration
+  Agent_LOG_TIMEOUT: ""
+  # Agent module: Max file name length configuration
+  Agent_MAX_FILE_NAME_LENGTH: ""
+  # Agent module: Agent deal expire time configuration
+  Agent_agentDealExpireTime: ""
+  # Agent module: Twenty minutes configuration
+  Agent_TWENTY_MINUTES: ""
+  # Agent module: Core pool size configuration
+  Agent_CORE_POOL_SIZE: ""
+  # Agent module: Maximum pool size configuration
+  Agent_MAXIMUM_POOL_SIZE: ""
+  # Agent module: Keep alive time configuration
+  Agent_KEEP_ALIVE_TIME: ""
+  # Agent module: Work queue size configuration
+  Agent_WORK_QUEUE_SIZE: ""
+  # Agent module: Socket timeout configuration
+  Agent_SOCKET_TIMEOUT: ""
+  # Agent module: Retry time configuration
+  Agent_RETRY_TIME: ""
+  # Agent module: Session timeout configuration
+  Agent_SESSION_TIMEOUT: ""
+
+  # Alarm Module: Fixed rate configuration
+  Alarm_FIXED_RATE: ""
+  # Alarm Module: Failure limit configuration
+  Alarm_FAIL_LIMIT: ""
+  # Alarm Module: Skip execution count configuration
+  Alarm_SKIP_EXEC_COUNT: ""
+  # Alarm Module: Value 1000 configuration
+  Alarm_VALUE_1000: ""
+  # Alarm Module: Value 1000000 configuration
+  Alarm_VALUE_1000000: ""
+  # Alarm Module: Maximum number configuration
+  Alarm_MAX_NUM: ""
+  # Alarm Module: Loop time configuration
+  Alarm_LOOP_TIME: ""
+  # Alarm Module: Try lock time configuration
+  Alarm_TRY_LOCK_TIME: ""
+  # Alarm Module: Minimum length of security name V2C configuration
+  Alarm_MIN_LENGTH_OF_SECURITY_NAME_V2C: ""
+  # Alarm Module: Maximum length of username configuration
+  Alarm_MAX_LENGTH_OF_USERNAME: ""
+  # Alarm Module: Maximum length of password configuration
+  Alarm_MAX_LENGTH_OF_PASSWORD: ""
+  # Alarm Module: Maximum length of upload path configuration
+  Alarm_MAX_LENGTH_OF_UPLOAD_PATH: ""
+  # Alarm Module: Default reserve date configuration
+  Alarm_DEFAULT_RESER_DATE: ""
+
+  # Initialization Module: Initialization timeout configuration
+  Initialization_INIT_OVER_TIME: ""
+  # Initialization Module: Modify timeout configuration
+  Initialization_MODIFY_OVER_TIME: ""
+  # Initialization Module: Failure threshold configuration
+  Initialization_FAILURE_THRESHOLD: ""
+  # Initialization Module: Period configuration
+  Initialization_PERIOD: ""
+  # Initialization Module: Maximum retry count configuration
+  Initialization_MAX_RETRY_COUNT: ""
+  # Initialization Module: Default wait seconds configuration
+  Initialization_DEFAULT_WAIT_SECOND: ""
+
+  # SFTP Module: User count limit configuration
+  SFTP_USER_COUNT_LIMIT: ""
+  # SFTP Module: SFTP switch wait time configuration
+  SFTP_SFTP_SWITCH_WAIT_TIME: ""
+  # SFTP Module: SFTP lock wait times configuration
+  SFTP_SFTP_LOCK_WAIT_TIMES: ""
+  # SFTP Module: SFTP password maximum length configuration
+  SFTP_SFTP_PWD_MAX_LENGTH: ""
+  # SFTP Module: SFTP password minimum length configuration
+  SFTP_SFTP_PWD_MIN_LENGTH: ""
+  # SFTP Module: Retry delay time configuration
+  SFTP_RETRY_DELAY_TIME: ""
+  # SFTP Module: Retry number time configuration
+  SFTP_RETRY_NUMBER_TIME: ""
+  # SFTP Module: Maximum retry count configuration
+  SFTP_MAX_RETRY_COUNT: ""
+  # SFTP Module: First wait time configuration
+  SFTP_FIRST_WAIT_TIME: ""
+  # SFTP Module: Average waiting time configuration
+  SFTP_AVERAGE_WAITING_TIME: ""
+  # SFTP Module: Keep alive configuration
+  SFTP_KEEP_ALIVE: ""
+  # SFTP Module: Await termination configuration
+  SFTP_AWAIT_TERMINATION: ""
+
+  # Data Backup Management Module: Retry time interval configuration
+  DataBackupManagement_RETRY_TIME_INTERVAL: ""
+  # Data Backup Management Module: Maximum file length configuration
+  DataBackupManagement_MAX_FILE_LENGTH: ""
+  # Data Backup Management Module: Input backup file size configuration
+  DataBackupManagement_INPUT_BACK_UP_FILE_SIZE: ""

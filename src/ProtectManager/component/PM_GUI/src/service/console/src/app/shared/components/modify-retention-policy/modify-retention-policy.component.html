@@ -31,7 +31,7 @@
         <lv-form-label lvRequired>
             {{'common_retention_label' | i18n}}
             <i *ngIf="!isCyberEngine" lv-icon="aui-icon-help" lv-tooltip="{{'protection_retention_policy_desc_label' | i18n}}
-{{helpTipsLabel}}" lvTooltipTheme="light" class="configform-constraint" lvColorState='true'>
+{{helpTipsLabel}}{{retainedTipLabel}}" lvTooltipTheme="light" class="configform-constraint" lvColorState='true'>
             </i>
         </lv-form-label>
         <lv-form-control [lvErrorTip]="retentionDurationErrorTip">

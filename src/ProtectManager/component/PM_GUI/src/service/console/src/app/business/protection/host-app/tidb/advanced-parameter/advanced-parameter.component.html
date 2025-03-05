@@ -12,27 +12,25 @@
   -->
 
 <lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
-    <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="true">
+    <lv-collapse-panel [lvTitle]="'common_advanced_label'|i18n" [lvExpanded]="true">
         <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
             <ng-container>
                 <lv-form-item>
-                    <lv-form-label>{{'common_limit_rate_policy_label' | i18n}}</lv-form-label>
+                    <lv-form-label>
+                        {{'protection_archive_index_set_label' | i18n}}
+                    </lv-form-label>
                     <lv-form-control>
-                        <ng-container>
-                            <lv-select [lvOptions]="qosNames" formControlName="qos_id" lvValueKey="uuid" lvShowClear>
-                            </lv-select>
-                        </ng-container>
+                        <lv-switch formControlName="archive_res_auto_index"></lv-switch>
+                        <div *ngIf="formGroup.value.archive_res_auto_index">
+                            <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                            <span>
+                            {{'protection_sla_index_enable_label' | i18n}}
+                        </span>
+                        </div>
                     </lv-form-control>
                 </lv-form-item>
-                <aui-protect-filter [formGroup]="formGroup" [valid$]="valid$" [resType]="resourceType">
-                </aui-protect-filter>
             </ng-container>
         </lv-form>
     </lv-collapse-panel>
 </lv-collapse>
 
-<ng-template #titleTpl>
-    <lv-group lvGutter='8px'>
-        <span class="custom-collapse-title-text">{{'common_advanced_label'|i18n}}</span>
-    </lv-group>
-</ng-template>

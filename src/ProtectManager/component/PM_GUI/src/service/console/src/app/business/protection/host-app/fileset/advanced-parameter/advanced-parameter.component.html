@@ -79,7 +79,7 @@
         </lv-form-label>
         <lv-form-control>
           <ng-container *ngIf="!isDetail">
-            <lv-switch formControlName="crossFileBackup"></lv-switch>
+            <lv-switch formControlName="crossFileBackup" [lvDisabled]="isOsBackup"></lv-switch>
           </ng-container>
 
           <ng-container *ngIf="isDetail">
@@ -147,7 +147,7 @@
       <lv-form-item *ngIf="!batchModify">
         <lv-form-label>{{ 'protection_small_file_aggregation_label' | i18n }}
           <i lv-icon="aui-icon-help" lv-tooltip="{{
-              'protection_small_file_aggregation_tips_label' | i18n
+            (appUtilsService.isDistributed ? 'protection_e6000_small_file_aggregation_tips_label' : 'protection_small_file_aggregation_tips_label') | i18n
             }}" lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
         </lv-form-label>
         <lv-form-control>
@@ -182,10 +182,6 @@
                   <ng-container *ngIf="!isModified">
                     <lv-radio-group formControlName="fileSize" [lvGroupName]="'fileSize'" [lvDisabled]="isModified">
                       <lv-group>
-                        <lv-radio [lvViewType]="'button'" [lvValue]="dataMap.Small_File_Size.small.value">{{
-                          dataMap.Small_File_Size.small.label }}</lv-radio>
-                        <lv-radio [lvViewType]="'button'" [lvValue]="dataMap.Small_File_Size.normal.value">
-                          {{ dataMap.Small_File_Size.normal.label }}</lv-radio>
                         <lv-radio [lvViewType]="'button'" [lvValue]="dataMap.Small_File_Size.large.value">{{
                           dataMap.Small_File_Size.large.label }}</lv-radio>
                         <lv-radio [lvViewType]="'button'" [lvValue]="dataMap.Small_File_Size.xlarge.value">

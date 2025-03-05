@@ -54,16 +54,16 @@ export class OverviewComponent implements OnInit, OnDestroy {
       label: this.i18n.get('explore_infected_label')
     },
     {
-      key: 'abnormal_copy_num',
-      num: 0,
-      color: '#FBCC3F',
-      label: this.i18n.get('common_status_exception_label')
-    },
-    {
       key: 'uninfected_copy_num',
       num: 0,
       color: '#86D44E',
       label: this.i18n.get('explore_uninfected_label')
+    },
+    {
+      key: 'abnormal_copy_num',
+      num: 0,
+      color: '#FBCC3F',
+      label: this.i18n.get('explore_detecte_fail_label')
     },
     {
       key: 'detecting_copy_num',
@@ -219,16 +219,18 @@ export class OverviewComponent implements OnInit, OnDestroy {
         const uninfectedData = [];
         const abnormalData = [];
         each(res, item => {
-          const [year, month, day] = item.detection_date.split('-').map(Number);
-          const tmpDate = new Date(0, 0, 1);
-          tmpDate.setFullYear(year, month - 1, day);
-          let tmpKey = tmpDate.getTime();
-          infectedData.push([Number(tmpKey), String(item.infected_copy_num)]);
+          infectedData.push([
+            item.detection_date,
+            String(item.infected_copy_num)
+          ]);
           uninfectedData.push([
-            Number(tmpKey),
+            item.detection_date,
             String(item.uninfected_copy_num)
           ]);
-          abnormalData.push([Number(tmpKey), String(item.abnormal_copy_num)]);
+          abnormalData.push([
+            item.detection_date,
+            String(item.abnormal_copy_num)
+          ]);
         });
 
         this.createChart();
@@ -274,8 +276,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
       legend: {
         data: [
           this.i18n.get('explore_infected_label'),
-          this.i18n.get('common_status_exception_label'),
-          this.i18n.get('explore_uninfected_label')
+          this.i18n.get('explore_uninfected_label'),
+          this.i18n.get('explore_detecte_fail_label')
         ],
         textStyle: {
           color: this.getLabelColor()
@@ -289,15 +291,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
         containLabel: true
       },
       xAxis: {
-        type: 'time',
+        type: 'category',
         scale: true,
         axisLabel: {
           color: this.getLabelColor(),
-          formatter: value => {
-            return echarts.format.formatTime('yyyy-MM-dd', value);
-          }
+          showMaxLabel: true
         },
-        boundaryGap: ['2%', '2%']
+        boundaryGap: false
       },
       yAxis: {
         type: 'value',
@@ -319,7 +319,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           symbol: 'none'
         },
         {
-          name: this.i18n.get('common_status_exception_label'),
+          name: this.i18n.get('explore_detecte_fail_label'),
           type: 'line',
           stack: 'Total',
           areaStyle: {},
@@ -343,8 +343,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
       ]
     };
     this.detectionDataChart.setOption(this.chartOption);
-    window.onresize = () => {
+    window.addEventListener('resize', () => {
       this.detectionDataChart.resize();
-    };
+    });
   }
 }

@@ -57,10 +57,18 @@ export class RegisterComponent implements OnInit {
     ...this.baseUtilService.nameErrorTip,
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
   };
-  typeOptions = this.dataMapService.toArray('Mysql_Cluster_Type').map(item => {
-    item.isLeaf = true;
-    return item;
-  });
+  typeOptions = this.dataMapService
+    .toArray('Mysql_Cluster_Type')
+    .filter(item => {
+      if (this.appUtilsService.isDistributed) {
+        return item.value !== DataMap.Mysql_Cluster_Type.eapp.value;
+      }
+      return true;
+    })
+    .map(item => {
+      item.isLeaf = true;
+      return item;
+    });
 
   constructor(
     private appUtilsService: AppUtilsService,

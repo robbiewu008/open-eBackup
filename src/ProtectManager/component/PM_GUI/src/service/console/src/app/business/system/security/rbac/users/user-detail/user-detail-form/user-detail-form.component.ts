@@ -24,7 +24,9 @@ import {
   DataMapService,
   I18NService,
   ResourceSetApiService,
-  RoleApiService
+  RoleApiService,
+  SpecialRoleIds,
+  StorageUserAuthService
 } from 'app/shared';
 import {
   Filters,
@@ -32,7 +34,8 @@ import {
   TableCols,
   TableConfig
 } from 'app/shared/components/pro-table';
-import { assign, each, find, includes, trim } from 'lodash';
+import { assign, each, find, includes, isEmpty, trim } from 'lodash';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'aui-user-detail-form',
@@ -74,6 +77,11 @@ export class UserDetailFormComponent implements OnInit, AfterViewInit {
   };
   roleTableConfig: TableConfig;
   resourceTableConfig: TableConfig;
+  includes = includes;
+  isShowUnit = false; // 为了控制先获取完之前单元数据才展示子组件
+  isShowStorage = false;
+  isShowResourceSet = true;
+  _isEmpty = isEmpty;
 
   @ViewChild('roleDataTable', { static: false })
   roleDataTable: ProTableComponent;
@@ -86,10 +94,14 @@ export class UserDetailFormComponent implements OnInit, AfterViewInit {
     public i18n: I18NService,
     public roleApiService: RoleApiService,
     public dataMapService: DataMapService,
-    private resourceSetService: ResourceSetApiService
+    private resourceSetService: ResourceSetApiService,
+    private storageUserAuthService: StorageUserAuthService
   ) {}
 
   ngOnInit() {
+    if (this.data) {
+      this.isShowResourceSet = true;
+    }
     this.initData();
     this.initRoleTable();
     this.initResourceTable();
@@ -193,9 +205,18 @@ export class UserDetailFormComponent implements OnInit, AfterViewInit {
       assign(this.data, {
         roleId: this.data?.rolesSet[0]?.roleId
       });
+      this.isShowStorage = !SpecialRoleIds.includes(
+        this.data?.rolesSet[0]?.roleId
+      );
       this.getRoleData();
       this.getResourceData();
+      if (this.isShowStorage) {
+        this.getStorageData();
+      }
     } else {
+      this.isShowStorage = !SpecialRoleIds.includes(this.roleList[0].roleId);
+      this.isShowResourceSet = this.isShowStorage;
+      this.isShowUnit = true;
       this.data = this.formGroup.value;
       this.roleData.sourceData = this.roleList;
       this.resourceData.sourceData = this.getResourceSetList();
@@ -213,6 +234,15 @@ export class UserDetailFormComponent implements OnInit, AfterViewInit {
       roleNameMap[item.roleId] = item.roleName;
     });
     this.resourceSetMap.forEach((rsList, roleId) => {
+      // 最初在map里只有角色，后期加入了单元所以这里做处理
+      if (
+        [
+          DataMap.storagePoolBackupStorageType.group.value,
+          DataMap.storagePoolBackupStorageType.unit.value
+        ].includes(roleId)
+      ) {
+        return;
+      }
       rsList.forEach(rsData => {
         const findData = find(resourceSetList, { uuid: rsData.uuid });
         if (findData) {
@@ -289,5 +319,37 @@ export class UserDetailFormComponent implements OnInit, AfterViewInit {
         });
         this.resourceDataTable.fetchData(true);
       });
+  }
+
+  getStorageData() {
+    this.resourceSetMap = new Map();
+    combineLatest(this.callStorageData(2), this.callStorageData(1)).subscribe(
+      res => {
+        this.resourceSetMap.set(
+          DataMap.storagePoolBackupStorageType.group.value,
+          res[0].records.map(item => {
+            return assign(item, {
+              uuid: item.storageId
+            });
+          })
+        );
+        this.resourceSetMap.set(
+          DataMap.storagePoolBackupStorageType.unit.value,
+          res[1].records.map(item => {
+            return assign(item, {
+              id: item.storageId
+            });
+          })
+        );
+        this.isShowUnit = true;
+      }
+    );
+  }
+
+  callStorageData(type) {
+    return this.storageUserAuthService.getStorageUserAuthRelationsByUserId({
+      userId: this.data.userId,
+      authType: type
+    });
   }
 }

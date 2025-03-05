@@ -74,11 +74,8 @@
                     <lv-form-label lvRequired>
                         {{ (isCloudResource(childResType) ?
                         'protection_restore_cloud_ip_label' : 'protection_restore_vm_ip_label') | i18n}}
-                        <i *ngIf="![dataMap.Resource_Type.openStackCloudServer.value,dataMap.Resource_Type.hyperVVm.value].includes(childResType)"
-                            lv-icon="aui-icon-help" lv-tooltip="{{ (childResType === dataMap.Resource_Type.HCSCloudHost.value ?
-                            'common_hcs_vm_ip_help_label' : 'common_vmtools_help_label') | i18n}}"
-                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
-                            lvColorState='true'></i>
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{getIpHelp()}}" lvTooltipPosition="rightTop"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
                     </lv-form-label>
                     <lv-form-control>
                         <ng-container *ngTemplateOutlet="vmIpTpl"></ng-container>
@@ -152,7 +149,8 @@
                                     (lvExpandedChange)="openstackExpandedChange($event)" lvShowFilter
                                     lvFilterKey="label" lvFilterMode="contains">
                                     <lv-treeselect-trigger>
-                                        <span>{{ formGroup.value.targetServer[0]?.path | nil }}</span>
+                                        <span>{{ !isEmpty(formGroup.value.targetServer) ?
+                                            formGroup.value.targetServer[0]?.path : '' }}</span>
                                     </lv-treeselect-trigger>
                                 </lv-tree-select>
                                 <p class="aui-text-help-sm" style="line-height: 0.18rem">
@@ -173,7 +171,8 @@
                                     (lvExpandedChange)="apsExpandedChange($event)" lvShowFilter lvFilterKey="label"
                                     lvFilterMode="contains">
                                     <lv-treeselect-trigger>
-                                        <span>{{ formGroup.value.targetServer[0]?.path | nil }}</span>
+                                        <span>{{ !isEmpty(formGroup.value.targetServer) ?
+                                            formGroup.value.targetServer[0]?.path : '' }}</span>
                                     </lv-treeselect-trigger>
                                 </lv-tree-select>
                             </lv-form-control>
@@ -203,22 +202,32 @@
                                     formControlName="vm" lvShowClear lvTreeShowContentIcon
                                     lvPlaceholder="{{'protection_computer_location_disk_tip_label'|i18n}}"
                                     lvVirtualScroll (lvExpandedChange)="expandedChange($event)" lvShowFilter
-                                    lvFilterKey="label" lvFilterMode="contains">
+                                    lvFilterKey="label" lvFilterMode="contains"
+                                    (lvFilterChange)="vmFilterChange($event)">
                                 </lv-tree-select>
                             </lv-form-control>
                         </lv-form-item>
                     </ng-container>
 
                 </ng-container>
+                <!-- 指定路径 -->
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_specified_path_label' | i18n}}
+                        <i lv-icon="aui-icon-help" lvTooltipTheme="light" lvTooltipPosition="bottom"
+                            [lv-tooltip]="helpTpl" class="configform-constraint" lvColorState='true'></i>
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="pathErrorTip">
+                        <input lv-input type="text" formControlName="targetPath"
+                            placeholder="{{'protection_specified_path_placeholder_label' | i18n}}" />
+                    </lv-form-control>
+                </lv-form-item>
                 <lv-form-item>
                     <lv-form-label lvRequired>
                         {{ (isCloudResource(childResType) ?
                         'protection_restore_cloud_ip_label' : 'protection_restore_vm_ip_label') | i18n}}
-                        <i *ngIf="![dataMap.Resource_Type.openStackCloudServer.value,dataMap.Resource_Type.hyperVVm.value].includes(childResType)"
-                            lv-icon="aui-icon-help" lv-tooltip="{{ (childResType === dataMap.Resource_Type.HCSCloudHost.value ?
-                            'common_hcs_vm_ip_help_label' : 'common_vmtools_help_label') | i18n}}"
-                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
-                            lvColorState='true'></i>
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{getIpHelp()}}" lvTooltipPosition="rightTop"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
                     </lv-form-label>
                     <lv-form-control>
                         <ng-container *ngTemplateOutlet="vmIpTpl"></ng-container>
@@ -226,8 +235,7 @@
                 </lv-form-item>
             </ng-container>
             <!-- 操作系统放前面 -->
-            <lv-form-item
-                *ngIf="[dataMap.Resource_Type.openStackCloudServer.value,dataMap.Resource_Type.hyperVVm.value].includes(childResType)">
+            <lv-form-item *ngIf="manualOstype()">
                 <lv-form-label lvRequired>
                     {{'protection_os_type_label' | i18n}}
                 </lv-form-label>
@@ -329,4 +337,9 @@
             </button>
         </lv-group>
     </div>
+</ng-template>
+
+<ng-template #helpTpl>
+    <span
+        innerHTML="{{ (isCloudResource(childResType) ? 'protection_cloud_specified_path_help_label' : 'protection_specified_path_help_label') | i18n}}"></span>
 </ng-template>

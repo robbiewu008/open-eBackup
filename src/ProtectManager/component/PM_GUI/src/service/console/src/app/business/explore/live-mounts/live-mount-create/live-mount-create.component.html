@@ -11,6 +11,12 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div *ngIf="!i18n.isEn && !!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.cNwareVm.value]).length">
+    <lv-alert lvType="warning" lvClosable="false">
+        {{'common_cnware_restore_or_livemount_tip_label' | i18n }}
+    </lv-alert>
+</div>
+
 <lv-wizard [lvMode]="'icon'" [lvStatus]="'process'" [lvActiveIndex]="activeIndex" class="aui-gutter-column-lg">
     <lv-wizard-step>{{'explore_select_resource_label' | i18n}}</lv-wizard-step>
     <lv-wizard-step>{{'common_select_copydata_label' | i18n}}</lv-wizard-step>
@@ -64,7 +70,7 @@
     <ng-container *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.cNwareVm.value]).length">
         <aui-live-mount-cnware-options [componentData]="componentData"
             (selectMountOptionChange)="selectMountOptionChange($event)"
-            [activeIndex]="activeIndex"></aui-live-mount-cnware-options>
+            [activeIndex]="activeIndex" [isHidden]="true"></aui-live-mount-cnware-options>
     </ng-container>
 </div>
 

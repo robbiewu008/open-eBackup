@@ -51,6 +51,8 @@ export class VmwareAdvancedParameterComponent implements OnInit, OnChanges {
   @Input() data: any;
   @Input() formGroup: FormGroup;
   @Input() isUsed: boolean;
+  @Input() hasArchival: boolean;
+  @Input() hasReplication: boolean;
   @Output() isDisableBasicDiskWorm = new EventEmitter<any>();
   capacityThresholdErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
     invalidRang: this.i18n.get('common_valid_rang_label', [0, 100])
@@ -115,6 +117,7 @@ export class VmwareAdvancedParameterComponent implements OnInit, OnChanges {
 
   updateForm() {
     this.formGroup.addControl('storage_type', new FormControl(''));
+    this.formGroup.addControl('device_type', new FormControl(''));
     this.formGroup.addControl('storage_id', new FormControl(''));
     this.formGroup.addControl('fine_grained_restore', new FormControl(false));
     this.formGroup.addControl(
@@ -145,6 +148,8 @@ export class VmwareAdvancedParameterComponent implements OnInit, OnChanges {
       'specifies_transfer_mode',
       new FormControl(DataMap.vmwareTransferMode.san.value)
     );
+
+    this.formGroup.addControl('add_backup_record', new FormControl(false));
 
     this.formGroup.addControl(
       'available_capacity_threshold',

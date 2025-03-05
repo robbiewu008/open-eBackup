@@ -67,6 +67,8 @@ import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { RegisterComponent } from './register/register.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
 import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
+import { GetLabelOptionsService } from 'app/shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-cluster',
@@ -98,7 +100,9 @@ export class ClusterComponent implements OnInit, AfterViewInit {
     private batchOperateService: BatchOperateService,
     private warningMessageService: WarningMessageService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private appUtilsService: AppUtilsService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit(): void {
@@ -213,19 +217,34 @@ export class ClusterComponent implements OnInit, AfterViewInit {
           type: 'select',
           isMultiple: true,
           showCheckAll: true,
-          options: this.dataMapService.toArray('Mysql_Cluster_Type')
+          options: this.appUtilsService.isDistributed
+            ? this.dataMapService
+                .toArray('Mysql_Cluster_Type')
+                .filter(
+                  item => item.value !== DataMap.Mysql_Cluster_Type.eapp.value
+                )
+            : this.dataMapService.toArray('Mysql_Cluster_Type')
         },
         cellRender: {
           type: 'status',
-          config: this.dataMapService.toArray('Mysql_Cluster_Type')
+          config: this.appUtilsService.isDistributed
+            ? this.dataMapService
+                .toArray('Mysql_Cluster_Type')
+                .filter(
+                  item => item.value !== DataMap.Mysql_Cluster_Type.eapp.value
+                )
+            : this.dataMapService.toArray('Mysql_Cluster_Type')
         }
       },
       {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -308,9 +327,10 @@ export class ClusterComponent implements OnInit, AfterViewInit {
     if (!isEmpty(filters.conditions_v2)) {
       const conditionsTemp = JSON.parse(filters.conditions_v2);
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;

@@ -41,6 +41,7 @@ import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
   assign,
+  cloneDeep,
   each,
   filter,
   find,
@@ -384,12 +385,17 @@ export class SanDetectionSettingListComponent implements OnInit, AfterViewInit {
               akLoading: false
             });
           },
-          data,
+          map(cloneDeep(data), item => {
+            assign(item, { uuid: item.id });
+            return item;
+          }),
           () => {
             this.selectionData = [];
             this.dataTable.setSelections([]);
             this.dataTable.fetchData();
-          }
+          },
+          '',
+          true
         );
       }
     });
@@ -414,12 +420,17 @@ export class SanDetectionSettingListComponent implements OnInit, AfterViewInit {
               akLoading: false
             });
           },
-          data,
+          map(cloneDeep(data), item => {
+            assign(item, { uuid: item.id });
+            return item;
+          }),
           () => {
             this.selectionData = [];
             this.dataTable.setSelections([]);
             this.dataTable.fetchData();
-          }
+          },
+          '',
+          true
         );
       }
     });

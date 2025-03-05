@@ -22,6 +22,7 @@ import { VmListComponent } from './vm-list.component';
 import { TakeManualBackupServiceModule } from 'app/shared/services/take-manual-backup.service';
 import { WarningBatchConfirmModule } from 'app/shared/components/warning-batch-confirm/warning-batch-confirm.module';
 import { CustomTableSearchModule } from 'app/shared/components/custom-table-search/custom-table-search.module';
+import { CustomTableFilterModule } from '../../../../../shared/components/custom-table-filter/custom-table-filter.module';
 
 @NgModule({
   declarations: [VmListComponent],
@@ -35,7 +36,8 @@ import { CustomTableSearchModule } from 'app/shared/components/custom-table-sear
     HostAdvancedModule,
     TakeManualBackupServiceModule,
     WarningBatchConfirmModule,
-    CustomTableSearchModule
+    CustomTableSearchModule,
+    CustomTableFilterModule
   ],
   exports: [VmListComponent]
 })

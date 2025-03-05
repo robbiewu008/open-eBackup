@@ -111,7 +111,7 @@ export class SummaryClusterComponent implements OnInit, AfterViewInit {
         {
           key: 'host',
           value: `${this.data.name}(${this.data.endpoint})`,
-          label: this.i18n.get('protection_proxy_host_label')
+          label: this.i18n.get('protection_clients_label')
         }
       ],
       [

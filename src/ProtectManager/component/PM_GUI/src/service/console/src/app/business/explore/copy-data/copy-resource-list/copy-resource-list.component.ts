@@ -17,10 +17,10 @@ import {
   CookieService,
   DataMap,
   GROUP_COMMON,
-  SYSTEM_TIME,
   WormStatusEnum,
   hasCopyDeletePermission,
-  OperateItems
+  OperateItems,
+  CommonConsts
 } from 'app/shared';
 import { CopiesService } from 'app/shared/api/services';
 import { I18NService, WarningMessageService } from 'app/shared/services';
@@ -132,7 +132,8 @@ export class CopyResourceListComponent implements OnInit {
             this.copyListComponent.getCopies();
           },
           '',
-          true
+          false,
+          CommonConsts.CONCURRENT_NUM
         );
       }
     });

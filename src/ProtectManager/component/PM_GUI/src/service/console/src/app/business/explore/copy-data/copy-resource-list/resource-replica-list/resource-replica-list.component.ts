@@ -477,6 +477,7 @@ export class ResourceReplicaListComponent implements OnInit {
       {
         id: 'manualCopy',
         disabled: !item.protectedSlaId,
+        hidden: item?.resourceSubType === DataMap.Resource_Type.oraclePDB.value,
         permission: OperateItems.RestoreCopy,
         label: this.i18n.get('protection_manual_copy_label'),
         onClick: () => this.manualCopy(item)

@@ -11,16 +11,17 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<h2 class="target-location">{{'protection_copy_location_label' | i18n}}</h2>
+<aui-specify-destination-location [formGroup]="formGroup" [data]="data" [isSlaDetail]="isSlaDetail" [action]="action"
+    [isRetry]="isRetry" [isUsed]="isUsed" [hasArchival]="hasArchival" [hasReplication]="hasReplication" (isDisableQos)="storageTypeChange($event)">
+</aui-specify-destination-location>
 <lv-collapse [lvType]="'simple'">
-    <lv-collapse-panel [lvTitle]="'common_advanced_label'|i18n" lvExpanded>
+    <lv-collapse-panel [lvTitle]="advanceTpl" lvExpanded>
         <lv-form [formGroup]="formGroup" [lvLabelColon]="isSlaDetail" class="vmAdvance">
-            <aui-specify-destination-location [formGroup]="formGroup" [data]="data" [isSlaDetail]="isSlaDetail"
-                [action]="action" [isRetry]="isRetry" [isUsed]="isUsed" (isDisableQos)="storageTypeChange($event)">
-            </aui-specify-destination-location>
             <lv-form-item>
                 <lv-form-label>
                     {{'common_limit_rate_policy_single_label' | i18n}}
-                    <i lv-icon="aui-icon-help" lv-tooltip="{{'common_limit_rate_policy_tip_label' | i18n}}"
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="limitTooltip"
                         lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
                         lvColorState='true'></i>
                 </lv-form-label>
@@ -116,7 +117,7 @@
                 </lv-form-control>
             </lv-form-item>
             <!-- 源端重删 -->
-            <lv-form-item *ngIf="!appUtilsService.isDistributed">
+            <lv-form-item *ngIf="!appUtilsService.isDistributed && !isHcsUser">
                 <lv-form-label>
                     {{'protection_sla_source_deduplication_label' | i18n}}
                     <i lv-icon="aui-icon-help" lv-tooltip="{{'protect_sla_source_deduplication_help_label' | i18n}}"
@@ -212,6 +213,24 @@
                     {{formGroup.value.specifies_transfer_mode | textMap:'vmwareTransferMode'}}
                 </lv-form-control>
             </lv-form-item>
+            <!-- 添加备份记录 -->
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_add_backup_record_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_add_backup_record_tip_label' | i18n}}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.add_backup_record | textMap: 'Switch_Status'}}
+                    </ng-container>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="add_backup_record">
+                        </lv-switch>
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
             <!-- 生产存储剩余容量阈值 -->
             <ng-container *ngIf="isSlaDetail">
                 <lv-form-item>
@@ -239,7 +258,7 @@
                     <lv-form-control [lvErrorTip]="capacityThresholdErrorTip" class="groupInControl">
                         <lv-group lvGutter='8px' class="lv-group-flex-start">
                             <lv-group> <input lv-input formControlName="available_capacity_threshold" type="text"
-                                    lvSize="small" placeholder="0~100" class="backup-for-text" /></lv-group>
+                                    placeholder="0~100" class="backup-for-text" /></lv-group>
                             <lv-group> <span class="configform-constraint">%</span></lv-group>
                         </lv-group>
                     </lv-form-control>
@@ -318,4 +337,11 @@
 
 <ng-template #storageHelpTpl>
     <span innerHTML="{{'protection_vmware_storage_tips_label' | i18n}}"></span>
+</ng-template>
+<ng-template #advanceTpl>
+    <h2>{{'common_advanced_label'|i18n}}</h2>
+</ng-template>
+
+<ng-template #limitTooltip>
+    <span [innerHTML]="'common_limit_rate_policy_tip_label' | i18n"></span>
 </ng-template>

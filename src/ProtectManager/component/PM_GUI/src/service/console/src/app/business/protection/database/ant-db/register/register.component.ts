@@ -10,34 +10,26 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
+  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
   ValidatorFn
 } from '@angular/forms';
-import { AddNodeComponent } from 'app/business/protection/database/ant-db/register/add-node/add-node.component';
 import {
   BaseUtilService,
   ClientManagerApiService,
   CommonConsts,
   DataMap,
   DataMapService,
-  getPermissionMenuItem,
   I18NService,
   InstanceType,
-  MODAL_COMMON,
   ProtectedResourceApiService,
   ResourceType
 } from 'app/shared';
-import { ProButton } from 'app/shared/components/pro-button/interface';
-import {
-  ProTableComponent,
-  TableCols,
-  TableConfig
-} from 'app/shared/components/pro-table';
 import {
   cacheGuideResource,
   USER_GUIDE_CACHE_DATA
@@ -45,20 +37,14 @@ import {
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import {
-  assign,
-  cloneDeep,
   each,
   find,
   first,
   includes,
   isEmpty,
-  isEqual,
   map,
-  omit,
   pick,
-  remove,
   set,
-  size,
   some,
   trim,
   uniq
@@ -75,18 +61,10 @@ export class RegisterComponent implements OnInit {
   optItems = [];
   hostOptions = [];
   clusterOptions = [];
+  clusterNodesData = []; // lv-datatable使用的默认数据
   dataMap = DataMap;
-  hostNum = 0;
-  _isEmpty = isEmpty;
-  tableData = {
-    data: [],
-    total: 0
-  };
-  tableConfig: TableConfig;
   formGroup: FormGroup;
   extendsAuth: { [key: string]: any } = {};
-  cols: TableCols[] = [];
-  extraCols: TableCols[];
   clusterInfo; // 缓存集群信息
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip
@@ -121,8 +99,6 @@ export class RegisterComponent implements OnInit {
     pathError: this.i18n.get('common_path_error_label')
   };
 
-  @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
-
   constructor(
     public baseUtilService: BaseUtilService,
     public dataMapService: DataMapService,
@@ -136,7 +112,6 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.initConfig(); // 只做表格初始化操作
     this.updateData(); // 回显数据
     this.getHostOptions();
   }
@@ -157,6 +132,8 @@ export class RegisterComponent implements OnInit {
 
   updateData() {
     if (!this.rowData) {
+      this.addControlToDataTable(); // 默认填充一个空的集群节点
+      this.formGroup.get('nodes').disable(); // 默认是单实例，所以需要禁用集群节点
       return;
     }
     this.protectedResourceApiService
@@ -181,44 +158,27 @@ export class RegisterComponent implements OnInit {
                 port: res.extendInfo.instancePort,
                 database_username: res.auth.authKey,
                 databaseStreamUserName: res.auth.dbStreamRepUser,
-                userName: res.extendInfo.osUsername,
-                children: res.dependencies.children
+                userName: res.extendInfo.osUsername
               };
         this.formGroup.patchValue(data);
-        this.updateTableData(res, data);
+        this.updateTableData(res);
       });
   }
 
-  private updateTableData(res, data) {
+  private updateTableData(res) {
     if (res.subType === DataMap.Resource_Type.AntDBClusterInstance.value) {
-      data?.children.filter(item => {
-        assign(item, {
-          hostName: item.dependencies?.agents[0]?.name,
-          ip: item.dependencies?.agents[0]?.endpoint,
-          port: item.extendInfo?.instancePort,
-          business_ip: item.extendInfo?.serviceIp,
-          client: item.extendInfo?.clientPath,
-          adbhamgrPath: item.extendInfo?.adbhamgrPath
-        });
+      res.dependencies.children.forEach(item => {
+        this.addControlToDataTable(item);
       });
-      setTimeout(() => {
-        this.tableData = {
-          data: data?.children,
-          total: size(data?.children)
-        };
-      }, 1000);
     }
   }
 
   initForm() {
     this.formGroup = this.fb.group({
       type: new FormControl(DataMap.Instance_Type.single.value),
-      name: new FormControl(
-        { value: '', disabled: !!this.rowData },
-        {
-          validators: [this.baseUtilService.VALID.name()]
-        }
-      ),
+      name: new FormControl('', {
+        validators: [this.baseUtilService.VALID.name()]
+      }),
       agents: new FormControl('', [this.baseUtilService.VALID.required()]),
       port: new FormControl(
         { value: '6655', disabled: !!this.rowData },
@@ -254,8 +214,12 @@ export class RegisterComponent implements OnInit {
       ]),
       databaseStreamUserName: new FormControl(''),
       databaseStreamPassword: new FormControl(''),
-      children: new FormControl([])
+      nodes: this.fb.array([]) // 集群节点
     });
+    this.formGroup
+      .get('nodes')
+      .setValidators([this.baseUtilService.VALID.minLength(1)]);
+    this.clusterNodesData = this.getNodesData();
     this.watch();
   }
 
@@ -270,22 +234,6 @@ export class RegisterComponent implements OnInit {
       }
       if (!CommonConsts.REGEX.dataBaseName.test(name)) {
         return { invalidDataBaseName: { value: control.value } };
-      }
-      return null;
-    };
-  }
-
-  validUserName(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      if (!control.value) {
-        return null;
-      }
-      const userName = control.value;
-      if (!CommonConsts.REGEX.linuxUserNameBegin.test(userName)) {
-        return { invalidUserNameBegin: { value: control.value } };
-      }
-      if (!CommonConsts.REGEX.linuxUserName.test(userName)) {
-        return { invalidUserName: { value: control.value } };
       }
       return null;
     };
@@ -316,27 +264,12 @@ export class RegisterComponent implements OnInit {
     };
   }
 
-  getProxyOptions(uuid) {
-    if (!uuid) {
-      return;
-    }
-    const params = {
-      resourceId: uuid
-    };
-    this.protectedResourceApiService
-      .ShowResource(params)
-      .subscribe((res: any) => {
-        this.hostNum = res.dependencies.agents.length;
-        this.clusterInfo = res;
-      });
-  }
-
   watch() {
     const controlArr = [
       'agents',
       'business_ip',
       'client',
-      'children',
+      'nodes',
       'databaseStreamUserName',
       'databaseStreamPassword'
     ];
@@ -365,17 +298,13 @@ export class RegisterComponent implements OnInit {
     this.formGroup
       .get('client')
       .setValidators([this.baseUtilService.VALID.required(), this.validPath()]);
-    this.formGroup.get('children').clearValidators();
+    this.formGroup.get('nodes').disable();
     this.formGroup.get('databaseStreamUserName').clearValidators();
     this.formGroup.get('databaseStreamPassword').clearValidators();
   }
 
   updateCluster() {
-    if (!this.rowData) {
-      this.formGroup
-        .get('children')
-        .setValidators([this.baseUtilService.VALID.minLength(1)]);
-    }
+    this.formGroup.get('nodes').enable();
     this.formGroup
       .get('databaseStreamUserName')
       .setValidators([
@@ -416,128 +345,47 @@ export class RegisterComponent implements OnInit {
     );
   }
 
-  initConfig() {
-    const opts: ProButton[] = [
-      {
-        id: 'add',
-        type: 'primary',
-        label: this.i18n.get('common_add_label'),
-        onClick: () => {
-          this.add();
-        },
-        disableCheck: () => {
-          return !isEmpty(this.rowData);
+  createNodeControl(item?) {
+    return this.fb.group({
+      host: new FormControl(
+        isEmpty(item) ? '' : item.dependencies.agents[0].uuid,
+        {
+          validators: [this.baseUtilService.VALID.required()]
         }
-      }
-    ];
-
-    this.optItems = getPermissionMenuItem(opts);
-
-    this.cols = [
-      {
-        key: 'hostName',
-        name: this.i18n.get('common_host_label'),
-        filter: {
-          type: 'search',
-          filterMode: 'contains'
+      ),
+      client: new FormControl(isEmpty(item) ? '' : item.extendInfo.clientPath, {
+        validators: [this.baseUtilService.VALID.required(), this.validPath()]
+      }),
+      pgPath: new FormControl(
+        isEmpty(item) ? '' : item.extendInfo.adbhamgrPath,
+        {
+          validators: [this.baseUtilService.VALID.required(), this.validPath()]
         }
-      },
-      {
-        key: 'client',
-        name: this.i18n.get('common_database_client_path_label'),
-        filter: {
-          type: 'search',
-          filterMode: 'contains'
+      ),
+      business_ip: new FormControl(
+        isEmpty(item) ? '' : item.extendInfo.serviceIp,
+        {
+          validators: [
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.ip()
+          ]
         }
-      },
-      {
-        key: 'adbhamgrPath',
-        name: this.i18n.get('common_config_file_full_path_label'),
-        filter: {
-          type: 'search',
-          filterMode: 'contains'
+      ),
+      port: new FormControl(
+        isEmpty(item) ? '6655' : item.extendInfo.instancePort,
+        {
+          validators: [
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.integer(),
+            this.baseUtilService.VALID.rangeValue(1, 65535)
+          ]
         }
-      },
-      {
-        key: 'business_ip',
-        name: this.i18n.get('common_dataplane_ip_label'),
-        filter: {
-          type: 'search',
-          filterMode: 'contains'
-        }
-      },
-      {
-        key: 'port',
-        name: this.i18n.get('common_database_port_label'),
-        filter: {
-          type: 'search',
-          filterMode: 'contains'
-        }
-      },
-      {
-        key: 'operation',
-        width: '70px',
-        name: this.i18n.get('common_operation_label'),
-        cellRender: {
-          type: 'operation',
-          config: {
-            maxDisplayItems: 1,
-            items: [
-              {
-                id: 'modify',
-                label: this.i18n.get('common_modify_label'),
-                disableCheck: () => {
-                  return !isEmpty(this.rowData);
-                },
-                onClick: ([data]) => {
-                  this.add(data);
-                }
-              },
-              {
-                id: 'delete',
-                label: this.i18n.get('common_remove_label'),
-                disableCheck: () => {
-                  return !isEmpty(this.rowData);
-                },
-                onClick: data => {
-                  this.delete(data);
-                }
-              }
-            ]
-          }
-        }
-      }
-    ];
-    this.extraCols = [
-      {
-        key: 'ip',
-        name: this.i18n.get('common_ip_address_label'),
-        filter: {
-          type: 'search',
-          filterMode: 'contains'
-        }
-      }
-    ];
-    this.tableConfig = {
-      table: {
-        async: false,
-        size: 'small',
-        columns: this.cols,
-        compareWith: 'business_ip',
-        colDisplayControl: true,
-        trackByFn: (index, item) => {
-          return item.business_ip;
-        }
-      },
-      pagination: {
-        mode: 'simple',
-        showPageSizeOptions: false,
-        winTablePagination: true
-      }
-    };
+      ),
+      nodeValue: new FormControl(isEmpty(item) ? {} : item) // 监视节点，界面上不做展示，只用于缓存之前的数据
+    });
   }
 
-  add(item?) {
+  checkValidAndAddControl(item?) {
     const formValue = pick(this.formGroup.value, [
       'name',
       'userName',
@@ -550,69 +398,81 @@ export class RegisterComponent implements OnInit {
       this.formGroup.markAllAsTouched();
       return;
     }
-    this.drawModalService.create(
-      assign({}, MODAL_COMMON.generateDrawerOptions(), {
-        lvModalKey: 'add-ant-db-node',
-        lvWidth: MODAL_COMMON.normalWidth,
-        lvHeader: isEmpty(item)
-          ? this.i18n.get('common_add_label')
-          : this.i18n.get('common_modify_label'),
-        lvContent: AddNodeComponent,
-        lvComponentParams: {
-          parentFormGroupValue: this.formGroup.value,
-          hostOptions: this.hostOptions,
-          item
-        },
-        lvOkDisabled: isEmpty(item),
-        lvAfterOpen: modal => {
-          const content = modal.getContentComponent() as AddNodeComponent;
-          const modalIns = modal.getInstance();
-          content.formGroup.statusChanges.subscribe(res => {
-            modalIns.lvOkDisabled = res === 'INVALID';
-          });
-        },
-        lvOk: modal => {
-          return this.afterAddNode(modal, item);
-        }
-      })
-    );
+    this.addControlToDataTable(item);
   }
 
-  private afterAddNode(modal, item) {
-    return new Promise(resolve => {
-      const content = modal.getContentComponent() as AddNodeComponent;
-      content.onOK().subscribe({
-        next: res => {
-          resolve(true);
-          let currentTableData = cloneDeep(this.tableData.data);
-          if (isEmpty(item)) {
-            currentTableData = currentTableData.concat([content.data]);
-          } else {
-            const oldItem = currentTableData.find(
-              cur => cur.extendInfo?.hostId === item.extendInfo?.hostId
-            );
-            assign(oldItem, content.data);
-          }
-          this.formGroup.get('children').setValue(currentTableData);
-          this.formGroup.get('children').updateValueAndValidity();
-          this.tableData = {
-            data: currentTableData,
-            total: size(currentTableData)
-          };
-        }
-      });
-    });
+  addControlToDataTable(item?) {
+    this.NodesFormArray.push(this.createNodeControl(item));
+    this.clusterNodesData = this.getNodesData();
   }
 
-  delete(data) {
-    const currentTableData = cloneDeep(this.tableData.data);
-    remove(currentTableData, item => isEqual(data[0], item));
-    this.tableData = {
-      data: currentTableData,
-      total: size(currentTableData)
+  removeControlFromDataTable(index?: number) {
+    this.NodesFormArray.removeAt(index);
+    this.clusterNodesData = this.getNodesData();
+  }
+
+  get NodesFormArray(): FormArray {
+    return this.formGroup.get('nodes') as FormArray;
+  }
+
+  getNodesData() {
+    return new Array(this.NodesFormArray.length).fill({});
+  }
+
+  getClusterNodeParams(nodeControl: AbstractControl) {
+    const {
+      host: hostId,
+      port,
+      client,
+      pgPath,
+      business_ip,
+      nodeValue
+    } = nodeControl.value;
+    const {
+      userName,
+      databaseStreamUserName,
+      databaseStreamPassword
+    } = this.formGroup.value;
+    const authInfo = {
+      ...this.extendsAuth,
+      extendInfo: {
+        dbStreamRepUser: databaseStreamUserName,
+        dbStreamRepPwd: databaseStreamPassword
+      }
     };
-    this.formGroup.get('children').setValue(currentTableData);
-    this.formGroup.get('children').updateValueAndValidity();
+    const defaultParams = {
+      parentUuid: '',
+      name: null,
+      type: ResourceType.DATABASE,
+      subType: DataMap.Resource_Type.AntDBInstance.value,
+      extendInfo: {
+        hostId: hostId,
+        instancePort: port,
+        clientPath: client,
+        adbhamgrPath: pgPath,
+        serviceIp: business_ip,
+        osUsername: userName,
+        isTopInstance: InstanceType.NotTopinstance
+      },
+      dependencies: {
+        agents: [{ uuid: hostId }]
+      },
+      auth: { ...authInfo }
+    };
+    if (!isEmpty(nodeValue)) {
+      // nodeValue不为空。说明是修改以前已有的节点
+      set(nodeValue, 'extendInfo', {
+        ...nodeValue.extendInfo,
+        ...defaultParams.extendInfo
+      });
+      set(nodeValue, 'dependencies', defaultParams.dependencies);
+      set(nodeValue, 'auth', authInfo);
+      set(nodeValue, 'extendInfo.osUsername', this.formGroup.value.userName);
+      return nodeValue;
+    } else {
+      // nodeValue为空。说明是新增新的节点
+      return defaultParams;
+    }
   }
 
   getParams() {
@@ -658,30 +518,9 @@ export class RegisterComponent implements OnInit {
             }
           },
           dependencies: {
-            children: this.formGroup.value.children.map(item => {
-              const newItem = omit(item, [
-                'port',
-                'hostName',
-                'ip',
-                'client',
-                'business_ip',
-                'parent',
-                'adbhamgrPath'
-              ]);
-              set(newItem, 'auth', {
-                ...this.extendsAuth,
-                extendInfo: {
-                  dbStreamRepUser: this.formGroup.value.databaseStreamUserName,
-                  dbStreamRepPwd: this.formGroup.value.databaseStreamPassword
-                }
-              });
-              set(
-                newItem,
-                'extendInfo.osUsername',
-                this.formGroup.value.userName
-              );
-              return newItem;
-            })
+            children: this.NodesFormArray.controls.map(control =>
+              this.getClusterNodeParams(control)
+            )
           }
         };
   }

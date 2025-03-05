@@ -270,10 +270,13 @@ export class CreateSubscriptionComponent implements OnInit {
       daysOfMonth: new FormControl('', {
         validators: [this.baseUtilService.VALID.required()]
       }), // 界面回显一个月中选中的天数，
-      firstExecTime: new FormControl(new Date(), {
-        // 首次执行时间
-        validators: [this.baseUtilService.VALID.required()]
-      }),
+      firstExecTime: new FormControl(
+        this.appUtilsService.setTimePickerCurrent(),
+        {
+          // 首次执行时间
+          validators: [this.baseUtilService.VALID.required()]
+        }
+      ),
       createTime: new FormControl('') // 订阅创建时间，值为点击确认时的时间
     });
     if (this.isDecouple) {

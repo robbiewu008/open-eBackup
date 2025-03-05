@@ -77,7 +77,7 @@ export class SlaInfoComponent implements OnInit {
   targetZoneOps = [];
   resourceOps = [];
   _get = get;
-
+  isDistributed = this.appUtilsService.isDistributed;
   dataMap = DataMap;
   appType = ApplicationType;
   daysOfType = DaysOfType;
@@ -138,13 +138,15 @@ export class SlaInfoComponent implements OnInit {
     this.i18n.get('deploy_type')
   );
 
+  isHyperdetect =
+    this.i18n.get('deploy_type') === DataMap.Deploy_Type.hyperdetect.value;
+
   // 备份软件,包含X系列，E6000，软硬解耦
   isOceanProtect =
-    this.appUtilsService.isDataBackup ||
-    this.appUtilsService.isDecouple ||
-    this.appUtilsService.isDistributed;
+    this.appUtilsService.isDataBackup || this.appUtilsService.isDecouple;
   replicationModeType = ReplicationModeType;
   isDmeUser = this.cookieService.get('userType') === CommonConsts.DME_USER_TYPE;
+  isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
   autoIndexForObs = false; // 对象存储下支持自动索引的应用
   autoIndexForTape = false; // 磁带库下支持自动索引的应用
   archiveLogCopy = false; // 归档日志副本
@@ -180,11 +182,14 @@ export class SlaInfoComponent implements OnInit {
           ApplicationType.Hive,
           ApplicationType.HDFS,
           ApplicationType.KubernetesStatefulSet,
+          ApplicationType.KubernetesDatasetCommon,
           ApplicationType.Vmware,
           ApplicationType.HCSCloudHost,
           ApplicationType.FusionCompute,
           ApplicationType.TDSQL,
-          ApplicationType.HyperV
+          ApplicationType.HyperV,
+          ApplicationType.CNware,
+          ApplicationType.Nutanix
         ],
         this.sla.application
       )
@@ -552,7 +557,6 @@ export class SlaInfoComponent implements OnInit {
       .getClustersInfoUsingGET(params)
       .subscribe((res: any) => {
         const nodes = map(res.records, item => {
-          this.getMediaSets([], null, null, item);
           return {
             ...item,
             key: item.clusterId,
@@ -562,6 +566,18 @@ export class SlaInfoComponent implements OnInit {
           };
         });
         this.clusterNodeNames = nodes;
+        let nodeArray = [];
+        each(this.archiveTeams, item => {
+          if (item.protocol === DataMap.Archival_Protocol.tapeLibrary.value) {
+            const tmpNode = find(nodes, {
+              storageEsn: item?.storage_list[0]?.esn
+            });
+            nodeArray.push(tmpNode);
+          }
+        });
+        each(nodeArray, item => {
+          this.getMediaSets([], null, null, item);
+        });
       });
   }
 

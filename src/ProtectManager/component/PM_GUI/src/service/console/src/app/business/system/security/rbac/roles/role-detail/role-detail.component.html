@@ -17,6 +17,7 @@
       <i lv-icon="aui-widget-datepicker-previous" [lvColorState]="true"></i>
       <h1>{{ data.roleName }}</h1>
     </lv-group>
+    <button lv-button (click)="modify()" [disabled]="data.is_default" class="modify-style">{{'common_modify_label'|i18n}}</button>
   </div>
   <aui-rbac-overview-tag [title]="data?.roleName" [article]="data?.roleDescription"></aui-rbac-overview-tag>
   <div class="aui-block aui-paginator-container" style="padding: 0">

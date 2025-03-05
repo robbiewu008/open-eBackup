@@ -64,6 +64,38 @@ export class I18NService {
     this.initLanguage();
   }
 
+  getQueryLanguage(): string {
+    // 查询参数
+    let queryLang: string;
+    let url = window.location.href.split('?')[0];
+    try {
+      const urlParams = window.location.href.split('?')[1];
+      const queryParams = urlParams ? urlParams.split('&') : [];
+      const paramsArr = [];
+      for (let index = 0; index < queryParams.length; index++) {
+        const query = queryParams[index].split('=');
+        if (query[0] === 'language') {
+          queryLang = query[1];
+        } else {
+          paramsArr.push(`${query[0]}=${query[1]}`);
+        }
+      }
+      if (!isEmpty(paramsArr)) {
+        url += `?${paramsArr.join('&')}`;
+      }
+    } catch (error) {
+      queryLang = '';
+    }
+    if (queryLang) {
+      window.location.href = url;
+      const returnLang = queryLang === 'en' ? 'en-us' : 'zh-cn';
+      this.cookie.set(this.languageKey, returnLang);
+      localStorage.setItem(this.languageKey, returnLang);
+      return returnLang;
+    }
+    return queryLang;
+  }
+
   /**
    * 语言初始化
    * 优先级: 1.cookie 2.浏览器语言 3.默认zh-cn
@@ -79,6 +111,12 @@ export class I18NService {
       this.cookie.get(this.opLanguageKey) ||
       browserLanguage
     ).toLowerCase();
+
+    // url中携带的语言优先级最高
+    const urlQueryLang = this.getQueryLanguage();
+    if (urlQueryLang) {
+      this.language = urlQueryLang;
+    }
 
     if (this.supportLanguages.indexOf(this.language) === -1) {
       this.language = this.defaultLanguage;
@@ -224,6 +262,16 @@ export class I18NService {
         return includes(params, match) ? this.resource[match] || match : match;
       }
     );
+
+    // E6000屏蔽部分应用时修改词条
+    if (this.resource['deploy_type'] === DataMap.Deploy_Type.e6000.value) {
+      if (i18nStr.includes('/openGauss')) {
+        i18nStr = i18nStr.replace('/openGauss', '');
+      }
+      if (i18nStr.includes('Informix/')) {
+        i18nStr = i18nStr.replace('Informix/', '');
+      }
+    }
 
     return i18nStr;
   }

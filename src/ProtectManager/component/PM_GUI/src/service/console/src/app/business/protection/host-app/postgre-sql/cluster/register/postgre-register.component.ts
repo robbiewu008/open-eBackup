@@ -81,8 +81,7 @@ export class PostgreRegisterComponent implements OnInit {
     .map(item => {
       item.isLeaf = true;
       return item;
-    })
-    .filter(item => item.value !== DataMap.PostgreSqlDeployType.CLup.value);
+    });
 
   @ViewChild('footerTpl', { static: true }) footerTpl: TemplateRef<any>;
 
@@ -139,18 +138,12 @@ export class PostgreRegisterComponent implements OnInit {
 
   initForm() {
     this.formGroup = this.fb.group({
-      name: new FormControl(
-        {
-          value: !isEmpty(this.data) ? this.data.name : '',
-          disabled: !!this.data
-        },
-        {
-          validators: [
-            this.baseUtilService.VALID.name(),
-            this.baseUtilService.VALID.maxLength(64)
-          ]
-        }
-      ),
+      name: new FormControl(!isEmpty(this.data) ? this.data.name : '', {
+        validators: [
+          this.baseUtilService.VALID.name(),
+          this.baseUtilService.VALID.maxLength(64)
+        ]
+      }),
       type: new FormControl(!isEmpty(this.data) ? this.data.clusterType : '', {
         validators: [this.baseUtilService.VALID.required()]
       }),

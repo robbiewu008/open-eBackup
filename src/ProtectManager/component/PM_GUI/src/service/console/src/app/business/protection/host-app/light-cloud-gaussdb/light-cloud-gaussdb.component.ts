@@ -48,6 +48,7 @@ export class LightCloudGaussdbComponent implements OnInit, OnDestroy {
         'name',
         'pmAddress',
         'linkStatus',
+        'tpopsVersion',
         'isAllowRestore',
         'authorizedUser',
         'operation'
@@ -90,7 +91,8 @@ export class LightCloudGaussdbComponent implements OnInit, OnDestroy {
         'recovery',
         'allowRecovery',
         'disableRecovery',
-        'manualBackup'
+        'manualBackup',
+        'deleteResource'
       ]
     };
 

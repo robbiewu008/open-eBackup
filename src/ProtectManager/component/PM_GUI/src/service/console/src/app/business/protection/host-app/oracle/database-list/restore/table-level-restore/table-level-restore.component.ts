@@ -125,6 +125,12 @@ export class TableLevelRestoreComponent
   usersTableSpaceMap = new Map();
   restoreToNewLocationOnly = false;
   originCopyIsCDB = ''; // 需要用该变量来过滤目标主机
+  DatabaseRunningStatus = {
+    MOUNTED: 'mounted',
+    READ_WRITE: 'read write',
+    READ_ONLY: 'read only',
+    READ_ONLY_WITH_APPLY: 'read only with apply'
+  };
   iconMap = {
     Database: 'aui-icon-data-storage',
     [RestoreFileType.Directory]: 'aui-icon-topo',
@@ -200,7 +206,8 @@ export class TableLevelRestoreComponent
           path: this.rowCopy.resource_name,
           type: 'Database',
           parentPath: '',
-          isFirst: true
+          isFirst: true,
+          hidden: false
         },
         ''
       )
@@ -497,10 +504,10 @@ export class TableLevelRestoreComponent
   }
 
   private clearForm(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach(key => {
-      formGroup.get(key).setValue(null);
-      formGroup.markAllAsTouched();
-    });
+    Object.keys(formGroup.controls).forEach(key =>
+      formGroup.get(key).setValue(null)
+    );
+    formGroup.markAllAsTouched();
   }
 
   private assignItemTableInfo(item) {
@@ -523,6 +530,9 @@ export class TableLevelRestoreComponent
   }
 
   private createFormControl(item) {
+    if (item?.rowGroup) {
+      return;
+    }
     const formControlArr = [
       'target_user_name',
       'target_table_space',
@@ -723,6 +733,7 @@ export class TableLevelRestoreComponent
       children: [],
       expanded: false,
       disabled: this.isSearch && nodeData.type !== RestoreFileType.File,
+      hidden: nodeData?.hidden || false,
       isLeaf: nodeData.type === RestoreFileType.File
     };
   }
@@ -742,6 +753,7 @@ export class TableLevelRestoreComponent
       const resource = res.records;
       const childrenNodes: TreeTableNode[] = map(resource, (item: any) => {
         item.parentPath = `${node.data.parentPath}/${item.path}`;
+        item.hidden = includes(get(item, 'path', ''), ' ');
         return this.createTreeNode(item);
       });
       if (last(node.children)?.data?.isMoreBtn) {
@@ -804,7 +816,7 @@ export class TableLevelRestoreComponent
 
   selectionChange(data, node?) {
     const selection = map(data, 'data').filter(
-      item => item.isLeaf && !item.isMoreBtn
+      item => item.isLeaf && !item.isMoreBtn && !item.hidden
     );
     const removedArr = differenceBy(this.displayData, selection, 'uniqueId');
     selection.forEach(item => this.updateGroupControl(item, true));
@@ -875,6 +887,12 @@ export class TableLevelRestoreComponent
           value: item.rootUuid,
           label: `${item.name}(${item.environment?.endpoint})`,
           isLeaf: true,
+          disabled:
+            get(
+              item,
+              'extendInfo.open_mode',
+              this.DatabaseRunningStatus.READ_WRITE
+            ) === this.DatabaseRunningStatus.READ_ONLY,
           resourceRoleAuth: map(item.resourceRoleAuth, 'name')
         }));
       }

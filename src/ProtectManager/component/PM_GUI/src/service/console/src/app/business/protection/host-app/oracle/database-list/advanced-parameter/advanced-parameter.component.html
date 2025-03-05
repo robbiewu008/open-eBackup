@@ -74,11 +74,11 @@
         </lv-form-label>
         <lv-form-control>
           <ng-container *ngIf="!isDetail">
-             <lv-switch formControlName="storage_snapshot_flag" [lvDisabled]="unsupportStorage"></lv-switch>
-            <lv-group *ngIf="unsupportStorage" class="proxy-host-info-group" [lvColumns]='["16px", "auto"]'>
+             <lv-switch formControlName="storage_snapshot_flag" [lvDisabled]="unsupportStorage || disableStorage"></lv-switch>
+            <lv-group *ngIf="unsupportStorage || disableStorage" class="proxy-host-info-group" [lvColumns]='["16px", "auto"]'>
               <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
               <span class="aui-text-label proxy-host-info-label"
-                    innerHTML="{{unsupportedLabel|i18n}}">
+                    innerHTML="{{ disableStorage ? disableStorageLabel : unsupportStorage ? unsupportedLabel : ''|i18n}}">
               </span>
             </lv-group>
           </ng-container>
@@ -95,7 +95,7 @@
       <ng-container *ngIf="formGroup.value.storage_snapshot_flag || showProxyHost">
         <lv-form-item>
           <lv-form-label [lvRequired]="isRequiredProxy && !isDetail">
-            {{'protection_proxy_host_label' | i18n}}
+            {{'protection_clients_label' | i18n}}
           </lv-form-label>
           <lv-form-control>
             <ng-container *ngIf="!formGroup.value.storage_snapshot_flag && showProxyHost else agentTpl">

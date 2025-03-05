@@ -50,9 +50,13 @@
             </div>
         </div>
     </div>
-    <lv-alert lvType="info" lvClosable="false" *ngIf="!showMonitor && appUtilsService.isDecouple">
-        {{'insight_decouple_performance_no_data_tip_label' | i18n}}
-    </lv-alert>
+    <ng-container *ngIf="appUtilsService.isDecouple">
+        <lv-alert lvType="info" lvClosable="false" *ngIf="showMonitor">{{'insight_decouple_performance_e1000_tip_label' | i18n}}</lv-alert>
+        <lv-alert lvType="info" lvClosable="false" *ngIf="!showMonitor">
+            <span [innerHTML]="e1000ViewHelp"></span>
+        </lv-alert>
+    </ng-container>
+    
     <div class="echart-container aui-block">
         <div class="cluster-container">
             <lv-menu #menu [lvMenus]="clusters" [(lvActiveItemId)]="activeNode" [lvTheme]="'light'"

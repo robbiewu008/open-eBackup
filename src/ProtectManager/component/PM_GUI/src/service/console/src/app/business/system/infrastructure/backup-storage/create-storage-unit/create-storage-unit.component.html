@@ -62,6 +62,7 @@
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ 'common_alarm_threshold_label' | i18n }}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{thresholdTipLabel}}" lvTooltipTheme="light" class="operation-help-icon" lvColorState='true'></i>
       </lv-form-label>
       <lv-form-control [lvErrorTip]="thresholdErrorTip">
         <input lv-input type="text" formControlName="threshold" />

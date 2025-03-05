@@ -53,7 +53,7 @@
       {{ 'operation_target_antiransomwarepolicy_label' | i18n }}
       <i
         lv-icon="aui-icon-help"
-        lv-tooltip="{{ antiRansomwareTip}}"
+        lv-tooltip="{{ antiRansomwareTip }}"
         lvTooltipTheme="light"
         class="configform-constraint"
         lvColorState="true"
@@ -61,7 +61,10 @@
     </lv-form-label>
     <lv-form-control>
       <lv-group lvDirection="vertical">
-        <lv-switch formControlName="needDetect" [lvDisabled]="isDisableRansomware"></lv-switch>
+        <lv-switch
+          formControlName="needDetect"
+          [lvDisabled]="isDisableRansomware"
+        ></lv-switch>
       </lv-group>
     </lv-form-control>
   </lv-form-item>
@@ -149,6 +152,7 @@
             lvShowTime="true"
             formControlName="startDetectionTime"
             class="date-picker"
+            [lvFooterExtra]="timePickerFooterTpl"
           >
           </lv-date-picker>
         </lv-form-control>
@@ -197,6 +201,7 @@
                       lvShowTime="true"
                       class="date-picker"
                       formControlName="copyTime"
+                      [lvFooterExtra]="copyTimePickerFooterTpl"
                     >
                     </lv-date-picker>
                   </lv-form-control>
@@ -335,4 +340,26 @@
 </lv-form>
 <ng-template #tipContentTpl>
   <div [innerHTML]="typeChangeLabel"></div>
+</ng-template>
+
+<ng-template #timePickerFooterTpl>
+  <button
+    lv-button
+    lvType="link"
+    class="time-picker-current"
+    (click)="setSysTime('startDetectionTime')"
+  >
+    {{ 'common_current_time_label' | i18n }}
+  </button>
+</ng-template>
+
+<ng-template #copyTimePickerFooterTpl>
+  <button
+    lv-button
+    lvType="link"
+    class="time-picker-current"
+    (click)="setSysTime('copyTime')"
+  >
+    {{ 'common_current_time_label' | i18n }}
+  </button>
 </ng-template>

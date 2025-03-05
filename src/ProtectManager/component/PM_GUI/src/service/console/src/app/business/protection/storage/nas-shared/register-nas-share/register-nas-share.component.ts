@@ -76,7 +76,9 @@ export class RegisterNasShareComponent implements OnInit {
       DataMap.Deploy_Type.x3000.value,
       DataMap.Deploy_Type.x8000.value,
       DataMap.Deploy_Type.x6000.value,
-      DataMap.Deploy_Type.x9000.value
+      DataMap.Deploy_Type.x9000.value,
+      DataMap.Deploy_Type.e6000.value,
+      DataMap.Deploy_Type.decouple.value
     ],
     this.i18n.get('deploy_type')
   );
@@ -103,8 +105,9 @@ export class RegisterNasShareComponent implements OnInit {
     this.baseUtilService.requiredErrorTip,
     this.baseUtilService.lengthErrorTip,
     {
-      invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [256]),
-      invalidName: this.i18n.get('protection_no_slash_error_label')
+      invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [253]),
+      invalidName: this.i18n.get('protection_no_slash_error_label'),
+      invalidIp: this.i18n.get('protection_fqdn_valid_tip_label')
     }
   );
   domainNameErrorTip = {
@@ -163,7 +166,8 @@ export class RegisterNasShareComponent implements OnInit {
       ip: new FormControl('', {
         validators: [
           this.baseUtilService.VALID.required(),
-          this.baseUtilService.VALID.maxLength(256)
+          this.validIp(),
+          this.baseUtilService.VALID.maxLength(253)
         ]
       }),
       share_mode: new FormControl('', {
@@ -191,6 +195,23 @@ export class RegisterNasShareComponent implements OnInit {
 
     this.listernForm();
     this.patchValue();
+  }
+
+  validIp(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (!trim(control.value)) {
+        return null;
+      }
+      const arr = trim(control.value).split('.');
+      const reg = /^([a-zA-Z0-9]{1}|[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]{1}|[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9])){0,126}$/;
+      for (let i = 0; i < size(arr); i++) {
+        const item = arr[i];
+        if (!reg.test(item)) {
+          return { invalidIp: { value: control.value } };
+        }
+      }
+      return null;
+    };
   }
 
   setProxyValue(recordsTemp?, startPage?) {

@@ -31,6 +31,14 @@
         </lv-form-control>
     </lv-form-item>
     <lv-form-item>
+        <lv-form-label>
+            {{'common_database_archive_path_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]='pathErrorTip'>
+            <input lv-input type="text" formControlName="archive_path" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
         <lv-form-label lvRequired>
           {{(isPgpool ? 'common_pg_pool_path_label' : 'common_patroni_path_label') | i18n}}
         </lv-form-label>

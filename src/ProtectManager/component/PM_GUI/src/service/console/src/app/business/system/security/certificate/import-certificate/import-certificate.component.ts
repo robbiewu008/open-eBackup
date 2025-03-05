@@ -92,6 +92,15 @@ export class ImportCertificateComponent implements OnInit {
   isProtectAgent = false;
   isADFS;
   lvAcceptType;
+  isDataBackup = !includes(
+    [
+      DataMap.Deploy_Type.hyperdetect.value,
+      DataMap.Deploy_Type.cyberengine.value,
+      DataMap.Deploy_Type.cloudbackup.value,
+      DataMap.Deploy_Type.cloudbackup2.value
+    ],
+    this.i18n.get('deploy_type')
+  );
 
   constructor(
     public i18n: I18NService,
@@ -456,26 +465,26 @@ export class ImportCertificateComponent implements OnInit {
         this.warningMessageService.create({
           content: warnContent,
           onOK: () => {
-            if (this.internalFlag) {
-              this.certApiService.pushUpdateCertificate(params).subscribe(
-                () => {
+            if (this.internalFlag && this.isDataBackup) {
+              this.certApiService.pushUpdateCertificate(params).subscribe({
+                next: () => {
                   isFunction(cb) && cb();
                   resolve(true);
                 },
-                () => {
+                error: () => {
                   resolve(false);
                 }
-              );
+              });
             } else {
-              this.certApiService.importCertificateUsingPOST(params).subscribe(
-                () => {
+              this.certApiService.importCertificateUsingPOST(params).subscribe({
+                next: () => {
                   isFunction(cb) && cb();
                   resolve(true);
                 },
-                () => {
+                error: () => {
                   resolve(false);
                 }
-              );
+              });
             }
           },
           onCancel: () => resolve(false),

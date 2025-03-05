@@ -298,6 +298,12 @@ paths:
           required: false
           description: '条件参数：{"tableName": "name" }'
           type: string
+        - name: searchAfter
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
       responses:
         '200':
           description: 文件系统响应体
@@ -422,6 +428,34 @@ paths:
           description: ''
           schema:
             type: string
+  /v2/copies/{copyId}/open/guest-system:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - copy-controller
+      summary: 开启副本guestsystem
+      description: 开启副本guest system
+      operationId: OpenCopyGuestSystem
+      parameters:
+        - name: copyId
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
 definitions:
   FileSystemResponseList:
     description: 文件系统响应体
@@ -462,6 +496,8 @@ definitions:
       children:
         $ref: '#/definitions/RestoreFilesResponse'
         description: 子目录
+      sort:
+        type: object
     required:
       - path
       - modifyTime
