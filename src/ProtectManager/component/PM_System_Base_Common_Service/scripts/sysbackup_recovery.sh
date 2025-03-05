@@ -11,11 +11,6 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 
 #########################################
-# Copyright (c) 2023-2023 Huawei .
-# All rights reserved.
-#
-# Please send feedback to http://www.huawei.com
-#
 # Function 管理数据备份恢复脚本
 # revise note
 ########################################
@@ -61,7 +56,8 @@ log_error()
 {
   time=$(date "+%Y-%m-%d %H:%M:%S")
   user=$(whoami)
-  echo -e "\033[31m[${time}][USER:${user}][ERROR] ${FUNCNAME[1]}(), line ${BASH_LINENO[0]}: $*\033[0m" | tee -a $LOG_PATH
+  log_des=$(echo -e "\033[31m[${time}][USER:${user}][ERROR] ${FUNCNAME[1]}(), line ${BASH_LINENO[0]}: $*\033[0m" | tr -d '\n\r\f\t\b\v')
+  echo -e "${log_des}" | tee -a $LOG_PATH
   echo -e "\033[31mYou can get details in: /var/log/sysbackup_recovery.log\033[0m"
 }
 
@@ -70,7 +66,8 @@ log_info()
 {
   time=$(date "+%Y-%m-%d %H:%M:%S")
   user=$(whoami)
-  echo -e "\033[32m[${time}][USER:${user}][INFO] ${FUNCNAME[1]}(): $*\033[0m" | tee -a $LOG_PATH
+  log_des=$(echo -e "\033[32m[${time}][USER:${user}][INFO] ${FUNCNAME[1]}(): $*\033[0m\n" | tr -d '\n\r\f\t\b\v')
+  echo -e "${log_des}" | tee -a $LOG_PATH
 }
 
 # 删除recovery文件夹
@@ -102,6 +99,10 @@ prepare_for_recovery()
 # 2、下载最新备份副本
 download_backup_archived()
 {
+  printf -v user '%q' "$sftp_user"
+  printf -v host '%q' "$sftp_host"
+  printf -v pwd '%q' "$sftp_password"
+  printf -v path '%q' "$sftp_path"
   backup_bag='sftp'
   log_info "Start download backup from SFTP."
   if [ -z "$sftp_copy_name" ]; then
@@ -110,7 +111,7 @@ download_backup_archived()
       rm $file_list
     fi
     # 获取最新备份
-    sftp_ls "$sftp_user" "$sftp_host" "$sftp_password" "$sftp_path" > $file_list 2>/dev/null
+    sftp_ls $user $host $pwd $path > $file_list 2>/dev/null
     backup_file_name=$(< $file_list grep '.zip' | awk '{print $9}' | sort -r | head -1 | tr -d '\r')
     rm $file_list
     if [ -n "$backup_file_name" ]; then
@@ -122,8 +123,10 @@ download_backup_archived()
   else
     backup_file_name=$sftp_copy_name
   fi
+  printf -v de_path '%q' "$decrypt_path"
+  printf -v ab_path '%q' "$sftp_path"/"$backup_file_name"
   # 下载备份文件
-  sftp_download "$sftp_user" "$sftp_host" "$sftp_password" "$sftp_path"/"$backup_file_name" $decrypt_path >/dev/null 2>&1
+  sftp_download $user $host $pwd $ab_path $de_path >/dev/null 2>&1
   if [ -e "${decrypt_path}/${backup_file_name}" ]; then
     log_info "Download the backup success: ${backup_file_name}"
   else
@@ -326,12 +329,37 @@ decrypt_by_pm()
     clean_recovery_dir
     exit 1
   fi
-  pure_kmc_pass=\'${kmc_pass}\'
   log_info "Get kmc_pass success."
-  request_body=\'\{\"password\":\"${1}\"\}\'
-  result=$(isula exec -it "$container_id" /bin/bash -c "curl -X 'POST' -H 'accept: */*' -H 'Content-Type: application/json' --cert /opt/OceanProtect/infrastructure/cert/internal/internal.crt.pem --key /opt/OceanProtect/infrastructure/cert/internal/internal.pem --pass $pure_kmc_pass --cacert /opt/OceanProtect/infrastructure/cert/internal/ca/ca.crt.pem -d $request_body 'https://pm-system-base.dpa.svc.cluster.local:30081/v1/internal/sysbackup/decrypt'")
-  if [ -n "${result}" ]; then
-    log_error "Decrypt failed!"
+  printf -v decrypt_pwd '%q' ${1}
+  result=$(expect <<EOF
+    set timeout 30
+    spawn isula exec -it "$container_id" /bin/bash
+    expect {
+      -re {\[nobody@.*\]} {
+        send "curl -X 'PUT' -H 'accept: */*' -H 'Content-Type: application/json' --cert /opt/OceanProtect/infrastructure/cert/internal/internal.crt.pem --key /opt/OceanProtect/infrastructure/cert/internal/internal.pem --cacert /opt/OceanProtect/infrastructure/cert/internal/ca/ca.crt.pem -d $decrypt_pwd 'https://pm-system-base.dpa.svc.cluster.local:30081/v1/internal/sysbackup/decrypt'\r"
+      }
+      timeout {
+        send_user "Timeout occurred\n"
+        send "exit\r"
+        exit 1
+      }
+    }
+    expect {
+      "Enter PEM pass phrase:" {
+        send "${kmc_pass}\r"
+      }
+      timeout {
+        send_user "Timeout occurred\n"
+        send "exit\r"
+        exit 1
+      }
+    }
+    send "exit\r"
+    expect eof
+EOF
+  )
+  if echo "$result" | grep -q 'Timeout'; then
+    log_error "Timeout occurred while decrypt!"
     clean_recovery_dir
     exit 1
   fi
@@ -339,6 +367,7 @@ decrypt_by_pm()
 # 6、解压子系统文件
 unzip_sub_system_file()
 {
+  sleep 20
   log_info "Start unzip sub system file."
   decrypted_infra_unzip_result=$(unzip -o -q $recovery_root_path/$infrastructure_zip_file_name -d $recovery_root_path | grep 'cannot find zipfile')
   if [ -n "$decrypted_infra_unzip_result" ]; then
@@ -465,18 +494,81 @@ invoke_sub_system_recovery()
     clean_recovery_dir
     exit 1
   fi
-  pure_kmc_pass=\'${kmc_pass}\'
   log_info "Get kmc_pass success."
-  result=$(isula exec -it "$container_id" /bin/bash -c "curl -X 'GET' -H 'accept: */*' -H 'Content-Type: application/json' --cert $internal_cert_infra_path --key $internal_key_infra_path --pass $pure_kmc_pass --cacert $internal_ca_cert_infra_path 'https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/data/recover?subsystem=INFRA&data_type=DB&path=/opt/OceanProtect/protectmanager/sysbackup/recovery/infrastructure'" | grep 'success' | cut -d':' -f2 | tr -d '\r')
-  if [ "$result" = ' true' ]; then
+  result=$(expect <<EOF
+    set timeout 60
+    spawn isula exec -it "$container_id" /bin/bash
+    expect {
+      -re {\[nobody@.*\]} {
+        send "curl -X 'GET' -H 'accept: */*' -H 'Content-Type: application/json' --cert $internal_cert_infra_path --key $internal_key_infra_path --cacert $internal_ca_cert_infra_path 'https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/data/recover?subsystem=INFRA&data_type=DB&path=/opt/OceanProtect/protectmanager/sysbackup/recovery/infrastructure'\r"
+      }
+      timeout {
+        send_user "Timeout occurred\n"
+        send "exit\r"
+        exit 1
+      }
+    }
+    expect {
+      "Enter PEM pass phrase:" {
+        send "${kmc_pass}\r"
+      }
+      timeout {
+        send_user "Timeout occurred\n"
+        send "exit\r"
+        exit 1
+      }
+    }
+    send "exit\r"
+    expect eof
+EOF
+  )
+  if echo "$result" | grep -q 'Timeout'; then
+    log_error "Timeout occurred while recover infrastructure DB!"
+    clean_recovery_dir
+    exit 1
+  fi
+  recover_db_result=$(echo "$result" | grep 'success' | cut -d':' -f2 | tr -d '\r')
+  if [ "$recover_db_result" = ' true' ]; then
     log_info "Recover infrastructure DB success."
   else
     log_error "Recover infrastructure DB failed."
     clean_recovery_dir
     exit 1
   fi
-  result=$(isula exec -it "$container_id" /bin/bash -c "curl -X 'GET' -H 'accept: */*' -H 'Content-Type: application/json' --cert $internal_cert_infra_path --key $internal_key_infra_path --pass $pure_kmc_pass --cacert $internal_ca_cert_infra_path 'https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/data/recover?subsystem=INFRA&data_type=CONFIG&path=/opt/OceanProtect/protectmanager/sysbackup/recovery/infrastructure'" | grep 'success' | cut -d':' -f2 | tr -d '\r')
-  if [ "$result" = ' true' ]; then
+  result=$(expect <<EOF
+    set timeout 60
+    spawn isula exec -it "$container_id" /bin/bash
+    expect {
+      -re {\[nobody@.*\]} {
+        send "curl -X 'GET' -H 'accept: */*' -H 'Content-Type: application/json' --cert $internal_cert_infra_path --key $internal_key_infra_path --cacert $internal_ca_cert_infra_path 'https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/data/recover?subsystem=INFRA&data_type=CONFIG&path=/opt/OceanProtect/protectmanager/sysbackup/recovery/infrastructure'\r"
+      }
+      timeout {
+        send_user "Timeout occurred\n"
+        send "exit\r"
+        exit 1
+      }
+    }
+    expect {
+      "Enter PEM pass phrase:" {
+        send "${kmc_pass}\r"
+      }
+      timeout {
+        send_user "Timeout occurred\n"
+        send "exit\r"
+        exit 1
+      }
+    }
+    send "exit\r"
+    expect eof
+EOF
+  )
+  if echo "$result" | grep -q 'Timeout'; then
+    log_error "Timeout occurred while recover infrastructure CONFIG!"
+    clean_recovery_dir
+    exit 1
+  fi
+  recover_config_result=$(echo "$result" | grep 'success' | cut -d':' -f2 | tr -d '\r')
+  if [ "$recover_config_result" = ' true' ]; then
     log_info "Recover infrastructure CONFIG success."
   else
     log_error "Recover infrastructure CONFIG failed."
@@ -489,8 +581,40 @@ invoke_sub_system_recovery()
 reboot_pm_system()
 {
   log_info "Start reboot PM pod."
-  result=$(isula exec -it "$container_id" /bin/bash -c "curl -X 'POST' -H 'accept: */*' -H 'Content-Type: application/json' --cert $internal_cert_infra_path --key $internal_key_infra_path --pass $pure_kmc_pass --cacert $internal_ca_cert_infra_path 'https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/pod/delete?moduleName=PM'" | grep 'success' | cut -d':' -f2 | tr -d '\r')
-  if [ "$result" = ' true' ]; then
+  result=$(expect <<EOF
+    set timeout 60
+    spawn isula exec -it "$container_id" /bin/bash
+    expect {
+      -re {\[nobody@.*\]} {
+        send "curl -X 'POST' -H 'accept: */*' -H 'Content-Type: application/json' --cert $internal_cert_infra_path --key $internal_key_infra_path --cacert $internal_ca_cert_infra_path 'https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/pod/delete?moduleName=PM'\r"
+      }
+      timeout {
+        send_user "Timeout occurred\n"
+        send "exit\r"
+        exit 1
+      }
+    }
+    expect {
+      "Enter PEM pass phrase:" {
+        send "${kmc_pass}\r"
+      }
+      timeout {
+        send_user "Timeout occurred\n"
+        send "exit\r"
+        exit 1
+      }
+    }
+    send "exit\r"
+    expect eof
+EOF
+  )
+  if echo "$result" | grep -q 'Timeout'; then
+    log_error "Timeout occurred while rebooting PM pod!"
+    clean_recovery_dir
+    exit 1
+  fi
+  reboot_result=$(echo "$result" | grep 'success' | cut -d':' -f2 | tr -d '\r')
+  if [ "$reboot_result" = ' true' ]; then
     log_info "Rebooting PM pod, you can use 'kubectl get po -A' to check the reboot progress."
   else
     log_error "Reboot PM pod failed."
@@ -519,7 +643,8 @@ get_local_backup()
   echo -e "\033[36mBackup File List:\033[0m"
   for element in "${backup_file_list[@]}"
   do
-    echo -e "\033[36m${element}\033[0m"
+    log_des=$(echo -e "\033[36m${element}\033[0m\n" | tr -d '\n\r\f\t\b\v')
+    echo -e "${log_des}"
   done
   read -rp "Please choose the backup file to recovery: " backup_file_name
   while ! echo "$backup_file_list" | grep -qx "$backup_file_name"
@@ -589,15 +714,52 @@ gen_default_sftp_path()
     clean_recovery_dir
     exit 1
   fi
-  pure_kmc_pass=\'${kmc_pass}\'
   log_info "Get kmc_pass success."
-  result=$(isula exec -it "$container_id" /bin/bash -c "curl -X 'GET' -H 'accept: */*' -H 'Content-Type: application/json' --cert /opt/OceanProtect/infrastructure/cert/internal/internal.crt.pem --key /opt/OceanProtect/infrastructure/cert/internal/internal.pem --pass $pure_kmc_pass --cacert /opt/OceanProtect/infrastructure/cert/internal/ca/ca.crt.pem 'https://pm-system-base.dpa.svc.cluster.local:30081/v1/internal/system/esn'" | tr -d '\r' | awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'esn'\042/){print $(i+1)}}}' | tr -d '"' | sed -n 1p)
-  if [ -z "${result}" ]; then
+  result=$(expect <<EOF
+    set timeout 30
+    spawn isula exec -it "$container_id" /bin/bash
+    expect {
+      -re {\[nobody@.*\]} {
+        send "curl -X 'GET' -H 'accept: */*' -H 'Content-Type: application/json' --cert /opt/OceanProtect/infrastructure/cert/internal/internal.crt.pem --key /opt/OceanProtect/infrastructure/cert/internal/internal.pem --cacert /opt/OceanProtect/infrastructure/cert/internal/ca/ca.crt.pem 'https://pm-system-base.dpa.svc.cluster.local:30081/v1/internal/system/esn'\r"
+      }
+      timeout {
+        send_user "Timeout occurred\n"
+        send "exit\r"
+        exit 1
+      }
+    }
+    expect {
+      "Enter PEM pass phrase:" {
+        send "${kmc_pass}\r"
+      }
+      timeout {
+        send_user "Timeout occurred\n"
+        send "exit\r"
+        exit 1
+      }
+    }
+    send "exit\r"
+    expect eof
+EOF
+  )
+  if echo "$result" | grep -q 'Timeout'; then
+    log_error "Timeout occurred while getting ESN!"
+    clean_recovery_dir
+    exit 1
+  fi
+  esn_line=$(echo "$result" | sed -n '4p')
+  if echo "$esn_line" | grep -q "esn";
+  then
+    esn=$(echo "$result" | sed -n '4p' | awk -F'\\[nobody' '{print $1}' | tr -d '\r' | awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'esn'\042/){print $(i+1)}}}' | tr -d '"' | sed -n 1p)
+  else
+    esn=$(echo "$result" | sed -n '5p' | awk -F'\\[nobody' '{print $1}' | tr -d '\r' | awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'esn'\042/){print $(i+1)}}}' | tr -d '"' | sed -n 1p)
+  fi
+  if [ -z "${esn}" ]; then
     log_error "Get esn failed!"
     clean_recovery_dir
     exit 1
   fi
-  default_sftp_path=$(transfer_special_characters_for_expect_send "/var/sysbackup/${result}" | tr -d '\n\r')
+  default_sftp_path=$(transfer_special_characters_for_expect_send "/var/sysbackup/${esn}" | tr -d '\n\r')
 }
 
 main()
@@ -607,7 +769,7 @@ main()
   if [ "$#" -eq 0 ]; then
     get_local_backup
   elif [ "$#" -ge 2 ] && [ "$#" -le 4 ]; then
-    sftp_user=$(transfer_special_characters_for_expect_send "$1")
+    sftp_user="$1"
     if ! check_ipv4 "$2"; then
       if ! check_ipV6 "$2"; then
         log_error "The SFTP host IP address ${2} is invalid!"
@@ -621,12 +783,11 @@ main()
       gen_default_sftp_path
       sftp_path="$default_sftp_path"
     else
-      sftp_path=$(transfer_special_characters_for_expect_send "$3")
+      sftp_path="$3"
     fi
-    sftp_copy_name=$(transfer_special_characters_for_expect_send "$4")
+    sftp_copy_name="$4"
     read -rsp "Enter the sftp user's password: " sftp_password
     echo -e "\r"
-    sftp_password=$(transfer_special_characters_for_expect_send "$sftp_password")
     download_backup_archived
   else
     log_error "Parameters error!"
