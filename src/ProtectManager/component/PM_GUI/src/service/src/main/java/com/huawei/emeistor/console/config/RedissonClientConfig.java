@@ -18,6 +18,7 @@ import com.huawei.emeistor.console.config.datasource.JSONArray;
 import com.huawei.emeistor.console.config.datasource.JSONObject;
 import com.huawei.emeistor.console.exterattack.ExterAttack;
 import com.huawei.emeistor.console.util.EncryptorRestClient;
+import com.huawei.emeistor.console.util.ExceptionUtil;
 import com.huawei.emeistor.console.util.VerifyUtil;
 
 import feign.FeignException;
@@ -46,10 +47,10 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * RedissonClient https config
@@ -119,25 +120,23 @@ public class RedissonClientConfig {
         String password;
         do {
             password = encryptorRestClient.getRedisAuthFromSecret();
-            if (VerifyUtil.isEmpty(password)) {
+            if (StringUtils.isEmpty(password)) {
                 log.error("NA. with redis auth info.");
                 Thread.sleep(SLEEP_TIME); // 死循环中降低CPU占用
             }
-        } while (VerifyUtil.isEmpty(password));
+        } while (StringUtils.isEmpty(password));
         Config config = new Config();
         config.setCodec(codec);
+        config.setNettyThreads(nettyThreads);
         if (isCluster()) {
-            ClusterServersConfig serverConfig = config.useClusterServers();
-            serverConfig.setNodeAddresses(
-                serverNodes.stream().map(this::convertServerAddress).collect(Collectors.toList()));
-            serverConfig.setMasterConnectionPoolSize(100);
-            serverConfig.setMasterConnectionMinimumIdleSize(50);
-            setCommonConfig(serverConfig, password);
+            log.info("redis server is cluster");
+            ClusterServersConfig serversConfig = config.useClusterServers();
+            serversConfig.setNodeAddresses(getNodeAddresses());
+            setCommonConfig(serversConfig, password);
         } else {
+            log.info("redis server is single instance");
             SingleServerConfig serverConfig = config.useSingleServer();
             serverConfig.setAddress(convertServerAddress(serverAddress));
-            serverConfig.setConnectionPoolSize(100);
-            serverConfig.setConnectionMinimumIdleSize(50);
             setCommonConfig(serverConfig, password);
         }
         return Redisson.create(config);
@@ -153,30 +152,7 @@ public class RedissonClientConfig {
     @Bean
     @ExterAttack
     public RedissonClient redissonClient() throws InterruptedException, MalformedURLException {
-        String password;
-        do {
-            password = encryptorRestClient.getRedisAuthFromSecret();
-            if (StringUtils.isEmpty(password)) {
-                log.error("NA. with redis auth info.");
-                Thread.sleep(SLEEP_TIME); // 死循环中降低CPU占用
-            }
-        } while (StringUtils.isEmpty(password));
-        Config config = new Config();
-        config.setCodec(new FstCodec());
-        config.setNettyThreads(nettyThreads);
-        if (isCluster()) {
-            log.info("redis server is cluster");
-            ClusterServersConfig serversConfig = config.useClusterServers();
-            List<String> nodes = serverNodes.stream().map(this::convertServerAddress).collect(Collectors.toList());
-            serversConfig.setNodeAddresses(nodes);
-            setCommonConfig(serversConfig, password);
-        } else {
-            log.info("redis server is single instance");
-            SingleServerConfig serverConfig = config.useSingleServer();
-            serverConfig.setAddress(convertServerAddress(serverAddress));
-            setCommonConfig(serverConfig, password);
-        }
-        return Redisson.create(config);
+        return redissonClient(new FstCodec());
     }
 
     private void setCommonConfig(BaseConfig<?> serverConfig, String password) throws MalformedURLException {
@@ -202,6 +178,19 @@ public class RedissonClientConfig {
             log.error("wrong with get redis auth info from system base");
         }
         return authInfo;
+    }
+
+    private List<String> getNodeAddresses() {
+        List<String> result = new ArrayList<>();
+        for (String nodeAddress : serverNodes) {
+            try {
+                String convertNodeAddress = convertServerAddress(nodeAddress);
+                result.add(convertNodeAddress);
+            } catch (Exception exception) {
+                log.error("Get address fail for: {}.", nodeAddress, ExceptionUtil.getErrorMessage(exception));
+            }
+        }
+        return result;
     }
 
     /**
