@@ -34,6 +34,7 @@ import com.huawei.oceanprotect.system.sdk.service.SystemSwitchInternalService;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.google.common.collect.ImmutableList;
 
@@ -835,7 +836,9 @@ public class ProtectedResourceServiceImpl implements ResourceService {
      */
     private void createResourceSetRelation(ProtectedResource resource) {
         ResourceSetResourceBo resourceSetResourceBo = new ResourceSetResourceBo();
-        resourceSetResourceBo.setParentResourceObjectId(resource.getParentUuid());
+        if (!ResourceSubTypeEnum.FILESET.getType().equals(resource.getSubType())) {
+            resourceSetResourceBo.setParentResourceObjectId(resource.getParentUuid());
+        }
         resourceSetResourceBo.setResourceObjectId(resource.getUuid());
         resourceSetResourceBo.setUserId(resource.getUserId());
         resourceSetResourceBo.setIsManualAdd(Boolean.TRUE);
@@ -1720,7 +1723,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
             // 如果还有关联资源 则打印日志并报错 取第一个资源uuid和type作为提示
             String dependedResourceId = getUuidByCitation(resourceExtendInfoPo);
             Optional<ProtectedResource> resource =
-                resourceService.getBasicResourceById(resourceExtendInfoPo.getResourceId());
+                resourceService.getBasicResourceById(resourceExtendInfoPo.getValue());
             if (resource.isPresent()) {
                 log.error("Resource still have dependency, fail to delete, resource uuid:{}, total dependency size:{}",
                     dependedResourceId, resourceExtendInfos.size());
@@ -2682,8 +2685,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
         ProtectedResource resource = getResourceById(false, resourceId).orElseThrow(
             () -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST));
         String isAllowRestore = resource.getExtendInfo().get(ResourceConstants.IS_ALLOW_RESTORE_KEY);
-        if (StringUtils.isBlank(isAllowRestore) || StringUtils.equals(isAllowRestore,
-            ResourceConstants.NOT_ALLOW_RESTORE)) {
+        if (notAllowRestoreBase(isAllowRestore, resource.getSubType())) {
             isAllowRestoreFlag = ResourceConstants.NOT_ALLOW_RESTORE;
         }
 
@@ -2712,14 +2714,28 @@ public class ProtectedResourceServiceImpl implements ResourceService {
                 continue;
             }
             isAllowRestore = resource.getExtendInfo().get(ResourceConstants.IS_ALLOW_RESTORE_KEY);
-            if (StringUtils.isBlank(isAllowRestore) || StringUtils.equals(isAllowRestore,
-                ResourceConstants.NOT_ALLOW_RESTORE)) {
+            if (notAllowRestoreBase(isAllowRestore, resource.getSubType())) {
                 isAllowRestoreFlag = ResourceConstants.NOT_ALLOW_RESTORE;
                 log.info("child resource {} not allow restore, check end", relatedResourceUuid);
                 break;
             }
         }
         return isAllowRestoreFlag;
+    }
+
+    private boolean notAllowRestoreBase(String isAllowRestoreBase, String resourceSubType) {
+        boolean isAllowRestore = false;
+        if (resourceSubType.equals(ResourceSubTypeEnum.TPOPS_GAUSSDB_INSTANCE.getType())) {
+            if (StringUtils.equals(isAllowRestoreBase, ResourceConstants.NOT_ALLOW_RESTORE)) {
+                isAllowRestore = true;
+            }
+        } else {
+            if (StringUtils.isBlank(isAllowRestoreBase) || StringUtils.equals(isAllowRestoreBase,
+                    ResourceConstants.NOT_ALLOW_RESTORE)) {
+                isAllowRestore = true;
+            }
+        }
+        return isAllowRestore;
     }
 
     private String judgeParentResourceAllowRestore(String isAllowRestoreFlag, ProtectedResource resource) {
@@ -2742,8 +2758,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
             }
 
             String isAllowRestore = parentResource.getExtendInfo().get(ResourceConstants.IS_ALLOW_RESTORE_KEY);
-            if (StringUtils.isBlank(isAllowRestore) || StringUtils.equals(isAllowRestore,
-                ResourceConstants.NOT_ALLOW_RESTORE)) {
+            if (notAllowRestoreBase(isAllowRestore, resource.getSubType())) {
                 allowRestoreFlag = ResourceConstants.NOT_ALLOW_RESTORE;
                 log.info("Parent resource {} not allow restore, check end", parentUuid);
                 break;
@@ -2882,6 +2897,30 @@ public class ProtectedResourceServiceImpl implements ResourceService {
                     CopyGeneratedByEnum.BY_CASCADED_REPLICATION.value(),
                     CopyGeneratedByEnum.BY_REVERSE_REPLICATION.value())));
         return copyListParams;
+    }
+
+    @Override
+    public int batchUpdateStatusById(List<String> uuids, int protectStatus) {
+        if (VerifyUtil.isEmpty(uuids)) {
+            return 0;
+        }
+        int batchSize = 1000;
+        int totalSize = uuids.size();
+        int fromIndex = 0;
+        while (fromIndex < totalSize) {
+            // 获取当前批次的 ID 列表
+            int toIndex = Math.min(fromIndex + batchSize, totalSize);
+            List<String> subList = uuids.subList(fromIndex, toIndex);
+
+            // 执行批量更新
+            LambdaUpdateWrapper<ProtectedResourcePo> wrapper = new LambdaUpdateWrapper<>();
+            wrapper.in(ProtectedResourcePo::getUuid, subList);
+            wrapper.set(ProtectedResourcePo::getProtectionStatus, protectStatus);
+            protectedResourceMapper.update(null, wrapper);
+            fromIndex = toIndex;
+        }
+
+        return 0;
     }
 
     private void updateCopyUserForHCS(UserInnerResponse userInfoByUserId, CopyListParams copyListParams) {

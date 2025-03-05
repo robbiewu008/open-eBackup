@@ -13,6 +13,7 @@
 package openbackup.data.access.framework.copy.mng.handler.v2;
 
 import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.system.base.label.service.LabelService;
 
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.index.service.impl.UnifiedCopyIndexService;
@@ -41,6 +42,7 @@ import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.JobStopParam;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.RecoveryCallback;
 import org.springframework.retry.RetryCallback;
@@ -77,6 +79,9 @@ public class UnifiedCopyDeleteCompleteHandler extends UnifiedTaskCompleteHandler
     private UserQuotaManager userQuotaManager;
 
     private ProviderManager providerManager;
+
+    @Autowired
+    private LabelService labelService;
 
     public UnifiedCopyDeleteCompleteHandler(NotifyManager notifyManager, CopyRestApi copyRestApi, JobService jobService,
         UnifiedCopyIndexService unifiedCopyIndexService, JobCenterRestApi jobCenterRestApi) {
@@ -148,6 +153,9 @@ public class UnifiedCopyDeleteCompleteHandler extends UnifiedTaskCompleteHandler
         if (isSuccess) {
             // 副本删除成功，减少用户已使用配额
             userQuotaManager.decreaseUsedQuota(jobId, copy);
+            // 删除标签关联关系(一样的逻辑抽象出来比较好)
+            labelService.deleteByResourceObjectIdsAndLabelIds(Collections.singletonList(copy.getUuid()),
+                StringUtils.EMPTY);
         }
         // 发送删除任务完成消息
         sendCopyDeleteCompletedMessage(requestId);

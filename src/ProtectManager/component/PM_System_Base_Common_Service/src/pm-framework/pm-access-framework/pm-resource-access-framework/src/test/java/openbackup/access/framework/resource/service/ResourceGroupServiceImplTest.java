@@ -30,6 +30,8 @@ import openbackup.data.protection.access.provider.sdk.resourcegroup.req.Resource
 import openbackup.data.protection.access.provider.sdk.resourcegroup.req.UpdateResourceGroupProtectedObjectRequest;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.resp.ResourceGroupDetailVo;
 import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.report.enums.ProtectStatusEnum;
+
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.resource.ProtectObjectRestApi;
@@ -369,5 +371,29 @@ public class ResourceGroupServiceImplTest {
         PowerMockito.when(resourceGroupMapper.selectById("12"))
             .thenReturn(any());
         Assert.assertEquals(false, groupService.isResourceGroupExit("12"));
+    }
+
+    /**
+     * 测试用例：根据资源组类型查询资源组数量
+     * 前置条件：无
+     * CHECK点：查询无逻辑错误
+     */
+    @Test
+    public void count_by_group_type_success() {
+        PowerMockito.when(resourceGroupMapper.selectCount(any()))
+            .thenReturn(0L);
+        Assert.assertEquals(0, resourceGroupRepository.countByGroupType("rule"));
+    }
+
+    /**
+     * 测试用例：根据id更新资源保护状态
+     * 前置条件：无
+     * CHECK点：更新无逻辑错误
+     */
+    @Test
+    public void update_status_by_id_success() {
+        PowerMockito.when(resourceGroupMapper.updateById(any()))
+            .thenReturn(0);
+        Assert.assertEquals(0, resourceGroupRepository.updateStatusById("uuid", ProtectStatusEnum.PROTECTED));
     }
 }

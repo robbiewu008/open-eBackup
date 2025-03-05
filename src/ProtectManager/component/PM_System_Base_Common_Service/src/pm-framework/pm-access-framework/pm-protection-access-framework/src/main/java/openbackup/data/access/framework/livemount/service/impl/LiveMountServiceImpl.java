@@ -12,6 +12,9 @@
 */
 package openbackup.data.access.framework.livemount.service.impl;
 
+import static openbackup.system.base.common.constants.DateFormatConstant.DATE_TIME;
+import static openbackup.system.base.common.constants.DateFormatConstant.DATE_TIME_WITH_T;
+
 import com.huawei.oceanprotect.base.cluster.sdk.enums.StorageUnitTypeEnum;
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterBasicService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
@@ -35,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.service.CopyAuthVerifyService;
 import openbackup.data.access.framework.copy.mng.service.CopyService;
 import openbackup.data.access.framework.core.dao.CopyMapper;
-import openbackup.data.access.framework.core.entity.CopiesEntity;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.livemount.TopicConstants;
 import openbackup.data.access.framework.livemount.common.LiveMountOperateType;
@@ -65,6 +67,7 @@ import openbackup.data.protection.access.provider.sdk.livemount.LiveMountInterce
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceBase;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.system.base.bean.CopiesEntity;
 import openbackup.system.base.common.constants.AuthOperationEnum;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
@@ -113,12 +116,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.sql.Timestamp;
 import java.text.Normalizer;
+import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -625,7 +631,8 @@ public class LiveMountServiceImpl implements LiveMountService {
                         .eq(LiveMountEntity::getId, liveMountEntity.getId())
                         .set(LiveMountEntity::getMountJobId, liveMountEntity.getMountJobId())
                         .set(LiveMountEntity::getMountedCopyId, mountedCopy.getUuid())
-                        .set(LiveMountEntity::getMountedCopyDisplayTimestamp, mountedCopy.getDisplayTimestamp())
+                        .set(LiveMountEntity::getMountedCopyDisplayTimestamp,
+                                convertStringToTimestamp(mountedCopy.getDisplayTimestamp()))
                         .set(LiveMountEntity::getMountedSourceCopyId, mountedCopy.getUuid())
                         .set(LiveMountEntity::getCopyId, mountedCopy.getUuid());
         liveMountEntityDao.update(null, wrapper);
@@ -690,8 +697,13 @@ public class LiveMountServiceImpl implements LiveMountService {
             boolean isSupportLogCopy = liveMountServiceProvider.isSupportLogCopy();
             sourceCopy = queryLatestCopy(liveMountEntity, null, isSupportLogCopy);
         }
+        if (VerifyUtil.isEmpty(sourceCopy)) {
+            log.info("There is no new copy need to live mount.");
+            return;
+        }
         boolean isValid = liveMountServiceProvider.isSourceCopyCanBeMounted(sourceCopy, isManualUpdate);
         if (!isValid) {
+            log.info("There is no valid copy can be mounted.");
             return;
         }
         executeLiveMountOnCopyChanged(liveMountEntity, policy, sourceCopy, isManualUpdate);
@@ -1560,6 +1572,27 @@ public class LiveMountServiceImpl implements LiveMountService {
         if (keySet.contains(SHARE_NAME)) {
             checkFileSystemNameRegex(MapUtils.getString(advanceParams, SHARE_NAME));
         }
+    }
+
+    private Timestamp convertStringToTimestamp(String time) {
+        if (time == null) {
+            return new Timestamp(System.currentTimeMillis());
+        }
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_TIME_WITH_T);
+            Date parsedDate = dateFormat.parse(time);
+            return new Timestamp(parsedDate.getTime());
+        } catch (Exception e) {
+            log.error("database dateTime parse error", e);
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_TIME);
+                Date parsedDate = dateFormat.parse(time);
+                return new Timestamp(parsedDate.getTime());
+            } catch (Exception exception) {
+                log.error("database dateTime parse error", exception);
+            }
+        }
+        return new Timestamp(System.currentTimeMillis());
     }
 
     private void checkFileSystemKeepTime(LiveMountObject liveMountObject) {

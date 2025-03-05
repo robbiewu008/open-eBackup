@@ -98,6 +98,11 @@ public class VirtualResourceResponsePo {
     private String instanceId;
 
     /**
+     * 虚拟机设置中引导选项中的固件信息，如"bios"
+     */
+    private String firmware;
+
+    /**
      * 虚拟机名称
      */
     private String name;

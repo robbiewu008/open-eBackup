@@ -133,6 +133,12 @@ public interface ProtectedResourceMapper extends BaseMapper<ProtectedResourcePo>
     String RESOURCE_UUID_SQL = "select r.uuid from resources r ${ew.customSqlSegment}";
 
     /**
+     * RESOURCE_BY_UUIDS_SQL
+     */
+    String RESOURCE_BY_UUIDS_SQL = "<script>select * from resources where uuid in" + ID_LIST
+        + "</script>";
+
+    /**
      * WITH RECURSIVE tree(uuid, parent_uuid) as (<br/>
      * select r1.uuid, r1.parent_uuid from resources r1 where r1.uuid = #{id}<br/>
      * union all<br/>
@@ -446,4 +452,13 @@ public interface ProtectedResourceMapper extends BaseMapper<ProtectedResourcePo>
         + "and res_ext.key = 'agent_applications' "
         + "and res_ext.value like CONCAT('%',#{appLabelType},'%');")
     List<ProtectedResource> queryOnlineAgentListByAppLabel(@Param("appLabelType") String appLabelType);
+
+    /**
+     * 根据ids查资源
+     *
+     * @param uuids id集合
+     * @return 资源集合
+     */
+    @Select(RESOURCE_BY_UUIDS_SQL)
+    List<ProtectedResourcePo> listResourceByUuid(@Param("ids") List<String> uuids);
 }

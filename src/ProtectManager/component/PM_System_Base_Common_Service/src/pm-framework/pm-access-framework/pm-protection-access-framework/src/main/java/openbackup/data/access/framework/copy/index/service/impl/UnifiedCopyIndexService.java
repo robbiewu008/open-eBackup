@@ -329,6 +329,11 @@ public class UnifiedCopyIndexService implements ICopyIndexService {
         indexTask.setStorageRepository(
             taskRepositoryManager.getCopyRepoWithAuth(copy.getProperties(), copy.getStorageUnitId(),
                 RepositoryTypeEnum.DATA.getType()).orElse(null));
+        String subType = copy.getResourceSubType();
+        CopyIndexProvider copyIndexProvider = providerManager.findProvider(CopyIndexProvider.class, subType, null);
+        if (copyIndexProvider != null) {
+            copyIndexProvider.initialize(indexTask);
+        }
         return indexTask;
     }
 

@@ -258,7 +258,10 @@ public abstract class BaseCopyDeleteInterceptor implements CopyDeleteInterceptor
         List<String> copyUuids = new ArrayList<>();
         int backupType = thisCopy.getBackupType();
         Copy nextFullCopy = CopyUtil.getNextFullCopy(copies, thisCopy.getGn());
-        switch (BackupTypeConstants.getBackupTypeByAbBackupType(backupType)) {
+        log.info("copies:{}", copies);
+        BackupTypeConstants backupTypeByAbBackupType = BackupTypeConstants.getBackupTypeByAbBackupType(backupType);
+        log.info("backupTypeByAbBackupType:{}", backupTypeByAbBackupType);
+        switch (backupTypeByAbBackupType) {
             case FULL:
                 copyUuids = getCopiesCopyTypeIsFull(copies, thisCopy, nextFullCopy);
                 break;

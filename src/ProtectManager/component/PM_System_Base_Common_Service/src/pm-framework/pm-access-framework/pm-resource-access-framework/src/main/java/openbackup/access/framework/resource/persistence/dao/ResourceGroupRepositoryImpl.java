@@ -12,6 +12,9 @@
 */
 package openbackup.access.framework.resource.persistence.dao;
 
+import static openbackup.system.base.common.validator.constants.RegexpConstants.UUID_N0_SEPARATOR;
+
+import com.huawei.oceanprotect.report.enums.ProtectStatusEnum;
 import com.huawei.oceanprotect.system.base.user.common.enums.ResourceSetScopeModuleEnum;
 import com.huawei.oceanprotect.system.base.user.entity.ResourceSetResourceBo;
 import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
@@ -22,38 +25,34 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 
-import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.access.framework.resource.constant.SqlBuilderConstant;
 import openbackup.access.framework.resource.persistence.model.ResourceGroupExtendField;
 import openbackup.access.framework.resource.persistence.model.ResourceGroupMemberPo;
 import openbackup.access.framework.resource.persistence.model.ResourceGroupPo;
+import openbackup.access.framework.resource.service.ResourceGroupMemberRepository;
 import openbackup.access.framework.resource.service.ResourceGroupRepository;
 import openbackup.data.access.framework.core.dao.ProtectedObjectMapper;
 import openbackup.data.access.framework.core.entity.ProtectedObjectPo;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupDto;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupMemberDto;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupProtectedObjectDto;
+import openbackup.data.protection.access.provider.sdk.resourcegroup.enums.GroupTypeEnum;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.req.ResourceGroupQueryParams;
-import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.TokenBo;
-import openbackup.system.base.common.exception.LegoCheckedException;
-import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.JSONObject;
+import openbackup.system.base.common.utils.ValidateUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.query.PageQueryService;
 import openbackup.system.base.query.Pagination;
 import openbackup.system.base.query.SessionService;
 import openbackup.system.base.query.SnakeCasePageQueryFieldNamingStrategy;
 import openbackup.system.base.sdk.copy.model.BasePage;
-import openbackup.system.base.sdk.resource.ProtectObjectRestApi;
-import openbackup.system.base.sdk.resource.enums.ProtectionStatusEnum;
-import openbackup.system.base.sdk.resource.model.ProtectedObjectInfo;
-import openbackup.system.base.sdk.resource.model.ProtectionBatchOperationReq;
-import openbackup.system.base.sdk.resource.model.ProtectionModifyDto;
 import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
 import openbackup.system.base.service.ResourceGroupService;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +62,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -97,7 +97,7 @@ public class ResourceGroupRepositoryImpl implements ResourceGroupRepository, Res
     private SessionService sessionService;
 
     @Autowired
-    private ProtectObjectRestApi protectObjectRestApi;
+    private ResourceGroupMemberRepository resourceGroupMemberRepository;
 
     @Autowired
     private ResourceSetApi resourceSetApi;
@@ -138,20 +138,18 @@ public class ResourceGroupRepositoryImpl implements ResourceGroupRepository, Res
 
     private void saveResourceGroupMembers(String resourceGroupId,
                                           List<ResourceGroupMemberDto> resourceGroupMemberDtos) {
+        if (VerifyUtil.isEmpty(resourceGroupMemberDtos)) {
+            return;
+        }
+        List<ResourceGroupMemberPo> members = new ArrayList<>();
         for (ResourceGroupMemberDto resourceGroupMemberDto : resourceGroupMemberDtos) {
             ResourceGroupMemberPo resourceGroupMemberPo = new ResourceGroupMemberPo();
             BeanUtils.copyProperties(resourceGroupMemberDto, resourceGroupMemberPo);
             resourceGroupMemberPo.setUuid(UUID.randomUUID().toString());
             resourceGroupMemberPo.setResourceGroupId(resourceGroupId);
-            resourceGroupMemberMapper.insert(resourceGroupMemberPo);
+            members.add(resourceGroupMemberPo);
         }
-    }
-
-    private boolean isWithoutSla(ProtectedObjectInfo groupProtectObject) {
-        if (VerifyUtil.isEmpty(groupProtectObject)) {
-            return true;
-        }
-        return VerifyUtil.isEmpty(groupProtectObject.getSlaId());
+        resourceGroupMemberRepository.saveBatch(members, 1000);
     }
 
     @Override
@@ -166,18 +164,65 @@ public class ResourceGroupRepositoryImpl implements ResourceGroupRepository, Res
                 conditions.remove("sla_compliance");
             }
         }
+        final Map<String, Object> labelCondition = handleLabelCondition(conditions);
         Pagination<JSONObject> resourceGroupPagination = new Pagination<>(resourceGroupQueryParams.getPageNo(),
                 resourceGroupQueryParams.getPageSize(), conditions,
                 Collections.singletonList(resourceGroupQueryParams.getOrders()),
                 SnakeCasePageQueryFieldNamingStrategy.NAME);
         BasePage<ResourceGroupExtendField> resourceGroupPoBasePage =
-                pageQueryService.pageQuery(ResourceGroupExtendField.class, resourceGroupMapper::page,
+                pageQueryService.pageQuery(ResourceGroupExtendField.class,
+                    (page, wrapper) -> {
+                    addResourceLabelListCondition(wrapper, labelCondition);
+                    return resourceGroupMapper.page(page, wrapper);
+                    },
                         resourceGroupPagination, "-created_time", "uuid");
         BasePage<ResourceGroupDto> resourceGroupDtoPagination = new BasePage<>();
         BeanUtils.copyProperties(resourceGroupPoBasePage, resourceGroupDtoPagination);
         resourceGroupDtoPagination.setItems(
                 resourceGroupPoBasePage.getItems().stream().map(this::convertPoToDto).collect(Collectors.toList()));
         return resourceGroupDtoPagination;
+    }
+
+    private Map<String, Object> handleLabelCondition(JSONObject conditions) {
+        Map<String, Object> labelCondition = new HashMap<>();
+        Object labelConditionMap = conditions.get(SqlBuilderConstant.KEY_LABEL_CONDITION);
+        if (VerifyUtil.isEmpty(labelConditionMap) || !(labelConditionMap instanceof Map)) {
+            return labelCondition;
+        }
+        Object labelList = ((Map<?, ?>) labelConditionMap).remove(SqlBuilderConstant.KEY_LABEL_LIST);
+        if (VerifyUtil.isEmpty(labelList) || !(labelList instanceof List)) {
+            return labelCondition;
+        }
+        labelCondition.put(SqlBuilderConstant.KEY_LABEL_LIST, labelList);
+        return labelCondition;
+    }
+
+    private void addResourceLabelListCondition(QueryWrapper<ResourceGroupExtendField> wrapper,
+        Map<String, Object> labelConditions) {
+        if (VerifyUtil.isEmpty(labelConditions)) {
+            return;
+        }
+        Object labelListObj = labelConditions.get(SqlBuilderConstant.KEY_LABEL_LIST);
+        if (VerifyUtil.isEmpty(labelListObj) || !(labelListObj instanceof List)
+            || VerifyUtil.isEmpty((List<?>) labelListObj)) {
+            return;
+        }
+        List<String> labelList = (List<String>) labelListObj;
+        StringBuilder labelListSql = new StringBuilder(SqlBuilderConstant.LABEL_LIST_CONDITION_SQL_PREFIX);
+        for (int i = 0; i < labelList.size(); i++) {
+            // uuid防注入
+            if (!ValidateUtil.match(UUID_N0_SEPARATOR, labelList.get(i))) {
+                continue;
+            }
+            labelListSql.append(SqlBuilderConstant.SINGLE_QUOTES).append(labelList.get(i))
+                .append(SqlBuilderConstant.SINGLE_QUOTES);
+            if (i < (labelList.size() - 1)) {
+                labelListSql.append(SqlBuilderConstant.COMMA);
+            }
+        }
+        labelListSql.append(SqlBuilderConstant.LABEL_LIST_CONDITION_SQL_SUFFIX)
+            .append(labelList.size());
+        wrapper.inSql(SqlBuilderConstant.COLUMN_Q_UUID, labelListSql.toString());
     }
 
     private void fillResourceGroupConditions(JSONObject conditions) {
@@ -272,65 +317,23 @@ public class ResourceGroupRepositoryImpl implements ResourceGroupRepository, Res
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String update(ResourceGroupDto resourceGroupDto) {
-        // 1. 取出新的newResourceIdSet
-        Set<String> newResourceIdset = resourceGroupDto.getResources().stream().map(
-                ResourceGroupMemberDto::getSourceId).collect(Collectors.toSet());
-        // 2. 找出当前的existResourceIdSet
-        LambdaQueryWrapper<ResourceGroupMemberPo> wrapper = new LambdaQueryWrapper<ResourceGroupMemberPo>()
-                .eq(ResourceGroupMemberPo::getResourceGroupId, resourceGroupDto.getUuid());
-        List<ResourceGroupMemberPo> existResourceGroupMemberPos = resourceGroupMemberMapper.selectList(wrapper);
-        Set<String> existResourceIdSet = existResourceGroupMemberPos.stream().map(
-                ResourceGroupMemberPo::getSourceId).collect(Collectors.toSet());
-        // 3. 计算待删除的resourceIds，并进行删除处理
-        Set<String> toDeleteResourceIdSet = new HashSet<>(existResourceIdSet);
-        toDeleteResourceIdSet.removeAll(newResourceIdset);
-        deleteOldGroupMemberDtos(resourceGroupDto, new ArrayList<>(toDeleteResourceIdSet));
-        log.info("Finished delete old members for group {}, {}.", resourceGroupDto.getName(),
-                resourceGroupDto.getUuid());
-        // 4. 计算待新增的resourceIds，并进行增加处理
-        Set<String> toAddResourceIdSet = new HashSet<>(newResourceIdset);
-        toAddResourceIdSet.removeAll(existResourceIdSet);
-        List<ResourceGroupMemberDto> toAddResourceGroupMemberDtos = resourceGroupDto.getResources().stream().filter(
-                        resourceGroupMemberDto -> toAddResourceIdSet.contains(resourceGroupMemberDto.getSourceId()))
+    public String update(ResourceGroupDto resourceGroupDto, Set<String> toDeleteResourceIdSet,
+        Set<String> toAddResourceIdSet) {
+        // 1. 并进行删除处理
+        deleteOldGroupMemberDtos(resourceGroupDto, toDeleteResourceIdSet);
+
+        // 2. 子资源并进行增加处理
+        List<ResourceGroupMemberDto> toAddResourceGroupMemberDtos = Collections.emptyList();
+        if (!GroupTypeEnum.RULE.getValue().equals(resourceGroupDto.getGroupType())) {
+            toAddResourceGroupMemberDtos = resourceGroupDto.getResources().stream()
+                .filter(
+                    resourceGroupMemberDto -> toAddResourceIdSet.contains(resourceGroupMemberDto.getSourceId()))
                 .collect(Collectors.toList());
+        }
         saveResourceGroupMembers(resourceGroupDto.getUuid(), toAddResourceGroupMemberDtos);
-        createProtectIfGroupProtected(resourceGroupDto.getUuid(), toAddResourceGroupMemberDtos);
         log.info("Finished add new members for group {}, {}.", resourceGroupDto.getName(), resourceGroupDto.getUuid());
         // 保存组信息
         return updateResourceGroup(resourceGroupDto);
-    }
-
-    private void createProtectIfGroupProtected(String groupId,
-        List<ResourceGroupMemberDto> toAddResourceGroupMemberDtos) {
-        // 当前组已受到保护，添加组成员时，要同时添加组成员的保护
-        ProtectedObjectInfo groupProtectObject = protectObjectRestApi.getProtectObject(groupId);
-        if (isWithoutSla(groupProtectObject)) {
-            return;
-        }
-        boolean isProtected = ProtectionStatusEnum.PROTECTED.getType().equals(groupProtectObject.getStatus());
-        toAddResourceGroupMemberDtos.forEach(memberDto -> {
-            ProtectionModifyDto protectionModifyDto = new ProtectionModifyDto();
-            protectionModifyDto.setSlaId(groupProtectObject.getSlaId());
-            protectionModifyDto.setResourceId(memberDto.getSourceId());
-            protectionModifyDto.setIsResourceGroup(false);
-            protectionModifyDto.setIsGroupSubResource(true);
-            protectionModifyDto.setResourceGroupId(groupId);
-            protectionModifyDto.setExtParameters(groupProtectObject.getExtParameters());
-            protectObjectRestApi.createProtectedObjectInternal(protectionModifyDto);
-            if (!isProtected) {
-                ProtectionBatchOperationReq operationReq = new ProtectionBatchOperationReq();
-                operationReq.setResourceIds(Collections.singletonList(memberDto.getSourceId()));
-                operationReq.setIsResourceGroup(false);
-                try {
-                    protectObjectRestApi.deactivate(operationReq);
-                } catch (LegoUncheckedException | FeignException ex) {
-                    log.error("Call deactivate api failed, resource id: {}", memberDto.getSourceId(), ex);
-                    throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR, "call deactivate error.");
-                }
-            }
-            log.info("Create group sub resource protect object success. Resource id :{}", memberDto.getSourceId());
-        });
     }
 
     @Override
@@ -365,11 +368,13 @@ public class ResourceGroupRepositoryImpl implements ResourceGroupRepository, Res
         resourceGroupPo.setProtectionStatus(null);
     }
 
-    private void deleteOldGroupMemberDtos(ResourceGroupDto newResourceGroupDto, List<String> toDeleteResourceIds) {
-        // 1. 待删除为空则不删除
-        if (VerifyUtil.isEmpty(toDeleteResourceIds)) {
+    private void deleteOldGroupMemberDtos(ResourceGroupDto newResourceGroupDto, Set<String> toDeleteResourceIdSet) {
+        // 1. 按规则过滤组以及待删除为空则不删除
+        if (GroupTypeEnum.RULE.getValue().equals(newResourceGroupDto.getGroupType())
+            || VerifyUtil.isEmpty(toDeleteResourceIdSet)) {
             return;
         }
+        List<String> toDeleteResourceIds = new ArrayList<>(toDeleteResourceIdSet);
         // 2. 组成员列表不为空，则进行删除处理
         LambdaQueryWrapper<ResourceGroupMemberPo> wrapper = new LambdaQueryWrapper<ResourceGroupMemberPo>()
                 .in(ResourceGroupMemberPo::getSourceId, toDeleteResourceIds)
@@ -377,16 +382,6 @@ public class ResourceGroupRepositoryImpl implements ResourceGroupRepository, Res
         int count = resourceGroupMemberMapper.delete(wrapper);
         log.info("Deleted {} resource group members for group of {}.", count,
                 newResourceGroupDto.getUuid());
-        // 3. 当前组已受到保护，移除组成员时，要同时移除组成员的保护
-        ProtectedObjectInfo groupProtectObject = protectObjectRestApi.getProtectObject(newResourceGroupDto.getUuid());
-        if (isWithoutSla(groupProtectObject)) {
-            return;
-        }
-        ProtectionBatchOperationReq batchOperationReq = new ProtectionBatchOperationReq();
-        batchOperationReq.setResourceIds(toDeleteResourceIds);
-        batchOperationReq.setIsResourceGroup(false);
-        protectObjectRestApi.deleteProtectedObjects(batchOperationReq);
-        log.info("Remove protect for group sub resources success. Deleted resources ids:{}", toDeleteResourceIds);
     }
 
     /**
@@ -408,7 +403,31 @@ public class ResourceGroupRepositoryImpl implements ResourceGroupRepository, Res
         if (protectedObjectPo != null) {
             resourceGroupDto.setProtectedObjectDto(convertPoToDto(protectedObjectPo));
         }
+        if (GroupTypeEnum.RULE.getValue().equals(resourceGroupPo.getGroupType())) {
+            resourceGroupDto.setResources(listByGroupId(resourceGroupPo.getUuid()));
+        }
         return resourceGroupDto;
+    }
+
+    private List<ResourceGroupMemberDto> listByGroupId(String groupId) {
+        // 过滤掉资源组本身
+        return listProtectedObjectPoByGroupId(groupId).stream()
+            .filter(v -> !groupId.equals(v.getResourceId()))
+            .map(this::convertProtectedObjectPoToDto).collect(Collectors.toList());
+    }
+
+    private List<ProtectedObjectPo> listProtectedObjectPoByGroupId(String groupId) {
+        LambdaQueryWrapper<ProtectedObjectPo> wrapper = new LambdaQueryWrapper<ProtectedObjectPo>()
+            .eq(ProtectedObjectPo::getResourceGroupId, groupId);
+        return protectedObjectMapper.selectList(wrapper);
+    }
+
+    private ResourceGroupMemberDto convertProtectedObjectPoToDto(ProtectedObjectPo po) {
+        ResourceGroupMemberDto dto = new ResourceGroupMemberDto();
+        dto.setResourceGroupId(po.getResourceGroupId());
+        dto.setSourceId(po.getResourceId());
+        dto.setSourceSubType(po.getSubType());
+        return dto;
     }
 
     private ResourceGroupMemberDto convertPoToDto(ResourceGroupMemberPo resourceGroupMemberPo) {
@@ -427,13 +446,25 @@ public class ResourceGroupRepositoryImpl implements ResourceGroupRepository, Res
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public void deleteByScopeResourceId(String scopeResourceId) {
+        List<ResourceGroupPo> resourceGroupInScope =
+                Optional.ofNullable(resourceGroupMapper.selectList(new LambdaQueryWrapper<ResourceGroupPo>()
+                        .eq(ResourceGroupPo::getScopeResourceId, scopeResourceId))).orElse(Lists.newArrayList());
+        for (ResourceGroupPo resourceGroupPo : resourceGroupInScope) {
+            delete(resourceGroupPo.getUuid());
+        }
+        log.info("Finished deleting all resource groups of environment {} and their members.", scopeResourceId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(String resourceGroupId) {
         resourceGroupMapper.deleteById(resourceGroupId);
         resourceGroupMemberMapper.delete(
                 new LambdaUpdateWrapper<ResourceGroupMemberPo>().eq(
                         ResourceGroupMemberPo::getResourceGroupId, resourceGroupId));
         resourceSetApi.deleteResourceSetRelation(resourceGroupId, ResourceSetTypeEnum.RESOURCE_GROUP);
-        log.info("Finish delete resource group with id {} and it's members.", resourceGroupId);
+        log.info("Finished deleting resource group with id {} and its members.", resourceGroupId);
     }
 
     @Override
@@ -450,5 +481,20 @@ public class ResourceGroupRepositoryImpl implements ResourceGroupRepository, Res
     @Override
     public boolean isResourceGroupExit(String id) {
         return !VerifyUtil.isEmpty(resourceGroupMapper.selectById(id));
+    }
+
+    @Override
+    public int countByGroupType(String groupType) {
+        LambdaQueryWrapper<ResourceGroupPo> wrapper = new LambdaQueryWrapper<ResourceGroupPo>()
+            .eq(ResourceGroupPo::getGroupType, groupType);
+        return resourceGroupMapper.selectCount(wrapper).intValue();
+    }
+
+    @Override
+    public int updateStatusById(String uuid, ProtectStatusEnum protectStatus) {
+        ResourceGroupPo po = new ResourceGroupPo();
+        po.setUuid(uuid);
+        po.setProtectionStatus(protectStatus.getProtectStatusNum());
+        return resourceGroupMapper.updateById(po);
     }
 }

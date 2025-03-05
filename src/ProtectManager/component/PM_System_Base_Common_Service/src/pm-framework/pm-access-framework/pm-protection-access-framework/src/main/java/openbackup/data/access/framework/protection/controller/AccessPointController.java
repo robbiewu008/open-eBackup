@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.protection.controller;
 
+import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.TIME_ZONE;
 import static openbackup.data.access.framework.core.common.constants.TopicConstants.REPLICATION_COMPLETED_TOPIC;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
@@ -41,6 +42,7 @@ import openbackup.data.access.framework.protection.service.archive.ArchiveJobSer
 import openbackup.data.access.framework.protection.service.archive.CopyDependencyQueryResponse;
 import openbackup.data.access.framework.protection.service.archive.DefaultArchiveCopyProvider;
 import openbackup.data.access.framework.protection.service.quota.UserQuotaManager;
+import openbackup.data.access.framework.protection.service.replication.RepCommonService;
 import openbackup.data.access.framework.protection.service.replication.ReplicationService;
 import openbackup.data.access.framework.protection.service.replication.UnifiedReplicationProvider;
 import openbackup.data.access.framework.protectobject.service.ProjectObjectService;
@@ -76,6 +78,7 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.sdk.copy.model.CopyStatus;
+import openbackup.system.base.sdk.copy.model.CopyStorageUnitStatus;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.CreateJobRequest;
 import openbackup.system.base.sdk.protection.model.PolicyBo;
@@ -111,6 +114,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
@@ -191,6 +195,9 @@ public class AccessPointController {
 
     @Autowired
     private DefaultArchiveCopyProvider defaultArchiveCopyProvider;
+
+    @Autowired
+    private RepCommonService repCommonService;
 
     /**
      * 生成恢复任务 接口：/v1/internal/restore-task/action/create 方法：Post
@@ -344,6 +351,7 @@ public class AccessPointController {
         copy.setGeneration(0);
         copy.setParentCopyUuid(null);
         copy.setStatus(CopyStatus.NORMAL.getValue());
+        copy.setStorageUnitStatus(CopyStorageUnitStatus.ONLINE.getValue());
         copy.setIndexed(CopyIndexStatus.UNINDEXED.getIndexStaus());
         copy.setJobType(JobTypeEnum.COPY_REPLICATION.getValue());
         copy.setGeneratedTime(Constants.SIMPLE_DATE_FORMAT.format(generateTime));
@@ -522,18 +530,18 @@ public class AccessPointController {
 
         if (RetentionTypeEnum.TEMPORARY.getType().equals(repRetention.getRetentionType())) {
             CopyInfoBuilder.buildRetentionInfo(copy, replicationPolicy, replicationDate.getTime());
-            // 原副本为worm格式,从端副本过期时间取备份副本和复制策略中保留时间长的
-            if (isOriginCopyWorm) {
-                fillOriginCopyWorm(copy, importParam, replicationDate.getTime(), repRetention);
-            }
-            if (existWormPolicy) {
-                fillWormPolicyCopyWorm(copy, replicationDate.getTime());
-            }
         } else {
             // 复制策略为永久保留，无须与原副本保留时间比较
             copy.setRetentionType(RetentionTypeEnum.PERMANENT.getType());
             copy.setRetentionDuration(0);
             copy.setExpirationTime(null);
+        }
+        // 原副本为worm格式,从端副本过期时间取备份副本和复制策略中保留时间长的
+        if (isOriginCopyWorm) {
+            fillOriginCopyWorm(copy, importParam, replicationDate.getTime(), repRetention);
+        }
+        if (existWormPolicy) {
+            fillWormPolicyCopyWorm(copy, replicationDate.getTime());
         }
     }
 
@@ -577,9 +585,12 @@ public class AccessPointController {
                 TimeUnitEnum.getByUnit(wormDurationUnit), wormRetentionDuration);
             copy.setWormExpirationTime(backupWormExpirationTime);
         }
-        // 过期时间应该取原副本过期时间的情况：原副本为worm格式,原副本为永久保留或原副本保留时间大于复制策略保留时间
-        if (!RetentionTypeEnum.TEMPORARY.getType().equals(originCopyRetentionType) || copy.getExpirationTime()
-            .before(backupWormExpirationTime)) {
+        // worm过期时间应该取原副本过期时间的情况：原副本为worm格式,原副本为永久保留或原副本保留时间大于复制策略保留时间
+        if (!RetentionTypeEnum.TEMPORARY.getType().equals(originCopyRetentionType)) {
+            copy.setWormExpirationTime(backupWormExpirationTime);
+            return;
+        }
+        if (copy.getExpirationTime() != null && copy.getExpirationTime().before(backupWormExpirationTime)) {
             copy.setWormExpirationTime(backupWormExpirationTime);
         }
     }
@@ -589,7 +600,14 @@ public class AccessPointController {
         copy.setRetentionType(RetentionTypeEnum.TEMPORARY.getType());
 
         Date generateTime = new Date(originTimestamp);
+        // 根据主端的时区计算策略
+        JsonNode timeZoneInfo = policy.getExtParameters().get(TIME_ZONE);
+        TimeZone timeZone = TimeZone.getDefault();
+        if (timeZoneInfo != null) {
+            timeZone = TimeZone.getTimeZone(String.valueOf(timeZoneInfo));
+        }
         Calendar generateDate = Calendar.getInstance();
+        generateDate.setTimeZone(timeZone);
         generateDate.setTime(generateTime);
         int month = generateDate.get(Calendar.MONTH) + 1;
         int dayOfWeek = generateDate.get(Calendar.DAY_OF_WEEK);
@@ -727,5 +745,19 @@ public class AccessPointController {
         ArchiveCopyProvider archiveCopyProvider = providerManager.findProviderOrDefault(ArchiveCopyProvider.class,
             copyList.get(0).getResourceSubType(), defaultArchiveCopyProvider);
         return archiveCopyProvider.queryCopyDependenceChain(copyList);
+    }
+
+    /**
+     * 检查副本是否复制到指定设备
+     *
+     * @param copyId 副本id
+     * @param targetId 目标集群
+     * @return 是否复制
+     */
+    @ExterAttack
+    @GetMapping("/v1/internal/replication/check")
+    public boolean isCopyReplicated(@RequestParam String copyId, @RequestParam int targetId) {
+        Optional<Copy> copy = repCommonService.getCopyByBackupId(copyId, targetId);
+        return copy.isPresent();
     }
 }

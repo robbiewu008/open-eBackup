@@ -62,7 +62,11 @@ public class UnifiedRestoreTaskCompleteHandler extends UnifiedTaskCompleteHandle
         if (isMainTaskComplete(taskId, restoreTask)) {
             log.info("Restore main task success, requestId={}, taskId={}.", requestId, taskId);
             restoreTaskManager.complete(restoreTask,
-                    JobDataConverter.convertToProviderJobStatus(taskCompleteMessage.getJobStatus()));
+                JobDataConverter.convertToProviderJobStatus(taskCompleteMessage.getJobStatus()));
+            if (restoreTask.getTargetObject() != null) {
+                restoreTaskService.recoverAlarmWhenRestoreSuccess(restoreTask.getTargetObject().getUuid(),
+                    restoreTask.getTargetObject().getName());
+            }
         } else {
             log.info("Restore sub verify task success, requestId={}, taskId={}.", requestId, taskId);
             copyVerifyTaskManager.complete(taskCompleteMessage, covertToVerifyTask(taskId, restoreTask));
@@ -78,6 +82,10 @@ public class UnifiedRestoreTaskCompleteHandler extends UnifiedTaskCompleteHandle
             log.info("Restore main task failed, requestId={}, taskId={}.", requestId, taskId);
             restoreTaskManager.complete(restoreTask,
                 JobDataConverter.convertToProviderJobStatus(taskCompleteMessage.getJobStatus()));
+            if (restoreTask.getTargetObject() != null) {
+                restoreTaskService.sendAlarmWhenRestoreFailed(restoreTask.getTargetObject().getUuid(),
+                    restoreTask.getTargetObject().getName());
+            }
         } else {
             log.info("Restore sub verify task failed, requestId={}, taskId={}.", requestId, taskId);
             copyVerifyTaskManager.complete(taskCompleteMessage, covertToVerifyTask(taskId, restoreTask));

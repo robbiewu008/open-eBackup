@@ -125,4 +125,13 @@ public interface RestoreInterceptorProvider extends DataProtectionProvider<Strin
      */
     default void encryptExtendInfo(Map<String, String> extendInfo) {
     }
+
+    /**
+     * 恢复任务是否支持停止
+     *
+     * @return 是否支持停止
+     */
+    default boolean enableStop() {
+        return false;
+    }
 }

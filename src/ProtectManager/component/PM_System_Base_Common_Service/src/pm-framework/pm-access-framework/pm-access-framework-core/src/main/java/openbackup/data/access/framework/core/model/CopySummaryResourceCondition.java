@@ -37,11 +37,6 @@ public class CopySummaryResourceCondition {
     private String resourceLocation;
 
     /**
-     * 复制副本SLA名称，模糊匹配
-     */
-    private String protectedSlaName;
-
-    /**
      * 资源子类型
      */
     private List<String> resourceSubType;
@@ -52,9 +47,52 @@ public class CopySummaryResourceCondition {
     private List<String> resourceStatus;
 
     /**
+     * 资源环境IP，模糊匹配
+     */
+    private String resourceEnvironmentIp;
+
+    /**
+     * 资源环境名称，模糊匹配
+     */
+    private String resourceEnvironmentName;
+
+    /**
+     * 资源ID列表
+     */
+    private List<String> resourceIds;
+
+    private String indexed;
+
+    private String gnLte;
+
+    private String gnGte;
+
+    private String deviceEsn;
+
+    private String chainId;
+
+    private List<String> generatedBy;
+
+    /**
+     * 复制副本SLA ID
+     */
+    private String protectedSlaId;
+
+    /**
+     * 复制副本SLA名称，模糊匹配
+     */
+    private String protectedSlaName;
+
+    /**
      * 保护状态
      */
     private List<Boolean> protectedStatus;
+
+    /**
+     * 当前登录用户的域
+     */
+    @JsonIgnore
+    private String domainId;
 
     /**
      * 当前登录用户

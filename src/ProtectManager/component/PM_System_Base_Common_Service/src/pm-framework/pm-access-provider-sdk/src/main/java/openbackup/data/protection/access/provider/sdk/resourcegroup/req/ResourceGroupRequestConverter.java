@@ -14,6 +14,8 @@ package openbackup.data.protection.access.provider.sdk.resourcegroup.req;
 
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupDto;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupMemberDto;
+import openbackup.data.protection.access.provider.sdk.resourcegroup.enums.GroupTypeEnum;
+import openbackup.system.base.common.utils.VerifyUtil;
 
 import org.springframework.beans.BeanUtils;
 
@@ -34,6 +36,10 @@ public class ResourceGroupRequestConverter {
     public static ResourceGroupDto resourceGroupCreateReqToDto(CreateResourceGroupRequest createResourceGroupRequest) {
         ResourceGroupDto resourceGroupDto = new ResourceGroupDto();
         BeanUtils.copyProperties(createResourceGroupRequest, resourceGroupDto);
+        // 默认是静态组
+        if (VerifyUtil.isEmpty(resourceGroupDto.getGroupType())) {
+            resourceGroupDto.setGroupType(GroupTypeEnum.MANUAL.getValue());
+        }
         return getResourceGroupDto(createResourceGroupRequest.getResourceIds(), resourceGroupDto);
     }
 

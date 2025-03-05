@@ -14,6 +14,7 @@ package openbackup.data.access.framework.copy.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dme.AvailableTimeRanges;
+import openbackup.data.access.framework.copy.controller.req.CatalogQueryNoReq;
 import openbackup.data.access.framework.copy.controller.req.CatalogQueryReq;
 import openbackup.data.access.framework.copy.controller.req.CopyVerifyRequest;
 import openbackup.data.access.framework.copy.mng.service.CopyService;
@@ -21,6 +22,7 @@ import openbackup.data.access.framework.copy.verify.service.CopyVerifyTaskManage
 import openbackup.data.access.framework.core.copy.CopyManagerService;
 import openbackup.data.access.framework.core.model.CopySummaryCount;
 import openbackup.data.access.framework.core.model.CopySummaryResource;
+import openbackup.system.base.bean.CopiesEntity;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.constants.TokenBo;
@@ -49,7 +51,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 
 /**
  * 副本相关的接口
@@ -86,10 +87,7 @@ public class CopyController {
      * 浏览副本中文件和目录信息
      *
      * @param copyId 副本id
-     * @param parentPath 根路径
-     * @param pageSize 分页大小
-     * @param pageNo 起始页
-     * @param conditions 查询条件
+     * @param catalogQueryReq 查询参数
      * @return 副本文件和目录信息
      */
     @ExterAttack
@@ -97,11 +95,22 @@ public class CopyController {
     @Permission(roles = {Constants.Builtin.ROLE_SYS_ADMIN, Constants.Builtin.ROLE_DP_ADMIN}, resources = "copy:$1",
         resourceSetType = ResourceSetTypeEnum.COPY, operation = OperationTypeEnum.QUERY, target = "#copyId")
     public PageListResponse<FineGrainedRestore> listCopyCatalogs(@PathVariable("copyId") String copyId,
-        @NotBlank @RequestParam("parentPath") String parentPath,
-        @RequestParam(value = "pageSize", defaultValue = "200", required = false) int pageSize,
-        @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-        @RequestParam(value = "conditions", defaultValue = "{}", required = false) String conditions) {
-        return copyService.listCopyCatalogs(copyId, parentPath, pageSize, pageNo, conditions);
+        @Valid CatalogQueryNoReq catalogQueryReq) {
+        return copyService.listCopyCatalogs(copyId, catalogQueryReq);
+    }
+
+    /**
+     * 根据副本Id查询副本备份ID；
+     *
+     * @param copyId 副本id
+     * @return 副本文件和目录信息
+     */
+    @ExterAttack
+    @GetMapping("/v2/copies/{copyId}")
+    @Permission(roles = {Constants.Builtin.ROLE_SYS_ADMIN, Constants.Builtin.ROLE_DP_ADMIN}, resources = "copy:$1",
+        resourceSetType = ResourceSetTypeEnum.COPY, operation = OperationTypeEnum.QUERY, target = "#copyId")
+    public CopiesEntity queryCopyByCopyId(@PathVariable("copyId") String copyId) {
+        return copyService.queryOriginCopyIdById(copyId);
     }
 
     /**
@@ -115,9 +124,9 @@ public class CopyController {
     @GetMapping("/v2/copies/{copyId}/catalogs-name")
     @Permission(roles = {Constants.Builtin.ROLE_SYS_ADMIN, Constants.Builtin.ROLE_DP_ADMIN}, resources = "copy:$1",
         resourceSetType = ResourceSetTypeEnum.COPY, operation = OperationTypeEnum.QUERY, target = "#copyId")
-    public PageListResponse<FineGrainedRestore> listCopyCatalogs(@PathVariable("copyId") String copyId,
+    public PageListResponse<FineGrainedRestore> listCopyCatalogsByName(@PathVariable("copyId") String copyId,
         @Valid CatalogQueryReq catalogQueryReq) {
-        return copyService.listCopyCatalogsName(copyId, catalogQueryReq);
+        return copyService.listCopyCatalogsByName(copyId, catalogQueryReq);
     }
 
     /**
@@ -216,6 +225,22 @@ public class CopyController {
             domainId = null;
         }
         return copyManagerService.queryCopyCount(domainId);
+    }
+
+    /**
+     * 开启副本guest system
+     *
+     * @param copyId 副本id
+     */
+    @ExterAttack
+    @Permission(roles = {Constants.Builtin.ROLE_SYS_ADMIN, Constants.Builtin.ROLE_DP_ADMIN}, resources = "copy:$1",
+        resourceSetType = ResourceSetTypeEnum.COPY, operation = OperationTypeEnum.QUERY, target = "#copyId")
+    @Logging(name = "0x2064033A000D", target = "CopyCatalog",
+        details = {"$copy.resourceName", "$copy.displayTimestamp", "$1"},
+        context = @Context(name = "copy", statement = "@copy_context_loader_get_by_id.call($1)", required = true))
+    @PutMapping("/v2/copies/{copyId}/open/guest-system")
+    public void openCopyGuestSystem(@PathVariable("copyId") String copyId) {
+        copyService.openCopyGuestSystem(copyId);
     }
 
     /**

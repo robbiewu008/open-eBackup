@@ -91,7 +91,7 @@ import javax.validation.Valid;
 @RequestMapping("/v2/internal")
 public class EnvironmentInternalController {
     // 延迟时间，单位min
-    private static final int DELAY_MINUTE = 5;
+    private static final int DELAY_MINUTE = 8;
 
     // 更新
     private static final String UPDATE = "2";

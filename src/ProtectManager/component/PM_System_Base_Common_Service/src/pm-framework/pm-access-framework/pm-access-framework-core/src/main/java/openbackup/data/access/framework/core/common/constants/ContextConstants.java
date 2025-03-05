@@ -127,6 +127,11 @@ public final class ContextConstants {
      */
     public static final String COPY_FORMAT = "copy_format";
 
+    /**
+     * 存入redis缓存中备份任务执行类型
+     */
+    public static final String EXECUTE_TYPE = "execute_type";
+
     private ContextConstants() {
     }
 }

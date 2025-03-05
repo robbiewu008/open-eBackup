@@ -39,7 +39,8 @@ import java.util.List;
 @PropertySource("classpath:application.yaml")
 public class ProtectObjectConsistentStatusScheduler implements InitializingBean {
     private static final List<DeployTypeEnum> SUPPORTED_DEPLOY_TYPE = Arrays.asList(DeployTypeEnum.X9000,
-        DeployTypeEnum.A8000, DeployTypeEnum.X8000, DeployTypeEnum.X6000, DeployTypeEnum.X3000);
+        DeployTypeEnum.A8000, DeployTypeEnum.X8000, DeployTypeEnum.X6000, DeployTypeEnum.X3000,
+        DeployTypeEnum.OPEN_SOURCE);
 
     private final ProtectObjectConsistentService protectObjectService;
 

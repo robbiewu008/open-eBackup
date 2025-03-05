@@ -19,6 +19,7 @@ import com.huawei.oceanprotect.job.sdk.JobService;
 import com.huawei.oceanprotect.system.base.label.service.LabelService;
 import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
 
+import com.google.common.collect.ImmutableSet;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 
@@ -84,6 +85,7 @@ import openbackup.system.base.sdk.copy.model.CopyExtendType;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.sdk.copy.model.CopyStatus;
+import openbackup.system.base.sdk.copy.model.CopyStorageUnitStatus;
 import openbackup.system.base.sdk.job.JobCenterRestApi;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
@@ -106,6 +108,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 统一备份任务完成处理器
@@ -120,6 +123,11 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
     private static final int THOUSAND = 1000;
 
     private static final String DEFAULT_POOL_ID = "0";
+
+    private static final Set<String> INCREMENT_BACKUP_TYPE_SET = ImmutableSet.of(
+            BackupTypeEnum.CUMULATIVE_INCREMENT.name().toLowerCase(Locale.ROOT),
+            BackupTypeEnum.DIFFERENCE_INCREMENT.name().toLowerCase(Locale.ROOT),
+            BackupTypeEnum.PERMANENT_INCREMENT.name().toLowerCase(Locale.ROOT));
 
     @Autowired
     private DmeUnifiedRestApi unifiedRestApi;
@@ -203,6 +211,7 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         String jobId = taskMessage.getJobId();
         JobBo job = jobService.queryJob(jobId);
         copyInfo.setStorageUnitId(job.getStorageUnitId());
+        copyInfo.setStorageUnitStatus(CopyStorageUnitStatus.ONLINE.getValue());
         UuidObject resp;
         if (isResumableBackup) {
             resp = copyRestApi.saveCopy(copyInfo, true);
@@ -332,15 +341,18 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         SlaBo slaBo = JSONObject.toBean(slaJson, SlaBo.class);
         PolicyBo policyBo = JSONObject.toBean(context.get(CopyPropertiesKeyConstant.KEY_BACKUP_POLICY), PolicyBo.class);
         String name = getLocationName(context, dmeCopyInfo);
+        int abBackType = BackupTypeConstants.convert2AbBackType(backupType);
         return CopyInfoBuilder.builder()
                 .setBaseCopyInfo()
                 .setLocation(StringUtils.isEmpty(name) ? CopyInfoConstants.COPY_INIT_LOCATION : name)
+                .setStorageUnitStatus(CopyStorageUnitStatus.ONLINE.getValue())
                 .setCopyId(requestId)
                 .setOriginBackupId(requestId)
                 .setEBackupTimestamp(dmeCopyInfo.getTimestamp())
                 .setCopyFeature(buildFeature(dmeCopyInfo))
                 .setResourceInfo(resource)
-                .setRetentionInfo(slaBo, policyBo, dmeCopyInfo.getTimestamp() * IsmNumberConstant.THOUSAND)
+                .setRetentionInfo(context, abBackType, slaBo, policyBo,
+                    dmeCopyInfo.getTimestamp() * IsmNumberConstant.THOUSAND)
                 .setWormRetentionInfo(slaBo, policyBo, dmeCopyInfo.getTimestamp() * IsmNumberConstant.THOUSAND)
                 .setProperties(properties)
                 .setOtherInfo(context.get(CopyPropertiesKeyConstant.KEY_BACKUP_CHAIN_ID), resJson, slaJson)
@@ -348,7 +360,7 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
                 .setGeneratedBy(CopyGeneratedByEnum.BY_BACKUP.value())
                 .setIndexed(CopyIndexStatus.UNINDEXED.getIndexStaus())
                 .setDeletable(Boolean.TRUE)
-                .setBackupType(BackupTypeConstants.convert2AbBackType(backupType))
+                .setBackupType(abBackType)
                 .setUserId(queryUserId(resource.getUuid()))
                 .setName(context.get(CopyConstants.COPY_NAME))
                 .setStorageId(getStorageId(dmeCopyInfo))
@@ -482,6 +494,9 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         }
         String requestId = taskMessage.getJobRequestId();
         String jobId = taskMessage.getProperty(ContextConstants.JOB_ID);
+        if (VerifyUtil.isEmpty(jobId)) {
+            jobId = requestId;
+        }
         int status = taskMessage.getJobStatus();
         DmcJobStatus jobStatus = DmcJobStatus.getByStatus(status);
         // 发送任务终止消息到对应的workflow
@@ -535,11 +550,8 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         PolicyBo policyBo =
                 JSONObject.toBean(backupContext.get(CopyPropertiesKeyConstant.KEY_BACKUP_POLICY), PolicyBo.class);
         String userId = backupContext.get(Constants.CURRENT_OPERATE_USER_ID);
-        // 全量备份失败，副本类型为快照类型时，下一次备份需要转为全量备份。
-        if (!jobStatus.checkSuccess()
-                && BackupTypeEnum.FULL.name().toLowerCase(Locale.ROOT).equals(backupType)
-                && copyFormat == CopyFormatEnum.INNER_SNAPSHOT.getCopyFormat()) {
-            log.info("Full Backup failed this time, convert next backup type to Full!");
+        if (isNeedBackupToFull(jobStatus, backupType, copyFormat)) {
+            log.info("Full Backup or E6000 increment backup failed this time, convert next backup type to Full!");
             setNextBackupToFull(protectedObject.getResourceId());
         }
 
@@ -559,9 +571,35 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         }
     }
 
+    /**
+     * 下次备份需要转换为全量备份的情况
+     * 必要条件：任务状态失败且是快照
+     *         所有形态下的全量备份失败
+     *         E6000形态下的增量备份失败
+     *
+     * @param jobStatus 任务状态
+     * @param backupType 备份类型
+     * @param copyFormat 副本格式
+     * @return 下次备份是否需要转全量
+     */
+    private Boolean isNeedBackupToFull(ProviderJobStatusEnum jobStatus, String backupType, int copyFormat) {
+        // 任务状态失败，并且是快照格式的
+        if (jobStatus.checkSuccess() || copyFormat != CopyFormatEnum.INNER_SNAPSHOT.getCopyFormat()) {
+            return false;
+        }
+        // 所有形态下的全量备份失败，要转全量
+        if (BackupTypeEnum.FULL.name().toLowerCase(Locale.ROOT).equals(backupType)) {
+            return true;
+        }
+        // E6000 形态下，增量备份失败也要转全量
+        return deployTypeService.isPacific() && INCREMENT_BACKUP_TYPE_SET.contains(backupType);
+    }
+
     private void setNextBackupToFull(String resourceId) {
-        NextBackupModifyReq nextBackupModifyReq =
-                NextBackupModifyReq.build(resourceId, NextBackupChangeCauseEnum.BIGDATA_PLUGIN_TO_FULL_LABEL);
+        NextBackupChangeCauseEnum toFullReason = deployTypeService.isPacific()
+            ? NextBackupChangeCauseEnum.E6000_BACKUP_FAILED
+            : NextBackupChangeCauseEnum.BIGDATA_PLUGIN_TO_FULL_LABEL;
+        NextBackupModifyReq nextBackupModifyReq = NextBackupModifyReq.build(resourceId, toFullReason);
         resourceService.modifyNextBackup(nextBackupModifyReq);
     }
 }

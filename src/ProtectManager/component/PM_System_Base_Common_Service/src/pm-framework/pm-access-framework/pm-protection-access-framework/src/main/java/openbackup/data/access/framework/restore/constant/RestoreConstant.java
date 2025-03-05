@@ -50,5 +50,10 @@ public class RestoreConstant {
     /**
      * 归档导入恢复esn key
      */
-    public static final String IMPORT_RESTORE_ESN = "importRestoreEsn";
+    public static final String CERTAIN_DEVICE_RESTORE_ESN = "importRestoreEsn";
+
+    /**
+     * 归档导入存储池 key
+     */
+    public static final String CERTAIN_DEVICE_RESTORE_POOL = "importRestorePool";
 }

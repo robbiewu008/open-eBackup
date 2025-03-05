@@ -13,11 +13,13 @@
 package openbackup.data.access.framework.core.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import openbackup.data.access.framework.core.entity.CopiesEntity;
 import openbackup.data.access.framework.core.model.CopySummaryCount;
 import openbackup.data.access.framework.core.model.CopySummaryResource;
 import openbackup.data.access.framework.core.model.CopySummaryResourceQuery;
+import openbackup.system.base.bean.CopiesEntity;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -41,6 +43,16 @@ public interface CopyMapper extends BaseMapper<CopiesEntity> {
     List<CopySummaryResource> selectCopySummaryResourceList(@Param("query") CopySummaryResourceQuery query);
 
     /**
+     * 分页查询副本资源列表
+     *
+     * @param page  分页条件
+     * @param query 查询条件
+     * @return 副本资源列表
+     */
+    IPage<CopySummaryResource> selectCopySummaryResourceListV2(
+            Page<CopySummaryResource> page, @Param("query") CopySummaryResourceQuery query);
+
+    /**
      * 根据条件查询副本资源的总数
      *
      * @param query 查询条件
@@ -57,6 +69,16 @@ public interface CopyMapper extends BaseMapper<CopiesEntity> {
     List<String> selectCopyDeviceEsnByResourceId(@Param("resource_id") String resourceId);
 
     /**
+     * 根据storage_unit_id查询当前资源下副本id
+     *
+     * @param generatedTypeList 生成类型list
+     * @param storageUnitId 存储单元id
+     * @return List<String>  copyIdList</>
+     */
+    List<String> selectCopyIdByStorageUnitId(@Param("generated_type_list") List<String> generatedTypeList,
+                                             @Param("storage_unit_id") String storageUnitId);
+
+    /**
      * 统计副本
      *
      * @param domainId 用户所在域id，为空则统计所有
@@ -68,18 +90,27 @@ public interface CopyMapper extends BaseMapper<CopiesEntity> {
      * 更新副本状态
      *
      * @param copyIdList 副本ID列表
-     * @param status 副本状态
+     * @param status     副本状态
      */
     void updateCopyStatus(@Param("copy_id_list") List<String> copyIdList, @Param("status") String status);
+
+    /**
+     * 更新副本存储单元状态
+     *
+     * @param copyIdList 副本ID列表
+     * @param storageUnitStatus     副本状态
+     */
+    void updateCopyStorageUnitStatus(@Param("copy_id_list") List<String> copyIdList,
+                                     @Param("storage_unit_status") int storageUnitStatus);
 
     /**
      * 更新副本资源名称
      *
      * @param newResourceName 资源新名称
-     * @param resourceId 资源id
+     * @param resourceId      资源id
      */
     void updateCopyResourceName(@Param("new_resource_name") String newResourceName,
-        @Param("resource_id") String resourceId);
+                                @Param("resource_id") String resourceId);
 
     /**
      * 定时更新副本表中worm状态：将已worm且过期时间大于当前时间的副本worm状态更新为已过期
@@ -92,7 +123,7 @@ public interface CopyMapper extends BaseMapper<CopiesEntity> {
      * 更新副本所属用户
      *
      * @param copyIdList 副本ID列表
-     * @param userId 用户信息
+     * @param userId     用户信息
      */
     void updateCopyUserId(@Param("copy_id_list") List<String> copyIdList, @Param("userId") String userId);
 }

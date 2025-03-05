@@ -12,6 +12,8 @@
 */
 package openbackup.data.access.framework.agent;
 
+import static openbackup.system.base.common.constants.Constants.INTERNAL_AGENT_KEY;
+
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.system.base.user.bo.UserDomainRelationBo;
 import com.huawei.oceanprotect.system.base.user.common.enums.ResourceSetScopeModuleEnum;
@@ -62,9 +64,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class DefaultProtectAgentSelector implements ProtectAgentSelector {
-    // 内置agent的key
-    private static final String INTERNAL_AGENT_KEY = "scenario";
-
     private static final String INTERNAL_AGENT_ESN = "internal_agent_esn";
 
     private static final int SIZE = 10000;
@@ -157,8 +156,9 @@ public class DefaultProtectAgentSelector implements ProtectAgentSelector {
             .map(e -> {
                 if (HCS_SUB_TYPE_LIST.contains(protectedResource.getSubType()) || deployTypeService.isCyberEngine()) {
                     // HCS场景
-                    if (OpServiceUtil.isHcsService() && ResourceSubTypeEnum.HCS_CONTAINER.getType().equals(
-                        protectedResource.getEnvironment().getSubType())) {
+                    if (OpServiceUtil.isHcsService() && !VerifyUtil.isEmpty(protectedResource.getEnvironment())
+                        && ResourceSubTypeEnum.HCS_CONTAINER.getType().equals(
+                            protectedResource.getEnvironment().getSubType())) {
                         // 如果root节点的资源类型是HCSContainer（即线下场景），并且是HCS OP服务，则只使用外置代理。注：线上场景是HcsEnvOp
                         return findExternalAgentByResource(e, userInnerResponse);
                     } else {

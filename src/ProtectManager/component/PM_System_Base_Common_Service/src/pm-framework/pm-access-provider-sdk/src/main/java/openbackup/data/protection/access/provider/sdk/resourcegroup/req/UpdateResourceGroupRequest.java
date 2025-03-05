@@ -36,6 +36,7 @@ public class UpdateResourceGroupRequest {
     @Pattern(regexp = RegexpConstants.NAME_STR_NOT_START_WITH_NUM, message = "resource group name is invalid")
     private String name;
 
-    @NotNull
     private List<String> resourceIds;
+
+    private String extendStr;
 }

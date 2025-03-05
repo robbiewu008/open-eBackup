@@ -19,6 +19,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
+import openbackup.system.base.common.typehandler.TimestampTypeHandler;
 import openbackup.system.base.query.PageQueryConfig;
 
 import java.sql.Timestamp;
@@ -29,7 +30,7 @@ import java.sql.Timestamp;
  */
 @Data
 @PageQueryConfig(conditions = {"%name%"}, orders = {"live_mount_count", "created_time"})
-@TableName(value = "live_mount_policy")
+@TableName(value = "live_mount_policy", autoResultMap = true)
 public class LiveMountPolicyEntity {
     @TableId(type = IdType.INPUT)
     private String policyId;
@@ -50,12 +51,13 @@ public class LiveMountPolicyEntity {
 
     private String scheduleIntervalUnit;
 
+    @TableField(typeHandler = TimestampTypeHandler.class)
     private Timestamp scheduleStartTime;
 
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT, typeHandler = TimestampTypeHandler.class)
     private Timestamp createdTime;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.INSERT_UPDATE, typeHandler = TimestampTypeHandler.class)
     private Timestamp updatedTime;
 
     private String latestCopyFor;

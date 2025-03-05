@@ -12,11 +12,12 @@
 */
 package openbackup.data.access.framework.protection.service.replication;
 
-import com.huawei.oceanprotect.base.cluster.sdk.entity.TargetCluster;
 import com.huawei.oceanprotect.base.cluster.sdk.service.ArrayTargetClusterService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterQueryService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.base.cluster.sdk.util.ClusterUriUtil;
+import com.huawei.oceanprotect.system.base.sdk.devicemanager.model.beans.filesystem.QueryReplicationPairReq;
+import com.huawei.oceanprotect.system.base.sdk.devicemanager.model.beans.filesystem.ReplicationPairResponse;
 
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dme.replicate.DmeReplicationRestApi;
@@ -27,13 +28,15 @@ import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.StringUtil;
+import openbackup.system.base.common.utils.UserUtils;
+import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.accesspoint.model.DmeLocalDevice;
 import openbackup.system.base.sdk.accesspoint.model.DmeRemoteDevice;
 import openbackup.system.base.sdk.auth.api.AuthNativeApi;
 import openbackup.system.base.sdk.cluster.ClusterInternalApi;
 import openbackup.system.base.sdk.cluster.TargetClusterRestApi;
-import openbackup.system.base.sdk.cluster.model.ClusterDetailInfo;
 import openbackup.system.base.sdk.cluster.model.DmeRemovePairRequest;
+import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
 import openbackup.system.base.sdk.cluster.model.TargetClusterVo;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
@@ -53,8 +56,10 @@ import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -119,12 +124,32 @@ public class UnifiedReplicationRemoveProcessor implements ReplicationProtectionR
             Map<String, List<Copy>> copyByUnit = copies.stream().collect(Collectors.groupingBy(Copy::getStorageUnitId));
             copyByUnit.keySet().forEach(unitId -> {
                 repCommonService.fillLocalDevice(request.getLocalDevice(), unitId);
+                Optional<StorageUnitVo> storageUnitVo = repCommonService.getStorageUnitVo(unitId);
+                if (!storageUnitVo.isPresent()) {
+                    throw new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Local storage not exist.");
+                }
+                String deviceId = storageUnitVo.get().getDeviceId();
+                List<ReplicationPairResponse> replicationPairs = getPairs(resourceEntity, deviceId);
+                if (!VerifyUtil.isEmpty(replicationPairs)) {
+                    List<String> targetEsns = new ArrayList<>();
+                    replicationPairs.forEach(pair -> targetEsns.add(pair.getRemoteDeviceEsn()));
+                    request.setTargetEsns(targetEsns);
+                }
                 dmeReplicationRestApi.removePair(request);
             });
             log.info("Send local remove pair request to dme success");
             return;
         }
         memberClusterService.consumeInAllMembers(memberClusterService::dispatchRemoveReplicationPair, request);
+        log.info("remove pair request send to dme success, resource id:{}", request.getResourceId());
+    }
+
+    @Override
+    public void process(ResourceEntity resourceEntity, StorageUnitVo storageUnitVo) {
+        log.info("start dispatch remove dme pair");
+        List<String> esnList = Collections.singletonList(storageUnitVo.getDeviceId());
+        DmeRemovePairRequest request = buildDmeRemovePairRequest(resourceEntity, esnList);
+        dmeReplicationRestApi.removePair(request);
         log.info("remove pair request send to dme success, resource id:{}", request.getResourceId());
     }
 
@@ -170,26 +195,31 @@ public class UnifiedReplicationRemoveProcessor implements ReplicationProtectionR
             request.setResourceId(resourceEntity.getUuid());
         }
         List<String> targetEsns = new ArrayList<>();
-        try {
-            TargetCluster targetCluster = clusterQueryService.getTargetClusterById(
-                Integer.parseInt(clusterVo.getClusterId()));
-            ClusterDetailInfo targetClusterInfo = arrayTargetClusterService.getTargetClusterDetailsInfo(targetCluster)
-                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "cluster not exist"));
-            if (targetClusterInfo.getAllMemberClustersDetail() == null) {
-                targetEsns.add(targetClusterInfo.getStorageSystem().getStorageEsn());
-            } else {
-                targetClusterInfo.getAllMemberClustersDetail().forEach(clusterDetailInfo -> {
-                    targetEsns.add(clusterDetailInfo.getStorageSystem().getStorageEsn());
-                });
+        if (!deployTypeService.isE1000()) {
+            try {
+                String deviceId = memberClusterService.getCurrentClusterEsn();
+                List<ReplicationPairResponse> replicationPairs = getPairs(resourceEntity, deviceId);
+                if (!VerifyUtil.isEmpty(replicationPairs)) {
+                    log.info("Replication pair size:{}", replicationPairs.size());
+                    replicationPairs.forEach(pair -> targetEsns.add(pair.getRemoteDeviceEsn()));
+                    request.setTargetEsns(targetEsns);
+                }
+            } catch (LegoCheckedException | LegoUncheckedException e) {
+                log.info("fail to get replication target esns", ExceptionUtil.getErrorMessage(e));
             }
-        } catch (LegoCheckedException | LegoUncheckedException e) {
-            log.info("fail to get replication target esns", ExceptionUtil.getErrorMessage(e));
         }
         log.info("target esn size:{}", targetEsns.size());
         request.setTargetEsns(targetEsns);
         DmeRemoteDevice remoteDevice = buildRemoteDevice(clusterVo);
         request.setRemoteDevice(remoteDevice);
         return request;
+    }
+
+    private List<ReplicationPairResponse> getPairs(ResourceEntity resourceEntity, String deviceId) {
+        QueryReplicationPairReq param = new QueryReplicationPairReq();
+        param.setLocalResType("40");
+        param.setLocalResName(resourceEntity.getUuid());
+        return repCommonService.queryReplicationPair(deviceId, UserUtils.getBusinessUsername(), param);
     }
 
     private DmeRemovePairRequest buildDmeRemovePairRequest(ResourceEntity resourceEntity, List<String> esnList) {

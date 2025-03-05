@@ -12,13 +12,13 @@
 */
 package openbackup.data.access.framework.core.copy;
 
-import openbackup.data.access.framework.core.entity.CopiesEntity;
 import openbackup.data.access.framework.core.model.CopySummaryCount;
 import openbackup.data.access.framework.core.model.CopySummaryResource;
 import openbackup.data.access.framework.core.model.CopySummaryResourceCondition;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
+import openbackup.system.base.bean.CopiesEntity;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.copy.model.Copy;
 
@@ -119,6 +119,15 @@ public interface CopyManagerService {
      */
     void updateCopyStatus(List<String> copyIdList, String status);
 
+
+    /**
+     * 更新副本存储单元状态
+     *
+     * @param copyIdList 副本ID列表
+     * @param copyStorageUnitStatus 副本状态
+     */
+    void updateCopyStorageUnitStatus(List<String> copyIdList, int copyStorageUnitStatus);
+
     /**
      * 更新副本状态
      *
@@ -136,6 +145,15 @@ public interface CopyManagerService {
      * @return 副本数量
      */
     Long queryCopyCounts(String resourceId, String storageUnitId, List<Integer> backupTypes);
+
+    /**
+     * 归档副本，根据storage_id查询副本
+     *
+     * @param generatedBy 副本ID列表
+     * @param storageId 副本状态
+     * @return 副本id列表
+     */
+    List<String> queryCopyIdByStorageId(String generatedBy, String storageId);
 
     /**
      * 批量更新副本用户Id

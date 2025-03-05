@@ -97,4 +97,9 @@ public class BackupConstant {
      * 断点续传的最大重试次数
      */
     public static final int MAX_CHECK_POINT_RETRY_NUM = 5;
+
+    /**
+     * 禁止文件系统worm保护
+     */
+    public static final String FORBID_WORM_FILE_SYSTEM = "forbidWormFileSystem";
 }

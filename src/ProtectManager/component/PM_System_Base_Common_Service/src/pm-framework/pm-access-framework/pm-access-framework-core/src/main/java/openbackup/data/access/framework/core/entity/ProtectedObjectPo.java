@@ -16,6 +16,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import openbackup.system.base.common.typehandler.TimestampTypeHandler;
+
 import java.sql.Timestamp;
 
 /**
@@ -42,7 +44,9 @@ public class ProtectedObjectPo {
     private String path;
     private String extParameters;
     private int status;
+    @TableField(typeHandler = TimestampTypeHandler.class)
     private Timestamp latestTime;
+    @TableField(typeHandler = TimestampTypeHandler.class)
     private Timestamp earliestTime;
     private String chainId;
     private String consistentStatus;

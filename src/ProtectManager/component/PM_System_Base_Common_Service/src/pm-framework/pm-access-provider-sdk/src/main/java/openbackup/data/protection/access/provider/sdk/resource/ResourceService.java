@@ -643,4 +643,13 @@ public interface ResourceService {
      * @param updateCopyUserObjectReq 更新副本归属用户请求体
      */
     void updateCopyUser(UpdateCopyUserObjectReq updateCopyUserObjectReq);
+
+    /**
+     * 更新保护状态
+     *
+     * @param uuids id
+     * @param protectStatus 保护状态
+     * @return 更新结果
+     */
+    int batchUpdateStatusById(List<String> uuids, int protectStatus);
 }
