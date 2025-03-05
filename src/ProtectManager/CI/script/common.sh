@@ -19,7 +19,7 @@ if [ -z "${MS_IMAGE_TAG}" ]; then
     exit 1
 fi
 
-NOB_VERSION=$(echo "$MS_IMAGE_TAG" | grep -oE '(\w+.){2}(\w+)' | head -n 1)
+NOB_VERSION=${Version}  # 不带B版本号，通过流水线设置的环境变量获取
 echo "MS_IMAGE_TAG=${MS_IMAGE_TAG}"
 echo "NOB_VERSION=${NOB_VERSION}"
 
@@ -39,7 +39,7 @@ done
 chart_file="${BASE_PATH}/build/helm/protect-manager/Chart.yaml"
 values_file="${BASE_PATH}/build/helm/protect-manager/values.yaml"
 
-system_base_dockerfile="${BASE_PATH}/build/dockerfiles/PM_System_Base_Service.dockerfile"
+system_base_dockerfile="${BASE_PATH}/build/dockerfiles/PM_System_Base_Service_opensource.dockerfile"
 
 modify_version_files=(${chart_file} ${values_file} ${chart_dev_file} ${values_dev_file} ${system_base_dockerfile} \
                       ${system_base_dev_dockerfile})
