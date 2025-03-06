@@ -24,13 +24,14 @@ WORKDIR /opt/script
 RUN python3 -O -m compileall -b /opt/sftp/package/src/app \
     && find /opt/sftp/package/src/app/ -name "*.py" | xargs -i rm -rf '{}'
 
+
 RUN mv /opt/sftp/package/script /opt/ \
     && chmod 750 /opt/sftp \
     && chown -R 15004:99 /opt/script \
     && chown -R 15004:99 /etc/ssh \
     && chmod 750 /opt/script \
     && cd /opt/sftp/package/requirements \
-    && pip3 install --no-cache-dir * \
+    && pip install --no-index --find-links="/opt/sftp/package/requirements/" *.whl\
     && chown -R root:root /opt/sftp \
     && sed -i 's/AuthorizedKeysFile.*/AuthorizedKeysFile      \/sftp\/%u\/%u\/authorized_keys/' /etc/ssh/sshd_config \
     && echo "sftp  ALL=(root)      NOPASSWD:SETENV:/opt/sftp/package/actual_install.sh" >> /etc/sudoers \

@@ -19,7 +19,7 @@ CURRENT_PATH=$(
   cd $(dirname $0)/
   pwd
 )
-source $CURRENT_PATH/commParam.sh
+source $CURRENT_PATH/open_comm_param.sh
 
 # base_image
 cd "${CURRENT_PATH}"
@@ -32,7 +32,7 @@ fi
 echo "build base images success"
 
 # om
-cd "${CURRENT_PATH}"/../../om/build
+cd "${CURRENT_PATH}"/../../om
 sh build_opensource.sh
 if [ $? -ne 0 ]; then
   echo "build om images failed"
@@ -43,7 +43,7 @@ echo "build om images success"
 
 # infra(sftp、zookeeper)
 cd "${CURRENT_PATH}"
-sh open_build_compile_pkg.sh
+sh open_build_images.sh
 
 if [ $? -ne 0 ]; then
   echo "build infrastructure images failed"

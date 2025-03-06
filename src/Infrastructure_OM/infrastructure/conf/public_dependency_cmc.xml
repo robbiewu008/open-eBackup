@@ -22,11 +22,11 @@
             <repoType>Generic</repoType>
             <id>
                 <offering>GaussDB Kernel</offering>
-                <version>GaussDB Kernel 505.0.0.SPC1500.B002</version>
+                <version>GaussDB Kernel 505.1.0.SPC0900.B003</version>
             </id>
             <copies>
                 <copy>
-                    <source>Lite/Euler2.11_arm_64/GaussDB-Kernel_505.0.0.SPC1500.B002_Server_ARM_Lite.tar.gz</source>
+                    <source>Lite/Euler2.11_arm_64/GaussDB-Kernel_505.1.0.SPC0900.B003_Server_ARM_Lite.tar.gz</source>
                     <dest></dest>
                 </copy>
             </copies>
