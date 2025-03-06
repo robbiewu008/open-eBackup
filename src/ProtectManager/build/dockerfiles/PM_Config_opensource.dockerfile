@@ -19,8 +19,8 @@ COPY package/3rd/ /wheels/
 
 RUN luseradd -u 99 -g nobody -s /sbin/nologin nobody
 RUN yum install -y gcc \
-&& pip3 install --no-index --find-links=../3rd_inc/ --no-cache-dir setuptools==65.6.3 \
-&& pip3 install --no-index --find-links=../3rd_inc/ --no-cache-dir wheel==0.44.0 \
+&& pip3 install --no-index --find-links=./ --no-cache-dir setuptools==65.6.3 \
+&& pip3 install --no-index --find-links=./ --no-cache-dir wheel==0.44.0 \
 && sh prepare_env.sh && rm -rf /wheels/ && yum remove -y gcc && yum clean all \
 && chmod -R 755 "/usr/local/lib" \
 && chmod -R 755 "/usr/lib/python3.9" \
