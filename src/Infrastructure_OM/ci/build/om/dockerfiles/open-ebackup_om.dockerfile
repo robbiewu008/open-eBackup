@@ -3,7 +3,7 @@
 FROM open-ebackup-1.0:base
 
 # om版本
-ENV OM_VERSION om_version
+ENV OM_VERSION 1.6.RC2.010
 ENV PSYCOPG_VERSION 2_9_1
 ENV SQLALCHEMY_VERSION 1.4.49
 
@@ -20,13 +20,11 @@ WORKDIR /opt/om/package
 
 RUN cd /opt/om/package/3rd \
     && tar xzf psycopg2.tar.gz \
-    && tar xzf SQLAlchemy-${SQLALCHEMY_VERSION}.tar.gz \
-    && find /opt/om/package/3rd/ -name "*.tar.gz" | xargs -i rm -f '{}'
-
+    && tar xzf SQLAlchemy-${SQLALCHEMY_VERSION}.tar.gz
 
 ## 第二阶段
 #指定基础镜像
-FROM oceanprotect-dataprotect-1.0.rc1:base
+FROM open-ebackup-1.0:base
 
 # om版本
 ENV SQLALCHEMY_VERSION 1.4.49
@@ -47,8 +45,9 @@ RUN luseradd -u 99 -g nobody -s /sbin/nologin nobody \
     && find /opt/om/package/src/app/ -name "*.py" | xargs -i rm -f '{}' \
     # 安装SQLAlchemy 依赖greenlet、 importlib-metadata
     && cd /opt/om/package/3rd/requirements \
-    && ls | grep greenlet | xargs -i pip3 install --no-cache-dir {} \
-    && ls | grep importlib | grep metadata | xargs -i pip3 install --no-cache-dir {} \
+    && ls | grep greenlet | xargs -i pip3 install {} \
+    && ls | grep zipp | xargs -i pip3 install {} \
+    && ls | grep importlib | grep metadata | xargs -i pip3 install {} \
     && cd /opt/om/package/3rd/SQLAlchemy-${SQLALCHEMY_VERSION} \
     && python3 setup.py install
 
@@ -61,7 +60,7 @@ RUN cd /opt/om/package/3rd \
     && ln -s libpq.so.5 libpq.so \
     && ldconfig \
     && cd /opt/om/package/3rd/requirements \
-    && pip3 install --no-cache-dir * \
+    && pip install --no-index --find-links="/opt/om/package/3rd/requirements/" *.tar.gz *.whl\
     && rm -rf /opt/om/package/3rd/requirements \
     && chmod -R 755 /usr/local/lib/python3.9 /usr/lib/python3.9 /usr/local/lib64/python3.9 /usr/lib64/python3.9 \
     && find "/opt/om/package/" -type f -name "*.o" | xargs rm -f \
