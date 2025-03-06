@@ -3,9 +3,9 @@
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
   If a copy of the MPL was not distributed with this file, You can obtain one at
   http://mozilla.org/MPL/2.0/.
-  
+
   Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-  
+
   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
@@ -110,7 +110,7 @@
         </div>
 
     </lv-header>
-    
+
     <!-- DME用户的header -->
     <lv-header *ngIf="!isLogin && !isReportDetail && !isErrorPage && !isHcsUser && isDmeUser" lvFixed="true"
       class="aui-header-icon" [ngClass]="{'cyber-home-header':cyberDarkHeader}">
@@ -133,9 +133,6 @@
 </lv-layout>
 <!-- 预加载智能助手背景图 -->
 <div class="hide-guide-bg"></div>
-
-<!-- 换肤 -->
-<lv-config-provider [lvTheme]="appTheme"></lv-config-provider>
 
 <ng-template #titleTpl>
   <div *ngIf="cookieService.isInited" class="aui-menu-header">
@@ -233,7 +230,7 @@
                       ],
                       task.status
                     )" [lv-tooltip]="
-                      dataMapService.getLabel('Job_status', task.status)"                              
+                      dataMapService.getLabel('Job_status', task.status)"
                   lv-icon="aui-icon-job-status-pending">
                 </i>
                 </lv-group>
