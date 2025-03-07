@@ -109,7 +109,9 @@ function build_cbb_image()
 
   compile_cbb_dependency
   cd ${CBB_PYTHON_DOCKERFILE_PATH}
-  mkdir lib
+  if [ ! -d lib ]; then
+    mkdir lib
+  fi
   tar -zxvf ${PACKAGE_PATH}/../../Infrastructure_OM/infrastructure/cbb/python/cbb_lib.tar.gz -C ./lib
 
   docker build -f ${product_name}_cbb_python.dockerfile -t ${product_name,,}-${product_version,,}-cbb-python:base .

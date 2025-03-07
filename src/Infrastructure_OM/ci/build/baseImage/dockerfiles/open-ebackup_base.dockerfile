@@ -8,7 +8,7 @@ ENV COMMON_INIT_VERSION product_version
 
 WORKDIR /usr/local
 
-COPY openeuler.repo /etc/yum.repos.d/
+# COPY openeuler.repo /etc/yum.repos.d/
 COPY kmcv3.h /usr/include/
 COPY sudoers /etc/
 COPY --chown=99:99 kmcdecrypt /usr/bin/
