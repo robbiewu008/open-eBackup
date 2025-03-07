@@ -16,7 +16,6 @@ COPY --chown=root:root restclient /usr/bin/
 COPY --chown=99:99 get.sh /usr/bin/
 COPY --chown=root:root init_logic_ports.py /usr/bin/
 COPY --chown=root:root $JDK_VERSION /usr/local/$JDK_VERSION
-COPY --chown=99:99 libSecurityStarter.so /usr/lib64/
 COPY --chown=99:99 FileClient /opt/FileClient
 RUN cp /opt/FileClient/lib/libkmcv3.so /usr/lib64/  \
     && chmod 755 /usr/lib64/libkmcv3.so \
