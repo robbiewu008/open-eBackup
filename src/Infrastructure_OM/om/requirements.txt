@@ -1,5 +1,5 @@
 # 主动依赖pydantic
-pydantic==1.10.5
+pydantic==v1.10.5
 
 # 主动依赖PyJWT
 PyJWT==2.4.0
