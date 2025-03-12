@@ -35,6 +35,9 @@ function borrow_package(){
 function build_package(){
     echo "=========== Build package start ========="
     cd ${PM_MS_DIR}/tmp
+    if [ -f "PM_System_Base_Service.tar.gz" ]; then
+        rm -f PM_System_Base_Service.tar.gz
+    fi
     mkdir -p ${PM_MS_DIR}/tmp/pmtmp/
     mv ${PM_MS_DIR}/tmp/pm-main-server.jar ${PM_MS_DIR}/tmp/pmtmp/pm-main-server.jar
     cd ${PM_MS_DIR}/tmp/pmtmp/

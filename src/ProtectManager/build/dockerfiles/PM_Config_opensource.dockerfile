@@ -18,6 +18,8 @@ WORKDIR /wheels
 COPY package/3rd/ /wheels/
 
 RUN luseradd -u 99 -g nobody -s /sbin/nologin nobody
+RUN yum install -y python3-devel
+RUN yum install iproute -y
 RUN yum install -y gcc \
 && pip3 install --no-index --find-links=./ --no-cache-dir setuptools==65.6.3 \
 && pip3 install --no-index --find-links=./ --no-cache-dir wheel==0.44.0 \

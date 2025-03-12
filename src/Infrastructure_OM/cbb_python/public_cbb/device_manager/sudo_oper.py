@@ -24,6 +24,7 @@ MOUNT_POINT_IN_SHELL_LOG_END_TAG = ". Line:"
 OS_CONFIG_SC_PAGE_SIZE = 'SC_PAGE_SIZE'
 OS_CHAR_BIT = 32
 DEFAULT_STRING_LENGTH = 65536
+SHELL_EXEC_TIMEOUT = 3600  # unit: second
 
 
 class OperationClass:
@@ -69,7 +70,7 @@ def mount_nfs_by_root_account(mount_point, mount_src):
                              shell=False,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     return out, error, child.returncode
 
 
@@ -79,7 +80,7 @@ def mount_cifs_by_root_account(mount_point, mount_src, user_name, passwd):
                              shell=False,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     return out, error, child.returncode
 
 
@@ -92,7 +93,7 @@ def mount_fuse_by_root_account(mount_point, source_id, osad_ip_list, osad_auth_p
                              shell=False,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     return out, error, child.returncode
 
 
@@ -101,7 +102,7 @@ def umount_by_root_account(mount_point):
                              shell=False,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     return out, error, child.returncode
 
 
@@ -111,7 +112,7 @@ def umount_fuse_by_root_account(mount_point):
                              shell=False,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     return out, error, child.returncode
 
 
@@ -120,7 +121,7 @@ def delete_path_by_root_account(delete_path):
                              shell=False,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     return out, error, child.returncode
 
 
@@ -129,7 +130,7 @@ def read_lines_by_root_account(file_path):
                              shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True,
                              encoding='UTF-8')
     data_list = child.stdout.readlines()
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     context_line = []
     for item in data_list:
         context_line.append(item.strip())
@@ -153,7 +154,7 @@ def over_write_by_root_account(file_path, data):
     child = subprocess.Popen(("sudo", OperationEnum.MOUNT_SCRIPT.get_path(), "over_write", file_path,
                               text_list[0], need_next), shell=False, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE, encoding='UTF-8')
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     if error or child.returncode != 0:
         log.error(f'Write data failed index 0, error: {error}, code: {child.returncode}.')
         return out, error, child.returncode
@@ -173,21 +174,28 @@ def over_write_by_root_account(file_path, data):
 def append_write_by_root_account(file_path, data, need_next='next'):
     child = subprocess.Popen(("sudo", OperationEnum.MOUNT_SCRIPT.get_path(), "append_write", file_path, data,
                               need_next), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='UTF-8')
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
+    return out, error, child.returncode
+
+
+def batch_create_path_by_root_account(dir_path):
+    command = ["sudo", "mkdir", "-p"] + dir_path
+    child = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='UTF-8',)
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     return out, error, child.returncode
 
 
 def create_path_by_root_account(dir_path):
     child = subprocess.Popen(("sudo", OperationEnum.MOUNT_SCRIPT.get_path(), "create_path", dir_path),
                              shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='UTF-8')
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     return out, error, child.returncode
 
 
 def check_file_exists_by_root_account(file_path):
     child = subprocess.Popen(("sudo", OperationEnum.MOUNT_SCRIPT.get_path(), "check_file", file_path),
                              shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='UTF-8')
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     code = child.returncode
     if error or code != 0:
         log.error(f'Check file exists failed, out: {out}, error: {error}, code: {code}')
@@ -198,7 +206,7 @@ def check_file_exists_by_root_account(file_path):
 def check_is_directory_sudo(file_path):
     child = subprocess.Popen(("sudo", OperationEnum.MOUNT_SCRIPT.get_path(), "is_directory", file_path),
                              shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='UTF-8')
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     code = child.returncode
     if error or code != 0:
         log.error(f'Check is directory failed, out: {out}, error: {error}, code: {code}')
@@ -209,7 +217,7 @@ def check_is_directory_sudo(file_path):
 def check_is_mount_sudo(file_path):
     child = subprocess.Popen(("sudo", OperationEnum.MOUNT_SCRIPT.get_path(), "is_mount", file_path),
                              shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='UTF-8')
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     code = child.returncode
     if error or code != 0:
         log.error(f'Check is a mount point failed, out: {out}, error: {error}, code: {code}')
@@ -222,5 +230,5 @@ def clear_path_by_root_account(clear_path):
                              shell=False,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-    out, error = child.communicate()
+    out, error = child.communicate(timeout=SHELL_EXEC_TIMEOUT)
     return out, error, child.returncode

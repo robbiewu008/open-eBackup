@@ -81,7 +81,7 @@ class GlobalConfig(BaseSettings):
 
     MOUNT_OPER_PATH: str = '/usr/bin/mount_oper.sh'
 
-    TIME_SCHEDULER_WORKS: int = 5
+    TIME_SCHEDULER_WORKS: int = 10
     MAX_CACHE_CONNECTION: int = 1
     HTTP_TIME_OUT: int = 120
     MAX_HTTP_RETRIES: int = 3

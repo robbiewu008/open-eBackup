@@ -53,7 +53,7 @@ class HttpRequest:
         self.verify = get_settings().OPEN_CERT_VERIFY
 
 
-def get_src_logical_ip(destination_ip):
+def get_src_logical_ip(destination_ip, port):
     req = HttpRequest()
     req.method = 'GET'
     req.suffix = f'/v1/internal/deviceManager/rest/logical_ip'
@@ -63,7 +63,8 @@ def get_src_logical_ip(destination_ip):
         destination_ip = destination_ip.strip("[]")
     req.body = json.dumps({
         "task_type": "backup",
-        "destination_ip": destination_ip
+        "destination_ip": destination_ip,
+        "port": str(port)
     })
     req.https = True
     request = RequestUtils(req)
@@ -122,7 +123,7 @@ class RequestUtils(object):
                 connect = urllib3.HTTPSConnectionPool(
                     req.host, req.port, maxsize=settings.MAX_CACHE_CONNECTION,
                     retries=settings.MAX_HTTP_RETRIES, timeout=settings.HTTP_TIME_OUT, ssl_context=context,
-                    socket_options=[vrf_bind_option], source_address=(get_src_logical_ip(req.host), 0),
+                    socket_options=[vrf_bind_option], source_address=(get_src_logical_ip(req.host, req.port), 0),
                     assert_hostname=False
                 )
             else:
@@ -133,6 +134,30 @@ class RequestUtils(object):
         except Exception as e:
             logger.error(f'Send request with crl failed, e:{Anonymity.process(str(e))}')
             return http_status, data
+        if not response:
+            return http_status, data
+        http_status, rsp_data = response.status, response.data.decode('utf-8')
+        data = json.loads(rsp_data) if cls._is_json(rsp_data) else rsp_data
+        return http_status, data
+
+    @classmethod
+    def send_request_with_crl_check_no_retry(cls, req: HttpRequest, context, bind_address=False):
+        http_status = None
+        data = None
+        settings = get_settings()
+        if bind_address:
+            vrf_bind_option = (socket.SOL_SOCKET, socket.SO_BINDTODEVICE, "vrf-srv".encode('utf-8'))
+            connect = urllib3.HTTPSConnectionPool(
+                req.host, req.port, maxsize=settings.MAX_CACHE_CONNECTION,
+                retries=0, timeout=settings.HTTP_TIME_OUT, ssl_context=context,
+                socket_options=[vrf_bind_option], source_address=(get_src_logical_ip(req.host, req.port), 0),
+                assert_hostname=False
+            )
+        else:
+            connect = urllib3.HTTPSConnectionPool(req.host, req.port, maxsize=settings.MAX_CACHE_CONNECTION,
+                                                  retries=0, timeout=settings.HTTP_TIME_OUT,
+                                                  ssl_context=context, assert_hostname=False)
+        response = connect.request(req.method, req.suffix, headers=req.headers, body=req.body)
         if not response:
             return http_status, data
         http_status, rsp_data = response.status, response.data.decode('utf-8')

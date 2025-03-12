@@ -188,10 +188,10 @@ spec:
           {{- if eq $environment "Dorado" }}
           resources:
             requests:
-              memory: "200Mi"
+              memory: "100Mi"
               cpu: "0.5"
             limits:
-              memory: "100Mi"
+              memory: "200Mi"
               cpu: "0.5"
           {{- end }}
         - name: pm-system-base
