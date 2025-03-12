@@ -1,0 +1,228 @@
+{{/*
+Get running environment
+*/}}
+{{- $environment:= "" }}
+{{- $realreplicas:= "" }}
+{{- if .Values.global }}
+{{- $environment = .Values.global.environment }}
+{{- $realreplicas = .Values.global.replicas }}
+{{- else }}
+{{- $environment = .Values.local.environment }}
+{{- $realreplicas = .Values.local.replicas }}
+{{- end }}
+
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d9" }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: protectengine-e-dma
+  namespace: dpa
+spec:
+  selector:
+    matchLabels:
+      app: protectengine-e-dma
+  serviceName: protectengine-e-dma
+  replicas: 1
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app: protectengine-e-dma # has to match .spec.selector.matchLabels
+    spec:
+      serviceAccountName: dme-sa
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: mgmt
+                    operator: NotIn
+                    values:
+                      - down
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - protectengine-e-dma
+              topologyKey: "kubernetes.io/hostname"
+      {{- if eq $environment "Dorado" }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      terminationGracePeriodSeconds: 0
+      securityContext:
+        {{- if eq $environment "Dorado" }}
+        seccompProfile:
+          type: RuntimeDefault
+        {{- end }}
+        fsGroup: 99
+        supplementalGroups: [62900] #OceanStorCommonGroup
+      containers:
+        - name: dma-nginx
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+            - name: DEPLOY_TYPE
+              value: {{ "d2" }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          image: dma_nginx:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 30070
+              name: web
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - sh /opt/OceanStor/100P/ProtectEngine-E/nginx/script/check_health.sh dma-nginx readinessProbe
+            initialDelaySeconds: 0
+            periodSeconds: 60
+            failureThreshold: 3
+            timeoutSeconds: 60
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - sh /opt/OceanStor/100P/ProtectEngine-E/nginx/script/check_health.sh dma-nginx livenessProbe
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            failureThreshold: 20
+            timeoutSeconds: 60
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsUser: 65500
+            capabilities:
+              add: ["SYS_ADMIN"]
+              drop: ["NET_RAW"]
+          volumeMounts:
+            - mountPath: /cache
+              name: cache-volume
+            - mountPath: /config
+              name: config
+              readOnly: true
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/logpath
+              name: log-path
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            {{- if eq $environment "Dorado" }}
+            - mountPath: /opt/product_conf
+              name: product-ini
+              readOnly: true
+            - mountPath: /startup_conf
+              name: start-up-conf
+              readOnly: true
+            {{- end }}
+          resources:
+            limits:
+              memory: "50Mi"
+              cpu: "0.1"
+        - name: dme-dns
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          image: dme_dns:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          securityContext:
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /var/run
+              name: var-run
+            - mountPath: /cache
+              name: cache-volume
+            - mountPath: /config
+              name: config
+              readOnly: true
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/resolv.conf
+              name: resolv-config
+              readOnly: true
+            - mountPath: /opt/logpath
+              name: log-path
+          resources:
+            limits:
+              memory: "30Mi"
+              cpu: "0.1"
+      initContainers:
+        - name: init-infrastructure
+          image: dme_initcontainer:{{ .Values.global.version }}
+          command:
+            - /bin/bash
+            - -c
+            - |
+              sh /opt/OceanStor/100P/ProtectEngine-E/initcontainer/init_infrastructure.sh
+          imagePullPolicy: Never
+          volumeMounts:
+          - mountPath: /cache
+            name: cache-volume
+          - mountPath: /opt/OceanProtect
+            name: log-path
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+      volumes:
+        - name: var-run
+          emptyDir: {}
+        - name: cache-volume
+          emptyDir: {}
+        - name: config
+          configMap:
+            name: protectengine-e-conf
+        - name: date-config
+          hostPath:
+            path: /etc/localtime
+        - name: resolv-config
+          hostPath:
+            path: /etc/resolv.conf
+        - name: kmc-conf
+          configMap:
+            name: kmc-store-conf
+            defaultMode: 0640
+        {{- if eq $environment "Dorado" }}
+        - name: log-path
+          persistentVolumeClaim:
+            claimName: "comm-nas"
+        - name: product-ini
+          hostPath:
+            path: /OSM/conf/app_data/spec/product.ini
+        - name: start-up-conf
+          hostPath:
+            path: /startup_disk/conf
+        {{- else }}
+        - name: log-path
+          hostPath:
+            path: /opt/OceanProtect
+        {{- end }}
+{{- end }}
