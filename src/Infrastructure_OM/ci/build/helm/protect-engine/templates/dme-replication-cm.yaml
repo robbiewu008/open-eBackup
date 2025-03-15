@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: replication-conf
+  namespace: dpa
+data:
+  GetMaxRunningJobOneNode: "20"
+  ClientIOThreadNum: "20"
+  ServerIOThreadNum: "40"
+  APITimeoutDuration: "90"
