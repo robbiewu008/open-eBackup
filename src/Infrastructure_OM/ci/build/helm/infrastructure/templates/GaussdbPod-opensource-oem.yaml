@@ -141,7 +141,7 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: DEPLOY_TYPE
-              value: {{ $deploytype }}
+              value: d2
           volumeMounts:
             - name: log-path
               mountPath: /opt/OceanProtect
