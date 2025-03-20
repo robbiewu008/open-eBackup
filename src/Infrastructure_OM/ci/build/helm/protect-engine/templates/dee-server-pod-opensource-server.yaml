@@ -76,7 +76,7 @@ spec:
             - name: COMPONENT_NAME
               value: protectengine-e
             - name: DEPLOY_TYPE
-              value: d10
+              value: d8
             - name: ENVIRONMENT
               value: Dorado
         - name: dee-init-container
@@ -106,7 +106,7 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: DEPLOY_TYPE
-              value: d10
+              value: d8
       containers:
         - name: dee-global-search
           image: dee_global_search:{{ .Values.global.version }}
