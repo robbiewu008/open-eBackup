@@ -28,7 +28,7 @@ RUN cp /opt/FileClient/lib/libkmcv3.so /usr/lib64/  \
 ADD common-init-${COMMON_INIT_VERSION}.tar.gz /usr/local/
 
 RUN sed -i '/update/,$d' /etc/yum.repos.d/openEuler.repo
-RUN dnf install -y python3-pip python39 openssl libatomic net-tools libuser shadow-utils openssh expect sudo iptables vim kmod libatomic dnsmasq nfs-utils\
+RUN dnf install -y python3-pip python39 openssl libatomic net-tools libuser shadow-utils openssh expect sudo iptables vim kmod libatomic dnsmasq nfs-utils iputils iproute\
     && chown -R root:root /usr/local/common-init \
     && dnf clean all \
     && chmod -R 555 "/usr/bin/restclient" \
