@@ -13,7 +13,33 @@ spec:
   storageClassName: oceanstor-protect-san
   resources:
     requests:
-      storage: 100Gi
+      storage: 100Gi  
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "dme-nas"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: dorado-vf-nas
+  resources:
+    requests:
+      storage: 200Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "agent-nas"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: dorado-vf-nas
+  resources:
+    requests:
+      storage: 1Gi
 {{- end }}
 
 {{- end }}

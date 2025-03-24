@@ -301,7 +301,7 @@ spec:
             - name: ENVIRONMENT
               value: {{ $environment }}
             - name: DEPLOY_TYPE
-              value: {{ $deploytype }}
+              value: d2
             - name: IMAGE_VERSION
               value: {{ .Values.global.version }}
             - name: POD_IP
@@ -364,7 +364,7 @@ spec:
               fieldRef:
                 fieldPath: spec.nodeName
           - name: DEPLOY_TYPE
-            value: {{ $deploytype }}
+            value: d2
           - name: ENVIRONMENT
             value: {{ $environment }}
           - name: POD_IP
@@ -431,7 +431,7 @@ spec:
               fieldRef:
                 fieldPath: status.podIP
           - name: DEPLOY_TYPE
-            value: {{ $deploytype }}
+            value: d2
           image: dme_dmc:{{ .Values.global.version }}
           imagePullPolicy: Never
           resources:
@@ -520,7 +520,7 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: DEPLOY_TYPE
-              value: {{ $deploytype }}
+              value: d2
           envFrom:
             - configMapRef:
                 name: cluster-conf

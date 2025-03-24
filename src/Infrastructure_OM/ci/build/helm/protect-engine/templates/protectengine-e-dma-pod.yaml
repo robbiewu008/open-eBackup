@@ -77,7 +77,7 @@ spec:
             - name: ENVIRONMENT
               value: {{ $environment }}
             - name: DEPLOY_TYPE
-              value: {{ "d2" }}
+              value: d2
             - name: POD_IP
               valueFrom:
                 fieldRef:
