@@ -13,6 +13,7 @@
 package openbackup.system.base.config;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.utils.CommonUtil;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.service.ConfigMapServiceImpl;
@@ -126,6 +127,13 @@ public class RedissonClientConfig {
                 Thread.sleep(SLEEP_TIME); // 死循环中降低CPU占用
             }
         } while (VerifyUtil.isEmpty(password));
+
+        log.info("Check redis cluster is creating start.");
+        while (isRedisClusterCreating()) {
+            CommonUtil.sleep(SLEEP_TIME); // 死循环中降低CPU占用
+        }
+        log.info("Check redis cluster is creating success.");
+
         Config config = new Config();
         config.setCodec(codec);
         if (isRedisCluster()) {
@@ -153,6 +161,16 @@ public class RedissonClientConfig {
         return Boolean.parseBoolean(redisCluster);
     }
 
+    private boolean isRedisClusterCreating() {
+        String redisCluster = ConfigMapUtil.getValueInConfigMap(ConfigMapUtil.MULTI_CLUSTER_CONF, REDIS_CLUSTER_KEY);
+        // 单机时为空
+        if (VerifyUtil.isEmpty(redisCluster)) {
+            return false;
+        }
+        // 为false时，集群创建中，为true时，集群已创建
+        return !Boolean.parseBoolean(redisCluster);
+    }
+
     private void setCommonServerConfig(BaseConfig<?> serverConfig, String password) throws MalformedURLException {
         URL url = new File(keyStoreFile).toURI().toURL();
         serverConfig.setSslKeystore(url);
@@ -165,7 +183,7 @@ public class RedissonClientConfig {
         serverConfig.setSslEnableEndpointIdentification(false);
         serverConfig.setPassword(password);
         serverConfig.setPingConnectionInterval(30000);
-        serverConfig.setTimeout(10000);
+        serverConfig.setTimeout(30000);
     }
 
     private List<String> getNodeAddresses() {

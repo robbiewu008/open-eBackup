@@ -13,7 +13,7 @@
 package openbackup.system.base.common.process;
 
 import lombok.extern.slf4j.Slf4j;
-import openbackup.system.base.common.thread.ThreadPoolTool;
+import openbackup.system.base.common.thread.LogProcessResultThreadPoolTool;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -190,9 +190,10 @@ public class ProcessUtil {
     }
 
     private static void log(InputStream inputStream, ProcessResult processResult, boolean isError) {
-        // 线程池执行
-        ThreadPoolTool.getPool().execute(() -> {
-            try (BufferedReader bf = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+        // 指定独立线程池
+        LogProcessResultThreadPoolTool.getPool().execute(() -> {
+            try (BufferedReader bf = new BufferedReader(
+                    new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
                 collectErrorOrOutput(bf, processResult, isError);
             } catch (IOException e) {
                 log.error("ProcessUtil.log(inputStream:{},processResult:{},isError:{})", inputStream,
@@ -200,6 +201,7 @@ public class ProcessUtil {
             }
         });
     }
+
 
     private static void collectErrorOrOutput(BufferedReader bufferedReader, ProcessResult processResult,
             boolean isError) throws IOException {

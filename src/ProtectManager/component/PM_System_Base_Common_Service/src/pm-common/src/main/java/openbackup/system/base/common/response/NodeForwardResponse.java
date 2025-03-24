@@ -10,29 +10,24 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-package openbackup.system.base.sdk.resource.model;
+package openbackup.system.base.common.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.Builder;
 import lombok.Data;
+import openbackup.system.base.common.exception.ErrorResponse;
+
+import java.util.List;
 
 /**
- * VMWare info
+ * 内部转发请求响应体
  *
  */
 @Data
-public class VMWareDetailInfo {
-    private String uuid;
+@Builder
+public class NodeForwardResponse {
+    private boolean success;
 
-    @JsonProperty("hardware")
-    private VMWareHardware hardware;
+    private String response;
 
-    @JsonProperty("vmx_datastore")
-    private VMWareSettingDataStore vmWareSettingDataStore;
-
-    private VMWareRuntime runtime;
-    private String firmware;
-
-    @JsonProperty("vm_parent_location")
-    private String vmParentLocation;
+    private List<ErrorResponse> errorResponses;
 }

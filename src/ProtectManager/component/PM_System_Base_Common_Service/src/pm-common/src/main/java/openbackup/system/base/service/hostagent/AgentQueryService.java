@@ -54,4 +54,12 @@ public interface AgentQueryService {
      * @return 内置agent的uuid列表
      */
     List<String> queryInternalAgentIds();
+
+    /**
+     * 查询agent插件列表
+     *
+     * @param agentId 要查询的agentid
+     * @return 内置agent插件的uuid列表
+     */
+    List<String> queryAgentPlugInIds(String agentId);
 }

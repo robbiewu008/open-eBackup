@@ -34,6 +34,12 @@ public class StoragePool {
     private String id;
 
     /**
+     * 存储池UUID
+     */
+    @JsonProperty("STORAGE_UUID")
+    private String storageUuid;
+
+    /**
      * 存储池名称
      */
     @JsonProperty("NAME")

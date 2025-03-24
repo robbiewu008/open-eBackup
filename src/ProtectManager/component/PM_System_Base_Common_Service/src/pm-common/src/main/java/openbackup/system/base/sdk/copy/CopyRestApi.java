@@ -455,6 +455,21 @@ public interface CopyRestApi {
         @RequestParam("job_type") String jobType);
 
     /**
+     * delete copy
+     *
+     * @param userId userId
+     * @param isForced 是否强删
+     * @param isAssociated 是否关联删除
+     * @param jobType 任务类型
+     * @param copyList 副本列表
+     */
+    @DeleteMapping("/internal/async/copies")
+    void asyncDeleteCopy(@RequestParam("user_id") String userId,
+        @RequestParam("is_forced") Boolean isForced, @RequestParam("is_associated") Boolean isAssociated,
+        @RequestParam("job_type") String jobType,
+        @RequestParam("copy_list") List<String> copyList);
+
+    /**
      * only delete copy in databse
      *
      * @param copyIds copy id list

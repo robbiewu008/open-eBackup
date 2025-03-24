@@ -189,11 +189,14 @@ public interface MemberClusterRestApi {
      * @param token token
      * @param function function
      * @param resourceType resourceType
+     * @param esn 备份目的地的存储esn 用来判断存储类型 目前仅E6000需要
+     * @param jobId 任务id 用来判断存储类型 目前仅E6000需要
      */
     @ExterAttack
     @GetMapping(value = "/v1/license/function")
     void licenseFunction(URI uri, @RequestHeader(name = "x-auth-token") String token,
-        @RequestParam("function") String function, @RequestParam("resourceType") String resourceType);
+        @RequestParam("function") String function, @RequestParam("resourceType") String resourceType,
+        @RequestParam("jobId") String jobId);
 
     /**
      * 同步HA证书

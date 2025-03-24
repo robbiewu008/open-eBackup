@@ -10,29 +10,27 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-package openbackup.system.base.sdk.resource.model;
+package openbackup.system.base.bean;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
-import lombok.Data;
+import java.util.List;
 
 /**
- * VMWare info
+ * 功能描述：存放E1000的网口信息
  *
  */
-@Data
-public class VMWareDetailInfo {
-    private String uuid;
+@Getter
+@Setter
+public class NetworkPortInfo {
+    /**
+     * 网口名称
+     */
+    private String ifaceName;
 
-    @JsonProperty("hardware")
-    private VMWareHardware hardware;
-
-    @JsonProperty("vmx_datastore")
-    private VMWareSettingDataStore vmWareSettingDataStore;
-
-    private VMWareRuntime runtime;
-    private String firmware;
-
-    @JsonProperty("vm_parent_location")
-    private String vmParentLocation;
+    /**
+     * 对应网口的ip列表
+     */
+    private List<String> ipList;
 }

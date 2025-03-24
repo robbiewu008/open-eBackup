@@ -10,29 +10,19 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-package openbackup.system.base.sdk.resource.model;
+package openbackup.system.base.service;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
+import java.util.List;
 
 /**
- * VMWare info
+ * DeviceHelper
  *
  */
-@Data
-public class VMWareDetailInfo {
-    private String uuid;
-
-    @JsonProperty("hardware")
-    private VMWareHardware hardware;
-
-    @JsonProperty("vmx_datastore")
-    private VMWareSettingDataStore vmWareSettingDataStore;
-
-    private VMWareRuntime runtime;
-    private String firmware;
-
-    @JsonProperty("vm_parent_location")
-    private String vmParentLocation;
+public interface DeviceHelper {
+    /**
+     * 获取用于OP服务化的本地逻辑端口的IP
+     *
+     * @return 逻辑IP（角色=11）
+     */
+    List<String> getOpServiceLogicPortIp();
 }

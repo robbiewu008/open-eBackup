@@ -19,6 +19,7 @@ import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
 
+import java.io.EOFException;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.NoRouteToHostException;
@@ -114,6 +115,10 @@ public class Routing {
      * @return 可重试: true; 不可重试: false
      */
     protected boolean isRetryableException(Throwable exception) {
+        // 这个问题通常发生在SSL/TLS连接过程中，一方意外关闭了连接，导致另一方无法正确完成握手或数据传输
+        if (ExceptionUtil.lookFor(exception, EOFException.class) != null) {
+            return true;
+        }
         // RetryableException有可能由于证书异常导致，首先排除
         if (ExceptionUtil.lookFor(exception, SSLHandshakeException.class) != null) {
             return false;
