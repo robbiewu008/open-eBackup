@@ -1,0 +1,89 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="应用一致性备份的生产环境Pod配置（容器应用为MairaDB）">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00102.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="kubernetes_CSI_00110_a2">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>应用一致性备份的生产环境Pod配置（容器应用为MairaDB）</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="kubernetes_CSI_00110_a2"></a><a name="kubernetes_CSI_00110_a2"></a>
+
+<h1 class="topictitle1">应用一致性备份的生产环境Pod配置（容器应用为MairaDB）</h1>
+<div><p>为PVC创建快照执行的前置/后置命令有多条时，可将多条预执行命令写入同一个脚本中，并将脚本放置于容器的持久化目录中，通过运行脚本执行多条命令，以简化输入的命令。</p>
+<p>以下分别为前置和后置命令的脚本内容示例：</p>
+<pre class="screen">#前置命令脚本
+#!/bin/bash
+if mariadb -uroot -phuawei@123 -e "SELECT 1;" 2&gt;/dev/null; then
+#注意：MairaDB数据库锁定时长大于备份时长。
+    mariadb -uroot -phuawei@123 -e "flush tables with read lock;system echo "200";system sleep 3000;"
+else
+#数据库连接失败。
+    echo "0"
+fi</pre>
+<pre class="screen">#后置命令脚本
+#!/bin/bash
+#当用户需要提前结束前置脚本执行时，可以强制终止前置脚本中“sleep进程”，命令中“grep”的字符串需要根据实际环境中“ps -ef”的执行结果来设置，并且“awk”打印的字段也需要根据“ps -ef”的执行结果中进程PID所在列进行相应更改。
+pid=$(ps -ef | grep "/bin/sh -c /var/lib/mariadb/backup/dataprotect_mysql_consistency_pre_script.sh" | grep -v grep | awk '{print $2}')
+#说明：当系统中没有前置脚本进程号时，表明在调用后置脚本解锁MairaDB数据库之前，前置脚本已经执行结束，此时可能存在备份数据不一致，导致后置脚本执行失败。
+[ ! $pid ] &amp;&amp; echo "pid is null" &amp;&amp; echo "0" &amp;&amp; exit
+#强制终止前置脚本中的sleep进程，从而完成MairaDB数据库的解锁操作。
+subtree=$(pstree -p $pid) subtree=$(pstree -p $pid)  
+right_str=${subtree##*\(}  
+sleep_pid=${right_str%*)}  
+kill -9 $sleep_pid
+kill -9 $pid
+#数据库解锁成功。
+echo "200"</pre>
+<div class="section"><h4 class="sectiontitle">配置步骤</h4><ol><li><span>将脚本上传至容器的任意持久化目录中并在容器界面执行以下命令为脚本文件添加权限。</span><p><pre class="screen">chmod +x <em>/var/lib/mariadb/backup/dataprotect_mysql_consistency_pre_script.sh</em>
+chmod +x <em>/var/lib/mariadb/backup/dataprotect_mysql_consistency_post_script.sh</em></pre>
+</p></li><li><span>执行以下命令登录MariaDB数据库。</span><p><pre class="screen">mariadb -u<em>root</em> -p<em>huawei@123</em></pre>
+<p>其中root是用户名，huawei@123是数据库密码，请根据实际替换，回显如下所示，表示成功进入数据库。</p>
+<p><span><img src="zh-cn_image_0000002237508157.png"></span></p>
+</p></li><li><span>修改脚本中所有相关内容，并保存。</span><p><ul><li>命令中的<strong>postgres</strong>请按实际用户密码替换。<pre class="screen">export PGPASSWORD='<em>postgres</em>'</pre>
+</li><li>后续操作将以前置脚本位置“/var/lib/mariadb/backup/dataprotect_mysql_consistency_pre_script.sh”和后置脚本位置“/var/lib/mariadb/backup/dataprotect_mysql_consistency_post_script.sh”为例说明，用户请根据实际脚本位置进行内容修改。</li></ul>
+</p></li><li><span>参见<a href="kubernetes_CSI_00108.html">应用一致性备份的生产环境Pod配置（通用）</a>添加Pod标签和注解，添加注解时输入的前置和后置命令值示例如下。</span><p><pre class="screen">#前置命令
+kubectl annotate pod -l <strong><em>label=value </em></strong>-n <strong><em>namespace</em></strong> pre.hook.dataprotect.backup.io/command='["/bin/sh", "-c","<em>/var/lib/mariadb/backup/dataprotect_pgsql_consistency_pre_script.sh</em>"]'
+#后置命令
+kubectl annotate pod -l <strong><em>label=value</em></strong><em> </em>-n <strong><em>namespace</em></strong> post.hook.dataprotect.backup.io/command='["/bin/sh", "-c","<em>/var/lib/mariadb/backup/dataprotect_pgsql_consistency_post_script.sh</em>"]'</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>为确保前置和后置命令能正常执行，命令中的脚本位置需要和脚本实际的上传位置保持一致。</p>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="kubernetes_CSI_00102.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

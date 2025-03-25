@@ -12,6 +12,9 @@
   -->
 
 <h2 class="target-location">{{'protection_copy_location_label' | i18n}}</h2>
+<lv-alert lvType="warning" lvClosable="false" *ngIf="[applicationType.TDSQL,applicationType.OceanBase].includes(appType)">
+    {{'protection_copy_location_alert_label'|i18n}}
+</lv-alert>
 <aui-specify-destination-location [formGroup]="formGroup" [data]="data" [isSlaDetail]="isSlaDetail" [action]="action"
     [isRetry]="isRetry" [isUsed]="isUsed" [hasArchival]="hasArchival" [hasReplication]="hasReplication"
     [application]="application" (isDisableQos)="storageTypeChange($event)" *ngIf="isSpecifiedLocation">
@@ -23,8 +26,8 @@
             <lv-form-item *ngIf="appType !== applicationType.CommonShare">
                 <lv-form-label>
                     {{'common_limit_rate_policy_single_label' | i18n}}
-                    <i lv-icon="aui-icon-help" [lv-tooltip]="limitTooltip" lvTooltipTheme="light"
-                        lvTooltipPosition="right" class="configform-constraint" lvColorState='true'></i>
+                    <aui-router-jump-help [routerUrl]="ratePolicyRouterUrl"
+                        helpTips="{{'common_limit_rate_policy_tip_label' | i18n}}"></aui-router-jump-help>
                 </lv-form-label>
                 <lv-form-control>
                     <ng-container *ngIf="isSlaDetail">
@@ -343,23 +346,19 @@
                     </ng-container>
                 </lv-form-control>
             </lv-form>
-            <!-- 保留快照 -->
+            <!-- 删除快照 -->
             <lv-form-item *ngIf="isKeepSnapshot">
                 <lv-form-label>
-                    {{'protection_keep_snapshot_label' | i18n}}
-                    <i lv-icon="aui-icon-help" lv-tooltip="{{'common_retain_sanpshot_help_label' | i18n}}"
+                    {{'common_delete_sanpshot_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'common_delete_sanpshot_help_label' | i18n}}"
                         lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
                 </lv-form-label>
                 <lv-form-control>
                     <ng-container *ngIf="!isSlaDetail">
                         <lv-switch formControlName="keep_snapshot"></lv-switch>
-                        <div *ngIf="!formGroup.value.keep_snapshot">
-                            <i lv-icon="lv-icon-status-info" lvColorState="true" class="icon"></i>
-                            <span>{{ 'common_retain_sanpshot_disable_label' | i18n }}</span>
-                        </div>
                     </ng-container>
                     <ng-container *ngIf="isSlaDetail">
-                        {{formGroup.value.keep_snapshot | textMap: 'switchStatus'}}
+                        {{formGroup.value.keep_snapshot | textMap: 'Switch_Status'}}
                     </ng-container>
                 </lv-form-control>
             </lv-form-item>
@@ -555,8 +554,4 @@
 </lv-collapse>
 <ng-template #advanceTpl>
     <h2>{{'common_advanced_label'|i18n}}</h2>
-</ng-template>
-
-<ng-template #limitTooltip>
-    <span [innerHTML]="'common_limit_rate_policy_tip_label' | i18n"></span>
 </ng-template>

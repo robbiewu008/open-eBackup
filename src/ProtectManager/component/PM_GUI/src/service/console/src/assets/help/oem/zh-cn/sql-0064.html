@@ -17,100 +17,148 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="查看SLA信息">
+  <meta name="DC.Title" content="创建介质集（归档存储是磁带库）（适用于部分型号）">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="sql-0062.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="sql-0064">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>查看SLA信息</title>
+  <title>创建介质集（归档存储是磁带库）（适用于部分型号）</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="sql-0064"></a><a name="sql-0064"></a>
-  <h1 class="topictitle1">查看SLA信息</h1>
+  <h1 class="topictitle1">创建介质集（归档存储是磁带库）（适用于部分型号）</h1>
   <div>
-   <div class="section" id="sql-0064__zh-cn_topic_0000001792344062_section128761441211">
+   <p id="sql-0064__zh-cn_topic_0000002200061393_p52126361762">当将磁带库作为归档存储时，请参考本节创建介质集。如果归档存储不是磁带库请忽略本节。</p>
+   <div class="section" id="sql-0064__zh-cn_topic_0000002200061393_section64578218528">
+    <h4 class="sectiontitle">背景信息</h4>
+    <ul id="sql-0064__zh-cn_topic_0000002200061393_ul20158183415546">
+     <li id="sql-0064__zh-cn_topic_0000002200061393_li12775337145414">介质集是基于磁带创建的，是一个磁带存储池，用于存放归档数据。因此创建介质集前需确保已有磁带库被扫描并更新至<span id="sql-0064__zh-cn_topic_0000002200061393_text18376218116">本产品</span>。</li>
+     <li id="sql-0064__zh-cn_topic_0000002200061393_li104011181308"><span id="sql-0064__zh-cn_topic_0000002200061393_ph035553742017">系统定期自动扫描磁带库（对于1.5.0版本系统每隔10分钟自动扫描，对于1.6.0及后续版本系统每隔24小时自动扫描），发现连接到<span id="sql-0064__zh-cn_topic_0000002200061393_text1834982214116">本产品</span>的磁带库后会将其自动更新至<span id="sql-0064__zh-cn_topic_0000002200061393_text1679762213115">本产品</span>。</span><p id="sql-0064__zh-cn_topic_0000002200061393_p22934181108">如果您发现磁带库还未更新至<span id="sql-0064__zh-cn_topic_0000002200061393_text102942231211">本产品</span>，可手动扫描磁带库，具体操作可参考《管理员指南》中的<span class="parmvalue" id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000001132896521_parmvalue63001041533">“扫描磁带库”</span>。</p></li>
+    </ul>
+   </div>
+   <div class="section" id="sql-0064__zh-cn_topic_0000002200061393_section24210211414">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p id="sql-0064__zh-cn_topic_0000002200061393_p166439914143">请确保磁带库内的所有磁带的“Access Status”为“Accessible”，“Access Status”可在磁带管理界面查看。</p>
+   </div>
+   <div class="section" id="sql-0064__zh-cn_topic_0000002200061393_section8876201915305">
     <h4 class="sectiontitle">操作步骤</h4>
-    <ol id="sql-0064__zh-cn_topic_0000001792344062_ol9516123410217">
-     <li id="sql-0064__zh-cn_topic_0000001792344062_li149381918143112"><span>选择<span class="uicontrol" id="sql-0064__zh-cn_topic_0000001792344062_zh-cn_topic_0000001839142377_uicontrol8111821122820">“<span id="sql-0064__zh-cn_topic_0000001792344062_zh-cn_topic_0000001839142377_text71111921162814">保护</span> &gt; 保护策略 &gt; SLA”</span>。</span></li>
-     <li id="sql-0064__zh-cn_topic_0000001792344062_li4524532214"><span>查看SLA信息。</span><p></p><p id="sql-0064__zh-cn_topic_0000001792344062_p11387181813226">相关参数说明如<a href="#sql-0064__zh-cn_topic_0000001792344062_table293653514225">表1</a>所示。</p>
+    <ol id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_ol16741124252118">
+     <li id="sql-0064__li79299103444"><span>选择<span class="uicontrol" id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_zh-cn_topic_0000002200069893_zh-cn_topic_0000002164660702_zh-cn_topic_0000001132896521_zh-cn_topic_0000001125223205_zh-cn_topic_0000001091431193_uicontrol123381932135316">“<span id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_zh-cn_topic_0000002200069893_zh-cn_topic_0000002164660702_zh-cn_topic_0000001132896521_zh-cn_topic_0000001125223205_text3591711162920">系统</span> &gt; <span id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_zh-cn_topic_0000002200069893_zh-cn_topic_0000002164660702_zh-cn_topic_0000001132896521_zh-cn_topic_0000001125223205_text134875310309">基础设施</span> &gt; <span id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_zh-cn_topic_0000002200069893_zh-cn_topic_0000002164660702_text102788238478">归档存储库</span>”</span>。</span></li>
+     <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li3233732194510"><span>在<span class="uicontrol" id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_uicontrol17681657155019">“<span id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_text17165161385110">磁带</span>”</span>页签，选择某个节点，单击<span class="uicontrol" id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_uicontrol94863210528">“<span id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_text716846185211">介质集</span>”</span>。</span></li>
+     <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li3878513121018"><span>单击<span class="uicontrol" id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_uicontrol1977312120105">“<span id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_text18211164020818">创建</span>”</span>。</span><p></p><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p11848102711287">创建介质集参数说明如<a href="#sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_table7624154102812">表1</a>所示。</p>
       <div class="tablenoborder">
-       <a name="sql-0064__zh-cn_topic_0000001792344062_table293653514225"></a><a name="zh-cn_topic_0000001792344062_table293653514225"></a>
-       <table cellpadding="4" cellspacing="0" summary="" id="sql-0064__zh-cn_topic_0000001792344062_table293653514225" frame="border" border="1" rules="all">
+       <a name="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_table7624154102812"></a><a name="zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_table7624154102812"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_table7624154102812" frame="border" border="1" rules="all">
         <caption>
-         <b>表1 </b>SLA参数说明
+         <b>表1 </b>创建介质集参数
         </caption>
         <colgroup>
-         <col style="width:35.33%">
-         <col style="width:64.67%">
+         <col style="width:34.69%">
+         <col style="width:65.31%">
         </colgroup>
         <thead align="left">
-         <tr id="sql-0064__zh-cn_topic_0000001792344062_row1393783513223">
-          <th align="left" class="cellrowborder" valign="top" width="35.33%" id="mcps1.3.1.2.2.2.2.2.3.1.1"><p id="sql-0064__zh-cn_topic_0000001792344062_p993719355227">参数</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="64.67%" id="mcps1.3.1.2.2.2.2.2.3.1.2"><p id="sql-0064__zh-cn_topic_0000001792344062_p09378358223">说明</p></th>
+         <tr id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_row86253541287">
+          <th align="left" class="cellrowborder" valign="top" width="34.69%" id="mcps1.3.4.2.3.2.2.2.3.1.1"><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p18625165492813">参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="65.31%" id="mcps1.3.4.2.3.2.2.2.3.1.2"><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p196251854192810">说明</p></th>
          </tr>
         </thead>
         <tbody>
-         <tr id="sql-0064__zh-cn_topic_0000001792344062_row5937235112214">
-          <td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000001792344062_p993733512219"><span id="sql-0064__zh-cn_topic_0000001792344062_text26536491231">名称</span></p></td>
-          <td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="sql-0064__zh-cn_topic_0000001792344062_p17937535112213">SLA的名称。</p> <p id="sql-0064__zh-cn_topic_0000001792344062_p520781119174">支持基于SLA名称进行排序便于查找相应SLA。</p></td>
+         <tr id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_row46251354142818">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p196251554152811">名称</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p362555420281">自定义介质集的名称。</p></td>
          </tr>
-         <tr id="sql-0064__zh-cn_topic_0000001792344062_row1937835142217">
-          <td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000001792344062_p593743542212"><span id="sql-0064__zh-cn_topic_0000001792344062_text1815881102417">应用类型</span></p></td>
-          <td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="sql-0064__zh-cn_topic_0000001792344062_p393763514221">SLA关联的应用类型。</p> <p id="sql-0064__zh-cn_topic_0000001792344062_p1865194815259">系统预置的SLA：Gold、Silver、Bronze，关联的应用类型为<span class="uicontrol" id="sql-0064__zh-cn_topic_0000001792344062_uicontrol17371126102610">“<span id="sql-0064__zh-cn_topic_0000001792344062_text14862114811269">通用</span>”</span>。</p></td>
-         </tr>
-         <tr id="sql-0064__zh-cn_topic_0000001792344062_row12937113542210">
-          <td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000001792344062_p15937173592218"><span id="sql-0064__zh-cn_topic_0000001792344062_text145161413112419">保护策略</span></p></td>
-          <td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="sql-0064__zh-cn_topic_0000001792344062_p89371351229">SLA中创建的保护策略。</p></td>
-         </tr>
-         <tr id="sql-0064__zh-cn_topic_0000001792344062_row19937335132213">
-          <td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000001792344062_p49371435152219"><span id="sql-0064__zh-cn_topic_0000001792344062_text14526142562410">关联资源</span></p></td>
-          <td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="sql-0064__zh-cn_topic_0000001792344062_p593753520227">SLA关联的资源数量。</p> <p id="sql-0064__zh-cn_topic_0000001792344062_p338215112919">单击资源数量，可查看详细的资源信息。</p>
-           <div class="note" id="sql-0064__zh-cn_topic_0000001792344062_note9502201213314">
+         <tr id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_row196251154192811">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p17625105419281">驱动块大小</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p12625105410281">支持64KB、128KB、256KB。向磁带写入数据时，是一块一块写入的。介质集所属磁带数据会以设置的块大小进行写入。</p>
+           <div class="note" id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_note565243611320">
             <span class="notetitle"> 说明： </span>
             <div class="notebody">
-             <p id="sql-0064__zh-cn_topic_0000001792344062_p175023128338">当<span class="uicontrol" id="sql-0064__zh-cn_topic_0000001792344062_uicontrol4536161916401">“<span id="sql-0064__zh-cn_topic_0000001792344062_text1137233117400">应用类型</span>”</span>为<span class="uicontrol" id="sql-0064__zh-cn_topic_0000001792344062_uicontrol1073033553910">“<span id="sql-0064__zh-cn_topic_0000001792344062_text114076934015">复制副本</span>”</span>时，SLA关联的资源仅支持在远程复制的源端集群查看。</p>
+             <p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p2161343103218">建议按照文件大小选择驱动块大小。</p>
+             <ul id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_ul201610431324">
+              <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li5161343163212">对于大文件，选择较大的驱动块大小，以保证读写效率。</li>
+              <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li6161204315321">对于小文件，选择较小的驱动块大小，以充分利用磁带空间。</li>
+             </ul>
             </div>
            </div></td>
          </tr>
-         <tr id="sql-0064__zh-cn_topic_0000001792344062_row15991228152413">
-          <td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000001792344062_p175995288247"><span id="sql-0064__zh-cn_topic_0000001792344062_text1960584317244">归档目标数量</span></p></td>
-          <td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="sql-0064__zh-cn_topic_0000001792344062_p95991028112415">SLA中创建的归档策略数量。</p> <p id="sql-0064__zh-cn_topic_0000001792344062_p16772182216335">一个归档策略中会指定一个归档存储。</p></td>
+         <tr id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_row26253549286">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p196251554182818">数据压缩</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 ">
+           <div class="p" id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p1814841316339">
+            <span style="color:#1A1A1A;">缩减数据量以减少存储空间，提升写入速度</span>。
+            <ul id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_ul1215331318334">
+             <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li131531213203310">启用：将开启磁带库的硬件压缩功能，启用压缩可以节省磁带容量并提升写入速度。</li>
+             <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li12153713103315">禁用：将禁用磁带库的硬件压缩功能。</li>
+            </ul>
+           </div></td>
          </tr>
-         <tr id="sql-0064__zh-cn_topic_0000001792344062_row15237133213243">
-          <td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000001792344062_p123793210243"><span id="sql-0064__zh-cn_topic_0000001792344062_text147171658152413">复制目标数量</span></p></td>
-          <td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="sql-0064__zh-cn_topic_0000001792344062_p82371322246">SLA中创建的复制策略数量。</p> <p id="sql-0064__zh-cn_topic_0000001792344062_p1049075303312">一个复制策略中会指定一个复制的目标集群。</p></td>
+         <tr id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_row717874343016">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p2017884323017">所属控制器</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p7997171124615">选择磁带所属控制器。</p></td>
          </tr>
-         <tr id="sql-0064__zh-cn_topic_0000001792344062_row758605515316">
-          <td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 ">
-           <div class="p" id="sql-0064__zh-cn_topic_0000001792344062_p11586175517310">
-            创建用户
-            <div class="note" id="sql-0064__zh-cn_topic_0000001792344062_note12966131135113">
-             <span class="notetitle"> 说明： </span>
-             <div class="notebody">
-              <p id="sql-0064__zh-cn_topic_0000001792344062_p199681613513">对于1.5.0版本，该参数名称为“<span id="sql-0064__zh-cn_topic_0000001792344062_text89541045103415">所属用户</span>”。</p>
-             </div>
+         <tr id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_row179321114123115">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p1093201418312">磁带</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p1393271493115">在左侧的磁带库列表中，选择某个磁带库，勾选右侧磁带库中的磁带。</p>
+           <div class="note" id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_note152988121326">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <ul id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_ul5529181923219">
+              <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li75291194325">支持添加多个磁带库中的磁带。不支持跨控制器添加磁带。</li>
+              <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li2529141903214">向介质集添加磁带时，不支持添加已经加入其它介质集的磁带。</li>
+              <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li053041903219">如果待选择的磁带“位置”长时间显示为“Driver”、磁带未识别、或“驱动数量”与实际不一致，可能为磁带被锁定在驱动上导致，请先参考磁带设备操作指南手动卸载磁带，解锁驱动后，并重新“扫描磁带库”。</li>
+             </ul>
             </div>
            </div></td>
-          <td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="sql-0064__zh-cn_topic_0000001792344062_p358605518319">SLA的创建用户。系统预置的SLA创建用户显示为“--”。</p></td>
+         </tr>
+         <tr id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_row8420183933310">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p74201439103316">可用磁带不足告警</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 ">
+           <ul id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_ul6295175973317">
+            <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li11891826343">功能开启后需要设置<span class="uicontrol" id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_uicontrol04341514582">“告警阈值”</span>。当空白磁带和过期可覆盖磁带的总数小于该值时，将产生告警。此时，您可以插入空白磁带或者将存在数据的磁带标记为空。
+             <div class="note" id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_note13197517113418">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <ul id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_ul558332553419">
+                <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li258392513346">如果启用了数据压缩，一个磁带能实际存储的最大数据量是未知的。比如磁带标称容量为50GB，实际可能存储60G、80G、100G的数据，所以无法做到按容量进行告警，只能按空白磁带和过期可覆盖磁带总数进行告警。</li>
+                <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li75831258343">告警阈值设置不能超过已选择磁带数量。</li>
+               </ul>
+              </div>
+             </div></li>
+            <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li172871912143413">功能关闭后，您将无法知道可用磁带数量。建议开启。</li>
+           </ul></td>
+         </tr>
+         <tr id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_row13782619458">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p479365451">告警阈值</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p1779462453"><span style="color:#1A1A1A;">请设置磁带数量，当可用磁带数量小于该值时，将产生告警。</span></p></td>
+         </tr>
+         <tr id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_row2816531134610">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_p1481683164611">保留范围</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 ">
+           <ul id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_ul16601125824717">
+            <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li16601458184710">不保护数据（根据需要循环覆盖磁带）：不保护磁带中的数据，有新的数据写入时，直接覆盖原有数据。选择此保留策略时，请确保当前介质集中至少有两个磁带。</li>
+            <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li96021358174719">永久保留数据：永久保留磁带中的数据。</li>
+            <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li12602185844715">定期保护数据：定期保护磁带中的数据。保护xx天/月/年。例如，设置定期保护数据的时间为10天，那么从对磁带最后一次写数据完成，经过10天后，将磁带标记为空，可以对磁带进行覆盖写。</li>
+           </ul></td>
          </tr>
         </tbody>
        </table>
       </div> <p></p></li>
+     <li id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_li2882165851013"><span>单击<span class="uicontrol" id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_uicontrol1193214611112">“<span id="sql-0064__zh-cn_topic_0000002200061393_zh-cn_topic_0000002164669278_text42337112109">确定</span>”</span>。介质集创建完成后，系统每隔1小时刷新介质集的状态和容量。可能存在介质集的状态与容量与实际不一致的情况，请等待系统刷新。</span></li>
     </ol>
    </div>
   </div>
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="sql-0062.html">SLA</a>
+     <strong>父主题：</strong> <a href="sql-0062.html">步骤1：添加归档存储</a>
     </div>
    </div>
   </div>

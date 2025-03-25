@@ -314,7 +314,7 @@ export class AlarmsComponent implements OnInit, OnDestroy {
 
   alarmHelpHover() {
     const url = this.i18n.isEn
-      ? '/console/assets/help/a8000/en-us/index.html#admin_email_save_000000.html'
+      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002164788896.html'
       : '/console/assets/help/a8000/zh-cn/index.html#helpcenter_000192.html';
     this.appUtilsService.openSpecialHelp(url);
   }
@@ -469,7 +469,16 @@ export class AlarmsComponent implements OnInit, OnDestroy {
     }
     if (this.appUtilsService.isDistributed) {
       return reject(sourceTypes, item => {
-        return includes(['Replication'], item.key);
+        return includes(
+          [
+            'Replication',
+            'anonymization',
+            'detection',
+            'antiRansomwarePolicy',
+            'Kerberos'
+          ],
+          item.key
+        );
       });
     }
     return sourceTypes;

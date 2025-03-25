@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="执行Hyper-V备份任务失败，错误详情包含“Read file failed, error: 22”">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="hyper_gud_0086.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="hyper_gud_0093">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>执行Hyper-V备份任务失败，错误详情包含“Read file failed, error: 22”</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hyper_gud_0093"></a><a name="hyper_gud_0093"></a>
+
+<h1 class="topictitle1">执行Hyper-V备份任务失败，错误详情包含“Read file failed, error: 22”</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>执行Hyper-V备份任务失败，同时待备份虚拟机无法开机，提示磁盘文件被其他进程占用。登录OceanProtect管理界面，选择“保护 &gt; 客户端”，在对应的客户端所在行，导出日志。查询VirtualPlugin.log日志文件中包含“Read file failed, error: 22”。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>待备份的Hyper-V虚拟机磁盘文件的进程被Hyper-V主机的其他进程占用，导致备份流程中客户端读取磁盘文件报错，报错内容包含“22：ERROR_BAD_COMMAND，设备无法识别命令”。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li><span>登录待备份的Hyper-V宿主机。</span></li><li><span>打开windows任务管理器，在<span class="uicontrol">“性能”</span>页面，打开资源监视器。</span></li><li><span>在<span class="uicontrol">“CPU”</span>页签，打开<span class="uicontrol">“关联的句柄”</span>页签，搜索被占用的磁盘文件名。磁盘文件名在执行虚拟机开机任务的报错信息中获取。</span></li><li><span>手动关闭占用磁盘文件的进程。</span></li><li><span>启动待备份虚拟机，观察是否能正常开机。</span><p><ul><li>是：即代表故障排除。</li><li>否：请联系华为技术支持工程师。</li></ul>
+</p></li></ol>
+<p></p>
+<p></p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="hyper_gud_0086.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

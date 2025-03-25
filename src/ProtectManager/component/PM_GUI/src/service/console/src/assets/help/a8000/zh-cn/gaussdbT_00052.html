@@ -20,73 +20,76 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="管理SLA">
+<meta name="DC.Title" content="步骤6：添加复制集群">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="gaussdbT_00049.html">
+<meta name="DC.Relation" scheme="URI" content="gaussdbT_00046.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="gaussdbT_00052">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>管理SLA</title>
+<title>步骤6：添加复制集群</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="gaussdbT_00052"></a><a name="gaussdbT_00052"></a>
 
-<h1 class="topictitle1">管理SLA</h1>
-<div><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_p8060118">您可以在管理界面上对SLA执行相关操作。</p>
-<p id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_p1143217175110">您需要登录管理界面，选择<span class="uicontrol" id="gaussdbT_00052__zh-cn_topic_0000001839223153_uicontrol9143133018394">“<span id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001839142377_text71111921162814">保护</span> &gt; 保护策略 &gt; SLA”</span>，进入SLA页面。</p>
-<p id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_p187384984516">具体操作任务如<a href="#gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_table51069596392">表1</a>所示。</p>
-
-<div class="tablenoborder"><a name="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_table51069596392"></a><a name="zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_table51069596392"></a><table cellpadding="4" cellspacing="0" summary="" id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_table51069596392" frame="border" border="1" rules="all"><caption><b>表1 </b>SLA相关操作</caption><colgroup><col style="width:21.3%"><col style="width:47.3%"><col style="width:31.4%"></colgroup><thead align="left"><tr id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_row91070599391"><th align="left" class="cellrowborder" valign="top" width="21.3%" id="mcps1.3.4.2.4.1.1"><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_p3107135953910">任务</p>
+<h1 class="topictitle1">步骤6：添加复制集群</h1>
+<div><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_p173011029113111">在本端集群侧添加目标集群，建立主端设备和从端设备之间的逻辑连接，用于设备之间的数据传输。</p>
+<div class="section" id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_section5343122851716"><h4 class="sectiontitle">前提条件</h4><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_p27481329181712">已准备用于复制的目标集群。</p>
+</div>
+<div class="section" id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_section152913359312"><h4 class="sectiontitle">操作步骤</h4><ol id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_ol1038139939"><li id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_li1570821013536"><span>选择<span class="uicontrol" id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_text195451245818">系统</span> &gt; <span id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_text1825116201482">基础设施</span> &gt; <span id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_text2324131633414">集群管理</span>”</span>。</span></li><li id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_li0123231815"><span>在<span class="uicontrol" id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_uicontrol855335015454">“<span id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_text11821141684610">复制集群</span>”</span>页签，单击<span class="uicontrol" id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_uicontrol1645154510534">“<span id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_text26407307349">添加</span>”</span>。</span></li><li id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_li10626045539"><span>配置目标集群参数。</span><p><div class="p" id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_p344744712197">相关参数说明如<a href="#gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_table13641194661910">表1</a>所示。
+<div class="tablenoborder"><a name="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_table13641194661910"></a><a name="fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_table13641194661910"></a><table cellpadding="4" cellspacing="0" summary="" id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_table13641194661910" frame="border" border="1" rules="all"><caption><b>表1 </b>目标集群参数说明</caption><colgroup><col style="width:34.949999999999996%"><col style="width:65.05%"></colgroup><thead align="left"><tr id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row66412046151918"><th align="left" class="cellrowborder" valign="top" width="34.949999999999996%" id="mcps1.3.3.2.3.2.1.2.2.3.1.1"><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_p11641204641917">参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="47.3%" id="mcps1.3.4.2.4.1.2"><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_p2107185910394">任务描述</p>
-</th>
-<th align="left" class="cellrowborder" valign="top" width="31.4%" id="mcps1.3.4.2.4.1.3"><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_p1510735916393">界面入口</p>
+<th align="left" class="cellrowborder" valign="top" width="65.05%" id="mcps1.3.3.2.3.2.1.2.2.3.1.2"><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_p3641114610198">说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_row1910765917395"><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.4.2.4.1.1 "><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p07411330154813">克隆SLA</p>
+<tbody><tr id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row11154135519445"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_p9154135544411">名称</p>
 </td>
-<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.4.2.4.1.2 "><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_p910714592398"><strong id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_b722315495463">操作背景</strong></p>
-<p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p3593161114122">克隆SLA，可以帮助您基于已有SLA快速创建一个新的SLA。</p>
-</td>
-<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.4.2.4.1.3 "><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p20738730164813">在SLA所在行选择<span class="uicontrol" id="gaussdbT_00052__zh-cn_topic_0000001839223153_uicontrol12145248165011">“<span id="gaussdbT_00052__zh-cn_topic_0000001839223153_text1299311213518">更多</span> &gt; <span id="gaussdbT_00052__zh-cn_topic_0000001839223153_text191134398513">克隆</span>”</span>。</p>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_p15783192212167">自定义目标集群的名称。</p>
 </td>
 </tr>
-<tr id="gaussdbT_00052__zh-cn_topic_0000001839223153_zh-cn_topic_0000001090712911_row15107205912390"><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.4.2.4.1.1 "><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p2737143020480">修改SLA</p>
+<tr id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row15735172017508"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_p188591081763">角色</p>
 </td>
-<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.4.2.4.1.2 "><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p6737173013481"><strong id="gaussdbT_00052__zh-cn_topic_0000001839223153_b1239415173142">操作背景</strong></p>
-<p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p19520101811417">通过该操作可修改SLA名称、SLA中已配置的备份策略、复制策略或归档策略。</p>
-<p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p52561147151419"><strong id="gaussdbT_00052__zh-cn_topic_0000001839223153_b1388415134161">注意事项</strong></p>
-<ul id="gaussdbT_00052__zh-cn_topic_0000001839223153_ul167127192164"><li id="gaussdbT_00052__zh-cn_topic_0000001839223153_li195851422121619">不支持修改应用类型。</li><li id="gaussdbT_00052__zh-cn_topic_0000001839223153_li87121819151614">系统预置的SLA不支持修改。</li><li id="gaussdbT_00052__zh-cn_topic_0000001839223153_li116544512316">修改SLA的副本保留时长后，通过该SLA已生成的副本保留策略不会自动修改，如需修改已生成副本的保留时长，请手动修改该副本保留策略。</li></ul>
-</td>
-<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.4.2.4.1.3 "><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p57341830204817">在SLA所在行选择<span class="uicontrol" id="gaussdbT_00052__zh-cn_topic_0000001839223153_uicontrol5986114775119">“<span id="gaussdbT_00052__zh-cn_topic_0000001839223153_text1986124710512">更多</span> &gt; <span id="gaussdbT_00052__zh-cn_topic_0000001839223153_text962617125214">修改</span>”</span>。</p>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_p14980173721618">固定为<span class="uicontrol" id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_uicontrol3110113172718">“<span id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_text844584915492">复制目标集群</span>”</span>。</p>
 </td>
 </tr>
-<tr id="gaussdbT_00052__zh-cn_topic_0000001839223153_row1373965525817"><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.4.2.4.1.1 "><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p1575219280487">删除SLA</p>
+<tr id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row17641164617192"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_p61532194619">IP地址</p>
 </td>
-<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.4.2.4.1.2 "><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p510213915204"><strong id="gaussdbT_00052__zh-cn_topic_0000001839223153_b3102239152017">操作背景</strong></p>
-<p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p191022396205">通过该操作可删除不再使用的SLA。</p>
-<p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p101029397203"><strong id="gaussdbT_00052__zh-cn_topic_0000001839223153_b1610263922010">注意事项</strong></p>
-<ul id="gaussdbT_00052__zh-cn_topic_0000001839223153_ul7486104911349"><li id="gaussdbT_00052__zh-cn_topic_0000001839223153_li1848612497343">不允许删除已关联资源的SLA；如需删除，请先将关联了该SLA的资源移除保护。</li><li id="gaussdbT_00052__zh-cn_topic_0000001839223153_li74071452183420">不允许删除系统预置的SLA。</li></ul>
-</td>
-<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.4.2.4.1.3 "><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p145051324124814">在SLA所在行选择<span class="uicontrol" id="gaussdbT_00052__zh-cn_topic_0000001839223153_uicontrol3677448185110">“<span id="gaussdbT_00052__zh-cn_topic_0000001839223153_text14677348115112">更多</span> &gt; <span id="gaussdbT_00052__zh-cn_topic_0000001839223153_text1244132235219">删除</span>”</span>。</p>
-<div class="note" id="gaussdbT_00052__zh-cn_topic_0000001839223153_note547613624819"><span class="notetitle"> 说明： </span><div class="notebody"><p id="gaussdbT_00052__zh-cn_topic_0000001839223153_p6476636154814">您也可以勾选多个SLA，单击左上角的<span class="uicontrol" id="gaussdbT_00052__zh-cn_topic_0000001839223153_uicontrol76273390498">“删除”</span>，进行批量删除。</p>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><div class="p" id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_p12127149171616">输入目标集群任一控制器的管理、备份或复制IP地址。<ul id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_ul10691523173813"><li id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_li1869223123818">如果输入目标集群的管理IP地址，请确保本端与目标端的管理网络连通。</li><li id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_li12657153011405">如果输入目标集群的备份网络IP地址，请确保本端与目标端的备份网络连通。</li><li id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_li1768111253458">如果输入目标集群的复制网络IP地址，请确保本端与目标端的复制网络连通。</li></ul>
+<div class="note" id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_note4160173815018"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_ul114693044613"><li id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_li472320144611">管理IP地址即为登录目标集群管理界面的IP地址。</li><li id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_li174692084618">备份或复制网络IP请登录目标集群的管理界面，选择<span class="uicontrol" id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_uicontrol1664124518511">“系统 &gt; 基础设施 &gt; 集群管理”</span>，在“备份集群”页签单击集群名称，获取任一控制器的备份网络IP地址（数据备份引擎）或复制网络IP地址。</li></ul>
 </div></div>
+</div>
+</td>
+</tr>
+<tr id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row18641204619191"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_p577915299616">端口</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_p199938014179">目标集群的端口。取值范围为：1~65535。</p>
+<p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_p7624122151720">IP地址框输入管理IP地址时，默认端口为25081；IP地址框输入复制网络IP地址或备份网络IP地址时，默认端口为30068。</p>
+</td>
+</tr>
+<tr id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row9641346121912"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_p17777391664">用户名</p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_p1119324620413"><a href="gaussdbT_00051.html#gaussdbT_00051">步骤5：创建远端设备管理员</a>中创建的用户及其密码。</p>
+</td>
+</tr>
+<tr id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row12641194631915"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_p1644865412613">密码</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+</p></li><li id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_li398813261430"><span>单击<span class="uicontrol" id="gaussdbT_00052__fc_gud_0033_17_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_uicontrol138611845761">“确定”</span>。</span></li></ol>
+</div>
+</div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="gaussdbT_00049.html">SLA</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="gaussdbT_00046.html">复制GaussDB T数据库副本（适用于OceanProtect E1000）</a></div>
 </div>
 </div>
 

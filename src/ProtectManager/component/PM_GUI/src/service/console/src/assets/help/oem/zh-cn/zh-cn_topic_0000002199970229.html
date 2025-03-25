@@ -1,0 +1,70 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="对Patroni集群执行按时间点做日志副本恢复时，恢复任务执行成功但恢复后的数据与指定时间点的数据存在不一致">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="postgresql-0061.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002199970229">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>对Patroni集群执行按时间点做日志副本恢复时，恢复任务执行成功但恢复后的数据与指定时间点的数据存在不一致</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000002199970229"></a><a name="ZH-CN_TOPIC_0000002199970229"></a>
+  <h1 class="topictitle1">对Patroni集群执行按时间点做日志副本恢复时，恢复任务执行成功但恢复后的数据与指定时间点的数据存在不一致</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>对PostgreSQL数据库Patroni集群部署类型进行指定时间点的日志副本恢复操作时，恢复任务执行成功，但恢复后进入指定数据库查看数据，发现数据与指定恢复的时间点的数据存在不一致情况。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>在执行PostgreSQL数据库Patroni集群部署类型按指定时间点进行日志副本恢复前，需要按照<a href="postgresql-0045.html#postgresql-0045__section721285884410">前提条件</a>对恢复目标位置的Patroni集群配置文件patroni.yml提前进行配置，如若未进行配置或配置位置不正确（如未正确在patroni.yml配置文件的bootstrap项下进行配置），则会出现数据不一致现象。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li><span>使用PuTTY，登录PostgreSQL数据库Patroni集群部署类型主机。</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>Patroni集群由多个节点构成，由于Patroni集群可以执行切主操作，故以下处理步骤应在所有的Patroni集群节点全部执行一遍，才可保证恢复时不会出现新问题。</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>按照<a href="postgresql-0045.html#postgresql-0045__section721285884410">前提条件</a>内容对恢复目标位置的Patroni集群配置文件patroni.yml进行自定义配置，建议配置位置为patroni.yml文件的bootstrap项下方initdb项上方，如下图红框处，并且method应与initdb缩进相同。除此处配置外，无需在其余项下增加配置，否则一样会导致恢复任务出现故障或恢复任务执行成功但数据不一致。</span><p></p><p>配置样例为：</p> <p><span><img src="zh-cn_image_0000002164763686.png"></span></p> <p></p></li>
+     <li><span>在Patroni集群所有节点配置完成后，重新执行按时间点进行日志副本恢复，恢复任务执行成功且数据成功恢复到指定时间点数据。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="postgresql-0061.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

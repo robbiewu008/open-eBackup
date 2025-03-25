@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="hbase_00044.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -41,12 +41,12 @@
 <div><p>当需要对已备份的HBase备份集进行恢复时，可以参考本节恢复HBase备份集至原位置或新位置。</p>
 <div class="section"><h4 class="sectiontitle">背景信息</h4><p>支持使用备份副本、复制副本、归档副本、导入的副本进行恢复。支持恢复至原位置（复制副本不支持恢复至原位置，复制副本再归档后不支持恢复至原位置）或新位置。</p>
 </div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="hbase_00047__hbase_00043_zh-cn_topic_0000001839142377_uicontrol161751858496">“<span id="hbase_00047__hbase_00043_zh-cn_topic_0000001839142377_text3175185114918">数据利用</span> &gt; <span id="hbase_00047__hbase_00043_zh-cn_topic_0000001839142377_text1117515124916">副本数据</span> &gt; <span id="hbase_00047__hbase_00043_zh-cn_topic_0000001839142377_text58221719218">大数据</span> &gt; HBase”</span>。</span></li><li><span>您可以以HBase备份集资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在“资源”页签，根据备份集名称查找到需要恢复的备份集，并单击备份集名称。</p>
-</p></li><li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000001839187997.png"></span>，即表示该月、该天存在副本。</p>
-</p></li><li><span>指定副本或时间点进行恢复。</span><p><div class="p">您可以指定副本或指定时间点进行恢复。<ol type="a"><li>指定副本或指定时间点进行恢复。<ul><li>指定副本进行恢复<p><span><img class="eddx" src="zh-cn_image_0000001792388908.png"></span></p>
-</li><li>指定时间点进行恢复。<p><span><img class="eddx" src="zh-cn_image_0000001839267961.png"></span></p>
-<p>时间轴上蓝色覆盖区域均可进行时间点恢复，<span><img src="zh-cn_image_0000001839267957.png"></span>表示该时间点存在全量备份副本或永久增量（合成全量）副本。如果需要进行时间点恢复，请确保待恢复到的时间点或之前存在非日志备份的副本，且在该时间点之后进行过日志备份。</p>
-<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="hbase_00047__oracle_gud_0058_ul75802612312"><li id="hbase_00047__oracle_gud_0058_li1497342618234">对于1.5.0版本，时间轴上最多仅展示100个副本，单击<span><img id="hbase_00047__oracle_gud_0058_image173544102299" src="zh-cn_image_0000001886153709.png"></span>可以查看所有副本。</li><li id="hbase_00047__oracle_gud_0058_li95818264231">执行时间点恢复时，由于管理界面无法获取恢复时所使用的副本信息，因此，在恢复任务和相关的事件页面，用户无法看到该恢复任务的副本信息。</li></ul>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="hbase_00047__hbase_00043_zh-cn_topic_0000002199964685_uicontrol161751858496">“<span id="hbase_00047__hbase_00043_zh-cn_topic_0000002199964685_text3175185114918">数据利用</span> &gt; <span id="hbase_00047__hbase_00043_zh-cn_topic_0000002199964685_text1117515124916">副本数据</span> &gt; <span id="hbase_00047__hbase_00043_zh-cn_topic_0000002199964685_text58221719218">大数据</span> &gt; HBase”</span>。</span></li><li><span>您可以以HBase备份集资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在“资源”页签，根据备份集名称查找到需要恢复的备份集，并单击备份集名称。</p>
+</p></li><li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000002199954693.png"></span>，即表示该月、该天存在副本。</p>
+</p></li><li><span>指定副本或时间点进行恢复。</span><p><div class="p">您可以指定副本或指定时间点进行恢复。<ol type="a"><li>指定副本或指定时间点进行恢复。<ul><li>指定副本进行恢复<p><span><img class="eddx" src="zh-cn_image_0000002199954669.png"></span></p>
+</li><li>指定时间点进行恢复。<p><span><img class="eddx" src="zh-cn_image_0000002164748058.png"></span></p>
+<p>时间轴上蓝色覆盖区域均可进行时间点恢复，<span><img src="zh-cn_image_0000002199989061.png"></span>表示该时间点存在全量备份副本或永久增量（合成全量）副本。如果需要进行时间点恢复，请确保待恢复到的时间点或之前存在非日志备份的副本，且在该时间点之后进行过日志备份。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="hbase_00047__oracle_gud_0083_ul75802612312"><li id="hbase_00047__oracle_gud_0083_li1497342618234">对于1.5.0版本，时间轴上最多仅展示100个副本，单击<span><img id="hbase_00047__oracle_gud_0083_image173544102299" src="zh-cn_image_0000002199963833.png"></span>可以查看所有副本。</li><li id="hbase_00047__oracle_gud_0083_li95818264231">执行时间点恢复时，由于管理界面无法获取恢复时所使用的副本信息，因此，在恢复任务和相关的事件页面，用户无法看到该恢复任务的副本信息。</li></ul>
 </div></div>
 </li></ul>
 </li><li>恢复HBase备份集至原位置或新位置。<div class="p">相关参数说明如<a href="#hbase_00047__table194961441141219">表1</a>。

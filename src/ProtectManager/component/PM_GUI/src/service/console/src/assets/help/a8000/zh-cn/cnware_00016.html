@@ -20,36 +20,59 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤5：（可选）开启备份链路加密开关">
+<meta name="DC.Title" content="步骤4：（可选）创建CNware虚拟机组">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="cnware_00011.html">
+<meta name="DC.Relation" scheme="URI" content="cnware_00012.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="documenttype" content="usermanual">
 <meta name="prodname" content="csbs">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="cnware_00016">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤5：（可选）开启备份链路加密开关</title>
+<title>步骤4：（可选）创建CNware虚拟机组</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="cnware_00016"></a><a name="cnware_00016"></a>
 
-<h1 class="topictitle1">步骤5：（可选）开启备份链路加密开关</h1>
-<div><p>您需要开启备份链路加密开关，备份链路加密功能才会生效。</p>
-<div class="section"><h4 class="sectiontitle">前提条件</h4><p id="cnware_00016__zh-cn_topic_0000001839143225_p13640951351">请确保已为存储系统配置NFS Kerberos服务，并已在AD域中添加<strong id="cnware_00016__zh-cn_topic_0000001839143225_b1495762152419">rdadmin</strong>用户。否则开启备份链路加密开关后，可能导致备份任务失败。<span id="cnware_00016__zh-cn_topic_0000001839143225_ph527185394510">配置NFS Kerberos服务的操作请参见产品对应型号的<span id="cnware_00016__zh-cn_topic_0000001839143225_cite5907115716400">《安装指南》</span>中的“（可选）配置NFS Kerberos服务”章节。</span></p>
+<h1 class="topictitle1">步骤4：（可选）创建CNware虚拟机组</h1>
+<div><p>虚拟机组是CNware平台中指定的虚拟机群组。可通过注册虚拟机组对指定的多个虚拟机进行数据保护。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="cnware_00016__zh-cn_topic_0000002199964685_uicontrol14456431877">“<span id="cnware_00016__zh-cn_topic_0000002199964685_text134457431679">保护</span> &gt; 虚拟化 &gt; CNware”</span>。</span></li></ol><ol start="2"><li><span>选择<span class="uicontrol">“虚拟机组”</span>页签，单击<span class="uicontrol">“创建”</span>。</span><p><div class="p">虚拟机组的创建信息如<a href="#cnware_00016__table613227155112">表1</a>所示。
+<div class="tablenoborder"><a name="cnware_00016__table613227155112"></a><a name="table613227155112"></a><table cellpadding="4" cellspacing="0" summary="" id="cnware_00016__table613227155112" frame="border" border="1" rules="all"><caption><b>表1 </b>虚拟机组创建信息</caption><colgroup><col style="width:25.6%"><col style="width:74.4%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.6%" id="mcps1.3.2.3.1.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.4%" id="mcps1.3.2.3.1.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.3.1.2.1.2.2.3.1.1 "><p>虚拟机组名称</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.3.1.2.1.2.2.3.1.2 "><p>用户自定义虚拟机组名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.3.1.2.1.2.2.3.1.1 "><p>计算位置</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.3.1.2.1.2.2.3.1.2 "><p>请选择目标集群或者主机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.3.1.2.1.2.2.3.1.1 "><p>选择资源</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.3.1.2.1.2.2.3.1.2 "><p>用户选择单个或多个虚拟机创建虚拟机组，可通过资源ID或虚拟机名称筛选需要保护的虚拟机资源。<span style="color:#282B33;">不支持选择已保护或已加入其他虚拟机组的资源。</span></p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>单个虚拟机组可选择虚拟机数的限制为40个。</p>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="section"><h4 class="sectiontitle">注意事项</h4><p id="cnware_00016__zh-cn_topic_0000001839143225_p1854315715349">开启备份链路加密后，代理主机与KDC域服务器之间的票证存在有效期，票证过期之后可能导致备份任务失败。建议延长KDC域服务器上Kerberos策略中票证的过期时间或者配置为永不过期。如果未配置永不过期，需要在票证即将过期前，在代理主机上，对添加到AD域中的用户，通过<strong id="cnware_00016__zh-cn_topic_0000001839143225_b3195122210175">kinit</strong>命令或<strong id="cnware_00016__zh-cn_topic_0000001839143225_b185942242179">net</strong>命令重新获取票证，具体操作请参见产品对应型号的<span id="cnware_00016__zh-cn_topic_0000001839143225_cite890601917412">《安装指南》</span>中的“配置客户端”章节。</p>
 </div>
-<div class="section"><h4 class="sectiontitle">开启备份链路加密开关</h4><ol><li><span>选择<span class="uicontrol">“<span><span>系统</span></span> &gt; <span><span>安全</span></span> &gt; <span>数据安全</span>”</span>。</span></li><li><span>单击页面右侧的<span class="uicontrol">“<span>修改</span>”</span>，开启<span class="uicontrol">“<span>备份链路加密</span>”</span>。</span></li><li><span>单击<span class="uicontrol">“<span>保存</span>”</span>。</span></li></ol>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
 </div>
-<p></p>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="cnware_00011.html">备份CNware虚拟机</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="cnware_00012.html">备份CNware虚拟机</a></div>
 </div>
 </div>
 

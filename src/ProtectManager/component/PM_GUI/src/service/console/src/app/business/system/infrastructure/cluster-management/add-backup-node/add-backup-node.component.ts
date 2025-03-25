@@ -10,7 +10,13 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -18,6 +24,7 @@ import {
   FormGroup,
   ValidatorFn
 } from '@angular/forms';
+import { ModalRef } from '@databackup/live';
 import {
   BackupClustersNetplaneService,
   BaseUtilService,
@@ -76,10 +83,12 @@ export class AddBackupNodeComponent implements OnInit {
     ...this.baseUtilService.requiredErrorTip,
     invalidName: this.i18n.get('system_netplane_name_error_info_label')
   };
+  @ViewChild('headerTpl', { static: true }) headerTpl: TemplateRef<any>;
 
   constructor(
     public i18n: I18NService,
     public fb: FormBuilder,
+    public modal: ModalRef,
     public clusterApiService: ClustersApiService,
     public backupClusterNetplaneService: BackupClustersNetplaneService,
     public baseUtilService: BaseUtilService,
@@ -87,7 +96,12 @@ export class AddBackupNodeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initHeader();
     this.initForm();
+  }
+
+  initHeader() {
+    this.modal.setProperty({ lvHeader: this.headerTpl });
   }
 
   validLength(min, max): ValidatorFn {

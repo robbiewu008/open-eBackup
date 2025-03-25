@@ -41,6 +41,7 @@ import {
   isNumber,
   map,
   size,
+  some,
   startsWith,
   uniq
 } from 'lodash';
@@ -372,17 +373,17 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   markVolume(tableData) {
+    let tmpSystemList = [...this.systemVolumeList, '/'];
     each(tableData, item => {
       let tmp = item.volumeMountPoints.split(',');
-      if (!tmp) {
-        item.type = false;
-      }
-      each(tmp, volume => {
-        assign(item, {
-          type: !!find(this.systemVolumeList, val => {
-            return startsWith(volume, val) || volume === '/';
-          })
-        });
+      assign(item, {
+        type: !!some(tmp, volume => {
+          return (
+            !!some(this.systemVolumeList, val =>
+              startsWith(volume, val + '/')
+            ) || tmpSystemList.includes(volume)
+          );
+        })
       });
     });
   }

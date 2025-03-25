@@ -1,0 +1,180 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring the CDB or Multiple PDBs in the Oracle Database (Applicable to 1.6.0 and Later Versions)">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002199963633.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002199998029">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring the CDB or Multiple PDBs in the Oracle Database (Applicable to 1.6.0 and Later Versions)</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002199998029"></a><a name="EN-US_TOPIC_0000002199998029"></a>
+
+<h1 class="topictitle1">Restoring the CDB or Multiple PDBs in the Oracle Database (Applicable to 1.6.0 and Later Versions)</h1>
+<div><p>This section describes how to restore damaged or lost CDBs or PDB sets in an Oracle database to the Oracle host.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><ul><li>The GUI may vary with versions.</li><li>Oracle 12c and later versions support the CDB and PDB features.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li><span>Ensure that the multi-tenant environment is configured for the Oracle instance. Otherwise, there will be no PDB available for the PDB set registration task. You can run the SQL statement <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002199997993_b9211112135015">SELECT cdb FROM v$database</strong> to query whether the multi-tenant environment is configured for the current Oracle instance. In the command output, value <span class="uicontrol" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002199997993_uicontrol10762145114811"><b>yes</b></span> indicates that the multi-tenant environment is configured for the current Oracle instance, and value <span class="uicontrol" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002199997993_uicontrol1659611961514"><b>no</b></span> indicates that the multi-tenant environment is not configured, that is, no PDB set exists.</span></li><li><span>The client and other related software have been installed on the target host for mounting.</span><span>For details, see </span><span><i><cite>OceanProtect DataBackup 1.5.0-1.6.0 Client Installation Guide</cite></i></span></li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Check and configure the Open state of the Oracle database. For details, see <a href="en-us_topic_0000002164597290.html">Checking and Configuring the Open State of the Oracle Database</a>.</span></li><li><span>Check whether the target database is in archive mode. For details, see <a href="en-us_topic_0000002164756966.html">Checking and Configuring the Archive Mode of the Oracle Database</a>.</span></li><li><span>Check whether the target database is in read/write mode.</span><p><ol type="a"><li>Log in to the Oracle database host.<ul id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597202_en-us_topic_0000001656760969_ul1983714162204"><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597202_en-us_topic_0000001656760969_li7258697580">If the Linux OS is used, use PuTTY to log in to the Oracle database host and run the <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597202_b14682476107">su - oracle</strong> command to switch to user <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597202_b1646874718106">oracle</strong>.</li><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597202_en-us_topic_0000001656760969_li1366015032013">If the Windows OS is used, log in to the Oracle database host as the system administrator.</li></ul>
+</li><li>Run the following commands to log in to the Oracle database instance.<ul id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_ul7420345341"><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_li15682124913711">OS authentication:<ul id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_ul89443983816"><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_li18420124173415">If the Linux OS is used, run the following commands:<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_p95148598366"><a name="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_li18420124173415"></a><a name="en-us_topic_0000002164597290_li18420124173415"></a><strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_b14236563719">export ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_i85144598369">Database instance name</em></p>
+<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_p145141259153613"><strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_b1597618293715">sqlplus / as sysdba</strong></p>
+</li><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_li7402151163816">If the Windows OS is used, perform the following operations:<ol class="substepthirdol" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_ol124110408264"><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_li624120402267">Press <span class="uicontrol" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_en-us_topic_0000002164597290_uicontrol11819941114510"><b>Win+R</b></span> to open the <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_en-us_topic_0000002164597290_b1015191219408">Run</strong> window.</li><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_li161821338277">Enter <span class="parmvalue" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_parmvalue122291222476"><b>cmd</b></span> and run the following commands:<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_p1755152313372"><strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_b19591532143713">set ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_i16755423133718">Database instance name</em></p>
+<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_p1075515234379"><strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_b540852910371">sqlplus / as sysdba</strong></p>
+</li></ol>
+</li></ul>
+</li><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_li105571236103417">Database authentication:<ul id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_ul1136516538386"><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_li1723334817382">If the Linux OS is used, run the following commands:<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_p920984963717"><a name="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_li1723334817382"></a><a name="en-us_topic_0000002164597290_li1723334817382"></a><strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_b162511338427">export ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_i142521037423">Database instance name</em></p>
+<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_p182093496371"><strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_b034785743716">sqlplus</strong></p>
+<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_p17915722412">Enter the name of a user with the <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_b0440649114212">sysdba</strong> permissions as prompted:</p>
+<pre class="screen" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_screen9915112104114"><em id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_i1915102164113">username </em>as sysdba</pre>
+<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_p159150224117">Enter the password as prompted.</p>
+</li><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_li122822426407">If the Windows OS is used, perform the following operations:<ol class="substepthirdol" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_ol587720252273"><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_li5168124414479">Press <span class="uicontrol" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_en-us_topic_0000002164597290_uicontrol11819941114510_1"><b>Win+R</b></span> to open the <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_en-us_topic_0000002164597290_b1015191219408_1">Run</strong> window.</li><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_li3877172517270">Enter <span class="parmvalue" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_parmvalue89061315114212"><b>cmd</b></span> and run the following commands:<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_p8745723103813"><strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_b0361183517422">set ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_i8361163518426">Database instance name</em></p>
+<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_p15745182333814"><strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_b11154427163811">sqlplus</strong></p>
+<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_p71274192512">Enter the name of a user with the <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_b330420012221">sysdba</strong> permissions as prompted:</p>
+<pre class="screen" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_screen18896121620243"><em id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_i380114413256">username </em>as sysdba</pre>
+<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597290_p15251105852511">Enter the password as prompted.</p>
+</li></ol>
+</li></ul>
+</li></ul>
+</li><li>Run the following command to check whether the read/write mode is enabled:<pre class="screen" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597258_screen4685431210">select OPEN_MODE from v$database;</pre>
+<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597258_p366474875319">If information similar to the following is displayed, the read/write mode has been enabled:</p>
+<pre class="screen" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597258_screen198721447193017">SQL&gt; select OPEN_MODE from v$database;
+<strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597258_b13609181315314">OPEN_MODE</strong>
+--------------------
+READ WRITE</pre>
+<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597258_p581310172519">If the read/write mode is not enabled, run the following commands in sequence to enable it:</p>
+<pre class="screen" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597258_screen2662173815390">shutdown immediate;
+startup mount;
+alter database open read write;</pre>
+<div class="note" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597258_note6711131853513"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164597258_p1271141818355">The database is shut down when the database read/write mode is enabled. This operation may cause service interruption. Therefore, you need to take the service interruption time into account before performing this operation.</p>
+</div></div>
+</li></ol>
+</p></li><li><span>Check whether the target database runs 12.<em>x.x</em> or a later version.</span><p><pre class="screen">show parameter compatible;</pre>
+<p>If the version in the command output is not 12.<em>x.x</em> or later, restoration to the target database is not supported.</p>
+</p></li><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002199964685_uicontrol1186171611461"><b><span id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002199964685_text6186101615464"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002199964685_text74373665812"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002199964685_text12413710445"><strong>Databases</strong></span> &gt; <span id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002199964685_text151861216124615"><strong>Oracle</strong></span></b></span>.</span></li><li><span>Search for copies by resource or copy. This section describes how to search for copies by resource.</span><p><p>On the <span class="wintitle"><b><span><strong>Resources</strong></span></b></span> tab page, locate the PDB to be restored by PDB name and click the name.</p>
+</p></li><li><span>Restore data to a specified point in time or using a copy.</span><p><div class="p">You can specify a copy or any point in time between two copies for restoration.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_p10749547154615">For the OceanProtect E6000 Appliance, when a replication copy is used for restoration, other copies of the resource cannot be replicated at the remote end.</p>
+</div></div>
+<ol type="a"><li>On the <span><strong>By Date</strong></span> tab page, select a year, month, and day in sequence to search for copies.<p>If <span><img src="en-us_image_0000002199963769.png"></span> is displayed under a month or date, copies exist in the month or on the date.</p>
+</li><li>Specify a copy or a point in time for restoration.<ul><li>Specifying a copy for restoration<p>Click <span><img src="en-us_image_0000002199963781.png"></span>. In the row of the target copy, choose <span class="uicontrol"><b>More &gt; Restore PDB Set</b></span> and specify a copy for PDB set restoration.</p>
+</li><li>Specifying a point in time for restoration<p>Click <span><img src="en-us_image_0000002164597442.png"></span>. Select the point in time <span><img src="en-us_image_0000002164597454.png"></span> for restoration on the timeline, and choose <span class="uicontrol"><b>More &gt; Restore PDB Set</b></span>. If no archive logs are backed up at a point in time, data cannot be restored to the point in time.</p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>During point-in-time restoration, the information about the copy used for restoration cannot be obtained on the management page. Therefore, you cannot view the copy information of the restoration job on pages of the restoration job and related events.</li></ul>
+</div></div>
+</li></ul>
+</li><li>Restore the PDB sets of the Oracle database to the original location or a new location.<ol class="substepthirdol"><li>Set the location for restoration.<ul><li>If you select <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span>, set <span class="uicontrol"><b>Target Restoration Location</b></span>.</li><li>If you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>, set <strong>Target Database</strong> and <strong>Target Restoration Location</strong>.</li></ul>
+</li><li>Set the basic and advanced parameters for restoration.<p><a href="#EN-US_TOPIC_0000002199998029__table94195378364">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002199998029__table94195378364"></a><a name="table94195378364"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002199998029__table94195378364" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters of the restoration job</caption><colgroup><col style="width:32.86%"><col style="width:67.14%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.86%" id="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.14%" id="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.1 "><p><strong>Target Database</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.2 "><p>Target database to which data is to be restored. This parameter is displayed only for restoration to a new location.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.1 "><p><strong>Target Restoration Location</strong></p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>This parameter is available only for RMAN-based restoration.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.2 "><p>ASM disk group directory or file system directory where the PDB set to be restored is located on the target host.</p>
+<p>An example of the ASM disk group directory is <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b1890110556352">+ORADATA</strong>, and an example of the file system directory is <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b1034285212359">/u01/oracle/oradata/</strong>.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li><span>Ensure that the path exists on the target host and the Oracle installation user has the read, write, and execute permissions on the path. (If the Linux OS is used, switch to the Oracle installation user and run the <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b250151316494">ll</strong> command in the parent path to query the permissions. If the Windows OS is used, right-click the path, choose <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b1680102494913">Properties</strong> &gt; <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b177971928114914">Security</strong>, and find the installation user to view the permissions.)</span> In addition, the data files in the path cannot have the same names as the PDB files to be restored. Otherwise, the restoration job will fail.</li><li>The remaining space of the disk where the target restoration location resides must be greater than the space occupied by the PDB sets in the source database. Otherwise, the restoration job will fail.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.1 "><p><strong>Delete Same-Name PDB</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.2 "><p>Deletes the PDBs with the same names in the target database.</p>
+<p>If a PDB with the same name exists in the target restoration location, enable this function. Otherwise, the restoration job will fail.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>Log in to the target Oracle database host and run the following command in the database instance to check whether the target database has a PDB with the same name:</p>
+<pre class="screen">select count(*) count from v$pdbs where NAME='<em>PDB name</em>';</pre>
+<ul><li>If <strong>0</strong> is displayed in the command output, no PDB with the same name exists.</li><li>If the value is not <strong>0</strong>, a PDB with the same name exists.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.1 "><p><span><strong>Channels</strong></span></p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_p12270112845717">This parameter is available only for RMAN-based restoration.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.2 "><p>Controls the concurrency of restoration jobs. This parameter specifies the maximum number of connections between RMAN and database instances. If the host performance is average, you are advised to retain the default value. If the host performance is excellent, you can increase the number of channels to improve the concurrency and restoration efficiency. It is recommended that the number of channels be the same as the number of data files.</p>
+<p>The value ranges from <strong>1</strong> to <strong>254</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.1 "><p><strong>Start Database</strong></p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>This parameter is available only when RMAN-based restoration is performed in 1.6.0 and later versions.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.2 "><p>After this function is enabled, the database is automatically started after the restoration job is complete.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.1 "><p><span><strong>Execution Script</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.2 "><p>You can execute a user-defined script before restoration, upon restoration success, or upon restoration failure as required.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.1 "><p><span><strong>Script to Run Before Restoration</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.2 "><p>You can configure <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b76991612143815">Script to Run Before Restoration</strong>, <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b13699171210384">Script to Run upon Restoration Success</strong>, and <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b4699121213814">Script to Run upon Restoration Failure</strong> based on the actual requirements. When a message indicating that the prerequisite task starts to be executed is displayed during a backup job, the configured script will be executed in the corresponding scenario.</p>
+<ul><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_li664172111592">If the Linux OS is used, enter the script name, which ends with <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b455691613819">.sh</strong>. Ensure that the script has been stored in the <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b1535284433812">DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty</strong> directory in the client installation directory and the user (<strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b183891830133820">root</strong> by default) who has logged in to the database host is permitted to execute the script. If the user has no execution permission, run the following commands in sequence to grant the permission:<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_p1122810535219"><strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b11890754143818">chown root:root</strong> <em id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_i19890125443816">Script name</em></p>
+<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_p72285517529"><strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b6340135733813">chmod 500</strong><em id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_i2340205773810"> Script name</em></p>
+</li></ul>
+<ul><li id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_li422818514522">If the Windows OS is used, enter the script name, which ends with <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b6771810113914">.bat</strong>. Ensure that the script has been stored in the <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b881782015394">DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty</strong> directory in the client installation directory and the user (<strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b1988213103914">Administrator</strong> by default) who has logged in to the database host is permitted to execute the script. If the user has no execution permission, perform the following operations in sequence to grant the permission:<p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_p1222865205217">Right-click the script and choose <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b121087327395">Properties</strong> &gt; <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b010823211399">Security</strong>. In the dialog box that is displayed, select the <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b51082326396">Administrator</strong> user and click <strong id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_b131081632143917">Edit</strong> to change the permission.</p>
+</li></ul>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_p519614617243">When <span class="uicontrol" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_uicontrol3817648133717"><b><span id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_text1817154863715"><strong>Script to Run upon Restoration Success</strong></span></b></span> is configured, the status of the restoration job is displayed as <span class="uicontrol" id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_uicontrol15818144810376"><b><span id="EN-US_TOPIC_0000002199998029__en-us_topic_0000002164757038_text1381714883715"><strong>Succeeded</strong></span></b></span> on the management page even if the script fails to be executed. Check whether the job details contain a message indicating that a post-processing script fails to be executed. If yes, modify the script in a timely manner. </p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.1 "><p><span><strong>Script to Run upon Restoration Success</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.1.2.3.1.2.2.2.3.1.1 "><p><span><strong>Script to Run upon Restoration Failure</strong></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>After restoration to the original location is performed, execute a full backup during off-peak hours. Otherwise, the log backup after the point in time for restoration may be unavailable.</p>
+</div></div>
+</li></ol>
+</li></ol>
+</div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002199963633.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

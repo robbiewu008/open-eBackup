@@ -1,0 +1,63 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="资源扫描或备份恢复任务失败，无明显错误提示">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="cnware_00103.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="cnware_00113">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>资源扫描或备份恢复任务失败，无明显错误提示</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="cnware_00113"></a><a name="cnware_00113"></a>
+
+<h1 class="topictitle1">资源扫描或备份恢复任务失败，无明显错误提示</h1>
+<div><div class="section"><h4 class="sectiontitle">故障现象</h4><p>资源扫描或备份恢复时仅提示任务失败，无其他明显错误提示。</p>
+<p></p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>当CNware管理节点/计算节点负载偏高或资源数量较多时（具体规格取决于计算节点硬件能力），CNware接口响应速度变慢，导致备份软件调用接口超时失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><p id="cnware_00113__zh-cn_topic_0000002164630552_p1389433101916">以下操作均以客户端的默认安装目录为“/opt”为例进行说明，实际操作时请根据客户端的实际安装目录替换。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>通过PuTTY或SSH工具登录CNware虚拟机客户端所在主机。</span></li><li><span>执行以下命令客户端所在主机和生产环境连通性，其中xxx.xxx.xx.xx为CNware管理节点的IP地址。</span><p><pre class="screen">ping <em>xxx.xxx.xx.xx</em></pre>
+</p></li><li><span>执行<strong>cat /<em>opt</em>/DataBackup/ProtectClient/ProtectClient-E/log/Plugins/VirtualizationPlugin/VirtualPlugin.log | grep "Http send request failed. Error is28"</strong>命令查询失败日志。</span><p><p>如果有回显则执行<a href="#cnware_00113__li59871696516">4</a>，否则请联系技术支持工程师。</p>
+</p></li><li id="cnware_00113__li59871696516"><a name="cnware_00113__li59871696516"></a><a name="li59871696516"></a><span>执行<strong>vi /<em>opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/conf/hcpconf.ini</strong>命令打开配置文件。</span></li><li><span>找到[General]下代表接口建立连接超时时间的ConnectTimeOut和接口总超时时间TotalTimeOut，增大TotalTimeOut的值。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>一般只需要增大TotalTimeOut的值即可，当增大TotalTimeOut的值执行资源扫描或备份恢复任务失败后尝试增大ConnectTimeOut的值重试。</p>
+</div></div>
+</p></li><li><span>执行命令<strong>sh /</strong><strong><em>opt</em></strong><strong>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/stop.sh</strong>重启插件。</span></li><li><span>重新执行资源扫描或备份恢复任务。</span></li></ol>
+</div>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="cnware_00103.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

@@ -1,0 +1,205 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="查看信息">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="kubernetes_gud_0094.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="kubernetes_gud_0095">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>查看信息</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="kubernetes_gud_0095"></a><a name="kubernetes_gud_0095"></a>
+
+<h1 class="topictitle1">查看信息</h1>
+<div><p>当Kubernetes集群注册至<span>OceanProtect</span>后，您可以查看集群、命名空间和StatefulSet信息。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="kubernetes_gud_0095__kubernetes_gud_0013_zh-cn_topic_0000002199964685_uicontrol84751741193812">“<span id="kubernetes_gud_0095__kubernetes_gud_0013_zh-cn_topic_0000002199964685_text194759416387">保护</span> &gt; 容器 &gt; Kubernetes FlexVolume”</span>。</span></li><li><span>在<span class="uicontrol">“集群”</span>页签浏览集群信息。</span><p><ol type="a"><li>集群的详细信息如<a href="#kubernetes_gud_0095__table2382789197">表1</a>所示。
+<div class="tablenoborder"><a name="kubernetes_gud_0095__table2382789197"></a><a name="table2382789197"></a><table cellpadding="4" cellspacing="0" summary="" id="kubernetes_gud_0095__table2382789197" frame="border" border="1" rules="all"><caption><b>表1 </b>集群信息</caption><colgroup><col style="width:20.31%"><col style="width:79.69000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20.31%" id="mcps1.3.2.2.2.2.1.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.69000000000001%" id="mcps1.3.2.2.2.2.1.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.2.2.1.1.2.2.3.1.1 "><p>名称</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.2.2.1.1.2.2.3.1.2 "><p>集群名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.2.2.1.1.2.2.3.1.1 "><p><span>状态</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.2.2.1.1.2.2.3.1.2 "><div class="p">集群状态，包含“在线”和“离线”。<ul id="kubernetes_gud_0095__kubernetes_csi_00099_ul77001833356"><li id="kubernetes_gud_0095__kubernetes_csi_00099_li1570017303518">在线：当<span id="kubernetes_gud_0095__kubernetes_csi_00099_text716917135715">OceanProtect</span>与Kubernetes集群连接正常时，“状态”为“在线”。</li><li id="kubernetes_gud_0095__kubernetes_csi_00099_li137002363516">离线：当<span id="kubernetes_gud_0095__kubernetes_csi_00099_text1025118125718">OceanProtect</span>与Kubernetes集群连接异常时，“状态”为“离线”。</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.2.2.1.1.2.2.3.1.1 "><p><span id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_text157544277528">IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.2.2.1.1.2.2.3.1.2 "><p>集群的管理IP地址。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.2.2.1.1.2.2.3.1.1 "><div class="p">标签<div class="note" id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_note1330311543247"><span class="notetitle"> 说明： </span><div class="notebody"><p id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_p630385412417"><span id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_ph5374928181810">仅1.6.0及后续版本存在此参数。</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.2.2.1.1.2.2.3.1.2 "><p>当资源已添加标签时，则此处显示标签名称。否则，显示“--”。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.2.2.1.1.2.2.3.1.1 "><div class="p"><span id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_text1045121611529">所属用户</span><div class="note" id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_note6159153035311"><span class="notetitle"> 说明： </span><div class="notebody"><p id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_p815914301534">仅1.5.0版本存在此参数。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.2.2.1.1.2.2.3.1.2 "><p>集群资源分配给某个数据保护管理员管理。当界面显示“--”时，表示还未将资源分配给数据保护管理员。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>单击名称，可以查看集群的基本信息、存储资源、命名空间、StatefulSet和客户端。</li></ol>
+</p></li><li><span>在<span class="uicontrol">“命名空间”</span>页签浏览命名空间信息。</span><p><ol type="a"><li>命名空间的详细信息如<a href="#kubernetes_gud_0095__table664941173815">表2</a>所示。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_p4219634163218">部分参数默认不展示，您可以单击“操作”列后的<span><img id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_image1271105319486" src="zh-cn_image_0000002200147221.png"></span>，勾选对应参数，即可在当前界面展示。</p>
+</div></div>
+
+<div class="tablenoborder"><a name="kubernetes_gud_0095__table664941173815"></a><a name="table664941173815"></a><table cellpadding="4" cellspacing="0" summary="" id="kubernetes_gud_0095__table664941173815" frame="border" border="1" rules="all"><caption><b>表2 </b>命名空间信息</caption><colgroup><col style="width:30%"><col style="width:70%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="30%" id="mcps1.3.2.2.3.2.1.1.3.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70%" id="mcps1.3.2.2.3.2.1.1.3.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.1 "><p>名称</p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.2 "><p>命名空间名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.1 "><p>所属集群</p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.2 "><p>命名空间所在的集群名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.1 "><p><span>集群IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.2 "><p>命名空间所在集群的管理IP地址。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.1 "><p>SLA</p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.2 "><p>当资源已关联SLA时，则显示SLA名称，否则显示<span class="uicontrol" id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_uicontrol9578183214495">“--”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.1 "><p>SLA遵从度</p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.2 "><div class="p">SLA遵从度指某次备份任务是否按设定的备份频率或备份窗口成功完成备份。<ul id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_ul1823814519293"><li id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_li9238184572919">遵从：如果某次备份任务（首次全量备份除外）的备份时间满足备份窗口或备份频率要求，且备份成功，则表示SLA遵从。</li><li id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_li189142052112912">不遵从：如果备份时间不满足备份窗口或备份频率要求，例如某次备份任务SLA设定的备份频率为每半小时执行一次，最终备份时间超过半小时，则表示SLA不遵从。建议调整备份频率或备份窗口。</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.1 "><p>保护状态</p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.2 "><div class="p">当前资源是否被保护。<ul id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_ul161172118317"><li id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_li11611621173118">未保护：当前资源未关联SLA，或者已关联SLA但已禁用保护。</li><li id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_li761111211312">已保护：当前资源已关联SLA，且已激活保护。</li><li id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_li2088261163715">创建中：当前资源已关联SLA，正在创建保护。</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.1 "><div class="p">标签<div class="note" id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_note1330311543247_1"><span class="notetitle"> 说明： </span><div class="notebody"><p id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_p630385412417_1"><span id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_ph5374928181810_1">仅1.6.0及后续版本存在此参数。</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.2.2.3.2.1.1.3.2.3.1.2 "><p>当资源已添加标签时，则此处显示标签名称。否则，显示“--”。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>单击名称，可以查看命名空间的总览、任务。<ul><li>总览<p>显示名称、SLA信息、任务执行时间、副本总数、StatefulSet信息等。</p>
+</li><li>任务<p>展示数据库相关的所有任务，包括备份、恢复、复制等任务。可选择展示执行中的任务，或历史任务。</p>
+</li></ul>
+</li></ol>
+</p></li><li><span>在<span class="uicontrol">“StatefulSet”</span>页签浏览StatefulSet信息。</span><p><ol type="a"><li>StatefulSet的详细信息如<a href="#kubernetes_gud_0095__table63208525418">表3</a>所示。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_p4219634163218_1">部分参数默认不展示，您可以单击“操作”列后的<span><img id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_image1271105319486_1" src="zh-cn_image_0000002200147221.png"></span>，勾选对应参数，即可在当前界面展示。</p>
+</div></div>
+
+<div class="tablenoborder"><a name="kubernetes_gud_0095__table63208525418"></a><a name="table63208525418"></a><table cellpadding="4" cellspacing="0" summary="" id="kubernetes_gud_0095__table63208525418" frame="border" border="1" rules="all"><caption><b>表3 </b>StatefulSet信息</caption><colgroup><col style="width:20.31%"><col style="width:79.69000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20.31%" id="mcps1.3.2.2.4.2.1.1.3.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.69000000000001%" id="mcps1.3.2.2.4.2.1.1.3.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.2 "><p>StatefulSet名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.1 "><p><span>所属命名空间</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.2 "><p>StatefulSet所在的命名空间名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.1 "><p><span>所属集群</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.2 "><p>StatefulSet所在的集群名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.1 "><p><span>SLA</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.2 "><p>当资源已关联SLA时，则显示SLA名称，否则显示<span class="uicontrol" id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_uicontrol9578183214495_1">“--”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.1 "><p><span>SLA遵从度</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.2 "><div class="p">SLA遵从度指某次备份任务是否按设定的备份频率或备份窗口成功完成备份。<ul id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_ul1823814519293_1"><li id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_li9238184572919_1">遵从：如果某次备份任务（首次全量备份除外）的备份时间满足备份窗口或备份频率要求，且备份成功，则表示SLA遵从。</li><li id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_li189142052112912_1">不遵从：如果备份时间不满足备份窗口或备份频率要求，例如某次备份任务SLA设定的备份频率为每半小时执行一次，最终备份时间超过半小时，则表示SLA不遵从。建议调整备份频率或备份窗口。</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.1 "><p><span>保护状态</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.2 "><div class="p">当前资源是否被保护。<ul id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_ul161172118317_1"><li id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_li11611621173118_1">未保护：当前资源未关联SLA，或者已关联SLA但已禁用保护。</li><li id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_li761111211312_1">已保护：当前资源已关联SLA，且已激活保护。</li><li id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_li2088261163715_1">创建中：当前资源已关联SLA，正在创建保护。</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.1 "><div class="p">标签<div class="note" id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_note1330311543247_2"><span class="notetitle"> 说明： </span><div class="notebody"><p id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_p630385412417_2"><span id="kubernetes_gud_0095__zh-cn_topic_0000002164820458_ph5374928181810_2">仅1.6.0及后续版本存在此参数。</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.1.1.3.2.3.1.2 "><p>当资源已添加标签时，则此处显示标签名称。否则，显示“--”。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>单击名称，可以查看StatefulSet的总览、副本数据、任务信息。</li></ol>
+<ul><li>总览<p>显示名称、SLA信息、任务执行时间、副本总数、卷信息等。</p>
+</li><li>副本数据<p>您可以依次按照年、月、天查找相应时间的副本。</p>
+<p>时间下方显示<span><img src="zh-cn_image_0000002164779080.png"></span>，表示该时间存在副本。单击日期进入副本数据页面。</p>
+</li><li>任务<p>展示数据库相关的所有任务，包括备份、恢复、复制等任务。可选择展示执行中的任务，或历史任务。</p>
+</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="kubernetes_gud_0094.html">集群/命名空间/StatefulSet</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

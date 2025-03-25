@@ -2109,7 +2109,16 @@ export class AppUtilsService {
 
   downloadUseAElement(url: string, fileName: string) {
     const a = document.createElement('a');
-    a.href = `${location.protocol}//${location.host}/console/rest${url}`;
+    let downloadUrl: string;
+    const herf: string = first(window.location.href.split('#'));
+    if (this.isHcsUser) {
+      downloadUrl = herf.replace('/console/', `/console/rest${url}`);
+    } else if (this.isDmeUser) {
+      downloadUrl = herf.replace('/console/index.html', `/console/rest${url}`);
+    } else {
+      downloadUrl = `${location.protocol}//${location.host}/console/rest${url}`;
+    }
+    a.href = downloadUrl;
     a.setAttribute('target', '_blank');
     document.body.appendChild(a);
     a.download = fileName;

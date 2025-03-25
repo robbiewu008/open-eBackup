@@ -256,25 +256,25 @@ export const JobColorConsts = {
 export const HelpUrlCode = {
   zh: {
     host: 'helpcenter_000008',
-    database: 'zh-cn_topic_0000001918630660',
-    bigdata: 'zh-cn_topic_0000001948269721',
-    virtualization: 'zh-cn_topic_0000001918470736',
-    container: 'zh-cn_topic_0000001918630668',
-    cloud: 'zh-cn_topic_0000001948269725',
-    application: 'zh-cn_topic_0000001918470740',
-    fileservice: 'zh-cn_topic_0000001918630672',
-    baremetal: 'zh-cn_topic_0000001873679157'
+    database: 'zh-cn_topic_0000002164767482',
+    bigdata: 'zh-cn_topic_0000002200094133',
+    virtualization: 'zh-cn_topic_0000002200094081',
+    container: 'zh-cn_topic_0000002164607766',
+    cloud: 'zh-cn_topic_0000002164607810',
+    application: 'zh-cn_topic_0000002200094085',
+    fileservice: 'zh-cn_topic_0000002164767498',
+    baremetal: 'zh-cn_topic_0000002164767498'
   },
   en: {
-    host: 'helpcenter000008',
-    database: 'en-us_topic_0000001918630660',
-    bigdata: 'en-us_topic_0000001948269721',
-    virtualization: 'en-us_topic_0000001918470736',
-    container: 'en-us_topic_0000001918630668',
-    cloud: 'en-us_topic_0000001948269725',
-    application: 'en-us_topic_0000001918470740',
-    fileservice: 'en-us_topic_0000001918630672',
-    baremetal: 'en-us_topic_0000001873679157'
+    host: 'en-us_topic_0000002164629176',
+    database: 'en-us_topic_0000002164767482',
+    bigdata: 'en-us_topic_0000002200094133',
+    virtualization: 'en-us_topic_0000002200094081',
+    container: 'en-us_topic_0000002164607766',
+    cloud: 'en-us_topic_0000002164607810',
+    application: 'en-us_topic_0000002200094085',
+    fileservice: 'en-us_topic_0000002164767498',
+    baremetal: 'en-us_topic_0000002164767498'
   }
 };
 

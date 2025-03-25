@@ -1,0 +1,57 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="安装Windows Server Backup">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="ActiveDirectory-00084.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ActiveDirectory-00092">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>安装Windows Server Backup</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ActiveDirectory-00092"></a><a name="ActiveDirectory-00092"></a>
+
+<h1 class="topictitle1">安装Windows Server Backup</h1>
+<div><p>域控制器需要安装Windows Server Backup工具才能进行备份，可以通过服务器管理器或者Windows PowerShell执行命令来完成安装。</p>
+<div class="section"><h4 class="sectiontitle">方式一：通过服务器管理器安装Windows Server Backup</h4><ol><li><span>使用Administrator登录本地主机。</span></li><li><span>在开始菜单中单击“服务器管理器”。</span></li><li><span>单击“添加角色和功能”。</span></li><li><span>在弹出的对话框中单击“下一步”。</span></li><li><span>选择“基于角色或功能的安装”并单击“下一步”。</span></li><li><span>选择“从服务器池中选择服务器”并单击“下一步”。</span></li><li><span>勾选Windows Server Backup并单击“下一步”。</span></li><li><span>单击“安装”。</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">方式二：通过Windows PowerShell执行命令安装Windows Server Backup</h4><ol><li id="ActiveDirectory-00092__li114228462513"><span>在下方搜索栏中输入“Windows PowerShell”。</span></li><li id="ActiveDirectory-00092__li114220492514"><span>右键单击“Windows PowerShell”选择<span class="uicontrol" id="ActiveDirectory-00092__uicontrol88217013253">“以管理员身份运行”</span>，打开Windows PowerShell。</span></li><li><span>执行以下命令，进行安装。</span><p><pre class="screen">Install-WindowsFeature -Name Windows-Server-Backup</pre>
+<p>回显如下，以Windows Server 2016为例：</p>
+<p><span><img src="zh-cn_image_0000002164769722.png"></span></p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="ActiveDirectory-00084.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

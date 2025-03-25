@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="ES_gud_00011.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
@@ -40,7 +40,7 @@
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li id="ES_gud_00014__li0198134611381"><span>选择<span class="uicontrol" id="ES_gud_00014__zh-cn_topic_0000001839142377_uicontrol9263121219407">“<span id="ES_gud_00014__zh-cn_topic_0000001839142377_text162635121401">保护</span> &gt; 大数据 &gt; Elasticsearch”</span>。</span></li>
+     <li id="ES_gud_00014__li0198134611381"><span>选择<span class="uicontrol" id="ES_gud_00014__zh-cn_topic_0000002199964685_uicontrol9263121219407">“<span id="ES_gud_00014__zh-cn_topic_0000002199964685_text162635121401">保护</span> &gt; 大数据 &gt; Elasticsearch”</span>。</span></li>
      <li><span>在<span class="uicontrol">“<span>集群</span>”</span>页面，单击<span class="uicontrol">“<span>注册</span>”</span>，注册Elasticsearch集群。</span><p></p><p>Elasticsearch集群注册信息如<a href="#ES_gud_00014__table164432003147">表1</a>所示。</p>
       <div class="tablenoborder">
        <a name="ES_gud_00014__table164432003147"></a><a name="table164432003147"></a>
@@ -81,33 +81,46 @@
           <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>认证模式</span></p></td>
           <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>配置Elasticsearch集群与<span>本产品</span>通信的认证模式。该配置项根据Elasticsearch集群已配置的认证模式进行配置。</p>
            <ul>
-            <li><span>Simple认证</span>：当Elasticsearch集群未开启Kerberos认证时，选择该认证模式。该认证模式采用用户名进行认证，安全性较差。</li>
+            <li><span>Simple认证</span>：当Elasticsearch集群未开启Kerberos认证和XPack认证时，选择该认证模式。该认证模式采用用户名进行认证，安全性较差。</li>
             <li><span>Kerberos认证</span>：当Elasticsearch集群已启用Kerberos认证时，选择该认证模式。Elasticsearch集群与<span>本产品</span>之间采用Kerberos协议进行身份认证。</li>
+            <li>XPack认证：当Elasticsearch集群已启用XPack认证且未启用Kerberos认证时，选择该认证模式。Elasticsearch集群与<span>本产品</span>之间采用XPack安全特性进行身份认证。</li>
            </ul></td>
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>用户名</span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>当<span class="uicontrol">“<span>认证模式</span>”</span>选择<span class="uicontrol">“<span>Simple认证</span>”</span>时，才需要配置该参数。</p> <p>输入的用户名需要对要访问的资源具备读写权限。</p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>当<span class="parmname">“认证模式”</span>选择<span class="parmvalue">“Simple认证”</span>或<span class="parmvalue">“XPack认证”</span>时，才需要配置该参数。</p> <p>输入的用户名需要对要访问的资源具备读写权限，获取方法请见<a href="ES_gud_00010.html">备份前准备</a>。</p>
+           <div class="note" id="ES_gud_00014__note17503101624812">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p id="ES_gud_00014__p1550311613485">Simple认证，仅1.5.0版本才需要配置该参数。</p>
+            </div>
+           </div></td>
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>密码</span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>当<span class="uicontrol">“<span>认证模式</span>”</span>选择<span class="uicontrol">“<span>Simple认证</span>”</span>时，才需要配置该参数。</p> <p>输入的用户名的密码。</p></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>Kerberos</span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>当<span class="uicontrol">“<span>认证模式</span>”</span>选择<span class="uicontrol">“<span>Kerberos认证</span>”</span>时，才需要配置该参数。</p> <p>选择已创建的Kerberos认证。首次注册Elasticsearch集群时，请单击<span class="uicontrol">“创建”</span>，配置Kerberos认证参数。具体参数说明如<a href="#ES_gud_00014__table93413354118">表2</a>。</p></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>证书</span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>当<span class="uicontrol">“<span>认证模式</span>”</span>选择<span class="uicontrol">“<span>Kerberos认证</span>”</span>时，才需要配置该参数。</p> <p>如果您希望<span>本产品</span>与大数据平台通信过程中进行数据加密，实现安全通信，请导入CA证书。</p> <p>导入<a href="ES_gud_00012.html#ES_gud_00012__section6706354142710">获取并导入证书</a>中获取到的CA证书。</p></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>代理主机</span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>选择执行数据保护的代理主机。</p>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>当<span class="parmname">“认证模式”</span>选择<span class="parmvalue">“Simple认证”</span>或<span class="parmvalue">“XPack认证”</span>时，才需要配置该参数。</p> <p>输入的用户名的密码。</p>
            <div class="note">
             <span class="notetitle"> 说明： </span>
             <div class="notebody">
-             <p>不允许将同1台代理主机分配给多个配置了不同Kerberos认证的大数据集群或不同认证模式的大数据集群，否则会导致备份/恢复任务失败。</p>
+             <p>Simple认证，仅1.5.0版本才需要配置该参数。</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>Kerberos</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>当<span class="parmname">“认证模式”</span>选择<span class="parmvalue">“Kerberos认证”</span>时，才需要配置该参数。</p> <p>选择已创建的Kerberos认证。首次注册Elasticsearch集群时，请单击<span class="uicontrol">“创建”</span>，配置Kerberos认证参数。具体参数说明如<a href="#ES_gud_00014__table93413354118">表2</a>。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>证书</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>当<span class="parmname">“认证模式”</span>选择<span class="parmvalue">“Kerberos认证”</span>或<span class="parmvalue">“XPack认证”</span>时，才需要配置该参数。</p> <p>如果Elasticsearch集群同时开启了XPack安全特性和SSL认证，则必须导入Elasticsearch集群的CA证书。</p> <p>如果您希望<span>本产品</span>与大数据平台通信过程中进行数据加密，实现安全通信，请导入CA证书。</p> <p>导入<a href="ES_gud_00012.html#ES_gud_00012__section6706354142710">获取并导入证书</a>中获取到的CA证书。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p>客户端</p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>选择执行数据保护的客户端所在的主机。</p>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p>不允许将同1台客户端所在的主机分配给多个配置了不同Kerberos认证的大数据集群或不同认证模式的大数据集群，否则会导致备份/恢复任务失败。</p>
             </div>
            </div></td>
          </tr>
@@ -121,7 +134,7 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>启用安全协议</span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>当<span class="uicontrol">“<span>认证模式</span>”</span>选择<span class="uicontrol">“<span>Kerberos认证</span>”</span>时，才需要配置该参数。</p> <p>是否启用TLS安全协议。</p>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>当<span class="parmname">“认证模式”</span>选择<span class="parmvalue">“Kerberos认证”</span>时，才需要配置该参数。</p> <p>是否启用TLS安全协议。</p>
            <ul>
             <li>如果不启用，默认使用TLS 1.2。</li>
             <li>如果启用，支持使用TLS 1.2及以上版本。</li>
@@ -129,7 +142,7 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>启用安全算法</span></p></td>
-          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>当<span class="uicontrol">“<span>认证模式</span>”</span>选择<span class="uicontrol">“<span>Kerberos认证</span>”</span>时，才需要配置该参数。</p> <p>是否启用安全加密算法。启用后，系统与大数据平台通信的通道将仅使用安全的加密算法加密数据。</p></td>
+          <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>当<span class="parmname">“认证模式”</span>选择<span class="parmvalue">“Kerberos认证”</span>时，才需要配置该参数。</p> <p>是否启用安全加密算法。启用后，系统与大数据平台通信的通道将仅使用安全的加密算法加密数据。</p></td>
          </tr>
         </tbody>
        </table>
@@ -158,10 +171,10 @@
          <tr>
           <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.2.2.4.2.3.1.1 "><p><span>主体名</span></p></td>
           <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.4.2.3.1.2 "><p>Kerberos认证的主体名，配置格式为：<em>主体名</em>@<em>本端域</em>，如：ES1@HADOOP.COM。</p> <p>以FusionInsight为例，可在FusionInsight Manager界面，<span class="uicontrol">“系统 &gt; 域和互信”</span>页面，查看本端域信息。</p>
-           <div class="note">
+           <div class="note" id="ES_gud_00014__note1997805374919">
             <span class="notetitle"> 说明： </span>
             <div class="notebody">
-             <p>配置为Kerberos服务器上已配置的主体名，并且该主体名需要对要访问的资源具备读写权限。</p>
+             <p id="ES_gud_00014__p185420508162">配置为大数据平台上的人机用户名称，并且该用户需要对要访问的资源具备读写权限。</p>
             </div>
            </div></td>
          </tr>
@@ -178,7 +191,7 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.2.2.4.2.3.1.1 "><p><span>配置文件</span></p></td>
-          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.4.2.3.1.2 "><p>Kerberos认证过程中使用的<span class="filepath">“.conf”</span>配置文件（如：krb5.conf）。请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000001839233193.png"></span>上传至<span>本产品</span>。</p>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.4.2.3.1.2 "><p>Kerberos认证过程中使用的<span class="filepath">“.conf”</span>配置文件（如：krb5.conf）。请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000002200011405.png"></span>上传至<span>本产品</span>。</p> <p><span>以MRS产品为例，具体获取方法可以参考对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">《MapReduce Service 产品文档》</a>的“导出认证凭据文件”章节。</span></p>
            <div class="p">
             由于Kerberos自身的问题，当配置文件中存在<span class="uicontrol">“renew_lifetime”</span>参数时，需将其注释，否则可能导致注册失败。如：
             <pre class="screen">#renew_lifetime = 7d</pre>
@@ -194,7 +207,7 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.2.2.4.2.3.1.1 "><p><span>Keytab文件</span></p></td>
-          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.4.2.3.1.2 "><p>当<span class="uicontrol">“<span>配置方式</span>”</span>选择<span class="uicontrol">“<span>Keytab文件</span>”</span>时，才需要配置该参数。Kerberos认证过程中使用的<span class="filepath">“.keytab”</span>文件（如：user.keytab）。</p> <p>请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000001792513870.png"></span>上传至<span>本产品</span>。</p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.4.2.3.1.2 "><p>当<span class="uicontrol">“<span>配置方式</span>”</span>选择<span class="uicontrol">“<span>Keytab文件</span>”</span>时，才需要配置该参数。Kerberos认证过程中使用的<span class="filepath">“.keytab”</span>文件（如：user.keytab）。</p> <p>请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000002164770382.png"></span>上传至<span>本产品</span>。</p> <p><span>以MRS产品为例，具体获取方法可以参考对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">《MapReduce Service 产品文档》</a>的“导出认证凭据文件”章节。</span></p></td>
          </tr>
         </tbody>
        </table>

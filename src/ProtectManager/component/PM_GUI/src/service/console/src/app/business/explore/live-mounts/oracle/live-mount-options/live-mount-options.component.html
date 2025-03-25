@@ -21,27 +21,27 @@
         <lv-form-control>
             <div formArrayName='targetHosts'>
                 <div *ngFor='let item of targetHosts; let i=index' [formGroupName]="i" class="aui-gutter-column-sm">
-                    <lv-group lvGutter='36px' class="lv-group-flex-start">
+                    <lv-group lvGutter='24px' class="lv-group-flex-start">
                         <lv-form-control>
                             <lv-select formControlName="searchSelect" (ngModelChange)="filterChange($event,i,item)"
                             lvValueKey="value" lvMode="multiple" [lvOptions]="labelOptions" lvShowFilter lvFilterKey='label'
                                        [lvLoading]="labelLoading" [lvVirtualScroll]="labelOptions?.length > 10"
-                            [lvPlaceholder]="'explore_select_tag_label' | i18n" lvFilterMode='contains' style="width: 150px;"></lv-select>
+                            [lvPlaceholder]="'explore_select_tag_label' | i18n" lvFilterMode='contains' lvShowClear style="width: 150px;"></lv-select>
                         </lv-form-control>
                         <lv-form-control [lvErrorTip]="targetHostErrorTip">
                             <lv-select formControlName="host_id" lvValueKey="key" [lvOptions]="item.value.hostOptions" class="target-host-options"
                                 (ngModelChange)="targetHostChange(i, $event)" (lvOpenChange)="targetHostOpenChange(i, $event)"
-                                lvShowFilter  lvFilterKey='label' lvFilterMode='contains'  #selectHost>
+                                lvShowFilter  lvFilterKey='label' lvFilterMode='contains' lvShowClear #selectHost>
                             </lv-select>
                         </lv-form-control>
                         <lv-form-control>
-                            <div style="width: 200px;" lv-overflow>
+                            <div style="width: 160px;" lv-overflow>
                                 {{targetIpLabel}} {{item.value.ip | nil}}
                             </div>
                         </lv-form-control>
                         <lv-form-control
                             *ngIf="!componentData.childResourceType || componentData?.childResourceType[0] !== dataMap.Resource_Type.tdsqlInstance.value">
-                            <div style="width: 200px;" lv-overflow>
+                            <div style="width: 160px;" lv-overflow>
                                 {{versionLabel}} {{item.value.version | nil}}
                             </div>
                         </lv-form-control>

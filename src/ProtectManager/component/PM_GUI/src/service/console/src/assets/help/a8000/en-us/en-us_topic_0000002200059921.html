@@ -1,0 +1,98 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Preparations for Backup">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200145533.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200059921">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Preparations for Backup</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200059921"></a><a name="EN-US_TOPIC_0000002200059921"></a>
+
+<h1 class="topictitle1">Preparations for Backup</h1>
+<div><p>Before backing up TDSQL databases, prepare related information by following instructions in <a href="#EN-US_TOPIC_0000002200059921__en-us_topic_0000001455091930_table10744125193920">Table 1</a>.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200059921__en-us_topic_0000001455091930_table10744125193920"></a><a name="en-us_topic_0000001455091930_table10744125193920"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200059921__en-us_topic_0000001455091930_table10744125193920" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Preparations for backup</caption><colgroup><col style="width:17.34%"><col style="width:12.75%"><col style="width:47.94%"><col style="width:21.97%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="17.34%" id="mcps1.3.2.2.5.1.1"><p>Item</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="12.75%" id="mcps1.3.2.2.5.1.2"><p>Mandatory or Not</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="47.94%" id="mcps1.3.2.2.5.1.3"><p>How to Obtain</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="21.97%" id="mcps1.3.2.2.5.1.4"><p>To Be Used In</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="17.34%" headers="mcps1.3.2.2.5.1.1 "><p>Username and password of the administrator of the TDSQL CHITU management console</p>
+</td>
+<td class="cellrowborder" valign="top" width="12.75%" headers="mcps1.3.2.2.5.1.2 "><p>Mandatory</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.94%" headers="mcps1.3.2.2.5.1.3 "><p>Contact the administrator of the TDSQL CHITU management console to obtain the username and password.</p>
+</td>
+<td class="cellrowborder" valign="top" width="21.97%" headers="mcps1.3.2.2.5.1.4 "><p><a href="en-us_topic_0000002200059925.html">Step 1: Enabling the TDSQL Database Permission (Applicable to Non-distributed Instances)</a></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="17.34%" headers="mcps1.3.2.2.5.1.1 "><p>Username and password for OSS interface authentication</p>
+</td>
+<td class="cellrowborder" valign="top" width="12.75%" headers="mcps1.3.2.2.5.1.2 "><p>Mandatory</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.94%" headers="mcps1.3.2.2.5.1.3 "><p>Contact the database vendor to obtain the username and password for OSS interface authentication.</p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="21.97%" headers="mcps1.3.2.2.5.1.4 "><p><a href="en-us_topic_0000002200059929.html">Step 3: Registering a TDSQL Database</a></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.1 "><p><span><strong>tdsqlsys_repl User Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.2 "><p>Mandatory</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><p>Contact the database vendor to obtain the value, or run the <strong>select * from mysql.slave_master_info</strong><strong>;</strong> command on the standby database node to obtain the value of <span class="parmname"><b>User_password</b></span> in the command output.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="17.34%" headers="mcps1.3.2.2.5.1.1 "><p>Viewing TDSQL node information</p>
+</td>
+<td class="cellrowborder" valign="top" width="12.75%" headers="mcps1.3.2.2.5.1.2 "><p>Optional</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.94%" headers="mcps1.3.2.2.5.1.3 "><ol><li>Log in to the TDSQL CHITU management console.</li><li>On the home page of the CHITU management console, click <span class="uicontrol"><b>Dispatching and management system</b></span>.</li><li>View node information.<ul><li>Click <span class="uicontrol"><b>Zookeeper monitoring</b></span> to view ZooKeeper node information.</li><li>Click <span class="uicontrol"><b>Scheduler monitoring</b></span> to view Scheduler node information.</li><li>Click <span class="uicontrol"><b>Manager monitoring</b></span> to view Manager node information.</li><li>Click <span class="uicontrol"><b>OSS-service monitoring</b></span> to view the information about OSS service nodes.</li></ul>
+</li></ol>
+</td>
+<td class="cellrowborder" valign="top" width="21.97%" headers="mcps1.3.2.2.5.1.4 ">&nbsp;&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200145533.html">Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

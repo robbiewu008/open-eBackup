@@ -657,6 +657,19 @@ export class HostComponent implements OnInit, OnDestroy {
     this.getHosts();
   }
 
+  // 解决首次查询可更新字段没有，需要下一次查询才会显示更新图标
+  setAgentUpgradeable(hostInfo) {
+    const upgradeableHost = _map(hostInfo, 'uuid');
+    each(this.tableData, item => {
+      if (
+        isUndefined(item.extendInfo?.agentUpgradeable) &&
+        includes(upgradeableHost, item.uuid)
+      ) {
+        set(item.extendInfo, 'agentUpgradeable', '1');
+      }
+    });
+  }
+
   getHosts(refreshData?) {
     each(this.moreMenus, item => {
       item.disabled = true;
@@ -785,7 +798,8 @@ export class HostComponent implements OnInit, OnDestroy {
               akLoading: false,
               akDoException: false
             })
-            .subscribe(() => {
+            .subscribe(res => {
+              this.setAgentUpgradeable(res);
               this.cdr.detectChanges();
             });
         }

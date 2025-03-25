@@ -20,35 +20,45 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤7：（可选）开启备份链路加密开关">
+<meta name="DC.Title" content="步骤9：执行备份">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="sql-0013.html">
+<meta name="DC.Relation" scheme="URI" content="sql-0012.html">
+<meta name="DC.Relation" scheme="URI" content="sql-0022.html">
+<meta name="DC.Relation" scheme="URI" content="sql-0023.html">
+<meta name="DC.Relation" scheme="URI" content="sql-0024.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="sql-0021">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤7：（可选）开启备份链路加密开关</title>
+<title>步骤9：执行备份</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="sql-0021"></a><a name="sql-0021"></a>
 
-<h1 class="topictitle1">步骤7：（可选）开启备份链路加密开关</h1>
-<div><p id="sql-0021__zh-cn_topic_0000001839143225_p105016314451">当需要确保数据安全性时，可以开启备份链路加密开关，开启后，可以在数据备份过程中对传输数据进行加密。</p>
-<div class="section" id="sql-0021__zh-cn_topic_0000001839143225_section41258319515"><h4 class="sectiontitle">前提条件</h4><p id="sql-0021__zh-cn_topic_0000001839143225_p13640951351">请确保已为存储系统配置NFS Kerberos服务，并已在AD域中添加<strong id="sql-0021__zh-cn_topic_0000001839143225_b1495762152419">rdadmin</strong>用户。否则开启备份链路加密开关后，可能导致备份任务失败。<span id="sql-0021__zh-cn_topic_0000001839143225_ph527185394510">配置NFS Kerberos服务的操作请参见产品对应型号的<span id="sql-0021__zh-cn_topic_0000001839143225_cite5907115716400">《安装指南》</span>中的“（可选）配置NFS Kerberos服务”章节。</span></p>
-</div>
-<div class="section" id="sql-0021__zh-cn_topic_0000001839143225_section1376817483418"><h4 class="sectiontitle">注意事项</h4><p id="sql-0021__zh-cn_topic_0000001839143225_p1854315715349">开启备份链路加密后，代理主机与KDC域服务器之间的票证存在有效期，票证过期之后可能导致备份任务失败。建议延长KDC域服务器上Kerberos策略中票证的过期时间或者配置为永不过期。如果未配置永不过期，需要在票证即将过期前，在代理主机上，对添加到AD域中的用户，通过<strong id="sql-0021__zh-cn_topic_0000001839143225_b3195122210175">kinit</strong>命令或<strong id="sql-0021__zh-cn_topic_0000001839143225_b185942242179">net</strong>命令重新获取票证，具体操作请参见产品对应型号的<span id="sql-0021__zh-cn_topic_0000001839143225_cite890601917412">《安装指南》</span>中的“配置客户端”章节。</p>
-</div>
-<div class="section" id="sql-0021__zh-cn_topic_0000001839143225_section4718134149"><h4 class="sectiontitle">操作步骤</h4><ol id="sql-0021__zh-cn_topic_0000001839143225_ol171184511428"><li id="sql-0021__zh-cn_topic_0000001839143225_li185661554204220"><span>选择<span class="uicontrol" id="sql-0021__zh-cn_topic_0000001839143225_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="sql-0021__zh-cn_topic_0000001839143225_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_text113848306235"><span id="sql-0021__zh-cn_topic_0000001839143225_zh-cn_topic_0000001102065552_text8949174614917">系统</span></span> &gt; <span id="sql-0021__zh-cn_topic_0000001839143225_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_text484521122916"><span id="sql-0021__zh-cn_topic_0000001839143225_zh-cn_topic_0000001102065552_text2943115917492">安全</span></span> &gt; <span id="sql-0021__zh-cn_topic_0000001839143225_text6472734351">数据安全</span>”</span>。</span></li><li id="sql-0021__zh-cn_topic_0000001839143225_li109511195437"><span>在“加密设置”区域，单击页面右侧的<span class="uicontrol" id="sql-0021__zh-cn_topic_0000001839143225_uicontrol851575420436">“<span id="sql-0021__zh-cn_topic_0000001839143225_text2172104153514">修改</span>”</span>，开启<span class="uicontrol" id="sql-0021__zh-cn_topic_0000001839143225_uicontrol13743170204412">“<span id="sql-0021__zh-cn_topic_0000001839143225_text451824814419">备份链路加密</span>”</span>。</span></li><li id="sql-0021__zh-cn_topic_0000001839143225_li178813714443"><span>单击<span class="uicontrol" id="sql-0021__zh-cn_topic_0000001839143225_uicontrol1839019167443">“<span id="sql-0021__zh-cn_topic_0000001839143225_text1418318566358">保存</span>”</span>。</span></li></ol>
+<h1 class="topictitle1">步骤9：执行备份</h1>
+<div><p>执行备份前将需要保护的资源关联到指定SLA，系统将对这些资源按照SLA进行保护，并根据SLA周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><ul><li>手动备份时，SLA中定义的参数（<span class="uicontrol">“<span>失败后自动重试</span>”</span>除外），如<span class="uicontrol">“<span>限速策略</span>”</span>、会应用到手动备份任务中。</li><li>手动备份产生的副本保留时长按照SLA中的定义进行保留。</li><li>如果客户端所在主机为Windows OS，<span id="sql-0021__zh-cn_topic_0000002200146973_text1448272102617">OceanProtect</span>会默认将备份存储的文件系统挂载至“C:\mnt\databackup\”路径。如需修改挂载路径，可在“<em id="sql-0021__zh-cn_topic_0000002200146973_i1542112916218">客户端安装目录</em>\DataBackup\ProtectClient\ProtectClient-E\conf”目录下打开agent_cfg.xml配置文件，修改<strong id="sql-0021__zh-cn_topic_0000002200146973_b3394105619195">win_mount_public_path value</strong>配置项的值。<div class="note" id="sql-0021__zh-cn_topic_0000002200146973_note197102742415"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="sql-0021__zh-cn_topic_0000002200146973_p1197162742413">目录中的<em id="sql-0021__zh-cn_topic_0000002200146973_i1232194212249">客户端安装目录</em>请根据实际替换。</p>
+</div></div>
+</li></ul>
 </div>
 </div>
 <div>
+<ul class="ullinks">
+<li class="ulchildlink"><strong><a href="sql-0022.html">执行实例级备份</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="sql-0023.html">执行可用性组备份</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="sql-0024.html">执行数据库级备份</a></strong><br>
+</li>
+</ul>
+
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="sql-0013.html">备份SQL Server数据库</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="sql-0012.html">备份SQL Server数据库</a></div>
 </div>
 </div>
 

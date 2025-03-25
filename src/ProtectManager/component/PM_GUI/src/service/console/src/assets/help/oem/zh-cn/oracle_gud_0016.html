@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="oracle_gud_0015.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
@@ -36,16 +36,21 @@
   <a name="oracle_gud_0016"></a><a name="oracle_gud_0016"></a>
   <h1 class="topictitle1">检查并配置Oracle数据库的Open状态</h1>
   <div>
-   <p>执行备份时，Oracle数据库所在主机必须处于开机状态，并且Oracle数据库为Open状态。以下步骤说明如何检查并配置Oracle数据库的Open状态。</p>
+   <p>执行备份时，Oracle数据库所在主机必须处于开机状态。对于主备部署形态中的DG部署模式，备端待保护的Oracle数据库需处于Mounted状态；对于其他部署形态，待保护的Oracle数据库需处于Open状态。以下步骤说明如何检查并配置Oracle数据库的状态。</p>
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>登录Oracle数据库主机，查询数据库安装用户及实例名。</span><p></p>
+     <li><span>登录Oracle数据库主机。</span><p></p>
+      <ul id="oracle_gud_0016__oracle_gud_0020_zh-cn_topic_0000001656760969_ul1983714162204">
+       <li id="oracle_gud_0016__oracle_gud_0020_zh-cn_topic_0000001656760969_li7258697580">如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行<strong id="oracle_gud_0016__oracle_gud_0020_zh-cn_topic_0000001656760969_b119369483451">su - oracle</strong>命令，切换到<strong id="oracle_gud_0016__oracle_gud_0020_zh-cn_topic_0000001656760969_b2486163014495">oracle</strong>账户。</li>
+       <li id="oracle_gud_0016__oracle_gud_0020_zh-cn_topic_0000001656760969_li1366015032013">如果是Windows操作系统，请使用系统管理员登录Oracle数据库主机。</li>
+      </ul> <p></p></li>
+     <li><span>查询数据库安装用户及实例名。</span><p></p>
       <ul>
        <li>如果是Linux操作系统，请执行以下操作。
         <ol type="a">
          <li>使用PuTTY，登录Oracle数据库主机。</li>
-         <li>执行以下命令，查询安装数据库的用户名。<pre class="screen">ps -ef | grep pmon</pre> <p>回显类似如下，<em>xxx</em><strong>_pmon_hwdb</strong>所在行的用户即为安装数据库的用户，<em>xxx</em><strong>_pmon_hwdb</strong>中“hwdb”则为数据库实例名称。后续操作均以<strong>oracle</strong>用户为例。</p> <p><span><img src="zh-cn_image_0000002035874017.png"></span></p></li>
+         <li>执行以下命令，查询安装数据库的用户名。<pre class="screen">ps -ef | grep pmon</pre> <p>回显类似如下，<em>xxx</em><strong>_pmon_hwdb</strong>所在行的用户即为安装数据库的用户，<em>xxx</em><strong>_pmon_hwdb</strong>中“hwdb”则为数据库实例名称。后续操作均以<strong>oracle</strong>用户为例。</p> <p><span><img src="zh-cn_image_0000002199963853.png"></span></p></li>
         </ol></li>
        <li>如果是Windows操作系统，请执行以下操作。
         <ol type="a">
@@ -61,7 +66,7 @@
              <p>路径中的<em>19Home1</em>仅为示例，请以实际为准。</p>
             </div>
            </div>
-          </div> <p><span><img src="zh-cn_image_0000001999595720.png"></span></p></li>
+          </div> <p><span><img src="zh-cn_image_0000002199998277.png"></span></p></li>
         </ol></li>
       </ul> <p></p></li>
      <li id="oracle_gud_0016__li14919010154311"><a name="oracle_gud_0016__li14919010154311"></a><a name="li14919010154311"></a><span>执行以下命令检查数据库是否已启动。</span><p></p>
@@ -161,11 +166,17 @@ oracle   239014 239013  0 Apr07 pts/1    00:00:00 -bash</pre></li>
           </ol></li>
         </ul></li>
       </ul> <p></p></li>
-     <li><span>如果<a href="#oracle_gud_0016__li14919010154311">2</a>检查到未启动数据库进程，执行以下命令启动数据库进程。否则请跳过。</span><p></p><p><strong>startup;</strong></p> <p></p></li>
-     <li><span>执行以下命令检查数据库状态。</span><p></p><p><strong>select instance_name,status from v$instance;</strong></p>
+     <li><span>如果<a href="#oracle_gud_0016__li14919010154311">3</a>检查到未启动数据库进程，在待保护的数据库节点上执行以下命令启动数据库进程。否则请跳过。</span><p></p><p><strong>startup;</strong></p> <p></p></li>
+     <li><span>执行以下命令检查待保护数据库的状态。</span><p></p><p><strong>select instance_name,status from v$instance;</strong></p>
       <ul>
        <li>当回显中<span class="parmname">“STATUS”</span>为<span class="parmvalue">“open”</span>时，表示数据库为Open状态。</li>
-       <li>当回显中<span class="parmname">“STATUS”</span>为非<span class="parmvalue">“open”</span>时，请联系管理员将数据库开启至Open状态后再进行备份。</li>
+       <li>当回显中<span class="parmname">“STATUS”</span>为非<span class="parmvalue">“open”</span>时，请联系管理员将数据库开启至Open状态后再进行备份。
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>对于主备部署形态中的DG（Data Gurad）部署模式，备端待保护的Oracle数据库执行该命令后，回显中<span class="parmname">“STATUS”</span>应该为“MOUNTED”状态。</p>
+         </div>
+        </div></li>
       </ul> <pre class="screen">SQL&gt; select instance_name,status from v$instance; 
  INSTANCE_NAME    STATUS 
  ---------------- ------------ 

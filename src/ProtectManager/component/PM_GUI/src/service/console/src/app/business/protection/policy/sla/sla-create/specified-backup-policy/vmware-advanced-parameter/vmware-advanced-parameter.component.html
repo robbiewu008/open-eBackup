@@ -13,7 +13,8 @@
 
 <h2 class="target-location">{{'protection_copy_location_label' | i18n}}</h2>
 <aui-specify-destination-location [formGroup]="formGroup" [data]="data" [isSlaDetail]="isSlaDetail" [action]="action"
-    [isRetry]="isRetry" [isUsed]="isUsed" [hasArchival]="hasArchival" [hasReplication]="hasReplication" (isDisableQos)="storageTypeChange($event)">
+    [isRetry]="isRetry" [isUsed]="isUsed" [hasArchival]="hasArchival" [hasReplication]="hasReplication"
+    (isDisableQos)="storageTypeChange($event)">
 </aui-specify-destination-location>
 <lv-collapse [lvType]="'simple'">
     <lv-collapse-panel [lvTitle]="advanceTpl" lvExpanded>
@@ -21,9 +22,8 @@
             <lv-form-item>
                 <lv-form-label>
                     {{'common_limit_rate_policy_single_label' | i18n}}
-                    <i lv-icon="aui-icon-help" [lv-tooltip]="limitTooltip"
-                        lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
-                        lvColorState='true'></i>
+                    <aui-router-jump-help [routerUrl]="ratePolicyRouterUrl"
+                        helpTips="{{'common_limit_rate_policy_tip_label' | i18n}}"></aui-router-jump-help>
                 </lv-form-label>
                 <lv-form-control>
                     <ng-container *ngIf="isSlaDetail">
@@ -340,8 +340,4 @@
 </ng-template>
 <ng-template #advanceTpl>
     <h2>{{'common_advanced_label'|i18n}}</h2>
-</ng-template>
-
-<ng-template #limitTooltip>
-    <span [innerHTML]="'common_limit_rate_policy_tip_label' | i18n"></span>
 </ng-template>

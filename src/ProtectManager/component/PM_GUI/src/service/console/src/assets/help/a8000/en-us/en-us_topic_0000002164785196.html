@@ -1,0 +1,116 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Creating a Media Set (When the Archive Storage Is a Tape Library) (Applicable to OceanProtect X Series Backup Appliances)">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200111729.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164785196">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Creating a Media Set (When the Archive Storage Is a Tape Library) (Applicable to OceanProtect X Series Backup Appliances)</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164785196"></a><a name="EN-US_TOPIC_0000002164785196"></a>
+
+<h1 class="topictitle1">Creating a Media Set (When the Archive Storage Is a Tape Library) (Applicable to OceanProtect X Series Backup Appliances)</h1>
+<div><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000001839143173_p52126361762">This section describes how to create a media set when a tape library is used as the archive storage. If the archive storage is not a tape library, skip this section. </p>
+<div class="section" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000001839143173_section64578218528"><h4 class="sectiontitle">Context</h4><ul id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000001839143173_ul20158183415546"><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000001839143173_li12775337145414">A media set is created based on tapes and is a tape storage pool for storing archive data. Therefore, ensure that a tape library has been scanned and updated to the <span id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002200061393_text18376218116">OceanProtect</span> before creating a media set.</li><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000001839143173_li104011181308"><span id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000001839143173_ph035553742017">The system automatically scans tape libraries every 24 hours. When detecting a tape library connected to the <span id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_text77621359192219">OceanProtect</span>, the system automatically updates the tape library to the <span id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_text136126811235">OceanProtect</span>.</span><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000001839143173_p22934181108">If a tape library is not updated to the <span id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_text1722521652311">OceanProtect</span>, you can manually scan the tape library. For details, see "Scanning Tape Libraries" in the <i><cite id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_cite26981149808">OceanProtect DataBackup 1.5.0-1.6.0 Administrator Guide</cite></i>.</p>
+</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000001839143173_section24210211414"><h4 class="sectiontitle">Prerequisites</h4><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002200061393_p166439914143">Ensure that <strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002200061393_b665611604613">Access Status</strong> is <strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002200061393_b19173720184610">Accessible</strong> for all tapes in the tape library. You can view the value of <strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002200061393_b4949185913509">Access Status</strong> on the tape management page.</p>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000001839143173_section8876201915305"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000001839224677_ol16741124252118"><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000001839224677_li79299103444"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_en-us_topic_0000002200069893_en-us_topic_0000002164660702_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_uicontrol123381932135316"><b><span id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_en-us_topic_0000002200069893_en-us_topic_0000002164660702_en-us_topic_0000001132896521_en-us_topic_0000001125223205_text3591711162920">System</span> &gt; <span id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_en-us_topic_0000002200069893_en-us_topic_0000002164660702_en-us_topic_0000001132896521_en-us_topic_0000001125223205_text134875310309">Infrastructure</span> &gt; <span id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_en-us_topic_0000002200069893_en-us_topic_0000002164660702_text102788238478"><strong>Archive Storage Library</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_li818816416326"><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_uicontrol17681657155019"><b><span id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_text17165161385110"><strong>Tape</strong></span></b></span> tab page, select a node and click <span class="uicontrol" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_uicontrol94863210528"><b><span id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_text716846185211"><strong>Media Set</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_li1427516216320"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_uicontrol2120184217482"><b><span id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_text171191142194813"><strong>Create</strong></span></b></span>.</span><p><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p11848102711287"><a href="#EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_table7624154102812">Table 1</a> describes the parameters for creating a media set.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_table7624154102812"></a><a name="en-us_topic_0000002164760142_en-us_topic_0000002164669278_table7624154102812"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_table7624154102812" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for creating a media set</caption><colgroup><col style="width:34.69%"><col style="width:65.31%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_row86253541287"><th align="left" class="cellrowborder" valign="top" width="34.69%" id="mcps1.3.4.2.3.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p18625165492813">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="65.31%" id="mcps1.3.4.2.3.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p196251854192810">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_row46251354142818"><td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p196251554152811">Name</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p362555420281">Media set name, which is user-defined.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_row196251154192811"><td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p17625105419281">Driver Block Size</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p12625105410281">The value can be <strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_b16164173911918">64 KB</strong>, <strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_b207204118196">128 KB</strong>, or <strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_b18697242171913">256 KB</strong>. Data is written to tapes block by block. Data is written to tapes in a media set based on the set block size.</p>
+<div class="note" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_note565243611320"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p2161343103218">You are advised to select the driver block size based on the file size.</p>
+<ul id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_ul201610431324"><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li5161343163212">For large files, select a large driver block size to ensure read and write efficiency.</li><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li6161204315321">For small files, select a small drive block size to make full use of tape space.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_row26253549286"><td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p196251554182818">Data Compression</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><div class="p" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p1814841316339">Decreases data volume to reduce storage space and improve write speed.<ul id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_ul1215331318334"><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li131531213203310"><strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_b20491155912204">Enable</strong>: indicates to enable the hardware compression function of the tape library to reduce the required tape capacity and improve the write speed.</li><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li12153713103315"><strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_b8702181217215">Disable</strong>: indicates to disable the hardware compression function of the tape library.</li></ul>
+</div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_row717874343016"><td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p2017884323017">Owning Controller</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p7997171124615">Select the controller to which the tapes belong.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_row179321114123115"><td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p1093201418312">Tape</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p1393271493115">In the tape library list on the left, select a tape library and select tapes in the tape library on the right.</p>
+<div class="note" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_note152988121326"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_ul5529181923219"><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li75291194325">Tapes in multiple tape libraries can be added. Tapes on different controllers cannot be added.</li><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li2529141903214">Tapes that have been added to other media sets cannot be added to the media set.</li><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li053041903219">If <strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_b1522202242319">Location</strong> of a tape to be selected is displayed as <strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_b422282217238">Driver</strong> for a long time, the tape is not identified, or the value of <strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_b11223152219239">Number of Drives</strong> is different from the actual number, the tape may be locked on the driver. In this case, manually unload the tape by referring to the tape device operation guide. After the tape is unlocked from the driver, perform <strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_b82232022152315">Scan Tape Library</strong> again.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_row8420183933310"><td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p74201439103316">Insufficient Available Tapes</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><ul id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_ul6295175973317"><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li11891826343">After this function is enabled, you need to set <span class="uicontrol" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_uicontrol04341514582"><b>Alarm Threshold</b></span>. If the total number of empty tapes and expired tapes that can be overwritten is less than the threshold, an alarm is generated. To clear the alarm, you can insert empty tapes or mark tapes with data stored as empty.<div class="note" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_note13197517113418"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_ul558332553419"><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li258392513346">If data compression is enabled, the maximum amount of data that can be stored on a tape is unknown. For example, if the nominal capacity of a tape is 50 GB, the tape may actually be able to store 60 GB, 80 GB, or 100 GB data. Therefore, alarms cannot be generated based on the tape capacity, but can be generated only based on the total number of empty tapes and expired tapes that can be overwritten.</li><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li75831258343">The alarm threshold cannot exceed the total number of selected tapes.</li></ul>
+</div></div>
+</li><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li172871912143413">After this function is disabled, the number of available tapes is unknown. You are advised to enable this function.</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_row13782619458"><td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p479365451">Alarm Threshold</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p1779462453">Set the number of tapes. When the number of available tapes is less than the threshold, an alarm is generated.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_row2816531134610"><td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_p1481683164611">Retention Range</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><ul id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_ul16601125824717"><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li16601458184710"><strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_b159964710264">No Data Protection (Overwrite Tape as Needed)</strong>: Data in tapes is not protected. When new data is written to a tape, the original data is overwritten. To select this retention policy, ensure that there are at least two tapes in the current media set.</li><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li96021358174719"><strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_b1530713682711">Permanent Data Retention</strong>: Data in tapes is permanently retained.</li><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_li12602185844715"><strong id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_b286914509279">Temporary Data Protection</strong>: Data in tapes is protected periodically for <em id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_i863554182714">xx</em> days, months, or years. For example, if the period for temporary data protection is set to 10 days, the tape is marked as empty after 10 days since the last data is written into the tape. Then, the tape can be overwritten.</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_li619273283318"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_uicontrol118738193116"><b><span id="EN-US_TOPIC_0000002164785196__en-us_topic_0000002164760142_en-us_topic_0000002164669278_text4873916317"><strong>OK</strong></span></b></span>. After a media set is created, the system updates the status and capacity information of the media set every hour. Before the system updates data, the status and capacity of a media set may be inconsistent with the actual situation.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200111729.html">Step 1: Adding Archive Storage</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

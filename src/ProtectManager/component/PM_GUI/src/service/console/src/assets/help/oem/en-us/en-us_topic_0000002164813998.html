@@ -1,0 +1,68 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="A VM or Disk Fails to Be Restored">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164813998">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>A VM or Disk Fails to Be Restored</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164813998"></a><a name="EN-US_TOPIC_0000002164813998"></a>
+  <h1 class="topictitle1">A VM or Disk Fails to Be Restored</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>A VM or disk fails to be restored. The error message "Failed to restore the VM disk." is displayed in the job details, and <strong>Write failed, err:'Unknown error'</strong> is recorded in the log.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p>In SAN transmission mode, if the copy used for restoration contains data of thick provision lazy zeroed or thin provisioned disks, write I/O errors may occur. (For details, visit VMware Knowledge Base: <a href="https://kb.vmware.com/s/article/52193" target="_blank" rel="noopener noreferrer">https://kb.vmware.com/s/article/52193</a>.)</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164813998__en-us_topic_0000002199964685_uicontrol1812933174613"><b><span id="EN-US_TOPIC_0000002164813998__en-us_topic_0000002199964685_text0129103112462"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164813998__en-us_topic_0000002199964685_text81291431134613"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002164813998__en-us_topic_0000002199964685_text860175510430"><strong>Virtualization</strong></span> &gt; <span id="EN-US_TOPIC_0000002164813998__en-us_topic_0000002199964685_text8319371528"><strong>VMware</strong></span></b></span>.</span></li>
+     <li><span>On the <span class="wintitle"><b>Copy</b></span> tab page, select the copy used for restoration.</span><p></p>
+      <ul>
+       <li>VM restoration: Choose <strong>Operation</strong> &gt; <strong>Restore</strong>. On the displayed page, enable <span class="uicontrol"><b>NBDSSL-based Restore</b></span>.</li>
+       <li>Disk restoration: Select the disk to be restored and click <strong>Restore</strong>. On the <strong>Restore</strong> page, enable <span class="uicontrol"><b>NBDSSL-based Restore</b></span>.</li>
+      </ul> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span> and start the restoration job.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="airgap_0011.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="documenttype" content="usermanual">
   <meta name="prodname" content="csbs">
   <meta name="DC.Format" content="XHTML">
@@ -77,7 +77,11 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="31.830000000000002%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p>强制中止复制</p></td>
-          <td class="cellrowborder" valign="top" width="68.17%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p><span style="color:#282B33;"> 开启后，当复制时长超过Air Gap策略设置的复制时间窗时，复制任务将被强制中止。</span>默认开启。</p></td>
+          <td class="cellrowborder" valign="top" width="68.17%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p>是否开启强制中止复制。系统默认开启强制中止复制。</p>
+           <ul>
+            <li>开启后，运行中的复制任务不在Air Gap策略设置的复制时间窗内，该复制任务将被强制中止且会立即失败。</li>
+            <li>关闭后，在Air Gap策略设置的复制时间窗内生成的复制任务将会正常排队或执行。</li>
+           </ul></td>
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="31.830000000000002%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p>联动侦测</p>

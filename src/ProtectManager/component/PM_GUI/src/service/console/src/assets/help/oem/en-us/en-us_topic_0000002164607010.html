@@ -1,0 +1,161 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring an NDMP NAS File System or File Directory">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002228601237.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164607010">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring an NDMP NAS File System or File Directory</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164607010"></a><a name="EN-US_TOPIC_0000002164607010"></a>
+  <h1 class="topictitle1">Restoring an NDMP NAS File System or File Directory</h1>
+  <div>
+   <p>This section describes how to restore an NDMP NAS file system or file directory (that has been backed up) to its original location or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>The <span>product</span> supports restoration to the original location or a new location using backup copies.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li id="EN-US_TOPIC_0000002164607010__li558413141988">To restore an NDMP NAS file system or file directory to a new location, a storage device residing at the new location needs to be added to the <span id="EN-US_TOPIC_0000002164607010__text1511818204144">product</span>. For details about how to add a storage device, see <a href="en-us_topic_0000002200007849.html">Step 1: Adding a Storage Device</a>.</li>
+     <li>Before the restoration, ensure that the remaining space of the target location is larger than that of the NDMP NAS file system or file directory to be restored. If the space is insufficient, expand the capacity of the target location or release sufficient space to complete the restoration.
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>If the target location does not have sufficient space for restoration, the restoration job will be partially successful but the failed files cannot be restored. The restoration event contains messages similar to the following:</p>
+        <p>RESTORE: Warning: We recommend that 13547742 inodes and 6991617042 kbytes of disk space be available on the target volume in order to restore this dump. You have 8348418 inodes and 271447472 kbytes of disk space on volume ndmp_shu8t.</p>
+        <p>RESTORE: Warning: This restore will proceed, but may fail when it runs out of inodes and/or disk space on this volume.</p>
+       </div>
+      </div></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>If you change the name of a protected NDMP NAS file system or file directory in the <span>product</span> at the production end and scan for resources again, the <span>product</span> will identify the file system or file directory as a new resource and the file system or file directory does not inherit the backup policy and backup copy of the original file system or file directory. If a file system or file directory with a new name needs to be backed up, you need to configure protection again.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164607010__en-us_topic_0000002199964685_uicontrol824614391515"><b><span id="EN-US_TOPIC_0000002164607010__en-us_topic_0000002199964685_text1324633181516"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164607010__en-us_topic_0000002199964685_text92466391512"><strong>Copy Data</strong></span> &gt; File Systems &gt; NDMP</b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000002164607010__li87691438131514"><span>Search for copies by resource or copy. This section describes how to search for copies by resource.</span><p></p><p id="EN-US_TOPIC_0000002164607010__p142551140161511">On the <span id="EN-US_TOPIC_0000002164607010__text6827103218214"><strong>Resources</strong></span> tab page, find the file system or file directory to be restored based on the name and click the name.</p> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164607010__li02165214225"><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000002164607010__uicontrol1812414562220"><b><span id="EN-US_TOPIC_0000002164607010__text18993182162710"><strong>Copy Data</strong></span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p></p><p id="EN-US_TOPIC_0000002164607010__p9918150182310">If <span><img id="EN-US_TOPIC_0000002164607010__image886000161711" src="en-us_image_0000002164766826.png"></span> is displayed below a month or day, a copy is generated in the month or day.</p> <p></p></li>
+     <li><span>In the row of the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Restore</strong></span></b></span>.</span></li>
+     <li><span>Restore an NDMP NAS file system or file directory to its original location or a new location.</span><p></p>
+      <ul>
+       <li>Restore data to the original location.<p><a href="#EN-US_TOPIC_0000002164607010__table1452025982813">Table 1</a> describes the related parameters.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002164607010__table1452025982813"></a><a name="table1452025982813"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164607010__table1452025982813" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>Parameters for restoring data to the original location
+          </caption>
+          <colgroup>
+           <col style="width:13.569999999999999%">
+           <col style="width:86.42999999999999%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.5.2.5.2.1.1.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.5.2.5.2.1.1.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.1.2.2.3.1.1 "><p>Location</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.1.2.2.3.1.2 "><p>Location of a file system, which cannot be modified.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.1.2.2.3.1.1 "><p>Clients</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.1.2.2.3.1.2 "><p>By default, the built-in client is selected. If an external client exists, you can also select the external client.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>Restore data to a new location.<p><a href="#EN-US_TOPIC_0000002164607010__table1248313820599">Table 2</a> describes the related parameters.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002164607010__table1248313820599"></a><a name="table1248313820599"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164607010__table1248313820599" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 2 </b>Parameters for restoring data to a new location
+          </caption>
+          <colgroup>
+           <col style="width:13.569999999999999%">
+           <col style="width:86.42999999999999%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.5.2.5.2.1.2.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.5.2.5.2.1.2.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p>Storage Device</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p>Select the storage device that resides at a new location.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p>File System</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p>Select the file system to be restored.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p>FQDN/IP</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p>Domain name or service IP address for accessing a NAS share.</p>
+             <div class="note">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p>If you need to enter an FQDN, configure the DNS service on the management page of the <span>product</span> so that the <span>product</span> can access external domain names. For details about how to configure the DNS service, see <a href="en-us_topic_0000002200007861.html">Configuring the DNS Service</a>.</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p>Clients</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p>By default, the built-in client is selected. If an external client exists, you can also select the external client.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p>Overwrite Rule</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p>Replace existing files.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ul> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002228601237.html">Performing Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

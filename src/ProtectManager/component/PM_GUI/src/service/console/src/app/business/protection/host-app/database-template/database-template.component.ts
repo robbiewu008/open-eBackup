@@ -76,6 +76,7 @@ import {
   get,
   has,
   includes,
+  isArray,
   isEmpty,
   isUndefined,
   map as _map,
@@ -279,12 +280,7 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
         permission: OperateItems.ModifyProtection,
         label: this.i18n.get('common_resource_protection_modify_label'),
         onClick: data =>
-          this.protect(
-            data,
-            ProtectResourceAction.Modify,
-            this.i18n.get('protection_modify_protection_label'),
-            data
-          )
+          this.beforeProtectCheck(OperateItems.ModifyProtection, data)
       },
       removeProtection: {
         id: 'removeProtection',
@@ -306,13 +302,7 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
         permission: OperateItems.RemoveProtection,
         label: this.i18n.get('protection_remove_protection_label'),
         onClick: data => {
-          this.protectService
-            .removeProtection(_map(data, 'uuid'), _map(data, 'name'))
-            .subscribe(() => {
-              this.selectionData = [];
-              this.dataTable?.setSelections([]);
-              this.dataTable?.fetchData();
-            });
+          this.beforeProtectCheck(OperateItems.RemoveProtection, data);
         }
       },
       activeProtection: {
@@ -1075,6 +1065,77 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
     };
   }
 
+  private beforeProtectCheck(action, data) {
+    // 判断是否需要显示提示
+    const shouldShowTip = this.shouldShowProtectionTip(data);
+
+    if (action === OperateItems.ModifyProtection) {
+      this.handleProtectAction(
+        shouldShowTip,
+        this.i18n.get('protection_modify_protection_warn_copy_location_label'),
+        () =>
+          this.protect(
+            data,
+            ProtectResourceAction.Modify,
+            this.i18n.get('protection_modify_protection_label'),
+            data
+          )
+      );
+    } else if (action === OperateItems.RemoveProtection) {
+      this.handleProtectAction(
+        shouldShowTip,
+        this.i18n.get('protection_remove_protection_warn_copy_location_label'),
+        () => this.handleRemoveProtection(data)
+      );
+    }
+  }
+
+  // 检查是否需要提示
+  private shouldShowProtectionTip(rowData) {
+    const data = isArray(rowData) ? rowData[0] : rowData;
+    const tdsqlAndOceanBaseTypes = [
+      DataMap.Resource_Type.tdsqlInstance.value,
+      DataMap.Resource_Type.OceanBaseCluster.value,
+      DataMap.Resource_Type.OceanBaseTenant.value
+    ];
+
+    // TDSQL 和 OceanBase
+    if (tdsqlAndOceanBaseTypes.includes(data?.subType || data?.sub_type)) {
+      return true;
+    }
+
+    // 其他情况不需要提示
+    return false;
+  }
+
+  // 处理保护操作
+  private handleProtectAction(
+    showTip: boolean,
+    warningMessage: string,
+    action: Function
+  ) {
+    if (showTip) {
+      this.warningMessageService.create({
+        content: warningMessage,
+        lvModalKey: 'before_protection_change_warn_copy_location',
+        onOK: () => action()
+      });
+    } else {
+      action();
+    }
+  }
+
+  // 处理移除保护操作
+  private handleRemoveProtection(data) {
+    this.protectService
+      .removeProtection(_map(data, 'uuid'), _map(data, 'name'))
+      .subscribe(() => {
+        this.selectionData = [];
+        this.dataTable?.setSelections([]);
+        this.dataTable?.fetchData();
+      });
+  }
+
   disableConditions(val) {
     let conditions =
       isEmpty(val.sla_id) &&
@@ -1354,6 +1415,7 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
           endpoint: environmentEndpoint
         });
       }
+      this.extraProcessParams(rest, environmentCondition);
       if (!isEmpty(environmentCondition)) {
         assign(rest, {
           environment: environmentCondition
@@ -1406,6 +1468,25 @@ export class DatabaseTemplateComponent implements OnInit, AfterViewInit {
           );
         }
       });
+  }
+
+  private extraProcessParams(rest, environmentCondition) {
+    if (
+      this.configParams.activeIndex === DataMap.Resource_Type.oraclePDB.value
+    ) {
+      if (rest.osType) {
+        assign(environmentCondition, {
+          osType: rest.osType
+        });
+        delete rest.osType;
+      }
+      if (rest.linkStatus) {
+        assign(environmentCondition, {
+          linkStatus: rest.linkStatus
+        });
+        delete rest.linkStatus;
+      }
+    }
   }
 
   formatData(item) {

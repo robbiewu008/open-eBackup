@@ -17,6 +17,7 @@ import { CreateStoragePoolModule } from 'app/business/system/infrastructure/arch
 import { BaseModule } from 'app/shared';
 import { CurrentSystemTimeModule } from 'app/shared/components/current-system-time/current-system-time.module';
 import { GeneralArchivalPolicyComponent } from './general-archival-policy.component';
+import { RouterJumpHelpModule } from 'app/shared/components/router-jump-help/router-jump-help.module';
 
 @NgModule({
   declarations: [GeneralArchivalPolicyComponent],
@@ -25,7 +26,8 @@ import { GeneralArchivalPolicyComponent } from './general-archival-policy.compon
     BaseModule,
     CreateArchiveStorageModule,
     CreateStoragePoolModule,
-    CurrentSystemTimeModule
+    CurrentSystemTimeModule,
+    RouterJumpHelpModule
   ],
   exports: [GeneralArchivalPolicyComponent]
 })

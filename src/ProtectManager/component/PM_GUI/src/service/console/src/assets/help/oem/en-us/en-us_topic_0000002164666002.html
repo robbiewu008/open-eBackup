@@ -1,0 +1,293 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 5: Creating a Backup SLA">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164665930.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164666002">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 5: Creating a Backup SLA</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164666002"></a><a name="EN-US_TOPIC_0000002164666002"></a>
+  <h1 class="topictitle1">Step 5: Creating a Backup SLA</h1>
+  <div>
+   <p>Customize an SLA to protect resources based on your requirements.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>For details about the customized SLA, see <a href="en-us_topic_0000002200066713.html">About SLA</a>.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199964685_uicontrol8111821122820"><b>Protection &gt; Protection Policies &gt; SLAs</b></span>.</span></li>
+     <li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_uicontrol163291605515"><b>Create</b></span>.</span></li>
+     <li><span>Enter an SLA name. The default name is <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b694314191141">SLA_</strong><em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i1829310311138">Current timestamp</em>.</span></li>
+     <li><span>Select an application type for the SLA to be created.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_ol71011061385">
+       <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_li874192611325">Click the <span class="uicontrol" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_uicontrol16364345183319"><b>Applications</b></span> icon to create a general SLA or an SLA for a specified application.
+        <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_ul157501053341">
+         <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_li3750135143412">On the <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_b1159831019515">General SLA</strong> tab page, click <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_b7748151518514">All Resources</strong>.<p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_p144377559348">A general SLA can be applied to resources except filesets, SQL Server, PostgreSQL, Kingbase, Redis, ClickHouse, MongoDB, NAS shares, NAS file systems, Huawei Cloud Stack GaussDB, TDSQL, Kubernetes CSI, TiDB, volumes, common shares, Active Directory, GaussDB T single-node systems, object storage, GaussDB (DWS), SAP HANA (as an application in 1.6.0 and later versions), SAP on Oracle, AntDB, VMware, and Hyper-V.</p></li>
+         <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_li1512516103413">On the <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_b7010451519">Specific to application</strong> tab page, select an application type.<p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_p1889316245358">This section describes how to create an SLA for a specified application.</p></li>
+        </ul>
+        <div class="note" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_note1521871141414">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_p3218512141">Some models of this product support NAS file systems. For details, see the product documentation released on the technical support website or consult the product provider.</p>
+         </div>
+        </div></li>
+       <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_li7586156123316">Click <span class="uicontrol" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002199961269_en-us_topic_0000002164820434_uicontrol145664914545"><b>OK</b></span>.</li>
+      </ol> <p></p></li>
+     <li><span>Configure a backup policy.</span><p></p>
+      <ol type="a">
+       <li>Click <span class="uicontrol"><b><span><span><strong>Backup Policy</strong></span></span></b></span>.</li>
+       <li>Set basic parameters of the backup policy.<p><a href="#EN-US_TOPIC_0000002164666002__table2663151516335">Table 1</a> describes related parameters.</p>
+        <div class="p">
+         Set the backup interval, copy retention period, and backup time window based on service requirements. The recommended settings are as follows:
+         <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_ul188491594283">
+          <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li14385102192911">The backup interval must be longer than the backup duration.</li>
+          <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li19397172762917">The retention period of a full backup copy must be longer than that of an incremental backup (or forever incremental (synthetic full) backup) copy.</li>
+         </ul>
+         <div class="note" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_note71621858195515">
+          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_ul192116591633">
+            <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li921115591430">At least one backup policy must be created. To add more backup policies, click <span><img id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_image94919215716" src="en-us_image_0000002222637705.png"></span> on the right of the page.</li>
+            <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li621119590319">A maximum of four backup policies can be added for each backup type.</li>
+           </ul>
+          </div>
+         </div>
+        </div>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002164666002__table2663151516335"></a><a name="table2663151516335"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164666002__table2663151516335" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>Basic parameters of a backup policy
+          </caption>
+          <colgroup>
+           <col style="width:17.31%">
+           <col style="width:82.69%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="17.31%" id="mcps1.3.3.2.5.2.1.2.3.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="82.69%" id="mcps1.3.3.2.5.2.1.2.3.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="17.31%" headers="mcps1.3.3.2.5.2.1.2.3.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b1057017401964">Name</strong></p></td>
+            <td class="cellrowborder" valign="top" width="82.69%" headers="mcps1.3.3.2.5.2.1.2.3.2.3.1.2 "><p>Name of a backup policy.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="17.31%" headers="mcps1.3.3.2.5.2.1.2.3.2.3.1.1 "><p><strong>Full Backup</strong></p></td>
+            <td class="cellrowborder" valign="top" width="82.69%" headers="mcps1.3.3.2.5.2.1.2.3.2.3.1.2 ">
+             <div class="p">
+              Configure the backup interval, copy retention period, and backup time window for full backup.
+              <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_ul06281446133611">
+               <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li5628184619364">Configure the backup interval and copy retention period for full backup.
+                <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_ul3912541183319">
+                 <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li1491311419338"><strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b2095613421578">By Year</strong><p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_p7913141173316">Configure the job to be executed once every year on <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i8695125961819">xx</em> (month)-<em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i8695205941811">xx</em> (day). Configure copies to be retained for <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i269613594180">xx</em> days, weeks, months, years, or permanently.</p> <p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_p52204181864">If the date does not exist in the year, no copy is generated.</p></li>
+                 <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li18913134153311"><strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b0337616580">By Month</strong><p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_p19131141133318">Configure the job to be executed on <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i3137640154710">xx</em> (day) (multiple days can be selected) or the last day of each month. Configure copies to be retained for <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i20137114020478">xx</em> days, weeks, months, years, or permanently.</p> <p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_p131866516465">If the backup job is set to be performed on the <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i638819152110">xx</em>th day of each month, no copy is generated when the date does not exist in the current month.</p></li>
+                 <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li79137410332"><strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b1030222135810">By Week</strong><p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_p091313410338">Configure the job to be executed every Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, or Sunday (you can select multiple options). Configure copies to be retained for <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i10839155815217">xx</em> days, weeks, months, years, or permanently.</p></li>
+                 <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li18498191724615"><strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b17849134821">By Day</strong><p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_p46219385469">Configure the job to be executed every <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i563934782212">xx</em> days starting from <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i11639154719227">xx</em> (year)-<em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i14640194713225">xx</em> (month)-<em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i176406479225">xx</em> (day). Configure copies to be retained for <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i1164014713226">xx</em> days, weeks, months, years, or permanently.</p></li>
+                 <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li426962116468"><strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b1992916401127">By Hour</strong><p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_p6350614134914">Configure the job to be executed every <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i3449105714464">xx</em> hours starting from <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i1644985754613">xx</em> (year)-<em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i1044916576462">xx</em> (month)-<em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i15449257134618">xx</em> (day). Configure copies to be retained for <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i64501457104615">xx</em> days, weeks, months, years, or permanently.</p></li>
+                </ul></li>
+               <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li1881682412376">Set the time period for performing full backup. The full backup job will not be scheduled beyond the time range.
+                <div class="note" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_note3335182113214">
+                 <span class="notetitle"> NOTE: </span>
+                 <div class="notebody">
+                  <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_ul64461851101420">
+                   <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li037445621410">If the end time is earlier than or the same as the start time, the end time is actually the end time of the next day.</li>
+                   <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li4446145117142">If the backup job is not completed within the specified time window, the system does not stop the backup job, but reports an event.</li>
+                   <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li4684315367">Once the retention period expires, the system automatically deletes the expired copies.</li>
+                  </ul>
+                 </div>
+                </div></li>
+              </ul>
+             </div></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>To generate a WORM copy for 1.6.0 and later versions, enable WORM and set a WORM validity period. Otherwise, skip this step.
+        <div class="p" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_p19339194114493">
+         For <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_b15358729184918">WORM Validity Period</strong>, you can select <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_b469832194914">Same as the copy retention period</strong> or <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_b4820353104917">Custom validity period</strong>.
+         <div class="note" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_note8945151620502">
+          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_ul2550728175518">
+            <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_li103014415565">WORM copies cannot be deleted or their validity periods cannot be shortened.</li>
+            <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_li9171132315916">The custom WORM validity period cannot be longer than the copy retention period.</li>
+            <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_li976612319580">A WORM copy cannot be changed to a non-WORM copy within its validity period.</li>
+            <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_li8684112013014">If you select <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_b1834713017282">Same as the copy retention period</strong> for <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_b0211164119281">WORM Validity Period</strong> and choose to retain copies permanently, the actual WORM validity period is 20 years for the copies in snapshot format and 70 years for the copies in directory format. This is because copies in snapshot format can be retained for up to 20 years and those in directory format can be retained for up to 70 years on the backup storage.</li>
+           </ul>
+          </div>
+         </div>
+        </div></li>
+      </ol>
+      <ol type="a" start="4">
+       <li>Set other parameters of the backup policy.
+        <div class="p">
+         <a href="#EN-US_TOPIC_0000002164666002__en-us_topic_0000001142022930_table1970194542811">Table 2</a> describes related parameters. 
+         <div class="tablenoborder">
+          <a name="EN-US_TOPIC_0000002164666002__en-us_topic_0000001142022930_table1970194542811"></a><a name="en-us_topic_0000001142022930_table1970194542811"></a>
+          <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000001142022930_table1970194542811" frame="border" border="1" rules="all">
+           <caption>
+            <b>Table 2 </b>Other parameters of a backup policy
+           </caption>
+           <colgroup>
+            <col style="width:30.06%">
+            <col style="width:69.94%">
+           </colgroup>
+           <thead align="left">
+            <tr>
+             <th align="left" class="cellrowborder" valign="top" width="30.06%" id="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1"><p>Parameter</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="69.94%" id="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2"><p>Description</p></th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b203081655125718">Specify Target Location</strong></p></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 ">
+              <div class="p">
+               Specify the target storage location of backup copies.
+               <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_ul3832679403">
+                <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li299019528162"><span class="parmvalue" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_parmvalue20580546155113"><b>Backup Storage Units</b></span>: A backup storage unit corresponds to a backup cluster node. After a backup storage unit is selected, copies are stored to the storage unit. If the capacity of the storage unit is insufficient, the backup job will fail.<p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_p36749546164">For details about how to create a backup storage unit, see "Creating a Backup Storage Unit" in the <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i88291510396">Cluster HA Feature Guide</em>.</p></li>
+                <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li168151656101610"><span class="parmvalue" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_parmvalue142224995111"><b>Backup Storage Unit Groups</b></span>: A backup storage unit group is a collection of backup storage units. After a backup storage unit group is selected, the system automatically selects a target backup storage unit based on the storage policy of the storage unit group.<p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_p15126135815168">For details about how to create a backup storage unit group, see "(Optional) Creating Backup Storage Unit Groups" in the <em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i168179237215">Cluster HA Feature Guide</em>.</p></li>
+               </ul>
+               <div class="note" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_note06533915171">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_ul2261104811172">
+                  <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li182618487176">For 1.5.0, this parameter is displayed only when you have deployed the cluster HA feature. You can leave the target location unspecified. If you do not specify the target location, the system automatically selects the target storage unit through intelligent balancing.</li>
+                  <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li1025484315189">For 1.6.0 and later versions, you must specify the target location.</li>
+                 </ul>
+                </div>
+               </div>
+              </div></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_p6195834193813"><strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164765986_en-us_topic_0000002164820434_b25086515492">Rate Limiting Policy</strong></p></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 "><p>Average maximum amount of data that can be transmitted per second in a backup job.</p> <p>Select the rate limiting policy created in <a href="en-us_topic_0000002200152293.html">Step 3: (Optional) Creating a Rate Limiting Policy</a>.</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 ">
+              <div class="p">
+               <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b48481597490">Source Deduplication</strong>
+               <div class="note" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_note1141182723518">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_p164111271351">Some models of this product support this parameter. For details, see the product documentation released on the technical support website or consult the product provider.</p>
+                </div>
+               </div>
+              </div></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 ">
+              <div class="p">
+               After this function is enabled, the amount of data to be transmitted can be reduced, but more client resources will be occupied.
+               <div class="note" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_note8885112682911">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_ul5885426132914">
+                  <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li10885172616299">A client can only be linked with one storage unit. To enable source deduplication, select <span class="parmvalue" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_parmvalue13417617181719"><b>Backup Storage Unit</b></span> for <span class="parmname" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_parmname164341313131719"><b>Specify Target Location</b></span>. Otherwise, a storage unit that is not linked with the client may be selected through intelligent balancing. As a result, source deduplication fails to be enabled. If different protected objects are associated with different SLAs, where different backup storage units are specified, select different clients for the protected objects. Otherwise, source deduplication will fail to be enabled for some backup jobs.</li>
+                  <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li9885182662911">If a client has been linked with a storage unit but is not performing a backup job with source deduplication enabled, you can run the <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b1734071915190">dataturbo delete storage_object storage_name=</strong><em id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_i18291255102216">?</em> command on the host where the client is deployed to delete the source deduplication link with the storage unit. The value of <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b9927131312572">storage_name</strong> in the command can be queried by running the <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b11782052162315">dataturbo show storage_object</strong> command. This way, when the client performs a backup job with source deduplication enabled, the link between the client and a new storage unit can be established.</li>
+                  <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li11885142615297">View the product compatibility to check whether source deduplication is supported by the OS of the host where the client is deployed. If not supported, source deduplication will not take effect after being configured.</li>
+                  <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li7883549153219">If a built-in client (that is, the client is co-deployed with the <span id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_text13835155817114">product</span>) is used for backup, source deduplication does not take effect after being configured.</li>
+                 </ul>
+                </div>
+               </div>
+              </div></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 ">
+              <div class="p">
+               <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b693713423122">Job Timeout Alarm</strong>
+               <div class="note" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_note379352823112">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_en-us_topic_0000001839143213_p8320153562113">This parameter is available only in 1.6.0 and later versions.</p>
+                </div>
+               </div>
+              </div></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 "><p>After this function is enabled, an alarm is sent if the job execution time exceeds the time window. The alarm needs to be manually cleared.</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 "><p><span><strong>Job Failure Alarm</strong></span></p></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 "><p>After this function is enabled, an alarm is sent when a job fails. The alarm is automatically cleared when the next job is successful. This function is disabled by default.</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 "><p><span><strong>Automatic Retry</strong></span></p></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 "><p>After this function is enabled, the system automatically retries if a periodic backup job fails.</p>
+              <div class="p">
+               The number of retries ranges from 1 to 5, and the wait time ranges from 1 to 30 minutes. For example, if the number of retries is set to 3 and the wait time is set to 5 minutes, the system retries for a total of three times at an interval of 5 minutes.
+               <div class="note" id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_note139701345152818">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_ul264071314279">
+                  <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li1864001332715">During automatic retry, the system creates a backup job. The backup job is executed only when it is within the preset time window.</li>
+                  <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li116401113172713">This function takes effect only during periodic backup. Automatic retry is not supported if a backup job fails to be manually initiated.</li>
+                 </ul>
+                </div>
+               </div>
+              </div></td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div></li>
+       <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</li>
+      </ol> <p></p></li>
+     <li><span>(Optional) Configure an archive policy.</span><p></p><p>The built-in storage space of the <span>product</span> is limited. If you need to retain copy data for a long time, you are advised to archive the copy data to external storage.</p> <p>You can configure an archive policy by clicking the <span class="uicontrol"><b><span><strong>Archive Policy</strong></span></b></span> icon or by modifying the SLA.</p> <p>For details about how to configure an archive policy, see <a href="en-us_topic_0000002164665974.html">Archiving</a>.</p> <p></p></li>
+     <li><span>(Optional) Configure a replication policy.</span><p></p><p>The <span>product</span> allows you to replicate local data to a remote data center. If a disaster occurs, copy data in the remote data center can be used to restore production data and services can be taken over.</p> <p>You can configure a replication policy by clicking the <span class="uicontrol"><b><span><strong>Replication Policy</strong></span></b></span> icon or by modifying the SLA.</p> <p>For details about how to configure a replication policy, see "Creating a Replication SLA" of the corresponding product model in <a href="en-us_topic_0000002200066709.html">Replication</a>.</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_ul1078182475012">
+         <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li18183194213013">For 1.6.0 and later versions:
+          <ul id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_ul20769645302">
+           <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li83901215999">The WORM validity period of the backup policy in the SLA must be shorter than the copy retention period in the replication policy.</li>
+           <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li878324105017">If WORM is not configured at the local end but configured at the target end, the WORM validity period is the same as the replication copy retention period.</li>
+           <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li07815248507">If WORM is configured at the local end but not at the target end, the WORM validity period of replication copies is the same as that of WORM copies at the local end. The retention period of replication copies is greater than or equal to the WORM validity period of backup copies at the local end.</li>
+           <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li1278624195020">If WORM is configured at both the local and target ends and WORM is configured by resource in the WORM configuration of <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b78231650163717">Data Security</strong> at the target end, all replication copies will have WORM enabled, and the WORM validity period is the same as the replication copy retention period.</li>
+           <li id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_li127819245503">At the local end, if you configure local backup copies to be retained permanently and set <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b20511104361110">WORM Validity Period</strong> to <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b851224341112">Same as the copy retention period</strong>, the WORM validity period is permanent. After a backup copy is generated, if you modify the SLA policy (by adding a replication policy and setting <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b115122018172413">Replication and Retention Rules</strong> to <strong id="EN-US_TOPIC_0000002164666002__en-us_topic_0000002164820434_b9172163882417">Replicate all copies</strong>), the WORM validity period at the target end is the same as the retention period of replication copies.</li>
+          </ul></li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164665930.html">Backing Up the ClickHouse Database and Table Set</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

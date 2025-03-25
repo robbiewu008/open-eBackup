@@ -64,10 +64,9 @@ export class JobStrategyComponent implements OnInit {
     this.extendStr = JSON.parse(this.job?.extendStr);
     if (this.backupDetailJobType.includes(this.job.type)) {
       this.sla = assign(this.extendStr, {
-        application: this.getTypeKey(
-          this.job.sourceSubType,
-          this.resourceSubTypeSLAMap
-        ),
+        application:
+          this.extendStr?.slaApplication ||
+          this.getTypeKey(this.job.sourceSubType, this.resourceSubTypeSLAMap),
         policy_list: this.extendStr?.triggerPolicy?.policy_list
       });
       this.slaName = this.sla.slaName;

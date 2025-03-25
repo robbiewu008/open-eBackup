@@ -41,6 +41,10 @@
                 <lv-form-item>
                     <lv-form-label>
                         {{'protection_overwrite_policy_label' | i18n}}
+                        <i lv-icon="aui-icon-help" *ngIf="!isResourceSet"
+                            lv-tooltip="{{'protection_overwrite_policy_aps_help_label' | i18n}}"
+                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                            lvColorState='true'></i>
                     </lv-form-label>
                     <lv-form-control>
                         <lv-radio-group formControlName="slaOverwrite">
@@ -63,10 +67,15 @@
                         <lv-checkbox-group formControlName="slaPolicy" [lvDisabled]="disabled">
                             <lv-group [lvGutter]="'8px'" lvDirection='vertical' class="mgt-8">
                                 <lv-checkbox lvValue="APPLY_TO_ALL">
-                                    {{'protection_apply_sla_in_hcs_project_label' | i18n }}
+                                    {{ (isResourceSet? 'protection_apply_sla_in_resource_set_project_label' :
+                                    'protection_apply_sla_in_aps_project_label') | i18n }}
+                                    <i lv-icon="aui-icon-help" *ngIf="!isResourceSet"
+                                        lv-tooltip="{{'protection_aps_sla_help_label' | i18n}}"
+                                        lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
                                 </lv-checkbox>
                                 <lv-checkbox lvValue="APPLY_TO_NEW">
-                                    {{'protection_apply_sla_in_new_hcs_project_label' | i18n }}
+                                    {{(isResourceSet ? 'protection_apply_sla_in_new_resource_project_label' :
+                                    'protection_apply_sla_in_new_aps_project_label') | i18n }}
                                 </lv-checkbox>
                             </lv-group>
                         </lv-checkbox-group>

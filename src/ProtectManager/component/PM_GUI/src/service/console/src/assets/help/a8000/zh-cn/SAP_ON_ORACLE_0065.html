@@ -1,0 +1,95 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复SAP on Oracle数据库">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="SAP_ON_ORACLE_0062.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="SAP_ON_ORACLE_0065">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复SAP on Oracle数据库</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="SAP_ON_ORACLE_0065"></a><a name="SAP_ON_ORACLE_0065"></a>
+
+<h1 class="topictitle1">恢复SAP on Oracle数据库</h1>
+<div><p>当需要对已备份的数据库进行恢复时，可以参考本节恢复数据库至原位置或新位置。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>关闭目标数据库。</span><p><p>在目标数据库所在的Windows主机命令提示符（cmd）窗口（您可以使用快捷键Win + R、输入cmd后按Enter进入），依次执行以下步骤，关闭目标数据库：</p>
+<ol type="a"><li>进入<a href="SAP_ON_ORACLE_0007.html#SAP_ON_ORACLE_0007__section10539810434">手动创建run文件夹和拷贝文件</a>创建的run目录，例如：<pre class="screen">C:\&gt;cd usr\sap\EH7\SYS\exe\run</pre>
+</li><li>执行以下命令，关闭目标数据库。<pre class="screen">brconnect -c force -l E -u <em>userName</em>/<em>passWord</em> -f dbshut -f</pre>
+<div class="p">其中，“userName”和“passWord”为<a href="SAP_ON_ORACLE_0007.html#SAP_ON_ORACLE_0007__section09572159441">启动数据库并创建数据库用户</a>中创建的数据库用户名和密码。例如：<pre class="screen">brspace -c force -l E -u user1/Huawei123 -f dbshow -c dbstate</pre>
+</div>
+</li></ol>
+</p></li><li><span>选择<span class="uicontrol" id="SAP_ON_ORACLE_0065__zh-cn_topic_0000002199964685_uicontrol276155912544">“<span id="SAP_ON_ORACLE_0065__zh-cn_topic_0000002199964685_text87620597549">数据利用</span> &gt; <span id="SAP_ON_ORACLE_0065__zh-cn_topic_0000002199964685_text776125915420">副本数据</span> &gt; <span id="SAP_ON_ORACLE_0065__zh-cn_topic_0000002199964685_text177625918547">应用</span> &gt; SAP on Oracle”</span>。</span></li><li><span>支持以数据库维度或以副本维度查找副本，本节以数据库维度为例进行说明。</span><p><p>在“资源”页签，根据数据库名称查找到需要恢复的数据库，并单击数据库名称。</p>
+</p></li><li><span>在<span class="uicontrol">“副本数据”</span>页签，依次选择年、月、天找到副本。</span><p><p>当时间下方显示<span><img src="zh-cn_image_0000002164769154.png"></span>，即表示该月、该天存在副本。</p>
+</p></li><li><span>指定副本或时间点进行恢复。</span><p><ol type="a"><li>指定某个副本或两个副本之间的任意时间点进行恢复。<ul><li>指定某个副本进行恢复<p><span><img class="eddx" src="zh-cn_image_0000002164609434.png"></span></p>
+</li><li>指定时间点进行恢复。<p><span><img class="eddx" src="zh-cn_image_0000002164609442.png"></span></p>
+<p>时间轴上蓝色覆盖区域均可进行时间点恢复，<span><img src="zh-cn_image_0000002200010189.png"></span>表示该时间点存在副本。没有备份日志的时间点无法进行时间点恢复。</p>
+</li></ul>
+</li></ol><ol type="a" start="2"><li>恢复SAP on Oracle数据库至原位置或新位置。<ul><li>恢复SAP on Oracle数据库至原位置。<ol class="substepthirdol"><li>选择恢复至<span class="uicontrol">“原位置”</span>。</li><li>选择是否开启手工设置通道数。<p>未开启时，默认的通道数为“1”；开启时，用户可手工设置通道数。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>通道数，即执行恢复任务时，系统能够同时进行文件拷贝的线程数。每个CPU能够分配一个线程用于执行该恢复任务，设置的通道数应不大于主机的CPU数。请根据主机CPU的利用率和CPU数进行配置。</p>
+</div></div>
+</li><li>单击<span class="uicontrol">“确定”</span>。</li></ol>
+</li><li>恢复SAP on Oracle数据库至新位置。<ol class="substepthirdol"><li>选择恢复至<span class="uicontrol">“新位置”</span>。</li><li>配置恢复基本参数。<p>相关参数说明如<a href="#SAP_ON_ORACLE_0065__table261702245415">表1</a>所示。</p>
+
+<div class="tablenoborder"><a name="SAP_ON_ORACLE_0065__table261702245415"></a><a name="table261702245415"></a><table cellpadding="4" cellspacing="0" summary="" id="SAP_ON_ORACLE_0065__table261702245415" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复参数说明</caption><colgroup><col style="width:18.41%"><col style="width:81.58999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="18.41%" id="mcps1.3.2.2.5.2.2.1.1.2.1.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="81.58999999999999%" id="mcps1.3.2.2.5.2.2.1.1.2.1.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.2.2.5.2.2.1.1.2.1.2.2.2.3.1.1 "><p>标签</p>
+</td>
+<td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.2.2.5.2.2.1.1.2.1.2.2.2.3.1.2 "><p>资源关联的标签名称，可通过标签筛选数据库。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.2.2.5.2.2.1.1.2.1.2.2.2.3.1.1 "><p>资源</p>
+</td>
+<td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.2.2.5.2.2.1.1.2.1.2.2.2.3.1.2 "><p>数据库恢复到新位置的资源名称。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>选择是否开启手工设置通道数。<p>未开启时，默认的通道数为“1”；开启时，用户可手工设置通道数。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>通道数，即执行恢复任务时，系统能够同时进行文件拷贝的线程数。每个CPU能够分配一个线程用于执行该恢复任务，设置的通道数应不大于主机的CPU数。请根据主机CPU的利用率和CPU数进行配置。</p>
+</div></div>
+</li><li>单击<span class="uicontrol">“确定”</span>。</li></ol>
+</li></ul>
+</li></ol>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="SAP_ON_ORACLE_0062.html">恢复</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

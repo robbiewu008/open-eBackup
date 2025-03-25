@@ -1,0 +1,57 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="索引被删除导致备份失败，如何跳过被删除索引的备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="ES_gud_00066.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ES_gud_00070">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>索引被删除导致备份失败，如何跳过被删除索引的备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ES_gud_00070"></a><a name="ES_gud_00070"></a>
+
+<h1 class="topictitle1">索引被删除导致备份失败，如何跳过被删除索引的备份</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>当执行Elasticsearch备份任务时，备份失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>备份任务执行中，当索引已被删除，为Elasticsearch生产环境添加快照时，索引不存在导致备份任务失败。如果需要允许备份时索引被删除，可参照操作步骤进行配置。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>登录任意客户端所在的主机。</span></li><li id="ES_gud_00070__li0666112614514"><a name="ES_gud_00070__li0666112614514"></a><a name="li0666112614514"></a><span>执行以下命令查看配置文件信息（“/opt”为客户端安装的路径，请填写客户端实际部署的路径）。</span><p><pre class="screen">cat <em>/opt</em>/DataBackup/ProtectClient/Plugins/ElasticSearchPlugin/cfg/plugin.cfg</pre>
+</p></li><li><span>查找回显中的参数“elasticsearch.allowIndexDelete”的值。</span><p><ul><li>当参数值为“true”，表示当备份时索引被删除时，将跳过该索引的备份。此时备份失败可能由其他原因导致，请收集日志并联系华为技术支持工程师协助处理。</li><li>当参数值为“false”，表示当备份时索引被删除时，不跳过该索引的备份，备份任务将失败。当需要允许备份时索引被删除，可执行<a href="#ES_gud_00070__li11630817164912">4</a>。</li></ul>
+</p></li><li id="ES_gud_00070__li11630817164912"><a name="ES_gud_00070__li11630817164912"></a><a name="li11630817164912"></a><span>分别登录所有客户端所在的主机修改<a href="#ES_gud_00070__li0666112614514">2</a>中的配置文件的参数“elasticsearch.allowIndexDelete”值为“true”。修改保存后重新发起备份任务。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="ES_gud_00066.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

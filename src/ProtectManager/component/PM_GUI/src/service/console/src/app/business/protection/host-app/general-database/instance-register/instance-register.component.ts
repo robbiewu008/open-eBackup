@@ -177,13 +177,13 @@ export class InstanceRegisterComponent implements OnInit {
       this.formGroup.get('verifyScript').value === 'gbase8a'
         ? `/console/assets/help/a8000/${
             this.i18n.isEn
-              ? 'en-us/index.html#GBase_8a_00012.html'
+              ? 'en-us/index.html#en-us_topic_0000002164771390.html'
               : 'zh-cn/index.html#GBase_8a_00011.html'
           }`
         : `/console/assets/help/a8000/${
             this.i18n.isEn
-              ? 'en-us/index.html#SAP_HANA_0013.html'
-              : 'zh-cn/index.html#SAP_HANA_00013.html'
+              ? 'en-us/index.html#en-us_topic_0000002200155025.html'
+              : 'zh-cn/index.html#SAP_HANA_0012.html'
           }`;
     this.appUtilsService.openSpecialHelp(url);
   }
@@ -664,12 +664,17 @@ export class InstanceRegisterComponent implements OnInit {
             supportType: get(result, `${item}.resource.auth.supportType`)
           });
         });
+        // gbase8a只有sharding一种模式，hana是另外三种模式
         if (
           this.formGroup.get('databaseType').value ===
           DataMap.generalDbClusterType.sharding.value
         ) {
           scriptArray = filter(scriptArray, item => {
             return item.value !== 'saphana';
+          });
+        } else {
+          scriptArray = filter(scriptArray, item => {
+            return item.value !== 'gbase8a';
           });
         }
         // E6000不支持Gbase8a

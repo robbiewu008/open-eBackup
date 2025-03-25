@@ -1,0 +1,74 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="应用一致性备份的生产环境Pod配置（容器应用为MySQL）">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00102.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="kubernetes_CSI_00109">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>应用一致性备份的生产环境Pod配置（容器应用为MySQL）</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="kubernetes_CSI_00109"></a><a name="kubernetes_CSI_00109"></a>
+
+<h1 class="topictitle1">应用一致性备份的生产环境Pod配置（容器应用为MySQL）</h1>
+<div><p>为PVC创建快照执行的前置/后置命令有多条时，可将多条预执行命令写入同一个脚本中，并将脚本放置于容器的持久化目录中，通过运行脚本执行多条命令，以简化输入的命令。</p>
+<p>以下分别为前置和后置命令的脚本内容示例，password请按实际用户密码填写（后续操作将以前置脚本位置“<em>/opt/backup/dataprotect</em>_<em>mysql</em>_<em>consistency</em>_<em>pre</em>_<em>script.sh</em>”和后置脚本位置“<em>/opt/backup/dataprotect</em>_<em>mysql</em>_<em>consistency</em>_<em>post</em>_<em>script.sh</em>”为例说明，使用者请根据实际脚本位置进行内容修改）：</p>
+<pre class="screen">#前置命令脚本
+mysql -u root -p <em><strong>password </strong></em>-e "flush tables with read lock;system echo "200";system sleep 300;"</pre>
+<pre class="screen">#后置命令脚本
+pid=$(ps -ef | grep "/bin/sh -c<em> /opt/backup/dataprotect</em><em>_</em><em>mysql</em><em>_</em><em>consistency</em><em>_</em><em>pre</em><em>_</em><em>script.sh"</em> | grep -v grep | awk '{print $2}')  
+[ ! $pid ] &amp;&amp; echo "pid is null" &amp;&amp; exit
+subtree=$(pstree -p $pid) subtree=$(pstree -p $pid)  
+right_str=${subtree##*\(}  
+sleep_pid=${right_str%*)}  
+kill -9 $sleep_pid
+system echo "200"</pre>
+<div class="section"><h4 class="sectiontitle">配置步骤</h4><ol><li><span>将脚本上传至容器的任意持久化目录中并在容器界面执行以下命令为脚本文件添加权限。</span><p><pre class="screen">chmod +x <em>/opt/backup/dataprotect_mysql_consistency_pre_script.sh</em>
+chmod +x <em>/opt/backup/dataprotect_mysql_consistency_post_script.sh</em></pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>脚本内容也可在容器目录使用<strong>echo</strong>命令覆盖或追加写入。示例如下：</p>
+<pre class="screen">echo "mysql -uroot -p{password} -e "flush tables with read lock;system sleep 300;"" &gt; <em>/opt/backup/dataprotect</em>_<em>mysql</em>_<em>consistency</em>_<em>pre</em>_<em>script.sh</em></pre>
+</div></div>
+</p></li><li><span>参见<a href="kubernetes_CSI_00108.html">应用一致性备份的生产环境Pod配置（通用）</a>添加Pod标签和注解，添加注解时输入的前置和后置命令值示例如下。</span><p><pre class="screen">#前置命令
+kubectl annotate pod -l <strong><em>label=value </em></strong>-n <strong><em>namespace</em></strong> pre.hook.dataprotect.backup.io/command='["/bin/sh", "-c","<em>/opt/backup/dataprotect_mysql_consistency_pre_script.sh</em>"]'
+#后置命令
+kubectl annotate pod -l <strong><em>label=value</em></strong><em> </em>-n <strong><em>namespace</em></strong> post.hook.dataprotect.backup.io/command='["/bin/sh", "-c","<em>/opt/backup/dataprotect_mysql_consistency_post_script.sh</em>"]'</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>为确保前置和后置命令能正常执行，命令中的脚本位置需要和脚本实际的上传位置保持一致。</p>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="kubernetes_CSI_00102.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

@@ -130,7 +130,10 @@
     <lv-form-column *ngFor="let column of formItems" lvWidth="50%">
       <ng-container *ngFor="let item of column">
         <lv-form-item *ngIf="!item.hidden">
-          <lv-form-label>{{ item.label }}</lv-form-label>
+          <lv-form-label>{{ item.label }}
+            <i lv-icon="aui-icon-help" *ngIf="getWormTipsLabel(item.key)" lv-tooltip="{{getWormTipsLabel(item.key)}}" lvTooltipTheme="light"
+               class="configform-constraint" lvColorState='true'></i>
+          </lv-form-label>
           <ng-container [ngSwitch]="item.key">
             <ng-container *ngSwitchCase="'status'">
               <lv-form-control>

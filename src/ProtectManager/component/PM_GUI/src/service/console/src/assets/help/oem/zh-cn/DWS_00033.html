@@ -17,213 +17,33 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="步骤8：（可选）创建反向复制/级联复制SLA">
+  <meta name="DC.Title" content="复制">
   <meta name="product" content="">
-  <meta name="DC.Relation" scheme="URI" content="DWS_00024.html">
+  <meta name="DC.Relation" scheme="URI" content="product_documentation_000029.html">
+  <meta name="DC.Relation" scheme="URI" content="DWS_00037.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="DWS_00033">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>步骤8：（可选）创建反向复制/级联复制SLA</title>
+  <title>复制</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="DWS_00033"></a><a name="DWS_00033"></a>
-  <h1 class="topictitle1">步骤8：（可选）创建反向复制/级联复制SLA</h1>
+  <h1 class="topictitle1">复制</h1>
+  <div></div>
   <div>
-   <p>如果您需要配置反向复制（将复制副本复制回源端）或级联复制（将目标端的复制副本复制到其他集群），请参考本节配置复制策略的SLA。否则请忽略。</p>
-   <div class="section">
-    <h4 class="sectiontitle">操作步骤</h4>
-    <ol>
-     <li><span>登录复制副本所在集群的管理界面。</span><p></p><p id="DWS_00033__zh-cn_topic_0000001839223157_p16156520184414">复制副本仅支持在目标集群查看、操作。</p> <p></p></li>
-     <li><span>选择<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839142377_uicontrol8111821122820">“<span id="DWS_00033__zh-cn_topic_0000001839142377_text71111921162814">保护</span> &gt; 保护策略 &gt; SLA”</span>。</span></li>
-     <li><span>单击<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839223157_uicontrol8280111313316">“<span id="DWS_00033__zh-cn_topic_0000001839223157_text649194517339">创建</span>”</span>。</span></li>
-     <li><span>自定义SLA的名称。</span></li>
-     <li><span>选择需要创建SLA的应用类型。</span><p></p>
-      <ol type="a" id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001140003755_ol71011061385">
-       <li id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001140003755_li16667553151916">单击<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001140003755_uicontrol16364345183319">“<span id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001140003755_text1149753619468">应用</span>”</span>图标。</li>
-       <li id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001140003755_li874192611325">选择<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001140003755_uicontrol111981759171912">“<span id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001140003755_text36181344182016">指定应用</span> &gt; 副本 &gt; <span id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001140003755_text884542312198">复制副本</span>”</span>。</li>
-       <li id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001140003755_li158271347172012">单击<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001140003755_uicontrol95561152115">“确定”</span>。</li>
-      </ol> <p></p></li>
-     <li><span>单击<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839223157_uicontrol111335151290">“<span id="DWS_00033__zh-cn_topic_0000001839223157_text1466823185112">复制策略</span>”</span>图标。</span></li>
-     <li><span>配置复制策略信息。</span><p></p><p>单击页面右侧的<span class="uicontrol">“<span>添加</span>”</span>，可创建多个复制策略，最多允许创建4个。</p> <p>相关参数说明如<a href="#DWS_00033__zh-cn_topic_0000001607691472_zh-cn_topic_0000001092505481_table201991821175612">表1</a>。</p>
-      <div class="tablenoborder">
-       <a name="DWS_00033__zh-cn_topic_0000001607691472_zh-cn_topic_0000001092505481_table201991821175612"></a><a name="zh-cn_topic_0000001607691472_zh-cn_topic_0000001092505481_table201991821175612"></a>
-       <table cellpadding="4" cellspacing="0" summary="" id="DWS_00033__zh-cn_topic_0000001607691472_zh-cn_topic_0000001092505481_table201991821175612" frame="border" border="1" rules="all">
-        <caption>
-         <b>表1 </b>复制策略参数说明
-        </caption>
-        <colgroup>
-         <col style="width:20.26%">
-         <col style="width:79.74%">
-        </colgroup>
-        <thead align="left">
-         <tr>
-          <th align="left" class="cellrowborder" valign="top" width="20.26%" id="mcps1.3.2.2.7.2.3.2.3.1.1"><p>参数</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="79.74%" id="mcps1.3.2.2.7.2.3.2.3.1.2"><p>说明</p></th>
-         </tr>
-        </thead>
-        <tbody>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><span>名称</span></p></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>用户自定义复制策略名称。</p></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><span>复制模式</span></p></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>仅支持跨域复制，即集群之间进行复制。</p></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><span>复制目标集群</span></p></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>复制到的目标集群。</p> <p>选择已添加的目标集群，或单击<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001092505481_uicontrol28664506013">“<span id="DWS_00033__zh-cn_topic_0000001839223157_text193651191506">添加</span>”</span>，添加新的集群。</p>
-           <ul>
-            <li id="DWS_00033__zh-cn_topic_0000001839223157_li3998812219">当<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839223157_uicontrol641561815216">“复制目标集群”</span>为复制副本的源端集群时，即为反向复制。</li>
-            <li id="DWS_00033__zh-cn_topic_0000001839223157_li1419217379216">当<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839223157_uicontrol149321939112110">“复制目标集群”</span>为其他集群时，即为级联复制。</li>
-           </ul></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p>复制目标端用户</p></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>选择复制目标端的系统管理员或数据保护管理员用户。</p></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p>密码</p></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>填写复制目标端的系统管理员或数据保护管理员用户密码。输入密码后，单击<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_uicontrol171601242183913">“认证”</span>，认证密码的正确性。</p></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p>指定目标位置</p></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 ">
-           <div class="p">
-            可选择复制的目标位置为备份存储单元或备份存储单元组。当选择备份存储单元组，对备份副本进行首次复制时，系统将从备份存储单元组中选择其中一个备份存储单元，作为复制的目标位置，后续复制时优先选择首次复制使用的备份存储单元。
-            <div class="note" id="DWS_00033__zh-cn_topic_0000001839143213_note119618230211">
-             <span class="notetitle"> 说明： </span>
-             <div class="notebody">
-              <ul id="DWS_00033__zh-cn_topic_0000001839143213_ul19974205194214">
-               <li id="DWS_00033__zh-cn_topic_0000001839143213_li117129544426">对于1.5.0版本，复制模式为<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839143213_uicontrol242715110431">“域内”</span>时，才支持设置该参数。</li>
-               <li id="DWS_00033__zh-cn_topic_0000001839143213_li199748517429">当备份策略的目标位置指定备份存储单元时，复制策略的目标位置不能为同一备份存储单元。</li>
-              </ul>
-             </div>
-            </div>
-           </div></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><span>频率</span></p></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>每xx分钟/小时/天/周执行一次复制。</p></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p>复制规则&amp;保留规则</p></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>选择需要复制的复制副本并设置副本的保留时长。</p> <p>一旦超过设定的保留时间，系统将自动删除过期的副本。副本保留时长必须大于复制频率。</p>
-           <ul>
-            <li id="DWS_00033__zh-cn_topic_0000001839223157_li14284119318"><span id="DWS_00033__zh-cn_topic_0000001839223157_text542916113319">复制所有副本</span>：指定复制副本开始复制的时间并设置副本保留时长。</li>
-            <li id="DWS_00033__zh-cn_topic_0000001839223157_li169914211296"><span id="DWS_00033__zh-cn_topic_0000001839223157_text78253174580">复制指定日期的副本</span>：指定日期并设置副本保留时长，仅支持复制指定日期的全量和永久增量（合成全量）副本。以下选项同时可选择多项：
-             <ul id="DWS_00033__zh-cn_topic_0000001839223157_ul15411165794010">
-              <li id="DWS_00033__zh-cn_topic_0000001839223157_li241110576407">选择每年的x月产生的全量复制副本进行复制，复制副本保留x年（支持保留1~70年）。</li>
-              <li id="DWS_00033__zh-cn_topic_0000001839223157_li156079239417">选择每月的第一个或最后一个全量复制副本进行复制，复制副本保留x个月（支持保留1~840个月）。</li>
-              <li id="DWS_00033__zh-cn_topic_0000001839223157_li7824743184118">选择每周的第x天产生的全量复制副本进行复制，复制副本保留x个周（支持保留1~3650个周）。</li>
-             </ul>
-             <div class="note" id="DWS_00033__zh-cn_topic_0000001839223157_note13295163217817">
-              <span class="notetitle"> 说明： </span>
-              <div class="notebody">
-               <ul id="DWS_00033__zh-cn_topic_0000001839223157_ul143741051510">
-                <li id="DWS_00033__zh-cn_topic_0000001839223157_li23741951352">对于不支持永久增量（合成全量）备份的应用，仅支持复制指定日期的全量复制副本。</li>
-                <li id="DWS_00033__zh-cn_topic_0000001839223157_li637916121662">如果同时选择了多个选项，复制副本的时间范围为多个选项的并集，复制副本的保留时长为多个选项中保留时间最久的保留时长。</li>
-               </ul>
-              </div>
-             </div></li>
-           </ul></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><span>首次执行时间</span></p></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>选择已创建的限速策略，创建限速策略的具体操作请参考<a href="DWS_00017.html">步骤4：创建限速策略</a>章节。</p>
-           <div class="p">
-            如果<span id="DWS_00033__zh-cn_topic_0000001839223157_text10459152095213">首次执行时间</span>晚于当前时间，则按照<span id="DWS_00033__zh-cn_topic_0000001839223157_text945932065215">首次执行时间</span>开始复制；如果<span id="DWS_00033__zh-cn_topic_0000001839223157_text3459142095218">首次执行时间</span>早于当前时间，则等待下次复制周期到达后进行复制。
-            <div class="note" id="DWS_00033__zh-cn_topic_0000001839223157_note1324519263290">
-             <span class="notetitle"> 说明： </span>
-             <div class="notebody">
-              <p id="DWS_00033__zh-cn_topic_0000001839223157_p1524552632911">请确保代理主机、本地集群以及目标集群的设备时间一致。</p>
-             </div>
-            </div>
-           </div></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><span>限速策略</span></p></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>复制任务平均每秒最大传输的数据量。</p> <p>选择已创建的限速策略，创建限速策略的具体操作请参考<a href="DWS_00017.html">步骤4：创建限速策略</a>章节。</p></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">
-           <div class="p">
-            链路重删
-            <div class="note" id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_note43214486811">
-             <span class="notetitle"> 说明： </span>
-             <div class="notebody">
-              <p id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_p9322048780">对于1.5.0版本，该参数名为“<span id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_text16858755171112">数据重删</span>”。</p>
-             </div>
-            </div>
-           </div></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 ">
-           <div class="p">
-            开启后，远程复制过程中系统会对副本数据进行重删以提升复制效率。建议开启数据重删功能。
-            <div class="note" id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_note19674741123810">
-             <span class="notetitle"> 说明： </span>
-             <div class="notebody">
-              <ul id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_ul1096989193510">
-               <li id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_li18970109163510">请确保备份策略已打开目标端重删开关，否则将导致数据重删功能不生效。</li>
-              </ul>
-             </div>
-            </div>
-           </div></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">
-           <div class="p">
-            链路压缩
-            <div class="note" id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_note98175196112">
-             <span class="notetitle"> 说明： </span>
-             <div class="notebody">
-              <p id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_p188181119191119">对于1.5.0版本，该参数名为“<span id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_text7585914124">数据压缩</span>”。</p>
-             </div>
-            </div>
-           </div></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>开启后，远程复制过程中系统会对副本数据进行压缩以提升复制效率。建议开启数据压缩功能。</p></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">
-           <div class="p">
-            <span id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_text19670113775616">WORM设置</span>
-            <div class="note" id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_note9935149115617">
-             <span class="notetitle"> 说明： </span>
-             <div class="notebody">
-              <p id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001839143213_zh-cn_topic_0000001792503806_p18759163818421">仅1.5.0版本存在此参数。</p>
-             </div>
-            </div>
-           </div></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>开启后，生成的副本为WORM副本。WORM副本不支持删除和缩短保留时间。</p></td>
-         </tr>
-         <tr>
-          <td class="cellrowborder" valign="top" width="20.26%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p><span>任务失败告警</span></p></td>
-          <td class="cellrowborder" valign="top" width="79.74%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p>开启后，任务执行失败后自动发送告警，下次任务成功后告警自动清除。</p></td>
-         </tr>
-        </tbody>
-       </table>
-      </div> <p></p></li>
-     <li><span>单击<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839223157_zh-cn_topic_0000001092505481_uicontrol13919162932">“确定”</span>。</span></li>
-     <li><span>关联资源到创建的SLA，对复制副本进行反向复制或级联复制。</span><p></p>
-      <ol type="a">
-       <li>选择<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839223157_uicontrol137744685812">“<span id="DWS_00033__zh-cn_topic_0000001839223157_text9893546125720">数据利用</span> &gt; <span id="DWS_00033__zh-cn_topic_0000001839223157_text74373665812">副本数据</span>”</span>，选择相应的应用类型。</li>
-       <li>查找到需要进行反向复制或级联复制的资源，在资源所在行单击<span class="uicontrol" id="DWS_00033__zh-cn_topic_0000001839223157_uicontrol317419517404">“更多 &gt; 保护”</span>。</li>
-       <li>选择已创建的SLA。</li>
-       <li>单击<span class="uicontrol">“确定”</span>。</li>
-      </ol> <p></p></li>
-    </ol>
-   </div>
-  </div>
-  <div>
+   <ul class="ullinks">
+    <li class="ulchildlink"><strong><a href="DWS_00037.html">复制GaussDB(DWS)备份副本</a></strong><br></li>
+   </ul>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="DWS_00024.html">复制GaussDB(DWS)备份副本</a>
+     <strong>父主题：</strong> <a href="product_documentation_000029.html">GaussDB(DWS)数据保护</a>
     </div>
    </div>
   </div>

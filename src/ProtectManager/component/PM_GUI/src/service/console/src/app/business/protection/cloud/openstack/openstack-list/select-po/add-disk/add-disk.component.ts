@@ -12,14 +12,22 @@
 */
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ModalRef } from '@iux/live';
-import { CommonConsts, DataMap, DataMapService, I18NService } from 'app/shared';
+import {
+  CommonConsts,
+  DataMap,
+  DataMapService,
+  I18NService,
+  isOpenstackSystemDisk
+} from 'app/shared';
 import {
   ProTableComponent,
   TableCols,
   TableConfig
 } from 'app/shared/components/pro-table';
 import {
+  assign,
   cloneDeep,
+  each,
   filter,
   get,
   includes,
@@ -69,7 +77,7 @@ export class AddDiskComponent implements OnInit {
   initConfig() {
     const cols: TableCols[] = [
       {
-        key: 'name',
+        key: 'nameId',
         name: this.i18n.get('common_name_label'),
         filter: {
           type: 'search',
@@ -77,7 +85,7 @@ export class AddDiskComponent implements OnInit {
         }
       },
       {
-        key: 'bootable',
+        key: 'diskType',
         name: this.i18n.get('common_type_label'),
         filter: {
           type: 'select',
@@ -164,6 +172,13 @@ export class AddDiskComponent implements OnInit {
 
   initData() {
     const allDisk = JSON.parse(get(this.data, ['extendInfo', 'volInfo']));
+    // 磁盘名称可能没有，用uuid区分
+    each(allDisk, item => {
+      assign(item, {
+        nameId: `${item.name || '--'}(${item.id})`,
+        diskType: isOpenstackSystemDisk(item.device, item.bootable)
+      });
+    });
     setTimeout(() => {
       this.totalTableData = {
         data: cloneDeep(allDisk),

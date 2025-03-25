@@ -1,0 +1,233 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="恢复命名空间/数据集">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00080.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="kubernetes_CSI_00083">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>恢复命名空间/数据集</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="kubernetes_CSI_00083"></a><a name="kubernetes_CSI_00083"></a>
+  <h1 class="topictitle1">恢复命名空间/数据集</h1>
+  <div>
+   <p>当需要对已备份的命名空间或数据集恢复时，可以参考本节恢复命名空间或数据集至原位置或新位置。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <p><span>本产品</span>支持使用备份副本、复制副本（不支持恢复至原位置）进行数据恢复，支持恢复至原位置或新位置。</p>
+    <ul>
+     <li>恢复至原位置<p>支持恢复到以下原位置：</p>
+      <ul>
+       <li>将命名空间的PVC副本中的数据恢复到PVC副本所在命名空间中。</li>
+       <li>将数据集的PVC副本中的数据恢复到PVC副本所在数据集中。</li>
+      </ul></li>
+     <li>恢复至新位置<p>支持恢复到以下新位置：</p>
+      <ul>
+       <li>将命名空间的PVC副本中的数据恢复到目标集群的命名空间中。</li>
+       <li>将数据集的PVC副本中的数据恢复到目标集群的数据集中。</li>
+      </ul></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>将已备份的资源副本恢复到其他Kubernetes集群的资源中时，需要先将其他Kubernetes集群注册到<span>本产品</span>中。注册操作请参见<a href="kubernetes_CSI_00027.html">步骤3：注册集群</a>。</li>
+     <li>恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</li>
+     <li>对于OpenShift，mysql执行新位置恢复前，需要在集群节点执行以下命令将工作负载中的服务账户添加到anyuid。<pre class="screen">oc adm policy add-scc-to-user anyuid system:serviceaccount:<em>命名空间名</em>:<em>服务账户名</em></pre></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p>执行跨Pod恢复操作时，如果原Pod业务正常，执行跨Pod恢复操作将导致目标Pod业务无法正常启动。建议在原Pod故障场景下，执行跨Pod恢复。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li id="kubernetes_CSI_00083__li0198134611381"><span>选择<span class="uicontrol" id="kubernetes_CSI_00083__kubernetes_csi_00079_zh-cn_topic_0000002199964685_uicontrol17790342165415">“<span id="kubernetes_CSI_00083__kubernetes_csi_00079_zh-cn_topic_0000002199964685_text679084235415">数据利用</span> &gt; <span id="kubernetes_CSI_00083__kubernetes_csi_00079_zh-cn_topic_0000002199964685_text14790942175410">副本数据</span> &gt; <span id="kubernetes_CSI_00083__kubernetes_csi_00079_zh-cn_topic_0000002199964685_text42195499217">容器</span> &gt; <span id="kubernetes_CSI_00083__kubernetes_csi_00079_zh-cn_topic_0000002199964685_text729816765515">Kubernetes CSI</span>”</span>。</span></li>
+     <li><span>支持以资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p>在“<span>资源</span>”页签，根据表名称查找到需要恢复的命名空间或数据集，并单击命名空间或数据集名称（以下步骤以命名空间为例执行恢复操作）。</p> <p></p></li>
+     <li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页面，依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000002164590434.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>找到要恢复的副本，单击其右侧的“<span>更多</span> &gt; <span>恢复</span>”。</span></li>
+     <li><span>恢复到原位置或新位置。</span><p></p>
+      <ul>
+       <li>恢复到原位置<p>相关参数说明如<a href="#kubernetes_CSI_00083__table52750616234">表1</a>所示。</p>
+        <div class="tablenoborder">
+         <a name="kubernetes_CSI_00083__table52750616234"></a><a name="table52750616234"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="kubernetes_CSI_00083__table52750616234" frame="border" border="1" rules="all">
+          <caption>
+           <b>表1 </b>恢复到原位置参数说明
+          </caption>
+          <colgroup>
+           <col style="width:29.43%">
+           <col style="width:70.57%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="29.43%" id="mcps1.3.5.2.5.2.1.1.2.2.3.1.1"><p>参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="70.57%" id="mcps1.3.5.2.5.2.1.1.2.2.3.1.2"><p>说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="29.43%" headers="mcps1.3.5.2.5.2.1.1.2.2.3.1.1 "><p><span>覆盖规则</span></p></td>
+            <td class="cellrowborder" valign="top" width="70.57%" headers="mcps1.3.5.2.5.2.1.1.2.2.3.1.2 "><p>当副本和目标位置的PVC存在相同文件时，需要选择替换或忽略已存在的文件。仅支持对PVC数据设置覆盖规则。</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>恢复到新位置
+        <div class="p">
+         相关参数说明如<a href="#kubernetes_CSI_00083__table15668141795417">表2</a>所示。 
+         <div class="tablenoborder">
+          <a name="kubernetes_CSI_00083__table15668141795417"></a><a name="table15668141795417"></a>
+          <table cellpadding="4" cellspacing="0" summary="" id="kubernetes_CSI_00083__table15668141795417" frame="border" border="1" rules="all">
+           <caption>
+            <b>表2 </b>恢复到新位置参数说明
+           </caption>
+           <colgroup>
+            <col style="width:29.87%">
+            <col style="width:70.13000000000001%">
+           </colgroup>
+           <thead align="left">
+            <tr>
+             <th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.1"><p>参数</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.2"><p>说明</p></th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.1 "><p><span>目标集群</span></p></td>
+             <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.2 "><p>选择备份副本恢复到的集群。</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.1 "><p><span>命名空间</span></p></td>
+             <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.2 "><p>选择备份副本恢复到的命名空间。</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.1 "><p><span>覆盖规则</span></p></td>
+             <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.2 "><p>当副本和目标位置的PVC存在相同文件时，需要选择替换或忽略已存在的文件。仅支持对PVC数据设置覆盖规则。</p></td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div></li>
+      </ul> <p></p></li>
+     <li><span>（可选）在“<span>高级配置</span>”中，可打开“<span>修改环境变量</span>”，通过配置环境变量相关参数，使恢复目标位置的环境变量配置与待恢复副本中的环境变量配置相同。修改相关参数如<a href="#kubernetes_CSI_00083__table1612824872219">表3</a>所示。</span><p></p>
+      <div class="tablenoborder">
+       <a name="kubernetes_CSI_00083__table1612824872219"></a><a name="table1612824872219"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="kubernetes_CSI_00083__table1612824872219" frame="border" border="1" rules="all">
+        <caption>
+         <b>表3 </b>环境变量修改的参数说明
+        </caption>
+        <colgroup>
+         <col style="width:50%">
+         <col style="width:50%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.5.2.6.2.1.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.5.2.6.2.1.2.3.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.1.2.3.1.1 "><p>工作负载类型</p></td>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.1.2.3.1.2 "><p>恢复目标位置环境变量中需要配置的工作负载类型，有以下工作类型：</p>
+           <ul>
+            <li><span style="color:#282B33;">DaemonSet</span>：可以确保全部（或者某些）节点上运行一个Pod副本，当有节点加入集群时，也会为节点新增Pod。</li>
+            <li><span style="color:#282B33;">Deployment：指在运行中始终不保存任何数据或状态的工作负载。</span></li>
+            <li><span style="color:#282B33;">ReplicaSet：通常用来保证给定数量的、完全相同的Pod的可用性。</span></li>
+            <li><span style="color:#282B33;">StatefulSet</span>：指在运行过程中会保存数据或状态的工作负载。</li>
+            <li>DeploymentConfig：是OpenShift平台特有的资源类型，其功能与Kubernetes的Deployment类似。</li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.1.2.3.1.1 "><p>工作负载名称</p></td>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.1.2.3.1.2 "><p>目标位置环境变量中需要配置的工作负载名，对应工作负载yaml文件中“metadata”字段的“name”属性值。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.1.2.3.1.1 "><p>容器名称</p></td>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.1.2.3.1.2 "><p>目标位置环境变量中需要配置的容器名，对应工作负载yaml文件中“spec &gt; template &gt; spec”下的“containers”字段的“name”属性值。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.1.2.3.1.1 "><p>环境变量</p></td>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.1.2.3.1.2 "><p>目标位置需要配置的环境变量信息，可添加多个环境变量。输入信息对应工作负载yaml文件中“spec &gt; template &gt; spec &gt; containers”下的“env”字段的信息，输入的“key”和“value”分别对应该字段的“name”和“value”的值。</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>（可选）对于1.6.0及以上版本，可打开<span class="uicontrol">“修改存储类参数”</span>选项。当需要将副本中的存储类恢复到新位置时，可通过此选项配置待恢复的存储类参数。配置参数如<a href="#kubernetes_CSI_00083__table14504479371">表4</a>所示。</span><p></p>
+      <div class="tablenoborder">
+       <a name="kubernetes_CSI_00083__table14504479371"></a><a name="table14504479371"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="kubernetes_CSI_00083__table14504479371" frame="border" border="1" rules="all">
+        <caption>
+         <b>表4 </b>修改存储类参数的相关参数说明
+        </caption>
+        <colgroup>
+         <col style="width:12.44%">
+         <col style="width:68.13%">
+         <col style="width:19.42%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="12.44124412441244%" id="mcps1.3.5.2.7.2.1.2.4.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="68.13681368136814%" id="mcps1.3.5.2.7.2.1.2.4.1.2"><p>说明</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="19.421942194219426%" id="mcps1.3.5.2.7.2.1.2.4.1.3"><p>示例值</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="12.44124412441244%" headers="mcps1.3.5.2.7.2.1.2.4.1.1 "><p>存储类名称</p></td>
+          <td class="cellrowborder" valign="top" width="68.13681368136814%" headers="mcps1.3.5.2.7.2.1.2.4.1.2 "><p>原Kubernetes集群的存储类名称。</p></td>
+          <td class="cellrowborder" valign="top" width="19.421942194219426%" headers="mcps1.3.5.2.7.2.1.2.4.1.3 "><p>sc-nas</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="12.44124412441244%" headers="mcps1.3.5.2.7.2.1.2.4.1.1 "><p>参数</p></td>
+          <td class="cellrowborder" valign="top" width="68.13681368136814%" headers="mcps1.3.5.2.7.2.1.2.4.1.2 "><p>存储类对应的参数值，可单击 “添加”补充多个参数属性。通过命令行获取参数信息的方法如下：</p>
+           <ul>
+            <li>对于FusionCompute或CCE，在集群后台界面执行<strong>kubectl get sc</strong>可查看存储类的名称，再次执行<strong>kubectl get sc </strong><em>存储类名</em><strong> -oyaml</strong>命令可查看存储类的yaml信息，其中 “parameters”字段的内容即为参数的值。</li>
+            <li>对于OpenShift，在集群后台界面执行<strong>oc get sc</strong>可查看存储类的名称，再次执行<strong>oc get sc </strong><em>存储类名</em><strong> -oyaml</strong>命令可查看存储类的yaml信息，其中 “parameters”字段的内容即为参数的值。</li>
+           </ul></td>
+          <td class="cellrowborder" valign="top" width="19.421942194219426%" headers="mcps1.3.5.2.7.2.1.2.4.1.3 "><p>key=backend</p> <p>value=storage-1</p> <p></p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+     <li><span>确认高危提示信息后，单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="kubernetes_CSI_00080.html">恢复</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

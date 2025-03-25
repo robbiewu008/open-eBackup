@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="Open_Stack_00010.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -40,8 +40,9 @@
 <h1 class="topictitle1">步骤10：（可选）修改Project的快照配额</h1>
 <div><p>OpenStack云平台中每个Project的快照配额默认是10个。当同一个Project下同时备份的云磁盘数量超过10个时，备份任务会失败。可参考本节在OpenStack云平台修改Project的快照配额。</p>
 <div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>使用PuTTY，以<strong>fsp</strong>账号通过管理IP地址登录任一OpenStack节点。</span></li><li><span>执行以下命令切换到root账号。</span><p><pre class="screen">su - root</pre>
-</p></li><li><span>执行以下命令导入环境变量，选择“openstack environment variable (keystone v3)”，并输入密码。</span><p><pre class="screen">source set_env </pre>
-</p></li></ol><ol start="4"><li><span>执行以下命令查询需要修改快照配额的Project ID。</span><p><pre class="screen">openstack project list</pre>
+</p></li><li><span>执行<strong>source set_env</strong>命令导入环境变量，选择“openstack environment variable (keystone v3)”，并输入cloud_admin密码（密码从环境管理员处获取）。</span></li></ol><ol start="4"><li><span>执行以下命令查询需要修改快照配额的Project ID。</span><p><pre class="screen">openstack project list</pre>
+<p>回显示例如下：</p>
+<p><span><img src="zh-cn_image_0000002205261172.png"></span></p>
 </p></li><li><span>执行以下命令查询该Project当前的快照配额。</span><p><pre class="screen">cinder quota-usage <em>ProjectID</em></pre>
 <div class="p">如：<pre class="screen">42F8515F-070B-E711-BE89-C0BFC0BA9506:<font style="font-size:8pt" Face="Courier New" >~</font> # cinder quota-usage 9c3792495cfd4811a0055e8c21601e9f
 +-------------------------+--------+----------+-------+-----------+

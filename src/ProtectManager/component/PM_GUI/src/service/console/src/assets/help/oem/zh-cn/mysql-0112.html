@@ -1,0 +1,128 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="备份失败，上报“Percona XtraBackup不支持INSTANT ADD/DROP COLUMNS特性”报错">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="mysql-0105.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="mysql-0112">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>备份失败，上报“Percona XtraBackup不支持INSTANT ADD/DROP COLUMNS特性”报错</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="mysql-0112"></a><a name="mysql-0112"></a>
+  <h1 class="topictitle1">备份失败，上报“Percona XtraBackup不支持INSTANT ADD/DROP COLUMNS特性”报错</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>执行数据库备份任务失败，错误原因包含“Percona XtraBackup不支持INSTANT ADD/DROP COLUMNS特性”。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>Percona XtraBackup不支持MySQL8.0.29-8.0.31版本的INSTANT ADD/DROP COLUMNS特性。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>在执行优化操作前，建议备份相关数据库，以防止意外情况导致的数据丢失。</li>
+     <li>执行脚本可能会锁定表，影响正在进行的读写操作。建议在低峰时段执行此操作，或根据业务需求进行分批优化。</li>
+     <li>优化表可能需要额外的存储空间。在优化过程中，确保服务器有足够的磁盘空间。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li><span>以root用户登录客户端所在主机。</span></li>
+     <li><span>执行以下命令，创建optimize_innodb_tables.sh脚本文件。</span><p></p><pre class="screen">touch optimize_innodb_tables.sh</pre> <p></p></li>
+     <li><span>执行以下命令，编辑optimize_innodb_tables.sh脚本文件。</span><p></p><pre class="screen">vi optimize_innodb_tables.sh</pre> <p></p></li>
+     <li><span>将以下内容粘贴到optimize_innodb_tables.sh脚本文件中。</span><p></p><pre class="screen">#!/bin/bash
+
+# 数据库配置
+DB_HOST="<em>xxx.x.x.x</em>"               # MySQL 主机地址，<span style="color:#24292E;">通常是本地</span><span style="color:#24292E;">或远程服务器的 IP 地址。</span>
+DB_USER="<em>用户名</em>"                    # MySQL 用户名
+DB_PASS="<em>密码</em>"                     # MySQL 密码
+DB_NAME="<em>mysql</em>"                   # 要查询的数据库名称
+
+# 查询所有具有未处理行版本的 InnoDB 表
+result=$(mysql -h $DB_HOST -u $DB_USER -p$DB_PASS $DB_NAME -e \
+    'SELECT NAME FROM INFORMATION_SCHEMA.INNODB_TABLES WHERE TOTAL_ROW_VERSIONS &gt; 0;' \
+    -s --skip-column-names)
+
+# 将查询结果写入临时文件
+echo "$result" &gt;&gt; tmp_result.txt
+
+# 删除以 "mysql:" 开头的行（可能是默认数据库名称的行）
+sed -i '/^mysql:/d' tmp_result.txt
+
+# 逐行读取临时文件中的每个表名
+while IFS= read -r line; do
+  if [ -n "$line" ]; then
+    # 分割 schema 和 table 名称
+    schema=$(echo "$line" | awk -F "/" '{print $1}')  # 提取 schema 名称
+    table=$(echo "$line" | awk -F "/" '{print $2}')   # 提取 table 名称
+
+    # 构建 OPTIMIZE TABLE 语句
+    optimize_table_sql="optimize table \`$schema\`.\`$table\`"
+
+    # 输出执行的 SQL 语句
+    echo "${optimize_table_sql}"
+
+    # 执行 OPTIMIZE TABLE 语句
+    result=$(mysql -h $DB_HOST -u $DB_USER -p$DB_PASS $DB_NAME -e "${optimize_table_sql}")
+
+    # 输出执行结果
+    echo "execute result $result"
+  fi
+done &lt; "tmp_result.txt"
+
+# 删除临时文件
+rm -rf tmp_result.txt</pre> <p></p></li>
+     <li><span>执行以下命令运行脚本。</span><p></p><pre class="screen">./optimize_innodb_tables.sh</pre> <p>回显示例如下后可成功执行备份：</p> <pre class="screen">optimize table `sales_db`.`customers` 
+execute result Optimize table `sales_db`.`customers` operation completed
+optimize table `sales_db`.`orders` 
+execute result Optimize table `sales_db`.`orders` operation completed 
+optimize table `sales_db`.`products` 
+execute result Optimize table `sales_db`.`products` operation completed</pre> <p></p></li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">建议与总结</h4>
+    <p>无。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">参考信息</h4>
+    <p>无。</p>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="mysql-0105.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

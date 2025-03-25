@@ -17,107 +17,81 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="步骤6：添加复制集群">
+  <meta name="DC.Title" content="步骤4：下载并导入证书">
   <meta name="product" content="">
-  <meta name="DC.Relation" scheme="URI" content="cnware_00024.html">
+  <meta name="DC.Relation" scheme="URI" content="cnware_00027.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
-  <meta name="documenttype" content="usermanual">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="cnware_00031">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>步骤6：添加复制集群</title>
+  <title>步骤4：下载并导入证书</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="cnware_00031"></a><a name="cnware_00031"></a>
-  <h1 class="topictitle1">步骤6：添加复制集群</h1>
+  <h1 class="topictitle1">步骤4：下载并导入证书</h1>
   <div>
-   <p id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_p173011029113111">在本端集群侧添加目标集群，建立主端设备和从端设备之间的逻辑连接，用于设备之间的数据传输。</p>
-   <div class="section" id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_section5343122851716">
-    <h4 class="sectiontitle">前提条件</h4>
-    <p id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_p27481329181712">已准备用于复制的目标集群。</p>
+   <p id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p3314585811">使用复制功能前，请先在复制的主端集群导入从端集群的CA证书，否则系统将无法验证其所访问设备的信息，安全性存在风险。</p>
+   <div class="section" id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section17774134611364">
+    <a name="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section17774134611364"></a><a name="foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section17774134611364"></a>
+    <h4 class="sectiontitle">在从端集群下载证书</h4>
+    <ol id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_zh-cn_topic_0000001102065552_ol11979102814374">
+     <li id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_zh-cn_topic_0000001102065552_li1597932883716"><span>登录复制从端集群的<span id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_text20981175294311">本产品</span>管理界面。</span></li>
+     <li id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_zh-cn_topic_0000001102065552_li10897959114110"><span>选择<span class="uicontrol" id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_text113848306235">系统</span> &gt; <span id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_text484521122916">安全</span> &gt; 证书”</span>。</span></li>
+     <li id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_zh-cn_topic_0000001102065552_li791619610427"><span>在<span class="uicontrol" id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_zh-cn_topic_0000001102065552_uicontrol1514113235454">“类型”</span>为<span class="uicontrol" id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_zh-cn_topic_0000001102065552_uicontrol7482102811457">“服务端证书”</span>的行，单击<span class="uicontrol" id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_zh-cn_topic_0000001102065552_uicontrol41349391483">“更多 &gt; 下载CA证书”</span>。</span><p></p><p id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_zh-cn_topic_0000001102065552_p184648437483">下载CA证书，并妥善保存。</p> <p></p></li>
+    </ol>
    </div>
-   <div class="section" id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_section152913359312">
-    <h4 class="sectiontitle">操作步骤</h4>
-    <ol id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_ol1038139939">
-     <li id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_li1570821013536"><span>选择<span class="uicontrol" id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_text195451245818">系统</span> &gt; <span id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_text1825116201482">基础设施</span> &gt; <span id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_text2324131633414">集群管理</span>”</span>。</span></li>
-     <li id="cnware_00031__foc_gud_0032_0_li1125712582118"><span>在<span class="uicontrol" id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_uicontrol855335015454">“<span id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_text11821141684610">复制集群</span>”</span>页签，单击<span class="uicontrol" id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol1645154510534">“<span id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_text26407307349">添加</span>”</span>。</span></li>
-     <li id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_li10626045539"><span>配置目标集群参数。</span><p></p>
-      <div class="p" id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_p344744712197">
-       相关参数说明如<a href="#cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_table13641194661910">表1</a>所示。 
-       <div class="tablenoborder">
-        <a name="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_table13641194661910"></a><a name="foc_gud_0032_0_zh-cn_topic_0000001792344106_table13641194661910"></a>
-        <table cellpadding="4" cellspacing="0" summary="" id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_table13641194661910" frame="border" border="1" rules="all">
-         <caption>
-          <b>表1 </b>目标集群参数说明
-         </caption>
-         <colgroup>
-          <col style="width:34.949999999999996%">
-          <col style="width:65.05%">
-         </colgroup>
-         <thead align="left">
-          <tr id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_row66412046151918">
-           <th align="left" class="cellrowborder" valign="top" width="34.949999999999996%" id="mcps1.3.3.2.3.2.1.2.2.3.1.1"><p id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_p11641204641917">参数</p></th>
-           <th align="left" class="cellrowborder" valign="top" width="65.05%" id="mcps1.3.3.2.3.2.1.2.2.3.1.2"><p id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_p3641114610198">说明</p></th>
-          </tr>
-         </thead>
-         <tbody>
-          <tr id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_row11154135519445">
-           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_p9154135544411">名称</p></td>
-           <td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_p51549551446">自定义目标集群的名称。</p></td>
-          </tr>
-          <tr id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_row15735172017508">
-           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_p1152814501268">角色</p></td>
-           <td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="cnware_00031__foc_gud_0032_0_p125401920228">固定为<span class="uicontrol" id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_uicontrol3110113172718">“<span id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_text844584915492">复制目标集群</span>”</span>。</p></td>
-          </tr>
-          <tr id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_row17641164617192">
-           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_p1164184612196">IP地址</p></td>
-           <td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 ">
-            <div class="p" id="cnware_00031__foc_gud_0032_0_p1272311347226">
-             输入目标集群任一控制器的管理、备份或复制IP。
-             <ul id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_ul10691523173813">
-              <li id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_li1869223123818">如果输入目标集群的管理IP，请确保本端与目标端的管理网络连通。</li>
-              <li id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_li12657153011405">如果输入目标集群的备份网络IP，请确保本端与目标端的备份网络连通。</li>
-              <li id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_li1768111253458">如果输入目标集群的复制网络IP，请确保本端与目标端的复制网络连通。</li>
-             </ul>
-             <div class="note" id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_note4160173815018">
-              <span class="notetitle"> 说明： </span>
-              <div class="notebody">
-               <ul id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_ul114693044613">
-                <li id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_li472320144611">管理IP即为登录目标集群管理界面的IP地址。</li>
-                <li id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_li174692084618">备份或复制网络IP请登录目标集群的管理界面，选择<span class="uicontrol" id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_uicontrol1664124518511">“<span id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_text16647456516">系统</span> &gt; <span id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_text146641145105111">基础设施</span> &gt; <span id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_text9664154515518">集群管理</span>”</span>，在“备份集群”页签单击集群名称，获取任一控制器的备份网络IP（数据备份引擎）或复制网络IP。</li>
-               </ul>
-              </div>
-             </div>
-            </div></td>
-          </tr>
-          <tr id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_row18641204619191">
-           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_p116416464192">端口</p></td>
-           <td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="cnware_00031__foc_gud_0032_0_p56361611234">目标集群的端口。</p> <p id="cnware_00031__foc_gud_0032_0_p12932125615229">IP地址框输入管理IP地址时，默认端口为25081；IP地址框输入复制网络IP地址或备份网络IP地址时，默认端口为30068。</p></td>
-          </tr>
-          <tr id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_row9641346121912">
-           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_p164113466197">用户名</p></td>
-           <td class="cellrowborder" rowspan="2" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_p1119324620413"><a href="cnware_000300.html">步骤5：创建远端设备管理员（适用于1.6.0及后续版本）</a>中创建的用户及其密码。</p></td>
-          </tr>
-          <tr id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_row12641194631915">
-           <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_p20641646181916">密码</p></td>
-          </tr>
-         </tbody>
-        </table>
-       </div>
+   <div class="section" id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section0846167203710">
+    <h4 class="sectiontitle">在主端集群导入证书</h4>
+    <ol id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_ol191881157546">
+     <li id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li918818505418"><span>登录复制主端集群的<span id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_text5894195154417">本产品</span>管理界面。</span></li>
+     <li id="cnware_00031__foc_gud_0029_li677902711196"><span>登录复制主端集群的<span id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_text5894195154417_1">本产品</span>管理界面。</span></li>
+     <li id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li8602191845419"><span>单击<span class="uicontrol" id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol754082417548">“添加外部证书”</span>，配置外部证书信息。</span><p></p><p id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p6842196195513">相关参数说明如<a href="#cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_table146451017195515">表1</a>所示。</p>
+      <div class="tablenoborder">
+       <a name="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_table146451017195515"></a><a name="foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_table146451017195515"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_table146451017195515" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>外部证书参数说明
+        </caption>
+        <colgroup>
+         <col style="width:50%">
+         <col style="width:50%">
+        </colgroup>
+        <thead align="left">
+         <tr id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_row9645117195517">
+          <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.3.2.2.2.3.1.1"><p id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p764691705516">参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.3.2.2.2.3.1.2"><p id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p156461317125516">说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_row1764681714553">
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p1664631795513">名称</p></td>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p4646151720551">自定义证书名称。</p></td>
+         </tr>
+         <tr id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_row2056614550311">
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p1954581110245">类型</p></td>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="cnware_00031__foc_gud_0029_p152791557101910">选择<span class="uicontrol" id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_zh-cn_topic_0000001102065552_uicontrol3429191832618">“备份集群/多域集群/复制集群”</span>。</p></td>
+         </tr>
+         <tr id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_row48663202555">
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p8867202065516">CA证书</p></td>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p38671320165517">单击<span><img id="cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_image158881574223" src="zh-cn_image_0000002164600570.png"></span>，导入<a href="#cnware_00031__foc_gud_0029_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section17774134611364">在从端集群下载的证书</a>。</p></td>
+         </tr>
+        </tbody>
+       </table>
       </div> <p></p></li>
-     <li id="cnware_00031__foc_gud_0032_0_li14308163482314"><span>单击<span class="uicontrol" id="cnware_00031__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol138611845761">“确定”</span>。</span></li>
+     <li id="cnware_00031__foc_gud_0029_li73878328192"><span>登录复制主端集群的<span id="cnware_00031__foc_gud_0029_zh-cn_topic_0000002200147077_text5894195154417_2">本产品</span>管理界面。</span></li>
     </ol>
    </div>
   </div>
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="cnware_00024.html">复制CNware虚拟机副本</a>
+     <strong>父主题：</strong> <a href="cnware_00027.html">复制CNware虚拟机副本</a>
     </div>
    </div>
   </div>

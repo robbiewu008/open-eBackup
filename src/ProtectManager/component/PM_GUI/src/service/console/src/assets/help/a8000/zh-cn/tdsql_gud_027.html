@@ -20,76 +20,94 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤6：添加复制集群">
+<meta name="DC.Title" content="步骤1：创建复制网络逻辑端口（适用于1.5.0版本）">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="tdsql_gud_020.html">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_026.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="tdsql_gud_027">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤6：添加复制集群</title>
+<title>步骤1：创建复制网络逻辑端口（适用于1.5.0版本）</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="tdsql_gud_027"></a><a name="tdsql_gud_027"></a>
 
-<h1 class="topictitle1">步骤6：添加复制集群</h1>
-<div><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_p173011029113111">在本端集群侧添加目标集群，建立主端设备和从端设备之间的逻辑连接，用于设备之间的数据传输。</p>
-<div class="section" id="tdsql_gud_027__zh-cn_topic_0000001792344106_section5343122851716"><h4 class="sectiontitle">前提条件</h4><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p27481329181712">已准备用于复制的目标集群。</p>
+
+  <h1 class="topictitle1">步骤1：创建复制网络逻辑端口<span>（适用于1.5.0版本）</span></h1>
+
+  <div><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p1720618465166">分别在主从端存储系统的DeviceManager，创建复制网络逻辑端口，用于远程复制数据传输。</p>
+<div class="section" id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_section76551503175"><h4 class="sectiontitle">前提条件</h4><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p4324626143813">已规划主从端复制网络IP地址。</p>
 </div>
-<div class="section" id="tdsql_gud_027__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_section152913359312"><h4 class="sectiontitle">操作步骤</h4><ol id="tdsql_gud_027__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_ol1038139939"><li id="tdsql_gud_027__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_li1570821013536"><span>选择<span class="uicontrol" id="tdsql_gud_027__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text195451245818">系统</span> &gt; <span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text1825116201482">基础设施</span> &gt; <span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text2324131633414">集群管理</span>”</span>。</span></li><li id="tdsql_gud_027__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_li12591123311535"><span>在<span class="uicontrol" id="tdsql_gud_027__zh-cn_topic_0000001792344106_uicontrol855335015454">“<span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text11821141684610">复制集群</span>”</span>页签，单击<span class="uicontrol" id="tdsql_gud_027__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol1645154510534">“<span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text26407307349">添加</span>”</span>。</span></li><li id="tdsql_gud_027__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_li10626045539"><span>配置目标集群参数。</span><p><div class="p" id="tdsql_gud_027__zh-cn_topic_0000001792344106_p344744712197">相关参数说明如<a href="#tdsql_gud_027__zh-cn_topic_0000001792344106_table13641194661910">表1</a>所示。
-<div class="tablenoborder"><a name="tdsql_gud_027__zh-cn_topic_0000001792344106_table13641194661910"></a><a name="zh-cn_topic_0000001792344106_table13641194661910"></a><table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_027__zh-cn_topic_0000001792344106_table13641194661910" frame="border" border="1" rules="all"><caption><b>表1 </b>目标集群参数说明</caption><colgroup><col style="width:34.949999999999996%"><col style="width:65.05%"></colgroup><thead align="left"><tr id="tdsql_gud_027__zh-cn_topic_0000001792344106_row66412046151918"><th align="left" class="cellrowborder" valign="top" width="34.949999999999996%" id="mcps1.3.3.2.3.2.1.2.2.3.1.1"><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p11641204641917">参数</p>
+<div class="section" id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_section01286189357"><h4 class="sectiontitle">操作步骤</h4><ol id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_ol3195132918350"><li id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_li319522912350"><span>分别登录主端和从端存储系统的DeviceManager管理界面。具体操作请参考<a href="tdsql_gud_091.html#tdsql_gud_091">登录DeviceManager管理界面</a>。</span></li><li id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_li1749374163512"><span>选择“服务 &gt; 网络 &gt; 逻辑端口”。</span></li><li id="tdsql_gud_027__zh-cn_topic_0000002200061401_li17548185061613"><span>设置“租户”为“所有租户”。</span></li><li id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_li1020518291423"><span>单击<span class="uicontrol" id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_uicontrol9233246164210">“创建”</span>，创建逻辑端口。</span><p><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p122201058114510">相关参数说明如<a href="#tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_table4902520114617">表1</a>所示。</p>
+
+<div class="tablenoborder"><a name="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_table4902520114617"></a><a name="zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_table4902520114617"></a><table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_table4902520114617" frame="border" border="1" rules="all"><caption><b>表1 </b>逻辑端口参数说明</caption><colgroup><col style="width:43.55%"><col style="width:56.45%"></colgroup><thead align="left"><tr id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row12902520144613"><th align="left" class="cellrowborder" valign="top" width="43.55%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p11902142011468">参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="65.05%" id="mcps1.3.3.2.3.2.1.2.2.3.1.2"><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p3641114610198">说明</p>
+<th align="left" class="cellrowborder" valign="top" width="56.45%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p139023200466">说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr id="tdsql_gud_027__zh-cn_topic_0000001792344106_row11154135519445"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p9154135544411"><span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text1938482119472">名称</span></p>
+<tbody><tr id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row1990214209462"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p179021520174612">名称</p>
 </td>
-<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p51549551446">自定义目标集群的名称。</p>
-</td>
-</tr>
-<tr id="tdsql_gud_027__zh-cn_topic_0000001792344106_row15735172017508"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p1152814501268"><span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text82331522194918">角色</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p8528850102620">固定为<span class="uicontrol" id="tdsql_gud_027__zh-cn_topic_0000001792344106_uicontrol3110113172718">“<span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text844584915492">复制目标集群</span>”</span>。</p>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p10902122084614">自定义复制网络逻辑端口名称。</p>
 </td>
 </tr>
-<tr id="tdsql_gud_027__zh-cn_topic_0000001792344106_row17641164617192"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p1164184612196"><span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text19959194531512">IP地址</span></p>
+<tr id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row590214206469"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p1390242018463">角色</p>
 </td>
-<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><div class="p" id="tdsql_gud_027__zh-cn_topic_0000001792344106_p0641104621913">输入目标集群任一控制器的管理、备份或复制IP。<ul id="tdsql_gud_027__zh-cn_topic_0000001792344106_ul10691523173813"><li id="tdsql_gud_027__zh-cn_topic_0000001792344106_li1869223123818">如果输入目标集群的管理IP，请确保本端与目标端的管理网络连通。</li><li id="tdsql_gud_027__zh-cn_topic_0000001792344106_li12657153011405">如果输入目标集群的备份网络IP，请确保本端与目标端的备份网络连通。</li><li id="tdsql_gud_027__zh-cn_topic_0000001792344106_li1768111253458">如果输入目标集群的复制网络IP，请确保本端与目标端的复制网络连通。</li></ul>
-<div class="note" id="tdsql_gud_027__zh-cn_topic_0000001792344106_note4160173815018"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="tdsql_gud_027__zh-cn_topic_0000001792344106_ul114693044613"><li id="tdsql_gud_027__zh-cn_topic_0000001792344106_li472320144611">管理IP即为登录目标集群管理界面的IP地址。</li><li id="tdsql_gud_027__zh-cn_topic_0000001792344106_li174692084618">备份或复制网络IP请登录目标集群的管理界面，选择<span class="uicontrol" id="tdsql_gud_027__zh-cn_topic_0000001792344106_uicontrol1664124518511">“<span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text16647456516">系统</span> &gt; <span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text146641145105111">基础设施</span> &gt; <span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text9664154515518">集群管理</span>”</span>，在“备份集群”页签单击集群名称，获取任一控制器的备份网络IP（数据备份引擎）或复制网络IP。</li></ul>
-</div></div>
-</div>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p89021220144617">选择<span class="uicontrol" id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_uicontrol1599065984713">“复制”</span>。</p>
 </td>
 </tr>
-<tr id="tdsql_gud_027__zh-cn_topic_0000001792344106_row18641204619191"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p116416464192"><span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text7383379164">端口</span></p>
+<tr id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row159021320204618"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p89021320194613">IP地址类型</p>
 </td>
-<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p16641144613195">目标集群的端口。</p>
-<p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p14641546131918">IP地址框输入管理IP地址时，默认端口为25081；IP地址框输入复制网络IP地址或备份网络IP地址时，默认端口为30068。</p>
-</td>
-</tr>
-<tr id="tdsql_gud_027__zh-cn_topic_0000001792344106_row9641346121912"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p164113466197"><span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text1393312491611">用户名</span></p>
-</td>
-<td class="cellrowborder" rowspan="2" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p1119324620413"><a href="tdsql_gud_026.html#tdsql_gud_026">步骤5：创建远端设备管理员（适用于1.5.0版本）</a>或<a href="tdsql_gud_026_1.html#tdsql_gud_026_1">步骤5：创建远端设备管理员（适用于1.6.0及后续版本）</a>中创建的用户及其密码。</p>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p1790212044613">复制网络逻辑端口的IP地址类型，IPv4或IPv6。</p>
 </td>
 </tr>
-<tr id="tdsql_gud_027__zh-cn_topic_0000001792344106_row12641194631915"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000001792344106_p20641646181916"><span id="tdsql_gud_027__zh-cn_topic_0000001792344106_text488694514166">密码</span></p>
+<tr id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row2902122013465"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p139021020134618">IP</p>
+</td>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p39031820154614">复制网络逻辑端口的IP地址。</p>
+</td>
+</tr>
+<tr id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row10903720194618"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p17903220184614">子网掩码</p>
+</td>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p89031620184617">当IP地址为IPv4类型时，配置其子网掩码。</p>
+</td>
+</tr>
+<tr id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row070651994917"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p1470619193499">前缀</p>
+</td>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p1770671912495">当IP地址为IPv6类型时，配置其前缀。</p>
+</td>
+</tr>
+<tr id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row1075519116478"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p475641115470">网关</p>
+</td>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p1675612113472">复制网络逻辑端口IP地址的网关。</p>
+</td>
+</tr>
+<tr id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row4957112110477"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p6957152119477">端口类型</p>
+</td>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_p1187201353020">选择用于创建复制网络逻辑端口的端口类型。支持选择“以太网端口”、“绑定端口”或“VLAN”。</p>
+<p id="tdsql_gud_027__zh-cn_topic_0000002200061401_p7393956171420">默认情况下，用户在初始化<span id="tdsql_gud_027__zh-cn_topic_0000002200061401_text44851941602">OceanProtect</span>过程中已对用于复制的端口进行了绑定，因此，如果用户无其他操作（如删除绑定端口等），此处需要选择“绑定端口”。</p>
+</td>
+</tr>
+<tr id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row3551112915475"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p165511029124718">主端口</p>
+</td>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="tdsql_gud_027__zh-cn_topic_0000002200061401_p175510297476">创建的复制网络逻辑端口所属的以太网端口、绑定端口或VLAN。</p>
+<p id="tdsql_gud_027__zh-cn_topic_0000002200061401_p1549136151615">系统已过滤出用于复制网络的所有端口，选择任意一个已连接的端口即可。</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
+</p></li><li id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_li1871473615017"><span>单击<span class="uicontrol" id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_uicontrol58330521508">“确定”</span>。</span></li><li id="tdsql_gud_027__zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_li205675443341"><span>重复以上步骤，依次为每个主端口配置逻辑端口。</span></li></ol>
 </div>
-</p></li><li id="tdsql_gud_027__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_li731119361160"><span>单击<span class="uicontrol" id="tdsql_gud_027__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol138611845761">“确定”</span>。</span></li></ol>
 </div>
-</div>
+
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="tdsql_gud_020.html">复制TDSQL数据库副本</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="tdsql_gud_026.html">复制TDSQL数据库副本（适用于X系列备份一体机）</a></div>
 </div>
 </div>
 

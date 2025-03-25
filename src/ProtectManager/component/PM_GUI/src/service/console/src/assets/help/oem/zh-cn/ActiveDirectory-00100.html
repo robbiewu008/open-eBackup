@@ -1,0 +1,64 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="主域控制器在系统状态恢复后无法创建新用户">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="ActiveDirectory-00084.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ActiveDirectory-00100">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>主域控制器在系统状态恢复后无法创建新用户</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ActiveDirectory-00100"></a><a name="ActiveDirectory-00100"></a>
+  <h1 class="topictitle1">主域控制器在系统状态恢复后无法创建新用户</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>创建用户时界面提示Cannot create the object because directory service was unable to allocate a relative identifier.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <ul>
+     <li>当RID（Relative Identifier）主机做系统状态恢复时，它会尝试与其他域控制器同步。如果没有可同步的域控制器或者同步不起作用，同步过程将失败。</li>
+     <li>RID池已耗尽或者RID分配的对象存在问题。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <p>请参见<a href="https://learn.microsoft.com/zh-cn/troubleshoot/windows-server/active-directory/event-16650-account-identifier-allocator-not-initialize#Cause" target="_blank" rel="noopener noreferrer">帐户标识符分配器在Windows Server中初始化失败</a>。</p>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="ActiveDirectory-00084.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

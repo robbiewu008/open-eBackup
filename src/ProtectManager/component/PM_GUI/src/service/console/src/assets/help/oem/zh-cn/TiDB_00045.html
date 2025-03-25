@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="TiDB_00041.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
@@ -53,7 +53,7 @@
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>选择<span class="uicontrol" id="TiDB_00045__tidb_00040_zh-cn_topic_0000001839142377_uicontrol548619473589">“<span id="TiDB_00045__tidb_00040_zh-cn_topic_0000001839142377_text44861447115812">数据利用</span> &gt; <span id="TiDB_00045__tidb_00040_zh-cn_topic_0000001839142377_text2048614765813">副本数据</span> &gt; <span id="TiDB_00045__tidb_00040_zh-cn_topic_0000001839142377_text163101122194918">数据库</span> &gt; TiDB”</span>。</span></li>
+     <li><span>选择<span class="uicontrol" id="TiDB_00045__tidb_00040_zh-cn_topic_0000002199964685_uicontrol548619473589">“<span id="TiDB_00045__tidb_00040_zh-cn_topic_0000002199964685_text44861447115812">数据利用</span> &gt; <span id="TiDB_00045__tidb_00040_zh-cn_topic_0000002199964685_text2048614765813">副本数据</span> &gt; <span id="TiDB_00045__tidb_00040_zh-cn_topic_0000002199964685_text163101122194918">数据库</span> &gt; TiDB”</span>。</span></li>
      <li><span>您可以以TiDB备份资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p>在“资源”页签，根据备份资源名称查找到需要恢复的备份资源，并单击备份资源名称。</p>
       <div class="note">
        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
@@ -61,8 +61,8 @@
         <p>仅资源类型为集群或数据库的副本可选择表级恢复。</p>
        </div>
       </div> <p></p></li>
-     <li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000001839224157.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
-     <li><span>单击<span><img src="zh-cn_image_0000001839144201.png"></span>，在副本所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>表级恢复</span>”</span>。</span></li>
+     <li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000002200065169.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>单击<span><img src="zh-cn_image_0000002200150757.png"></span>，在副本所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>表级恢复</span>”</span>。</span></li>
      <li><span>在<span class="uicontrol">“<span>表级恢复</span>”</span>页面左侧框勾选要恢复的表。</span></li>
      <li><span>在<span class="uicontrol">“<span>表级恢复</span>”</span>页面右侧，单击<span class="uicontrol">“<span>请选择</span>”</span>，选择需要恢复到的目标位置后单击<span class="uicontrol">“确定”</span>。</span><p></p><p>相关参数说明如<a href="#TiDB_00045__table194961441141219">表1</a>所示。</p>
       <div class="tablenoborder">
@@ -87,6 +87,19 @@
           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.6.2.2.2.3.1.2 "><p>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>或<span class="uicontrol">“<span>新位置</span>”</span>。</p></td>
          </tr>
          <tr>
+          <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.6.2.2.2.3.1.1 ">
+           <div class="p">
+            标签
+            <div class="note" id="TiDB_00045__mysql-0074_zh-cn_topic_0000002164660718_note6966434109">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p id="TiDB_00045__mysql-0074_zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_p1816719214566"><span id="TiDB_00045__mysql-0074_zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_ph206615454589">仅1.6.0及后续版本支持此功能。</span></p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.6.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol" id="TiDB_00045__mysql-0074_uicontrol245831518502">“<span id="TiDB_00045__mysql-0074_text15458191510501">新位置</span>”</span>时展示该参数。</p> <p>可通过标签筛选集群。</p></td>
+         </tr>
+         <tr>
           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.6.2.2.2.3.1.1 "><p><span>目标集群</span></p></td>
           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.6.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，请选择恢复到的目标TiDB集群。</p>
            <div class="note">
@@ -100,7 +113,7 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.6.2.2.2.3.1.1 "><p><span>是否删除重名表</span></p></td>
-          <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.6.2.2.2.3.1.2 "><p>通过该参数选择是否删除重名表。表级恢复时，当选择了该选项，ProtectAgent代理主机默认会删除和原副本中重名的表。</p>
+          <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.6.2.2.2.3.1.2 "><p>通过该参数选择是否删除重名表。表级恢复时，当开启了该功能，客户端所在的主机默认会删除和原副本中重名的表。</p>
            <div class="note">
             <span class="notetitle"> 说明： </span>
             <div class="notebody">

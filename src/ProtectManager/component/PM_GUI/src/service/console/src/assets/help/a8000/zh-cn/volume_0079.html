@@ -20,28 +20,87 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="以WinPE方式启动Windows OS，启动后配置IP地址">
+<meta name="DC.Title" content="查看卷信息">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="volume_0078.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="volume_0079">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>以WinPE方式启动Windows OS，启动后配置IP地址</title>
+<title>查看卷信息</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="volume_0079"></a><a name="volume_0079"></a>
 
-<h1 class="topictitle1">以WinPE方式启动Windows OS，启动后配置IP地址</h1>
-<div><p>裸机恢复的目标主机为Windows时，需要以WinPE方式启动目标主机，并需要配置IP地址与OceanProtect备份一体机通信。</p>
-<div class="section"><h4 class="sectiontitle">前提条件</h4><p class="msonormal">目标主机已关机。</p>
-</div>
-<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li id="volume_0079__li101449241407"><a name="volume_0079__li101449241407"></a><a name="li101449241407"></a><span>上载镜像文件OP_Win10XPE_v3.iso到VMware ESXi虚拟平台。</span><p><ol type="a"><li>登录VMware ESXi虚拟平台。</li><li>单击<span class="uicontrol">“存储 &gt; 数据存储 &gt; 数据存储浏览器”</span>。</li><li>单击容量足够的数据存储名称。</li><li>选择目录单击<span class="uicontrol">“上载”</span>，将镜像文件上传到该目录下。</li></ol>
-</p></li><li><span>目标主机挂载镜像文件OP_Win10XPE_v3.iso。</span><p><ol type="a"><li>单击<span class="uicontrol">“虚拟机”</span>，选择目标主机。</li><li>在目标主机页签中，单击<span class="uicontrol">“硬件配置 &gt; CD/DVD 驱动器 1 &gt; 选择磁盘映像”</span>。</li><li>选择<a href="#volume_0079__li101449241407">步骤 1</a>上载的镜像文件OP_Win10XPE_v3.iso。</li></ol>
-</p></li><li><span>设置目标主机的引导选项。</span><p><ol type="a"><li>单击<span class="uicontrol">“虚拟机”</span>，选择目标主机。</li><li>在目标主机页签的上方单击<span class="uicontrol">“操作 &gt; 编辑设置 &gt; 虚拟机选项 &gt; 引导选项”</span>。</li><li>设置引导选项：<ul><li>EFI：勾选强制执行 EFI 设置。</li><li>BIOS：勾选强制执行 BIOS 设置。</li></ul>
-</li></ol>
-</p></li><li><span>重新启动虚拟机。</span><p><ol type="a"><li>单击<span class="uicontrol">“虚拟机”</span>，选择目标主机。</li><li>在目标主机页签的上方单击<span class="uicontrol">“打开电源”</span>。</li><li>单击<span class="uicontrol">“控制台 &gt; 打开浏览器控制台”</span>.</li><li>在启动界面设置启动方式：<ul><li>EFI：选择<span class="uicontrol">“EFI UMware Virtual SATA CDROM Drive (0.0)”</span>，按<span class="uicontrol">“Ente”</span>r键。</li><li>BIOS：选择<span class="uicontrol">“Boot &gt; CD-ROM Drive”</span>，并调整<span class="uicontrol">“CD-ROM Drive”</span>到最上面位置，按<span class="uicontrol">“F10”</span>键保存并退出，单击<span class="uicontrol">“OK”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>Windows裸机恢复完成后，需要恢复目标主机BIOS启动方式的顺序。</p>
+<h1 class="topictitle1">查看卷信息</h1>
+<div><p>创建卷后，您可以在管理界面查看卷的详细信息。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="volume_0079__zh-cn_topic_0000002199964685_uicontrol34250519116">“<span id="volume_0079__zh-cn_topic_0000002199964685_text154255511911">保护</span> &gt; 文件系统 &gt; 卷”</span>。</span></li><li><span>查看卷信息。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="volume_0079__zh-cn_topic_0000002164820458_p4219634163218">部分参数默认不展示，您可以单击“操作”列后的<span><img id="volume_0079__zh-cn_topic_0000002164820458_image1271105319486" src="zh-cn_image_0000002200147221.png"></span>，勾选对应参数，即可在当前界面展示。</p>
 </div></div>
+<div class="p">相关参数说明如<a href="#volume_0079__table12420116163916">表1</a>所示。
+<div class="tablenoborder"><a name="volume_0079__table12420116163916"></a><a name="table12420116163916"></a><table cellpadding="4" cellspacing="0" summary="" id="volume_0079__table12420116163916" frame="border" border="1" rules="all"><caption><b>表1 </b>卷信息</caption><colgroup><col style="width:20.39%"><col style="width:79.61%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20.39%" id="mcps1.3.2.2.2.2.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.61%" id="mcps1.3.2.2.2.2.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20.39%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.61%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.2 "><p>卷名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.39%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.1 "><p><span>主机名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.61%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.2 "><p>卷所在主机的名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.39%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.1 "><p><span>IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.61%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.2 "><p>卷所在主机的IP地址。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.39%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.1 "><p><span>SLA</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.61%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.2 "><p>当卷已关联SLA时，则显示SLA名称，否则显示<span class="uicontrol">“--”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.39%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.1 "><p><span>SLA遵从度</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.61%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.2 "><div class="p">SLA遵从度指某次备份任务是否按设定的备份频率或备份窗口成功完成备份。<ul id="volume_0079__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_ul1823814519293"><li id="volume_0079__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_li9238184572919">遵从：如果某次备份任务（首次全量备份除外）的备份时间满足备份窗口或备份频率要求，且备份成功，则表示SLA遵从。</li><li id="volume_0079__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_li189142052112912">不遵从：如果备份时间不满足备份窗口或备份频率要求，例如某次备份任务SLA设定的备份频率为每半小时执行一次，最终备份时间超过半小时，则表示SLA不遵从。建议调整备份频率或备份窗口。</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.39%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.1 "><p><span>保护状态</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.61%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.2 "><p>卷当前是否被保护。</p>
+<ul><li><span>未保护</span>：卷未关联SLA，或者卷已关联SLA但已禁用保护。</li><li><span>已保护</span>：卷已关联SLA，且已激活保护。</li><li><span>创建中</span>：卷已关联SLA，正在创建保护。</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.39%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.1 "><p>标签</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.61%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.2 "><p>当资源已添加标签时，则此处显示标签名称，否则显示“--”。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>单击卷名称，浏览卷总览信息、副本信息、保护详情以及任务。</span><p><ul><li>总览<p>显示卷的名称、SLA信息、任务执行时间、副本总数等。</p>
+<p>您也可以查看当前卷中保护的文件及目录。</p>
+</li><li>副本数据<p>您可以依次按照年、月、天查找相应时间的副本。</p>
+<p>时间下方显示<span><img src="zh-cn_image_0000002164815146.png"></span>，表示该时间存在副本。</p>
+</li><li>任务<p>卷相关的所有任务展示，包括备份、恢复等任务。</p>
 </li></ul>
-</li></ol>
-</p></li><li><span>目标主机启动完成后，为目标主机配置IP地址与OceanProtect备份一体机通信。</span></li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="volume_0078.html">卷</a></div>
 </div>
 </div>
 

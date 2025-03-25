@@ -1,0 +1,160 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring an Object Storage Bucket">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002242926653.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164815314">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring an Object Storage Bucket</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164815314"></a><a name="EN-US_TOPIC_0000002164815314"></a>
+  <h1 class="topictitle1">Restoring an Object Storage Bucket</h1>
+  <div>
+   <p>This section describes how to restore a bucket of backed-up object storage to the original location or a new location.</p>
+   <div class="section" id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_section10921114220467">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792550248_ul155946913719">
+     <li id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792550248_li178221624154012">Before the restoration, ensure that the bucket with the same name exists in the target location or the conditions of creating the target bucket for restoration are met. Otherwise, the restoration will fail.</li>
+    </ul>
+    <ul id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792550248_ul1648381342319">
+     <li id="EN-US_TOPIC_0000002164815314__li5913102317529">Before performing the restoration, ensure that the account corresponding to the AK/SK of the object storage has the permissions to create, read, and write buckets, as well as read and write bucket ACLs.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164815314__en-us_topic_0000002199964685_uicontrol11629101161212"><b><span id="EN-US_TOPIC_0000002164815314__en-us_topic_0000002199964685_text1629611111214"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164815314__en-us_topic_0000002199964685_text562901114126"><strong>Copy Data</strong></span> &gt; File Systems &gt; <span id="EN-US_TOPIC_0000002164815314__en-us_topic_0000002199964685_text518282701311"><strong>Object Storage</strong></span></b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_li888616341964"><span>You can search for copies by object storage resource or copy. This section describes how to search for copies by resource.</span><p></p><p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_en-us_topic_0000001397321757_p624620403810">On the <span class="uicontrol" id="EN-US_TOPIC_0000002164815314__uicontrol10152203519450"><b>Resources</b></span> tab page, locate the resource to be restored by resource name and click the name.</p> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_li182120214713"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002164815314__uicontrol6641114334514"><b>Copy Data</b></span> and select the year, month, and day in sequence to find the copy.</span><p></p><p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_p9918150182310">If <span><img id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_image18922132513166" src="en-us_image_0000002200141969.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p> <p></p></li>
+     <li><span>Restore data using a specific copy.</span><p></p>
+      <ol type="a">
+       <li>In the row of the target copy, choose <strong>More</strong> &gt; <strong>Restore</strong>.</li>
+       <li id="EN-US_TOPIC_0000002164815314__li1556018338288">Restore object storage to the original location or a new location. <a href="#EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_table93951625101715">Table 1</a> describes the related parameters. 
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_table93951625101715"></a><a name="en-us_topic_0000001792388616_table93951625101715"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_table93951625101715" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>Parameters for restoring object storage
+          </caption>
+          <colgroup>
+           <col style="width:23.02%">
+           <col style="width:76.98%">
+          </colgroup>
+          <thead align="left">
+           <tr id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_row53951325131711">
+            <th align="left" class="cellrowborder" valign="top" width="23.02%" id="mcps1.3.3.2.4.2.1.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_p173952253171">Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="76.98%" id="mcps1.3.3.2.4.2.1.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_p203951725141711">Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_row917642384819">
+            <td class="cellrowborder" valign="top" width="23.02%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_p12176162317482">Restore To</p></td>
+            <td class="cellrowborder" valign="top" width="76.98%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_p417710230483">Location where the object storage is to be restored.</p>
+             <ul id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_ul14145610596">
+              <li id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_li548561594"><span id="EN-US_TOPIC_0000002164815314__text8348612194313"><strong>Original location</strong></span>: indicates to restore data to the original object storage location.</li>
+              <li id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_li677925955914"><span id="EN-US_TOPIC_0000002164815314__text203642224436"><strong>New location</strong></span>: indicates to restore data to a new location. In this case, you need to specify the target location and target object storage for restoration.</li>
+             </ul></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_row3926142015444">
+            <td class="cellrowborder" valign="top" width="23.02%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_p189271420134410">Location</p></td>
+            <td class="cellrowborder" valign="top" width="76.98%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_p192762034416">This parameter is displayed only when data is restored to the original object storage location.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_row95141312124614">
+            <td class="cellrowborder" valign="top" width="23.02%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_p1051411284614">Target Object Storage</p></td>
+            <td class="cellrowborder" valign="top" width="76.98%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_p351401284614">This parameter is displayed only when data is restored to a new location. You need to select the target object storage.</p> <p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_p32752222010">You can search for the name of object storage that has been registered with the <span id="EN-US_TOPIC_0000002164815314__text8695155120210">product</span> to select the object storage.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164815314__row152310193394">
+            <td class="cellrowborder" valign="top" width="23.02%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164815314__p182312191396">Target Bucket</p></td>
+            <td class="cellrowborder" valign="top" width="76.98%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164815314__p11231619183915">This parameter is displayed only when data is restored to a new location.</p>
+             <ul id="EN-US_TOPIC_0000002164815314__ul965012516414">
+              <li id="EN-US_TOPIC_0000002164815314__li1865035124113"><strong id="EN-US_TOPIC_0000002164815314__b1660955083012">Select an existing bucket</strong>: indicates to select an existing bucket of the current user.</li>
+              <li id="EN-US_TOPIC_0000002164815314__li1865065164112"><strong id="EN-US_TOPIC_0000002164815314__b1776617711317">Create a bucket</strong>: indicates to create a bucket for the current user. In this case, data will be restored to the created bucket.</li>
+             </ul>
+             <div class="note" id="EN-US_TOPIC_0000002164815314__note128401213887">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <ul id="EN-US_TOPIC_0000002164815314__ul05592024112710">
+                <li id="EN-US_TOPIC_0000002164815314__li155916245279">If you select an existing bucket and the ACL data has been backed up in the copy, the ACL of the target bucket will be overwritten during restoration.</li>
+                <li id="EN-US_TOPIC_0000002164815314__li2055922417277">If multiple buckets to be restored have objects with the same name and prefix, only one object can be randomly restored.</li>
+                <li id="EN-US_TOPIC_0000002164815314__li172671559182517">Enter a name for the bucket to be created based on the naming rule of <span class="uicontrol" id="EN-US_TOPIC_0000002164815314__uicontrol14716333133915"><b>Type of Owning Object Storage</b></span>.
+                 <ul id="EN-US_TOPIC_0000002164815314__ul78373157435">
+                  <li id="EN-US_TOPIC_0000002164815314__li1644919818436">OceanStor Pacific: The namespace name consists of 1 to 255 characters, including only letters, digits, hyphens (-), underscores (_), and periods (.). It must contain at least one letter or digit.</li>
+                  <li id="EN-US_TOPIC_0000002164815314__li12452828443">Huawei Cloud Stack Object Storage Service (OBS): The bucket name must be globally unique and cannot be the same as any existing bucket name, including the names of buckets created by other users. Once a bucket is created, its name cannot be changed. Make sure that the bucket name you set is appropriate.<p id="EN-US_TOPIC_0000002164815314__p632620112461"><a name="EN-US_TOPIC_0000002164815314__li12452828443"></a><a name="li12452828443"></a>Name the bucket in the OBS according to the globally applied DNS naming rules as follows:</p> <p id="EN-US_TOPIC_0000002164815314__p1332619115460">The name of a deleted bucket can be reused for another bucket or a parallel file system at least in 30 minutes after the deletion.</p> <p id="EN-US_TOPIC_0000002164815314__p5326411124612">It must contain 3 to 63 characters and supports only lowercase letters, digits, hyphens (-), and periods (.)</p> <p id="EN-US_TOPIC_0000002164815314__p1532691144616">It cannot start or end with a period (.) or hyphen (-). A period (.) is not allowed to be adjacent with another period (.) or any hyphens (-).</p> <p id="EN-US_TOPIC_0000002164815314__p63261311154612">It cannot be an IP address.</p> <p id="EN-US_TOPIC_0000002164815314__p83261411154610">When you access OBS through HTTPS using a virtual host and if the bucket name contains a period (.), the certificate verification will fail. Therefore, you are advised not to use periods (.) in bucket names.</p></li>
+                  <li id="EN-US_TOPIC_0000002164815314__li943651574410">Alibaba Cloud Object Storage Service (OSS): The bucket name must contain 3 to 63 characters, including only lowercase letters, digits, and hyphens (-); must start and end with a lowercase letter or digit.</li>
+                 </ul></li>
+               </ul>
+              </div>
+             </div></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164815314__row82162534117">
+            <td class="cellrowborder" valign="top" width="23.02%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164815314__p02102516413">Prefix</p></td>
+            <td class="cellrowborder" valign="top" width="76.98%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164815314__p225105019717">This parameter is displayed only when data is restored to a new location.</p> <p id="EN-US_TOPIC_0000002164815314__p163710291395">Set a prefix for the objects to be restored. Using prefixes and separators (for example, <span class="uicontrol" id="EN-US_TOPIC_0000002164815314__uicontrol399616332213"><b>/</b></span>), the object storage console can infer the logical structure and organize data based on folders.</p> <p id="EN-US_TOPIC_0000002164815314__p13663102822812">Example:</p>
+             <ul id="EN-US_TOPIC_0000002164815314__ul04281231192818">
+              <li id="EN-US_TOPIC_0000002164815314__li997018323288">If you do not enter a prefix during restoration, the objects to be restored will be displayed in the root directory of the bucket on the console after restoration.</li>
+              <li id="EN-US_TOPIC_0000002164815314__li13956110228">If you enter the prefix <span class="uicontrol" id="EN-US_TOPIC_0000002164815314__uicontrol1632261142215"><b>abc</b></span> during restoration, the <span class="uicontrol" id="EN-US_TOPIC_0000002164815314__uicontrol1132291119222"><b>abc</b></span> folder will be displayed in the bucket on the console. You can open the <span class="uicontrol" id="EN-US_TOPIC_0000002164815314__uicontrol43221811172215"><b>abc</b></span> folder to view the restored objects.</li>
+              <li id="EN-US_TOPIC_0000002164815314__li14428231152812">If you enter the prefix <span class="uicontrol" id="EN-US_TOPIC_0000002164815314__uicontrol070212518242"><b>abc/de</b></span> during restoration, the <span class="uicontrol" id="EN-US_TOPIC_0000002164815314__uicontrol276712504256"><b>abc</b></span> folder and <span class="uicontrol" id="EN-US_TOPIC_0000002164815314__uicontrol1335795372512"><b>de</b></span> subfolder will be displayed in the bucket on the console. You can open the <span class="uicontrol" id="EN-US_TOPIC_0000002164815314__uicontrol07237718263"><b>de</b></span> subfolder to view the restored objects.</li>
+             </ul>
+             <div class="note" id="EN-US_TOPIC_0000002164815314__note111518409559">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <ul id="EN-US_TOPIC_0000002164815314__ul17625153474619">
+                <li id="EN-US_TOPIC_0000002164815314__li16625173418467">After a prefix is added, the object name length may exceed the upper limit at the production end. In this case, the object restoration job fails.</li>
+                <li id="EN-US_TOPIC_0000002164815314__li14350201762815">Special characters \:*?"&lt;&gt;| cannot be contained in the prefix.</li>
+                <li id="EN-US_TOPIC_0000002164815314__li183501117102812">The prefix cannot start with a slash (/).</li>
+                <li id="EN-US_TOPIC_0000002164815314__li1935011176287">The prefix cannot contain two consecutive slashes (/).</li>
+               </ul>
+              </div>
+             </div></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_row1395725201718">
+            <td class="cellrowborder" valign="top" width="23.02%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_p1339520259174">Overwrite Rule</p></td>
+            <td class="cellrowborder" valign="top" width="76.98%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_p839532511712">If a file with the same name exists in the restoration path, you can choose to replace or skip the existing file.</p>
+             <ul id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_ul102931348087">
+              <li id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_li529354811812"><strong id="EN-US_TOPIC_0000002164815314__b118121230174716">Replace existing files</strong></li>
+              <li id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_li948417501782"><strong id="EN-US_TOPIC_0000002164815314__b1331181564814">Skip existing files</strong>: The files with the same names are skipped and are not replaced.</li>
+              <li id="EN-US_TOPIC_0000002164815314__en-us_topic_0000001792388616_li1376912501980"><strong id="EN-US_TOPIC_0000002164815314__b79909282483">Only replace the files older than the restoration file</strong>: The latest files with the same names in the target path are retained.</li>
+             </ul></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ol> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002242926653.html">Restoring Object Storage</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

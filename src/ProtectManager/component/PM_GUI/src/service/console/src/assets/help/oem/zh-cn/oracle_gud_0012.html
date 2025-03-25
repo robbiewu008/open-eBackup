@@ -19,11 +19,11 @@
   <meta name="DC.Type" content="topic">
   <meta name="DC.Title" content="备份前准备">
   <meta name="product" content="">
-  <meta name="DC.Relation" scheme="URI" content="oracle_gud_0008.html">
+  <meta name="DC.Relation" scheme="URI" content="oracle_gud_0009.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
@@ -36,7 +36,7 @@
   <a name="oracle_gud_0012"></a><a name="oracle_gud_0012"></a>
   <h1 class="topictitle1">备份前准备</h1>
   <div>
-   <p>备份Oracle数据库前，请参考<a href="#oracle_gud_0012__zh-cn_topic_0000001455091930_table10744125193920">表1</a>提前准备相关信息。以下信息均会在<a href="oracle_gud_0023.html">步骤4：注册数据库</a>章节使用。</p>
+   <p>备份Oracle数据库前，请参考<a href="#oracle_gud_0012__zh-cn_topic_0000001455091930_table10744125193920">表1</a>提前准备相关信息。以下信息均会在<a href="oracle_gud_0026.html">注册数据库（适用于单机部署形态）</a>章节使用。</p>
    <div class="note">
     <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
     <div class="notebody">
@@ -55,28 +55,28 @@
      </caption>
      <colgroup>
       <col style="width:17.34%">
-      <col style="width:11.55%">
-      <col style="width:54.769999999999996%">
-      <col style="width:16.34%">
+      <col style="width:8.82%">
+      <col style="width:58.64%">
+      <col style="width:15.2%">
      </colgroup>
      <thead align="left">
       <tr>
        <th align="left" class="cellrowborder" valign="top" width="17.34%" id="mcps1.3.3.2.5.1.1"><p>准备项</p></th>
-       <th align="left" class="cellrowborder" valign="top" width="11.55%" id="mcps1.3.3.2.5.1.2"><p>是否必须</p></th>
-       <th align="left" class="cellrowborder" valign="top" width="54.769999999999996%" id="mcps1.3.3.2.5.1.3"><p>获取方式</p></th>
-       <th align="left" class="cellrowborder" valign="top" width="16.34%" id="mcps1.3.3.2.5.1.4"><p>数据使用章节</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="8.82%" id="mcps1.3.3.2.5.1.2"><p>是否必须</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="58.64%" id="mcps1.3.3.2.5.1.3"><p>获取方式</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="15.2%" id="mcps1.3.3.2.5.1.4"><p>数据使用章节</p></th>
       </tr>
      </thead>
      <tbody>
       <tr>
        <td class="cellrowborder" valign="top" width="17.34%" headers="mcps1.3.3.2.5.1.1 "><p>名称</p></td>
-       <td class="cellrowborder" valign="top" width="11.55%" headers="mcps1.3.3.2.5.1.2 "><p>必选</p></td>
-       <td class="cellrowborder" valign="top" width="54.769999999999996%" headers="mcps1.3.3.2.5.1.3 "><p>要保护的数据库名称。</p>
+       <td class="cellrowborder" valign="top" width="8.82%" headers="mcps1.3.3.2.5.1.2 "><p>必选</p></td>
+       <td class="cellrowborder" valign="top" width="58.64%" headers="mcps1.3.3.2.5.1.3 "><p>要保护的数据库名称。</p>
         <div class="p">
          该名称与生产环境的数据库名称保持一致。一般数据库的name与db_unique_name一致，当两者不一致时，请配置为db_unique_name。可通过以下SQL语句查看name与db_unique_name。
          <pre class="screen">select name,db_unique_name FROM v$database;</pre>
         </div></td>
-       <td class="cellrowborder" rowspan="11" valign="top" width="16.34%" headers="mcps1.3.3.2.5.1.4 "><p><a href="oracle_gud_0023.html">步骤4：注册数据库</a></p></td>
+       <td class="cellrowborder" rowspan="11" valign="top" width="15.2%" headers="mcps1.3.3.2.5.1.4 "><p><a href="oracle_gud_0026.html">注册数据库（适用于单机部署形态）</a></p></td>
       </tr>
       <tr>
        <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>主机</p></td>
@@ -93,6 +93,7 @@
          <li>执行以下命令查询数据库认证方式。<pre class="screen">cat $ORACLE_HOME/network/admin/sqlnet.ora</pre>
           <ul id="oracle_gud_0012__ul1281144762818">
            <li id="oracle_gud_0012__li1181793163115">如果不存在sqlnet.ora文件，则表示为OS认证方式。</li>
+           <li id="oracle_gud_0012__li12131144102512">如果存在sqlnet.ora文件，但文件中未记录SQLNET.AUTHENTICATION_SERVICES，则表示为OS认证方式。</li>
            <li id="oracle_gud_0012__li5252161217474">如果存在sqlnet.ora文件，且文件中存在记录：SQLNET.AUTHENTICATION_SERVICES= (ALL)或SQLNET.AUTHENTICATION_SERVICES= (NTS)，则表示为OS认证方式。</li>
            <li id="oracle_gud_0012__li728111476285">如果存在sqlnet.ora文件，并且文件中存在记录：SQLNET.AUTHENTICATION_SERVICES= (None)，则表示为数据库认证。</li>
           </ul></li>
@@ -102,7 +103,7 @@
          <div class="notebody">
           <ul>
            <li>当要备份的数据库所在的主机为Oracle ADG集群的从端，则要求数据库必须采用数据库认证方式。</li>
-           <li>当指定了多个代理主机执行备份任务时，则要求数据库必须采用数据库认证方式。</li>
+           <li>当指定了多个主机执行备份任务时，则要求数据库必须采用数据库认证方式。</li>
           </ul>
          </div>
         </div></td>
@@ -124,6 +125,7 @@
          <li>进入“<em>ORACLE_HOME</em><em>的路径</em>\network\admin”路径，查看数据库认证方式。
           <ul>
            <li id="oracle_gud_0012__oracle_gud_0012_li1181793163115">如果不存在sqlnet.ora文件，则表示为OS认证方式。</li>
+           <li id="oracle_gud_0012__oracle_gud_0012_li12131144102512">如果存在sqlnet.ora文件，但文件中未记录SQLNET.AUTHENTICATION_SERVICES，则表示为OS认证方式。</li>
            <li id="oracle_gud_0012__oracle_gud_0012_li5252161217474">如果存在sqlnet.ora文件，且文件中存在记录：SQLNET.AUTHENTICATION_SERVICES= (ALL)或SQLNET.AUTHENTICATION_SERVICES= (NTS)，则表示为OS认证方式。</li>
            <li id="oracle_gud_0012__oracle_gud_0012_li728111476285">如果存在sqlnet.ora文件，并且文件中存在记录：SQLNET.AUTHENTICATION_SERVICES= (None)，则表示为数据库认证。</li>
           </ul></li>
@@ -131,7 +133,7 @@
         <div class="note">
          <span class="notetitle"> 说明： </span>
          <div class="notebody">
-          <p>当指定了多个代理主机执行备份任务时，则要求数据库必须采用数据库认证方式。</p>
+          <p>当指定了多个主机执行备份任务时，则要求数据库必须采用数据库认证方式。</p>
          </div>
         </div></td>
       </tr>
@@ -143,7 +145,7 @@
       <tr>
        <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>数据库安装用户名（适用于Linux操作系统）</p></td>
        <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>必选</p></td>
-       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>安装数据库的用户，如<strong>oracle</strong>。</p> <p>该用户可登录数据库主机，执行以下命令查询。</p> <pre class="screen">ps -ef  | grep pmon</pre> <p>回显类似如下，<em>xxx</em><strong>_pmon_hwdb</strong>所在行的用户即为安装数据库的用户。</p> <p><span><img src="zh-cn_image_0000001909814804.png"></span></p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>安装数据库的用户，如<strong>oracle</strong>。</p> <p>该用户可登录数据库主机，执行以下命令查询。</p> <pre class="screen">ps -ef  | grep pmon</pre> <p>回显类似如下，<em>xxx</em><strong>_pmon_hwdb</strong>所在行的用户即为安装数据库的用户。</p> <p><span><img src="zh-cn_image_0000002164597526.png"></span></p></td>
       </tr>
       <tr>
        <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>数据库安装用户名（适用于Windows操作系统）</p></td>
@@ -159,7 +161,7 @@
            <div class="notebody">
             <p>路径中的<em>19Home</em><em>1</em>仅为示例，请以实际为准。</p>
            </div>
-          </div> <p><span class="parmname">“ORACLE_GROUP_NAME”</span>的值类似如下，其中<strong>Oracle</strong>即为安装数据库的用户。</p> <p><span class="parmname">“ORACLE_SID”</span>的值为数据库实例名称。</p> <p><span><img src="zh-cn_image_0000002035794917.png"></span></p></li>
+          </div> <p><span class="parmname">“ORACLE_GROUP_NAME”</span>的值类似如下，其中<strong>Oracle</strong>即为安装数据库的用户。</p> <p><span class="parmname">“ORACLE_SID”</span>的值为数据库实例名称。</p> <p><span><img src="zh-cn_image_0000002199963861.png"></span></p></li>
         </ol></td>
       </tr>
       <tr>
@@ -171,7 +173,7 @@
          <div class="notebody">
           <p id="oracle_gud_0012__zh-cn_topic_0000001656680997_p1836318172815">对于集群场景，登录任一Oracle数据库主机，执行以下操作即可。</p>
          </div>
-        </div> <p>该用户可登录Oracle数据库主机，执行以下命令查询ASM的安装用户名。</p> <pre class="screen">ps -ef | grep pmon</pre> <p>回显类似如下，<em>xxx</em><strong>_pmon_+ASM</strong>所在行的用户即为ASM的安装用户。</p> <p><span><img src="zh-cn_image_0000001999754012.png"></span></p></td>
+        </div> <p>该用户可登录Oracle数据库主机，执行以下命令查询ASM的安装用户名。</p> <pre class="screen">ps -ef | grep pmon</pre> <p>回显类似如下，<em>xxx</em><strong>_pmon_+ASM</strong>所在行的用户即为ASM的安装用户。</p> <p><span><img src="zh-cn_image_0000002164757254.png"></span></p></td>
       </tr>
       <tr>
        <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>ASM认证（适用于Linux操作系统）</p></td>
@@ -188,6 +190,7 @@
           </ol>
           <ul>
            <li id="oracle_gud_0012__oracle_gud_0012_li1181793163115_1">如果不存在sqlnet.ora文件，则表示为OS认证方式。</li>
+           <li id="oracle_gud_0012__oracle_gud_0012_li12131144102512_1">如果存在sqlnet.ora文件，但文件中未记录SQLNET.AUTHENTICATION_SERVICES，则表示为OS认证方式。</li>
            <li id="oracle_gud_0012__oracle_gud_0012_li5252161217474_1">如果存在sqlnet.ora文件，且文件中存在记录：SQLNET.AUTHENTICATION_SERVICES= (ALL)或SQLNET.AUTHENTICATION_SERVICES= (NTS)，则表示为OS认证方式。</li>
            <li id="oracle_gud_0012__oracle_gud_0012_li728111476285_1">如果存在sqlnet.ora文件，并且文件中存在记录：SQLNET.AUTHENTICATION_SERVICES= (None)，则表示为数据库认证。</li>
           </ul></li>
@@ -214,6 +217,7 @@
           </ol>
           <ul>
            <li id="oracle_gud_0012__oracle_gud_0012_li1181793163115_2">如果不存在sqlnet.ora文件，则表示为OS认证方式。</li>
+           <li id="oracle_gud_0012__oracle_gud_0012_li12131144102512_2">如果存在sqlnet.ora文件，但文件中未记录SQLNET.AUTHENTICATION_SERVICES，则表示为OS认证方式。</li>
            <li id="oracle_gud_0012__oracle_gud_0012_li5252161217474_2">如果存在sqlnet.ora文件，且文件中存在记录：SQLNET.AUTHENTICATION_SERVICES= (ALL)或SQLNET.AUTHENTICATION_SERVICES= (NTS)，则表示为OS认证方式。</li>
            <li id="oracle_gud_0012__oracle_gud_0012_li728111476285_2">如果存在sqlnet.ora文件，并且文件中存在记录：SQLNET.AUTHENTICATION_SERVICES= (None)，则表示为数据库认证。</li>
           </ul></li>
@@ -231,7 +235,7 @@
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="oracle_gud_0008.html">备份</a>
+     <strong>父主题：</strong> <a href="oracle_gud_0009.html">备份</a>
     </div>
    </div>
   </div>

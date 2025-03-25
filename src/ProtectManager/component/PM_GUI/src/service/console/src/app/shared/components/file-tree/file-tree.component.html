@@ -24,7 +24,7 @@
 </lv-alert>
 <lv-form class="aui-gutter-column-md">
     <lv-alert lvType="info">
-        {{'protection_manual_path_tip_label' | i18n}}
+        {{ (appUtilsService.isDecouple ? 'protection_file_tree_e1000_tip_label' : 'protection_file_tree_tip_label') | i18n}}
     </lv-alert>
     <lv-form-item>
         <lv-form-label>

@@ -1,0 +1,65 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="VMware恢复任务失败，任务详情显示“创建虚拟机失败”">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0115.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="vmware_gud_0167">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>VMware恢复任务失败，任务详情显示“创建虚拟机失败”</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="vmware_gud_0167"></a><a name="vmware_gud_0167"></a>
+  <h1 class="topictitle1">VMware恢复任务失败，任务详情显示“创建虚拟机失败”</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>执行VMware恢复任务时，恢复到的目标数据存储选择为vSAN存储，任务失败，任务详情显示“创建虚拟机失败”。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>所选择的vSAN存储的默认存储策略和虚拟机的默认存储策略不兼容。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li><span>使用浏览器，登录vCenter Server。</span><p></p><p id="vmware_gud_0167__vmware_gud_0149_p3458193034817">登录地址：<strong id="vmware_gud_0167__vmware_gud_0149_b1245883004818">https://</strong><em id="vmware_gud_0167__vmware_gud_0149_i44581430154817">vcenter_server_ip_address</em></p> <p></p></li>
+     <li><span>在vCenter Server上找到VMware恢复时选择的vSAN存储。</span></li>
+     <li><span>在目录树中选择对应vSAN存储，在<span class="uicontrol">“配置”</span>页签查看<span class="uicontrol">“默认存储策略”</span>。如果值为“vSAN Default Storage Policy” ，需要更改为“Management Storage Policy - Single Node”。</span></li>
+    </ol>
+    <p></p>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="vmware_gud_0115.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

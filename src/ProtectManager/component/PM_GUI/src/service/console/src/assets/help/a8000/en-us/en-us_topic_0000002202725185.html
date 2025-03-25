@@ -1,0 +1,179 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring One or More Tables">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164597710.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002202725185">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring One or More Tables</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002202725185"></a><a name="EN-US_TOPIC_0000002202725185"></a>
+
+<h1 class="topictitle1">Restoring One or More Tables</h1>
+<div><p>This section describes how to restore one or more tables in a GaussDB (DWS) cluster, schema set, or table set that has been backed up to the original location or a new location.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_p6873141491714">Backup copies, reverse replication copies, cascaded replication copies, archive copies, and replication copies can be used for restoration. GaussDB (DWS) can be restored to the original location or a new location. Replication copies and their archive copies, cascaded replication copies and their archive copies cannot be used for restoration of the GaussDB (DWS) to the original location</p>
+<p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_p19896104213331">If the backup copy and archive copy coexist, use the backup copy first for restoration.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li></ul>
+<ul><li>Before table-level restoration to a new schema, ensure that the schema has been created in the database corresponding to GaussDB (DWS). Otherwise, the restoration fails.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002199964685_uicontrol879104212548"><b><span id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002199964685_text1079164214547"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002199964685_text1679164255414"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002199964685_text364514912581"><strong>Big Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002199964685_text1416113393018"><strong>GaussDB(DWS)</strong></span></b></span>.</span></li><li><span>Search for copies by GaussDB (DWS) resource or copy. This section uses resources as an example.</span><p><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_p624620403810">On the <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_uicontrol816218529113"><b>Resources</b></span> tab page, locate the resource to be restored by resource name and click the name.</p>
+</p></li><li><span>Select the year, month, and day in sequence to find the copy.</span><p><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_p9918150182310">If <span><img id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_image669318410309" src="en-us_image_0000002167398698.png"></span> is displayed under a month or date, copies exist in the month or on the date.</p>
+</p></li><li><span>Restore data using a specific copy.</span><p><ul><li>Restore one or more tables in the GaussDB (DWS) cluster copy by using a GaussDB (DWS) cluster copy.<ol type="a"><li>In the row of the target GaussDB (DWS) cluster copy, choose <strong>More</strong> &gt; <strong>Table-Level Restoration</strong>.</li><li>Restore a table in the GaussDB (DWS) cluster copy to the original location or a new location.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>For 1.5.0, click <strong>Select</strong> and select the target location for restoration.</p>
+</div></div>
+<div class="p"><a href="#EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_table13681910173115">Table 1</a> describes the related parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_table13681910173115"></a><a name="en-us_topic_0000002167238922_en-us_topic_0000001397321757_table13681910173115"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_table13681910173115" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Target location description</caption><colgroup><col style="width:32.019999999999996%"><col style="width:67.97999999999999%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_row15368121073117"><th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.4.2.4.2.1.1.1.2.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_p183681310193120">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.4.2.4.2.1.1.1.2.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_p16368121015315">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_row103681710113115"><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.1.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_p636851013114">Restore To</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.1.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_p113681710143113">Select either <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_uicontrol2368161003111"><b>Original location</b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_uicontrol1336819106318"><b>New location</b></span>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_row113681810193113"><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.1.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_p1036814104312">Location</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.1.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_p11368110193111">If you select <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_uicontrol1526918456517"><b>Original location</b></span> for <strong id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_b16270174512518">Restore To</strong>, the original location is displayed.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_row236821003111"><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.1.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_p12368610193113">Target Cluster</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.1.1.2.2.2.2.3.1.2 "><div class="p" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_en-us_topic_0000001397321757_p1136881063111">If you select <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_uicontrol1830359775"><b>New location</b></span> for <strong id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_b93038919714">Restore To</strong>, you must select the target cluster to be restored. Ensure that the installation configuration file named <strong id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_b137292033813">mppdb-install-config.xml</strong> of the target cluster has been replicated to the <strong id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_b10729732819">/opt/huawei/</strong> directory on each node in the target cluster and that the database user has the read permission. Otherwise, the restoration will fail. Note that if the installation configuration file is not named <strong id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_b12730232087">mppdb-install-config.xml</strong>, rename it.<div class="note" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_note6258184911513"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_p1915091720158">If the database user does not have the read permission on the configuration file, log in to each node in the target cluster as user <strong id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_b5506101597">root</strong> and run the following command:</p>
+<pre class="screen" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002167238922_screen6958121461515">sudo g+r /opt/huawei/mppdb-install-config.xml</pre>
+</div></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li><li id="EN-US_TOPIC_0000002202725185__li9529591288">Select the database where the table to be restored resides.</li><li id="EN-US_TOPIC_0000002202725185__li1282683510299">Select one or more tables to be restored.<div class="note" id="EN-US_TOPIC_0000002202725185__note72851129134318"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002202725185__p228552934319">For 1.6.0 and later versions: You can enter a keyword in the search box to quickly search for one or more tables to be restored.</p>
+</div></div>
+</li><li id="EN-US_TOPIC_0000002202725185__li63294017260">If you select <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__uicontrol832114014267"><b>New location</b></span> for <strong id="EN-US_TOPIC_0000002202725185__b969836132016">Restore To</strong>, enter the names of the schema and table to which the table belongs after restoration.<div class="note" id="EN-US_TOPIC_0000002202725185__note17469419194516"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002202725185__p18469219174511">For 1.6.0 and later versions: You can select multiple tables and click <strong id="EN-US_TOPIC_0000002202725185__b69457802319">Batch Set Restoration Location</strong> to set the names of the schemas to which the tables belong after restoration.</p>
+</div></div>
+</li><li>Click <span class="uicontrol"><b>OK</b></span> and confirm the information as prompted.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li id="EN-US_TOPIC_0000002202725185__li1532840142617">Ensure that the restoration target location is correct and the remaining space of the restoration target location is greater than the size of the copy used for restoration before reduction.</li><li id="EN-US_TOPIC_0000002202725185__li1432124014267">For 1.6.0 and later versions, table-level restoration to a new location is supported.</li><li id="EN-US_TOPIC_0000002202725185__li19321640102615">Table-level restoration can be used to restore only the table structure and data of a table set. If you want to restore information such as view and function of a table set, manually create such information by referring to <a href="https://support.huawei.com/enterprise/en/cloud-computing/hcs-dws-service-pid-251527524" target="_blank" rel="noopener noreferrer">Product Documentation</a> of the corresponding GaussDB (DWS) version.</li></ul>
+</div></div>
+</li></ol>
+</li></ul>
+<ul><li>Restore one or more tables in the schema set or table set copy by using a schema set/table set copy.<ul><li>Common restoration (restoring all tables in a table set copy)<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Common restoration cannot be used for schema set copies.</p>
+</div></div>
+<ol type="a"><li>In the row of the target table set copy, choose <strong>More</strong> &gt; <strong>Restore</strong>.</li><li>Restore a table in the copy to the original location or a new location.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>For 1.5.0, click <strong>Select</strong> and select the target location for restoration.</p>
+</div></div>
+<div class="p" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_p6368171033117"><a href="#EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_table13681910173115">Table 2</a> describes the related parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_table13681910173115"></a><a name="en-us_topic_0000001397321757_table13681910173115"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_table13681910173115" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Target location description</caption><colgroup><col style="width:32.019999999999996%"><col style="width:67.97999999999999%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_row15368121073117"><th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.4.2.4.2.2.1.1.1.2.2.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_p183681310193120">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.4.2.4.2.2.1.1.1.2.2.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_p16368121015315">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_row103681710113115"><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.2.1.1.1.2.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_p636851013114">Restore To</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.2.1.1.1.2.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_p113681710143113">Select either <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__uicontrol11220735943546"><b>Original location</b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__uicontrol19530240113546"><b>New location</b></span>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_row113681810193113"><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.2.1.1.1.2.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002202725185__p310402016357">Location</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.2.1.1.1.2.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_p11368110193111">If you select <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__uicontrol2627911513627"><b>Original location</b></span> for <strong id="EN-US_TOPIC_0000002202725185__b18209433993627">Restore To</strong>, the original location is displayed.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_row236821003111"><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.2.1.1.1.2.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_p12368610193113">Target Cluster</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.2.1.1.1.2.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000001397321757_p1136881063111">If you select <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__uicontrol973088104382"><b>New location</b></span> for <strong id="EN-US_TOPIC_0000002202725185__b316203054382">Restore To</strong>, you must select the target cluster to be restored.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002202725185__row138901404550"><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.2.1.1.1.2.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002202725185__p128906065514">Databases</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.2.1.1.1.2.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002202725185__p389018085520">If <strong id="EN-US_TOPIC_0000002202725185__b17590103623919">Restore To</strong> is set to <strong id="EN-US_TOPIC_0000002202725185__b2019095223816">New location</strong> for restoration using table set copies, you need to select the target database for restoration.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li><li>Click <span class="uicontrol"><b>OK</b></span> and confirm the information as prompted.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>Ensure that the restoration target location is correct and the remaining space of the restoration target location is greater than the size of the copy used for restoration before reduction.</li><li>For table-level GDS-based restoration, the number of GDSs started at the target end must be greater than or equal to the number of GDSs started at the source end during backup.</li><li>For 1.6.0 and later versions, table-level restoration to a new location is supported.</li><li>Table-level restoration can be used to restore only the table structure and data of a table set. If you want to restore information such as view and function of a table set, manually create such information by referring to <a href="https://support.huawei.com/enterprise/en/cloud-computing/hcs-dws-service-pid-251527524" target="_blank" rel="noopener noreferrer">Product Documentation</a> of the corresponding GaussDB (DWS) version.</li></ul>
+</div></div>
+</li></ol>
+</li><li>Table-level restoration (restoring one or more tables in a schema set or table set copy)<ol type="a"><li>In the row of the target schema set or table set copy, choose <strong>More</strong> &gt; <strong>Table-Level Restoration</strong>.</li><li>Restore a table in the copy to the original location or a new location.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>For 1.5.0, click <strong>Select</strong> and select the target location for restoration.</p>
+</div></div>
+<div class="p"><a href="#EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_table13681910173115">Table 3</a> describes the related parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_table13681910173115"></a><a name="en-us_topic_0000002202725185_en-us_topic_0000001397321757_table13681910173115"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_table13681910173115" frame="border" border="1" rules="all"><caption><b>Table 3 </b>Target location description</caption><colgroup><col style="width:32.019999999999996%"><col style="width:67.97999999999999%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_row15368121073117"><th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_p183681310193120">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_p16368121015315">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_row103681710113115"><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_p636851013114">Restore To</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_p113681710143113">Select either <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_uicontrol11220735943546"><b>Original location</b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_uicontrol19530240113546"><b>New location</b></span>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_row113681810193113"><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_p310402016357">Location</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_p11368110193111">If you select <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_uicontrol2627911513627"><b>Original location</b></span> for <strong id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_b18209433993627">Restore To</strong>, the original location is displayed.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_row236821003111"><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_p12368610193113">Target Cluster</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_en-us_topic_0000001397321757_p1136881063111">If you select <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_uicontrol973088104382"><b>New location</b></span> for <strong id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_b316203054382">Restore To</strong>, you must select the target cluster to be restored.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_row138901404550"><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_p128906065514">Databases</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_p389018085520">If <strong id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_b17590103623919">Restore To</strong> is set to <strong id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_b2019095223816">New location</strong> for restoration using table set copies, you need to select the target database for restoration.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li><li>Select the database where the table to be restored resides.</li><li>Select one or more tables to be restored.<div class="note" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_note72851129134318"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_p228552934319">For 1.6.0 and later versions: You can enter a keyword in the search box to quickly search for one or more tables to be restored.</p>
+</div></div>
+</li><li>If you select <span class="uicontrol" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_uicontrol832114014267"><b>New location</b></span> for <strong id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_b969836132016">Restore To</strong>, enter the names of the schema and table to which the table belongs after restoration.<div class="note" id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_note17469419194516"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_p18469219174511">For 1.6.0 and later versions: You can select multiple tables and click <strong id="EN-US_TOPIC_0000002202725185__en-us_topic_0000002202725185_b69457802319">Batch Set Restoration Location</strong> to set the names of the schemas to which the tables belong after restoration.</p>
+</div></div>
+</li><li>Click <span class="uicontrol"><b>OK</b></span> and confirm the information as prompted.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>Ensure that the restoration target location is correct and the remaining space of the restoration target location is greater than the size of the copy used for restoration before reduction.</li><li>If table-level GDS restoration is performed using table set copies, the number of GDSs started at the target end must be greater than or equal to the number of GDSs started at the source end during backup.</li><li>For 1.6.0 and later versions, table-level restoration to a new location is supported.</li><li>Table-level restoration can be used to restore only the table structure and data of a table set. If you want to restore information such as view and function of a table set, manually create such information by referring to <a href="https://support.huawei.com/enterprise/en/cloud-computing/hcs-dws-service-pid-251527524" target="_blank" rel="noopener noreferrer">Product Documentation</a> of the corresponding GaussDB (DWS) version.</li></ul>
+</div></div>
+</li></ol>
+</li></ul>
+</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164597710.html">Restoring the GaussDB (DWS)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

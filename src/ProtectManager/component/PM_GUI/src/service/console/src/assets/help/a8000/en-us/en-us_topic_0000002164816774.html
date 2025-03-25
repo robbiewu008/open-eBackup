@@ -1,0 +1,154 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Handling Stuck Volume Snapshots">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164656978.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164816774">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Handling Stuck Volume Snapshots</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164816774"></a><a name="EN-US_TOPIC_0000002164816774"></a>
+
+<h1 class="topictitle1">Handling Stuck Volume Snapshots</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>During creation or deletion of volume snapshots, a volume snapshot is unavailable for use when it is kept stuck in a transition state (including <strong>creating</strong>, <strong>deleting</strong>, and <strong>error_deleting</strong>).</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Causes</h4><ul><li>A system exception occurs during a volume snapshot operation, which delays the update of the volume snapshot status.</li><li>The database is rolled back using the management data backup to a previous backup point. For example, after data is backed up, operations are performed on the volume snapshot, and the volume snapshot status is updated in the database. If the data is backed up or restored, records in the database are rolled back, and the volume snapshot status is also restored to the original backup point.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><p>Determine the volume snapshot handling method based on <a href="#EN-US_TOPIC_0000002164816774__table13437176222">Table 1</a>. For other scenarios, contact technical support for assistance.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002164816774__table13437176222"></a><a name="table13437176222"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164816774__table13437176222" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Volume snapshot handling methods</caption><colgroup><col style="width:20%"><col style="width:20%"><col style="width:20%"><col style="width:20%"><col style="width:20%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20%" id="mcps1.3.3.3.2.6.1.1"><p>Volume Snapshot Status</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="20%" id="mcps1.3.3.3.2.6.1.2"><p>In Transition Mode</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="20%" id="mcps1.3.3.3.2.6.1.3"><p>Description</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="20%" id="mcps1.3.3.3.2.6.1.4"><p>Possible Scenario</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="20%" id="mcps1.3.3.3.2.6.1.5"><p>Handling Method</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.1 "><p>creating</p>
+</td>
+<td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.2 "><p>Y</p>
+</td>
+<td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.3 "><p>The volume snapshot is being created.</p>
+</td>
+<td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.4 "><p>Create a volume snapshot.</p>
+</td>
+<td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.5 "><p>For details, see <a href="#EN-US_TOPIC_0000002164816774__li149172916333">Method 1</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.1 "><p>deleting</p>
+</td>
+<td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.2 "><p>Y</p>
+</td>
+<td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.3 "><p>The volume snapshot is being deleted.</p>
+</td>
+<td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.4 "><p>Delete a volume snapshot.</p>
+</td>
+<td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.5 "><p>For details, see <a href="#EN-US_TOPIC_0000002164816774__li825218114713">Method 2</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.1 "><p>error_deleting</p>
+</td>
+<td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.2 "><p>N</p>
+</td>
+<td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.3 "><p>The volume snapshot fails to be deleted.</p>
+</td>
+<td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.4 "><p>Failed to delete a volume snapshot.</p>
+</td>
+<td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.3.3.2.6.1.5 "><p>For details, see <a href="#EN-US_TOPIC_0000002164816774__li825218114713">Method 2</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Method 1</strong></p>
+</div>
+<ol><li id="EN-US_TOPIC_0000002164816774__li149172916333"><a name="EN-US_TOPIC_0000002164816774__li149172916333"></a><a name="li149172916333"></a><span>Use PuTTY to log in to any OpenStack node using the management IP address as user <strong>fsp</strong>.</span></li><li id="EN-US_TOPIC_0000002164816774__li42781127135216"><a name="EN-US_TOPIC_0000002164816774__li42781127135216"></a><a name="li42781127135216"></a><span>Import environment variables on the current host. For details, see "Importing Environment Variables" in the <a href="https://support.huawei.com/enterprise/en/huawei-cloud-stack/huawei-cloud-stack-pid-23864287" target="_blank" rel="noopener noreferrer">Huawei Cloud Stack Product Documentation</a> of the corresponding version.</span></li><li id="EN-US_TOPIC_0000002164816774__li13882133911368"><a name="EN-US_TOPIC_0000002164816774__li13882133911368"></a><a name="li13882133911368"></a><span>Run the following commands to query the volume snapshot status on the node.</span><p><ol type="a"><li>Run the following command to enter the secure operation mode:<pre class="screen">runsafe</pre>
+<p>Information similar to the following is displayed:</p>
+<pre class="screen">Input command:</pre>
+</li><li>Run the following command to query the volume snapshot status:<pre class="screen">cinder snapshot-show <em>Snapshot ID</em></pre>
+<p>Check whether the value of <strong>status</strong> in the command output is consistent with the volume snapshot status in the audit report.</p>
+<ul><li>If yes, go to <a href="#EN-US_TOPIC_0000002164816774__li385991723817">4</a>.</li><li>If no, contact technical support for assistance.</li></ul>
+</li></ol>
+</p></li><li id="EN-US_TOPIC_0000002164816774__li385991723817"><a name="EN-US_TOPIC_0000002164816774__li385991723817"></a><a name="li385991723817"></a><span>View the value of <strong>last_update_time</strong> in the audit report and check whether the time difference between the value and the current time exceeds 24 hours.</span><p><ul><li>If yes, go to <a href="#EN-US_TOPIC_0000002164816774__li89293393381">5</a>.</li><li>If no, contact technical support for assistance.</li></ul>
+</p></li><li id="EN-US_TOPIC_0000002164816774__li89293393381"><a name="EN-US_TOPIC_0000002164816774__li89293393381"></a><a name="li89293393381"></a><span>Set the volume snapshot status to <strong>error</strong>.</span><p><div class="p">Enter the secure operation mode based on <a href="#EN-US_TOPIC_0000002164816774__li13882133911368">3</a> and run the following command:<pre class="screen">cinder snapshot-reset-state <em>Snapshot ID</em> --state error</pre>
+</div>
+<p>In the command output, check whether the value of <strong>status</strong> is <strong>error</strong>.</p>
+<ul><li>If yes, no further action is required.</li><li>If no, contact technical support for assistance.</li></ul>
+</p></li><li><span>Check the volume snapshot status.</span><p><p>Enter the secure operation mode based on <a href="#EN-US_TOPIC_0000002164816774__li13882133911368">3</a> and run the following command:</p>
+<pre class="screen">cinder snapshot-show <em>Snapshot ID</em></pre>
+<p>In the command output, check whether the <strong>value</strong> of <strong>status</strong> is error.</p>
+<ul><li>If yes, no further action is required.</li><li>If no, contact technical support for assistance.</li></ul>
+</p></li><li><span>Run the following command to delete the volume snapshot:</span><p><pre class="screen">cinder snapshot-delete <em>Snapshot UUID</em></pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>The <strong>Snapshot UUID</strong> value is the value of <strong>snap_id</strong> obtained from the audit report.</p>
+</div></div>
+</p></li><li id="EN-US_TOPIC_0000002164816774__li77422894012"><a name="EN-US_TOPIC_0000002164816774__li77422894012"></a><a name="li77422894012"></a><span>Run the following command to check whether the volume snapshot is deleted:</span><p><pre class="screen">cinder snapshot-show <em>Snapshot UUID</em></pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>The <strong>Snapshot UUID</strong> value is the value of <strong>snap_id</strong> obtained from the audit report.</p>
+</div></div>
+<p>If information similar to the following is displayed, the volume snapshot is deleted:</p>
+<pre class="screen">ERROR: No snapshot with a name or ID of 'e318e16e-5a1c-471f-89c2-5c76719aa346' exists.</pre>
+<p>If the value of <strong>status</strong> in the command output is <strong>error_deleting</strong>, the volume snapshot fails to be deleted.</p>
+<p>If the value of <strong>status</strong> in the command output is <strong>deleting</strong>, the volume snapshot is being deleted. Wait for a while and perform <a href="#EN-US_TOPIC_0000002164816774__li77422894012">8</a> again until the volume snapshot is deleted or fails to be deleted.</p>
+<div class="p">Check whether the volume snapshot is successfully deleted.<ul><li>If yes, no further action is required.</li><li>If no, contact technical support for assistance.</li></ul>
+</div>
+</p></li></ol>
+<p><strong>Method 2</strong></p>
+<ol><li id="EN-US_TOPIC_0000002164816774__li825218114713"><a name="EN-US_TOPIC_0000002164816774__li825218114713"></a><a name="li825218114713"></a><span>Log in to any OpenStack node. For details, see <a href="#EN-US_TOPIC_0000002164816774__li149172916333">1</a>.</span></li><li><span>Import environment variables on the current host. For details, see <a href="#EN-US_TOPIC_0000002164816774__li42781127135216">2</a>.</span></li><li id="EN-US_TOPIC_0000002164816774__li18597143712439"><a name="EN-US_TOPIC_0000002164816774__li18597143712439"></a><a name="li18597143712439"></a><span>Run the following commands to query the volume snapshot status on the node.</span><p><ol type="a"><li>Run the following command to enter the secure operation mode:<pre class="screen">runsafe</pre>
+<p>Information similar to the following is displayed:</p>
+<pre class="screen">Input command:</pre>
+</li><li>Run the following command to query the volume snapshot status:<pre class="screen">cinder snapshot-show <em>Snapshot ID</em></pre>
+<p>Check whether the value of <strong>status</strong> in the command output is consistent with the volume snapshot status in the audit report.</p>
+<ul><li>If the volume snapshot status is <strong>deleting</strong>, go to <a href="#EN-US_TOPIC_0000002164816774__li1821213194918">4</a>. If the volume snapshot status is <strong>error_deleting</strong>, go to <a href="#EN-US_TOPIC_0000002164816774__li545516256013">5</a>.</li><li>If no, no further action is required.</li></ul>
+</li></ol>
+</p></li><li id="EN-US_TOPIC_0000002164816774__li1821213194918"><a name="EN-US_TOPIC_0000002164816774__li1821213194918"></a><a name="li1821213194918"></a><span>Check the content of the audit report. For details, see <a href="#EN-US_TOPIC_0000002164816774__li385991723817">4</a>.</span></li><li id="EN-US_TOPIC_0000002164816774__li545516256013"><a name="EN-US_TOPIC_0000002164816774__li545516256013"></a><a name="li545516256013"></a><span>Set the volume snapshot status to <strong>available</strong>.</span><p><p>Enter the secure operation mode based on <a href="#EN-US_TOPIC_0000002164816774__li18597143712439">3</a> and run the following command:</p>
+<pre class="screen">cinder snapshot-reset-state <em>Snapshot ID</em> --state available</pre>
+</p></li><li><span>Delete the volume snapshot.</span><p><p>Enter the secure operation mode based on <a href="#EN-US_TOPIC_0000002164816774__li18597143712439">3</a> and run the following command:</p>
+<pre class="screen">cinder snapshot-delete <em>Snapshot ID</em></pre>
+</p></li><li id="EN-US_TOPIC_0000002164816774__li1037414318211"><a name="EN-US_TOPIC_0000002164816774__li1037414318211"></a><a name="li1037414318211"></a><span>Check whether the volume snapshot is successfully deleted.</span><p><p>Enter the secure operation mode based on <a href="#EN-US_TOPIC_0000002164816774__li18597143712439">3</a> and run the following command:</p>
+<pre class="screen">cinder snapshot-show <em>Snapshot ID</em></pre>
+<p>If information similar to the following is displayed, the volume snapshot is deleted:</p>
+<pre class="screen">ERROR: No snapshot with a name or ID of 'e318e16e-5a1c-471f-89c2-5c76719aa346' exists.</pre>
+<p>If the value of <strong>status</strong> in the command output is <strong>error_deleting</strong>, the volume snapshot fails to be deleted.</p>
+<p>If the value of <strong>status</strong> in the command output is <strong>deleting</strong>, the volume snapshot is being deleted. Wait for a while and perform <a href="#EN-US_TOPIC_0000002164816774__li1037414318211">7</a> again until the volume snapshot is deleted or fails to be deleted.</p>
+<p>Check whether the volume snapshot is successfully deleted.</p>
+<ul><li>If yes, no further action is required.</li><li>If no, contact technical support for assistance.</li></ul>
+</p></li></ol>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164656978.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

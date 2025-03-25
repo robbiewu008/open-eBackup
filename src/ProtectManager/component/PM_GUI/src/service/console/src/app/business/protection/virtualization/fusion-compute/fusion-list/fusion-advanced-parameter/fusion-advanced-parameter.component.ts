@@ -61,6 +61,9 @@ export class FusionAdvancedParameterComponent implements OnInit {
 
   isFusionOne = false;
 
+  slaOverwriteHelp: string;
+  slaApplyAllHelp: string;
+
   speedErrorTip = {
     invalidInteger: this.i18n.get('common_valid_integer_label'),
     invalidRang: this.i18n.get('common_valid_rang_label', [10, 500])
@@ -227,6 +230,17 @@ export class FusionAdvancedParameterComponent implements OnInit {
     this.isFusionOne =
       this.resourceData?.subType === DataMap.Resource_Type.fusionOne.value ||
       this.resourceData?.sub_type === DataMap.Resource_Type.fusionOne.value;
+    if (this.resourceType === ResourceType.HOST) {
+      this.slaOverwriteHelp = this.i18n.get(
+        'protection_overwrite_policy_host_help_label'
+      );
+      this.slaApplyAllHelp = this.i18n.get('protection_host_sla_help_label');
+    } else {
+      this.slaOverwriteHelp = this.i18n.get(
+        'protection_overwrite_policy_cluster_help_label'
+      );
+      this.slaApplyAllHelp = this.i18n.get('protection_cluster_sla_help_label');
+    }
   }
 
   onOK() {

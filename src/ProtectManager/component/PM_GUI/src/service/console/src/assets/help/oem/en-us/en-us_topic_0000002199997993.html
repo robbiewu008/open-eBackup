@@ -1,0 +1,107 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 4: Registering a PDB Set (Applicable to 1.6.0 and Later Versions)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002199963553.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199997993">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 4: Registering a PDB Set (Applicable to 1.6.0 and Later Versions)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199997993"></a><a name="EN-US_TOPIC_0000002199997993"></a>
+  <h1 class="topictitle1">Step 4: Registering a PDB Set (Applicable to 1.6.0 and Later Versions)</h1>
+  <div>
+   <p>This section describes how to register a PDB set when the object to be protected is a container database (CDB) or PDB set in a multi-tenant environment.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>Only Oracle 12c and later versions support the CDB and PDB. In the multi-tenant environment, one CDB can carry multiple PDBs.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>You have registered the database with the <span>product</span> by referring to <a href="en-us_topic_0000002209175821.html">Step 3: Registering an Oracle Database</a>.</li>
+     <li><span id="EN-US_TOPIC_0000002199997993__ph726173316142">Ensure that the multi-tenant environment is configured for the Oracle instance. Otherwise, there will be no PDB available for the PDB set registration task. You can run the SQL statement <strong id="EN-US_TOPIC_0000002199997993__b9211112135015">SELECT cdb FROM v$database</strong> to query whether the multi-tenant environment is configured for the current Oracle instance. In the command output, value <span class="uicontrol" id="EN-US_TOPIC_0000002199997993__uicontrol10762145114811"><b>yes</b></span> indicates that the multi-tenant environment is configured for the current Oracle instance, and value <span class="uicontrol" id="EN-US_TOPIC_0000002199997993__uicontrol1659611961514"><b>no</b></span> indicates that the multi-tenant environment is not configured, that is, no PDB set exists.</span></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002199997993__en-us_topic_0000002199964685_uicontrol49641842919"><b><span id="EN-US_TOPIC_0000002199997993__en-us_topic_0000002199964685_text63901566195"><strong>Protection</strong></span> &gt; Databases &gt; Oracle</b></span>.</span></li>
+     <li><span>Switch to the <span class="uicontrol"><b>PDB Sets</b></span> tab page and click <span class="uicontrol"><b><span>Register</span></b></span>.</span><p></p><p><a href="#EN-US_TOPIC_0000002199997993__table17561557152715">Table 1</a> describes the related parameters.</p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002199997993__table17561557152715"></a><a name="table17561557152715"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002199997993__table17561557152715" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Parameters for registering a PDB set
+        </caption>
+        <colgroup>
+         <col style="width:31.4%">
+         <col style="width:68.60000000000001%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="31.4%" id="mcps1.3.4.2.2.2.2.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="68.60000000000001%" id="mcps1.3.4.2.2.2.2.2.3.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.4.2.2.2.2.2.3.1.1 "><p>Name</p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.4.2.2.2.2.2.3.1.2 "><p>Name of the PDB set resource to be protected. The value can be customized.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.4.2.2.2.2.2.3.1.1 "><p>Databases</p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.4.2.2.2.2.2.3.1.2 "><p>Database where the PDB set to be backed up resides.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.4.2.2.2.2.2.3.1.1 "><p>Nodes</p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.4.2.2.2.2.2.3.1.2 "><p>This parameter is displayed when the selected database is deployed in cluster mode.</p> <p>Select the Oracle node where the PDB set to be backed up resides for registration.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>In the <strong>Available PDBs</strong> area, select the PDBs to be backed up. You can view the selected PDBs in the <strong>Selected PDBs</strong> area.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>If you select all PDBs in the database instance, the system automatically identifies <strong>PDB</strong> for the PDB set as <strong>CDB</strong>.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002199963553.html">Backing Up an Oracle Database</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

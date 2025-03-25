@@ -20,58 +20,40 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="Oracle数据库">
+<meta name="DC.Title" content="步骤2：检查并开启vmware-vapi-endpoint服务">
 <meta name="product" content="">
 <meta name="DC.Relation" scheme="URI" content="vmware_gud_0018.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="vmware_gud_0020">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>Oracle数据库</title>
+<title>步骤2：检查并开启vmware-vapi-endpoint服务</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="vmware_gud_0020"></a><a name="vmware_gud_0020"></a>
 
-<h1 class="topictitle1">Oracle数据库</h1>
-<div><div class="section" id="vmware_gud_0020__section4543102195920"><a name="vmware_gud_0020__section4543102195920"></a><a name="section4543102195920"></a><h4 class="sectiontitle">pre-freeze-script脚本</h4><p>脚本内容如下：</p>
-<pre class="screen">#!/bin/sh
-ORACLE_HOME=<em><strong>Oracle数据库安装路径</strong></em>
-FREEZEFILE=$ORACLE_HOME"/DBA_SCRIPTS/pre-freeze.sql"
-FREEZELOG=$ORACLE_HOME"/DBA_SCRIPTS/pre-freeze.log"
-if [ "$(id -u)" -eq "0" ]; then 
-    echo "$ORACLE_HOME/bin/sqlplus 'sys/sys@KPNDB as sysdba' &lt;&lt;EOF" &gt; ${FREEZEFILE}
-    echo "spool ${FREEZELOG};" &gt;&gt; ${FREEZEFILE}
-    echo "alter database begin backup;" &gt;&gt; ${FREEZEFILE}
-    echo "spool off;" &gt;&gt; ${FREEZEFILE}
-    echo "EOF" &gt;&gt; ${FREEZEFILE}
-    exec su oracle -c  ${FREEZEFILE}
-    [ -f ${ FREEZELOG } ] &amp;&amp; rm -f ${ FREEZELOG }
-fi</pre>
-</div>
-<div class="section" id="vmware_gud_0020__section655719346595"><a name="vmware_gud_0020__section655719346595"></a><a name="section655719346595"></a><h4 class="sectiontitle">post-thaw-script脚本</h4><p>脚本内容如下：</p>
-<pre class="screen">#!/bin/sh
-ORACLE_HOME=<em><strong>Oracle数据库安装路径</strong></em>
-UNFREEZEFILE=$ORACLE_HOME"/DBA_SCRIPTS/post-thaw.sql"
-UNFREEZELOG=$ORACLE_HOME"/DBA_SCRIPTS/post-thaw.log"
-if [ "$(id -u)" -eq "0" ]; then 
-    echo "$ORACLE_HOME/bin/sqlplus 'sys/sys@KPNDB as sysdba' &lt;&lt;EOF" &gt; ${UNFREEZEFILE}
-    echo "spool ${UNFREEZELOG};" &gt;&gt; ${UNFREEZEFILE}
-    echo "alter database end backup;" &gt;&gt; ${UNFREEZEFILE}
-    echo "spool off;" &gt;&gt; ${UNFREEZEFILE}
-    echo "EOF" &gt;&gt; ${UNFREEZEFILE}
-    exec su oracle -c  ${UNFREEZEFILE}
-    [ -f ${UNFREEZEFILE} ] &amp;&amp; rm -f ${UNFREEZEFILE}
-fi</pre>
+<h1 class="topictitle1">步骤2：检查并开启vmware-vapi-endpoint服务</h1>
+<div><p>注册VMware虚拟化环境前，请确保vCenter Server上vmware-vapi-endpoint服务已开启，否则注册将失败。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>使用PuTTY，以<strong>root</strong>账号登录vCenter Server。</span></li><li><span>执行以下命令，进入shell模式。</span><p><pre class="screen">shell</pre>
+</p></li><li><span>执行以下命令，检查<strong>vmware-vapi-endpoint</strong>服务是否已开启。</span><p><pre class="screen">service-control --status</pre>
+<p>回显类似如下，当<span class="parmname">“running”</span>下包含<strong>vmware-vapi-endpoint</strong>服务时，表示服务已开启。否则，请执行<a href="#vmware_gud_0020__li3254446179">4</a>开启服务。</p>
+<pre class="screen">root@vc161-99 [ <font style="font-size:8pt" Face="Courier New" >~</font> ]# service-control --status
+<strong>Running: </strong>
+applmgmt lwsmd pschealth vmafdd vmcad vmdird vmdnsd vmonapi vmware-cis-license vmware-cm vmware-content-library vmware-perfcharts vmware-pod vmware-postgres-archiver vmware-rhttpproxy vmware-sca vmware-sps vmware-sts-idmd vmware-stsd vmware-updatemgr <strong>vmware-vapi-endpoint</strong> vmware-vmon vmware-vpostgres vmware-vpxd vmware-vpxd-svcs vmware-vsan-health vmware-vsm vsphere-client vsphere-ui
+Stopped: 
+vmcam vmware-analytics vmware-eam vmware-imagebuilder vmware-mbcs vmware-netdumper vmware-rbd-watchdog vmware-statsmonitor vmware-vcha vsan-dps</pre>
+</p></li><li id="vmware_gud_0020__li3254446179"><a name="vmware_gud_0020__li3254446179"></a><a name="li3254446179"></a><span>执行以下命令，开启<strong>vmware-vapi-endpoint</strong>服务。</span><p><pre class="screen">service-control --start vmware-vapi-endpoint</pre>
+</p></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="vmware_gud_0018.html">步骤3：配置应用一致性备份脚本</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="vmware_gud_0018.html">备份VMware虚拟机</a></div>
 </div>
 </div>
 

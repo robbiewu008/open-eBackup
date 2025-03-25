@@ -1,0 +1,171 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 2: (Optional) Creating an IPsec Policy">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002203895593.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002203781161">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 2: (Optional) Creating an IPsec Policy</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002203781161"></a><a name="EN-US_TOPIC_0000002203781161"></a>
+  <h1 class="topictitle1">Step 2: (Optional) Creating an IPsec Policy</h1>
+  <div>
+   <p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p618831644613">Before enabling replication link encryption, you need to create IPsec policies for replication network logical ports on the storage devices at both ends of a replication link. After IPsec policies are created, transmitted data is encrypted during remote replication to ensure data security. To create such IPsec policies, you must perform the following operations on the storage devices at both ends of the replication link.</p>
+   <div class="section" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_section387343573110">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_ul1614193821113">
+     <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li17141338161114">You can create IPsec policies only when the replication network is an IP network.</li>
+     <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li17586815116">You can create IPsec policies only when the replication network IP address is an IPv4 address.</li>
+     <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li82609552112">You cannot create IPsec policies if the replication network logical ports are created on a bond port containing members from different interface modules.</li>
+     <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li169781538433">Only SmartIO interface modules (10 Gbit/s) support IPsec policies.</li>
+    </ul>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_section135599911160">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_ol65154559312">
+     <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li1371153454510"><span>Check and ensure that the maximum transmission units (MTUs) of the replication network logical ports for which IPsec policies are to be created at both ends of a replication link are less than the switch port MTU.</span><p></p>
+      <div class="p" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p7426336164514">
+       Contact the network administrator to obtain the switch port MTU. To query or modify the MTUs of replication network logical ports, perform the following steps:
+       <div class="notice" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_note440019564200">
+        <span class="noticetitle"><img src="public_sys-resources/notice_3.0-en-us.png"> </span>
+        <div class="noticebody">
+         <p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p17400656152015">For the network connectivity of the replication link after IPsec policies are created, ensure that the MTU of each replication network logical port involved at both ends of the replication link is less than the switch port MTU, and the MTU difference is at least 100 bytes.</p>
+        </div>
+       </div>
+       <ol type="a" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_ol758275814538">
+        <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li189170183419">Log in to DeviceManager of the primary and secondary storage systems separately. For details, see <a href="en-us_topic_0000002164820486.html">Logging In to DeviceManager</a>.</li>
+        <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li671572511177">Choose <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b74137111011">Services</strong> &gt; <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b174139161015">Network</strong> &gt; <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b341414120102">Logical Ports</strong>.</li>
+        <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li1539303115353"><a name="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li1539303115353"></a><a name="en-us_topic_0000002199972725_en-us_topic_0000002164820386_li1539303115353"></a>Filter the logical ports whose <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b1845905418119">Role</strong> is <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b792075815114">Replication</strong> and obtain the values of <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b424922601420">Current Port</strong>.</li>
+        <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li108045246421">In the navigation pane, choose <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b119206364129">Ethernet Network</strong>.</li>
+        <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li1060916465317">Based on the values obtained in <a href="#EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li1539303115353">1.c</a>, filter the corresponding Ethernet ports in the <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b14280521151320">Location</strong> column and check the values of <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b23863440135">MTU (Bytes)</strong> for the ports.
+         <ul id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_ul1460121235411">
+          <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li460712155417">If the MTU values of all replication network logical ports are less than the switch port MTU and the difference is greater than or equal to 100 bytes, go to <a href="#EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li0209128194">2</a>.</li>
+          <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li1763193310">Otherwise, change the MTUs of the replication network logical ports.
+           <ol class="substepthirdol" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_ol14600961242">
+            <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li156001861547">Click the name of an Ethernet port.</li>
+            <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li176001467416">In the upper right corner of the page that is displayed, choose <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b4588149141618">Operation</strong> &gt; <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b691513514162">Modify</strong> and change the value of <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b7871637141716">MTU (Bytes)</strong>.
+             <div class="note" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_note741641619229">
+              <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+              <div class="notebody">
+               <p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p2154425592">The MTU value range of replication network logical ports is [1280, Switch port MTU – 100].</p>
+               <p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p39231595260">For example, if the switch port MTU is 1500 bytes, the MTU value range of the replication network logical ports is [1280, 1400]. The recommended MTU is 1300 bytes.</p>
+              </div>
+             </div></li>
+            <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li67381812162113">Click <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b123961345199">OK</strong>.</li>
+           </ol></li>
+         </ul></li>
+       </ol>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li0209128194"><a name="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li0209128194"></a><a name="en-us_topic_0000002199972725_en-us_topic_0000002164820386_li0209128194"></a><span>Set the security type of the interface module to IPsec.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_ol1788419251018">
+       <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_en-us_topic_0145458794_en-us_topic_0127771727_li24773389">Choose <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b14952673065248">System</strong> &gt; <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b1347745485248">Hardware</strong> &gt; <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b21007130715248">Devices</strong>.</li>
+       <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li20556718142213">Click the controller enclosure that houses the desired interface module.</li>
+       <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_en-us_topic_0145458825_en-us_topic_0127772045_li39598310">Click <span><img id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_image15291154112015" src="en-us_image_0000002200147113.png"></span> to switch to the rear view of the storage device.</li>
+       <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_en-us_topic_0145458825_en-us_topic_0127772045_li53346567">Click the desired interface module.</li>
+       <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li361555923412">On the page that is displayed, choose <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b10706076275248">Operation</strong> &gt; <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b2792277635248">Switch Security Type</strong>.</li>
+       <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li1062520132616">Select <span class="uicontrol" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_uicontrol2709198985248"><b>IPsec</b></span>.<p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p1912565416127">When <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b20997124115248">Security Type</strong> is <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b3208247935248">IPsec</strong>, TOE is disabled for all ports on the interface module and cannot be enabled independently.</p></li>
+       <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li397216280297">Confirm your operation as prompted.</li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li1341392475617"><span>Create IPsec policies for the replication network logical ports.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_ol92021645165616">
+       <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li2515195513112">Choose <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b16189325205248">Services</strong> &gt; <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b2334195125248">Network</strong> &gt; <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b2022417425248">Logical Ports</strong>.</li>
+       <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li7584122818912">Select a replication network logical port for which you want to create an IPsec policy and click <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b11192891425248">Manage IPsec Policy</strong>.</li>
+       <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li11351258994">Click <span class="uicontrol" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_uicontrol1664625018236"><b>Create</b></span> to create an IPsec policy.<p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p69242292100"><a href="#EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_table1688015148293">Table 1</a> describes the related parameters.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_table1688015148293"></a><a name="en-us_topic_0000002199972725_en-us_topic_0000002164820386_table1688015148293"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_table1688015148293" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>IPsec policy parameters
+          </caption>
+          <colgroup>
+           <col style="width:24.07%">
+           <col style="width:75.92999999999999%">
+          </colgroup>
+          <thead align="left">
+           <tr id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_row148809148293">
+            <th align="left" class="cellrowborder" valign="top" width="24.07%" id="mcps1.3.3.2.3.2.1.3.3.2.3.1.1"><p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p17880214122914">Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="75.92999999999999%" id="mcps1.3.3.2.3.2.1.3.3.2.3.1.2"><p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p38809143293">Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_row1588010144293">
+            <td class="cellrowborder" valign="top" width="24.07%" headers="mcps1.3.3.2.3.2.1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p12788144711440">Name</p></td>
+            <td class="cellrowborder" valign="top" width="75.92999999999999%" headers="mcps1.3.3.2.3.2.1.3.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p7787154734410">IPsec policy name.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_row1330314544416">
+            <td class="cellrowborder" valign="top" width="24.07%" headers="mcps1.3.3.2.3.2.1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p19786124711440">Remote IP Address</p></td>
+            <td class="cellrowborder" valign="top" width="75.92999999999999%" headers="mcps1.3.3.2.3.2.1.3.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p748615262717">Replication network IP address of the secondary storage device over the replication link.</p> <p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p1776619474444">Only IPv4 addresses are supported. A maximum of 32 IP addresses can be entered. Use semicolons (;) or spaces, or press <strong id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_b10609882735248">Enter</strong> to separate multiple IP addresses.</p>
+             <div class="note" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_note08068289815">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p1806152817819">After the IPsec policy is created, you can add new IP addresses or delete existing IP addresses by modifying the IPsec policy.</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_row12535134518443">
+            <td class="cellrowborder" valign="top" width="24.07%" headers="mcps1.3.3.2.3.2.1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p3535154584414">Encryption Algorithm</p></td>
+            <td class="cellrowborder" valign="top" width="75.92999999999999%" headers="mcps1.3.3.2.3.2.1.3.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p1536445194420">Encryption algorithm used for data transmission. The encryption algorithms at both ends of a replication link must be the same. Data encryption algorithms include AES and SM4.</p>
+             <div class="note" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_note717731711919">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p117731720191">Some product models do not provide encryption algorithm settings. For models that do not provide encryption algorithm settings, the AES algorithm is used by default for encryption.</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_row1267015458442">
+            <td class="cellrowborder" valign="top" width="24.07%" headers="mcps1.3.3.2.3.2.1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p56701145124418">Pre-shared Key</p></td>
+            <td class="cellrowborder" valign="top" width="75.92999999999999%" headers="mcps1.3.3.2.3.2.1.3.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p84261148269">User-defined pre-shared key. The pre-shared keys at both ends of a replication link must be the same.</p> <p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p14670650612">[Value range]</p>
+             <ul id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_ul567085762">
+              <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li76705510612">The value contains 16 to 127 characters.</li>
+              <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li196701553613">The value must contain at least two of the following types: special characters, uppercase letters, lowercase letters, and digits. Special characters include !"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^`{_|}~ and spaces.</li>
+             </ul></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_li159813261107">Click <span class="uicontrol" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_uicontrol165011712112720"><b>OK</b></span>.
+        <div class="note" id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_note12248146121112">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="EN-US_TOPIC_0000002203781161__en-us_topic_0000002199972725_en-us_topic_0000002164820386_p15167204592113">If an IPsec policy is no longer needed, delete it from both storage devices. When you delete it on one storage device, the replication service will be interrupted. After you delete it on the other storage device, the replication service will recover automatically. Therefore, you are advised to delete an IPsec policy when no replication service exists and delete it from both storage devices at a short interval.</p>
+         </div>
+        </div></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002203895593.html">Replicating a GBase 8a Copy</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

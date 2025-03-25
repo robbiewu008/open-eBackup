@@ -1,0 +1,216 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Residual Data Exists on All CNs and DNs Where the Client Is Deployed Due to Partial Success of the GaussDB (DWS) Copy Expiration or Copy Deletion Job">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164597706.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002181549558">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Residual Data Exists on All CNs and DNs Where the Client Is Deployed Due to Partial Success of the GaussDB (DWS) Copy Expiration or Copy Deletion Job</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002181549558"></a><a name="EN-US_TOPIC_0000002181549558"></a>
+  <h1 class="topictitle1">Residual Data Exists on All CNs and DNs Where the Client Is Deployed Due to Partial Success of the GaussDB (DWS) Copy Expiration or Copy Deletion Job</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Fault Symptom</h4>
+    <p>For a GaussDB(DWS) job whose <strong>Job Type</strong> is <strong>Copy Expiration</strong> or <strong>Copy Deletion</strong> and <strong>Job Status</strong> is <strong>Partially successful</strong>, residual data exists on all CNs and DNs where the GaussDB (DWS) cluster is deployed.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Cause</h4>
+    <p>During the execution of a job whose <strong>Job Type</strong> is <strong>Copy Expiration</strong> and <strong>Copy Deletion</strong>, the host where the client is installed is disconnected from the <span>product</span> due to network problems. As a result, the deletion command cannot be delivered to nodes, and residual data exists on the nodes.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Suggestion</h4>
+    <ol>
+     <li id="EN-US_TOPIC_0000002181549558__li8936122720112"><a name="EN-US_TOPIC_0000002181549558__li8936122720112"></a><a name="li8936122720112"></a><span>Obtain the object information and copy ID of a job whose <strong>Job Status</strong> is <strong>Partially successful</strong> and <strong>Job Type</strong> is <strong>Copy Expiration</strong> or <strong>Copy Deletion</strong>.</span><p></p>
+      <ol type="a">
+       <li>Choose <span class="uicontrol"><b><span><strong>Jobs</strong></span></b></span>.
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>For 1.5.0, choose <span class="uicontrol"><b><span><strong>Insight</strong></span> &gt; <span><strong>Jobs</strong></span></b></span>.</p>
+         </div>
+        </div></li>
+       <li id="EN-US_TOPIC_0000002181549558__li9379123610470"><a name="EN-US_TOPIC_0000002181549558__li9379123610470"></a><a name="li9379123610470"></a>On the <strong>Historical Jobs</strong> tab page, view and record <strong>Object</strong> and <strong>Object Type</strong> in the row where <strong>Job Type</strong> is <strong>Copy Expiration</strong> or <strong>Copy Deletion</strong> and <strong>Job Status</strong> is <strong>Partially successful</strong>.</li>
+       <li>Click the job corresponding to <a href="#EN-US_TOPIC_0000002181549558__li9379123610470">1.b</a> under <strong>Job Type</strong>. In the job details, search for the description of <strong>starts preparing for deleting copy</strong> to obtain the copy ID.<p>For example, if the job description is "Node (2102355CBW10N9100001-node-0) starts preparing for deleting copy (00640606-7ef1-45bd-909c-a878e1f41d01)," <strong>00640606-7ef1-45bd-909c-a878e1f41d01</strong> is the copy ID.</p></li>
+      </ol> <p></p></li>
+     <li><span>Obtain the resource ID, environment variable file path, and metadata storage path of the object in <a href="#EN-US_TOPIC_0000002181549558__li9379123610470">1.b</a>.</span><p></p>
+      <ol type="a">
+       <li>Choose <span class="uicontrol"><b><span id="EN-US_TOPIC_0000002181549558__en-us_topic_0000002199964685_text4651950123919"><strong>Protection</strong></span> &gt; Big Data &gt; GaussDB(DWS)</b></span> and click the <span class="uicontrol"><b>Clusters</b></span>, <span class="uicontrol"><b>Schema Sets</b></span>, or <span class="uicontrol"><b>Table Sets</b></span> tab based on the value of <strong>Object Type</strong> obtained in <a href="#EN-US_TOPIC_0000002181549558__li9379123610470">1.b</a>.</li>
+       <li>Find the target object under <strong>Name</strong> based on the value of <strong>Object</strong> obtained in <a href="#EN-US_TOPIC_0000002181549558__li9379123610470">1.b</a>, and perform the following operations in sequence in the row of the object:
+        <ol class="substepthirdol">
+         <li id="EN-US_TOPIC_0000002181549558__li14722922121215"><a name="EN-US_TOPIC_0000002181549558__li14722922121215"></a><a name="li14722922121215"></a>Click <span><img src="en-us_image_0000002218632037.png"></span> on the right of the menu bar, select <strong>Resource ID</strong> from the drop-down list, and view and record the displayed resource ID, for example, <strong>7e6400a7c4b04e62a1faa46478ef7efe</strong>.</li>
+         <li id="EN-US_TOPIC_0000002181549558__li718515461118"><a name="EN-US_TOPIC_0000002181549558__li718515461118"></a><a name="li718515461118"></a>In the <strong>Operation</strong> column on the right of the menu bar, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify</strong></span></b></span> to view and record the path of the environment variable file, for example, <strong>/home/omm/profile/env</strong>.
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <ul>
+             <li>For <span class="uicontrol"><b>Schema Sets</b></span>, click the <span class="uicontrol"><b>Clusters</b></span> tab and view the environment variable file path of the cluster to which the schema set belongs.</li>
+             <li>For a table set, you do not need to query the path of the environment variable file.</li>
+            </ul>
+           </div>
+          </div></li>
+         <li id="EN-US_TOPIC_0000002181549558__li13699155419"><a name="EN-US_TOPIC_0000002181549558__li13699155419"></a><a name="li13699155419"></a>In the <strong>Operation</strong> column on the right of the menu bar, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; Modify Protection</b></span>, and view and record the storage path of the backup metadata, for example, <strong>/home/omm/backup</strong>.
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <p>For a table set, you do not need to query the path of the environment variable file.</p>
+           </div>
+          </div></li>
+        </ol></li>
+      </ol> <p></p></li>
+     <li><span>Log in to DeviceManager.</span></li>
+     <li id="EN-US_TOPIC_0000002181549558__li21721325163318"><a name="EN-US_TOPIC_0000002181549558__li21721325163318"></a><a name="li21721325163318"></a><span>Obtain the NFS IP address.</span><p></p><p>Choose <strong>Services</strong> &gt; <strong>Network</strong> &gt; <strong>Logical Ports</strong>. In the function pane, select an IP address in the row where <strong>Data Protocol</strong> is <strong>NFS + CIFS</strong> or <strong>NFS</strong> resides as the NFS IP address, for example, <strong>192.168.20.3</strong>.</p> <p></p></li>
+     <li><span>Obtain the names of the four file systems to be mounted and grant operation permissions on each file system.</span><p></p>
+      <ol type="a">
+       <li id="EN-US_TOPIC_0000002181549558__li8808816122611"><a name="EN-US_TOPIC_0000002181549558__li8808816122611"></a><a name="li8808816122611"></a>Obtain the names of the four file systems to be mounted.<p><a name="EN-US_TOPIC_0000002181549558__li8808816122611"></a><a name="li8808816122611"></a>Choose <strong>Services</strong> &gt; <strong>File Systems</strong>, click <span><img src="en-us_image_0000002218487285.png"></span> next to <strong>Name</strong>, and enter the resource ID obtained in <a href="#EN-US_TOPIC_0000002181549558__li14722922121215">2.b.i</a> to obtain the names of the four file systems to be mounted. For example:</p>
+        <ul>
+         <li>File system 0: <strong>Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0</strong></li>
+         <li>File system 1: <strong>Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1</strong></li>
+         <li>File system 2: <strong>Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2</strong></li>
+         <li>File system 3: <strong>Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3</strong></li>
+        </ul> <p>In the preceding names, <strong>7e6400a7c4b04e62a1faa46478ef7efe</strong> indicates the resource ID obtained in <a href="#EN-US_TOPIC_0000002181549558__li14722922121215">2.b.i</a>.</p></li>
+       <li id="EN-US_TOPIC_0000002181549558__li1256254717263"><a name="EN-US_TOPIC_0000002181549558__li1256254717263"></a><a name="li1256254717263"></a>Grant operation permissions on the four file systems obtained in <a href="#EN-US_TOPIC_0000002181549558__li8808816122611">5.a</a> in sequence.
+        <ol class="substepthirdol">
+         <li id="EN-US_TOPIC_0000002181549558__li14457161710329"><a name="EN-US_TOPIC_0000002181549558__li14457161710329"></a><a name="li14457161710329"></a>Click the name of the desired file system. In the dialog box that is displayed, choose <strong>Share</strong> &gt; <strong>NFS Share</strong>.</li>
+         <li>Click <strong>Share Path</strong>. In the dialog box that is displayed, click the <strong>Permissions</strong> tab.</li>
+         <li>Click <strong>Add</strong> and set the client attributes. For details about the parameters, see <a href="#EN-US_TOPIC_0000002181549558__en-us_topic_0174008382_nfs_client_add_tab01">Table 1</a>. 
+          <div class="tablenoborder">
+           <a name="EN-US_TOPIC_0000002181549558__en-us_topic_0174008382_nfs_client_add_tab01"></a><a name="en-us_topic_0174008382_nfs_client_add_tab01"></a>
+           <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002181549558__en-us_topic_0174008382_nfs_client_add_tab01" frame="border" border="1" rules="all">
+            <caption>
+             <b>Table 1 </b>Client attributes
+            </caption>
+            <colgroup>
+             <col style="width:36.67%">
+             <col style="width:63.33%">
+            </colgroup>
+            <thead align="left">
+             <tr>
+              <th align="left" class="cellrowborder" valign="top" width="36.67%" id="mcps1.3.3.2.5.2.1.2.2.3.3.2.3.1.1"><p>Parameter</p></th>
+              <th align="left" class="cellrowborder" valign="top" width="63.33%" id="mcps1.3.3.2.5.2.1.2.2.3.3.2.3.1.2"><p>Value</p></th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="cellrowborder" valign="top" width="36.67%" headers="mcps1.3.3.2.5.2.1.2.2.3.3.2.3.1.1 "><p>Type</p></td>
+              <td class="cellrowborder" valign="top" width="63.33%" headers="mcps1.3.3.2.5.2.1.2.2.3.3.2.3.1.2 "><p>Host</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="36.67%" headers="mcps1.3.3.2.5.2.1.2.2.3.3.2.3.1.1 "><p>Client</p></td>
+              <td class="cellrowborder" valign="top" width="63.33%" headers="mcps1.3.3.2.5.2.1.2.2.3.3.2.3.1.2 "><p>*</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="36.67%" headers="mcps1.3.3.2.5.2.1.2.2.3.3.2.3.1.1 "><p>UNIX Permission</p></td>
+              <td class="cellrowborder" valign="top" width="63.33%" headers="mcps1.3.3.2.5.2.1.2.2.3.3.2.3.1.2 "><p>Read-Write</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" valign="top" width="36.67%" headers="mcps1.3.3.2.5.2.1.2.2.3.3.2.3.1.1 "><p>Root Permission Constraint</p></td>
+              <td class="cellrowborder" valign="top" width="63.33%" headers="mcps1.3.3.2.5.2.1.2.2.3.3.2.3.1.2 "><p>no_root_squash</p></td>
+             </tr>
+             <tr>
+              <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.2.2.3.3.2.3.1.1 mcps1.3.3.2.5.2.1.2.2.3.3.2.3.1.2 "><p>Retain the default values for other parameters.</p></td>
+             </tr>
+            </tbody>
+           </table>
+          </div></li>
+         <li id="EN-US_TOPIC_0000002181549558__li205610556328"><a name="EN-US_TOPIC_0000002181549558__li205610556328"></a><a name="li205610556328"></a>Click <strong>OK</strong> after the configuration.<p>The added client is displayed in the client list.</p></li>
+         <li>Repeat <a href="#EN-US_TOPIC_0000002181549558__li14457161710329">5.b.i</a> to <a href="#EN-US_TOPIC_0000002181549558__li205610556328">5.b.iv</a> to grant permissions on other file systems in sequence.</li>
+        </ol></li>
+      </ol> <p></p></li>
+     <li><span>Use PuTTY to log in to any CN in the GaussDB (DWS) cluster where the client has been deployed.</span></li>
+     <li id="EN-US_TOPIC_0000002181549558__li18483122304417"><a name="EN-US_TOPIC_0000002181549558__li18483122304417"></a><a name="li18483122304417"></a><span>Run the following commands to create local mount paths for the four file systems in <a href="#EN-US_TOPIC_0000002181549558__li8808816122611">5.a</a> in sequence:</span><p></p><pre class="screen">mkdir /mnt/<em>File system name</em></pre> <p>In the preceding command, <em>File system name</em> indicates the file system name obtained in <a href="#EN-US_TOPIC_0000002181549558__li8808816122611">5.a</a>. Example:</p> <pre class="screen">mkdir /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0</pre> <pre class="screen">mkdir /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1</pre> <pre class="screen">mkdir /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2</pre> <pre class="screen">mkdir /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3</pre> <p>After the mounting is successful, the local mount paths created for the four file systems are as follows:</p>
+      <ul>
+       <li>Local mount path 0: <strong>/mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0</strong></li>
+       <li>Local mount path 1: <strong>/mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1</strong></li>
+       <li>Local mount path 2: <strong>/mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2</strong></li>
+       <li>Local mount path 3: <strong>/mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3</strong></li>
+      </ul> <p></p></li>
+     <li><span>Run the following command to mount the file system:</span><p></p><pre class="screen">mount -t nfs <em>nfs ip</em>:/<em>File system name</em> <em>Local mount path</em></pre> <p>In the command:</p>
+      <ul>
+       <li><em>nfs ip</em> indicates the NFS IP address obtained in <a href="#EN-US_TOPIC_0000002181549558__li21721325163318">4</a>.</li>
+       <li><em>File system name</em> indicates the names of the four file systems obtained in <a href="#EN-US_TOPIC_0000002181549558__li8808816122611">5.a</a>.</li>
+       <li><em>Local mount path</em> indicates the four local mount paths created in <a href="#EN-US_TOPIC_0000002181549558__li18483122304417">7</a>.</li>
+      </ul> <p>Example:</p> <pre class="screen">mount -t nfs 192.168.20.3:/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0 /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0</pre> <pre class="screen">mount -t nfs 192.168.20.3:/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1 /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1</pre> <pre class="screen">mount -t nfs 192.168.20.3:/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2 /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2</pre> <pre class="screen">mount -t nfs 192.168.20.3:/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3 /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000002181549558__li8221161381620"><a name="EN-US_TOPIC_0000002181549558__li8221161381620"></a><a name="li8221161381620"></a><span>Obtain the value of <strong>backup_key</strong>.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>For a table set, skip this step and go to <a href="#EN-US_TOPIC_0000002181549558__li11291179123018">10</a>.</p>
+       </div>
+      </div>
+      <ol type="a">
+       <li>Run the following command to open the <strong>copyInfo.txt</strong> file:<pre class="screen">vi <em>Local mount path 0</em>/source_policy_<em>resource_id</em>_Context_Global_MD/meta/<em>copy_id</em>/copyInfo.txt</pre> <p>In the command:</p>
+        <ul>
+         <li><em>Local mount path 0</em> indicates local mount path 0 created in <a href="#EN-US_TOPIC_0000002181549558__li18483122304417">7</a>.</li>
+         <li><em>resource_id</em> indicates the resource ID obtained in <a href="#EN-US_TOPIC_0000002181549558__li14722922121215">2.b.i</a>.</li>
+         <li><em>copy_id</em> indicates the copy ID obtained in <a href="#EN-US_TOPIC_0000002181549558__li8936122720112">1</a>.</li>
+        </ul> <p>Example:</p> <pre class="screen">vi /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0/source_policy_7e6400a7c4b04e62a1faa46478ef7efe_Context_Global_MD/meta/00640606-7ef1-45bd-909c-a878e1f41d01/copyInfo.txt</pre></li>
+       <li>View and record the value of the key field <strong>dws_backup_id</strong> in the <strong>copyInfo.txt</strong> file.<p>An example of the content in the <strong>copyInfo.txt</strong> file:</p> <pre class="screen">{"dws_backup_id": "20250208_114002", "hostname": "dws01", "host_ip": "192.168.104.164", "cluster_nodes": ["dws03", "dws01", "dws02"], "storage_esn": ["2102355CBW10N9100001"], "version": "8.2.1", "storage_id": "", "storage_type": "storage_unit", "BackAgent_id": "07e9e65c-ef22-43f8-9d9c-3eb1afeb1b6b", "backupToolType": 0, "metadataPath": "/home/omm/backup", "copy_id": "fbcca29f-b913-477d-81aa-09c031c35e81", "totalDataSize": 260, "backup_time": 1738986013}</pre> <p><strong>20250208_114002</strong> is the value of <strong>backup_key</strong>.</p></li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002181549558__li11291179123018"><a name="EN-US_TOPIC_0000002181549558__li11291179123018"></a><a name="li11291179123018"></a><span>Run the following commands to delete data from the metadata and data warehouses.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>For a table set, skip <a href="#EN-US_TOPIC_0000002181549558__li1047516520486">10.a</a> to <a href="#EN-US_TOPIC_0000002181549558__li12631544115518">10.c</a> and go to <a href="#EN-US_TOPIC_0000002181549558__li1795475614913">10.d</a>.</p>
+       </div>
+      </div>
+      <ol type="a">
+       <li id="EN-US_TOPIC_0000002181549558__li1047516520486"><a name="EN-US_TOPIC_0000002181549558__li1047516520486"></a><a name="li1047516520486"></a>Run the following command to switch to the database user:<pre class="screen">su - Account</pre> <p>The following uses database user <strong>omm</strong> as an example:</p> <pre class="screen">su - omm</pre></li>
+       <li>Run the following command to read the environment variable file:<pre class="screen">source <em>env_file</em></pre> <p>In the command, <em>env_file</em> indicates the path of the environment variable file obtained in <a href="#EN-US_TOPIC_0000002181549558__li718515461118">2.b.ii</a>. Example:</p> <pre class="screen">source /home/omm/profile/env</pre></li>
+       <li id="EN-US_TOPIC_0000002181549558__li12631544115518"><a name="EN-US_TOPIC_0000002181549558__li12631544115518"></a><a name="li12631544115518"></a>Run the following command to delete the content in the directory whose prefix is <strong>backup_key</strong>:<pre class="screen">gs_ssh -c "rm -rf <em>metadata_destination</em>/roach/<em>backup_key</em>*"</pre> <p>In the command:</p>
+        <ul>
+         <li><em>metadata_destination</em> indicates the metadata backup storage path obtained in <a href="#EN-US_TOPIC_0000002181549558__li13699155419">2.b.iii</a>.</li>
+         <li><em>backup_key</em> indicates the value of the backup_key obtained in <a href="#EN-US_TOPIC_0000002181549558__li8221161381620">9</a>.</li>
+        </ul> <p>Example:</p> <pre class="screen">gs_ssh -c "rm -rf /home/omm/backup/roach/20250208_114002*"</pre></li>
+       <li id="EN-US_TOPIC_0000002181549558__li1795475614913"><a name="EN-US_TOPIC_0000002181549558__li1795475614913"></a><a name="li1795475614913"></a>Run the following command to clear the data in the metadata warehouse:<pre class="screen">rm -rf <em>Local mount path 0</em>/source_policy_<em>resource_id</em>_Context_Global_MD/meta/<em>copy_id</em>/*</pre>
+        <ul>
+         <li><em>Local mount path 0</em> indicates local mount path 0 obtained in <a href="#EN-US_TOPIC_0000002181549558__li18483122304417">7</a>.</li>
+         <li><em>resource_id</em> indicates the resource ID obtained in <a href="#EN-US_TOPIC_0000002181549558__li14722922121215">2.b.i</a>.</li>
+         <li><em>copy_id</em> indicates the copy ID obtained in <a href="#EN-US_TOPIC_0000002181549558__li8936122720112">1</a>.</li>
+        </ul> <p>Example:</p> <pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0/source_policy_7e6400a7c4b04e62a1faa46478ef7efe_Context_Global_MD/meta/00640606-7ef1-45bd-909c-a878e1f41d01/*</pre></li>
+       <li>Run the following command to delete the data in the data warehouse:<pre class="screen">rm -rf <em>Local mount path</em>/data/<em>copy_id</em>/*</pre> <p>In the command, <em>Local mount path</em> indicates the four local mount paths in <a href="#EN-US_TOPIC_0000002181549558__li18483122304417">7</a>, and <em>copy_id</em> indicates the copy ID obtained in <a href="#EN-US_TOPIC_0000002181549558__li8936122720112">1</a>. Example:</p> <pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0/data/00640606-7ef1-45bd-909c-a878e1f41d01/*</pre> <pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1/data/00640606-7ef1-45bd-909c-a878e1f41d01/*</pre> <pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2/data/00640606-7ef1-45bd-909c-a878e1f41d01/*</pre> <pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3/data/00640606-7ef1-45bd-909c-a878e1f41d01/*</pre></li>
+      </ol> <p></p></li>
+     <li><span>After the residual data is cleared, unmount the mount paths and remove the permissions granted on the file systems.</span><p></p>
+      <ol type="a">
+       <li>Run the following command for unmounting:<pre class="screen">umount <em>Local mount path</em></pre> <p><em>Local mount path</em> indicates the four local mount paths in <a href="#EN-US_TOPIC_0000002181549558__li18483122304417">7</a>. Example:</p> <pre class="screen">umount /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0</pre> <pre class="screen">umount /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1</pre> <pre class="screen">umount /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2</pre> <pre class="screen">umount /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3</pre></li>
+       <li>Run the following command to delete the created directories:<pre class="screen">rm -rf <em>Local mount path</em></pre> <p><em>Local mount path</em> indicates the four local mount paths in <a href="#EN-US_TOPIC_0000002181549558__li18483122304417">7</a>. Example:</p> <pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0</pre> <pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1</pre> <pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2</pre> <pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3</pre></li>
+       <li>Log in to DeviceManager and delete the permissions granted on the four file systems in <a href="#EN-US_TOPIC_0000002181549558__li1256254717263">5.b</a> in sequence.<p>In the client list in <a href="#EN-US_TOPIC_0000002181549558__li205610556328">5.b.iv</a>, choose <strong>More</strong> &gt; <strong>Remove</strong> on the right of the row that contains a client marked with <strong>*</strong>.</p></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164597706.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

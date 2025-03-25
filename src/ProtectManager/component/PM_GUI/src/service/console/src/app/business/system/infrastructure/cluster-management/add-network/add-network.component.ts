@@ -136,17 +136,19 @@ export class AddNetworkComponent implements OnInit {
   }
 
   getControl() {
-    this.logManagerApiService.collectNodeInfo({}).subscribe(
-      res => {
-        each(res.data, item => {
-          this.controllers.push(item.nodeName);
-        });
-        this.getData();
-        this.source.cols[1].filters = this.getFilter();
-        this.target.cols[1].filters = this.getFilter();
-      },
-      err => {}
-    );
+    this.logManagerApiService
+      .collectNodeInfo({ memberEsn: this.drawData.storageEsn })
+      .subscribe(
+        res => {
+          each(res.data, item => {
+            this.controllers.push(item.nodeName);
+          });
+          this.getData();
+          this.source.cols[1].filters = this.getFilter();
+          this.target.cols[1].filters = this.getFilter();
+        },
+        err => {}
+      );
   }
 
   initColumns() {
@@ -438,22 +440,19 @@ export class AddNetworkComponent implements OnInit {
         return false;
       }
 
-      const usedPort = filter(
-        this.logicPort,
-        val =>
-          val.HOMEPORTTYPE !== DataMap.initHomePortType.bonding.value &&
-          item.location === val.HOMEPORTNAME
-      );
+      // 将已经被使用过的端口而且不是自己创出来的端口拿出来
+      const usedPort = filter(this.logicPort, val => {
+        if (val.HOMEPORTTYPE !== DataMap.initHomePortType.bonding.value) {
+          return item.location === val.HOMEPORTNAME && !port.includes(item.id);
+        } else {
+          const tmpBondPort = find(this.bondPort, { id: val.HOMEPORTID });
+          return (
+            tmpBondPort.portIdList.includes(item.id) && !port.includes(item.id)
+          );
+        }
+      });
 
-      if (!this.isModify) {
-        return !usedPort.length;
-      } else {
-        // 否则如果端口被SFTP本身创出的逻辑端口使用是可以的
-        return (
-          !usedPort.length ||
-          (usedPort.length === 1 && find(port, val => val === item.location))
-        );
-      }
+      return !usedPort.length;
     });
   }
 
@@ -537,6 +536,7 @@ export class AddNetworkComponent implements OnInit {
   getData() {
     this.systemApiService
       .getAllPorts({
+        memberEsn: this.drawData.storageEsn,
         queryLogicPortRequest: {},
         ethLogicTypeValue: '0;13',
         akOperationTips: false
@@ -621,6 +621,19 @@ export class AddNetworkComponent implements OnInit {
       .getNetPlane({ memberEsn: this.drawData.storageEsn })
       .subscribe((res: any) => {
         this.selectedPort = res.portList;
+        // 如果上次不是创的绑定端口就去筛选
+        if (
+          res?.vlanPort?.portType === DataMap.initHomePortType.ethernet.value ||
+          res.homePortType === DataMap.initHomePortType.ethernet.value
+        ) {
+          this.ethPort = filter(
+            this.ethPort,
+            item =>
+              !find(this.bondPort, port => {
+                return port.portIdList.includes(item.id);
+              })
+          );
+        }
         this.formGroup.patchValue(res);
         if (res.homePortType === DataMap.initHomePortType.vlan.value) {
           this.enableVlan = true;
@@ -657,7 +670,6 @@ export class AddNetworkComponent implements OnInit {
         res.portList
       );
       this.source.selection = [...filteredSelection];
-      this.source.data = this.ethPort;
       this.targetData = this.source.selection;
     } else {
       // 复用的时候要么绑定口复用，要么vlan复用

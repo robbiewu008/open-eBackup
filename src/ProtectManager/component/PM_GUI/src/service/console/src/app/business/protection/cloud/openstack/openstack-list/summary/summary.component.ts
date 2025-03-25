@@ -15,7 +15,8 @@ import {
   CommonConsts,
   DataMapService,
   I18NService,
-  ProtectedResourceApiService
+  ProtectedResourceApiService,
+  isOpenstackSystemDisk
 } from 'app/shared';
 import {
   TableCols,
@@ -70,7 +71,7 @@ export class SummaryComponent implements OnInit {
         }
       },
       {
-        key: 'bootable',
+        key: 'diskType',
         name: this.i18n.get('common_type_label'),
         filter: {
           type: 'select',
@@ -161,7 +162,8 @@ export class SummaryComponent implements OnInit {
       each(disks, item => {
         assign(item, {
           sla: selectAll ? true : selectDisk.includes(item.id),
-          nameId: `${item.name || '--'}(${item.id})`
+          nameId: `${item.name || '--'}(${item.id})`,
+          diskType: isOpenstackSystemDisk(item.device, item.bootable)
         });
       });
       this.tableData = {

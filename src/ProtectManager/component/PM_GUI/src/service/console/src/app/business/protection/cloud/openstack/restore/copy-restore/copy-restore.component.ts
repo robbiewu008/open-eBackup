@@ -155,7 +155,7 @@ export class CopyRestoreComponent implements OnInit {
         async: false,
         columns: [
           {
-            key: 'name',
+            key: 'nameId',
             name: this.i18n.get('common_name_label')
           },
           {
@@ -183,8 +183,10 @@ export class CopyRestoreComponent implements OnInit {
     if (isEmpty(needRestoreDisks)) {
       needRestoreDisks = properties.extendInfo?.volList || [];
     }
+    // 由于名称可能为空，此时用uuid作区分
     each(needRestoreDisks, item => {
       assign(item, {
+        nameId: `${item.name || '--'}(${item.uuid})`,
         volumeType: item.volume_type,
         id: item.uuid,
         size: item.volSizeInBytes / 1024 / 1024 / 1024

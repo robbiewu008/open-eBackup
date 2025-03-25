@@ -1,0 +1,139 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="A Restoration Job Fails When the Client Is Restarted During a Restoration Subjob">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200098149.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002207837944">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>A Restoration Job Fails When the Client Is Restarted During a Restoration Subjob</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002207837944"></a><a name="EN-US_TOPIC_0000002207837944"></a>
+  <h1 class="topictitle1">A Restoration Job Fails When the Client Is Restarted During a Restoration Subjob</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>When an Informix/GBase 8s database restoration job is executed, if the client is restarted during the restoration subjob, the restoration subjob reports an error and the Informix/GBase 8s database restoration job fails.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptoms</h4>
+    <p>When a restoration job is executed for the Informix/GBase 8s database, an error message is displayed for the restoration sub-job, indicating that the <strong>Restore</strong> command fails to be executed.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <p>Deliver the restoration job again.</p>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002199964685_uicontrol12513913152710"><b><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002199964685_text751371311271"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002199964685_text55131513142712"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002199964685_text1637173717498"><strong>Databases</strong></span> &gt; Informix/GBase 8s</b></span>.</span></li>
+     <li><span>Search for copies by Informix/GBase 8s instance resource or copy. This section describes how to search for copies by resource.</span><p></p><p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_en-us_topic_0000001397321757_p624620403810">On the <span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_uicontrol816218529113"><b><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text106576202129"><strong>Resources</strong></span></b></span> tab page, locate the resource to be restored by resource name and click the name.</p> <p></p></li>
+     <li><span>Select the resource for copy-based restoration.</span></li>
+     <li><span>Specify a copy or a point in time for restoration.</span><p></p><p>You can specify a copy or any point in time between two copies for restoration.</p>
+      <div class="p">
+       For the product, when a replication copy is used for restoration, other copies of the resource cannot be replicated at the remote end.
+       <ul>
+        <li>Restoration using a specified copy
+         <ol type="a" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_ol1557419319814">
+          <li id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_li2552270813">Select the year, month, and day in sequence to find the copy.<p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p655297181"><a name="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_li2552270813"></a><a name="en-us_topic_0000002164611814_li2552270813"></a>If <span><img id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_image165521276810" src="en-us_image_0000002200012605.png"></span> is displayed below a month or day, a copy is generated in the month or on the day.</p></li>
+          <li id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_li823411174131">On the copy data page, click <span><img id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_image202351117131311" src="en-us_image_0000002164611854.png"></span> and choose <span class="menucascade" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_menucascade1523511761316"><b><span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_uicontrol142351917181319"><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text6235161721311"><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_uicontrol923518177132"><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text6235101718132"><strong>Restore</strong></span></span></b></span> in the row where the desired copy resides.</li>
+         </ol></li>
+        <li>Restoration to a specified point in time
+         <ol type="a">
+          <li>Select the year, month, and day in sequence to find the copy.<p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p1260177131417">If <span><img id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_image1860112751418" src="en-us_image_0000002200098205.png"></span> is displayed below a month or day, a copy is generated in the month or on the day.</p></li>
+          <li>On the copy data page, click <span><img id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_image15844465147" src="en-us_image_0000002164771570.png"></span>. In the blue part on the timeline, select a copy and click <span class="menucascade" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_menucascade80816037895353"><b><span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_uicontrol204666450495353"><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text59136710495353"><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_uicontrol78216687495353"><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text111955012795353"><strong>Restore</strong></span></span></b></span>.
+           <div class="note" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_note16282173320345">
+            <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+            <div class="notebody">
+             <ul id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_ul192811733173416">
+              <li id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_li1528193316344">For 1.5.0, a maximum of 100 copies can be displayed on the timeline. You can click <span><img id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_en-us_topic_0000001839188281_image173544102299" src="en-us_image_0000002164611862.png"></span> to view all copies.</li>
+              <li id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_li20281193310348">During point-in-time restoration, the information about the copy used for restoration cannot be obtained on the management page. Therefore, you cannot view the copy information of the restoration job on pages of the restoration job and related events.</li>
+             </ul>
+            </div>
+           </div></li>
+          <li>In the displayed dialog box, confirm the information and click <span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_uicontrol1674514449340"><b><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text674544418348"><strong>Close</strong></span></b></span>.<p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p127451344153420"><span><img id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_image157922121489" src="en-us_image_0000002200098209.png"></span></p></li>
+          <li>Restore the Informix/GBase 8s database to the original or a new location.
+           <div class="p">
+            <a href="#EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_table4574123782">Table 1</a> describes the related parameters. 
+            <div class="tablenoborder">
+             <a name="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_table4574123782"></a><a name="en-us_topic_0000002164611814_table4574123782"></a>
+             <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_table4574123782" frame="border" border="1" rules="all">
+              <caption>
+               <b>Table 1 </b>Restoring the Informix/GBase 8s database
+              </caption>
+              <colgroup>
+               <col style="width:26.279999999999998%">
+               <col style="width:73.72%">
+              </colgroup>
+              <thead align="left">
+               <tr id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_row25721831285">
+                <th align="left" class="cellrowborder" valign="top" width="26.279999999999998%" id="mcps1.3.3.3.4.2.2.1.2.1.4.1.2.2.3.1.1"><p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p135727314812">Parameter</p></th>
+                <th align="left" class="cellrowborder" valign="top" width="73.72%" id="mcps1.3.3.3.4.2.2.1.2.1.4.1.2.2.3.1.2"><p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p195721433816">Description</p></th>
+               </tr>
+              </thead>
+              <tbody>
+               <tr id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_row185721734816">
+                <td class="cellrowborder" valign="top" width="26.279999999999998%" headers="mcps1.3.3.3.4.2.2.1.2.1.4.1.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p25726314815"><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text12572103487"><strong>Restore To</strong></span></p></td>
+                <td class="cellrowborder" valign="top" width="73.72%" headers="mcps1.3.3.3.4.2.2.1.2.1.4.1.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p4572231481">Select either <span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_uicontrol88958564595353"><b><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text173981388095353"><strong>Original location</strong></span></b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_uicontrol196632725795353"><b><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text97282449695353"><strong>New location</strong></span></b></span>.</p></td>
+               </tr>
+               <tr id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_row145731931182">
+                <td class="cellrowborder" valign="top" width="26.279999999999998%" headers="mcps1.3.3.3.4.2.2.1.2.1.4.1.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p257303884"><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text105725311811"><strong>Location</strong></span></p></td>
+                <td class="cellrowborder" valign="top" width="73.72%" headers="mcps1.3.3.3.4.2.2.1.2.1.4.1.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p95739311818">If you select restoration to <span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_uicontrol17573203189"><b><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text175738314811"><strong>Original location</strong></span></b></span>, the original location is displayed.</p></td>
+               </tr>
+               <tr id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_row132618115416">
+                <td class="cellrowborder" valign="top" width="26.279999999999998%" headers="mcps1.3.3.3.4.2.2.1.2.1.4.1.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p978613518488"><strong id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_b0657123590">Tag</strong></p>
+                 <div class="note" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_note1330311543247">
+                  <span class="notetitle"> NOTE: </span>
+                  <div class="notebody">
+                   <p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p630385412417">This parameter is available only in 1.6.0 and later versions.</p>
+                  </div>
+                 </div></td>
+                <td class="cellrowborder" valign="top" width="73.72%" headers="mcps1.3.3.3.4.2.2.1.2.1.4.1.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p1340136163618">If you set <strong id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_b12999228194517">Restore To</strong> to <span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_uicontrol1199914287458"><b>New location</b></span>, you can filter the resource to be restored by tag.</p></td>
+               </tr>
+               <tr id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_row15574831983">
+                <td class="cellrowborder" valign="top" width="26.279999999999998%" headers="mcps1.3.3.3.4.2.2.1.2.1.4.1.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p195746313810"><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text55741331987"><strong>Target Instance</strong></span></p></td>
+                <td class="cellrowborder" valign="top" width="73.72%" headers="mcps1.3.3.3.4.2.2.1.2.1.4.1.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_p19574631083">Target instance for restoration, which is mandatory if you select <span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_uicontrol190571988295353"><b><span id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_text211611631495353"><strong>New location</strong></span></b></span> for the <strong id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_b158251293395353">Restore To</strong> parameter.</p></td>
+               </tr>
+              </tbody>
+             </table>
+            </div>
+           </div></li>
+          <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
+         </ol></li>
+       </ul>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002207837944__en-us_topic_0000002164611814_uicontrol14960418122"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200098149.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

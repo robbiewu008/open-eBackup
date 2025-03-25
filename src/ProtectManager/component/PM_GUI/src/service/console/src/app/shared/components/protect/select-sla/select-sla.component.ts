@@ -1798,8 +1798,7 @@ export class SelectSlaComponent implements OnInit {
         this.subResourceType
       ) &&
       this.resourceData?.extendInfo?.clusterType ===
-        DataMap.dbTwoType.standby.value &&
-      this.resourceData?.extendInfo?.deployOperatingSystem === 'Red Hat'
+        DataMap.dbTwoType.rhel.value
     ) {
       let result = true;
       if (this.selectedSlaView) {
@@ -2104,6 +2103,37 @@ export class SelectSlaComponent implements OnInit {
             lvMessageKey: 'msg_mysql_eapp_laog_error',
             lvShowCloseButton: true
           }
+        );
+        this.valid$.next(false);
+      }
+      return result;
+    } else if (
+      [
+        DataMap.Resource_Type.informixClusterInstance.value,
+        DataMap.Resource_Type.informixInstance.value
+      ].includes(this.resourceData.subType) &&
+      this.resourceData.databaseType ===
+        DataMap.informixDatabaseType.gbase.value
+    ) {
+      // GBase 8s数据库不支持日志备份
+      const slaArr = this.selectedSlaView ? this.slaDatas : this.slaList;
+      const selectedSla = get(
+        find(slaArr, item => item.uuid === sla_id),
+        'policy_list'
+      );
+      let result = true;
+      let invalidPolicy = '';
+      if (find(selectedSla, item => item.action === PolicyAction.LOG)) {
+        result = false;
+        invalidPolicy = this.i18n.get('common_log_backup_label');
+      }
+      if (!result) {
+        this.messageService.error(
+          this.i18n.get('protection_unsupport_backup_policy_label', [
+            '',
+            DataMap.informixDatabaseType.gbase.label,
+            invalidPolicy
+          ])
         );
         this.valid$.next(false);
       }

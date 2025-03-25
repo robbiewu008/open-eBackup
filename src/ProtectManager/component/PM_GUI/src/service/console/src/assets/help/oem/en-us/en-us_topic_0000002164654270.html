@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="What Should I Do If a Backup Job Fails After the Capacity of the Production Storage Is Expanded?">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164654270">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>What Should I Do If a Backup Job Fails After the Capacity of the Production Storage Is Expanded?</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164654270"></a><a name="EN-US_TOPIC_0000002164654270"></a>
+  <h1 class="topictitle1">What Should I Do If a Backup Job Fails After the Capacity of the Production Storage Is Expanded?</h1>
+  <div>
+   <p>If the capacity of a LUN corresponding to the datastore where a VMware VM resides is expanded, you need to scan the LUN again on the host where the client is installed by referring to the following steps. Otherwise, the backup job will fail.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Use PuTTY to log in to the host where the client is to be installed as user <strong id="EN-US_TOPIC_0000002164654270__en-us_topic_0000002164790296_en-us_topic_0000002200031305_b916917212">root</strong>.</span></li>
+     <li><span>Run the following command to scan for LUNs:</span><p></p><pre class="screen">for host in $(ls -1d /sys/class/scsi_host/*); do echo "- - -" &gt; ${host}/scan ; done</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164654270__li14487152214719"><a name="EN-US_TOPIC_0000002164654270__li14487152214719"></a><a name="li14487152214719"></a><span>Run the following command to check whether the LUN capacity is expanded:</span><p></p><pre class="screen">fdisk -l</pre> <p></p></li>
+     <li><span>Restart the host where the client is installed.</span><p></p><p>Perform this step only when the LUN capacity obtained in <a href="#EN-US_TOPIC_0000002164654270__li14487152214719">3</a> is different from the actual LUN capacity. After the restart, run the <strong>fdisk -l</strong> command to check the LUN capacity again.</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

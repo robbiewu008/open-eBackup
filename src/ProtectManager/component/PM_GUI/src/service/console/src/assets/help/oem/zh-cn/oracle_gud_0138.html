@@ -1,0 +1,75 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="备份任务长时间没有进度">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="oracle_gud_0119.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="oracle_gud_0138">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>备份任务长时间没有进度</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="oracle_gud_0138"></a><a name="oracle_gud_0138"></a>
+  <h1 class="topictitle1">备份任务长时间没有进度</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>执行RMAN备份操作时，备份任务长时间没有进度，且安装客户端的主机操作系统及内核版本为Redhat7.6 3.10.0-957.el7.x86_64。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>Redhat7.6 3.10.0-957.el7.x86_64版本内核问题导致<span>本产品</span>进程重启，进而导致备份存储上文件系统不可写，备份任务卡住。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li><span>使用PuTTY，登录已安装客户端的主机。</span></li>
+     <li><span>执行以下命令查看主机操作系统及内核版本是否为Redhat7.6 3.10.0-957.el7.x86_64。</span><p></p><p><strong>cat /etc/redhat-release</strong></p> <p><strong>uname -r</strong></p>
+      <ul>
+       <li>是，执行<a href="#oracle_gud_0138__li3304144725013">3</a>。</li>
+       <li>否，联系技术支持协助处理。</li>
+      </ul> <p></p></li>
+     <li id="oracle_gud_0138__li3304144725013"><a name="oracle_gud_0138__li3304144725013"></a><a name="li3304144725013"></a><span>用户自行下载Redhat内核包。</span></li>
+     <li><span>将下载到的内核包上传至数据库主机。</span></li>
+     <li><span>执行以下命令安装内核包。</span><p></p><p><strong>rpm -ivh </strong><em>内核包</em></p>
+      <div class="p">
+       以kernel-3.10.0-957.10.1.el7.x86_64.rpm为例，如：
+       <pre class="screen">rpm -ivh kernel-3.10.0-957.10.1.el7.x86_64.rpm</pre>
+      </div> <p></p></li>
+     <li><span>重启操作系统后，再次执行以下命令查看内核版本是否为新安装的版本。</span><p></p><p><strong>uname -r</strong></p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="oracle_gud_0119.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

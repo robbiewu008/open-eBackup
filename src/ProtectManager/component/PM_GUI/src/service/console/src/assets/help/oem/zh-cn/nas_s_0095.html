@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="nas_s_0094.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
@@ -40,11 +40,11 @@
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>选择<span class="uicontrol">“<span id="nas_s_0095__zh-cn_topic_0000001839142377_text99081414144119">保护</span> &gt; 文件系统 &gt; NAS共享”</span>。</span><p></p>
+     <li><span>选择<span class="uicontrol">“<span id="nas_s_0095__zh-cn_topic_0000002199964685_text99081414144119">保护</span> &gt; 文件系统 &gt; NAS共享”</span>。</span><p></p>
       <div class="note">
        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="nas_s_0095__zh-cn_topic_0000001839142377_p5978112341818">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0095__zh-cn_topic_0000001839142377_uicontrol129783237180">“<span id="nas_s_0095__zh-cn_topic_0000001839142377_text10978172391818">保护</span> &gt; 文件服务 &gt; NAS共享”</span>。</p>
+        <p id="nas_s_0095__zh-cn_topic_0000002199964685_p5978112341818">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0095__zh-cn_topic_0000002199964685_uicontrol129783237180">“<span id="nas_s_0095__zh-cn_topic_0000002199964685_text10978172391818">保护</span> &gt; 文件服务 &gt; NAS共享”</span>。</p>
        </div>
       </div> <p>NAS共享信息如<a href="#nas_s_0095__table2382789197">表1</a>所示。</p>
       <div class="tablenoborder">
@@ -69,7 +69,7 @@
           <td class="cellrowborder" valign="top" width="80.02%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>NAS共享名称。</p> <p>单击名称，可以查看NAS共享的总览、副本数据和任务。</p>
            <ul>
             <li>总览<p>显示名称、SLA信息、任务执行时间、副本总数等。</p></li>
-            <li>副本数据<p>您可以依次按照年、月、天查找相应时间的副本。</p> <p>时间下方显示<span><img src="zh-cn_image_0000001792520506.png"></span>，表示该时间存在副本。</p> <p>单击“<span id="nas_s_0095__nas_s_0092_text6231156172516">清除索引</span>”，可以删除该资源下的所有索引。</p>
+            <li>副本数据<p>您可以依次按照年、月、天查找相应时间的副本。</p> <p>时间下方显示<span><img src="zh-cn_image_0000002200046117.png"></span>，表示该时间存在副本。</p> <p>单击“<span id="nas_s_0095__nas_s_0092_text6231156172516">清除索引</span>”，可以删除该资源下的所有索引。</p>
              <div class="note">
               <span class="notetitle"> 说明： </span>
               <div class="notebody">
@@ -83,8 +83,8 @@
            </ul></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.98%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span>FQDN/IP</span></p></td>
-          <td class="cellrowborder" valign="top" width="80.02%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>访问NAS共享的FQDN或者业务IP地址。</p></td>
+          <td class="cellrowborder" valign="top" width="19.98%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p>域名/IP</p></td>
+          <td class="cellrowborder" valign="top" width="80.02%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>访问NAS共享的域名或者业务IP地址。</p></td>
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="19.98%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span>存储设备</span></p></td>
@@ -107,9 +107,9 @@
           <td class="cellrowborder" valign="top" width="80.02%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 ">
            <div class="p">
             SLA遵从度指某次备份任务是否按设定的备份频率或备份窗口成功完成备份。
-            <ul id="nas_s_0095__zh-cn_topic_0000001792344110_zh-cn_topic_0000001792344094_ul1823814519293">
-             <li id="nas_s_0095__zh-cn_topic_0000001792344110_zh-cn_topic_0000001792344094_li9238184572919">遵从：如果某次备份任务（首次全量备份除外）的备份时间满足备份窗口或备份频率要求，且备份成功，则表示SLA遵从。</li>
-             <li id="nas_s_0095__zh-cn_topic_0000001792344110_zh-cn_topic_0000001792344094_li189142052112912">不遵从：如果备份时间不满足备份窗口或备份频率要求，例如某次备份任务SLA设定的备份频率为每半小时执行一次，最终备份时间超过半小时，则表示SLA不遵从。建议调整备份频率或备份窗口。</li>
+            <ul id="nas_s_0095__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_ul1823814519293">
+             <li id="nas_s_0095__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_li9238184572919">遵从：如果某次备份任务（首次全量备份除外）的备份时间满足备份窗口或备份频率要求，且备份成功，则表示SLA遵从。</li>
+             <li id="nas_s_0095__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_li189142052112912">不遵从：如果备份时间不满足备份窗口或备份频率要求，例如某次备份任务SLA设定的备份频率为每半小时执行一次，最终备份时间超过半小时，则表示SLA不遵从。建议调整备份频率或备份窗口。</li>
             </ul>
            </div></td>
          </tr>
@@ -126,10 +126,10 @@
           <td class="cellrowborder" valign="top" width="19.98%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 ">
            <div class="p">
             标签
-            <div class="note" id="nas_s_0095__zh-cn_topic_0000001792344110_note1330311543247">
+            <div class="note" id="nas_s_0095__zh-cn_topic_0000002164820458_note1330311543247">
              <span class="notetitle"> 说明： </span>
              <div class="notebody">
-              <p id="nas_s_0095__zh-cn_topic_0000001792344110_p630385412417">仅1.6.0及后续版本存在此参数。</p>
+              <p id="nas_s_0095__zh-cn_topic_0000002164820458_p630385412417"><span id="nas_s_0095__zh-cn_topic_0000002164820458_ph5374928181810">仅1.6.0及后续版本存在此参数。</span></p>
              </div>
             </div>
            </div></td>

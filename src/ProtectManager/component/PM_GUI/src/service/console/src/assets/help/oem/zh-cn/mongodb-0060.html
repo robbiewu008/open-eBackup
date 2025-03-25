@@ -17,199 +17,40 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="管理MongoDB副本">
+  <meta name="DC.Title" content="步骤2：创建复制副本周期性归档">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="mongodb-0058.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="mongodb-0060">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>管理MongoDB副本</title>
+  <title>步骤2：创建复制副本周期性归档</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="mongodb-0060"></a><a name="mongodb-0060"></a>
-  <h1 class="topictitle1">管理MongoDB副本</h1>
+  <h1 class="topictitle1">步骤2：创建复制副本周期性归档</h1>
   <div>
-   <p>您可以在<span>本产品</span>上对副本数据执行相关操作。</p>
-   <p>您需要登录管理界面，选择<span class="uicontrol">“<span id="mongodb-0060__zh-cn_topic_0000001839142377_text732145416391">数据利用</span> &gt; <span id="mongodb-0060__zh-cn_topic_0000001839142377_text1932135423913">副本数据</span> &gt; <span id="mongodb-0060__zh-cn_topic_0000001839142377_text12694336586">大数据</span> &gt; MongoDB”</span>，进入MongoDB副本页面。</p>
-   <ul>
-    <li>单击<span class="uicontrol">“资源”</span>以资源维度执行相关操作，该页面的操作均是针对当前资源的复制副本，请在复制副本所在的集群执行以下操作。<p>具体操作任务如<a href="#mongodb-0060__table14710939161317">表1</a>所示。</p>
-     <div class="tablenoborder">
-      <a name="mongodb-0060__table14710939161317"></a><a name="table14710939161317"></a>
-      <table cellpadding="4" cellspacing="0" summary="" id="mongodb-0060__table14710939161317" frame="border" border="1" rules="all">
-       <caption>
-        <b>表1 </b>复制副本相关操作
-       </caption>
-       <colgroup>
-        <col style="width:21.32%">
-        <col style="width:47.339999999999996%">
-        <col style="width:31.34%">
-       </colgroup>
-       <thead align="left">
-        <tr>
-         <th align="left" class="cellrowborder" valign="top" width="21.32%" id="mcps1.3.3.1.3.2.4.1.1"><p>任务</p></th>
-         <th align="left" class="cellrowborder" valign="top" width="47.339999999999996%" id="mcps1.3.3.1.3.2.4.1.2"><p>任务描述</p></th>
-         <th align="left" class="cellrowborder" valign="top" width="31.34%" id="mcps1.3.3.1.3.2.4.1.3"><p>界面入口</p></th>
-        </tr>
-       </thead>
-       <tbody>
-        <tr>
-         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>为复制副本创建保护</p></td>
-         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要对复制副本执行周期性复制或归档时，可以通过该操作实现。</p> <p><strong>注意事项</strong></p> <p>如果当前选择的资源未产生复制副本，则无法关联SLA对该资源进行保护。</p></td>
-         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>在资源所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>保护</span>”</span>，关联复制SLA或归档SLA，对复制副本进行复制或归档。</p></td>
-        </tr>
-        <tr>
-         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>修改复制副本关联的SLA</p> <p></p></td>
-         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p> <p>您可以通过该操作修改复制副本关联的SLA。</p></td>
-         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>在资源所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>修改保护</span>”</span>，为复制副本关联新的SLA。</p></td>
-        </tr>
-        <tr>
-         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>移除对复制副本的保护</p></td>
-         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当不需要再对复制副本执行保护时，可以通过移除保护计划来实现。移除后系统将无法对该复制副本执行保护。</p></td>
-         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>在资源所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>移除保护</span>”</span>。</p></td>
-        </tr>
-        <tr>
-         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>激活对复制副本的保护</p></td>
-         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p> <p>复制副本的保护计划被禁用后，您可以通过激活操作使复制副本的保护计划重新生效。激活后系统将按照保护计划对复制副本执行保护。</p></td>
-         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>单击<span class="uicontrol">“<span>更多</span> &gt; <span>激活保护</span>”</span>。</p></td>
-        </tr>
-        <tr>
-         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>禁用对复制副本的保护</p></td>
-         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您暂时不需要再对复制副本执行周期性保护时，可以通过禁用其保护计划来实现。禁用后系统将不会执行该复制副本的自动保护任务。</p></td>
-         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>单击<span class="uicontrol">“<span>更多</span> &gt; <span>禁用保护</span>”</span>。</p></td>
-        </tr>
-        <tr>
-         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>对复制副本执行一次手动复制</p></td>
-         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要对复制副本立即执行一次复制，可以通过该操作实现。</p> <p><strong>注意事项</strong></p> <p>执行该操作前，请确保已对当前资源创建基于复制副本的SLA，并且该SLA为复制SLA。</p></td>
-         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动复制</span>”</span>。</p></td>
-        </tr>
-        <tr>
-         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 ">
-          <div class="p">
-           更改所属用户
-           <div class="note" id="mongodb-0060__zh-cn_topic_0000001839143185_note6966434109">
-            <span class="notetitle"> 说明： </span>
-            <div class="notebody">
-             <p id="mongodb-0060__zh-cn_topic_0000001839143185_zh-cn_topic_0000001792344090_p1816719214566">仅1.6.0及后续版本支持此功能。</p>
-            </div>
-           </div>
-          </div></td>
-         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要对资源及其所有副本更改所属用户，并将副本原本占用的配额切换至新的所属用户，可以通过该操作实现。</p>
-          <div class="p">
-           <strong>注意事项</strong>
-           <ul>
-            <li>仅系统管理员有修改所属用户的权限。</li>
-            <li>仅支持修改为数据保护管理员或自定义角色的用户。</li>
-            <li>更改所属用户后，该资源的所有信息均不在原所属用户下展示。</li>
-           </ul>
-          </div></td>
-         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>在资源所在行单击“更多 &gt; 更改所属用户”。</p></td>
-        </tr>
-       </tbody>
-      </table>
-     </div></li>
-    <li>单击“副本”以副本维度执行相关操作。<p>具体操作任务如<a href="#mongodb-0060__zh-cn_topic_0000001263933990_zh-cn_topic_0000001090712911_table51069596392">表2</a>所示。</p>
-     <div class="tablenoborder">
-      <a name="mongodb-0060__zh-cn_topic_0000001263933990_zh-cn_topic_0000001090712911_table51069596392"></a><a name="zh-cn_topic_0000001263933990_zh-cn_topic_0000001090712911_table51069596392"></a>
-      <table cellpadding="4" cellspacing="0" summary="" id="mongodb-0060__zh-cn_topic_0000001263933990_zh-cn_topic_0000001090712911_table51069596392" frame="border" border="1" rules="all">
-       <caption>
-        <b>表2 </b>MongoDB副本相关操作
-       </caption>
-       <colgroup>
-        <col style="width:21.3%">
-        <col style="width:47.3%">
-        <col style="width:31.4%">
-       </colgroup>
-       <thead align="left">
-        <tr>
-         <th align="left" class="cellrowborder" valign="top" width="21.3%" id="mcps1.3.3.2.2.2.4.1.1"><p>任务</p></th>
-         <th align="left" class="cellrowborder" valign="top" width="47.3%" id="mcps1.3.3.2.2.2.4.1.2"><p>任务描述</p></th>
-         <th align="left" class="cellrowborder" valign="top" width="31.4%" id="mcps1.3.3.2.2.2.4.1.3"><p>界面入口</p></th>
-        </tr>
-       </thead>
-       <tbody>
-        <tr>
-         <td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.2.2.4.1.1 ">
-          <div class="p">
-           手动归档
-           <div class="note" id="mongodb-0060__zh-cn_topic_0000001839143185_note1993101364115">
-            <span class="notetitle"> 说明： </span>
-            <div class="notebody">
-             <p id="mongodb-0060__zh-cn_topic_0000001839143185_zh-cn_topic_0000001792344090_p1816719214566_1">仅1.6.0及后续版本支持此功能。</p>
-            </div>
-           </div>
-          </div></td>
-         <td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要手动将副本归档至归档存储时，可以通过该操作实现。</p> <p><strong>注意事项</strong></p> <p>仅全量备份副本及其对应的复制副本、级联复制副本，以及永久增量（合成全量）备份副本及其对应的复制副本、级联复制副本支持手动归档。</p></td>
-         <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.2.2.4.1.3 "><p>在副本所在行单击<span class="uicontrol">“<span>更多</span> &gt; 手动归档”</span>。</p></td>
-        </tr>
-        <tr>
-         <td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.2.2.4.1.1 "><p>修改副本保留策略</p> <p style="color:#FF0000;"></p></td>
-         <td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要重新设置副本的保留时长时，可以通过该操作实现。</p> <p><strong>注意事项</strong></p>
-          <ul>
-           <li>修改后从当前时间开始计算副本保留时长。</li>
-           <li>修改副本保留时长时，不允许全量副本的保留时长小于增量副本（基于该全量副本执行增量备份产生的副本）的保留时长。</li>
-          </ul></td>
-         <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.2.2.4.1.3 "><p>在副本所在行单击<span class="uicontrol">“<span>更多</span> &gt; 修改保留策略”</span>。</p> <p>您可以设置为永久保留或保留xx天/周/月/年。</p> <p></p></td>
-        </tr>
-        <tr>
-         <td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.2.2.4.1.1 "><p>删除副本</p></td>
-         <td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您不再需要某个副本或某个副本不可用时，可以删除该副本，以释放存储空间。</p> <p><strong>注意事项</strong></p>
-          <ul>
-           <li>同一资源下存在多个全量副本时，不允许删除最近一次全量副本。</li>
-           <li>同一资源下存在多个副本时，仅存在一个全量备份副本时，允许删除该全量备份副本。</li>
-           <li>同一资源下存在多个副本时，仅存在一个全量复制副本时，不允许删除该全量复制副本。</li>
-           <li>删除全量副本时，系统会同步删除依赖其的增量副本。</li>
-          </ul></td>
-         <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.2.2.4.1.3 ">
-          <div class="p">
-           在副本所在行单击“更多 &gt; <span id="mongodb-0060__zh-cn_topic_0000001839143185_text1659218118342">删除</span>”，或勾选待删除副本后单击列表上方的“<span id="mongodb-0060__zh-cn_topic_0000001839143185_text7770103919243">删除</span>”。
-           <div class="note" id="mongodb-0060__zh-cn_topic_0000001839143185_note172661250175414">
-            <span class="notetitle"> 说明： </span>
-            <div class="notebody">
-             <p id="mongodb-0060__zh-cn_topic_0000001839143185_p15266165085416">对于1.6.0及后续版本，如果在副本删除失败后需强制删除数据库中的副本数据，请在弹出的对话框中勾选“删除失败后强制删除副本数据”。</p>
-            </div>
-           </div>
-          </div></td>
-        </tr>
-        <tr>
-         <td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.2.2.4.1.1 "><p>反向复制/级联复制复制副本</p></td>
-         <td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p> <p>如果您希望将复制副本复制回源端以恢复源端数据，或者将复制副本复制至其他集群以进行异地容灾，可以通过本操作实现。</p> <p><strong>注意事项</strong></p> <p>执行反向复制前请先从源端删除复制副本对应的备份副本，否则会导致复制失败。</p></td>
-         <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.2.2.4.1.3 ">
-          <div class="p">
-           在复制副本所在行单击“更多 &gt; <span id="mongodb-0060__zh-cn_topic_0000001839143185_text191285272345">复制</span>”。配置副本复制参数：
-           <ol id="mongodb-0060__zh-cn_topic_0000001839143185_ol15113142311175">
-            <li id="mongodb-0060__zh-cn_topic_0000001839143185_li0113202310179">选择<span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839143185_uicontrol1611634014176">“复制目标集群”</span>。
-             <ul id="mongodb-0060__zh-cn_topic_0000001839143185_ul2991182216">
-              <li id="mongodb-0060__zh-cn_topic_0000001839143185_li3998812219">当<span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839143185_uicontrol630794164212">“复制目标集群”</span>为源端集群时，即为反向复制。</li>
-              <li id="mongodb-0060__zh-cn_topic_0000001839143185_li1419217379216">当<span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839143185_uicontrol118058437428">“复制目标集群”</span>为其他集群时，即为级联复制。</li>
-             </ul></li>
-            <li id="mongodb-0060__zh-cn_topic_0000001839143185_li8112182510382">对于1.6.0及后续版本，请选择“复制目标端用户”。</li>
-            <li id="mongodb-0060__zh-cn_topic_0000001839143185_li83719248152">对于1.6.0及后续版本，请输入复制目标端用户的密码，并单击“认证”。</li>
-            <li id="mongodb-0060__zh-cn_topic_0000001839143185_li222198163919">选择复制的“指定目标位置”。</li>
-            <li id="mongodb-0060__zh-cn_topic_0000001839143185_li1564916443171">设置副本保留时长。</li>
-            <li id="mongodb-0060__zh-cn_topic_0000001839143185_li6696135771714">开启/关闭重删、压缩开关。<p id="mongodb-0060__zh-cn_topic_0000001839143185_p325810594214"><a name="mongodb-0060__zh-cn_topic_0000001839143185_li6696135771714"></a><a name="zh-cn_topic_0000001839143185_li6696135771714"></a>建议开启，以提升复制效率。</p></li>
-            <li id="mongodb-0060__zh-cn_topic_0000001839143185_li3458142216186">开启/关闭任务失败告警。</li>
-           </ol>
-          </div></td>
-        </tr>
-        <tr>
-         <td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.3.2.2.2.4.1.1 mcps1.3.3.2.2.2.4.1.2 mcps1.3.3.2.2.2.4.1.3 "><p>注：恢复数据库的配置类似<a href="mongodb-0046.html">恢复MongoDB</a>，本节不再重复说明。</p></td>
-        </tr>
-       </tbody>
-      </table>
-     </div></li>
-   </ul>
+   <p>如果需要对资源产生的复制副本进行周期性归档，请参考本节为资源关联SLA。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000002199964685_uicontrol3329549395">“<span id="mongodb-0060__zh-cn_topic_0000002199964685_text732145416391">数据利用</span> &gt; <span id="mongodb-0060__zh-cn_topic_0000002199964685_text1932135423913">副本数据</span> &gt; <span id="mongodb-0060__zh-cn_topic_0000002199964685_text12694336586">大数据</span> &gt; MongoDB”</span>。</span></li>
+     <li><span>查找到需要归档复制副本的资源，单击<span class="uicontrol">“<span>更多</span> &gt; <span>保护</span>”</span>。</span></li>
+     <li><span>选择已创建的归档SLA。</span><p></p><p>您也可以单击<span class="uicontrol">“<span>创建</span>”</span>，创建新的SLA。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+    </ol>
+   </div>
   </div>
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="mongodb-0058.html">副本</a>
+     <strong>父主题：</strong> <a href="mongodb-0058.html">归档MongoDB复制副本</a>
     </div>
    </div>
   </div>

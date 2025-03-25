@@ -20,95 +20,35 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤3：注册Informix/GBase 8s实例">
+<meta name="DC.Title" content="步骤2：注册Informix/GBase 8s集群">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="informix-0010.html">
+<meta name="DC.Relation" scheme="URI" content="informix-0011.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="informix-0013">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤3：注册Informix/GBase 8s实例</title>
+<title>步骤2：注册Informix/GBase 8s集群</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="informix-0013"></a><a name="informix-0013"></a>
 
-<h1 class="topictitle1">步骤3：注册Informix/GBase 8s实例</h1>
-<div><div class="section"><h4 class="sectiontitle">操作步骤</h4><p><strong>注册Informix/GBase 8s单实例</strong></p>
-<ol><li><span>选择<span class="uicontrol" id="informix-0013__zh-cn_topic_0000001839142377_uicontrol1138252616373">“<span id="informix-0013__zh-cn_topic_0000001839142377_text73821261375">保护</span> &gt; 数据库 &gt; Informix/GBase 8s”</span>。</span></li><li><span>选择<span class="uicontrol">“<span>实例</span>”</span>页签。</span></li><li><span>单击<span class="uicontrol">“<span>注册</span>”</span>，注册Informix/GBase 8s。</span></li><li><span><span class="uicontrol">“<span>类型</span>”</span>选择<span class="uicontrol">“<span>单实例</span>”</span>。</span></li><li><span>配置数据库实例及其认证信息。</span><p><p>相关参数说明如<a href="#informix-0013__table15124911184515">表1</a>所示。</p>
-
-<div class="tablenoborder"><a name="informix-0013__table15124911184515"></a><a name="table15124911184515"></a><table cellpadding="4" cellspacing="0" summary="" id="informix-0013__table15124911184515" frame="border" border="1" rules="all"><caption><b>表1 </b>Informix/GBase 8s单实例注册信息</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.1.3.5.2.2.2.3.1.1"><p>参数</p>
-</th>
-<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.1.3.5.2.2.2.3.1.2"><p>说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.3.5.2.2.2.3.1.1 "><p><span>名称</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.1.3.5.2.2.2.3.1.2 "><p>实例名称。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.3.5.2.2.2.3.1.1 "><p><span>集群</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.1.3.5.2.2.2.3.1.2 "><p>选择已创建的集群（注册实例所在的主机）。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.3.5.2.2.2.3.1.1 "><p><span style="color:#6C7280;">Sqlhost文件路径</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.1.3.5.2.2.2.3.1.2 "><p>输入<span style="color:#6C7280;">Sqlhost文件绝对路径</span>。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.3.5.2.2.2.3.1.1 "><p><span style="color:#6C7280;">Onconfig文件路径</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.1.3.5.2.2.2.3.1.2 "><p>输入<span style="color:#6C7280;">Onconfig文件绝对路径</span>。</p>
-</td>
-</tr>
-</tbody>
-</table>
+<h1 class="topictitle1">步骤2：注册Informix/GBase 8s集群</h1>
+<div><div class="section"><h4 class="sectiontitle">前提条件</h4><p>请确保集群中每个主机已进行注册。</p>
 </div>
-</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
-<p><strong>注册Informix/GBase 8s集群实例</strong></p>
-<ol><li><span>在Informix/GBase 8s页面选择<span class="uicontrol">“<span>实例</span>”</span>页签。</span></li><li><span>单击<span class="uicontrol">“<span>注册</span>”</span>。</span></li><li><span><span class="uicontrol">“<span>类型</span>”</span>选择<span class="uicontrol">“<span>集群实例</span>”</span>。</span></li><li><span>自定义实例名。</span></li><li><span>单击“<span>添加</span>”，在弹出的添加对话框中添加集群实例下的所有节点。</span><p><p>相关参数说明如<a href="#informix-0013__zh-cn_topic_0000001311214069_table241515964115">表2</a>所示。</p>
-
-<div class="tablenoborder"><a name="informix-0013__zh-cn_topic_0000001311214069_table241515964115"></a><a name="zh-cn_topic_0000001311214069_table241515964115"></a><table cellpadding="4" cellspacing="0" summary="" id="informix-0013__zh-cn_topic_0000001311214069_table241515964115" frame="border" border="1" rules="all"><caption><b>表2 </b>Informix/GBase 8s集群注册信息</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.1.5.5.2.2.2.3.1.1"><p>参数</p>
-</th>
-<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.1.5.5.2.2.2.3.1.2"><p>说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.5.5.2.2.2.3.1.1 "><p><span>名称</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.1.5.5.2.2.2.3.1.2 "><p>实例名称。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.5.5.2.2.2.3.1.1 "><p><span>集群</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.1.5.5.2.2.2.3.1.2 "><p>选择已创建的集群。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.5.5.2.2.2.3.1.1 "><p><span style="color:#6C7280;">Sqlhost文件路径</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.1.5.5.2.2.2.3.1.2 "><p id="informix-0013__p1994421119162">输入<span style="color:#6C7280;">Sqlhost文件绝对路径</span>。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.5.5.2.2.2.3.1.1 "><p><span style="color:#6C7280;">Onconfig文件路径</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.1.5.5.2.2.2.3.1.2 "><p id="informix-0013__p1794451141619">输入<span style="color:#6C7280;">Onconfig文件绝对路径</span>。</p>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="informix-0013__zh-cn_topic_0000002199964685_uicontrol1138252616373">“<span id="informix-0013__zh-cn_topic_0000002199964685_text73821261375">保护</span> &gt; 数据库 &gt; Informix/GBase 8s”</span>。</span></li><li><span>选择<span class="uicontrol">“<span>集群</span>”</span>页签。</span></li><li><span>单击<span class="uicontrol">“<span>注册</span>”</span>。</span></li><li><span>在<span class="uicontrol">“<span>注册</span>”</span>页面，自定义集群名称并选择主机。</span></li><li><span>（可选）开启日志备份，并输入日志备份路径，请注意数据库日志空间的使用，及时进行清理。如果空间被占满，将会影响正常业务的进行。具体操作请参见<a href="informix-0091.html">数据库日志空间占满导致业务无法正常进行</a>。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li><span style="color:#282B33;">开启日志备份后，系统支持按时间点恢复数据库。</span></li><li>请确保路径已存在且用户拥有Informix/GBase 8s数据库的读写权限。</li><li><span style="color:#252B3A;">日志路径不允许配置操作系统自带的目录，如：/etc、/bin、/usr 、/dev等</span>。</li><li>日志备份路径推荐使用系统默认路径。<ul><li>对于Informix，系统默认路径是/home/informix/log。</li><li>对于GBase 8s，系统默认路径是/home/gbasedbt/log。</li></ul>
+</li></ul>
+</div></div>
 </p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="informix-0010.html">备份Informix/GBase 8s</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="informix-0011.html">备份Informix/GBase 8s</a></div>
 </div>
 </div>
 

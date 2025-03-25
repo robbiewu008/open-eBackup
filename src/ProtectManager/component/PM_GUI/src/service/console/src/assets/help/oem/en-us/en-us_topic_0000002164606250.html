@@ -1,0 +1,90 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="The Number of VM Disks Increases After Data Disks Are Restored to New Locations">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200007065.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164606250">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>The Number of VM Disks Increases After Data Disks Are Restored to New Locations</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164606250"></a><a name="EN-US_TOPIC_0000002164606250"></a>
+  <h1 class="topictitle1">The Number of VM Disks Increases After Data Disks Are Restored to New Locations</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>After data disks are restored to new locations, the number of VM disks in the new locations are greater than that before the restoration.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Cause</h4>
+    <div class="p">
+     During disk restoration, the <span>product</span> checks whether the original disks exist on the target VM. If the original disks do not exist, the <span>product</span> creates disks for restoration. The system determines that disks need to be created in the following scenarios:
+     <ul>
+      <li>The original disks have been deleted.</li>
+      <li>Capacities of the original disks have been expanded.</li>
+      <li>Datastores of the original disks have been replaced.</li>
+      <li>IDs of the original disks have been changed.</li>
+      <li>The original disks are not on the target VM. The system determines that the original disks exist on the target VM in the following scenarios:
+       <ul>
+        <li>For versions earlier than FusionCompute 6.3:
+         <ul>
+          <li>If the slot IDs of a copy disk and the target disk are both <strong>1</strong> and the disk type is IDE, the copy disk exists on the target VM.</li>
+          <li>If the Uniform Resource Name (URN), for example, urn:sites:1:volumes:78 of a copy disk is the same as that of the target disk and no slot ID of the disks is <strong>1</strong>, the copy disk exists on the target VM.</li>
+         </ul></li>
+        <li>For FusionCompute 6.3 and later versions:
+         <ul>
+          <li>If a copy disk and the target disk are both system disks, the copy disk exists on the target VM.</li>
+          <li>If the URN, for example, urn:sites:1:volumes:78 of a copy disk is the same as that of the target disk and none of them is a system disk, the copy disk exists on the target VM.</li>
+         </ul></li>
+       </ul></li>
+     </ul>
+    </div>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <p>The disks restored to new locations are suffixed with <strong>_RESTORE</strong>. You need to add partitions to the restored disks and mount the partitions again. To detach unnecessary disks, refer to the following operations. The following uses FusionCompute 8.1.1 as an example.</p>
+    <ol>
+     <li><span>Log in to FusionCompute using a browser.</span><p></p><p id="EN-US_TOPIC_0000002164606250__en-us_topic_0000002164606210_p6381515018">Login address: <strong id="EN-US_TOPIC_0000002164606250__en-us_topic_0000002164606210_b65373179016">https://</strong><em id="EN-US_TOPIC_0000002164606250__en-us_topic_0000002164606210_i7538817902">Floating IP address of the VRM node of FusionCompute</em><strong id="EN-US_TOPIC_0000002164606250__en-us_topic_0000002164606210_b1053891716013">:8443</strong></p> <p></p></li>
+     <li><span>Click <span><img src="en-us_image_0000002164766198.png"></span> on the navigation pane on the left to go to the <strong>Resource Pools</strong> page.</span></li>
+     <li><span>In the navigation tree on the left of the <strong>Resource Pools</strong> page, choose the target VM.</span></li>
+     <li><span>On the VM page, click the <strong>Configuration</strong> tab.</span></li>
+     <li><span>In the navigation tree on the left of the <strong>Configuration</strong> page, choose <strong>Hardware</strong> &gt; <strong>Disk</strong>.</span></li>
+     <li><span>In the row of the new disk, choose <strong>More</strong> &gt; <strong>Detach</strong>.</span></li>
+     <li><span>In the displayed dialog box, confirm the information.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200007065.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

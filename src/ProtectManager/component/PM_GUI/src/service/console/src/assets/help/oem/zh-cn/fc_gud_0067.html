@@ -1,0 +1,89 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="整机恢复到新位置失败，错误详情包含&quot;ErrorCode: 10300005&quot;">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="fc_gud_0064.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="fc_gud_0067">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>整机恢复到新位置失败，错误详情包含"ErrorCode: 10300005"</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="fc_gud_0067"></a><a name="fc_gud_0067"></a>
+  <h1 class="topictitle1">整机恢复到新位置失败，错误详情包含"ErrorCode: 10300005"</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>FusionCompute虚拟机恢复到新位置失败，错误详情中显示：{"ErrorCode": "10300005", "ErrorDesc":"The entered parameter VM CPU limit is invalid. Please enter a valid value."}。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>备份虚拟机设置了CPU限制频率，且备份虚拟机所在主机和恢复目标位置主机的CPU频率不同，导致CPU限制频率的下限值不同。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">方法一</h4>
+    <p>重新设置FusionCompute虚拟机待恢复至的<span class="uicontrol">“<span>目标计算位置</span>”</span>，请选择为与备份虚拟机所在主机相同CPU频率的目标主机。</p>
+    <p><strong>处理步骤：</strong></p>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="fc_gud_0067__zh-cn_topic_0000002199964685_uicontrol9143133018394">“数据利用 &gt; 副本数据 &gt; 虚拟化 &gt; FusionCompute”</span>。</span></li>
+     <li><span>支持以虚拟机维度或以副本维度查找副本，本节以虚拟机维度为例进行说明。</span><p></p><p id="fc_gud_0067__fc_gud_0049_p624620403810">在<span class="wintitle" id="fc_gud_0067__fc_gud_0049_wintitle89091044143717">“<span id="fc_gud_0067__fc_gud_0049_text10513419388">资源</span>”</span>页签，根据虚拟机名称查找到需要恢复的虚拟机，并单击虚拟机名称。</p> <p></p></li>
+     <li><span>在<span class="uicontrol" id="fc_gud_0067__fc_gud_0048_uicontrol1812414562220">“<span id="fc_gud_0067__fc_gud_0048_text18993182162710">副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p id="fc_gud_0067__fc_gud_0048_p9918150182310">当时间上显示<span><img id="fc_gud_0067__fc_gud_0048_image99531319193912" src="zh-cn_image_0000002200007213.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>在副本所在的行，单击<span class="uicontrol" id="fc_gud_0067__fc_gud_0048_uicontrol4705161613273">“<span id="fc_gud_0067__fc_gud_0048_text04951528155216">更多</span> &gt; <span id="fc_gud_0067__fc_gud_0048_text2152153611315">恢复</span>”</span>。</span></li>
+     <li><span>恢复虚拟机至相同CPU频率的目标主机。</span><p></p>
+      <ol type="a">
+       <li>选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>。</li>
+       <li>设置恢复虚拟机到新位置的位置信息，其中，<span class="uicontrol">“<span>目标计算位置</span>”</span>选择和备份虚拟机所在主机相同CPU频率的目标主机。</li>
+       <li>按需设置剩余参数。</li>
+      </ol> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">方法二</h4>
+    <p>在FusionCompute管理系统中选择目标位置主机创建虚拟机，后使用磁盘恢复功能恢复磁盘。</p>
+    <p><strong>处理步骤：</strong></p>
+    <ol>
+     <li><span>使用浏览器，登录FusionCompute。</span><p></p><p id="fc_gud_0067__fc_gud_0014_p6381515018">登录地址：<strong id="fc_gud_0067__fc_gud_0014_b415811413217">https://</strong><em id="fc_gud_0067__fc_gud_0014_i190316371521">FusionCompute的VRM节点的浮动IP地址</em><strong id="fc_gud_0067__fc_gud_0014_b179837448219">:8443</strong></p> <p></p></li>
+     <li id="fc_gud_0067__li15907755135718"><a name="fc_gud_0067__li15907755135718"></a><a name="li15907755135718"></a><span>在FusionCompute管理系统上创建虚拟机。该虚拟机用于保存待恢复FusionCompute虚拟机的磁盘数据。</span><p></p>
+      <ol type="a">
+       <li>选择<span class="uicontrol">“资源池 ”</span>。</li>
+       <li>单击“创建虚拟机”。其中，创建虚拟机的计算资源信息和数据存储信息选择为需要恢复FusionCompute虚拟机的目标位置。</li>
+       <li>单击“<span>确定</span>”。</li>
+      </ol> <p></p></li>
+     <li><span>使用FusionCompute虚拟机磁盘恢复功能，将磁盘信息恢复至<a href="#fc_gud_0067__li15907755135718">2</a>创建的虚拟机中。磁盘恢复的具体操作步骤参见<a href="fc_gud_0049.html">恢复FusionCompute虚拟机磁盘</a>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="fc_gud_0064.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

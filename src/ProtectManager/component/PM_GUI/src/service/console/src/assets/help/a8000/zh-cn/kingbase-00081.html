@@ -1,0 +1,134 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复Kingbase实例">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="kingbase-00078.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="kingbase-00081">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复Kingbase实例</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="kingbase-00081"></a><a name="kingbase-00081"></a>
+
+<h1 class="topictitle1">恢复Kingbase实例</h1>
+<div><p>当需要对已备份的Kingbase实例进行恢复时，可以参考本节恢复Kingbase实例至原位置或新位置。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><p>支持使用备份副本、复制副本、归档副本进行恢复。支持恢复至原位置（复制副本不支持恢复至原位置，复制副本的归档副本不支持恢复至原位置）或新位置。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>恢复时如果目标实例正在运行，请先停止目标实例再执行恢复操作。停止实例操作如下：</span><p><ul><li>集群实例<ol type="a"><li>使用PuTTY登录Kingbase数据库所在主机。</li><li>执行以下命令，停止集群实例。<pre class="screen"><em>/安装目录</em>/bin/sys_monitor.sh stop</pre>
+</li></ol>
+</li></ul>
+<ul><li>单实例<ol type="a"><li>使用PuTTY登录Kingbase数据库所在主机。</li><li>执行以下命令，停止单实例。<pre class="screen"><em>/安装目录</em>/bin/sys_ctl -D <em>/数据目录</em> stop</pre>
+</li></ol>
+</li></ul>
+</p></li><li><span>恢复时如果目标实例的端口被占用，请先解除目标实例将占用的端口再执行恢复操作，具体操作如下:</span><p><ol type="a"><li>使用PuTTY登录Kingbase数据库所在主机。</li><li>执行以下命令，判断端口是否被占用，其中<strong>54321</strong>是查询是否被占用的端口，<strong>4784</strong>是端口的进程ID。<pre class="screen">netstat -tunlp | grep <em>54321</em></pre>
+<p>回显如下所示，表明端口已被占用。</p>
+<p><span><img src="zh-cn_image_0000002200021117.png"></span></p>
+</li><li>执行以下命令，解除被占用的端口。<pre class="screen">kill -9 <em>进程ID</em></pre>
+</li></ol>
+</p></li></ol><ol start="3"><li><span>选择<span class="uicontrol" id="kingbase-00081__zh-cn_topic_0000002199964685_uicontrol1459541416277">“<span id="kingbase-00081__zh-cn_topic_0000002199964685_text1459512149272">数据利用</span> &gt; <span id="kingbase-00081__zh-cn_topic_0000002199964685_text185956147273">副本数据</span> &gt; <span id="kingbase-00081__zh-cn_topic_0000002199964685_text1647174044920">数据库</span> &gt; Kingbase”</span>。</span></li><li><span>您可以以Kingbase实例资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据资源名称查找到需要恢复的资源，并单击资源名称。</p>
+</p></li><li><span>选择副本恢复的资源。</span></li><li><span>指定副本或指定时间点进行恢复。</span><p><ul><li>指定副本恢复<ol type="a"><li>依次选择年、月、天找到副本。<p>当日期上显示<span><img src="zh-cn_image_0000002200021121.png"></span>，即表示该月、该天存在副本。</p>
+</li><li>单击<span><img src="zh-cn_image_0000002164780084.png"></span>，进入副本数据页面。</li><li>在副本数据页面单击<span><img src="zh-cn_image_0000002200106701.png"></span>，单击需要恢复的副本所在行的<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"> <span>恢复</span></span>”</span>。</li></ol>
+</li><li>指定时间点恢复<ol type="a"><li>依次选择年、月、天找到副本。<p>当时间上显示<span><img src="zh-cn_image_0000002200106697.png"></span>，即表示该月、该天存在副本。</p>
+</li><li>单击<span><img src="zh-cn_image_0000002164620352.png"></span>，进入副本数据页面。</li><li>在副本数据页面单击<span><img src="zh-cn_image_0000002164620356.png"></span>，在时间轴上选择蓝色覆盖区域的副本，单击<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"><span>恢复</span></span>”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="kingbase-00081__oracle_gud_0083_ul75802612312"><li id="kingbase-00081__oracle_gud_0083_li1497342618234">对于1.5.0版本，时间轴上最多仅展示100个副本，单击<span><img id="kingbase-00081__oracle_gud_0083_image173544102299" src="zh-cn_image_0000002199963833.png"></span>可以查看所有副本。</li><li id="kingbase-00081__oracle_gud_0083_li95818264231">执行时间点恢复时，由于管理界面无法获取恢复时所使用的副本信息，因此，在恢复任务和相关的事件页面，用户无法看到该恢复任务的副本信息。</li></ul>
+</div></div>
+</li></ol>
+</li></ul>
+</p></li><li><span>指定副本或时间点进行恢复。</span><p><div class="p">相关参数说明如<a href="#kingbase-00081__table194961441141219">表1</a>。
+<div class="tablenoborder"><a name="kingbase-00081__table194961441141219"></a><a name="table194961441141219"></a><table cellpadding="4" cellspacing="0" summary="" id="kingbase-00081__table194961441141219" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复Kingbase实例参数说明</caption><colgroup><col style="width:32.019999999999996%"><col style="width:67.97999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.3.3.5.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.3.3.5.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.1 "><p><span>恢复至</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.2 "><p>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>或<span class="uicontrol">“<span>新位置</span>”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.1 "><p><span>位置</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>时，默认显示当前实例所在位置。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.1 "><p>标签</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p><span>仅1.6.0及后续版本存在此参数。</span></p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，可以通过标签筛选待恢复的资源。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.1 "><p><span>目标主机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，请选择恢复到的目标主机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.1 "><p><span>目标实例</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，请选择恢复到的目标实例。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.1 "><p><span>并发进程数</span></p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>仅在1.6.0及后续版本支持该参数。</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.2 "><div class="p" id="kingbase-00081__p284323634310">并发运行的最大进程数。<ul id="kingbase-00081__kingbase-00019_ul441812321262"><li id="kingbase-00081__kingbase-00019_li168933916267"><span style="color:#282B33;">适当的设置可以提高备份或还原的效率，太高的设置会影响数据库实例本身的性能。</span></li><li id="kingbase-00081__kingbase-00019_li9418632172612"><span style="color:#282B33;">建议将最大进程数设置为CPU内核数。</span></li></ul>
+</div>
+<p id="kingbase-00081__p1322615422614"></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.1 "><p><span>恢复前执行脚本</span></p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="67.97999999999999%" headers="mcps1.3.3.3.5.2.1.2.2.3.1.2 "><p>您可以根据实际需求，在恢复任务执行前、执行成功后、执行失败后，执行自定义脚本。此处请输入脚本名称，脚本名称以<strong>.sh</strong>结尾。</p>
+<div class="p"><span style="color:#282B33;">请确保脚本已存放在数据库主机的“DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty”目录，且登录数据库主机的用户（默认为root）对该脚本有可执行权限。</span><div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>当配置了<span class="uicontrol">“<span>恢复成功执行脚本</span>”</span>时，即使该脚本执行失败，<span>OceanProtect</span>上也会显示恢复任务的状态为<span class="uicontrol">“<span>成功</span>”</span>。请您留意任务详情中是否有后置脚本执行失败的相关提示，如有请及时修正脚本。</p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.3.5.2.1.2.2.3.1.1 "><p><span>恢复成功执行脚本</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.3.5.2.1.2.2.3.1.1 "><p><span>恢复失败执行脚本</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="kingbase-00078.html">恢复</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

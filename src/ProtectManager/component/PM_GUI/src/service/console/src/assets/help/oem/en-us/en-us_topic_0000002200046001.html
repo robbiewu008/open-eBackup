@@ -1,0 +1,62 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: (Optional) Obtaining the CA Certificate of a Storage Device (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164805012.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200046001">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: (Optional) Obtaining the CA Certificate of a Storage Device (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200046001"></a><a name="EN-US_TOPIC_0000002200046001"></a>
+  <h1 class="topictitle1">Step 1: (Optional) Obtaining the CA Certificate of a Storage Device (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)</h1>
+  <div>
+   <p id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_p1733182219508">To ensure the security of interaction between the <span id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_text1420811157135">product</span> and a storage device, you can import the storage device certificate to the system. This operation is optional.</p>
+   <p id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_p19722164210475">Obtain the CA certificate of a storage device as follows:</p>
+   <ul id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_ul9722184217475">
+    <li id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_li9722042184720">Method 1: Obtain the certificate from the storage device administrator.</li>
+    <li id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_li18722242154714">Method 2: Download the certificate of Huawei storage devices by yourself. For other storage devices, obtain the certificate from the storage device administrator. The following gives an example of the procedure for obtaining the CA certificate of a Huawei OceanStor storage device.
+     <ol id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_ol1723642184711">
+      <li id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_li1644514484819">Enter the DeviceManager login address of a storage device whose certificate is to be obtained in the address box of a browser. The browser displays a message indicating that the login is insecure (Microsoft Edge displays a message indicating that the certificate is incorrect).<p id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_p1410010574816"><a name="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_li1644514484819"></a><a name="en-us_topic_0000002164804992_li1644514484819"></a>The displayed information varies depending on the browser. The following uses Google Chrome 84 as an example.</p></li>
+      <li id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_li177235428473">Click <strong id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_b1530875215322">Not secure</strong> on the left of the URL address box.<p id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_p1472318425476"><span><img id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_image3723164274715" src="en-us_image_0000002164645344.png"></span></p></li>
+      <li id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_li20723134211473">In the dialog box that is displayed, click <strong id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_b19938166111916">Certificate is not valid</strong>.<p id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_p7683465539"><span><img id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_image194097119545" src="en-us_image_0000002200131673.png"></span></p></li>
+      <li id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_li166118685812">In the displayed dialog box, verify that the issuer is Huawei on the <span class="uicontrol" id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_uicontrol1423110123613"><b>General</b></span> tab page.<p id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_p10664171318"><span><img id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_image49571921627" src="en-us_image_0000002164645348.png"></span></p></li>
+      <li id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_li15834331125420">Click the <span class="uicontrol" id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_uicontrol1990458181717"><b>Details</b></span> tab and click <span class="uicontrol" id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_uicontrol990413813175"><b>Export</b></span>.<p id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_p055711719557"><span><img id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_image3604193991312" src="en-us_image_0000002164805076.png"></span></p></li>
+      <li id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_li847718278550">Change the file name extension to <span class="uicontrol" id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_uicontrol3859193445518"><b>.pem</b></span>, set <strong id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_b191921310122118">Save as type</strong> to <span class="uicontrol" id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_uicontrol181729238175"><b>Base64-encoded ASCII, Single certificate</b></span>, and click <span class="uicontrol" id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_uicontrol58591534205514"><b>Save</b></span>. Save the exported certificate file to the local PC.<p id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_p1570371417561"><span><img id="EN-US_TOPIC_0000002200046001__en-us_topic_0000002164804992_image55961634141519" src="en-us_image_0000002200046113.png"></span></p></li>
+     </ol></li>
+   </ul>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164805012.html">Backing Up a NAS Share</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

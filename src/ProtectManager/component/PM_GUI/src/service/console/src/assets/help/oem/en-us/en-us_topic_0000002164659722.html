@@ -1,0 +1,137 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Preparations for Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200060405.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164659722">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Preparations for Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164659722"></a><a name="EN-US_TOPIC_0000002164659722"></a>
+  <h1 class="topictitle1">Preparations for Backup</h1>
+  <div>
+   <p>Before the backup, prepare related information by following instructions in <a href="#EN-US_TOPIC_0000002164659722__en-us_topic_0000001505943769_table10744125193920">Table 1</a>.</p>
+   <div class="note">
+    <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+    <div class="notebody">
+     <ul id="EN-US_TOPIC_0000002164659722__ul17447111517311">
+      <li id="EN-US_TOPIC_0000002164659722__li18475121815115"><span id="EN-US_TOPIC_0000002164659722__ph158001916133217">Unless otherwise specified, the operations in this section use Dameng 8 as an example. The operations may vary according to the database version.</span></li>
+      <li id="EN-US_TOPIC_0000002164659722__li135951626152410"><span id="EN-US_TOPIC_0000002164659722__ph1496613312326">If the Dameng database is deployed in a cluster, you need to log in to all hosts where the cluster instances reside and perform the following operations unless otherwise specified.</span></li>
+     </ul>
+    </div>
+   </div>
+   <div class="tablenoborder">
+    <a name="EN-US_TOPIC_0000002164659722__en-us_topic_0000001505943769_table10744125193920"></a><a name="en-us_topic_0000001505943769_table10744125193920"></a>
+    <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164659722__en-us_topic_0000001505943769_table10744125193920" frame="border" border="1" rules="all">
+     <caption>
+      <b>Table 1 </b>Preparations for backup
+     </caption>
+     <colgroup>
+      <col style="width:26.97%">
+      <col style="width:60%">
+      <col style="width:13.03%">
+     </colgroup>
+     <thead align="left">
+      <tr>
+       <th align="left" class="cellrowborder" valign="top" width="26.970000000000006%" id="mcps1.3.3.2.4.1.1"><p>Item</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="60.00000000000001%" id="mcps1.3.3.2.4.1.2"><p>How to Obtain</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="13.030000000000003%" id="mcps1.3.3.2.4.1.3"><p>To Be Used In</p></th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td class="cellrowborder" valign="top" width="26.970000000000006%" headers="mcps1.3.3.2.4.1.1 ">
+        <ul>
+         <li>Name and password of the database installation user</li>
+         <li><strong>bin</strong> directory path under the database installation directory</li>
+         <li>Path of the <strong>dm.ini</strong> configuration file</li>
+        </ul> <p></p></td>
+       <td class="cellrowborder" valign="top" width="60.00000000000001%" headers="mcps1.3.3.2.4.1.2 "><p>Perform the following operations to query the name of the database installation user. Contact the database administrator to obtain the password of the installation user.</p>
+        <ol>
+         <li id="EN-US_TOPIC_0000002164659722__li159953579577">Use PuTTY to log in to the host where the Dameng database is located and switch to user <strong id="EN-US_TOPIC_0000002164659722__b3153175110268">root</strong>.</li>
+         <li id="EN-US_TOPIC_0000002164659722__li1899525755716"><a name="EN-US_TOPIC_0000002164659722__li1899525755716"></a><a name="li1899525755716"></a>Run the following command to query the name of the database installation user, <strong>bin</strong> directory path under the database installation directory, and path to the <strong>dm.ini</strong> configuration file<pre class="screen">ps -ef | grep dm.ini</pre> <p>Information similar to the following is displayed. In the command output, <span class="filepath"><b>/dm8/data/DMServer/DAMENG/</b></span> indicates the path to the <strong>dm.ini</strong> configuration file, <strong>dmdba</strong> in the line of the <strong>dm.ini</strong> file path indicates the database installation user, and <span class="filepath"><b>/dm8/bin</b></span> indicates the <strong>bin</strong> directory path under the database installation directory.</p> <pre class="screen">[root@dameng16543 ~]# ps -ef | grep dm.ini
+root       508  8886  0 09:45 pts/2    00:00:00 grep --color=auto dm.ini
+<strong>dmdba</strong>    21665     1  0 Jul16 ?        00:16:37 <strong>/dm8/bin</strong>/dmserver path=/dm8/data/DMServer/DAMENG/dm.ini -noconsole</pre></li>
+        </ol></td>
+       <td class="cellrowborder" rowspan="3" valign="top" width="13.030000000000003%" headers="mcps1.3.3.2.4.1.3 "><p><a href="en-us_topic_0000002164659722.html">Preparations for Backup</a></p> <p><a href="en-us_topic_0000002164659714.html">Step 3: Registering the Dameng Database</a></p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.1.1 "><p>Listening port of the database</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.1.2 ">
+        <ol>
+         <li>Use PuTTY to log in to the host where the Dameng database is located and switch to user <strong id="EN-US_TOPIC_0000002164659722__en-us_topic_0000002164659722_b3153175110268">root</strong>.</li>
+         <li>Run the following command to query the port number:<pre class="screen">cat<strong> </strong><em>Path to the dm.ini configuration file</em>/dm.ini | grep PORT_NUM</pre>
+          <div class="note">
+           <span class="notetitle"> NOTE: </span>
+           <div class="notebody">
+            <p>Replace <em>Path to the dm.ini configuration file</em> in the command with the query result in <a href="#EN-US_TOPIC_0000002164659722__li1899525755716">2</a>.</p>
+           </div>
+          </div>
+          <div class="p">
+           Information similar to the following is displayed. The value of <span class="menucascade"><b><span class="uicontrol">PORT_NUM</span></b></span> is the listening port of the database.
+           <pre class="screen">                PORT_NUM                        = 5236                  #Port number on which the database server will listen</pre>
+          </div></li>
+        </ol></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.1.1 "><p>Database authentication method</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.1.2 ">
+        <ol>
+         <li>Use PuTTY to log in to the host where the Dameng database is located and run the following command to switch to the database installation user, for example, <strong>dmdba</strong>:<pre class="screen">su - dmdba</pre></li>
+         <li>Go to the <strong>bin</strong> directory under the database installation directory, for example, <span class="filepath"><b>/dm8/bin</b></span>.<pre class="screen">cd <em>/dm8/bin</em></pre>
+          <div class="note">
+           <span class="notetitle"> NOTE: </span>
+           <div class="notebody">
+            <p>Replace the <strong>bin</strong> directory path under the database installation directory with that obtained in <a href="#EN-US_TOPIC_0000002164659722__li1899525755716">2</a>.</p>
+           </div>
+          </div></li>
+         <li>Run the following command to log in to the Dameng database:<pre class="screen">./disql <em>Name of the database installation user</em>/<em>Password of the database installation user</em>@LOCALHOST:<em>Listening port of the database</em></pre> <p>Example:</p> <pre class="screen">./disql SYSDBA/SYSDBA@LOCALHOST:5236</pre></li>
+         <li>Run the following command to check the value of <strong>VALUE</strong>:<pre class="screen">select name, value from v$parameter where name = 'ENABLE_LOCAL_OSAUTH';</pre>
+          <div class="p">
+           <span><img src="en-us_image_0000002164819490.png"></span>
+           <ul>
+            <li>If the value is <span class="parmvalue"><b>1</b></span>, OS authentication is used.</li>
+            <li>If the value is <span class="parmvalue"><b>0</b></span>, OS authentication is not used.</li>
+           </ul>
+          </div></li>
+        </ol></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200060405.html">Backup</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

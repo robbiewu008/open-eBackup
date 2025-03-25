@@ -28,7 +28,8 @@ import {
   CookieService,
   WarningMessageService
 } from 'app/shared';
-import { assign, cloneDeep, includes } from 'lodash';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
+import { find, includes, set } from 'lodash';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -94,7 +95,8 @@ export class AddComponentsComponent implements OnInit {
     public baseUtilService: BaseUtilService,
     public message: MessageService,
     public cookieService: CookieService,
-    private warningMessageService: WarningMessageService
+    private warningMessageService: WarningMessageService,
+    private appUtilsService: AppUtilsService
   ) {}
 
   initForm() {
@@ -181,6 +183,16 @@ export class AddComponentsComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.appUtilsService.isDecouple || this.appUtilsService.isDistributed) {
+      const a8000Type = find(this.typeOptions, {
+        value: DataMap.Component_Type.a8000.value
+      });
+      set(
+        a8000Type,
+        'label',
+        this.i18n.get('common_e_series_cluster_type_label')
+      );
+    }
     this.initForm();
   }
 }

@@ -1,0 +1,279 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Managing Event Dump (Applicable to Some Models)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200029785.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164788896">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Managing Event Dump (Applicable to Some Models)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164788896"></a><a name="EN-US_TOPIC_0000002164788896"></a>
+  <h1 class="topictitle1">Managing Event Dump (Applicable to Some Models)</h1>
+  <div>
+   <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_p159125100541">Through event dump, the system periodically exports events to local disks of the storage system and deletes event records from the database beyond the retention period.</p>
+   <div class="section" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_section1596185819173">
+    <h4 class="sectiontitle">Context</h4>
+    <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_p10738881161">You can use the <span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text1410816018451">product</span> to download dumped event files and delete unnecessary event files from the directory.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_section365920491758">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_p454611815596">If an alarm indicating that the event storage space is about to reach the upper limit is generated, go to DeviceManager and enable alarm dump.</p>
+    <ol id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_ol71596016109">
+     <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_li515920013105">Log in to DeviceManager by referring to <a href="en-us_topic_0000002164828878.html">Logging In to DeviceManager</a>.</li>
+     <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_li1852152571019">Choose <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b764712156012">Settings</strong> &gt; <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b14217191010">Alarm Settings</strong> &gt; <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b511802110017">Alarm Dump</strong> to display the <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b188814301502">Alarm Dump</strong> page.</li>
+     <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_li1286119167116">Click <span><img id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_image54799123127" src="en-us_image_0000002164669506.png"></span> next to <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b1441854615010">Alarm Dump</strong> to enable alarm dump.</li>
+     <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li14348752411">Set alarm dump parameters. <a href="#EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_table98331154151817">Table 1</a> describes the related parameters. 
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_table98331154151817"></a><a name="en-us_topic_0000002164828946_en-us_topic_0000001160283003_table98331154151817"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_table98331154151817" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Alarm dump parameters
+        </caption>
+        <colgroup>
+         <col style="width:25.2%">
+         <col style="width:74.8%">
+        </colgroup>
+        <thead align="left">
+         <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_row208347544188">
+          <th align="left" class="cellrowborder" valign="top" width="25.2%" id="mcps1.3.3.3.4.2.2.3.1.1"><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p2083465411817">Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.8%" id="mcps1.3.3.3.4.2.2.3.1.2"><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p683415441817">Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_row78341540186">
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.4.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p0834115418188">Transport Protocol</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.4.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p14834165419185">Transport protocol of alarm dump, which can be <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b786121113111">SFTP</strong> or <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b188621011418">FTP</strong>.</p>
+           <div class="note" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_note15492183162011">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p049373172019">The storage systems support FTP for compatibility concerns. You are advised to use SFTP to ensure data transmission security.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_row118341254131810">
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.4.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p2834195412184">Username</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.4.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p183445413180">Username used for logging in to the SFTP or FTP server.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p2087918618406">[Value range]</p>
+           <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_ul587976194012">
+            <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li1487914624012">The name must be unique.</li>
+            <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li1587917620405">The value contains 1 to 63 characters.</li>
+            <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li148791263403">Special characters !':;|`$&lt;&gt;&amp;-()#?"\* cannot be contained.</li>
+           </ul></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_row4834105481817">
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.4.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p383485411188">Password</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.4.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p3242191512013">Password used for logging in to the server.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p1454442412405">[Value range]</p>
+           <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_ul18188173017408">
+            <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li1256442014218">The value contains 1 to 63 characters.</li>
+            <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li111891530164014">A valid password cannot contain extended ASCII characters or Unicode characters. It is recommended that a password should contain the following characters: digits (0 to 9), letters (a to z and A to Z), spaces, and special characters ([\]^_{|}~`@!"#$%&amp;'()*+-./:;&lt;=&gt;?).</li>
+           </ul></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_row38341554171810">
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.4.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p28341546189">Server IP Address</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.4.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p1483411543181">IP address of the server.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p733113774017">[Value range]</p>
+           <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_ul99831210132115">
+            <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li1898351042110">When an IPv4 address is used:
+             <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_ul29831110152115">
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li15983191019210">The 32-bit IPv4 address is divided into four 8-bit fields that are expressed in dotted decimal notation.</li>
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li49831610102117">Each field of the IPv4 address must be an integer.</li>
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li20983131032110">The value of the first field ranges from 1 to 223 (excluding 127).</li>
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li179831110172113">The values of the other fields range from 0 to 255.</li>
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li18983121018214">An IP address cannot be set to a special address such as a broadcast address.</li>
+             </ul></li>
+            <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li1498351042111">When an IPv6 address is used:
+             <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_ul16983121072116">
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li69831310132114">The 128-bit IPv6 address is divided into eight 16-bit fields. Each 16-bit field consists of four colon-separated hexadecimal numbers.</li>
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li098301018214">In each 16-bit field, leading zeros can be omitted for simplicity. However, at least one digit must be reserved in each field.</li>
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li69831410122110">To achieve further simplicity, you can use a double colon (::) in place of a series of zeros. A double colon (::) can be used only once in an address. It can also represent the neighboring consecutive zeros at the beginning or end of an address.</li>
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li16983510142111">The IP address cannot be set to a special address, such as a network address, loopback address, or multicast address.</li>
+             </ul></li>
+           </ul></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_row1087634813199">
+          <td class="cellrowborder" valign="top" width="25.2%" headers="mcps1.3.3.3.4.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p1787734861916">File Save Path</p></td>
+          <td class="cellrowborder" valign="top" width="74.8%" headers="mcps1.3.3.3.4.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p13877114891913">File path for storing the dumped storage system information. A save path is set on the FTP software. You must create a folder in the save path and enter the folder name in <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b78113317514">File Save Path</strong> on DeviceManager.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_p65097479">[Value range]</p>
+           <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_ul119931957439">
+            <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li1099319574317">The value contains 1 to 255 characters.</li>
+            <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li10993205714320">Special characters !':;|`$&lt;&gt;&amp;-()#?"\* are not allowed. The first character cannot be a period (.). The first and last characters cannot be spaces. The first character after a slash (/) in the path cannot be a period (.).</li>
+           </ul></td>
+         </tr>
+        </tbody>
+       </table>
+      </div></li>
+     <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_li699175918433">(Optional) Click <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b245216311763">Test</strong> to verify the parameter values.
+      <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_ul11156141742310">
+       <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li04511617162320">If an error dialog box is displayed, at least one parameter value is incorrect. Modify the parameter and try again.</li>
+       <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001160283003_li2451191732315">If a success dialog box is displayed, the alarm dump parameters have been configured correctly.</li>
+      </ul></li>
+     <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_li1485196184418">Click <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b09346121173">Save</strong>.</li>
+    </ol>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_section20287103810283">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_ol61721291281">
+     <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_li31809451213"><span>Choose <span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text0225915459"><strong>System</strong></span> &gt; <span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text49716338518"><strong>Settings</strong></span> &gt; <span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text972217511511"><strong>Event Dump</strong></span>.</span></li>
+     <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li282810281524"><span>Modify dump parameters.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_ol10826228125212">
+       <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li1419834385215">In the <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_uicontrol1010010391403"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text19100339204017"><strong>Dump Parameters</strong></span></b></span> area, click <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_uicontrol6991143151013"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_text125843917115"><strong>Modify</strong></span></b></span>.</li>
+       <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li382622816525">Set dump parameters. <a href="#EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_table13374941017">Table 2</a> describes the related parameters. 
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_table13374941017"></a><a name="en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_table13374941017"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_table13374941017" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 2 </b>Event dump parameters
+          </caption>
+          <colgroup>
+           <col style="width:23.96%">
+           <col style="width:76.03999999999999%">
+          </colgroup>
+          <thead align="left">
+           <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_row937139171015">
+            <th align="left" class="cellrowborder" valign="top" width="23.96%" id="mcps1.3.4.2.2.2.1.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p43287665">Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="76.03999999999999%" id="mcps1.3.4.2.2.2.1.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p16640014">Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_row153810991014">
+            <td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p49536326"><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text4138192464116"><strong>Dumped At</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p53019476">Time when events are dumped.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p7413244">The dump time is usually set to a point in time during off-peak hours.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_row13381496108">
+            <td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_p135601413597"><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text155141932154117"><strong>Dump Cycle</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p15156672">Interval for the system to automatically dump event information.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p78734156541">[Value range]</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p580392112543">7 to 120 days.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p2192324">For example, if the dump interval is set to 7 days, the system automatically dumps events every 7 days.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_row17381292106">
+            <td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p4978733"><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text14826240104110"><strong>Keep Database Records Within the Latest</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_p1079116101905">Days within which generated event records in the database are reserved.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p12603242185415">[Value range]</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p18603194215543">7 to 120 days.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p624200">For example, if this parameter is set to <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b184921626225856">7</strong>, the event records of the last seven days are retained in the database of the storage system.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_row8393941011">
+            <td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_p320516317119"><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text1174765118419"><strong>File Type</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p4100073">Format of the event dump file.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p36900657">The value can be <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b150939055125856">Excel</strong> or <strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_b111537040125856">CSV</strong>.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_row173919911101">
+            <td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_p1028515283217"><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text1576645615214"><strong>Language</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.4.2.2.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p2254227">Event language.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_p20288046">Simplified Chinese and English are supported.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li118773530515">Click <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_uicontrol28771953175110"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_text1687714533512"><strong>Save</strong></span></b></span>.</li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li8466164633216"><span>Configure and enable the SFTP server.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_ol1714711493319">
+       <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li214701413334">In the <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_uicontrol61711623422"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text16792116463"><strong>SFTP Server</strong></span></b></span> area, click <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_uicontrol031315144114"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text33121544117"><strong>Modify</strong></span></b></span>.</li>
+       <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li175521919345">Click <span><img id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_image1878121518360" src="en-us_image_0000002164829210.png"></span> to enable the SFTP server, and set SFTP server parameters. <a href="#EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_alarm_alarm_save_table01">Table 3</a> describes the related parameters. 
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_alarm_alarm_save_table01"></a><a name="en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_alarm_alarm_save_table01"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_alarm_alarm_save_table01" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 3 </b>SFTP server parameters
+          </caption>
+          <colgroup>
+           <col style="width:25.45%">
+           <col style="width:74.55000000000001%">
+          </colgroup>
+          <thead align="left">
+           <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_row40286359">
+            <th align="left" class="cellrowborder" valign="top" width="25.45%" id="mcps1.3.4.2.3.2.1.2.3.2.3.1.1"><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p41969672">Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="74.55000000000001%" id="mcps1.3.4.2.3.2.1.2.3.2.3.1.2"><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p44100310">Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_row64272308">
+            <td class="cellrowborder" valign="top" width="25.45%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p38674437"><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text12486189164718"><strong>Username</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.55000000000001%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p45621724">Username for the SFTP server used to store events.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p4372126">[Value range]</p>
+             <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_ul39349140">
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li18597941">The value contains 1 to 255 characters.</li>
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li33163748">The value cannot contain the following special characters: ! ' : ; | ` $ &lt; &gt; &amp; - ( ) # ? " \ *.</li>
+             </ul> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p143101839181619">[Example]</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p209964415169">admin</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_row17181697">
+            <td class="cellrowborder" valign="top" width="25.45%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p49540230"><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_text86851244114511"><strong>Password</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.55000000000001%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p53335679">Password for logging in to the SFTP server.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p25222741">[Value range]</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p25678078">The value contains 1 to 255 characters.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p29776111">[Example]</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p66658409">user123456</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_row63054773">
+            <td class="cellrowborder" valign="top" width="25.45%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p7163025"><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text18091717124713"><strong>Service IP Address</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.55000000000001%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p43334120">IP address of the SFTP server.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p20402852">[Value range]</p>
+             <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_ul49407948">
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li42018349">When an IPv4 address is used:
+               <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_ul42620826">
+                <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li48043114">The 32-bit IPv4 address is divided into four 8-bit fields that are expressed in dotted decimal notation.</li>
+                <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li29734848">Each field of the IPv4 address must be an integer.</li>
+                <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li66287044">The value of the first field ranges from 1 to 223 (excluding 127).</li>
+                <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li59712487">The values of the other fields range from 0 to 255.</li>
+                <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li541474">An IP address cannot be set to a special address such as a broadcast address.</li>
+               </ul></li>
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li4873270">When an IPv6 address is used:
+               <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_ul43859437">
+                <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li59190614">The 128-bit IPv6 address is divided into eight 16-bit fields. Each 16-bit field consists of four colon-separated hexadecimal numbers.</li>
+                <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li62953484">In each 16-bit field, leading zeros can be omitted for simplicity. However, at least one digit must be reserved in each field.</li>
+                <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li29710447">To achieve further simplicity, you can use a double colon (::) in place of a series of zeros. A double colon (::) can be used only once in an address. It can also represent the neighboring consecutive zeros at the beginning or end of an address.</li>
+                <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li66067432">The IP address cannot be set to a special address, such as a network address, loopback address, or multicast address.</li>
+               </ul></li>
+             </ul> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p54247797">[Example]</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p18468133">192.168.1.100</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p31995475">fc00::1234</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_row196216816393">
+            <td class="cellrowborder" valign="top" width="25.45%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p79621187396"><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text43701815114811"><strong>Port</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.55000000000001%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p199621987398">Port number of the SFTP server.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p13928067403">[Value range]</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p1592811634012">1 to 65535</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p7928167400">[Example]</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p1292946104010">22</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_row41496693">
+            <td class="cellrowborder" valign="top" width="25.45%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p5788996"><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text1591272254811"><strong>File Save Path</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.55000000000001%" headers="mcps1.3.4.2.3.2.1.2.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p66255527">Path for event dump.</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p1248652184210">[Value range]</p>
+             <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_ul1045852174211">
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li194510528425">The value contains 1 to 1024 characters.</li>
+              <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li17600105444218">Special characters !':;|`$&lt;&gt;&amp;-()#?"\* are not allowed. The first character cannot be a period (.). The first and last characters cannot be spaces. The first character after a slash (/) in the path cannot be a period (.).</li>
+             </ul> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p38404427">[Example]</p> <p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_p10095526">/test</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li2489145201717"><strong id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_b12431292">(Optional)</strong> Click <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_uicontrol1671555755818"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text12515141194820"><strong>Test</strong></span></b></span> to verify the parameter values.
+        <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_ul44772769">
+         <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li301738">If an error dialog box is displayed, at least one parameter value is incorrect. Modify the parameter and try again.</li>
+         <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0223232402_li2715650">If a success dialog box is displayed, SFTP server parameters are correctly set.</li>
+        </ul></li>
+       <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_li117683399153">Click <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_uicontrol2086962934110"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text1586911294416"><strong>Save</strong></span></b></span>.</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_en-us_topic_0000001123352597_en-us_topic_0171822298_section9223236">
+    <h4 class="sectiontitle">Follow-up Procedure</h4>
+    <ul id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_ul1464016429256">
+     <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li1269191615261">View and download dump files:<p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p938971652617"><a name="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li1269191615261"></a><a name="en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li1269191615261"></a>In the <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_uicontrol2012194183014"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text2465181314917"><strong>Dump History</strong></span></b></span> area, you can view the event dump history. In the <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_uicontrol22955116309"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text1026518374498"><strong>Dump File</strong></span></b></span> area where the dumped event records are located, you can click the file name to download the file to the local PC for backup.</p></li>
+     <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li16592021142620">Delete dump files:<p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p1261954252617"><a name="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li16592021142620"></a><a name="en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li16592021142620"></a>In the <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_uicontrol1381214617413"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text1981234610413"><strong>Dump History</strong></span></b></span> area, click <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_uicontrol2977113103011"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_text2746132818314"><strong>More</strong></span></b></span> next to a dumped file and select <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_uicontrol18813124612419"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text128123461413"><strong>Delete</strong></span></b></span> to delete the dumped file stored in the system.</p></li>
+     <li id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li1088324562618">Upload dump events:<p id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_p1271115812617"><a name="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li1088324562618"></a><a name="en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_li1088324562618"></a>In the <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_uicontrol12579333164212"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text10579533154213"><strong>Dump History</strong></span></b></span> area, click <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_uicontrol12556101710309"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_en-us_topic_0000001349070253_en-us_topic_0000001254813470_text16122131153112"><strong>More</strong></span></b></span> next to a dumped file and select <span class="uicontrol" id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_uicontrol957914336423"><b><span id="EN-US_TOPIC_0000002164788896__en-us_topic_0000002164828946_text13579103319425"><strong>Upload</strong></span></b></span> to upload the dump event saved in the system to the enabled SFTP server.</p></li>
+    </ul>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200029785.html">System</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

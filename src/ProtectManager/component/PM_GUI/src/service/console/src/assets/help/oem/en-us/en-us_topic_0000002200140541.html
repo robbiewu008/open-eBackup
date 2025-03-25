@@ -1,0 +1,69 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Backup or Restoration of a VM That Contains RDM Disks Fails">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200140541">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Backup or Restoration of a VM That Contains RDM Disks Fails</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200140541"></a><a name="EN-US_TOPIC_0000002200140541"></a>
+  <h1 class="topictitle1">Backup or Restoration of a VM That Contains RDM Disks Fails</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>Backup or restoration of a VM that contains RDM disks fails. A message is displayed, indicating the failure of restoring VM disks or the failure of instructing client (<em>xxx</em>) to complete backup of disk (<em>xxx</em>).</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p>Jobs that involve RDM disks contain disk scanning. Due to insufficient resources of the current client, disk scanning may time out. As a result, the backup or restoration job fails.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol>
+     <li><span>Log in to the host where the client is installed as user <strong>root</strong>.</span></li>
+     <li><span>Run the following command to restart the iSCSI service:</span><p></p><pre class="screen">systemctl restart iscsi.service</pre> <p></p></li>
+     <li><span>Run the following command to reboot the host where the client is installed:</span><p></p><pre class="screen">reboot </pre> <p>If the environment is not restored:</p>
+      <ul>
+       <li>Check whether the specifications of the host where the client is installed meet the requirements in the product documentation.</li>
+       <li>Check whether the OS of the host where the client is installed is in the compatibility list.</li>
+       <li>Check whether Huawei UltraPath is installed on the host where the client is installed. If the built-in multipathing software of the system is used, disk scanning will time out.</li>
+      </ul> <p>If the fault persists, you are advised to use another host where the client is installed to perform the backup or restoration job.</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

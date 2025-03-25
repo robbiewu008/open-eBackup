@@ -20,38 +20,76 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="归档SQL Server复制副本">
+<meta name="DC.Title" content="步骤8：添加复制集群">
 <meta name="product" content="">
 <meta name="DC.Relation" scheme="URI" content="sql-0039.html">
-<meta name="DC.Relation" scheme="URI" content="sql-0048.html">
-<meta name="DC.Relation" scheme="URI" content="sql-0049.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="sql-0047">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>归档SQL Server复制副本</title>
+<title>步骤8：添加复制集群</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="sql-0047"></a><a name="sql-0047"></a>
 
-<h1 class="topictitle1">归档SQL Server复制副本</h1>
-<div><p>副本复制到目标集群后，如果您需要长期保留目标集群的复制副本，可以将复制副本归档到归档存储。</p>
+<h1 class="topictitle1">步骤8：添加复制集群</h1>
+<div><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_p173011029113111">在本端集群侧添加目标集群，建立主端设备和从端设备之间的逻辑连接，用于设备之间的数据传输。</p>
+<div class="section" id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_section5343122851716"><h4 class="sectiontitle">前提条件</h4><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_p27481329181712">已准备用于复制的目标集群。</p>
+</div>
+<div class="section" id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_section152913359312"><h4 class="sectiontitle">操作步骤</h4><ol id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_ol1038139939"><li id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_li1570821013536"><span>选择<span class="uicontrol" id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_text195451245818">系统</span> &gt; <span id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_text1825116201482">基础设施</span> &gt; <span id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_text2324131633414">集群管理</span>”</span>。</span></li><li id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_li0123231815"><span>在<span class="uicontrol" id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_uicontrol855335015454">“<span id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_text11821141684610">复制集群</span>”</span>页签，单击<span class="uicontrol" id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_uicontrol1645154510534">“<span id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_text26407307349">添加</span>”</span>。</span></li><li id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_li10626045539"><span>配置目标集群参数。</span><p><div class="p" id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_p344744712197">相关参数说明如<a href="#sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_table13641194661910">表1</a>所示。
+<div class="tablenoborder"><a name="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_table13641194661910"></a><a name="zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_table13641194661910"></a><table cellpadding="4" cellspacing="0" summary="" id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_table13641194661910" frame="border" border="1" rules="all"><caption><b>表1 </b>目标集群参数说明</caption><colgroup><col style="width:34.949999999999996%"><col style="width:65.05%"></colgroup><thead align="left"><tr id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row66412046151918"><th align="left" class="cellrowborder" valign="top" width="34.949999999999996%" id="mcps1.3.3.2.3.2.1.2.2.3.1.1"><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_p11641204641917">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="65.05%" id="mcps1.3.3.2.3.2.1.2.2.3.1.2"><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_p3641114610198">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row11154135519445"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_p9154135544411">名称</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_p15783192212167">自定义目标集群的名称。</p>
+</td>
+</tr>
+<tr id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row15735172017508"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_p188591081763">角色</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_p14980173721618">固定为<span class="uicontrol" id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_uicontrol3110113172718">“<span id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_text844584915492">复制目标集群</span>”</span>。</p>
+</td>
+</tr>
+<tr id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row17641164617192"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_p61532194619">IP地址</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><div class="p" id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_p12127149171616">输入目标集群任一控制器的管理、备份或复制IP地址。<ul id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_ul10691523173813"><li id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_li1869223123818">如果输入目标集群的管理IP地址，请确保本端与目标端的管理网络连通。</li><li id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_li12657153011405">如果输入目标集群的备份网络IP地址，请确保本端与目标端的备份网络连通。</li><li id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_li1768111253458">如果输入目标集群的复制网络IP地址，请确保本端与目标端的复制网络连通。</li></ul>
+<div class="note" id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_note4160173815018"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_ul114693044613"><li id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_li472320144611">管理IP地址即为登录目标集群管理界面的IP地址。</li><li id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_li174692084618">备份或复制网络IP请登录目标集群的管理界面，选择<span class="uicontrol" id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_uicontrol1664124518511">“系统 &gt; 基础设施 &gt; 集群管理”</span>，在“备份集群”页签单击集群名称，获取任一控制器的备份网络IP地址（数据备份引擎）或复制网络IP地址。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row18641204619191"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_p577915299616">端口</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_p199938014179">目标集群的端口。取值范围为：1~65535。</p>
+<p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_p7624122151720">IP地址框输入管理IP地址时，默认端口为25081；IP地址框输入复制网络IP地址或备份网络IP地址时，默认端口为30068。</p>
+</td>
+</tr>
+<tr id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row9641346121912"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_p17777391664">用户名</p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_p1119324620413"><a href="sql-0054.html#sql-0054">步骤5：创建远端设备管理员</a>中创建的用户及其密码。</p>
+</td>
+</tr>
+<tr id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_row12641194631915"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_p1644865412613">密码</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_li398813261430"><span>单击<span class="uicontrol" id="sql-0047__zh-cn_topic_0000002202220941_zh-cn_topic_0000002166854680_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_uicontrol138611845761">“确定”</span>。</span></li></ol>
+</div>
 </div>
 <div>
-<ul class="ullinks">
-<li class="ulchildlink"><strong><a href="sql-0048.html">步骤1：创建复制副本归档SLA</a></strong><br>
-</li>
-<li class="ulchildlink"><strong><a href="sql-0049.html">步骤2：创建复制副本周期性归档</a></strong><br>
-</li>
-</ul>
-
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="sql-0039.html">归档</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="sql-0039.html">复制SQL Server数据库副本（适用于OceanProtect E6000备份一体机）</a></div>
 </div>
 </div>
 

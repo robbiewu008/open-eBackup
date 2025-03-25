@@ -1,0 +1,223 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤1：创建复制副本归档SLA">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="gaussdbT_00063.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="gaussdbT_00064">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤1：创建复制副本归档SLA</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="gaussdbT_00064"></a><a name="gaussdbT_00064"></a>
+  <h1 class="topictitle1">步骤1：创建复制副本归档SLA</h1>
+  <div>
+   <p id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_p121201013191420">如果您需要对复制副本进行归档，请在目标集群创建归档SLA。</p>
+   <div class="section" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_section15371826121012">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_p52691739154914">已将归档存储接入复制副本所在的<span id="gaussdbT_00064__zh-cn_topic_0000002200147013_text418110267111">本产品</span>集群，具体操作可参考<a href="gaussdbT_00059.html#gaussdbT_00059">步骤1：添加归档存储</a>。</p>
+   </div>
+   <div class="section" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_section32344304103">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_ol112221128161219">
+     <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li149381918143112"><span>选择<span class="uicontrol" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002199964685_uicontrol8111821122820">“保护 &gt; 保护策略 &gt; SLA”</span>。</span></li>
+     <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li19913158161519"><span>单击<span class="uicontrol" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_uicontrol6506191391516">“创建”</span>。</span></li>
+     <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li632243103212"><span>自定义SLA的名称。</span></li>
+     <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li6674114017375"><span>选择需要创建SLA的应用类型。</span><p></p>
+      <ol type="a" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_ol71011061385">
+       <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li16667553151916">单击<span class="uicontrol" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_uicontrol16364345183319">“应用”</span>图标。</li>
+       <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li874192611325">选择<span class="uicontrol" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_uicontrol111981759171912">“指定应用 &gt; 副本 &gt; 复制副本”</span>。</li>
+       <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li158271347172012">单击<span class="uicontrol" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_uicontrol95561152115">“确定”</span>。</li>
+      </ol> <p></p></li>
+     <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li148724933815"><span>设置归档策略。</span><p></p>
+      <ol type="a" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_ol187761825123814">
+       <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li35291622193815">单击<span class="uicontrol" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_uicontrol12308113618612">“归档策略”</span>图标。</li>
+       <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li1244710220390">配置归档策略参数。<p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p0630115485415"><a name="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li1244710220390"></a><a name="zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li1244710220390"></a>单击页面右侧的<span><img id="gaussdbT_00064__zh-cn_topic_0000002200147013_image35074914613" src="zh-cn_image_0000002249987585.png"></span>，可创建多个归档策略，最多允许创建4个归档策略，最多支持归档到4个归档存储。</p>
+        <div class="p" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_p16913201623311">
+         相关参数说明如<a href="#gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_table461492220220">表1</a>所示。 
+         <div class="tablenoborder">
+          <a name="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_table461492220220"></a><a name="zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_table461492220220"></a>
+          <table cellpadding="4" cellspacing="0" summary="" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_table461492220220" frame="border" border="1" rules="all">
+           <caption>
+            <b>表1 </b>归档参数说明
+           </caption>
+           <colgroup>
+            <col style="width:30.620000000000005%">
+            <col style="width:69.38%">
+           </colgroup>
+           <thead align="left">
+            <tr id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_row11614722142210">
+             <th align="left" class="cellrowborder" valign="top" width="30.620000000000005%" id="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1"><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_p761472217223">参数</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="69.38%" id="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2"><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_p106141622152216">说明</p></th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_row1961432220228">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_p36142022182215">名称</p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p1269417381911">系统已设置默认的归档策略名称，用户也可以自定义归档策略名称。</p></td>
+            </tr>
+            <tr id="gaussdbT_00064__zh-cn_topic_0000002200147013_row131066587500">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p76251913181910">归档存储类型</p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 ">
+              <div class="p" id="gaussdbT_00064__zh-cn_topic_0000002200147013_p3978173931914">
+               支持选择<span class="parmvalue" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_parmvalue1144218369156">“对象存储”</span>或<span class="parmvalue" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_parmvalue349803920153">“磁带库”</span>作为归档存储。
+               <div class="note" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_note637615511479">
+                <span class="notetitle"> 说明： </span>
+                <div class="notebody">
+                 <p id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_p193763554711">本产品部分型号支持归档到磁带库，详细的功能支持信息请参考技术支持网站发布的产品文档或咨询产品提供商。</p>
+                </div>
+               </div>
+              </div></td>
+            </tr>
+            <tr id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_row1161413229221">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p0398122171912">归档存储</p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 ">
+              <ul id="gaussdbT_00064__zh-cn_topic_0000002200147013_ul16248205204410">
+               <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_li078744584316">归档存储类型选择为<span class="parmvalue" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_parmvalue18114194311511">“对象存储”</span>时，请选择已添加的对象存储，也可以单击<span class="uicontrol" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_uicontrol1971818559393">“添加”</span>添加对象存储。</li>
+               <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_li113522047134319">归档存储类型选择为<span class="parmvalue" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_parmvalue64108598158">“磁带库”</span>时，请选择节点。</li>
+              </ul></td>
+            </tr>
+            <tr id="gaussdbT_00064__zh-cn_topic_0000002200147013_row162541717125619">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p584879192016">介质集</p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p361910402251">归档存储类型选择为<span class="parmvalue" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_parmvalue5451146161617">“磁带库”</span>时，请选择介质集。也可以单击<span class="uicontrol" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_uicontrol056992061120">“添加”</span>创建介质集。</p></td>
+            </tr>
+            <tr id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_row156144229228">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p131701720202010">归档时间</p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 ">
+              <div class="p" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_p1061419221227">
+               设置归档时间。
+               <ul id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_ul20614112292215">
+                <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li961432262213">周期性归档
+                 <ul id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_ul661462213226">
+                  <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li384887142516">频率：每xx分钟/小时/天/周归档一次。</li>
+                  <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li961410225225">首次执行时间：首次执行归档任务的具体时间。<p id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_p3220183916251"><a name="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li961410225225"></a><a name="zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li961410225225"></a>如果设置的开始时间早于当前设备时间，则创建保护计划后立即执行归档任务。</p></li>
+                 </ul></li>
+                <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li2614152216227">复制成功后立即执行<p id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_p106141722132214"><a name="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li2614152216227"></a><a name="zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li2614152216227"></a>每次复制任务执行成功后立即执行归档任务。</p></li>
+                <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li6614152217224">副本生成后的指定时间归档<p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p17973133185018"><a name="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li6614152217224"></a><a name="zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li6614152217224"></a>时间：副本生成后xx天后执行归档任务。可指定时间范围为1~365天。</p></li>
+               </ul>
+              </div></td>
+            </tr>
+            <tr id="gaussdbT_00064__zh-cn_topic_0000002200147013_row18831182494213">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p12800333182014">归档规则&amp;保留规则</p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 ">
+              <div class="p" id="gaussdbT_00064__zh-cn_topic_0000002200147013_p1331522611175">
+               选择需要归档的复制副本并设置归档副本的保留时长。
+               <div class="note" id="gaussdbT_00064__zh-cn_topic_0000002200147013_note948392917176">
+                <span class="notetitle"> 说明： </span>
+                <div class="notebody">
+                 <ul id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_ul6217428463">
+                  <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_li2851103119619">当归档存储类型选择为“磁带库”时，只能配置归档规则。保留规则由磁带的保留策略决定。</li>
+                  <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_li32171828360">如果同时选择了多个选项，待归档副本的时间范围为多个选项的并集，生成的归档副本的保留时长为多个选项中保留时间最久的保留时长。</li>
+                 </ul>
+                </div>
+               </div>
+               <ul id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001091370109_ul6461175912421">
+                <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_li1815184993013">指定副本归档：指定归档策略并设置副本保留时长，归档策略说明如下：
+                 <ul id="gaussdbT_00064__zh-cn_topic_0000002200147013_ul1193014332306">
+                  <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_li393063317305">仅归档最新的副本<p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p893019338306"><a name="gaussdbT_00064__zh-cn_topic_0000002200147013_li393063317305"></a><a name="zh-cn_topic_0000002200147013_li393063317305"></a>每次归档任务仅归档最近一次复制任务产生的副本。</p></li>
+                  <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_li10930203320309">归档所有未曾归档副本<p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p8930123320308"><a name="gaussdbT_00064__zh-cn_topic_0000002200147013_li10930203320309"></a><a name="zh-cn_topic_0000002200147013_li10930203320309"></a>每次归档任务归档当前所有未曾归档的副本。</p></li>
+                 </ul></li>
+                <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_li169914211296">指定日期归档：指定日期并设置副本保留时长，以下选项同时可选择多项：
+                 <ul id="gaussdbT_00064__zh-cn_topic_0000002200147013_ul15411165794010">
+                  <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_li241110576407">选择每年的x月产生的复制副本进行归档，归档副本保留x年（支持保留1~70年）。</li>
+                  <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_li156079239417">选择每月的第一个或最后一个复制副本进行归档，归档副本保留x个月（支持保留1~840个月）。</li>
+                  <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_li7824743184118">选择每周的第x天产生的复制副本进行归档，归档副本保留x个周（支持保留1~3650个周）。
+                   <div class="note" id="gaussdbT_00064__zh-cn_topic_0000002200147013_note250102619369">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_p19502026133610">当归档存储类型选择为“磁带库”时，不能指定归档副本的保留时间，其保留时间以对应介质集的保留策略设置为准。</p>
+                    </div>
+                   </div></li>
+                 </ul></li>
+               </ul>
+              </div></td>
+            </tr>
+            <tr id="gaussdbT_00064__zh-cn_topic_0000002200147013_row127091115184014">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 ">
+              <div class="p" id="gaussdbT_00064__zh-cn_topic_0000002200147013_p10306125164014">
+               驱动数量
+               <div class="note" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_note754320443218">
+                <span class="notetitle"> 说明： </span>
+                <div class="notebody">
+                 <p id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_zh-cn_topic_0000002164820434_zh-cn_topic_0000001839143213_p8320153562113">仅1.6.0及后续版本支持设置该参数。</p>
+                </div>
+               </div>
+              </div></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 ">
+              <div class="p" id="gaussdbT_00064__zh-cn_topic_0000002200147013_p330617259402">
+               当归档存储类型选择为“磁带库”时，才显示该参数，取值范围为1~32。
+               <div class="note" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_note765316318178">
+                <span class="notetitle"> 说明： </span>
+                <div class="notebody">
+                 <p id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_p06531331181715">驱动数量越大，归档任务或使用归档副本进行恢复的任务运行时占用的磁带库驱动就越多，性能更好。</p>
+                </div>
+               </div>
+              </div></td>
+            </tr>
+            <tr id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_row6615172214228">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p832884816201">限速策略</p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p45761953142812">归档任务平均每秒最大传输的数据量。当归档存储为磁带库时，不支持配置限速策略。</p> <p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p208941559135816">选择已创建的限速策略，创建限速策略的具体操作请参考<a href="gaussdbT_00016.html#gaussdbT_00016">步骤5：（可选）创建限速策略</a>章节。</p></td>
+            </tr>
+            <tr id="gaussdbT_00064__zh-cn_topic_0000002200147013_row868013124114">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p10332184842419">网络加速</p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p86809384114">开启后可使用BBR（Bottleneck Bandwidth and Round-trip propagation time）网络加速，网络时延≥20毫秒时建议启用该选项。当归档存储为磁带库时，不支持配置网络加速。</p></td>
+            </tr>
+            <tr id="gaussdbT_00064__zh-cn_topic_0000002200147013_row799724420116">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p5770111102519">任务失败告警</p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p1795191617298">开启后，任务执行失败后自动发送告警，下次任务成功后告警自动清除。</p></td>
+            </tr>
+            <tr id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_row66151022122214">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p1171411212253">失败后自动重试</p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="gaussdbT_00064__zh-cn_topic_0000002200147013_p20534926102917">开启后，周期性归档任务失败后系统自动重试。</p>
+              <div class="p" id="gaussdbT_00064__zh-cn_topic_0000002200147013_p81581024103019">
+               支持重试次数为1~3次，等待时长为1~30分钟。如设置为重试3次，等待5分钟，即每5分钟后重试一次，总共重试3次。
+               <div class="note" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_zh-cn_topic_0000001091370109_note8686631815">
+                <span class="notetitle"> 说明： </span>
+                <div class="notebody">
+                 <p id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000002164660726_zh-cn_topic_0000001091370109_p14686173218">自动重试时系统会创建一个新的归档任务。</p>
+                </div>
+               </div>
+              </div></td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div></li>
+      </ol> <p></p></li>
+     <li id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_li649983114125"><span>单击<span class="uicontrol" id="gaussdbT_00064__zh-cn_topic_0000002200147013_zh-cn_topic_0000001140003755_uicontrol101170532248">“确定”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="gaussdbT_00063.html">归档GaussDB T复制副本</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

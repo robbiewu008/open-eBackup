@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="TPOPS_GaussDB_00010.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -39,7 +39,7 @@
 
 <h1 class="topictitle1">步骤2：在TPOPS节点上开启XBSA备份的白名单</h1>
 <div><p>使用GaussDB备份功能前，需要开启XBSA特性和XBSA PITR特性白名单，确保备份功能正常。</p>
-<div class="p" id="TPOPS_GaussDB_00013__p1417941134413">用户可根据使用的管理平台确定是否需要执行本节操作：<ul id="TPOPS_GaussDB_00013__ul126368123442"><li id="TPOPS_GaussDB_00013__li1963611216447">对于OLTP OPS管理平台，请执行本节操作。</li><li id="TPOPS_GaussDB_00013__li5226451173818">对于云数据库GaussDB管理平台，请忽略本节操作。</li></ul>
+<div class="p" id="TPOPS_GaussDB_00013__p1417941134413">用户可根据使用的管理平台确定是否需要执行本节操作：<ul id="TPOPS_GaussDB_00013__ul126368123442"><li id="TPOPS_GaussDB_00013__li1963611216447">对于OLTP OPS管理平台，请执行本节操作。</li><li id="TPOPS_GaussDB_00013__li5226451173818">对于云数据库GaussDB管理平台（TPOPS），请忽略本节操作。</li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">操作步骤</h4><p><strong>打开XBSA特性白名单</strong><strong>（适用于全量备份、差异备份和日志备份）</strong></p>
 <ol><li><span>使用SSH工具，通过节点的管理IP地址，使用<strong>root</strong>用户，登录TPOPS Server主节点。</span></li><li><span>在TPOPS节点执行以下命令，通过<strong>dmuser</strong>用户登录TPOPS节点。</span><p><pre class="screen">su - dmuser</pre>
@@ -49,7 +49,7 @@ gsql -d primdb -p 22202 -r -U apprim -W <em>dmuser密码 </em></pre>
 </p></li><li><span>执行以下命令，开启“OPENAPI_XBSA_BACKUP_RESOTRE”特性。</span><p><pre class="screen">UPDATE PUBLIC.GA_COM_TPOPS_FEATURES SET SUPPORT = TRUE WHERE FEATUREID = ( SELECT FEATUREID FROM GA_COM_FILTER_FEATURES WHERE FEATURENAME = 'OPENAPI_XBSA_BACKUP_RESTORE');</pre>
 </p></li><li><span>执行以下命令查询对应数据库表单是否更新成功。</span><p><pre class="screen">SELECT * FROM PUBLIC.GA_COM_TPOPS_FEATURES WHERE FEATUREID = ( SELECT FEATUREID FROM GA_COM_FILTER_FEATURES WHERE FEATURENAME = 'OPENAPI_XBSA_BACKUP_RESTORE');</pre>
 <p>查询命令回显示例如下（如果“support”的值为“t”，则表示开启白名单成功）：</p>
-<p><span><img src="zh-cn_image_0000001792346066.png"></span></p>
+<p><span><img src="zh-cn_image_0000002164817582.png"></span></p>
 </p></li><li><span>如果以上步骤打开白名单失败，请执行以下命令恢复白名单状态。</span><p><pre class="screen">UPDATE PUBLIC.GA_COM_TPOPS_FEATURES SET SUPPORT = FALSE WHERE FEATUREID = ( SELECT FEATUREID FROM GA_COM_FILTER_FEATURES WHERE FEATURENAME = 'OPENAPI_XBSA_BACKUP_RESTORE');</pre>
 </p></li><li id="TPOPS_GaussDB_00013__li471716181933"><span>修改XBSA备份白名单完成后，需要登录TPOPS管理界面注销当前用户，注销用户后重新登录使配置生效。</span></li></ol>
 <p><strong>打开XBSA PITR特性白名单</strong><strong>（适用于日志备份）</strong></p>
@@ -60,7 +60,7 @@ gsql -d primdb -p 22202 -r -U apprim -W <em>dmuser密码 </em></pre>
 </p></li><li><span>执行以下命令，开启“TPOPS_PITR”特性。</span><p><pre class="screen">UPDATE PUBLIC.GA_COM_TPOPS_FEATURES SET SUPPORT = TRUE WHERE FEATUREID = ( SELECT FEATUREID FROM GA_COM_FILTER_FEATURES WHERE FEATURENAME = 'TPOPS_PITR');</pre>
 </p></li><li><span>执行以下命令查询对应数据库表单是否更新成功。</span><p><pre class="screen">SELECT * FROM PUBLIC.GA_COM_TPOPS_FEATURES WHERE FEATUREID = ( SELECT FEATUREID FROM GA_COM_FILTER_FEATURES WHERE FEATURENAME = 'TPOPS_PITR');</pre>
 <p>查询命令回显示例如下（如果“support”的值为“t”，则表示开启白名单成功）：</p>
-<p><span><img src="zh-cn_image_0000001976838126.png"></span></p>
+<p><span><img src="zh-cn_image_0000002200058605.png"></span></p>
 </p></li><li><span>如果以上步骤打开白名单失败，请执行以下命令恢复白名单状态。</span><p><pre class="screen">UPDATE PUBLIC.GA_COM_TPOPS_FEATURES SET SUPPORT = FALSE WHERE FEATUREID = ( SELECT FEATUREID FROM GA_COM_FILTER_FEATURES WHERE FEATURENAME = 'TPOPS_PITR');</pre>
 </p></li><li><span>修改XBSA备份白名单完成后，需要登录TPOPS管理界面注销当前用户，注销用户后重新登录使配置生效。</span></li></ol>
 </div>

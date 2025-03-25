@@ -223,10 +223,7 @@ export class NormalResourcesetTemplateComponent
       this.parentRelatedFetch$ = this.globalService
         .getState(`${this.tmpAppType}parentSelect`)
         .subscribe(res => {
-          if (
-            !isEmpty(this.allSelectionMap[this.tmpAppType]?.data) &&
-            !this.allSelectionMap[this.appType]?.isAllSelected
-          ) {
+          if (!this.allSelectionMap[this.appType]?.isAllSelected) {
             this.parentSelectChild();
           }
         });

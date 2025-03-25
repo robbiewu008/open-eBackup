@@ -1,0 +1,120 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复对象存储桶中的单个或多个对象">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="object-0070-1.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="object-0070-2">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复对象存储桶中的单个或多个对象</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="object-0070-2"></a><a name="object-0070-2"></a>
+
+<h1 class="topictitle1">恢复对象存储桶中的单个或多个对象</h1>
+<div><p>当需要对已备份对象存储的桶中的单个或多个对象进行恢复时，可以参考本节恢复对象至原位置或新位置。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul id="object-0070-2__object-0070_zh-cn_topic_0000001792550248_ul155946913719"><li id="object-0070-2__object-0070_zh-cn_topic_0000001792550248_li178221624154012">恢复前请确保恢复目标位置存在同名桶或满足创建恢复目标桶的条件，否则恢复将失败。</li></ul>
+<ul id="object-0070-2__object-0070_zh-cn_topic_0000001792550248_ul1648381342319"><li id="object-0070-2__object-0070_li5913102317529">执行恢复前，请确保对象存储的AK/SK对应的账号具有创建桶（CreateBuckets）权限、桶读权限、桶写权限、桶ACL读权限、桶ACL写权限。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="object-0070-2__zh-cn_topic_0000002199964685_uicontrol11629101161212">“<span id="object-0070-2__zh-cn_topic_0000002199964685_text1629611111214">数据利用</span> &gt; <span id="object-0070-2__zh-cn_topic_0000002199964685_text562901114126">副本数据</span> &gt; 文件系统 &gt; <span id="object-0070-2__zh-cn_topic_0000002199964685_text518282701311">对象存储</span>”</span>。</span></li><li><span>您可以以对象存储资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_zh-cn_topic_0000001397321757_p624620403810">在<span class="uicontrol" id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_uicontrol816218529113">“资源”</span>页签，根据资源名称查找到需要恢复的资源，并单击资源名称。</p>
+</p></li><li><span>单击<span class="uicontrol" id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_uicontrol01521691870">“副本数据”</span>，依次选择年、月、天找到副本。</span><p><p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_p9918150182310">当时间下方显示<span><img id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_image18922132513166" src="zh-cn_image_0000002200141969.png"></span>，即表示该月、该天存在副本。</p>
+</p></li><li><span>指定副本进行恢复。</span><p><ol type="a"><li>在副本所在行，单击<span class="uicontrol">“更多 &gt; 对象级恢复”</span>。</li><li>恢复对象存储至原位置或新位置，相关参数说明如<a href="#object-0070-2__object-0070_zh-cn_topic_0000001792388616_table93951625101715">表1</a>所示。
+<div class="tablenoborder"><a name="object-0070-2__object-0070_zh-cn_topic_0000001792388616_table93951625101715"></a><a name="object-0070_zh-cn_topic_0000001792388616_table93951625101715"></a><table cellpadding="4" cellspacing="0" summary="" id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_table93951625101715" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复对象存储参数说明</caption><colgroup><col style="width:23.02%"><col style="width:76.98%"></colgroup><thead align="left"><tr id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_row53951325131711"><th align="left" class="cellrowborder" valign="top" width="23.02%" id="mcps1.3.3.2.4.2.1.2.2.2.3.1.1"><p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_p173952253171">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="76.98%" id="mcps1.3.3.2.4.2.1.2.2.2.3.1.2"><p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_p203951725141711">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_row917642384819"><td class="cellrowborder" valign="top" width="23.02%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.1 "><p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_p12176162317482">恢复至</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.98%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.2 "><p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_p417710230483">对象存储的恢复位置。</p>
+<ul id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_ul14145610596"><li id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_li548561594"><span id="object-0070-2__object-0070_text8348612194313">原位置</span>：恢复至原对象存储位置。</li><li id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_li677925955914"><span id="object-0070-2__object-0070_text203642224436">新位置</span>：恢复至新位置，需要指定恢复的目标位置及目标对象存储。</li></ul>
+</td>
+</tr>
+<tr id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_row3926142015444"><td class="cellrowborder" valign="top" width="23.02%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.1 "><p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_p189271420134410">位置</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.98%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.2 "><p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_p192762034416">仅在原位置恢复时显示该参数，恢复至原对象存储位置。</p>
+</td>
+</tr>
+<tr id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_row95141312124614"><td class="cellrowborder" valign="top" width="23.02%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.1 "><p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_p1051411284614">目标对象存储</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.98%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.2 "><p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_p351401284614">仅在新位置恢复时显示该参数，选择恢复的目标对象存储。</p>
+<p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_p32752222010">可通过搜索已注册到<span id="object-0070-2__object-0070_text8695155120210">OceanProtect</span>的对象存储名称选择相应对象存储。</p>
+</td>
+</tr>
+<tr id="object-0070-2__object-0070_row152310193394"><td class="cellrowborder" valign="top" width="23.02%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.1 "><p id="object-0070-2__object-0070_p182312191396">目标桶</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.98%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.2 "><p id="object-0070-2__object-0070_p11231619183915">仅在新位置恢复时显示该参数。</p>
+<ul id="object-0070-2__object-0070_ul965012516414"><li id="object-0070-2__object-0070_li1865035124113">选择已有桶：当前用户下存在的桶。</li><li id="object-0070-2__object-0070_li1865065164112">新建桶：在当前用户下新建桶，会恢复到新建桶内。</li></ul>
+<div class="note" id="object-0070-2__object-0070_note128401213887"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="object-0070-2__object-0070_ul05592024112710"><li id="object-0070-2__object-0070_li155916245279">选择已有桶时，如果该副本已备份ACL，恢复时会将目标桶ACL进行覆盖。</li><li id="object-0070-2__object-0070_li2055922417277">如果待恢复的多个桶中存在相同前缀的同名对象，那么在恢复时只能随机恢复其中一个对象。</li><li id="object-0070-2__object-0070_li172671559182517">根据<span class="uicontrol" id="object-0070-2__object-0070_uicontrol14716333133915">“所属对象存储类型”</span>的命名规则输入新建桶的名称：<ul id="object-0070-2__object-0070_ul78373157435"><li id="object-0070-2__object-0070_li1644919818436">OceanStor Pacific：命名空间名称长度为1～255位，只支持字母、数字、“-”、“_”和“.”，必须包含字母或数字。</li><li id="object-0070-2__object-0070_li12452828443">华为云Stack对象存储：需全局唯一，不能与已有的任何桶名称重复，包括其他用户创建的桶。桶创建成功后，不支持修改名称，创建时，请设置合适的桶名。<p id="object-0070-2__object-0070_p632620112461"><a name="object-0070-2__object-0070_li12452828443"></a><a name="object-0070_li12452828443"></a>OBS中桶按照DNS规范进行命名，DNS规范为全球通用规则，其具体命名规则如下：</p>
+<p id="object-0070-2__object-0070_p1332619115460">用户删除桶后，立即创建同名桶或并行文件系统会创建失败，需要等待30分钟才能创建。</p>
+<p id="object-0070-2__object-0070_p5326411124612">长度范围为3到63个字符，支持小写字母、数字、中划线（-）、英文句号（.）。</p>
+<p id="object-0070-2__object-0070_p1532691144616">禁止两个英文句号（.）相邻，禁止英文句号（.）和中划线（-）相邻，禁止以英文句号（.）和中划线（-）开头或结尾。</p>
+<p id="object-0070-2__object-0070_p63261311154612">禁止使用IP地址。</p>
+<p id="object-0070-2__object-0070_p83261411154610">当用户使用虚拟主机方式通过HTTPS协议访问OBS时，如果桶名称中包含英文句号（.），会导致证书校验失败。所以该场景下，建议桶名称不要使用英文句号（.）。</p>
+</li><li id="object-0070-2__object-0070_li943651574410">阿里云对象存储：只能包括小写字母、数字和短划线（-），必须以小写字母或者数字开头和结尾，长度必须在3~63字符之间。</li></ul>
+</li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="object-0070-2__object-0070_row82162534117"><td class="cellrowborder" valign="top" width="23.02%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.1 "><p id="object-0070-2__object-0070_p02102516413">前缀</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.98%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.2 "><p id="object-0070-2__object-0070_p225105019717">仅在新位置恢复时显示该参数。</p>
+<p id="object-0070-2__object-0070_p163710291395">为待恢复的对象设置前缀。通过使用前缀和分隔符（例如<span class="uicontrol" id="object-0070-2__object-0070_uicontrol399616332213">“/”</span>），对象存储控制台可以推断逻辑层次结构，并以文件夹概念组织数据。</p>
+<p id="object-0070-2__object-0070_p13663102822812">示例：</p>
+<ul id="object-0070-2__object-0070_ul04281231192818"><li id="object-0070-2__object-0070_li997018323288">如果您在恢复时未填写前缀，恢复后，控制台中待恢复对象将直接在存储桶的根目录出现。</li><li id="object-0070-2__object-0070_li13956110228">如果您在恢复时填写前缀<span class="uicontrol" id="object-0070-2__object-0070_uicontrol1632261142215">“abc”</span>，控制台将在桶中呈现<span class="uicontrol" id="object-0070-2__object-0070_uicontrol1132291119222">“abc”</span>文件夹，打开<span class="uicontrol" id="object-0070-2__object-0070_uicontrol43221811172215">“abc”</span>文件夹，可以看到恢复后的对象。</li><li id="object-0070-2__object-0070_li14428231152812">如果您在恢复时填写前缀<span class="uicontrol" id="object-0070-2__object-0070_uicontrol070212518242">“abc/de”</span>，控制台将在桶中呈现<span class="uicontrol" id="object-0070-2__object-0070_uicontrol276712504256">“abc”</span>文件夹及<span class="uicontrol" id="object-0070-2__object-0070_uicontrol1335795372512">“de”</span>子文件夹，打开<span class="uicontrol" id="object-0070-2__object-0070_uicontrol07237718263">“de”</span>子文件夹，可以看到恢复后的对象。</li></ul>
+<div class="note" id="object-0070-2__object-0070_note111518409559"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="object-0070-2__object-0070_ul17625153474619"><li id="object-0070-2__object-0070_li16625173418467">添加前缀后可能会导致对象名称长度超过生产端限制，从而导致对象恢复任务失败。</li><li id="object-0070-2__object-0070_li14350201762815"><span style="color:#282B33;">前缀不能包括“\:*?"</span><span style="color:#282B33;">&lt;</span><span style="color:#282B33;">&gt;</span><span style="color:#282B33;">|”特殊字符。</span></li><li id="object-0070-2__object-0070_li183501117102812"><span style="color:#282B33;">前缀不能以“/”开头。</span></li><li id="object-0070-2__object-0070_li1935011176287"><span style="color:#282B33;">前缀不能有两个“/”相邻。</span></li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_row1395725201718"><td class="cellrowborder" valign="top" width="23.02%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.1 "><p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_p1339520259174">覆盖规则</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.98%" headers="mcps1.3.3.2.4.2.1.2.2.2.3.1.2 "><p id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_p839532511712">当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。</p>
+<ul id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_ul102931348087"><li id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_li529354811812">直接替换已经存在的文件。</li><li id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_li948417501782"><span style="color:#1A1A1A;">忽略已存在的文件</span>，即跳过这些同名文件不替换。</li><li id="object-0070-2__object-0070_zh-cn_topic_0000001792388616_li1376912501980"><span style="color:#1A1A1A;">只替换比恢复文件更旧的文件</span>，即保存目标位置上较新的同名文件不替换。</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>选择需要恢复的对象。<p>设置“<span style="color:#4D4D4D;">恢复文件选择方式</span>”，并从目录树选择待恢复对象或手动输入待恢复对象的路径。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>如果副本中的对象数量较多，系统可能超时，无法从目录树上选择待恢复对象，建议手动输入恢复对象路径。</li></ul>
+<ul><li>手动输入对象路径时，请输入对象完整路径，例如：/abc/efg.txt。当输入文件夹路径时，表示恢复该目录下的所有对象。注意：文件夹路径需以”/“结尾，例如：/abc/，否则会导致恢复失败。</li></ul>
+</div></div>
+</li></ol>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="object-0070-1.html">恢复对象存储</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

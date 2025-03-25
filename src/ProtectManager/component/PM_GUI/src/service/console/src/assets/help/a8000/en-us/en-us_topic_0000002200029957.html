@@ -1,0 +1,90 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Checking the Driver">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200029861.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200029957">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Checking the Driver</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200029957"></a><a name="EN-US_TOPIC_0000002200029957"></a>
+
+<h1 class="topictitle1">Checking the Driver</h1>
+<div><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p19922089589">Drivers are used to read and write tapes. This section describes how to check the driver of a tape library.</p>
+<div class="section" id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_section20185152292111"><h4 class="sectiontitle">Precautions</h4><ul id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_ul14217122112212"><li id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_li112171722152219">Ensure that at least one tape exists in the tape library and the tape is not in the import/export slot. Otherwise, the driver cannot be identified.</li><li id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_li152483245225">Unloading tapes from virtual tape libraries and canceling allocation of tape libraries or drives are high-risk operations, which will cause tapes or drives of the <span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_text982019815403">OceanProtect</span> to be unavailable.</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_section18603115913335"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_ol16741124252118"><li id="EN-US_TOPIC_0000002200029957__li79299103444"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_en-us_topic_0000002200069893_en-us_topic_0000002164660702_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_uicontrol123381932135316"><b><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_en-us_topic_0000002200069893_en-us_topic_0000002164660702_en-us_topic_0000001132896521_en-us_topic_0000001125223205_text3591711162920">System</span> &gt; <span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_en-us_topic_0000002200069893_en-us_topic_0000002164660702_en-us_topic_0000001132896521_en-us_topic_0000001125223205_text134875310309">Infrastructure</span> &gt; <span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_en-us_topic_0000002200069893_en-us_topic_0000002164660702_text102788238478"><strong>Archive Storage Library</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_li3233732194510"><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_en-us_topic_0000002200155613_uicontrol120212905318"><b><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_en-us_topic_0000002200155613_text1278022313534"><strong>Tape</strong></span></b></span> tab page, select a node and click <span class="uicontrol" id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_en-us_topic_0000002200155613_uicontrol663051135311"><b><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_en-us_topic_0000002200155613_text6263729145310"><strong>Tape Library</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_li88753592517"><span>Click the <span class="uicontrol" id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_uicontrol387992019255"><b><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_text11821611193"><strong>Name</strong></span></b></span> of a tape library. In the window that is displayed, click the <span class="uicontrol" id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_uicontrol45563461259"><b><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_text313471314199"><strong>Driver</strong></span></b></span> tab.</span></li><li id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_li15788131016343"><span>View the drivers in the driver list. <a href="#EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_table1270093118346">Table 1</a> describes the related parameters.</span><p>
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_table1270093118346"></a><a name="en-us_topic_0000002200155645_table1270093118346"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_table1270093118346" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Driver parameters</caption><colgroup><col style="width:26.83%"><col style="width:73.17%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_row1370033111344"><th align="left" class="cellrowborder" valign="top" width="26.83%" id="mcps1.3.3.2.4.2.1.2.3.1.1"><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p16700193112343">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="73.17%" id="mcps1.3.3.2.4.2.1.2.3.1.2"><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p157006317346">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_row970015319346"><td class="cellrowborder" valign="top" width="26.83%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p87001931153417"><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_text26715424195"><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="73.17%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p0735182492112">Name of a driver, which is generated by the system. The name is in the format of <strong id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_b19300185824715">Driver + </strong><em id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_i16232945174810">ID</em>. IDs are sorted according to the scanning sequence of drivers.</p>
+<p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p11700103153413">Example: <strong id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_b18462133320379">Driver 0</strong></p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_row19700131183417"><td class="cellrowborder" valign="top" width="26.83%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p370033143420"><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_text533619498191"><strong>Running Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="73.17%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p2700153119342">Running status of a driver.</p>
+<ul id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_ul14419439354"><li id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_li184144317359"><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_text1491442242019"><strong>Enabled</strong></span>: The driver has been enabled.</li><li id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_li12856185973515"><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_text95591628192011"><strong>Disabled</strong></span>: The driver has been disabled.</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_row1433123374610"><td class="cellrowborder" valign="top" width="26.83%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p193314336467"><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_text960594610462"><strong>Compression Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="73.17%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p833113384610">Compression function status of the driver.</p>
+<ul id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_ul83561145497"><li id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_li17356174519915"><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_text129910171491"><strong>Enable</strong></span>: The compression function is enabled for the driver.</li><li id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_li635617453910"><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_text175111431596"><strong>Disable</strong></span>: The compression function is disabled for the driver.</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_row1370013316342"><td class="cellrowborder" valign="top" width="26.83%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p107011931113411"><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_text68791545204"><strong>Tag of Loaded Tape</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="73.17%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p1070123116343">Label of the tape loaded for the driver.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_row5924111519359"><td class="cellrowborder" valign="top" width="26.83%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p99241015193516"><span id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_text196110117201"><strong>Serial No.</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="73.17%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029957__en-us_topic_0000002200155645_p149244150352">Serial number of a driver.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200029861.html">Managing Drivers</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

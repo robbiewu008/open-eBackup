@@ -1,0 +1,74 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Failed to Restore the GaussDB T Single-Node System Because the Installation Directory of the Single-Node System of the Backup Copy Is Different from That of the Target Single-Node System for Restoration">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002199967361.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164601098">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Failed to Restore the GaussDB T Single-Node System Because the Installation Directory of the Single-Node System of the Backup Copy Is Different from That of the Target Single-Node System for Restoration</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164601098"></a><a name="EN-US_TOPIC_0000002164601098"></a>
+  <h1 class="topictitle1">Failed to Restore the GaussDB T Single-Node System Because the Installation Directory of the Single-Node System of the Backup Copy Is Different from That of the Target Single-Node System for Restoration</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>The restoration of GaussDB T deployed in single-node mode fails. An event is displayed as follows: <strong>The installation directory of backuped single server(</strong><em>{0}</em><strong>) is different from the target single server for restoration(</strong><em>{1}</em><strong>). Ensure that DB_FILE_NAME_CONVERT and LOG_FILE_NAME_CONVERT are configured in the zengine.ini configuration file. Refer to OceanProtect Backup Appliance Troubleshooting or contact technical support engineers</strong>.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Cause</h4>
+    <p>The installation directory of the single-node system where the backup copy resides is different from that of the target single-node system for restoration.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Log in to the target single-node system and run the following commands in sequence to access the window for editing the configuration file:</span><p></p><pre class="screen">su - omm
+cd $GSDB_DATA/cfg
+vi zengine.ini</pre> <p></p></li>
+     <li><span>Edit the values of <strong>DB_FILE_NAME_CONVERT</strong> and <strong>LOG_FILE_NAME_CONVERT</strong>. If the parameters do not exist, add them to the configuration file. For details, see the following figure. The following is an example of changing the parameter values:</span><p></p><pre class="screen">DB_FILE_NAME_CONVERT = <em>{0}</em>/data,<em>{1}</em>/data
+LOG_FILE_NAME_CONVERT = <em>{0}</em>/data,<em>{1}</em>/data</pre>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p><em>{0}</em> and <em>{1}</em> in the parameter values correspond to <em>{0}</em> and <em>{1}</em> in the restoration failure event, respectively.</p>
+       </div>
+      </div> <p>The following figure shows an example of the configuration file.</p> <p><span><img src="en-us_image_0000002164601122.png"></span></p> <p></p></li>
+     <li><span>Save the edited content and perform the restoration job again.</span></li>
+    </ol>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002199967361.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

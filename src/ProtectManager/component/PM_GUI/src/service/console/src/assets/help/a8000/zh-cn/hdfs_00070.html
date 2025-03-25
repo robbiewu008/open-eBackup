@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="HDFS执行索引任务失败">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="hdfs_00066.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="hdfs_00070">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>HDFS执行索引任务失败</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hdfs_00070"></a><a name="hdfs_00070"></a>
+
+<h1 class="topictitle1">HDFS执行索引任务失败</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>HDFS执行索引任务失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>执行索引任务前，客户端所在的主机空闲内存已耗尽，需要保证执行任务前客户端所在的主机内存未耗尽。执行索引任务前，建议预留4GB以上内存，确保索引任务能正常运行。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li><span>使用puTTY，登录客户端所在的主机。</span></li><li id="hdfs_00070__li056242854116"><a name="hdfs_00070__li056242854116"></a><a name="li056242854116"></a><span>执行<strong>free -g</strong>命令查询空闲内存，命令回显示例如下，如果内存的“free”列显示的值为0，则表示内存剩余可用空间为0。</span><p><pre class="screen">              total        used        free      shared  buff/cache   available
+Mem:             62           2           0           0          60          60</pre>
+</p></li><li><span>根据<a href="#hdfs_00070__li056242854116">2</a>的回显内容，确认场景：</span><p><ul><li>如果内存剩余空间为0，则选择以下处理方式。<ul><li>关停同时运行的其他占用内存的进程。</li><li>修改客户端配置文件，修改“<em>/opt</em>/DataBackup/ProtectClient/Plugins/HadoopPlugin/”cfg目录下的plugin.cfg文件中的ios.minThreads和ios.maxThreads参数值（“<em>/opt</em>”为客户端默认安装路径，用户需根据实际安装路径修改），按照当前实际业务性能减小参数值，降低并发线程数量。修改文件后，请重启客户端服务。<p>配置文件内容示例如下图。</p>
+<p><span><img src="zh-cn_image_0000002200055345.png"></span></p>
+</li><li>扩展客户端所在主机内存，或者使用内存大的独立主机安装客户端。</li></ul>
+</li><li>如果内存剩余空间不为0且剩余空间较多，请收集日志并联系华为技术支持工程师协助处理。</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="hdfs_00066.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

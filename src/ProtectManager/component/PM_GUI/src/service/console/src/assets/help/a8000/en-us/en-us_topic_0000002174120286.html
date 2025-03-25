@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="What Are the Transmission Modes for Backup and Restoration of FusionCompute?">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200007065.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002174120286">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>What Are the Transmission Modes for Backup and Restoration of FusionCompute?</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002174120286"></a><a name="EN-US_TOPIC_0000002174120286"></a>
+
+<h1 class="topictitle1">What Are the Transmission Modes for Backup and Restoration of FusionCompute?</h1>
+<div><p id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_p1188117116136">When the <span id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_text1143118818121">OceanProtect</span> provides protection for the FusionCompute virtualization environment, the data transmission modes for backup and restoration vary depending on the production storage of FusionCompute.</p>
+<div class="section" id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_section154850191510"><h4 class="sectiontitle">LAN-Free Mode</h4><p id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_p799242971711">If the production storage of FusionCompute is Huawei scale-out block storage or eVol storage, the <span id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_text879911249489">OceanProtect</span> queries the mapping information of the target disk on Huawei scale-out storage or eVol storage and mounts the target volume to the host where the client is installed. In this way, the data transmission rate is not limited by the bandwidth of the FusionCompute storage LAN, achieving higher backup and restoration efficiency.</p>
+<div class="fignone" id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_fig129435814502"><span class="figcap"><b>Figure 1 </b>Backup and restoration in LAN-free mode</span><br><span><img class="eddx" id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_image149430819504" src="en-us_image_0000002164790440.png"></span></div>
+<p id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_p179064411466"></p>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_section19337289547"><h4 class="sectiontitle">LAN-based Mode</h4><p id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_p8968143117569">If the production storage of FusionCompute is virtualized storage, such as virtualized local disks, virtualized SAN storage (IP SAN and FC SAN), and virtualized NAS storage, FusionCompute obtains disk location and other information from VRM through the host where the client is installed and sets up a connection with the CNA node to transmit backup and restoration data.</p>
+</div>
+<div class="fignone" id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_fig1338134810910"><span class="figcap"><b>Figure 2 </b>Backup and restoration in LAN-based mode</span><br><span><img class="eddx" id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_image53381748891" src="en-us_image_0000002200117045.png"></span></div>
+<p id="EN-US_TOPIC_0000002174120286__en-us_topic_0000002200031181_p1458416122719"></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200007065.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

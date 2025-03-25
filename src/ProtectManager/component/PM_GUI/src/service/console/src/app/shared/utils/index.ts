@@ -1328,26 +1328,32 @@ export function isDatabaseApp(subType) {
   );
 }
 
-export function isHideOracleInstanceRestore(data): boolean {
+export function isHideOracleInstanceRestore(
+  rowCopy,
+  resourceProperties,
+  properties
+): boolean {
   if (
     !includes(
       [
         DataMap.Resource_Type.oracle.value,
         DataMap.Resource_Type.oracleCluster.value
       ],
-      data.sub_type
+      resourceProperties.sub_type
     )
   ) {
     return false;
   }
   const isSnapshotCopy = get(
-    data,
+    resourceProperties,
     'ext_parameters.storage_snapshot_flag',
     false
   );
   return (
-    (isString(data.version) && data.version.substring(0, 2) === '11') ||
-    data.environment_os_type === DataMap.Os_Type.windows.value ||
+    (isString(resourceProperties.version) &&
+      resourceProperties.version.substring(0, 2) === '11') ||
+    resourceProperties.environment_os_type === DataMap.Os_Type.windows.value ||
+    DataMap.CopyData_generatedType.liveMount.value === rowCopy.generated_by ||
     isSnapshotCopy
   );
 }
@@ -1546,7 +1552,9 @@ export function hiddenHcsUserFileLevelRestore(data, isHcsUser) {
         DataMap.Resource_Type.HCSCloudHost.value,
         DataMap.Resource_Type.openStackCloudServer.value,
         DataMap.Resource_Type.cNwareVm.value,
-        DataMap.Resource_Type.nutanixVm.value
+        DataMap.Resource_Type.nutanixVm.value,
+        DataMap.Resource_Type.APSCloudServer.value,
+        DataMap.Resource_Type.hyperVVm.value
       ],
       data.resource_sub_type
     ) &&
@@ -2219,4 +2227,54 @@ export function getBootTypeWarnTipByType(
   } else {
     self.bootOptionsWarnTip = '';
   }
+}
+
+/**
+ *
+ * @param attachmentPath 挂载路径
+ * @param bootable 引导选项
+ * @returns 是否是系统盘
+ */
+export function isOpenstackSystemDisk(
+  attachmentPath: string,
+  bootable: string
+): string {
+  return `${bootable === DataMap.Disk_Mode.true.value &&
+    includes(attachmentPath, 'da')}`;
+}
+
+/**
+ * @param appUtilsService
+ * @param data 副本数据
+ * @param isAll 是否屏蔽所有应用
+ * @returns 是否隐藏
+ */
+export function hideE6000Func(appUtilsService, data, isAll) {
+  if (
+    appUtilsService.isDistributed &&
+    includes(
+      [DataMap.CopyData_generatedType.replicate.value],
+      data.generated_by
+    )
+  ) {
+    if (!isAll) {
+      return includes(
+        [
+          // 虚拟化
+          ApplicationType.Vmware,
+          ApplicationType.FusionCompute,
+          ApplicationType.FusionOne,
+          // 文件系统
+          ApplicationType.Fileset,
+          ApplicationType.NASShare,
+          //云
+          ApplicationType.OpenStack,
+          ApplicationType.HCSCloudHost
+        ],
+        data.resource_sub_type
+      );
+    }
+    return true;
+  }
+  return false;
 }

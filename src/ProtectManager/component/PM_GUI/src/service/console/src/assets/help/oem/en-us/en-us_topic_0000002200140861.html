@@ -1,0 +1,74 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="What Can I Do If the HDFS Fails to Execute An Index Job?">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164814270.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200140861">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>What Can I Do If the HDFS Fails to Execute An Index Job?</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200140861"></a><a name="EN-US_TOPIC_0000002200140861"></a>
+  <h1 class="topictitle1">What Can I Do If the HDFS Fails to Execute An Index Job?</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>The HDFS fails to execute the index job.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Cause</h4>
+    <p>Before an index job is executed, the idle memory of the host where the client is installed is used up. You need to ensure that the memory of the host where the client is installed is not used up before the job is executed. Before executing an index job, you are advised to reserve at least 4 GB memory to ensure that the index job can run properly.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Use PuTTY to log in to the host where the client is installed.</span></li>
+     <li id="EN-US_TOPIC_0000002200140861__li056242854116"><a name="EN-US_TOPIC_0000002200140861__li056242854116"></a><a name="li056242854116"></a><span>Run the <strong>free -g</strong> command to query the free memory. In the command output, if the value in the <strong>free</strong> column is <strong>0</strong>, the free memory space is <strong>0</strong>.</span><p></p><pre class="screen">              total        used        free      shared  buff/cache   available
+Mem:             62           2           0           0          60          60</pre> <p></p></li>
+     <li><span>Determine the scenario based on the command output of <a href="#EN-US_TOPIC_0000002200140861__li056242854116">2</a>.</span><p></p>
+      <ul>
+       <li>If the free memory space is <strong>0</strong>, perform the following operations:
+        <ul>
+         <li>Stop other backup jobs that occupy the memory.</li>
+         <li>Modify the client configuration file. Change the values of <strong>ios.minThreads</strong> and <strong>ios.maxThreads</strong> in the <strong>plugin.cfg</strong> file in the <strong>/opt/DataBackup/ProtectClient/Plugins/HadoopPlugin/cfg</strong> directory based on the actual service performance. In the file name, <strong>/opt/</strong> indicates the default client installation path. Change the path based on service requirements, and reduce the number of concurrent threads. After modifying the file, restart the client service.<p>The following is an example of the configuration file.</p> <p><span><img src="en-us_image_0000002200055345.png"></span></p></li>
+         <li>Expand the memory of the host where the client is installed, or install the client on an independent host with a large memory.</li>
+        </ul></li>
+       <li>If the free memory space is not 0 and the free memory space is large, collect logs and contact Huawei technical support.</li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164814270.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

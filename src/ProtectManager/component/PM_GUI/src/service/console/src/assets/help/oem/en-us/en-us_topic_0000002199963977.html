@@ -1,0 +1,127 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Preparing for Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164757370.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199963977">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Preparing for Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199963977"></a><a name="EN-US_TOPIC_0000002199963977"></a>
+  <h1 class="topictitle1">Preparing for Backup</h1>
+  <div>
+   <ul>
+    <li>Prepare the information required for registering a GaussDB (DWS) cluster in advance by referring to <a href="#EN-US_TOPIC_0000002199963977__en-us_topic_0000001514245785_table10744125193920">Table 1</a>. 
+     <div class="tablenoborder">
+      <a name="EN-US_TOPIC_0000002199963977__en-us_topic_0000001514245785_table10744125193920"></a><a name="en-us_topic_0000001514245785_table10744125193920"></a>
+      <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002199963977__en-us_topic_0000001514245785_table10744125193920" frame="border" border="1" rules="all">
+       <caption>
+        <b>Table 1 </b>Preparing information for registering a GaussDB (DWS) cluster
+       </caption>
+       <colgroup>
+        <col style="width:29.56%">
+        <col style="width:40.26%">
+        <col style="width:30.18%">
+       </colgroup>
+       <thead align="left">
+        <tr>
+         <th align="left" class="cellrowborder" valign="top" width="29.56%" id="mcps1.3.1.1.2.2.4.1.1"><p>Item</p></th>
+         <th align="left" class="cellrowborder" valign="top" width="40.26%" id="mcps1.3.1.1.2.2.4.1.2"><p>How to Obtain</p></th>
+         <th align="left" class="cellrowborder" valign="top" width="30.18%" id="mcps1.3.1.1.2.2.4.1.3"><p>Section</p></th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td class="cellrowborder" valign="top" width="29.56%" headers="mcps1.3.1.1.2.2.4.1.1 "><p>Name of the system user of the GaussDB (DWS) cluster</p></td>
+         <td class="cellrowborder" valign="top" width="40.26%" headers="mcps1.3.1.1.2.2.4.1.2 "><p>Contact the GaussDB (DWS) cluster administrator to obtain the username.</p></td>
+         <td class="cellrowborder" rowspan="2" valign="top" width="30.18%" headers="mcps1.3.1.1.2.2.4.1.3 "><p><a href="en-us_topic_0000002164597610.html">Step 1: Registering a GaussDB (DWS) Cluster</a></p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" headers="mcps1.3.1.1.2.2.4.1.1 "><p>Environment variable file path</p></td>
+         <td class="cellrowborder" valign="top" headers="mcps1.3.1.1.2.2.4.1.2 "><p>Path of the environment variable file of a cluster user. Contact the GaussDB (DWS) cluster administrator to obtain the path.</p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" width="29.56%" headers="mcps1.3.1.1.2.2.4.1.1 "><p>Backup metadata storage path</p></td>
+         <td class="cellrowborder" valign="top" width="40.26%" headers="mcps1.3.1.1.2.2.4.1.2 "><p>A directory on a cluster node, which is used to store backup copy metadata. If the directory does not exist, the system will automatically create it. The GaussDB (DWS) cluster user must have the read and write permissions on the directory<sup>a</sup>.</p></td>
+         <td class="cellrowborder" valign="top" width="30.18%" headers="mcps1.3.1.1.2.2.4.1.3 "><p><a href="en-us_topic_0000002164597666.html">Step 6: Performing Backup</a></p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.1.1.2.2.4.1.1 mcps1.3.1.1.2.2.4.1.2 mcps1.3.1.1.2.2.4.1.3 "><p>a: The size of the directory is related to the size of the metadata of a backup copy, backup period, and number of days for retaining the backup copy.</p>
+          <ul>
+           <li id="EN-US_TOPIC_0000002199963977__li1520271419164">You are advised to reserve at least 20 GB disk space for the backup metadata storage path. Do not configure the path as a system volume or production service volume. Otherwise, ongoing production services will be affected when the disk space is insufficient.</li>
+           <li id="EN-US_TOPIC_0000002199963977__li836512573513"><a name="EN-US_TOPIC_0000002199963977__li836512573513"></a><a name="li836512573513"></a>The permissions of the GaussDB (DWS) cluster user vary depending on the backup metadata storage path. The following uses GaussDB (DWS) cluster user <strong>omm</strong> as an example.
+            <ul>
+             <li>If the entered path is a path (for example, <strong>/home/omm/backup</strong>) under <strong>/home/</strong><em>GaussDB (DWS) cluster user</em>, the GaussDB (DWS) cluster user has the read and write permissions on the path by default.</li>
+             <li>If the entered path (for example, <strong>/opt/abc/backup</strong>, <strong>/opt/omm/backup</strong> or <strong>/home/abc/backup</strong>) is not under <strong>/home/</strong><em>GaussDB (DWS) cluster user</em>, ensure that the GaussDB (DWS) cluster user has the read and write permissions on the path.<p>To prevent backup failures caused by permission issues, you are advised to manually create a path and check the read and write permissions of the GaussDB (DWS) cluster user on the path if the entered path does not exist.</p></li>
+            </ul> <p>To check whether the GaussDB (DWS) cluster user has the read and write permissions on the backup metadata storage path, log in to the GaussDB (DWS) node as user <strong>root</strong> and run the <strong>ls -ld</strong> <em>Backup metadata storage path</em> command. If the user does not have the read and write permissions, run the <strong>sudo chown </strong><em>GaussDB (DWS) cluster user</em><strong>:</strong><em>Backup metadata storage path of the GaussDB (DWS) cluster user</em> command to change the permissions. Then, run the <strong>touch</strong> command to check whether the path can be accessed and whether the user has the read and write permissions on it.</p> <p>Assume the GaussDB (DWS) cluster user is <strong>omm</strong> and the backup metadata storage path is <strong>/opt/abc/backup</strong>:</p> <pre class="screen">ls -ld /opt/abc/backup</pre> <pre class="screen">sudo chown omm:omm /opt/abc/backup</pre> <pre class="screen">touch /opt/abc/backup/example.txt</pre> <p>If <strong>Permission denied</strong> is displayed after the <strong>touch</strong> command is executed, check and grant the execute permission on all directories (<strong>/opt</strong> and <strong>/opt/abc</strong>) in the upper-level path of <strong>backup</strong> to the GaussDB (DWS) cluster user.</p></li>
+          </ul></td>
+        </tr>
+       </tbody>
+      </table>
+     </div></li>
+   </ul>
+   <ul>
+    <li>Before GaussDB (DWS) backup and restoration, register a GaussDB (DWS) cluster with the <span>product</span>. Before registering the GaussDB (DWS) cluster, modify the configuration files of all GaussDB (DWS) nodes where the client is installed as required. For details, see <a href="en-us_topic_0000002199998441.html">Modifying the GaussDB (DWS) Configuration File</a>.</li>
+    <li>Enable the ports required for backup and restoration jobs by referring to <a href="https://support.huawei.com/enterprise/en/doc/EDOC1100385843" target="_blank" rel="noopener noreferrer">Communication Matrix</a>.</li>
+    <li id="EN-US_TOPIC_0000002199963977__li234583920126">To enable <span id="EN-US_TOPIC_0000002199963977__text205981614355"><strong>Source Deduplication</strong></span>:
+     <ul id="EN-US_TOPIC_0000002199963977__ul17786162813185">
+      <li id="EN-US_TOPIC_0000002199963977__li520316496179">Create a logical port using the <span class="uicontrol" id="EN-US_TOPIC_0000002199963977__uicontrol4973155321312"><b>DataTurbo</b></span> protocol for the <span id="EN-US_TOPIC_0000002199963977__text1474071521713">product</span>. For details, see <a href="en-us_topic_0000002187549814.html">What Can I Do to Create a DataTurbo Logical Port?</a>.</li>
+      <li id="EN-US_TOPIC_0000002199963977__li11369431540">Configure the full mapping between the service plane IP addresses and the <span id="EN-US_TOPIC_0000002199963977__text1047852143117">product</span> on all hosts where the client is deployed. For details, see <a href="en-us_topic_0000002199963997.html">Configuring the Full Mapping Between the Client and Product</a>.</li>
+     </ul>
+     <div class="note" id="EN-US_TOPIC_0000002199963977__note96574176104">
+      <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+      <div class="notebody">
+       <p id="EN-US_TOPIC_0000002199963977__en-us_topic_0000002164820434_p164111271351">Some models of this product support this parameter. For details, see the product documentation released on the technical support website or consult the product provider.</p>
+      </div>
+     </div></li>
+    <li>To protect a table set:
+     <ul>
+      <li>Ensure that GDS has been started on the host where the client is installed. GDS running on the GaussDB (DWS) node occupies resources in the production environment. Therefore, you are advised to start GDS on the host where the client is installed.
+       <ul>
+        <li id="EN-US_TOPIC_0000002199963977__li13476034145011">For details about how to start GDS, see "Installing, Configuring, and Starting GDS" in the <a href="https://support.huawei.com/enterprise/en/cloud-computing/hcs-dws-service-pid-251527524" target="_blank" rel="noopener noreferrer">GaussDB (DWS) Product Documentation</a> of the corresponding version.</li>
+        <li id="EN-US_TOPIC_0000002199963977__li1664134725011">Parameters <strong id="EN-US_TOPIC_0000002199963977__b19364163813010">-d</strong>, <strong id="EN-US_TOPIC_0000002199963977__b1436413820018">-p</strong>, and <strong id="EN-US_TOPIC_0000002199963977__b183653384010">-t</strong> are required for starting GDS. The directory for storing data of each GDS must be unique. The following is an example:<pre class="screen" id="EN-US_TOPIC_0000002199963977__screen949817461541">/home/gds_user/bin/gds <strong id="EN-US_TOPIC_0000002199963977__b526515126328">-d</strong><strong id="EN-US_TOPIC_0000002199963977__b11486851163215"> </strong>/home/gds_user/input_data_1/ <strong id="EN-US_TOPIC_0000002199963977__b14216182111329">-p</strong> 192.168.97.240:9001 -H 0/0 -l /home/gds_user/gds_log/gds_process1.log -D <strong id="EN-US_TOPIC_0000002199963977__b19744132223213">-t</strong> 2
+/home/gds_user/bin/gds <strong id="EN-US_TOPIC_0000002199963977__b4430814123212">-d</strong> /home/gds_user/input_data_2/ <strong id="EN-US_TOPIC_0000002199963977__b8467192413218">-p</strong> 192.168.97.240:9002 -H 0/0 -l /home/gds_user/gds_log/gds_process2.log -D <strong id="EN-US_TOPIC_0000002199963977__b76471726103212">-t</strong> 2
+/home/gds_user/bin/gds <strong id="EN-US_TOPIC_0000002199963977__b1739771623220">-d</strong> /home/gds_user/input_data_3/ <strong id="EN-US_TOPIC_0000002199963977__b7403125413321">-p</strong> 192.168.97.240:9003 -H 0/0 -l /home/gds_user/gds_log/gds_process3.log -D <strong id="EN-US_TOPIC_0000002199963977__b427905633216">-t</strong> 2
+/home/gds_user/bin/gds <strong id="EN-US_TOPIC_0000002199963977__b12459218193212">-d</strong> /home/gds_user/input_data_4/ <strong id="EN-US_TOPIC_0000002199963977__b7818257113218">-p</strong> 192.168.97.240:9004 -H 0/0 -l /home/gds_user/gds_log/gds_process4.log -D <strong id="EN-US_TOPIC_0000002199963977__b1211865911325">-t</strong> 2</pre></li>
+        <li id="EN-US_TOPIC_0000002199963977__li533754020509">If you start GDS on multiple hosts where the client is deployed, the system uses the host where the client is installed with the largest number of GDSs for backup. Therefore, you are advised to start multiple GDSs as one user on only one host where the client is deployed. To achieve the highest performance, it is recommended that the number of GDSs to be started be four times and eight times the number of backup storage units for a dual-controller system and a four-controller system, respectively.</li>
+        <li id="EN-US_TOPIC_0000002199963977__li98601520162418">If the GaussDB (DWS) node is deployed in the sandbox, map the GDS configuration directory in the sandbox to the corresponding directory on the host by referring to <a href="en-us_topic_0000002199964037.html">Precautions for GDS Running in a GaussDB (DWS) Node Where the Sandbox Is Deployed</a> before GDS-based table set backup.</li>
+       </ul></li>
+      <li>Table-level restoration can be used to restore only the table structure and data of a table set. However, it cannot be used to restore the permissions, indexes, constraints, sequences, composite types, views, and functions associated with tables. If the preceding parameters of the table set in a cluster have been modified, manually obtain the corresponding parameter information during backup. For details, see the <a href="https://support.huawei.com/enterprise/en/cloud-computing/hcs-dws-service-pid-251527524" target="_blank" rel="noopener noreferrer">Product Documentation</a> of the corresponding GaussDB (DWS) version.</li>
+     </ul></li>
+   </ul>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164757370.html">Backup</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

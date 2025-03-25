@@ -1,0 +1,200 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring PostgreSQL">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164763630.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164763610">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring PostgreSQL</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164763610"></a><a name="EN-US_TOPIC_0000002164763610"></a>
+  <h1 class="topictitle1">Restoring PostgreSQL</h1>
+  <div>
+   <p>This section describes how to restore a PostgreSQL instance that has been backed up to its original location or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>Backup and replication copies can be used for restoration. Restoration to the original location or a new location is supported. Replication copies cannot be used for restoration to the original location.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002164763610__section721285884410">
+    <a name="EN-US_TOPIC_0000002164763610__section721285884410"></a><a name="section721285884410"></a>
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul id="EN-US_TOPIC_0000002164763610__en-us_topic_0000002200060437_ul155946913719">
+     <li id="EN-US_TOPIC_0000002164763610__en-us_topic_0000002200060437_li178221624154012">Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li>
+    </ul>
+    <ul id="EN-US_TOPIC_0000002164763610__en-us_topic_0000002200060437_ul1648381342319">
+     <li id="EN-US_TOPIC_0000002164763610__en-us_topic_0000002200060437_li69561792311">Before restoring data to a new location, ensure that the database installation user has the read and write permissions on the target path of restoration.</li>
+     <li id="EN-US_TOPIC_0000002164763610__en-us_topic_0000002200060437_li97319774218">If the resource to be restored is an active/standby MPP cluster, ensure that the active/standby database information is correct before stopping the database. Otherwise, you need to scan the restoration target resource.</li>
+    </ul>
+   </div>
+   <ul>
+    <li>If the port of the target instance is occupied, release the occupied port before the restoration.</li>
+    <li>If the target instance for restoration is a single instance, perform the following operation to stop the database. <strong>/usr/local/pgsql/bin/pg_ctl</strong> indicates the database instance installation path, and <strong>/usr/local/pgsql/data</strong> indicates the data path. Replace them with the actual paths.<pre class="screen">su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile stop  </pre></li>
+    <li>If the target instance for restoration is a cluster instance, stop the service on each node. Next, stop the standby database and then the primary database. The procedure is as follows:<p><strong>Pgpool</strong> <strong>cluster</strong></p>
+     <ol>
+      <li>Stop the pgpool service on all nodes.<pre class="screen"><em>/usr/local/pgpool/bin/pgpool</em> -m fast stop</pre></li>
+      <li>Stop the database.<pre class="screen">su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile stop</pre></li>
+     </ol> <p><strong>Patroni cluster</strong></p>
+     <ol>
+      <li>Stop the patroni service on all nodes and the database.<pre class="screen">systemctl stop patroni</pre></li>
+      <li>Run the <strong>patronictl -c /etc/patroni/patroni.yml list</strong> command on any node to check whether the node service is stopped. If the command output is an empty table, the node service has been stopped.<p><span><img src="en-us_image_0000002168601462.png"></span></p></li>
+      <li>Run the <strong>cat </strong><strong>/etc/patroni/patroni.yml</strong> command to view the <strong>patroni.yml</strong> file and find the value of <strong>namespace</strong>. The following figure shows an example.<p><span><img src="en-us_image_0000002168441738.png"></span></p></li>
+      <li>Run the <strong>etcdctl del --prefix " </strong><em>namespace</em><strong> "</strong> command to delete the PostgreSQL cluster data from ETCD.<p>Example: <strong>etcdctl del --prefix " </strong><strong>/service148new/ "</strong></p></li>
+     </ol>
+     <div class="note">
+      <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+      <div class="notebody">
+       <p>Before restoring log copies to the original or a new location, you need to configure the <strong>patroni.yml</strong> file in advance as follows:</p>
+       <pre class="screen"> method: OceanProtectPITR
+ OceanProtectPITR:
+    command: "mv <em>$PGDATA/../OceanProtectData/DATADIR $PGDATA/../</em>"
+    no_params: True
+    keep_existing_recovery_conf: True</pre>
+      </div>
+     </div> <p><strong>CLup cluster</strong></p>
+     <ol>
+      <li>Log in to the CLup database management system.
+       <ol type="a">
+        <li>Choose <strong>HA Cluster</strong> &gt; <strong>HA Management</strong>, find the target cluster, and click <span class="uicontrol"><b>Offline</b></span>. After the cluster is brought offline, the cluster status changes to <strong>Offline</strong>.</li>
+        <li>Choose <strong>Instance</strong> &gt; <strong>Instance List</strong>, find the target database instance, and click <span class="uicontrol"><b>Stop</b></span> to stop the standby database and then the primary database. After the database instances are stopped, their states change to <strong>Stopped</strong>.</li>
+       </ol></li>
+      <li>After the restoration job is complete, perform the following operation to bring the CLup cluster online:<p>Choose <strong>HA Cluster</strong> &gt; <strong>HA Management</strong>, find the target cluster, and click <span class="uicontrol"><b>Online</b></span>. After the cluster is brought online, the cluster status changes to <strong>Online</strong>.</p></li>
+     </ol> <p><strong>HACS</strong></p> <p>Before performing restoration, run the <strong>crm configure property maintenance-mode=true</strong> command to freeze the cluster. After the cluster is frozen, you can manually stop the PostgreSQL database. The procedure is as follows (stop the standby database first and then the primary database):</p> <pre class="screen">su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile stop</pre> <p>Then, perform the restoration operation. After the PostgreSQL instance is successfully restored, run the <strong>crm configure property maintenance-mode=false</strong> command to unfreeze the HACS cluster.</p></li>
+   </ul>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164763610__en-us_topic_0000002199964685_uicontrol6167212279"><b><span id="EN-US_TOPIC_0000002164763610__en-us_topic_0000002199964685_text1816152172710"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164763610__en-us_topic_0000002199964685_text1816021152712"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002164763610__en-us_topic_0000002199964685_text19649165519496"><strong>Databases</strong></span> &gt; PostgreSQL</b></span>.</span></li>
+     <li><span>Search for copies by PostgreSQL instance resource or copy. This section describes how to search for copies by resource.</span><p></p><p>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> tab page, locate the resource to be restored by resource name and click the name.</p> <p></p></li>
+     <li><span>Select the year, month, and day in sequence to find the copy.</span><p></p><p>If <span><img src="en-us_image_0000002164603930.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p> <p></p></li>
+     <li><span>Restore data to a specified point in time or using a specific copy.</span><p></p>
+      <div class="p">
+       <a href="#EN-US_TOPIC_0000002164763610__table194961441141219">Table 1</a> describes related parameters. 
+       <div class="tablenoborder">
+        <a name="EN-US_TOPIC_0000002164763610__table194961441141219"></a><a name="table194961441141219"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164763610__table194961441141219" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>Parameters for restoring a PostgreSQL instance
+         </caption>
+         <colgroup>
+          <col style="width:32.019999999999996%">
+          <col style="width:67.97999999999999%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.5.2.4.2.1.2.2.3.1.1"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.5.2.4.2.1.2.2.3.1.2"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span><strong>Restore To</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>Select either <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> or <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</p>
+            <div class="note">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p>When performing restoration to a new location, if the copy has a tablespace directory other than the data directory, ensure that the operating system user who installs the database in the new location instance can access the tablespace directory with the same name on the host in the new location.</p>
+             </div>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><strong>Tag</strong></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>If you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for restoration, you can use <span class="uicontrol"><b>Tag</b></span> to quickly filter and manage resources.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span><strong>Location</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>If you select <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> for restoration, the location of the current instance is displayed by default.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span><strong>Target Host</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>Specify the target host, which is mandatory if you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for restoration.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span><strong>Target Instance</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>Specify the target instance, which is mandatory if you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for restoration.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span><strong>Script to Run Before Restoration</strong></span></p></td>
+           <td class="cellrowborder" rowspan="3" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>You can execute a self-defined script before a restoration job is executed or after it succeeds or fails, all based on your needs. You need to enter the absolute path of the script.</p>
+            <ul>
+             <li>The Windows OS supports <span class="uicontrol"><b>.bat</b></span> scripts.</li>
+             <li>Non-Windows OSs support <span class="uicontrol"><b>.sh</b></span> scripts.
+              <div class="note" id="EN-US_TOPIC_0000002164763610__note116601417195112">
+               <span class="notetitle"> NOTE: </span>
+               <div class="notebody">
+                <p id="EN-US_TOPIC_0000002164763610__en-us_topic_0000001264099602_p196461512103113">If <span class="uicontrol" id="EN-US_TOPIC_0000002164763610__en-us_topic_0000001264099602_uicontrol180112781919"><b><span id="EN-US_TOPIC_0000002164763610__en-us_topic_0000001264099602_text10711756153116"><strong>Script to Run upon Restoration Success</strong></span></b></span> is configured, the status of the restoration job is displayed as <span class="uicontrol" id="EN-US_TOPIC_0000002164763610__en-us_topic_0000001264099602_uicontrol488919204209"><b><span id="EN-US_TOPIC_0000002164763610__en-us_topic_0000001264099602_text186291135132417"><strong>Succeeded</strong></span></b></span> on the <span id="EN-US_TOPIC_0000002164763610__text712055613536">product</span> even if the script fails to be executed. Check whether the job details contain a message indicating that the post-processing script fails to be executed. If yes, modify the script in a timely manner.</p>
+               </div>
+              </div></li>
+            </ul></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span><strong>Script to Run upon Restoration Success</strong></span></p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span><strong>Script to Run upon Restoration Failure</strong></span></p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <div class="p">
+         In the scenario where the PostgreSQL CLup cluster is restored to a new location, if the cluster username and password at the original location are different from those at the new location after the restoration is successful, perform the following operations:
+         <ol type="a">
+          <li>Log in to the CLup database management system and change the username and password of the cluster at the new location.
+           <ol>
+            <li>Choose <span class="uicontrol"><b>HA Cluster &gt; Cluster Definition</b></span>, modify <span class="uicontrol"><b>Users in DB</b></span>, <span class="uicontrol"><b>Password in DB</b></span>, <span class="uicontrol"><b>Stream replication user</b></span>, and <span class="uicontrol"><b>Stream replication password</b></span> of the cluster at the new location so that they are the same as those of the original cluster, and save the modification.</li>
+            <li>Choose <span class="uicontrol"><b>HA Cluster &gt; HA Management</b></span>, locate the corresponding cluster, and click <span class="uicontrol"><b>Online</b></span>. After the cluster is brought online, the cluster status changes to <strong>Online</strong>.</li>
+           </ol></li>
+          <li>Log in to the <span>product</span> WebUI to change the username and password of the target cluster in the new location.
+           <ol>
+            <li>Choose <span class="uicontrol"><b>Protection &gt; Databases &gt; PostgreSQL</b></span>. Switch to the <span class="uicontrol"><b>Instance</b></span> tab page and find the database cluster instance to be restored.</li>
+            <li>Modify <span class="uicontrol"><b>Database Username</b></span>, <span class="uicontrol"><b>Database Password</b></span>, <span class="uicontrol"><b>Database Stream Replication Username</b></span>, and <span class="uicontrol"><b>Database Stream Replication Password</b></span> so that they are the same as those of the original cluster. After the modification, the instance status is <strong>Online</strong>.</li>
+           </ol></li>
+         </ol>
+        </div>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164763630.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

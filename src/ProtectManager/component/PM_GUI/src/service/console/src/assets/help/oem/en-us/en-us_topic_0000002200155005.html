@@ -1,0 +1,150 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring the SAP HANA Database (SAP HANA from Applications, Applicable to 1.6.0 and Later Versions)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164828410.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200155005">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring the SAP HANA Database (SAP HANA from Applications, Applicable to 1.6.0 and Later Versions)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200155005"></a><a name="EN-US_TOPIC_0000002200155005"></a>
+  <h1 class="topictitle1">Restoring the SAP HANA Database (SAP HANA from Applications, Applicable to 1.6.0 and Later Versions)</h1>
+  <div>
+   <p>This section describes how to restore a backed-up database to the original location or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li id="EN-US_TOPIC_0000002200155005__li9435621163611"><a name="EN-US_TOPIC_0000002200155005__li9435621163611"></a><a name="li9435621163611"></a><span>Before restoring a tenant database, you must stop the target database. Skip this step when restoring a system database.</span><p></p>
+      <div class="p">
+       Ensure that no system database is being restored in the cluster where the target database resides.
+       <ol type="a">
+        <li>Use PuTTY to log in to the SAP HANA database host.</li>
+        <li>Run the following command to switch to the SAP system user:<pre class="screen">su - <em>&lt;sid&gt;</em>adm</pre> <p>In the preceding command, <em>sid</em> indicates the SAP system ID. For example:</p> <pre class="screen">su - s00adm</pre></li>
+        <li>Run the following command to log in to the system database:<pre class="screen">hdbsql -i <em>Instance ID</em> -n <em>Host name of the active node of the system database</em><strong>:</strong><em>SQL port of the system database</em><strong> -d SYSTEMDB -u </strong><em>Username of the system database</em><strong> -p </strong><em>Password of the system database</em></pre> <p>Example:</p> <pre class="screen">hdbsql -i 00 -n localhost:30013 -d SYSTEMDB -u SYSTEM -p xxxxxxx</pre></li>
+        <li>Run the following command to stop the target database:<pre class="screen">alter system stop database <em>Name of the target database</em>;</pre></li>
+       </ol>
+      </div> <p></p></li>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200155005__en-us_topic_0000002199964685_uicontrol5782125952210"><b><span id="EN-US_TOPIC_0000002200155005__en-us_topic_0000002199964685_text1178285962212"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002200155005__en-us_topic_0000002199964685_text167826593224"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002200155005__en-us_topic_0000002199964685_text157828598224"><strong>Applications</strong></span> &gt; <span id="EN-US_TOPIC_0000002200155005__en-us_topic_0000002199964685_text4800111011243"><strong>SAP HANA</strong></span></b></span>.</span></li>
+     <li><span>Search for copies by database or copy. This section describes how to search for copies by database.</span><p></p><p>On the <strong>Resources</strong> tab page, locate the database to be restored by database name and then click the name.</p> <p></p></li>
+     <li><span>On the <strong>Copy Data</strong> tab page, select the year, month, and day in sequence to search for copies.</span><p></p><p>If <span><img src="en-us_image_0000002164828486.png"></span> is displayed below a month or day, copies exist in the month or on the day.</p> <p></p></li>
+     <li><span>Restore data to a specified point in time or using a specific copy.</span><p></p>
+      <ol type="a">
+       <li>Perform restoration by specifying a copy or a time point between two copies.
+        <ul>
+         <li>Specifying a copy for restoration<p><span><img class="eddx" src="en-us_image_0000002164668762.png"></span></p></li>
+         <li>Restoring data to a specified point in time<p><span><img class="eddx" src="en-us_image_0000002200155089.png"></span></p> <p>Data can be restored to the specific time point in the blue part on the timeline. <span><img src="en-us_image_0000002200069509.png"></span> indicates that a copy exists at the time point. If no logs are backed up at a time point, data cannot be restored to the time point.</p></li>
+        </ul></li>
+      </ol>
+      <ol type="a" start="2">
+       <li>Restore an SAP HANA database to the original location or a new location.
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>During system database restoration, the tenant database information contained in the restoration copy is synchronized. As a result, some tenant databases may fail to be accessed.</p>
+         </div>
+        </div>
+        <ul>
+         <li>Restore an SAP HANA database to the original location.
+          <ol class="substepthirdol">
+           <li>Set <strong>Restore To</strong> to <span class="uicontrol"><b>Original location</b></span>.</li>
+           <li>Select <strong>Use incremental or differential backup copies to accelerate restoration</strong>.
+            <div class="note">
+             <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+             <div class="notebody">
+              <p>This function is supported only in the scenario of restoration using log copies.</p>
+             </div>
+            </div></li>
+           <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
+          </ol></li>
+         <li>Restore an SAP HANA database to a new location.
+          <ol class="substepthirdol">
+           <li>Set <strong>Restore To</strong> to <span class="uicontrol"><b>New location</b></span>.</li>
+           <li>Select <strong>Use incremental or differential backup copies to accelerate restoration</strong>.
+            <div class="note">
+             <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+             <div class="notebody">
+              <p>This function is supported only in the scenario of restoration using log copies.</p>
+             </div>
+            </div></li>
+           <li>Set the basic and advanced parameters of the restoration job.<p><a href="#EN-US_TOPIC_0000002200155005__table261702245415">Table 1</a> describes the related parameters.</p>
+            <div class="tablenoborder">
+             <a name="EN-US_TOPIC_0000002200155005__table261702245415"></a><a name="table261702245415"></a>
+             <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200155005__table261702245415" frame="border" border="1" rules="all">
+              <caption>
+               <b>Table 1 </b>Parameters of a restoration job
+              </caption>
+              <colgroup>
+               <col style="width:18.41%">
+               <col style="width:81.58999999999999%">
+              </colgroup>
+              <thead align="left">
+               <tr>
+                <th align="left" class="cellrowborder" valign="top" width="18.41%" id="mcps1.3.2.2.5.2.2.1.2.2.1.3.2.2.3.1.1"><p>Parameter</p></th>
+                <th align="left" class="cellrowborder" valign="top" width="81.58999999999999%" id="mcps1.3.2.2.5.2.2.1.2.2.1.3.2.2.3.1.2"><p>Description</p></th>
+               </tr>
+              </thead>
+              <tbody>
+               <tr>
+                <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.2.2.5.2.2.1.2.2.1.3.2.2.3.1.1 "><p>Tag</p></td>
+                <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.2.2.5.2.2.1.2.2.1.3.2.2.3.1.2 "><p>Name of a tag associated with the resource. You can filter databases by tag.</p></td>
+               </tr>
+               <tr>
+                <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.2.2.5.2.2.1.2.2.1.3.2.2.3.1.1 "><p>Target Instance</p></td>
+                <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.2.2.5.2.2.1.2.2.1.3.2.2.3.1.2 "><p>Target instance to which data is restored. The instance must have been registered with the <span>product</span>.</p></td>
+               </tr>
+               <tr>
+                <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.2.2.5.2.2.1.2.2.1.3.2.2.3.1.1 "><p>Target Database</p></td>
+                <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.2.2.5.2.2.1.2.2.1.3.2.2.3.1.2 "><p>Target database to which data is restored.</p> <p>Before restoring a tenant database, stop the database. For details, see <a href="#EN-US_TOPIC_0000002200155005__li9435621163611">1</a>.</p>
+                 <div class="note">
+                  <span class="notetitle"> NOTE: </span>
+                  <div class="notebody">
+                   <p>Data in the target database will be overwritten during restoration.</p>
+                  </div>
+                 </div></td>
+               </tr>
+              </tbody>
+             </table>
+            </div></li>
+           <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
+          </ol></li>
+        </ul></li>
+      </ol> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164828410.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

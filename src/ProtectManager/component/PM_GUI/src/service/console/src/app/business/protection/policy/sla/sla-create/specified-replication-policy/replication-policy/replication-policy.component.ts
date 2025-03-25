@@ -39,6 +39,7 @@ import {
   ProtectResourceAction,
   QosService,
   ReplicationModeType,
+  RouterUrl,
   ScheduleTrigger,
   StoragesApiService,
   StorageUnitService,
@@ -226,6 +227,8 @@ export class ReplicationPolicyComponent implements OnInit {
   wormData = 0; // 最大的worm时间
   wormDataList = []; // 备份策略worm时间组
   limitRatePolicyTip = this.i18n.get('common_limit_rate_policy_tip_label');
+
+  ratePolicyRouterUrl = RouterUrl.ProtectionLimitRatePolicy;
 
   constructor(
     public i18n: I18NService,

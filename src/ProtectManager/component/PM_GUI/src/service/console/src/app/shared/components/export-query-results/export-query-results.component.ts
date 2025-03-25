@@ -518,6 +518,7 @@ export class ExportQueryResultsComponent implements OnInit, OnDestroy {
         `${item.fileName}.zip`
       );
     }
+    setTimeout(() => this.getDatas(), 2e3);
   }
 
   exportSubItem(data) {

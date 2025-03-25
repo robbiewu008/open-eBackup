@@ -1,0 +1,59 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Configuring Route Information for the Replication Network">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002206093085.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002170726876">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Configuring Route Information for the Replication Network</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002170726876"></a><a name="EN-US_TOPIC_0000002170726876"></a>
+
+<h1 class="topictitle1">Step 2: Configuring Route Information for the Replication Network</h1>
+<div><p id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_en-us_topic_0000001141960567_p413413105217">If different replication ports of replication nodes are configured with IP addresses on the same network segment and the replication network uses multiple IP addresses for networking, you need to follow instructions in this section to configure policy-based routes for the replication network ports of all replication nodes in the local and remote storage systems to implement network connectivity and data balancing. Otherwise, skip this section.</p>
+<div class="section" id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_en-us_topic_0000001141960567_section134869549323"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_en-us_topic_0000001141960567_ol14941294358"><li id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_en-us_topic_0000001141960567_li14689641183717"><span>Log in to DeviceManager of the local and remote storage systems separately.</span></li><li id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_lc07ffb8678c5446abb42e82ed2a4105a"><span>Choose <strong id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_b15731462339">Cluster</strong> &gt; <strong id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_b25731946103319">Network</strong> &gt; <strong id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_b4573174643317">Port and Route</strong> &gt; <strong id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_b857414616331">Physical Port</strong>.</span></li><li id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_lea60255cf59d4ab6ab001ae2210a911b"><span>Select the physical port of the replication node and click <strong id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_b137119413413">Configure Policy-based Route</strong>.</span></li><li id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_li78661544175019"><span>On the <strong id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_b1229018439125">Configure Policy-based Route</strong> page, configure the gateway of the selected physical port IP address.</span></li><li id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_li14354184291817"><span>Click <strong id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_b4880444133510">OK</strong>.</span></li><li id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_li1554616113187"><span>After the configuration is complete, check whether the policy-based route is configured successfully.</span><p><ol type="a" id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_ol116311136368"><li id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_li1263213113615">On the <strong id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_b484716508369">Physical Port</strong> page, click the name of the port for which a policy-based route has been configured.</li><li id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_li06931914173612">On the page that is displayed, click the <strong id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_b459919255370">Policy-based Route</strong> tab and check whether a policy-based route has been configured.</li><li id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_li135241533163615">Log in to the replication node using the management IP address, run the <strong id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_b18611103418569">minisystem</strong> command to go to the minisystem view, and run the <strong id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_b1261111346566">ping</strong> command to check whether each network port can properly communicate with the remote replication plane.<div class="p" id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_p685353113352">Example:<pre class="screen" id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_screen207998985211">ping -I <em id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_i379969125215">192.168.10.31</em><em id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_i17991696526"> </em><em id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_i10799095528">XXX.XXX.XXX.XXX</em> 
+ping -I <em id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_i17993917527">192.168.10.32</em> <em id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_i17999925214">XXX.XXX.XXX.XXX</em> </pre>
+<div class="note" id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_note2079913985212"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_p2799394521">In the command, <em id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_i1379911975217">192.168.10.31</em> indicates the replication service IP address configured for the local replication plane, and <em id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_i951515109571">XXX.XXX.XXX.XXX</em> indicates the replication service IP address of the remote replication plane.</p>
+</div></div>
+</div>
+<p id="EN-US_TOPIC_0000002170726876__en-us_topic_0000002203034125_en-us_topic_0000002164660650_en-us_topic_0000001796207937_en-us_topic_0000001518134085_p179929195219">If the data returned by the remote replication plane can be received, the policy-based route configuration takes effect. Otherwise, check whether the default gateway configuration of the management plane and the policy-based route configuration of the local and remote replication planes are correct.</p>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002206093085.html">Replicating PostgreSQL Database Copies (Applicable to the OceanProtect E6000 Appliance)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

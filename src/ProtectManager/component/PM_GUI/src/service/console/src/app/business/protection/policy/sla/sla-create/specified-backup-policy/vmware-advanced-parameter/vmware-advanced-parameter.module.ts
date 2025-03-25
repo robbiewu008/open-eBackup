@@ -16,6 +16,7 @@ import { MultiDuduplicationTipModule } from '@backup-policy/multi-duduplication-
 import { SpecifyDestinationLocationModule } from '@backup-policy/specify-destination-location/specify-destination-location.module';
 import { BaseModule } from 'app/shared';
 import { VmwareAdvancedParameterComponent } from './vmware-advanced-parameter.component';
+import { RouterJumpHelpModule } from 'app/shared/components/router-jump-help/router-jump-help.module';
 
 @NgModule({
   declarations: [VmwareAdvancedParameterComponent],
@@ -23,7 +24,8 @@ import { VmwareAdvancedParameterComponent } from './vmware-advanced-parameter.co
     CommonModule,
     BaseModule,
     SpecifyDestinationLocationModule,
-    MultiDuduplicationTipModule
+    MultiDuduplicationTipModule,
+    RouterJumpHelpModule
   ],
 
   exports: [VmwareAdvancedParameterComponent]

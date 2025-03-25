@@ -1,0 +1,322 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Registering a Database (Applicable to the Cluster Deployment Mode)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002209175821.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199963617">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Registering a Database (Applicable to the Cluster Deployment Mode)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199963617"></a><a name="EN-US_TOPIC_0000002199963617"></a>
+  <h1 class="topictitle1">Registering a Database (Applicable to the Cluster Deployment Mode)</h1>
+  <div>
+   <p>This section describes how to register an Oracle database cluster when the database to be protected is deployed in a cluster.</p>
+   <div class="section" id="EN-US_TOPIC_0000002199963617__section17305246175013">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p id="EN-US_TOPIC_0000002199963617__p138022121518">Ensure that the client installation user can be switched to the Oracle installation user by running the <strong id="EN-US_TOPIC_0000002199963617__b7716401510">su - oracle</strong> command. If the grid component is installed, ensure that you can run the <strong id="EN-US_TOPIC_0000002199963617__b923919186527">su - grid</strong> command to switch to user <strong id="EN-US_TOPIC_0000002199963617__b15797182405211">grid</strong>.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002199964685_uicontrol49641842919"><b><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002199964685_text63901566195"><strong>Protection</strong></span> &gt; Databases &gt; Oracle</b></span>.</span></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab page, click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</span><p></p><p><a href="#EN-US_TOPIC_0000002199963617__table17561557152715">Table 1</a> describes the related parameters.</p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002199963617__table17561557152715"></a><a name="table17561557152715"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002199963617__table17561557152715" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Parameters for registering a cluster
+        </caption>
+        <colgroup>
+         <col style="width:36.919999999999995%">
+         <col style="width:63.080000000000005%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="36.919999999999995%" id="mcps1.3.3.2.2.2.2.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="63.080000000000005%" id="mcps1.3.3.2.2.2.2.2.3.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="36.919999999999995%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="63.080000000000005%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>User-defined cluster name.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="36.919999999999995%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Type</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="63.080000000000005%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Database cluster type. Currently, only <strong>RAC</strong> is supported.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="36.919999999999995%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Node</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="63.080000000000005%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Select all nodes in the cluster.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Databases</strong></span></b></span> tab page, click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</span><p></p><p><a href="#EN-US_TOPIC_0000002199963617__table163891610134417">Table 2</a> describes the related parameters.</p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002199963617__table163891610134417"></a><a name="table163891610134417"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002199963617__table163891610134417" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 2 </b>Parameters for registering a database
+        </caption>
+        <colgroup>
+         <col style="width:31.4%">
+         <col style="width:68.60000000000001%">
+        </colgroup>
+        <thead align="left">
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row15756165752718">
+          <th align="left" class="cellrowborder" valign="top" width="31.4%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p10756105715272">Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="68.60000000000001%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p11756857132710">Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row1675655792713">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1375645762716"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text9585193192718"><strong>Type</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p575635710271">Database type, which can be <span class="uicontrol" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_uicontrol22221717377"><b>Single Server</b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_uicontrol15856131973717"><b>Cluster</b></span>.</p>
+           <ul id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_ul498294065311">
+            <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li49821940135318">If the database is deployed in a cluster, select <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b1538818218524">Cluster</strong>.</li>
+            <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li133593535417">If the database is deployed in a single-server system, select <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b10566532175213">Single Server</strong>.</li>
+           </ul></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row1875685752712">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1875665714274"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text158331842182716"><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p15970215763">Name of the database to be protected.</p>
+           <div class="p" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p312142713516">
+            The name must be the same as the database name in the production environment. Generally, the value of <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b16922810142216">name</strong> is the same as that of <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b992221010226">db_unique_name</strong>. If they are different, set the database name to <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b592361019226">db_unique_name</strong>. You can run the following SQL statement to view the values of <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b2797513172211">name</strong> and <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b779831312228">db_unique_name</strong>:
+            <pre class="screen" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_screen1084516518517">select name,db_unique_name FROM v$database;</pre>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row0756145752720">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p207561557202719"><strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b14961229111612">Host</strong>/<strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b1574783051613">Cluster</strong></p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p142251452263">Host or cluster where the database is located.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row20620735162">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p133192195016"><strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b1865612101139">Running Database Username</strong></p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1973744653">If the host where the database is located runs the Windows OS, contact the database administrator to obtain the username of the system administrator of the host.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row64609631613">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p176725894910"><strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b154163134132">Running Database User Password</strong></p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p16789134910183">If the host where the database is located runs the Windows OS, contact the database administrator to obtain the password of the system administrator of the host.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row169057587343">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p19905058123416"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text355565417277"><strong>Database Authentication Method</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1090513587340">Database authentication mode, which can be <span class="uicontrol" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_uicontrol11231144955014"><b>Database authentication</b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_uicontrol10433552145012"><b>OS authentication</b></span>. The value must be the same as that configured on the database.</p> <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p68181854162214">For details about how to query the database authentication mode, see <a href="en-us_topic_0000002199998061.html">Preparations for Backup</a>.</p>
+           <div class="note" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_note3523163482116">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <ul id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_ul1271154832110">
+              <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li970211010162">If the host where the database to be backed up resides works in Oracle ADG or DG primary/standby mode, this parameter must be set to <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b1919655415356">Database authentication</strong> for the database at the standby end.</li>
+              <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li13433510142011">If multiple hosts where the client is installed are specified in <a href="en-us_topic_0000002164757022.html#EN-US_TOPIC_0000002164757022__li164660725814">4</a> to perform backup jobs, this parameter must be set to <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b17332183751517">Database authentication</strong>.</li>
+              <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li14667165013208">In the cluster scenario, if the database authentication modes queried on different database nodes are different, set this parameter to <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b0197139153810">Database authentication</strong>.</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row2053712715354">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p45371575356"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text843211214284"><strong>Database Installation Username</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p553719714354">User for database installation, for example, <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b57931924173712">oracle</strong>. For details about how to obtain the value, see <a href="en-us_topic_0000002199998061.html">Preparations for Backup</a>.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row52052917594">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1920829185912"><strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b139211138203311">ORACLE_HOME Path</strong></p>
+           <div class="note" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_en-us_topic_0000001839143189_note379352823112">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_en-us_topic_0000001839143189_en-us_topic_0000001839143213_p8320153562113">This parameter is available only in 1.6.0 and later versions.</p>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p18967154610558">This parameter is displayed only when the database node runs the Linux OS.</p> <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p81964551912"><strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b19571353180">ORACLE_HOME</strong> is an environment variable of the Oracle software. If the <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b3577355181">ORACLE_HOME</strong> environment variable is not configured for the database node installation user, you need to manually configure it. The configuration method is as follows (when <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b857143571813">Type</strong> is set to <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b1057133571811">Cluster</strong>, perform the following steps on all nodes):</p>
+           <ol type="a" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_ol165438225242">
+            <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li125432022192415">Log in to the database node and check whether the <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b6833716121911">ORACLE_HOME</strong> environment variable is configured.<pre class="screen" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_screen11189171019153">su - oracle -c 'env | grep ORACLE_HOME'</pre>
+             <ul id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_ul113195120113">
+              <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li51311515113">If the command output is not empty, the <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b02521847161913">ORACLE_HOME</strong> environment variable has been configured. In this case, you do not need to configure this parameter on the management page.</li>
+              <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li1413175114119">If the command output is empty, go to the next step.</li>
+             </ul></li>
+            <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li1438252343614">Manually configure the <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b19535145817372">ORACLE_HOME</strong> environment variable.
+             <ul id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_ul17826256143610">
+              <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li626153819377">If the environment variable configuration file can be modified, perform the following operations:
+               <div class="p" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p73118199386">
+                <a name="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li626153819377"></a><a name="en-us_topic_0000002164597186_li626153819377"></a>Contact the database administrator to obtain ORACLE_HOME path, and edit the environment variable configuration file (for example, <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b9711104362120">.bash_profile</strong>) in the directory of the database installation user by adding the path to the last line. For example:
+                <pre class="screen" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_screen151311511414">export ORACLE_HOME=/<em id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_i18310733193418">XXX</em></pre>
+               </div> <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p735019281443">Save the environment variable configuration file and run the following command to make the environment variable take effect:</p> <pre class="screen" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_screen155033174">source ~/.bash_profile</pre></li>
+              <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li23641726143810">If the environment variable configuration file cannot be modified, contact the database administrator to obtain the ORACLE_HOME path and enter it on the management page.</li>
+             </ul></li>
+           </ol></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row1815173117599">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1581523116591"><strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b18612133773917">ORACLE_BASE Path</strong></p>
+           <div class="note" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_note116368215518">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p3636132120514">This parameter is available only in 1.6.0 and later versions.</p>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p20565131232415">This parameter is displayed only when the database node runs the Linux OS.</p> <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1356511127249"><strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b2215131610228">ORACLE_BASE</strong> is an environment variable of the Oracle software. If the <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b8215131610223">ORACLE_BASE</strong> environment variable is not configured for the database node installation user, you need to manually configure it. The configuration method is as follows (when <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b19215516142214">Type</strong> is set to <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b221511169225">Cluster</strong>, perform the following steps on all nodes):</p>
+           <ol type="a" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_ol1356591211241">
+            <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li4565141262413">Log in to the database node and check whether the <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b1675912916226">ORACLE_BASE</strong> environment variable is configured.<pre class="screen" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_screen11159133010243">su - oracle -c 'env | grep ORACLE_BASE'</pre>
+             <ul id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_ul1565191292414">
+              <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li16565312152413">If the command output is not empty, the <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b1535143416226">ORACLE_BASE</strong> environment variable has been configured. In this case, you do not need to configure this parameter on the management page.</li>
+              <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li125651612132410">If the command output is empty, go to the next step.</li>
+             </ul></li>
+            <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li656517123246">Manually configure the <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b5815712406">ORACLE_BASE</strong> environment variable.
+             <ul id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_ul1565141214248">
+              <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li105651412122411">If the environment variable configuration file can be modified, perform the following operations:
+               <div class="p" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p5565191213245">
+                <a name="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li105651412122411"></a><a name="en-us_topic_0000002164597186_li105651412122411"></a>Contact the database administrator to obtain ORACLE_BASE path, and edit the environment variable configuration file (for example, <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b773534132216">.bash_profile</strong>) in the directory of the database installation user by adding the path to the last line. For example:
+                <pre class="screen" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_screen756515121247">export ORACLE_BASE=/<em id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_i2565912132420">XXX</em></pre>
+               </div> <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p256519126242">Save the environment variable configuration file and run the following command to make the environment variable take effect:</p> <pre class="screen" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_screen1256515127244">source ~/.bash_profile</pre></li>
+              <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li85651612152417">If the environment variable configuration file cannot be modified, contact the database administrator to obtain the ORACLE_BASE path and enter it on the management page.</li>
+             </ul></li>
+           </ol></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row39665228355">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1396642215351"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text17161131042813"><strong>Database Username</strong></span></p></td>
+          <td class="cellrowborder" rowspan="2" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p2096617223357">If the <span class="uicontrol" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_uicontrol954315314514"><b>Database Authentication Method</b></span> is set to <span class="uicontrol" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_uicontrol16920124617517"><b>Database authentication</b></span>, you need to configure the username and password of the database.</p> <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p699317272524">Enter the name and password of a user with the <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b2554185113916">sysdba</strong> permissions.</p>
+           <div class="note" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_note82232292012">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p173724301004">If the OS authentication mode is configured on the database but <span class="uicontrol" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_uicontrol74961659425"><b>Database Authentication Method</b></span> is set to <span class="uicontrol" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_uicontrol1868113392214"><b>Database authentication</b></span> during registration, the username and password of the database are not verified due to the mechanism of the database.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row20535172673513">
+          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p353512265354"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text49921117122810"><strong>Database Password</strong></span></p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row14127174411359">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p15128544133518"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text837616277283"><strong>ASM Authentication</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1412819441353">If the database uses ASM, you need to enable ASM authentication.</p> <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p694817349373">To check whether the database uses the ASM, see <a href="en-us_topic_0000002199998061.html">Preparations for Backup</a>.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row7356102443610">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p13357224173610"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text11201123782819"><strong>Authentication Method</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p17357122403612">ASM authentication mode, which must be the same as that configured in the database.</p> <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p031663016387">To query the ASM authentication mode configured in the database, see <a href="en-us_topic_0000002199998061.html">Preparations for Backup</a>.</p>
+           <div class="note" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_note82841536182219">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p82841836132219">In the cluster scenario, if the ASM authentication modes queried on different database nodes are different, set this parameter to <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b15411398407">ASM Authentication</strong>.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row1687483773612">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p187715401364"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text263274612288"><strong>Installation Username</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p7874173763615">ASM installation username, for example, <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b17420114014423">grid</strong>.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row1781184418363">
+          <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p381114414362"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text69052057102810"><strong>ASM Username</strong></span></p></td>
+          <td class="cellrowborder" rowspan="2" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1481144453614">This parameter is mandatory when <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b4732102418438">Authentication Method</strong> is set to <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b1073318242436">ASM Authentication</strong>. Enter the name and password of a user with the <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b1292679643">sysdba</strong> permissions.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row10297155220367">
+          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p0297195273615"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text2036825102910"><strong>ASM Password</strong></span></p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>In the <span><strong>Storage Resources</strong></span> area, click <span><strong>Add</strong></span>. <a href="#EN-US_TOPIC_0000002199963617__table5692101024117">Table 3</a> describes storage resource parameters.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_ul1522010591716">
+         <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li116309119213">Only 1.6.0 and later versions support this function.</li>
+         <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li132202592113">When the Oracle database is connected to the OceanStor Dorado 6.<em id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_i616525781719">x</em> storage device and snapshot-based backup at the storage layer is required, add storage resources. In other scenarios, you do not need to add storage resources.</li>
+         <li id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_li730103516313">When the Oracle database is connected to OceanStor Dorado 6.<em id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_i75554873711">x</em> storage devices of a HyperMetro pair, you can add two storage resources. The storage resource that is first added is preferentially used for backup and restoration jobs.</li>
+        </ul>
+       </div>
+      </div>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002199963617__table5692101024117"></a><a name="table5692101024117"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002199963617__table5692101024117" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 3 </b>Parameters for adding storage resources
+        </caption>
+        <colgroup>
+         <col style="width:25.629999999999995%">
+         <col style="width:74.37%">
+        </colgroup>
+        <thead align="left">
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row469231012419">
+          <th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.3.2.5.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p106923107414">Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.3.2.5.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1692161011412">Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row1552933144420">
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p195293384415"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text14795162563515"><strong>Device Type</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1352993114413">Storage resource type.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row156924105418">
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1447416484523"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text0951938233"><strong>Management IP Address</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1572219555316">You can enter multiple management IP addresses of a storage device. If a management IP address cannot be accessed, the system automatically switches to another accessible management IP address.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row11692410194115">
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p86921100411"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text84171222037"><strong>Port</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p176923103418">Port for accessing storage resources. Port <strong id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_b14933133813513">8088</strong> is used by default.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row1869291094117">
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1169221012410"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text569291014412"><strong>Username</strong></span></p></td>
+          <td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p1269218103411">Username and password for accessing storage resources.</p>
+           <div class="note" id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_note1496145518305">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p9961145513012">Use an administrator account, and ensure that the RESTful login mode is available for the user and the password has been initialized. Otherwise, backup of resources of the device may fail.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row19692131044119">
+          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p136927109413"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text9692410114111"><strong>Password</strong></span></p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row11906115412334">
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p990612542335"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text86431838203518"><strong>Protocol</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p15906185413331">Select the data transmission protocol used by the Oracle database host to connect to storage resources.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row9693131015418">
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p84858527216"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text1648545220215"><strong>Certificate Verification</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p126931210144116">This function is enabled by default. The storage resource certificate will be verified during database registration to ensure security of interactions between the <span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text104402035112113">product</span> and external devices. After this function is disabled, security risks may exist in the communication between the system and the storage device. Exercise caution when performing this operation.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row1737117014469">
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p138240311112"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text13121124726"><strong>Certificate</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p282416316116">Import the CA certificate of the storage resource obtained in <a href="en-us_topic_0000002199963629.html">Step 2: Obtaining the CA Certificate of the Storage Resource (Applicable to Snapshot-based Backup at the Storage Layer)</a>.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_row239197184619">
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p08012393018"><span id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_text18813399016"><strong>Revocation List</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002199963617__en-us_topic_0000002164597186_p18813391309">After the CRL is imported, the system checks whether the client certificate has been revoked. If the certificate has been revoked, storage device registration fails.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002209175821.html">Step 3: Registering an Oracle Database</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

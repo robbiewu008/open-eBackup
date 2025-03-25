@@ -17,127 +17,148 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="恢复Hyper-V虚拟机">
+  <meta name="DC.Title" content="创建介质集（归档存储是磁带库）（适用于部分型号）">
   <meta name="product" content="">
-  <meta name="DC.Relation" scheme="URI" content="hyper_gud_0055.html">
+  <meta name="DC.Relation" scheme="URI" content="hyper_gud_0056.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="hyper_gud_0058">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>恢复Hyper-V虚拟机</title>
+  <title>创建介质集（归档存储是磁带库）（适用于部分型号）</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="hyper_gud_0058"></a><a name="hyper_gud_0058"></a>
-  <h1 class="topictitle1">恢复Hyper-V虚拟机</h1>
+  <h1 class="topictitle1">创建介质集（归档存储是磁带库）（适用于部分型号）</h1>
   <div>
-   <p>当需要对已备份的虚拟机进行整机恢复时，可以参考本节恢复虚拟机至原位置或新位置。</p>
-   <div class="section">
+   <p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000001839143173_p52126361762">当将磁带库作为归档存储时，请参考本节创建介质集。如果归档存储不是磁带库请忽略本节。</p>
+   <div class="section" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000001839143173_section64578218528">
     <h4 class="sectiontitle">背景信息</h4>
-    <div class="p">
-     <span>本产品</span>支持使用备份副本、复制副本（不支持恢复至原位置）进行虚拟机恢复，支持恢复至原位置或新位置。
-     <ul>
-      <li>恢复至原位置<p>恢复至原位置时，系统将在原虚拟机所在路径下（即原虚拟机所属的Hyper-V服务器）创建一个新的虚拟机，将备份数据全量恢复到新虚拟机。</p></li>
-      <li>恢复至新位置<p>恢复至新位置时，系统进行全量恢复，将备份数据恢复到指定的新路径下，即由用户指定新虚拟机所在的Hyper-V服务器对应的路径。</p></li>
-     </ul>
-    </div>
+    <ul id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000001839143173_ul20158183415546">
+     <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000001839143173_li12775337145414">介质集是基于磁带创建的，是一个磁带存储池，用于存放归档数据。因此创建介质集前需确保已有磁带库被扫描并更新至<span id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002200061393_text18376218116">本产品</span>。</li>
+     <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000001839143173_li104011181308"><span id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000001839143173_ph035553742017">系统每隔24小时自动扫描磁带库，发现连接到<span id="hyper_gud_0058__foc_gud_0041_text77621359192219">本产品</span>的磁带库后会将其自动更新至<span id="hyper_gud_0058__foc_gud_0041_text136126811235">本产品</span>。</span><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000001839143173_p22934181108">如果您发现磁带库还未更新至<span id="hyper_gud_0058__foc_gud_0041_text1722521652311">本产品</span>，可手动扫描磁带库，具体操作可参考《管理员指南》中的<span class="parmvalue" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000001839143173_zh-cn_topic_0000001132896521_parmvalue63001041533">“扫描磁带库”</span>。</p></li>
+    </ul>
    </div>
-   <div class="section">
+   <div class="section" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000001839143173_section24210211414">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002200061393_p166439914143">请确保磁带库内的所有磁带的“Access Status”为“Accessible”，“Access Status”可在磁带管理界面查看。</p>
+   </div>
+   <div class="section" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000001839143173_section8876201915305">
     <h4 class="sectiontitle">操作步骤</h4>
-    <ol>
-     <li id="hyper_gud_0058__li0198134611381"><span>选择<span class="uicontrol" id="hyper_gud_0058__zh-cn_topic_0000001839142377_uicontrol66667531188">“<span id="hyper_gud_0058__zh-cn_topic_0000001839142377_text86661453985">数据利用</span> &gt; <span id="hyper_gud_0058__zh-cn_topic_0000001839142377_text26661531582">副本数据</span> &gt; <span id="hyper_gud_0058__zh-cn_topic_0000001839142377_text56671153582">虚拟化</span> &gt; Hyper-V”</span>。</span></li>
-     <li><span>支持以虚拟机维度或以副本维度查找副本，本节以虚拟机维度为例进行说明。</span><p></p><p>在“资源”页签，根据虚拟机名称查找到需要恢复的虚拟机，并单击虚拟机名称。</p> <p></p></li>
-     <li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000001894303320.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
-     <li><span>在副本所在的行，单击<span class="uicontrol">“<span>更多</span> &gt; 恢复”</span>。</span></li>
-     <li><span>恢复虚拟机至原位置或新位置。</span><p></p>
-      <ul>
-       <li>恢复虚拟机至原位置。
-        <ol type="a">
-         <li>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>。</li>
-         <li>设置新虚拟机的名称。</li>
-         <li id="hyper_gud_0058__li1221013597276">恢复后是否启用虚拟机网络适配器。
-          <ul id="hyper_gud_0058__ul10473512087">
-           <li id="hyper_gud_0058__li64731812984">不启用：恢复后虚拟机的所有网络适配器都处于未连接状态，如需远程登录虚拟机，恢复后需要在Hyper-V 管理界面设置网络适配器的连接状态。</li>
-           <li id="hyper_gud_0058__li587672511810">启用：启用后，如果副本中的原虚拟机仍然存在，则恢复后可能导致新虚拟机与原虚拟机网络冲突，请恢复虚拟机后检查新虚拟机网络。</li>
-          </ul></li>
-         <li id="hyper_gud_0058__li1964792011356">选择恢复后是否自动开机。</li>
-         <li>选择恢复成功后是否删除原虚拟机。<p>开启该选项后，虚拟机恢复成功后会删除原虚拟机，否则原虚拟机将保留。</p></li>
-         <li id="hyper_gud_0058__li1372711219491">单击<span class="uicontrol" id="hyper_gud_0058__uicontrol1224533122916">“确定”</span>。</li>
-        </ol></li>
-       <li>恢复虚拟机至新位置。
-        <ol type="a">
-         <li>选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>。</li>
-         <li>设置新虚拟机名称。</li>
-         <li>设置恢复虚拟机到新位置的位置信息。 
-          <div class="tablenoborder">
-           <table cellpadding="4" cellspacing="0" summary="" frame="border" border="1" rules="all">
-            <caption>
-             <b>表1 </b>新位置信息
-            </caption>
-            <colgroup>
-             <col style="width:29.87%">
-             <col style="width:70.13000000000001%">
-            </colgroup>
-            <thead align="left">
-             <tr>
-              <th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.3.2.5.2.1.2.1.3.1.2.3.1.1"><p>参数</p></th>
-              <th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.3.2.5.2.1.2.1.3.1.2.3.1.2"><p>说明</p></th>
-             </tr>
-            </thead>
-            <tbody>
-             <tr>
-              <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.3.2.5.2.1.2.1.3.1.2.3.1.1 "><p><span>计算位置</span></p></td>
-              <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.3.2.5.2.1.2.1.3.1.2.3.1.2 "><p>虚拟机恢复后所使用的计算资源。</p> <p>选择一个Hyper-V服务器作为目标主机。</p>
-               <div class="note">
-                <span class="notetitle"> 说明： </span>
-                <div class="notebody">
-                 <p>目标主机的Hyper-V版本不能低于原Hyper-V的版本。</p>
-                </div>
-               </div></td>
-             </tr>
-             <tr>
-              <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.3.2.5.2.1.2.1.3.1.2.3.1.1 "><p><span>存储位置</span></p></td>
-              <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.3.2.5.2.1.2.1.3.1.2.3.1.2 "><p>虚拟机配置文件和磁盘数据恢复到的Hyper-V服务器文件路径。</p>
-               <ul>
-                <li><span>不同数据存储</span>
-                 <ul>
-                  <li><span>VM配置文件</span>：虚拟机配置文件在Hyper-V服务器上的路径。</li>
-                  <li><span>VM磁盘文件</span>：虚拟磁盘在Hyper-V服务器上的路径。
-                   <div class="note">
-                    <span class="notetitle"> 说明： </span>
-                    <div class="notebody">
-                     <p>为提高数据安全性，用户可选择将虚拟机的配置文件单独存放在一个数据存储上，而将磁盘数据统一放在另一个数据存储上。</p>
-                    </div>
-                   </div></li>
-                 </ul></li>
-                <li><span>相同数据存储</span><p>虚拟机配置文件和所有虚拟磁盘数据存储在Hyper-V服务器上的同一路径。</p></li>
-               </ul></td>
-             </tr>
-            </tbody>
-           </table>
-          </div></li>
-         <li>恢复后是否启用虚拟机网络适配器。
-          <ul id="hyper_gud_0058__hyper_gud_0058_ul10473512087">
-           <li id="hyper_gud_0058__hyper_gud_0058_li64731812984">不启用：恢复后虚拟机的所有网络适配器都处于未连接状态，如需远程登录虚拟机，恢复后需要在Hyper-V 管理界面设置网络适配器的连接状态。</li>
-           <li id="hyper_gud_0058__hyper_gud_0058_li587672511810">启用：启用后，如果副本中的原虚拟机仍然存在，则恢复后可能导致新虚拟机与原虚拟机网络冲突，请恢复虚拟机后检查新虚拟机网络。</li>
-          </ul></li>
-         <li id="hyper_gud_0058__li12299104424012">选择恢复后是否自动开机。</li>
-         <li>单击<span class="uicontrol" id="hyper_gud_0058__hyper_gud_0058_uicontrol1224533122916">“确定”</span>。</li>
-        </ol></li>
-      </ul> <p></p></li>
-     <li><span>单击<span class="uicontrol">“关闭”</span>。</span></li>
+    <ol id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000001839224677_ol16741124252118">
+     <li id="hyper_gud_0058__zh-cn_topic_0000001839224677_li79299103444"><span>选择<span class="uicontrol" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_zh-cn_topic_0000002200069893_zh-cn_topic_0000002164660702_zh-cn_topic_0000001132896521_zh-cn_topic_0000001125223205_zh-cn_topic_0000001091431193_uicontrol123381932135316">“<span id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_zh-cn_topic_0000002200069893_zh-cn_topic_0000002164660702_zh-cn_topic_0000001132896521_zh-cn_topic_0000001125223205_text3591711162920">系统</span> &gt; <span id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_zh-cn_topic_0000002200069893_zh-cn_topic_0000002164660702_zh-cn_topic_0000001132896521_zh-cn_topic_0000001125223205_text134875310309">基础设施</span> &gt; <span id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_zh-cn_topic_0000002200069893_zh-cn_topic_0000002164660702_text102788238478">归档存储库</span>”</span>。</span></li>
+     <li id="hyper_gud_0058__foc_gud_0041_li818816416326"><span>在<span class="uicontrol" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_uicontrol17681657155019">“<span id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_text17165161385110">磁带</span>”</span>页签，选择某个节点，单击<span class="uicontrol" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_uicontrol94863210528">“<span id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_text716846185211">介质集</span>”</span>。</span></li>
+     <li id="hyper_gud_0058__foc_gud_0041_li1427516216320"><span>单击<span class="uicontrol" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_uicontrol1977312120105">“<span id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_text18211164020818">创建</span>”</span>。</span><p></p><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p11848102711287">创建介质集参数说明如<a href="#hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_table7624154102812">表1</a>所示。</p>
+      <div class="tablenoborder">
+       <a name="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_table7624154102812"></a><a name="foc_gud_0041_zh-cn_topic_0000002164669278_table7624154102812"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_table7624154102812" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>创建介质集参数
+        </caption>
+        <colgroup>
+         <col style="width:34.69%">
+         <col style="width:65.31%">
+        </colgroup>
+        <thead align="left">
+         <tr id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_row86253541287">
+          <th align="left" class="cellrowborder" valign="top" width="34.69%" id="mcps1.3.4.2.3.2.2.2.3.1.1"><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p18625165492813">参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="65.31%" id="mcps1.3.4.2.3.2.2.2.3.1.2"><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p196251854192810">说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_row46251354142818">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p196251554152811">名称</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p362555420281">自定义介质集的名称。</p></td>
+         </tr>
+         <tr id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_row196251154192811">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p17625105419281">驱动块大小</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p12625105410281">支持64KB、128KB、256KB。向磁带写入数据时，是一块一块写入的。介质集所属磁带数据会以设置的块大小进行写入。</p>
+           <div class="note" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_note565243611320">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p2161343103218">建议按照文件大小选择驱动块大小。</p>
+             <ul id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_ul201610431324">
+              <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li5161343163212">对于大文件，选择较大的驱动块大小，以保证读写效率。</li>
+              <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li6161204315321">对于小文件，选择较小的驱动块大小，以充分利用磁带空间。</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_row26253549286">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p196251554182818">数据压缩</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 ">
+           <div class="p" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p1814841316339">
+            <span style="color:#1A1A1A;">缩减数据量以减少存储空间，提升写入速度</span>。
+            <ul id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_ul1215331318334">
+             <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li131531213203310">启用：将开启磁带库的硬件压缩功能，启用压缩可以节省磁带容量并提升写入速度。</li>
+             <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li12153713103315">禁用：将禁用磁带库的硬件压缩功能。</li>
+            </ul>
+           </div></td>
+         </tr>
+         <tr id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_row717874343016">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p2017884323017">所属控制器</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p7997171124615">选择磁带所属控制器。</p></td>
+         </tr>
+         <tr id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_row179321114123115">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p1093201418312">磁带</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p1393271493115">在左侧的磁带库列表中，选择某个磁带库，勾选右侧磁带库中的磁带。</p>
+           <div class="note" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_note152988121326">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <ul id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_ul5529181923219">
+              <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li75291194325">支持添加多个磁带库中的磁带。不支持跨控制器添加磁带。</li>
+              <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li2529141903214">向介质集添加磁带时，不支持添加已经加入其它介质集的磁带。</li>
+              <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li053041903219">如果待选择的磁带“位置”长时间显示为“Driver”、磁带未识别、或“驱动数量”与实际不一致，可能为磁带被锁定在驱动上导致，请先参考磁带设备操作指南手动卸载磁带，解锁驱动后，并重新“扫描磁带库”。</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_row8420183933310">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p74201439103316">可用磁带不足告警</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 ">
+           <ul id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_ul6295175973317">
+            <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li11891826343">功能开启后需要设置<span class="uicontrol" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_uicontrol04341514582">“告警阈值”</span>。当空白磁带和过期可覆盖磁带的总数小于该值时，将产生告警。此时，您可以插入空白磁带或者将存在数据的磁带标记为空。
+             <div class="note" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_note13197517113418">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <ul id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_ul558332553419">
+                <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li258392513346">如果启用了数据压缩，一个磁带能实际存储的最大数据量是未知的。比如磁带标称容量为50GB，实际可能存储60G、80G、100G的数据，所以无法做到按容量进行告警，只能按空白磁带和过期可覆盖磁带总数进行告警。</li>
+                <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li75831258343">告警阈值设置不能超过已选择磁带数量。</li>
+               </ul>
+              </div>
+             </div></li>
+            <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li172871912143413">功能关闭后，您将无法知道可用磁带数量。建议开启。</li>
+           </ul></td>
+         </tr>
+         <tr id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_row13782619458">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p479365451">告警阈值</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p1779462453"><span style="color:#1A1A1A;">请设置磁带数量，当可用磁带数量小于该值时，将产生告警。</span></p></td>
+         </tr>
+         <tr id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_row2816531134610">
+          <td class="cellrowborder" valign="top" width="34.69%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_p1481683164611">保留范围</p></td>
+          <td class="cellrowborder" valign="top" width="65.31%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 ">
+           <ul id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_ul16601125824717">
+            <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li16601458184710">不保护数据（根据需要循环覆盖磁带）：不保护磁带中的数据，有新的数据写入时，直接覆盖原有数据。选择此保留策略时，请确保当前介质集中至少有两个磁带。</li>
+            <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li96021358174719">永久保留数据：永久保留磁带中的数据。</li>
+            <li id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_li12602185844715">定期保护数据：定期保护磁带中的数据。保护xx天/月/年。例如，设置定期保护数据的时间为10天，那么从对磁带最后一次写数据完成，经过10天后，将磁带标记为空，可以对磁带进行覆盖写。</li>
+           </ul></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li id="hyper_gud_0058__foc_gud_0041_li619273283318"><span>单击<span class="uicontrol" id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_uicontrol1193214611112">“<span id="hyper_gud_0058__foc_gud_0041_zh-cn_topic_0000002164669278_text42337112109">确定</span>”</span>。介质集创建完成后，系统每隔1小时刷新介质集的状态和容量。可能存在介质集的状态与容量与实际不一致的情况，请等待系统刷新。</span></li>
     </ol>
    </div>
   </div>
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="hyper_gud_0055.html">恢复</a>
+     <strong>父主题：</strong> <a href="hyper_gud_0056.html">步骤1：添加归档存储</a>
     </div>
    </div>
   </div>

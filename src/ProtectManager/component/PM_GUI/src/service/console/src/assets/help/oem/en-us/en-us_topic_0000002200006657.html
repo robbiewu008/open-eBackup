@@ -1,0 +1,195 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring One or Multiple Files in a Fileset">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002206377609.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200006657">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring One or Multiple Files in a Fileset</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200006657"></a><a name="EN-US_TOPIC_0000002200006657"></a>
+  <h1 class="topictitle1">Restoring One or Multiple Files in a Fileset</h1>
+  <div>
+   <p>You can perform file-level restoration to quickly restore one or more files in a copy.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p>Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002199964685_uicontrol1888202316279"><b><span id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002199964685_text16882112392716"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002199964685_text13882182372717"><strong>Copy Data</strong></span> &gt; File Systems &gt; Filesets</b></span>.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002199964685_note192321935714">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002199964685_p62332915575">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002199964685_uicontrol35211628145713"><b><span id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002199964685_text15521328105712"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002199964685_text9521152813577"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002199964685_text18417734832"><strong>Bare Metal</strong></span> &gt; Filesets</b></span>.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>You can search for copies by fileset resource or copy. This section uses resources as an example.</span><p></p><p>On the <span class="uicontrol"><b>Resources</b></span> tab page, locate the resource to be restored by resource name and click the name.</p> <p></p></li>
+     <li><span>On the <span class="uicontrol"><b>Copy Data</b></span> area, select the year, month, and day in sequence to search for copies.</span><p></p><p>If <span><img src="en-us_image_0000002200006733.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p> <p></p></li>
+     <li><span>In the row of the target file set copy, choose <strong>More</strong> &gt; <strong>File-level Restoration</strong>.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>Linked files do not support file-level restoration.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>In the fileset copy data, select one or more files or directories.</span><p></p>
+      <ul>
+       <li>For 1.5.0: Select the files to be restored from the directory tree.</li>
+       <li>For 1.6.0 and later versions: Set <strong>File Obtaining Mode</strong>, which can be <strong>Select file paths from the directory tree</strong> or <strong>Enter file paths</strong>.
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <ul>
+           <li>For OceanProtect E1000, if there are more than 10,000 files in the selected directory, the system may time out, preventing you from selecting files or folders to be restored from the directory. In this case, you are advised to manually enter paths. For other models of this product, if there are more than one million files in the selected directory, the system may time out, preventing you from selecting files or folders to be restored from the directory. In this case, you are advised to manually enter paths.</li>
+           <li>When entering a file path, enter a complete file path, for example, <strong id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002164813938_b745510458333">/opt/abc/efg.txt</strong> or <strong id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002164813938_b186591048123315">C:\abc\efg.txt</strong>. If you enter a folder path, for example, <strong id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002164813938_b15108423133414">/opt/abc</strong> or <strong id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002164813938_b13283162543410">C:\abc</strong>, all files in the folder are restored. The file name in the path is case sensitive.</li>
+          </ul>
+         </div>
+        </div></li>
+      </ul> <p></p></li>
+     <li><span>Set file restoration parameters.</span><p></p><p><a href="#EN-US_TOPIC_0000002200006657__table93951625101715">Table 1</a> describes the related parameters.</p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002200006657__table93951625101715"></a><a name="table93951625101715"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200006657__table93951625101715" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>File restoration parameters
+        </caption>
+        <colgroup>
+         <col style="width:23.09%">
+         <col style="width:76.91%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="23.09%" id="mcps1.3.3.2.6.2.2.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="76.91%" id="mcps1.3.3.2.6.2.2.2.3.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>Restore To</p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>Fileset restoration location.</p>
+           <ul>
+            <li><strong>Original location</strong>: Restores data to the original location on the original host.</li>
+            <li><strong>New location</strong>: Restores data to a new location. You need to specify the target host and path for restoration.
+             <div class="note">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002164765674_p17892164110119">If restored files are not displayed in the restoration target location after restoration to a new location in Windows OS, open the folder in Windows OS and choose <strong id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002164765674_b136041111123718">View</strong> &gt; <strong id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002164765674_b1460431153713">Options</strong> to open the <strong id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002164765674_b206049117372">Folder Options</strong> dialog box. Click the <strong id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002164765674_b96041911203716">View</strong> tab and deselect <strong id="EN-US_TOPIC_0000002200006657__en-us_topic_0000002164765674_b126041111113715">Hide protected operating system files (Recommended)</strong>.</p>
+              </div>
+             </div></li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>Location</p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>Location of the file. This parameter is displayed only when data is restored to the original location.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>Target Host</p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>Target host to which data is restored. This parameter is displayed only when data is restored to a new location.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>Target Path</p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>Target path to which data is restored. This parameter is displayed only when data is restored to a new location.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>Overwrite Rule</p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>If a file with the same name exists in the restoration path, you can choose to replace or skip the existing file.</p>
+           <ul>
+            <li><strong>Replace existing files</strong></li>
+            <li><strong>Skip existing files</strong>: The files with the same names are skipped and are not replaced.</li>
+            <li><strong>Only replace the files older than the restoration file</strong>: The latest files with the same names in the target path are retained.
+             <div class="note">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p>For restoration using a hard link file copy, if a file with the same name exists in the restoration path, the overwriting rule supports only <strong>Replace existing files</strong>.</p>
+              </div>
+             </div></li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>Channels</p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>The more the channels, the better the backup performance. However, more memory of the production host will be occupied. Each channel occupies about 200 MB memory.</p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p>The value must range from <strong>1</strong> to <strong>40</strong>. Set the parameter based on the memory usage of the production host.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>Script to Run Before Restoration</p></td>
+          <td class="cellrowborder" rowspan="3" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>You can configure <strong>Script to Run Before Restoration</strong>, <strong>Script to Run upon Restoration Success</strong>, and <strong>Script to Run upon Restoration Failure</strong> based on the actual requirements. When a message indicating that the prerequisite task starts to be executed is displayed during a backup job, the configured script will be executed in the corresponding scenario.</p>
+           <ul>
+            <li>If the non-Windows OS is used, enter the script name, which ends with <strong>.sh</strong>. Ensure that the script has been stored in <span class="filepath"><b>DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty</b></span> in the client installation directory.</li>
+            <li>If the Windows OS is used, enter the script name, which ends with <strong>.bat</strong>. Ensure that the script has been stored in <span class="filepath"><b>DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty</b></span> in the client installation directory.
+             <div class="note" id="EN-US_TOPIC_0000002200006657__en-us_topic_0000001792548340_note64007332505">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p id="EN-US_TOPIC_0000002200006657__en-us_topic_0000001792548340_en-us_topic_0000001792402656_en-us_topic_0000001264099602_p196461512103113">If <span class="uicontrol" id="EN-US_TOPIC_0000002200006657__uicontrol4895744101218"><b><span id="EN-US_TOPIC_0000002200006657__text289518444121">Script to Run upon Restoration Success</span></b></span> is configured, the status of the restoration job is displayed as <span class="uicontrol" id="EN-US_TOPIC_0000002200006657__uicontrol98967449122"><b><span id="EN-US_TOPIC_0000002200006657__text2896184412127">Successful</span></b></span> on the <span id="EN-US_TOPIC_0000002200006657__text6896154491210">product</span> even if the script fails to be executed. Check whether the job details contain information indicating that a post-processing script fails to be executed. If yes, modify the script in a timely manner.</p>
+              </div>
+             </div></li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>Script to Run upon Restoration Success</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>Script to Run upon Restoration Failure</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>For 1.6.0 and later versions: If you select <strong>New location</strong>, you also need to determine whether to select <strong>Retain Original Path</strong>.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul>
+         <li>If <strong>Retain Original Path</strong> is selected, the files will be restored to the target location based on the original paths in copies.</li>
+         <li>If <strong>Retain Original Path</strong> is not selected:
+          <ul>
+           <li>If all the files to be restored are stored under the same directory at the same level, they will be restored to the target location, excluding the directory.</li>
+           <li>If the files to be restored are not stored under the same directory, the system will search for the lowest-leveI common directory of the files during file restoration, and restore the file-related directories under this common directory to the target location.<p>Example: If the original paths of the files to be restored are <strong>folder1/dir1/dir2/test1.txt</strong> and <strong>folder1/dir1/dir3/test2.txt</strong>, the lowest-level common directory is <strong>dir1</strong>, and the target path is <strong>folder2</strong>, the paths after restoration will be <strong>folder2/dir2/test1.txt</strong> and <strong>folder2/dir3/test2.txt</strong>.</p></li>
+          </ul></li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002206377609.html">Performing Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

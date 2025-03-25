@@ -1,0 +1,259 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="恢复Nutanix虚拟机中的文件">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="Nutanix_0079">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>恢复Nutanix虚拟机中的文件</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="Nutanix_0079"></a><a name="Nutanix_0079"></a>
+  <h1 class="topictitle1">恢复Nutanix虚拟机中的文件</h1>
+  <div>
+   <p>当需要恢复虚拟机中的某些文件时，可以通过文件级恢复功能实现。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <ul>
+     <li><span>本产品</span>支持使用备份副本、复制副本（不支持恢复至原位置）进行文件级恢复。</li>
+     <li>支持恢复的<span style="color:#282B33;">Linux文件系统类型为ext 2/3/4、XFS</span>。支持恢复的<span style="color:#282B33;">Windows文件系统类型为NTFS、FAT、FAT32</span>。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>已为待恢复到的目标虚拟机配置业务网络平面IP地址。</li>
+     <li>当目标虚拟机为Windows OS时，请确保目标虚拟机已开启445和138端口。当目标虚拟机为Linux OS时，请确保目标虚拟机已开启22端口。</li>
+     <li>当目标虚拟机为Windows OS时，请确保目标虚拟机已开启CIFS服务，具体操作请参考<a href="https://learn.microsoft.com/zh-cn/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3?tabs=server#how-to-detect-status-enable-and-disable-smb-protocols" target="_blank" rel="noopener noreferrer">Microsoft官方网站</a>。</li>
+     <li>当目标虚拟机为非Windows OS时，请确保目标虚拟机已安装并开启rsync，且rsync版本需为3.2.5及以上。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="Nutanix_0079__nutanix_0078_zh-cn_topic_0000002199964685_uicontrol6416255195613">“<span id="Nutanix_0079__nutanix_0078_zh-cn_topic_0000002199964685_text13416955175611">数据利用</span> &gt; <span id="Nutanix_0079__nutanix_0078_zh-cn_topic_0000002199964685_text4416155185618">副本数据</span> &gt; <span id="Nutanix_0079__nutanix_0078_zh-cn_topic_0000002199964685_text1441655575614">虚拟化</span> &gt; Nutanix”</span>。</span></li>
+     <li><span>以虚拟机维度或以副本维度查找副本，本节以虚拟机维度为例进行说明。</span><p></p><p>在“资源”页签，根据虚拟机名称查找到需要恢复的虚拟机，并单击虚拟机名称。</p> <p></p></li>
+     <li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000002200026301.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>找到要恢复的副本，选择<span class="uicontrol">“<span>更多</span> &gt; <span>文件级恢复</span>”</span>。</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul>
+         <li>如果副本中没有OS，则不能为其建立索引，因此该副本无法进行文件级恢复。</li>
+         <li>备份Nutanix虚拟机时，未写入/etc/fstab文件的挂载点信息存储在内存中，<span>本产品</span>不会备份该内容。因此，不会对该挂载点的文件生成索引，也不支持文件级恢复。如需对新增的文件系统生成索引并支持文件级恢复，请将新增的文件系统挂载点信息写入/etc/fstab。</li>
+         <li>当文件夹或文件名称存在乱码时，不支持文件级恢复。请勿勾选该类型的文件夹或文件，否则恢复失败。</li>
+         <li>当目标虚拟机为Windows OS时，且仅开启了SMBv1服务，文件恢复后的时间为虚拟机的当前时间。</li>
+         <li>链接文件不支持文件级恢复。</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li><span>设置恢复文件的选择方式，并从目录树选择待恢复文件或手动输入待恢复文件的路径。</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="Nutanix_0079__vmware_gud_0083_ul14956124712297">
+         <li id="Nutanix_0079__vmware_gud_0083_li10562105983915">当恢复文件选择方式为“从目录树选择”时，如果当前副本还未创建文件级挂载任务，请单击“创建挂载”，待挂载成功后才支持从目录树选择文件。</li>
+         <li id="Nutanix_0079__vmware_gud_0083_li19956104762918">手动输入文件路径时，请输入文件完整路径，例如：/opt/abc/efg.txt或者C:\abc\efg.txt。当输入文件夹路径时，表示恢复该文件夹下的所有文件，例如：/opt/abc或者C:\abc。路径中的文件名区分大小写。</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li><span>在“恢复配置”区域，选择恢复至“原位置”或“新位置”，并设置恢复参数。</span><p></p>
+      <ul>
+       <li>选择恢复至原位置，即恢复至原虚拟机的原目录。
+        <div class="p">
+         相关参数说明如<a href="#Nutanix_0079__zh-cn_topic_0000001851882629_table9960822181311">表1</a>所示。 
+         <div class="tablenoborder">
+          <a name="Nutanix_0079__zh-cn_topic_0000001851882629_table9960822181311"></a><a name="zh-cn_topic_0000001851882629_table9960822181311"></a>
+          <table cellpadding="4" cellspacing="0" summary="" id="Nutanix_0079__zh-cn_topic_0000001851882629_table9960822181311" frame="border" border="1" rules="all">
+           <caption>
+            <b>表1 </b>原位置恢复参数说明
+           </caption>
+           <colgroup>
+            <col style="width:29.9%">
+            <col style="width:70.1%">
+           </colgroup>
+           <thead align="left">
+            <tr>
+             <th align="left" class="cellrowborder" valign="top" width="29.9%" id="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.1"><p>参数</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="70.1%" id="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.2"><p>说明</p></th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.1 "><p><span>虚拟机IP地址</span></p></td>
+             <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.2 "><p>选择或手动输入已配置的备份网络IP地址。</p>
+              <div class="note">
+               <span class="notetitle"> 说明： </span>
+               <div class="notebody">
+                <ul>
+                 <li>执行文件级别的恢复前，需要事先为虚拟机配置备份网络IP地址。文件级恢复过程中，系统会使用该IP地址连接目标虚拟机进行恢复。</li>
+                 <li>如果系统无法获取计算位置虚拟机的备份网络IP地址，请手动输入IP地址。如果虚拟机IP地址未在列表内，请退出当前页面，在<span class="uicontrol">“<span id="Nutanix_0079__zh-cn_topic_0000002199964685_text14746113419525">保护</span> &gt; 虚拟化 &gt; Nutanix”</span>页面重新扫描虚拟化环境。</li>
+                </ul>
+               </div>
+              </div></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.1 "><p><span>虚拟机用户名</span></p></td>
+             <td class="cellrowborder" rowspan="2" valign="top" width="70.1%" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.2 ">
+              <div class="p">
+               文件级恢复时，目标虚拟机需要验证<span>本产品</span>的登录凭据，输入目标虚拟机的登录用户名及密码。
+               <ul>
+                <li>Windows OS：默认用户名为<strong>Administrator</strong>。</li>
+                <li>Linux OS：默认用户名为<strong>root</strong>。</li>
+               </ul>
+               <div class="note">
+                <span class="notetitle"> 说明： </span>
+                <div class="notebody">
+                 <ul id="Nutanix_0079__vmware_gud_0083_ul871974405518">
+                  <li id="Nutanix_0079__vmware_gud_0083_li8719444175514">该登录用户需要有目标虚拟机待恢复目录的读写权限。</li>
+                  <li id="Nutanix_0079__vmware_gud_0083_li231424655513">恢复后该文件的访问权限与该登录用户一致。</li>
+                 </ul>
+                </div>
+               </div>
+              </div></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.1 "><p><span>虚拟机密码</span></p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.1 "><p><span>覆盖规则</span></p></td>
+             <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.4.2.6.2.1.1.1.2.2.3.1.2 ">
+              <div class="p" id="Nutanix_0079__zh-cn_topic_0000001851882629_p78773497306">
+               当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。
+               <ul id="Nutanix_0079__zh-cn_topic_0000001851882629_ul138776497307">
+                <li id="Nutanix_0079__zh-cn_topic_0000001851882629_li1087714914306"><span id="Nutanix_0079__text4971205644416">直接替换已经存在的文件</span></li>
+                <li id="Nutanix_0079__zh-cn_topic_0000001851882629_li1287717497308"><span id="Nutanix_0079__text11537131511116">忽略已存在的文件</span>，即跳过这些同名文件不替换。</li>
+                <li id="Nutanix_0079__zh-cn_topic_0000001851882629_li68771149143011"><span id="Nutanix_0079__text13482133318440">只替换比恢复文件更旧的文件</span>
+                 <div class="note" id="Nutanix_0079__zh-cn_topic_0000001851882629_note98771049113012">
+                  <span class="notetitle"> 说明： </span>
+                  <div class="notebody">
+                   <p id="Nutanix_0079__zh-cn_topic_0000001851882629_p15877144918305">如果目标虚拟机的同名文件拒绝访问，则在替换文件进行恢复时会恢复失败。</p>
+                  </div>
+                 </div></li>
+               </ul>
+              </div></td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div></li>
+       <li>选择恢复至新位置，即恢复至指定虚拟机。<p>相关参数说明如<a href="#Nutanix_0079__zh-cn_topic_0000001851882629_table14691181871520">表2</a>所示。</p>
+        <div class="tablenoborder">
+         <a name="Nutanix_0079__zh-cn_topic_0000001851882629_table14691181871520"></a><a name="zh-cn_topic_0000001851882629_table14691181871520"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="Nutanix_0079__zh-cn_topic_0000001851882629_table14691181871520" frame="border" border="1" rules="all">
+          <caption>
+           <b>表2 </b>新位置恢复参数说明
+          </caption>
+          <colgroup>
+           <col style="width:22.75%">
+           <col style="width:77.25%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="22.75%" id="mcps1.3.4.2.6.2.1.2.2.2.3.1.1"><p>参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="77.25%" id="mcps1.3.4.2.6.2.1.2.2.2.3.1.2"><p>说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>目标计算位置</span></p></td>
+            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 ">
+             <div class="p">
+              选择恢复到的目标计算资源。
+              <div class="note">
+               <span class="notetitle"> 说明： </span>
+               <div class="notebody">
+                <ul>
+                 <li>指定虚拟机为Windows OS时，恢复到的目录与文件的源目录一致，如果虚拟机中不存在相应的盘符，则恢复失败。如：文件所在路径为D:\a\b.txt，则在指定虚拟机的D盘下新建a目录，再进行文件恢复，如果指定虚拟机不存在D盘，则恢复失败。</li>
+                 <li>指定虚拟机为Linux OS时，恢复到的目录与文件的源目录一致，恢复时在指定虚拟机中新建相应的目录，再进行文件恢复。</li>
+                </ul>
+               </div>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>目标路径</span></p></td>
+            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>设置文件恢复至目标虚拟机下的路径。</p>
+             <div class="note">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <ul>
+                <li><span style="color:#1A1A1A;">如果不输入目标路径，则按已选择文件的原路径恢复至目标虚拟机。</span></li>
+                <li><span style="color:#1A1A1A;">目标虚拟机为Windows OS时，如果虚拟机中不存在目标路径中相应的盘符，则恢复失败。</span></li>
+               </ul>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>虚拟机IP地址</span></p></td>
+            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>选择或填写已配置的IP地址。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>虚拟机用户名</span></p></td>
+            <td class="cellrowborder" rowspan="2" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 ">
+             <div class="p">
+              文件级恢复时，目标虚拟机需要验证<span id="Nutanix_0079__cnware_00071_cnware_00071_text15868524164815">本产品</span>的登录凭据，输入目标虚拟机的登录用户名及密码。
+              <ul id="Nutanix_0079__cnware_00071_cnware_00071_ul119609220135">
+               <li id="Nutanix_0079__cnware_00071_cnware_00071_li796017225136">Windows OS：默认用户名为<strong id="Nutanix_0079__cnware_00071_cnware_00071_b2960522131311">Administrator</strong>。</li>
+               <li id="Nutanix_0079__cnware_00071_cnware_00071_li1496012225130">Linux OS：默认用户名为<strong id="Nutanix_0079__cnware_00071_cnware_00071_b1096019222138">root</strong>。</li>
+              </ul>
+              <div class="note" id="Nutanix_0079__cnware_00071_cnware_00071_note10319381535">
+               <span class="notetitle"> 说明： </span>
+               <div class="notebody">
+                <ul id="Nutanix_0079__cnware_00071_cnware_00071_vmware_gud_0083_ul871974405518">
+                 <li id="Nutanix_0079__cnware_00071_cnware_00071_vmware_gud_0083_li8719444175514">该登录用户需要有目标虚拟机待恢复目录的读写权限。</li>
+                 <li id="Nutanix_0079__cnware_00071_cnware_00071_vmware_gud_0083_li231424655513">恢复后该文件的访问权限与该登录用户一致。</li>
+                </ul>
+               </div>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>虚拟机密码</span></p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="22.75%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>覆盖规则</span></p></td>
+            <td class="cellrowborder" valign="top" width="77.25%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 ">
+             <div class="p">
+              当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。
+              <ul id="Nutanix_0079__nutanix_0079_zh-cn_topic_0000001851882629_ul138776497307">
+               <li id="Nutanix_0079__nutanix_0079_zh-cn_topic_0000001851882629_li1087714914306"><span id="Nutanix_0079__nutanix_0079_text4971205644416">直接替换已经存在的文件</span></li>
+               <li id="Nutanix_0079__nutanix_0079_zh-cn_topic_0000001851882629_li1287717497308"><span id="Nutanix_0079__nutanix_0079_text11537131511116">忽略已存在的文件</span>，即跳过这些同名文件不替换。</li>
+               <li id="Nutanix_0079__nutanix_0079_zh-cn_topic_0000001851882629_li68771149143011"><span id="Nutanix_0079__nutanix_0079_text13482133318440">只替换比恢复文件更旧的文件</span>
+                <div class="note" id="Nutanix_0079__nutanix_0079_zh-cn_topic_0000001851882629_note98771049113012">
+                 <span class="notetitle"> 说明： </span>
+                 <div class="notebody">
+                  <p id="Nutanix_0079__nutanix_0079_zh-cn_topic_0000001851882629_p15877144918305">如果目标虚拟机的同名文件拒绝访问，则在替换文件进行恢复时会恢复失败。</p>
+                 </div>
+                </div></li>
+              </ul>
+             </div></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ul> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>测试</span>”</span>，确保<span style="color:#3C4458;">恢复的目标虚拟机与</span><span style="color:#3C4458;">本产品</span>网络连接正常。</span></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

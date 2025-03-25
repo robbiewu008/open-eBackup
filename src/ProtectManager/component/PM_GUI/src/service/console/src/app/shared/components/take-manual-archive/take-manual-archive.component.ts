@@ -23,6 +23,7 @@ import {
   MediaSetApiService,
   QosService,
   RetentionType,
+  RouterUrl,
   StoragesApiService
 } from 'app/shared';
 import { ArchiveService } from 'app/shared/api/services';
@@ -105,6 +106,8 @@ export class TakeManualArchiveComponent implements OnInit {
   driverCountErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 32])
   });
+
+  ratePolicyRouterUrl = RouterUrl.ProtectionLimitRatePolicy;
 
   constructor(
     private fb: FormBuilder,

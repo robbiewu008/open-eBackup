@@ -93,7 +93,7 @@ export class GeneralDatabaseRestoreComponent implements OnInit {
       : {};
     const type = JSON.parse(this.rowCopy.resource_properties).extendInfo
       ?.databaseTypeDisplay;
-    if (type.indexOf('Gbase') !== -1) {
+    if (type.indexOf('GBase 8a') !== -1) {
       this.isGbase = true;
     }
     this.initForm();
@@ -244,7 +244,7 @@ export class GeneralDatabaseRestoreComponent implements OnInit {
             ','
           );
           resource = filter(resource, item => {
-            return !includes(relateIp, item.environment.uuid);
+            return includes(relateIp, item.environment.uuid);
           });
         }
         each(resource, item => {

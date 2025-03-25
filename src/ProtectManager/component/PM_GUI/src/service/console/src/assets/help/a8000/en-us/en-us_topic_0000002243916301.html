@@ -1,0 +1,59 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="After the System Disk of a FusionCompute VM Is Restored to a New VM, the Target VM Fails to Be Started">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200007065.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002243916301">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>After the System Disk of a FusionCompute VM Is Restored to a New VM, the Target VM Fails to Be Started</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002243916301"></a><a name="EN-US_TOPIC_0000002243916301"></a>
+
+<h1 class="topictitle1">After the System Disk of a FusionCompute VM Is Restored to a New VM, the Target VM Fails to Be Started</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>After the system disk of a FusionCompute VM is restored to a new VM, the target VM, upon startup, enters the <strong>Boot Manager</strong> page and cannot be started using any boot option.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Cause</h4><p>When the system disk of a VM is restored to a new VM that runs a different OS or OS version, the boot option of the source FusionCompute VM is BIOS, but that of the target VM can only be UEFI.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Troubleshooting</h4><p>The following operations use FusionCompute 8.6.0 as an example. The GUI may vary with versions.</p>
+<ol><li><span>Log in to FusionCompute using a browser.</span><p><p id="EN-US_TOPIC_0000002243916301__en-us_topic_0000002164606210_p6381515018">Login address: <strong id="EN-US_TOPIC_0000002243916301__en-us_topic_0000002164606210_b65373179016">https://</strong><em id="EN-US_TOPIC_0000002243916301__en-us_topic_0000002164606210_i7538817902">Floating IP address of the VRM node of FusionCompute</em><strong id="EN-US_TOPIC_0000002243916301__en-us_topic_0000002164606210_b1053891716013">:8443</strong></p>
+</p></li><li><span>In the left navigation tree, click <span><img src="en-us_image_0000002208799864.png"></span>.</span></li><li><span>In the navigation tree under <strong>Resource Pools</strong>, select the corresponding VM.</span></li><li><span>On the <strong>Configuration</strong> tab page, choose <strong>Management</strong> &gt; <strong>Options</strong> &gt; <strong>Boot Firmware</strong> to view the <strong>Boot Firmware</strong> configuration.</span><p><p>If the <strong>Boot Firmware</strong> options of the source VM and target VM are different, perform VM restoration.</p>
+</p></li></ol>
+</div>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200007065.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

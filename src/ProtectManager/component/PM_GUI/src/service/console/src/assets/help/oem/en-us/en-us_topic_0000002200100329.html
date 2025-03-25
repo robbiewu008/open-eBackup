@@ -1,0 +1,63 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="After a VM Disk Is Overwritten for Restoration, Service Data Is Abnormal After the Restoration Is Complete">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164614056.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200100329">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>After a VM Disk Is Overwritten for Restoration, Service Data Is Abnormal After the Restoration Is Complete</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200100329"></a><a name="EN-US_TOPIC_0000002200100329"></a>
+  <h1 class="topictitle1">After a VM Disk Is Overwritten for Restoration, Service Data Is Abnormal After the Restoration Is Complete</h1>
+  <div>
+   <div class="section" id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_section152112481487">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_p1653019539483">After a VM disk is overwritten for restoration, service data is abnormal after the restoration is complete.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_section21962215112">
+    <h4 class="sectiontitle">Possible Cause</h4>
+    <p id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_p1850394411618">When a disk is overwritten for restoration, the bus type of the original disk is different from that of the target disk. As a result, the disk device name changes after the restoration. For example, after data of a disk using the SCSI bus type is restored to a disk using the VIRTIO bus type, disk device <span class="parmvalue" id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_parmvalue39131814201217"><b>/dev/sdb</b></span> changes to <span class="parmvalue" id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_parmvalue1457481715129"><b>/dev/vdb</b></span>. As a result, the service data that references the original disk device name is abnormal.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_section12542145825413">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ul id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_ul2712145841610">
+     <li id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_li1762615501713">Method 1: Restore the entire VM.</li>
+     <li id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_li164261326152515">Method 2: Update the name of the disk device used by the service.<p id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_p1396122892510"><a name="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_li164261326152515"></a><a name="en-us_topic_0000002164606242_li164261326152515"></a>For example, in the <span class="filepath" id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_filepath125431214172511"><b>/etc/fstab</b></span> configuration file, the name of the originally mounted disk is <span class="parmvalue" id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_parmvalue16543914142513"><b>/dev/sdb</b></span>. After the restoration, change the name to <span class="parmvalue" id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_parmvalue3543614192515"><b>/dev/vdb</b></span>.</p> <p id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_p14566171716255"><span><img id="EN-US_TOPIC_0000002200100329__en-us_topic_0000002164606242_image183281119255" src="en-us_image_0000002164766186.png"></span></p></li>
+    </ul>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164614056.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -20,33 +20,38 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="关于即时挂载">
+<meta name="DC.Title" content="归档卷复制副本">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="volume_0046.html">
+<meta name="DC.Relation" scheme="URI" content="volume_0039.html">
+<meta name="DC.Relation" scheme="URI" content="volume_0048.html">
+<meta name="DC.Relation" scheme="URI" content="volume_0049.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="volume_0047">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>关于即时挂载</title>
+<title>归档卷复制副本</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="volume_0047"></a><a name="volume_0047"></a>
 
-<h1 class="topictitle1">关于即时挂载</h1>
-<div><p><span id="volume_0047__tdsql_gud_049_text10686121017113">OceanProtect</span>支持即时挂载功能，通过将备份副本挂载给使用数据的主机，达到可立即恢复或访问备份副本数据的效果。即时挂载与即时恢复的主要区别在于：即时挂载从副本启动数据库后，系统不会自动迁移数据至目标数据库，且挂载后生成挂载副本。用户如需迁移数据至目标平台可以选择即时恢复方式或即时挂载后在<span id="volume_0047__tdsql_gud_049_text1838510319168">OceanProtect</span>管理界面手动迁移数据。</p>
-<div class="section"><h4 class="sectiontitle">应用场景</h4><ul id="volume_0047__tdsql_gud_049_zh-cn_topic_0000001337228478_zh-cn_topic_0000001170622244_ul1460958114114"><li id="volume_0047__tdsql_gud_049_zh-cn_topic_0000001337228478_zh-cn_topic_0000001170622244_li1238219114583">开发测试数据验证<p id="volume_0047__tdsql_gud_049_zh-cn_topic_0000001337228478_zh-cn_topic_0000001170622244_p1226325701112"><a name="volume_0047__tdsql_gud_049_zh-cn_topic_0000001337228478_zh-cn_topic_0000001170622244_li1238219114583"></a><a name="tdsql_gud_049_zh-cn_topic_0000001337228478_zh-cn_topic_0000001170622244_li1238219114583"></a>快速从备份副本启动数据库，在该环境中运行测试脚本、验证应用程序等。</p>
-</li><li id="volume_0047__tdsql_gud_049_zh-cn_topic_0000001337228478_zh-cn_topic_0000001170622244_li6225113913215">分钟级恢复<p id="volume_0047__tdsql_gud_049_zh-cn_topic_0000001337228478_zh-cn_topic_0000001170622244_p515213131296"><a name="volume_0047__tdsql_gud_049_zh-cn_topic_0000001337228478_zh-cn_topic_0000001170622244_li6225113913215"></a><a name="tdsql_gud_049_zh-cn_topic_0000001337228478_zh-cn_topic_0000001170622244_li6225113913215"></a>当生产主机宕机时，您可以从备份副本启动数据库，临时使用该数据库替代生产主机直到生产主机重新开机，减少业务中断时间。</p>
-</li></ul>
-</div>
+<h1 class="topictitle1">归档卷复制副本</h1>
+<div><p>副本复制到目标集群后，如果您需要长期保留目标集群的复制副本，可以将复制副本归档到归档存储。</p>
 </div>
 <div>
+<ul class="ullinks">
+<li class="ulchildlink"><strong><a href="volume_0048.html">步骤1：创建复制副本归档SLA</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="volume_0049.html">步骤2：创建复制副本周期性归档</a></strong><br>
+</li>
+</ul>
+
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="volume_0046.html">即时挂载</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="volume_0039.html">归档</a></div>
 </div>
 </div>
 

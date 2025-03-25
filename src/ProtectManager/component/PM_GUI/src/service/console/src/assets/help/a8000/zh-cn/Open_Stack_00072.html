@@ -1,0 +1,67 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复OpenStack云服务器时，客户端所在主机长时间故障导致恢复任务失败">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="Open_Stack_00069.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="Open_Stack_00072">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复OpenStack云服务器时，客户端所在主机长时间故障导致恢复任务失败</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="Open_Stack_00072"></a><a name="Open_Stack_00072"></a>
+
+<h1 class="topictitle1">恢复OpenStack云服务器时，客户端所在主机长时间故障导致恢复任务失败</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>客户端所在主机在执行恢复OpenStack云服务器过程中，出现了故障或下电，并且5分钟内没有从故障中恢复或上电，导致恢复任务失败，并且OpenStack云服务器磁盘丢失。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>客户端所在主机在恢复云磁盘时，会先将待恢复的云磁盘从云服务器卸载，并挂载至客户端所在主机。恢复过程中，客户端所在主机故障或下电，并且无其他可用主机接管任务时，恢复任务失败，并且出现OpenStack云服务器磁盘丢失的情况。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li><span>使用PuTTY，以<strong>fsp</strong>账号通过管理IP地址登录任一OpenStack节点。</span></li><li><span>执行以下命令切换到root账号。</span><p><pre class="screen">su - root</pre>
+</p></li><li><span>执行<strong>source set_env</strong>命令导入环境变量，选择“openstack environment variable of cloud_admin (keystone v3)”，并输入cloud_admin的密码（密码从环境管理员处获取）。</span></li><li id="Open_Stack_00072__li122355914818"><a name="Open_Stack_00072__li122355914818"></a><a name="li122355914818"></a><span>执行以下命令查看当前云磁盘挂载的主机ID（即客户端所在主机）。</span><p><pre class="screen">cinder show<em> volume-id</em></pre>
+<p><em>volume-id</em>为上述描述中丢失的云磁盘，可以在恢复任务中查看其ID。</p>
+<p>回显中<span class="uicontrol">“attached_servers”</span>即为要查找的客户端所在主机ID。</p>
+</p></li><li><span>执行以下命令将该云磁盘从客户端所在主机上卸载。</span><p><pre class="screen">nova volume-detach <em style="color:#4D5156;">server-id volume-id</em></pre>
+<p><em style="color:#4D5156;">server-id</em><span style="color:#4D5156;">即为</span><a href="#Open_Stack_00072__li122355914818">4</a><span style="color:#4D5156;">中查询到的客户端所在主机ID。</span></p>
+</p></li><li><span>执行以下命令将该云磁盘重新挂载至云服务器。</span><p><pre class="screen">nova volume-attach <em style="color:#4D5156;">server-id volume-id</em></pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>当挂载系统磁盘至云服务器时，请指定盘符为/dev/vda，避免开机时找不到系统盘。执行以下命令挂载系统盘：</p>
+<pre class="screen">nova volume-attach <em style="color:#4D5156;">server-id volume-id</em> /dev/vda</pre>
+</div></div>
+</p></li><li><span>重新执行恢复任务。</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">建议</h4><p>在创建恢复任务时，建议指定多个客户端所在主机执行恢复任务，其中一个客户端所在主机故障时，其他客户端所在主机可接管恢复任务。另外，客户端所在主机故障时，如果短时间（5分钟）内可以恢复，系统将进行任务重做或续作以确保恢复任务成功执行。</p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="Open_Stack_00069.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

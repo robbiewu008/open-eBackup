@@ -1,0 +1,93 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring Hyper-V VMs">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200100381.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164773708">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring Hyper-V VMs</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164773708"></a><a name="EN-US_TOPIC_0000002164773708"></a>
+
+<h1 class="topictitle1">Restoring Hyper-V VMs</h1>
+<div><p>This section describes how to restore an entire VM that has been backed up to the original location or a new location.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><div class="p">The <span>OceanProtect</span> allows you to restore VMs to the original or a new location using backup copies or replication copies (restoration to the original location is not supported).<ul><li>Restoring to the original location<p>If you restore a VM to the original location, the system creates a VM in the path of the original VM (that is, the Hyper-V server to which the original VM belongs) and fully restores the backup data to the new VM.</p>
+</li><li>Restoring to a new location<p>If you restore a VM to a new location, the system performs full restoration and restores the backup data to a specified new path. That is, the user specifies the Hyper-V server where the new VM is located and the corresponding path.</p>
+</li></ul>
+</div>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="EN-US_TOPIC_0000002164773708__li0198134611381"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164773708__en-us_topic_0000002199964685_uicontrol66667531188"><b><span id="EN-US_TOPIC_0000002164773708__en-us_topic_0000002199964685_text86661453985"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164773708__en-us_topic_0000002199964685_text26661531582"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002164773708__en-us_topic_0000002199964685_text56671153582"><strong>Virtualization</strong></span> &gt; Hyper-V</b></span>.</span></li><li><span>You can search for a copy by VM or copy. This section uses a VM as an example.</span><p><p>Click <strong>Resources</strong> to switch to the corresponding page, search for the VM to be restored by name, and click the VM name.</p>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> and select the year, month, and day in sequence to find the copy.</span><p><p>If <span><img src="en-us_image_0000002164614268.png"></span> is displayed below a month or day, a copy is generated in the month or on the day.</p>
+</p></li><li><span>In the row of the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; Restore</b></span>.</span></li><li><span>Restore a VM to the original location or a new location.</span><p><ul><li>Restore the VM to the original location.<ol type="a"><li>Select <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span>.</li><li>Set a name for the new VM.</li><li id="EN-US_TOPIC_0000002164773708__li1221013597276">Select whether to enable the network adapter of the VM after the restoration.<ul id="EN-US_TOPIC_0000002164773708__ul10473512087"><li id="EN-US_TOPIC_0000002164773708__li64731812984">Disabled: All network adapters of the VM are disconnected after the restoration. To remotely log in to the VM, you need to set the connection status of the network adapters on the Hyper-V management page after the restoration.</li><li id="EN-US_TOPIC_0000002164773708__li587672511810">Enabled: After this option is enabled, if the original VM of the copy still exists, the new VM may have a network conflict with the original VM after the restoration. Check the network of the new VM after the restoration.</li></ul>
+</li><li id="EN-US_TOPIC_0000002164773708__li1964792011356">Select whether to automatically start the VM after the restoration.</li><li>Select whether to delete the original VM after the restoration is successful.<p>If this option is enabled, the original VM will be deleted after the VM is successfully restored. Otherwise, the original VM will be retained.</p>
+</li><li id="EN-US_TOPIC_0000002164773708__li1372711219491">Click <span class="uicontrol" id="EN-US_TOPIC_0000002164773708__uicontrol165325618248"><b>OK</b></span>.</li></ol>
+</li><li>Restore the VM to a new location.<ol type="a"><li>Select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</li><li>Set a name for the new VM.</li><li>Set information about a new location to which the VM is restored.
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" frame="border" border="1" rules="all"><caption><b>Table 1 </b>New location information</caption><colgroup><col style="width:29.87%"><col style="width:70.13000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.3.2.5.2.1.2.1.3.1.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.3.2.5.2.1.2.1.3.1.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.3.2.5.2.1.2.1.3.1.2.3.1.1 "><p><span><strong>Compute Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.3.2.5.2.1.2.1.3.1.2.3.1.2 "><p>Compute resources used by the VM after being restored.</p>
+<p>Select a Hyper-V server as the target host.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>The Hyper-V version of the target host cannot be earlier than that of the original Hyper-V.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.3.2.5.2.1.2.1.3.1.2.3.1.1 "><p><span><strong>Storage Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.3.2.5.2.1.2.1.3.1.2.3.1.2 "><p>File path on a Hyper-V server to which VM configuration files and disk data are restored.</p>
+<ul><li><span><strong>Different Datastores</strong></span><ul><li><span><strong>VM Profile</strong></span>: path of the VM configuration files on the Hyper-V server.</li><li><span><strong>VM Disk Files</strong></span>: path of the virtual disk on the Hyper-V server.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>To improve data security, you can store the VM configuration files on an independent datastore and disk data on another datastore.</p>
+</div></div>
+</li></ul>
+</li><li><span><strong>Same Datastore</strong></span><p>The VM configuration files and all virtual disk data are stored in the same path on the Hyper-V server.</p>
+</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Select whether to enable the network adapter of the VM after the restoration.<ul id="EN-US_TOPIC_0000002164773708__en-us_topic_0000002164773708_ul10473512087"><li id="EN-US_TOPIC_0000002164773708__en-us_topic_0000002164773708_li64731812984">Disabled: All network adapters of the VM are disconnected after the restoration. To remotely log in to the VM, you need to set the connection status of the network adapters on the Hyper-V management page after the restoration.</li><li id="EN-US_TOPIC_0000002164773708__en-us_topic_0000002164773708_li587672511810">Enabled: After this option is enabled, if the original VM of the copy still exists, the new VM may have a network conflict with the original VM after the restoration. Check the network of the new VM after the restoration.</li></ul>
+</li><li id="EN-US_TOPIC_0000002164773708__li12299104424012">Select whether to automatically start the VM after the restoration.</li><li>Click <span class="uicontrol" id="EN-US_TOPIC_0000002164773708__en-us_topic_0000002164773708_uicontrol165325618248"><b>OK</b></span>.</li></ol>
+</li></ul>
+</p></li><li><span>Click <span class="uicontrol"><b>Close</b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200100381.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="hdfs_00011.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -42,17 +42,18 @@
 <div class="section" id="hdfs_00014__section10758914153313"><a name="hdfs_00014__section10758914153313"></a><a name="section10758914153313"></a><h4 class="sectiontitle">前提条件</h4><p>已获取HDFS集群中的<span class="filepath">“hdfs-site.xml”</span>和<span class="filepath">“core-site.xml”</span>文件，获取方法可参考以下步骤：</p>
 <ul><li>大数据平台为CDH（Cloudera's Distribution including Apache Hadoop）<p>本节以<span style="color:#1C2429;">Cloudera Express 6.3.1</span>版本为例说明，不同版本的操作可能存在差异，可查看CDH产品文档进行操作。</p>
 <ol><li>使用浏览器，登录<span style="color:#1C2429;">Cloudera</span> Manager。</li><li>选择<span class="uicontrol">“群集 &gt; HDFS”</span>。</li><li>单击HDFS右侧的<span class="uicontrol">“操作 &gt; 下载客户端配置”</span>。</li><li>在下载得到的压缩包中获取<span class="filepath">“hdfs-site.xml”</span>和<span class="filepath">“core-site.xml”</span>文件。</li></ol>
-</li><li>大数据平台为FusionInsight<p>本节以<span style="color:#1C2429;">FusionInsight 6.5.1</span>版本为例说明，不同版本的操作可能存在差异，可查看FusionInsight产品文档进行操作。</p>
-<ol><li>使用浏览器，登录FusionInsight Manager。</li><li>选择<span class="uicontrol">“Cluster &gt; HDFS”</span>。</li><li>在页面右上方选择<span class="uicontrol">“More &gt; Download Client”</span>。</li><li>在下载得到的压缩包中获取<span class="filepath">“hdfs-site.xml”</span>和<span class="filepath">“core-site.xml”</span>文件。</li></ol>
+</li><li id="hdfs_00014__li13251112284317">大数据平台为MRS<p id="hdfs_00014__zh-cn_topic_0000001792557040_p484063714327"><a name="hdfs_00014__li13251112284317"></a><a name="li13251112284317"></a>本节以<span style="color:#1C2429;">FusionInsight Manager 8.2.0</span>版本为例说明，不同版本的操作可能存在差异，可查看对应大数据平台的产品文档进行操作。</p>
+<ol id="hdfs_00014__zh-cn_topic_0000001792557040_ol1333416207133"><li id="hdfs_00014__zh-cn_topic_0000001792557040_li524610256296">使用浏览器，登录FusionInsight Manager。</li><li id="hdfs_00014__zh-cn_topic_0000001792557040_li109541923132418">选择“集群 &gt; <em id="hdfs_00014__zh-cn_topic_0000001792557040_i59334573343">待操作集群的名称</em> &gt; 概览 &gt; 更多 &gt; 下载客户端”，继续在当前页面选择“仅配置文件”下载HDFS客户端配置文件压缩包。</li><li id="hdfs_00014__zh-cn_topic_0000001792557040_li175021213303">解压下载得到的压缩包，获取以下文件：<ul id="hdfs_00014__zh-cn_topic_0000001792557040_ul34711216305"><li id="hdfs_00014__zh-cn_topic_0000001792557040_li1647191218303">../HDFS/config/hdfs-site.xml文件</li><li id="hdfs_00014__zh-cn_topic_0000001792557040_li103771816311">../HDFS/config/core-site.xml文件</li></ul>
+</li></ol>
 </li><li>大数据平台为星环大数据（TDH）<p>本节以TDH 8.0.2版本为例说明，不同版本的操作可能存在差异，可查看Transwarp Data Hub产品文档进行操作。</p>
-<ol><li>使用浏览器，登录Transwarp Data Hub。</li><li>选择“仪表盘 &gt; 集群”，单击界面中的HDFS集群进入集群页面。</li><li>在HDFS集群页面右上方选择<span><img src="zh-cn_image_0000001839276425.png"></span>图标， 单击“下载服务配置”。</li><li>在下载得到的压缩包中获取“hdfs-site.xml”和“core-site.xml”文件。</li><li>删除core-site.xml文件中的以下内容。</li></ol>
+<ol><li>使用浏览器，登录Transwarp Data Hub。</li><li>选择“仪表盘 &gt; 集群”，单击界面中的HDFS集群进入集群页面。</li><li>在HDFS集群页面右上方选择<span><img src="zh-cn_image_0000002164654594.png"></span>图标， 单击“下载服务配置”。</li><li>在下载得到的压缩包中获取“hdfs-site.xml”和“core-site.xml”文件。</li><li>删除core-site.xml文件中的以下内容。</li></ol>
 <pre class="screen">&lt;property&gt;
     &lt;name&gt;hadoop.security.group.mapping.ldap.bind.password.file&lt;/name&gt;
     &lt;value&gt;/etc/hdfs1/conf/ldap-conn-pass.txt&lt;/value&gt;
 &lt;/property&gt;</pre>
 </li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="hdfs_00014__zh-cn_topic_0000001249935107_li1368863015381"><span>选择<span class="uicontrol" id="hdfs_00014__zh-cn_topic_0000001839142377_uicontrol1225102113916">“<span id="hdfs_00014__zh-cn_topic_0000001839142377_text1125113213390">保护</span> &gt; 大数据 &gt; HDFS”</span>。</span></li><li><span>在<span class="uicontrol">“<span>集群</span>”</span>页面，单击<span class="uicontrol">“<span>注册</span>”</span>，注册HDFS集群。</span><p><p>HDFS集群注册信息如<a href="#hdfs_00014__table164432003147">表1</a>所示。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="hdfs_00014__zh-cn_topic_0000001249935107_li1368863015381"><span>选择<span class="uicontrol" id="hdfs_00014__zh-cn_topic_0000002199964685_uicontrol1225102113916">“<span id="hdfs_00014__zh-cn_topic_0000002199964685_text1125113213390">保护</span> &gt; 大数据 &gt; HDFS”</span>。</span></li><li><span>在<span class="uicontrol">“<span>集群</span>”</span>页面，单击<span class="uicontrol">“<span>注册</span>”</span>，注册HDFS集群。</span><p><p>HDFS集群注册信息如<a href="#hdfs_00014__table164432003147">表1</a>所示。</p>
 
 <div class="tablenoborder"><a name="hdfs_00014__table164432003147"></a><a name="table164432003147"></a><table cellpadding="4" cellspacing="0" summary="" id="hdfs_00014__table164432003147" frame="border" border="1" rules="all"><caption><b>表1 </b>HDFS集群注册信息</caption><colgroup><col style="width:25.03%"><col style="width:74.97%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.03%" id="mcps1.3.3.2.2.2.2.2.3.1.1"><p>参数</p>
 </th>
@@ -69,7 +70,7 @@
 </td>
 <td class="cellrowborder" rowspan="2" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>将<a href="#hdfs_00014__section10758914153313">前提条件</a>中已获取到的<span class="filepath">“hdfs-site.xml”</span>和<span class="filepath">“core-site.xml”</span>文件上传至管理界面。</p>
 <p>该文件用于配置HDFS集群的相关信息，如集群地址、端口等。</p>
-<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>大数据集群仅支持配置IPv4地址，不支持IPv6地址。请您注意检查配置文件中的配置是否正确。</li><li>上传至管理界面的配置文件信息必须与大数据集群上的配置文件信息一致，请勿在本地对其配置信息进行修改。</li></ul>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>大数据集群仅支持配置IPv4地址，不支持IPv6地址。请您注意检查配置文件中的配置是否正确。</li><li>上传至管理界面的配置文件信息必须与大数据集群上的配置文件信息一致，请勿在本地对其配置信息进行修改。</li><li>不允许将已添加的HDFS集群修改为另一个HDFS集群，否则已创建的文件集会失效。</li></ul>
 </div></div>
 </td>
 </tr>
@@ -85,7 +86,7 @@
 <tr><td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span>用户名</span></p>
 </td>
 <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>当<span class="uicontrol">“<span>认证模式</span>”</span>选择<span class="uicontrol">“<span>Simple认证</span>”</span>时，才需要配置该参数。</p>
-<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>输入的用户名需要对要访问的资源具备读写权限。</li><li>如果恢复HDFS文件时要同时恢复HDFS ACL信息，那么此处注册的主体名需要具备HDFS超级用户权限。如：您可以在大数据平台将主体名加入supergroup中，使其具备HDFS超级用户权限。</li></ul>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>配置为大数据平台人机用户名称。</li><li>输入的用户需要对要访问的资源具备读、写和执行权限。</li><li>如果恢复HDFS文件时要同时恢复HDFS ACL信息，那么此处注册的主体名需要具备HDFS超级用户权限。如：您可以在大数据平台将主体名加入supergroup中，使其具备HDFS超级用户权限。</li></ul>
 </div></div>
 </td>
 </tr>
@@ -95,10 +96,10 @@
 <p>选择已创建的Kerberos认证。首次注册HDFS集群时，请单击<span class="uicontrol">“创建”</span>，配置Kerberos认证参数。具体参数说明如<a href="#hdfs_00014__table93413354118">表2</a>。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span>代理主机</span></p>
+<tr><td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p>客户端</p>
 </td>
-<td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>选择执行数据保护的代理主机。</p>
-<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>不允许将同一台代理主机分配给多个配置了不同Kerberos认证的大数据集群或不同认证模式的大数据集群，否则会导致备份/恢复任务失败。</p>
+<td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>选择执行数据保护的客户端所在主机。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>不允许将同一台客户端所在主机分配给多个配置了不同Kerberos认证的大数据集群或不同认证模式的大数据集群，否则会导致备份/恢复任务失败。</p>
 </div></div>
 </td>
 </tr>
@@ -129,7 +130,7 @@
 <tr id="hdfs_00014__row83417352118"><td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p id="hdfs_00014__p143513352112"><span id="hdfs_00014__text13420328134312">主体名</span></p>
 </td>
 <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p id="hdfs_00014__p16354357116">Kerberos认证的主体名。</p>
-<div class="note" id="hdfs_00014__note1997805374919"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="hdfs_00014__ul53571451001"><li id="hdfs_00014__li133577516015">配置为Kerberos服务器上已配置的主体名，并且该主体名需要对要访问的资源具备读写权限。</li><li id="hdfs_00014__li17687183713589">如果恢复HDFS文件时要同时恢复HDFS ACL信息，那么此处注册的主体名需要具备HDFS超级用户权限。举例如下：<ul id="hdfs_00014__ul10684153715580"><li id="hdfs_00014__li176852373586">如果大数据平台为FusionInsight或CDH，您可以在大数据平台将主体名加入supergroup中，使其具备HDFS超级用户权限。</li><li id="hdfs_00014__li986445365918">如果大数据平台为TDH，您可以在大数据平台为主体名添加admin角色，使其具备HDFS超级用户权限。</li></ul>
+<div class="note" id="hdfs_00014__note1997805374919"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="hdfs_00014__ul53571451001"><li id="hdfs_00014__li133577516015">配置为大数据平台人机用户名称，并且该用户需要对要访问的资源具备读、写和执行权限。</li><li id="hdfs_00014__li17687183713589">如果恢复HDFS文件时要同时恢复HDFS ACL信息，那么此处注册的主体名需要具备HDFS超级用户权限。举例如下：<ul id="hdfs_00014__ul10684153715580"><li id="hdfs_00014__li176852373586">如果大数据平台为FusionInsight或CDH，您可以在大数据平台将主体名加入supergroup中，使其具备HDFS超级用户权限。</li><li id="hdfs_00014__li986445365918">如果大数据平台为TDH，您可以在大数据平台为主体名添加admin角色，使其具备HDFS超级用户权限。</li></ul>
 </li></ul>
 </div></div>
 </td>
@@ -142,7 +143,8 @@
 </tr>
 <tr id="hdfs_00014__row183523512112"><td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p id="hdfs_00014__p15351835151118"><span id="hdfs_00014__text114821547144418">配置文件</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p id="hdfs_00014__p1958995015013">Kerberos认证过程中使用的<span class="filepath" id="hdfs_00014__filepath1558985065011">“.conf”</span>配置文件（如：krb5.conf）。请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img id="hdfs_00014__image958945045017" src="zh-cn_image_0000001792397360.png"></span>上传至管理界面。</p>
+<td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p id="hdfs_00014__p133131443215">Kerberos认证过程中使用的<span class="filepath" id="hdfs_00014__filepath1558985065011">“.conf”</span>配置文件（如：krb5.conf）。请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img id="hdfs_00014__image958945045017" src="zh-cn_image_0000002200055329.png"></span>上传至管理界面。</p>
+<p id="hdfs_00014__p1958995015013"><span id="hdfs_00014__ph1061015712220">以MRS产品为例，具体获取方法可以参考对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">《MapReduce Service 产品文档》</a>的“导出认证凭据文件”章节。</span></p>
 <div class="p" id="hdfs_00014__p335113531110">由于Kerberos自身的问题，当配置文件中存在<span class="uicontrol" id="hdfs_00014__uicontrol1462119340419">“renew_lifetime”</span>参数时，需将其注释，否则可能导致注册失败。如：<pre class="screen" id="hdfs_00014__screen43313539415">#renew_lifetime = 7d</pre>
 </div>
 </td>
@@ -161,7 +163,8 @@
 <tr id="hdfs_00014__row1728863716141"><td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p id="hdfs_00014__p112881037171415"><span id="hdfs_00014__text19503531104618">Keytab文件</span></p>
 </td>
 <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p id="hdfs_00014__p374615219184">当<span class="uicontrol" id="hdfs_00014__uicontrol6701435124612">“<span id="hdfs_00014__text1170193513465">配置方式</span>”</span>选择<span class="uicontrol" id="hdfs_00014__uicontrol67464241815">“<span id="hdfs_00014__text8150194415468">Keytab文件</span>”</span>时，才需要配置该参数。Kerberos认证过程中使用的<span class="filepath" id="hdfs_00014__filepath19934532131518">“.keytab”</span>文件（如：krb5.keytab）。</p>
-<p id="hdfs_00014__p1836535991910">请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img id="hdfs_00014__image2782840141712" src="zh-cn_image_0000001792557096.png"></span>上传至管理界面。</p>
+<p id="hdfs_00014__p1836535991910">请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img id="hdfs_00014__image2782840141712" src="zh-cn_image_0000002164814330.png"></span>上传至管理界面。</p>
+<p id="hdfs_00014__p2080111116220"><span id="hdfs_00014__ph437661619211">以MRS产品为例，具体获取方法可以参考对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">《MapReduce Service 产品文档》</a>的“导出认证凭据文件”章节。</span></p>
 </td>
 </tr>
 </tbody>

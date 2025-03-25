@@ -1,0 +1,56 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Backup and Restoration Jobs Fail Due to FusionCompute Node Faults">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200007065.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200006993">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Backup and Restoration Jobs Fail Due to FusionCompute Node Faults</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200006993"></a><a name="EN-US_TOPIC_0000002200006993"></a>
+
+<h1 class="topictitle1">Backup and Restoration Jobs Fail Due to FusionCompute Node Faults</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>During backup or restoration of FusionCompute VMs, the VRM management node becomes faulty, triggering an active/standby switchover. As a result, the backup or restoration job fails.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Cause</h4><p>When two FusionCompute management nodes are deployed in active/standby mode, it takes 1 to 2 minutes for the standby node to take over services if a fault occurs, such as hardware or key process suspension, OS breakdown, or network interruption. (The takeover may take 2 to 3 minutes, depending on the actual load in the environment.) During the takeover process, the management service is abnormal, and interfaces cannot be invoked.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Troubleshooting</h4><ol><li><span>Check whether the FusionCompute management node is restored.</span><p><p>Use <strong>https://</strong><em>IP address of the FusionCompute management node</em><strong>:8443</strong> to log in to the FusionCompute WebUI. If the login is successful, the FusionCompute management node has been restored.</p>
+</p></li><li><span>After the FusionCompute management node is restored, perform the backup or restoration job again.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200007065.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

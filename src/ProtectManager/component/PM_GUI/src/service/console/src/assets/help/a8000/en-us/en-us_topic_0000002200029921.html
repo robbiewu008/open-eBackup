@@ -1,0 +1,52 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring Management Data">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164629212.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200029921">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring Management Data</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200029921"></a><a name="EN-US_TOPIC_0000002200029921"></a>
+
+<h1 class="topictitle1">Restoring Management Data</h1>
+<div><p id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_p6874516161213">This section describes how to restore management data to the system.</p>
+<div class="section" id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_section8499191127"><h4 class="sectiontitle">Precautions</h4><ul id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_ul126750225910"><li id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_li1967514218593">If you use a backup copy at a certain point in time to restore the management data, the system management data will be overwritten. Therefore, exercise caution when performing this operation.</li><li id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_li1220195195911">Management data cannot be restored using a backup copy on one system to another system.</li><li id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_li15835131915213">After the backup copy generated at a point in time is used to restore management data, copies (such as backup copies, replication copies, and archive copies) generated after the point in time are not displayed on the GUI. Consequently, these copies cannot be for restoration.</li><li id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_li050622213238">After the management data is restored, historical jobs are cleared.</li><li id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_li59005545218">In the cluster HA scenario, if you need to restore the management data of the active node, remove the HA member by referring to "Removing an HA Member" in the <em id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_i01691237165113">Cluster HA Feature Guide</em> and then restore the management data. After the restoration is complete, add the HA member again.</li><li id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_li15967194510234">Before restoring management data, ensure that you can log in to the OceanProtect WebUI.</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_section1636356804"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_en-us_topic_0219008867_ol463515012542"><li id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_en-us_topic_0219008867_li171816336243"><span>In the navigation pane, choose <span class="uicontrol" id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_uicontrol174413914472313"><b>System &gt; Settings &gt; Management Data Backup</b></span>.</span></li><li id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_li12607758203511"><span>In the row of the target management data backup, choose <span id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_text1631116434515"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_text48655118199"><strong>Restore</strong></span> in the <span id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_text1854984110415"><strong>Operation</strong></span> column.</span></li><li id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_li11626714111915"><span>Enter the data encryption password set during backup policy configuration and click <span id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_text1319774318199"><strong>OK</strong></span>.</span></li><li id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_li1981915258206"><span>Read the warning message carefully, select <span id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_text651318124516"><strong>I have read and understand the consequences associated with performing this operation.</strong></span>, and click <span id="EN-US_TOPIC_0000002200029921__en-us_topic_0000002200069901_text851181817457"><strong>OK</strong></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164629212.html">Managing System Data Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

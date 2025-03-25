@@ -28,6 +28,7 @@ import {
   PolicyAction,
   QosService,
   ReplicationModeType,
+  RouterUrl,
   ScheduleTrigger,
   SLA_BACKUP_NAME,
   StoragesApiService,
@@ -150,6 +151,7 @@ export class SlaInfoComponent implements OnInit {
   autoIndexForObs = false; // 对象存储下支持自动索引的应用
   autoIndexForTape = false; // 磁带库下支持自动索引的应用
   archiveLogCopy = false; // 归档日志副本
+  ratePolicyRouterUrl = RouterUrl.ProtectionLimitRatePolicy;
   @Input() sla: any = {};
   @Input() activeIndex = '0';
   @Input() isTask = false;

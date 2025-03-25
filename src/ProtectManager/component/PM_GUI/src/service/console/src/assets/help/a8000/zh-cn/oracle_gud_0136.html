@@ -1,0 +1,82 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Oracle环境变量配置文件被删除后如何处理">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="oracle_gud_0119.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="oracle_gud_0136">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Oracle环境变量配置文件被删除后如何处理</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="oracle_gud_0136"></a><a name="oracle_gud_0136"></a>
+
+<h1 class="topictitle1">Oracle环境变量配置文件被删除后如何处理</h1>
+<div><p>当Oracle主机中的环境变量配置文件（如.bash_profile）被误删后，导致管理界面上显示主机离线，数据库备份恢复任务失败。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>登录Oracle数据库主机。</span><p><p id="oracle_gud_0136__oracle_gud_0090_p8360011829">请使用PuTTY登录Oracle数据库主机，并执行<strong id="oracle_gud_0136__oracle_gud_0090_b14760136722">su - oracle</strong>命令，切换到<strong id="oracle_gud_0136__oracle_gud_0090_b776016920">oracle</strong>账户。</p>
+</p></li><li><span>查看是否存在环境变量配置文件（如.bash_profile）。</span><p><p><strong>ll -al</strong></p>
+<ul><li>如果存在该文件请检查环境变量是否正确。</li><li>如果不存在请新建环境变量配置文件，根据实际环境添加以下环境变量内容：<pre class="screen">export PATH
+ORACLE_SID=<em>orcl;export ORACLE_SID</em>
+ORACLE_UNQNAME=<em>orcl;export ORACLE_UNQNAME</em>
+JAVA_HOME=<em>/usr/local/java; export JAVA_HOME</em>
+ORACLE_BASE<em>=/u01/app/oracle; export ORACLE_BASE</em>   #oracle安装目录
+ORACLE_HOME=<em>$ORACLE_BASE/product/18.3.0/dbhome_1; export ORACLE_HOME</em>    #oracle程序目录。
+ORACLE_TERM=<em>xterm; export ORACLE_TERM</em>
+NLS_DATE_FORMAT=<em>"YYYY:MM:DDHH24:MI:SS"; export NLS_DATE_FORMAT</em>
+#NLS_LANG=american_america.ZHS16GBK; export NLS_LANG
+export NLS_LANG=<em>AMERICAN_AMERICA.UTF8</em>
+TNS_ADMIN=<em>$ORACLE_HOME/network/admin; export TNS_ADMIN</em>
+ORA_NLS11=<em>$ORACLE_HOME/nls/data; export ORA_NLS11</em>
+PATH=<em>.:${JAVA_HOME}/bin:${PATH}:$HOME/bin:$ORACLE_HOME/bin:$ORA_CRS_HOME/bin</em>
+PATH=<em>${PATH}:/usr/bin:/bin:/usr/bin/X11:/usr/local/bin</em>
+export PATH
+LD_LIBRARY_PATH=<em>$ORACLE_HOME/lib</em>
+LD_LIBRARY_PATH=<em>${LD_LIBRARY_PATH}:$ORACLE_HOME/oracm/lib</em>
+LD_LIBRARY_PATH=<em>${LD_LIBRARY_PATH}:/lib:/usr/lib:/usr/local/lib</em>
+export LD_LIBRARY_PATH
+CLASSPATH=<em>$ORACLE_HOME/JRE</em>
+CLASSPATH=<em>${CLASSPATH}:$ORACLE_HOME/jlib</em>
+CLASSPATH=<em>${CLASSPATH}:$ORACLE_HOME/rdbms/jlib</em>
+CLASSPATH=<em>${CLASSPATH}:$ORACLE_HOME/network/jlib</em>
+export CLASSPATH
+THREADS_FLAG=<em>native; export THREADS_FLAG</em>
+export TEMP=<em>/tmp</em>
+export TMPDIR=<em>/tmp</em></pre>
+</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="oracle_gud_0119.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

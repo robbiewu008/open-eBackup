@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="hive_00011.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
@@ -61,12 +61,12 @@ cp -r $JAVA_HOME/jre/lib/security/* $JAVA_HOME/jre/lib/security_bak</pre></li>
       <div class="p">
        命令执行过程中请设置keystore的密码。生成的JKS证书保存在当前节点的<span class="uicontrol">“/opt/cloudera/security/pki”</span>目录。
        <pre class="screen">$JAVA_HOME/bin/keytool -genkeypair -alias $(hostname -f) -keyalg RSA -keystore /opt/cloudera/security/pki/$(hostname -f).jks -keysize 2048 -dname "CN=$(hostname -f),OU=Engineering,O=Cloudera,L=Palo Alto,ST=California,C=US" -ext san=dns:$(hostname -f)</pre>
-      </div> <p><span><img src="zh-cn_image_0000001792361546.png"></span></p> <p></p></li>
-     <li><span>执行以下命令生成CSR证书。</span><p></p><pre class="screen">$JAVA_HOME/bin/keytool -certreq -alias $(hostname -f) -keystore /opt/cloudera/security/pki/$(hostname -f).jks -file /opt/cloudera/security/pki/$(hostname -f).csr -ext san=dns:$(hostname -f) -ext EKU=serverAuth,clientAuth</pre> <p><span><img src="zh-cn_image_0000001792521290.png"></span></p> <p></p></li>
-     <li><span>依次执行以下命令生成PEM证书。</span><p></p><pre class="screen">keytool -export -alias $(hostname -f) -keystore $(hostname -f).jks -file server.cer</pre> <pre class="screen">openssl x509 -inform DER -outform PEM -text -in server.cer -out server.pem</pre> <p><span><img src="zh-cn_image_0000001839240597.png"></span></p> <p></p></li>
+      </div> <p><span><img src="zh-cn_image_0000002200006485.png"></span></p> <p></p></li>
+     <li><span>执行以下命令生成CSR证书。</span><p></p><pre class="screen">$JAVA_HOME/bin/keytool -certreq -alias $(hostname -f) -keystore /opt/cloudera/security/pki/$(hostname -f).jks -file /opt/cloudera/security/pki/$(hostname -f).csr -ext san=dns:$(hostname -f) -ext EKU=serverAuth,clientAuth</pre> <p><span><img src="zh-cn_image_0000002164605726.png"></span></p> <p></p></li>
+     <li><span>依次执行以下命令生成PEM证书。</span><p></p><pre class="screen">keytool -export -alias $(hostname -f) -keystore $(hostname -f).jks -file server.cer</pre> <pre class="screen">openssl x509 -inform DER -outform PEM -text -in server.cer -out server.pem</pre> <p><span><img src="zh-cn_image_0000002199972053.png"></span></p> <p></p></li>
      <li><span>执行以下命令校验证书。</span><p></p><pre class="screen">openssl x509 -in /opt/cloudera/security/pki/server.pem -noout -text</pre> <p></p></li>
      <li><span>执行以下命令将keystore的密码增加到Java安全库。</span><p></p><pre class="screen">sudo cp $JAVA_HOME/jre/lib/security/cacerts $JAVA_HOME/jre/lib/security/jssecacerts</pre> <pre class="screen">$JAVA_HOME/bin/keytool -storepasswd -keystore $JAVA_HOME/jre/lib/security/cacerts</pre> <pre class="screen">$JAVA_HOME/bin/keytool -storepasswd -keystore $JAVA_HOME/jre/lib/security/jssecacerts</pre> <p>初始密码为<span class="uicontrol">“changeit”</span>，按照回显提示修改密码为<a href="#hive_00014__li15931291246">4</a>中设置的密码。</p> <p></p></li>
-     <li><span>执行以下命令将证书增加到Java安全库。</span><p></p><pre class="screen">sudo $JAVA_HOME/bin/keytool -importcert -alias $(hostname -f) -keystore</pre> <pre class="screen">$JAVA_HOME/jre/lib/security/jssecacerts -file /opt/cloudera/security/pki/server.pem</pre> <p><span><img src="zh-cn_image_0000001792361542.png"></span></p> <p></p></li>
+     <li><span>执行以下命令将证书增加到Java安全库。</span><p></p><pre class="screen">sudo $JAVA_HOME/bin/keytool -importcert -alias $(hostname -f) -keystore</pre> <pre class="screen">$JAVA_HOME/jre/lib/security/jssecacerts -file /opt/cloudera/security/pki/server.pem</pre> <p><span><img src="zh-cn_image_0000002164765462.png"></span></p> <p></p></li>
      <li id="hive_00014__li11362958912"><a name="hive_00014__li11362958912"></a><a name="li11362958912"></a><span>依次执行以下命令创建集群节点到证书的软连接。</span><p></p><pre class="screen">sudo ln -s /opt/cloudera/security/pki/$(hostname -f).pem /opt/cloudera/security/pki/agent.pem</pre> <pre class="screen">sudo ln -s /opt/cloudera/security/pki/$(hostname -f).jks /opt/cloudera/security/pki/server.jks</pre> <p></p></li>
      <li><span>请依次登录其他Hive集群节点，重复执行<a href="#hive_00014__li5631235132010">1</a>~<a href="#hive_00014__li11362958912">10</a>。</span></li>
      <li id="hive_00014__li26041510201017"><a name="hive_00014__li26041510201017"></a><a name="li26041510201017"></a><span>使用浏览器，登录Cloudera Manager修改Hive集群配置。</span><p></p>
@@ -80,13 +80,13 @@ cp -r $JAVA_HOME/jre/lib/security/* $JAVA_HOME/jre/lib/security_bak</pre></li>
          <li><span class="parmname">“HiveServer2 TLS/SSL 证书信任存储库文件”</span>配置为<span class="parmvalue">“/usr/java/jdk1.8.0_171/jre/lib/security/jssecacerts”</span>，其中，<span class="parmvalue">“jdk1.8.0_171”</span>为Java版本号，请根据实际情况替换。</li>
         </ul>
         <div class="fignone" id="hive_00014__fig1519418412433">
-         <a name="hive_00014__fig1519418412433"></a><a name="fig1519418412433"></a><span class="figcap"><b>图1 </b>Hive集群配置</span><br><span><img src="zh-cn_image_0000001839240601.png"></span>
+         <a name="hive_00014__fig1519418412433"></a><a name="fig1519418412433"></a><span class="figcap"><b>图1 </b>Hive集群配置</span><br><span><img src="zh-cn_image_0000002164765454.png"></span>
         </div></li>
        <li>在Cloudera Manager首页，单击<span class="uicontrol">“Cloudera Manager Service”</span>。</li>
        <li>单击<span class="uicontrol">“配置 &gt; 安全性”</span>，配置以下参数。配置示例如<a href="#hive_00014__fig1519418412433">图1</a>所示。
         <ul>
          <li><span class="parmname">“ssl.client.truststore.location”</span>配置为<span class="parmvalue">“/usr/java/jdk1.8.0_171/jre/lib/security/jssecacerts”</span>。其中，<span class="parmvalue">“jdk1.8.0_171”</span>为Java版本号，请根据实际情况替换。</li>
-         <li><span class="parmname">“ssl.client.truststore.password”</span>配置为<a href="#hive_00014__li15931291246">4</a>设置的密码。<p><span><img src="zh-cn_image_0000001839160649.png"></span></p></li>
+         <li><span class="parmname">“ssl.client.truststore.password”</span>配置为<a href="#hive_00014__li15931291246">4</a>设置的密码。<p><span><img src="zh-cn_image_0000002199972057.png"></span></p></li>
         </ul></li>
        <li>在<span class="uicontrol">“实例”</span>页面，同步以上配置至各集群节点。</li>
        <li>使用PuTTY，登录Hive集群管理节点，执行以下命令重启管理服务。<pre class="screen">sudo systemctl restart cloudera-scm-server</pre></li>

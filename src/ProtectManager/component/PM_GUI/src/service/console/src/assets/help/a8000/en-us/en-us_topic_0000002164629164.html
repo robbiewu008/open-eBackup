@@ -1,0 +1,72 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Viewing System Version Information">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164788924.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164629164">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Viewing System Version Information</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164629164"></a><a name="EN-US_TOPIC_0000002164629164"></a>
+
+<h1 class="topictitle1">Viewing System Version Information</h1>
+<div><p id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_p1824436164819">You can use the <span id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_text1133135491219">OceanProtect</span> management page and CLI to query and familiarize yourself with system version information so that you can quickly determine matching software versions according to the system version during maintenance.</p>
+<div class="section" id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_section11725154795816"><h4 class="sectiontitle">Obtaining Current System Version Information Using the Management Interface</h4><p class="MsoNormal" id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0223232608_p26171779">You can use the management interface to view current system version information.</p>
+<ol id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0223232608_ol34219424"><li id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_li84033442337"><span>Choose <strong id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_b211237992491020">System</strong> &gt; <strong id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_b135779585891020">Infrastructure</strong> &gt; <strong id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_b74286881891020">Cluster Management</strong>.</span></li><li id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_li938315412338"><span>On the <strong id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_b682832399118">Backup Clusters</strong> tab page, click a node name under the <strong id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_b16130595069118">Local Cluster Nodes</strong> area.</span></li><li id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_li1115217015589"><span>In the <span id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_text1760185102512"><strong>Basic Info</strong></span> area of the displayed <span class="uicontrol" id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0000001656571657_en-us_topic_0000001607531760_uicontrol1144724616332"><b><span id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0000001656571657_en-us_topic_0000001607531760_text51761646203516"><strong>Node Details</strong></span></b></span> dialog box, view <span id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_text10769161111158"><strong>Version</strong></span>, that is, the current version of the system, as shown in <a href="#EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0223232608_mnt_edition">Figure 1</a>.</span><p><div class="fignone" id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0223232608_mnt_edition"><a name="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0223232608_mnt_edition"></a><a name="en-us_topic_0000002164828986_en-us_topic_0223232608_mnt_edition"></a><span class="figcap"><b>Figure 1 </b>Basic system information</span><br><span><img id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_image9336161282517" src="en-us_image_0000002200070245.png"></span></div>
+</p></li></ol>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_section107269473586"><h4 class="sectiontitle">Obtaining Current System Version Information Using the CLI</h4><p class="MsoNormal" id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0223232608_p37599697">You can use the CLI to query the current system version.</p>
+<ol id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0223232608_ol2852954"><li id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0223232608_li25676594"><span>Use PuTTY to log in to the CLI as user <strong id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_b57601442144712">admin</strong>.</span></li><li id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0223232608_li29762761"><span>Run the <strong id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0223232608_b66538265">show system general</strong> command to view the system version.</span><p><pre class="screen" id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0223232608_screen61973473">admin:/&gt;show system general
+
+  System Name         : Huawei.Storage               
+  Health Status       : Normal                       
+  Running Status      : Normal                       
+  Total Capacity      : 996.471TB                    
+  SN                  : 2102354PBA13D9988001         
+  Location            :                              
+  Product Model       : OceanProtect X8000          
+  Product Version     : 1.2.1RC1                     
+  High Water Level(%) : 80                           
+  Low Water Level(%)  : 20                           
+  WWN                 : 210030fbb8c80ded             
+  Time                : 2022-06-17/10:06:16 UTC+08:00 
+  Patch Version       :                              
+  Description         :</pre>
+<p class="MsoNormal" id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_en-us_topic_0223232608_p20890347">In the preceding command output, the value of <strong id="EN-US_TOPIC_0000002164629164__en-us_topic_0000002164828986_b0920192410134">Product Version</strong> indicates current system version.</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164788924.html">Viewing System Information (Applicable to OceanProtect X Series Backup Appliances)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -1,0 +1,101 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 5: Performing Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200012409.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="documenttype" content="usermanual">
+  <meta name="prodname" content="csbs">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164771382">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 5: Performing Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164771382"></a><a name="EN-US_TOPIC_0000002164771382"></a>
+  <h1 class="topictitle1">Step 5: Performing Backup</h1>
+  <div>
+   <p>Before performing backup, you need to associate the resources to be protected with a specified SLA. The system protects the resources and periodically executes backup jobs based on the SLA. You can perform a backup job immediately through manual backup.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>During the backup, the passwords of the host where the GBase 8a client is installed and database users cannot be changed.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>Before the backup, ensure that the pexpect package (pexpect 3.2 recommended) has been installed on the host where the client is installed. For details, see "Installing pexpect (Applicable to GBase 8a)" in the <em>Client Installation Guide</em>.</li>
+     <li>Before the backup, ensure that GBase 8a databases are running properly and the network connection of each node in the cluster is normal.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <ul>
+     <li>During a manual backup, parameters (except <span class="uicontrol"><b><span><strong>Automatic Retry</strong></span></b></span>) defined in the SLA, such as <span class="uicontrol"><b><span><strong>Rate Limiting Policies</strong></span></b></span>, <span class="uicontrol"><b><span><strong>Source Deduplication</strong></span></b></span>, and <span class="uicontrol"><b><span><strong>Job Failure Alarm</strong></span></b></span>, are applied to the manual backup job.</li>
+     <li>If a replication or archive policy has been defined in the SLA, the system will perform replication or archiving once based on the SLA when you perform manual backup.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164771382__en-us_topic_0000002164771390_en-us_topic_0000002199964685_uicontrol19391112102819"><b>Protection &gt; Databases &gt; General Databases</b></span>.</span></li>
+     <li><span>Select the database to be protected and click <span class="uicontrol"><b><span><strong>Protect</strong></span></b></span>.</span></li>
+     <li><span>Select an SLA. You can select a preset SLA or click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> to create one.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002164771382__en-us_topic_0000002200146973_p125947145711"><span id="EN-US_TOPIC_0000002164771382__en-us_topic_0000002200146973_ph1413818422327">If a WORM policy has been configured for the resources to be protected, select an SLA without a WORM policy to avoid WORM policy conflicts.</span></p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002164771382__en-us_topic_0000002200146973_uicontrol23691650677"><b>OK</b></span>.</span><p></p><p id="EN-US_TOPIC_0000002164771382__en-us_topic_0000002200146973_en-us_topic_0000001656691397_p25041111535">If the current system time is later than the start time of the first backup specified in the SLA, you can select <strong id="EN-US_TOPIC_0000002164771382__en-us_topic_0000002200146973_b9624185216713">Execute manual backup now</strong> in the dialog box that is displayed or choose to perform automatic backup periodically based on the backup policy set in the SLA.</p> <p></p></li>
+     <li><strong>Optional: </strong><span>Perform manual backup.</span><p></p><p>If you want to execute a backup job immediately, perform manual backup through the following operations. Otherwise, skip this step.</p>
+      <ol type="a">
+       <li>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Manual Backup</strong></span></b></span>.
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>You can select multiple resources to perform manual backup in batches. Select multiple resources and choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Manual Backup</strong></span></b></span>.</p>
+         </div>
+        </div></li>
+       <li>Set the name of the copy generated through manual backup.<p>If this parameter is left unspecified, the system sets the name to <strong>backup_</strong><em>Timestamp</em> by default.</p></li>
+       <li>Select a protection policy, which can be <span><strong>Full Backup</strong></span> or <span><strong>Incremental Backup</strong></span>.
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="EN-US_TOPIC_0000002164771382__en-us_topic_0000002200146973_p13522118194919"><span id="EN-US_TOPIC_0000002164771382__en-us_topic_0000002200146973_ph19374310343">If the selected protection policy is different from that configured in the associated SLA for 1.6.0 and later versions, the WORM configuration does not take effect.</span></p>
+         </div>
+        </div></li>
+       <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200012409.html">Backing Up a GBase 8a Database</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

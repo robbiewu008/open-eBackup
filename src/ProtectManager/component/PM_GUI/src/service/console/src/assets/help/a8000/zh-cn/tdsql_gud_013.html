@@ -20,41 +20,56 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤5：（可选）开启备份链路加密开关">
+<meta name="DC.Title" content="备份TDSQL数据库">
 <meta name="product" content="">
 <meta name="DC.Relation" scheme="URI" content="tdsql_gud_009.html">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_014.html">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_015.html">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_016.html">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_017.html">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_018.html">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_019.html">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_020.html">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_021.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="tdsql_gud_013">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤5：（可选）开启备份链路加密开关</title>
+<title>备份TDSQL数据库</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="tdsql_gud_013"></a><a name="tdsql_gud_013"></a>
 
-<h1 class="topictitle1">步骤5：（可选）开启备份链路加密开关</h1>
-<div><p>您需要开启备份链路加密开关，备份链路加密功能才会生效。</p>
-<div class="section"><h4 class="sectiontitle">前提条件</h4><p>请确保已为存储系统配置NFS Kerberos服务，并已在AD域中添加<strong>rdadmin</strong>、TDSQL数据库的<strong>root</strong>和<strong>tdsql</strong>用户。否则开启备份链路加密开关后，可能导致备份任务失败。<span>配置NFS Kerberos服务的操作请参见产品对应型号的<span id="tdsql_gud_013__zh-cn_topic_0000001839143225_cite5907115716400">《安装指南》</span>中的“（可选）配置NFS Kerberos服务”章节。</span></p>
-</div>
-<div class="section"><h4 class="sectiontitle">注意事项</h4><p id="tdsql_gud_013__zh-cn_topic_0000001839143225_p1854315715349">开启备份链路加密后，代理主机与KDC域服务器之间的票证存在有效期，票证过期之后可能导致备份任务失败。建议延长KDC域服务器上Kerberos策略中票证的过期时间或者配置为永不过期。如果未配置永不过期，需要在票证即将过期前，在代理主机上，对添加到AD域中的用户，通过<strong id="tdsql_gud_013__zh-cn_topic_0000001839143225_b3195122210175">kinit</strong>命令或<strong id="tdsql_gud_013__zh-cn_topic_0000001839143225_b185942242179">net</strong>命令重新获取票证，具体操作请参见产品对应型号的<span id="tdsql_gud_013__zh-cn_topic_0000001839143225_cite890601917412">《安装指南》</span>中的“配置客户端”章节。</p>
-</div>
-<div class="section"><h4 class="sectiontitle">创建UNIX本地认证用户组</h4><p>开启备份链路加密前，如果当前环境未加入域环境，需要将用户组添加到本地认证用户组。</p>
-<ol><li><span>登录DeviceManager管理界面。</span><p><ul><li>对于OceanProtect X系列备份一体机，请执行以下操作：<ol type="a"><li>选择“系统 &gt; 基础设施 &gt; 集群管理”。</li><li>在“备份集群”页签的“本地集群节点”区域，单击节点名称。</li><li>在弹出的“节点详情”界面，单击“打开设备管理”，进入DeviceManager管理界面。</li></ol>
-</li><li>对于OceanProtect E1000（备份存储为OceanProtect），登录备份存储设备的DeviceManager管理界面，具体操作请参见<a href="tdsql_gud_dm.html">登录DeviceManager管理界面</a>。</li></ul>
-</p></li><li><span>选择<span class="uicontrol">“服务 &gt; 文件服务 &gt; 认证用户”</span>。</span></li><li><span>在<span class="uicontrol">“UNIX用户”</span>页签下选择<span class="uicontrol">“本地认证用户组”</span>。</span></li><li><span>单击<span class="uicontrol">“创建”</span>。</span></li><li><span>配置UNIX本地认证用户组信息。</span><p><ul><li>名称：安装数据库时设置的用户所属组。可在数据库主机执行<strong>cat /etc/group</strong>命令查看数据库用户所属组。</li><li>ID：在数据库主机执行<strong>cat /etc/group</strong>命令查看所属组对应的ID。</li></ul>
-</p></li></ol>
-</div>
-<div class="section"><h4 class="sectiontitle">开启备份链路加密开关</h4><ol><li><span>选择<span class="uicontrol" id="tdsql_gud_013__zh-cn_topic_0000001839143225_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="tdsql_gud_013__zh-cn_topic_0000001839143225_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_text113848306235"><span id="tdsql_gud_013__zh-cn_topic_0000001839143225_zh-cn_topic_0000001102065552_text8949174614917">系统</span></span> &gt; <span id="tdsql_gud_013__zh-cn_topic_0000001839143225_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_text484521122916"><span id="tdsql_gud_013__zh-cn_topic_0000001839143225_zh-cn_topic_0000001102065552_text2943115917492">安全</span></span> &gt; <span id="tdsql_gud_013__zh-cn_topic_0000001839143225_text6472734351">数据安全</span>”</span>。</span></li><li><span>在“加密设置”区域，单击页面右侧的<span class="uicontrol" id="tdsql_gud_013__zh-cn_topic_0000001839143225_uicontrol851575420436">“<span id="tdsql_gud_013__zh-cn_topic_0000001839143225_text2172104153514">修改</span>”</span>，开启<span class="uicontrol" id="tdsql_gud_013__zh-cn_topic_0000001839143225_uicontrol13743170204412">“<span id="tdsql_gud_013__zh-cn_topic_0000001839143225_text451824814419">备份链路加密</span>”</span>。</span></li><li><span>单击<span class="uicontrol" id="tdsql_gud_013__zh-cn_topic_0000001839143225_uicontrol1839019167443">“<span id="tdsql_gud_013__zh-cn_topic_0000001839143225_text1418318566358">保存</span>”</span>。</span></li></ol>
-</div>
+<h1 class="topictitle1">备份TDSQL数据库</h1>
+<div><p>您可以根据本章节指引完成备份配置。对于1.6.0及后续版本，也支持通过智能助手提供伴随式教学和流程引导，在用户操作过程中及时提供指引，降低操作难度。您登录<span id="tdsql_gud_013__zh-cn_topic_0000002164820518_text8740255151519">OceanProtect</span>管理界面后，单击界面上方的<span><img id="tdsql_gud_013__zh-cn_topic_0000002164820518_image189341348123814" src="zh-cn_image_0000002200147377.png"></span>，在打开的“智能助手”页面，单击“了解如何进行备份操作”，选择待保护的资源类型后单击“下一步”，即可根据备份配置引导逐步完成本章节的备份配置。</p>
 </div>
 <div>
+<ul class="ullinks">
+<li class="ulchildlink"><strong><a href="tdsql_gud_014.html">步骤1：开启TDSQL数据库权限（适用于非分布式实例）</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="tdsql_gud_015.html">步骤2：开启zkmeta自动备份功能（适用于分布式实例）</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="tdsql_gud_016.html">步骤3：注册TDSQL数据库</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="tdsql_gud_017.html">步骤4：（可选）修改agent_cfg.xml备份文件</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="tdsql_gud_018.html">步骤5：（可选）创建限速策略</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="tdsql_gud_019.html">步骤6：（可选）开启备份链路加密开关</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="tdsql_gud_020.html">步骤7：创建备份SLA</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="tdsql_gud_021.html">步骤8：执行备份</a></strong><br>
+</li>
+</ul>
+
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="tdsql_gud_009.html">备份TDSQL数据库</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="tdsql_gud_009.html">备份</a></div>
 </div>
 </div>
 

@@ -1,0 +1,113 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring a GaussDB T Cluster">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002194839870.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002194680266">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring a GaussDB T Cluster</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002194680266"></a><a name="EN-US_TOPIC_0000002194680266"></a>
+
+<h1 class="topictitle1">Restoring a GaussDB T Cluster</h1>
+<div><p>This section describes how to use a copy to restore a backed-up GaussDB T cluster database to the original or a new location.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_p163281625103616">The database service status is <strong id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_b422455516167">Online</strong>, <strong id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_b1541505881615">Degraded</strong>, or <strong id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_b173925181715">Unavailable</strong> and the status of the node where the database service resides is <strong id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_b2051419812176">Online</strong>.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_p189391716181616">Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_ol115861512165614"><li id="EN-US_TOPIC_0000002194680266__en-us_topic_0000001263936798_li10796132225712"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760790_en-us_topic_0000002199964685_uicontrol137901542165417"><b><span id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760790_en-us_topic_0000002199964685_text4790154220547"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760790_en-us_topic_0000002199964685_text15790114235419"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760790_en-us_topic_0000002199964685_text9626515124917"><strong>Databases</strong></span> &gt; <span id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760790_en-us_topic_0000002199964685_text193013119308"><strong>GaussDB T</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_li87691438131514"><span>Search for copies by resource or copy. This section describes how to search for copies by resource.</span><p><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_p142551140161511">On the <span id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_text6827103218214"><strong>Resources</strong></span> tab page, locate the database to be restored based on the database name and then click the database name.</p>
+</p></li><li id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_li182120214713"><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_uicontrol1812414562220"><b><span id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_text18993182162710"><strong>Copy Data</strong></span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_p9918150182310">If <span><img id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_image6372127414" src="en-us_image_0000002199967441.png"></span> is displayed below a month or day, a copy was generated in that month or on that day.</p>
+</p></li><li id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_li2098620343715"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_uicontrol17834155014018"><b><span id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_text3935161010423"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_text388813503428"><strong>Restore</strong></span></b></span> in the row that contains the target copy.</span><p><ul id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_ul46503661812"><li id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_li9651136131814">Restore the database instance to the original location.
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_table10161134615197" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Restoring the GaussDB T database instance to the original location</caption><colgroup><col style="width:32.53%"><col style="width:67.47%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_row116194613197"><th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.4.2.4.2.1.1.1.2.3.1.1"><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_p151611462191">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.4.2.4.2.1.1.1.2.3.1.2"><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_p1316114691914">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_row19161204621915"><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.4.2.1.1.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164780060_p421028152915">Parallel Processes</p>
+<div class="note" id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164780060_note137601255152715"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164780060_p1176010553271">Only 1.6.0 and later versions support this parameter.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.4.2.1.1.1.2.3.1.2 "><div class="p" id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164780060_p284323634310">Maximum number of processes that can run concurrently.<ul id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164780060_en-us_topic_0000002164620324_ul441812321262"><li id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164780060_en-us_topic_0000002164620324_li168933916267">An appropriate value for this parameter can improve the backup or restoration efficiency. If this parameter is set to a large value, the database instance performance will be affected.</li><li id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164780060_en-us_topic_0000002164620324_li9418632172612">You are advised to set the maximum number of processes to the number of CPU cores.</li></ul>
+</div>
+<p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164780060_p1322615422614"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_li211144814180">Restore the database instance to a new location.<p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_p20231853141612"><a name="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_li211144814180"></a><a name="en-us_topic_0000002164760750_en-us_topic_0000001263936798_li211144814180"></a><a href="#EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_table93951625101715">Table 2</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_table93951625101715"></a><a name="en-us_topic_0000002164760750_en-us_topic_0000001263936798_table93951625101715"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_table93951625101715" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Restoring the GaussDB T database instance to a new location</caption><colgroup><col style="width:32.53%"><col style="width:67.47%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_row53951325131711"><th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.4.2.4.2.1.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_p173952253171">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.4.2.4.2.1.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_p203951725141711">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_row20642038151510"><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_p9786123578">Tag</p>
+<div class="note" id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_note11548318195710"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760750_en-us_topic_0000002164780060_p1176010553271">Only 1.6.0 and later versions support this parameter.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_p8641538151516">Name of a tag associated with the resource. You can filter databases by tag.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_row6884113111815"><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_p2130181513019">Target Location</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_p1988443121811">Target location to which data is restored.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_row148511955244"><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760750_en-us_topic_0000002164780060_p421028152915">Parallel Processes</p>
+<div class="note" id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760750_en-us_topic_0000002164780060_note137601255152715"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760750_en-us_topic_0000002164780060_p1176010553271_1">Only 1.6.0 and later versions support this parameter.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.2 "><div class="p" id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760750_en-us_topic_0000002164780060_p284323634310">Maximum number of processes that can run concurrently.<ul id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760750_en-us_topic_0000002164780060_en-us_topic_0000002164620324_ul441812321262"><li id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760750_en-us_topic_0000002164780060_en-us_topic_0000002164620324_li168933916267">An appropriate value for this parameter can improve the backup or restoration efficiency. If this parameter is set to a large value, the database instance performance will be affected.</li><li id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760750_en-us_topic_0000002164780060_en-us_topic_0000002164620324_li9418632172612">You are advised to set the maximum number of processes to the number of CPU cores.</li></ul>
+</div>
+<p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000002164760750_en-us_topic_0000002164780060_p1322615422614"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note" id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_note1667603815313"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_p76762381533">During the restoration, the system disables the database service of the target location.</p>
+</div></div>
+</li></ul>
+</p></li><li id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_en-us_topic_0000001263936798_li1481714307166"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_uicontrol173287768993026"><b><span id="EN-US_TOPIC_0000002194680266__en-us_topic_0000002164760750_text43558709293026"><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002194839870.html">Restoring GaussDB T Databases</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

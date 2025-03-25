@@ -1,0 +1,289 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Object Attribute Restoration Fails When the Active Directory Recycle Bin Is Disabled">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164769606.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164769630">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Object Attribute Restoration Fails When the Active Directory Recycle Bin Is Disabled</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164769630"></a><a name="EN-US_TOPIC_0000002164769630"></a>
+  <h1 class="topictitle1">Object Attribute Restoration Fails When the Active Directory Recycle Bin Is Disabled</h1>
+  <div>
+   <p>Some attributes may fail to be restored when the Active Directory Recycle Bin is disabled. Manual attribute modification has various impacts on the system and users.</p>
+   <div class="tablenoborder">
+    <table cellpadding="4" cellspacing="0" summary="" frame="border" border="1" rules="all">
+     <caption>
+      <b>Table 1 </b>Attributes that fail to be restored and the impact of attribute modification
+     </caption>
+     <colgroup>
+      <col style="width:22.5%">
+      <col style="width:41.510000000000005%">
+      <col style="width:35.99%">
+     </colgroup>
+     <thead align="left">
+      <tr>
+       <th align="left" class="cellrowborder" valign="top" width="22.5%" id="mcps1.3.2.2.4.1.1"><p>Attribute</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="41.510000000000005%" id="mcps1.3.2.2.4.1.2"><p>Description</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="35.99%" id="mcps1.3.2.2.4.1.3"><p>Impact</p></th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>Common Name (CN)</p></td>
+       <td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>Common name of an object, which is a part of the object RDN. RDN is short for relative distinguished name.</p></td>
+       <td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>Modifying this attribute will change the name of the object, which may affect the applications or services associated with the object.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>memberof</p></td>
+       <td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>List of groups to which an object belongs.</p></td>
+       <td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>If the groups to which an object belongs are not deleted, the <strong>memberof</strong> attribute of the object can be restored successfully. If the <strong>memberof</strong> attribute of a user changes, the permissions and access control of the user may be affected. Removing the group to which a user belongs may cause the user to lose permissions.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>userParameters</p></td>
+       <td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>User parameters.</p></td>
+       <td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>Modifying this attribute affects user experience or operation methods. Exercise caution when performing this operation.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>member</p></td>
+       <td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>List of groups to which an object belongs. This attribute is the same as <strong>memberof</strong>.</p></td>
+       <td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>Modifying this attribute will change the membership of an object.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>msExchWhenMailboxCreated</p></td>
+       <td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>Time when an Exchange mailbox was created.</p></td>
+       <td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>Modifying this attribute during mailbox policy adjustment or data migration may affect the timestamps of subsequent operations.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>mS-DS-CreatorSID</p></td>
+       <td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>Security identifier (SID) of the user who creates an object, indicating which user or security principal (such as a computer account) creates the object.</p></td>
+       <td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>This attribute is automatically managed by the system. Manual modification may cause incorrect information about the object creator. This may affect audit and permission management.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>userAccountControl</p></td>
+       <td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>User account management.</p></td>
+       <td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>Modifying this attribute can change the behavior of a user account, for example, enabling or disabling an account, setting a password expiration policy, and allowing or forbidding login. An incorrect setting may cause user login failures or account locking.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>badPasswordTime</p></td>
+       <td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>Time when a user entered an incorrect password for the last time.</p></td>
+       <td class="cellrowborder" rowspan="41" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>The attributes are automatically managed by the system. No impact is involved.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>badPwdCount</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Number of consecutive incorrect password attempts.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>CanonicalName</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Canonical name of an object, which is usually used for Lightweight Directory Access Protocol (LDAP) operations.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>Created</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Time when an object was created.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>whenChanged</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Time when an object was last modified.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>ObjectGuid</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Globally unique identifier (GUID) of an object.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>groupType</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Type of a group, such as a security group or a distribution group.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>createTimeStamp</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Timestamp when an object was created.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>Deleted</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Whether an object has been deleted.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>DistinguishedName</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Full path name of an object, which uniquely identifies the object.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>dSCorePropagationData</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Internal attribute used for replication. It records the replication metadata of an object.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>instanceType</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Object instance type, which is used to distinguish different Active Directory object types.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>ObjectGUID</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Unique GUID of an object, which is the same as <strong>ObjectGuid</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>ou (OrganizationalUnit)</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Organization unit to which an object belongs.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>pwdLastSet</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Last time when a user password was set.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>isDeleted</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Whether an object has been deleted. This attribute is the same as <strong>Deleted</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>LastKnownParent</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Last known parent container of an object.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>lastLogoff</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Last time when a user logged off.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>lastLogon</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Last time of user login.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>logonCount</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Number of user logins.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>Modified</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Time when an object was modified.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>whenCreated</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Time when an object was created. This attribute is the same as <strong>Created</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>modifyTimeStamp</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Time when an object was last modified. This attribute is the same as <strong>whenChanged</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>nTSecurityDescriptor</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Security descriptor of an object.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>ObjectCategory</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Object category, which is used to define the object type.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>PropertyNames</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>List of object attribute names.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>objectSid</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Security identifier (SID) of an object.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>primaryGroupID</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Primary group SID of a user.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>PropertyCount</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Number of object attributes.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>sAMAccountType</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>User account type.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>sDRightsEffective</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Permission effect of an object.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>msNPAllowDialin</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Whether dial-in is allowed.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>ProtectedFromAccidentalDeletion</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Whether to prevent an object from being deleted.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>msDS-LastKnownRDN</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Last known RDN of an object.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>uSNChanged</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Update sequence number, which records the number of times an object is modified.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>lockoutTime</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>User lockout time.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>Name</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Name of an object.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>lastLogonTimestamp</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Timestamp of the last login of a user.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>msExchMailboxGuid</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>GUID of an Exchange mailbox.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>msExchMailboxSecurityDescriptor</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Security descriptor of an Exchange mailbox.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>mDBUseDefaults</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Whether the default settings are used for the email database.</p></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li id="EN-US_TOPIC_0000002164769630__li20516469345"><span>Open Active Directory Users and Computers.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002164769630__ol1558811113511">
+       <li id="EN-US_TOPIC_0000002164769630__li458811203511">Log in to the remote host as <strong id="EN-US_TOPIC_0000002164769630__b147191456185920">Administrator</strong>.</li>
+       <li id="EN-US_TOPIC_0000002164769630__li749551033511">Press <strong id="EN-US_TOPIC_0000002164769630__b3620051103919">Win+R</strong>.</li>
+       <li id="EN-US_TOPIC_0000002164769630__li11778132363511">Enter <strong id="EN-US_TOPIC_0000002164769630__b1443111773317">dsa.msc</strong> and press <strong id="EN-US_TOPIC_0000002164769630__b352221213020">Enter</strong>.<p id="EN-US_TOPIC_0000002164769630__p579574016591"></p></li>
+      </ol> <p></p></li>
+     <li><span>Modify attributes.</span><p></p>
+      <ol type="a">
+       <li>Find the target user or group.</li>
+       <li>Right-click the object and choose <strong>Properties</strong> from the shortcut menu.<p></p></li>
+       <li>In the displayed dialog box, click the <strong>Attribute Editor</strong> tab.<p></p></li>
+       <li>Double-click the attribute to be modified.</li>
+       <li>Modify the attribute value and click <strong>OK</strong>.<p></p></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164769606.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

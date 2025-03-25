@@ -1,0 +1,102 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Creating a File System">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200131601.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164645220">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Creating a File System</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164645220"></a><a name="EN-US_TOPIC_0000002164645220"></a>
+
+<h1 class="topictitle1">Creating a File System</h1>
+<div><p>Before restoring a NAS share to a local location for the first time, you need to create a file system.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Set the file system name.</span><p><p>By default, the name is prefixed with <strong>Restore_</strong>.</p>
+</p></li><li><span>Configure the sharing mode.</span><p><p><a href="#EN-US_TOPIC_0000002164645220__table89615043315">Table 1</a> describes the related parameters.</p>
+<p>You can configure NFS and CIFS shares at the same time.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002164645220__table89615043315"></a><a name="table89615043315"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164645220__table89615043315" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Sharing mode parameters</caption><colgroup><col style="width:16.439999999999998%"><col style="width:20.72%"><col style="width:62.839999999999996%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.2.2.3.2.4.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.2.2.3.2.4.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" rowspan="2" valign="top" width="16.439999999999998%" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p><strong>NFS</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="20.72%" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p><span><strong>Share Path</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="62.839999999999996%" headers="mcps1.3.2.2.2.2.3.2.4.1.2 "><p>Share path for accessing the file system. The path name is the same as the file system name and cannot be changed.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p><span><strong>Client</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><div class="p">Information about the client that accesses a file system.<ul id="EN-US_TOPIC_0000002164645220__en-us_topic_0000002200046049_ul10853114216166"><li id="EN-US_TOPIC_0000002164645220__en-us_topic_0000002200046049_li141781311161">You can enter share client IP addresses, share client IP address segments, or an asterisk (*) to represent IP addresses of all share clients.</li><li id="EN-US_TOPIC_0000002164645220__en-us_topic_0000002200046049_li717813151615">The IP addresses can be IPv4 addresses, IPv6 addresses, or a combination of IPv4 and IPv6 addresses.</li><li id="EN-US_TOPIC_0000002164645220__en-us_topic_0000002200046049_li2178531151612">You can enter multiple IP addresses or IP address segments and separate them by semicolons (;), spaces, or <strong id="EN-US_TOPIC_0000002164645220__en-us_topic_0000002200046049_b3334203131920">Enter</strong>. Example: <strong id="EN-US_TOPIC_0000002164645220__en-us_topic_0000002200046049_b186852403458">192.168.0.10;192.168.0.0/24;*</strong></li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" rowspan="3" valign="top" width="16.439999999999998%" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p><strong>CIFS</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="20.72%" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p><span><strong>Share Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="62.839999999999996%" headers="mcps1.3.2.2.2.2.3.2.4.1.2 "><p>Share name for accessing a file system.</p>
+<p>The default share name is <strong>Restore_</strong><em>Timestamp</em>. You can change it as needed.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p><span><strong>Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p>Type of the user who accesses a CIFS share.</p>
+<ul id="EN-US_TOPIC_0000002164645220__ul35301947103614"><li id="EN-US_TOPIC_0000002164645220__li115301547103614"><span id="EN-US_TOPIC_0000002164645220__text11836124163210"><strong>Everyone</strong></span></li><li id="EN-US_TOPIC_0000002164645220__li1853094715369"><span id="EN-US_TOPIC_0000002164645220__text12625493210"><strong>Windows Local Authentication User</strong></span></li><li id="EN-US_TOPIC_0000002164645220__li58994343227"><span id="EN-US_TOPIC_0000002164645220__text1018841611228"><strong>Windows Local Authentication User Group</strong></span></li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p><span><strong>Users</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p>Username for accessing a CIFS share.</p>
+<p id="EN-US_TOPIC_0000002164645220__p862510421222">This parameter is mandatory when <strong id="EN-US_TOPIC_0000002164645220__b140357142311"><span id="EN-US_TOPIC_0000002164645220__text66251842152215"><strong>Type</strong></span></strong> is set to <strong id="EN-US_TOPIC_0000002164645220__b5567205814231"><span id="EN-US_TOPIC_0000002164645220__text1862524232215"><strong>Windows Local Authentication User</strong></span></strong> or <strong id="EN-US_TOPIC_0000002164645220__b14169117244"><span id="EN-US_TOPIC_0000002164645220__text462474214224"><strong>Windows Local Authentication User Group</strong></span></strong>.</p>
+<p id="EN-US_TOPIC_0000002164645220__p7841427394">If the required user or user group does not exist, create one on DeviceManager. For details about how to log in to DeviceManager, see <a href="en-us_topic_0000002200131625.html">Logging In to DeviceManager</a>.</p>
+<ul><li>For the OceanProtect X series backup appliance or OceanProtect E1000 (with the OceanProtect used as backup storage), perform the following operations:<ol type="a"><li>Choose <strong>Services</strong> &gt; <strong>File Service</strong> &gt; <strong>Authentication Users</strong> &gt; <strong>Windows Users</strong> from the navigation pane. On the <strong>Local Authentication Users</strong> or <strong>Local Authentication User Groups</strong> tab page, create a user or user group.</li></ol>
+</li><li>For OceanProtect E6000, perform the following operations:<ol type="a"><li>Choose <strong>Resources</strong> &gt; <strong>Access</strong> &gt; <strong>Authentication User</strong> &gt; <strong>Windows Users</strong> from the navigation pane. On the <strong>Local Authentication User</strong> or <strong>Local Authentication User Group</strong> tab page, create a user or user group.</li></ol>
+</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <strong><span><strong>OK</strong></span></strong>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200131601.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

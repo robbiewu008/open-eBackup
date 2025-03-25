@@ -1,0 +1,109 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Live Mount or Instant Recovery Job Failed and a Message Is Displayed Indicating that the Storage Device Failed to Scan Storage Resources">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200060029.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164819022">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Live Mount or Instant Recovery Job Failed and a Message Is Displayed Indicating that the Storage Device Failed to Scan Storage Resources</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164819022"></a><a name="EN-US_TOPIC_0000002164819022"></a>
+  <h1 class="topictitle1">Live Mount or Instant Recovery Job Failed and a Message Is Displayed Indicating that the Storage Device Failed to Scan Storage Resources</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>When a user performs live mount or instant recovery for a CNware VM, a message is displayed on the job page of the <span>product</span>, indicating that the storage device failed to scan storage resources. After multiple retries, the storage resources still cannot be scanned, and the job failed.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <ul>
+     <li>If the target CNware host selected for live mount or instant recovery is disconnected from the logical port of the <span>product</span>, the scanning will fail.</li>
+     <li>Some NFS services of the <span>product</span> are not enabled.</li>
+     <li>The number of share paths of the <span>product</span> exceeds the internal upper limit. As a result, the file system data scanned by CNware is incomplete.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Check the network of the target CNware host selected for live mount or instant recovery, and ensure that it is connected to the backup network of the <span>product</span>.</span><p></p>
+      <ol type="a">
+       <li>Use PuTTY to log in to the host machine.</li>
+       <li>Run the following command to check the network (<em>xxx.xxx.xx.xx</em> indicates the backup network IP address of the <span>product</span>):<pre class="screen">ping <em>xxx.xxx.xx.xx</em></pre></li>
+      </ol> <p></p></li>
+     <li><span>Confirm that all NFS services are enabled.</span><p></p>
+      <ol type="a">
+       <li>Log in to DeviceManager.</li>
+       <li>Choose <strong>Settings</strong> &gt; <strong>File Service</strong> &gt; <strong>NFS Service</strong>.</li>
+       <li>Click <span class="uicontrol"><b>Modify</b></span>.</li>
+       <li>Select all NFS services.</li>
+       <li>Click <span class="uicontrol"><b>Save</b></span>.</li>
+      </ol> <p></p></li>
+     <li><span>Delete unnecessary share paths of the <span>product</span>.</span><p></p>
+      <ol type="a">
+       <li>Log in to the target host.</li>
+       <li>Run the following command and view return values:<pre class="screen">showmount -e <em>NFS logical port IP address of the backup storage</em></pre>
+        <ul>
+         <li>If no value is returned, no share path exists. In this case, go to <a href="#EN-US_TOPIC_0000002164819022__li93637435237">4</a>.</li>
+         <li>If there are return values, proceed to <a href="#EN-US_TOPIC_0000002164819022__li38481727193911">3.c</a>.</li>
+        </ul></li>
+       <li id="EN-US_TOPIC_0000002164819022__li38481727193911"><a name="EN-US_TOPIC_0000002164819022__li38481727193911"></a><a name="li38481727193911"></a>Compare the return values.
+        <ol class="substepthirdol">
+         <li>Log in to DeviceManager.</li>
+         <li>Choose <strong>Services</strong> &gt; <strong>File Service</strong> &gt; <strong>File Systems</strong>.</li>
+         <li>Click the sorting icon on the right of <span class="uicontrol"><b>Created</b></span> to sort the records in descending order.</li>
+         <li>Compare the return values. If the latest file system in the return values is different from that displayed on the page, the internal upper limit is exceeded.</li>
+         <li>Contact technical support engineers.
+          <ol>
+           <li>Choose <strong>Services</strong> &gt; <strong>File Service</strong> &gt; <strong>Shares</strong>.</li>
+           <li>Locate the row of the share path that is no longer used, and choose <strong>More</strong> &gt; <strong>Delete</strong>.</li>
+          </ol></li>
+        </ol></li>
+       <li>Delete unnecessary IP addresses.
+        <ol class="substepthirdol">
+         <li>Check the return values. Each share path has a client IP address list. Find the share with a large IP address list (with more than 20 IP addresses) and copy the share name.</li>
+         <li>Log in to DeviceManager.</li>
+         <li>Choose <strong>Services</strong> &gt; <strong>File Service</strong> &gt; <strong>Shares</strong> &gt; <strong>NFS Shares</strong>.</li>
+         <li>Click the search icon next to <strong>Share Name</strong> and enter the copied share name for search.</li>
+         <li>Click <strong>Share Path</strong> and remove unnecessary IP addresses or replace IP addresses in the same network segment with the IP address segment, for example, <strong>192.168.0.0/24,*</strong>.</li>
+        </ol></li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164819022__li93637435237"><a name="EN-US_TOPIC_0000002164819022__li93637435237"></a><a name="li93637435237"></a><span>Re-execute the live mount or instant recovery job.</span></li>
+    </ol>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200060029.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

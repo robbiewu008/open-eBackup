@@ -545,7 +545,11 @@ export class TodayComponent implements OnInit {
             DataMap.Resource_Type.OpenGauss_instance.value,
             DataMap.Resource_Type.informixInstance.value,
             DataMap.Resource_Type.informixClusterInstance.value,
-            DataMap.Resource_Type.saponoracleDatabase.value
+            DataMap.Resource_Type.saponoracleDatabase.value,
+            DataMap.Resource_Type.gaussdbTSingle.value,
+            DataMap.Resource_Type.GaussDB_T.value,
+            DataMap.Resource_Type.KingBaseInstance.value,
+            DataMap.Resource_Type.KingBaseClusterInstance.value
           ],
           this.rowData.sub_type
         )
@@ -1054,7 +1058,8 @@ export class TodayComponent implements OnInit {
                   this.resourceResourceType.OceanBaseCluster.value,
                   this.resourceResourceType.tdsqlInstance.value,
                   this.resourceResourceType.tdsqlDistributedInstance.value,
-                  this.resourceResourceType.OpenGauss_instance.value
+                  this.resourceResourceType.OpenGauss_instance.value,
+                  this.resourceResourceType.oraclePDB.value
                 ],
                 this.resType
               )
@@ -1107,6 +1112,15 @@ export class TodayComponent implements OnInit {
                 ],
                 this.resType
               ) ||
+              (includes(
+                [
+                  DataMap.Resource_Type.oracle.value,
+                  DataMap.Resource_Type.oracleCluster.value
+                ],
+                this.resType
+              ) &&
+                data.generated_by ===
+                  DataMap.CopyData_generatedType.liveMount.value) ||
               this.hideOracleWinodwsOpt(data),
             onClick: () => {
               this.instantRestore();
@@ -1275,9 +1289,17 @@ export class TodayComponent implements OnInit {
             ],
             this.resType
           ) ||
-          (this.resType === this.resourceResourceType.oracle.value &&
-            this.rowData.version &&
-            this.rowData.version.substring(0, 2) === '11') ||
+          (includes(
+            [
+              DataMap.Resource_Type.oracle.value,
+              DataMap.Resource_Type.oracleCluster.value
+            ],
+            this.resType
+          ) &&
+            ((this.rowData.version &&
+              this.rowData.version.substring(0, 2) === '11') ||
+              data.generated_by ===
+                DataMap.CopyData_generatedType.liveMount.value)) ||
           this.hideOracleWinodwsOpt(data),
         permission: OperateItems.InstanceRecovery,
         onClick: () => {
@@ -1436,7 +1458,8 @@ export class TodayComponent implements OnInit {
             this.resourceResourceType.OceanBaseCluster.value,
             this.resourceResourceType.tdsqlInstance.value,
             this.resourceResourceType.OpenGauss_instance.value,
-            this.resourceResourceType.tdsqlDistributedInstance.value
+            this.resourceResourceType.tdsqlDistributedInstance.value,
+            this.resourceResourceType.oraclePDB.value
           ].includes(this.resType)
         ? this.getCopyDataTimeStamp(data)
         : this.resType !== this.resourceResourceType.oracle.value
@@ -1657,7 +1680,34 @@ export class TodayComponent implements OnInit {
         )
       );
     }
-
+    if (
+      includes(
+        [
+          DataMap.Resource_Type.dbTwoDatabase.value,
+          DataMap.Resource_Type.DB2.value
+        ],
+        this.rowData.sub_type
+      )
+    ) {
+      set(
+        hbaseCopyData,
+        'generated_by',
+        get(
+          !!data ? data : this.logData,
+          'generated_by',
+          hbaseCopyData.generated_by
+        )
+      );
+      set(
+        hbaseCopyData,
+        'resource_status',
+        get(
+          !!data ? data : this.logData,
+          'resource_status',
+          hbaseCopyData.resource_status
+        )
+      );
+    }
     return hbaseCopyData;
   }
 

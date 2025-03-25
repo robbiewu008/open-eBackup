@@ -1,0 +1,187 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Registering a ClickHouse Cluster">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164665930.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200152273">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Registering a ClickHouse Cluster</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200152273"></a><a name="EN-US_TOPIC_0000002200152273"></a>
+  <h1 class="topictitle1">Step 1: Registering a ClickHouse Cluster</h1>
+  <div>
+   <p>Before backing up and restoring a ClickHouse database or table set, register the ClickHouse cluster with the <span>product</span>.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p>ClickHouse hosts have been added.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200152273__en-us_topic_0000002199964685_uicontrol12263171215409"><b><span id="EN-US_TOPIC_0000002200152273__en-us_topic_0000002199964685_text1926371213406"><strong>Protection</strong></span> &gt; Big Data &gt; ClickHouse</b></span>.</span></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> page, click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register a ClickHouse cluster.</span><p></p>
+      <ol type="a">
+       <li>Enter the name of the ClickHouse cluster.</li>
+       <li>Adds nodes. <a href="#EN-US_TOPIC_0000002200152273__table196232217593">Table 1</a> describes related parameters. 
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002200152273__table196232217593"></a><a name="table196232217593"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200152273__table196232217593" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>Add ClickHouse nodes.
+          </caption>
+          <colgroup>
+           <col style="width:25.03%">
+           <col style="width:74.97%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="25.03%" id="mcps1.3.3.2.2.2.1.2.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="74.97%" id="mcps1.3.3.2.2.2.1.2.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.1 "><p><span><strong>Hosts</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.2 "><p>Select the registered ClickHouse hosts.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.1 "><p><span><strong>Client installation path</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.2 "><p>Set the installation path of the ClickHouse application in the production environment.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.1 "><p><span><strong>Service IP Address</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.2 "><p>Set the service IP address of a ClickHouse.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.1 "><p><span><strong>Port</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002200152273__p113210173438">Set the port for the client to connect to the ClickHouse server through TCP SSL. The default value is <strong id="EN-US_TOPIC_0000002200152273__b796313193010">21427</strong>. The value ranges from <strong id="EN-US_TOPIC_0000002200152273__b157116514291">21420</strong> to <strong id="EN-US_TOPIC_0000002200152273__b853955472914">21469</strong>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.1 "><p><span><strong>Authentication Method</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.2 "><p>Configure the authentication method for communication between the ClickHouse cluster and <span>product</span>. Set this parameter as follows:</p>
+             <ul>
+              <li><span><strong>Database authentication</strong></span>: Select this option when Kerberos authentication is disabled for the ClickHouse cluster. This mode authenticates usernames, which is less secure.</li>
+              <li><span><strong>Kerberos Authentication</strong></span>: Select this option when Kerberos authentication is enabled for the ClickHouse cluster. The Kerberos protocol is used for identity authentication between the ClickHouse cluster and <span>product</span>.</li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.1 "><p><span><strong>Database Username</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Method</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Database authentication</strong></span></b></span>.</p> <p>Enter the name of a user having the read and write permissions on the protected resources.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Method</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Database authentication</strong></span></b></span>.</p> <p>Enter the password of the database user.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.1 "><p><span><strong>Kerberos</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.1.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Method</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p> <p>Select the created Kerberos authentication. When you register a ClickHouse cluster for the first time, click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> and configure Kerberos authentication parameters. <a href="#EN-US_TOPIC_0000002200152273__table93413354118">Table 2</a> describes related parameters.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div> <p>Set Kerberos authentication parameters as described in <a href="#EN-US_TOPIC_0000002200152273__table93413354118">Table 2</a>.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002200152273__table93413354118"></a><a name="table93413354118"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200152273__table93413354118" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 2 </b>Kerberos authentication parameters
+          </caption>
+          <colgroup>
+           <col style="width:23.24%">
+           <col style="width:76.75999999999999%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="23.24%" id="mcps1.3.3.2.2.2.1.2.4.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="76.75999999999999%" id="mcps1.3.3.2.2.2.1.2.4.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.2 "><p>User-defined Kerberos authentication name.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.1 "><p><span><strong>Principal Name</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.2 "><p>Principal name of Kerberos authentication.</p>
+             <div class="note" id="EN-US_TOPIC_0000002200152273__en-us_topic_0000001337708038_note1997805374919">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p id="EN-US_TOPIC_0000002200152273__p521253601515">Set this parameter to the human-machine username of the big data platform. The user must have the permission to manage the resources to be accessed.</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.1 "><p><span><strong>Configuration Mode</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.2 ">
+             <div class="p">
+              Kerberos authentication mode, which must be the same as that configured on the Kerberos server. Two authentication modes are available:
+              <ul>
+               <li><span><strong>Password</strong></span>: Use the principal name and password for identity authentication.</li>
+               <li><span><strong>Keytab File</strong></span>: Use the principal name and keytab file for identity authentication.</li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.1 "><p><span><strong>Configuration File</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.2 "><p><span class="filepath"><b>.conf</b></span> configuration file (for example, <strong>krb5.conf</strong>) used during Kerberos authentication. Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img src="en-us_image_0000002200152345.png"></span> to upload it to the <span>product</span>.</p> <p><span>Take MRS as an example. For details about how to obtain the configuration file, see "Exporting an Authentication Credential File" in the <a href="https://support.huawei.com/enterprise/en/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">MapReduce Service Product Documentation</a> of the corresponding version.</span></p>
+             <div class="p">
+              If <strong>renew_lifetime</strong> exists in the configuration file, comment it out. Otherwise, the registration may fail. Example:
+              <pre class="screen">#renew_lifetime = 7d</pre>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Password</strong></span></b></span>.</p> <p>Set this parameter to the password of <span class="uicontrol"><b><span><strong>Principal Name</strong></span></b></span>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.1 "><p><span><strong>Confirm Password</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.2 "><p>Confirm password of <span class="uicontrol"><b><span><strong>Principal Name</strong></span></b></span>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.1 "><p><span><strong>Keytab File</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.1.2.4.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Keytab File</strong></span></b></span>. <span class="filepath"><b>.keytab</b></span> configuration file (for example, <strong>krb5.keytab</strong>) used during Kerberos authentication.</p> <p><span>Take MRS as an example. For details about how to obtain the configuration file, see "Exporting an Authentication Credential File" in the <a href="https://support.huawei.com/enterprise/en/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">MapReduce Service Product Documentation</a> of the corresponding version.</span></p> <p>Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img src="en-us_image_0000002164666014.png"></span> to upload it to the <span>product</span>.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ol> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>. After the ClickHouse cluster is registered, the system automatically discovers the ClickHouse database. You can view the newly discovered database on the <span class="uicontrol"><b><span><strong>Databases</strong></span></b></span> tab page.</span></li>
+    </ol>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164665930.html">Backing Up the ClickHouse Database and Table Set</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

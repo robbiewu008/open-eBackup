@@ -261,6 +261,13 @@ export class CreateDistributedNasComponent implements OnInit {
         ) {
           const cluster = [];
           each(recordsTemp, item => {
+            if (
+              item.deviceType ===
+              DataMap.poolStorageDeviceType.OceanProtectX.value
+            ) {
+              item.totalCapacity = item.totalCapacity / 2;
+              item.usedCapacity = item.usedCapacity / 2;
+            }
             cluster.push({
               uuid: item.id,
               threshold: item['availableCapacityRatio'] || 90,

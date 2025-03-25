@@ -20,39 +20,38 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="关于全局搜索">
+<meta name="DC.Title" content="归档VMware复制副本">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="vmware_gud_0074.html">
+<meta name="DC.Relation" scheme="URI" content="vmware_gud_0067.html">
+<meta name="DC.Relation" scheme="URI" content="vmware_gud_0076.html">
+<meta name="DC.Relation" scheme="URI" content="vmware_gud_0077.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="vmware_gud_0075">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>关于全局搜索</title>
+<title>归档VMware复制副本</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="vmware_gud_0075"></a><a name="vmware_gud_0075"></a>
 
-<h1 class="topictitle1">关于全局搜索</h1>
-<div><div class="section" id="vmware_gud_0075__zh-cn_topic_0000001839143177_section71751842573"><h4 class="sectiontitle">什么是全局搜索</h4><p id="vmware_gud_0075__zh-cn_topic_0000001839143177_p8373165115717"><span id="vmware_gud_0075__zh-cn_topic_0000001839143177_text3666162416311">OceanProtect</span>对接入系统的资源提供搜索功能，能够快速查找资源，以及备份副本中的文件、目录。全局副本数据搜索能力为文件级恢复和文件下载提供了基础能力。对于1.6.0及后续版本，<span id="vmware_gud_0075__zh-cn_topic_0000001839143177_text881917586261">OceanProtect</span>还提供了全局标签搜索能力。</p>
-</div>
-<div class="section" id="vmware_gud_0075__zh-cn_topic_0000001839143177_section86197460576"><h4 class="sectiontitle">副本数据全局搜索</h4><p id="vmware_gud_0075__zh-cn_topic_0000001839143177_p62408202155">资源全局搜索是记录资源元数据信息，对资源进行搜索查询。本节主要介绍副本数据全局搜索的业务流程。</p>
-<p id="vmware_gud_0075__zh-cn_topic_0000001839143177_p250214785715"><span id="vmware_gud_0075__zh-cn_topic_0000001839143177_text17381152514312">OceanProtect</span>支持对<span id="vmware_gud_0075__zh-cn_topic_0000001839143177_ph1090510569347">FusionCompute/VMware/华为云Stack/HDFS/NAS文件系统/NAS共享/对象存储/文件集/OpenStack（仅1.6.0及后续版本）/卷/CNware/Hyper-V/阿里云/FusionOne Compute/NDMP</span>的备份副本执行全局搜索，通过对搜索内容创建索引的方式实现快速查找能力，支持在线索引和离线索引两种索引创建方式。在线索引是在备份副本生成后系统立即对其创建索引。离线索引是备份完成后，手动选择副本创建索引。</p>
-<p id="vmware_gud_0075__zh-cn_topic_0000001839143177_p1338174617156">以下详细介绍备份副本的索引创建流程，如<a href="#vmware_gud_0075__zh-cn_topic_0000001839143177_fig8421155119114">图1</a>。</p>
-<div class="fignone" id="vmware_gud_0075__zh-cn_topic_0000001839143177_fig8421155119114"><a name="vmware_gud_0075__zh-cn_topic_0000001839143177_fig8421155119114"></a><a name="zh-cn_topic_0000001839143177_fig8421155119114"></a><span class="figcap"><b>图1 </b>副本数据全局搜索业务流</span><br><span><img class="eddx" id="vmware_gud_0075__zh-cn_topic_0000001839143177_image1942235112118" src="zh-cn_image_0000001792344118.png"></span></div>
-<p id="vmware_gud_0075__zh-cn_topic_0000001839143177_p192201131111218"></p>
-</div>
-<ol id="vmware_gud_0075__zh-cn_topic_0000001839143177_ol13379173724511"><li id="vmware_gud_0075__zh-cn_topic_0000001839143177_li1690624011456">备份任务完成或通过管理界面手动触发索引创建任务后，管理系统调度任务并发送至数据使能引擎。</li><li id="vmware_gud_0075__zh-cn_topic_0000001839143177_li1644074215458">数据使能引擎创建备份副本所在文件系统快照的克隆，并将克隆挂载至<span id="vmware_gud_0075__zh-cn_topic_0000001839143177_text72936281435">OceanProtect</span>。</li><li id="vmware_gud_0075__zh-cn_topic_0000001839143177_li499124310451">数据使能引擎扫描克隆中虚拟磁盘文件的目录和文件列表。</li><li id="vmware_gud_0075__zh-cn_topic_0000001839143177_li1408104624512">根据扫描结果生成索引，插入索引至搜索引擎Elasticsearch。<p id="vmware_gud_0075__zh-cn_topic_0000001839143177_p920794715454"><a name="vmware_gud_0075__zh-cn_topic_0000001839143177_li1408104624512"></a><a name="zh-cn_topic_0000001839143177_li1408104624512"></a>索引建立后用户即可通过界面对备份副本或副本中的文件进行搜索、展示。</p>
-</li></ol>
-<p id="vmware_gud_0075__zh-cn_topic_0000001839143177_p6607173795210"></p>
+<h1 class="topictitle1">归档VMware复制副本</h1>
+<div><p id="vmware_gud_0075__zh-cn_topic_0000002164660758_zh-cn_topic_0000001139902025_p14279250194915">副本复制到目标集群后，如果您需要长期保留目标集群的复制副本，可以将复制副本归档到归档存储。</p>
 </div>
 <div>
+<ul class="ullinks">
+<li class="ulchildlink"><strong><a href="vmware_gud_0076.html">步骤1：创建复制副本归档SLA</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="vmware_gud_0077.html">步骤2：创建复制副本周期性归档</a></strong><br>
+</li>
+</ul>
+
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="vmware_gud_0074.html">全局搜索</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="vmware_gud_0067.html">归档</a></div>
 </div>
 </div>
 

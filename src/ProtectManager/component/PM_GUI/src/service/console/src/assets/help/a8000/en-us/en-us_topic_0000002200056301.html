@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Configuring the DNS Service">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200056305.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200056301">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Configuring the DNS Service</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200056301"></a><a name="EN-US_TOPIC_0000002200056301"></a>
+
+<h1 class="topictitle1">Configuring the DNS Service</h1>
+<div><p id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_p184331146490">After connecting the <span id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_text103741358111512">OceanProtect</span> to the DNS server, external domain names can be resolved and accessed.</p>
+<div class="section" id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_section84408074710"><h4 class="sectiontitle">Prerequisites</h4><ul id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_ul127106719472"><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li1591453144615">The DNS server has been configured and is running properly.</li><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li1171018715475">TCP/UDP port 53 between the <span id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_text11398161191611">OceanProtect</span> and DNS server is enabled.</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_section14363102215470"><h4 class="sectiontitle">Context</h4><ul id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_ul11598536467"><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li1059953174610">A DNS server is used to resolve and access external domain names.</li><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li14591853134619">If you want to configure a standby DNS server, keep the domain names of the active and standby servers consistent.</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_section177292329470"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_ol69744384913"><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li75164286113"><span>Log in to DeviceManager. </span></li><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li9544194974714"><span>Choose <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b8664115914915">Settings</strong> &gt; <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b1566525918493">Basic Information</strong> &gt; <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b466565913491">DNS Service</strong>.</span></li><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li1154414984718"><span>Click <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b1680451297104927">Modify</strong> in the upper right corner of the <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b1421787493104927">Management DNS</strong> area to configure the DNS service for the management plane.</span></li><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li1197583174919"><span>Set <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b252114027104927">Active DNS IP Address</strong>.</span><p><ol type="a" id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_ol097514364916"><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li1260165320466">(Optional) Set <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b1660165344615">Standby DNS IP Address 1</strong>.</li><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li897518364913">(Optional) Set <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b159751632497">Standby DNS IP Address 2</strong>. Set <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b1698817341104927">Standby DNS IP Address 1</strong> first and then <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b1218119624104927">Standby DNS IP Address 2</strong>.</li><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li196055344615">(Optional) Test the connectivity between the DNS server and the storage system.<ul id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_ul11601253144617"><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li860185312461">You can click <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b444506045104927">Test</strong> next to a DNS IP address to test its availability.</li><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li760253124620">You can click <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b98240482304">Test All</strong> to test the connectivity between the DNS server and storage system.</li></ul>
+</li><li id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_li1460253164610">Click <strong id="EN-US_TOPIC_0000002200056301__en-us_topic_0000002200131557_b161585913104927">Save</strong>.</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200056305.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

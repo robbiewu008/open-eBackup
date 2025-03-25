@@ -1,0 +1,73 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step1: (Optional) Obtaining the Certificate">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164771258.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200097901">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step1: (Optional) Obtaining the Certificate</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200097901"></a><a name="EN-US_TOPIC_0000002200097901"></a>
+
+<h1 class="topictitle1">Step1: (Optional) Obtaining the Certificate</h1>
+<div><p>When registering a Huawei Cloud Stack protected environment, you can import the Cinder certificate and CA certificates of storage resources to improve access security between devices. Otherwise, the system cannot verify information about the devices to be accessed, causing security risks. This operation is optional.</p>
+<p>You can obtain it from the administrator or download it by yourself.</p>
+<div class="section"><h4 class="sectiontitle">Downloading the Cinder Certificate</h4><ol><li><span>Open Google Chrome, enter <strong>https://</strong><em>FusionSphere OpenStack reverse proxy IP address</em> in the address box, and press <strong>Enter</strong>.</span><p><p>Obtain the IP address for accessing FusionSphere OpenStack: On the <strong>Tool_generated_IP_Params</strong> sheet of <em>xxx</em><strong>_export_all_EN</strong> exported by the Huawei Cloud Stack deployment tool, search for <strong>Reverse-Proxy</strong> to obtain the corresponding parameter value.</p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>For Huawei Cloud Stack 6.5.1, search for <strong>Cascading-Reverse-Proxy</strong>.</li><li>If Huawei Cloud Stack has multiple regions, obtain the parameter summary file of the primary region.</li></ul>
+</div></div>
+</p></li><li><span>Click <strong>Not secure</strong> on the left of the URL address box, and click <strong>Certificate is not valid</strong>.</span><p><p>The displayed information varies depending on the browser. The following uses Google Chrome 120 as an example.</p>
+<p><span><img src="en-us_image_0000002200097937.png"></span></p>
+</p></li><li><span>In the dialog box that is displayed, click the <strong>General</strong> tab to view the certificate security algorithm level.</span><p><p>Only algorithms with the security level of SHA-256 or higher can pass the verification of the <span>OceanProtect</span>. Therefore, if the certificate security level does not meet the requirements, no further action is required. If the certificate security level meets the requirements, go to <a href="#EN-US_TOPIC_0000002200097901__li11998102765020">4</a>.</p>
+<p><span><img src="en-us_image_0000002200012349.png"></span></p>
+</p></li><li id="EN-US_TOPIC_0000002200097901__li11998102765020"><a name="EN-US_TOPIC_0000002200097901__li11998102765020"></a><a name="li11998102765020"></a><span>Click the <strong>Details</strong> tab and click <strong>Export</strong>.</span></li><li><span>Export the certificate and rename the certificate file <em>XXX</em><strong>.pem</strong> as prompted.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p><em>XXX</em> indicates the actual certificate name. The certificate must be in <strong>.pem</strong> format.</p>
+</div></div>
+</p></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Downloading the Storage Resource CA Certificate</h4><p>If OceanStor Dorado 6.1.5 or later or OceanStor 6.1.5 or later is used as the production storage, the following methods cannot be used to obtain the CA certificate. For details about how to obtain the CA certificate, see "Issuing Certificates from the Built-in CA of the Storage System" in the <a href="https://support.huawei.com/enterprise/en/flash-storage/oceanstor-dorado-series-pid-262794301" target="_blank" rel="noopener noreferrer">OceanStor Dorado Product Documentation</a> or <a href="https://support.huawei.com/enterprise/en/flash-storage/oceanstor-series-pid-262794302" target="_blank" rel="noopener noreferrer">OceanStor Product Documentation</a>.</p>
+<ul id="EN-US_TOPIC_0000002200097901__ul95086551254"><li id="EN-US_TOPIC_0000002200097901__li95354413619">Method 1:<ol id="EN-US_TOPIC_0000002200097901__ol069212181467"><li id="EN-US_TOPIC_0000002200097901__li46921618969">Log in to the <a href="https://support.huawei.com/pki" target="_blank" rel="noopener noreferrer">website</a> for downloading a PKI CA certificate.</li><li id="EN-US_TOPIC_0000002200097901__li269291814611">Click <strong id="EN-US_TOPIC_0000002200097901__b89016591537">Level-2 CA</strong>.</li><li id="EN-US_TOPIC_0000002200097901__li36921181162">Enter <strong id="EN-US_TOPIC_0000002200097901__b99915819418">Huawei IT Product CA</strong> in the search box and click <strong id="EN-US_TOPIC_0000002200097901__b194091613148">Search</strong>.</li><li id="EN-US_TOPIC_0000002200097901__li36926181620">In the query result area, click <span><img id="EN-US_TOPIC_0000002200097901__image177413913493" src="en-us_image_0000002200097941.png"></span> in the row of the target <strong id="EN-US_TOPIC_0000002200097901__b36711810754">Huawei IT Product CA certificate</strong> to download the certificate and save it locally.<div class="note" id="EN-US_TOPIC_0000002200097901__note192173131862"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002200097901__p388713467614">The certificate file must be in .pem format. If the format of the saved certificate file does not meet the requirements, manually change the file name extension to .pem.</p>
+</div></div>
+</li></ol>
+</li><li id="EN-US_TOPIC_0000002200097901__li14508185519517">Method 2:<div class="p" id="EN-US_TOPIC_0000002200097901__p104558181694"><a name="EN-US_TOPIC_0000002200097901__li14508185519517"></a><a name="li14508185519517"></a>The displayed information varies depending on the browser. The following uses Google Chrome 120 as an example.<ol id="EN-US_TOPIC_0000002200097901__ol245918511655"><li id="EN-US_TOPIC_0000002200097901__li94591551955">In the address box of Google Chrome, type the URL of DeviceManager of the storage device and press <strong id="EN-US_TOPIC_0000002200097901__b439014204619">Enter</strong>.</li><li id="EN-US_TOPIC_0000002200097901__li8459451150">Click <strong id="EN-US_TOPIC_0000002200097901__b11879202513613">Not secure</strong> on the left of the URL address box, and click <strong id="EN-US_TOPIC_0000002200097901__b287910251269">Certificate is not valid</strong>.<p id="EN-US_TOPIC_0000002200097901__p6388181019412"><span><img id="EN-US_TOPIC_0000002200097901__image193883101346" src="en-us_image_0000002164771318.png"></span></p>
+</li><li id="EN-US_TOPIC_0000002200097901__li2459175117516">In the dialog box that is displayed, click the <strong id="EN-US_TOPIC_0000002200097901__b193986520307">Details</strong> tab and click <strong id="EN-US_TOPIC_0000002200097901__b8170165693014">Export</strong>.</li><li id="EN-US_TOPIC_0000002200097901__li1945914516513">Export the certificate and rename the certificate file <em id="EN-US_TOPIC_0000002200097901__i74083585309">XXX</em><strong id="EN-US_TOPIC_0000002200097901__b1409558173016">.pem</strong> as prompted.<div class="note" id="EN-US_TOPIC_0000002200097901__note14297195512584"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002200097901__p52973551583"><em id="EN-US_TOPIC_0000002200097901__i3384141183120">XXX</em> indicates the actual certificate name. The certificate must be in <strong id="EN-US_TOPIC_0000002200097901__b93846111315">.pem</strong> format.</p>
+</div></div>
+</li></ol>
+</div>
+</li></ul>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164771258.html">Backing Up an EVS Disk</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

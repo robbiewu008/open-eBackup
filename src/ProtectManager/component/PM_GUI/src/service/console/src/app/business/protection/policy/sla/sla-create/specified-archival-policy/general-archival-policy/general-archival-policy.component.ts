@@ -29,6 +29,7 @@ import {
   PolicyType,
   ProtectResourceAction,
   QosService,
+  RouterUrl,
   StoragesApiService,
   WarningMessageService
 } from 'app/shared';
@@ -184,6 +185,7 @@ export class GeneralArchivalPolicyComponent implements OnInit {
   autoIndexForObs = false; // 对象存储下支持自动索引的应用
   autoIndexForTape = false; // 磁带库下支持自动索引的应用
   archiveLogCopy = false; // 归档日志副本
+  ratePolicyRouterUrl = RouterUrl.ProtectionLimitRatePolicy;
   constructor(
     private fb: FormBuilder,
     public i18n: I18NService,

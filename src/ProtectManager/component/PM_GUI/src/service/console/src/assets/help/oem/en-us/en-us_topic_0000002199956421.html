@@ -1,0 +1,77 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Uploading the Kubernetes Image Package to the Image Repository">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164590062.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199956421">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Uploading the Kubernetes Image Package to the Image Repository</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199956421"></a><a name="EN-US_TOPIC_0000002199956421"></a>
+  <h1 class="topictitle1">Uploading the Kubernetes Image Package to the Image Repository</h1>
+  <div>
+   <p id="EN-US_TOPIC_0000002199956421__p167267322616">Before performing backup or restoration, you need to upload the Kubernetes image package to the image repository. During backup or restoration, you need to use images to deploy the backup pod in the production environment for data migration during the running of backup or restoration jobs. Therefore, you need to upload the Kubernetes image package to the image repository to deploy the backup pod.</p>
+   <div class="section" id="EN-US_TOPIC_0000002199956421__section86041226145019">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p id="EN-US_TOPIC_0000002199956421__p155091416131516">Before uploading the Kubernetes image package, query the version on the <span id="EN-US_TOPIC_0000002199956421__text177672018144616">product</span> WebUI, download the <strong id="EN-US_TOPIC_0000002199956421__b7767121815466"></strong><em id="EN-US_TOPIC_0000002199956421__i11767101812461">XXX</em><em id="EN-US_TOPIC_0000002199956421__i1976717188463">_X.X.X_</em><strong id="EN-US_TOPIC_0000002199956421__b1976718181463">K8s_BackupImage.tgz</strong> installation package based on the queried version, and decompress the installation package to obtain the <strong id="EN-US_TOPIC_0000002199956421__b14768151814619">k8s_backup_image_x86.tar</strong> or <strong id="EN-US_TOPIC_0000002199956421__b2768518104611">k8s_backup_image_arm64.tar</strong> image package. To obtain the installation package:</p>
+    <ul id="EN-US_TOPIC_0000002199956421__ul1470191016457">
+     <li id="EN-US_TOPIC_0000002199956421__li12701151074511">For enterprise users: <a href="https://support.huawei.com/enterprise/en/flash-storage/oceanprotect-databackup-pid-258115661/software/" target="_blank" rel="noopener noreferrer">Click here</a>.</li>
+     <li id="EN-US_TOPIC_0000002199956421__li8194016184520">For carrier users: <a href="https://support.huawei.com/carrier/navi?coltype=software#col=software&amp;path=PBI1-21430725/PBI1-251363742/PBI1-250389226/PBI1-251366310/PBI1-258115661" target="_blank" rel="noopener noreferrer">Click here</a>.
+      <div class="note" id="EN-US_TOPIC_0000002199956421__note17426123215178">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <div class="p" id="EN-US_TOPIC_0000002199956421__p8557192519583">
+         You can query the version in the following way:
+         <ol id="EN-US_TOPIC_0000002199956421__ol1134712489218">
+          <li id="EN-US_TOPIC_0000002199956421__li858118598213">Click <span><img id="EN-US_TOPIC_0000002199956421__image1458902641019" src="en-us_image_0000002199991073.png"></span> in the upper right corner and choose <span id="EN-US_TOPIC_0000002199956421__text97786324433"><strong>About</strong></span>.<p id="EN-US_TOPIC_0000002199956421__p99764566169">In the dialog box that is displayed, the version is displayed in the line where <span id="EN-US_TOPIC_0000002199956421__text8170123961415"><strong>Version</strong></span> is located.</p></li>
+         </ol>
+        </div>
+       </div>
+      </div></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Log in to the FusionCompute Web Client.</span></li>
+     <li><span>Click <strong>Container Management</strong> and click <span><img src="en-us_image_0000002164590342.png"></span> to switch to the containerized application management page.</span></li>
+     <li><span>Choose <strong>Container Images</strong> &gt; <strong>Local Repositories</strong> &gt; <strong>library</strong> to switch to the <strong>library</strong> page.</span></li>
+     <li><span>Click <strong>Upload</strong> to upload the obtained image package to the library.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164590062.html">Preparing for Backup (Applicable to FusionCompute)</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

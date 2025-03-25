@@ -1,0 +1,63 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="归档日志被自动清理，导致日志备份子任务失败">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="gaussdbT_00085.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="gaussdbT_00094">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>归档日志被自动清理，导致日志备份子任务失败</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="gaussdbT_00094"></a><a name="gaussdbT_00094"></a>
+
+<h1 class="topictitle1">归档日志被自动清理，导致日志备份子任务失败</h1>
+<div><div class="section"><h4 class="sectiontitle">故障现象</h4><p>执行GaussDB T的日志备份操作时，任务失败，OceanProtect管理界面的任务详情中显示为“内部错误”。从报错的客户端所在主机获取所有节点的“database_plugin.log”日志文件，可查询到日志报错信息，日志信息示例如下。</p>
+<p><span><img src="zh-cn_image_0000002200001873.png"></span></p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>GaussDB T会遵循参数的设置自动清理归档日志，归档日志被清理后，根据清理数量的不同，可能会产生以下两种异常场景：</p>
+<ul><li>某次日志备份A和下一次全量备份B之间的归档日志被清理，下次日志备份C的副本时间起点将是全量备份B的副本时间，日志备份C的副本时间与日志备份A的副本时间不连续；</li><li>某次全量备份A之后的归档日志被清理，下次日志备份B将失败。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ul><li><strong>方式一</strong>：全量备份<ol><li>在SLA中，配置开启日志备份失败后自动转全量备份，开启后，日志备份失败时，下一次日志备份会自动转为全量备份。</li></ol>
+</li></ul>
+<ul><li><strong>方式二</strong>：减少归档日志的清理<ol><li>登录目标主机的GaussDB T数据库。</li><li>执行以下命令：<pre class="screen"><strong>ALTER SYSTEM SET </strong>PARAMETER<strong>=</strong>'VALUE'</pre>
+<div class="p"><strong>PARAMETER</strong>可替换为以下三个参数，<strong>VALUE</strong>可根据实际情况填写参数，以下参数含义可参见GaussDB T官方文档。<ul><li>ARCH_CLEAN_UPPER_LIMIT：默认值为85%。</li><li>ARCH_CLEAN_LOWER_LIMIT：默认值为15%。</li><li>MAX_ARCH_FILES_SIZE：默认值为16GB。</li></ul>
+</div>
+</li></ol>
+</li></ul>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="gaussdbT_00085.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

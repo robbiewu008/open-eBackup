@@ -1,0 +1,122 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring GaussDB Instances">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200144053.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200144085">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring GaussDB Instances</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200144085"></a><a name="EN-US_TOPIC_0000002200144085"></a>
+
+<h1 class="topictitle1">Restoring GaussDB Instances</h1>
+<div><p>This section describes how to restore a GaussDB copy that has been backed up to the original or a new location.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>Backup, reverse replication, cascaded replication, archive, and replication copies can be used for restoration. GaussDB can be restored to the original location or a new location. Replication copies and their archive copies, cascaded replication copies and their archive copies cannot be used for restoration of GaussDB to the original location.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before performing restoration, ensure that the database is in the normal state.</li></ul>
+<ul><li>Before performing restoration, ensure that backUpAgent has been started on the host where the client is installed. For details about how to start backUpAgent, see "Starting backUpAgent" in the <i><cite>OceanProtect DataBackup 1.5.0-1.6.0 Client Installation Guide</cite></i>.</li><li>Before performing restoration, ensure that the original instance has been managed by TPOPS.</li><li>When data is restored to a new location, ensure that the new instance exists and its deployment mode, shard quantity, version number, and transaction consistency are the same as those of the original instance.</li><li>Point-in-time recovery (PITR) depends on the NTP clock. The clock source configurations must be the same among the nodes where the instances reside in the production environment.</li><li>Before restoration, ensure that the space of the restoration target instance is greater than or equal to the size of the backup copy.</li><li>Before restoration, ensure that the replica consistency protocol of the original instance is the same as that of the instance to which the restoration is performed. </li><li>Before restoration, ensure that <strong>Allow Restoration</strong> has been enabled for the instance to be restored and the project to which the instance belongs. For details, see <a href="en-us_topic_0000002164657790.html">Managing GaussDB Projects</a> and <a href="en-us_topic_0000002200144085.html">Restoring GaussDB Instances</a>.</li><li>Before performing cross-project/TPOPS instance restoration, you need to enable the whitelist. For details, see <a href="en-us_topic_0000002164817470.html">Enabling the gaussdb_feature_supportSyncBackupCrossSite_pcs-lite Whitelist</a>.</li><li>The platform and OS of the new database must be the same as those of the database to be backed up.</li></ul>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>For details about the prerequisites for the production end, see "User Guide &gt; Operation Guide &gt; Data Restoration" in the <a href="https://support.huawei.com/enterprise/en/cloud-computing/gaussdb-pid-251517148?category=operation-maintenance&amp;subcategory=user-guide" target="_blank" rel="noopener noreferrer">Usage Guide</a> of the corresponding GaussDB version.</p>
+</div></div>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="EN-US_TOPIC_0000002200144085__li0198134611381"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002164657806_en-us_topic_0000002199964685_uicontrol17911421542"><b><span id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002164657806_en-us_topic_0000002199964685_text2791124220547"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002164657806_en-us_topic_0000002199964685_text137911742135414"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002164657806_en-us_topic_0000002199964685_text102119344153"><strong>Databases</strong></span> &gt; GaussDB</b></span>.</span><p><div class="note" id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002164657806_en-us_topic_0000002199964685_note10308124081215"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002164657806_en-us_topic_0000002199964685_p5308194081211">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002164657806_en-us_topic_0000002199964685_uicontrol53537515125"><b><span id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002164657806_en-us_topic_0000002199964685_text1035316516128"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002164657806_en-us_topic_0000002199964685_text10353125121211"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002164657806_en-us_topic_0000002199964685_text16353175161210"><strong>Cloud Platforms</strong></span> &gt; GaussDB</b></span>.</p>
+</div></div>
+</p></li><li><span>Search for copies by resource or copy. This section describes how to search for copies by resource.</span><p><p>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> tab page, locate the instance to be restored by instance name and click the instance name.</p>
+</p></li><li><span>On the <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p><p>If <span><img src="en-us_image_0000002200144177.png"></span> is displayed below a month or day, a copy is generated in the month or on the day.</p>
+</p></li><li><span>Find the copy to be restored and choose <span><strong>More</strong></span> &gt; <span><strong>Restore</strong></span> on the right.</span></li><li><span>Specify a copy or point in time for restoration.</span><p><ol type="a"><li>Specify a copy or any point in time between two copies for restoration.<ul><li>Specify a copy for restoration.<p><span><img class="eddx" src="en-us_image_0000002164817598.png"></span></p>
+</li><li>Specify a point in time for restoration.<p><span><img class="eddx" src="en-us_image_0000002164657854.png"></span></p>
+<p>Data can be restored to a specific point in time in the blue part on the timeline. <span><img src="en-us_image_0000002164657846.png"></span> indicates that a copy exists at this point in time. You cannot specify a point in time for restoration if no backup log exists at the point in time.</p>
+</li></ul>
+</li><li>Restore data to the original location or a new location.<ul><li>Restore to the original location<p><a href="#EN-US_TOPIC_0000002200144085__table774016874418">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200144085__table774016874418"></a><a name="table774016874418"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200144085__table774016874418" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for restoring data to the original location</caption><colgroup><col style="width:24.21%"><col style="width:75.79%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="24.21%" id="mcps1.3.4.2.5.2.1.2.1.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="75.79%" id="mcps1.3.4.2.5.2.1.2.1.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="24.21%" headers="mcps1.3.4.2.5.2.1.2.1.1.2.2.3.1.1 "><p><span><strong>Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="75.79%" headers="mcps1.3.4.2.5.2.1.2.1.1.2.2.3.1.2 "><p>Location of the instance, which cannot be modified by users.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Restore to a new location<div class="p">Enter <span class="uicontrol"><b>Basic Information</b></span>. <a href="#EN-US_TOPIC_0000002200144085__table1799312512502">Table 2</a> describes the basic parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200144085__table1799312512502"></a><a name="table1799312512502"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200144085__table1799312512502" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Basic parameters</caption><colgroup><col style="width:11.62%"><col style="width:88.38000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="11.62%" id="mcps1.3.4.2.5.2.1.2.1.2.1.3.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="88.38000000000001%" id="mcps1.3.4.2.5.2.1.2.1.2.1.3.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="11.62%" headers="mcps1.3.4.2.5.2.1.2.1.2.1.3.2.3.1.1 "><div class="p"><strong id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002199969673_b10248325438">Tag</strong><div class="note" id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002199969673_en-us_topic_0000002164660718_note6966434109"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002199969673_en-us_topic_0000002164660718_en-us_topic_0000002200147037_p1816719214566"><span id="EN-US_TOPIC_0000002200144085__en-us_topic_0000002199969673_en-us_topic_0000002164660718_en-us_topic_0000002200147037_ph206615454589">This function is available only in 1.6.0 and later versions.</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="88.38000000000001%" headers="mcps1.3.4.2.5.2.1.2.1.2.1.3.2.3.1.2 "><p>This parameter is displayed when data is restored to a new location.</p>
+<p>You can filter projects by tag.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="11.62%" headers="mcps1.3.4.2.5.2.1.2.1.2.1.3.2.3.1.1 "><p><span><strong>Target Project</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="88.38000000000001%" headers="mcps1.3.4.2.5.2.1.2.1.2.1.3.2.3.1.2 "><p>Fill in the project to be restored to the new location. Only the project where the instance associating with the copy is located can be selected as the target project.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="11.62%" headers="mcps1.3.4.2.5.2.1.2.1.2.1.3.2.3.1.1 "><p><span><strong>Target Instance</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="88.38000000000001%" headers="mcps1.3.4.2.5.2.1.2.1.2.1.3.2.3.1.2 "><p>Name of the instance to be restored to a new location.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>During the restoration, the system deletes archive logs from the target location.</li></ul>
+<ul><li>Before restoration, ensure that the space of the restoration target instance is greater than or equal to the size of the backup copy.</li><li>Data in the target location will be overwritten during restoration.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="11.62%" headers="mcps1.3.4.2.5.2.1.2.1.2.1.3.2.3.1.1 "><p><strong>Version Verification</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="88.38000000000001%" headers="mcps1.3.4.2.5.2.1.2.1.2.1.3.2.3.1.2 "><p>After this function is enabled, the version will be verified. This function applies only to cross-project restoration.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li></ul>
+</li><li>Click <span class="uicontrol"><b>OK</b></span>.</li></ol>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200144053.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

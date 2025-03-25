@@ -1,0 +1,170 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="GaussDB(DWS)副本过期或副本删除任务部分成功，导致已部署客户端的所有CN和DN节点数据残留。">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="DWS_00109.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="DWS_00129-1">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>GaussDB(DWS)副本过期或副本删除任务部分成功，导致已部署客户端的所有CN和DN节点数据残留。</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="DWS_00129-1"></a><a name="DWS_00129-1"></a>
+
+<h1 class="topictitle1">GaussDB(DWS)副本过期或副本删除任务部分成功，导致已部署客户端的所有CN和DN节点数据残留。</h1>
+<div><div class="section"><h4 class="sectiontitle"><span style="color:#5B9BD5;">故障现象</span></h4><p>GaussDB(DWS)副本过期或副本删除任务的“任务状态”为“部分成功”，导致部署GaussDB(DWS)集群的所有CN和DN节点数据有残留。</p>
+</div>
+<div class="section"><h4 class="sectiontitle"><span style="color:#5B9BD5;">可能原因</span></h4><p>“副本过期”和“副本删除”的任务执行时，因为网络原因，导致客户端所在主机与<span>OceanProtect</span>连接断开，删除命令无法下发到节点，导致节点数据有残留。</p>
+</div>
+<div class="section"><h4 class="sectiontitle"><span style="color:#5B9BD5;">处理建议</span></h4><ol><li id="DWS_00129-1__li8936122720112"><a name="DWS_00129-1__li8936122720112"></a><a name="li8936122720112"></a><span>获取执行结果为“部分成功”的、“副本过期”或“副本删除”任务的对象信息和副本ID。</span><p><ol type="a"><li>选择<span class="uicontrol">“<span>任务</span>”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>对于1.5.0版本，请选择<span class="uicontrol">“<span>监控</span> &gt; <span>任务</span>”</span>。</p>
+</div></div>
+</li><li id="DWS_00129-1__li9379123610470"><a name="DWS_00129-1__li9379123610470"></a><a name="li9379123610470"></a>在“历史任务”页签，查看并记录“任务类型”为“副本过期”或“副本删除”、执行结果为“部分成功”的任务所在行的“对象”和“对象类型”。</li><li>单击“任务类型”下<a href="#DWS_00129-1__li9379123610470">1.b</a>对应的任务，在任务详情中查找“开始准备删除副本”的相关描述，获取副本ID。<p>例如：任务详情的描述为“节点（2102355CBW10N9100001-node-0）开始准备删除副本（00640606-7ef1-45bd-909c-a878e1f41d01）”，“00640606-7ef1-45bd-909c-a878e1f41d01”即为副本ID。</p>
+</li></ol>
+</p></li><li><span>获取<a href="#DWS_00129-1__li9379123610470">1.b</a>中对象的资源ID、<span style="color:#4D4D4D;">环境变量文件路径</span>和<span style="color:#4D4D4D;">元数据存储路径</span>。</span><p><ol type="a"><li>选择<span class="uicontrol">“<span id="DWS_00129-1__zh-cn_topic_0000002199964685_text4651950123919">保护</span> &gt; 大数据 &gt; GaussDB(DWS)”</span>，根据<a href="#DWS_00129-1__li9379123610470">1.b</a>中获取的“对象类型”，选择<span class="uicontrol">“集群”</span>、<span class="uicontrol">“Schema集”</span>或<span class="uicontrol">“表集”</span>页签。</li><li>根据<a href="#DWS_00129-1__li9379123610470">1.b</a>中获取的“对象”，在“名称”下找到要进行操作的对象，并在该对象的所在行依次执行以下操作：<ol class="substepthirdol"><li id="DWS_00129-1__li14722922121215"><a name="DWS_00129-1__li14722922121215"></a><a name="li14722922121215"></a>单击菜单栏最右侧的图标<span><img src="zh-cn_image_0000002218632037.png"></span>，在弹出的下拉列表中勾选“资源ID”，查看并记录显示的资源ID，例如：7e6400a7c4b04e62a1faa46478ef7efe。</li><li id="DWS_00129-1__li718515461118"><a name="DWS_00129-1__li718515461118"></a><a name="li718515461118"></a>在菜单栏最右侧的的“操作”一列，单击<span class="uicontrol">“<span>更多</span> &gt; <span>修改</span>”</span>，查看<span style="color:#4D4D4D;">并记录环境变量文件路径</span>，例如：/home/omm/profile/env。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>对于<span class="uicontrol">“Schema集”</span>，请在<span class="uicontrol">“集群”</span>页签，查看该Schema集所属集群的<span style="color:#4D4D4D;">环境变量文件路径</span>。</li><li>若是表集，无需查询<span style="color:#4D4D4D;">环境变量文件路径</span>。</li></ul>
+</div></div>
+</li><li id="DWS_00129-1__li13699155419"><a name="DWS_00129-1__li13699155419"></a><a name="li13699155419"></a>在菜单栏最右侧的的“操作”一列，单击<span class="uicontrol">“<span>更多</span> &gt; 修改保护”</span>，查看<span style="color:#4D4D4D;">并记录备份元数据存储路径</span>，例如：/home/omm/backup。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>若是表集，无需查询<span style="color:#4D4D4D;">环境变量文件路径</span>。</p>
+</div></div>
+</li></ol>
+</li></ol>
+</p></li><li><span>登录DeviceManager管理界面。</span></li><li id="DWS_00129-1__li21721325163318"><a name="DWS_00129-1__li21721325163318"></a><a name="li21721325163318"></a><span>获取NFS IP。</span><p><p>选择“服务 &gt; 网络 &gt; 逻辑端口“，在信息展示区，选择任意一个“数据协议”为“NFS + CIFS”或“NFS”所在行的“IP”作为NFS IP，例如：192.168.20.3。</p>
+</p></li><li><span>获取要挂载的4个文件系统名称，并对各个文件系统赋予操作权限。</span><p><ol type="a"><li id="DWS_00129-1__li8808816122611"><a name="DWS_00129-1__li8808816122611"></a><a name="li8808816122611"></a>获取要挂载的4个文件系统名称。<p><a name="DWS_00129-1__li8808816122611"></a><a name="li8808816122611"></a>选择“服务 &gt;文件系统”，单击“名称”旁边的<span><img src="zh-cn_image_0000002218487285.png"></span>，输入<a href="#DWS_00129-1__li14722922121215">2.b.i</a>中获取的资源ID，获取要挂载的4个文件系统名称，例如：</p>
+<ul><li>文件系统0：Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0</li><li>文件系统1：Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1</li><li>文件系统2：Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2</li><li>文件系统3：Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3</li></ul>
+<p>其中，“7e6400a7c4b04e62a1faa46478ef7efe”为<a href="#DWS_00129-1__li14722922121215">2.b.i</a>中获取的资源ID。</p>
+</li><li id="DWS_00129-1__li1256254717263"><a name="DWS_00129-1__li1256254717263"></a><a name="li1256254717263"></a>依次为<a href="#DWS_00129-1__li8808816122611">5.a</a>中的4个文件系统赋予操作权限。<ol class="substepthirdol"><li id="DWS_00129-1__li14457161710329"><a name="DWS_00129-1__li14457161710329"></a><a name="li14457161710329"></a>单击文件系统的名称，在弹出的对话框中选择“共享 &gt; NFS共享”页签。</li><li>单击“共享路径”中的内容，在弹出的对话框中选择“权限”页签。</li><li>单击“增加”，设置客户端属性，要设置的参数和参数值如<a href="#DWS_00129-1__zh-cn_topic_0174008382_nfs_client_add_tab01">表1</a>所示。
+<div class="tablenoborder"><a name="DWS_00129-1__zh-cn_topic_0174008382_nfs_client_add_tab01"></a><a name="zh-cn_topic_0174008382_nfs_client_add_tab01"></a><table cellpadding="4" cellspacing="0" summary="" id="DWS_00129-1__zh-cn_topic_0174008382_nfs_client_add_tab01" frame="border" border="1" rules="all"><caption><b>表1 </b>客户端属性</caption><colgroup><col style="width:36.67%"><col style="width:63.33%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="36.67%" id="mcps1.3.3.2.5.2.1.2.2.3.2.2.3.1.1"><p>参数名称</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="63.33%" id="mcps1.3.3.2.5.2.1.2.2.3.2.2.3.1.2"><p>参数设置</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="36.67%" headers="mcps1.3.3.2.5.2.1.2.2.3.2.2.3.1.1 "><p>类型</p>
+</td>
+<td class="cellrowborder" valign="top" width="63.33%" headers="mcps1.3.3.2.5.2.1.2.2.3.2.2.3.1.2 "><p>主机</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="36.67%" headers="mcps1.3.3.2.5.2.1.2.2.3.2.2.3.1.1 "><p>客户端</p>
+</td>
+<td class="cellrowborder" valign="top" width="63.33%" headers="mcps1.3.3.2.5.2.1.2.2.3.2.2.3.1.2 "><p>*</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="36.67%" headers="mcps1.3.3.2.5.2.1.2.2.3.2.2.3.1.1 "><p>UNIX权限</p>
+</td>
+<td class="cellrowborder" valign="top" width="63.33%" headers="mcps1.3.3.2.5.2.1.2.2.3.2.2.3.1.2 "><p>读写</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="36.67%" headers="mcps1.3.3.2.5.2.1.2.2.3.2.2.3.1.1 "><p>root权限限制</p>
+</td>
+<td class="cellrowborder" valign="top" width="63.33%" headers="mcps1.3.3.2.5.2.1.2.2.3.2.2.3.1.2 "><p>no_root_squash</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.2.2.3.2.2.3.1.1 mcps1.3.3.2.5.2.1.2.2.3.2.2.3.1.2 "><p>其他参数保持默认值，无需修改。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li id="DWS_00129-1__li205610556328"><a name="DWS_00129-1__li205610556328"></a><a name="li205610556328"></a>完成配置后，单击“确定”。<p><a name="DWS_00129-1__li205610556328"></a><a name="li205610556328"></a>添加的客户端将在客户端列表中展示。</p>
+</li><li>重复<a href="#DWS_00129-1__li14457161710329">5.b.i</a>~<a href="#DWS_00129-1__li205610556328">5.b.iv</a>，依次为其他文件系统赋予权限。</li></ol>
+</li></ol>
+</p></li><li><span>使用PuTTY，登录任意一个已部署客户端的GaussDB(DWS)集群的CN节点。</span></li><li id="DWS_00129-1__li18483122304417"><a name="DWS_00129-1__li18483122304417"></a><a name="li18483122304417"></a><span>执行以下命令，依次为<a href="#DWS_00129-1__li8808816122611">5.a</a>中的4个文件系统创建本地挂载路径。</span><p><pre class="screen">mkdir /mnt/<em>文件系统</em><em>名称</em></pre>
+<p>其中，“文件系统名称”为<a href="#DWS_00129-1__li8808816122611">5.a</a>中获取的文件系统名称。例如：</p>
+<pre class="screen">mkdir /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0</pre>
+<pre class="screen">mkdir /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1</pre>
+<pre class="screen">mkdir /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2</pre>
+<pre class="screen">mkdir /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3</pre>
+<p>挂载成功后，为4个文件系统创建的本地挂载路径分别为：</p>
+<ul><li>本地挂载路径0：/mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0</li><li>本地挂载路径1：/mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1</li><li>本地挂载路径2：/mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2</li><li>本地挂载路径3：/mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3</li></ul>
+</p></li><li><span>执行以下命令，挂载文件系统。</span><p><pre class="screen">mount -t nfs <em>nfs ip</em>:/<em>文件系统名称</em> <em>本地挂载路径</em></pre>
+<p>其中：</p>
+<ul><li>“nfs ip”为<a href="#DWS_00129-1__li21721325163318">4</a>中获取的NFS IP。</li><li>“文件系统名称”为<a href="#DWS_00129-1__li8808816122611">5.a</a>中获取的4个文件系统名称。</li><li>“本地挂载路径”为<a href="#DWS_00129-1__li18483122304417">7</a>中创建的4个本地挂载路径。</li></ul>
+<p>例如：</p>
+<pre class="screen">mount -t nfs 192.168.20.3:/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0 /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0</pre>
+<pre class="screen">mount -t nfs 192.168.20.3:/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1 /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1</pre>
+<pre class="screen">mount -t nfs 192.168.20.3:/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2 /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2</pre>
+<pre class="screen">mount -t nfs 192.168.20.3:/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3 /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3</pre>
+</p></li><li id="DWS_00129-1__li8221161381620"><a name="DWS_00129-1__li8221161381620"></a><a name="li8221161381620"></a><span>获取backup_key。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>若是表集，请跳过该步骤，直接执行<a href="#DWS_00129-1__li11291179123018">10</a>。</p>
+</div></div>
+<ol type="a"><li>执行以下命令，打开copyInfo.txt文件。<pre class="screen">vi <em>本地挂载路径0</em>/source_policy_<em>resource_id</em>_Context_Global_MD/meta/<em>copy_id</em>/copyInfo.txt</pre>
+<p>其中：</p>
+<ul><li>“本地挂载路径0”为<a href="#DWS_00129-1__li18483122304417">7</a>中创建的本地挂载路径0。</li><li>“resource_id”为<a href="#DWS_00129-1__li14722922121215">2.b.i</a>中获取的资源ID。</li><li>“copy_id”为<a href="#DWS_00129-1__li8936122720112">1</a>中获取的副本ID。</li></ul>
+<p>例如：</p>
+<pre class="screen">vi /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0/source_policy_7e6400a7c4b04e62a1faa46478ef7efe_Context_Global_MD/meta/00640606-7ef1-45bd-909c-a878e1f41d01/copyInfo.txt</pre>
+</li><li>查看并记录copyInfo.txt文件中关键字段“dws_backup_id”的值。<p>copyInfo.txt文件的内容样例如下：</p>
+<pre class="screen">{"dws_backup_id": "20250208_114002", "hostname": "dws01", "host_ip": "192.168.104.164", "cluster_nodes": ["dws03", "dws01", "dws02"], "storage_esn": ["2102355CBW10N9100001"], "version": "8.2.1", "storage_id": "", "storage_type": "storage_unit", "BackAgent_id": "07e9e65c-ef22-43f8-9d9c-3eb1afeb1b6b", "backupToolType": 0, "metadataPath": "/home/omm/backup", "copy_id": "fbcca29f-b913-477d-81aa-09c031c35e81", "totalDataSize": 260, "backup_time": 1738986013}</pre>
+<p>"20250208_114002"即为“backup_key”的值。</p>
+</li></ol>
+</p></li><li id="DWS_00129-1__li11291179123018"><a name="DWS_00129-1__li11291179123018"></a><a name="li11291179123018"></a><span>执行以下命令，删除元数据仓和数据仓的数据。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>若是表集，请跳过步骤<a href="#DWS_00129-1__li1047516520486">10.a</a>~<a href="#DWS_00129-1__li12631544115518">10.c</a>，直接执行<a href="#DWS_00129-1__li1795475614913">10.d</a>。</p>
+</div></div>
+<ol type="a"><li id="DWS_00129-1__li1047516520486"><a name="DWS_00129-1__li1047516520486"></a><a name="li1047516520486"></a>执行以下命令，切换到数据库用户。<pre class="screen">su - Account</pre>
+<p>以数据库用户omm为例：</p>
+<pre class="screen">su - omm</pre>
+</li><li>执行以下命令，读取环境变量文件。<pre class="screen">source <em>env_file</em></pre>
+<p>其中，“env_file”为<a href="#DWS_00129-1__li718515461118">2.b.ii</a>获取的环境变量文件路径。例如：</p>
+<pre class="screen">source /home/omm/profile/env</pre>
+</li><li id="DWS_00129-1__li12631544115518"><a name="DWS_00129-1__li12631544115518"></a><a name="li12631544115518"></a>执行以下命令，删除前缀为backup_key的目录下的内容。 <pre class="screen">gs_ssh -c "rm -rf <em>metadata_destination</em>/roach/<em>backup_key</em>*"</pre>
+<p>其中：</p>
+<ul><li>“metadata_destination”为<a href="#DWS_00129-1__li13699155419">2.b.iii</a>获取的<span style="color:#4D4D4D;">备份元数据存储路径</span>。</li><li>“backup_key”为<a href="#DWS_00129-1__li8221161381620">9</a>获取的backup_key。</li></ul>
+<p>例如：</p>
+<pre class="screen">gs_ssh -c "rm -rf /home/omm/backup/roach/20250208_114002*"</pre>
+</li><li id="DWS_00129-1__li1795475614913"><a name="DWS_00129-1__li1795475614913"></a><a name="li1795475614913"></a>执行以下命令，清除元数据仓的数据。<pre class="screen">rm -rf <em>本地挂载路径0</em>/source_policy_<em>resource_id</em>_Context_Global_MD/meta/<em>copy_id</em>/*</pre>
+<ul><li>“本地挂载路径0”为<a href="#DWS_00129-1__li18483122304417">7</a>中创建的本地挂载路径0。</li><li>“resource_id”为<a href="#DWS_00129-1__li14722922121215">2.b.i</a>中获取的资源ID。</li><li>“copy_id”为<a href="#DWS_00129-1__li8936122720112">1</a>中获取的副本ID。</li></ul>
+<p>例如：</p>
+<pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0/source_policy_7e6400a7c4b04e62a1faa46478ef7efe_Context_Global_MD/meta/00640606-7ef1-45bd-909c-a878e1f41d01/*</pre>
+</li><li>执行以下命令，删除数据仓数据。<pre class="screen">rm -rf <em>本地挂载路径</em>/data/<em>copy_id</em>/*</pre>
+<p>其中，“本地挂载路径”为<a href="#DWS_00129-1__li18483122304417">7</a>中的4个本地挂载路径，“copy_id”为<a href="#DWS_00129-1__li8936122720112">1</a>中获取的副本ID。例如：</p>
+<pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0/data/00640606-7ef1-45bd-909c-a878e1f41d01/*</pre>
+<pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1/data/00640606-7ef1-45bd-909c-a878e1f41d01/*</pre>
+<pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2/data/00640606-7ef1-45bd-909c-a878e1f41d01/*</pre>
+<pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3/data/00640606-7ef1-45bd-909c-a878e1f41d01/*</pre>
+</li></ol>
+</p></li><li><span>完成残留数据的清除后，请对挂载路径进行解挂载、并移除为文件系统赋予的权限。</span><p><ol type="a"><li>执行以下命令，进行解挂载操作。<pre class="screen">umount <em>本地挂载路径</em></pre>
+<p>“本地挂载路径”为<a href="#DWS_00129-1__li18483122304417">7</a>中的4个本地挂载路径。例如：</p>
+<pre class="screen">umount /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0</pre>
+<pre class="screen">umount /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1</pre>
+<pre class="screen">umount /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2</pre>
+<pre class="screen">umount /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3</pre>
+</li><li>执行以下命令，解挂完成后删除创建的目录。<pre class="screen">rm -rf <em>本地挂载路径</em></pre>
+<p>“本地挂载路径”为<a href="#DWS_00129-1__li18483122304417">7</a>中的4个本地挂载路径。例如：</p>
+<pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_0</pre>
+<pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_1</pre>
+<pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_2</pre>
+<pre class="screen">rm -rf /mnt/Database_7e6400a7c4b04e62a1faa46478ef7efe_InnerDirectory_su0_3</pre>
+</li><li>登录DeviceManager管理界面，依次将<a href="#DWS_00129-1__li1256254717263">5.b</a>中为4个文件系统赋予的权限删除。<p>在<a href="#DWS_00129-1__li205610556328">5.b.iv</a>的客户端列表中，单击客户端为“*”所在行右侧的“更多 &gt; 移除”。</p>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="DWS_00109.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

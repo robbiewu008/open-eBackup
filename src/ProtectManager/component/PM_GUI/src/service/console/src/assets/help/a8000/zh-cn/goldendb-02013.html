@@ -1,0 +1,63 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤3：（可选）修改dbagent.ini备份文件">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="goldendb-00011.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="goldendb-02013">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤3：（可选）修改dbagent.ini备份文件</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="goldendb-02013"></a><a name="goldendb-02013"></a>
+
+<h1 class="topictitle1">步骤3：（可选）修改<strong>dbagent.ini</strong>备份文件</h1>
+<div><p>通过优化备份复制线程和压缩线程，提升产品的性能，所有数据节点都要执行。</p>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><p>建议通过阶梯测试，即backup_copy_theads和compress按2、4、8、16逐步增加，并记录CPU、内存、I/O和压缩时间。</p>
+<ul><li>如果backup_copy_theads增加不合理，可能会导致I/O争用，影响数据库的正常运行（当磁盘最大I/O吞吐量是500MB/s，如果设置backup_copy_threads为8时，xtrabackup工具试图消耗800MB/s。此时备份速率可能会受限，无法充分利用8线程的能力，同时该主机中的其他应用其他应用I/O可能下降，查询延迟可能增加2-5倍。）。</li><li>如果compress增加不合理可能导致：<ul><li>资源竞争加剧（如果CPU调度开销增加5-15%，内存压力可能引发交换（Swap），导致延迟增加50%以上）。</li><li>I/O瓶颈，I/O过载导致压缩速度无法线性扩展（如线程数翻倍，速度仅提升30%），且高延迟可能影响其他依赖磁盘的服务（如数据库响应时间增加20%）。</li></ul>
+</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>用PuTTY工具，以root用户登录数据节点的主机。</span></li><li><span>执行vim <em>数据节点用户的根目录</em>/etc/dbagent.ini，打开dbagent.ini文件。</span><p><div class="p">例如：<pre class="screen">vim /home/goldendb/zxdb1/etc/dbagent.ini</pre>
+</div>
+</p></li><li><span>修改备份复制线程和压缩线程的参数。</span><p><pre class="screen">backup_copy_threads = <em>备份复制线程</em>
+compress = <em>压缩线程值</em></pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>备份复制线程和压缩线程值根据自身设备进行配置，可配置范围1~32，通常配置4~8即可。</p>
+</div></div>
+</p></li><li><span>按“Esc”，输入：wq!保存退出。</span></li><li><span>切到数据节点的用户，执行以下命令，重新加载<strong>dbagent.ini</strong>文件。</span><p><pre class="screen">dbtool -dbagent -lc</pre>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="goldendb-00011.html">备份GoldenDB数据库</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

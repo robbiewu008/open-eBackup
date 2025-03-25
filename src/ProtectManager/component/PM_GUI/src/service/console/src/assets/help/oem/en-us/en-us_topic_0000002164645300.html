@@ -1,0 +1,288 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring a NAS Share">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200131633.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164645300">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring a NAS Share</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164645300"></a><a name="EN-US_TOPIC_0000002164645300"></a>
+  <h1 class="topictitle1">Restoring a NAS Share</h1>
+  <div>
+   <p>This section describes how to restore a NAS share that has been backed up to the original location or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_p13356226151412">The <span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_text143181219121420">product</span> supports restoration to the original location or a new location using backup copies or replication copies (data cannot be restored to the original location).</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li id="EN-US_TOPIC_0000002164645300__li632210479486">To restore a NAS share to a new location, register the NAS share at the new location or the storage device where the NAS share resides with the <span id="EN-US_TOPIC_0000002164645300__text5542395141">product</span>. The following lists the supported storage device types.
+      <ul id="EN-US_TOPIC_0000002164645300__ul571916508480">
+       <li id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_en-us_topic_0000001792360666_li3415133617174">OceanStor Dorado V700R001</li>
+       <li id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_en-us_topic_0000001792360666_li1739551514266">OceanStor V700R001</li>
+       <li id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_en-us_topic_0000001792360666_li984654311123">OceanStor Dorado 6.x</li>
+       <li id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_en-us_topic_0000001792360666_li151737411958">OceanStor 6.x</li>
+       <li id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_en-us_topic_0000001792360666_li72988389413">OceanProtect 1.3.0 and later versions</li>
+       <li id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_li15575172132717">OceanStor V5</li>
+       <li id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_li632419162715">OceanStor Pacific</li>
+       <li id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_li207631011131214">NetApp ONTAP</li>
+      </ul></li>
+     <li id="EN-US_TOPIC_0000002164645300__li17945216184613">If you want to restore a NAS share to a new location, you need to configure the access permission for the <span id="EN-US_TOPIC_0000002164645300__text11734103918143">product</span> on the new storage device. For details, see <a href="en-us_topic_0000002164645244.html">Step 4: Configuring Access Permissions (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)</a>. During the operation, configure a client or add a user for the target NAS share.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li id="EN-US_TOPIC_0000002164645300__li0198134611381"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002199964685_uicontrol1387642214492"><b><span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002199964685_text18761122134919"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002199964685_text087662214918"><strong>Copy Data</strong></span> &gt; File Systems &gt; <span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002199964685_text2897115217345"><strong>NAS Shares</strong></span></b></span>.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002199964685_note1634925131911">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002199964685_p1934182521913">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002199964685_uicontrol08045348196"><b><span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002199964685_text980410346197"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002199964685_text4804183441910"><strong>Copy Data</strong></span> &gt; File Services &gt; <span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002199964685_text20804834141911"><strong>NAS Shares</strong></span></b></span>.</p>
+       </div>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164645300__li87691438131514"><span>A copy can be searched by NAS share resource or copy. This section uses the NAS share resource as an example.</span><p></p><p id="EN-US_TOPIC_0000002164645300__p142551140161511">On the <span id="EN-US_TOPIC_0000002164645300__text6827103218214"><strong>Resources</strong></span> tab page, locate the NAS share to be recovered by NAS share name and click the name.</p> <p></p></li>
+     <li><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_uicontrol1812414562220"><b><span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_text18993182162710"><strong>Copy Data</strong></span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p></p><p id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_p9918150182310">If <span><img id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_image886000161711" src="en-us_image_0000002200131661.png"></span> is displayed under a month or date, copies exist in the month or on the date.</p> <p></p></li>
+     <li><span>In the row of the target copy, choose <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_uicontrol4705161613273"><b><span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_text04951528155216"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_text12444191814117"><strong>Restore</strong></span></b></span>.</span></li>
+     <li><span>For 1.6.0, select <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_uicontrol159431826474"><b>Direct Recovery</b></span> if the copy is generated when the <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_uicontrol184781526184619"><b>Automatic Indexing of Copies Archived to Tapes</b></span> function is enabled and is archived to tapes. For other copies, skip this step. The <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_uicontrol1261712213413"><b>Direct Recovery</b></span> function is enabled by default. In this case, the copy archived to tapes is directly restored without generating intermediate files, saving space. After this function is disabled, intermediate files will be generated during restoration, occupying space; however, the restoration speed is accelerated.</span></li>
+     <li><span>Restore a NAS share to its original location or a new location.</span><p></p>
+      <ul>
+       <li>Restore data to the original location.<p><a href="#EN-US_TOPIC_0000002164645300__table1452025982813">Table 1</a> describes the related parameters.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002164645300__table1452025982813"></a><a name="table1452025982813"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164645300__table1452025982813" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>Parameters for restoring data to the original location
+          </caption>
+          <colgroup>
+           <col style="width:25.840000000000003%">
+           <col style="width:74.16%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="25.840000000000003%" id="mcps1.3.4.2.6.2.1.1.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="74.16%" id="mcps1.3.4.2.6.2.1.1.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.840000000000003%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span><strong>Location</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.16%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>Location of a NAS share, which cannot be modified.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.840000000000003%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164645300__p1546219412123"><strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_b83934218124">Channels</strong></p></td>
+            <td class="cellrowborder" valign="top" width="74.16%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>Number of subjobs that can be concurrently executed on the clients when restoration is executed. The default number of channels for the NAS share is <strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046061_b75076301131">10</strong>, and the maximum number is <strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046061_b10507030131313">40</strong>.</p> <p>More channels indicate better backup performance and a higher NAS share access rate. However, more CPUs and memory of the client will be occupied. Each channel occupies about 200 MB memory.</p> <p>For 1.5.0, you are advised to reduce the number of channels due to limited container resources if the client is deployed on the <span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046061_text1999610369555">product</span>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.840000000000003%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164645300__p13142117151214"><strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_b7801200193818">Clients</strong></p></td>
+            <td class="cellrowborder" valign="top" width="74.16%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164645300__p1014247111216">Select clients for performing backup jobs.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.840000000000003%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.16%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>If files with the same names exist in the restoration path, you can choose to replace or skip existing files.</p>
+             <ul>
+              <li><span><strong>Replace existing files</strong></span></li>
+              <li><span><strong>Skip existing files</strong></span></li>
+              <li><span><strong>Only replace the files older than the restoration file</strong></span></li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.840000000000003%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164645300__p1197904335715"><strong id="EN-US_TOPIC_0000002164645300__b783015417449">File Restoration Sequence</strong></p></td>
+            <td class="cellrowborder" valign="top" width="74.16%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164645300__p6979124310575">File name order, in which files are to be restored. This function is disabled by default. When it is enabled, data can be restored in lexicographical or reverse lexicographical order.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>Restore data to a new location.<p><a href="#EN-US_TOPIC_0000002164645300__en-us_topic_0000001792520482_table429861453516">Table 2</a> describes the parameters for restoring data to the <span><strong>OceanStor V5</strong></span>, OceanStor Pacific, or NetApp ONTAP.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002164645300__en-us_topic_0000001792520482_table429861453516"></a><a name="en-us_topic_0000001792520482_table429861453516"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164645300__en-us_topic_0000001792520482_table429861453516" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 2 </b>Parameters for restoring data to the <span><strong>OceanStor V5</strong></span>, OceanStor Pacific, or NetApp ONTAP
+          </caption>
+          <colgroup>
+           <col style="width:25.330000000000002%">
+           <col style="width:74.67%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="25.330000000000002%" id="mcps1.3.4.2.6.2.1.2.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="74.67%" id="mcps1.3.4.2.6.2.1.2.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.330000000000002%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span><strong>Storage Device</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.67%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>Select the storage device that resides at a new location.</p>
+             <div class="note">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p id="EN-US_TOPIC_0000002164645300__p105412525318">The NAS share registered using the <a href="en-us_topic_0000002200046089.html">(Optional) Step 5: Registering a NAS Share</a> belongs to the <strong id="EN-US_TOPIC_0000002164645300__b993784413119">otherDevice</strong> storage device.</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.330000000000002%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span><strong>Share Name</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.67%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>Select the name of the share that accesses a file system. If no share is available, click <span><strong>Register</strong></span> to add a NAS share. For details about NAS share registration parameters, see <a href="en-us_topic_0000002200046089.html#EN-US_TOPIC_0000002200046089__table1929515516558">Table 1</a>.</p>
+             <div class="note">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <ul>
+                <li>For an NFS share, ensure that the current device has the read and write permissions on the NFS share directory and the <strong>no_root_squash</strong> option is enabled. For details about how to configure NFS share access permissions, see <a href="en-us_topic_0000002164645244.html">Step 4: Configuring Access Permissions (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)</a>.</li>
+                <li>For a CIFS share, ensure that the current device has the read and write permissions on the CIFS share directory. You are advised to use a user in the Administrator group for backup. Otherwise, only files and directories whose read and write permissions are granted to the device can be backed up. For details about how to configure CIFS share access permissions, see <a href="en-us_topic_0000002164645244.html">Step 4: Configuring Access Permissions (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)</a>.</li>
+                <li>For an NFS/CIFS share, ensure that the security style of the file system to which the current share belongs is the same as that of the file system to which the backup share belongs. Otherwise, the file permission may be changed.</li>
+                <li id="EN-US_TOPIC_0000002164645300__li455841518615">If you select <strong id="EN-US_TOPIC_0000002164645300__b3395162023216">otherDevice</strong> for <strong id="EN-US_TOPIC_0000002164645300__b1161002293216">Storage Device</strong> and no share name is available, click <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__uicontrol743075417202"><b>Register</b></span>. After the registration is complete, click <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__uicontrol10630846192012"><b>OK</b></span>. You can view the share name in the drop-down list box. For details about the parameters for registering a share name, see <a href="en-us_topic_0000002200046089.html#EN-US_TOPIC_0000002200046089__table1929515516558">Table 1</a>.</li>
+                <li id="EN-US_TOPIC_0000002164645300__li12311351311">When a CIFS share is used for restoration, if the user to which the original copy file belongs does not exist in the target storage for restoration, the permissions of the user cannot be restored. For details about how to view user information, see <a href="en-us_topic_0000002164804940.html">Viewing User Information</a>.</li>
+               </ul>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.330000000000002%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002164645300_en-us_topic_0000002200046005_b83934218124">Channels</strong></p></td>
+            <td class="cellrowborder" valign="top" width="74.67%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>Number of subjobs that can be concurrently executed on the clients when restoration is executed. The default number of channels for the NAS share is <strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046061_b75076301131_1">10</strong>, and the maximum number is <strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046061_b10507030131313_1">40</strong>.</p> <p>More channels indicate better backup performance and a higher NAS share access rate. However, more CPUs and memory of the client will be occupied. Each channel occupies about 200 MB memory.</p> <p>For 1.5.0, you are advised to reduce the number of channels due to limited container resources if the client is deployed on the <span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046061_text1999610369555_1">product</span>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.330000000000002%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046005_b7801200193818_1">Clients</strong></p></td>
+            <td class="cellrowborder" valign="top" width="74.67%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>Select clients for performing backup jobs.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.330000000000002%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="74.67%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>If files with the same names exist in the restoration path, you can choose to replace or skip existing files.</p>
+             <ul>
+              <li><span><strong>Replace existing files</strong></span></li>
+              <li><span><strong>Skip existing files</strong></span></li>
+              <li><span><strong>Only replace the files older than the restoration file</strong></span></li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="25.330000000000002%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002164645300_b783015417449">File Restoration Sequence</strong></p></td>
+            <td class="cellrowborder" valign="top" width="74.67%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>File name order, in which files are to be restored. This function is disabled by default. When it is enabled, data can be restored in lexicographical or reverse lexicographical order.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div> <p><a href="#EN-US_TOPIC_0000002164645300__en-us_topic_0000001792520482_table1248313820599">Table 3</a> describes the parameters for restoring data to OceanProtect 1.3.0 or later or OceanStor Dorado V700R001/OceanStor V700R001/OceanStor Dorado 6.x/OceanStor 6.x.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002164645300__en-us_topic_0000001792520482_table1248313820599"></a><a name="en-us_topic_0000001792520482_table1248313820599"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164645300__en-us_topic_0000001792520482_table1248313820599" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 3 </b>Parameters for restoring data to OceanProtect 1.3.0 or later or OceanStor Dorado V700R001/OceanStor V700R001/OceanStor Dorado 6.x/OceanStor 6.x
+          </caption>
+          <colgroup>
+           <col style="width:24.990000000000002%">
+           <col style="width:75.01%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="24.990000000000002%" id="mcps1.3.4.2.6.2.1.2.4.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="75.01%" id="mcps1.3.4.2.6.2.1.2.4.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="24.990000000000002%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><span><strong>Storage Device</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="75.01%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>Select the storage device that resides at a new location.</p>
+             <div class="note">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p>The NAS share registered using the <a href="en-us_topic_0000002200046089.html">(Optional) Step 5: Registering a NAS Share</a> belongs to the <strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002164645300_b993784413119">otherDevice</strong> storage device.</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="24.990000000000002%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><span><strong>File Systems</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="75.01%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>Select the target file system for restoration.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="24.990000000000002%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><span><strong>Share Name</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="75.01%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>Select the share name of the target file system for restoration.</p>
+             <div class="note">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <ul>
+                <li>For an NFS share, ensure that the current device has the read and write permissions on the NFS share directory and the <strong>no_root_squash</strong> option is enabled. For details about how to configure NFS share access permissions, see <a href="en-us_topic_0000002164645244.html">Step 4: Configuring Access Permissions (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)</a>.</li>
+                <li>For a CIFS share, ensure that the current device has the read and write permissions on the CIFS share directory. You are advised to use a user in the Administrator group for backup. Otherwise, only files and directories whose read and write permissions are granted to the device can be backed up. For details about how to configure CIFS share access permissions, see <a href="en-us_topic_0000002164645244.html">Step 4: Configuring Access Permissions (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)</a>.</li>
+                <li>For an NFS/CIFS share, ensure that the security style of the file system to which the current share belongs is the same as that of the file system to which the backup share belongs. Otherwise, the file permission may be changed.</li>
+                <li>If you select <strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002164645300_b3395162023216">otherDevice</strong> for <strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002164645300_b1161002293216">Storage Device</strong> and no share name is available, click <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002164645300_uicontrol743075417202"><b>Register</b></span>. After the registration is complete, click <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002164645300_uicontrol10630846192012"><b>OK</b></span>. You can view the share name in the drop-down list box. For details about the parameters for registering a share name, see <a href="en-us_topic_0000002200046089.html#EN-US_TOPIC_0000002200046089__table1929515516558">Table 1</a>.</li>
+                <li>When a CIFS share is used for restoration, if the user to which the original copy file belongs does not exist in the target storage for restoration, the permissions of the user cannot be restored. For details about how to view user information, see <a href="en-us_topic_0000002164804940.html">Viewing User Information</a>.</li>
+               </ul>
+               <p>Ensure that the share protocol (NFS/CIFS) of the share is the same as that of the file system where the copy resides. Otherwise, file permission information will be lost during restoration. For example, if the share protocol of the file system where the copy resides is NFS and <strong>CIFS</strong> is selected for <strong>Share Name</strong> during restoration, the NFS permission information of the file system will be lost after restoration.</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="24.990000000000002%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><strong>Domain Name/IP Address</strong></p></td>
+            <td class="cellrowborder" valign="top" width="75.01%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>Domain name or service IP address for accessing a NAS share.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="24.990000000000002%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002164645300_en-us_topic_0000002200046005_b83934218124_1">Channels</strong></p></td>
+            <td class="cellrowborder" valign="top" width="75.01%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>Number of subjobs that can be concurrently executed on the clients when restoration is executed. The default number of channels for the NAS share is <strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046061_b75076301131_2">10</strong>, and the maximum number is <strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046061_b10507030131313_2">40</strong>.</p> <p>More channels indicate better backup performance and a higher NAS share access rate. However, more CPUs and memory of the client will be occupied. Each channel occupies about 200 MB memory.</p> <p>For 1.5.0, you are advised to reduce the number of channels due to limited container resources if the client is deployed on the <span id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002200046061_text1999610369555_2">product</span>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="24.990000000000002%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002164645300_en-us_topic_0000002200046005_b7801200193818">Clients</strong></p></td>
+            <td class="cellrowborder" valign="top" width="75.01%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>Select clients for performing backup jobs.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="24.990000000000002%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><span><strong>Authentication Method</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="75.01%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>Authentication mode of a file system. This parameter is available when the share protocol of a backup copy is CIFS. For details about this parameter, see <a href="en-us_topic_0000002200046089.html#EN-US_TOPIC_0000002200046089__table1929515516558">Table 1</a>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="24.990000000000002%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="75.01%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>If files with the same names exist in the restoration path, you can choose to replace or skip existing files.</p>
+             <ul>
+              <li><span><strong>Replace existing files</strong></span></li>
+              <li><span><strong>Skip existing files</strong></span></li>
+              <li><span><strong>Only replace the files older than the restoration file</strong></span></li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="24.990000000000002%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002164645300__en-us_topic_0000002164645300_b783015417449_1">File Restoration Sequence</strong></p></td>
+            <td class="cellrowborder" valign="top" width="75.01%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>File name order, in which files are to be restored. This function is disabled by default. When it is enabled, data can be restored in lexicographical or reverse lexicographical order.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ul> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164645300__li1168243513296"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__uicontrol8682163517294"><b><span id="EN-US_TOPIC_0000002164645300__text923644131319"><strong>OK</strong></span></b></span>. Before you restore data using the copy, ensure that the target location for restoration has sufficient free space for restoration. The confirmation method is as follows:</span><p></p>
+      <ul id="EN-US_TOPIC_0000002164645300__ul698861123720">
+       <li id="EN-US_TOPIC_0000002164645300__li17226131513373">Requirements for restoration using a full copy: Remaining space of the target location ≥ Data volume of the full copy before reduction. To obtain the data volume of the full copy before reduction, view <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__uicontrol6781131216406"><b>Data Volume Before Reduction</b></span> of the backup job on the <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__uicontrol18893135113394"><b>Job Information</b></span> tab page.</li>
+       <li id="EN-US_TOPIC_0000002164645300__li3988191115372">Requirements for restoration using forever incremental copies or incremental copies: Remaining space of the target location ≥ Total amount of data of all copies generated in the following period before reduction: from the current permanent incremental copy or incremental copy to the last full copy. To obtain the total amount of data before reduction, add the value of <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__uicontrol561253514498"><b>Data Volume Before Reduction</b></span> of each backup job on the <span class="uicontrol" id="EN-US_TOPIC_0000002164645300__uicontrol81551548216"><b>Job Information</b></span> tab page.</li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200131633.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,73 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤1：（可选）获取证书">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="HCS_Stack_gud_0012.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="HCS_Stack_gud_0013">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤1：（可选）获取证书</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="HCS_Stack_gud_0013"></a><a name="HCS_Stack_gud_0013"></a>
+
+<h1 class="topictitle1">步骤1：（可选）获取证书</h1>
+<div><p>注册华为云Stack受保护环境时，可以导入Cinder证书和存储资源的CA证书，提升设备之间访问的安全性，否则系统将无法验证其所访问设备的信息，安全性存在风险。该操作为可选操作。</p>
+<p>您可以向管理员获取，或者自行下载。</p>
+<div class="section"><h4 class="sectiontitle">自行下载Cinder证书</h4><ol><li><span>使用Chrome浏览器，在地址栏输入<strong>https://</strong><em>FusionSphere OpenStack反向代理IP地址</em>，按回车。</span><p><p>FusionSphere OpenStack访问IP地址获取方式：在Huawei Cloud Stack部署工具导出的参数汇总文件《<em>xxx</em>_export_all_CN》的“工具生成的IP参数”页签，搜索“Reverse-Proxy”，获取对应的参数值。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>华为云Stack 6.5.1版本，请搜索“Cascading-Reverse-Proxy”。</li><li>如果华为云Stack有多个Region，请获取首Region的参数汇总文件。</li></ul>
+</div></div>
+</p></li><li><span>单击<span style="color:#494949;">URL输入栏左侧</span>的“不安全”，单击“证书无效”。</span><p><p>不同浏览器提示方式不同，此处以Google Chrome 120为例进行说明。</p>
+<p><span><img src="zh-cn_image_0000002200097937.png"></span></p>
+</p></li><li><span>在弹出的对话框中，选择“基本信息”页签，查看证书安全算法等级。</span><p><p>由于只有SHA-256及以上安全等级的算法才能通过<span>OceanProtect</span>的校验，因此如果证书安全等级不满足要求，则无需执行后续操作。如果满足要求，则继续执行<a href="#HCS_Stack_gud_0013__li11998102765020">4</a>。</p>
+<p><span><img src="zh-cn_image_0000002200012349.png"></span></p>
+</p></li><li id="HCS_Stack_gud_0013__li11998102765020"><a name="HCS_Stack_gud_0013__li11998102765020"></a><a name="li11998102765020"></a><span>选择“详细信息”页签，单击“导出”。</span></li><li><span>根据向导提示，导出证书并重命名证书文件为<em>XXX</em>.pem。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p><em>XXX</em>为实际的证书名，证书格式必须为.pem格式。</p>
+</div></div>
+</p></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">自行下载存储资源CA证书</h4><p>如果生产存储为OceanStor Dorado 6.1.5及后续版本或OceanStor 6.1.5及后续版本，以下获取CA证书的方式均不适用，请参考<a href="https://support.huawei.com/enterprise/zh/flash-storage/oceanstor-dorado-series-pid-262794301" target="_blank" rel="noopener noreferrer">《OceanStor Dorado产品文档》</a>或<a href="https://support.huawei.com/enterprise/zh/flash-storage/oceanstor-series-pid-262794302" target="_blank" rel="noopener noreferrer">《OceanStor产品文档》</a>中的“通过存储内置CA中心签发证书”章节获取CA证书。</p>
+<ul id="HCS_Stack_gud_0013__ul95086551254"><li id="HCS_Stack_gud_0013__li95354413619">方式一：<ol id="HCS_Stack_gud_0013__ol069212181467"><li id="HCS_Stack_gud_0013__li46921618969">登录<a href="https://support.huawei.com/pki" target="_blank" rel="noopener noreferrer">PKI CA证书下载</a>界面。</li><li id="HCS_Stack_gud_0013__li269291814611">单击“二级CA证书”。</li><li id="HCS_Stack_gud_0013__li36921181162">在搜索框中输入“Huawei IT Product CA”，单击“查询”。</li><li id="HCS_Stack_gud_0013__li36926181620">在查询结果区域中，单击“Huawei IT Product CA”证书所在行的<span><img id="HCS_Stack_gud_0013__image177413913493" src="zh-cn_image_0000002200097941.png"></span>，下载证书并保存在本地。<div class="note" id="HCS_Stack_gud_0013__note192173131862"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="HCS_Stack_gud_0013__p388713467614">证书文件格式必须为.pem格式，如果保存的证书文件格式不符合要求，请手动修改证书文件后缀为.pem。</p>
+</div></div>
+</li></ol>
+</li><li id="HCS_Stack_gud_0013__li14508185519517">方式二：<div class="p" id="HCS_Stack_gud_0013__p104558181694"><a name="HCS_Stack_gud_0013__li14508185519517"></a><a name="li14508185519517"></a>不同浏览器提示方式不同，此处以Google Chrome 120为例进行说明。<ol id="HCS_Stack_gud_0013__ol245918511655"><li id="HCS_Stack_gud_0013__li94591551955">在Chrome浏览器中，输入存储设备DeviceManager的URL地址，按回车。</li><li id="HCS_Stack_gud_0013__li8459451150">单击URL输入栏左侧的<span style="color:#494949;">“不安全”</span>，单击“证书无效”。<p id="HCS_Stack_gud_0013__p6388181019412"><span><img id="HCS_Stack_gud_0013__image193883101346" src="zh-cn_image_0000002164771318.png"></span></p>
+</li><li id="HCS_Stack_gud_0013__li2459175117516"><span style="color:#494949;">在弹出的对话框</span><span style="color:#494949;">中，</span>选择“详细信息”页签，单击“导出”。</li><li id="HCS_Stack_gud_0013__li1945914516513">根据向导提示，导出证书并重命名证书文件为<em id="HCS_Stack_gud_0013__i202977553589">XXX</em>.pem。<div class="note" id="HCS_Stack_gud_0013__note14297195512584"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="HCS_Stack_gud_0013__p52973551583"><em id="HCS_Stack_gud_0013__i12297185565815">XXX</em>为实际的证书名，证书格式必须为.pem格式。</p>
+</div></div>
+</li></ol>
+</div>
+</li></ul>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="HCS_Stack_gud_0012.html">备份云硬盘</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

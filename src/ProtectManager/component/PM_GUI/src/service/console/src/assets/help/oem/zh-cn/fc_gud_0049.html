@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="fc_gud_0045.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
@@ -44,9 +44,9 @@
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>选择<span class="uicontrol" id="fc_gud_0049__zh-cn_topic_0000001839142377_uicontrol9143133018394">“<span id="fc_gud_0049__zh-cn_topic_0000001839142377_text154711237125112">数据利用</span> &gt; <span id="fc_gud_0049__zh-cn_topic_0000001839142377_text3405121755116">副本数据</span> &gt; <span id="fc_gud_0049__zh-cn_topic_0000001839142377_text13859104734315">虚拟化</span> &gt; <span id="fc_gud_0049__zh-cn_topic_0000001839142377_text1825442418308">FusionCompute</span>”</span>。</span></li>
-     <li><span>支持以虚拟机维度或以副本维度查找副本，本节以虚拟机维度为例进行说明。</span><p></p><p>在<span class="wintitle">“<span>资源</span>”</span>页签，根据虚拟机名称查找到需要恢复的虚拟机，并单击虚拟机名称。</p> <p></p></li>
-     <li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000001792387552.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>选择<span class="uicontrol" id="fc_gud_0049__zh-cn_topic_0000002199964685_uicontrol9143133018394">“数据利用 &gt; 副本数据 &gt; 虚拟化 &gt; FusionCompute”</span>。</span></li>
+     <li id="fc_gud_0049__li888616341964"><span>支持以虚拟机维度或以副本维度查找副本，本节以虚拟机维度为例进行说明。</span><p></p><p id="fc_gud_0049__p624620403810">在<span class="wintitle" id="fc_gud_0049__wintitle89091044143717">“<span id="fc_gud_0049__text10513419388">资源</span>”</span>页签，根据虚拟机名称查找到需要恢复的虚拟机，并单击虚拟机名称。</p> <p></p></li>
+     <li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000002200007357.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
      <li><span>在副本所在的行，单击<span class="uicontrol">“<span>更多</span> &gt; <span>磁盘恢复</span>”</span>。</span></li>
      <li><span>勾选要恢复的磁盘，单击<span class="uicontrol">“<span>选择</span>”</span>。</span></li>
      <li><span>恢复虚拟机磁盘到原位置或新位置。</span><p></p>
@@ -55,7 +55,16 @@
         <ol type="a">
          <li>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>。</li>
          <li><span class="uicontrol">“<span>目标计算位置</span>”</span>默认为虚拟机原位置。</li>
-         <li>选择副本恢复时使用的代理主机。<p id="fc_gud_0049__fc_gud_0048_p1569583811493">当用户未选择时，系统会从注册资源时配置的代理主机中选择1到多个代理主机执行恢复。</p></li>
+         <li>选择“客户端”，用于执行恢复任务。
+          <div class="note" id="fc_gud_0049__fc_gud_0048_note1010711260385">
+           <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <ul id="fc_gud_0049__fc_gud_0048_ul108733302388">
+             <li id="fc_gud_0049__fc_gud_0048_li1587310307389"><span id="fc_gud_0049__fc_gud_0048_ph1188431412398">对于1.5.0版本，该参数名为“代理主机”。</span></li>
+             <li id="fc_gud_0049__fc_gud_0048_li773215458386">当用户未选择时，系统会从注册资源时配置的客户端中选择1到多个客户端执行恢复任务。</li>
+            </ul>
+           </div>
+          </div></li>
          <li>选择恢复后是否自动开机。</li>
          <li>选择恢复前是否执行副本校验。<p id="fc_gud_0049__fc_gud_0048_p21611424203315">开启后，副本恢复前将执行校验，校验副本的完整性。该操作将影响恢复性能。默认关闭。当未生成副本校验文件时，不支持开启此功能。</p></li>
          <li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li>
@@ -105,7 +114,16 @@
             </table>
            </div>
           </div></li>
-         <li>选择副本恢复时使用的代理主机。<p id="fc_gud_0049__fc_gud_0048_p1569583811493_1">当用户未选择时，系统会从注册资源时配置的代理主机中选择1到多个代理主机执行恢复。</p></li>
+         <li>选择“客户端”，用于执行恢复任务。
+          <div class="note" id="fc_gud_0049__fc_gud_0048_note1010711260385_1">
+           <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <ul id="fc_gud_0049__fc_gud_0048_ul108733302388_1">
+             <li id="fc_gud_0049__fc_gud_0048_li1587310307389_1"><span id="fc_gud_0049__fc_gud_0048_ph1188431412398_1">对于1.5.0版本，该参数名为“代理主机”。</span></li>
+             <li id="fc_gud_0049__fc_gud_0048_li773215458386_1">当用户未选择时，系统会从注册资源时配置的客户端中选择1到多个客户端执行恢复任务。</li>
+            </ul>
+           </div>
+          </div></li>
          <li>选择恢复后是否自动开机。</li>
          <li>选择恢复前是否执行副本校验。<p id="fc_gud_0049__fc_gud_0048_p21611424203315_1">开启后，副本恢复前将执行校验，校验副本的完整性。该操作将影响恢复性能。默认关闭。当未生成副本校验文件时，不支持开启此功能。</p></li>
         </ol></li>

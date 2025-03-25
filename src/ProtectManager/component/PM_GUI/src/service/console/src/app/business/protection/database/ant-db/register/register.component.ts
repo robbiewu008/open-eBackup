@@ -40,6 +40,7 @@ import {
   each,
   find,
   first,
+  get,
   includes,
   isEmpty,
   map,
@@ -65,7 +66,7 @@ export class RegisterComponent implements OnInit {
   dataMap = DataMap;
   formGroup: FormGroup;
   extendsAuth: { [key: string]: any } = {};
-  clusterInfo; // 缓存集群信息
+  clusterInfo = null; // 缓存集群信息
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip
   };
@@ -167,6 +168,7 @@ export class RegisterComponent implements OnInit {
 
   private updateTableData(res) {
     if (res.subType === DataMap.Resource_Type.AntDBClusterInstance.value) {
+      this.clusterInfo = res;
       res.dependencies.children.forEach(item => {
         this.addControlToDataTable(item);
       });
@@ -479,50 +481,72 @@ export class RegisterComponent implements OnInit {
     this.extendsAuth.authType = DataMap.Postgre_Auth_Method.db.value;
     this.extendsAuth.authKey = this.formGroup.value.database_username;
     this.extendsAuth.authPwd = this.formGroup.value.database_password;
-    return this.formGroup.value.type === DataMap.Instance_Type.single.value
-      ? {
-          name: this.formGroup.get('name').value,
-          type: ResourceType.DATABASE,
-          subType: DataMap.Resource_Type.AntDBInstance.value,
-          parentUuid: this.formGroup.value.agents,
-          extendInfo: {
-            hostId: this.formGroup.value.agents,
-            instancePort: this.formGroup.get('port').value,
-            clientPath: this.formGroup.get('client').value,
-            serviceIp: this.formGroup.get('business_ip').value,
-            osUsername: this.formGroup.value.userName,
-            isTopInstance: InstanceType.TopInstance
-          },
-          dependencies: {
-            agents: [{ uuid: this.formGroup.value.agents }]
-          },
-          auth: {
-            ...this.extendsAuth,
-            extendInfo: {}
-          }
+    let params: any = {
+      name: this.formGroup.get('name').value,
+      type: ResourceType.DATABASE
+    };
+    if (
+      this.formGroup.get('type').value === DataMap.Instance_Type.single.value
+    ) {
+      params = {
+        ...params,
+        subType: DataMap.Resource_Type.AntDBInstance.value,
+        parentUuid: this.formGroup.value.agents,
+        extendInfo: {
+          hostId: this.formGroup.value.agents,
+          instancePort: this.formGroup.get('port').value,
+          clientPath: this.formGroup.get('client').value,
+          serviceIp: this.formGroup.get('business_ip').value,
+          osUsername: this.formGroup.value.userName,
+          isTopInstance: InstanceType.TopInstance
+        },
+        dependencies: {
+          agents: [{ uuid: this.formGroup.value.agents }]
+        },
+        auth: {
+          ...this.extendsAuth,
+          extendInfo: {}
         }
-      : {
-          name: this.formGroup.get('name').value,
-          type: ResourceType.DATABASE,
-          subType: DataMap.Resource_Type.AntDBClusterInstance.value,
-          parentUuid: '',
+      };
+    } else {
+      const childNodes: any[] = this.NodesFormArray.controls.map(control =>
+        this.getClusterNodeParams(control)
+      );
+      const oldNodes: any[] = get(
+        this.clusterInfo,
+        'dependencies.children',
+        []
+      );
+      const newHostIds = new Set(
+        childNodes.map(node => node?.extendInfo?.hostId)
+      );
+      const deprecatedNodes = oldNodes.filter(
+        node => !newHostIds.has(node?.extendInfo?.hostId)
+      );
+      params = {
+        ...params,
+        subType: DataMap.Resource_Type.AntDBClusterInstance.value,
+        parentUuid: '',
+        extendInfo: {
+          osUsername: this.formGroup.value.userName,
+          isTopInstance: InstanceType.TopInstance
+        },
+        auth: {
+          ...this.extendsAuth,
           extendInfo: {
-            osUsername: this.formGroup.value.userName,
-            isTopInstance: InstanceType.TopInstance
-          },
-          auth: {
-            ...this.extendsAuth,
-            extendInfo: {
-              dbStreamRepUser: this.formGroup.value.databaseStreamUserName,
-              dbStreamRepPwd: this.formGroup.value.databaseStreamPassword
-            }
-          },
-          dependencies: {
-            children: this.NodesFormArray.controls.map(control =>
-              this.getClusterNodeParams(control)
-            )
+            dbStreamRepUser: this.formGroup.value.databaseStreamUserName,
+            dbStreamRepPwd: this.formGroup.value.databaseStreamPassword
           }
-        };
+        },
+        dependencies: {
+          children: childNodes,
+          '-children': deprecatedNodes.map(item => ({
+            uuid: item.uuid
+          }))
+        }
+      };
+    }
+    return params;
   }
 
   onOK(): Observable<void> {
