@@ -601,7 +601,7 @@
   "explore_tidb_restore_tip_label": "注意：<br>1.执行恢复时将会删除目标位置的部分数据库或者表。<br>2.执行日志恢复时将会删除目标数据库。<br>3.执行恢复任务前，请关闭TiDB日志归档开关。恢复任务完成后，重新打开该开关。",
   "explore_tidb_restore_version_tip_label": "<br>4.从高版本数据库恢复到低版本数据库，可能会恢复失败，请查询TiDB官方文档确认数据库版本的兼容情况。",
   "explore_tidb_same_name_delete_label": "是否删除重名表",
-  "explore_tidb_same_name_delete_tip_label": "当存在重名表时，不选择删除重名表将导致恢复失败，请慎重选择。\n如果删除重名表失败，需要手动连接数据库进行删除，具体请参见《OceanProtect DataBackup 数据备份特性指南(适用于TiDB)》 中的“手动连接数据库删除数据库中的表”章节。",
+  "explore_tidb_same_name_delete_tip_label": "此功能默认关闭，建议开启。当存在重名表时，不选择删除重名表将导致恢复失败。\n如果删除重名表失败，需要手动连接数据库进行删除，具体请参见《OceanProtect DataBackup 数据备份特性指南(适用于TiDB)》中的“手动连接数据库删除数据库中的表”章节。",
   "explore_add_file_label": "文件系统智能侦测阶段，当前快照相比于前一份未感染快照的新增文件数量。",
   "explore_modify_file_label": "文件系统智能侦测阶段，当前快照相比于前一份未感染快照的修改文件数量。",
   "explore_delete_file_label": "文件系统智能侦测阶段，当前快照相比于前一份未感染快照的删除文件数量。",
