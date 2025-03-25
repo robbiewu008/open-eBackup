@@ -37,6 +37,7 @@ struct plugin_info {
     mp_int32 memoryLimit;    // 单位M，用于设置 memory.limit_in_bytes 缺省值 -1
     mp_int32 blkioWeight;    // 用于设置 blkio.weight 缺省值 -1
     std::map<mp_string, mp_string> mountParam; // 应用挂载参数
+    std::map<mp_string, mp_string> mountRestoreParam; // 恢复用挂载参数
 };
 
 class ExternalPluginParse {
@@ -59,6 +60,7 @@ public:
         return m_pluginsInfo;
     }
     mp_string GetMountParamByAppType(const mp_string &appType, const mp_string &mountOptionKey);
+    mp_string GetMountRestoreParamByAppType(const mp_string &appType, const mp_string &mountOptionKey);
     mp_int32 GetCpuLimitByPluginName(const mp_string &pluginName);
     mp_int32 GetMemoryLimitByPluginName(const mp_string &pluginName);
     mp_int32 GetBlkioWeightByPluginName(const mp_string &pluginName);
@@ -69,6 +71,7 @@ private:
     mp_int32 GetConfigInfo(plugin_info &pluginInfo, const mp_string &strFileName);
     mp_int32 ParseJsonFileld(plugin_info &pluginInfo, const Json::Value &jsonValue);
     mp_void GetPluginMountParam(const Json::Value &jsonValue, std::map<mp_string, mp_string> &mountParam);
+    mp_void GetPluginMountRestoreParam(const Json::Value &jsonValue, std::map<mp_string, mp_string> &mountRestoreParam);
     mp_void GetApplicationSubJobCntMax(const Json::Value &jsonValue, const std::vector<mp_string> &application);
 
 private:

@@ -1,14 +1,16 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
+# 
+#  This file is a part of the open-eBackup project.
+#  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+#  If a copy of the MPL was not distributed with this file, You can obtain one at
+#  http://mozilla.org/MPL/2.0/.
+# 
+#  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+# 
+#  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+#  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+#  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 
 #####################################################################
@@ -40,6 +42,11 @@ TMP_DATA_BACKUP_AGENT_HOME=`cat /etc/profile | grep "DATA_BACKUP_AGENT_HOME=" |$
 TMP_DATA_BACKUP_SANCLIENT_HOME=`cat /etc/profile | grep "export DATA_BACKUP_SANCLIENT_HOME=" |${AWK} -F "=" '{print $NF}'`
 if [ -n "${TMP_DATA_BACKUP_AGENT_HOME}" ] || [ -n "${TMP_DATA_BACKUP_SANCLIENT_HOME}" ] ; then
     . /etc/profile
+    if [ -n "${DATA_BACKUP_AGENT_HOME}" ] || [ -n "${DATA_BACKUP_SANCLIENT_HOME}" ] ; then
+        DATA_BACKUP_AGENT_HOME=${TMP_DATA_BACKUP_AGENT_HOME}
+        DATA_BACKUP_SANCLIENT_HOME=${TMP_DATA_BACKUP_SANCLIENT_HOME}
+        export DATA_BACKUP_AGENT_HOME DATA_BACKUP_SANCLIENT_HOME
+    fi
 else
     DATA_BACKUP_AGENT_HOME=/opt
     DATA_BACKUP_SANCLIENT_HOME=/opt
@@ -92,7 +99,11 @@ CheckShellType()
 CheckHosts()
 {
     temp_path=${LD_LIBRARY_PATH}
-    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CURRENT_PATH}/ProtectClient-E/bin/
+    if [ -z "$LD_LIBRARY_PATH" ]; then
+        export LD_LIBRARY_PATH=${AGENT_ROOT_PATH}/bin
+    else
+        export LD_LIBRARY_PATH=${AGENT_ROOT_PATH}/bin:$LD_LIBRARY_PATH
+    fi
     HOST_NAME=`SUExecCmdWithOutput "${AGENT_ROOT_PATH}/bin/agentcli gethostname"`
     export LD_LIBRARY_PATH=${temp_path}
     if [ "${HOST_NAME}" = "" ]; then
@@ -114,12 +125,18 @@ SelectStart()
     if [ -d "$INSTALL_PATH" ]; then
         if [ "${SYS_NAME}" = "AIX" ] || [ "${SYS_NAME}" = "SunOS" ]; then
             su - ${AGENT_USER} -c "${EXPORT_ENV}${INSTALL_PATH}/ProtectClient-E/bin/agent_start.sh"
+            if [ $? -ne 0 ]; then
+                su - ${AGENT_USER} -c "${EXPORT_ENV}${INSTALL_PATH}/ProtectClient-E/bin/agent_stop.sh"
+                echo "Failed to start the DataBackup ProtectAgent, error exit."
+                exit 1
+            fi
         else
             su - ${AGENT_USER} -s ${SHELL_TYPE_SH} ${UNIX_CMD} -c "${EXPORT_ENV}\"${INSTALL_PATH}/ProtectClient-E/bin/agent_start.sh\""
-        fi
-        if [ $? -ne 0 ]; then
-            echo "Failed to start the DataBackup ProtectAgent, error exit."
-            exit 1
+            if [ $? -ne 0 ]; then
+                su - ${AGENT_USER} -s ${SHELL_TYPE_SH} ${UNIX_CMD} -c "${EXPORT_ENV}\"${INSTALL_PATH}/ProtectClient-E/bin/agent_stop.sh\""
+                echo "Failed to start the DataBackup ProtectAgent, error exit."
+                exit 1
+            fi
         fi
     else
         echo "Not install any client,the startup will be stopped."
@@ -141,6 +158,22 @@ ModifyTTYService()
         fi
     fi
 }
+
+CheckInputParams()
+{
+    if [ $# -eq 1 ] && [ $1 = "service" ]; then
+        echo "exec start.sh service"
+        su - ${AGENT_USER} -s ${SHELL_TYPE_SH} ${UNIX_CMD} -c "${AGENT_ROOT_PATH}/bin/monitor &" > /dev/null 2>&1
+        return 1
+    fi
+    return 0
+}
+
+# Check Whether Input Params
+CheckInputParams $*
+if [ $? -eq 1 ]; then
+    exit 0
+fi
 
 ModifyTTYService
 # Check the shell type.

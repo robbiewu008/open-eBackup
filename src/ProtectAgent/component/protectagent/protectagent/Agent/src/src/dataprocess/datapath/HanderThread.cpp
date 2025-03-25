@@ -27,10 +27,12 @@ HanderThread::HanderThread()
 
 HanderThread::~HanderThread()
 {
-    CMpThread::DestroyLock(&m_dataFuncLock);
     if (m_thread.get() != nullptr && m_runTask) {
         StopThread();
+        CMpThread::DestroyLock(&m_dataFuncLock);
         m_thread->join();
+    } else {
+        CMpThread::DestroyLock(&m_dataFuncLock);
     }
 }
 
@@ -48,6 +50,8 @@ bool HanderThread::IsRuning()
 
 void HanderThread::StopThread()
 {
+    CThreadAutoLock threadLock(&m_dataFuncLock);
+    m_FuncVec.clear();
     m_runTask = false;
 }
 

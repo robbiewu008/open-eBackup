@@ -1,7 +1,5 @@
 add_subdirectory(app)
 add_subdirectory(appprotect)
-add_subdirectory(oracle)
-add_subdirectory(oraclenative)
 add_subdirectory(vmwarenative)
 if(LINUX_COMPILE)
     add_subdirectory(dws)

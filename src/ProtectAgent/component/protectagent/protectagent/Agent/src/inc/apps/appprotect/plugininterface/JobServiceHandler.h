@@ -28,6 +28,8 @@ public:
     EXTER_ATTACK virtual void AddNewJob(AppProtect::ActionResult& _return, const std::vector<AppProtect::SubJob>& job);
     EXTER_ATTACK virtual void ReportJobDetails(AppProtect::ActionResult& _return,
         const AppProtect::SubJobDetails& jobInfo);
+    EXTER_ATTACK virtual void ReportAsyncJobDetails(AppProtect::ActionResult& _return, const std::string &jobId,
+        mp_int32 code, const AppProtect::ResourceResultByPage& results);
     EXTER_ATTACK virtual void ReportCopyAdditionalInfo(
         AppProtect::ActionResult& _return, const std::string& jobId, const AppProtect::Copy& copy);
     EXTER_ATTACK virtual void ComputerFileLocationInMultiFileSystem(std::map<std::string, std::string>& _return,
@@ -44,6 +46,8 @@ public:
         const AppProtect::AlarmDetails& alarm);
     EXTER_ATTACK void AddIpWhiteList(AppProtect::ActionResult& _return, const std::string &jobId,
         const std::string &ipListStr);
+    EXTER_ATTACK void GetHcsToken(AppProtect::ApplicationEnvironment& env, const std::string &projectId,
+        const std::string &isWorkSpace);
 
 private:
     inline mp_void ThrowAppException(mp_int32 errCode, const mp_string& message)

@@ -34,6 +34,7 @@ public:
 
     EXTER_ATTACK void CheckCertThumbPrint(ActionResult& _return, const std::string& ip, const int32_t port,
         const std::string& thumbPrint);
+    EXTER_ATTACK void RunCommand(CmdResult &_return, const std::string& cmdPara);
     bool Initailize() override;
     bool Uninitailize() override;
 

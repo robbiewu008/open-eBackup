@@ -36,6 +36,7 @@ mp_int32 BsaObjManager::QueryObject(const BsaObjInfo &queryCond, const BsaQueryP
         case BSA_AppType::BSA_DWS: {
             return DwsQueryObject(queryCond, pageInfo, result, bsaHandle);
         }
+        case BSA_AppType::BSA_GBASE_8S:
         case BSA_AppType::BSA_INFORMIX: {
             return InformixQueryObject(queryCond, pageInfo, result, bsaHandle);
         }

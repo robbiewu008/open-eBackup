@@ -99,7 +99,7 @@ private:
     bool RetryThriftCall(std::shared_ptr<T> ptr, void (T::*MemFunc)(ARGS1 ...), long bsaHandle, ARGS2 &&... args);
     template<typename T, typename ... ARGS1, typename ... ARGS2>
     bool ProtectServiceCall(void (T::*MemFunc)(ARGS1...), long bsaHandle, ARGS2 &&... args);
-
+    void CheckAppIsUsedSockFile();
 private:
     int32_t m_thriftRetryTimes{600}; // thrift接口调用最大重试次数，方便LLT修改提升执行效率
     uint32_t m_thriftRetryInterval{1000*1000}; // thrift接口调用重试间隔时间，单位us,方便LLT修改提升执行效率
@@ -113,6 +113,7 @@ private:
     std::shared_ptr<TSSLSocketFactoryPassword> m_socketFactory;
     int32_t m_appType = {0};
     bool m_isInformix11 = false;
+    bool m_isUseSockFile = false;
 };
 
 #endif

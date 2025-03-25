@@ -31,6 +31,8 @@ AGENT_API bool GetAgentIp(mp_string& agentIp);
 
 // check agent install type and deploy type
 AGENT_API bool IsInnerAgentMainDeploy();
+
+AGENT_API bool GetInnerAgentNodeIps(std::vector<std::string>& ips);
 };
 
 #endif

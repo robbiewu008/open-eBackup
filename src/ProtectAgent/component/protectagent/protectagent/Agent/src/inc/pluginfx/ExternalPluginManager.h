@@ -86,6 +86,9 @@ public:
     mp_int32 QueryPluginDetailV2(const mp_string &strAppType, CRequestMsg &requestMsg, CResponseMsg &responseMsg);
     // query plugin detail
     mp_int32 CheckPlugin(const mp_string &strAppType, CRequestMsg &requestMsg, CResponseMsg &responseMsg);
+    // async query plugin resource
+    mp_int32 PluginAsyncListApplicationResource(const mp_string &strAppType, CRequestMsg &requestMsg,
+        CResponseMsg &responseMsg);
     // plugin finalize clear
     mp_int32 PluginFinalizeClear(const mp_string &strAppType, CRequestMsg &requestMsg, CResponseMsg &responseMsg);
     
@@ -116,6 +119,8 @@ private:
     mp_void QueryPluginState(const mp_string &strAppType, Json::Value &jValueRsp);
     mp_int32 InvokingPlugins(const Json::Value &requestParam, CResponseMsg &responseMsg,
         const std::shared_ptr<AppProtect::ApplicationServiceConcurrentClient> &appServiceClient);
+    mp_int32 AsyncListApplicationResource(const Json::Value &requestParam, CResponseMsg &responseMsg,
+        const std::shared_ptr<AppProtect::ApplicationServiceConcurrentClient> &appServiceClient, const mp_string id);
     mp_int32 FinalizeClear(const Json::Value &requestParam, CResponseMsg &responseMsg,
         const std::shared_ptr<AppProtect::ApplicationServiceConcurrentClient> &appServiceClient);
     mp_int32 WriteThriftServerPort(const mp_int32 &thriftServerPort);

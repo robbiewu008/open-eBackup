@@ -18,6 +18,7 @@
 #include "message/tcp/CSocket.h"
 
 #include "message/curlclient/PmRestClient.h"
+#include "host/ConnectivityManager.h"
 
 namespace {
     const mp_uint32 ONE_SECOND = 1 * 1000;  // 1000 ms
@@ -77,7 +78,7 @@ mp_int32 BaseRestClient::ReceiveCheckStatus(HttpResponse& httpResponse, HttpRequ
     mp_int32 iRet = MP_FAILED;
     if (httpResponse.statusCode == SC_OK) {
         DBGLOG("Send url:%s info success.", req.url.c_str());
-        iRet = MP_SUCCESS;
+        return MP_SUCCESS;
     }
     ERRLOG("Send key request(%s) fail, status code: %d.", req.url.c_str(), httpResponse.statusCode);
     return iRet;
@@ -128,7 +129,7 @@ mp_int32 PmRestClient::SendRequest(HttpReqCommonParam& httpParam, HttpResponse& 
         return MP_FAILED;
     }
 
-    pmIps = GetConnectIps(pmIps, pmPort);
+    pmIps = ConnectivityManager::GetInstance().GetConnectedIps(pmIps, CMpString::SafeStoi(pmPort));
     if (pmIps.size() == 0) {
         WARNLOG("pm ip list is empty, Perhaps it has not been set yet.");
         return MP_FAILED;

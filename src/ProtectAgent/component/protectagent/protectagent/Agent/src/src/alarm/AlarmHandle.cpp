@@ -18,6 +18,7 @@
 #include "common/JsonUtils.h"
 #include "common/Utils.h"
 #include "alarm/Trap.h"
+#include "host/ConnectivityManager.h"
 
 #include <fstream>
 using namespace std;
@@ -151,16 +152,22 @@ EXTER_ATTACK mp_int32 AlarmHandle::SendAlarm_Http(const alarm_Info_t& alarmInfo)
         COMMLOG(OS_LOG_ERROR, "Get PM port failed.");
         return iRet;
     }
-
-    for (int i = 0; i < vecIP.size(); i++) {
+    
+    std::vector<std::string> connectIP =
+        ConnectivityManager::GetInstance().GetConnectedIps(vecIP, CMpString::SafeStoi(port));
+    if (connectIP.size() == 0) {
+        ERRLOG("Failed to get connected IP to send alarm!");
+        return MP_FAILED;
+    }
+    for (int i = 0; i < connectIP.size(); i++) {
         HttpRequest req;
         BuildHttpBody(req, alarmInfo);
-        iRet = BuildHttpRequest(req, vecIP[i], port);
+        iRet = BuildHttpRequest(req, connectIP[i], port);
         iRet = SendRequest(req);
         if (iRet != MP_SUCCESS) {
-            COMMLOG(OS_LOG_WARN, "Send Alarm PmIp(%s) failed.", vecIP[i].c_str());
+            COMMLOG(OS_LOG_WARN, "Send Alarm PmIp(%s) failed.", connectIP[i].c_str());
         } else {
-            COMMLOG(OS_LOG_INFO, "Send Alarm PmIp(%s) success.", vecIP[i].c_str());
+            COMMLOG(OS_LOG_INFO, "Send Alarm PmIp(%s) success.", connectIP[i].c_str());
             break;
         }
     }

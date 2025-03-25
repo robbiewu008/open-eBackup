@@ -144,6 +144,9 @@ static mp_void StructToJson(const StorageRepository& st, Json::Value& jsonValue)
     if (!st.extendInfo.empty()) {
         JsonHelper::JsonStringToJsonValue(st.extendInfo, jsonValue["extendInfo"]);
     }
+    if (!st.subDirPath.empty()) {
+        JsonHelper::TypeToJsonValue(st.subDirPath, jsonValue["subDirPath"]);
+    }
 }
 
 static mp_void StructToJson(const Snapshot& st, Json::Value& jsonValue)

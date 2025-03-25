@@ -30,6 +30,7 @@ Description  :初始化函数
 Others       :------------------------------------------------------------- */
 mp_int32 CConfigXmlParser::Init(const mp_string& strCfgFilePath)
 {
+    CThreadAutoLock lockInit(&m_cfgValueMutexLock);
     m_strCfgFilePath = strCfgFilePath;
     m_lastTime = 0;
     return Load();

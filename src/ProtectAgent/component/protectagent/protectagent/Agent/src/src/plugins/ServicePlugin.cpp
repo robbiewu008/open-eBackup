@@ -109,8 +109,10 @@ mp_int32 CServicePlugin::Invoke(CRequestMsg& req, CResponseMsg& rsp)
 
     COMMLOG(OS_LOG_DEBUG, "Begin invoke service plugin by rest channel.");
     iRet = DoAction(req, rsp);
+    Json::Value& rspData = rsp.GetJsonValueRef();
     if (iRet != MP_SUCCESS) {
         rsp.SetRetCode((mp_int64)iRet);
+        rspData["errorCode"] = (Json::UInt64)rsp.GetRetCode();
         COMMLOG(OS_LOG_DEBUG, "Do rest action failed, iRet %d.", iRet);
         return iRet;
     }

@@ -138,7 +138,6 @@ mp_int32 BsaSessionManager::CloseSession(mp_long bsaHandle)
     mp_string taskId = iter->second.GetTaskId();
     DwsCacheInfo cacheInfo = iter->second.GetCacheInfo();
     DwsXbsaSpeedInfo info;
-    mp_string cachePath = cacheInfo.cacheRepoPath;
     info.totalSizeInMB = m_taskDataSize[taskId].dataSize / MB_TO_BYTE;
     if (info.totalSizeInMB == 0) {
         DBGLOG("task:%s,TotalSizeInMB is 0.no need to write speed file", taskId.c_str());

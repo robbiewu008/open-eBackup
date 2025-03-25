@@ -87,7 +87,9 @@ Executor PluginSubJob::GetJobSuccess()
 {
     return [this](int32_t) {
         StartReportTiming();
-        ChangeState(SubJobState::Running);
+        if (m_data.status != mp_uint32(SubJobState::SubJobComplete)) {
+            ChangeState(SubJobState::Running);
+        }
         return MP_SUCCESS;
     };
 }
@@ -183,15 +185,23 @@ bool PluginSubJob::AbortTimeoutHandler()
 
 void PluginSubJob::ChangeState(SubJobState state)
 {
-    if (IsSubJobFinish(state)) {
+    {
+        std::lock_guard<std::mutex> lk(m_mutexChangeState);
+        if (m_data.status == mp_uint32(state)) {
+            return;
+        }
+        INFOLOG("JobId=%s, subjobId=%s, form status=%d change to status=%d.",
+            m_data.mainID.c_str(), m_data.subID.c_str(), m_data.status, mp_uint32(state));
         m_data.status = mp_uint32(state);
+    }
+
+    if (IsSubJobFinish(state)) {
+        INFOLOG("JobId=%s, subjobId=%s finished. status=%d", m_data.mainID.c_str(),
+            m_data.subID.c_str(), m_data.status);
         RemovePluginTimer();
         return;
     }
-    if (m_data.status == mp_uint32(state)) {
-        return;
-    }
-    m_data.status = mp_uint32(state);
+
     // update m_pluginUdTimer
     if (m_pluginUdTimer.get() == nullptr) {
         auto service  =
@@ -227,6 +237,7 @@ void PluginSubJob::AbortBeforePluginRun()
 
 void PluginSubJob::NotifyPluginAbort()
 {
+    INFOLOG("NotifyPluginAbort, jobId=%s, subJobId=%s, state=%d.", m_data.mainID.c_str(), m_data.subID.c_str(), m_data.status);
     // notify plugin to stop
     mp_int32 ret = SendAbortToPlugin();
     if (ret == MP_SUCCESS) {

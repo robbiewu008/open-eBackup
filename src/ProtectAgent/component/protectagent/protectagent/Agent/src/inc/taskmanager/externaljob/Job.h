@@ -101,6 +101,15 @@ struct PluginJobData {
     mp_string scriptFileName;
     mp_string scriptResult;
 
+    // acquire job frenquence control
+    uint32_t nextAcquireInterval = 2;
+    uint32_t currentAcquireInterval = 0;
+    uint32_t acquireAdjustTimes = 0;
+
+    void UpdateNextAcquireInterval(bool acquireSuccess = false);
+    void UpdateCurrentAcquireInterval();
+    bool IsNeedTriggerAcquire();
+
     mp_string culDataturboPid;
     // 当前的dataturbo进程id
 
@@ -488,10 +497,12 @@ protected:
     void SetJobRetry(bool retry);
     mp_bool IsLogBackupJob();
     mp_void SetAgentsToExtendInfo(Json::Value &param);
+    void SetPostScanParam(const StorageRepository& repo, const Json::Value& repoJson);
 protected:
     PluginJobData m_data;
     mp_int32 m_iRet = MP_SUCCESS;
-
+    
+    bool m_isAgentNeedScan = false;
     // if start timing job detail report
     bool m_startTiming {false};
     // last success job detail report time point
@@ -517,6 +528,8 @@ private:
     mp_void ReportSubJobRunning();
     bool NeedMount(const Json::Value &jsonRep);
     bool IsNasLiveMountJob();
+    void CheckReplaceHost(const std::vector<mp_string>& containerBackendIps, const mp_string& esnLocal,
+        Json::Value &JsonRep_new, std::map<Json::ArrayIndex, std::vector<Json::Value>>::iterator& jsonVec);
     std::atomic<bool> m_stopMountKeepAliveTheadFlag {false};
     std::shared_ptr<std::thread> m_mountKeepAliveTh;
 };

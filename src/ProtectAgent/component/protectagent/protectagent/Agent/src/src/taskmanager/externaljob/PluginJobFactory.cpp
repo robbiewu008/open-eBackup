@@ -38,13 +38,13 @@ std::shared_ptr<Job> PluginJobFactory::CreatePluginJob(const PluginJobData& data
             return pJob;
         }
     }
-    INFOLOG("Create plugin job succ, jobId=%s", data.mainID.c_str());
+    INFOLOG("Create plugin job succ, jobId=%s, subId=%s", data.mainID.c_str(), data.subID.c_str());
     return pJob;
 }
 
 std::shared_ptr<Job> PluginJobFactory::BuildMainJob(const PluginJobData& data)
 {
-    DBGLOG("Build for BuildMainJob, jobId=%s", data.mainID.c_str());
+    INFOLOG("Build for BuildMainJob, jobId=%s", data.mainID.c_str());
     std::shared_ptr<AppProtect::PluginMainJob> pJob = std::make_shared<AppProtect::PluginMainJob>(data);
     ExecutorBuilder builder;
     auto mainJobExec = pJob->GetMainJobExec();
@@ -59,7 +59,7 @@ std::shared_ptr<Job> PluginJobFactory::BuildMainJob(const PluginJobData& data)
 
 std::shared_ptr<Job> PluginJobFactory::BuildGeneSubJob(const PluginJobData& data)
 {
-    DBGLOG("Build for BuildGeneSubJob, jobId=%s", data.mainID.c_str());
+    INFOLOG("Build for BuildGeneSubJob, jobId=%s, subID=%s.", data.mainID.c_str(), data.subID.c_str());
     std::shared_ptr<PluginSubGeneJob> pJob = std::make_shared<PluginSubGeneJob>(data);
     ExecutorBuilder builder;
     auto reportSuccess = PluginMainJob::GetReportExecutor(PluginMainJob::ActionEvent::EXEC_GENE_SUBJOB,
@@ -92,7 +92,7 @@ std::shared_ptr<Job> PluginJobFactory::BuildGeneSubJob(const PluginJobData& data
 
 std::shared_ptr<Job> PluginJobFactory::BuildPreSubJob(const PluginJobData& data)
 {
-    DBGLOG("Build for BuildPreSubJob, jobId=%s", data.mainID.c_str());
+    INFOLOG("Build for BuildPreSubJob, jobId=%s, subID=%s.", data.mainID.c_str(), data.subID.c_str());
     std::shared_ptr<PluginSubPrepJob> pJob = std::make_shared<PluginSubPrepJob>(data);
     ExecutorBuilder builder;
     auto reportSuccess = PluginMainJob::GetReportExecutor(PluginMainJob::ActionEvent::EXEC_PRE_SUBJOB,
@@ -125,7 +125,7 @@ std::shared_ptr<Job> PluginJobFactory::BuildPreSubJob(const PluginJobData& data)
 
 std::shared_ptr<Job> PluginJobFactory::BuildSubBusiJob(const PluginJobData& data)
 {
-    DBGLOG("Build for BuildSubBusiJob, jobId=%s", data.mainID.c_str());
+    INFOLOG("Build for BuildSubBusiJob, jobId=%s, subID=%s.", data.mainID.c_str(), data.subID.c_str());
     std::shared_ptr<PluginSubBusiJob> pJob = std::make_shared<PluginSubBusiJob>(data);
     ExecutorBuilder builder;
     auto reportNasFailed = PluginSubJob::GetReportExecutor(PluginSubJob::ActionEvent::MOUNT_NAS,
@@ -148,7 +148,7 @@ std::shared_ptr<Job> PluginJobFactory::BuildSubBusiJob(const PluginJobData& data
 
 std::shared_ptr<Job> PluginJobFactory::BuildSubPostJob(const PluginJobData& data)
 {
-    DBGLOG("Build for BuildSubPostJob, jobId=%s", data.mainID.c_str());
+    INFOLOG("Build for BuildSubPostJob, jobId=%s, subID=%s.", data.mainID.c_str(), data.subID.c_str());
     std::shared_ptr<PluginSubPostJob> pJob = std::make_shared<PluginSubPostJob>(data);
     ExecutorBuilder builder;
     auto reportNasFailed = PluginSubJob::GetReportExecutor(PluginSubJob::ActionEvent::MOUNT_NAS,

@@ -37,6 +37,7 @@ ArchiveStreamClient::ArchiveStreamClient()
 
 ArchiveStreamClient::~ArchiveStreamClient()
 {
+    INFOLOG("Enter destruct");
     if (m_recvMsg != NULL) {
         delete m_recvMsg;
         m_recvMsg = NULL;
@@ -107,11 +108,13 @@ mp_int32 ArchiveStreamClient::Connect()
         return MP_FAILED;
     }
 
+    DBGLOG("ArchiveStreamClient Connected.");
     return MP_SUCCESS;
 }
 
 mp_void ArchiveStreamClient::DisConnect()
 {
+    DBGLOG("ArchiveStreamClient Disconnect.");
     m_conn.DisConnect();
 }
 
@@ -171,6 +174,7 @@ mp_int32 ArchiveStreamClient::HandleRecvDppMessage(CDppMessage &message)
 
 mp_bool ArchiveStreamClient::RecvEventsReady()
 {
+#ifdef WIN32
     fd_set fdsRead;
     fd_set fdsWrite;
     CSocket::FdInit(fdsRead);
@@ -179,6 +183,7 @@ mp_bool ArchiveStreamClient::RecvEventsReady()
     mp_uint16 sock = GetClientSocket();
     CSocket::FdSet(sock, fdsRead);
 
+    // use select
     mp_int32 ret = CSocket::WaitEvents(fdsRead, fdsWrite, sock);
     if (ret < 0) {
         ERRLOG("Wait events failed, ret=%d.", ret);
@@ -188,6 +193,18 @@ mp_bool ArchiveStreamClient::RecvEventsReady()
     }
 
     return CSocket::FdIsSet(sock, fdsRead);
+#else
+    mp_uint16 sock = GetClientSocket();
+    // use poll
+    mp_int32 ret = CSocket::WaitEvents(sock);
+    if (ret < 0) {
+        ERRLOG("Wait events failed, ret=%d.", ret);
+        return MP_FALSE;
+    } else if (ret == 0) { // select timeout
+        return MP_FALSE;
+    }
+    return MP_TRUE;
+#endif
 }
 
 mp_int32 ArchiveStreamClient::RecvMessage()

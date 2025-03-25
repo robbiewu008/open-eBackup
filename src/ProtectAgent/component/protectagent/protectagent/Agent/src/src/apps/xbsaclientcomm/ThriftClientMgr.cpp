@@ -13,6 +13,8 @@
 #include "xbsaclientcomm/ThriftClientMgr.h"
 #include "securecom/SecureUtils.h"
 #include "securecom/CryptAlg.h"
+#include "common/Utils.h"
+#include "common/MpString.h"
 #include "common/Path.h"
 #include "common/Ip.h"
 #include "common/ConfigXmlParse.h"
@@ -40,6 +42,7 @@ const std::string DEFAULT_CERT_HOSTNAME = "DataBackup-AGENT";
 const std::string DEFAULT_CA_FILE_PATH = "thrift/client/ca.crt.pem";
 const std::string DEFAULT_CRT_FILE_PATH = "thrift/client/client.crt.pem";
 const std::string DEFAULT_KEY_FILE_PATH = "thrift/client/client.pem";
+const std::string DEFAULT_SOCK_FILE_PATH = "thrift/xbsa.sock";
 const std::string DEFAULT_ALGORITHM_SUITE = "ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256";
 const std::string DEFAULT_ROOT_PATH = "/usr/openv";
 const int DEFAULT_HOSTPORT = 59560;
@@ -84,13 +87,29 @@ void ThriftClientMgr::Init()
     if (iRet != MP_SUCCESS) {
         return;
     }
-
+    CheckAppIsUsedSockFile();
     int32_t sslFlag = 1;
     this->Init(sslFlag);
 }
 
+void ThriftClientMgr::CheckAppIsUsedSockFile()
+{
+    mp_string strUserName;
+    mp_ulong iErrCode = 0;
+    if (GetCurrentUserName(strUserName, iErrCode) == MP_SUCCESS) {
+        INFOLOG("Current user is %s.", strUserName.c_str());
+        if (strUserName == "gbasedbt") {
+            m_isUseSockFile = true;
+        }
+    }
+    return;
+}
+
 EXTER_ATTACK int32_t ThriftClientMgr::Init(bool ssl)
 {
+    if (m_isUseSockFile) {
+        return MP_SUCCESS;
+    }
     if (ssl) {
         try {
             std::string hostName = EMPY_STRING;
@@ -130,7 +149,11 @@ EXTER_ATTACK int32_t ThriftClientMgr::Init(bool ssl)
 std::shared_ptr<apache::thrift::transport::TSocket> ThriftClientMgr::CreateSock(bool ssl)
 {
     std::shared_ptr<TSocket> socket;
-    if (ssl) {
+    if (m_isUseSockFile)  {
+        std::string sockFilePath = CPath::GetInstance().GetXBSASockFilePath(DEFAULT_SOCK_FILE_PATH);
+        INFOLOG("Thrift client connect thrift server by sock file %s.", sockFilePath.c_str());
+        socket = std::make_shared<TSocket>(sockFilePath);
+    } else if (ssl) {
         try {
             std::string hostName = DEFAULT_CERT_HOSTNAME;
             std::string certPath = CPath::GetInstance().GetXBSAConfFilePath(DEFAULT_CRT_FILE_PATH);
@@ -144,7 +167,6 @@ std::shared_ptr<apache::thrift::transport::TSocket> ThriftClientMgr::CreateSock(
     } else {
         socket = std::make_shared<TSocket>(DEFAULT_IP, DEFAULT_HOSTPORT);
     }
-
     return socket;
 }
 
@@ -564,7 +586,6 @@ int32_t ThriftClientMgr::BSAInitMgr(long* bsaHandlePtr, BSA_SecurityToken* token
     StackTracer stackTracer;
 #endif
     m_appType = appType;
-    INFOLOG("Application type: %d.", m_appType);
     long bsaHandle = 0;
     BsaObjectOwner objectOwner;
     BSAInitResult initRet;
@@ -576,6 +597,24 @@ int32_t ThriftClientMgr::BSAInitMgr(long* bsaHandlePtr, BSA_SecurityToken* token
 
     // 当前支持的环境变量和版本
     std::string environment = "BSA_API_VERSION=1.1.0;";
+    if (appType == BSA_AppType::BSA_TPOPS) {
+        int32_t index = 0;
+        while (environmentPtr[index] != nullptr) {
+            std::string envStr = std::string(environmentPtr[index]);
+            size_t pos = envStr.find("XBSACONFIG=");
+            if (pos != std::string::npos) {
+                std::vector<std::string> vecTmp;
+                CMpString::StrSplit(vecTmp, envStr, '/');
+                std::string xbsaConfigFile = vecTmp.back();
+                vecTmp.clear();
+                CMpString::StrSplit(vecTmp, xbsaConfigFile, '.');
+                environment += "BSA_TPOPS_JOB_TYPE=" + vecTmp[0] + ";";
+                break;
+            }
+            index++;
+        }
+    }
+    INFOLOG("app type:%d, %s", appType, environment.c_str());
     initRet.response = BSA_RC_ABORT_SYSTEM_ERROR;
     ProtectServiceCall(&BSAServiceClient::BSAInit, bsaHandle, initRet, objectOwner, environment, appType);
     if (initRet.response != BSA_RC_SUCCESS) {
@@ -846,13 +885,12 @@ int32_t ThriftClientMgr::SendData(long bsaHandle, BSA_DataBlock32 *dataBlockPtr)
         filePath = iter->second.workingObj.storgePath;
         bsaWriteStatus = iter->second.workingObj.objectStatus;
     }
-    INFOLOG("Application type: %d.", m_appType);
-    if (m_appType == BSA_AppType::BSA_INFORMIX) {
+
+    if (m_appType == BSA_AppType::BSA_INFORMIX || m_appType == BSA_AppType::BSA_GBASE_8S) {
         bsaWriteStatus = BSA_OBJECTSTATUS_OVERWRITE_WRITE;
     }
 
     int32_t iRet;
-    INFOLOG("ThriftClientMgr SendData bsaWriteStatus=%d.", bsaWriteStatus);
     if (bsaWriteStatus == BSA_OBJECTSTATUS_OVERWRITE_WRITE) {
         // 1、覆盖写
         iRet = m_writer.OpenForWriteWithSameFile(bsaHandle, filePath, "wb+");

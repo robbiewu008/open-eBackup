@@ -114,6 +114,7 @@ private:
     static mp_int32 m_registerFlag;
     static mp_int32 m_proxyRole;
     static mp_int32 m_registerType;
+    static mp_int32 m_errCode;
 };
 
 #endif

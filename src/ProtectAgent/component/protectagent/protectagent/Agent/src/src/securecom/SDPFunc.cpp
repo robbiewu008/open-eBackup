@@ -25,10 +25,9 @@
 #include "include/kmcv2_itf.h"
 #include "securec.h"
 #include "include/wsecv2_errorcode.h"
+#include "securecom/KmcCallback.h"
 #include "cac/cacv2_pri.h"
 #include "common/wsecv2_order.h"
-
-#include "securecom/KmcCallback.h"
 
 using namespace std;
 namespace {

@@ -200,7 +200,7 @@ mp_int32 GetFileFromArchive::Handle(const mp_string &backupId, const mp_string &
         return MP_FAILED;
     }
 
-    ret = clientHandler->Connect(vecParam[0], std::stoi(vecParam[1]), true);
+    ret = clientHandler->Connect(vecParam[0], CMpString::SafeStoi(vecParam[1], 0), true);
     if (ret != MP_SUCCESS) {
         ERRLOG("Archive client Connect false");
     } else {

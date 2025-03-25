@@ -13,6 +13,7 @@
 #ifndef TCP_DPP_CONNECTION_H
 #define TCP_DPP_CONNECTION_H
 
+#include <atomic>
 #include "common/Defines.h"
 #include "common/Types.h"
 #include "common/CMpTime.h"
@@ -211,7 +212,7 @@ private:
     // laste heartbeat time
     mp_time lastHbTime;
     // 链路连接状态
-    LinkState linkState;
+    std::atomic<LinkState> linkState;
     mp_bool m_isIpv4;
     mp_string m_listenIp;
     // 是否是安全通道
@@ -222,6 +223,7 @@ private:
     mp_time lastReconnectTime;
     thread_lock_t m_stateLock;
     thread_lock_t m_sendMsgLock;
+    thread_lock_t m_connectLock;
     mp_bool m_sendMesFlag = MP_TRUE;
     thread_lock_t m_recvExitFlagLock;
     mp_bool m_recvExitFlag = MP_FALSE;

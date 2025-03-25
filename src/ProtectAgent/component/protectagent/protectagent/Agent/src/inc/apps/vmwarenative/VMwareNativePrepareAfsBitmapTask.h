@@ -24,6 +24,9 @@ public:
 
 private:
     mp_void CreateTaskStep();
+    mp_int32 PrepareIscsiMedia(const Json::Value &param);
+
+    mp_string m_diskType;
 };
 
 #endif

@@ -177,6 +177,7 @@ static mp_void JsonToStruct(const Json::Value& jsonValue, StorageRepository& st)
     JSON_TO_STRUCT_ARRAY(remoteHost, remoteHost, HostAddress);
     JSON_TO_STRUCT(remotePath, remotePath);
     JSON_TO_STRUCT(shareName, remoteName);
+    JSON_TO_STRUCT(subDirPath, subDirPath);
     JSON_TO_STRUCT_OBJ(extendInfo, extendInfo);
     JSON_TO_STRUCT_STRUCT(cifsAuth, cifsAuth)
 }

@@ -1,4 +1,5 @@
 @echo off
+:: 
 ::  This file is a part of the open-eBackup project.
 ::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 ::  If a copy of the MPL was not distributed with this file, You can obtain one at
@@ -9,6 +10,7 @@
 ::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 ::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 ::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+::
 rem ########################################################################
 rem #
 rem #  upgrade: %~1=/up; push upgrade: %~1=/up/r; 
@@ -72,7 +74,7 @@ rem =================add working user=====================
 echo Start add working user
 set /a RETRY_TIMES=3
 set WORKING_USER_PWD=
-call :Log "Start add working user."
+call :Log "Start add working user, type=%~1."
 if "%UPGRADE_VALUE%" == "1" (
     echo The upgrade process does not require users and groups to be reset.
 ) else if "%~1" == "push" (
@@ -83,7 +85,15 @@ if "%UPGRADE_VALUE%" == "1" (
         exit /b %ERR_WORKINGUSER_ADD_FAILED_RETCODE%
     )
 ) else (
-    call :addworkinguser manual
+    if /i "!InDomain!"=="TRUE" (
+        echo "Use the !WORKING_USER! existed"
+        call :Log "Use the !WORKING_USER! existed"
+        call :addworkinguser manualdomain
+    ) else (
+        echo "Create the !WORKING_USER!"
+        call :Log "Create the !WORKING_USER!"
+        call :addworkinguser manual
+    )
     if not "!errorlevel!" == "0" (
         call :LogError "add working user failed" %ERR_WORKINGUSER_ADD_FAILED%
         exit /b %ERR_WORKINGUSER_ADD_FAILED_RETCODE%
@@ -119,6 +129,9 @@ if exist "!AGENT_ROOT_PATH!\conf\testcfg.tmp" (
 		if "%%a" == "USER_ID" (
 			set USER_ID=%%b
 		)
+        if "%%a"=="eip" (
+            set EIP=%%b
+        )
 	)
 
     call :checkIpsValid "!PMIP_LIST!"
@@ -208,6 +221,7 @@ if not "!errorlevel!" == "0" (
     )
 
 set PARAM_NAME=listen
+call :checkhostip
 call :modifyconffile
 if not "!errorlevel!" == "0" (
     call :LogError "Modify nginx port failed" %ERR_MODIFY_NGINX_PORT%
@@ -367,23 +381,30 @@ rem ==================start register to pm=================
 call :Log "Start regiser host to pm."
 echo Start regiser host to pm.
 if "%UPGRADE_VALUE%" == "1" (
-    call "%AGENT_BIN_PATH%\agentcli.exe" registerHost RegisterHost Upgrade >nul
+    call "%AGENT_BIN_PATH%\agentcli.exe" registerHost RegisterHost Upgrade >> %LOGFILE_PATH% 2>&1
 ) else (
-	call "%AGENT_BIN_PATH%\agentcli.exe" registerHost RegisterHost >nul
+	call "%AGENT_BIN_PATH%\agentcli.exe" registerHost RegisterHost >> %LOGFILE_PATH% 2>&1
 )
 if not "!errorlevel!" == "0" (
-    echo "regiser host failed."
-	call :Log "regiser host failed"
-	call "%AGENT_BIN_PATH%\agent_stop.bat"
-	if not "!errorlevel!" == "0" (
-		echo Install Agent faile and stop service failed.
-        call :LogError "Stop agent failed." %ERR_STOP_AGENT_SERVICE%
-		exit /b %ERR_STOP_AGENT_SERVICE_RETCODE%
-	)
-	call :unregisterall
-	goto :gotoexit
-    call :LogError "regiser host to pm failed." %ERR_REGISTER_TO_PM%
-	exit /b %ERR_REGISTER_TO_PM_RET_CODE%
+    rem upgrade register failed, don't failed.
+    if "%UPGRADE_VALUE%" == "1" (
+        call :Log "This is upgrading process, Registering with the pm failed have no influnce, continue."
+        echo This is upgrading process, Registering with the pm failed have no influnce, continue.
+        exit /b 0
+    ) else (
+        echo "regiser host failed."
+        call :Log "regiser host failed"
+        call "%AGENT_BIN_PATH%\agent_stop.bat"
+        if not "!errorlevel!" == "0" (
+            echo Install Agent faile and stop service failed.
+            call :LogError "Stop agent failed." %ERR_STOP_AGENT_SERVICE%
+            exit /b %ERR_STOP_AGENT_SERVICE_RETCODE%
+        )
+        call :unregisterall
+        goto :gotoexit
+        call :LogError "regiser host to pm failed." %ERR_REGISTER_TO_PM%
+        exit /b %ERR_REGISTER_TO_PM_RET_CODE%
+    )
 ) 
 call :Log "Registering with the pm succeeded."
 echo Registering with the pm succeeded.
@@ -397,36 +418,62 @@ rem ==================register to pm end===================
     rem add user
     set OPRATE=%~1
     if !RETRY_TIMES! GTR 0 (
-        echo Please enter password to create a new user !WORKING_USER!, you still have !RETRY_TIMES! chances:
-        call :Log "Please enter password to create a new user !WORKING_USER!, you still have !RETRY_TIMES! chances:"
+        echo Please enter password to set user !WORKING_USER!, you still have !RETRY_TIMES! chances:
+        call :Log "Please enter password to set user !WORKING_USER!, you still have !RETRY_TIMES! chances:"
         call "!AGENT_BIN_PATH!\agentcli.exe" setuser !WORKING_USER! !OPRATE! !WORKING_USER_PWD!
         if not "!errorlevel!" == "0" (
-            echo The password is invalid.
-	        call :Log "The password is invalid."
+            if "!OPRATE!" == "manualdomain" (
+                echo The password is incorrect.
+	            call :Log "The password is incorrect."
+            ) else (
+                echo The password is invalid.
+	            call :Log "The password is invalid."
+            )
             set /a RETRY_TIMES-=1
             goto :addworkinguser
         ) else (
-            echo Create new user !WORKING_USER! successfully.
-            call :Log "Create new user !WORKING_USER! succ."
+            echo Set user !WORKING_USER! successfully.
+            call :Log "Set user !WORKING_USER! succ."
         )
     ) else (
-        echo Create user !WORKING_USER! failed.
-        call :Log "Create user !WORKING_USER! failed."
+        if "!OPRATE!" == "manualdomain" (
+            echo The password verification for the !WORKING_USER! account has failed more than three times. Please confirm the password. If this account has not been used before, please delete it manually.
+            call :Log "The password verification for the !WORKING_USER! account has failed more than three times. Please confirm the password. If this account has not been used before, please delete it manually."
+        ) else (
+            echo Set user !WORKING_USER! failed.
+            call :Log "Set user !WORKING_USER! failed."
+        )
         goto :gotoexit
         exit /b 1
     )
 
     rem set password never expires
     wmic useraccount where "Name='!WORKING_USER!'" set PasswordExpires=FALSE >nul 2>&1
-    call :Log "Add user !WORKING_USER! succ."
+    call :Log "set user !WORKING_USER! succ."
 
-    net localgroup administrators !WORKING_USER! /add >nul 2>&1
-	if not "!errorlevel!" == "0" (
-        echo Add user !WORKING_USER! to localgroup administrators failed.
-        call :Log "Add user !WORKING_USER! to localgroup administrators failed."
-        goto :gotoexit
-		exit /b 1
+    for /f "skip=1 delims= " %%a in ('wmic OS Get Locale') do (
+        if "%%a" equ "040c" (
+            net localgroup administrateurs !WORKING_USER! /add >nul 2>&1
+            if not %errorlevel% == 0 (
+                echo Add user !WORKING_USER! to localgroup administrators failed.
+                call :Log "Add user !WORKING_USER! to localgroup administrators failed."
+                goto :gotoexit
+		        exit /b 1
+                
+            )
+            goto :addFinish
+        ) else (
+            net localgroup administrators !WORKING_USER! /add >nul 2>&1
+            if not %errorlevel% == 0 (
+                echo Add user !WORKING_USER! to localgroup administrators failed.
+                call :Log "Add user !WORKING_USER! to localgroup administrators failed."
+                goto :gotoexit
+		        exit /b 1
+            )
+            goto :addFinish
+        )
     )
+    :addFinish
 	call :seservicelogonright
     if not "!errorlevel!" == "0" (
         goto :gotoexit
@@ -543,11 +590,27 @@ rem ==================regiser to pm end======================
 :setipaddress
     echo Obtaining ProtectAgent network adapter information. Please wait...
     call :Log "Obtaining ProtectAgent network adapter information. Please wait..."
+    call :Log "Check the EIP can be used to connect to the PM or not."
+    if not "%EIP%" == "" (
+        for /f "tokens=1,2,3 delims=:" %%i in ('2^>nul ipconfig ^| findstr /i "!IP_FILTER!"') do (
+            if " !EIP!" == "%%j" (
+                for %%a in (%PMIP_LIST:,= %) do ( 
+                    call :CheckIpsConnectivity "%%a" "%PM_PORT%" "!EIP!"
+                    if "!errorlevel!" == "0" (
+                        echo Set EIP !EIP! successfully!.
+                        call :Log "Set EIP !EIP! as host IP successfully!."
+                        set host_ip=!EIP!
+                        exit /b 0
+                    )
+                )
+            )
+        )
+    )
     for /f "tokens=1,2,3 delims=:" %%i in ('2^>nul ipconfig ^| findstr /i "!IP_FILTER!"') do (
         if "%%j" NEQ " 127.0.0.1" (
             set host_ip=%%j
             for %%a in (%PMIP_LIST:,= %) do ( 
-                ping -S !host_ip! %%a -n 2 1>nul
+                call :CheckIpsConnectivity "%%a" "%PM_PORT%" "!host_ip!"
                 if "!errorlevel!" == "0" (
                     echo Set host IP !host_ip! successfully!.
                     call :Log "Set host IP !host_ip! successfully!."
@@ -570,11 +633,7 @@ rem ==================regiser to pm end======================
         set IP_TYPE=IPV6
     )
     for %%a in (%ips:,= %) do (
-        if "!IP_TYPE!"=="IPV4"  (
-            ping -4 %%a -n 1 -w 3000 > nul
-        ) else (
-            ping -6 %%a -n 1 -w 3000 > nul
-        )
+        call :CheckIpsConnectivity "%%a" "%PM_PORT%"
         if "!errorlevel!" == "0" (
             exit /b 0
         )
@@ -599,26 +658,27 @@ exit /b 1
     )
     set PM_IP=
     for %%a in (%PMIP_LIST:,= %) do (
-        if "!IP_TYPE!"=="IPV4"  (
-            ping -4 %%a -n 1 -w 3000 > nul
-        ) else (
-            ping -6 %%a -n 1 -w 3000 > nul
-        )
+        call :CheckIpsConnectivity "%%a" "%PM_PORT%"
         if "!errorlevel!" == "0" (
             set PM_IP=!PM_IP!,%%a
         )
     )
     set PM_IP=!PM_IP:~1!
     if "!PM_IP!" == "" (
-        echo Ping pm ip [!PMIP_LIST!] failed.
+        echo Check pm ip [!PMIP_LIST!] failed.
         call :Log "Connect to pm ip failed."
         goto :gotoexit
         exit /b 1
     ) else (
-        echo Ping pm ip [!PM_IP!] success.
+        echo Check pm ip [!PM_IP!] success.
         call :Log "Connect to pm ip success."
     )
     exit /b 0
+
+rem ~1: dst_ip, 2: dst_port 3: src_ip
+:CheckIpsConnectivity
+    call "!AGENT_BIN_PATH!\agentcli.exe" testhost "%~1" "%~2" "5000" %~3
+    exit /b !errorlevel!
 
 :setports
         set PORT_NUM=
@@ -765,6 +825,17 @@ exit /b 1
     )
 exit /b 0
 
+:checkhostip
+    if not "%EIP%" == "" (
+        echo !EIP! | findstr "\." > nul && (
+            set IP_TYPE=IPV4
+        ) || (
+            set IP_TYPE=IPV6
+        )
+        call :Log "Checked local ip !EIP! type succeed."
+    )
+    exit /b 0
+
 :modifyconffile
     set ISPECIL_NUM=0
     for /f "tokens=1* delims=:" %%a in ('findstr /n .* "!AGENT_ROOT_PATH!\nginx\conf\nginx.conf"') do (
@@ -795,7 +866,7 @@ exit /b 0
                 if "!IP_TYPE!" == "IPV4" (
                     echo.        !PARAM_NAME!       !host_ip!:!PORT_NUM! ssl;>>"!AGENT_ROOT_PATH!\tmp\nginx.conf.bak"
                  ) else if "!IP_TYPE!" == "IPV6" (
-                    set IP_ADDRESS=[%IP_ADDRESS%]
+                    set IP_ADDRESS=[%EIP%]
                     echo.        !PARAM_NAME!       !IP_ADDRESS!:!PORT_NUM! ssl;>>"!AGENT_ROOT_PATH!\tmp\nginx.conf.bak"
                 ) else (
                     call :Log "The network Type invalid"
@@ -880,14 +951,18 @@ exit /b 0
         echo The upgrade process does not require users and groups to be reset.
         exit /b 0
     )
-    call :deleteworkinguser
-    if not "!errorlevel!" == "0" (
-        echo Clear source failed.
-        call :Log "Clear source failed."
-        exit /b 1
+    if /i "!InDomain!"=="TRUE" (
+        echo "Agent working user !WORKING_USER! exists before install, no need to clear."
+        call :Log "Agent working user !WORKING_USER! exists before install, no need to clear."
+    ) else (
+        call :deleteworkinguser
+        if not "!errorlevel!" == "0" (
+            echo Clear source failed.
+            call :Log "Clear source failed."
+            exit /b 1
+        )
     )
     exit /b 0
-
 
 :WinSleep
     ping 127.0.0.1 -n %~1 > nul

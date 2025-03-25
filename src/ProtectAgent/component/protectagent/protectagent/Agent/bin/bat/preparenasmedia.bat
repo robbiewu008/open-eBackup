@@ -1,4 +1,5 @@
 @echo off
+:: 
 ::  This file is a part of the open-eBackup project.
 ::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 ::  If a copy of the MPL was not distributed with this file, You can obtain one at
@@ -9,6 +10,7 @@
 ::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 ::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 ::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+::
 rem @dest:   application agent for oracle
 rem @date:   2020-07-16
 rem @authr:  
@@ -48,7 +50,6 @@ call %COMMONFUNC% "%AGENT_ROOT%" getvalue %PID% %LOGFILE% "!INPUTINFO!" "logShar
 call %COMMONFUNC% "%AGENT_ROOT%" getvalue %PID% %LOGFILE% "!INPUTINFO!" "storageIp" storageIP
 call %COMMONFUNC% "%AGENT_ROOT%" getvalue %PID% %LOGFILE% "!INPUTINFO!" "AppName" dbName
 call %COMMONFUNC% "%AGENT_ROOT%" getvalue %PID% %LOGFILE% "!INPUTINFO!" "authUser" authUser
-call %COMMONFUNC% "%AGENT_ROOT%" getvalue %PID% %LOGFILE% "!INPUTINFO!" "authKey" authKey
 call %COMMONFUNC% "%AGENT_ROOT%" getvalue %PID% %LOGFILE% "!INPUTINFO!" "dataPath" dataMount
 call %COMMONFUNC% "%AGENT_ROOT%" getvalue %PID% %LOGFILE% "!INPUTINFO!" "logPath" logMount
 call :Log "dataPath=%dataPath%;logPath=%logPath%;storageIP=%storageIP%;dbName=%dbName%;authUser=%authUser%;dataMount=%dataMount%;logMount=%logMount%"
@@ -113,7 +114,7 @@ if "!dataDriver!" == "" (
     if "%authUser%" == "" (
         net use !dataDriver! \\%storageIP%\%dataPath% /PERSISTENT:YES
     ) else (
-        net use !dataDriver! \\%storageIP%\%dataPath% "%authKey%" /user:%authUser% /PERSISTENT:YES
+        net use !dataDriver! \\%storageIP%\%dataPath% "*" /user:%authUser% /PERSISTENT:YES
         net use \\%storageIP%\%dataPath% /SAVECRED
     )
 ) else (
@@ -147,7 +148,7 @@ if "!logDriver!" == "" (
     if "%authUser%" == "" (
         net use !logDriver! \\%storageIP%\%logPath% /PERSISTENT:YES
     ) else (
-        net use !logDriver! \\%storageIP%\%logPath% "%authKey%" /user:%authUser% /PERSISTENT:YES
+        net use !logDriver! \\%storageIP%\%logPath% "*" /user:%authUser% /PERSISTENT:YES
         net use \\%storageIP%\%logPath% /SAVECRED
     )
 ) else (

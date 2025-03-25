@@ -30,11 +30,13 @@ public:
         StorageRepository& stRep, Json::Value& jsonRep_new);
 
 private:
-    mp_int32 ParseRestoreMetaInfo(mp_string& metapath);
+    mp_int32 ParseRestoreMetaInfo(mp_string& metapath, bool is_metapath = true);
     mp_int32 GetTimeStampLogDirList(std::vector<mp_string>& logdirlist);
     mp_int32 GetSCNLogDirList(std::vector<mp_string>& logdirlist);
     mp_int32 ComposeNewRepository(const std::vector<mp_string>& mountPoint, StorageRepository& stRep,
-        Json::Value& jsonRep_new);
+        Json::Value& jsonRep_new, mp_string associateds);
+    void GenerateMultiMap(bool is_metapath, std::vector<mp_string>& loginfo);
+    mp_string GetAssociatedCopies(const Json::Value& jValueExtendinfo);
 
     std::multimap<mp_time, Json::Value> m_timeMultiMap;
     std::multimap<mp_long, Json::Value> m_scnMultiMap;

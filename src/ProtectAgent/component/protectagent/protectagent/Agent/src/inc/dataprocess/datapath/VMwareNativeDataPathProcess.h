@@ -135,6 +135,7 @@ private:
         const mp_string &currentTaskID, const mp_string &parentTaskID);
 
     // GenertateMap
+    void CleanPreviousThread();
     mp_int32 GenerateMap(CDppMessage &message, mp_string &currentTaskID, mp_string &parentTaskID);
     mp_int32 GenerateVMwareDpImplInstanceMap(mp_string &currentTaskID, mp_string &parentTaskID);
     mp_int32 GenerateVMwareThreadHanderMap(mp_string &currentTaskID, mp_string &parentTaskID);
@@ -152,7 +153,8 @@ private:
 
     mp_void GenerateCmdMsgHandlerFunMap();
     mp_void GenerateCmdMsgHandlerFunMapBackup();
-    mp_void RemoveVMwareThreadHander(const mp_string &parentTaskID);
+    mp_void RemoveVMwareThreadHander(const mp_string &parentTaskID,
+        std::vector<std::shared_ptr<HanderThread>> &removeThreadList);
     mp_void ReleaseVMwareThreadHander(const mp_string &parentTaskID);
     mp_void ReleaseTaskPoolResource(const mp_string& taskId);
     mp_void RemoveDataPathImplInstance(const mp_string& taskId);

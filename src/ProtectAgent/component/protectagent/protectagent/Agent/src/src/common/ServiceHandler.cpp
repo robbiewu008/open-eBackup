@@ -64,7 +64,7 @@ mp_bool CWinServiceHanlder::InstallService(
         COMMLOG(OS_LOG_ERROR, "OpenSCManager failed, errorno[%d].", GetLastError());
         return MP_FALSE;
     }
-
+    
     // Create the service
     if (strWorkingUser != "") {
         hService = CreateService(hSCM, strServcieName.c_str(), strServcieName.c_str(), SERVICE_ALL_ACCESS,

@@ -24,6 +24,7 @@
 #include "host/host.h"
 #include "servicecenter/services/device/PrepareFileSystem.h"
 #include "apps/appprotect/plugininterface/JobServiceHandler.h"
+#include "message/curlclient/PmRestClient.h"
 
 namespace jobservice {
 static const mp_string REPOSITORY_TYPE_ARRAY[] = {"meta", "data", "cache", "log", "index", "log_meta"};
@@ -83,6 +84,16 @@ EXTER_ATTACK void JobServiceHandler::ReportJobDetails(AppProtect::ActionResult& 
     _return.code = AppProtect::AppProtectJobHandler::GetInstance()->ReportJobDetails(_return, jobInfo);
     if (_return.code != MP_SUCCESS) {
         ERRLOG("Fail to notify dme report job detail");
+    }
+}
+
+EXTER_ATTACK void JobServiceHandler::ReportAsyncJobDetails(AppProtect::ActionResult& _return, const std::string &jobId,
+    mp_int32 code, const AppProtect::ResourceResultByPage& results)
+{
+    INFOLOG("Now begin to report async job details to PM, jobId=%s", jobId.c_str());
+    int ret = AppProtect::AppProtectJobHandler::GetInstance()->ReportAsyncJobDetails(_return, jobId, code, results);
+    if (ret != MP_SUCCESS) {
+        ERRLOG("Fail to report details to pm, jobId=%s", jobId.c_str());
     }
 }
 
@@ -295,12 +306,12 @@ mp_string JobServiceHandler::GetLunInfo(const Json::Value& sanClientParam,  mp_s
         for (auto &lun : sanClient["luninfo"]) {
             mp_int32 repositoryTypeIndex;
             try {
-                repositoryTypeIndex = std::stoi(lun["lunName"].asString());
+                repositoryTypeIndex = CMpString::SafeStoi(lun["lunName"].asString(), 0);
             } catch (const std::exception& erro) {
                 ERRLOG("Invalid lunName , erro: %s.", erro.what());
                 return "";
             }
-            mp_string fileSystemSize = std::to_string(lun["filesystemsize"].asInt() - 1);
+            mp_string fileSystemSize = std::to_string(lun["filesystemsize"].asInt64() - 1);
             if (REPOSITORY_TYPE_ARRAY[repositoryTypeIndex] == repositoryType &&
                 lun["path"].asString().find(remotePath) != mp_string::npos) {
                 mp_string wpnInfo = lun["sanclientWwpn"].asString() + CHAR_SLASH + lun["lunId"].asString() +
@@ -715,5 +726,19 @@ void JobServiceHandler::AddIpWhiteList(AppProtect::ActionResult& _return, const 
     } else {
         HandleRestResult(_return, response);
     }
+}
+
+EXTER_ATTACK void JobServiceHandler::GetHcsToken(AppProtect::ApplicationEnvironment& env, const std::string &projectId,
+    const std::string &isWorkSpace)
+{
+    INFOLOG("Start to get hcs token, project id: %s.", projectId.c_str());
+    HttpResponse httpResponse;
+    std::string url = "/v2/internal/resources/" + projectId +"/hcs/token?isWorkspace=" + isWorkSpace;
+    HttpReqCommonParam httpParam("GET", url.c_str(), "");
+    if (PmRestClient::GetInstance().SendRequest(httpParam, httpResponse) != MP_SUCCESS) {
+        ERRLOG("Get hcs token from PM failed.");
+        return;
+    }
+    env.__set_extendInfo(httpResponse.body);
 }
 }  // namespace jobservice

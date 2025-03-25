@@ -10,7 +10,6 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-#if (defined LINUX) && (!defined ENABLE_TSAN)
 #include <gperftools/malloc_extension.h>
 #endif
 

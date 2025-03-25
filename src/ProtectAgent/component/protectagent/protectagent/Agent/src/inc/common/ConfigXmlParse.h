@@ -147,6 +147,7 @@ static const mp_string CFG_MOUNT_SECTION = "Mount";
 static const mp_string CFG_LINK_HOST_PORT = "link_host_port";
 static const mp_string CFG_CHECK_LINK_STATUS_TIMEOUT = "check_link_status_timeout";
 static const mp_string CFG_EIP = "eip";
+static const mp_string CFG_WIN_MOUNT_PUBLIC_PATH = "win_mount_public_path";
 static const mp_string CFG_GENERAL_MOUNT_OPTION = "general_mount_option";
 static const mp_string CFG_LINKENCRY_MOUNT_OPTION = "linkencyption_mount_option";
 static const mp_string CFG_GENERAL_MOUNT_PROTOCOL = "general_mount_protocol";
@@ -166,6 +167,12 @@ static const mp_string CFG_OPENSTACK_METADATA_SERVER_IP = "openstack_metadata_se
 static const mp_string CFG_OPENSTACK_METADATA_SERVER_PORT = "openstack_metadata_server_port";
 static const mp_string CFG_DATAPROCESS_USE_AIO_BACKUP = "use_aio_backup";
 static const mp_string CFG_DATAPROCESS_USE_AIO_RESTORE = "use_aio_restore";
+
+// job frame
+static const mp_string CFG_JOB_FRAM_SECTION = "JobFrame";
+static const mp_string CFG_GET_JOB_BASE_INTERVAL = "get_job_base_interval";
+static const mp_string CFG_GET_JOB_INC_INTERVAL = "get_job_inc_interval";
+static const mp_string CFG_GET_JOB_INTERVAL_MAX_ADJUST_TIMES = "get_job_interval_max_adjust_times";
 
 static const mp_string XBSACFG_APP_TYPE_SECTION = "Apptype";
 static const mp_string XBSACFG_APP_TYPE = "app_type";

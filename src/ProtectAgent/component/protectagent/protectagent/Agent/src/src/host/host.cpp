@@ -1285,7 +1285,6 @@ mp_int32 CHost::QueryWwpns(std::vector<mp_string>& vecWwpns)
     mp_int32 iRet = CSystemExec::ExecSystemWithEcho(strCmd, vecRlt);
     if (iRet != MP_SUCCESS) {
         ERRLOG("Exec sys cmd failed, iRet = %d.", iRet);
-        return MP_FAILED;
     }
 
     for (mp_string& item : vecRlt) {
@@ -1672,8 +1671,7 @@ mp_int32 CHost::QueryFusionStorageIP(vector<mp_string>& strFusionStorageIP)
 mp_int32 CHost::IsSafeDirectory(const mp_string& strInput)
 {
     // 检查是否包含 ".." 或者以 "/" 开头
-    if (strInput.find("..") != std::string::npos || strInput.find('/') != std::string::npos
-        || strInput.find('\\') != std::string::npos) {
+    if (strInput.find("..") != std::string::npos) {
         COMMLOG(OS_LOG_ERROR, "IsSafeDirectory failed");
         return MP_FAILED;
     }
@@ -2844,7 +2842,7 @@ mp_int32 CHost::GetMemUsageRateLinux(mp_double& sysMemRateRest, mp_uint64& memAv
         if (line.compare(0, SIZE_OF_MEMTOTAL, "MemTotal:") == 0) {
             memTotal = CMpString::SafeStoll(line.substr(SIZE_OF_MEMTOTAL + 1)) / SIZE_KB;
         } else if (line.compare(0, SIZE_OF_MEMAVAILABLE, "MemAvailable:") == 0) {
-            memAvail = CMpString::SafeStoll(line.substr(SIZE_OF_MEMTOTAL + 1)) / SIZE_KB;      // 单位MB
+            memAvail = CMpString::SafeStoll(line.substr(SIZE_OF_MEMAVAILABLE + 1)) / SIZE_KB;      // 单位MB
         }
     }
     sysMemRateRest = (double)memAvail / memTotal * PERCENT;

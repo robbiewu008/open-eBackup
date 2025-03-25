@@ -14,6 +14,7 @@
 #define _BSA_SESSION_H_
 
 #include "common/Types.h"
+#include "common/MpString.h"
 #include "xbsa/xbsa.h"
 #include "apps/dws/XBSAServer/xbsa_types.h"
 #include "apps/dws/XBSAServer/BsaTransManager.h"
@@ -22,12 +23,14 @@
 typedef enum tagBsaEnv {
     BSA_API_VERSION = 0,
     BSA_SERVICE_HOST,
+    BSA_TPOPS_JOB_TYPE,
     BSA_ENV_BUTT
 } BsaEnv;
 
 const mp_string BsaEnvKeys[BSA_ENV_BUTT] = {
     "BSA_API_VERSION",
-    "BSA_SERVICE_HOST"
+    "BSA_SERVICE_HOST",
+    "BSA_TPOPS_JOB_TYPE"
 };
 
 // BsaSession类

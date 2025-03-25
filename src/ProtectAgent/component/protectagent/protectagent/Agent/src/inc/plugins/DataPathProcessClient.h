@@ -91,6 +91,7 @@ private:
     mp_int32 EndDataProcessOnTimeout();
     mp_int32 EstablishClient();
     mp_void PushMsg2Queue(CDppMessage *reqMsg);
+    mp_void DiscardReqMsgQueue();
 
     mp_int32 StartOMDataPathProcess();
     // VMware native data path process

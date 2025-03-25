@@ -36,6 +36,7 @@ AppProtectPlugin::AppProtectPlugin()
     REGISTER_ACTION(REST_APPPROTECT_CHECK_V1, REST_URL_METHOD_POST, &AppProtectPlugin::PluginCheckV1);
     REGISTER_ACTION(REST_APPPROTECT_CLUSTER_V1, REST_URL_METHOD_POST, &AppProtectPlugin::PluginClusterV1);
     REGISTER_ACTION(REST_APPPROTECT_DETAIL_V2, REST_URL_METHOD_POST, &AppProtectPlugin::PluginDetailV2);
+    REGISTER_ACTION(REST_APPPROTECT_ASYNCDETAIL_V2, REST_URL_METHOD_POST, &AppProtectPlugin::PluginAsynDetailV2);
     REGISTER_ACTION(REST_APPPROTECT_FINALIZE_CLEAR, REST_URL_METHOD_POST, &AppProtectPlugin::FinalizeClear);
     REGISTER_ACTION(REST_APPPROTECT_WAKEUP_JOB, REST_URL_METHOD_POST, &AppProtectPlugin::WakeUpJob);
     REGISTER_ACTION(REST_APPPROTECT_SANCLIENT_JOB, REST_URL_METHOD_POST, &AppProtectPlugin::SanclientJob);
@@ -139,6 +140,14 @@ EXTER_ATTACK mp_int32 AppProtectPlugin::PluginDetailV2(CRequestMsg& req, CRespon
     return iRet;
 }
 
+EXTER_ATTACK mp_int32 AppProtectPlugin::PluginAsynDetailV2(CRequestMsg& req, CResponseMsg& rsp)
+{
+    mp_string strAppType = req.GetURL().GetSpecialQueryParam("appType");
+    mp_int32 iRet = ExternalPluginManager::GetInstance().PluginAsyncListApplicationResource(strAppType, req, rsp);
+    DealInvokePluginFailed(iRet, rsp);
+    return iRet;
+}
+
 EXTER_ATTACK mp_int32 AppProtectPlugin::FinalizeClear(CRequestMsg& req, CResponseMsg& rsp)
 {
     mp_string strAppType = req.GetURL().GetSpecialQueryParam("appType");
@@ -189,24 +198,19 @@ mp_int32 AppProtectPlugin::SanclientPreParamCheckIsVaild(const Json::Value& jvRe
     return MP_SUCCESS;
 }
 
-mp_int32 AppProtectPlugin::SanclientPrepareJob(const Json::Value& jvReq)
+mp_int32 AppProtectPlugin::SanclientPrepareJobInner(const Json::Value& jvReq,
+    std::shared_ptr<AppProtectService> &appProtectServiceInstance, const mp_string& taskId)
 {
-    INFOLOG("Start Sanclient Job with UBC!");
-    mp_string taskId;
+    INFOLOG("Start Sanclient Job with UBC, the jobid is %s", taskId.c_str());
     mp_int32 iRet = SanclientPreParamCheck(jvReq); // sanclient任务参数校验
     if (iRet != MP_SUCCESS) {
         ERRLOG("SanclientPreParamCheck faild.");
         return iRet;
     }
-    GET_JSON_STRING(jvReq, "taskID",  taskId);
+
     mp_string sanclient_ip = jvReq["sanclient"]["ip"].asString();
     mp_string lanfree_switch = (jvReq["sanclient"]["openLanFreeSwitch"].asBool() ||
         jvReq["sanclient"]["srcDeduption"].asBool()) ? "true" : "false";
-    std::shared_ptr<AppProtectService> appProtectServiceInstance = AppProtectService::GetInstance();
-    if (appProtectServiceInstance == nullptr) {
-        ERRLOG("new AppProtectService failed.");
-        return MP_FAILED;
-    }
     iRet = appProtectServiceInstance->EnvCheck(taskId); // sanclient任务环境检查
     if (iRet != MP_SUCCESS) {
         ERRLOG("EnvCheck faild.");
@@ -236,6 +240,25 @@ mp_int32 AppProtectPlugin::SanclientPrepareJob(const Json::Value& jvReq)
         iRet = AppProtectService::GetInstance()->CreateLunISCSI(agentIqns[0], sanclientIqns[0], filesysteminfo, taskId);
     }
     INFOLOG("Sanclient pre-job end. Create Lun return value:%d!", iRet);
+    return iRet;
+}
+
+mp_int32 AppProtectPlugin::SanclientPrepareJob(const Json::Value& jvReq)
+{
+    INFOLOG("Start Sanclient Job with UBC!");
+    mp_string taskId;
+    GET_JSON_STRING(jvReq, "taskID",  taskId);
+    std::shared_ptr<AppProtectService> appProtectServiceInstance = AppProtectService::GetInstance();
+    if (appProtectServiceInstance == nullptr) {
+        ERRLOG("new AppProtectService failed.");
+        return MP_FAILED;
+    }
+
+    mp_int32 iRet = SanclientPrepareJobInner(jvReq, appProtectServiceInstance, taskId);
+    if (iRet != MP_SUCCESS) {
+        ERRLOG("SanclientPrepareJob faild.");
+        appProtectServiceInstance->SetSanclientFailedPreJob(taskId);
+    }
     return iRet;
 }
 

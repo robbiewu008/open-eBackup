@@ -49,7 +49,8 @@ public:
 
     virtual std::set<mp_string> GetCookies();
 
-    virtual bool TestConnectivity(const std::string& ip, const std::string& port);
+    virtual bool TestConnectivity(const std::string& ip, const std::string& port,
+        uint32_t testTimeout = 0, const std::string& srcHost = "");
 
 private:
     friend class CurlHttpClient;
@@ -112,7 +113,8 @@ public:
 
     virtual mp_bool TestConnect(const mp_string& url, const mp_uint32 time_out = 90);
 
-    virtual bool TestConnectivity(const std::string& ip, const std::string& port);
+    virtual bool TestConnectivity(const std::string& ip, const std::string& port,
+        uint32_t testTimeout = 0, const std::string& srcHost = "");
 
     virtual mp_int32 GetThumbPrint(const mp_string& url, mp_string& thunmPrint, const mp_uint32 time_out = 90);
 

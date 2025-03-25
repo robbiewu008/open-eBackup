@@ -124,6 +124,8 @@ private:
     int32_t m_pluginUdTimeId;                               // external update detail timeout timer id
     std::map<SubJobState, timerservice::TimeoutExecuter> m_pluginUdTimeoutHandler;
     std::map<SubJobState, AbortHandleFun> m_abortHandleMap;
+
+    std::mutex m_mutexChangeState;
 };
 
 }  // namespace AppProtect

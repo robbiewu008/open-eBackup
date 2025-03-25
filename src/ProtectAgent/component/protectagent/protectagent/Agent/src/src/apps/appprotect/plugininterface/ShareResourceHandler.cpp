@@ -165,7 +165,7 @@ EXTER_ATTACK void ShareResourceHandler::QueryResource(
         ERRLOG("Rsp body have error code: %s.", errCodeStr.c_str());
         mp_int32 erroCode;
         try {
-            erroCode = std::stoi(errCodeStr);
+            erroCode = CMpString::SafeStoi(errCodeStr, 0);
         } catch (const std::exception& erro) {
             ERRLOG("Invalid errCodeStr , erro: %s.", erro.what());
             erroCode = MP_FAILED;

@@ -582,7 +582,7 @@ mp_int32 Task::FinishTask(Json::Value& param, Json::Value& respParam)
         mp_int32 iRet = m_curStep->Finish(param, respParam);
         if (iRet != MP_SUCCESS) {
             COMMLOG(OS_LOG_ERROR, "finish taskstep failed, iRet=%d.", iRet);
-            return MP_FAILED;
+            return iRet;
         }
     }
 

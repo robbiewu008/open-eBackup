@@ -27,6 +27,9 @@
     <ClInclude Include="..\..\..\src\inc\common\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\common\LogRotater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\src\inc\common\LogCode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -102,6 +105,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\src\common\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\common\LogRotater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\src\common\String.cpp">

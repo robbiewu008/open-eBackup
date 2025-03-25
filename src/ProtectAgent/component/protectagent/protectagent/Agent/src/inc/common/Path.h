@@ -81,6 +81,11 @@ public:
         return GetXBSAConfPath() + PATH_SEPARATOR + strFileName;
     }
     
+    mp_string GetXBSASockFilePath(const mp_string& strFileName)
+    {
+        return m_strAgentRootPath + mp_string("/../../ProtectClient-E/conf/")  + strFileName;
+    }
+
     mp_string GetPluginPidPath()
     {
         return GetConfPath() + PATH_SEPARATOR + "PluginPid";
@@ -144,10 +149,15 @@ public:
     {
         return m_strAgentRootPath + PATH_SEPARATOR + AGENT_DB;
     }
-    // 获取agent安装路径下bin文件夹下nginx子文件夹路径
+    // 获取agent安装路径下nginx子文件夹路径
     mp_string GetNginxPath()
     {
         return m_strAgentRootPath + PATH_SEPARATOR + AGENT_NGINX;
+    }
+    // 获取agent安装路径下nginx子文件夹下logs子文件夹路径
+    mp_string GetNginxLogsPath()
+    {
+        return GetNginxPath() + PATH_SEPARATOR + AGENT_NGINX_LOGS;
     }
     // 获取agent安装路径下的bin文件夹下某个文件路径
     mp_string GetBinFilePath(const mp_string& strFileName)

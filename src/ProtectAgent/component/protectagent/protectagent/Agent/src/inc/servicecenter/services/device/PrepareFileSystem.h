@@ -85,6 +85,7 @@ namespace AppProtect {
         mp_string pvcTaskId;
         mp_int32 pvcOSADAuthPort = 0;
         mp_int32 pvcOSADServerPort = 0;
+        mp_int32 taskType = 0; // Default taskType=UNDEFINE
     };
 
     struct MountNasKeyParam {
@@ -166,10 +167,12 @@ public:
 
     static bool IsMountChainGood(const mp_string& jobId);      // it is used when read or write fail
 private:
+    mp_string GetMountPublicPath();
     mp_string GenerateSubPath(const MountNasParam &mountNasParam);
     mp_string SplitFileClientMountPath(const mp_string &mountPath);
     mp_void GetMountPath(const MountNasParam &mountNasParam, const mp_string iterIp, mp_string &mountPath);
     mp_int32 CheckAndCreateDataturboLink(const mp_string &storageName, const MountNasParam &mountNasParam);
+    bool GetMountOption(const MountNasParam &mountNasParam, mp_string &mountOptionKey, mp_string &mountOption);
 
 #ifdef WIN32
     mp_int32 WinMountOperation(MountNasKeyParam& mountKeyParam, mp_string& mountPath);
@@ -209,7 +212,7 @@ private:
     static std::mutex m_mountFailIpMapMutex;
 
     void HandleAfterMountSuccess(const MountNasParam &mountNasParam);
-    void HandleAfterMountFail(const MountNasParam &mountNasParam, mp_int32 errCode);
+    void HandleAfterMountFail(const MountNasParam &mountNasParam, mp_int32 &errCode);
     void HandleAfterUMountSuccess(const mp_string& jobId, const mp_string& mountPath);
 
     static void JobAddMountChainInfo(const mp_string& jobId, const MountChainInfo& mountChainInfo);

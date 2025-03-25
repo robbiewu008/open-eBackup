@@ -18,6 +18,7 @@
 #include "message/tcp/CSocket.h"
 #ifdef SUPPORT_SSL
 #include <openssl/ssl.h>
+#include <openssl/err.h>
 #endif
 namespace {
 const int SLEEP_1000_MS = 1000;
@@ -40,6 +41,7 @@ CConnection::CConnection() : m_isIpv4(MP_TRUE)
     CMpThread::InitLock(&m_stateLock);
     CMpThread::InitLock(&m_sendMsgLock);
     CMpThread::InitLock(&m_recvExitFlagLock);
+    CMpThread::InitLock(&m_connectLock);
 }
 
 CConnection::~CConnection()
@@ -274,14 +276,13 @@ mp_void CConnection::SetSocket(mp_socket clientSock)
 {
     conn->clientSock = clientSock;
     linkState = LINK_STATE_LINKED;
+    INFOLOG("socket %d linked.", clientSock);
 }
 
 mp_void CConnection::DisConnect()
 {
+    CThreadAutoLock lock_guard(&m_connectLock);
     if (conn->clientSock != MP_INVALID_SOCKET) {
-        INFOLOG("CConnection::DisConnect %d", conn->clientSock);
-        CSocket::Close(conn->clientSock);
-        conn->clientSock = MP_INVALID_SOCKET;
 #ifdef SUPPORT_SSL
         if (pSsl != NULL) {
             SSL_shutdown(pSsl);
@@ -289,8 +290,12 @@ mp_void CConnection::DisConnect()
             pSsl = NULL;
         }
 #endif
+        INFOLOG("CConnection::DisConnect %d", conn->clientSock);
+        CSocket::Close(conn->clientSock);
+        conn->clientSock = MP_INVALID_SOCKET;
     }
     linkState = LINK_STATE_NO_LINKED;
+    INFOLOG("socket %d no linked.", conn->clientSock);
 }
 
 mp_int32 CConnection::ResetConnection()
@@ -314,6 +319,7 @@ mp_int32 CConnection::Connect()
         ERRLOG("connection %d have not initail server information.", conn->clientSock);
         return MP_FAILED;
     }
+    CThreadAutoLock lock_guard(&m_connectLock);
     if (linkState == LINK_STATE_LINKED) {
         INFOLOG("connection %d have already connected.", conn->clientSock);
         return MP_SUCCESS;
@@ -380,17 +386,21 @@ mp_int32 CConnection::CreateSslConnect(const mp_socket &sock)
     }
     INFOLOG("SSL set sock fd=%d.", sock);
 
-    int iReconnectCount = 0;
-    while (iReconnectCount < RETRY_CONNECT_NUM) {
+    for (int iReconnectCount = 0; iReconnectCount < RETRY_CONNECT_NUM; iReconnectCount++) {
         iRet = SSL_connect(ssl);
         if (iRet != MP_TRUE) {
             mp_int32 errorStatus = SSL_get_error(ssl, iRet);
             if (errorStatus == SSL_ERROR_WANT_READ || errorStatus == SSL_ERROR_WANT_WRITE) {
-                iReconnectCount++;
                 DoSleep(SLEEP_1000_MS);
                 continue;
             }
-            ERRLOG("Failed to ssl connect to the server, error=%d, sockerror=%d.", errorStatus, errno);
+            ERRLOG("Failed to ssl connect to the server, ret %d, error=%d, sockerror=%d.", iRet, errorStatus, errno);
+            if (errorStatus == SSL_ERROR_SSL) {
+                unsigned long err = ERR_get_error();
+                char err_buf[MAX_ERROR_MSG_LEN];
+                ERR_error_string_n(err, err_buf, sizeof(err_buf));
+                DBGLOG("SSL_connect ssl err code %d msg: %s", err, err_buf);
+            }
             SSL_free(ssl);
             ssl = NULL;
             return (errorStatus == SSL_ERROR_SYSCALL && errno == 0) ? MP_ARCHIVE_TOO_MUCH_CONNECTION : MP_FAILED;
@@ -401,10 +411,8 @@ mp_int32 CConnection::CreateSslConnect(const mp_socket &sock)
                 DBGLOG("Certificate dual-ended authentication succeeded");
                 return MP_SUCCESS;
             } else {
-                SSL_free(ssl);
-                ssl = NULL;
                 ERRLOG("Certificate dual-ended authentication failed.");
-                return MP_FAILED;
+                break;
             }
         }
     }
@@ -461,6 +469,7 @@ mp_void CConnection::Destroy()
     CMpThread::DestroyLock(&m_stateLock);
     CMpThread::DestroyLock(&m_sendMsgLock);
     CMpThread::DestroyLock(&m_recvExitFlagLock);
+    CMpThread::DestroyLock(&m_connectLock);
 }
 mp_bool CConnection::GetIsIpv4()
 {

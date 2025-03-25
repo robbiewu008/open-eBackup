@@ -88,11 +88,12 @@
       <MinimalRebuild>false</MinimalRebuild>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
       <BrowseInformation>true</BrowseInformation>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\..\..\bin\;..\..\..\..\open_src\openssl\out32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>alarm.lib;libcommon.lib;tinyxml.lib;securec.lib;snmp.lib;sqlite.lib;libeay32.lib;Ws2_32.lib;Psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>host.lib;alarm.lib;libcommon.lib;tinyxml.lib;securec.lib;snmp.lib;sqlite.lib;libeay32.lib;Ws2_32.lib;Psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -108,13 +109,14 @@
       <PreprocessorDefinitions>WIN32;NDEBUG</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\..\..\..\bin\;..\..\..\..\open_src\openssl\out32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>alarm.lib;libcommon.lib;tinyxml.lib;securec.lib;snmp.lib;sqlite.lib;libeay32.lib;Ws2_32.lib;Psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>host.lib;alarm.lib;libcommon.lib;tinyxml.lib;securec.lib;snmp.lib;sqlite.lib;libeay32.lib;Ws2_32.lib;Psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -123,10 +125,11 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_DEBUG;HAVE_CONFIG_H</PreprocessorDefinitions>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\..\..\bin\;..\..\..\..\open_src\openssl\out32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>alarm.lib;libcommon.lib;tinyxml.lib;securec.lib;snmp.lib;sqlite.lib;libeay32.lib;Ws2_32.lib;Psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>host.lib;alarm.lib;libcommon.lib;tinyxml.lib;securec.lib;snmp.lib;sqlite.lib;libeay32.lib;Ws2_32.lib;Psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -136,10 +139,11 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;STDCXX_98_HEADERS</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4273;4251;4819</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\..\..\bin\;..\..\..\..\open_src\openssl\out32;..\..\..\..\open_src\curl\builds\out_static\lib;..\..\..\..\open_src\openssl\out32\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcommon.lib;libsecurecom.lib;alarm.lib;libsdp.lib;tinyxml.lib;securec.lib;snmp.lib;sqlite.lib;jsoncpp.lib;message.lib;libcurl_a.lib;libssl.lib;libcrypto.lib;
+      <AdditionalDependencies>libcommon.lib;libsecurecom.lib;host.lib;alarm.lib;libsdp.lib;tinyxml.lib;securec.lib;snmp.lib;sqlite.lib;jsoncpp.lib;message.lib;libcurl_a.lib;libssl.lib;libcrypto.lib;
 Crypt32.lib;wldap32.lib;
 Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>

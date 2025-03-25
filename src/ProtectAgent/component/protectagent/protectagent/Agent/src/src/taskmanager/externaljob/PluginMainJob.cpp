@@ -50,6 +50,8 @@ namespace {
             static_cast<int32_t>(MainJobState::CHECK_BACKUP_TYPE)},
         {{PluginMainJob::ActionEvent::GENE_POST_JOB, PluginMainJob::EventResult::START},
             static_cast<int32_t>(MainJobState::INITIALIZING)},
+        {{PluginMainJob::ActionEvent::GENE_POST_JOB, PluginMainJob::EventResult::FAILED},
+            static_cast<int32_t>(MainJobState::FAILED)},
         {{PluginMainJob::ActionEvent::MAIN_JOB_FINISHED, PluginMainJob::EventResult::SUCCESS},
             static_cast<int32_t>(MainJobState::COMPLETE)},
         {{PluginMainJob::ActionEvent::MAIN_JOB_FINISHED, PluginMainJob::EventResult::FAILED},
@@ -237,7 +239,7 @@ mp_int32 PluginMainJob::ReportAction(PluginMainJob::ActionEvent event, PluginMai
 {
     INFOLOG("ReportAction jobId=%s: event:%d result:%d resCode:%d.", data.mainID.c_str(), event, result, resultCode);
     if (DetermineWhetherToReportAction(event, result, resultCode, data) == false) {
-    INFOLOG("Job no need report.");
+        INFOLOG("Job no need report.");
         return MP_FAILED;
     }
     std::pair<ActionEvent, EventResult> key{event, result};
@@ -439,7 +441,7 @@ mp_int32 PluginMainJob::GenerateMainJob()
     DmeRestClient::HttpReqParam param("POST",
         "/v1/dme-unified/tasks/sub-tasks", jobValue.toStyledString());
     param.mainJobId = m_data.mainID;
-    mp_int32 iRet = dmeClient->SendRequest(param, response);
+    mp_int32 iRet = dmeClient->SendKeyRequest(param, response);
     if (iRet != MP_SUCCESS) {
         return iRet;
     }
@@ -561,6 +563,14 @@ mp_int32 PluginMainJob::CanbeRunInLocalNode()
             ret.code = (ret.bodyErr == 0) ? ERR_PLUGIN_AUTHENTICATION_FAILED : ret.bodyErr;
             ERRLOG("Check jobId=%s can be allow check copy in local node failed, error=%d",
                 m_data.mainID.c_str(), ret.code);
+        }
+    } else if (m_data.mainType == MainJobType::DELETE_COPY_JOB && m_data.appType == "HCSCloudHost") {
+        DelCopyJob delCopyJob;
+        JsonToStruct(m_data.param, delCopyJob);
+        ProtectServiceCall(&ProtectServiceIf::AllowDelCopyInLocalNode, ret, delCopyJob);
+        if (ret.code != MP_SUCCESS) {
+            ret.code = (ret.bodyErr == 0) ? ERR_PLUGIN_AUTHENTICATION_FAILED : ret.bodyErr;
+            ERRLOG("AllowDelCopyInLocalNode failed, jobId=%s error=%d", m_data.mainID.c_str(), ret.code);
         }
     }
     JobStateDB::GetInstance().UpdateRunEnable(m_data.mainID, ret.code);

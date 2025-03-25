@@ -56,8 +56,8 @@
     <ClInclude Include="..\..\..\..\src\inc\host\CheckConnectStatus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\..\src\src\host\ConnectivityManager.h">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\..\..\src\inc\host\ConnectivityManager.h">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

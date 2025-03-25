@@ -61,6 +61,7 @@ protected:
     mp_int32 CanbeRunInLocalNodeForBackup();
     mp_int32 CanbeRunInLocalNodeForRestore();
     mp_int32 CanbeRunInLocalNodeForCheckCopy();
+    mp_int32 CanbeRunInLocalNodeForDelCopy();
     bool NeedExecPolicy();
 };
 

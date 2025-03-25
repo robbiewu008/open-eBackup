@@ -415,6 +415,23 @@ mp_int32 PluginSubBusiJob::CanbeRunInLocalNodeForCheckCopy()
     return ret.code;
 }
 
+mp_int32 PluginSubBusiJob::CanbeRunInLocalNodeForDelCopy()
+{
+    INFOLOG("Check del job can run,jobId=%s, subJobId=%s.", m_data.mainID.c_str(), m_data.subID.c_str());
+    ActionResult ret;
+    DelCopyJob delCopyJob;
+    SubJob subJob;
+    JsonToStruct(m_data.param, delCopyJob);
+    JsonToStruct(m_data.param, subJob);
+    ProtectServiceCall(&ProtectServiceIf::AllowDelCopySubJobInLocalNode, ret, delCopyJob, subJob);
+    if (ret.code != MP_SUCCESS) {
+        ret.code = (ret.bodyErr == 0) ? ERR_PLUGIN_AUTHENTICATION_FAILED : ret.bodyErr;
+        ERRLOG("Check jobId=%s can be allow del copy in local node failed, subJobId=%s, error=%d",
+            m_data.mainID.c_str(), m_data.subID.c_str(), ret.code);
+    }
+    return ret.code;
+}
+
 mp_int32 PluginSubBusiJob::CanbeRunInLocalNode()
 {
     LOGGUARD("");
@@ -424,6 +441,8 @@ mp_int32 PluginSubBusiJob::CanbeRunInLocalNode()
         return CanbeRunInLocalNodeForRestore();
     } else if (m_data.mainType == MainJobType::CHECK_COPY_JOB) {
         return CanbeRunInLocalNodeForCheckCopy();
+    } else if (m_data.mainType == MainJobType::DELETE_COPY_JOB && m_data.appType == "HCSCloudHost") {
+        return CanbeRunInLocalNodeForDelCopy();
     }
     return MP_SUCCESS;
 }

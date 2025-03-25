@@ -789,16 +789,16 @@ EXTER_ATTACK mp_int32 HostPlugin::CheckCompressTool(CRequestMsg& req, CResponseM
     mp_string strCmd = "command -v tar";
     std::vector<mp_string> vecRes;
     mp_int32 iRet = CSystemExec::ExecSystemWithEcho(strCmd, vecRes);
-    if (iRet != MP_SUCCESS) {
-        WARNLOG("The system  not support tar tool.");
+    if (iRet != MP_SUCCESS || vecRes.empty()) {
+        WARNLOG("The system not support tar tool.");
         jValueRsp["isSupportTar"] = "false";
     } else {
         jValueRsp["isSupportTar"] = "true";
     }
     strCmd = "command -v unzip";
     iRet = CSystemExec::ExecSystemWithEcho(strCmd, vecRes);
-    if (iRet != MP_SUCCESS) {
-        WARNLOG("The system  not support unzip tool.");
+    if (iRet != MP_SUCCESS || vecRes.empty()) {
+        WARNLOG("The system not support unzip tool.");
         jValueRsp["isSupportUnzip"] = "false";
     } else {
         jValueRsp["isSupportUnzip"] = "true";
@@ -1884,7 +1884,7 @@ mp_int32 HostPlugin::CheckExportLogParams(const mp_string &strLogId, const mp_st
 
     mp_int64 maxSize = -1;
     try {
-        maxSize = std::stoll(strMaxSize);
+        maxSize = CMpString::SafeStoll(strMaxSize, 0);
         /* trans MiB to Bytes */
         maxSize = maxSize * NUM_1024 * NUM_1024;
     } catch (std::exception& e) {
@@ -1897,7 +1897,7 @@ mp_int32 HostPlugin::CheckExportLogParams(const mp_string &strLogId, const mp_st
     if (CMpFile::FileSize(strFilePath.c_str(), logSize) != MP_SUCCESS) {
         rsp.SetHttpStatus(SC_INTERNAL_SERVER_ERROR);
         COMMLOG(OS_LOG_ERROR, "Get log file size failed, file: %s", strFilePath.c_str());
-        return MP_FAILED;
+        return ERROR_AGENT_GET_LOG_FILE_FAILED;
     }
 
     if (maxSize < LOG_EXPORT_MIN || maxSize > LOG_EXPORT_MAX || logSize > maxSize) {
@@ -1966,7 +1966,7 @@ EXTER_ATTACK mp_int32 HostPlugin::CleanAgentExportedLog(CRequestMsg& req, CRespo
     mp_string collectId;
     GET_JSON_STRING(jv, REST_PARAM_HOST_LOG_EXPORT_ID, collectId);
     CHECK_FAIL_EX(CheckPathTraversal(collectId));
-    if (!CheckParamValid(collectId)) {
+    if (CheckParamValid(collectId) != MP_SUCCESS) {
         COMMLOG(OS_LOG_ERROR, "Check CleanAgentExportedLog param valid failed, collectId(%s).", collectId.c_str());
         rsp.SetHttpStatus(SC_BAD_REQUEST);
         return ERROR_COMMON_INVALID_PARAM;

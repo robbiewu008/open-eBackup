@@ -220,6 +220,13 @@ mp_int32 CIP::GetUnixHostIPList(std::vector<mp_string>& ipv4List, std::vector<mp
             mp_string str(temp);
             mp_int32 pos = str.find("%");
             mp_string ipv6 = str.substr(0, pos);
+            pos = ipv6.find("/");
+            mp_string ipv6Str = ipv6.substr(0, pos);
+            if (ipv6Str == "::" || ipv6Str == "::1") {
+                continue;
+            }
+            pos = ipv6.find(" ");
+            ipv6 = ipv6.substr(0, pos);
             ipv6List.push_back(ipv6);
         }
     }
@@ -586,7 +593,7 @@ mp_string CIP::ParseIPv6(const std::string& ip, bool delOrAddSign)
     return ipTmp;
 }
 
-// nginxListenPort -- 类似“listen       100.136.139.220:59526 ssl;”输入
+// nginxListenPort -- 类似“listen {ip}:{port} ssl;”输入
 mp_void CIP::GetListenPort(const mp_string& nginxListenPort, mp_string& strPort)
 {
     strPort = "";
@@ -757,7 +764,13 @@ mp_int32 CIP::GetApplications(mp_string& applications)
         ERRLOG("The testcfg.tmp file can't open");
         return MP_FAILED;
     }
+    mp_string pkgText = "PKG_CONF_PATH=";
+    mp_string sanClient = "sanclient";
     while (getline(stream, line)) {
+        if (line.find(pkgText.c_str()) != std::string::npos && line.find(sanClient.c_str()) != std::string::npos) {
+            INFOLOG("No need to get applications for sanClient.");
+            return MP_SUCCESS;
+        }
         if (line.find(strText.c_str()) != std::string::npos) {
             strApplicationText = line;
             break;

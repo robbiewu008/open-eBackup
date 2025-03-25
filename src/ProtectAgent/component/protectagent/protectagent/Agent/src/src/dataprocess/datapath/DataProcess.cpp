@@ -10,7 +10,6 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-#if (defined LINUX) && (!defined ENABLE_TSAN)
 #include <gperftools/malloc_extension.h>
 #endif
 
@@ -127,12 +126,6 @@ mp_int32 main(mp_int32 argc, mp_char **argv)
     MallocExtension::instance()->SetMemoryReleaseRate(RELEASE_MEM_FRE);
 #endif
 
-    std::shared_ptr<DataPath> pDataPath = nullptr;
-    pDataPath = HandleDataProcessType(argc, argv);
-    if (pDataPath == nullptr) {
-        return MP_FAILED;
-    }
-
     if (argc > VERSION_NUM) {
         auto item = find(DATAPROCESS_VERSION_LIST.begin(), DATAPROCESS_VERSION_LIST.end(), argv[VERSION_NUM]);
         if (item == DATAPROCESS_VERSION_LIST.end()) {
@@ -147,6 +140,13 @@ mp_int32 main(mp_int32 argc, mp_char **argv)
         std::cout << "Dataprocess log file creation failed : " << std::endl;
         return iRet;
     }
+
+    std::shared_ptr<DataPath> pDataPath = nullptr;
+    pDataPath = HandleDataProcessType(argc, argv);
+    if (pDataPath == nullptr) {
+        return MP_FAILED;
+    }
+
     COMMLOG(OS_LOG_INFO, "Begin to run data process service!");
     iRet = InitDataPath(pDataPath);
 

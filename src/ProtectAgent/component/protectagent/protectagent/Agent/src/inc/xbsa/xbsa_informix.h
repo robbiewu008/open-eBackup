@@ -63,6 +63,7 @@ XBSA_EXPORT_API int NBBSAGetServerError(long bsaHandle, int *ServerStatus, BSA_U
 
 XBSA_EXPORT_API int NBBSASetEnv(long bsaHandle, char *EnvVar, char *EnvVal);
 
+mp_bool AnalyzeAppType(BSA_AppType& appType, mp_string& envStr);
 #ifdef __cplusplus
 }
 #endif  /* __cplusplus */

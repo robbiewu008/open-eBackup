@@ -29,6 +29,7 @@
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <sys/poll.h>
 #endif
 
 #ifdef SUPPORT_SSL
@@ -60,6 +61,7 @@ typedef mp_int32 sock_option_t;
 // special return value for socket
 #define SOCKET_TIMEOUT -2  // select timeout
 #define SOCKET_CLOSED -3   // Socket closed
+#define MILLI_SECOND 1000 // 1 second is 1000 millisecond
 
 typedef enum {
     CLIENT_ERRTYPE_SOCKET = 1,
@@ -99,6 +101,9 @@ public:
     static mp_void FdClr(mp_socket sock, fd_set& fdSet);
     static mp_bool FdIsSet(mp_socket sock, fd_set& fdset);
     static mp_int32 WaitEvents(fd_set& fdRead, fd_set& fdWrite, mp_int32 iMaxFd);
+#ifndef WIN32
+    static mp_int32 WaitEvents(mp_socket sock);
+#endif
     static mp_int32 ConnectIpv6(mp_socket clientSock, const mp_string &uiServerAddr, mp_uint16 uiPort);
     static mp_int32 CheckHostLinkStatus(
         const mp_string& strSrcIp, const mp_string& strHostIp, mp_uint16 uiPort = 111, mp_int32 timeout = 200);

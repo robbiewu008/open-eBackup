@@ -141,12 +141,11 @@ mp_int32 GetUserPwd(std::string &outStr)
     if (MP_SUCCESS !=
         CConfigXmlParser::GetInstance().GetValueString(CFG_SYSTEM_SECTION, WORKING_USER_PASSWORD, inStr)) {
         COMMLOG(OS_LOG_ERROR, "Get value of working_user_passward failed, get ssl_key_password instead.");
-
-        if (MP_SUCCESS != CConfigXmlParser::GetInstance().GetValueString(
-            CFG_MONITOR_SECTION, CFG_NGINX_SECTION, CFG_SSL_KEY_PASSWORD, inStr)) {
+    }
+    if (inStr.empty() && MP_SUCCESS != CConfigXmlParser::GetInstance().GetValueString(
+        CFG_MONITOR_SECTION, CFG_NGINX_SECTION, CFG_SSL_KEY_PASSWORD, inStr)) {
             COMMLOG(OS_LOG_ERROR, "Get value of ssl_key_password failed");
             return MP_FAILED;
-        }
     }
     DecryptStr(inStr, outStr);
     return MP_SUCCESS;

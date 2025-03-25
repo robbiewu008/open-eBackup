@@ -607,6 +607,7 @@ mp_void CResponseMsg::PackageReponse(Json::Value& root)
         } else if (m_httpType == RSP_JSON_TYPE2) {
             root["errorMessage"] = m_msgJsonData.isNull() ? "" : m_msgJsonData.toStyledString();
         }
+        m_httpRsp.SetHead(REST_PARAM_ERROR_CODE, oss.str().c_str());
         COMMLOG(OS_LOG_DEBUG, "Response error code %d.", m_lRetCode);
         if (m_iHttpStatus == SC_OK) {
             // 如果各逻辑模块没有设置http status,默认设置为SC_NOT_ACCEPTABLE

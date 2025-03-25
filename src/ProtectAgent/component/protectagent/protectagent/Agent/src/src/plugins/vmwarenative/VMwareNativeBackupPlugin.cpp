@@ -135,7 +135,8 @@ EXTER_ATTACK mp_int32 VMwareNativeBackupPlugin::InitVMwareNativeVddkLib(CDppMess
             reqMsg.GetIpAddr(), reqMsg.GetPort(), strTaskID, rspBody);
         rspBody[MANAGECMD_KEY_ERRORCODE] = iRet;
         if (iRet != MP_SUCCESS) {
-            strError = "Init VDDK lib failed!";
+            strError = "Init VDDK lib failed, errorDetail: This function cannot be performed because the handle is "
+                       "executing another function";
             ERRLOG("Init VDDK lib failed!");
         }
     }

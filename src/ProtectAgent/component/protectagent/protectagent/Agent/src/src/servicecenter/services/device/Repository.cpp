@@ -25,6 +25,7 @@
 namespace {
     const mp_int32 SUPPORT_DATATURBO_PROTOCOL = 1024;
     const mp_int32 RESOURCE_IDENTIFY_LENGTH = 5;
+    const mp_int32 CORRECT_IPANDESN_SIZE = 2;
 }
 
 namespace AppProtect {
@@ -336,14 +337,26 @@ mp_int32 Repository::AssembleRepository(const PluginJobData &data, StorageReposi
     StructToJson(stRep, afterHandleJson);
     afterHandleJson["path"] = Json::arrayValue;
     for (auto mountPt : m_mountPoint) {
+        mp_string perMountPath;
+        mp_string subDirPath;
+        // subDirPath由UBC统一下发，agent进行拼接
+        if (afterHandleJson.isMember("subDirPath")) {
+            subDirPath = afterHandleJson["subDirPath"].asString();
+            DBGLOG("subDirPath is %s", subDirPath.c_str());
+        }
 #ifdef WIN32
         std::vector<mp_string> mountInfoVec;
         CMpString::StrSplit(mountInfoVec, mountPt, '&');
-        afterHandleJson["path"].append(mountInfoVec.front());
+        perMountPath = mountInfoVec.front();
+        subDirPath = CMpString::StrReplace(subDirPath, "/", "\\");
+        perMountPath += subDirPath;
 #else
-        afterHandleJson["path"].append(mountPt);
+        perMountPath = mountPt;
 #endif
+        DBGLOG("AssembleRepository perMountPath is %s", perMountPath.c_str());
+        afterHandleJson["path"].append(perMountPath);
     }
+    INFOLOG("Mount path count is %d.", m_mountPoint.size());
     jsonRep_new.append(std::move(afterHandleJson));
     return MP_SUCCESS;
 }
@@ -387,6 +400,9 @@ mp_int32 Repository::GetMountNasParam(MountNasParam& param, const PluginJobData 
     param.authPwd = stRep.auth.authPwd;
     param.cifsAuthKey = stRep.cifsAuth.authkey;
     param.cifsAuthPwd = stRep.cifsAuth.authPwd;
+    mp_int32 taskType = 0; // Default taskType=UNDEFINE
+    CJsonUtils::GetJsonInt32(data.param, "taskType", taskType);
+    param.taskType = taskType;
 #ifdef WIN32
     GetCopyFormat(param, data, stRep);
 #else
@@ -546,7 +562,8 @@ mp_int32 Repository::GetHostAndStorageMap(std::map<mp_string, mp_string> &ipAndE
     for (auto item : hostItem) {
         std::vector<mp_string> ipAndEsn;
         CMpString::StrSplit(ipAndEsn, item, '@');
-        if (ipAndEsn.empty()) {
+        DBGLOG("The ipAndEsn is %s, the size is %d", item.c_str(), ipAndEsn.size());
+        if (ipAndEsn.size() != CORRECT_IPANDESN_SIZE) {
             continue;
         }
         ipAndEsnMap.insert(std::map<mp_string, mp_string>::value_type (ipAndEsn[0], ipAndEsn[1]));
@@ -646,8 +663,8 @@ mp_string Repository::GetMountLunInfo(const Json::Value &lunInfo, MountNasParam 
             param.protocolType = "fc";
         }
         for (auto &lun : sanClient["luninfo"]) {
-            mp_int32 repositoryTypeIndex = std::stoi(lun["lunName"].asString());
-            mp_string fileSystemSize = std::to_string(lun["filesystemsize"].asInt() - 1);
+            mp_int32 repositoryTypeIndex = CMpString::SafeStoi(lun["lunName"].asString(), 0);
+            mp_string fileSystemSize = std::to_string(lun["filesystemsize"].asInt64() - 1);
             mp_string unidirectionalAuthPwd = "";
             mp_string sanclientPort = "";
             mp_string sanclientWwpn = lun["sanclientWwpn"].asString();

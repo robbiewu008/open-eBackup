@@ -129,6 +129,7 @@ private:
         const Json::Value &msg, mp_uint64 &snapType, vmware_vm_info &vmInfo, vmware_pm_info &pmInfo);
     mp_int32 InitVddkLibPath(Json::Value &msg, mp_string &vddkPath);
     mp_int32 TryConnecetWithSpecifiedMode();
+    void CheckVmwareTmpDir();
     void GetTransportMode(const bool& enableAdvanced, mp_string& transportMode);
     mp_int32 TryToOpenDisk(
         const mp_uint32 &openMode, const mp_uint64 &chunkSize, mp_string &tryTransMode, mp_string &errDesc);

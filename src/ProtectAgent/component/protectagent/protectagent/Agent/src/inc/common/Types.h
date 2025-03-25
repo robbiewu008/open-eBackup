@@ -40,6 +40,7 @@
 static const int MP_TRUE = 1;
 static const int MP_FALSE = 0;
 // 函数返回值，如果需要其他特定返回值，各函数方法自己定义
+static const int MP_DATA_VALID = 1;
 static const int MP_SUCCESS = 0;
 static const int MP_FAILED = -1;
 static const int MP_ERROR = -2;
@@ -48,6 +49,8 @@ static const int MP_TIMEOUT = -4;
 static const int MP_TASK_FAILED_NEED_RETRY = -5;
 static const int MP_TASK_COMPLETE = -10;
 static const int MP_TASK_RUNNING = -11;
+static const int MP_UNTREATED = -20;
+static const int MP_BUSY = -21;
 // 非阻塞模式，如果返回
 static const int MP_EAGAIN = -6;
 

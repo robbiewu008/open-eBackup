@@ -15,6 +15,8 @@ typedef ApplicationProtectBaseDataType.CopyDataType CopyDataType
 typedef ApplicationProtectBaseDataType.StorageRepository StorageRepository
 typedef ApplicationProtectBaseDataType.BackupJobType BackupJobType
 typedef ApplicationProtectBaseDataType.JobPermission JobPermission
+typedef ApplicationProtectBaseDataType.ResourceResultByPage ResourceResultByPage
+typedef ApplicationProtectBaseDataType.CmdResult CmdResult
 
 exception AppProtectFrameworkException {
     1:required i32 code;
@@ -323,7 +325,19 @@ service JobService {
     */
     Copy QueryPreviousCopy(1:Application application, 2:set<CopyDataType> types, 3:string copyId, 4:string mainJobId) throws(1:AppProtectFrameworkException e);
 
-     /**
+    /**
+        Function description
+            Plugin send msg to pm to update async list task results
+        Parameters
+            jobId : main job id
+            code : return value code
+            results : ResourceResultByPage
+        Return value
+            validity if the ActionResult.code is 0, invalidity otherwise
+    */
+    ActionResult ReportAsyncJobDetails(1:string jobId, 2:i32 code, 3:ResourceResultByPage results);
+
+    /**
         Function description
             Plugin call this interface to mount Repository, synchronization function
         Parameters
@@ -373,6 +387,17 @@ service JobService {
             validity if the ActionResult.code is 0, invalidity otherwise
     */
     ActionResult AddIpWhiteList(1:string jobId, 2:string ipListStr);
+
+    /**
+        Function description
+            Plugin send msg to PM to get lasted hcs token
+        Parameters
+            projectId : HCS project id
+            isWorkSpace: 0:HCS ecs, 1:workspace ecs
+        Return value
+            new hcs token will save in ApplicationEnvironment's extendInfo
+    */
+    ApplicationEnvironment GetHcsToken(1:string projectId, 2:string isWorkSpace);
 }
 
 /** 
@@ -417,6 +442,17 @@ service SecurityService {
             validity if the ActionResult.code is 0, invalidity otherwise
     */
     ActionResult CheckCertThumbPrint(1:string ip, 2:i32 port, 3:string thumbPrint);
+
+    /** 
+        Function description
+            when plugin need run commmand call the interface
+        Parameters
+            cmdPara : command parameters
+            cmdOutput: output of command
+        Return value
+            validity if the ActionResult.code is 0, invalidity otherwise
+    */
+    CmdResult RunCommand(1:string cmdPara);
 }
 
 /** 

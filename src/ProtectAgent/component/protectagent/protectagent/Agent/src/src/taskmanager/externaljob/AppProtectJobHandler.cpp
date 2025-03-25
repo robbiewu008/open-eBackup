@@ -22,6 +22,7 @@
 #include "message/curlclient/DmeRestClient.h"
 #include "message/tcp/CSocket.h"
 #include "message/curlclient/RestClientCommon.h"
+#include "message/curlclient/PmRestClient.h"
 #include "message/curlclient/OSAClient.h"
 #include "common/Log.h"
 #include "common/Ip.h"
@@ -73,6 +74,8 @@ constexpr int CHECK_TIMEOUT_MILLS = 3000; // socket超时时间3000毫秒
 constexpr int MAX_THEADS_NUMBER = 20;
 const mp_string NAS_SHARE_APP_TYPE = "NasShare";
 const mp_string NAS_FILESYSTEM_APP_TYPE = "NasFileSystem";
+const mp_string OBJECT_SET_APP_TYPE = "ObjectSet";
+const mp_string OBJECT_STORAGE_APP_TYPE = "ObjectStorage";
 }  // namespace
 
 namespace AppProtect {
@@ -185,10 +188,24 @@ mp_int32 CacheHostIp::GetIpList(const std::set<mp_string>& doradoIps,
         ERRLOG("Get Host ip failed");
         return iRet;
     }
-    GetAndUpdateIpList(doradoIps, hostIpv4List, validLocalIps, validDoradoIps);
-    if (validLocalIps.empty()) {
-        GetAndUpdateIpList(doradoIps, hostIpv6List, validLocalIps, validDoradoIps);
+    std::set<mp_string> doradoIpv4Set;
+    std::set<mp_string> doradoIpv6Set;
+    for (const auto& ip : doradoIps) {
+        if (CIP::IsIPV4(ip)) {
+            doradoIpv4Set.insert(ip);
+        } else if (CIP::IsIPv6(ip)) {
+            doradoIpv6Set.insert(ip);
+        } else {
+            ERRLOG("Dorado ip(%s) is not ipv4 or ipv6", ip.c_str());
+        }
     }
+    if (!doradoIpv4Set.empty()) {
+        GetAndUpdateIpList(doradoIpv4Set, hostIpv4List, validLocalIps, validDoradoIps);
+    }
+    if (!doradoIpv6Set.empty()) {
+        GetAndUpdateIpList(doradoIpv6Set, hostIpv6List, validLocalIps, validDoradoIps);
+    }
+
     Deduplicate(validDoradoIps);
     Deduplicate(validLocalIps);
     return MP_SUCCESS;
@@ -239,7 +256,8 @@ AppProtectJobHandler::~AppProtectJobHandler()
     }
 }
 
-mp_int32 AppProtectJobHandler::WakeUpJob(const mp_string& taskId, const Json::Value& mainJobJson)
+mp_int32 AppProtectJobHandler::WakeUpJob(const mp_string& taskId, const Json::Value& mainJobJson,
+    WakeupJobResult& result, CResponseMsg &rsp)
 {
     INFOLOG("Begin to wakeup job, jobId=%s, receive main job json", taskId.c_str());
     if (!mainJobJson.isObject() || !mainJobJson.isMember(NOTIFY_DMEIPLISTS)) {
@@ -268,7 +286,13 @@ mp_int32 AppProtectJobHandler::WakeUpJob(const mp_string& taskId, const Json::Va
 
     if (AddAcquireInfo(mainJob) == MP_FAILED) {
         ERRLOG("Add acquire info fail, jobId=%s.", taskId.c_str());
+        rsp.SetHttpStatus(SC_SERVICE_UNAVAILABLE);
         return MP_FAILED;
+    }
+
+    if (JudgeSubJobCnt(appType) != MP_SUCCESS) {
+        result.agentStatus = static_cast<uint32_t>(AgentServiceStatus::LOAD_FULL);
+        INFOLOG("Agent load is full for apptype %s.", appType.c_str());
     }
 
     INFOLOG("Wakeup job succ, jobId=%s", taskId.c_str());
@@ -294,21 +318,73 @@ mp_void AppProtectJobHandler::AbortJob(const std::string& jobId)
     // 考虑到agent无法收到dme下发的abort命令的情况，当agent发现任务不存在时，终止掉该任务下所有正在运行的任务
     INFOLOG("Begin to abort job, jobId=%s.", jobId.c_str());
     std::vector<std::shared_ptr<Job>> tJobs = GetRunJobs();
+    std::map<mp_string, std::shared_ptr<Job>> abortJobs;
     for (std::shared_ptr<Job> pJob : tJobs) {
         if (pJob->GetData().mainID == jobId) {
             if (pJob->IsMainJob() && (pJob->GetData().status == mp_uint32(MainJobState::PRE_JOB_RUNNING) ||
                 pJob->GetData().status == mp_uint32(MainJobState::GENERATE_JOB_RUNNING))) {
+                DBGLOG("Find mainjob waiting to be aborted by id, jobId=%s, subJobId=%s, status=%d.",
+                    pJob->GetData().mainID.c_str(), pJob->GetData().subID.c_str(), pJob->GetData().status);
+                abortJobs[pJob->GetData().mainID] = pJob;
                 pJob->Abort();
             } else if (pJob->GetData().status == mp_uint32(SubJobState::Running)) {
+                DBGLOG("Find subjob waiting to be aborted by id, jobId=%s, subJobId=%s, status=%d.",
+                    pJob->GetData().mainID.c_str(), pJob->GetData().subID.c_str(), pJob->GetData().status);
+                abortJobs[pJob->GetData().subID] = pJob;
                 pJob->Abort();
             }
         }
+    }
+    std::unique_lock<std::mutex> lock(m_mutexOFAbortJob);
+    if (!abortJobs.empty() && m_abortJobs.find(jobId) == m_abortJobs.end()) {
+        m_abortJobs[jobId] = std::make_pair(abortJobs, nullptr);
+    }
+}
+
+mp_void AppProtectJobHandler::ExecuteAbortJobForUmount(const AppProtect::SubJobDetails& jobInfo)
+{
+    bool abortEmpty = false;
+    std::shared_ptr<MountPointInfo> mountPointInfo = nullptr;
+    {
+        std::unique_lock<std::mutex> lock(m_mutexOFAbortJob);
+        if (m_abortJobs.find(jobInfo.jobId) == m_abortJobs.end()) {
+            DBGLOG("Can not find job in the abortJobs map, jobId=%s subjobId=%s JOBSTATUS=%d.",
+                jobInfo.jobId.c_str(), jobInfo.subJobId.c_str(), mp_int32(jobInfo.jobStatus));
+            return;
+        }
+        INFOLOG("Find job in the abortJobs map, jobId=%s subjobId=%s JOBSTATUS=%d.",
+            jobInfo.jobId.c_str(), jobInfo.subJobId.c_str(), mp_int32(jobInfo.jobStatus));
+
+        bool jobFinish = false;
+        mp_string jobId = jobInfo.subJobId;
+        if (jobInfo.subJobId.empty()) {
+            jobId = jobInfo.jobId;
+        }
+
+        if (jobInfo.jobStatus >= AppProtect::SubJobStatus::COMPLETED &&
+            m_abortJobs[jobInfo.jobId].first.find(jobId) != m_abortJobs[jobInfo.jobId].first.end()) {
+            INFOLOG("ExecuteAbortJobForUmount erase, jobId=%s subjobId=%s JOBSTATUS=%d.",
+                jobInfo.jobId.c_str(), jobInfo.subJobId.c_str(), mp_int32(jobInfo.jobStatus));
+            m_abortJobs[jobInfo.jobId].first.erase(jobId);
+        }
+
+        abortEmpty = m_abortJobs[jobInfo.jobId].first.empty();
+        if (abortEmpty) {
+            mountPointInfo = m_abortJobs[jobInfo.jobId].second;
+            m_abortJobs.erase(jobInfo.jobId);
+        }
+    }
+    if (abortEmpty) {
+        INFOLOG("All subjobs have been aborted, jobId=%s, subjobId=%s, now begin to umount.",
+            jobInfo.jobId.c_str(), jobInfo.subJobId.c_str());
+        Umount(jobInfo.jobId, mountPointInfo);
     }
 }
 
 mp_int32 AppProtectJobHandler::ReportJobDetails(
     AppProtect::ActionResult& _return, const AppProtect::SubJobDetails& jobInfo)
 {
+    ExecuteAbortJobForUmount(jobInfo);
     mp_int32 jobStage = MP_FAILED;
     std::shared_ptr<Job> pJob = nullptr;
     {
@@ -357,6 +433,34 @@ mp_int32 AppProtectJobHandler::ReportJobDetails(
             INFOLOG("SubJob have reported complate status success, main jobId=%s, sub jobId=%s, jobStatus=%d.",
                 jobInfo.jobId.c_str(), jobInfo.subJobId.c_str(), mp_int32(jobInfo.jobStatus));
         }
+    }
+    return _return.code;
+}
+
+mp_int32 AppProtectJobHandler::ReportAsyncJobDetails(AppProtect::ActionResult& _return, const std::string &jobId,
+    mp_int32 code, const AppProtect::ResourceResultByPage& results)
+{
+    INFOLOG("Enter the ReportAsyncJobDetails.");
+    HttpReqCommonParam req;
+    req.method = "POST";
+    req.url = "/v2/internal/resources/" + jobId + "/action/update";
+    Json::Value body;
+    body["id"] = jobId;
+    body["code"] = code;
+    StructToJson(results, body["results"]);
+    req.body = body.toStyledString();
+    HttpResponse response;
+    DBGLOG("ReportAsyncJobDetails Rest req: %s", req.body.c_str());
+    mp_int32 ret = PmRestClient::GetInstance().SendRequest(req, response);
+    DBGLOG("The response body is : %s", response.body.c_str());
+    Json::Value rspValue;
+    CHECK_FAIL_EX(CJsonUtils::ConvertStringtoJson(response.body, rspValue));
+    if (ret != MP_SUCCESS) {
+        _return.code = rspValue["code"].asInt();
+        _return.bodyErr = rspValue["bodyErr"].asInt();
+        _return.message = rspValue["message"].asString();
+        ERRLOG("Send request for Report Details to PM failed, jobId=%s, ret=%d, code=%d, bodyErr=%d, message=%s.",
+            jobId.c_str(), ret, _return.code, _return.bodyErr, _return.message.c_str());
     }
     return _return.code;
 }
@@ -681,10 +785,6 @@ mp_int32 AppProtectJobHandler::InitializeTimer()
 mp_int32 AppProtectJobHandler::AddAcquireInfo(const MainJobInfoPtr mainJob)
 {
     LOGGUARD("");
-    if (JudgeMainJobCnt() != MP_SUCCESS) {
-        WARNLOG("Too many job running, AddAcquireInfo failed. jobId=%s.", mainJob->mainID.c_str());
-        return MP_FAILED;
-    }
 
     std::lock_guard<std::mutex> lk(m_mutexOfAcquireInfo);
     auto pos = std::find_if(m_vecAcquireInfo.begin(), m_vecAcquireInfo.end(), [&](const MainJobInfoPtr& item) -> bool {
@@ -693,6 +793,10 @@ mp_int32 AppProtectJobHandler::AddAcquireInfo(const MainJobInfoPtr mainJob)
     if (pos != std::end(m_vecAcquireInfo)) {
         INFOLOG("AcquireInfo exists. jobId=%s, cnt: %d.", mainJob->mainID.c_str(), m_vecAcquireInfo.size());
         return MP_SUCCESS;
+    }
+    if (JudgeMainJobCnt() != MP_SUCCESS) {
+        WARNLOG("Too many job running, AddAcquireInfo failed. jobId=%s.", mainJob->mainID.c_str());
+        return MP_FAILED;
     }
     m_vecAcquireInfo.push_back(mainJob);
     INFOLOG("AddAcquireInfo suc. %s", mainJob->mainID.c_str());
@@ -790,7 +894,7 @@ mp_void AppProtectJobHandler::DelRunJob(MainJobInfoPtr mainJob)
         auto iter = m_runJobs.begin();
         for (; iter != m_runJobs.end();) {
             if ((*iter)->GetData().mainID == mainJob->mainID) {
-                INFOLOG("Find job in job.Main, jobId=%s, subJobId=%s.",
+                INFOLOG("Delete job from run jobs, jobId=%s, subJobId=%s.",
                     (*iter)->GetData().mainID.c_str(), (*iter)->GetData().subID.c_str());
                 delObjAppType = (*iter)->GetData().appType;
                 iter = m_runJobs.erase(iter);
@@ -835,12 +939,12 @@ mp_void AppProtectJobHandler::DelRunJob(MainJobInfoPtr mainJob)
     }
 }
 
-mp_void AppProtectJobHandler::Umount(const mp_string& mainID)
+mp_void AppProtectJobHandler::GetMountPoints(const mp_string& mainID, std::vector<mp_string>& vecCacheMountPoints,
+    std::vector<mp_string>& vecNonCacheMountPoints, bool& isFileClientMount)
 {
     LOGGUARD("");
     std::set<mp_string> setNonCacheMountPoints;
     std::set<mp_string> setCacheMountPoints;
-    bool isFileClientMount = false;
     {
         std::lock_guard<std::mutex> lk(m_mutexOfRunJob);
         for (const auto& item : m_runJobs) {
@@ -864,10 +968,23 @@ mp_void AppProtectJobHandler::Umount(const mp_string& mainID)
         }
     }
 
-    std::vector<mp_string> vecCacheMountPoints;
-    std::vector<mp_string> vecNonCacheMountPoints;
     vecCacheMountPoints.assign(setCacheMountPoints.begin(), setCacheMountPoints.end());
     vecNonCacheMountPoints.assign(setNonCacheMountPoints.begin(), setNonCacheMountPoints.end());
+}
+
+mp_void AppProtectJobHandler::Umount(const mp_string& mainID, std::shared_ptr<MountPointInfo> abortMountInfo)
+{
+    LOGGUARD("");
+    std::vector<mp_string> vecCacheMountPoints;
+    std::vector<mp_string> vecNonCacheMountPoints;
+    bool isFileClientMount = false;
+    if (abortMountInfo == nullptr) {
+        GetMountPoints(mainID, vecCacheMountPoints, vecNonCacheMountPoints, isFileClientMount);
+    } else {
+        abortMountInfo->GetMountPoints(vecCacheMountPoints, vecNonCacheMountPoints, isFileClientMount);
+        INFOLOG("Umount jobId=%s, cache mount point size=%d, non-cache mount point size=%d, isFileClientMount=%d.",
+            mainID.c_str(), vecCacheMountPoints.size(), vecNonCacheMountPoints.size(), isFileClientMount);
+    }
     m_createRepositoryHandler = std::make_shared<AppProtect::RepositoryFactory>();
     std::shared_ptr<Repository> pDataRepository =
         m_createRepositoryHandler->CreateRepository(RepositoryDataType::type::DATA_REPOSITORY);
@@ -881,6 +998,7 @@ mp_void AppProtectJobHandler::Umount(const mp_string& mainID)
 
 std::shared_ptr<Job> AppProtectJobHandler::GetRunJobById(const mp_string& mainJobId, const mp_string& subJobId) const
 {
+    std::lock_guard<std::mutex> lk(m_mutexOfRunJob);
     for (const auto& item : m_runJobs) {
         if (item && item->GetData().mainID == mainJobId && item->GetData().subID == subJobId) {
             DBGLOG("Find job. jobId=%s, subJobId=%s.", mainJobId.c_str(), subJobId.c_str());
@@ -1002,6 +1120,8 @@ mp_void AppProtectJobHandler::RedoJob(const PluginJobData& jobData)
             });
             if (pos == std::end(m_runJobs)) {
                 m_runJobs.push_back(pJob);
+                INFOLOG("Add redo job. jobId=%s, subJobId=%s.",
+                    pJob->GetData().mainID.c_str(), pJob->GetData().subID.c_str());
             }
         }
         m_jobPool->PushJob(pJob);
@@ -1014,6 +1134,8 @@ void AppProtectJobHandler::RedoFinishedMainJob(std::shared_ptr<Job> job, const P
     job->UpdateStatus(jobData.status);
     job->StopReportTiming();
     m_runJobs.push_back(job);
+    INFOLOG("Add redo finished job. jobId=%s, subJobId=%s.",
+        job->GetData().mainID.c_str(), job->GetData().subID.c_str());
 }
 
 std::vector<std::shared_ptr<Job>> AppProtectJobHandler::AcquireRunningJob(const PluginJobData& jobData)
@@ -1129,26 +1251,18 @@ mp_int32 AppProtectJobHandler::Run(const MainJobInfoPtr& mainJobInfo)
     LOGGUARD("");
     std::vector<std::shared_ptr<Job>> jobs;
     mp_uint32 iRet = AcquireJob(mainJobInfo, GetNodeId(), jobs);
+    mainJobInfo->UpdateCurrentAcquireInterval();
     if (iRet != MP_SUCCESS) {
         if (iRet == ERR_OBJ_NOT_EXIST) {
             INFOLOG("When AcquireJob main job, jobId=%s, which has completed.", mainJobInfo->mainID.c_str());
-            auto mainJobInfos = GetMainJobs();
-            AbortJob(mainJobInfo->mainID);
-            Umount(mainJobInfo->mainID);
-            auto pos = std::find_if(mainJobInfos.begin(), mainJobInfos.end(), [&](const Json::Value& item) -> bool {
-                return mainJobInfo->mainID == item["taskId"].asString();
-            });
-            if (pos != std::end(mainJobInfos)) {
-                INFOLOG("MainJob is exists in runJobs. jobId=%s, cnt: %d.",
-                    mainJobInfo->mainID.c_str(),
-                    mainJobInfos.size());
-                ReportJobDetailFactory::GetInstance()->ReportMainAndPostJobInformation(*pos);
-            }
-            JobStateDB::GetInstance().DeleteRecord(mainJobInfo->mainID);
-            ClearJobInMemory(mainJobInfo);
+            EndJob(mainJobInfo);
             return iRet;
         }
-        if (iRet == ERR_INVALID_PARAM || iRet == ERR_OPERATION_FAILED) {
+        if (iRet != MP_UNTREATED) {           // if treated.
+            mainJobInfo->UpdateNextAcquireInterval(false);
+        }
+        // 主任务获取不到子任务或者子任务并发数被占满时 更新主任务超时时间
+        if (iRet == ERR_INVALID_PARAM || iRet == ERR_OPERATION_FAILED || iRet == MP_BUSY) {
             UpdateMainJobOverTime(mainJobInfo);
             return iRet;
         }
@@ -1166,16 +1280,68 @@ mp_int32 AppProtectJobHandler::Run(const MainJobInfoPtr& mainJobInfo)
 
         // when the main job can't query the subjob for 6h, agent will stop the main job
         // when query sucessfully, only refresh the job generate time in memory
-        if (mainJobInfo->IsOverTime()) {
+        if (!CheckSubJobsRunning(mainJobInfo) && mainJobInfo->IsOverTime()) {
             INFOLOG("Delete job due to over time, jobId=%s.", mainJobInfo->mainID.c_str());
             ClearJobInMemory(mainJobInfo);
         }
         return iRet;
     }
+    mainJobInfo->UpdateNextAcquireInterval(true);
     mainJobInfo->SetNoNetworkErrorOccur();
     UpdateMainJobOverTime(mainJobInfo);
     CheckAndSubcribeJobs(jobs);
     return MP_SUCCESS;
+}
+
+mp_void AppProtectJobHandler::AbortUmountProcess(const mp_string& mainID)
+{
+    if (m_abortJobs.find(mainID) == m_abortJobs.end()) {
+        Umount(mainID);
+    } else if (m_abortJobs[mainID].second == nullptr) {
+        auto abortMountInfo = std::make_shared<MountPointInfo>(mainID);
+        std::vector<mp_string> vecCacheMountPoints;
+        std::vector<mp_string> vecNonCacheMountPoints;
+        bool isFileClientMount = false;
+        GetMountPoints(mainID, vecCacheMountPoints, vecNonCacheMountPoints, isFileClientMount);
+        INFOLOG("Abort mount datapoint size %d, cachepoint size %d",
+            vecNonCacheMountPoints.size(), vecCacheMountPoints.size());
+        abortMountInfo->SetMountPoints(vecCacheMountPoints, vecNonCacheMountPoints, isFileClientMount);
+        std::unique_lock<std::mutex> lock(m_mutexOFAbortJob);
+        m_abortJobs[mainID].second = abortMountInfo;
+    }
+}
+
+void AppProtectJobHandler::EndJob(const MainJobInfoPtr& mainJobInfo)
+{
+    auto mainJobInfos = GetMainJobs();
+    AbortJob(mainJobInfo->mainID);
+    AbortUmountProcess(mainJobInfo->mainID);
+    auto pos = std::find_if(mainJobInfos.begin(), mainJobInfos.end(), [&](const Json::Value& item) -> bool {
+        return mainJobInfo->mainID == item["taskId"].asString();
+    });
+    if (pos != std::end(mainJobInfos)) {
+        INFOLOG("MainJob is exists in runJobs. jobId=%s, cnt: %d.",
+            mainJobInfo->mainID.c_str(),
+            mainJobInfos.size());
+        ReportJobDetailFactory::GetInstance()->ReportMainAndPostJobInformation(*pos);
+    }
+    JobStateDB::GetInstance().DeleteRecord(mainJobInfo->mainID);
+    ClearJobInMemory(mainJobInfo);
+}
+
+bool AppProtectJobHandler::CheckSubJobsRunning(MainJobInfoPtr mainJob)
+{
+    std::lock_guard<std::mutex> lk(m_mutexOfRunJob);
+    auto iter = m_runJobs.begin();
+    for (; iter != m_runJobs.end();) {
+        if ((*iter)->GetData().mainID == mainJob->mainID && !(*iter)->GetData().subID.empty()) {
+            DBGLOG("Check sub job is running, jobId=%s, subJobId=%s.",
+                (*iter)->GetData().mainID.c_str(), (*iter)->GetData().subID.c_str());
+            return true;
+        }
+        ++iter;
+    }
+    return false;
 }
 
 void AppProtectJobHandler::ClearJobInMemory(const MainJobInfoPtr& mainJobInfo)
@@ -1235,10 +1401,11 @@ mp_int32 AppProtectJobHandler::ParseValidLocalIps(std::shared_ptr<Job> job, std:
             std::vector<mp_string> validDoradoIps;
             iRet = CheckIpConnection(doradoIp, validLocalIps, validDoradoIps);
             if (iRet != MP_SUCCESS) {
-                WARNLOG("Local ip can not access dorado, use container back end ips.");
                 validLocalIps = m_containerBackendIps;
             }
+            job->FilerUnvalidDoradoIps(validDoradoIps);
         }
+
         InnerAgentAdjustJobParam(job);
         job->AddDoradoIpToExtendInfo(doradoIp);
     } else {
@@ -1308,6 +1475,8 @@ mp_void AppProtectJobHandler::CheckAndSubcribeJobs(const std::vector<std::shared
         {
             std::lock_guard<std::mutex> lk(m_mutexOfRunJob);
             m_runJobs.push_back(job);
+            INFOLOG("Add run job. jobId=%s, subJobId=%s.",
+                job->GetData().mainID.c_str(), job->GetData().subID.c_str());
         }
         m_jobPool->PushJob(job);
         UpdateJobAgentSize(job);
@@ -1501,16 +1670,8 @@ mp_int32 AppProtectJobHandler::AllowSubcribe(std::shared_ptr<Job> job)
  */
 mp_int32 AppProtectJobHandler::GetRotationTime()
 {
-    mp_int32 jobCnt = GetRunningJobsCount();
-    mp_int32 rotationTime = 0;
-    if (jobCnt <= JOB_CNT_TEN) {
-        rotationTime = TWO * ONE_THOUSAND_MILLISECONDS;
-    } else if (jobCnt > JOB_CNT_TEN && jobCnt <= JOB_CNT_TWENTY) {
-        rotationTime = FIVE_SECONDS * ONE_THOUSAND_MILLISECONDS;
-    } else if (jobCnt > JOB_CNT_TWENTY) {
-        rotationTime = TEN_SECONDS * ONE_THOUSAND_MILLISECONDS;
-    }
-    DBGLOG("Current Running jobCnt:%d, rotationTime:%d", jobCnt, rotationTime);
+    mp_int32 rotationTime = TWO * ONE_THOUSAND_MILLISECONDS;
+    DBGLOG("Current running rotationTime:%d", rotationTime);
     return rotationTime;
 }
 
@@ -1521,8 +1682,17 @@ mp_int32 AppProtectJobHandler::AcquireJob(
     if (!mainJob) {
         return MP_FAILED;
     }
+    if (!mainJob->IsNeedTriggerAcquire()) {
+        DBGLOG("No need get job now %s.", mainJob->mainID.c_str());
+        return MP_UNTREATED;
+    }
+    if (JudgeSubJobCnt(mainJob->appType) != MP_SUCCESS) {
+        WARNLOG("Too many Apptype(%s) jobs are being executed, jobId=%s.",
+            mainJob->appType.c_str(), mainJob->mainID.c_str());
+        return MP_BUSY;
+    }
     std::ostringstream url;
-    if (mainJob->appType == NAS_FILESYSTEM_APP_TYPE) {
+    if (m_isDorado && mainJob->appType == NAS_FILESYSTEM_APP_TYPE) {
         // 内置代理场景下，该请求转向protectengine.dpa.svc.cluster.local
         url << "/v1/internal/dme-unified/tasks/" << mainJob->mainID << "?"
             << "node_id=" << nodeID << "&task_status=0&task_num=" << mainJob->agentsSize;
@@ -1535,13 +1705,8 @@ mp_int32 AppProtectJobHandler::AcquireJob(
     reqParam.method = mp_string("GET");
     reqParam.url = url.str();
     reqParam.mainJobId = mainJob->mainID;
-    auto DmeClient = DmeRestClient::GetInstance();
-    if (!DmeClient) {
-        ERRLOG("Get DmeClient Ins failed. jobId=%s.", mainJob->mainID.c_str());
-        return MP_FAILED;
-    }
 
-    mp_int32 iRet = DmeClient->SendRequest(reqParam, response);
+    mp_int32 iRet = DmeRestClient::GetInstance()->SendRequest(reqParam, response);
     if (iRet != MP_SUCCESS) {
         if (response.curlErrCode == CURLE_OPERATION_TIMEDOUT || response.curlErrCode == CURLE_COULDNT_CONNECT) {
             iRet = ERR_NETWORK_EXCEPTION;
@@ -1794,7 +1959,6 @@ mp_int32 AppProtectJobHandler::ParseRsp(const mp_string& respParam, std::vector<
                 }
             }
         }
-
         auto pJob = PluginJobFactory::GetInstance()->CreatePluginJob(pluginData);
         if (pJob.get() != nullptr && pJob->Initialize() == MP_SUCCESS) {
             jobs.push_back(pJob);
@@ -1874,7 +2038,17 @@ mp_void AppProtectJobHandler::NotifyPluginReload(const mp_string& pluginName, co
     INFOLOG("Plugin %s Reload, notify to jobs", pluginName.c_str());
     std::vector<std::shared_ptr<Job>> tJobs = GetRunJobs();
     for (std::shared_ptr<Job> pJob : tJobs) {
-        if (pJob->NotifyPluginReloadImpl(pluginName, newPluginPID)) {
+        mp_string jobPluginName;
+        mp_int32 ret = ExternalPluginManager::GetInstance().GetParseManager()->GetPluginNameByAppType(
+            pJob->GetData().appType, jobPluginName);
+        if (ret != MP_SUCCESS) {
+            WARNLOG("when reload the plugin, failed to get plugin name for apptype=%s.",
+                pJob->GetData().appType.c_str());
+            continue;
+        }
+        INFOLOG("The jobpluginName of apptype %s is %s, the pluginName is %s", pJob->GetData().appType.c_str(),
+            jobPluginName.c_str(), pluginName.c_str());
+        if (jobPluginName != pluginName || pJob->NotifyPluginReloadImpl(pluginName, newPluginPID)) {
             continue;
         }
         // 只有业务和后置子任务调用thrift接口完成后会退出线程池执行，需要重新下发任务池

@@ -10,9 +10,6 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-#ifndef _AGENT_MESSAGE_DPP_H_
-#define _AGENT_MESSAGE_DPP_H_
-
 #include "jsoncpp/include/json/value.h"
 #include "jsoncpp/include/json/json.h"
 #include "common/Types.h"
@@ -475,4 +472,4 @@ private:
     mp_string mErrDetail;
     mp_time mLastUpTime;    // record last udpate time
 };
-#endif  // _AGENT_MESSAGE_DPP_H_
+#endif  // !defined(EA_C7849FDE_421E_43f5_A7EB_6D01673A8C72__INCLUDED_)

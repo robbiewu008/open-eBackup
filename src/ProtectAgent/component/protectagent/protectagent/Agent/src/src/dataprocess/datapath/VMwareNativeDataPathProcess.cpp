@@ -215,17 +215,25 @@ mp_int32 VMwareNativeDataPathProcess::ExtCmdProcess(CDppMessage &message)
     return MP_SUCCESS;
 }
 
-mp_int32 VMwareNativeDataPathProcess::GenerateMap(CDppMessage &message,
-    mp_string &currentTaskID, mp_string &parentTaskID)
+void VMwareNativeDataPathProcess::CleanPreviousThread()
 {
+    std::vector<std::shared_ptr<HanderThread>> removeThreadList;
     {   // clean 之前任务的线程
         CThreadAutoLock threadLock(&m_handerLock);
         while (!m_prepareCleanThread.empty()) {
             auto parentId = m_prepareCleanThread.back();
             m_prepareCleanThread.pop_back();
-            RemoveVMwareThreadHander(parentId);
+            RemoveVMwareThreadHander(parentId, removeThreadList);
         }
     }
+    // m_handerLock锁外析构回收线程
+    removeThreadList.clear();
+}
+
+mp_int32 VMwareNativeDataPathProcess::GenerateMap(CDppMessage &message,
+    mp_string &currentTaskID, mp_string &parentTaskID)
+{
+    CleanPreviousThread();
     mp_int32 iRet = GenerateVMwareDpImplInstanceMap(currentTaskID, parentTaskID);
     if (iRet != MP_SUCCESS) {
         ERRLOG("Unable to init a VMwareNativeDataPathImpl, taskid=%s, parent taskid=%s, ret=%d, cmd=0x%x, seq=%llu.",
@@ -343,7 +351,8 @@ mp_void VMwareNativeDataPathProcess::RemoveTaskMapItem(const mp_string &taskId)
     ReleaseVMwareThreadHander(taskId);
 }
 
-mp_void VMwareNativeDataPathProcess::RemoveVMwareThreadHander(const mp_string &parentTaskID)
+mp_void VMwareNativeDataPathProcess::RemoveVMwareThreadHander(const mp_string &parentTaskID,
+    std::vector<std::shared_ptr<HanderThread>> &removeThreadList)
 {
     std::map<mp_string, std::shared_ptr<HanderThread>>::iterator iter = m_mapVMwareThreadHander.find(
         parentTaskID);
@@ -359,6 +368,7 @@ mp_void VMwareNativeDataPathProcess::RemoveVMwareThreadHander(const mp_string &p
         if (iter->second == nullptr) {
             return;
         }
+        removeThreadList.emplace_back(iter->second);
         m_mapVMwareThreadHander.erase(iter);
     }
 }

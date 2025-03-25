@@ -502,7 +502,7 @@ mp_void GetHostFromCert(const mp_string &certPath, mp_string &hostName)
             break;
         }
 
-        COMMLOG(OS_LOG_INFO, "subjectName:%s", pSubject);
+        COMMLOG(OS_LOG_DEBUG, "subjectName:%s", pSubject);
 
         mp_string tmpHost(pSubject);
         int index = tmpHost.find(CRT_USER_NAME);

@@ -16,7 +16,7 @@
 #include "XBSAServer/BSAServiceHandler.h"
 #include "XBSACom/TSSLSocketFactoryPassword.h"
 
-
+using namespace apache::thrift::transport;
 namespace {
     const std::string DEFAULT_THRIFT_SERVER_PATH = "thrift/server";
     const std::string DEFAULT_LISTEN_IP = "127.0.0.1";
@@ -65,6 +65,11 @@ private:
     int32_t Init(const NormalConfigInfo &normalConfig, const SslConfigInfo &sslConfig);
     std::shared_ptr<TSSLSocketFactoryPassword> createServerSocketFactory(const std::string &certFilePath,
         const std::string &cipherkey);
+    void CheckAppIsUsedSockFile();
+    void InitServerTransport(std::shared_ptr<TNonblockingServerTransport> &serverTransport, std::string &sockFilePath,
+                             const NormalConfigInfo &normalConfig,
+                             const SslConfigInfo &sslConfig);
+    bool m_isUseSockFile = false;
 };
 
 #endif

@@ -27,6 +27,7 @@ public:
     static std::shared_ptr<AppProtectService> GetInstance();
 
     mp_int32 Init();
+    mp_void SetSanclientFailedPreJob(const mp_string &taskId);
     mp_int32 SanclientJobForUbc(Json::Value& jvReq, CRequestMsg& req);
     mp_int32 WakeUpJob(CRequestMsg& req, CResponseMsg& rsp);
     mp_int32 AbortJob(CRequestMsg& req, CResponseMsg& rsp);
@@ -100,9 +101,11 @@ private:
     static std::mutex m_mutex_luninfolist;
     static std::mutex m_mutex_errorcodelist;
     static std::mutex m_mutex_mountpoint;
+    static std::mutex m_mutex_sanclientprejobfailedset;
     std::map<mp_string, std::vector<mp_string>> m_mountPoint;
     std::map<mp_string, Json::Value> m_LuninfoList;
     std::map<mp_string, mp_int32> m_ErrorcodeList;
+    std::set<mp_string> m_sanclientPreJobFailedSet;
     std::vector<AppProtect::LunInfo> m_lunInfos;
     std::list<int> m_lunidList;
     mp_bool m_jvReqGenerated = false;

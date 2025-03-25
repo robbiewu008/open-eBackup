@@ -35,6 +35,7 @@ namespace {
     const mp_int32 CONSTANTS_128 = 128;
     const mp_int32 CONSTANTS_256 = 256;
     const mp_int32 CONSTANTS_512 = 512;
+    static mp_string DEFAULT_PARENTDIR = "";
 }
 class ArchiveStreamClientHandler;
 AGENT_EXPORT typedef enum {
@@ -197,7 +198,8 @@ public:
     // 准备备份  archive去s3上读取副本相关信息耗时较长，所以做成异步接口，该函数为下发命令接口，后续调用QueryPrepareStatus接口查询archive是否完成读取操作
     // metaFileDir为元数据文件路径，后续根据读取到的splitFile文件中的元数据文件名称来读取对应的元数据文件列表
     // cacheRepoName 默认为空，可选择传入，传入后将使用cache仓来跟Archive共享数据，不传入时由Archive创建的文件系统来共享数据
-    mp_int32 PrepareRecovery(mp_string &metaFileDir, const std::string& cacheRepoName = "");
+    mp_int32 PrepareRecovery(mp_string &metaFileDir, mp_string &parentDir = DEFAULT_PARENTDIR,
+         const std::string& cacheRepoName = "");
 
     // 查询准备状态  state标识备份状态：0表示进行中  1表示已完成  -1表示失败
     mp_int32 QueryPrepareStatus(mp_int32 &state);
@@ -230,6 +232,8 @@ public:
     mp_int32 Disconnect();
     
     mp_int32 UnMountFileSystem(const mp_string &mountPath);
+
+    mp_int32 BuildConnect(const mp_string &ip, mp_int32 port, bool openSsl);
 
 private:
 #ifndef WIN32

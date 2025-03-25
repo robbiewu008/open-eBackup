@@ -53,6 +53,23 @@ mp_int32 TpopsTaskManage::UpdateTaskWhenCreateObject(const BsaObjectDescriptor &
     queryDesc.objectName.pathName = objDesc.objectName.pathName;
     return UpdateTaskWhenQueryObject(queryDesc);
 }
+
+mp_bool TpopsTaskManage::GetTpopsCacheInfoFile(mp_string &tpopsCacheInfoFile, mp_string &instanceId)
+{
+    mp_string tmpFileName;
+    if (!m_jobType.empty()) {
+        tmpFileName = "xbsa_cacheInfo_info_tpops_" + instanceId + "_" + m_jobType + ".txt";
+    } else {
+        tmpFileName = "xbsa_cacheInfo_info_tpops_" + instanceId + ".txt";
+    }
+    mp_string cacheFile = CPath::GetInstance().GetStmpFilePath(tmpFileName);
+    if (CMpFile::FileExist(cacheFile)) {
+        tpopsCacheInfoFile = tmpFileName;
+        return MP_TRUE;
+    }
+    return MP_FALSE;
+}
+
 mp_int32 TpopsTaskManage::UpdateTaskWhenQueryObject(const BsaQueryDescriptor &objDesc)
 {
     mp_string tpopsPathName = objDesc.objectName.pathName;
@@ -77,13 +94,13 @@ mp_int32 TpopsTaskManage::UpdateTaskWhenQueryObject(const BsaQueryDescriptor &ob
         } else {
             instanceId = elementList[i];
         }
-        mp_string cacheFile = CPath::GetInstance().GetStmpFilePath("xbsa_cacheInfo_info_tpops_" + instanceId + ".txt");
-        if (CMpFile::FileExist(cacheFile)) {
-            tpopsCacheInfoFile = "xbsa_cacheInfo_info_tpops_" + instanceId + ".txt";
+
+        if (GetTpopsCacheInfoFile(tpopsCacheInfoFile, instanceId)) {
             break;
         }
     }
-    INFOLOG("TpopsPathName param split string failed, %s.", tpopsCacheInfoFile.c_str());
+
+    INFOLOG("Tpops job cahce file is %s.", tpopsCacheInfoFile.c_str());
     mp_string cacheFilePath = CPath::GetInstance().GetStmpFilePath(tpopsCacheInfoFile);
     DwsTaskInfoParser parser;
     if (parser.ParseCacheInfo(m_cacheInfo, cacheFilePath) != MP_SUCCESS) {

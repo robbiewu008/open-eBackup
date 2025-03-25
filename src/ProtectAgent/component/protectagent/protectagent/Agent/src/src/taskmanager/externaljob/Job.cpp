@@ -48,6 +48,8 @@ namespace {
     const int32_t DATA_REPOSITORY_TYPE = 1;
     const mp_string NAS_SHARE_APP_TYPE = "NasShare";
     const mp_string NAS_FILESYSTEM_APP_TYPE = "NasFileSystem";
+    constexpr uint32_t MAX_INC_ACQUIRE_INTERVAL_TIMES = 5;
+    constexpr uint32_t DEFAULT_ACQUIRE_INTERVAL = 2;
 }
 
 mp_bool PluginJobData::IsCurAgentFcOn() const
@@ -146,6 +148,39 @@ bool PluginJobData::IsNetworkLongTimeError()
 
     auto start =  std::chrono::steady_clock::time_point(std::chrono::steady_clock::duration(timeNetErrorStart));
     return (std::chrono::steady_clock::now() - start) > std::chrono::minutes(NETWIORK_ERROR_IDENTIFY_TIME);
+}
+
+void PluginJobData::UpdateNextAcquireInterval(bool acquireSuccess)
+{
+    int32_t baseInterval = DEFAULT_ACQUIRE_INTERVAL;
+    CConfigXmlParser::GetInstance().GetValueInt32(CFG_JOB_FRAM_SECTION, CFG_GET_JOB_BASE_INTERVAL, baseInterval);
+
+    int32_t incInterval = DEFAULT_ACQUIRE_INTERVAL;
+    CConfigXmlParser::GetInstance().GetValueInt32(CFG_JOB_FRAM_SECTION, CFG_GET_JOB_INC_INTERVAL, incInterval);
+
+    int32_t maxAdjustTimes = MAX_INC_ACQUIRE_INTERVAL_TIMES;
+    CConfigXmlParser::GetInstance().GetValueInt32(CFG_JOB_FRAM_SECTION,
+        CFG_GET_JOB_INTERVAL_MAX_ADJUST_TIMES, maxAdjustTimes);
+
+    if (acquireSuccess) {
+        acquireAdjustTimes = (acquireAdjustTimes <= 0) ? 0 : acquireAdjustTimes - 1;
+    } else {
+        acquireAdjustTimes = (acquireAdjustTimes >= maxAdjustTimes) ? maxAdjustTimes : acquireAdjustTimes + 1;
+    }
+
+    currentAcquireInterval = 0;
+    nextAcquireInterval = acquireAdjustTimes * incInterval + baseInterval;
+    DBGLOG("Update next acquire job %s interval %d.", mainID.c_str(), nextAcquireInterval);
+}
+
+void PluginJobData::UpdateCurrentAcquireInterval()
+{
+    currentAcquireInterval += DEFAULT_ACQUIRE_INTERVAL;
+}
+
+bool PluginJobData::IsNeedTriggerAcquire()
+{
+    return currentAcquireInterval >= nextAcquireInterval;
 }
 
 Job::~Job()
@@ -418,6 +453,7 @@ mp_int32 Job::MountNas_Ex(const std::vector<Json::Value>& vecJsonRep,
         WipeSensitiveForJsonData(jsonRep.toStyledString(), jsonRepStr);
         DBGLOG("RepoInfo=%s.", jsonRepStr.c_str());
         JsonToStruct(jsonRep, stRep);
+        SetPostScanParam(stRep, jsonRep);
         if (stRep.remotePath.empty() || (!m_data.IsCurAgentFcOn() && stRep.remoteHost.empty())) {
             JsonRep_new.append(std::move(jsonRep));
             INFOLOG("remotePath=%s, IsCurAgentFcOn=%d, remoteHost.empty=%d, skip Mount option, jobId=%s, subJobId=%s",
@@ -427,6 +463,7 @@ mp_int32 Job::MountNas_Ex(const std::vector<Json::Value>& vecJsonRep,
         }
         if (!NeedMount(jsonRep)) {
             JsonRep_new.append(std::move(jsonRep));
+            INFOLOG("No need mount.");
             continue;
         }
         MountPermission permit = { jobPermit.user, jobPermit.group, jobPermit.fileMode };
@@ -442,6 +479,21 @@ mp_int32 Job::MountNas_Ex(const std::vector<Json::Value>& vecJsonRep,
         }
     }
     return MP_SUCCESS;
+}
+
+void Job::SetPostScanParam(const StorageRepository& repo, const Json::Value& repoJson)
+{
+    if ((m_data.mainType != MainJobType::BACKUP_JOB) || (m_data.subType != SubJobType::type::POST_SUB_JOB)) {
+        return;
+    }
+    if (repo.repositoryType == RepositoryDataType::type::DATA_REPOSITORY ||
+        repo.repositoryType == RepositoryDataType::type::LOG_REPOSITORY) {
+        if (!repoJson["extendInfo"].isMember("isAgentNeedScan")) {
+            return;
+        }
+        INFOLOG("The value of isAgentNeedScan is %s.", repoJson["extendInfo"]["isAgentNeedScan"].asString().c_str());
+        m_isAgentNeedScan = repoJson["extendInfo"]["isAgentNeedScan"].asString() == "true" ? true : false;
+    }
 }
 
 bool Job::NeedMount(const Json::Value &jsonRep)
@@ -588,6 +640,10 @@ mp_int32 Job::SplitRepositoriesParam(Json::Value &jsonRep, Json::Value &JsonRep_
         tempJsonRep["remotePath"] = jPath["path"];
         tempJsonRep["shareName"] = jPath["shareName"];
         tempJsonRep["remoteHost"] = jPath["remoteHost"];
+        tempJsonRep["subDirPath"] = "";
+        if (jPath.isMember("subDirPath") && !jPath["subDirPath"].empty()) {
+            tempJsonRep["subDirPath"] = jPath["subDirPath"];
+        }
         tempJsonRep["extendInfo"]["fsId"] = jPath["id"];
         if (jPath.isMember("type") && jPath["type"].isUInt() &&
             jPath["type"].asUInt() == REPOSITORY_META_REMOTE_PATH) {
@@ -681,6 +737,37 @@ void Job::AddDoradoIpToExtendInfo(const std::multimap<mp_string, std::vector<mp_
     }
 }
 
+void Job::CheckReplaceHost(const std::vector<mp_string>& containerBackendIps, const mp_string& esnLocal,
+    Json::Value& JsonRep_new, std::map<Json::ArrayIndex, std::vector<Json::Value>>::iterator& jsonVec)
+{
+    for (auto jsonRep : jsonVec->second) {
+        mp_string esn = jsonRep["extendInfo"]["esn"].isString() ? jsonRep["extendInfo"]["esn"].asString() : "";
+        mp_string remotePath = jsonRep["remotePath"].isString() ? jsonRep["remotePath"].asString() : "";
+        DBGLOG("dorado esn is :%s, remote path is %s", esn.c_str(), remotePath.c_str());
+        if (!esn.empty() && esn != esnLocal && !esnLocal.empty()) {
+            JsonRep_new.append(std::move(jsonRep));
+            DBGLOG("Esn %s checked, no need replace remote host.", esn.c_str());
+            continue;
+        }
+        if (jsonRep["protocol"].isInt() && (jsonRep["protocol"].asInt() == RepositoryProtocolType::type::CIFS ||
+            jsonRep["protocol"].asInt() == RepositoryProtocolType::type::S3 ||
+            jsonRep["protocol"].asInt() == RepositoryProtocolType::type::TAPE)) {
+            JsonRep_new.append(std::move(jsonRep));
+            DBGLOG("Protocol is cifs or s3 or tape, inner agent no need replace remote host.");
+            continue;
+        }
+        jsonRep["remoteHost"].clear();
+        for (mp_string strIp : containerBackendIps) {
+            Json::Value jHost;
+            jHost["ip"] = strIp;
+            jHost["port"] = 0;
+            jsonRep["remoteHost"].append(std::move(jHost));
+        }
+        JsonRep_new.append(std::move(jsonRep));
+        DBGLOG("Remote path %s have been replace remote host", remotePath.c_str());
+    }
+}
+
 void Job::ReplaceRemoteHost(const std::vector<mp_string>& containerBackendIps)
 {
     std::map<Json::ArrayIndex, std::vector<Json::Value>> mapJsonRep;
@@ -698,30 +785,7 @@ void Job::ReplaceRemoteHost(const std::vector<mp_string>& containerBackendIps)
 
     for (auto iter = mapJsonRep.begin(); iter != mapJsonRep.end(); ++iter) {
         Json::Value JsonRep_new;
-        for (auto jsonRep : iter->second) {
-            mp_string esn = jsonRep["extendInfo"]["esn"].isString() ? jsonRep["extendInfo"]["esn"].asString() : "";
-            DBGLOG("dorado esn is :%s, local esn is :%s", esn.c_str(), esnLocal.c_str());
-            if (!esn.empty() && esn != esnLocal && !esnLocal.empty()) {
-                JsonRep_new.append(std::move(jsonRep));
-                DBGLOG("Esn %s checked, no need replace remote host.", esn.c_str());
-                continue;
-            }
-            if (jsonRep["protocol"].isInt() && jsonRep["protocol"].asInt() == RepositoryProtocolType::type::CIFS) {
-                JsonRep_new.append(std::move(jsonRep));
-                DBGLOG("Protocol is cifs, inner agent no need replace remote host.");
-                continue;
-            }
-            jsonRep["remoteHost"].clear();
-            for (mp_string strIp : containerBackendIps) {
-                Json::Value jHost;
-                jHost["ip"] = strIp;
-                jHost["port"] = 0;
-                jsonRep["remoteHost"].append(std::move(jHost));
-            }
-            JsonRep_new.append(std::move(jsonRep));
-            mp_string remotePath = jsonRep["remotePath"].isString() ? jsonRep["remotePath"].asString() : "";
-            DBGLOG("Remote path %s have been replace remote host", remotePath.c_str());
-        }
+        CheckReplaceHost(containerBackendIps, esnLocal, JsonRep_new, iter);
         mapJsonRep_new.insert(std::make_pair(iter->first, JsonRep_new));
     }
 

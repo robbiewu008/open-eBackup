@@ -30,6 +30,7 @@ private:
     EXTER_ATTACK mp_int32 PluginCheckV1(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 PluginClusterV1(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 PluginDetailV2(CRequestMsg& req, CResponseMsg& rsp);
+    EXTER_ATTACK mp_int32 PluginAsynDetailV2(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 FinalizeClear(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 WakeUpJob(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 SanclientJob(CRequestMsg& req, CResponseMsg& rsp);
@@ -46,6 +47,8 @@ private:
 private:
     mp_int32 SanclientPreParamCheck(const Json::Value& jvReq);
     mp_int32 SanclientPreParamCheckIsVaild(const Json::Value& jvReq);
+    mp_int32 SanclientPrepareJobInner(const Json::Value& jvReq,
+        std::shared_ptr<AppProtectService> &appProtectServiceInstance, const mp_string& taskId);
     mp_int32 SanclientPrepareJob(const Json::Value& jvReq);
 private:
     thread_id_t m_CheckSanclientThread;

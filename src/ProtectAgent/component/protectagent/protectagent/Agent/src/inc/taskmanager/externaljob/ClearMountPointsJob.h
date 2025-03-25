@@ -17,6 +17,7 @@
 #include <list>
 #include <vector>
 #include <memory>
+#include <regex>
 #include "common/Types.h"
 #include "servicecenter/timerservice/include/ITimer.h"
 
@@ -46,6 +47,7 @@ private:
         std::list<mp_string> &vecFolderPath);
     mp_int32 GetMountPointsPath(const mp_string &vecJobIDFolderPath, std::vector<mp_string> &vecMountPoints);
     mp_int32 UmountAndDeleteJobFloder(mp_string &jobFloderPath, const std::vector<mp_string> &vecMountPoints);
+    mp_void GetTaskIdFrompath(std::list<mp_string> &jobIDFolderPathList);
 #endif
 };
 }

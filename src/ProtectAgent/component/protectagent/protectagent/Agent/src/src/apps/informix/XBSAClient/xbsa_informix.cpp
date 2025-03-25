@@ -76,10 +76,13 @@ int BSABeginTxn(long bsaHandle)
 
 int BSACreateObject(long bsaHandle, BSA_ObjectDescriptor *objectDescriptorPtr, BSA_DataBlock32 *dataBlockPtr)
 {
+    BSA_AppType appType = BSA_AppType::BSA_UNKNOWN;
     mp_string envStr;
-    if (CIP::GetHostEnv("INFORMIXSERVER", envStr) != MP_SUCCESS) {
+    if (AnalyzeAppType(appType, envStr) == MP_FALSE) {
+        ERRLOG("INFORMIXSERVER or GBASEDBTSERVER env is not found.");
         return BSA_RC_INVALID_ENV;
     }
+
     if (DataConversion::CopyStrToChar(envStr, objectDescriptorPtr->rsv2, BSA_MAX_RESOURCETYPE) != 0) {
         ERRLOG("copy objectInfo failed!");
         return BSA_RC_INVALID_ENV;
@@ -175,9 +178,30 @@ int BSAGetObject(long bsaHandle, BSA_ObjectDescriptor *objectDescriptorPtr, BSA_
     return ret;
 }
 
+mp_bool AnalyzeAppType(BSA_AppType& appType, mp_string& envStr)
+{
+    if (CIP::GetHostEnv("INFORMIXSERVER", envStr) == MP_SUCCESS) {
+        appType = BSA_AppType::BSA_INFORMIX;
+        INFOLOG("App is Informix.");
+        return MP_TRUE;
+    } else if (CIP::GetHostEnv("GBASEDBTSERVER", envStr) == MP_SUCCESS) {
+        appType = BSA_AppType::BSA_GBASE_8S;
+        INFOLOG("App is Gbase 8s.");
+        return MP_TRUE;
+    }
+    return MP_FALSE;
+}
+
 int BSAInit(long *bsaHandlePtr, BSA_SecurityToken *tokenPtr, BSA_ObjectOwner *objectOwnerPtr, char **environmentPtr)
 {
-    return xbsacomm::PbBSAInit(bsaHandlePtr, tokenPtr, objectOwnerPtr, environmentPtr, BSA_AppType::BSA_INFORMIX);
+    BSA_AppType appType = BSA_AppType::BSA_UNKNOWN;
+    mp_string envStr;
+    if (AnalyzeAppType(appType, envStr) == MP_FALSE) {
+        ERRLOG("INFORMIXSERVER or GBASEDBTSERVER env is not found.");
+        return BSA_RC_INVALID_ENV;
+    }
+
+    return xbsacomm::PbBSAInit(bsaHandlePtr, tokenPtr, objectOwnerPtr, environmentPtr, appType);
 }
 
 int BSAQueryApiVersion(BSA_ApiVersion *apiVersionPtr)
@@ -187,10 +211,13 @@ int BSAQueryApiVersion(BSA_ApiVersion *apiVersionPtr)
 
 int BSAQueryObject(long bsaHandle, BSA_QueryDescriptor *queryDescriptorPtr, BSA_ObjectDescriptor *objectDescriptorPtr)
 {
+    BSA_AppType appType = BSA_AppType::BSA_UNKNOWN;
     mp_string envStr;
-    if (CIP::GetHostEnv("INFORMIXSERVER", envStr) != MP_SUCCESS) {
+    if (AnalyzeAppType(appType, envStr) == MP_FALSE) {
+        ERRLOG("INFORMIXSERVER or GBASEDBTSERVER env is not found.");
         return BSA_RC_INVALID_ENV;
     }
+    
     if (DataConversion::CopyStrToChar(envStr, queryDescriptorPtr->rsv5, BSA_MAX_RESOURCETYPE) != 0) {
         ERRLOG("copy objectInfo failed!");
         return BSA_RC_INVALID_ENV;

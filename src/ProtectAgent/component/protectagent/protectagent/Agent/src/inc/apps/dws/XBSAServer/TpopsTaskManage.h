@@ -16,7 +16,7 @@
 
 class TpopsTaskManage : public AppTaskManage {
 public:
-    TpopsTaskManage() : AppTaskManage() {}
+    TpopsTaskManage(mp_string jobType) : AppTaskManage() { m_jobType = jobType; }
     mp_int32 UpdateTaskWhenCreateObject(const BsaObjectDescriptor &objDesc) override;
     mp_int32 UpdateTaskWhenQueryObject(const BsaQueryDescriptor &objDesc) override;
     mp_void AllocFilesystem(BsaObjInfo &objInfo) override;
@@ -27,6 +27,9 @@ protected:
     mp_bool FillQuryRspCommonTpops(mp_long bsaHandle, const BsaObjInfo &queryReslt, T &rsp);
 private:
     mp_int32 GetTaskInfoLockedInner();
+    mp_bool GetTpopsCacheInfoFile(mp_string &tpopsCacheInfoFile, mp_string &instanceId);
+private:
+    mp_string m_jobType;
 };
 
 #endif

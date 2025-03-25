@@ -67,6 +67,7 @@ static const mp_string REST_APPPROTECT_CLUSTER_V1 = "/v1/tasks/cluster";
 static const mp_string REST_APPPROTECT_CONFIG_V1 = "/v1/tasks/config";
 static const mp_string REST_APPPROTECT_DELIVER_JOB_STATUS_V1 = "/v1/tasks/task-status";
 static const mp_string REST_APPPROTECT_DETAIL_V2 = "/v2/tasks/detail";
+static const mp_string REST_APPPROTECT_ASYNCDETAIL_V2 = "/v2/tasks/asyncdetail";
 static const mp_string REST_APPPROTECT_REMOVE_PROTECT_V1 = "/v1/tasks/remove-protect";
 static const mp_string REST_APPPROTECT_FINALIZE_CLEAR = "/v1/tasks/finalizeclear";
 static const mp_string REST_APPPROTECT_SANCLIENT_JOB = "/v1/tasks/[[:alnum:]]{8}-"

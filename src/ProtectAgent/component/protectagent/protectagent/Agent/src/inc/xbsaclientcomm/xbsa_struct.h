@@ -264,6 +264,7 @@ typedef enum {
     BSA_INFORMIX  = 2,
     BSA_HCS = 3,
     BSA_TPOPS = 4,
+    BSA_GBASE_8S = 5,
     BSA_UNKNOWN = 255
 } BSA_AppType;
 

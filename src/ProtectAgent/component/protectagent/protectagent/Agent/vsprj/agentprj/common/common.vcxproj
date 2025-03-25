@@ -95,6 +95,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
       <BrowseInformation>true</BrowseInformation>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -114,6 +115,7 @@
       <AdditionalIncludeDirectories>..\..\..\open_src;..\..\..\src\inc;..\..\..\platform\securec\include;..\..\..\open_src\openssl\inc32;..\..\..\platform\kmc\include;..\..\..\platform\kmc;..\..\..\open_src\tinyxml</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;AGENT_DLL_EXPORTS;WSEC_ERR_CODE_BASE=0</PreprocessorDefinitions>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -130,6 +132,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;AGENT_DLL_EXPORTS;WSEC_ERR_CODE_BASE=0</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\..\bin\;..\..\..\open_src\openssl\out32</AdditionalLibraryDirectories>
@@ -139,13 +142,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\platform\kmc;..\..\..\platform\kmc\include;..\..\..\platform\kmc\src\sdp;..\..\..\platform\securec\include;..\..\..\open_src;..\..\..\open_src\tinyxml;..\..\..\open_src\openssl\include;..\..\..\open_src\curl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\platform\kmc;..\..\..\platform\kmc\include;..\..\..\platform\kmc\src\sdp;..\..\..\platform\kmc\src;..\..\..\platform\securec\include;..\..\..\open_src;..\..\..\open_src\tinyxml;..\..\..\open_src\openssl\include;..\..\..\open_src\curl\include</AdditionalIncludeDirectories>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <OmitFramePointers>false</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <PreprocessorDefinitions>WIN32;AGENT_DLL_EXPORTS;WSEC_ERR_CODE_BASE=0;_CRT_NO_VA_START_VALIDATION</PreprocessorDefinitions>
       <DisableSpecificWarnings>4273;4251;4819</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\..\bin;..\..\..\open_src\curl\builds\out_static\lib</AdditionalLibraryDirectories>
@@ -166,6 +170,7 @@
     <ClInclude Include="..\..\..\src\inc\common\JsonHelper.h" />
     <ClInclude Include="..\..\..\src\inc\common\JsonUtils.h" />
     <ClInclude Include="..\..\..\src\inc\common\Log.h" />
+    <ClInclude Include="..\..\..\src\inc\common\LogRotater.h" />
     <ClInclude Include="..\..\..\src\inc\common\LogCode.h" />
     <ClInclude Include="..\..\..\src\inc\common\MpString.h" />
     <ClInclude Include="..\..\..\src\inc\common\Path.h" />
@@ -191,6 +196,7 @@
     <ClCompile Include="..\..\..\src\src\common\Ip.cpp" />
     <ClCompile Include="..\..\..\src\src\common\JsonUtils.cpp" />
     <ClCompile Include="..\..\..\src\src\common\Log.cpp" />
+    <ClCompile Include="..\..\..\src\src\common\LogRotater.cpp" />
     <ClCompile Include="..\..\..\src\src\common\Path.cpp" />
     <ClCompile Include="..\..\..\src\src\common\Pipe.cpp" />
     <ClCompile Include="..\..\..\src\src\common\Semaf.cpp" />

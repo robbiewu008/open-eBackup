@@ -12,7 +12,10 @@
 */
 #include "ThriftServer.h"
 #include "common/Log.h"
+#include "common/Utils.h"
 #include "common/Path.h"
+#include "common/Ip.h"
+#include "common/CSystemExec.h"
 #include "common/ConfigXmlParse.h"
 #include "securecom/CryptAlg.h"
 #include "message/tcp/CSocket.h"
@@ -22,6 +25,12 @@ using namespace apache::thrift;
 using namespace apache::thrift::server;
 using namespace apache::thrift::transport;
 using namespace apache::thrift::protocol;
+
+
+namespace {
+const std::string DEFAULT_SOCK_FILE_PATH = "thrift/xbsa.sock";
+const int SOCK_FILE_CREATE_WAIT_TIME = 1000 * 5;
+}
 
 ThriftServer::ThriftServer()
 {
@@ -103,7 +112,7 @@ EXTER_ATTACK int ThriftServer::Init()
     if (result != MP_SUCCESS) {
         WARNLOG("Get thrift max thread size error.");
     }
-
+    CheckAppIsUsedSockFile();
     sslConfig.sslFlag = 1;
 
     if (sslConfig.sslFlag) {
@@ -119,18 +128,45 @@ EXTER_ATTACK int ThriftServer::Init()
     return this->Init(normalConfig, sslConfig);
 }
 
-int32_t ThriftServer::Init(const NormalConfigInfo &normalConfig, const SslConfigInfo &sslConfig)
+void ThriftServer::CheckAppIsUsedSockFile()
 {
-    try {
-        INFOLOG("agent service start, ip:%s port:%d", DEFAULT_LISTEN_IP.c_str(), normalConfig.port);
-        std::shared_ptr<BSAServiceHandler> handler = std::make_shared<BSAServiceHandler>();
-        std::shared_ptr<TProcessor> processor = std::make_shared<BSAServiceProcessor>(handler);
-        std::shared_ptr<TNonblockingServerTransport> serverTransport;
+    mp_string applications = "";
+    mp_int32 iRet = CIP::GetApplications(applications);
+    if (iRet != MP_SUCCESS) {
+        ERRLOG("Query applications  failed, iRet %d.", iRet);
+        return;
+    }
+    if (applications.find("Informix") != mp_string::npos) {
+        vector<mp_string> vecRlt;
+        mp_int32 iRet = CSystemExec::ExecSystemWithEcho("id gbasedbt", vecRlt);
+        if (iRet != MP_SUCCESS) {
+            ERRLOG("gbasedbt user is not exist.");
+            return;
+        }
+        m_isUseSockFile = true;
+    }
+    return;
+}
+
+void ThriftServer::InitServerTransport(std::shared_ptr<TNonblockingServerTransport> &serverTransport,
+                                       std::string &sockFilePath, const NormalConfigInfo &normalConfig,
+                                       const SslConfigInfo &sslConfig)
+{
+    if (m_isUseSockFile) {
+        sockFilePath = CPath::GetInstance().GetXBSAConfFilePath(DEFAULT_SOCK_FILE_PATH);
+        if (CMpFile::FileExist(sockFilePath)) {
+            CMpFile::DelFile(sockFilePath);
+        }
+        INFOLOG("Thrift server start by sock file:%s.", sockFilePath.c_str());
+        auto socket = std::make_shared<TNonblockingServerSocket>(sockFilePath);
+        socket->setListenCallback(SetFDCloseOnExec);
+        serverTransport = socket;
+    } else {
         if (sslConfig.sslFlag) {
             std::shared_ptr<TSSLSocketFactory> pServerSocketFactory =
                 createServerSocketFactory(sslConfig.certPath, sslConfig.algorithmSuite);
-            auto socket = std::make_shared<TNonblockingSSLServerSocket>(DEFAULT_LISTEN_IP,
-                normalConfig.port, pServerSocketFactory);
+            auto socket = std::make_shared<TNonblockingSSLServerSocket>(DEFAULT_LISTEN_IP, normalConfig.port,
+                                                                        pServerSocketFactory);
             socket->setListenCallback(SetFDCloseOnExec);
             serverTransport = socket;
         } else {
@@ -138,10 +174,20 @@ int32_t ThriftServer::Init(const NormalConfigInfo &normalConfig, const SslConfig
             socket->setListenCallback(SetFDCloseOnExec);
             serverTransport = socket;
         }
+    }
+}
 
+int32_t ThriftServer::Init(const NormalConfigInfo &normalConfig, const SslConfigInfo &sslConfig)
+{
+    try {
+        std::string sockFilePath;
+        INFOLOG("agent service start, ip:%s port:%d", DEFAULT_LISTEN_IP.c_str(), normalConfig.port);
+        std::shared_ptr<BSAServiceHandler> handler = std::make_shared<BSAServiceHandler>();
+        std::shared_ptr<TProcessor> processor = std::make_shared<BSAServiceProcessor>(handler);
+        std::shared_ptr<TNonblockingServerTransport> serverTransport;
+        InitServerTransport(serverTransport, sockFilePath, normalConfig, sslConfig);
         std::shared_ptr<TProtocolFactory> protocolFactory = std::make_shared<TBinaryProtocolFactory>();
         m_serverPtr = std::make_shared<TNonblockingServer>(processor, protocolFactory, serverTransport);
-
         m_serverPtr->setOverloadAction(T_OVERLOAD_DRAIN_TASK_QUEUE);
         m_serverPtr->setNumIOThreads(normalConfig.maxConnections);
         m_serverPtr->setResizeBufferEveryN(0);
@@ -155,6 +201,14 @@ int32_t ThriftServer::Init(const NormalConfigInfo &normalConfig, const SslConfig
         std::shared_ptr<apache::thrift::concurrency::Runnable> serverThreadRunner(m_serverPtr);
         m_threadPtr = factory.newThread(serverThreadRunner);
         m_threadPtr->start();
+        if (m_isUseSockFile) {
+            DoSleep(SOCK_FILE_CREATE_WAIT_TIME);
+            if (ChmodFile(sockFilePath, S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IWOTH |
+                                            S_IXOTH) != MP_SUCCESS) {
+                ERRLOG("chmod sock file failed.", sockFilePath.c_str());
+            }
+        }
+        INFOLOG("Thrit server start succ.");
     } catch (TException& tx) {
         ERRLOG("thrift Server Init failed, %s", tx.what());
         return MP_FAILED;

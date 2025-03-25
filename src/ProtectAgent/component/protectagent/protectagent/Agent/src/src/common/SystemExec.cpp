@@ -639,8 +639,14 @@ mp_int32 CSystemExec::ExecSystemWithEchoNoWin(
     }
 
     COMMLOG(OS_LOG_DEBUG, "Leave ExecSystemWithEcho, command is %s", strLogNewCmd.c_str());
-    (mp_void) pclose(pStream);
-
-    return MP_SUCCESS;
+    mp_int32 exitStatus = pclose(pStream);
+    if (WIFEXITED(exitStatus)) {
+        mp_int32 status = WEXITSTATUS(exitStatus);
+        COMMLOG(OS_LOG_DEBUG, "Command exited with status %d.", status);
+        return status;
+    } else {
+        COMMLOG(OS_LOG_ERROR, "Command did not exit normally.");
+    }
+    return exitStatus;
 }
 #endif

@@ -105,6 +105,7 @@ private:
     mp_bool  CheckDpcProcess();
     mp_void  ConfigDpcFlowControl();
 #endif
+    mp_bool  IsInstallDataTurbo();
     mp_int32 UpdatePMInfo();
     mp_int32 UpdatePMInfo(Json::Value registerReq);
     mp_int32 InitRequest(const mp_string& reqmethod, const mp_string& requrl, const mp_string& ip, HttpRequest& req);

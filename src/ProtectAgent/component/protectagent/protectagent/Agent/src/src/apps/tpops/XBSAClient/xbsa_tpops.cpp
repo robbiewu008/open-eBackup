@@ -42,7 +42,6 @@ int BSACreateObject(long bsaHandle, BSA_ObjectDescriptor *objectDescriptorPtr, B
     if (strlen(objectDescriptorPtr->objectName.pathName) <= 0) {
         return BSA_RC_INVALID_OBJECTDESCRIPTOR;
     }
-
     return ThriftClientMgr::GetInstance().BSACreateObjectMgr(bsaHandle, objectDescriptorPtr, dataBlockPtr);
 }
 

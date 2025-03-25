@@ -20,6 +20,11 @@
 #include <sstream>
 #include <algorithm>
 #include <regex>
+#include <functional>
+#include <atomic>
+#include <condition_variable>
+#include <mutex>
+#include <chrono>
 #include "common/Types.h"
 #include "common/LogCode.h"
 #include "common/CMpThread.h"
@@ -169,18 +174,16 @@ class AGENT_API CLogger {
 public:
     ~CLogger();
     static CLogger& GetInstance();
-    void Init(const char* pcLogFileName, const mp_string& strFilePath)
-    {
-        m_strFilePath = strFilePath;
-        m_strFileName = pcLogFileName;
-    }
 
+    void Init(const char* pcLogFileName, const mp_string& strFilePath);
     mp_int32 SetLogLevel(mp_int32 iLogLevel);
     mp_int32 SetLogCount(mp_int32 iLogCount);
     // 打开日志缓存
     mp_void OpenLogCache();
     // 关闭日志缓存
     mp_int32 CloseLogCache();
+    mp_void GetLogCfgInfo();
+    mp_void LoadLogCfg();
     mp_void ReadLevelAndCount();
     mp_void ReadMaxSizeAndKeepTime();
     // 临时放到public,为了UT打桩方便
@@ -188,6 +191,11 @@ public:
     mp_string GetUserString();
     mp_string GetModuleName();
     mp_string FilterModleNamePath(const mp_string& str);
+    mp_int32 GetLogMaxSize();
+    mp_int32 GetLogCount();
+    mp_int32 GetLogKeepTime();
+    mp_int32 SwitchLogFile(
+        const mp_string& pszLogPath, const mp_string& pszLogName, mp_int32 iLogCount, mp_time LogKeepTime);
     mp_int32 InitLogContent(const mp_int32 iLevel, const mp_int32 iFileLine, const mp_string& pszFileName,
         const mp_string& pszFuncction, const mp_string& pszFormat, va_list& pszArgp, std::ostringstream& strMsg);
     mp_void Log(const mp_int32 iLevel, const mp_int32 iFileLine, const mp_string& pszFileName,
@@ -195,6 +203,7 @@ public:
 #ifdef WIN32
     mp_void LogW(const mp_int32 iLevel, const mp_int32 iFileLine, const mp_wstring& pszFileName,
         const mp_wstring& pszFuncction, const mp_wstring pszFormat, ...);
+    mp_int32 ExecWinCmd(mp_string pszCmdBuf, mp_uint32& uiRetCode);
 #endif
     mp_void SetWriteLogFunc(CallbackWriteLogPtr writeLogFunc);
 
@@ -235,10 +244,16 @@ private:
     mp_int32 m_OpenCacheNum;
     // 日志写函数，如果设置了日志函数，直接调用函数指针完成日志打印
     CallbackWriteLogPtr m_funcWriteLog;
+    // 日志配置信息读取线程
+    std::unique_ptr<std::thread> m_getLogCfgThread;
+    // 日志配置信息读取线程停止条件变量
+    std::condition_variable m_logCfgThreadCV;
+    // 日志配置信息读取线程停止标志
+    std::atomic<bool> m_stopFlag { false };
+    // 日志配置信息读取线程停止条件变量互斥锁
+    std::mutex m_logCfgThreadCVLock;
 
     mp_int32 MkHead(mp_int32 iLevel, mp_char pszHeadBuf[], mp_int32 iBufLen);
-    mp_int32 SwitchLogFile(
-        const mp_string& pszLogPath, const mp_string& pszLogName, mp_int32 iLogCount, mp_time LogKeepTime);
     mp_int32 HandleEachLogFile(const mp_string& OldLogNameStr, const mp_string& NewLogNameStr, mp_int32 LogNum,
         mp_int32 MaxLogCount, mp_time MaxKeepTime);
     mp_int32 HandleCurrentLogFile(const mp_string& LogPath, const mp_string& LogName);
@@ -253,7 +268,6 @@ private:
     mp_wstring FilterModleNamePath(const mp_wstring& str);
     mp_int32 InitLogContentW(const mp_int32 iLevel, const mp_int32 iFileLine, const mp_wstring& pszFileName,
         const mp_wstring& pszFuncction, const mp_wstring pszFormat, va_list& pszArgp, std::wostringstream& strMsg);
-    mp_int32 ExecWinCmd(mp_string pszCmdBuf, mp_uint32& uiRetCode);
     mp_void WriteLog2Cache(std::wostringstream& strWMsg);
 #endif
 

@@ -18,7 +18,7 @@
 #include <ctime>
 #include <sys/types.h>
 #include <sys/stat.h>
-
+#include <uuid/uuid.h>
 #include <libgen.h>
 #ifdef NO_POSIX_MEMALIGN
 #include <malloc.h>

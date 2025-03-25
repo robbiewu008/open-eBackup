@@ -13,6 +13,7 @@
 #include <iostream>
 #include <sys/types.h>
 #include <pwd.h>
+#include <fstream>
 #include "common/Types.h"
 #include "rootexec/SystemCall.h"
 #include "common/ConfigXmlParse.h"
@@ -40,6 +41,7 @@ Description  : 判断是否是自己启动
 Others       :-------------------------------------------------------- */
 
 const mp_string HOST_ENV_INSTALL_PATH = "DATA_BACKUP_AGENT_HOME";
+const mp_string INTERNAL_NODE_NAME = "NODE_NAME";
 
 mp_bool IsRunManually()
 {
@@ -110,6 +112,44 @@ mp_int32 COMProcessCommand(mp_int32 iCommandID, const mp_string& strUniqueID,
     return pFunc(strUniqueID, vecParam);
 }
 
+mp_int32 GetNodeName(mp_string& nodeName)
+{
+    mp_string strFilePath = CPath::GetInstance().GetConfFilePath(CFG_RUNNING_PARAM);
+    mp_bool iRet = CMpFile::FileExist(strFilePath);
+    if (iRet != MP_TRUE) {
+        ERRLOG("The testcfg.tmp file does not exist.");
+        return MP_FAILED;
+    }
+
+    std::ifstream stream;
+    stream.open(strFilePath.c_str(), std::ifstream::in);
+    mp_string line;
+    mp_string strSceneText;
+    mp_string strText = "NODE_NAME=";
+
+    if (!stream.is_open()) {
+        ERRLOG("The testcfg.tmp file can't open");
+        return MP_FAILED;
+    }
+
+    while (getline(stream, line)) {
+        if (line.find(strText.c_str()) != std::string::npos) {
+            strSceneText = line;
+            break;
+        }
+    }
+    stream.close();
+
+    std::size_t start = strSceneText.find("=", 0);
+    if (start == std::string::npos) {
+        ERRLOG("The testcfg.tmp file format error");
+        return MP_FAILED;
+    }
+    nodeName = strSceneText.substr(start + 1);
+
+    return MP_SUCCESS;
+}
+
 /* ------------------------------------------------------------
 Function Name: Exec
 Description  : 根据输入参数执行具体操作
@@ -148,6 +188,14 @@ mp_int32 Exec(mp_int32 iCommandID, const mp_string& strUniqueID, const std::vect
     if (IRet != MP_SUCCESS) {
         ERRLOG("Failed to set the environment, IRet=%d, path=%s.", IRet, customPath.c_str());
         return IRet;
+    }
+
+    mp_string nodeName;
+    if (GetNodeName(nodeName) == MP_SUCCESS) {
+        IRet = setenv(INTERNAL_NODE_NAME.c_str(), nodeName.c_str(), 0);
+        if (IRet != MP_SUCCESS) {
+            ERRLOG("Failed to set the environment, IRet=%d, node name=%s.", IRet, nodeName.c_str());
+        }
     }
 
     IRet = COMProcessCommand(iCommandID, strUniqueID, vecParam);
@@ -195,11 +243,6 @@ mp_int32 CheckParam(mp_int32 iCommandID, const mp_string& strUniqueID,
             printf("Invalid -u parameter %s.\n", strUniqueID.c_str());
             return ERROR_COMMON_INVALID_PARAM;
         }
-    }
-
-    if (lParamNum < 0 || lParamNum > MAX_LINE_SIZE) {
-        printf("Invalid -n parameter %d.\n", lParamNum);
-        return ERROR_COMMON_INVALID_PARAM;
     }
 
     vecParam.reserve(lParamNum);

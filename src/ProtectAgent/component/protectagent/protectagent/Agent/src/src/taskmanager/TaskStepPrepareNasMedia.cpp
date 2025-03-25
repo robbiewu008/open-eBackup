@@ -20,8 +20,21 @@
 #include "securecom/RootCaller.h"
 #include "securecom/SecureUtils.h"
 #include "common/CSystemExec.h"
+#include "message/curlclient/HttpClientInterface.h"
 
 using namespace std;
+
+namespace {
+    const mp_int32 DATATURBO_MAXIMUM_IPS = 16;
+    const mp_string MOUNT_PROTOCOL_NFS = "nfs";
+    const mp_string MOUNT_PROTOCOL_CIFS = "cifs";
+    const mp_string MOUNT_PROTOCOL_DATATURBO = "dataturbo";
+    static std::map<mp_string, mp_string> G_ProtocolTypePortMap = {
+        {MOUNT_PROTOCOL_NFS, "111"},
+        {MOUNT_PROTOCOL_CIFS, "445"},
+        {MOUNT_PROTOCOL_DATATURBO, "12300"}
+    };
+}
 
 TaskStepPrepareNasMedia::TaskStepPrepareNasMedia(
     const mp_string& id, const mp_string& taskId, const mp_string& name, mp_int32 ratio, mp_int32 order)
@@ -72,12 +85,28 @@ mp_int32 TaskStepPrepareNasMedia::CheckAndCreateDataturboLink(const DataturboMou
         ERRLOG("File system %s have no valid ip.", param.storageName.c_str());
         return ERR_NOT_CONFIG_DATA_TURBO_LOGIC_PORT;
     }
-
-    mp_string ipList = CMpString::StrJoin(param.vecDataturboIP, ",");
+    mp_string ipList;
     CRootCaller rootCaller;
     ostringstream scriptParam;
     scriptParam << "storageName=" << param.storageName << NODE_COLON ;
     if (!m_accessNASOverFC) {
+        std::vector<mp_string> connectableIP;
+        std::shared_ptr<IHttpClient> httpClient = IHttpClient::CreateNewClient();
+        if (httpClient == nullptr) {
+            COMMLOG(OS_LOG_ERROR, "HttpClient create failed.");
+            return ERR_NOT_CONFIG_DATA_TURBO_LOGIC_PORT;
+        }
+        for (const mp_string &ip : param.vecDataturboIP) {
+            if (httpClient->TestConnectivity(ip, G_ProtocolTypePortMap[MOUNT_PROTOCOL_DATATURBO])) {
+                COMMLOG(OS_LOG_INFO, "Can connect ip(%s).", ip.c_str());
+                connectableIP.push_back(ip);
+            }
+            if (connectableIP.size() >= DATATURBO_MAXIMUM_IPS) {
+                COMMLOG(OS_LOG_INFO, "Dataturbo ip amount reached.");
+                break;
+            }
+        }
+        ipList = CMpString::StrJoin(connectableIP, ",");
         scriptParam << "ipList=" << ipList << NODE_COLON;
     } else {
         scriptParam << "linkType=FC" << NODE_COLON;
