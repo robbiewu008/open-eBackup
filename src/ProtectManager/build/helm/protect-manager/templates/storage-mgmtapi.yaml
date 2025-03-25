@@ -1,3 +1,5 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if or (eq $deploytype "d8") (eq $deploytype "d9") }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -10,5 +12,7 @@ spec:
     - name: pm-config-port
       port: {{ .Values.pm_config_port }}
       protocol: TCP
+  clusterIP: None
   selector:
     app: pm-nodeproxy
+{{- end }}

@@ -370,8 +370,8 @@ public class LockServiceImpl implements LockService {
          */
         @Override
         public void unlock() {
-            LockAssert.endLock();
             sqlLockService.unLock(key);
+            LockAssert.endLock();
         }
     }
 }

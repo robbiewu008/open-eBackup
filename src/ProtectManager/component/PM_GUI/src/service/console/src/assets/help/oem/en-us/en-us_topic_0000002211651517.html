@@ -1,0 +1,138 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Registering a Database (Applicable to the Cluster Deployment Mode)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002176405212.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002211651517">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Registering a Database (Applicable to the Cluster Deployment Mode)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002211651517"></a><a name="EN-US_TOPIC_0000002211651517"></a>
+  <h1 class="topictitle1">Registering a Database (Applicable to the Cluster Deployment Mode)</h1>
+  <div>
+   <p>This section describes how to register a DB2 database cluster when the database to be protected is deployed in a cluster.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>On the DB2 page, click the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</span></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> page, customize a cluster name and select the type and cluster node.</span></li>
+     <li><span><a href="#EN-US_TOPIC_0000002211651517__table8422135145120">Table 1</a> describes the related parameters.</span><p></p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002211651517__table8422135145120"></a><a name="table8422135145120"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002211651517__table8422135145120" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Parameters for registering a cluster
+        </caption>
+        <colgroup>
+         <col style="width:17.16%">
+         <col style="width:82.84%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="17.16%" id="mcps1.3.2.2.4.2.1.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="82.84%" id="mcps1.3.2.2.4.2.1.2.3.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="17.16%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="82.84%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p>User-defined cluster name.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="17.16%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p><span><strong>Type</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="82.84%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 ">
+           <div class="p">
+            The value can be <strong>Database Partitioning Feature</strong>, <strong>PowerHA</strong>, <strong>HADR</strong>, or <strong>RHEL HA</strong>.
+            <div class="note">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p>RHEL HA clusters are supported in 1.6.0 and later versions.</p>
+             </div>
+            </div>
+           </div>
+           <div class="p">
+            To determine the cluster type, perform the following steps:
+            <ul>
+             <li><strong>HADR</strong>
+              <ol type="a">
+               <li>Use PuTTY to log in to the host where the DB2 database resides.</li>
+               <li>Switch to the DB2 database user, for example, <strong>db2inst1</strong>.<pre class="screen">su - <strong><em>db2inst1</em></strong></pre></li>
+               <li>Check whether the cluster is of the <strong>HADR</strong> type. Database <strong>HADRDB</strong> is used as an example.<pre class="screen">db2 get db cfg for <strong><em>HADRDB</em></strong> | grep -i 'HADR'</pre> <p>In the command output, <strong>HADR</strong> is displayed in the right column, indicating that the cluster is of the <strong>HADR</strong> type.</p> <p><span><img src="en-us_image_0000002202659726.png"></span></p></li>
+               <li>Check the status of the HADR cluster. For example, run the following command to check the HADR cluster status for database <strong>HADRDB</strong>:<pre class="screen">db2pd -db <strong><em>HADRDB</em></strong> -hadr</pre>
+                <ul>
+                 <li>The command output shown in the following figure indicates the active node in the HADR cluster.<p><span><img src="en-us_image_0000002202860144.png"></span></p></li>
+                 <li>The command output shown in the following figure indicates the standby node in the HADR cluster.<p><span><img src="en-us_image_0000002202669294.png"></span></p></li>
+                </ul></li>
+              </ol></li>
+             <li><strong>Database Partitioning Feature</strong>
+              <ol type="a">
+               <li>Use PuTTY to log in to the host where the DB2 database resides.</li>
+               <li>Switch to the DB2 database user, for example, <strong>db2inst1</strong>.<pre class="screen">su - <strong><em>db2inst1</em></strong></pre></li>
+               <li>Check whether the cluster is of the <strong>Database Partitioning Feature</strong> type.<pre class="screen">$ db2 get db cfg for <em>Database name</em> | grep -i 'partition'</pre>
+                <div class="p">
+                 In the command output, <strong>Database Partitioning Feature</strong> indicates that the cluster is of the <strong>Database Partitioning Feature</strong> type.
+                 <pre class="screen">Catalog database partition number                (CATALOGPARTITION) = 0
+ Partitioning strategy                               (DATABASEPARTITIONINGSTRATEGY) = Database Partitioning Feature</pre>
+                </div></li>
+              </ol></li>
+             <li><strong>PowerHA</strong>
+              <ol type="a">
+               <li>Use PuTTY to log in to the host where the DB2 database resides.</li>
+               <li>Check whether the OS is AIX.<pre class="screen">uname -s</pre> <p>In the command output, if <strong>AIX</strong> is displayed, go to <a href="#EN-US_TOPIC_0000002211651517__li16833191931114">3</a>. If <strong>AIX</strong> is not displayed, the cluster type is not PowerHA.</p></li>
+               <li id="EN-US_TOPIC_0000002211651517__li16833191931114"><a name="EN-US_TOPIC_0000002211651517__li16833191931114"></a><a name="li16833191931114"></a>Check whether the cluster is of the <strong>PowerHA</strong> type.<pre class="screen">lssrc -g cluster</pre> <p>In the command output, <strong>clstrmgrES</strong> and <strong>clconfd</strong> are subsystems of a PowerHA cluster, indicating that the cluster is of the <strong>PowerHA</strong> type.</p> <p><span><img src="en-us_image_0000002211989701.png"></span></p></li>
+              </ol></li>
+             <li><strong>RHEL HA</strong>
+              <ol type="a">
+               <li>Use PuTTY to log in to the host where the DB2 database resides.</li>
+               <li>Check whether the cluster is of the <strong>RHEL HA</strong> type.<pre class="screen">pcs cluster status</pre> <p>The command output shown in the following figure indicates that the cluster is of the <strong>RHEL HA</strong> type.</p> <p><span><img src="en-us_image_0000002196884176.png"></span></p></li>
+              </ol></li>
+            </ul>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="17.16%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p><span><strong>Nodes</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="82.84%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p>Host where the DB2 instance resides.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002176405212.html">Step 2: Registering a DB2 Database</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

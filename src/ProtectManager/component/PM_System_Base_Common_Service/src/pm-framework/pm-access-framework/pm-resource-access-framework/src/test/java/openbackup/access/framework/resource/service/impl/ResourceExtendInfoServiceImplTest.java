@@ -117,6 +117,32 @@ public class ResourceExtendInfoServiceImplTest {
     }
 
     /**
+     * 用例名称：不用事务更新事务保存指定资源的数据，
+     * 前置条件：对数据库打桩。
+     * check点：保存成功。
+     */
+    @Test
+    public void test_saveOrUpdateExtendInfoWithOutTransactional_success(){
+        String connectionResult="{\n" +
+            "    \"uuid\": {\n" +
+            "        \"end_point\": \"127.0.0.1\",\n" +
+            "        \"link_status\": 0,\n" +
+            "        \"cluster_name\": \"name\"\n" +
+            "    },\n" +
+            "    \"esn\": {\n" +
+            "        \"end_point\": \"127.0.0.1\",\n" +
+            "        \"link_status\": 1,\n" +
+            "        \"cluster_name\": \"name\"\n" +
+            "    }\n" +
+            "}";
+        Map<String,String> map=new HashMap<>();
+        map.put("connection_result",connectionResult);
+        map.put("key",connectionResult);
+        resourceExtendInfoService.saveOrUpdateExtendInfoWithOutTransactional("key",map);
+        Mockito.verify(protectedResourceExtendInfoMapper, Mockito.times(1)).insert(any());
+    }
+
+    /**
      * 用例名称：查询指定资源的数据，
      * 前置条件：对数据库打桩，表中已存在待查询的数据。
      * check点：查询成功。

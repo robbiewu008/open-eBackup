@@ -56,6 +56,7 @@ import {
   hiddenDwsFileLevelRestore,
   hiddenHcsUserFileLevelRestore,
   hiddenOracleFileLevelRestore,
+  hideE6000Func,
   I18NService,
   isHideOracleInstanceRestore,
   isHideOracleMount,
@@ -261,19 +262,20 @@ export class CopyListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   preProcessData() {
-    this.isVirtualizationAndCloud = !!size(
-      intersection(this.childResourceType, [
-        DataMap.Resource_Type.virtualMachine.value,
-        DataMap.Resource_Type.FusionCompute.value,
-        DataMap.Resource_Type.fusionOne.value,
-        DataMap.Resource_Type.HCSCloudHost.value,
-        DataMap.Resource_Type.openStackCloudServer.value,
-        DataMap.Resource_Type.APSCloudServer.value,
-        DataMap.Resource_Type.cNwareVm.value,
-        DataMap.Resource_Type.hyperVVm.value,
-        DataMap.Resource_Type.nutanixVm.value
-      ])
-    );
+    this.isVirtualizationAndCloud =
+      !!size(
+        intersection(this.childResourceType, [
+          DataMap.Resource_Type.virtualMachine.value,
+          DataMap.Resource_Type.FusionCompute.value,
+          DataMap.Resource_Type.fusionOne.value,
+          DataMap.Resource_Type.HCSCloudHost.value,
+          DataMap.Resource_Type.openStackCloudServer.value,
+          DataMap.Resource_Type.APSCloudServer.value,
+          DataMap.Resource_Type.cNwareVm.value,
+          DataMap.Resource_Type.hyperVVm.value,
+          DataMap.Resource_Type.nutanixVm.value
+        ])
+      ) && !this.isHcsUser;
   }
 
   getStorageUnit() {
@@ -2665,7 +2667,8 @@ export class CopyListComponent implements OnInit, OnDestroy, AfterViewInit {
                 DataMap.CopyData_generatedType.reverseReplication.value
               ],
               data.generated_by
-            )),
+            )) ||
+          hideE6000Func(this.appUtilsService, data, false),
         permission: OperateItems.FileLevelRestore,
         onClick: () => {
           // 说白了，vmware文件级恢复是打开副本详情
@@ -2869,7 +2872,7 @@ export class CopyListComponent implements OnInit, OnDestroy, AfterViewInit {
               ],
               data.generated_by
             )) ||
-          isHideOracleInstanceRestore(resourceProperties),
+          isHideOracleInstanceRestore(data, resourceProperties, properties),
         permission: OperateItems.InstanceRecovery,
         onClick: () => {
           this.restoreService.restore({
@@ -3093,6 +3096,7 @@ export class CopyListComponent implements OnInit, OnDestroy, AfterViewInit {
               ],
               data.resource_sub_type
             )) ||
+          hideE6000Func(this.appUtilsService, data, true) ||
           isHideOracleMount(resourceProperties) ||
           this.hideBasicDiskFuction(data, this.appUtilsService.isDistributed),
         permission: OperateItems.MountingCopy,
@@ -3189,7 +3193,8 @@ export class CopyListComponent implements OnInit, OnDestroy, AfterViewInit {
             data,
             this.appUtilsService.isDecouple ||
               this.appUtilsService.isDistributed
-          ),
+          ) ||
+          this.isHcsUser,
         onClick: () =>
           this.takeManualArchiveService.manualArchive(data, () => {
             this.getCopies();
@@ -3536,7 +3541,8 @@ export class CopyListComponent implements OnInit, OnDestroy, AfterViewInit {
               [DataMap.CopyData_generatedType.Imported.value],
               data.generated_by
             )) ||
-          this.isHcsUser,
+          this.isHcsUser ||
+          hideE6000Func(this.appUtilsService, data, false),
         onClick: () => {
           this.copiesApiService
             .createCopyIndexV1CopiesCopyIdActionCreateIndexPost({

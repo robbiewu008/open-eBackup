@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="TPOPS_GaussDB_00010.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -44,13 +44,13 @@
 cd <font style="font-size:8pt" Face="Courier New" >~</font>/dmpackage</pre>
 </p></li><li><span>执行以下命令查看管理面地址和端口。</span><p><pre class="screen">cat install-default.conf | grep "webui.listen"</pre>
 <p>回显示例如下（“webui.listen.ip”的值为管理面地址，“webui.listen.port”的值为管理面端口）：</p>
-<p><span><img src="zh-cn_image_0000001792346094.png"></span></p>
+<p><span><img src="zh-cn_image_0000002200144153.png"></span></p>
 </p></li></ol>
 <p></p>
-<ul><li><strong>当使用的管理平台为云数据库GaussDB管理平台</strong><strong>，通过以下步骤获取：</strong></li></ul>
-<ol><li><span>登录云数据库GaussDB管理平台的任意节点的后台界面。</span></li><li id="TPOPS_GaussDB_00014__li617145614412"><a name="TPOPS_GaussDB_00014__li617145614412"></a><a name="li617145614412"></a><span>执行<strong>docker ps</strong>命令，查询带有“gaussdb-open-api”前缀的镜像名，记录对应的“CONTAINER ID”值。</span><p><p><span><img src="zh-cn_image_0000001948202973.png"></span></p>
+<ul><li><strong>当使用的管理平台为云数据库GaussDB管理平台（TPOPS）</strong><strong>，通过以下步骤获取：</strong></li></ul>
+<ol><li><span>登录云数据库GaussDB管理平台（TPOPS）的任意节点的后台界面。</span></li><li id="TPOPS_GaussDB_00014__li617145614412"><a name="TPOPS_GaussDB_00014__li617145614412"></a><a name="li617145614412"></a><span>执行<strong>docker ps</strong>命令，查询带有“gaussdb-open-api”前缀的镜像名，记录对应的“CONTAINER ID”值。</span><p><p><span><img src="zh-cn_image_0000002164657830.png"></span></p>
 </p></li><li><span>执行以下命令，其中“CONTAINER_ID”为<a href="#TPOPS_GaussDB_00014__li617145614412">2</a>记录的参数值。</span><p><pre class="screen">docker exec -it <em>CONTAINER_ID</em> /bin/bash</pre>
-</p></li><li><span>执行<strong>cd /opt/cloud/GaussDB-open-api/conf cat server.xml | grep "port"</strong>命令查看管理面地址和端口，示例图如下：</span><p><p><span><img src="zh-cn_image_0000001918405924.png"></span></p>
+</p></li><li><span>执行<strong>cd /opt/cloud/GaussDB-open-api/conf cat server.xml | grep "port"</strong>命令查看管理面地址和端口，示例图如下：</span><p><p><span><img src="zh-cn_image_0000002200058585.png"></span></p>
 </p></li></ol>
 </div>
 </div>

@@ -1,0 +1,56 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Authorization">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164788848.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200115541">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Authorization</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200115541"></a><a name="EN-US_TOPIC_0000002200115541"></a>
+
+<h1 class="topictitle1">Authorization</h1>
+<div><p id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_p8060118">After a managed cluster is added to a local cluster, the system administrator of the local cluster has the system administrator permissions of the managed cluster. This section describes how to grant user permissions of a managed cluster to a local cluster user.</p>
+<div class="note" id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_note86131557405"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_p561417571608">Local cluster users that support the authorization function include users of the <strong id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_b1140216182411">Data Protection Administrator</strong> or custom roles.</p>
+<p id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_p756121011312">Users of managed clusters include those of the <strong id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_b135883441143">Data Protection Administrator</strong> or custom roles.</p>
+</div></div>
+<div class="section" id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_section1478813111817"><h4 class="sectiontitle">Precautions</h4><ul id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_ul46285116915"><li id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_li13628819916">Batch authorization is not supported for local cluster users.</li><li id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_li7918428917">A local cluster user can be granted permissions of multiple managed clusters. Each managed cluster can grant the permissions of only one user of the <strong id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_b167364815714">Data Protection Administrator</strong> role to a local cluster user.</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_section292610011115"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_ol159244461703"><li id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_li0198134611381"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_uicontrol9143133018394"><b><span id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_text34321217571"><strong>System</strong></span> &gt; <span id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_text075328175610"><strong>Infrastructure</strong></span> &gt; <span id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_text3912011173416"><strong>Cluster Management</strong></span></b></span>.</span></li></ol><ol start="2" id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_ol962694310415"><li id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_en-us_topic_0274211889_en-us_topic_0224938451_li18900716111720"><span>In the multi-domain cluster area, choose <span class="menucascade" id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_menucascade721715260214"><b><span class="uicontrol" id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_uicontrol8217126326"><span id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_text97351817422"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_text182101327258"><strong>Authorize</strong></span></span></b></span> in the row that contains the desired managed cluster.</span></li><li id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_li1579344117310"><span>Select the local cluster user of the <strong id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_b8237717195910">Data Protection Administrator</strong> or custom role for authorization.</span></li><li id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_li113715181941"><span>In the <span class="uicontrol" id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_uicontrol13145144312416"><b><span id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_text291421914257"><strong>Authorization Information</strong></span></b></span> area, enter the name and password of the user of the <strong id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_b1354643817597">Data Protection Administrator</strong> or custom role in the managed cluster.</span></li><li id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_li19113371847"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_uicontrol142281845844"><b><span id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_text1262333812211"><strong>OK</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_li141411220777"><span>In the displayed dialog box, confirm the information and click <span class="uicontrol" id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_uicontrol1158916359711"><b><span id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_text1638113433212"><strong>OK</strong></span></b></span>.</span><p><p id="EN-US_TOPIC_0000002200115541__en-us_topic_0000002164669366_p1178231185610">After authorization is complete, you can click the authorized user of the managed cluster in the cluster list to view the authorization information.</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164788848.html">Managing Multi-domain Clusters (Not Supported by the OceanProtect E6000 Applianceand OceanProtect E1000)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

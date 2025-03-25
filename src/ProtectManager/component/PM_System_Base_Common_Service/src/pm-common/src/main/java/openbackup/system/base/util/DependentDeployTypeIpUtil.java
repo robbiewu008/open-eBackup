@@ -15,6 +15,7 @@ package openbackup.system.base.util;
 import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.bean.NetWorkConfigInfo;
 import openbackup.system.base.bean.NetWorkLogicIp;
+import openbackup.system.base.bean.NetworkPortInfo;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.constants.LegoNumberConstant;
@@ -24,15 +25,14 @@ import openbackup.system.base.common.process.ProcessException;
 import openbackup.system.base.common.process.ProcessResult;
 import openbackup.system.base.common.process.ProcessUtil;
 import openbackup.system.base.common.utils.ExceptionUtil;
+import openbackup.system.base.common.utils.VerifyUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -48,21 +48,31 @@ public class DependentDeployTypeIpUtil {
     }
 
     /**
-     * 将网络配置list转化为key为ifname value为ip的map
+     * 将网络配置list转化为NetworkPortInfo对象列表，属性包括网口名称：ifname 和 对应的ip列表
      *
      * @param ipList iplist
      * @return 网络配置map
      */
-    public static Map<String, String> convertIpStringToMap(List<String> ipList) {
-        Map<String, String> ipInfoMap = new HashMap<>();
+    public static List<NetworkPortInfo> convertIpStringToNetworkPortPo(List<String> ipList) {
+        List<NetworkPortInfo> allPortInfoList = new ArrayList<>();
+        if (VerifyUtil.isEmpty(ipList)) {
+            return allPortInfoList;
+        }
         ipList.forEach(line -> {
             List<String> splitResult = Arrays.stream(line.split(" "))
-                    .filter(split -> !" ".equals(split) && !split.isEmpty()).collect(Collectors.toList());
-            if (splitResult.size() > IsmNumberConstant.TWO) {
-                ipInfoMap.put(splitResult.get(0), splitResult.get(IsmNumberConstant.TWO));
+                .filter(split -> !" ".equals(split) && !split.isEmpty())
+                .collect(Collectors.toList());
+            NetworkPortInfo networkPortInfo = new NetworkPortInfo();
+            networkPortInfo.setIfaceName(splitResult.get(0));
+            List<String> ipListValue = new ArrayList<>();
+            for (int i = IsmNumberConstant.TWO; i < splitResult.size(); i++) {
+                String ip = splitResult.get(i);
+                ipListValue.add(ip);
             }
+            networkPortInfo.setIpList(ipListValue);
+            allPortInfoList.add(networkPortInfo);
         });
-        return ipInfoMap;
+        return allPortInfoList;
     }
 
     /**

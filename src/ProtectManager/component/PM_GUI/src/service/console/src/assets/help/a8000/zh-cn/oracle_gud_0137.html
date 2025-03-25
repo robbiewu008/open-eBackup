@@ -1,0 +1,64 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="数据库闪回区满导致恢复任务失败">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="oracle_gud_0119.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="oracle_gud_0137">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>数据库闪回区满导致恢复任务失败</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="oracle_gud_0137"></a><a name="oracle_gud_0137"></a>
+
+<h1 class="topictitle1">数据库闪回区满导致恢复任务失败</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>Oracle数据库恢复任务失败，失败详情类似如下：</p>
+<p><span><img src="zh-cn_image_0000002164757046.png"></span></p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>数据库主机残留旧的数据库文件，导致恢复过程中闪回区满，恢复任务失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li><span>登录Oracle数据库主机。</span><p><ul id="oracle_gud_0137__oracle_gud_0020_zh-cn_topic_0000001656760969_ul1983714162204"><li id="oracle_gud_0137__oracle_gud_0020_zh-cn_topic_0000001656760969_li7258697580">如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行<strong id="oracle_gud_0137__oracle_gud_0020_zh-cn_topic_0000001656760969_b119369483451">su - oracle</strong>命令，切换到<strong id="oracle_gud_0137__oracle_gud_0020_zh-cn_topic_0000001656760969_b2486163014495">oracle</strong>账户。</li><li id="oracle_gud_0137__oracle_gud_0020_zh-cn_topic_0000001656760969_li1366015032013">如果是Windows操作系统，请使用系统管理员登录Oracle数据库主机。</li></ul>
+</p></li><li><span>删除旧数据库文件。</span><p><ul><li>如果是Linux操作系统，请执行以下操作：<ol type="a"><li>执行以下命令进入<span class="filepath">“/oradata”</span>目录。<p><strong>cd ${ORACLE_BASE}/oradata</strong></p>
+</li><li>执行以下命令删除旧数据库文件。<p><strong>rm -rf</strong> <em>旧数据库文件目录</em></p>
+<p>如数据库名称为fs199，则执行以下命令进行删除：</p>
+<pre class="screen">rm -rf FS199</pre>
+</li></ol>
+</li><li>如果是Windows操作系统，请执行以下操作：<ol type="a"><li>在键盘上按<span class="uicontrol" id="oracle_gud_0137__oracle_gud_0016_uicontrol11819941114510">“Win+R”</span>，打开运行窗口。</li><li>输入<span class="parmvalue">“regedit”</span>，打开Oracle注册表，查找<strong>ORACLE_BASE</strong>对应的路径，并打开该路径。</li><li>删除<span class="filepath">“\oradata”</span>目录下的旧数据库文件。</li></ol>
+</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="oracle_gud_0119.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

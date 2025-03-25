@@ -1,0 +1,112 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="备份前准备">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="antdb-0008.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="antdb-0011">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>备份前准备</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="antdb-0011"></a><a name="antdb-0011"></a>
+  <h1 class="topictitle1">备份前准备</h1>
+  <div>
+   <p>备份前，请参考<a href="#antdb-0011__zh-cn_topic_0000001508383465_table10744125193920">表1</a>提前准备相关信息。</p>
+   <div class="tablenoborder">
+    <a name="antdb-0011__zh-cn_topic_0000001508383465_table10744125193920"></a><a name="zh-cn_topic_0000001508383465_table10744125193920"></a>
+    <table cellpadding="4" cellspacing="0" summary="" id="antdb-0011__zh-cn_topic_0000001508383465_table10744125193920" frame="border" border="1" rules="all">
+     <caption>
+      <b>表1 </b>备份前准备
+     </caption>
+     <colgroup>
+      <col style="width:27.51%">
+      <col style="width:47.79%">
+      <col style="width:24.709999999999997%">
+     </colgroup>
+     <thead align="left">
+      <tr>
+       <th align="left" class="cellrowborder" valign="top" width="27.507249275072493%" id="mcps1.3.2.2.4.1.1"><p>准备项</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="47.78522147785221%" id="mcps1.3.2.2.4.1.2"><p>获取方式</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="24.707529247075293%" id="mcps1.3.2.2.4.1.3"><p>数据使用章节</p></th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td class="cellrowborder" valign="top" width="27.507249275072493%" headers="mcps1.3.2.2.4.1.1 "><p>安装AntDB数据库的操作系统用户名及密码</p></td>
+       <td class="cellrowborder" valign="top" width="47.78522147785221%" headers="mcps1.3.2.2.4.1.2 "><p>请联系数据库管理员获取，默认为antdb。</p></td>
+       <td class="cellrowborder" rowspan="6" valign="top" width="24.707529247075293%" headers="mcps1.3.2.2.4.1.3 "><p><a href="antdb-0014.html">步骤2：注册AntDB单实例</a></p> <p><a href="antdb-0015.html">步骤3：注册AntDB集群实例</a></p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>配置文件完整路径（单机形态的数据库无此文件）</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>请联系数据库管理员获取。</p> <p>可以使用PuTTY，登录AntDB数据库主机，执行<strong>ps -ef |grep adbhamgr |grep -v grep</strong>命令查询，回显中的/etc/adbhamgr/adbhamgr_antdbcluster.yaml即为配置文件路径，如下所示。</p> <pre class="screen">[root@antdb-165-71 <font style="font-size:8pt" face="Courier New">~</font>]# ps -ef |grep adbhamgr |grep -v grep
+antdb     179351       1  0 16:18 ?        00:00:01 /home/antdb/antdb/tool/adbpy3/bin/adbpy3 /home/antdb/antdb/tool/adbhamgr/bin/adbhamgr /etc/adbhamgr/adbhamgr_antdbcluster.yaml</pre></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>数据库安装路径</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 ">
+        <ul>
+         <li>单机<p>使用PuTTY，登录AntDB数据库主机，执行<strong>ps -ef |grep postgres</strong>命令，回显类似如下，其中“-D”前面的/home/antdb/antdb为数据库安装路径。</p> <pre class="screen">[root@antdb-165-71 <font style="font-size:8pt" face="Courier New">~</font>]# ps -ef |grep postgres
+antdb     179351       1  0 16:18 ?        00:00:01 /home/antdb/antdb/bin/postgres -D /home/antdb/antdb/data</pre></li>
+         <li>集群<p>配置文件（如adbhamgr_antdbcluster.yaml）中的“bin_dir”那一行的路径，回显类似如下，路径为/home/antdb/app。</p> <pre class="screen">bin_dir: /home/antdb/app/bin</pre></li>
+        </ul></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>数据库端口</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 ">
+        <ol>
+         <li id="antdb-0011__li338764418113"><a name="antdb-0011__li338764418113"></a><a name="li338764418113"></a>使用PuTTY，登录AntDB数据库主机（若为数据库集群，则只用在任意一台查询），先执行<strong>ps -ef |grep postgres</strong>命令，回显类似如下，其中“-D”后面的/home/antdb/antdb/data为数据库数据目录。<pre class="screen">[root@antdb-165-71 <font style="font-size:8pt" face="Courier New">~</font>]# ps -ef |grep postgres
+antdb     179351       1  0 16:18 ?        00:00:01 /home/antdb/antdb/bin/postgres -D /home/antdb/antdb/data</pre></li>
+         <li>根据<a href="#antdb-0011__li338764418113">1</a>中的数据库目录，然后执行<strong>grep -w port <em>数据库数据目录的完整路径</em>/postgresql.conf</strong>，回显类型如下，端口号为6655。<pre class="screen">[root@antdb-165-71 <font style="font-size:8pt" face="Courier New">~</font>]# grep -w port /home/antdb/antdb/data/postgresql.conf
+port = 6655                     #(change requires restart)</pre></li>
+        </ol></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>数据库用户名及密码</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 ">
+        <ul>
+         <li>单机<p>请联系数据库管理员获取。</p></li>
+         <li>集群<p>配置文件（如adbhamgr_antdbcluster.yaml）的“superuser”那一行下面记录的<span class="parmname">“username”</span>和<span class="parmname">“password”</span>分别为该用户名和密码。</p></li>
+        </ul></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>数据库流复制用户名及密码（单机形态的数据库无需此用户）</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>配置文件（如adbhamgr_antdbcluster.yaml）的“replication”那一行下面记录的<span class="parmname">“username”</span>和<span class="parmname">“password”</span>分别为该用户名和密码。</p></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="antdb-0008.html">备份</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

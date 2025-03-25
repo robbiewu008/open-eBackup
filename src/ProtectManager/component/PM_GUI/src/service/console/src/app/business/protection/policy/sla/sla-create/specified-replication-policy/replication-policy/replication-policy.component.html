@@ -334,7 +334,9 @@
                 formControlName="replication_storage_type"
                 lvValueKey="value"
                 class="storage-input"
-                [lvDisabled]="!item.value.isAuth || item.value.disableOriginalStorage"
+                [lvDisabled]="
+                  !item.value.isAuth || item.value.disableOriginalStorage
+                "
               ></lv-select>
               <!-- 远端存储类型,当前不支持选择OceanProtectX以外的存储单元所以暂时隐藏 -->
               <lv-select
@@ -342,7 +344,9 @@
                 formControlName="remote_storage_type"
                 lvValueKey="value"
                 class="storage-input"
-                [lvDisabled]="!item.value.isAuth || item.value.disableOriginalStorage"
+                [lvDisabled]="
+                  !item.value.isAuth || item.value.disableOriginalStorage
+                "
                 *ngIf="false"
               >
               </lv-select>
@@ -365,7 +369,9 @@
                 lvFilterKey="label"
                 lvFilterMode="contains"
                 lvShowClear
-                [lvDisabled]="!item.value.isAuth || item.value.disableOriginalStorage"
+                [lvDisabled]="
+                  !item.value.isAuth || item.value.disableOriginalStorage
+                "
               ></lv-select>
               <!--指定备份存储单元-->
               <lv-select
@@ -386,7 +392,9 @@
                 lvFilterKey="label"
                 lvFilterMode="contains"
                 lvShowClear
-                [lvDisabled]="!item.value.isAuth || item.value.disableOriginalStorage"
+                [lvDisabled]="
+                  !item.value.isAuth || item.value.disableOriginalStorage
+                "
                 [lvContentTemplate]="contentTpl"
               ></lv-select>
             </lv-group>
@@ -889,14 +897,10 @@
         <lv-form-item>
           <lv-form-label>
             {{ 'common_limit_rate_policy_single_label' | i18n }}
-            <i
-              lv-icon="aui-icon-help"
-              [lv-tooltip]="limitTooltip"
-              lvTooltipTheme="light"
-              lvTooltipPosition="right"
-              class="configform-constraint"
-              lvColorState="true"
-            ></i>
+            <aui-router-jump-help
+              [routerUrl]="ratePolicyRouterUrl"
+              helpTips="{{ 'common_limit_rate_policy_tip_label' | i18n }}"
+            ></aui-router-jump-help>
           </lv-form-label>
           <lv-form-control>
             <lv-select
@@ -1008,8 +1012,4 @@
       *ngIf="!!item?.runningStatus"
     ></aui-status>
   </div>
-</ng-template>
-
-<ng-template #limitTooltip>
-  <span [innerHTML]="limitRatePolicyTip"></span>
 </ng-template>

@@ -20,83 +20,76 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="恢复PVC">
+<meta name="DC.Title" content="步骤6：添加复制集群">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00043.html">
+<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00039.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="kubernetes_CSI_00047">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>恢复PVC</title>
+<title>步骤6：添加复制集群</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="kubernetes_CSI_00047"></a><a name="kubernetes_CSI_00047"></a>
 
-<h1 class="topictitle1">恢复PVC</h1>
-<div><p>当需要对已备份的PVC恢复时，可以参考本节恢复PVC至原位置或新位置。</p>
-<div class="section"><h4 class="sectiontitle">背景信息</h4><p><span>OceanProtect</span>支持使用备份副本、复制副本（不支持恢复至原位置）、反向复制副本、归档副本（复制副本的归档副本不支持恢复至原位置）进行PVC恢复，支持恢复至原位置或新位置。</p>
+<h1 class="topictitle1">步骤6：添加复制集群</h1>
+<div><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_p173011029113111">在本端集群侧添加目标集群，建立主端设备和从端设备之间的逻辑连接，用于设备之间的数据传输。</p>
+<div class="section" id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_section5343122851716"><h4 class="sectiontitle">前提条件</h4><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p27481329181712">已准备用于复制的目标集群。</p>
 </div>
-<ul><li>恢复至原位置<p>将副本中的PVC恢复到副本所在命名空间下相同数据集的相同PVC中。</p>
-</li><li>恢复至新位置<p>将选中的PVC副本恢复到目标Kubernetes集群中命名空间内的PVC中。</p>
-</li></ul>
-<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>将PVC恢复到其他Kubernetes集群时，需要先将其他Kubernetes集群注册到<span>OceanProtect</span>中。注册操作请参见<a href="kubernetes_CSI_00011.html">步骤3：注册集群</a>。</li><li>恢复的目标PVC不能为只读类型。</li><li>执行恢复前，请确保待恢复PVC大小小于或等于目标PVC大小，否则会造成恢复数据丢失风险。</li></ul>
-</div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="kubernetes_CSI_00047__kubernetes_csi_00042_zh-cn_topic_0000001839142377_uicontrol17790342165415">“<span id="kubernetes_CSI_00047__kubernetes_csi_00042_zh-cn_topic_0000001839142377_text679084235415">数据利用</span> &gt; <span id="kubernetes_CSI_00047__kubernetes_csi_00042_zh-cn_topic_0000001839142377_text14790942175410">副本数据</span> &gt; <span id="kubernetes_CSI_00047__kubernetes_csi_00042_zh-cn_topic_0000001839142377_text42195499217">容器</span> &gt; <span id="kubernetes_CSI_00047__kubernetes_csi_00042_zh-cn_topic_0000001839142377_text729816765515">Kubernetes CSI</span>”</span>。</span></li><li><span>支持以资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在“<span>资源</span>”页签，根据数据集名称查找到需要恢复的数据集，并单击数据集名称。</p>
-</p></li><li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页面，依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000001839180749.png"></span>，即表示该月、该天存在副本。</p>
-</p></li><li><span>找到要恢复的副本，单击其右侧的“<span>更多</span> &gt; <span>PVC级恢复</span>”。</span></li><li><span>选择需要恢复的PVC，恢复到原位置或新位置。</span><p><ul><li>恢复到原位置<p>相关参数说明如<a href="#kubernetes_CSI_00047__table52750616234">表1</a>所示。</p>
-
-<div class="tablenoborder"><a name="kubernetes_CSI_00047__table52750616234"></a><a name="table52750616234"></a><table cellpadding="4" cellspacing="0" summary="" id="kubernetes_CSI_00047__table52750616234" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复到原位置参数说明</caption><colgroup><col style="width:29.43%"><col style="width:70.57%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.43%" id="mcps1.3.5.2.5.2.1.1.2.2.3.1.1"><p>参数</p>
+<div class="section" id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_section152913359312"><h4 class="sectiontitle">操作步骤</h4><ol id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_ol1038139939"><li id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_li1570821013536"><span>选择<span class="uicontrol" id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_text195451245818">系统</span> &gt; <span id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_text1825116201482">基础设施</span> &gt; <span id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_text2324131633414">集群管理</span>”</span>。</span></li><li id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_li12591123311535"><span>在<span class="uicontrol" id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_uicontrol855335015454">“<span id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_text11821141684610">复制集群</span>”</span>页签，单击<span class="uicontrol" id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_uicontrol1645154510534">“<span id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_text26407307349">添加</span>”</span>。</span></li><li id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_li10626045539"><span>配置目标集群参数。</span><p><div class="p" id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p344744712197">相关参数说明如<a href="#kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_table13641194661910">表1</a>所示。
+<div class="tablenoborder"><a name="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_table13641194661910"></a><a name="fc_gud_0031_zh-cn_topic_0000002200061497_table13641194661910"></a><table cellpadding="4" cellspacing="0" summary="" id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_table13641194661910" frame="border" border="1" rules="all"><caption><b>表1 </b>目标集群参数说明</caption><colgroup><col style="width:34.949999999999996%"><col style="width:65.05%"></colgroup><thead align="left"><tr id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_row66412046151918"><th align="left" class="cellrowborder" valign="top" width="34.949999999999996%" id="mcps1.3.3.2.3.2.1.2.2.3.1.1"><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p11641204641917">参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="70.57%" id="mcps1.3.5.2.5.2.1.1.2.2.3.1.2"><p>说明</p>
+<th align="left" class="cellrowborder" valign="top" width="65.05%" id="mcps1.3.3.2.3.2.1.2.2.3.1.2"><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p3641114610198">说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="29.43%" headers="mcps1.3.5.2.5.2.1.1.2.2.3.1.1 "><p><span style="color:#6C7280;">覆盖规则</span></p>
+<tbody><tr id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_row11154135519445"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p9154135544411">名称</p>
 </td>
-<td class="cellrowborder" valign="top" width="70.57%" headers="mcps1.3.5.2.5.2.1.1.2.2.3.1.2 "><p>当副本和目标位置的PVC存在相同文件时，需要选择替换或忽略已存在的文件。仅支持对PVC数据设置覆盖规则。</p>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p51549551446">自定义目标集群的名称。</p>
 </td>
 </tr>
-</tbody>
-</table>
+<tr id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_row15735172017508"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p1152814501268">角色</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p8528850102620">固定为<span class="uicontrol" id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_uicontrol3110113172718">“<span id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_text844584915492">复制目标集群</span>”</span>。</p>
+</td>
+</tr>
+<tr id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_row17641164617192"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p1164184612196">IP地址</p>
+</td>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><div class="p" id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p0641104621913">输入目标端OceanProtect X系列备份一体机任一控制器的管理、备份或复制IP地址。<ul id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_ul10691523173813"><li id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_li1869223123818">如果输入管理IP地址，请确保本端与目标端的管理网络连通。</li><li id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_li12657153011405">如果输入备份网络IP地址，请确保本端与目标端的备份网络连通。</li><li id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_li1768111253458">如果输入复制网络IP地址，请确保本端与目标端的复制网络连通。</li></ul>
+<div class="note" id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_note4160173815018"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_ul114693044613"><li id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_li472320144611">管理IP地址即为登录目标集群管理界面的IP地址。</li><li id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_li174692084618">备份或复制网络IP请登录目标集群的管理界面，选择<span class="uicontrol" id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_uicontrol1664124518511">“系统 &gt; 基础设施 &gt; 集群管理”</span>，在“备份集群”页签单击集群名称，获取任一控制器的备份网络IP地址（数据备份引擎）或复制网络IP地址。</li></ul>
+</div></div>
 </div>
-</li><li>恢复到新位置<div class="p">相关参数说明如<a href="#kubernetes_CSI_00047__table15668141795417">表2</a>所示。
-<div class="tablenoborder"><a name="kubernetes_CSI_00047__table15668141795417"></a><a name="table15668141795417"></a><table cellpadding="4" cellspacing="0" summary="" id="kubernetes_CSI_00047__table15668141795417" frame="border" border="1" rules="all"><caption><b>表2 </b>恢复到新位置参数说明</caption><colgroup><col style="width:29.87%"><col style="width:70.13000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.1"><p>参数</p>
-</th>
-<th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.2"><p>说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.1 "><p><span>目标位置</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.2 "><p>选择备份副本恢复的目标命名空间名。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.1 "><p><span>恢复目标位置</span></p>
+<tr id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_row18641204619191"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p116416464192">端口</p>
 </td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.2 "><p>选择备份副本恢复的目标命名空间下的PVC名。</p>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p16641144613195">目标集群的端口。取值范围为：1~65535。</p>
+<p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p14641546131918">IP地址框输入管理IP地址时，默认端口为25081；IP地址框输入复制网络IP地址或备份网络IP地址时，默认端口为30068。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.1 "><p><span style="color:#6C7280;">覆盖规则</span></p>
+<tr id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_row9641346121912"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p164113466197">用户名</p>
 </td>
-<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.5.2.5.2.1.2.1.2.2.3.1.2 "><p>当副本和目标位置的PVC存在相同文件时，需要选择替换或忽略已存在的文件。仅支持对PVC数据设置覆盖规则。</p>
+<td class="cellrowborder" rowspan="2" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p1119324620413"><a href="kubernetes_CSI_00045.html#kubernetes_CSI_00045">步骤5：创建远端设备管理员（适用于1.5.0版本）</a>或<a href="kubernetes_CSI_00046.html#kubernetes_CSI_00046">步骤5：创建远端设备管理员（适用于1.6.0及后续版本）</a>中创建的用户及其密码。</p>
+</td>
+</tr>
+<tr id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_row12641194631915"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_p20641646181916">密码</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-</li></ul>
-</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+</p></li><li id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_li731119361160"><span>单击<span class="uicontrol" id="kubernetes_CSI_00047__fc_gud_0031_zh-cn_topic_0000002200061497_zh-cn_topic_0000001092505479_uicontrol138611845761">“确定”</span>。</span></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="kubernetes_CSI_00043.html">恢复</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="kubernetes_CSI_00039.html">复制Kubernetes CSI副本（适用于OceanProtect X系列备份一体机）</a></div>
 </div>
 </div>
 

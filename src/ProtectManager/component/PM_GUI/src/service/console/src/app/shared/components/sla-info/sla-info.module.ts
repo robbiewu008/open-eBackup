@@ -21,6 +21,7 @@ import { VmwareAdvancedParameterModule } from 'app/business/protection/policy/sl
 import { SlaAssociateResourceModule } from 'app/business/protection/policy/sla/sla-detail/sla-associate-resource/sla-associate-resource.module';
 import { BaseModule } from './../../base.module';
 import { SlaInfoComponent } from './sla-info.component';
+import { RouterJumpHelpModule } from '../router-jump-help/router-jump-help.module';
 
 @NgModule({
   declarations: [SlaInfoComponent],
@@ -33,7 +34,8 @@ import { SlaInfoComponent } from './sla-info.component';
     GeneralAdvancedParameterModule,
     AdvancedParametersModule,
     SlaAssociateResourceModule,
-    ProtectParameterDetailModule
+    ProtectParameterDetailModule,
+    RouterJumpHelpModule
   ],
   exports: [SlaInfoComponent]
 })

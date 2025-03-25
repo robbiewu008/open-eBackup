@@ -1,0 +1,125 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Adding a Storage Device">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164766738.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200007849">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Adding a Storage Device</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200007849"></a><a name="EN-US_TOPIC_0000002200007849"></a>
+  <h1 class="topictitle1">Step 1: Adding a Storage Device</h1>
+  <div>
+   <p>Before backing up or restoring an NDMP NAS file system, add the storage device where the NDMP NAS file system to be protected resides to the <span>product</span>.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>The <span>product</span> can protect NDMP-based NAS file systems.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200007849__en-us_topic_0000002199964685_uicontrol131851042141211"><b><span id="EN-US_TOPIC_0000002200007849__en-us_topic_0000002199964685_text218514421128"><strong>Protection</strong></span> &gt; File Systems &gt; Storage Devices</b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Add Device</strong></span></b></span> to add a storage device.</span></li>
+     <li><span>Set the device type to <strong>NDMP Server</strong>.</span></li>
+     <li><span>Configure parameters as required. <a href="#EN-US_TOPIC_0000002200007849__table20829151954610">Table 1</a> describes the related parameters.</span><p></p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002200007849__table20829151954610"></a><a name="table20829151954610"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200007849__table20829151954610" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Parameters for adding a device
+        </caption>
+        <colgroup>
+         <col style="width:25.629999999999995%">
+         <col style="width:74.37%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.3.2.4.2.1.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.3.2.4.2.1.2.3.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p><span><strong>Device Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p>Name of a user-defined device.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p><span><strong>IP Address</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p>Management IP address of the storage device.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p><span><strong>Port</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p>Number of the port for communication between the <span>product</span> and the management plane of a storage device.</p> <p>The default port number is <strong>10000</strong>.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p><span><strong>Username</strong></span></p></td>
+          <td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p>Username and password of a storage device NDMP administrator. Ensure that the RESTful login mode is available for the user and the password has been initialized.</p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p>Use an administrator account. Otherwise, resources on the device may fail to be backed up.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p><span><strong>Password</strong></span></p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p><strong>Clients</strong></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p>By default, the built-in client is selected. If an external client exists, you can also select the external client.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p><strong>Number of Concurrent Tasks</strong></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p>The default number of concurrent tasks is <strong>8</strong>. The allowed value ranges from <strong>1</strong> to <strong>64</strong>.</p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <ul>
+              <li>The number of concurrent tasks cannot exceed the flow control limit provided by the corresponding storage vendor.</li>
+              <li>This parameter indicates the maximum number of concurrent backup or restoration jobs that can be performed at the same time on the current storage device.</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span><p></p><p>When a storage device is added successfully, information about the added storage device is displayed on the <span class="uicontrol"><b><span><strong>Storage Device</strong></span></b></span> page.</p> <p>The <span>product</span> automatically scans NDMP NAS file systems in the storage device and displays them on the <span class="uicontrol"><b><span id="EN-US_TOPIC_0000002200007849__en-us_topic_0000002199964685_text152438422312"><strong>Protection</strong></span> &gt; File Systems &gt; NDMP</b></span> page. If a file system is added to the registered device, you can choose <span><strong>More</strong></span> &gt; <span><strong>Resource Scan</strong></span> in the row that contains the device to update the file system resources.</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164766738.html">Backing Up an NDMP NAS File System</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

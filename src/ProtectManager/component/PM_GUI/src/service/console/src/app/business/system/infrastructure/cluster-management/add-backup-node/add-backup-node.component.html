@@ -54,3 +54,15 @@
     </lv-form-item>
   </div>
 </lv-form>
+
+<ng-template #headerTpl>
+  <div class="lv-modal-title">
+    {{(drawData ? 'common_modify_label': 'common_create_label') | i18n}}
+    <i lv-icon="aui-icon-help" [lv-tooltip]="nodeTipTpl" lvTooltipPosition="rightTop" lvTooltipTheme="light"
+       class="configform-constraint info-icon" lvColorState='true'></i>
+  </div>
+</ng-template>
+
+<ng-template #nodeTipTpl>
+  <span innerHTML="{{'system_backup_member_node_tip_label' | i18n}}" class="name-tooltip"></span>
+</ng-template>

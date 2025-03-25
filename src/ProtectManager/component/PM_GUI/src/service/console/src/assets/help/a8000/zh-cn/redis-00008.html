@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="redis-00007.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -41,7 +41,7 @@
 <div><p>执行Redis集群备份恢复前，需要将Redis集群注册至<span>OceanProtect</span>。</p>
 <div class="section"><h4 class="sectiontitle">前提条件</h4><p>已添加Redis主机。</p>
 </div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="redis-00008__zh-cn_topic_0000001839142377_uicontrol465185015397">“<span id="redis-00008__zh-cn_topic_0000001839142377_text265115073919">保护</span> &gt; 大数据 &gt; Redis”</span>。</span></li><li><span>在<span class="uicontrol">“<span>集群</span>”</span>页面，单击<span class="uicontrol">“<span>注册</span>”</span>，注册Redis集群。</span><p><ol type="a"><li>填写Redis集群的名称。</li><li>单击<span class="uicontrol">“添加”</span>，添加Redis集群下所有节点。参数说明如<a href="#redis-00008__table196232217593">表1</a>所示。
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="redis-00008__zh-cn_topic_0000002199964685_uicontrol465185015397">“<span id="redis-00008__zh-cn_topic_0000002199964685_text265115073919">保护</span> &gt; 大数据 &gt; Redis”</span>。</span></li><li><span>在<span class="uicontrol">“<span>集群</span>”</span>页面，单击<span class="uicontrol">“<span>注册</span>”</span>，注册Redis集群。</span><p><ol type="a"><li>填写Redis集群的名称。</li><li>单击<span class="uicontrol">“添加”</span>，添加Redis集群下所有节点。参数说明如<a href="#redis-00008__table196232217593">表1</a>所示。
 <div class="tablenoborder"><a name="redis-00008__table196232217593"></a><a name="table196232217593"></a><table cellpadding="4" cellspacing="0" summary="" id="redis-00008__table196232217593" frame="border" border="1" rules="all"><caption><b>表1 </b>添加Redis节点</caption><colgroup><col style="width:25.03%"><col style="width:74.97%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.03%" id="mcps1.3.3.2.2.2.1.2.3.2.3.1.1"><p>参数</p>
 </th>
 <th align="left" class="cellrowborder" valign="top" width="74.97%" id="mcps1.3.3.2.2.2.1.2.3.2.3.1.2"><p>说明</p>
@@ -55,7 +55,7 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.1.2.3.2.3.1.1 "><p><span>客户端安装路径</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.1.2.3.2.3.1.2 "><p>Redis客户端的安装路径。</p>
+<td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.1.2.3.2.3.1.2 "><p>Redis应用在生产环境的安装路径。</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.1.2.3.2.3.1.1 "><p><span>业务IP</span></p>
@@ -104,7 +104,7 @@
 <tr><td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.1.2.5.2.3.1.1 "><p><span>主体名</span></p>
 </td>
 <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.1.2.5.2.3.1.2 "><p>Kerberos认证的主体名。</p>
-<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>配置为Kerberos服务器上已配置的主体名，并且该主体名需要对要访问的资源具备读权限和管理权限。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="redis-00008__redis-00006_zh-cn_topic_0000001514007325_p875118419379">配置为大数据平台上的人机用户名称，并且该用户需要对要访问的资源具备读权限和管理权限。</p>
 </div></div>
 </td>
 </tr>
@@ -116,7 +116,8 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.1.2.5.2.3.1.1 "><p><span>配置文件</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.1.2.5.2.3.1.2 "><p>Kerberos认证过程中使用的<span class="filepath">“.conf”</span>配置文件（如：krb5.conf）。请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000001792354022.png"></span>上传至<span>OceanProtect</span>。</p>
+<td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.1.2.5.2.3.1.2 "><p>Kerberos认证过程中使用的<span class="filepath">“.conf”</span>配置文件（如：krb5.conf）。请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000002200004865.png"></span>上传至<span>OceanProtect</span>。</p>
+<p><span id="redis-00008__ph10763172810335">以MRS产品为例，具体获取方法可以参考对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">《MapReduce Service 产品文档》</a>的“导出认证凭据文件”章节。</span></p>
 <div class="p">由于Kerberos自身的问题，当配置文件中存在<span class="uicontrol">“renew_lifetime”</span>参数时，需将其注释，否则可能导致注册失败。如：<pre class="screen">#renew_lifetime = 7d</pre>
 </div>
 </td>
@@ -135,7 +136,8 @@
 <tr><td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.3.2.2.2.1.2.5.2.3.1.1 "><p><span>Keytab文件</span></p>
 </td>
 <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.3.2.2.2.1.2.5.2.3.1.2 "><p>当<span class="uicontrol">“<span>配置方式</span>”</span>选择<span class="uicontrol">“<span>Keytab文件</span>”</span>时，才需要配置该参数。Kerberos认证过程中使用的<span class="filepath">“.keytab”</span>文件（如：krb5.keytab）。</p>
-<p>请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000001839153145.png"></span>上传至<span>OceanProtect</span>。</p>
+<p><span>以MRS产品为例，具体获取方法可以参考对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">《MapReduce Service 产品文档》</a>的“导出认证凭据文件”章节。</span></p>
+<p>请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000002164763850.png"></span>上传至<span>OceanProtect</span>。</p>
 </td>
 </tr>
 </tbody>

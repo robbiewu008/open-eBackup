@@ -1,0 +1,56 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Deleting a Member Node">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164791756.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="documenttype" content="usermanual">
+<meta name="prodname" content="csbs">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200118357">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Deleting a Member Node</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200118357"></a><a name="EN-US_TOPIC_0000002200118357"></a>
+
+<h1 class="topictitle1">Deleting a Member Node</h1>
+<div id="body0000001688590025"><p id="EN-US_TOPIC_0000002200118357__p10579523370">This section describes how to delete a member node that is no longer used.</p>
+<div class="section" id="EN-US_TOPIC_0000002200118357__section14212185084511"><h4 class="sectiontitle">Precautions</h4><ul id="EN-US_TOPIC_0000002200118357__ul168063386373"><li id="EN-US_TOPIC_0000002200118357__li2080653803715">A standby node cannot be deleted. If you need to delete a standby node, remove the HA member and then delete the member node.</li><li id="EN-US_TOPIC_0000002200118357__li146524012378">A member node in the <span class="uicontrol" id="EN-US_TOPIC_0000002200118357__uicontrol886633133714"><b><span id="EN-US_TOPIC_0000002200118357__text14139111715416"><strong>Setting</strong></span></b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000002200118357__uicontrol1938612343379"><b><span id="EN-US_TOPIC_0000002200118357__text1261011232411"><strong>Deleting</strong></span></b></span> state cannot be deleted.</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002200118357__section89514614511"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002200118357__ol1198210257148"><li id="EN-US_TOPIC_0000002200118357__li14865927113614"><span>Choose <span class="menucascade" id="EN-US_TOPIC_0000002200118357__en-us_topic_0000002164791752_menucascade31053579148"><b><span class="uicontrol" id="EN-US_TOPIC_0000002200118357__en-us_topic_0000002164791752_uicontrol41059577142"><span id="EN-US_TOPIC_0000002200118357__en-us_topic_0000002164791752_text1054020121612"><strong>System</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002200118357__en-us_topic_0000002164791752_uicontrol154661958121418"><span id="EN-US_TOPIC_0000002200118357__en-us_topic_0000002164791752_text8757278167"><strong>Infrastructure</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002200118357__en-us_topic_0000002164791752_uicontrol54471544151"><span id="EN-US_TOPIC_0000002200118357__en-us_topic_0000002164791752_text1631251418164"><strong>Cluster Management</strong></span></span></b></span>.</span></li><li id="EN-US_TOPIC_0000002200118357__li1378321711615"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002200118357__en-us_topic_0000002164791752_uicontrol1161813395168"><b><span id="EN-US_TOPIC_0000002200118357__en-us_topic_0000002164791752_text353374216166"><strong>Backup Cluster</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000002200118357__li16153193576"><span>In the row that contains the member node to be deleted, choose <span class="menucascade" id="EN-US_TOPIC_0000002200118357__menucascade111541032077"><b><span class="uicontrol" id="EN-US_TOPIC_0000002200118357__uicontrol111545320714"><span id="EN-US_TOPIC_0000002200118357__text1582611107193"><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002200118357__uicontrol81541834714"><span id="EN-US_TOPIC_0000002200118357__text18681217111916"><strong>Delete</strong></span></span></b></span>.</span></li><li id="EN-US_TOPIC_0000002200118357__li16391132213203"><span>In the <span class="uicontrol" id="EN-US_TOPIC_0000002200118357__uicontrol20897669421912"><b><span id="EN-US_TOPIC_0000002200118357__text182619241221912"><strong>Danger</strong></span></b></span> dialog box, confirm the information, select <span class="uicontrol" id="EN-US_TOPIC_0000002200118357__uicontrol47813191821912"><b><span id="EN-US_TOPIC_0000002200118357__text23693534321912"><strong>I have read and understand the consequences associated with performing this operation.</strong></span></b></span>, and click <span class="uicontrol" id="EN-US_TOPIC_0000002200118357__uicontrol65614625721912"><b><span id="EN-US_TOPIC_0000002200118357__text34769821912"><strong>OK</strong></span></b></span>.</span><p><p id="EN-US_TOPIC_0000002200118357__p88515531440"><span><img id="EN-US_TOPIC_0000002200118357__image8101165424416" src="en-us_image_0000002164632076.png"></span></p>
+<p id="EN-US_TOPIC_0000002200118357__p15731302463"></p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164791756.html">Managing a Standby or Member Node</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

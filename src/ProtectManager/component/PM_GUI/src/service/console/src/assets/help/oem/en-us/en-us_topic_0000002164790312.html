@@ -1,0 +1,70 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="How Do I Locate the Causse of a Client to Be Offline?">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164790312">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>How Do I Locate the Causse of a Client to Be Offline?</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164790312"></a><a name="EN-US_TOPIC_0000002164790312"></a>
+  <h1 class="topictitle1">How Do I Locate the Causse of a Client to Be Offline?</h1>
+  <div>
+   <p>This section describes how to locate the cause when a client is offline.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Linux OS/AIX OS/Solaris OS</h4>
+    <ol>
+     <li><span>Use PuTTY to log in to the host where the client is to be installed as user <strong id="EN-US_TOPIC_0000002164790312__en-us_topic_0000002164790296_en-us_topic_0000002200031305_b916917212">root</strong>.</span></li>
+     <li id="EN-US_TOPIC_0000002164790312__li1514711154617"><span>Check whether the firewall of the host where the client is installed is disabled.</span><p></p><p id="EN-US_TOPIC_0000002164790312__p11686134515526">If the firewall is enabled, the communication requests between the <span id="EN-US_TOPIC_0000002164790312__text19822419115513">product</span> and host where the client is installed may be intercepted. If the firewall is enabled and cannot be disabled directly, enable the corresponding ports in the <a href="https://support.huawei.com/enterprise/en/centralized-storage/oceanprotect-databackup-pid-258115661" target="_blank" rel="noopener noreferrer">OceanProtect DataBackup 1.5.0-1.6.0 Communication Matrix</a>.</p>
+      <div class="note" id="EN-US_TOPIC_0000002164790312__note17533155617316">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002164790312__p2533135623113">To ensure that the client status is <strong id="EN-US_TOPIC_0000002164790312__b830191924511">Online</strong>, ensure that port <strong id="EN-US_TOPIC_0000002164790312__b1476954933620">25082</strong> of the <span id="EN-US_TOPIC_0000002164790312__text5264174523617">product</span> and ports <strong id="EN-US_TOPIC_0000002164790312__b26339582368">59520–59559</strong> on the host where the client is installed are enabled.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Run the following command to check whether the client processes are running properly:</span><p></p><pre class="screen">ps aux | grep rdadmin</pre> <p>If information about four client processes is displayed, the client processes are running properly. Otherwise, run the <strong>start.sh</strong> script in the <em>Client installation directory</em><strong>/DataBackup/ProtectClient</strong> path to start the client processes.</p> <pre class="screen">rdadmin  12920  0.7  0.5 2170416 47148 ?       Sl   10:56   4:43 /opt/DataBackup/ProtectClient/ProtectClient-E//bin/rdagent
+rdadmin  13272  0.0  0.0  44272  1156 ?        Ss   10:56   0:00 nginx: master process ./rdnginx
+rdadmin  13273  0.0  0.0  45408  4176 ?        S    10:56   0:00 nginx: worker process
+rdadmin  13307  0.0  0.1 185064 11888 ?        Sl   10:56   0:11 /opt/DataBackup/ProtectClient/ProtectClient-E//bin/monitor</pre> <p></p></li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Windows OS</h4>
+    <ol>
+     <li><span>Log in to the host where the client is installed as user <strong>Administrator</strong>.</span></li>
+     <li><span>Check whether the firewall of the host where the client is installed is disabled.</span><p></p><p id="EN-US_TOPIC_0000002164790312__en-us_topic_0000002164790312_p11686134515526">If the firewall is enabled, the communication requests between the <span id="EN-US_TOPIC_0000002164790312__en-us_topic_0000002164790312_text19822419115513">product</span> and host where the client is installed may be intercepted. If the firewall is enabled and cannot be disabled directly, enable the corresponding ports in the <a href="https://support.huawei.com/enterprise/en/centralized-storage/oceanprotect-databackup-pid-258115661" target="_blank" rel="noopener noreferrer">OceanProtect DataBackup 1.5.0-1.6.0 Communication Matrix</a>.</p>
+      <div class="note" id="EN-US_TOPIC_0000002164790312__en-us_topic_0000002164790312_note17533155617316">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002164790312__en-us_topic_0000002164790312_p2533135623113">To ensure that the client status is <strong id="EN-US_TOPIC_0000002164790312__en-us_topic_0000002164790312_b830191924511">Online</strong>, ensure that port <strong id="EN-US_TOPIC_0000002164790312__en-us_topic_0000002164790312_b1476954933620">25082</strong> of the <span id="EN-US_TOPIC_0000002164790312__en-us_topic_0000002164790312_text5264174523617">product</span> and ports <strong id="EN-US_TOPIC_0000002164790312__en-us_topic_0000002164790312_b26339582368">59520–59559</strong> on the host where the client is installed are enabled.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Check whether the client processes are running properly.</span><p></p>
+      <ol type="a">
+       <li>Right-click on the task bar.</li>
+       <li>Choose <strong>Task Manager</strong> from the shortcut menu.</li>
+       <li>On the <strong>Processes</strong> tab page, check whether the client-related processes (monitor, rdagent, and rdnginx) are running properly.<p>If the client processes are not running properly, run the <strong>start.sh</strong> script in the <em>Client installation directory</em><strong>\DataBackup\ProtectClient</strong> path to start the client processes.</p> <p><span><img src="en-us_image_0000002164630976.png"></span></p></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

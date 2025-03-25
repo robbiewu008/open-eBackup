@@ -17,37 +17,41 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="步骤3：配置NAS共享信息（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）">
+  <meta name="DC.Title" content="（可选）步骤3：配置NAS共享信息（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="nas_s_0020.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="nas_s_0023">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>步骤3：配置NAS共享信息（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</title>
+  <title>（可选）步骤3：配置NAS共享信息（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="nas_s_0023"></a><a name="nas_s_0023"></a>
-  <h1 class="topictitle1">步骤3：配置NAS共享信息（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</h1>
+  <h1 class="topictitle1">（可选）步骤3：配置NAS共享信息（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</h1>
   <div>
-   <p>对于通过设备注册发现的NAS共享，请参考本节配置FQDN/IP和认证信息。</p>
+   <p>对于通过添加存储设备自动发现的NAS共享，请参考本节配置域名/IP和认证信息。</p>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p>当存储设备为NetApp ONTAP时，登录NetApp ONTAP管理界面或者CLI命令行界面后，设置待备份卷的导出策略时，需要支持NFSv3、NFSv4的访问权限，以及Unix类型的只读权限，并开启允许超级用户访问权限。</p>
+   </div>
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>选择<span class="uicontrol" id="nas_s_0023__zh-cn_topic_0000001839142377_uicontrol79081114124111">“<span id="nas_s_0023__zh-cn_topic_0000001839142377_text99081414144119">保护</span> &gt; 文件系统 &gt; NAS共享”</span>。</span><p></p>
-      <div class="note" id="nas_s_0023__zh-cn_topic_0000001839142377_note397892312184">
+     <li><span>选择<span class="uicontrol" id="nas_s_0023__zh-cn_topic_0000002199964685_uicontrol79081114124111">“<span id="nas_s_0023__zh-cn_topic_0000002199964685_text99081414144119">保护</span> &gt; 文件系统 &gt; NAS共享”</span>。</span><p></p>
+      <div class="note" id="nas_s_0023__zh-cn_topic_0000002199964685_note397892312184">
        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="nas_s_0023__zh-cn_topic_0000001839142377_p5978112341818">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0023__zh-cn_topic_0000001839142377_uicontrol129783237180">“<span id="nas_s_0023__zh-cn_topic_0000001839142377_text10978172391818">保护</span> &gt; 文件服务 &gt; NAS共享”</span>。</p>
+        <p id="nas_s_0023__zh-cn_topic_0000002199964685_p5978112341818">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0023__zh-cn_topic_0000002199964685_uicontrol129783237180">“<span id="nas_s_0023__zh-cn_topic_0000002199964685_text10978172391818">保护</span> &gt; 文件服务 &gt; NAS共享”</span>。</p>
        </div>
       </div> <p></p></li>
-     <li><span>勾选NAS共享，单击<span class="uicontrol">“<span>更多</span> &gt; <span>修改</span> ”</span>，配置NAS共享的FQDN/IP。</span><p></p><p>FQDN/IP的参数说明请参见<a href="nas_s_0024.html#nas_s_0024__table1929515516558">表1</a>。</p> <p></p></li>
+     <li><span>勾选NAS共享，单击<span class="uicontrol">“<span>更多</span> &gt; <span>修改</span> ”</span>，配置NAS共享的域名/IP。</span><p></p><p>域名/IP的参数说明请参见<a href="nas_s_0024.html#nas_s_0024__table1929515516558">表1</a>。</p> <p></p></li>
      <li><span>如果NAS共享有认证信息，还需要配置NAS共享的认证信息。</span><p></p><p>NAS共享认证信息的参数说明请参见<a href="nas_s_0024.html#nas_s_0024__table1929515516558">表1</a>。</p> <p></p></li>
      <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
     </ol>

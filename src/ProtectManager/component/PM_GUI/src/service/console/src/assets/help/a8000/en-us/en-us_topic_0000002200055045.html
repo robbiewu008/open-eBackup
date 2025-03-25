@@ -1,0 +1,142 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Minimum Permissions for Users Performing VMware Virtualization Environment Registration">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200055045">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Minimum Permissions for Users Performing VMware Virtualization Environment Registration</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200055045"></a><a name="EN-US_TOPIC_0000002200055045"></a>
+
+<h1 class="topictitle1">Minimum Permissions for Users Performing VMware Virtualization Environment Registration</h1>
+<div><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p8060118"><a href="#EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_table840017133810">Table 1</a> lists minimum permissions for users performing virtualization environment registration for VMware resource protection. The following part uses VMware 7.0 as an example. For other versions, permission setting methods may be different, but the permission requirements are the same.</p>
+<div class="note" id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_note12174104322317"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p7174164318237">VMware user permissions must be added on vCenter. Otherwise, VDDK initialization will fail. For details, see <a href="en-us_topic_0000002164813994.html">What Can I Do to Add User Permissions on vCenter?</a>.</p>
+</div></div>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_table840017133810"></a><a name="en-us_topic_0000001749858029_table840017133810"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_table840017133810" width="100%" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Minimum permission requirements for VMware users</caption><colgroup><col style="width:44.6%"><col style="width:55.400000000000006%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row104002193811"><th align="center" class="cellrowborder" valign="top" width="44.6%" id="mcps1.3.3.2.3.1.1"><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p194004110385"><strong id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_b11275155913273">Permission Category</strong></p>
+</th>
+<th align="center" class="cellrowborder" valign="top" width="55.400000000000006%" id="mcps1.3.3.2.3.1.2"><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p164005110386"><strong id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_b33428576514">Permission Requirements</strong></p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row440151113811"><td class="cellrowborder" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p18401121143814">Resource</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><ul id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_ul340101153818"><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li34013114382">Migrate powered off virtual machine</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li1140110103812">Migrate powered on virtual machine</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li1540113153815">Assign virtual machine to resource pool</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li64014163819">Query vMotion</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row3401712385"><td class="cellrowborder" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p7401311384">Host - Local operations</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><ul id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_ul040113163817"><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li84011513385">Reconfigure virtual machine</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li3401312380">Create virtual machine</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row2040110115385"><td class="cellrowborder" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p140151203810">Host - Configuration</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p13401131143812">Storage partition configuration</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row1640111112385"><td class="cellrowborder" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p240113114382">Folder</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p140171113816">Create folder</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row540111133817"><td class="cellrowborder" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p64012119387">Network</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p1040110133818">Assign network</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row740118110387"><td class="cellrowborder" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p204016173819">vApp</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p1640220114383">Add virtual machine</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row540271133817"><td class="cellrowborder" align="left" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p4402511385">Cryptographic operations</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p144021919384">Direct Access</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row9402111173812"><td class="cellrowborder" align="left" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p1402316388">Datastore</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><ul id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_ul1140212163816"><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li6402216382">Low level file operations</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li19402511388">Allocate space</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li8402111123813">Update virtual machine metadata</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li1740241153812">Update virtual machine files</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li740218117388">Browse datastore</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li104021183812">Configure datastore</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li184023123810">Rename datastore</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row1440211103815"><td class="cellrowborder" align="left" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p140220183818">Global</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><ul id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_ul24021014388"><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li114021519384">Disable methods</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li34025123815">Enable methods</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li34022119384">Log event</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li04028143818">Manage custom attributes</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li4402141123818">Set custom attribute</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row1040381173819"><td class="cellrowborder" align="left" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p340315113818">Datastore cluster</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p94033110380">Configure a datastore cluster</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row640313133810"><td class="cellrowborder" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p1440316114381">Virtual machine</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p2040341113819">Change Configuration</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row74030123813"><td class="cellrowborder" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p1403191133818">Virtual machine</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p8403101123810">Edit Inventory</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row540314112382"><td class="cellrowborder" align="left" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p74031513384">Virtual machine - Guest operations</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><ul id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_ul1340351113812"><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li240318110383">Guest operation modifications</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li16403191123816">Guest operation program execution</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li154031717388">Guest operation queries</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row13404161113813"><td class="cellrowborder" align="left" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p440412143815">Virtual machine - Interaction</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><ul id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_ul14045115383"><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li64041153810">Guest operating system management by VIX API</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li74045123819">Power off</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li54041819382">Power on</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row140416115386"><td class="cellrowborder" align="left" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p144041311384">Virtual machine - Provisioning</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><ul id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_ul24041711387"><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li740413133815">Allow read-only disk access</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li134041117381">Allow virtual machine download</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li10404519380">Allow disk access</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_row12404101133814"><td class="cellrowborder" align="left" valign="top" width="44.6%" headers="mcps1.3.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_p040411133818">Virtual machine - Snapshot management</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.400000000000006%" headers="mcps1.3.3.2.3.1.2 "><ul id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_ul11405111381"><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li1440515123816">Create snapshot</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li1440511114388">Remove snapshot</li><li id="EN-US_TOPIC_0000002200055045__en-us_topic_0000001749858029_li340517113388">Revert to snapshot</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -20,34 +20,52 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤2：注册Informix/GBase 8s集群">
+<meta name="DC.Title" content="步骤1：配置XBSA库路径">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="informix-0010.html">
+<meta name="DC.Relation" scheme="URI" content="informix-0011.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="informix-0012">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤2：注册Informix/GBase 8s集群</title>
+<title>步骤1：配置XBSA库路径</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="informix-0012"></a><a name="informix-0012"></a>
 
-<h1 class="topictitle1">步骤2：注册Informix/GBase 8s集群</h1>
-<div><div class="section"><h4 class="sectiontitle">前提条件</h4><p>注册Informix/GBase 8s集群前，请确保集群中每个主机已进行注册。</p>
-</div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="informix-0012__zh-cn_topic_0000001839142377_uicontrol1138252616373">“<span id="informix-0012__zh-cn_topic_0000001839142377_text73821261375">保护</span> &gt; 数据库 &gt; Informix/GBase 8s”</span>。</span></li><li><span>选择<span class="uicontrol">“<span>集群</span>”</span>页签。</span></li><li><span>单击<span class="uicontrol">“<span>注册</span>”</span>。</span></li><li><span>在<span class="uicontrol">“<span>注册</span>”</span>页面，自定义集群名称并选择主机。</span></li><li><span>（可选）开启日志备份，并输入日志备份路径。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li><span style="color:#282B33;">开启日志备份后，系统支持按时间点恢复数据库。</span></li><li>请确保路径已存在且用户拥有Informix/GBase 8s数据库的读写权限。</li><li><span style="color:#252B3A;">日志路径不允许配置操作系统自带的目录，如：/etc、/bin、/usr 、/dev等</span>。</li><li>Informix：日志备份路径推荐使用系统自带的路径/home/informix/log。</li><li>GBase 8s：日志备份路径推荐使用系统自带的路径/home/gbasedbt/log。</li></ul>
+<h1 class="topictitle1">步骤1：配置XBSA库路径</h1>
+<div><p>备份Informix/GBase 8s数据库前，需配置XBSA共享库指定路径和文件名。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>使用PuTTY工具，以root用户登录Informix/GBase 8s数据库所在的主机。</span></li><li id="informix-0012__li1650306175213"><span>Informix数据库执行<strong id="informix-0012__b096445305220">su - informix</strong>命令切换为Informix数据库用户，GBase 8s数据库执行<strong id="informix-0012__b4835175993915">su - gbasedbt</strong>命令切换为GBase 8s数据库用户。</span></li><li><span>执行以下命令，查询是否配置实例。</span><p><pre class="screen">cat<strong> </strong>/<em>数据库安装目录</em>/etc/onconfig |grep ^BAR_BSALIB_PATH</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p><strong>onconfig</strong>为实例配置文件名，具体以实际为准。</p>
 </div></div>
-</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+<p>若出现以下回显则表示已配置，操作结束，否则需要继续执行后续操作配置实例。</p>
+<p><span style="color:#3D4757;">对于1.5.0版本，回显类似如下信息：</span></p>
+<pre class="screen">BAR_BSALIB_PATH /usr/openv/lib/libxbsa64iif.so</pre>
+<p><span style="color:#3D4757;">对于1.6.0版本及后续版本，回显类似如下信息</span>：</p>
+<pre class="screen">BAR_BSALIB_PATH /<em>客户端安装的父目录</em>/DataBackup/ProtectClient/interfaces/xbsa/lib/libxbsa64iif.so</pre>
+</p></li><li><span>执行以下命令，打开实例配置文件例。</span><p><pre class="screen">vi /<em>数据库安装目录</em>/etc/onconfig</pre>
+</p></li><li><span>修改<em>BAR_BSALIB_PATH</em>参数取值。</span><p><ul><li><span style="color:#3D4757;">对于1.5.0版本</span>：修改<strong>BAR_BSALIB_PATH</strong>参数取值为<span class="uicontrol">“/usr/openv/lib/libxbsa64iif.so”</span>。<p>例如：BAR_BSALIB_PATH /usr/openv/lib/libxbsa64iif.so。</p>
+</li><li><span style="color:#3D4757;">对于1.6.0</span>及后续版本，修改<strong>BAR_BSALIB_PATH</strong>参数取值为<span class="uicontrol">“/客户端安装的父目录/DataBackup/ProtectClient/interfaces/xbsa/lib/libxbsa64iif.so”</span>。<p>例如：BAR_BSALIB_PATH /opt/DataBackup/ProtectClient/interfaces/xbsa/lib/libxbsa64iif.so。</p>
+</li></ul>
+</p></li><li><span><span style="color:#3D4757;">对于GBase 8s数据库，请执行本步骤。否则，请跳过</span>。</span><p><ol type="a"><li>执行以下命令，查看服务器编号。<pre class="screen">cat <strong>/</strong><em>数据库安装目录</em>/etc/onconfig |grep SERVERNUM</pre>
+<p><span><img src="zh-cn_image_0000002164771562.png"></span></p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p><strong>onconfig</strong>为实例配置文件名，具体以实际为准。</p>
+</div></div>
+</li><li id="informix-0012__li68634264103"><a name="informix-0012__li68634264103"></a><a name="li68634264103"></a>执行以下命令，查询是否配置实例。<pre class="screen">cat<strong> /</strong><em>数据库安装目录</em>/etc/onconfig |grep ^BAR_IXBAR_PATH</pre>
+<p>若出现以下回显则表示已配置，操作结束。否则需要继续执行后续操作配置实例。</p>
+<pre class="screen">BAR_IXBSA_PATH /<em>数据库安装目录</em>/backups/ixbar.<em>服务器编号</em></pre>
+</li><li>执行以下命令配置数据库实例。<pre class="screen">mkdir /<em>数据库安装目录</em>/backups; onmode -wf BAR_IXBAR_PATH=/数据库安装目录/backups/ixbar.<em>服务器编号</em></pre>
+</li><li>执行<a href="#informix-0012__li68634264103">6.b</a>，查询实例是否配置成功。</li></ol>
+</p></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="informix-0010.html">备份Informix/GBase 8s</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="informix-0011.html">备份Informix/GBase 8s</a></div>
 </div>
 </div>
 

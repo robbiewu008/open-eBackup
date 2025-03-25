@@ -35,9 +35,9 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <!--日志文件输出打包名称-->
             <fileNamePattern>${FILE_ROLLING_PATTERN}</fileNamePattern>
-            <!--打包最小1个最大20个-->
+            <!--打包最小1个最大10个-->
             <minIndex>1</minIndex>
-            <maxIndex>20</maxIndex>
+            <maxIndex>10</maxIndex>
         </rollingPolicy>
 
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">

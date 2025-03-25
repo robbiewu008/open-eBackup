@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="dameng-00009.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -41,8 +41,8 @@
 <div><p>Dameng在执行备份和恢复任务前，需要开启DmAPService服务，否则无法执行备份和恢复操作。</p>
 <div class="section"><h4 class="sectiontitle">注意事项</h4><ul id="dameng-00010__ul1749801716447"><li id="dameng-00010__dameng-00008_li18475121815115"><span id="dameng-00010__dameng-00008_ph1292522251311">本节操作如无特殊说明均以Dameng 8版本为例进行，数据库版本不同操作可能存在差异，请以实际为准。</span></li><li id="dameng-00010__dameng-00008_li135951626152410"><span id="dameng-00010__dameng-00008_ph1879711368271">对于以集群方式部署的Dameng数据库，如无特殊说明，均需登录集群实例所在的所有主机执行以下操作。</span></li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>登录Dameng数据库主机。</span></li><li><span>执行命令查询是否开启DmAPService服务。</span><p><pre class="screen">systemctl status DmAPService</pre>
-<ul><li>如果<span class="parmname">“Active”</span>状态为<span class="parmvalue">“active（running）”</span>，则表示已开启DmAPService服务。</li><li>如果<span class="parmname">“Active”</span>状态为<span class="parmvalue">“inactive（dead）”</span>，则表示未开启DmAPService服务，请执行<strong>systemctl start DmAPService</strong>命令，开启DmAPService服务。</li></ul>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>登录Dameng数据库主机。</span></li><li><span>切换到<strong>root</strong>用户，执行命令查询是否开启DmAPService服务。</span><p><pre class="screen">systemctl status DmAPService</pre>
+<ul><li>如果<span class="parmname">“Active”</span>状态为<span class="parmvalue">“active (running)”</span>，则表示已开启DmAPService服务。</li><li>如果<span class="parmname">“Active”</span>状态为<span class="parmvalue">“inactive (dead)”</span>，则表示未开启DmAPService服务，请执行<strong>systemctl start DmAPService</strong>命令，开启DmAPService服务。</li></ul>
 </p></li></ol>
 </div>
 </div>

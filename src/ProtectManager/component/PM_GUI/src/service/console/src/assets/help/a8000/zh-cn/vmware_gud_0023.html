@@ -20,43 +20,58 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤4：获取VMware证书">
+<meta name="DC.Title" content="Oracle数据库">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="vmware_gud_0015.html">
+<meta name="DC.Relation" scheme="URI" content="vmware_gud_0021.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="vmware_gud_0023">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤4：获取VMware证书</title>
+<title>Oracle数据库</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="vmware_gud_0023"></a><a name="vmware_gud_0023"></a>
 
-<h1 class="topictitle1">步骤4：获取VMware证书</h1>
-<div><p>注册VMware待保护环境时，建议导入待保护环境的CA证书，否则系统将无法验证其所访问设备的信息，安全性存在风险。本节介绍如何获取VMware待保护环境的CA证书。</p>
-<div class="section" id="vmware_gud_0023__section96983519518"><h4 class="sectiontitle">操作步骤</h4><ul id="vmware_gud_0023__ul9303155415576"><li id="vmware_gud_0023__li1030335414578">方式1：向VMware管理员获取。</li><li id="vmware_gud_0023__li992313153581">方式2：自行下载：<ol id="vmware_gud_0023__ol91681531175316"><li id="vmware_gud_0023__li19220122517446">当待保护环境为独立ESXi主机时，请执行本步骤，查看ESXi主机是否被vCenter Server管理过。否则，请跳过本步骤。<div class="p" id="vmware_gud_0023__p1968462613446"><a name="vmware_gud_0023__li19220122517446"></a><a name="li19220122517446"></a>操作以ESXi 8.0版本为例进行说明：<ol type="a" id="vmware_gud_0023__ol176441450124011"><li id="vmware_gud_0023__zh-cn_topic_0000001656861689_li2024144995218">使用浏览器，登录ESXi。<p id="vmware_gud_0023__zh-cn_topic_0000001656861689_p14208857125212"><a name="vmware_gud_0023__zh-cn_topic_0000001656861689_li2024144995218"></a><a name="zh-cn_topic_0000001656861689_li2024144995218"></a>登录地址：<strong id="vmware_gud_0023__zh-cn_topic_0000001656861689_b3208205755214">https://</strong><em id="vmware_gud_0023__zh-cn_topic_0000001656861689_i1750152611591">ESXi的管理IP地址</em></p>
-</li><li id="vmware_gud_0023__li1964435084014">在<span class="uicontrol" id="vmware_gud_0023__uicontrol14941426194412">“主机 &gt; 管理 &gt; 安全和用户 &gt; 证书”</span>中查看<span class="uicontrol" id="vmware_gud_0023__uicontrol192058154111">“颁发者”</span>参数。<pre class="screen" id="vmware_gud_0023__screen456110100599">OU=VMware Engineering,O=<strong id="vmware_gud_0023__b191554574391">vcenter21.hw.com</strong>,ST=California,C=US,DC=local,DC=vsphere,CN=CA</pre>
-<ul id="vmware_gud_0023__ul3207185834413"><li id="vmware_gud_0023__li4207165894412">如果<span class="uicontrol" id="vmware_gud_0023__uicontrol339323805812">“颁发者”</span>参数存在vCenter Server的域名（如上述示例中vCenter Server的域名为<strong id="vmware_gud_0023__b15959217204511">vcenter21.hw.com</strong>），表示ESXi主机被vCenter Server管理过，则ESXi主机的证书由该vCenter Server颁发，请继续执行<a href="#vmware_gud_0023__li2083185225310">2</a>。</li><li id="vmware_gud_0023__li108845413492">如果<span class="uicontrol" id="vmware_gud_0023__uicontrol598022913501">“颁发者”</span>参数不存在vCenter Server的域名，表示ESXi主机从未被vCenter Server管理过，则请向VMware管理员获取CA证书，无需执行后续步骤。</li></ul>
-</li></ol>
+<h1 class="topictitle1">Oracle数据库</h1>
+<div><div class="section" id="vmware_gud_0023__section4543102195920"><a name="vmware_gud_0023__section4543102195920"></a><a name="section4543102195920"></a><h4 class="sectiontitle">pre-freeze-script脚本</h4><p>脚本内容如下：</p>
+<pre class="screen">#!/bin/sh
+ORACLE_HOME=<em><strong>Oracle数据库安装路径</strong></em>
+FREEZEFILE=$ORACLE_HOME"/DBA_SCRIPTS/pre-freeze.sql"
+FREEZELOG=$ORACLE_HOME"/DBA_SCRIPTS/pre-freeze.log"
+if [ "$(id -u)" -eq "0" ]; then 
+    echo "$ORACLE_HOME/bin/sqlplus 'sys/sys@KPNDB as sysdba' &lt;&lt;EOF" &gt; ${FREEZEFILE}
+    echo "spool ${FREEZELOG};" &gt;&gt; ${FREEZEFILE}
+    echo "alter database begin backup;" &gt;&gt; ${FREEZEFILE}
+    echo "spool off;" &gt;&gt; ${FREEZEFILE}
+    echo "EOF" &gt;&gt; ${FREEZEFILE}
+    exec su oracle -c  ${FREEZEFILE}
+    [ -f ${ FREEZELOG } ] &amp;&amp; rm -f ${ FREEZELOG }
+fi</pre>
 </div>
-</li><li id="vmware_gud_0023__li2083185225310"><a name="vmware_gud_0023__li2083185225310"></a><a name="li2083185225310"></a>使用浏览器，打开vCenter Server登录地址。<p id="vmware_gud_0023__p171383317558"><a name="vmware_gud_0023__li2083185225310"></a><a name="li2083185225310"></a>登录地址：<strong id="vmware_gud_0023__b1846275114553">https://</strong><em id="vmware_gud_0023__i18830121311485">vCenter Server的域名</em></p>
-</li><li id="vmware_gud_0023__li1764225610537">在界面右侧单击“下载受信任的根CA证书”，下载证书压缩包至本地任意目录。<p id="vmware_gud_0023__p1167811558116"><a name="vmware_gud_0023__li1764225610537"></a><a name="li1764225610537"></a>如果下载时浏览器出现乱码的情况，建议：</p>
-<ul id="vmware_gud_0023__ul714785815113"><li id="vmware_gud_0023__li182638318124">方式1：更换其他浏览器（如：Internet Explorer）尝试下载。</li><li id="vmware_gud_0023__li4147558131118">方式2：在乱码页面空白处单击鼠标右键，在弹出的菜单中选择“另存为”，将证书压缩包保存至本地。</li></ul>
-</li><li id="vmware_gud_0023__li11651183217218">解压证书压缩包，参考以下步骤修改证书文件的后缀：<ul id="vmware_gud_0023__ul88521736142117"><li id="vmware_gud_0023__li1485273672114">VMware vSphere 6.0版本，查找到<span class="uicontrol" id="vmware_gud_0023__uicontrol1560491417226">“*.0”</span>格式的证书文件，修改证书格式为<span class="uicontrol" id="vmware_gud_0023__uicontrol135299177227">“.0.pem”</span>。</li><li id="vmware_gud_0023__li132991823202211">VMware vSphere 6.5，6.7，7.<em id="vmware_gud_0023__i09398210218">x</em>或8.0版本，查找到<span class="uicontrol" id="vmware_gud_0023__uicontrol788013373237">“*.crt”</span>格式的证书文件，修改证书格式为<span class="uicontrol" id="vmware_gud_0023__uicontrol19246194116238">“.pem”</span>。<div class="note" id="vmware_gud_0023__note1046113304573"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="vmware_gud_0023__p246173011572">当存在多个<span class="uicontrol" id="vmware_gud_0023__uicontrol18192154717218">“*.crt”</span>文件时，双击打开<span class="uicontrol" id="vmware_gud_0023__uicontrol5958172212313">“*.crt”</span>文件，证书信息中<span class="uicontrol" id="vmware_gud_0023__uicontrol111694221343">“颁发给”</span>和<span class="uicontrol" id="vmware_gud_0023__uicontrol1074116240411">“颁发者”</span>均为<span class="uicontrol" id="vmware_gud_0023__uicontrol04846571944">“CA”</span>时，即为要查找的<span class="uicontrol" id="vmware_gud_0023__uicontrol1180018121411">“*.crt”</span>证书文件。</p>
-</div></div>
-</li></ul>
-</li></ol>
-</li></ul>
+<div class="section" id="vmware_gud_0023__section655719346595"><a name="vmware_gud_0023__section655719346595"></a><a name="section655719346595"></a><h4 class="sectiontitle">post-thaw-script脚本</h4><p>脚本内容如下：</p>
+<pre class="screen">#!/bin/sh
+ORACLE_HOME=<em><strong>Oracle数据库安装路径</strong></em>
+UNFREEZEFILE=$ORACLE_HOME"/DBA_SCRIPTS/post-thaw.sql"
+UNFREEZELOG=$ORACLE_HOME"/DBA_SCRIPTS/post-thaw.log"
+if [ "$(id -u)" -eq "0" ]; then 
+    echo "$ORACLE_HOME/bin/sqlplus 'sys/sys@KPNDB as sysdba' &lt;&lt;EOF" &gt; ${UNFREEZEFILE}
+    echo "spool ${UNFREEZELOG};" &gt;&gt; ${UNFREEZEFILE}
+    echo "alter database end backup;" &gt;&gt; ${UNFREEZEFILE}
+    echo "spool off;" &gt;&gt; ${UNFREEZEFILE}
+    echo "EOF" &gt;&gt; ${UNFREEZEFILE}
+    exec su oracle -c  ${UNFREEZEFILE}
+    [ -f ${UNFREEZEFILE} ] &amp;&amp; rm -f ${UNFREEZEFILE}
+fi</pre>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="vmware_gud_0015.html">备份VMware虚拟机</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="vmware_gud_0021.html">步骤3：配置应用一致性备份脚本</a></div>
 </div>
 </div>
 

@@ -15,7 +15,7 @@ package openbackup.access.framework.resource.util;
 import com.alibaba.fastjson.JSON;
 
 import openbackup.access.framework.resource.persistence.model.VirtualResourceExtendPo;
-import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupExtendParam;
+import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceFilterConditionParam;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,8 +39,8 @@ public class ResourceFilterUtilTest {
             + "\"VM\",\"rule\":\"START_WITH\",\"mode\":\"INCLUDE\",\"values\":[\"aaa\",\"bbb\"]},"
             + "{\"filter_by\":\"NAME\",\"type\":\"VM\",\"rule\":\"ALL\",\"mode\":\"INCLUDE\",\"values\":[\"eeee\"]},"
             + "{\"filter_by\":\"NAME\",\"type\":\"VM\",\"rule\":\"ALL\",\"mode\":\"EXCLUDE\",\"values\":[\"dddd\"]}]}";
-        ResourceGroupExtendParam extendParam = JSON.parseObject(filterStr,
-            ResourceGroupExtendParam.class);
+        ResourceFilterConditionParam extendParam = JSON.parseObject(filterStr,
+            ResourceFilterConditionParam.class);
         List<VirtualResourceExtendPo> virtualResources = ResourceFilterUtil.filterResources(mockVirtualResources(),
             extendParam);
 
@@ -60,8 +60,8 @@ public class ResourceFilterUtilTest {
             + "\"mode\":\"INCLUDE\",\"values\":[\"del_win20222\"]},"
             + "{\"filter_by\":\"NAME\",\"type\":\"VM\",\"rule\":\"ALL\","
             + "\"mode\":\"EXCLUDE\",\"values\":[\"lixin2\"]}]}";
-        ResourceGroupExtendParam extendParam = JSON.parseObject(filterStr,
-            ResourceGroupExtendParam.class);
+        ResourceFilterConditionParam extendParam = JSON.parseObject(filterStr,
+            ResourceFilterConditionParam.class);
         List<VirtualResourceExtendPo> virtualResources = ResourceFilterUtil.filterResources(mockVirtualResources(),
             extendParam);
 
@@ -83,8 +83,8 @@ public class ResourceFilterUtilTest {
             + "[{\"filter_by\":\"NAME\",\"type\":\"VM\",\"rule\":\"FUZZY\",\"mode\":\"INCLUDE\",\"values\":"
             + "[\"lixin\",\"win\"]},{\"filter_by\":\"NAME\",\"type\":\"VM\","
             + "\"rule\":\"END_WITH\",\"mode\":\"EXCLUDE\",\"values\":[\"in1\"]}]}";
-        ResourceGroupExtendParam extendParam = JSON.parseObject(filterStr,
-            ResourceGroupExtendParam.class);
+        ResourceFilterConditionParam extendParam = JSON.parseObject(filterStr,
+            ResourceFilterConditionParam.class);
         List<VirtualResourceExtendPo> virtualResources = ResourceFilterUtil.filterResources(mockVirtualResources(),
             extendParam);
 

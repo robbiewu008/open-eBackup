@@ -81,7 +81,7 @@ public class SapHanaDatabaseBackupProvider extends AbstractDbBackupInterceptor {
         // 设置副本格式
         backupTask.setCopyFormat(CopyFormatEnum.INNER_DIRECTORY.getCopyFormat());
         // 设置速度统计方式为UBC
-        TaskUtil.setBackupTaskSpeedStatisticsEnum(backupTask, SpeedStatisticsEnum.UBC);
+        TaskUtil.setBackupTaskSpeedStatisticsEnum(backupTask, SpeedStatisticsEnum.APPLICATION);
         log.info("End sap hana database backup interceptor setting parameters, task id: {}", taskId);
         return backupTask;
     }

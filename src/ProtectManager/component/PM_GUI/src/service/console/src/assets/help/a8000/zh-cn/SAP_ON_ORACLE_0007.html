@@ -1,0 +1,164 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="配置客户端所在主机">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="SAP_ON_ORACLE_0006.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="SAP_ON_ORACLE_0007">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>配置客户端所在主机</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="SAP_ON_ORACLE_0007"></a><a name="SAP_ON_ORACLE_0007"></a>
+
+<h1 class="topictitle1">配置客户端所在主机</h1>
+<div><p>在已安装SAP ERP的主机上，请手动创建run文件夹和拷贝文件、启动数据库并创建数据库用户、根据获取的SAP ERP信息添加主机环境变量。</p>
+<div class="section" id="SAP_ON_ORACLE_0007__section17145114099"><a name="SAP_ON_ORACLE_0007__section17145114099"></a><a name="section17145114099"></a><h4 class="sectiontitle">背景信息</h4><p>在安装Oracle时，用户会在cmd界面设置SID；在安装SAP ERP时，用户会设置<span style="color:#4D4D4D;">安装路径、SAP实例ID</span>、数据库实例ID。</p>
+<p>完成安装后，系统会根据用户设置的SID、<span style="color:#4D4D4D;">安装路径、SAP实例ID</span>、数据库实例ID生成相关目录。根据所输入参数生成的相关目录说明，请参见<a href="#SAP_ON_ORACLE_0007__table4322245390">表1</a>。</p>
+
+<div class="tablenoborder"><a name="SAP_ON_ORACLE_0007__table4322245390"></a><a name="table4322245390"></a><table cellpadding="4" cellspacing="0" summary="" id="SAP_ON_ORACLE_0007__table4322245390" frame="border" border="1" rules="all"><caption><b>表1 </b>参数说明</caption><colgroup><col style="width:28.84%"><col style="width:21.9%"><col style="width:49.25%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="28.842884288428845%" id="mcps1.3.2.4.2.4.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="21.902190219021904%" id="mcps1.3.2.4.2.4.1.2"><p>参数说明</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="49.254925492549255%" id="mcps1.3.2.4.2.4.1.3"><p>生成的相关目录</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="28.842884288428845%" headers="mcps1.3.2.4.2.4.1.1 "><p>SID</p>
+</td>
+<td class="cellrowborder" valign="top" width="21.902190219021904%" headers="mcps1.3.2.4.2.4.1.2 "><p>Oracle ID</p>
+</td>
+<td class="cellrowborder" rowspan="4" valign="top" width="49.254925492549255%" headers="mcps1.3.2.4.2.4.1.3 "><p>&lt;Destination Drive&gt;:\usr\sap\&lt;SAPSID&gt;\...</p>
+<p>&lt;Destination Drive&gt;:\oracle\&lt;DBSID&gt;\...</p>
+<p>&lt;Destination Drive&gt;:\oracle\&lt;SID&gt;\&lt;Database Version<sup>a</sup>&gt;...</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.4.2.4.1.1 "><p>Destination Drive</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.4.2.4.1.2 "><p>安装路径</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.4.2.4.1.1 "><p>SAP System ID (SAPSID)</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.4.2.4.1.2 "><p><span style="color:#4D4D4D;">SAP实例ID</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.4.2.4.1.1 "><p>Database ID (DBSID)</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.4.2.4.1.2 "><p>数据库实例ID</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.2.4.2.4.1.1 mcps1.3.2.4.2.4.1.2 mcps1.3.2.4.2.4.1.3 "><p>a：数据库版本，系统自动获取，无需用户输入。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>此处仅对涉及创建run目录和添加环境变量的参数进行列举。</li><li>若用户忘记了设置的“SID”、“SAPSID”和“DBSID”值，可查看<a href="#SAP_ON_ORACLE_0007__table4322245390">表1</a>中列举的相关目录获取对应的值。例如：<ul><li>“C:\usr\sap\EH7”，即安装时设置的“SAPSID”为“EH7”。</li><li>“C:\oracle\EH8”，即安装时设置的“DBSID”为“EH8”。</li><li>“C:\oracle\EH9\11203”，即安装时设置的“SID”为“EH9”。</li></ul>
+</li></ul>
+</div></div>
+</div>
+<div class="section" id="SAP_ON_ORACLE_0007__section10539810434"><a name="SAP_ON_ORACLE_0007__section10539810434"></a><a name="section10539810434"></a><h4 class="sectiontitle">手动创建run文件夹和拷贝文件</h4><p>完成SAP ERP的安装后，系统在“&lt;<em>Destination Drive</em>&gt;:\usr\sap\&lt;<em>SAPSID</em>&gt;\SYS\exe”（“Destination Drive”和“SAPSID”相关说明，请参见<a href="#SAP_ON_ORACLE_0007__table4322245390">表1</a>）路径下，会生成uc文件夹。请在该路径新建一个与uc文件夹同级的run文件夹，并将uc文件夹内的如下7个文件拷贝至新建的run文件夹中：</p>
+<ul><li>brarchive</li><li>brbackup</li><li>beconnect</li><li>brrecover</li><li>brresotre</li><li>brspace</li><li>brtools</li></ul>
+</div>
+<div class="section" id="SAP_ON_ORACLE_0007__section1513725616430"><a name="SAP_ON_ORACLE_0007__section1513725616430"></a><a name="section1513725616430"></a><h4 class="sectiontitle">配置环境变量</h4><p>请分别将变量“ORACLE_SID”、“ORACLE_HOME”、“SAPDATA_HOME”追加至主机环境变量中。应填入的内容为<a href="#SAP_ON_ORACLE_0007__table202391617101213">表2</a>：</p>
+
+<div class="tablenoborder"><a name="SAP_ON_ORACLE_0007__table202391617101213"></a><a name="table202391617101213"></a><table cellpadding="4" cellspacing="0" summary="" id="SAP_ON_ORACLE_0007__table202391617101213" frame="border" border="1" rules="all"><caption><b>表2 </b>环境变量说明</caption><colgroup><col style="width:22.36%"><col style="width:45.45%"><col style="width:32.190000000000005%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="22.36%" id="mcps1.3.4.3.2.4.1.1"><p>变量名</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="45.45%" id="mcps1.3.4.3.2.4.1.2"><p>变量值</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="32.190000000000005%" id="mcps1.3.4.3.2.4.1.3"><p>样例</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="22.36%" headers="mcps1.3.4.3.2.4.1.1 "><p>ORACLE_SID</p>
+</td>
+<td class="cellrowborder" valign="top" width="45.45%" headers="mcps1.3.4.3.2.4.1.2 "><p>DBSID</p>
+</td>
+<td class="cellrowborder" valign="top" width="32.190000000000005%" headers="mcps1.3.4.3.2.4.1.3 "><p>EH8</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.36%" headers="mcps1.3.4.3.2.4.1.1 "><p>SAPDATA_HOME</p>
+</td>
+<td class="cellrowborder" valign="top" width="45.45%" headers="mcps1.3.4.3.2.4.1.2 "><p>&lt;Destination Drive&gt;:\oracle\&lt;DBSID&gt;</p>
+</td>
+<td class="cellrowborder" valign="top" width="32.190000000000005%" headers="mcps1.3.4.3.2.4.1.3 "><p>C:\oracle\EH8</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.36%" headers="mcps1.3.4.3.2.4.1.1 "><p>ORACLE_HOME</p>
+</td>
+<td class="cellrowborder" valign="top" width="45.45%" headers="mcps1.3.4.3.2.4.1.2 "><p>&lt;Destination Drive&gt;:\oracle\&lt;SID&gt;\&lt;Database Version&gt;</p>
+</td>
+<td class="cellrowborder" valign="top" width="32.190000000000005%" headers="mcps1.3.4.3.2.4.1.3 "><p>C:\oracle\EH9\11203</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="SAP_ON_ORACLE_0007__section09572159441"><a name="SAP_ON_ORACLE_0007__section09572159441"></a><a name="section09572159441"></a><h4 class="sectiontitle">启动数据库并创建数据库用户</h4><p>在windows主机的命令提示符（cmd）窗口（您可以使用快捷键Win + R、输入cmd后按Enter进入），执行以下步骤，启动数据库并创建数据库用户：</p>
+<pre class="screen">sqlplus / as sysdba
+startup;
+create user <em>userName</em> identified by "<em>passWord</em>";
+grant dba,sysoper,create session to <em>userName</em>;
+commit;</pre>
+<p>其中，“userName”和“passWord”为用户自定义创建的数据库用户名和密码。例如：</p>
+<pre class="screen"><strong>C:\&gt;sqlplus / as sysdba</strong>
+SQL*Plus: Release 11.2.0.3.0 Production on Tue Dec 24 07:33:40 2024
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+Connected to an idle instance.
+<strong>SQL&gt; startup;</strong>
+ORA-32004: obsolete or deprecated parameter(s) specified for RDBMS instance
+ORACLE instance started.
+Total System Global Area 2639106048 bytes
+Fixed Size                  2258032 bytes
+Variable Size            1325403024 bytes
+Database Buffers         1291845632 bytes
+Redo Buffers               19599360 bytes
+Database mounted.
+Database opened.
+SQL&gt; startup;
+ORA-32004: obsolete or deprecated parameter(s) specified for RDBMS instance
+ORA-01081: cannot start already-running ORACLE - shut it down first
+<strong>SQL&gt; create user user1 identified by "Test123";</strong>
+User created.
+<strong>SQL&gt; grant dba,sysoper,create session to user1;</strong>
+Grant succeeded.
+<strong>SQL&gt; commit;</strong>
+Commit complete.</pre>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="SAP_ON_ORACLE_0006.html">安装客户端</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

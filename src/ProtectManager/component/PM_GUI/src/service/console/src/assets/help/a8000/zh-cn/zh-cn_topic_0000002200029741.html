@@ -1,0 +1,183 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="配置LDAP服务">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="helpcenter_000110.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002200029741">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>配置LDAP服务</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002200029741"></a><a name="ZH-CN_TOPIC_0000002200029741"></a>
+
+<h1 class="topictitle1">配置LDAP服务</h1>
+<div><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_p8060118"><span id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_text5812258201217">OceanProtect</span>支持以LDAP（Lightweight Directory Access Protocol）服务器认证方式登录，以达到用户信息的统一管理。</p>
+<div class="section" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_section944932203517"><h4 class="sectiontitle">前提条件</h4><ul id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_ul453211633912"><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_li4892122217251">如需通过域名配置LDAP服务，请确保已配置DNS服务。<ul id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001888626984_ul1629962262510"><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000002164669218_li45625369246">对于OceanProtect X系列备份一体机和OceanProtect E1000（备份存储为OceanProtect），具体操作请参考<a href="zh-cn_topic_0000002164669370.html#ZH-CN_TOPIC_0000002164669370">配置DNS服务（适用于OceanProtect X系列备份一体机）</a>。</li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000002164669218_li1231372011118">对于OceanProtect E6000备份一体机，具体操作请参考<a href="zh-cn_topic_0000002164829006.html">配置DNS服务（适用于OceanProtect E6000备份一体机）</a>。</li></ul>
+</li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_li17532116113914">LDAP服务器安装部署完成。</li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_li8682141703911">如果使用LDAPS协议，请到第三方证书机构进行申请与该域认证服务器<strong id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_b257513347397">“证书”</strong>配套的CA证书，并导入该CA证书。导入CA证书的操作请参见<span id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_cite169031012145615">《OceanProtect DataBackup 1.5.0-1.6.0 安全配置指南》</span>中的<span class="uicontrol" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_uicontrol1259399145514">“导入证书”</span>章节。</li></ul>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_section36341118113516"><h4 class="sectiontitle">背景信息</h4><p class="MsoNormal" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_p33648747">LDAP是轻型目录访问协议，是基于TCP/IP的网络协议，允许对目录系统代理的访问，是X.500目录访问协议的简化形式。</p>
+<p class="MsoNormal" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_p34403269">随着网络应用日益丰富，网络管理特别是用户管理变得越来越复杂。对于提供单一服务的系统来说，基本上都是采用“用户名-密码”的认证方式。网络中的各种应用对每个用户具有不同的权限，因此每个应用都需要设定不同的用户名和密码。对于多个应用系统，用户需要输入不同的用户名和密码，不仅繁琐，而且不易管理。LDAP提供的目录服务能够有效解决此类问题。</p>
+<p class="MsoNormal" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_p41193968">基于LDAP的认证应用主要是实现一个以目录为核心的用户认证系统，即LDAP环境。在LDAP环境中，当客户端的用户需要访问应用程序时，客户端将用户名和密码提供给LDAP服务器，LDAP服务器将其与目录数据库中的认证信息进行比对来确定用户身份的合法性。</p>
+<p class="MsoNormal" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_p35201398">在新一代存储系统应用中，LDAP环境中的客户端组织结构信息存储于LDAP服务器中，用户访问存储系统时，将通过LDAP服务器完成用户身份的认证。</p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_section1646643033718"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_ol62951659141510"><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li5295195911513"><span>选择“系统 &gt; 安全 &gt; LDAP服务配置”。</span></li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li34791134111616"><span>开启“LDAP服务”。</span><p><div class="note" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_note1779573312412"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p16795733152413">当“LDAP服务”已开启时，单击右上角“修改”进行设置。</p>
+</div></div>
+</p></li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li0911154591617"><span>设置LDAP绑定参数，相关参数说明如<a href="#ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table961764631715">表1</a>所示。</span><p>
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table961764631715"></a><a name="zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table961764631715"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table961764631715" frame="border" border="1" rules="all"><caption><b>表1 </b>LDAP绑定参数</caption><colgroup><col style="width:21.57%"><col style="width:78.43%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1661844612172"><th align="left" class="cellrowborder" valign="top" width="21.57%" id="mcps1.3.4.2.3.2.1.2.3.1.1"><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p66181646101717">参数名称</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="78.43%" id="mcps1.3.4.2.3.2.1.2.3.1.2"><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p4618194611715">参数说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1961874641715"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p361854618176">服务器类型</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p8562121263818">1.6.0及后续版本，服务器的类型可选择<span class="uicontrol" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_uicontrol1849942620810">“Windows AD域服务器”</span>或<span class="uicontrol" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_uicontrol876383813">“LDAP服务器”</span>。</p>
+<p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_p18512030181218">1.5.0版本，服务器的类型仅支持选择<span class="uicontrol" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_uicontrol36091120101315">“LDAP服务器”</span>。</p>
+<p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p5562141253819">客户端组织结构信息存储于域认证服务器中，用户访问共享资源时，将通过服务器完成用户身份的认证。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1861864610171"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p13618446121713">协议</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p461818462172">域认证使用的加密协议，包括“LDAP”和“LDAPS”。</p>
+<div class="note" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_note14944530145214"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_ul345314127403"><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_li19453141219408">LDAPS（LDAP over SSL）：用于系统与LDAP服务器通信。如果LDAP服务器支持SSL，则可以选择LDAPS。</li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_li9454151204011">当协议设置为LDAP协议时，将存在安全风险。建议您选择LDAPS协议。</li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_li420912131105">请确保已在证书界面导入类型为“LDAP”的CA证书。如未导入，请先跳转至证书界面导入。</li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row166751053183710"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p367635343717">绑定DN</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p58644341589">服务器的绑定目录。</p>
+<p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p13865203414584">客户端发起连接请求与LDAP服务器建立会话，这一过程被称为绑定。在建立绑定时客户端通常需要指定访问账号，以便能够访问服务器上的目录信息。用户访问内容必须通过绑定目录来进行查找。</p>
+<p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_zh-cn_topic_0291592739_p1624172392817">[示例]</p>
+<p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p1130155393510">cn=My Application,ou=applications,dc=bigcorp,dc=com</p>
+<div class="note" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_note8111554105811"><span class="notetitle"> 说明： </span><div class="notebody"><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p040325143813">访问账号默认为管理员账号。若使用其他账号，需要保证其具有访问LDAP服务器上域服务的权限。</p>
+</div></div>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row10478105516377"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p114787555375">绑定密码</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p1047895513716">用户访问绑定DN对应目录需要输入的密码，长度范围为1~63位。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_row10709114210157"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_p137091442161518">校验CN</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_p1470917422151">开启后将校验LDAP服务器证书的CN字段，如果与“地址类型”的选项不一致，则会导致LDAP服务器连通性检查失败。</p>
+<div class="note" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_note36381445155617"><span class="notetitle"> 说明： </span><div class="notebody"><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_p26381845195620">仅在1.6.0及后续版本且协议选择为“LDAPS”时，展示该参数。</p>
+</div></div>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row965094819242"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p8650134892418">地址类型</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p865054822413">管理平面LDAP域服务器支持按<span class="uicontrol" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_uicontrol89217479713">“IP地址”</span>或按<span class="uicontrol" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_uicontrol19231114913711">“域名”</span>进行配置。</p>
+<div class="note" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_note9936040163715"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_ul19285124512554"><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_li328564515556">域名默认由存储系统根据设置的“绑定DN”自动生成，也支持自定义输入域名。</li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_li328554515519">若地址类型选择“域名”，则需要提前配置DNS服务，具体操作请参见<a href="zh-cn_topic_0000002164669370.html#ZH-CN_TOPIC_0000002164669370">配置DNS服务（适用于OceanProtect X系列备份一体机）</a>。</li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1469861914256"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p106191046181718">IP地址</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p1619164615173">设置需要添加到LDAP服务器的IPv4或IPv6地址，并单击<span><img id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_image99810256817" src="zh-cn_image_0000002200155861.png"></span>。</p>
+<div class="note" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_note134372544"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_ul13632182913014"><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li18632142913303">单击列表中IP地址右边的<span><img id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_image3341184119813" src="zh-cn_image_0000002200070257.png"></span>将可以删除IP地址。</li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li260214715434">最多支持输入4个IP地址。</li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li126326299305">该参数仅在“地址类型”为“IP地址”时显示。</li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1408171722514"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p16619154651710">端口</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p583541545616">服务器的端口号，取值范围为1~65535。</p>
+<p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p2083531545618">LDAP服务器的默认端口号为“389”。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li1242912156016"><span>设置LDAP用户的参数。相关参数说明如<a href="#ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table19336917119">表2</a>所示。</span><p>
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table19336917119"></a><a name="zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table19336917119"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table19336917119" frame="border" border="1" rules="all"><caption><b>表2 </b>LDAP用户参数</caption><colgroup><col style="width:21.57%"><col style="width:78.43%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1433791719"><th align="left" class="cellrowborder" valign="top" width="21.57%" id="mcps1.3.4.2.4.2.1.2.3.1.1"><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p233791917">参数名称</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="78.43%" id="mcps1.3.4.2.4.2.1.2.3.1.2"><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p4337151616">参数说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row17337191117"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p63371111311">所在目录</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p1549916431918">创建的域用户所在的目录。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row633714111110"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p16337714115">名称属性</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p1759412451412">用户的名称属性。该值用于存储用户对象的名称，在给定用户名称的情况下查找用户。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row33381914110"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p1633810113120">对象类型</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p1641114712117">用户对象所属类型，LDAP目录的每个条目都与一个或多个对象类型联系，对象类型包括：用户、群组、邮件、维护终端等。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li1599418531824"><span>开启“LDAP用户组”，设置LDAP相关参数。相关参数说明如<a href="#ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table179618292317">表3</a>所示。</span><p>
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table179618292317"></a><a name="zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table179618292317"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_table179618292317" frame="border" border="1" rules="all"><caption><b>表3 </b>LDAP用户组参数</caption><colgroup><col style="width:21.57%"><col style="width:78.43%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row119611297313"><th align="left" class="cellrowborder" valign="top" width="21.57%" id="mcps1.3.4.2.5.2.1.2.3.1.1"><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p149614293310">参数名称</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="78.43%" id="mcps1.3.4.2.5.2.1.2.3.1.2"><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p296152911315">参数说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row296429832"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.5.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p1096122915316">所在目录</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.5.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p10964292311">创建的域用户组所在的目录。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row189615291136"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.5.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p4962298312">名称属性</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.5.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p79682912310">组的名称属性。该值用于存储组对象的名称，用于在给定组名称的情况下查找该组。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1049625411313"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.5.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p74968546316">成员属性</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.5.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p10496195416320">组的成员属性。该值用于存储组的用户成员。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row89610291237"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.5.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p9961729438">对象类型</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.5.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p11967291434">组对象所属类型。LDAP目录的每个条目都与一个或多个对象类型联系，对象类型包括：用户、群组、邮件、维护终端等。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li19471757193914"><span><strong id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_b69653374016">可选：</strong>单击右上角“测试”可以测试域认证服务器是否可用。</span><p><div class="note" id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_note151452038184614"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p21459381462">当“协议”为“LDAPS”时，需要先导入CA证书后才能进行测试。</p>
+</div></div>
+</p></li><li id="ZH-CN_TOPIC_0000002200029741__zh-cn_topic_0000002200155605_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li1958514911515"><span>单击“保存”。按照界面提示完成确认操作。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="helpcenter_000110.html">系统</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

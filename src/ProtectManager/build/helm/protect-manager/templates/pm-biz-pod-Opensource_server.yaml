@@ -2,10 +2,13 @@
    Get running environment instand of using values.yaml
   */}}
   {{- $environment:= "" }}
+  {{- $cluster_enable:= "" }}
   {{- if .Values.global }}
   {{- $environment = .Values.global.environment }}
+  {{- $cluster_enable = .Values.global.cluster_enable | toString }}
   {{- else }}
   {{- $environment = .Values.local.environment }}
+  {{- $cluster_enable:= "false" }}
   {{- end }}
 
   {{- $storageip:= "" }}
@@ -53,7 +56,12 @@ metadata:
   name: protectmanager-biz-service
   namespace: dpa
 spec:
-  replicas: {{$realreplicas}}
+  replicas:
+  {{- if eq $cluster_enable "true"}}
+    3
+  {{- else }}
+    1
+  {{- end }}
   podManagementPolicy: "Parallel"
   serviceName: protectmanager-biz-service
   selector:
@@ -67,7 +75,43 @@ spec:
         co.elastic.logs/processors.decode_json_fields.fields.1: message
         co.elastic.logs/processors.decode_json_fields.target: ""
         co.elastic.logs/processors.decode_json_fields.overwrite_keys: "true"
+        {{- if eq $cluster_enable "true" }}
+        tag: cluster
+        {{- end }}
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - MASTER
+                      - STANDBY
+                      - SLAVE
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 3
+              preference:
+                matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - MASTER
+            - weight: 2
+              preference:
+                matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - STANDBY
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - SLAVE
       automountServiceAccountToken: false
       serviceAccount: ""
       serviceAccountName: ""
@@ -90,7 +134,7 @@ spec:
       initContainers:
         - name: pm-post-upgrade
           image: pm-database-version-migration:{{ .Values.global.version }}
-          command: [ "/bin/sh", "-c", "chown 15013:nobody '/tmp' && chmod 750 '/tmp' && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME} && chmod 750 /opt/OceanProtect/logs/${NODE_NAME} && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx;fi && chown 65500:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI;fi && chown 15012:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service;fi && chown 15013:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service && su nobody -s /bin/bash -c 'cd /context/src/ && python3 -m app post_upgrade' && find /opt/ProtectManager/ -type d | grep -v smart_balance | grep -v deploy-gui | xargs chown 99:99 && find /opt/ProtectManager/ -type f | grep -v smart_balance | grep -v deploy-gui | xargs chown 99:99 && chmod 770 /opt/ProtectManager && chown 99:99 /opt/OceanProtect/logs/*/protectmanager && if [ -d '/opt/ProtectManagerNas' ];then chown 99:99 /opt/ProtectManagerNas;fi && if [ ! -d '/opt/OceanProtect/protectmanager/sysbackup/uploadtmp' ];then mkdir -p /opt/OceanProtect/protectmanager/sysbackup/uploadtmp;chown 99:99 /opt/OceanProtect/protectmanager;chown 99:99 /opt/OceanProtect/protectmanager/sysbackup;chmod 750 /opt/OceanProtect/protectmanager;chmod 750 /opt/OceanProtect/protectmanager/sysbackup;chown 15012:99 /opt/OceanProtect/protectmanager/sysbackup/uploadtmp;chmod 750 /opt/OceanProtect/protectmanager/sysbackup/uploadtmp;fi"]
+          command: [ "/bin/sh", "-c", "chown 15013:nobody '/tmp' && chmod 750 '/tmp' && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME} && chmod 750 /opt/OceanProtect/logs/${NODE_NAME} && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx;fi && chown 65500:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI;fi && chown 15012:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Database_Version_Migration' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Database_Version_Migration;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Database_Version_Migration && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Database_Version_Migration && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service;fi && chown 15013:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service && su nobody -s /bin/bash -c 'cd /context/src/ && python3 -m app post_upgrade' && find /opt/ProtectManager/ -type d | grep -v smart_balance | grep -v deploy-gui | xargs chown 99:99 && find /opt/ProtectManager/ -type f | grep -v smart_balance | grep -v deploy-gui | xargs chown 99:99 && chmod 770 /opt/ProtectManager && chown 99:99 /opt/OceanProtect/logs/*/protectmanager && if [ -d '/opt/ProtectManagerNas' ];then chown 99:99 /opt/ProtectManagerNas;fi && if [ ! -d '/opt/OceanProtect/protectmanager/sysbackup/uploadtmp' ];then mkdir -p /opt/OceanProtect/protectmanager/sysbackup/uploadtmp;chown 99:99 /opt/OceanProtect/protectmanager;chown 99:99 /opt/OceanProtect/protectmanager/sysbackup;chmod 750 /opt/OceanProtect/protectmanager;chmod 750 /opt/OceanProtect/protectmanager/sysbackup;chown 15012:99 /opt/OceanProtect/protectmanager/sysbackup/uploadtmp;chmod 750 /opt/OceanProtect/protectmanager/sysbackup/uploadtmp;fi"]
           env:
             - name: NODE_NAME
               valueFrom:

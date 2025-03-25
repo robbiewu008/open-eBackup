@@ -12,13 +12,17 @@
 */
 package openbackup.access.framework.resource.util;
 
+import com.alibaba.fastjson.JSON;
+
 import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.persistence.model.VirtualResourceExtendPo;
 import openbackup.data.access.framework.core.common.enums.v2.filter.FilterModeEnum;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceFilterConditionParam;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceFilterParam;
-import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupExtendParam;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
+import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -44,17 +48,19 @@ public final class ResourceFilterUtil {
 
     private static final String COMMA = ",";
 
+    private static final String TAGS = "tags";
+
     private ResourceFilterUtil() {}
 
     /**
-     *  根据规则过滤资源
+     * 根据规则过滤资源
      *
      * @param virtualResources 资源
      * @param extendParam 过滤条件
      * @return 过滤后的资源
      */
     public static List<VirtualResourceExtendPo> filterResources(List<VirtualResourceExtendPo> virtualResources,
-        ResourceGroupExtendParam extendParam) {
+        ResourceFilterConditionParam extendParam) {
         if (VerifyUtil.isEmpty(extendParam) || VerifyUtil.isEmpty(virtualResources)) {
             return virtualResources;
         }
@@ -76,15 +82,15 @@ public final class ResourceFilterUtil {
 
         return virtualResources.stream()
             .filter(v -> {
-                boolean include = true;
-                boolean unExclude = true;
+                boolean isInclude = true;
+                boolean isExclude = true;
                 if (!VerifyUtil.isEmpty(batchFilterMap.get(FilterModeEnum.EXCLUDE.getMode()))) {
-                    unExclude = !filterByRule(v.getName(), batchFilterMap.get(FilterModeEnum.EXCLUDE.getMode()));
+                    isExclude = !filterByRule(v.getName(), batchFilterMap.get(FilterModeEnum.EXCLUDE.getMode()));
                 }
                 if (!VerifyUtil.isEmpty(batchFilterMap.get(FilterModeEnum.INCLUDE.getMode()))) {
-                    include = filterByRule(v.getName(), batchFilterMap.get(FilterModeEnum.INCLUDE.getMode()));
+                    isInclude = filterByRule(v.getName(), batchFilterMap.get(FilterModeEnum.INCLUDE.getMode()));
                 }
-                return include && unExclude;
+                return isInclude && isExclude;
             })
             .collect(Collectors.toList());
     }
@@ -109,10 +115,10 @@ public final class ResourceFilterUtil {
         }
 
         String[] tagList = tags.split(COMMA);
-        boolean include = true;
-        boolean unExclude = true;
+        boolean isInclude = true;
+        boolean isUnExclude = true;
         if (!VerifyUtil.isEmpty(batchFilterMap.get(FilterModeEnum.INCLUDE.getMode()))) {
-            include = Stream.of(tagList).anyMatch(v -> {
+            isInclude = Stream.of(tagList).anyMatch(v -> {
                 String tag = null;
                 try {
                     tag = URLDecoder.decode(v, "UTF-8");
@@ -124,7 +130,7 @@ public final class ResourceFilterUtil {
             });
         }
         if (!VerifyUtil.isEmpty(batchFilterMap.get(FilterModeEnum.EXCLUDE.getMode()))) {
-            unExclude = !Stream.of(tagList).anyMatch(v -> {
+            isUnExclude = !Stream.of(tagList).anyMatch(v -> {
                 String tag = null;
                 try {
                     tag = URLDecoder.decode(v, "UTF-8");
@@ -135,7 +141,7 @@ public final class ResourceFilterUtil {
                 return filterByRule(tag, batchFilterMap.get(FilterModeEnum.EXCLUDE.getMode()));
             });
         }
-        return include && unExclude;
+        return isInclude && isUnExclude;
     }
 
     // 选择多个包含或非包含条件时,满足一个即可
@@ -189,5 +195,53 @@ public final class ResourceFilterUtil {
             }
         }
         return false;
+    }
+
+    /**
+     * 资源是否满足过滤条件
+     *
+     * @param protectedRes 保护资源
+     * @param resourceFilterConditionParam 过滤条件
+     * @return 过滤后的资源
+     */
+    public static boolean isResourceMeetsFilterConditions(ProtectedResource protectedRes,
+        ResourceFilterConditionParam resourceFilterConditionParam) {
+        boolean isNameMeets = isMeetNameFilter(protectedRes, resourceFilterConditionParam.getResourceFilters());
+        boolean isTagMeets = isMeetTagFilter(protectedRes, resourceFilterConditionParam.getResourceTagFilters());
+        return isNameMeets && isTagMeets;
+    }
+
+    private static boolean isMeetNameFilter(ProtectedResource protectedRes, List<ResourceFilterParam> resourceFilters) {
+        if (VerifyUtil.isEmpty(resourceFilters)) {
+            // 如果没有名称过滤规则，直接返回 true
+            return true;
+        }
+        Map<String, List<ResourceFilterParam>> batchFilterMap = resourceFilters.stream()
+            .collect(Collectors.groupingBy(ResourceFilterParam::getMode));
+        boolean isInclude = true;
+        boolean isUnExclude = true;
+        if (!VerifyUtil.isEmpty(batchFilterMap.get(FilterModeEnum.INCLUDE.getMode()))) {
+            isInclude = filterByRule(protectedRes.getName(), batchFilterMap.get(FilterModeEnum.INCLUDE.getMode()));
+        }
+        if (!VerifyUtil.isEmpty(batchFilterMap.get(FilterModeEnum.EXCLUDE.getMode()))) {
+            isUnExclude = !filterByRule(protectedRes.getName(), batchFilterMap.get(FilterModeEnum.EXCLUDE.getMode()));
+        }
+        return isInclude && isUnExclude;
+    }
+
+    private static boolean isMeetTagFilter(ProtectedResource protectedRes, List<ResourceFilterParam> tagFilters) {
+        if (VerifyUtil.isEmpty(tagFilters)) {
+            // 如果没有tag过滤规则，直接返回 true
+            return true;
+        }
+        Map<String, List<ResourceFilterParam>> batchFilterMap = tagFilters.stream()
+            .collect(Collectors.groupingBy(ResourceFilterParam::getMode));
+        String tags = protectedRes.getExtendInfo().get(TAGS);
+        if (ResourceSubTypeEnum.CNWARE_VM.getType().equals(protectedRes.getSubType())) {
+            // cnware vm的tag是字符串数组转换成字符串存在数据库中的，eg:tags:"[\"123\",\"312\"]\n"，因此首先改成逗号拼接的字符串的格式
+            List<String> tagList = JSON.parseArray(tags, String.class);
+            tags = String.join(COMMA, tagList);
+        }
+        return checkTag(tags, batchFilterMap);
     }
 }

@@ -26,6 +26,7 @@ interface Options {
   header?: string;
   rowData?: any;
   actionId?: any;
+  lvModalKey?: string;
 }
 
 @Injectable({
@@ -42,7 +43,7 @@ export class WarningMessageService {
   create(options: Options) {
     this.drawModalService.create({
       ...MODAL_COMMON.generateDrawerOptions(),
-      lvModalKey: 'warningMessage',
+      lvModalKey: options?.lvModalKey || 'warningMessage',
       ...{
         lvType: 'dialog',
         lvDialogIcon: 'lv-icon-popup-danger-48',

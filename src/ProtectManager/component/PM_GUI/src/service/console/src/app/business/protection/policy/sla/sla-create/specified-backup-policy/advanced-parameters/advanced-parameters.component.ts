@@ -30,7 +30,8 @@ import {
   I18NService,
   ProtectedResourceApiService,
   ProtectResourceAction,
-  QosService
+  QosService,
+  RouterUrl
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
@@ -138,6 +139,9 @@ export class AdvancedParametersComponent implements OnInit, OnChanges {
   isBlockIncrementBackup = false; // 块级增量备份
   agentsLabel; // 用于详情显示代理主机
   isKeepSnapshot = false; // HCS保留快照
+
+  // 限速策略路由
+  ratePolicyRouterUrl = RouterUrl.ProtectionLimitRatePolicy;
 
   constructor(
     public i18n: I18NService,
@@ -425,7 +429,6 @@ export class AdvancedParametersComponent implements OnInit, OnChanges {
       includes(
         [
           ApplicationType.MySQL,
-          ApplicationType.OpenGauss,
           ApplicationType.GaussDBT,
           ApplicationType.GoldenDB
         ],
@@ -483,7 +486,15 @@ export class AdvancedParametersComponent implements OnInit, OnChanges {
     }
 
     // 重启归档
-    if (includes([ApplicationType.LightCloudGaussDB], this.appType)) {
+    if (
+      includes(
+        [
+          ApplicationType.LightCloudGaussDB,
+          ApplicationType.GaussDBForOpenGauss
+        ],
+        this.appType
+      )
+    ) {
       this.isRestartArchive = true;
       this.formGroup.addControl('restart_archive', new FormControl(false));
     }
@@ -669,7 +680,7 @@ export class AdvancedParametersComponent implements OnInit, OnChanges {
     // 保留快照
     if (includes([ApplicationType.HCSCloudHost], this.appType)) {
       this.isKeepSnapshot = true;
-      this.formGroup.addControl('keep_snapshot', new FormControl(true));
+      this.formGroup.addControl('keep_snapshot', new FormControl(false));
     }
   }
 
@@ -800,6 +811,13 @@ export class AdvancedParametersComponent implements OnInit, OnChanges {
         this.formGroup
           .get('available_capacity_threshold')
           .setValue(get(data, 'available_capacity_threshold', 5));
+      }
+
+      if (includes([ApplicationType.HCSCloudHost], this.appType)) {
+        // 保留快照界面词条改为删除快照，设置反着来
+        this.formGroup
+          .get('keep_snapshot')
+          .setValue(!get(data, 'keep_snapshot', true));
       }
     }
     this.isRetry = data.auto_retry;

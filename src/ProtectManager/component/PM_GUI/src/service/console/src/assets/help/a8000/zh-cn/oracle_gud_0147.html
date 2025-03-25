@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Oracle 12.1集群ASM恢复到Oracle 12.1单机非ASM环境后，备份Oracle 12.1单机非ASM时会卡住">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="oracle_gud_0119.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="oracle_gud_0147">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Oracle 12.1集群ASM恢复到Oracle 12.1单机非ASM环境后，备份Oracle 12.1单机非ASM时会卡住</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="oracle_gud_0147"></a><a name="oracle_gud_0147"></a>
+
+<h1 class="topictitle1">Oracle 12.1集群ASM恢复到Oracle 12.1单机非ASM环境后，备份Oracle 12.1单机非ASM时会卡住</h1>
+<div><div class="section" id="oracle_gud_0147__zh-cn_topic_0000001608748138_zh-cn_topic_0000001524685274_section188331150174018"><h4 class="sectiontitle">现象描述</h4><p id="oracle_gud_0147__zh-cn_topic_0000001608748138_p13121135310497">执行Oracle备份，查看Oracle trace日志，报错如下：</p>
+<pre class="screen" id="oracle_gud_0147__zh-cn_topic_0000001608748138_screen176741627670">Starting background process ASMB
+Thu Jul 20 04:52:37 2023
+ASMB started with pid=89, OS id=13500518 
+WARNING: failed to start ASMB (connection failed) state=0x1 sid=''
+WARNING: ASMB exiting with error</pre>
+</div>
+<div class="section" id="oracle_gud_0147__zh-cn_topic_0000001608748138_zh-cn_topic_0000001524685274_section1610619004217"><h4 class="sectiontitle">可能原因</h4><p id="oracle_gud_0147__zh-cn_topic_0000001608748138_p369473842415">根据Oracle官方文档，此错误与MIGRATING DATABASE FROM ASM TO FILE SYSTEM有关。</p>
+<p id="oracle_gud_0147__zh-cn_topic_0000001608748138_p15759842165816">生产数据库是RAC，使用ASM磁盘组，但恢复的目标数据库是非ASM，使用文件系统。因此，此错误与Oracle Bug 19503821有关，将数据库从ASM迁移到文件系统解决方案时，RMAN CATALOG极其缓慢。</p>
+</div>
+<div class="section" id="oracle_gud_0147__zh-cn_topic_0000001608748138_zh-cn_topic_0000001524685274_section185905353429"><h4 class="sectiontitle">处理步骤</h4><ol id="oracle_gud_0147__zh-cn_topic_0000001608748138_ol6372184462411"><li id="oracle_gud_0147__zh-cn_topic_0000001608748138_li237284414241"><span>停止Oracle数据库备份任务。</span></li><li id="oracle_gud_0147__zh-cn_topic_0000001608748138_li17377203121420"><span>安装Oracle的19503821补丁。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="oracle_gud_0119.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

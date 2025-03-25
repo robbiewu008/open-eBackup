@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="修改流控速率限制">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="TPOPS_GaussDB_00063.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="TPOPS_GaussDB_00066">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>修改流控速率限制</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="TPOPS_GaussDB_00066"></a><a name="TPOPS_GaussDB_00066"></a>
+
+<h1 class="topictitle1">修改流控速率限制</h1>
+<div><div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>登录TPOPS Server的节点。</span></li><li><span>执行以下命令切换dmuser用户。</span><p><pre class="screen">su - dmuser</pre>
+</p></li><li><span>依次执行以下命令登录primdb（“psd”为数据库密码）。</span><p><pre class="screen">source $HOME/.dmbashrc;
+source $DM_HOME/primdb/.infostore;
+gsql -d primdb -p 22202 -r -U apprim -W <em>psd</em></pre>
+</p></li><li id="TPOPS_GaussDB_00066__li755610548614"><a name="TPOPS_GaussDB_00066__li755610548614"></a><a name="li755610548614"></a><span>执行以下sql命令查询流控速率，并记录默认数值。</span><p><pre class="screen">SELECT * FROM GA_PL_OPEN_API_CONFIG where API_PATH = '/aps-autopilot-user-client/openAPI/v1/auth/tokens'</pre>
+</p></li><li id="TPOPS_GaussDB_00066__li593612121192"><a name="TPOPS_GaussDB_00066__li593612121192"></a><a name="li593612121192"></a><span>执行以下sql命令更新流控速率限制（“100”表示接口每秒允许调用的最大次数，数字越大，限制越小）。</span><p><pre class="screen">update GA_PL_OPEN_API_CONFIG set RATELIMIT_RATE=<em>100</em> where API_PATH = '/aps-autopilot-user-client/openAPI/v1/auth/tokens';</pre>
+</p></li><li id="TPOPS_GaussDB_00066__li16799226181116"><a name="TPOPS_GaussDB_00066__li16799226181116"></a><a name="li16799226181116"></a><span>执行以下命令重启zuul服务。</span><p><pre class="screen">python3 $DM_HOME/bin/dmserver.py restart -s APS_InfraZuul</pre>
+</p></li><li><span>如果以上步骤执行失败，请再次执行<a href="#TPOPS_GaussDB_00066__li593612121192">5</a>~<a href="#TPOPS_GaussDB_00066__li16799226181116">6</a>重新修改流控限制为默认值恢复（修改的限制值为<a href="#TPOPS_GaussDB_00066__li755610548614">4</a>记录的数值）。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="TPOPS_GaussDB_00063.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

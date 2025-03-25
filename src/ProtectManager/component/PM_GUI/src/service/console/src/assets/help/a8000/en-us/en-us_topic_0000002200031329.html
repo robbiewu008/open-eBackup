@@ -1,0 +1,45 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Installing OceanStor DataTurbo">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200031329">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Installing OceanStor DataTurbo</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200031329"></a><a name="EN-US_TOPIC_0000002200031329"></a>
+
+<h1 class="topictitle1">Installing OceanStor DataTurbo</h1>
+<div><p>If the source deduplication function needs to be enabled after the client is installed, you can refer to this section to install OceanStor DataTurbo and enable the source deduplication function.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Ensure that the free memory of the host where the client is installed is greater than 2 GB.</li><li>Ensure that the OS of the host where the client is installed supports source deduplication. For details about the OSs that support source deduplication, refer to <a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">Compatibility Query Tool</a>.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Download the client software package. For details, see <a href="en-us_topic_0000002200116889.html">Downloading a Client Software Package</a>.</span></li><li><span>Open the downloaded client software package and obtain the OceanStor DataTurbo installation package <strong>dataturbo.zip</strong> from the <strong>..\DataProtect_</strong><em>XXX</em><strong>_client_general_</strong><em>XXX</em><strong>.zip\DataProtect_</strong><em>XXX</em><strong>_client_general_</strong><em>XXX</em><strong>\third_party_software</strong> directory.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002200031329__en-us_topic_0000002200116873_p1818285216413">The name of the client software package varies depending on the version, client type, and OS.</p>
+</div></div>
+</p></li><li><span>Upload the OceanStor DataTurbo installation package to the host where the client is installed.</span></li><li><span>Install OceanStor DataTurbo and start the service. For details, see "Installation" and "Starting the Service" in the <a href="https://support.huawei.com/enterprise/en/flash-storage/oceanprotect-x8000-pid-251807257?category=configuration-commissioning&amp;subcategory=configuration-guide" target="_blank" rel="noopener noreferrer">SourceDedupe User Guide</a> of the corresponding version.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>For the Linux OS, <span>after source deduplication is enabled, add the source deduplication user to <strong>sudoers</strong> before the first backup. For details, see <a href="en-us_topic_0000002200031105.html">How Can I Add a Source Deduplication User to sudoers? (Applicable to the Linux OS)</a>.</span></li><li>For the Windows OS, <span id="EN-US_TOPIC_0000002200031329__ph154629106403">after source deduplication is enabled, add the SID (S-1-5-18) of user <strong id="EN-US_TOPIC_0000002200031329__b11752811812">system</strong> to the <span class="filepath" id="EN-US_TOPIC_0000002200031329__filepath8365201855911"><b>...\oceanstor\dataturbo\conf\whitelist</b></span> whitelist and run the <strong id="EN-US_TOPIC_0000002200031329__b171722812819">sc stop dataturbo</strong> and <strong id="EN-US_TOPIC_0000002200031329__b117628289">sc start dataturbo</strong> commands in sequence to restart the DataTurbo service.</span></li></ul>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

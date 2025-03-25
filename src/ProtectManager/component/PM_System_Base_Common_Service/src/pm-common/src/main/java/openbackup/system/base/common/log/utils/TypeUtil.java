@@ -38,6 +38,7 @@ public class TypeUtil {
      * constructor
      */
     protected TypeUtil() {
+
     }
 
     /**

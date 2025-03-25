@@ -78,6 +78,11 @@ public class JobDispatchClusterVo {
     private String availableZoneId;
 
     /**
+     * 存储单元类型
+     */
+    private String deviceType;
+
+    /**
      * 获取空闲空间
      *
      * @return 空闲空间

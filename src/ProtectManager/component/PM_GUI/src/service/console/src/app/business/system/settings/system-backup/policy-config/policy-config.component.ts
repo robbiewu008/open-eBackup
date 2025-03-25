@@ -41,6 +41,7 @@ export class PolicyConfigComponent implements OnInit {
   data;
   callBack;
   formGroup: FormGroup;
+  isTest = false;
   keepCountErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
     invalidRang: this.i18n.get('common_valid_rang_label', [3, 20])
   });
@@ -236,6 +237,10 @@ export class PolicyConfigComponent implements OnInit {
         updateOn: 'change'
       })
     });
+
+    this.formGroup.valueChanges.subscribe(res => {
+      this.isTest = false;
+    });
   }
 
   validSpecialIp(): ValidatorFn {
@@ -394,8 +399,13 @@ export class PolicyConfigComponent implements OnInit {
         ? this.formGroup.value.destPath
         : null
     };
-    this.sysbackupApiService
-      .testSftpConnection({ request: params })
-      .subscribe(() => {});
+    this.sysbackupApiService.testSftpConnection({ request: params }).subscribe(
+      res => {
+        this.isTest = true;
+      },
+      () => {
+        this.isTest = false;
+      }
+    );
   }
 }

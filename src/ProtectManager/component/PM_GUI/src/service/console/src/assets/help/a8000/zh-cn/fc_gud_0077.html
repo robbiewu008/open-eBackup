@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="OceanProtect出现业务中断或FusionCompute注册失败">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="fc_gud_0064.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="fc_gud_0077">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>OceanProtect出现业务中断或FusionCompute注册失败</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="fc_gud_0077"></a><a name="fc_gud_0077"></a>
+
+<h1 class="topictitle1"><span>OceanProtect</span>出现业务中断或FusionCompute注册失败</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>当FusionCompute与<span>OceanProtect</span>对接的用户类型为“接口对接用户”或“本地用户”时，出现业务中断或者注册失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><ul><li>原因一：FusionCompute支持配置“人机、机机接口访问隔离策略”，如果该策略的当前规则为“是”，则接口对接用户无法通过7443端口访问FusionCompute。</li><li>原因二：用户类型为“本地用户”时，首次登录FusionCompute需修改密码。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ul><li><strong>针对原因一的处理方式：</strong><ol><li>使用浏览器，登录FusionCompute。<p id="fc_gud_0077__fc_gud_0014_p6381515018">登录地址：<strong id="fc_gud_0077__fc_gud_0014_b415811413217">https://</strong><em id="fc_gud_0077__fc_gud_0014_i190316371521">FusionCompute的VRM节点的浮动IP地址</em><strong id="fc_gud_0077__fc_gud_0014_b179837448219">:8443</strong></p>
+</li><li>选择“系统管理 &gt; 权限管理 &gt; 权限管理策略”。</li><li>在“其他策略”区域单击“修改”。</li><li>将“人机、机机接口访问隔离策略”的当前规则修改为“否”。</li><li>单击“保存”。</li></ol>
+</li><li><strong>针对原因二的处理方式：</strong><ol><li>使用本地用户登录FusionCompute。</li><li>根据界面提示修改密码。</li><li>使用新密码在<span>OceanProtect</span>中重新注册FusionCompute。</li></ol>
+</li></ul>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="fc_gud_0064.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

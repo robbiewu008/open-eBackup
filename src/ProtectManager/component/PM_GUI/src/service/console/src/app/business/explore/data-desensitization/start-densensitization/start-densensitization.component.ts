@@ -21,6 +21,7 @@ import {
   PolicyControllerService,
   WarningMessageService
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import {
   assign,
@@ -36,7 +37,6 @@ import {
 import { AnonymizationVerificateComponent } from './anonymization-verificate/anonymization-verificate.component';
 import { ModifyIdentificationResultComponent } from './modify-identification-result/modify-identification-result.component';
 import { VerificateResultComponent } from './verificate-result/verificate-result.component';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'aui-start-densensitization',
@@ -211,7 +211,7 @@ export class StartDensensitizationComponent implements OnInit {
     }
 
     if (!!size(table) && size(table) === 1 && !!size(column)) {
-      if (!find(column, item => item.parent.label === table.label)) {
+      if (!find(column, item => item.parent.label === table[0].label)) {
         isCross = true;
       }
     }

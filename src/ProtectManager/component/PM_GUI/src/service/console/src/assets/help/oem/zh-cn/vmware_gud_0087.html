@@ -17,37 +17,141 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="VMware虚拟化环境">
+  <meta name="DC.Title" content="即时恢复VMware虚拟机">
   <meta name="product" content="">
-  <meta name="DC.Relation" scheme="URI" content="product_documentation_000027.html">
-  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0088.html">
-  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0089.html">
-  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0090.html">
+  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0084.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="vmware_gud_0087">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>VMware虚拟化环境</title>
+  <title>即时恢复VMware虚拟机</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="vmware_gud_0087"></a><a name="vmware_gud_0087"></a>
-  <h1 class="topictitle1">VMware虚拟化环境</h1>
-  <div></div>
+  <h1 class="topictitle1">即时恢复VMware虚拟机</h1>
   <div>
-   <ul class="ullinks">
-    <li class="ulchildlink"><strong><a href="vmware_gud_0088.html">查看VMware虚拟化环境信息</a></strong><br></li>
-    <li class="ulchildlink"><strong><a href="vmware_gud_0089.html">管理VMware注册信息</a></strong><br></li>
-    <li class="ulchildlink"><strong><a href="vmware_gud_0090.html">管理集群/主机/虚拟机/虚拟机组</a></strong><br></li>
-   </ul>
+   <p>当需要对已备份的虚拟机进行即时恢复时，可以参考本节即时恢复虚拟机至原位置或新位置。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <p>支持使用备份副本、复制副本、即时挂载产生的副本（副本需要已从虚拟机卸载）进行即时恢复，支持恢复至原位置或新位置。</p>
+    <ul>
+     <li>恢复至原位置
+      <ul>
+       <li>恢复到原位置时，系统将在原虚拟机所在路径下（即原虚拟机所属的集群或ESXi主机）创建一个新的虚拟机，将备份数据全量恢复到新虚拟机。</li>
+       <li>恢复至原位置时，如果原位置为集群，当该集群未开启vSphere DRS时，系统会将虚拟机恢复到副本产生时虚拟机所属的主机。可参考<a href="https://docs.vmware.com/cn/VMware-vSphere/6.7/com.vmware.vsphere.resmgmt.doc/GUID-827DBD6D-08B7-4411-9214-9E126671457F.html" target="_blank" rel="noopener noreferrer">VMware官网</a>查看或开启vSphere DRS。</li>
+       <li>恢复至原位置时，不支持使用复制副本、即时挂载产生的副本以及独立ESXi主机下虚拟机的副本进行恢复。</li>
+      </ul></li>
+     <li>恢复至新位置
+      <ul>
+       <li>恢复至新位置时，系统进行全量恢复，将备份数据恢复到指定的新路径下，即由用户指定的新虚拟机所在的ESXi主机/集群和对应的数据存储。</li>
+       <li>恢复至新位置时，如果新位置为集群，则要求集群必须已开启vSphere DRS，否则无法执行恢复。建议您选择集群内的主机进行恢复或在vCenter上开启vSphere DRS后再恢复。可参考<a href="https://docs.vmware.com/cn/VMware-vSphere/6.7/com.vmware.vsphere.resmgmt.doc/GUID-827DBD6D-08B7-4411-9214-9E126671457F.html" target="_blank" rel="noopener noreferrer">VMware官网</a>查看或开启vSphere DRS。</li>
+       <li>恢复至新位置时，不支持即时恢复至独立ESXi主机。</li>
+      </ul></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>如果恢复到集群，请确保集群下所有主机与<span style="color:#252B3A;">备份存储的逻辑端口网络连通。</span></li>
+     <li><span style="color:#252B3A;">如果恢复到主机，请确保选择的主机与备份存储的逻辑端口网络连通。</span></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="vmware_gud_0087__vmware_gud_0081_zh-cn_topic_0000002199964685_uicontrol1812933174613">“<span id="vmware_gud_0087__vmware_gud_0081_zh-cn_topic_0000002199964685_text0129103112462">数据利用</span> &gt; <span id="vmware_gud_0087__vmware_gud_0081_zh-cn_topic_0000002199964685_text81291431134613">副本数据</span> &gt; <span id="vmware_gud_0087__vmware_gud_0081_zh-cn_topic_0000002199964685_text860175510430">虚拟化</span> &gt; <span id="vmware_gud_0087__vmware_gud_0081_zh-cn_topic_0000002199964685_text8319371528">VMware</span>”</span>。</span></li>
+     <li><span>支持以虚拟机维度或以副本维度查找副本，本节以虚拟机维度为例进行说明。</span><p></p><p>在“资源”页签，根据虚拟机名称查找到需要恢复的虚拟机，并单击虚拟机名称。</p> <p></p></li>
+     <li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000002164654454.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>在副本所在的行，单击<span class="uicontrol">“<span>更多</span> &gt; <span>即时恢复</span>”</span>。</span></li>
+     <li><span>恢复虚拟机至原位置或新位置。</span><p></p>
+      <ul>
+       <li>恢复虚拟机至原位置。
+        <ol type="a">
+         <li>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>。</li>
+         <li>设置新虚拟机的名称。<p>新虚拟机不能与所在vCenter Server或ESXi主机下的其他虚拟机同名。</p></li>
+         <li>恢复后是否启用虚拟机网络适配器。
+          <ul>
+           <li>不启用：恢复后虚拟机的所有网络适配器都处于未连接状态，如需远程登录虚拟机，恢复后需要在vSphere或ESXi界面设置网络适配器的连接状态。<p>具体操作可参考<a href="vmware_gud_0125.html">如何启用VMware虚拟机的网络适配器</a>。</p></li>
+           <li>启用：启用后，如果副本中的原虚拟机仍然存在，则恢复后可能导致新虚拟机与原虚拟机网络冲突，请恢复虚拟机后检查新虚拟机网络。</li>
+          </ul></li>
+         <li>选择恢复成功后是否删除原虚拟机。<p>开启该选项后，虚拟机恢复成功后会删除原虚拟机，否则原虚拟机将保留。</p></li>
+         <li>单击<span class="uicontrol">“<span>确定</span>”</span>。<p>即时恢复后的虚拟机将自动开机。</p></li>
+        </ol></li>
+       <li>恢复虚拟机至新位置。
+        <ol type="a">
+         <li>选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>。</li>
+         <li>设置新虚拟机名称。<p>新虚拟机不能与所在vCenter Server或ESXi主机下的其他虚拟机同名。</p></li>
+         <li>设置恢复虚拟机到新位置的位置信息。
+          <div class="p">
+           相关参数说明如<a href="#vmware_gud_0087__table149241438565">表1</a>所示。 
+           <div class="tablenoborder">
+            <a name="vmware_gud_0087__table149241438565"></a><a name="table149241438565"></a>
+            <table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0087__table149241438565" frame="border" border="1" rules="all">
+             <caption>
+              <b>表1 </b>新位置信息
+             </caption>
+             <colgroup>
+              <col style="width:29.75%">
+              <col style="width:70.25%">
+             </colgroup>
+             <thead align="left">
+              <tr>
+               <th align="left" class="cellrowborder" valign="top" width="29.75%" id="mcps1.3.4.2.5.2.1.2.1.3.1.2.2.3.1.1"><p>参数</p></th>
+               <th align="left" class="cellrowborder" valign="top" width="70.25%" id="mcps1.3.4.2.5.2.1.2.1.3.1.2.2.3.1.2"><p>说明</p></th>
+              </tr>
+             </thead>
+             <tbody>
+              <tr>
+               <td class="cellrowborder" valign="top" width="29.75%" headers="mcps1.3.4.2.5.2.1.2.1.3.1.2.2.3.1.1 "><p><span>计算位置</span></p></td>
+               <td class="cellrowborder" valign="top" width="70.25%" headers="mcps1.3.4.2.5.2.1.2.1.3.1.2.2.3.1.2 "><p>虚拟机恢复后所使用的计算资源。</p> <p>选择一个集群、主机、资源池或vAPP作为目标。</p></td>
+              </tr>
+              <tr>
+               <td class="cellrowborder" valign="top" width="29.75%" headers="mcps1.3.4.2.5.2.1.2.1.3.1.2.2.3.1.1 "><p><span>存储位置</span></p></td>
+               <td class="cellrowborder" valign="top" width="70.25%" headers="mcps1.3.4.2.5.2.1.2.1.3.1.2.2.3.1.2 "><p>虚拟机配置文件和磁盘数据恢复到的数据存储。</p>
+                <ul>
+                 <li><span>不同数据存储</span>
+                  <ul>
+                   <li><span>VM配置文件</span>：虚拟机配置文件（除了VMDK文件以外的文件）所在的数据存储。</li>
+                   <li><span>VM磁盘文件</span>：虚拟磁盘数据所在的数据存储。
+                    <div class="note">
+                     <span class="notetitle"> 说明： </span>
+                     <div class="notebody">
+                      <p>为提高数据安全性，用户可选择将虚拟机的配置文件单独存放在一个数据存储上，而将磁盘数据统一放在另一个数据存储上。</p>
+                     </div>
+                    </div></li>
+                  </ul></li>
+                 <li><span>相同数据存储</span><p>虚拟机配置文件和所有虚拟磁盘数据存储在同一个数据存储中。</p></li>
+                </ul></td>
+              </tr>
+              <tr>
+               <td class="cellrowborder" valign="top" width="29.75%" headers="mcps1.3.4.2.5.2.1.2.1.3.1.2.2.3.1.1 "><p><span>网络位置</span></p></td>
+               <td class="cellrowborder" valign="top" width="70.25%" headers="mcps1.3.4.2.5.2.1.2.1.3.1.2.2.3.1.2 "><p>虚拟机恢复后连接到的网络。</p></td>
+              </tr>
+             </tbody>
+            </table>
+           </div>
+          </div></li>
+         <li>选择是否开启“启用网络适配器”，默认关闭。
+          <ul id="vmware_gud_0087__vmware_gud_0081_ul10473512087">
+           <li id="vmware_gud_0087__vmware_gud_0081_li64731812984">关闭时，恢复后虚拟机的所有网络适配器都处于未连接状态，如需远程登录虚拟机，恢复后需要在vSphere或ESXi界面设置网络适配器为连接状态，具体操作可参考<a href="vmware_gud_0125.html">如何启用VMware虚拟机的网络适配器</a>。</li>
+           <li id="vmware_gud_0087__vmware_gud_0081_li587672511810">开启时，如果副本中的原虚拟机仍然存在，则恢复后可能导致新虚拟机与原虚拟机网络冲突，请恢复虚拟机后检查新虚拟机网络。</li>
+          </ul></li>
+         <li>单击<span class="uicontrol">“<span>确定</span>”</span>。<p>即时恢复后的虚拟机将自动开机。</p></li>
+        </ol></li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="product_documentation_000027.html">VMware数据保护</a>
+     <strong>父主题：</strong> <a href="vmware_gud_0084.html">即时恢复</a>
     </div>
    </div>
   </div>

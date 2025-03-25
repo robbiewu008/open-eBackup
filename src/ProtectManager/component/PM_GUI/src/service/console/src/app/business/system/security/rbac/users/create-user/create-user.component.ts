@@ -326,7 +326,7 @@ export class CreateUserComponent implements OnInit {
     // 切换为其他内置角色则清空其他角色
     if (!this.isRoleAddable) {
       this.tableData = {
-        data: [tmpRole],
+        data: [cloneDeep(tmpRole)],
         total: 1
       };
     } else {

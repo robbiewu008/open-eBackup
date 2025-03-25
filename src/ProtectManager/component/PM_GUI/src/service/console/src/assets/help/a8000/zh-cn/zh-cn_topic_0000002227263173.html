@@ -1,0 +1,42 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="添加用户至Administrators用户组">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002227263173">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>添加用户至Administrators用户组</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002227263173"></a><a name="ZH-CN_TOPIC_0000002227263173"></a>
+
+<h1 class="topictitle1">添加用户至Administrators用户组</h1>
+<div><p>当非系统管理员需具有Administrators用户组权限时，可参考本章节将用户添加至Administrators用户组。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤（适用于非AD域场景）</h4><ol><li><span>以系统管理员登录客户端所在主机。</span></li><li><span>在键盘上按<span class="uicontrol" id="ZH-CN_TOPIC_0000002227263173__oracle_gud_0016_uicontrol11819941114510">“Win+R”</span>，打开运行窗口。</span></li><li><span>输入<span class="parmvalue">“lusrmgr.msc”</span>，进入本地用户和组管理界面。</span></li><li><span>选择“组 &gt; Administrators”。</span></li><li><span>单击鼠标右键，选择“添加到组”。</span></li><li><span>在弹出的对话框中单击“添加”。</span></li><li><span>输入对应的用户名称，并单击“确定”。</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤（适用于AD域场景）</h4><ol><li><span>以系统管理员登录客户端所在主机。</span></li><li><span>在键盘上按<span class="uicontrol" id="ZH-CN_TOPIC_0000002227263173__oracle_gud_0016_uicontrol11819941114510_1">“Win+R”</span>，打开运行窗口。</span></li><li><span>输入<span class="parmvalue">“cmd”</span>，进入命令提示符窗口。</span></li><li><span>执行以下命令，将用户（以<strong>user1</strong>为例）添加至<strong>Administrators</strong>用户组。</span><p><pre class="screen">net localgroup administrators <em>user1</em> /add</pre>
+</p></li></ol>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

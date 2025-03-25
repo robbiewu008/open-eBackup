@@ -145,6 +145,9 @@ public class ResourceLockReleaseScheduler {
         if (lockId.endsWith("@log")) {
             tmpLockId = lockId.substring(0, lockId.length() - 4);
         }
+        if (lockId.endsWith(ResourceLockConstant.VMWARE_RESTORE_LOCK_SUFFIX)) {
+            tmpLockId = lockId.replaceFirst(ResourceLockConstant.VMWARE_RESTORE_LOCK_SUFFIX, "");
+        }
 
         if (!isJobFinished(tmpLockId)) {
             return;

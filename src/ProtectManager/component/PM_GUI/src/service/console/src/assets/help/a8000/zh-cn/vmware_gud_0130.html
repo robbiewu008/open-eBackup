@@ -1,0 +1,62 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复VMware虚拟机时，任务详情中提示“恢复nvram文件失败”如何处理">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="vmware_gud_0115.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="vmware_gud_0130">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复VMware虚拟机时，任务详情中提示“恢复nvram文件失败”如何处理</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="vmware_gud_0130"></a><a name="vmware_gud_0130"></a>
+
+<h1 class="topictitle1">恢复VMware虚拟机时，任务详情中提示“恢复nvram文件失败”如何处理</h1>
+<div><p>恢复VMware虚拟机时，管理界面任务详情中提示<span class="uicontrol">“恢复nvram文件失败”</span>，则恢复后的虚拟机可能无法正常进入操作系统，可参考以下步骤进行处理，本节以vSphere Client 6.7.0版本为例说明。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>备份VMware虚拟机时，如果管理界面任务详情中提示<span class="uicontrol">“备份nvram文件失败”</span>，则使用该副本恢复虚拟机时将出现该问题。建议您不使用该副本进行恢复或恢复后参考本节进行处理。</li><li>本节内容同样适用于即时恢复、即时挂载。</li></ul>
+</div></div>
+<ol><li>设置下次进入虚拟机引导界面时进入BIOS设置。<ol type="a"><li>使用浏览器，登录vCenter Server。<p id="vmware_gud_0130__vmware_gud_0124_zh-cn_topic_0000001839187061_p171383317558">登录地址：<strong id="vmware_gud_0130__vmware_gud_0124_zh-cn_topic_0000001839187061_b1846275114553">https://</strong><em id="vmware_gud_0130__vmware_gud_0124_zh-cn_topic_0000001839187061_i849984595510">vcenter_server_ip_address</em></p>
+</li><li>根据虚拟机名称查找到恢复后的虚拟机。</li><li>选择<span class="uicontrol">“操作 &gt; 编辑设置”</span>。</li><li>在<span class="uicontrol">“虚拟机选项 &gt; 引导选项 &gt; 强制执行BIOS设置”</span>下，勾选<span class="uicontrol">“下次引导期间强制进入BIOS设置屏幕”</span>。</li><li>单击<span class="uicontrol">“确定”</span>。</li><li>重启虚拟机。</li></ol>
+</li></ol><ol start="2"><li>在BIOS中设置启动虚拟机时能优先扫描到系统盘。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>执行此操作前，请自行记录修改前的启动顺序，便于需要时回退。</p>
+</div></div>
+<ol type="a"><li>在虚拟机页面，单击<span class="uicontrol">“启动Web控制台”</span>，虚拟机进入BIOS设置。</li><li>通过←→键将光标移至<strong>BooT</strong>。<p><span><img src="zh-cn_image_0000002164654358.png"></span></p>
+</li><li>通过↑↓键将光标移至<strong>Hard Drive</strong>，按<strong>Enter</strong>展开。</li><li>通过↑↓键将光标移至系统盘，按<strong>Shift</strong>+<strong>+</strong>将该硬盘移至第一个。<p>如下所示“VMware Virtual SCSI Hard Driver (0:0)”为操作系统所在硬盘，请根据实际环境进行选择。</p>
+<p><span><img src="zh-cn_image_0000002200055093.png"></span></p>
+</li><li>按<strong>F10</strong>保存并返回。<p>将正常进入虚拟机操作系统。</p>
+</li></ol>
+</li></ol>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="vmware_gud_0115.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

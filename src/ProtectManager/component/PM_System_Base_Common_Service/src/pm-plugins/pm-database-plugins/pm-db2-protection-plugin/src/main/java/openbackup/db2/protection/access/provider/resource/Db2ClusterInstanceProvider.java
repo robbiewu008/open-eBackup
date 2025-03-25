@@ -119,14 +119,16 @@ public class Db2ClusterInstanceProvider implements ResourceProvider {
 
     @Override
     public void beforeUpdate(ProtectedResource resource) {
-        log.info("Start update db2 cluster instance check. resource name: {}", resource.getName());
+        log.info("Start update db2 cluster instance check. resource name: {}, uuid: {}", resource.getName(),
+            resource.getUuid());
         resource.setEnvironment(buildEnvironment(resource.getParentUuid()));
         db2instanceService.filterClusterInstance(resource);
         fillInstancePwd(resource);
         db2instanceService.checkClusterInstanceNameIsChanged(resource);
         checkIsClusterInstance(resource);
         resource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY, LinkStatusEnum.ONLINE.getStatus().toString());
-        log.info("End update db2 cluster instance check. resource name: {}", resource.getName());
+        log.info("End update db2 cluster instance check. resource name: {}, uuid: {}", resource.getName(),
+            resource.getUuid());
     }
 
     private void fillInstancePwd(ProtectedResource resource) {

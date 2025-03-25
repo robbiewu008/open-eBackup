@@ -20,93 +20,217 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="关于SLA">
+<meta name="DC.Title" content="管理Hyper-V副本">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="hyper_gud_0079.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="hyper_gud_0081">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>关于SLA</title>
+<title>管理Hyper-V副本</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hyper_gud_0081"></a><a name="hyper_gud_0081"></a>
 
-<h1 class="topictitle1">关于SLA</h1>
-<div><p>SLA（Service Level Agreement）是一组可配置的数据保护策略，策略中定义了数据保护和副本保留的规则。将这些策略关联至受保护环境，以实现对特定受保护环境的保护。</p>
-<p>为简化数据保护配置任务，<span>OceanProtect</span>提供了3种系统预置SLA：Gold、Silver、Bronze，可供用户立即使用。如：用户可选择Gold SLA应用于任务关键型业务的数据保护，选择Bronze SLA应用于web服务器的数据保护。</p>
-<p>同时，为满足企业对各类受保护环境不同的数据保护诉求，<span>OceanProtect</span>支持由用户自定义SLA。</p>
-<div class="section"><h4 class="sectiontitle">系统预置SLA</h4><p>系统预置了Gold、Silver和Bronze三种SLA，SLA中定义了备份任务的备份频率、副本保留时长以及备份时间窗口。</p>
-<p>预置SLA如<a href="#hyper_gud_0081__zh-cn_topic_0000001170622238_table179754488191">表1</a>。</p>
-<ul><li><span>备份频率</span>：首次执行时间及多长时间备份一次。</li><li><span>副本保留</span>：副本保留时长。</li><li><span><span>备份时间窗口</span></span>：可执行备份任务的时间范围，该范围以外的时间不会进行备份任务调度。</li></ul>
+<h1 class="topictitle1">管理Hyper-V副本</h1>
+<div><p>您可以在管理界面上对副本数据执行相关操作。</p>
+<p>您需要登录管理界面，选择，进入Hyper-V副本页面。</p>
+<ul><li>单击<span class="uicontrol" id="hyper_gud_0081__zh-cn_topic_0000002164660718_uicontrol2899165220510">“资源”</span>以资源维度执行相关操作，该页面的操作均是针对当前资源的复制副本，请在复制副本所在的集群执行以下操作。<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p1449155317445">具体操作任务如<a href="#hyper_gud_0081__zh-cn_topic_0000002164660718_table108701649347">表1</a>所示。</p>
 
-<div class="tablenoborder"><a name="hyper_gud_0081__zh-cn_topic_0000001170622238_table179754488191"></a><a name="zh-cn_topic_0000001170622238_table179754488191"></a><table cellpadding="4" cellspacing="0" summary="" id="hyper_gud_0081__zh-cn_topic_0000001170622238_table179754488191" frame="border" border="1" rules="all"><caption><b>表1 </b>系统预置SLA参数说明</caption><colgroup><col style="width:24%"><col style="width:76%"></colgroup><thead align="left"><tr id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_row1497564801916"><th align="left" class="cellrowborder" valign="top" width="24%" id="mcps1.3.4.5.2.3.1.1"><p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_p49751148121920">SLA</p>
+<div class="tablenoborder"><a name="hyper_gud_0081__zh-cn_topic_0000002164660718_table108701649347"></a><a name="zh-cn_topic_0000002164660718_table108701649347"></a><table cellpadding="4" cellspacing="0" summary="" id="hyper_gud_0081__zh-cn_topic_0000002164660718_table108701649347" frame="border" border="1" rules="all"><caption><b>表1 </b>复制副本相关操作</caption><colgroup><col style="width:21.32%"><col style="width:47.339999999999996%"><col style="width:31.34%"></colgroup><thead align="left"><tr id="hyper_gud_0081__zh-cn_topic_0000002164660718_row6870349042"><th align="left" class="cellrowborder" valign="top" width="21.32%" id="mcps1.3.3.1.3.2.4.1.1"><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p118701849749">任务</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="76%" id="mcps1.3.4.5.2.3.1.2"><p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_p19751648161918">SLA参数</p>
+<th align="left" class="cellrowborder" valign="top" width="47.339999999999996%" id="mcps1.3.3.1.3.2.4.1.2"><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p1387013498414">任务描述</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="31.34%" id="mcps1.3.3.1.3.2.4.1.3"><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p12870184910411">界面入口</p>
 </th>
 </tr>
 </thead>
-<tbody><tr id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_row13975104861916"><td class="cellrowborder" valign="top" width="24%" headers="mcps1.3.4.5.2.3.1.1 "><p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_p79751948131918">Gold</p>
+<tbody><tr id="hyper_gud_0081__zh-cn_topic_0000002164660718_row08701149540"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p48706491742">为复制副本创建保护</p>
 </td>
-<td class="cellrowborder" valign="top" width="76%" headers="mcps1.3.4.5.2.3.1.2 "><ul id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul636863217226"><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li113681332152219"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text313524974813">全量备份</span><ul id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul98681339192614"><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li037275620429"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text837365674218"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text4752195674813">备份频率</span></span>：从2021-04-20开始，每1天执行一次</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li16868153952618"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text451241534912">副本保留</span>：1个月</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li4416429267"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_text1826871163612"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text54161321104914">备份时间窗口</span></span>：00:30:00~次日00:30:00允许备份</li></ul>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li11580634152219"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text660816358497">增量备份</span><ul id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul8553103932718"><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li1912063864314"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text141201738204312"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text330415525493">备份频率</span></span>：从2021-04-20开始，每4小时执行一次</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li17553143916271"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text7200152195011">副本保留</span>：1个月</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li8208145142720"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_text17366162683614"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text1383221105010">备份时间窗口</span></span>：从01:00:00到次日01:00:00允许备份</li></ul>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_li152611382816">指定目标位置（仅1.6.0及后续版本存在此参数）<p id="hyper_gud_0081__zh-cn_topic_0000001839223149_p11670168103016"><a name="hyper_gud_0081__zh-cn_topic_0000001839223149_li152611382816"></a><a name="zh-cn_topic_0000001839223149_li152611382816"></a>系统通过智能均衡自动选择备份目标存储单元或存储单元组。</p>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_li9101152511305">任务超过时间窗告警（仅1.6.0及后续版本存在此参数）<p id="hyper_gud_0081__zh-cn_topic_0000001839223149_p05091431163012"><a name="hyper_gud_0081__zh-cn_topic_0000001839223149_li9101152511305"></a><a name="zh-cn_topic_0000001839223149_li9101152511305"></a>禁用</p>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li1770215191164">任务失败告警<p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_p530714331614"><a name="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li1770215191164"></a><a name="zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li1770215191164"></a>启用</p>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li5593153151610"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text1776115615507">失败后自动重试</span><p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_p1514017286176">周期性备份任务失败后每5分钟重试1次，总共重试3次</p>
-</li></ul>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p1087015494412"><strong id="hyper_gud_0081__zh-cn_topic_0000002164660718_b13871149741">操作背景</strong></p>
+<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p270074703612">当您需要对复制副本执行周期性复制或归档时，可以通过该操作实现。</p>
+<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p267094031613"><strong id="hyper_gud_0081__zh-cn_topic_0000002164660718_b7670174018163">注意事项</strong></p>
+<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p9670184021612">如果当前选择的资源未产生复制副本，则无法关联SLA对该资源进行保护。</p>
 </td>
-</tr>
-<tr id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_row119751748151919"><td class="cellrowborder" valign="top" width="24%" headers="mcps1.3.4.5.2.3.1.1 "><p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_p6975548111910">Silver</p>
-</td>
-<td class="cellrowborder" valign="top" width="76%" headers="mcps1.3.4.5.2.3.1.2 "><ul id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul17467846193010"><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li11467164603012"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text1981641819507">全量备份</span><ul id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul18467746153020"><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li122744134416"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text1760519220507"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text176051922185019">备份频率</span></span>：从2021-04-20开始，每1周执行一次</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li54671246103014"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text156918273502">副本保留</span>：1个月</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li124671746143011"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text1027615320505"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text132761932135018">备份时间窗口</span></span>：00:30:00~次日00:30:00允许备份</li></ul>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li1646715462303"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text24271836175016">增量备份</span><ul id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul204671046183020"><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li13272171464619"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text14301640195010"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text14430174019504">备份频率</span></span>：从2021-04-20开始，每1天执行一次</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li564919593455"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text1631534445013">副本保留</span>：1个月</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li64671546123014"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text28061147165014"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text380614735010">备份时间窗口</span></span>：从01:00:00到次日01:00:00允许备份</li></ul>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_li2537205323317">指定目标位置（仅1.6.0及后续版本存在此参数）<p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001839223149_p11670168103016"><a name="hyper_gud_0081__zh-cn_topic_0000001839223149_li2537205323317"></a><a name="zh-cn_topic_0000001839223149_li2537205323317"></a>系统通过智能均衡自动选择备份目标存储单元或存储单元组。</p>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li14252019152814">任务超过时间窗告警（仅1.6.0及后续版本存在此参数）<p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001839223149_p05091431163012"><a name="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li14252019152814"></a><a name="zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li14252019152814"></a>禁用</p>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li126089301778">任务失败告警<p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_p530714331614"><a name="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li126089301778"></a><a name="zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li126089301778"></a>启用</p>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_li163601857359"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text1776115615507">失败后自动重试</span><p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_p1514017286176">周期性备份任务失败后每5分钟重试1次，总共重试3次</p>
-</li></ul>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p487194915415">在资源所在行单击“更多 &gt; 保护”，关联复制SLA或归档SLA，对复制副本进行复制或归档。</p>
 </td>
 </tr>
-<tr id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_row11975154851913"><td class="cellrowborder" valign="top" width="24%" headers="mcps1.3.4.5.2.3.1.1 "><p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_p189758489191">Bronze</p>
+<tr id="hyper_gud_0081__zh-cn_topic_0000002164660718_row178717491342"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p18713493416">修改复制副本关联的SLA</p>
+<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p887110492414"></p>
 </td>
-<td class="cellrowborder" valign="top" width="76%" headers="mcps1.3.4.5.2.3.1.2 "><ul id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul5964164813305"><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li09641348103013"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text19844171117511">全量备份</span><ul id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul10964948183020"><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li196484813306"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_text42114620449"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text1044417176513"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text54441417185117">备份频率</span></span></span>：从2021-04-20开始，每30天执行一次</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li1077310010479"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text0173112212519">副本保留</span>：3个月</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li996494853011"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_text192374913440"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text681862625113"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text281892614510">备份时间窗口</span></span></span>：00:30:00~次日00:30:00允许备份</li></ul>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li169649482305"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text660516323517">增量备份</span><ul id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul1964114812303"><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li4964204843011"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_text913113213458"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text172901138155116"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text4290838165110">备份频率</span></span></span>：从2021-04-20开始，每1周执行一次</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li1620516487478"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text14791943195114">副本保留</span>：3个月</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_li1038565719471"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text927754325215"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text6277143175211">备份时间窗口</span></span>：从01:00:00到次日01:00:00允许备份</li></ul>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_li1767163993514">指定目标位置（仅1.6.0及后续版本存在此参数）<p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001839223149_p11670168103016_1"><a name="hyper_gud_0081__zh-cn_topic_0000001839223149_li1767163993514"></a><a name="zh-cn_topic_0000001839223149_li1767163993514"></a>系统通过智能均衡自动选择备份目标存储单元或存储单元组。</p>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_li1367243911359">任务超过时间窗告警（仅1.6.0及后续版本存在此参数）<p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001839223149_p05091431163012_1"><a name="hyper_gud_0081__zh-cn_topic_0000001839223149_li1367243911359"></a><a name="zh-cn_topic_0000001839223149_li1367243911359"></a>禁用</p>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_li3672193933516">任务失败告警<p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_p530714331614_1"><a name="hyper_gud_0081__zh-cn_topic_0000001839223149_li3672193933516"></a><a name="zh-cn_topic_0000001839223149_li3672193933516"></a>启用</p>
-</li><li id="hyper_gud_0081__zh-cn_topic_0000001839223149_li12672153914354"><span id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_text1776115615507_1">失败后自动重试</span><p id="hyper_gud_0081__zh-cn_topic_0000001839223149_zh-cn_topic_0000001839223149_zh-cn_topic_0000001337708186_p1514017286176_1">周期性备份任务失败后每5分钟重试1次，总共重试3次</p>
-</li></ul>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p987134915415"><strong id="hyper_gud_0081__zh-cn_topic_0000002164660718_b168711049240">操作背景</strong></p>
+<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p287104910419">您可以通过该操作修改复制副本关联的SLA。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p19871144910419">在资源所在行单击“更多 &gt; 修改保护”，为复制副本关联新的SLA。</p>
+</td>
+</tr>
+<tr id="hyper_gud_0081__zh-cn_topic_0000002164660718_row1987112491546"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p108711049749">移除对复制副本的保护</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p88711849945"><strong id="hyper_gud_0081__zh-cn_topic_0000002164660718_b1787117491414">操作背景</strong></p>
+<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p53695313586">当不需要再对复制副本执行保护时，可以通过移除保护计划来实现。移除后系统将无法对该复制副本执行保护。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p15871144920417">在资源所在行单击“更多 &gt; 移除保护”。</p>
+</td>
+</tr>
+<tr id="hyper_gud_0081__zh-cn_topic_0000002164660718_row191077557610"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p136950484237">激活对复制副本的保护</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p86648169242"><strong id="hyper_gud_0081__zh-cn_topic_0000002164660718_b4468151716249">操作背景</strong></p>
+<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p10694948192314">复制副本的保护计划被禁用后，您可以通过激活操作使复制副本的保护计划重新生效。激活后系统将按照保护计划对复制副本执行保护。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p61071551265">在资源所在行单击“更多 &gt; 激活保护”。</p>
+</td>
+</tr>
+<tr id="hyper_gud_0081__zh-cn_topic_0000002164660718_row811414581465"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p71076551464">禁用对复制副本的保护</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p842845116222"><strong id="hyper_gud_0081__zh-cn_topic_0000002164660718_b1797565114222">操作背景</strong></p>
+<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p10107055766">当您暂时不需要再对复制副本执行周期性保护时，可以通过禁用其保护计划来实现。禁用后系统将不会执行该复制副本的自动保护任务。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p1111475810613">在资源所在行单击“更多 &gt; 禁用保护”。</p>
+</td>
+</tr>
+<tr id="hyper_gud_0081__zh-cn_topic_0000002164660718_row153332773"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p43312218714">对复制副本执行手动复制</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p9940133218250"><strong id="hyper_gud_0081__zh-cn_topic_0000002164660718_b109408327259">操作背景</strong></p>
+<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p139401328256">当您需要对复制副本立即执行一次复制，可以通过该操作实现。</p>
+<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p6763172119279"><strong id="hyper_gud_0081__zh-cn_topic_0000002164660718_b17763721122714">注意事项</strong></p>
+<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p781862319279">执行该操作前，请确保已创建基于复制副本的SLA，并且使用该SLA为对应资源创建保护。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p1534321671">在资源所在行单击“更多 &gt; 手动复制”。</p>
+</td>
+</tr>
+<tr id="hyper_gud_0081__zh-cn_topic_0000002164660718_row102432183107"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><div class="p" id="hyper_gud_0081__zh-cn_topic_0000002164660718_p162441918181014">更改所属用户<div class="note" id="hyper_gud_0081__zh-cn_topic_0000002164660718_note6966434109"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_p1816719214566"><span id="hyper_gud_0081__zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_ph206615454589">仅1.6.0及后续版本支持此功能。</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p0746184915106"><strong id="hyper_gud_0081__zh-cn_topic_0000002164660718_b67462496106">操作背景</strong></p>
+<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p187461749141013">当您需要对资源当前已生成的所有副本更改所属用户，并将副本原本占用的配额切换至新的所属用户，可以通过该操作实现。</p>
+<div class="p" id="hyper_gud_0081__zh-cn_topic_0000002164660718_p3746164921019"><strong id="hyper_gud_0081__zh-cn_topic_0000002164660718_b127465492103">注意事项</strong><ul id="hyper_gud_0081__zh-cn_topic_0000002164660718_ul1839631171411"><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li5396121118149">仅系统管理员有修改所属用户的权限。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li2895912181415">仅支持修改为数据保护管理员或自定义角色的用户。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li1673515714529">更改所属用户后，请在“副本”页签查看对应副本的所属用户。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li16142132114513">更改所属用户后，该资源的所有信息均不在原所属用户下展示。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li99441412172">在复制从端集群更改所属用户后，需修改该资源在复制主端集群关联的复制SLA中的“复制目标端用户”与其一致，否则将导致复制失败。</li></ul>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p9971641161418">在资源所在行单击“更多 &gt; 更改所属用户”。</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-</div>
-<div class="section"><h4 class="sectiontitle">自定义SLA</h4><p>用户可针对备份任务、复制任务、归档任务自定义SLA。SLA中可定义任务的执行频率、时间窗口、首次执行时间、副本保留时长等基本参数以及其他适配各类应用的高级参数。关于SLA中参数的说明在后续任务创建章节有详细介绍。</p>
-<p>各类任务的SLA说明如<a href="#hyper_gud_0081__zh-cn_topic_0000001170622238_table171521524193513">表2</a>。</p>
+</li><li>单击“副本”以副本维度执行相关操作。<p>具体操作任务如<a href="#hyper_gud_0081__table51069596392">表2</a>所示。</p>
 
-<div class="tablenoborder"><a name="hyper_gud_0081__zh-cn_topic_0000001170622238_table171521524193513"></a><a name="zh-cn_topic_0000001170622238_table171521524193513"></a><table cellpadding="4" cellspacing="0" summary="" id="hyper_gud_0081__zh-cn_topic_0000001170622238_table171521524193513" frame="border" border="1" rules="all"><caption><b>表2 </b>自定义SLA</caption><colgroup><col style="width:19.75%"><col style="width:80.25%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="19.75%" id="mcps1.3.5.4.2.3.1.1"><p>SLA</p>
+<div class="tablenoborder"><a name="hyper_gud_0081__table51069596392"></a><a name="table51069596392"></a><table cellpadding="4" cellspacing="0" summary="" id="hyper_gud_0081__table51069596392" frame="border" border="1" rules="all"><caption><b>表2 </b>Hyper-V副本相关操作</caption><colgroup><col style="width:21.32%"><col style="width:47.3%"><col style="width:31.380000000000003%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="21.32%" id="mcps1.3.3.2.2.2.4.1.1"><p>任务</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="80.25%" id="mcps1.3.5.4.2.3.1.2"><p>说明</p>
+<th align="left" class="cellrowborder" valign="top" width="47.3%" id="mcps1.3.3.2.2.2.4.1.2"><p>任务描述</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="31.380000000000003%" id="mcps1.3.3.2.2.2.4.1.3"><p>界面入口</p>
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.4.2.3.1.1 "><p>备份SLA</p>
+<tbody><tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.4.1.1 "><div class="p">手动归档<div class="note" id="hyper_gud_0081__zh-cn_topic_0000002164660718_note1993101364115"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_p1816719214566_1"><span id="hyper_gud_0081__zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_ph206615454589_1">仅1.6.0及后续版本支持此功能。</span></p>
+</div></div>
+</div>
 </td>
-<td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p>定义备份任务的执行频率、备份副本保留时长、备份任务首次执行时间等。</p>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您需要手动将副本归档至归档存储时，可以通过该操作实现。</p>
+<div class="p"><strong id="hyper_gud_0081__zh-cn_topic_0000002164660718_b123446343316">注意事项</strong><ul id="hyper_gud_0081__zh-cn_topic_0000002164660718_ul97316251531"><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li77442575310">仅全量备份副本及其对应的复制副本、级联复制副本，以及永久增量（合成全量）备份副本及其对应的复制副本、级联复制副本支持手动归档。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li1210302812532"><span id="hyper_gud_0081__zh-cn_topic_0000002164660718_text1331521017584">OceanProtect</span>开始执行手动归档副本任务时，如果下电正在执行该任务的接口卡，将导致任务执行失败，请待接口卡上电后重新执行手动归档。</li></ul>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="31.380000000000003%" headers="mcps1.3.3.2.2.2.4.1.3 "><p>在副本所在行单击“更多 &gt; 手动归档”。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.4.2.3.1.1 "><p>复制SLA</p>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.4.1.1 "><p>文件级卸载</p>
 </td>
-<td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p>指定备份副本复制到的目标<span>OceanProtect</span>集群，并定义复制任务执行频率、复制副本保留时长、复制任务首次执行时间等。</p>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>成功创建的文件级挂载点超过1小时后，系统会自动卸载该挂载点。当您需要手动卸载已创建的文件级挂载点时，可以通过该操作实现。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.380000000000003%" headers="mcps1.3.3.2.2.2.4.1.3 "><p>在副本所在行单击“更多 &gt; 文件级卸载”。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.4.2.3.1.1 "><p>归档SLA</p>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.4.1.1 "><p>副本校验</p>
 </td>
-<td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p>指定备份副本或复制副本归档到归档存储（对象存储或磁带库），并定义归档任务执行频率、归档副本保留时长等参数。</p>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您需要确认副本完整性时，可以通过该操作实现。</p>
+<p><strong>注意事项</strong></p>
+<p>归档副本不支持副本校验。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.380000000000003%" headers="mcps1.3.3.2.2.2.4.1.3 "><p>在副本所在行单击“更多 &gt; 副本校验”。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.4.1.1 "><p>修改副本保留策略</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您需要重新设置副本的保留时长时，可以通过该操作实现。</p>
+<p><strong>注意事项</strong></p>
+<p>修改后从当前时间开始计算副本保留时长。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.380000000000003%" headers="mcps1.3.3.2.2.2.4.1.3 "><p>在副本所在行单击“更多 &gt; 修改保留策略”。</p>
+<p>您可以设置为永久保留或保留xx天/周/月/年。</p>
+<p></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.4.1.1 "><p>WORM设置</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p69891381719"><span id="hyper_gud_0081__zh-cn_topic_0000002164660718_ph13542121717119">仅OceanProtect X系列备份一体机和OceanProtect E1000支持此功能。</span></p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您需要设置副本为WORM副本或修改WORM有效期时，可以通过该操作实现。</p>
+<div class="p"><strong id="hyper_gud_0081__zh-cn_topic_0000002164660718_b198961640299">注意事项</strong><ul id="hyper_gud_0081__zh-cn_topic_0000002164660718_ul731014177115"><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_zh-cn_topic_0000002164820434_li103014415565">WORM副本不支持删除或缩短有效期。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_zh-cn_topic_0000002164820434_li9171132315916">自定义WORM有效期不能大于副本保留时长。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_zh-cn_topic_0000002164820434_li976612319580">在WORM有效期内不支持修改为非WORM副本。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_zh-cn_topic_0000002164820434_li8684112013014">如果“WORM有效期”设置为“与副本留存期一致”且副本为永久保留，由于备份存储对快照格式的副本最长保留20年，目录格式的副本最长保留70年，因此该场景下快照格式的副本WORM有效期实际为20年，目录格式的副本WORM有效期实际为70年。</li></ul>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="31.380000000000003%" headers="mcps1.3.3.2.2.2.4.1.3 "><p>在副本所在行单击“更多 &gt; WORM设置”。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.4.1.1 "><p>删除副本</p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您不再需要某个副本或某个副本不可用时，可以删除该副本，以释放存储空间。</p>
+<p><strong>注意事项</strong></p>
+<ul><li>删除副本前，请确认不再使用该副本执行恢复操作。</li><li>副本状态为<span class="uicontrol">“无效”</span>时可以被删除，<span class="uicontrol">“<span>正常</span>”</span>且未索引或已索引时可以被删除，其他状态的副本不允许被删除。</li><li>同一资源有多个副本时，最新的副本不允许被删除。</li><li>同一资源下存在多个副本时，仅存在一个全量复制副本时，不允许删除该全量复制副本。</li><li>正在执行防勒索检测的副本不允许被删除。</li></ul>
+</td>
+<td class="cellrowborder" valign="top" width="31.380000000000003%" headers="mcps1.3.3.2.2.2.4.1.3 "><div class="p">在副本所在行单击“更多 &gt; 删除”，或勾选待删除副本后单击列表上方的“删除”。<div class="note" id="hyper_gud_0081__foc_gud_0065_zh-cn_topic_0000001839143185_note172661250175414"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hyper_gud_0081__foc_gud_0065_zh-cn_topic_0000001839143185_p15266165085416">如果在副本删除失败后需强制删除数据库中的副本数据，请在弹出的对话框中勾选“删除失败后强制删除副本数据”。</p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.4.1.1 "><p>手动创建索引</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您需要进行搜索副本中的文件或目录时，且创建保护时未开启<span class="uicontrol">“备份副本自动索引”</span>时，可以手动创建索引。</p>
+<div class="p"><strong>注意事项</strong><ul><li>反向复制副本和级联复制副本不支持创建索引。</li><li>归档到磁带的副本不支持创建索引。</li></ul>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="31.380000000000003%" headers="mcps1.3.3.2.2.2.4.1.3 "><p>在副本所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动创建索引</span>”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.4.1.1 "><div class="p">反向复制/级联复制复制副本<div class="note" id="hyper_gud_0081__zh-cn_topic_0000002164660718_note10989781717"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p69891381719_1"><span id="hyper_gud_0081__zh-cn_topic_0000002164660718_ph13542121717119_1">仅OceanProtect X系列备份一体机和OceanProtect E1000支持此功能。</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>如果您希望将复制副本复制回源端以恢复源端数据，或者将复制副本复制至其他集群以进行异地容灾，可以通过本操作实现。</p>
+<p><strong>注意事项</strong></p>
+<p>执行反向复制前请先从源端删除复制副本对应的备份副本，否则会导致复制失败。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.380000000000003%" headers="mcps1.3.3.2.2.2.4.1.3 "><div class="p">在复制副本所在行单击“更多 &gt; 复制”。配置副本复制参数：<ol id="hyper_gud_0081__zh-cn_topic_0000002164660718_ol15113142311175"><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li0113202310179">选择<span class="uicontrol" id="hyper_gud_0081__zh-cn_topic_0000002164660718_uicontrol1611634014176">“复制目标集群”</span>。<ul id="hyper_gud_0081__zh-cn_topic_0000002164660718_ul2991182216"><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li3998812219">当<span class="uicontrol" id="hyper_gud_0081__zh-cn_topic_0000002164660718_uicontrol630794164212">“复制目标集群”</span>为源端集群时，即为反向复制。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li1419217379216">当<span class="uicontrol" id="hyper_gud_0081__zh-cn_topic_0000002164660718_uicontrol118058437428">“复制目标集群”</span>为其他集群时，即为级联复制。</li></ul>
+</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li8112182510382">对于1.6.0及后续版本，请选择“复制目标端用户”。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li83719248152">对于1.6.0及后续版本，请输入复制目标端用户的密码，并单击“认证”。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li222198163919">选择复制的“指定目标位置”。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li1564916443171">设置副本保留时长。</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li6696135771714">开启/关闭重删、压缩开关。<p id="hyper_gud_0081__zh-cn_topic_0000002164660718_p325810594214"><a name="hyper_gud_0081__zh-cn_topic_0000002164660718_li6696135771714"></a><a name="zh-cn_topic_0000002164660718_li6696135771714"></a>建议开启，以提升复制效率。</p>
+</li><li id="hyper_gud_0081__zh-cn_topic_0000002164660718_li3458142216186">开启/关闭任务失败告警。</li></ol>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.3.2.2.2.4.1.1 mcps1.3.3.2.2.2.4.1.2 mcps1.3.3.2.2.2.4.1.3 "><p>注：恢复、磁盘恢复、文件级恢复的配置类似<a href="hyper_gud_0066.html">恢复Hyper-V虚拟机</a>、<a href="hyper_gud_0067.html">恢复Hyper-V虚拟机磁盘</a>、<a href="hyper_gud_0068.html">恢复Hyper-V虚拟机中的文件</a>，本节不再重复说明。</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
+</li></ul>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="hyper_gud_0079.html">副本</a></div>
 </div>
 </div>
 

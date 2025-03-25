@@ -1,0 +1,117 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="执行表集备份">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="DWS_00029.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="DWS_00032">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>执行表集备份</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="DWS_00032"></a><a name="DWS_00032"></a>
+  <h1 class="topictitle1">执行表集备份</h1>
+  <div>
+   <p>执行备份前将需要保护的资源关联到指定SLA，系统将对这些资源按照SLA进行保护，并根据SLA周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <ul id="DWS_00032__dws_00030_zh-cn_topic_0000001346322404_zh-cn_topic_0000001142022920_ul18727123312225">
+     <li id="DWS_00032__dws_00030_zh-cn_topic_0000001346322404_zh-cn_topic_0000001142022920_li653882315253">手动备份产生的副本保留时长按照SLA中的定义进行保留。<p id="DWS_00032__dws_00030_zh-cn_topic_0000001346322404_p1021414520463"><a name="DWS_00032__dws_00030_zh-cn_topic_0000001346322404_zh-cn_topic_0000001142022920_li653882315253"></a><a name="dws_00030_zh-cn_topic_0000001346322404_zh-cn_topic_0000001142022920_li653882315253"></a>如果手动备份时选择的保护策略未在SLA中定义，则产生的备份副本保留时长为永久保留。如SLA中未定义增量备份，而手动备份时选择的是增量备份，则本次手动增量备份产生的副本保留时长为永久保留。</p></li>
+     <li id="DWS_00032__dws_00030_zh-cn_topic_0000001346322404_zh-cn_topic_0000001142022920_li648823113014">如果SLA中定义了复制策略或归档策略，则执行手动备份时，系统会按照SLA的定义执行一次复制或归档。</li>
+     <li id="DWS_00032__dws_00030_zh-cn_topic_0000001346322404_li147271733132211">手动备份时，SLA中定义的参数（<span class="uicontrol" id="DWS_00032__dws_00030_zh-cn_topic_0000001346322404_uicontrol1201136142020">“失败后自动重试”</span>除外），如<span class="uicontrol" id="DWS_00032__dws_00030_zh-cn_topic_0000001346322404_uicontrol11126637161316">“限速策略”</span>会应用到手动备份任务中。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p>进行表集进行保护时，请确保已经在客户端所在主机上成功启动GDS（在GaussDB(DWS)节点上启动GDS会占用生产环境资源，因此，建议在客户端所在主机上启动GDS）。</p>
+    <ul>
+     <li>启动GDS的操作请参见相应版本<a href="https://support.huawei.com/enterprise/zh/cloud-computing/hcs-dws-service-pid-251527524" target="_blank" rel="noopener noreferrer">《GaussDB(DWS) 产品文档》</a>中的<span class="uicontrol" id="DWS_00032__dws_00019_uicontrol92912017134817">“安装配置和启动GDS”</span>章节。</li>
+     <li>启动GDS的参数中需要有(-d -p -t)这三个参数。每个GDS存放数据的目录不能相同，示例如下：<pre class="screen" id="DWS_00032__dws_00019_screen949817461541">/home/gds_user/bin/gds <strong id="DWS_00032__dws_00019_b526515126328">-d</strong><strong id="DWS_00032__dws_00019_b11486851163215"> </strong>/home/gds_user/input_data_1/ <strong id="DWS_00032__dws_00019_b14216182111329">-p</strong> 192.168.97.240:9001 -H 0/0 -l /home/gds_user/gds_log/gds_process1.log -D <strong id="DWS_00032__dws_00019_b19744132223213">-t</strong> 2
+/home/gds_user/bin/gds <strong id="DWS_00032__dws_00019_b4430814123212">-d</strong> /home/gds_user/input_data_2/ <strong id="DWS_00032__dws_00019_b8467192413218">-p</strong> 192.168.97.240:9002 -H 0/0 -l /home/gds_user/gds_log/gds_process2.log -D <strong id="DWS_00032__dws_00019_b76471726103212">-t</strong> 2
+/home/gds_user/bin/gds <strong id="DWS_00032__dws_00019_b1739771623220">-d</strong> /home/gds_user/input_data_3/ <strong id="DWS_00032__dws_00019_b7403125413321">-p</strong> 192.168.97.240:9003 -H 0/0 -l /home/gds_user/gds_log/gds_process3.log -D <strong id="DWS_00032__dws_00019_b427905633216">-t</strong> 2
+/home/gds_user/bin/gds <strong id="DWS_00032__dws_00019_b12459218193212">-d</strong> /home/gds_user/input_data_4/ <strong id="DWS_00032__dws_00019_b7818257113218">-p</strong> 192.168.97.240:9004 -H 0/0 -l /home/gds_user/gds_log/gds_process4.log -D <strong id="DWS_00032__dws_00019_b1211865911325">-t</strong> 2</pre></li>
+     <li>如果您在多个部署了客户端的主机上启动了GDS，系统会使用GDS个数最多的客户端所在主机进行备份。因此，建议您仅在一个部署了客户端的主机上以一个用户启动多个GDS，为达到最高性能，对于双控系统，启动GDS的数量推荐为备份存储单元数量的四倍，对于四控系统，启动GDS的数量推荐为备份存储单元数量的八倍。</li>
+     <li>如果GaussDB(DWS)是沙箱部署场景，请在执行表集GDS备份前，参见<a href="DWS_00122.html">GDS运行在GaussDB(DWS)沙箱部署场景的注意事项</a>，将沙箱内的GDS配置目录映射至宿主机相应目录。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="DWS_00032__zh-cn_topic_0000001656569013_zh-cn_topic_0000001666345505_uicontrol865195012392">“<span id="DWS_00032__zh-cn_topic_0000001656569013_zh-cn_topic_0000001666345505_text4651950123919">保护</span> &gt; 大数据 &gt; GaussDB(DWS)”</span>。</span></li>
+     <li><span>选择<span class="uicontrol">“表集”</span>页签，在需要保护的资源所在行，单击<span class="menucascade">“<span class="uicontrol">更多</span> &gt; <span class="uicontrol">保护</span>”</span>。</span><p></p><p>您也可以勾选多个资源进行批量保护。</p> <p></p></li>
+     <li><span>填写<span class="uicontrol" id="DWS_00032__dws_00030_uicontrol5202191417162">“备份元数据存储路径”</span>。<span style="color:#282B33;">填写一个GaussDB(DWS)节点上的目录，用于存储备份副本元数据。如果目录不存在，会自动创建。GaussDB(DWS)集群用户需要有该目录读写权限。</span></span><p></p>
+      <div class="note" id="DWS_00032__dws_00030_note16947036142819">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="DWS_00032__dws_00030_ul5424191615296">
+         <li id="DWS_00032__dws_00030_li7424191672914">建议为备份元数据存储路径至少预留20G磁盘空间。请勿配置为系统卷和生产业务卷，否则磁盘空间不足时会影响生产业务运行。</li>
+         <li id="DWS_00032__dws_00030_li89481217182914"><span style="color:#282B33;">GaussDB(DWS)集群用户对</span><span class="uicontrol" style="color:#282B33;" id="DWS_00032__dws_00030_uicontrol32051027310">“备份元数据存储路径”</span><span style="color:#282B33;">是否具有</span><span style="color:#282B33;">读写权限的相关说明和判断方式，请参见</span><a href="DWS_00019.html#DWS_00019__li836512573513">备份元数据存储路径访问权限说明</a><span style="color:#282B33;">。</span></li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li><span>选择SLA。</span><p></p><p>您也可以单击<span class="uicontrol">“<span>创建</span>”</span>，创建新的SLA。</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul>
+         <li>对表集保护时，不支持选择预置SLA。</li>
+         <li><span>如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol" id="DWS_00032__zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p></p><p id="DWS_00032__zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p> <p></p></li>
+     <li><strong>可选：</strong><span>执行手动备份。</span><p></p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
+      <ol type="a">
+       <li>在需要备份的表集所在行单击<span class="uicontrol">“更多 &gt; <span>手动备份</span>”</span>。</li>
+       <li>设置手动备份产生的副本名称。<p id="DWS_00032__dws_00030_p420310146161">如果您不设置，系统默认设置副本名称为：backup_时间戳。</p></li>
+       <li>设置保护策略。<p>对于表集，仅支持<span class="uicontrol">“<span>全量备份</span>”</span>。</p>
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="DWS_00032__zh-cn_topic_0000002200146973_p13522118194919"><span id="DWS_00032__zh-cn_topic_0000002200146973_ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
+         </div>
+        </div></li>
+       <li>单击<span class="uicontrol" id="DWS_00032__dws_00030_uicontrol5203121417169">“确定”</span>。
+        <div class="note" id="DWS_00032__dws_00030_note152039149163">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="DWS_00032__dws_00030_zh-cn_topic_0000001607531736_p870125314544">支持选择多个资源批量进行手动备份。勾选多个资源，在页面左上角选择<span class="uicontrol" id="DWS_00032__dws_00030_zh-cn_topic_0000001607531736_uicontrol14182155715711">“<span id="DWS_00032__dws_00030_zh-cn_topic_0000001607531736_text662114113158">更多</span> &gt; <span id="DWS_00032__dws_00030_zh-cn_topic_0000001607531736_text1068159191519">手动备份</span>”</span>。</p>
+         </div>
+        </div></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="DWS_00029.html">步骤6：执行备份</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -84,6 +84,7 @@ import openbackup.system.base.sdk.exportfile.model.LogLevelDto;
 import openbackup.system.base.sdk.infrastructure.model.InfraResponseWithError;
 import openbackup.system.base.sdk.infrastructure.model.beans.NodePodInfo;
 import openbackup.system.base.sdk.repository.model.NasDistributionStorageDetail;
+import openbackup.system.base.sdk.system.model.EsnInfo;
 import openbackup.system.base.security.exterattack.ExterAttack;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -1250,4 +1251,16 @@ public interface TargetClusterRestApi {
     @Headers({"x-auth-token: {token}"})
     void checkBeforeManualReplication(URI uri, @Param("token") String token, @Param("storageType") String storageType,
             @Param("storageId") String storageId, @Param("resourceId") String resourceId);
+
+    /**
+     * 查询指定目标集群的esn
+     *
+     * @param uri uri
+     * @param token token
+     * @return PageListResponse 返回结果
+     */
+    @ExterAttack
+    @RequestLine("GET /v1/system/esn")
+    @Headers({"x-auth-token: {token}"})
+    EsnInfo getSystemEsn(URI uri, @Param("token") String token);
 }

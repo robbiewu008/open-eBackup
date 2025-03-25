@@ -1,0 +1,338 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring a TDSQL Database">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200145521.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200059985">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring a TDSQL Database</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200059985"></a><a name="EN-US_TOPIC_0000002200059985"></a>
+  <h1 class="topictitle1">Restoring a TDSQL Database</h1>
+  <div>
+   <p>This section describes how to use a copy to restore a database that has been backed up. Multiple instances in the same TDSQL cluster can be backed up or restored at the same time (for 1.6.0 and later versions).</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>The NTP service has been enabled for the cluster and the clock source configurations are the same.</li>
+     <li>During cluster instance restoration, ensure that the data synchronization user of the target cluster exists in the copy used for the restoration. Otherwise, the restoration fails.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li id="EN-US_TOPIC_0000002200059985__en-us_topic_0000001263614142_li10796132225712"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002199964685_uicontrol8687163819368"><b><span id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002199964685_text176879387363"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002199964685_text156881638113617"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002199964685_text49981969503"><strong>Databases</strong></span> &gt; TDSQL</b></span>.</span></li>
+     <li><span>Search for copies by TDSQL resource or copy. This section describes how to search for copies by resource.</span><p></p><p>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> tab page, locate the resource to be restored by resource name and click the name.</p> <p></p></li>
+     <li><span>Select the year, month, and day in sequence to find the copy.</span><p></p><p>If <span><img src="en-us_image_0000002200060017.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p> <p></p></li>
+     <li><span>Specify a copy or a point in time for restoration.</span><p></p>
+      <div class="p">
+       You can specify a copy or any point in time between two copies for restoration.
+       <div class="note">
+        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <p>If no archive logs are backed up at a time point, data cannot be restored to the time point.</p>
+        </div>
+       </div>
+       <ol type="a">
+        <li>On the <span><strong>By Date</strong></span> tab page, select a year, month, and day in sequence to search for copies.<p>If <span><img src="en-us_image_0000002200145609.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p></li>
+        <li>Specify a copy or a point in time for restoration.
+         <ul>
+          <li>Specify a copy for restoration.<p><span><img class="eddx" src="en-us_image_0000002200145605.png"></span></p></li>
+          <li>Specify a point in time for restoration.<p>Data can be restored to a specific point in time in the blue part on the timeline. <span><img src="en-us_image_0000002164818982.png"></span> indicates that a copy exists at this point in time. If no archive logs are backed up at a time point, data cannot be restored to the time point.</p> <p><span><img class="eddx" src="en-us_image_0000002164659258.png"></span></p> <p></p>
+           <div class="note">
+            <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+            <div class="notebody">
+             <ul id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002164757038_ul75802612312">
+              <li id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002164757038_li1497342618234">For 1.5.0, a maximum of 100 copies can be displayed on the timeline. You can click <span><img id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002164757038_image173544102299" src="en-us_image_0000002199963833.png"></span> to view all copies.</li>
+              <li id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002164757038_li95818264231">During point-in-time restoration, the information about the copy used for restoration cannot be obtained on the management page. Therefore, you cannot view the copy information of the restoration job on pages of the restoration job and related events.</li>
+             </ul>
+            </div>
+           </div></li>
+         </ul></li>
+        <li>Restore a TDSQL database.
+         <ul>
+          <li>Restore non-distributed instances.
+           <ul>
+            <li>Restore the TDSQL database to the original cluster.
+             <ol class="substepthirdol">
+              <li>Set <strong>Restore To</strong> to <span class="uicontrol"><b>Original Cluster</b></span>.</li>
+              <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</li>
+             </ol></li>
+            <li>Restore the TDSQL database to a new cluster.
+             <ol class="substepthirdol">
+              <li>Set <strong>Restore To</strong> to <span class="uicontrol"><b>New Cluster</b></span>.</li>
+              <li>If you set <strong>Restore To</strong> to <span class="uicontrol"><b>New Cluster</b></span>, you can filter the resource to be restored by tag.
+               <div class="note">
+                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p>This parameter is available only in 1.6.0 and later versions.</p>
+                </div>
+               </div></li>
+              <li>Select a cluster for restoration from the <span class="parmname"><b><span><strong>Target Cluster</strong></span></b></span> drop-down list.</li>
+              <li>Set the target instance for restoration.<p>For 1.5.0: You can only select an existing instance as the target instance.</p> <p>For 1.6.0 and later versions: You can select an existing instance or create an instance. The database version of the selected target instance must be the same as that of the original instance. If you choose to create an instance, see <a href="#EN-US_TOPIC_0000002200059985__table814219141233">Table 1</a>.</p>
+               <div class="note">
+                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p>Before creating an instance, ensure that the target cluster has sufficient resources to create the instance. Otherwise, the restoration will fail. For details about the resources of the target cluster, log in to the CHITU management console and click <strong>View [Equipment Resources]</strong> on the <strong>Instance management</strong> page.</p>
+                </div>
+               </div>
+               <div class="tablenoborder">
+                <a name="EN-US_TOPIC_0000002200059985__table814219141233"></a><a name="table814219141233"></a>
+                <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200059985__table814219141233" frame="border" border="1" rules="all">
+                 <caption>
+                  <b>Table 1 </b>Parameters for creating an instance
+                 </caption>
+                 <colgroup>
+                  <col style="width:31.1%">
+                  <col style="width:22.66%">
+                  <col style="width:46.239999999999995%">
+                 </colgroup>
+                 <thead align="left">
+                  <tr>
+                   <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1"><p>Parameter</p></th>
+                   <th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.2"><p>Description</p></th>
+                  </tr>
+                 </thead>
+                 <tbody>
+                  <tr>
+                   <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>DR Mode</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.2 "><p>You can only select the DR mode where the number of data nodes does not exceed that in the target cluster.</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>Instance Name</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.2 "><p>Name of an instance, which can be customized.</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>Client</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.2 "><p>Select a client for the TDSQL service node.</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" rowspan="5" valign="top" width="31.1%" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>Advanced</p>
+                    <div class="note">
+                     <span class="notetitle"> NOTE: </span>
+                     <div class="notebody">
+                      <p>If you do not set advanced parameters, the configuration of the original instance is used for restoration by default.</p>
+                     </div>
+                    </div></td>
+                   <td class="cellrowborder" valign="top" width="22.66%" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>Model</p></td>
+                   <td class="cellrowborder" valign="top" width="46.239999999999995%" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.2 "><p>Select the target model.</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>CPU (Cores)</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>The value ranges from 1 to 32.</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>Memory Size (GB)</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>The value ranges from 1 to 128.</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>Data Disk Size (GB)</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>The value ranges from 1 to 1500.</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>Log Disk Size (GB)</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.1.4.4.2.4.1.1 "><p>The value ranges from 1 to 300.</p></td>
+                  </tr>
+                 </tbody>
+                </table>
+               </div></li>
+              <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</li>
+             </ol></li>
+           </ul></li>
+          <li>Restore distributed instances.
+           <ul>
+            <li>Restore the TDSQL database to the original cluster.
+             <ol class="substepthirdol">
+              <li>Set <strong>Restore To</strong> to <span class="uicontrol"><b>Original Cluster</b></span>.</li>
+              <li id="EN-US_TOPIC_0000002200059985__li1545975010612">Select the mode for restoration from the <span class="parmname" id="EN-US_TOPIC_0000002200059985__parmname4364123931018"><b>DR Mode</b></span> drop-down list.
+               <div class="note" id="EN-US_TOPIC_0000002200059985__note1427914498213">
+                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p id="EN-US_TOPIC_0000002200059985__p2279349628">You can only select the DR mode where the number of data nodes does not exceed that in the target cluster.</p>
+                </div>
+               </div></li>
+              <li id="EN-US_TOPIC_0000002200059985__li850010299118">In the <span class="wintitle" id="EN-US_TOPIC_0000002200059985__wintitle77429743011"><b>Data Nodes</b></span> area, select a host where the client is installed for the TDSQL service node.</li>
+              <li id="EN-US_TOPIC_0000002200059985__li1473317682215">Set advanced parameters. For details about the parameters, see <a href="#EN-US_TOPIC_0000002200059985__table18661192115247">Table 2</a>.
+               <div class="note" id="EN-US_TOPIC_0000002200059985__note839823416220">
+                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p id="EN-US_TOPIC_0000002200059985__p939843418226">If you do not set advanced parameters, the configuration of the original instance is used for restoration by default.</p>
+                </div>
+               </div>
+               <div class="tablenoborder">
+                <a name="EN-US_TOPIC_0000002200059985__table18661192115247"></a><a name="table18661192115247"></a>
+                <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200059985__table18661192115247" frame="border" border="1" rules="all">
+                 <caption>
+                  <b>Table 2 </b>Advanced configuration parameters
+                 </caption>
+                 <colgroup>
+                  <col style="width:50%">
+                  <col style="width:50%">
+                 </colgroup>
+                 <thead align="left">
+                  <tr id="EN-US_TOPIC_0000002200059985__row36611021192414">
+                   <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1"><p id="EN-US_TOPIC_0000002200059985__p36624213242">Parameter</p></th>
+                   <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2"><p id="EN-US_TOPIC_0000002200059985__p12662321122419">Description</p></th>
+                  </tr>
+                 </thead>
+                 <tbody>
+                  <tr id="EN-US_TOPIC_0000002200059985__row96621210246">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200059985__p4662162118242"><strong id="EN-US_TOPIC_0000002200059985__b4251644142114">Model</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200059985__p36621521182414">Select the target model.</p></td>
+                  </tr>
+                  <tr id="EN-US_TOPIC_0000002200059985__row6662132182414">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200059985__p186621621162419"><strong id="EN-US_TOPIC_0000002200059985__b204511249192117">CPU (Cores)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200059985__p86621521172410">The value ranges from 1 to 64.</p></td>
+                  </tr>
+                  <tr id="EN-US_TOPIC_0000002200059985__row26621821122419">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200059985__p66628212242"><strong id="EN-US_TOPIC_0000002200059985__b3211129182118">Memory Size (GB)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200059985__p172071437202715">The value ranges from 1 to 128.</p></td>
+                  </tr>
+                  <tr id="EN-US_TOPIC_0000002200059985__row266262110245">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200059985__p14662152182410"><strong id="EN-US_TOPIC_0000002200059985__b14930153310212">Data Disk Size (GB)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200059985__p18104921182913">The value ranges from 1 to 800.</p></td>
+                  </tr>
+                  <tr id="EN-US_TOPIC_0000002200059985__row116886327298">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200059985__p156881932182912"><strong id="EN-US_TOPIC_0000002200059985__b1553738102117">Log Disk Size (GB)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200059985__p8456447102919">The value ranges from 1 to 800.</p></td>
+                  </tr>
+                 </tbody>
+                </table>
+               </div></li>
+              <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</li>
+             </ol></li>
+            <li>Restore the TDSQL database to a new cluster.
+             <ol class="substepthirdol">
+              <li>Set <strong>Restore To</strong> to <span class="uicontrol"><b>New Cluster</b></span>.</li>
+              <li>If you set <strong>Restore To</strong> to <span class="uicontrol"><b>New Cluster</b></span>, you can filter the resource to be restored by tag.
+               <div class="note">
+                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p>This parameter is available only in 1.6.0 and later versions.</p>
+                </div>
+               </div></li>
+              <li>Select a cluster for restoration from the <span class="parmname"><b><span>Target Cluster</span></b></span> drop-down list.
+               <div class="note">
+                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p>The zkmeta automatic backup function must be enabled for the selected target cluster. Otherwise, the restoration will fail.</p>
+                </div>
+               </div></li>
+              <li>Select the mode for restoration from the <span class="parmname" id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_parmname4364123931018"><b>DR Mode</b></span> drop-down list.
+               <div class="note" id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_note1427914498213">
+                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p2279349628">You can only select the DR mode where the number of data nodes does not exceed that in the target cluster.</p>
+                </div>
+               </div></li>
+              <li>In the <span class="wintitle" id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_wintitle77429743011"><b>Data Nodes</b></span> area, select a host where the client is installed for the TDSQL service node.</li>
+              <li>Set advanced parameters. For details about the parameters, see <a href="#EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_table18661192115247">Table 3</a>.
+               <div class="note" id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_note839823416220">
+                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p939843418226">If you do not set advanced parameters, the configuration of the original instance is used for restoration by default.</p>
+                </div>
+               </div>
+               <div class="tablenoborder">
+                <a name="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_table18661192115247"></a><a name="en-us_topic_0000002200059985_table18661192115247"></a>
+                <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_table18661192115247" frame="border" border="1" rules="all">
+                 <caption>
+                  <b>Table 3 </b>Advanced configuration parameters
+                 </caption>
+                 <colgroup>
+                  <col style="width:50%">
+                  <col style="width:50%">
+                 </colgroup>
+                 <thead align="left">
+                  <tr id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_row36611021192414">
+                   <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.1"><p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p36624213242">Parameter</p></th>
+                   <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.2"><p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p12662321122419">Description</p></th>
+                  </tr>
+                 </thead>
+                 <tbody>
+                  <tr id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_row96621210246">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p4662162118242"><strong id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_b4251644142114">Model</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p36621521182414">Select the target model.</p></td>
+                  </tr>
+                  <tr id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_row6662132182414">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p186621621162419"><strong id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_b204511249192117">CPU (Cores)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p86621521172410">The value ranges from 1 to 64.</p></td>
+                  </tr>
+                  <tr id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_row26621821122419">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p66628212242"><strong id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_b3211129182118">Memory Size (GB)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p172071437202715">The value ranges from 1 to 128.</p></td>
+                  </tr>
+                  <tr id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_row266262110245">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p14662152182410"><strong id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_b14930153310212">Data Disk Size (GB)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p18104921182913">The value ranges from 1 to 800.</p></td>
+                  </tr>
+                  <tr id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_row116886327298">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.1 "><p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p156881932182912"><strong id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_b1553738102117">Log Disk Size (GB)</strong></p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.2 "><p id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_p8456447102919">The value ranges from 1 to 800.</p></td>
+                  </tr>
+                 </tbody>
+                </table>
+               </div></li>
+              <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.
+               <div class="note">
+                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p>You can log in to the TDSQL database as administrator <strong>tdsqlsys_agent</strong> for the newly created instance. Contact the database administrator to obtain the administrator username and password.</p>
+                </div>
+               </div></li>
+             </ol></li>
+           </ul></li>
+         </ul></li>
+       </ol>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200059985__en-us_topic_0000001263614142_li1481714307166"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002200059985__en-us_topic_0000001263614142_uicontrol194684162818"><b><span id="EN-US_TOPIC_0000002200059985__text5761862442"><strong>OK</strong></span></b></span>.</span></li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Follow-up Procedure</h4>
+    <p>After the non-distributed instance is restored, the username and password of the target instance will be overwritten by those of the instance corresponding to the copy used for the restoration. If the status of the target instance is <span class="uicontrol"><b><span><strong>Offline</strong></span></b></span>, update the username and password of the target instance.</p>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002199964685_uicontrol123821426193719"><b><span id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002199964685_text3382726113718"><strong>Protection</strong></span> &gt; Databases &gt; TDSQL</b></span>.</span></li>
+     <li><span>Click the <span class="uicontrol" id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059929_en-us_topic_0000001311214069_uicontrol47381735103817"><b><span id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059929_text1668605291117"><strong>Non-distributed Instances</strong></span></b></span> tab.</span></li>
+     <li><span>Click the name of the target instance.</span></li>
+     <li><span>In the upper right corner of the page that is displayed, choose <span class="uicontrol"><b><span><strong>Modify</strong></span> &gt; <span><strong>Operation</strong></span></b></span>.</span></li>
+     <li><span>On the <span class="wintitle"><b><span><strong>Modify</strong></span></b></span> page that is displayed, update the username and password.</span></li>
+     <li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_en-us_topic_0000001263614142_uicontrol194684162818"><b><span id="EN-US_TOPIC_0000002200059985__en-us_topic_0000002200059985_text5761862442"><strong>OK</strong></span></b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200145521.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

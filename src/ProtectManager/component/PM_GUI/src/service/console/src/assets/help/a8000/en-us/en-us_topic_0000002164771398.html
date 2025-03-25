@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="GBase Restoration Job Fails Due to Inconsistent Database Topology Structures">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164611666.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164771398">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>GBase Restoration Job Fails Due to Inconsistent Database Topology Structures</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164771398"></a><a name="EN-US_TOPIC_0000002164771398"></a>
+
+<h1 class="topictitle1">GBase Restoration Job Fails Due to Inconsistent Database Topology Structures</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>Failed to restore the GBase incremental copy to a new location. The error code is <strong>1577212932</strong>.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Cause</h4><p>The database topology of the backup copy is inconsistent with that of the target location for restoration.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to the backup copy and the database in the target location. Run the following command to switch to the database view:</span><p><pre class="screen">su - <em>Database username</em></pre>
+<pre class="screen">gccli</pre>
+</p></li><li><span>Run the following command in the two databases to view the node information:</span><p><pre class="screen">show nodes;</pre>
+<p>View the values of <strong>primary part</strong> and <strong>duplicate part</strong> in the command output and check whether the parameter values of the two databases are consistent.</p>
+<p><span><img src="en-us_image_0000002200098049.png"></span></p>
+<ul><li>If they are inconsistent, the two database topologies are different. You need to ensure that the topologies of the two databases are the same.</li><li>Otherwise, contact Huawei technical support.</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164611666.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

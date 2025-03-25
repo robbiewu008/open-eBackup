@@ -33,6 +33,7 @@ import {
   ProtectedResourceApiService,
   QosService,
   RootPermisson,
+  RouterUrl,
   StorageUnitService
 } from 'app/shared';
 import { cacheGuideResource } from 'app/shared/consts/guide-config';
@@ -145,6 +146,8 @@ export class CreateCommonShareComponent implements OnInit {
     });
   userOptions = [];
   backupStorageUnitOps = [];
+
+  ratePolicyRouterUrl = RouterUrl.ProtectionLimitRatePolicy;
 
   constructor(
     private fb: FormBuilder,

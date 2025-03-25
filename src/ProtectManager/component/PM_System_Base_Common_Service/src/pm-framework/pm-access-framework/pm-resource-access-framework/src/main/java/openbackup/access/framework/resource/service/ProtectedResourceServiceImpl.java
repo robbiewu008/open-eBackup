@@ -16,6 +16,7 @@ import com.huawei.oceanprotect.job.sdk.JobService;
 import com.huawei.oceanprotect.system.base.label.service.LabelService;
 import com.huawei.oceanprotect.system.base.user.bo.DomainInfoBo;
 import com.huawei.oceanprotect.system.base.user.bo.ResourceSetBo;
+import com.huawei.oceanprotect.system.base.user.common.constant.UserConstants;
 import com.huawei.oceanprotect.system.base.user.common.helper.ResourceSetRelationHelper;
 import com.huawei.oceanprotect.system.base.user.controller.response.ResourceSetRoleResponse;
 import com.huawei.oceanprotect.system.base.user.entity.DomainResourceObjectEntity;
@@ -32,6 +33,8 @@ import com.huawei.oceanprotect.system.sdk.enums.SwitchNameEnum;
 import com.huawei.oceanprotect.system.sdk.enums.SwitchStatusEnum;
 import com.huawei.oceanprotect.system.sdk.service.SystemSwitchInternalService;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -58,6 +61,7 @@ import openbackup.access.framework.resource.persistence.model.ResourceGroupPo;
 import openbackup.access.framework.resource.persistence.model.ResourceRepositoryQueryParams;
 import openbackup.access.framework.resource.service.proxy.ProxyFactory;
 import openbackup.access.framework.resource.util.ResourceConstant;
+import openbackup.access.framework.resource.util.ResourceFilterUtil;
 import openbackup.access.framework.resource.util.ResourceUtil;
 import openbackup.data.access.framework.core.common.exception.LockNotObtainedException;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
@@ -75,6 +79,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
 import openbackup.data.protection.access.provider.sdk.resource.EnvironmentProvider;
 import openbackup.data.protection.access.provider.sdk.resource.NextBackupParams;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedObject;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResourceGroupResult;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceBase;
@@ -93,12 +98,19 @@ import openbackup.data.protection.access.provider.sdk.resource.model.ExecuteScan
 import openbackup.data.protection.access.provider.sdk.resource.model.ResourceExtendInfoKeyConstants;
 import openbackup.data.protection.access.provider.sdk.resource.model.ResourceScanDto;
 import openbackup.data.protection.access.provider.sdk.resource.model.ResourceUpsertRes;
+import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceFilterConditionParam;
+import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceFilterParam;
+import openbackup.system.base.common.aspect.OperationLogService;
 import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.constants.CommonOperationCode;
 import openbackup.system.base.common.constants.ErrorCodeConstant;
+import openbackup.system.base.common.constants.FaultEnum;
+import openbackup.system.base.common.constants.LegoInternalEvent;
 import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.enums.UserTypeEnum;
 import openbackup.system.base.common.errors.ResourceLockErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.log.constants.EventTarget;
 import openbackup.system.base.common.model.PagingParamRequest;
 import openbackup.system.base.common.model.SortingParamRequest;
 import openbackup.system.base.common.model.job.JobBo;
@@ -122,7 +134,13 @@ import openbackup.system.base.sdk.job.model.JobLogLevelEnum;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 import openbackup.system.base.sdk.quota.QuotaService;
+import openbackup.system.base.sdk.resource.ProtectObjectRestApi;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
+import openbackup.system.base.sdk.resource.enums.ProtectionStatusEnum;
+import openbackup.system.base.sdk.resource.model.ProtectionBatchOperationReq;
+import openbackup.system.base.sdk.resource.model.ProtectionCreationDto;
+import openbackup.system.base.sdk.resource.model.ProtectionModifyDto;
+import openbackup.system.base.sdk.resource.model.ProtectionResourceDto;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.sdk.resource.model.UpdateCopyUserObjectReq;
@@ -144,6 +162,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -208,6 +227,36 @@ public class ProtectedResourceServiceImpl implements ResourceService {
 
     private static final String MEM_RATE = "memRate";
 
+    private static final String PRE_SCRIPT = "pre_script";
+
+    private static final String POST_SCRIPT = "post_script";
+
+    private static final String ENABLE_SECURITY_ARCHIVE = "enable_security_archive";
+
+    private static final String WORM_SWITCH = "worm_switch";
+
+    private static final String AGENTS = "agents";
+
+    private static final String SNAP_DELETE_SPEED = "snap_delete_speed";
+
+    private static final String IS_CONSISTENT = "is_consistent";
+
+    private static final String BACKUP_RES_AUTO_INDEX = "backup_res_auto_index";
+
+    private static final String ARCHIVE_RES_AUTO_INDEX = "archive_res_auto_index";
+
+    private static final String APPLY_TO_ALL = "APPLY_TO_ALL";
+
+    private static final String OVERWRITE = "overwrite";
+
+    private static final String BINDING_POLICY = "binding_policy";
+
+    private static final String RESOURCE_FILTERS = "resource_filters";
+
+    private static final String RESOURCE_TAG_FILTERS = "resource_tag_filters";
+
+    private static final String DISK_INFO = "disk_info";
+
     private static final List<String> HCS_OP_LIST = ImmutableList.of(ResourceSubTypeEnum.HCS_GAUSSDB_PROJECT.getType(),
             ResourceSubTypeEnum.HCS_CONTAINER.getType(), ResourceSubTypeEnum.HDFS.getType(),
             ResourceSubTypeEnum.HIVE.getType(), ResourceSubTypeEnum.HBASE.getType(),
@@ -215,6 +264,19 @@ public class ProtectedResourceServiceImpl implements ResourceService {
 
     private static final List<JobStatusEnum> RUNNING_AND_PENDING_STATUS_LIST =
         ImmutableList.of(JobStatusEnum.PENDING, JobStatusEnum.RUNNING, JobStatusEnum.ABORTING, JobStatusEnum.READY);
+
+    private static final List<String> UPDATE_PROTECT_TYPE_LIST = ImmutableList.of(
+        ResourceSubTypeEnum.CNWARE.getType(), ResourceSubTypeEnum.NUTANIX.getType(),
+        ResourceTypeEnum.VIRTUALIZATION.getType(), ResourceSubTypeEnum.APSARA_STACK.getType(),
+        ResourceSubTypeEnum.OPEN_STACK.getType(), ResourceTypeEnum.HCS.getType());
+
+    private static final List<String> NEED_UPDATE_PROTECT_STATUS_TYPE_LIST = ImmutableList.of(
+        ResourceSubTypeEnum.CNWARE_VM.getType(), ResourceSubTypeEnum.NUTANIX_VM.getType(),
+        ResourceSubTypeEnum.HYPER_V_VM.getType(), ResourceSubTypeEnum.APS_INSTANCE.getType(),
+        ResourceSubTypeEnum.OPENSTACK_CLOUD_SERVER.getType(), ResourceSubTypeEnum.HCS_CLOUD_HOST.getType());
+
+    private static final List<String> FC_AND_FC_ONE_TYPE_LIST = ImmutableList.of(
+        ResourceSubTypeEnum.FUSION_COMPUTE.getType(), ResourceSubTypeEnum.FUSION_ONE_COMPUTE.getType());
 
     /**
      * 资源的扩展字段中有这个key,若为false则跳过新增或更新操作.用数据库中已有的资源
@@ -298,6 +360,12 @@ public class ProtectedResourceServiceImpl implements ResourceService {
 
     @Autowired
     private ResourceSetResourceService resourceSetResourceService;
+
+    @Autowired
+    private ProtectObjectRestApi protectObjectRestApi;
+
+    @Autowired
+    private OperationLogService operationLogService;
 
     @Autowired
     public void setJobScheduleService(JobScheduleService jobScheduleService) {
@@ -1463,6 +1531,10 @@ public class ProtectedResourceServiceImpl implements ResourceService {
         } else {
             upsertRes = upsert(resource, protectedResourceList);
         }
+
+        // 更新保护
+        checkResSubtypeAndUpdateProtectStatus(resource, protectedResourceList);
+
         List<String> increaseResourceUuidList = Optional.ofNullable(upsertRes.getIncreaseResourceUuids())
             .map(Arrays::asList).orElse(Collections.emptyList());
         if (upsertRes.isOverLimit()) {
@@ -1470,6 +1542,238 @@ public class ProtectedResourceServiceImpl implements ResourceService {
         }
         timer.cancel();
         return increaseResourceUuidList;
+    }
+
+    private void checkResSubtypeAndUpdateProtectStatus(ProtectedResource resource,
+        List<ProtectedResource> protectedResourceList) {
+        // 只有云和虚拟化插件需要适配，因为FC和FC ONE两款插件的类型和子类型是相反的，所以要分别判断
+        if (!UPDATE_PROTECT_TYPE_LIST.contains(resource.getType())
+            && !(FC_AND_FC_ONE_TYPE_LIST.contains(resource.getSubType())
+            && ResourceTypeEnum.PLATFORM.getType().equals(resource.getType()))) {
+            return;
+        }
+        checkProtectedResourceTypeAndUpdateProtectStatus(protectedResourceList);
+    }
+
+    private void checkProtectedResourceTypeAndUpdateProtectStatus(List<ProtectedResource> protectedResourceList) {
+        for (ProtectedResource protectedResource : protectedResourceList) {
+            // 这里部分插件protectedResource中没有parentUuid字段，因此需要去数据库中查询详细资源信息后获取parentUuid的值
+            Optional<ProtectedResource> protectedResOpt = resourceService.getResourceById(protectedResource.getUuid());
+            if (!protectedResOpt.isPresent()) {
+                continue;
+            }
+            ProtectedResource protectedRes = protectedResOpt.get();
+            boolean isVmOrCloudServer = NEED_UPDATE_PROTECT_STATUS_TYPE_LIST.contains(protectedRes.getSubType())
+                || (FC_AND_FC_ONE_TYPE_LIST.contains(protectedRes.getSubType())
+                && ResourceTypeEnum.VM.getType().equals(protectedRes.getType()));
+            if (!isVmOrCloudServer) {
+                // 只校验虚拟机或云服务器，List中VM是FC或FC ONE，LIST中其他的值对应的是其他虚拟化和云平台插件
+                // HCS只需考虑线下场景HCSContainer，线上场景因为资源只有一层云服务器，因此不考虑HCS线上场景HcsEnvOp
+                // 阿里云云服务费SLA的变化只根据其父资源可用区的SLA的配置而变化，不根据资源集的SLA的配置而变化，云服务器和可用区无父子关系
+                continue;
+            }
+            String parentUuid = protectedRes.getParentUuid();
+            Optional<ProtectedResource> parentResourceOpt = resourceService.getResourceById(parentUuid);
+            if (parentResourceOpt.isPresent()) {
+                ProtectedResource parentResource = parentResourceOpt.get();
+                if (parentResource.getProtectionStatus().equals(ProtectionStatusEnum.UNPROTECTED.getType())) {
+                    continue;
+                }
+                updateProtectStatus(parentResource, protectedRes);
+            }
+        }
+    }
+
+    private void updateProtectStatus(ProtectedResource parentResource, ProtectedResource protectedRes) {
+        if (!isMeetsFilterCondition(parentResource, protectedRes)) {
+            // 不满足过滤条件
+            updateProtectStatusWhenNotMeetsFilterCondition(parentResource, protectedRes);
+        } else {
+            // 满足过滤条件
+            updateProtectStatusWhenMeetsFilterCondition(parentResource, protectedRes);
+        }
+    }
+
+    private void updateProtectStatusWhenMeetsFilterCondition(ProtectedResource parentResource,
+        ProtectedResource protectedRes) {
+        String parentSlaId = parentResource.getProtectedObject().getSlaId();
+        String parentSlaName = parentResource.getProtectedObject().getSlaName();
+        Map<String, Object> parentExtendInfo = parentResource.getProtectedObject().getExtParameters();
+        boolean isOverwrite = (boolean) parentExtendInfo.get(OVERWRITE);
+        String bindingPolicy = parentExtendInfo.get(BINDING_POLICY).toString();
+        int protectStatus = protectedRes.getProtectionStatus();
+        switch (ProtectionStatusEnum.getStatus(protectStatus)) {
+            case PROTECTED:
+                String slaId = protectedRes.getProtectedObject().getSlaId();
+                if (isOverwrite && !slaId.equals(parentSlaId)) {
+                    modifyProtectionForRes(protectedRes, parentSlaId, parentSlaName, parentResource, parentExtendInfo);
+                }
+                break;
+            case UNPROTECTED:
+                if (bindingPolicy.contains(APPLY_TO_ALL)) {
+                    createProtectionForRes(protectedRes, parentSlaId, parentSlaName, parentResource, parentExtendInfo);
+                }
+                break;
+            case PROTECTING:
+                log.warn("Can not change protection(PROTECTING) of resources:{}.", protectedRes.getUuid());
+                break;
+            default:
+                log.error("Unknown protection status:{} of resource:{}.", protectStatus, protectedRes.getUuid());
+                break;
+        }
+    }
+
+    private void createProtectionForRes(ProtectedResource protectedRes, String parentSlaId, String parentSlaName,
+        ProtectedResource parentResource, Map<String, Object> parentExtendInfo) {
+        try {
+            String userId = UserConstants.SYS_ADMIN_USER_ID;
+            ProtectionCreationDto protectionCreationRequest = generateProtectionCreation(parentSlaId,
+                protectedRes.getUuid(), parentExtendInfo);
+            List<String> jobIds = protectObjectRestApi.createProtectedObject(userId, protectionCreationRequest);
+            String[] eventParams = setEventParams(parentResource, protectedRes, parentSlaName);
+            sendEvent(CommonOperationCode.AUTO_SCAN_AND_CREATE_PROTECT, eventParams, protectedRes.getUuid());
+            log.info("Create protection job: {} of resource: {} and sla: (id:{}, name:{}) success.",
+                jobIds, protectedRes.getUuid(), parentSlaId, parentSlaName);
+        } catch (LegoCheckedException ex) {
+            log.error("Create protection job of resource: {} and sla: (id:{}, name:{}) failed.",
+                protectedRes.getUuid(), parentSlaId, parentSlaName, ExceptionUtil.getErrorMessage(ex));
+        }
+    }
+
+    private void modifyProtectionForRes(ProtectedResource protectedRes, String parentSlaId, String parentSlaName,
+        ProtectedResource parentResource, Map<String, Object> parentExtendInfo) {
+        try {
+            String userId = UserConstants.SYS_ADMIN_USER_ID;
+            ProtectionModifyDto protectionModifyRequest = generateProtectionModifyReq(parentSlaId,
+                protectedRes.getUuid(), protectedRes.getProtectedObject(), parentExtendInfo);
+            String jobId = protectObjectRestApi.modifyProtectedObject(userId, protectionModifyRequest);
+            String[] eventParams = setEventParams(parentResource, protectedRes, parentSlaName);
+            sendEvent(CommonOperationCode.AUTO_SCAN_AND_MODIFY_PROTECT, eventParams, protectedRes.getUuid());
+            log.info("Modify protection job: {} of resource: {} and sla: (id:{}, name:{}) success.",
+                jobId, protectedRes.getUuid(), parentSlaId, parentSlaName);
+        } catch (LegoCheckedException ex) {
+            log.error("Modify protection job of resource: {} and sla: (id:{}, name:{}) failed.",
+                protectedRes.getUuid(), parentSlaId, parentSlaName, ExceptionUtil.getErrorMessage(ex));
+        }
+    }
+
+    private String[] setEventParams(ProtectedResource parentResource, ProtectedResource protectedRes, String slaName) {
+        return new String[] {parentResource.getEnvironment().getName(), protectedRes.getUuid(),
+            protectedRes.getName(), "--", slaName, "--"};
+    }
+
+    private void updateProtectStatusWhenNotMeetsFilterCondition(ProtectedResource parentResource,
+        ProtectedResource protectedRes) {
+        if (protectedRes.getProtectionStatus().equals(ProtectionStatusEnum.PROTECTED.getType())) {
+            // 当不满足被保护的条件，如果有保护，移除保护
+            deleteProtectionForRes(protectedRes, parentResource);
+        }
+    }
+
+    private void deleteProtectionForRes(ProtectedResource protectedRes, ProtectedResource parentResource) {
+        try {
+            ProtectionBatchOperationReq deleteGroupSubSourceReq = new ProtectionBatchOperationReq();
+            deleteGroupSubSourceReq.setIsResourceGroup(false);
+            List<String> deleteResourceIds = new ArrayList<>();
+            deleteResourceIds.add(protectedRes.getUuid());
+            deleteGroupSubSourceReq.setResourceIds(deleteResourceIds);
+            protectObjectRestApi.deleteProtectedObjects(deleteGroupSubSourceReq);
+            String[] eventParams = setEventParams(parentResource, protectedRes,
+                protectedRes.getProtectedObject().getSlaName());
+            sendEvent(CommonOperationCode.AUTO_SCAN_AND_REMOVE_PROTECT, eventParams, protectedRes.getUuid());
+            log.info("Remove protection of resource: {} success.", protectedRes.getUuid());
+        } catch (LegoCheckedException ex) {
+            log.error("Remove protection of resource: {} failed.", protectedRes.getUuid(),
+                ExceptionUtil.getErrorMessage(ex));
+        }
+    }
+
+    private void sendEvent(String eventId, String[] eventParams, String resourceId) {
+        LegoInternalEvent event = new LegoInternalEvent();
+        event.setResourceId(resourceId);
+        event.setSourceType(EventTarget.PROTECTION);
+        event.setSourceId(eventId);
+        event.setEventLevel(FaultEnum.AlarmSeverity.INFO);
+        event.setEventId(eventId);
+        event.setEventTime(Instant.now().getEpochSecond());
+        event.setEventSequence(Instant.now().getNano());
+        event.setIsSuccess(true);
+        event.setEventParam(eventParams);
+        event.setUserId(UserConstants.SYS_ADMIN_USER_ID);
+        operationLogService.sendEvent(event);
+    }
+
+    private boolean isMeetsFilterCondition(ProtectedResource parentResource, ProtectedResource protectedRes) {
+        Map<String, Object> parentExtendInfo = parentResource.getProtectedObject().getExtParameters();
+        Optional<Object> resourceFiltersObjOpt = Optional.ofNullable(parentExtendInfo.get(RESOURCE_FILTERS));
+        Object resourceFiltersObj = resourceFiltersObjOpt.orElse(null);
+        List<ResourceFilterParam> resourceFilterParams = new ArrayList<>();
+        if (resourceFiltersObj instanceof List) {
+            List<?> resourceFilters = (List<?>) resourceFiltersObj;
+            resourceFilterParams = JSON.parseObject(JSON.toJSONString(resourceFilters),
+                new TypeReference<List<ResourceFilterParam>>() {});
+        } else {
+            log.warn("ParentResource:{} do not have the 'resource_filters' value.", parentResource.getUuid());
+        }
+        Object resourceTagFiltersObj = parentExtendInfo.get(RESOURCE_TAG_FILTERS);
+        List<ResourceFilterParam> resourceTagFilterParams = new ArrayList<>();
+        if (resourceTagFiltersObj instanceof List) {
+            List<?> resourceFilters = (List<?>) resourceTagFiltersObj;
+            resourceTagFilterParams = JSON.parseObject(JSON.toJSONString(resourceFilters),
+                new TypeReference<List<ResourceFilterParam>>() {});
+        } else {
+            log.warn("ParentResource:{} do not have the 'resource_tag_filters' value.", parentResource.getUuid());
+        }
+        ResourceFilterConditionParam resourceFilterConditionParam = new ResourceFilterConditionParam();
+        resourceFilterConditionParam.setResourceFilters(resourceFilterParams);
+        resourceFilterConditionParam.setResourceTagFilters(resourceTagFilterParams);
+        return ResourceFilterUtil.isResourceMeetsFilterConditions(protectedRes, resourceFilterConditionParam);
+    }
+
+    private ProtectionCreationDto generateProtectionCreation(String slaId, String resourceId,
+        Map<String, Object> parentExtendInfo) {
+        ProtectionCreationDto creationDto = new ProtectionCreationDto();
+        creationDto.setSlaId(slaId);
+        creationDto.setResources(buildProtectionResources(resourceId));
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(DISK_INFO, new ArrayList<>());
+        Map<String, Object> extParameters = setExtParameters(parentExtendInfo, parameters);
+        creationDto.setExtParameters(extParameters);
+        return creationDto;
+    }
+
+    private static List<ProtectionResourceDto> buildProtectionResources(String resourceId) {
+        // 对云主机保护，无资源过滤规则
+        ProtectionResourceDto resourceDto = new ProtectionResourceDto();
+        resourceDto.setResourceId(resourceId);
+        return Collections.singletonList(resourceDto);
+    }
+
+    private ProtectionModifyDto generateProtectionModifyReq(String parentSlaId, String resourceId,
+        ProtectedObject oldProtectedObject, Map<String, Object> parentExtendInfo) {
+        ProtectionModifyDto protection = new ProtectionModifyDto();
+        protection.setSlaId(parentSlaId);
+        protection.setResourceId(resourceId);
+        protection.setIsResourceGroup(false);
+        protection.setIsGroupSubResource(false);
+        protection.setResourceGroupId("");
+        Map<String, Object> parameters = oldProtectedObject.getExtParameters();
+        Map<String, Object> extParameters = setExtParameters(parentExtendInfo, parameters);
+        protection.setExtParameters(extParameters);
+        return protection;
+    }
+
+    private Map<String, Object> setExtParameters(Map<String, Object> parentExtendInfo, Map<String, Object> parameters) {
+        parameters.put(PRE_SCRIPT, parentExtendInfo.get(PRE_SCRIPT));
+        parameters.put(POST_SCRIPT, parentExtendInfo.get(POST_SCRIPT));
+        parameters.put(ENABLE_SECURITY_ARCHIVE, parentExtendInfo.get(ENABLE_SECURITY_ARCHIVE));
+        parameters.put(WORM_SWITCH, parentExtendInfo.get(WORM_SWITCH));
+        parameters.put(AGENTS, parentExtendInfo.get(AGENTS));
+        parameters.put(SNAP_DELETE_SPEED, parentExtendInfo.get(SNAP_DELETE_SPEED));
+        parameters.put(IS_CONSISTENT, parentExtendInfo.get(IS_CONSISTENT));
+        parameters.put(BACKUP_RES_AUTO_INDEX, parentExtendInfo.get(BACKUP_RES_AUTO_INDEX));
+        parameters.put(ARCHIVE_RES_AUTO_INDEX, parentExtendInfo.get(ARCHIVE_RES_AUTO_INDEX));
+        return parameters;
     }
 
     private void sendResourceInfosToDee(List<ProtectedResource> protectedResourceList, String resourceId) {
@@ -2541,6 +2845,14 @@ public class ProtectedResourceServiceImpl implements ResourceService {
         }
         return query(false, 0, maxResourceNum,
             Collections.singletonMap("parentUuid", resourceId)).getRecords();
+    }
+
+    @Override
+    public List<ProtectedResource> getResourceByParentIdIgnoreOwner(String resourceId) {
+        if (resourceId == null) {
+            return new ArrayList<>();
+        }
+        return repository.queryResourcesByParentUuid(resourceId);
     }
 
     @Override

@@ -1,0 +1,55 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="How Do I Change the Number of NFS Volumes Mounted to an ESXi Host?">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200055033">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>How Do I Change the Number of NFS Volumes Mounted to an ESXi Host?</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200055033"></a><a name="EN-US_TOPIC_0000002200055033"></a>
+
+<h1 class="topictitle1">How Do I Change the Number of NFS Volumes Mounted to an ESXi Host?</h1>
+<div><p>Live mount is to mount the linked clone of a copy generated on the <span>OceanProtect</span> to an ESXi host, create an NFS datastore, and start the VM. If the number of mount jobs created on a single ESXi host exceeds the maximum number of NFS volumes that can be mounted, the mount jobs will fail. To change the number of NFS volumes that can be mounted to an ESXi host, perform the following steps (vCenter 6.7.0 is used as an example):</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="EN-US_TOPIC_0000002200055033__li1845527155914"><span>Log in to the vCenter Server on a browser.</span><p><p id="EN-US_TOPIC_0000002200055033__en-us_topic_0000001839187061_p171383317558">Login address: <strong id="EN-US_TOPIC_0000002200055033__b1897092811206">https://</strong><em id="EN-US_TOPIC_0000002200055033__i5970162819207">vCenter Server IP address</em></p>
+</p></li><li><span>Select the ESXi host whose configuration needs to be modified to display the host page.</span></li><li><span>Choose <span class="uicontrol"><b>Configure &gt; System &gt; Advanced System Settings</b></span>. </span></li><li><span>Click <span class="uicontrol"><b>EDIT</b></span>, find <span class="uicontrol"><b>NFS.MaxVolumes</b></span>, and change the value of <span class="uicontrol"><b>NFS.MaxVolumes</b></span>. </span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Before performing this operation, record the number of volumes that can be mounted before the modification for rollback if necessary.</p>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

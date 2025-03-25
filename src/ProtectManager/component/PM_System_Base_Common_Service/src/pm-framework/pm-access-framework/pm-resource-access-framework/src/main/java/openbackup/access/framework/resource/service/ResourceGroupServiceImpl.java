@@ -31,7 +31,7 @@ import openbackup.data.protection.access.provider.sdk.resourcegroup.constant.Res
 import openbackup.data.protection.access.provider.sdk.resourcegroup.constant.ResourceGroupErrorCode;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.constant.ResourceGroupLabelConstant;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupDto;
-import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupExtendParam;
+import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceFilterConditionParam;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupMemberDto;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupProtectedObjectDto;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupProtectedObjectLabelDto;
@@ -430,8 +430,8 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
         || VerifyUtil.isEmpty(existGroupDto.getProtectedObjectDto())) {
             return Collections.emptyList();
         }
-        ResourceGroupExtendParam extendParam = JSON.parseObject(dto.getExtendStr(),
-            ResourceGroupExtendParam.class);
+        ResourceFilterConditionParam extendParam = JSON.parseObject(dto.getExtendStr(),
+            ResourceFilterConditionParam.class);
         List<VirtualResourceExtendPo> resourceExtendPos = listAllVmware(extendParam.getResourcePathFilter(),
             existGroupDto.getScopeResourceId());
         List<VirtualResourceExtendPo> resources = resourceExtendPos.stream()
@@ -624,8 +624,8 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
         dto.setExtParameters(request.getExtParams());
         dto.setPostAction(request.getPostAction());
         if (GroupTypeEnum.RULE.getValue().equals(resourceGroupDto.getGroupType())) {
-            ResourceGroupExtendParam extendParam = JSON.parseObject(resourceGroupDto.getExtendStr(),
-                ResourceGroupExtendParam.class);
+            ResourceFilterConditionParam extendParam = JSON.parseObject(resourceGroupDto.getExtendStr(),
+                ResourceFilterConditionParam.class);
             List<VirtualResourceExtendPo> resourceExtendPos = listAllVmware(extendParam.getResourcePathFilter(),
                 resourceGroupDto.getScopeResourceId());
             List<ProtectionResourceDto> protectionResources = ResourceFilterUtil

@@ -104,4 +104,27 @@ public interface InstanceResourceService {
      * @return ProtectedResource 资源信息
      */
     ProtectedResource getResourceById(String resourceId);
+
+    /**
+     * 环境下的集群实例的子资源健康检查
+     *
+     * @param environment 子实例资源信息
+     */
+    void healthCheckSubInstance(ProtectedEnvironment environment);
+
+    /**
+     * 检查单实例联通状态
+     *
+     * @param resource 实例
+     * @param environment 环境
+     *
+     */
+    void healthCheckSingleInstanceByAgent(ProtectedResource resource, ProtectedEnvironment environment);
+
+    /**
+     * 更新资源状态
+     *
+     * @param resource resource
+     */
+    void updateResourceStatus(ProtectedResource resource);
 }

@@ -20,49 +20,59 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤7：执行备份">
+<meta name="DC.Title" content="步骤5：（可选）创建限速策略">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="gaussdbT_00010.html">
+<meta name="DC.Relation" scheme="URI" content="gaussdbT_00011.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="gaussdbT_00016">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤7：执行备份</title>
+<title>步骤5：（可选）创建限速策略</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="gaussdbT_00016"></a><a name="gaussdbT_00016"></a>
 
-<h1 class="topictitle1">步骤7：执行备份</h1>
-<div><p>执行备份前将需要保护的资源关联到指定SLA，系统将对这些资源按照SLA进行保护，并根据SLA周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
-<div class="section"><h4 class="sectiontitle">注意事项</h4><ul><li>全量备份失败后，如果下一次备份是日志备份，由于日志备份依赖上一次成功的全量备份副本，该日志备份任务将失败。此时，请手动执行一次全量备份。</li></ul>
-<ul><li>手动备份时，SLA中定义的参数（<span class="uicontrol">“<span>失败后自动重试</span>”</span>除外），如<span class="uicontrol">“<span>限速策略</span>”</span>会应用到手动备份任务中。</li><li>手动备份产生的副本保留时长按照SLA中的定义进行保留。</li></ul>
+<h1 class="topictitle1">步骤5：（可选）创建限速策略</h1>
+<div><p id="gaussdbT_00016__zh-cn_topic_0000002200061473_zh-cn_topic_0000001127901927_p31441444174712">如果需要限制保护任务的最大带宽以保证关键业务的性能，请参考本节配置限速策略。</p>
+<div class="section" id="gaussdbT_00016__zh-cn_topic_0000002200061473_zh-cn_topic_0000001127901927_section354917289471"><h4 class="sectiontitle">操作步骤</h4><ol id="gaussdbT_00016__zh-cn_topic_0000002200061473_zh-cn_topic_0000001127901927_ol1149154116466"><li id="gaussdbT_00016__zh-cn_topic_0000002200061473_zh-cn_topic_0000001127901927_li18388120104717"><span>选择<span class="uicontrol" id="gaussdbT_00016__zh-cn_topic_0000002200061473_zh-cn_topic_0000002199964685_uicontrol185917396272">“保护 &gt; 保护策略 &gt; 限速策略”</span>。</span></li><li id="gaussdbT_00016__zh-cn_topic_0000002200061473_zh-cn_topic_0000001127901927_li1438918203475"><span>单击<span class="uicontrol" id="gaussdbT_00016__zh-cn_topic_0000002200061473_zh-cn_topic_0000001127901927_uicontrol12389192016473">“<span id="gaussdbT_00016__zh-cn_topic_0000002200061473_zh-cn_topic_0000001127901927_text1214017349462">创建</span>”</span>。</span></li><li id="gaussdbT_00016__zh-cn_topic_0000002200061473_zh-cn_topic_0000001127901927_li117481133134716"><span>配置限速策略参数。</span><p><div class="p" id="gaussdbT_00016__zh-cn_topic_0000002200061473_p1897612503615">相关参数说明如<a href="#gaussdbT_00016__zh-cn_topic_0000002200061473_table12170124133619">表1</a>。
+<div class="tablenoborder"><a name="gaussdbT_00016__zh-cn_topic_0000002200061473_table12170124133619"></a><a name="zh-cn_topic_0000002200061473_table12170124133619"></a><table cellpadding="4" cellspacing="0" summary="" id="gaussdbT_00016__zh-cn_topic_0000002200061473_table12170124133619" frame="border" border="1" rules="all"><caption><b>表1 </b>限速策略参数说明</caption><colgroup><col style="width:32.269999999999996%"><col style="width:67.73%"></colgroup><thead align="left"><tr id="gaussdbT_00016__zh-cn_topic_0000002200061473_row716912241366"><th align="left" class="cellrowborder" valign="top" width="32.269999999999996%" id="mcps1.3.2.2.3.2.1.2.2.3.1.1"><p id="gaussdbT_00016__zh-cn_topic_0000002200061473_p5169524153616">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.73%" id="mcps1.3.2.2.3.2.1.2.2.3.1.2"><p id="gaussdbT_00016__zh-cn_topic_0000002200061473_p6169124103613">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="gaussdbT_00016__zh-cn_topic_0000002200061473_row7169112416367"><td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="gaussdbT_00016__zh-cn_topic_0000002200061473_p1916911248367"><span id="gaussdbT_00016__zh-cn_topic_0000002200061473_text161691424153611">名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="gaussdbT_00016__zh-cn_topic_0000002200061473_p9169924133613">自定义限速策略名称。</p>
+</td>
+</tr>
+<tr id="gaussdbT_00016__zh-cn_topic_0000002200061473_row7169182416362"><td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="gaussdbT_00016__zh-cn_topic_0000002200061473_p8169924113611"><span id="gaussdbT_00016__zh-cn_topic_0000002200061473_text12169424203614">最大带宽</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="gaussdbT_00016__zh-cn_topic_0000002200061473_p1981116133814">保护任务平均每秒最大传输的数据量。</p>
+<p id="gaussdbT_00016__zh-cn_topic_0000002200061473_p816992415362">默认值：1024<span style="color:#282B33;">MB/s</span>。</p>
+<p id="gaussdbT_00016__zh-cn_topic_0000002200061473_p61691524113616">取值范围：10MB/s~5120MB/s</p>
+</td>
+</tr>
+<tr id="gaussdbT_00016__zh-cn_topic_0000002200061473_row0169524103620"><td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="gaussdbT_00016__zh-cn_topic_0000002200061473_p2169424133612"><span id="gaussdbT_00016__zh-cn_topic_0000002200061473_text1516915245366">描述</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="gaussdbT_00016__zh-cn_topic_0000002200061473_p51691624103615">描述限速策略信息。</p>
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="section"><h4 class="sectiontitle">前提条件</h4><p>GaussDB T单机数据库备份的前提条件如下：</p>
-<ul><li>请确保GaussDB T数据库运行状态正常。</li><li>如果需要进行全量备份或日志备份，请确保备份前已开启日志归档。</li></ul>
-<p>GaussDB T集群数据库备份的前提条件如下：</p>
-<p>数据库需要在ARCHIVELOG模式下运行，并将Redo日志存档至多个位置。查询和修改日志归档模式，请参见<a href="gaussdbT_00071.html">步骤2：设置Redo日志模式</a>。</p>
 </div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="gaussdbT_00016__gaussdbt_00012_zh-cn_topic_0000001839142377_uicontrol174093353365">“<span id="gaussdbT_00016__gaussdbt_00012_zh-cn_topic_0000001839142377_text164093351368">保护</span> &gt; 数据库 &gt; GaussDB T”</span>。</span></li><li><span>选择需要保护的数据库实例，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p><p>您也可以勾选多个数据库实例进行批量保护。</p>
-</p></li><li><span>选择SLA。</span><p><div class="p" id="gaussdbT_00016__zh-cn_topic_0000001964713008_p16181740836">您也可以单击<span class="uicontrol" id="gaussdbT_00016__zh-cn_topic_0000001964713008_uicontrol744210206420">“<span id="gaussdbT_00016__zh-cn_topic_0000001964713008_text1873812341015">创建</span>”</span>，创建新的SLA。<div class="note" id="gaussdbT_00016__zh-cn_topic_0000001964713008_note25947145710"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="gaussdbT_00016__zh-cn_topic_0000001964713008_p125947145711"><span id="gaussdbT_00016__zh-cn_topic_0000001964713008_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
-</div></div>
-</div>
-</p></li></ol><ol start="4"><li><span>单击<span class="uicontrol" id="gaussdbT_00016__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p><p id="gaussdbT_00016__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p>
-</p></li><li><strong>可选：</strong><span>执行手动备份。</span><p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
-<ol type="a"><li>在需要备份的数据库所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>，支持多个资源同时进行手动备份。</li><li>设置手动备份产生的副本名称。<p>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
-</li><li>选择保护策略：<span>全量备份</span>、<span>增量备份</span>、<span>差异备份</span>或<span>日志备份</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li><span>增量备份</span>、<span>差异备份</span>仅适用于GaussDB T集群类型的备份场景。</li><li><span>对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></li></ul>
-</div></div>
-</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li></ol>
-</p></li></ol>
+</p></li><li id="gaussdbT_00016__zh-cn_topic_0000002200061473_li18215153613714"><span>单击<span class="uicontrol" id="gaussdbT_00016__zh-cn_topic_0000002200061473_uicontrol1756934320715">“<span id="gaussdbT_00016__zh-cn_topic_0000002200061473_text1686961087">确定</span>”</span>。</span></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="gaussdbT_00010.html">备份GaussDB T数据库</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="gaussdbT_00011.html">备份GaussDB T数据库</a></div>
 </div>
 </div>
 

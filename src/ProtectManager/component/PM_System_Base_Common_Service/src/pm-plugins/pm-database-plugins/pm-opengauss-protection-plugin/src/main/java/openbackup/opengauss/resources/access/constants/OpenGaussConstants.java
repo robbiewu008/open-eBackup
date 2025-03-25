@@ -81,4 +81,9 @@ public class OpenGaussConstants {
      * 是否删除关联副本
      */
     public static final String IS_DELETE_RELATIVE_COPIES = "is_delete_relative_copies";
+
+    /**
+     * 实例状态
+     */
+    public static final String INSTANCE_STATE = "instanceState";
 }

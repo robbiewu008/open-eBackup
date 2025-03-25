@@ -1,0 +1,64 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤2：检查FusionCompute接口访问隔离策略">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="fc_gud_0013.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="fc_gud_0014_0">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤2：检查FusionCompute接口访问隔离策略</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="fc_gud_0014_0"></a><a name="fc_gud_0014_0"></a>
+  <h1 class="topictitle1">步骤2：检查FusionCompute接口访问隔离策略</h1>
+  <div>
+   <p>如果FusionCompute管理界面的“系统管理 &gt; 权限管理 &gt; 权限管理策略”界面存在“人机、机机接口访问隔离策略”，请执行本章节操作，将“人机、机机接口访问隔离策略”的当前规则修改为“否”，以确保FusionCompute的接口对接用户能正常通过7443端口访问FusionCompute。否则，请跳过本章节。</p>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p>FusionCompute不同版本界面入口存在差异，请以实际界面为准。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <p>以下操作以FusionCompute 8.6.0版本为例。</p>
+    <ol>
+     <li><span>使用浏览器，登录FusionCompute。</span><p></p><p id="fc_gud_0014_0__fc_gud_0014_p6381515018">登录地址：<strong id="fc_gud_0014_0__fc_gud_0014_b415811413217">https://</strong><em id="fc_gud_0014_0__fc_gud_0014_i190316371521">FusionCompute的VRM节点的浮动IP地址</em><strong id="fc_gud_0014_0__fc_gud_0014_b179837448219">:8443</strong></p> <p></p></li>
+     <li><span>选择“系统管理 &gt; 权限管理 &gt; 权限管理策略”。</span></li>
+     <li><span>在“其他策略”区域单击“修改”。</span></li>
+     <li><span>将“人机、机机接口访问隔离策略”的当前规则修改为“否”。</span></li>
+     <li><span>单击“保存”。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="fc_gud_0013.html">备份FusionCompute虚拟机</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

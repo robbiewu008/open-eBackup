@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="nas_s_0020.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
@@ -40,12 +40,14 @@
    <p id="nas_s_0021__nas_s_0012_p19722164210475">存储设备CA证书的获取方式如下。</p>
    <ul id="nas_s_0021__nas_s_0012_ul9722184217475">
     <li id="nas_s_0021__nas_s_0012_li9722042184720">方式1：向设备管理员获取。</li>
-    <li id="nas_s_0021__nas_s_0012_li18722242154714">方式2：自行下载华为存储设备证书，其他存储设备请向设备管理员获取。以下以获取华为存储设备CA证书为例进行说明。
+    <li id="nas_s_0021__nas_s_0012_li18722242154714">方式2：自行下载华为存储设备证书，其他存储设备请向设备管理员获取。以下以获取华为OceanStor存储设备CA证书为例进行说明。
      <ol id="nas_s_0021__nas_s_0012_ol1723642184711">
       <li id="nas_s_0021__nas_s_0012_li1644514484819">在浏览器中输入待获取证书的存储设备DeviceManager登录地址，浏览器提示不安全（Microsoft Edge提示为“证书错误”）。<p id="nas_s_0021__nas_s_0012_p1410010574816"><a name="nas_s_0021__nas_s_0012_li1644514484819"></a><a name="nas_s_0012_li1644514484819"></a>不同浏览器提示方式不同，此处以Google Chrome 84为例进行说明。</p></li>
-      <li id="nas_s_0021__nas_s_0012_li177235428473"><span style="color:#494949;">单击url输入栏左侧的</span><span style="color:#494949;">“不安全”</span><span style="color:#494949;">。</span><p id="nas_s_0021__nas_s_0012_p1472318425476"><span><img id="nas_s_0021__nas_s_0012_image3723164274715" src="zh-cn_image_0000001839159889.png"></span></p></li>
-      <li id="nas_s_0021__nas_s_0012_li20723134211473"><span style="color:#494949;">在弹出的提示框中单击</span><span style="color:#494949;">“证书”</span><span style="color:#494949;">，查看颁发者是否为Huawei IT Product CA。</span><p id="nas_s_0021__nas_s_0012_p872384214476"><span><img id="nas_s_0021__nas_s_0012_image07231342194718" src="zh-cn_image_0000001839239829.png"></span></p></li>
-      <li id="nas_s_0021__nas_s_0012_li87231642174717"><span style="color:#494949;">请</span><a href="https://support.huawei.com/pki/pkidetail!loadCatagoryPkiData.action?type=PKI_TYPE-ROOT" target="_blank" rel="noopener noreferrer">单击此处</a><span style="color:#494949;">获取名为“Huawei Equipment Root CA.pem”的证书文件。</span></li>
+      <li id="nas_s_0021__nas_s_0012_li177235428473"><span style="color:#494949;">单击url输入栏左侧的</span><span style="color:#494949;">“不安全”</span><span style="color:#494949;">。</span><p id="nas_s_0021__nas_s_0012_p1472318425476"><span><img id="nas_s_0021__nas_s_0012_image3723164274715" src="zh-cn_image_0000002164645344.png"></span></p></li>
+      <li id="nas_s_0021__nas_s_0012_li20723134211473"><span style="color:#494949;">在弹出的提示框中单击</span><span style="color:#494949;">“证书无效”</span><span style="color:#494949;">。</span><p id="nas_s_0021__nas_s_0012_p7683465539"><span><img id="nas_s_0021__nas_s_0012_image194097119545" src="zh-cn_image_0000002200131673.png"></span></p></li>
+      <li id="nas_s_0021__nas_s_0012_li166118685812">在弹出的提示框中选择<span class="uicontrol" id="nas_s_0021__nas_s_0012_uicontrol486418249586">“基本信息”</span>页签，查看颁发者是否为<span style="color:#494949;">Huawei。</span><p id="nas_s_0021__nas_s_0012_p10664171318"><span><img id="nas_s_0021__nas_s_0012_image49571921627" src="zh-cn_image_0000002164645348.png"></span></p></li>
+      <li id="nas_s_0021__nas_s_0012_li15834331125420">选择<span class="uicontrol" id="nas_s_0021__nas_s_0012_uicontrol1997063816543">“详细信息”</span>页签，单击<span class="uicontrol" id="nas_s_0021__nas_s_0012_uicontrol16970123818540">“导出”</span>。<p id="nas_s_0021__nas_s_0012_p055711719557"><span><img id="nas_s_0021__nas_s_0012_image3604193991312" src="zh-cn_image_0000002164805076.png"></span></p></li>
+      <li id="nas_s_0021__nas_s_0012_li847718278550">将文件名后缀修改为<span class="uicontrol" id="nas_s_0021__nas_s_0012_uicontrol3859193445518">“.pem”</span>，保存类型为<span class="uicontrol" id="nas_s_0021__nas_s_0012_uicontrol181729238175">“Base64 编码ASCII，单一证书”</span>，单击<span class="uicontrol" id="nas_s_0021__nas_s_0012_uicontrol58591534205514">“保存”</span>。将导出的证书文件保存在本地。<p id="nas_s_0021__nas_s_0012_p1570371417561"><span><img id="nas_s_0021__nas_s_0012_image55961634141519" src="zh-cn_image_0000002200046113.png"></span></p></li>
      </ol></li>
    </ul>
   </div>

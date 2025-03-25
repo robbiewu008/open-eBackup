@@ -1,0 +1,165 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="恢复GaussDB T集群">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="gaussdbT_00069-1.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="gaussdbT_00069-2">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>恢复GaussDB T集群</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="gaussdbT_00069-2"></a><a name="gaussdbT_00069-2"></a>
+  <h1 class="topictitle1">恢复GaussDB T集群</h1>
+  <div>
+   <p>当需要对已备份的、类型为GaussDB T集群的数据库进行恢复时，可以参考本节使用副本恢复数据库至原位置或新位置。</p>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p id="gaussdbT_00069-2__gaussdbt_00069_p163281625103616">当数据库服务状态为“在线”、“降级”、“不可用”，且数据库服务所在节点状态为“在线”时，可以进行恢复操作。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p id="gaussdbT_00069-2__gaussdbt_00069_p189391716181616">恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_ol115861512165614">
+     <li id="gaussdbT_00069-2__zh-cn_topic_0000001263936798_li10796132225712"><span>选择<span class="uicontrol" id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00065_zh-cn_topic_0000002199964685_uicontrol137901542165417">“<span id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00065_zh-cn_topic_0000002199964685_text4790154220547">数据利用</span> &gt; <span id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00065_zh-cn_topic_0000002199964685_text15790114235419">副本数据</span> &gt; <span id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00065_zh-cn_topic_0000002199964685_text9626515124917">数据库</span> &gt; <span id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00065_zh-cn_topic_0000002199964685_text193013119308">GaussDB T</span>”</span>。</span></li>
+     <li id="gaussdbT_00069-2__gaussdbt_00069_li87691438131514"><span>支持以资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p id="gaussdbT_00069-2__gaussdbt_00069_p142551140161511">在“<span id="gaussdbT_00069-2__gaussdbt_00069_text6827103218214">资源</span>”页签，根据数据库名称查找到需要恢复的数据库，并单击数据库名称。</p> <p></p></li>
+     <li id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_li182120214713"><span>在<span class="uicontrol" id="gaussdbT_00069-2__gaussdbt_00069_uicontrol1812414562220">“<span id="gaussdbT_00069-2__gaussdbt_00069_text18993182162710">副本数据</span>”</span>页面，依次选择年、月、天找到副本。</span><p></p><p id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_p9918150182310">当时间上显示<span><img id="gaussdbT_00069-2__gaussdbt_00069_image6372127414" src="zh-cn_image_0000002199967441.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_li2098620343715"><span>在副本所在行，单击<span class="uicontrol" id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_uicontrol17834155014018">“<span id="gaussdbT_00069-2__gaussdbt_00069_text3935161010423">更多</span> &gt; <span id="gaussdbT_00069-2__gaussdbt_00069_text388813503428">恢复</span>”</span>。</span><p></p>
+      <ul id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_ul46503661812">
+       <li id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_li9651136131814">恢复数据库实例至原位置。 
+        <div class="tablenoborder">
+         <table cellpadding="4" cellspacing="0" summary="" id="gaussdbT_00069-2__gaussdbt_00069_table10161134615197" frame="border" border="1" rules="all">
+          <caption>
+           <b>表1 </b>恢复GaussDB T数据库实例至原位置
+          </caption>
+          <colgroup>
+           <col style="width:32.53%">
+           <col style="width:67.47%">
+          </colgroup>
+          <thead align="left">
+           <tr id="gaussdbT_00069-2__gaussdbt_00069_row116194613197">
+            <th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.4.2.4.2.1.1.1.2.3.1.1"><p id="gaussdbT_00069-2__gaussdbt_00069_p151611462191">参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.4.2.4.2.1.1.1.2.3.1.2"><p id="gaussdbT_00069-2__gaussdbt_00069_p1316114691914">说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr id="gaussdbT_00069-2__gaussdbt_00069_row19161204621915">
+            <td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.4.2.1.1.1.2.3.1.1 "><p id="gaussdbT_00069-2__gaussdbt_00069_kingbase-00081_p421028152915">并发进程数</p>
+             <div class="note" id="gaussdbT_00069-2__gaussdbt_00069_kingbase-00081_note137601255152715">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <p id="gaussdbT_00069-2__gaussdbt_00069_kingbase-00081_p1176010553271">仅1.6.0及后续版本支持该参数。</p>
+              </div>
+             </div></td>
+            <td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.4.2.1.1.1.2.3.1.2 ">
+             <div class="p" id="gaussdbT_00069-2__gaussdbt_00069_kingbase-00081_p284323634310">
+              并发运行的最大进程数。
+              <ul id="gaussdbT_00069-2__gaussdbt_00069_kingbase-00081_kingbase-00019_ul441812321262">
+               <li id="gaussdbT_00069-2__gaussdbt_00069_kingbase-00081_kingbase-00019_li168933916267"><span style="color:#282B33;">适当的设置可以提高备份或还原的效率，太高的设置会影响数据库实例本身的性能。</span></li>
+               <li id="gaussdbT_00069-2__gaussdbt_00069_kingbase-00081_kingbase-00019_li9418632172612"><span style="color:#282B33;">建议将最大进程数设置为CPU内核数。</span></li>
+              </ul>
+             </div> <p id="gaussdbT_00069-2__gaussdbt_00069_kingbase-00081_p1322615422614"></p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_li211144814180">恢复数据库实例至新位置。<p id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_p20231853141612"><a name="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_li211144814180"></a><a name="gaussdbt_00069_zh-cn_topic_0000001263936798_li211144814180"></a>相关参数说明如<a href="#gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_table93951625101715">表2</a>所示。</p>
+        <div class="tablenoborder">
+         <a name="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_table93951625101715"></a><a name="gaussdbt_00069_zh-cn_topic_0000001263936798_table93951625101715"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_table93951625101715" frame="border" border="1" rules="all">
+          <caption>
+           <b>表2 </b>恢复GaussDB T数据库实例至新位置
+          </caption>
+          <colgroup>
+           <col style="width:32.53%">
+           <col style="width:67.47%">
+          </colgroup>
+          <thead align="left">
+           <tr id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_row53951325131711">
+            <th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.4.2.4.2.1.2.2.2.3.1.1"><p id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_p173952253171">参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.4.2.4.2.1.2.2.2.3.1.2"><p id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_p203951725141711">说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr id="gaussdbT_00069-2__gaussdbt_00069_row20642038151510">
+            <td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.1 "><p id="gaussdbT_00069-2__gaussdbt_00069_p9786123578">标签</p>
+             <div class="note" id="gaussdbT_00069-2__gaussdbt_00069_note11548318195710">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <p id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00069_kingbase-00081_p1176010553271">仅1.6.0及后续版本支持该参数。</p>
+              </div>
+             </div></td>
+            <td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.2 "><p id="gaussdbT_00069-2__gaussdbt_00069_p8641538151516">资源关联的标签名称，可通过标签筛选数据库。</p></td>
+           </tr>
+           <tr id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_row6884113111815">
+            <td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.1 "><p id="gaussdbT_00069-2__gaussdbt_00069_p2130181513019">目标位置</p></td>
+            <td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.2 "><p id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_p1988443121811">选择恢复到的目标位置。</p></td>
+           </tr>
+           <tr id="gaussdbT_00069-2__gaussdbt_00069_row148511955244">
+            <td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.1 "><p id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00069_kingbase-00081_p421028152915">并发进程数</p>
+             <div class="note" id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00069_kingbase-00081_note137601255152715">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <p id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00069_kingbase-00081_p1176010553271_1">仅1.6.0及后续版本支持该参数。</p>
+              </div>
+             </div></td>
+            <td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.4.2.1.2.2.2.3.1.2 ">
+             <div class="p" id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00069_kingbase-00081_p284323634310">
+              并发运行的最大进程数。
+              <ul id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00069_kingbase-00081_kingbase-00019_ul441812321262">
+               <li id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00069_kingbase-00081_kingbase-00019_li168933916267"><span style="color:#282B33;">适当的设置可以提高备份或还原的效率，太高的设置会影响数据库实例本身的性能。</span></li>
+               <li id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00069_kingbase-00081_kingbase-00019_li9418632172612"><span style="color:#282B33;">建议将最大进程数设置为CPU内核数。</span></li>
+              </ul>
+             </div> <p id="gaussdbT_00069-2__gaussdbt_00069_gaussdbt_00069_kingbase-00081_p1322615422614"></p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div>
+        <div class="note" id="gaussdbT_00069-2__gaussdbt_00069_note1667603815313">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="gaussdbT_00069-2__gaussdbt_00069_p76762381533">恢复过程中，系统将关闭目标位置数据库服务。</p>
+         </div>
+        </div></li>
+      </ul> <p></p></li>
+     <li id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_li1481714307166"><span>单击<span class="uicontrol" id="gaussdbT_00069-2__gaussdbt_00069_zh-cn_topic_0000001263936798_uicontrol194684162818">“<span id="gaussdbT_00069-2__gaussdbt_00069_text17204857111715">确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="gaussdbT_00069-1.html">恢复GaussDB T数据库</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

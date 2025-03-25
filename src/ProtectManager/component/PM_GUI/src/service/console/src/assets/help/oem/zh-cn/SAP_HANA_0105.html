@@ -1,0 +1,69 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="恢复SAP HANA数据库时，恢复子任务长时间无进度">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="SAP_HANA_0100.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="SAP_HANA_0105">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>恢复SAP HANA数据库时，恢复子任务长时间无进度</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="SAP_HANA_0105"></a><a name="SAP_HANA_0105"></a>
+  <h1 class="topictitle1">恢复SAP HANA数据库时，恢复子任务长时间无进度</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>恢复SAP HANA数据库时，恢复子任务长时间无进度，长时间停留在该子任务：“数据保护代理主机（<em>xx.xx.xx.xx</em>），开始执行恢复子任务（<em>子</em><em>任务ID</em>）。”、“客户端（<em>xx.xx.xx.xx</em>），开始执行恢复子任务（<em>子任务ID</em>）。”或“客户端（<em>xx.xx.xx.xx</em>）更新恢复进度超时，请参考数据备份特性指南(适用于 SAP HANA)重新恢复。”。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>客户端所在主机内存空间不足。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li><span>使用PuTTY，登录执行当前恢复任务的客户端所在主机。</span><p></p><p>客户端所在主机的IP地址为恢复子任务中展示的IP地址（在OceanProtect管理界面的任务界面查看）。</p> <p></p></li>
+     <li><span>执行以下命令查看内存使用情况。</span><p></p><pre class="screen">free -g</pre> <p>当剩余内存较小，不足以启动一个租户数据库，则表示内存空间不足。</p> <p></p></li>
+     <li><span>执行以下命令查询子任务的进程ID。</span><p></p><pre class="screen">ps -ef|grep <em>子任务ID</em></pre> <p>子任务ID展示在恢复子任务中（在OceanProtect管理界面的任务界面查看）。例如：</p> <pre class="screen">ps -ef|grep 381e7752-f2a6-11ef-8fb4-5413108d9acd
+root     1632604    3221  0 19:49 ?        00:00:00 sh -c python3 /opt/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/applications/informix/api.py Backup 1740397794345_11465832245704297853 779560ad-bc7d-4eff-84d4-3abf1aa1ad09 381e7752-f2a6-11ef-8fb4-5413108d9acd  1&gt;&gt;/opt/DataBackup/ProtectClient/ProtectClient-E//slog/Plugins/GeneralDBPlugin/generaldbplugin.log 2&gt;&amp;1
+root     1632605 1632604  1 19:49 ?        00:00:00 python3 /opt/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/applications/informix/api.py Backup 1740397794345_11465832245704297853 779560ad-bc7d-4eff-84d4-3abf1aa1ad09 381e7752-f2a6-11ef-8fb4-5413108d9acd
+root     1633656 1003005  0 19:50 pts/2    00:00:00 grep 381e7752-f2a6-11ef-8fb4-5413108d9acd</pre> <p>回显样例中，“root”后的数字1632604、1632605和1633656即为子任务的进程ID。</p> <p></p></li>
+     <li><span>执行以下命令结束当前恢复任务。</span><p></p><pre class="screen">kill -9 <em>进程ID</em></pre> <p>若有多个进程ID，进程ID间请以空格隔开，例如：</p> <pre class="screen">kill -9 1632604 1632605 1633656</pre> <p></p></li>
+     <li><span>待内存空间充足后重新执行恢复任务。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="SAP_HANA_0100.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

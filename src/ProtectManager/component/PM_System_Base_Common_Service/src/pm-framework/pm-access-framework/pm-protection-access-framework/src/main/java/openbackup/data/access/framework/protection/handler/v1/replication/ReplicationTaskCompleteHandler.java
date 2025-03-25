@@ -242,6 +242,7 @@ public class ReplicationTaskCompleteHandler implements TaskCompleteHandler {
     private void addNeedNotifyRepCopy(PolicyBo policyBo, String resourceId, int clusterId,
         Map<String, String> repOrignMap, List<CopiesEntity> copiesEntities) {
         List<RepliacatWormContext> wormContexts = copiesEntities.stream().map(copy -> {
+            log.info("Add copy({}) to sync worm, Worm status is {}.", copy.getUuid(), copy.getWormStatus());
             RepliacatWormContext repliacatWormContext = new RepliacatWormContext();
             repliacatWormContext.setCopyId(copy.getUuid());
             repliacatWormContext.setRepId(repOrignMap.get(copy.getUuid()));

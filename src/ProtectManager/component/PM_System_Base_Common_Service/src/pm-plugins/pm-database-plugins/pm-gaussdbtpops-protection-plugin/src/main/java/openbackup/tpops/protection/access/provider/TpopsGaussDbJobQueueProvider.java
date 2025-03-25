@@ -54,6 +54,10 @@ public class TpopsGaussDbJobQueueProvider implements JobQueueProvider {
 
     private static final String KEY_QUEUE_JOB_TYPE = "tpops_job_type";
 
+    private static final String TARGET_ENV = "targetEnv";
+
+    private static final String ROOT_UUID = "rootUuid";
+
     private static final String RESTORE_TO_LOCAL_POSITION = "Local";
 
     /**
@@ -107,11 +111,15 @@ public class TpopsGaussDbJobQueueProvider implements JobQueueProvider {
             .orElse(new JobMessage());
         JSONObject payload = Optional.ofNullable(jobMessage.getPayload()).orElse(new JSONObject());
         payload.put(KEY_QUEUE_JOB_TYPE, job.getType());
-
         // pm传下来的参数，项目ID可能为空，用实例ID的root uuid 作为项目ID
         String projectId = payload.getString(CopyPropertiesKeyConstant.KEY_RESOURCE_PROPERTIES_ROOT_UUID);
+        JSONObject targetEnv = Optional.ofNullable(payload.getJSONObject(TARGET_ENV)).orElse(new JSONObject());
+        if (StringUtils.isEmpty(projectId)) {
+            projectId = targetEnv.getString(ROOT_UUID);
+        }
         if (StringUtils.isEmpty(projectId)) {
             String resourceUuid = job.getSourceId();
+            log.info("resourceUuid is {}", resourceUuid);
             Optional<ProtectedResource> resourceOptional = resourceService.getBasicResourceById(resourceUuid);
             if (resourceOptional.isPresent()) {
                 projectId = resourceOptional.get().getRootUuid();
@@ -124,6 +132,7 @@ public class TpopsGaussDbJobQueueProvider implements JobQueueProvider {
         if (!StringUtils.equals(RESTORE_TO_LOCAL_POSITION, job.getTargetLocation())) {
             log.info("TpopsGaussDbJobQueueProvider getCustomizedSchedulePolicy targetObject {}", job.getTargetName());
             HashMap<String, Object> conditions = new HashMap<>();
+            log.info("TpopsGaussDbJobQueueProvider getCustomizedSchedulePolicy target projectId is {}", projectId);
             conditions.put(DatabaseConstants.PARENT_UUID, projectId);
             conditions.put(DatabaseConstants.NAME, job.getTargetName());
             PageListResponse<ProtectedResource> result = resourceService

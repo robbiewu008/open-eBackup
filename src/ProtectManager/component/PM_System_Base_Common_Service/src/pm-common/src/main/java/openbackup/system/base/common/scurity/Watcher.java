@@ -240,6 +240,7 @@ public class Watcher {
      * called when init walk done
      */
     protected void onInitialize() {
+
     }
 
     private void dispatch() {

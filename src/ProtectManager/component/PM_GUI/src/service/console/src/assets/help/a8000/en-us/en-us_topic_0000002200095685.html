@@ -1,0 +1,68 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Installing the Client">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200095685">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Installing the Client</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200095685"></a><a name="EN-US_TOPIC_0000002200095685"></a>
+
+<h1 class="topictitle1">Installing the Client</h1>
+<div><p>Before application backup or restoration, you must install the client. <span id="EN-US_TOPIC_0000002200095685__en-us_topic_0000002164606286_ph355651111912">The client (referred to as the ProtectAgent software in 1.5.0) is used to connect the <span id="EN-US_TOPIC_0000002200095685__en-us_topic_0000002164606286_en-us_topic_0000002200031213_text2689348142311">OceanProtect</span> and the production environment. It obtains the production end data and transfers the data to the backup storage of the <span id="EN-US_TOPIC_0000002200095685__en-us_topic_0000002164606286_en-us_topic_0000002200031213_text1856916148247">OceanProtect</span> during backup. It is also used for process control and data transmission during backup and restoration.</span></p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>The client can be deployed only on production hosts. It must be deployed on all hosts where SAP on Oracle databases to be protected reside.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><ul><li>Before installing the client, ensure that environment variables have been configured based on <a href="en-us_topic_0000002200010101.html#EN-US_TOPIC_0000002200010101__section1513725616430">Configuring Environment Variables</a>. If you configure environment variables after installing the client, you need to restart the client after configuring the environment variables.</li><li>Install the client as an administrator.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Installation Process</h4><div class="p"><a href="#EN-US_TOPIC_0000002200095685__en-us_topic_0000001455526244_table6210448101619">Table 1</a> shows the process for installing the client on a host.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200095685__en-us_topic_0000001455526244_table6210448101619"></a><a name="en-us_topic_0000001455526244_table6210448101619"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200095685__en-us_topic_0000001455526244_table6210448101619" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Client installation process</caption><colgroup><col style="width:21.62%"><col style="width:78.38000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="21.62%" id="mcps1.3.4.2.2.2.3.1.1"><p>Operation</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="78.38000000000001%" id="mcps1.3.4.2.2.2.3.1.2"><p>Description/Operation Guide</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="21.62%" headers="mcps1.3.4.2.2.2.3.1.1 "><p>Preparing the host where the client is to be installed</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.38000000000001%" headers="mcps1.3.4.2.2.2.3.1.2 "><ul><li>For details about the resource requirements of the host where the client is to be installed, see "<span id="EN-US_TOPIC_0000002200095685__en-us_topic_0000002200061433_ph15176124316394">Check Before Client Installation (Applicable to Deployment on Production Hosts)</span>" in the <i><cite id="EN-US_TOPIC_0000002200095685__en-us_topic_0000002200061433_cite687873615434">OceanProtect DataBackup 1.5.0-1.6.0 Client Installation Guide</cite></i>.</li><li>For details about network planning for the host where the client is to be installed, see "<span id="EN-US_TOPIC_0000002200095685__en-us_topic_0000002200061433_ph1882783413413">Network Planning for Hosts</span>" in the <i><cite id="EN-US_TOPIC_0000002200095685__en-us_topic_0000002200061433_cite42632108251">OceanProtect DataBackup 1.5.0-1.6.0 Client Installation Guide</cite></i>. </li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.62%" headers="mcps1.3.4.2.2.2.3.1.1 "><p>Performing configurations before client installation</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.38000000000001%" headers="mcps1.3.4.2.2.2.3.1.2 "><ul><li>Configure environment variables. For details, see <a href="en-us_topic_0000002200010101.html#EN-US_TOPIC_0000002200010101__section1513725616430">Configuring Environment Variables</a>.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.62%" headers="mcps1.3.4.2.2.2.3.1.1 "><p>Installing the client</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.38000000000001%" headers="mcps1.3.4.2.2.2.3.1.2 "><ul><li>For details, see "Installing the Client" in the <i><cite id="EN-US_TOPIC_0000002200095685__en-us_topic_0000002200061433_cite8263171015251">OceanProtect DataBackup 1.5.0-1.6.0 Client Installation Guide</cite></i>.</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

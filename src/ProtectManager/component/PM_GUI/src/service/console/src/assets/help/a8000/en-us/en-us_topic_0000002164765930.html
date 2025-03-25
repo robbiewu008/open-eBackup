@@ -1,0 +1,65 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="The Backup or Restoration Job Fails and the Job Progress Is Not Updated Within a Certain Period of Time or the Error Details Contain &quot;Failed to execute the subjob.&quot;">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200007065.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164765930">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>The Backup or Restoration Job Fails and the Job Progress Is Not Updated Within a Certain Period of Time or the Error Details Contain "Failed to execute the subjob."</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164765930"></a><a name="EN-US_TOPIC_0000002164765930"></a>
+
+<h1 class="topictitle1">The Backup or Restoration Job Fails and the Job Progress Is Not Updated Within a Certain Period of Time or the Error Details Contain "Failed to execute the subjob."</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>On the <span>OceanProtect</span> page, a message indicating that the job progress is not updated within a certain period of time is displayed, or the error details contain "Failed to execute the subjob." If "Failed to execute the subjob." is displayed, click <strong>View Details</strong>. The details contain "Error doing sync read from disk" or "Failed during data mover". Error code 11 ("Resource temporarily unavailable") is printed in the client's virtualization plug-in log and socket-related logs. After three retries, the backup or restoration still fails.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Cause</h4><p>In versions earlier than FusionCompute 8.3.0, multiple sockets are concurrently executed. The sockets are stored in the map. The method of cyclically searching for sockets uses "[]" instead of "get". If a socket cannot be found, an error is reported. As a result, the main thread cyclically reports this error, and the read and write operations of normal sockets are suspended.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Troubleshooting</h4><ol><li id="EN-US_TOPIC_0000002164765930__li1651535902912"><span>Log in to the CNA host in the FusionCompute production environment.</span></li><li id="EN-US_TOPIC_0000002164765930__li877652799"><span>Run the <strong id="EN-US_TOPIC_0000002164765930__b1026720525222">su - root</strong> command to switch to user <strong id="EN-US_TOPIC_0000002164765930__b1826810529226">root</strong>.</span></li><li><span>Run the following command to change the method of searching for the socket based on the content in the red box in the following figure:</span><p><p><strong>vim /usr/lib/</strong>python<em>X.X</em><strong>/site-packages/vna/storage/utils/socket_server.py</strong></p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>Replace <em>python</em><em>X.X</em> in the command with the Python version of the instance.</li><li>If multiple Python versions are installed in the system, find the Python version that contains the <strong>/site-packages/vna/storage/utils/socket_server.py</strong> path and then run this command.</li></ul>
+</div></div>
+<div class="p">Add the following content to the position marked in the red box in the following figure.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Use spaces instead of <strong>Tab</strong> to indent the modified content. Otherwise, the modification fails.</p>
+</div></div>
+<pre class="screen">socket = fd_to_socket.get(fd)
+if not socket:
+    continue</pre>
+</div>
+<p><span><img src="en-us_image_0000002164606402.png"></span></p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200007065.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

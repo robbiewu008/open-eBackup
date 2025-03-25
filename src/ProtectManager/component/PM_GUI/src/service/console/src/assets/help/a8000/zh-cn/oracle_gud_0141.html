@@ -1,0 +1,73 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复Oracle集群，任务状态为“部分成功”时如何处理">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="oracle_gud_0119.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="oracle_gud_0141">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复Oracle集群，任务状态为“部分成功”时如何处理</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="oracle_gud_0141"></a><a name="oracle_gud_0141"></a>
+
+<h1 class="topictitle1">恢复Oracle集群，任务状态为“部分成功”时如何处理</h1>
+<div><p>对Oracle集群进行恢复时，任务状态为<span class="uicontrol">“<span>部分成功</span>”</span>，是由于恢复过程中存在部分Oracle主机恢复失败，部分主机恢复成功。这种场景下，数据实际已正常恢复，您只需要登录恢复失败的目标主机，启动数据库即可。参考以下步骤启动数据库。</p>
+<ol><li>使用PuTTY，登录恢复失败的Oracle数据库主机。<p>可在管理界面恢复任务详情中查看恢复失败的目标主机。</p>
+<ul><li>如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行<strong>su - oracle</strong>命令，切换到<strong>oracle</strong>账户。</li><li>如果是Windows操作系统，请使用系统管理员登录Oracle数据库主机。</li></ul>
+</li><li>执行以下命令，登录Oracle数据库实例。<ul><li id="oracle_gud_0141__oracle_gud_0016_li15682124913711">OS认证：<ul id="oracle_gud_0141__oracle_gud_0016_ul89443983816"><li id="oracle_gud_0141__oracle_gud_0016_li18420124173415">如果是Linux操作系统，请执行以下命令：<p id="oracle_gud_0141__oracle_gud_0016_p95148598366"><a name="oracle_gud_0141__oracle_gud_0016_li18420124173415"></a><a name="oracle_gud_0016_li18420124173415"></a><strong id="oracle_gud_0141__oracle_gud_0016_b14236563719">export ORACLE_SID=</strong><em id="oracle_gud_0141__oracle_gud_0016_i85144598369">数据库实例名称</em></p>
+<p id="oracle_gud_0141__oracle_gud_0016_p145141259153613"><strong id="oracle_gud_0141__oracle_gud_0016_b1597618293715">sqlplus / as sysdba</strong></p>
+</li><li id="oracle_gud_0141__oracle_gud_0016_li7402151163816">如果是Windows操作系统，请执行以下操作：<ol type="a" id="oracle_gud_0141__oracle_gud_0016_ol124110408264"><li id="oracle_gud_0141__oracle_gud_0016_li624120402267">在键盘上按<span class="uicontrol" id="oracle_gud_0141__oracle_gud_0016_oracle_gud_0016_uicontrol11819941114510">“Win+R”</span>，打开运行窗口。</li><li id="oracle_gud_0141__oracle_gud_0016_li161821338277">输入<span class="parmvalue" id="oracle_gud_0141__oracle_gud_0016_parmvalue122291222476">“cmd”</span>，执行以下命令。<p id="oracle_gud_0141__oracle_gud_0016_p1755152313372"><strong id="oracle_gud_0141__oracle_gud_0016_b19591532143713">set ORACLE_SID=</strong><em id="oracle_gud_0141__oracle_gud_0016_i16755423133718">数据库实例名称</em></p>
+<p id="oracle_gud_0141__oracle_gud_0016_p1075515234379"><strong id="oracle_gud_0141__oracle_gud_0016_b540852910371">sqlplus / as sysdba</strong></p>
+</li></ol>
+</li></ul>
+</li><li id="oracle_gud_0141__oracle_gud_0016_li105571236103417">数据库认证：<ul id="oracle_gud_0141__oracle_gud_0016_ul1136516538386"><li id="oracle_gud_0141__oracle_gud_0016_li1723334817382">如果是Linux操作系统，请执行以下命令：<p id="oracle_gud_0141__oracle_gud_0016_p920984963717"><a name="oracle_gud_0141__oracle_gud_0016_li1723334817382"></a><a name="oracle_gud_0016_li1723334817382"></a><strong id="oracle_gud_0141__oracle_gud_0016_b19174355163720">export ORACLE_SID=</strong><em id="oracle_gud_0141__oracle_gud_0016_i1420924973715">数据库实例名称</em></p>
+<p id="oracle_gud_0141__oracle_gud_0016_p182093496371"><strong id="oracle_gud_0141__oracle_gud_0016_b034785743716">sqlplus</strong></p>
+<p id="oracle_gud_0141__oracle_gud_0016_p17915722412">根据提示输入具备<strong id="oracle_gud_0141__oracle_gud_0016_b1691518214115">sysdba</strong>权限的用户：</p>
+<pre class="screen" id="oracle_gud_0141__oracle_gud_0016_screen9915112104114"><em id="oracle_gud_0141__oracle_gud_0016_i1915102164113">username </em>as sysdba</pre>
+<p id="oracle_gud_0141__oracle_gud_0016_p159150224117">根据提示输入密码。</p>
+</li><li id="oracle_gud_0141__oracle_gud_0016_li122822426407">Windows OS执行以下命令：<ol type="a" id="oracle_gud_0141__oracle_gud_0016_ol587720252273"><li id="oracle_gud_0141__oracle_gud_0016_li5168124414479">在键盘上按<span class="uicontrol" id="oracle_gud_0141__oracle_gud_0016_oracle_gud_0016_uicontrol11819941114510_1">“Win+R”</span>，打开运行窗口。</li><li id="oracle_gud_0141__oracle_gud_0016_li3877172517270">输入<span class="parmvalue" id="oracle_gud_0141__oracle_gud_0016_parmvalue2059612503475">“cmd”</span>，执行以下命令。<p id="oracle_gud_0141__oracle_gud_0016_p8745723103813"><strong id="oracle_gud_0141__oracle_gud_0016_b9408122923816">set ORACLE_SID=</strong><em id="oracle_gud_0141__oracle_gud_0016_i12745162318389">数据库实例名称</em></p>
+<p id="oracle_gud_0141__oracle_gud_0016_p15745182333814"><strong id="oracle_gud_0141__oracle_gud_0016_b11154427163811">sqlplus</strong></p>
+<p id="oracle_gud_0141__oracle_gud_0016_p71274192512">根据提示输入具备<strong id="oracle_gud_0141__oracle_gud_0016_b17349199162611">sysdba</strong>权限的用户：</p>
+<pre class="screen" id="oracle_gud_0141__oracle_gud_0016_screen18896121620243"><em id="oracle_gud_0141__oracle_gud_0016_i380114413256">username </em>as sysdba</pre>
+<p id="oracle_gud_0141__oracle_gud_0016_p15251105852511">根据提示输入密码。</p>
+</li></ol>
+</li></ul>
+</li></ul>
+</li><li>执行以下命令，启动数据库。<p><strong>startup;</strong></p>
+</li></ol>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="oracle_gud_0119.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

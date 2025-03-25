@@ -835,7 +835,8 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
           this.getApplicationExtParameters([
             'rate_limit',
             'enable_standby_backup',
-            'close_compression'
+            'close_compression',
+            'restart_archive'
           ])
         );
         break;
@@ -843,7 +844,6 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
         assign(params, this.getApplicationExtParameters(['parallel_process']));
         break;
       case ApplicationType.MySQL:
-      case ApplicationType.OpenGauss:
         assign(
           params,
           this.getApplicationExtParameters([
@@ -861,6 +861,7 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
       case ApplicationType.Dameng:
       case ApplicationType.SQLServer:
       case ApplicationType.Saponoracle:
+      case ApplicationType.OpenGauss:
         assign(params, this.getApplicationExtParameters(['channel_number']));
         break;
       case ApplicationType.DB2:
@@ -1056,6 +1057,11 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
       if (!ext_parameters.qos_id) {
         delete ext_parameters.qos_id;
       }
+    }
+
+    // HCS保留快照处理，词条修改为删除快照，值需要反着来
+    if (includes([ApplicationType.HCSCloudHost], this.applicationData)) {
+      ext_parameters.keep_snapshot = !ext_parameters.keep_snapshot;
     }
 
     // 部分应用qos处理
@@ -1466,6 +1472,14 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
             'backupTeams',
             'title'
           ]);
+          // HCS删除快照处理，描述和字段相反需要处理
+          if (
+            includes([ApplicationType.HCSCloudHost], this.applicationData) &&
+            res.ext_parameters
+          ) {
+            res.ext_parameters.keep_snapshot = !res.ext_parameters
+              .keep_snapshot;
+          }
           return res;
         })
       };

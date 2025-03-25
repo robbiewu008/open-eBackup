@@ -1,0 +1,64 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Active Directory执行副本恢复后启动DataTurbo服务失败">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="ActiveDirectory-00084.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ActiveDirectory-00095">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Active Directory执行副本恢复后启动DataTurbo服务失败</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ActiveDirectory-00095"></a><a name="ActiveDirectory-00095"></a>
+  <h1 class="topictitle1">Active Directory执行副本恢复后启动DataTurbo服务失败</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p><span style="color:#252B3A;">Active Directory执行副本恢复后</span><span style="color:#252B3A;">启动DataTurbo服务失败，在客户端所在主机上通过</span><span style="color:#252B3A;">Task Manager</span><span style="color:#252B3A;">查看</span><span style="color:#252B3A;">rdnginx.exe</span><span style="color:#252B3A;">程序显示</span><span style="color:#252B3A;">Not allowed</span><span style="color:#252B3A;">。</span></p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>备份后卸载重装客户端，DataTurbo<span style="color:#252B3A;">密码重新生成，</span>使用全量副本做系统状态恢复<span style="color:#252B3A;">后DataTurbo</span><span style="color:#252B3A;">密码恢复为</span>重装前的密码，密码改变导致服务启动失败。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li><span>双击运行C:\DataBackup\ProtectClient目录下的uninstall.bat脚本，卸载客户端。</span></li>
+     <li><span>安装客户端。</span></li>
+    </ol>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="ActiveDirectory-00084.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,108 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring Files in a NAS Share">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200131633.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164645200">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring Files in a NAS Share</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164645200"></a><a name="EN-US_TOPIC_0000002164645200"></a>
+
+<h1 class="topictitle1">Restoring Files in a NAS Share</h1>
+<div><p>This section describes how to restore a NAS share file to its original location, a new location, or a local location.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><ul id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_ul1684123102616"><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_li15684153110268">The <span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_text19278102815148">OceanProtect</span> supports file-level restoration using backup copies, replication copies, and copies archived to object storage.</li><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_li2871134142617">To query the compatibility of file systems that support indexes, you can log in to the <a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect Compatibility Query</a> tool.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><ul><li>File-level restoration is not supported if a folder or file name contains garbled characters. Do not select folders or files of this type. Otherwise, file-level restoration fails.</li><li>For the OceanProtect E6000 Appliance (with OceanStor Pacific used as backup storage), a replication copy cannot be used for file-level restoration.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>For 1.5.0, file-level restoration is supported only when the index status of a copy is <span class="uicontrol" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_en-us_topic_0000002200157697_uicontrol483213401802"><b><span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_en-us_topic_0000002200157697_text1711017353520">Indexed</span></b></span>. For 1.6.0 and later versions, copies whose index status is <span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_en-us_topic_0000002200157697_text413155718286"><strong>Not indexed</strong></span> also support file-level restoration.</li><li>To restore a NAS share to a new location, register the NAS share at the new location or the storage device where the NAS share resides with the <span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_text5542395141">OceanProtect</span>. The following lists the supported storage device types.<ul id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_ul571916508480"><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002200046005_en-us_topic_0000001792360666_li3415133617174">OceanStor Dorado V700R001</li><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002200046005_en-us_topic_0000001792360666_li1739551514266">OceanStor V700R001</li><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002200046005_en-us_topic_0000001792360666_li984654311123">OceanStor Dorado 6.x</li><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002200046005_en-us_topic_0000001792360666_li151737411958">OceanStor 6.x</li><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002200046005_en-us_topic_0000001792360666_li72988389413">OceanProtect 1.3.0 and later versions</li><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002200046005_li15575172132717">OceanStor V5</li><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002200046005_li632419162715">OceanStor Pacific</li><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002200046005_li207631011131214">NetApp ONTAP</li></ul>
+</li><li>If you want to restore a NAS share to a new location, you need to configure the access permission for the <span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_text11734103918143">OceanProtect</span> on the new storage device. For details, see <a href="en-us_topic_0000002164645244.html">Step 4: Configuring Access Permissions (Applicable to OceanStor V5/OceanStor Pacific/NetApp ONTAP)</a>. During the operation, configure a client or add a user for the target NAS share.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002199964685_uicontrol1387642214492"><b><span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002199964685_text18761122134919"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002199964685_text087662214918"><strong>Copy Data</strong></span> &gt; File Systems &gt; <span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002199964685_text2897115217345"><strong>NAS Shares</strong></span></b></span>.</span><p><div class="note" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002199964685_note1634925131911"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002199964685_p1934182521913">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002199964685_uicontrol08045348196"><b><span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002199964685_text980410346197"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002199964685_text4804183441910"><strong>Copy Data</strong></span> &gt; File Services &gt; <span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002199964685_text20804834141911"><strong>NAS Shares</strong></span></b></span>.</p>
+</div></div>
+</p></li><li><span>A copy can be searched by NAS share resource or copy. This section uses the NAS share resource as an example.</span><p><p id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_p142551140161511">On the <span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_text6827103218214"><strong>Resources</strong></span> tab page, locate the NAS share to be recovered by NAS share name and click the name.</p>
+</p></li><li><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002200046005_uicontrol1812414562220"><b><span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002200046005_text18993182162710"><strong>Copy Data</strong></span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p><p id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002200046005_p9918150182310">If <span><img id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002200046005_image886000161711" src="en-us_image_0000002200131661.png"></span> is displayed under a month or date, copies exist in the month or on the date.</p>
+</p></li><li><span>Locate the copy for restoration and click <span class="uicontrol" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_uicontrol144673212457"><b><span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_text16241181213589"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_text6433142318586"><strong>File-level Restoration</strong></span></b></span> on the right of the row where the copy is located.</span><p><ul id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_ul31458297552"><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_li1714532925520">For 1.5.0: Select the files to be restored from the directory tree.</li><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_li1475353185516">For 1.6.0 and later versions: Set <strong id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_b1932510245313">File Obtaining Mode</strong>, which can be <strong id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_b1432520205311">Select file paths from the directory tree</strong> or <strong id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_b1732514215320">Enter file paths</strong>.<div class="note" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_en-us_topic_0000002164813938_note1195634711290"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_en-us_topic_0000002164813938_ul14956124712297"><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_en-us_topic_0000002164813938_li19956104762918">When entering a file path, enter a complete file path, for example, <strong id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_en-us_topic_0000002164813938_b745510458333">/opt/abc/efg.txt</strong> or <strong id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_en-us_topic_0000002164813938_b186591048123315">C:\abc\efg.txt</strong>. If you enter a folder path, for example, <strong id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_en-us_topic_0000002164813938_b15108423133414">/opt/abc</strong> or <strong id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_en-us_topic_0000002164813938_b13283162543410">C:\abc</strong>, all files in the folder are restored. The file name in the path is case sensitive.</li></ul>
+</div></div>
+</li></ul>
+</p></li><li><span>Select the object to be restored and the restoration target location.</span><p><p>The restoration target location can be <span><strong>Original location</strong></span>, <span><strong>New location</strong></span>, or <span><strong>Local Host Location</strong></span>.</p>
+<ul><li><span><strong>Original location</strong></span>: Restores data to the original file system.</li><li><span><strong>New location</strong></span>: Restores data to the file system of another device.</li><li><span><strong>Local Host Location</strong></span>: Restores data to the <span>OceanProtect</span>.</li></ul>
+<p>For details about the parameters of the original location, see <a href="en-us_topic_0000002164645300.html#EN-US_TOPIC_0000002164645300__table1452025982813">Table 1</a>. For details about the parameters of a new location, see <a href="en-us_topic_0000002200046005.html#EN-US_TOPIC_0000002200046005__table429861453516">Table 3</a> and <a href="en-us_topic_0000002200046005.html#EN-US_TOPIC_0000002200046005__table1248313820599">Table 4</a>. <a href="#EN-US_TOPIC_0000002164645200__en-us_topic_0000001208774470_table165841851143">Table 1</a> describes the local host location parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002164645200__en-us_topic_0000001208774470_table165841851143"></a><a name="en-us_topic_0000001208774470_table165841851143"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000001208774470_table165841851143" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for restoring data to the local location</caption><colgroup><col style="width:21.55%"><col style="width:78.45%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="21.55%" id="mcps1.3.5.2.5.2.4.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="78.45%" id="mcps1.3.5.2.5.2.4.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="21.55%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_en-us_topic_0000002200046005_b83934218124">Channels</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.45%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p>Number of subjobs that can be concurrently executed on the clients when restoration is executed. The default number of channels for the NAS share is <strong id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002200046061_b75076301131">10</strong>, and the maximum number is <strong id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002200046061_b10507030131313">40</strong>.</p>
+<p>More channels indicate better backup performance and a higher NAS share access rate. However, more CPUs and memory of the client will be occupied. Each channel occupies about 200 MB memory.</p>
+<p>For 1.5.0, you are advised to reduce the number of channels due to limited container resources if the client is deployed on the <span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002200046061_text1999610369555">OceanProtect</span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.55%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_en-us_topic_0000002200046005_b7801200193818">Clients</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.45%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p>Select clients for performing backup jobs.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.55%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_b102141227111213">Nodes</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.45%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p>Local location of the cluster where the copy resides.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.55%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p><span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_text191084227520"><strong>File Systems</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.45%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p>Select the file system to be restored to the local device. When restoring data to the local location for the first time, you can click <span class="uicontrol" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_uicontrol124218413611"><b><span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_text128775231364"><strong>Create</strong></span></b></span> to create a file system. For details about how to create a file system, see <a href="en-us_topic_0000002164645220.html">Creating a File System</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.55%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p><span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_text132479819312"><strong>Overwrite Rule</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.45%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p>If files with the same names exist in the restoration path, you can choose to replace or skip existing files.</p>
+<ul><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_li52501642173711"><span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_text14250042193711"><strong>Replace existing files</strong></span></li><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_li15250154283711"><span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_text52507424377"><strong>Skip existing files</strong></span></li><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_li22501342183719"><span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645296_text32501742143716"><strong>Only replace the files older than the restoration file</strong></span></li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_uicontrol8682163517294"><b><span id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_text923644131319"><strong>OK</strong></span></b></span>. Before you restore data using the copy, ensure that the target location for restoration has sufficient free space for restoration. The confirmation method is as follows:</span><p><ul id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_ul698861123720"><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_li17226131513373">Requirements for restoration using a full copy: Remaining space of the target location ≥ Data volume of the full copy before reduction. To obtain the data volume of the full copy before reduction, view <span class="uicontrol" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_uicontrol6781131216406"><b>Data Volume Before Reduction</b></span> of the backup job on the <span class="uicontrol" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_uicontrol18893135113394"><b>Job Information</b></span> tab page.</li><li id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_li3988191115372">Requirements for restoration using forever incremental copies or incremental copies: Remaining space of the target location ≥ Total amount of data of all copies generated in the following period before reduction: from the current permanent incremental copy or incremental copy to the last full copy. To obtain the total amount of data before reduction, add the value of <span class="uicontrol" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_uicontrol561253514498"><b>Data Volume Before Reduction</b></span> of each backup job on the <span class="uicontrol" id="EN-US_TOPIC_0000002164645200__en-us_topic_0000002164645300_uicontrol81551548216"><b>Job Information</b></span> tab page.</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200131633.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

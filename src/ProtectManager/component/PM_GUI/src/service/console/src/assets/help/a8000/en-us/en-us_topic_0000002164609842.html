@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="During Active Directory Object-Level Restoration, an Error Message Is Displayed, Indicating that the DistinguishedName of the Object Already Exists">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164769606.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164609842">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>During Active Directory Object-Level Restoration, an Error Message Is Displayed, Indicating that the DistinguishedName of the Object Already Exists</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164609842"></a><a name="EN-US_TOPIC_0000002164609842"></a>
+
+<h1 class="topictitle1">During Active Directory Object-Level Restoration, an Error Message Is Displayed, Indicating that the DistinguishedName of the Object Already Exists</h1>
+<div><p>If you create an object with the same name as an object that has been deleted but is not in the recycle bin, errors will be reported when you restore the deleted object because this operation violates the object uniqueness constraint. In this case, you need to choose whether to restore the deleted object or retain the created same-name object. If you choose the former, you need to delete the created same-name object by referring to this section and then perform object-level restoration again. If you choose the latter, object-level restoration is not required.</p>
+<div class="section"><h4 class="sectiontitle">Symptom</h4><p>During Active Directory object-level restoration, an error message is displayed, indicating that the <strong>DistinguishedName</strong> of the object already exists.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Causes</h4><p>The <strong>DistinguishedName</strong> of the object already exists.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Open Active Directory Users and Computers.</span><p><ol type="a" id="EN-US_TOPIC_0000002164609842__en-us_topic_0000002164769630_ol1558811113511"><li id="EN-US_TOPIC_0000002164609842__en-us_topic_0000002164769630_li458811203511">Log in to the remote host as <strong id="EN-US_TOPIC_0000002164609842__en-us_topic_0000002164769630_b147191456185920">Administrator</strong>.</li><li id="EN-US_TOPIC_0000002164609842__en-us_topic_0000002164769630_li749551033511">Press <strong id="EN-US_TOPIC_0000002164609842__en-us_topic_0000002164769630_b3620051103919">Win+R</strong>.</li><li id="EN-US_TOPIC_0000002164609842__en-us_topic_0000002164769630_li11778132363511">Enter <strong id="EN-US_TOPIC_0000002164609842__en-us_topic_0000002164769630_b1443111773317">dsa.msc</strong> and press <strong id="EN-US_TOPIC_0000002164609842__en-us_topic_0000002164769630_b352221213020">Enter</strong>.<p id="EN-US_TOPIC_0000002164609842__en-us_topic_0000002164769630_p579574016591"></p>
+</li></ol>
+</p></li><li><span>Find the object to be deleted.</span></li><li><span>Right-click the object and choose <strong>Delete</strong> from the shortcut menu.</span></li><li><span>Click <strong>Yes</strong>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164769606.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

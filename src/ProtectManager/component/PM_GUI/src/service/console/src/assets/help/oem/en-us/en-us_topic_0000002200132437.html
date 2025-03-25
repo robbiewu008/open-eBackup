@@ -1,0 +1,176 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring Cloud Disks">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164646076.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200132437">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring Cloud Disks</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200132437"></a><a name="EN-US_TOPIC_0000002200132437"></a>
+  <h1 class="topictitle1">Restoring Cloud Disks</h1>
+  <div>
+   <p>This section describes how to restore a cloud server or cloud disk to the original or a new location after the cloud server has been backed up, when the cloud server disk is damaged.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>The <span>product</span> allows you to restore cloud disks to the original or a new location using backup copies or replication copies (data cannot be restored to the original cloud server using replication copies).</p>
+    <ul>
+     <li>Restoration to the original location<p>Restores data to cloud server disks on the current cloud platform, including existing disks and new disks.</p></li>
+     <li>Restoration to a new location<p>Restores data to existing disks of another cloud server.</p></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>A maximum of 24 disks can be mounted to a host where the client is installed. Therefore, if 24 disks have been mounted to a host where the client is installed during backup and restoration, the system performs the restoration job when there are idle slots.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200132437__en-us_topic_0000002164646080_en-us_topic_0000002199964685_uicontrol743231135612"><b><span id="EN-US_TOPIC_0000002200132437__en-us_topic_0000002164646080_en-us_topic_0000002199964685_text943133112569"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002200132437__en-us_topic_0000002164646080_en-us_topic_0000002199964685_text20436317563"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002200132437__en-us_topic_0000002164646080_en-us_topic_0000002199964685_text114463112568"><strong>Cloud Platforms</strong></span> &gt; Alibaba Cloud</b></span>.</span></li>
+     <li><span>Search for copies by resource or copy. This section describes how to search for copies by resource.</span><p></p><p>On the <strong>Resources</strong> tab page, locate the cloud server to be restored by cloud server name and click the name.</p> <p></p></li>
+     <li><span>On the <span class="uicontrol"><b><span>Copy Data</span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p></p><p>If <span><img src="en-us_image_0000002200046885.png"></span> is displayed below a month or day, a copy is generated in the month or on the day.</p> <p></p></li>
+     <li><span>Find the copy to be restored and choose <span><strong>More</strong></span> &gt; <span><strong>Disk Restoration</strong></span> on the right.</span></li>
+     <li><span>Select the cloud disk to be restored and configure the restoration.</span></li>
+     <li><span>Restore data to the original location or a new location.</span><p></p>
+      <ul>
+       <li>Restoration to the original location<p><a href="#EN-US_TOPIC_0000002200132437__table52750616234">Table 1</a> describes the related parameters.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002200132437__table52750616234"></a><a name="table52750616234"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200132437__table52750616234" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>Parameters for restoring data to the original location
+          </caption>
+          <colgroup>
+           <col style="width:29.87%">
+           <col style="width:70.13000000000001%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.4.2.6.2.1.1.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.4.2.6.2.1.1.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span><strong>Target Location</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>Select the cloud server to which the backup copy is restored.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span><strong>Type</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>Select the type of the disk to be restored. You can select <strong>Existing</strong> or <strong>New</strong>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span><strong>Target Disk Name</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>Select the name of the disk to be restored.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><strong>Password</strong></p></td>
+            <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>Password of the VM to be restored. This parameter is available when you select a system disk.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><strong>Clients</strong></p></td>
+            <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>Select the client for copy-based restoration.</p> <p>If no client is selected, the system selects one or more clients from those configured to perform restoration.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span><strong>Power on Automatically After Restoration</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>If this function is enabled, the cloud server is automatically started after the restoration is complete. This function is disabled by default.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span><strong>Copy Verification Before Restoration</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>If this option is enabled, the integrity of a copy is verified before the copy is used for restoration. This operation affects the restoration performance. This option is disabled by default. This function cannot be enabled when the copy verification status is <strong>Invalid</strong> or <strong>--</strong>.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>Restoration to a new location
+        <div class="p">
+         <a href="#EN-US_TOPIC_0000002200132437__table15668141795417">Table 2</a> describes the related parameters. 
+         <div class="tablenoborder">
+          <a name="EN-US_TOPIC_0000002200132437__table15668141795417"></a><a name="table15668141795417"></a>
+          <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200132437__table15668141795417" frame="border" border="1" rules="all">
+           <caption>
+            <b>Table 2 </b>Parameters for restoring data to a new location
+           </caption>
+           <colgroup>
+            <col style="width:29.87%">
+            <col style="width:70.13000000000001%">
+           </colgroup>
+           <thead align="left">
+            <tr>
+             <th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1"><p>Parameter</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2"><p>Description</p></th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span><strong>Target Location</strong></span></p></td>
+             <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>Select the cloud server to which the backup copy is restored.</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span><strong>Type</strong></span></p></td>
+             <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>Select the type of the disk to be restored. You can select <strong>Existing</strong> or <strong>New</strong>.</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span><strong>Target Disk Name</strong></span></p></td>
+             <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>If <strong>Type</strong> is set to <strong>Existing</strong>, set <strong>Target Disk Name</strong> to the name of the disk to be restored.</p> <p>If <strong>Type</strong> is set to <strong>New</strong>, <strong>--</strong> is displayed by default.</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><strong>Password</strong></p></td>
+             <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>Password of the VM to be restored. This parameter is available when you select a system disk.</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><strong>Clients</strong></p></td>
+             <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>Select the host where the client is installed for copy-based restoration.</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span><strong>Power on Automatically After Restoration</strong></span></p></td>
+             <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>If this function is enabled, the cloud server is automatically started after the restoration is complete. This function is disabled by default.</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span><strong>Copy Verification Before Restoration</strong></span></p></td>
+             <td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>If this option is enabled, the integrity of a copy is verified before the copy is used for restoration. This operation affects the restoration performance. This option is disabled by default. If no copy verification file is generated, this option cannot be enabled.</p></td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div></li>
+      </ul> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164646076.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

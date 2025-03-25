@@ -1,0 +1,59 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="不同大数据平台配置hbase.master.logcleaner.ttl参数">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="hbase_00064.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="hbase_00069">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>不同大数据平台配置hbase.master.logcleaner.ttl参数</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hbase_00069"></a><a name="hbase_00069"></a>
+
+<h1 class="topictitle1">不同大数据平台配置hbase.master.logcleaner.ttl参数</h1>
+<div><div class="section"><h4 class="sectiontitle">操作步骤</h4><p><strong>大数据平台为CDH</strong></p>
+<ol><li><span>使用浏览器，登录<span style="color:#1C2429;">Cloudera</span> Manager。</span></li><li><span>选择<span class="uicontrol">“集群 &gt; HBase”</span>。</span></li><li><span>在集群页面单击<span class="uicontrol">“配置”</span>，在搜索框搜索“hbase.master.logcleaner.ttl”并单击回车键。</span></li><li><span>在搜索到的参数名所在行选择保留日志文件的时间并保存。</span></li><li><span>修改完成后重启服务。</span></li></ol>
+<p></p>
+<p><strong>大数据平台为MRS</strong></p>
+<ol><li><span>登录MRS管理页面。</span></li><li><span>在HBase集群页面，单击<span class="uicontrol">“配置”</span>。</span></li><li><span>在配置页面的搜索框输入“hbase.master.logcleaner.ttl”，在搜索到的参数名所在行输入对应的参数值（单位ms）并保存。</span></li><li><span>修改参数值后重启服务。</span></li></ol>
+</div>
+<p></p>
+<p><strong>大数据平台为TDH</strong></p>
+<ol><li><span>使用浏览器，登录Transwarp Data Hub。</span></li><li><span>选择<span class="uicontrol">“仪表盘 &gt; 集群”</span>，单击界面中Hyperbase组件名进入集群页面。</span></li><li><span>单击<span class="uicontrol">“配置”</span>：</span><p><ul><li>如果已存在配置项“hbase.master.logcleaner.ttl”，在该配置项所在行输入对应的参数值（参数值单位ms）并保存。</li><li>如果不存在配置项“hbase.master.logcleaner.ttl”，单击<span class="uicontrol">“添加自定义参数”</span>，输入对应的配置项、值和配置文件名（默认值为“hbase-site.xml”）并单击<span class="uicontrol">“确定”</span>。</li></ul>
+</p></li></ol>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="hbase_00064.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

@@ -1009,7 +1009,10 @@ export class HostRegisterComponent implements OnInit {
       };
       if (windowsFlag) {
         assign(tempObj, {
-          businessIpFlag: ipInfo.businessIpFlags
+          businessIpFlag: ipInfo.businessIpFlags,
+          rdAdminPassword: ipInfo?.joinDomain
+            ? ipInfo?.rdadminPassword
+            : undefined
         });
       } else {
         assign(tempObj, {

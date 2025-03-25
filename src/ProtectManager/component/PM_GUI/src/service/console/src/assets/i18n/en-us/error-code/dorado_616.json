@@ -1752,7 +1752,7 @@
   "1073798226": "Cause:The capacity of the clone pair source object is smaller than that of the target object.<br>Suggestion:Change the capacity of the clone pair source object to that of the target object and try again.",
   "1073798227": "Cause:The clone consistency group that matches the specified name does not exist.<br>Suggestion:Select an existing clone consistency group and try again.",
   "1073799169": "Cause:Remote device has external LUNs in use.<br>Suggestion:Please release the remote LUN which is in use and retry.",
-  "1073799170": "Cause: Remote device has physical links connected to local device.<br>Suggestion: Please disconnect the physical link between the remote device and local device, then retry.",
+  "1073799170": "Cause:The remote storage array still has physical links to the local storage array.<br>Suggestion:Remove the physical links between the remote and local storage arrays and try again.",
   "1073799171": "Cause:The alias of the default remote device cannot be changed.<br>Suggestion:You cannot change the alias of the default remote device.",
   "1073799172": "Cause: On the local device, no user name or password has been configured for the remote device.<br>Suggestion: On the local device, Set a user name and password for the remote device.",
   "1073799173": "Cause:The specified remote device is not connected correctly.<br>Suggestion:Ensure that the remote device is connected correctly.",

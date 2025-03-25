@@ -18,7 +18,8 @@ import {
   ProtectResourceAction,
   I18NService,
   QosService,
-  DataMap
+  DataMap,
+  RouterUrl
 } from 'app/shared';
 import { ModalRef } from '@iux/live';
 import { assign, map, find, first, size, isUndefined } from 'lodash';
@@ -48,6 +49,8 @@ export class LocalFileSystemAdvancedParameterComponent implements OnInit {
   fullCopyPeriodErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 100])
   });
+
+  ratePolicyRouterUrl = RouterUrl.ProtectionLimitRatePolicy;
 
   constructor(
     public baseUtilService: BaseUtilService,

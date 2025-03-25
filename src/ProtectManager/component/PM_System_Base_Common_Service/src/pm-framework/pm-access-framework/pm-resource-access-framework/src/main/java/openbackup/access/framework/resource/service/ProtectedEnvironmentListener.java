@@ -101,7 +101,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Protected Environment Listener
@@ -153,9 +152,9 @@ public class ProtectedEnvironmentListener implements InitializingBean {
     private static final String OCEAN_CYBER_HEALTH_ALARM_CODE = "0x6403320008";
 
     /**
-     * 5分钟更新资源的状态的表达式
+     * 10分钟更新资源的状态的表达式
      */
-    private static final String UPDATE_RESOURCE_STATUS_CRON = "0 0/5 * * * ? ";
+    private static final String UPDATE_RESOURCE_STATUS_CRON = "0 0/10 * * * ? ";
 
     /**
      * 5分钟更新单节点的redis锁
@@ -195,6 +194,8 @@ public class ProtectedEnvironmentListener implements InitializingBean {
     private AgentDefaultLinkStatusProvider agentDefaultLinkStatusProvider;
 
     private RedissonClient redissonClient;
+
+    private ProtectedResourceRepository repository;
 
     /**
      * constructor
@@ -276,6 +277,10 @@ public class ProtectedEnvironmentListener implements InitializingBean {
     @Autowired
     public void setRedisTemplate(RedissonClient redissonClient) {
         this.redissonClient = redissonClient;
+    }
+    @Autowired
+    public void setRepository(ProtectedResourceRepository repository) {
+        this.repository = repository;
     }
 
     /**
@@ -438,7 +443,7 @@ public class ProtectedEnvironmentListener implements InitializingBean {
     }
 
     /**
-     * 受保护环境健康状态检查。间隔时间：5分钟
+     * 受保护环境健康状态检查。间隔时间：10分钟
      *
      */
     @Scheduled(cron = UPDATE_RESOURCE_STATUS_CRON)
@@ -539,7 +544,7 @@ public class ProtectedEnvironmentListener implements InitializingBean {
         String envId = environment.getUuid();
         Map<String, EnvironmentConnectionResult> connectionResultMap = getConnectionResultMapByEnvId(envId);
         connectionResultMap.put(currentClusterEsn, getAgentConnectionResultBy(currentClusterEsn, status.getStatus()));
-        resourceExtendInfoService.saveOrUpdateExtendInfo(envId,
+        resourceExtendInfoService.saveOrUpdateExtendInfoWithOutTransactional(envId,
                 Collections.singletonMap(CONNECTION_RESULT_KEY, JsonUtil.json(connectionResultMap)));
 
         String connectionResult =
@@ -608,7 +613,7 @@ public class ProtectedEnvironmentListener implements InitializingBean {
         if (connectionResultMap.size() != oldConnectionResultSize) {
             log.info("When summarizing the Agent health status, the primary node detects junk data "
                     + "and deletes junk data.");
-            resourceExtendInfoService.saveOrUpdateExtendInfo(envId,
+            resourceExtendInfoService.saveOrUpdateExtendInfoWithOutTransactional(envId,
                     Collections.singletonMap(CONNECTION_RESULT_KEY, JsonUtil.json(connectionResultMap)));
         }
 
@@ -782,8 +787,8 @@ public class ProtectedEnvironmentListener implements InitializingBean {
         resource.setScanInterval(null);
         resource.setUuid(envId);
         resource.setLinkStatus(status);
-        // 直接将环境的状态同步到数据库，不走update的重接口，避免两次检查连通性而导致同步数据库失败
-        resourceService.updateSourceDirectly(Stream.of(resource).collect(Collectors.toList()));
+        // 直接更新数据库
+        repository.update(resource, false);
     }
 
     private void manualTerminateEnvironmentScanJob(JSONObject data, JobStatusEnum status,

@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="ES_gud_00011.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -38,14 +38,20 @@
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ES_gud_00013"></a><a name="ES_gud_00013"></a>
 
 <h1 class="topictitle1">步骤2：创建并配置挂载目录</h1>
-<div><p>备份恢复过程中<span>OceanProtect</span>需要将存放备份数据的文件系统挂载至相应目录下，参考本节创建并配置挂载目录。</p>
-<div class="section"><h4 class="sectiontitle">创建挂载目录</h4><ol><li><span>依次登录Elasticsearch集群的所有节点。</span></li><li><span>在节点上创建目录<span class="uicontrol">“/mnt/databackup/ElasticSearchBackupSet”</span>。</span><p><p>存放备份数据的文件系统将挂载至该目录。</p>
+<div><p>备份恢复过程中<span>OceanProtect</span>需要将存放备份数据的文件系统挂载至相应目录下，参考本节创建并配置挂载目录。存放备份数据的文件系统将自动挂载至该目录。</p>
+<div class="section"><h4 class="sectiontitle">创建挂载目录</h4><p>需要在Elasticsearch集群的所有节点完成以下操作：</p>
+<ol><li><span>使用PuTTY工具登录节点。</span></li><li><span>在节点上通过<strong>su - root</strong>命令切换到<strong>root</strong>用户。</span></li><li id="ES_gud_00013__li6805181319216"><a name="ES_gud_00013__li6805181319216"></a><a name="li6805181319216"></a><span>执行以下命令，创建“/mnt/databackup/ElasticSearchBackupSet”目录。</span><p><pre class="screen">mkdir -p /mnt/databackup/ElasticSearchBackupSet</pre>
+</p></li><li><span>执行以下命令，将<a href="#ES_gud_00013__li6805181319216">步骤3</a>创建的目录的所属用户和所属组改为Elasticsearch安装目录的所属用户和所属用户组（Elasticsearch安装目录的所属用户和所属用户组获取方式请参见<a href="ES_gud_00010.html">备份前准备</a>），“<em>username</em>”为用户名，<em>“</em><em>usergroup</em>”为所属用户组。</span><p><pre class="screen">chown -R <em>username</em>:<em>usergroup</em> /mnt/databackup/ElasticSearchBackupSet</pre>
+</p></li><li><span>执行以下命令，确认该目录的所属用户和所属用户组是否修改成功。</span><p><pre class="screen">ll /mnt/databackup |grep -w ElasticSearchBackupSet</pre>
+<div class="p">若成功完成修改，以用户和用户组名称均为<span class="parmvalue">“elasticsearch”</span>为例，回显类似如下。<pre class="screen">dr-xr-xr-x 2 elasticsearch elasticsearch 4096 Dec 19	11:58 ElasticSearchBackupSet/</pre>
+</div>
 </p></li></ol>
 </div>
-<div class="section"><h4 class="sectiontitle">配置挂载目录</h4><p>本节以FusionInsight Manager版本为例说明相关操作。不同大数据平台操作略有差异，请参考对应大数据平台的产品文档。</p>
+<div class="section"><h4 class="sectiontitle">配置挂载目录</h4><p>本节以FusionInsight Manager 8.2.0版本为例说明相关操作。不同大数据平台操作略有差异，请参考对应大数据平台的产品文档。</p>
 <ol><li><span>使用浏览器，登录FusionInsight Manager。</span></li><li><span>选择<span class="uicontrol">“集群 &gt; Elasticsearch”</span>。</span></li><li><span>单击<span class="uicontrol">“配置 &gt; 全部配置”</span>。</span></li><li><span>依次在Elasticsearch服务、Elasticsearch各角色中选择<span class="uicontrol">“自定义”</span>，设置自定义配置的名称和值。</span><p><p>名称：path.repo，值：/srv/BigData/elasticsearch/nas,/mnt/databackup/ElasticSearchBackupSet</p>
 <div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>path.repo表示Elasticsearch集群的快照仓库，/srv/BigData/elasticsearch/nas为默认的快照仓库，/mnt/databackup/ElasticSearchBackupSet为本次配置中新增的快照仓库。</p>
 </div></div>
+</p></li><li><span>在Elasticsearch集群每个节点的Elasticsearch安装目录中的elasticsearch.yml文件里面增加一行内容如下：</span><p><pre class="screen">path.repo: /mnt/databackup/ElasticSearchBackupSet</pre>
 </p></li><li><span>配置完成后，请确保生产端没有业务时，重启Elasticsearch服务，重启成功后配置生效。</span></li></ol>
 </div>
 </div>

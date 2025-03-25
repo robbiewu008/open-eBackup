@@ -68,6 +68,9 @@ export class AdvancedComponent implements OnInit {
 
   isGroupRule = false;
 
+  slaOverwriteHelp: string;
+  slaApplyAllHelp: string;
+
   @ViewChild(ProtectFilterComponent, { static: false })
   ProtectFilterComponent: ProtectFilterComponent;
   constructor(
@@ -129,6 +132,22 @@ export class AdvancedComponent implements OnInit {
     this.isGroupRule =
       type === DataMap.Resource_Type.vmGroup.value &&
       this.resourceData.groupType === DataMap.vmGroupType.rule.value;
+
+    if (this.isGroupRule) {
+      this.slaOverwriteHelp = this.i18n.get(
+        'protection_overwrite_policy_group_help_label'
+      );
+    } else if (type === ProtectResourceCategory.cluster) {
+      this.slaOverwriteHelp = this.i18n.get(
+        'protection_overwrite_policy_cluster_help_label'
+      );
+      this.slaApplyAllHelp = this.i18n.get('protection_cluster_sla_help_label');
+    } else {
+      this.slaOverwriteHelp = this.i18n.get(
+        'protection_overwrite_policy_host_help_label'
+      );
+      this.slaApplyAllHelp = this.i18n.get('protection_host_sla_help_label');
+    }
   }
 
   initForm() {

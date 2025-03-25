@@ -1,0 +1,186 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Managing Databases">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200069409.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164668726">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Managing Databases</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164668726"></a><a name="EN-US_TOPIC_0000002164668726"></a>
+
+<h1 class="topictitle1">Managing Databases</h1>
+<div><p>The <span>OceanProtect</span> allows you to modify, remove, activate, or disable protection for databases.</p>
+<div class="section"><h4 class="sectiontitle">Related Operations</h4><p>You need to log in to the management page, choose <span class="uicontrol"><b>Protection &gt; Databases &gt; General Databases</b></span>, and find the target database.</p>
+<p><a href="#EN-US_TOPIC_0000002164668726__table24934294919">Table 1</a> describes the related operations.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002164668726__table24934294919"></a><a name="table24934294919"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164668726__table24934294919" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Operations related to database protection plans</caption><colgroup><col style="width:22.18%"><col style="width:50.03999999999999%"><col style="width:27.779999999999998%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="22.18%" id="mcps1.3.2.4.2.4.1.1"><p>Operation</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="50.03999999999999%" id="mcps1.3.2.4.2.4.1.2"><p>Description</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="27.779999999999998%" id="mcps1.3.2.4.2.4.1.3"><p>Navigation Path</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="22.18%" headers="mcps1.3.2.4.2.4.1.1 "><p>Modifying protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.03999999999999%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>You can modify the protection plan to re-associate a database with an SLA. After the modification, the next backup will be performed based on the new protection plan.</p>
+<p><strong>Note</strong></p>
+<p>The modification does not affect ongoing protection jobs. The modified protection plan will apply to the next protection period.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify Protection</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.18%" headers="mcps1.3.2.4.2.4.1.1 "><p>Removing protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.03999999999999%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to remove protection for a database when it no longer needs to be protected. After removal, the system cannot execute protection jobs for the database. To protect the database, you need to associate an SLA with the database again.</p>
+<p><strong>Note</strong></p>
+<p>When a protection job of a database is running, protection cannot be removed.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Remove Protection</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.18%" headers="mcps1.3.2.4.2.4.1.1 "><p>Activating protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.03999999999999%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation allows you to activate the protection plan of a database again if it is disabled. After the protection plan is activated, the system executes backup, archive, or replication jobs for the database based on the plan.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Activate Protection</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.18%" headers="mcps1.3.2.4.2.4.1.1 "><p>Disabling protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.03999999999999%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to disable a protection plan when periodic protection on a database is not required. After the protection plan is disabled, the system does not automatically back up, archive, or replicate database data.</p>
+<p><strong>Note</strong></p>
+<p>Disabling a protection plan does not affect running protection jobs.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Disable Protection</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.18%" headers="mcps1.3.2.4.2.4.1.1 "><p>Performing manual backup</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.03999999999999%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to perform a backup immediately.</p>
+<p><strong>Note</strong></p>
+<p>Copies generated by manual backup are retained for the duration defined in the SLA.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Manual Backup</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.18%" headers="mcps1.3.2.4.2.4.1.1 "><div class="p">Authorizing resources<div class="note" id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200061425_note1819152144411"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200061425_p72172194413">Only version 1.5.0 supports this function.</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="50.03999999999999%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>By default, only the system administrator has the permission to protect resources. If you want to assign this permission to a data protection administrator, authorize the data protection administrator as the system administrator to protect resources.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Authorize Resource</strong></span></b></span>, and select the data protection administrator to be authorized.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.18%" headers="mcps1.3.2.4.2.4.1.1 "><div class="p">Reclaiming resources<div class="note" id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200061425_note9135337194416"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200061425_en-us_topic_0000002200061425_p72172194413">Only version 1.5.0 supports this function.</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="50.03999999999999%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to reclaim resources authorized to the data protection administrator. The data protection administration is not permitted to protect the resources that have been reclaimed.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Reclaim Resource</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.18%" headers="mcps1.3.2.4.2.4.1.1 "><p>Testing connectivity</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.03999999999999%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to test the connectivity between the <span>OceanProtect</span> and a database.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Test Connectivity</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.18%" headers="mcps1.3.2.4.2.4.1.1 "><p>Modifying database registration information</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.03999999999999%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>After the database username or password is changed, you can perform this operation to modify the database registration information.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.18%" headers="mcps1.3.2.4.2.4.1.1 "><p>Deleting a database</p>
+</td>
+<td class="cellrowborder" valign="top" width="50.03999999999999%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to delete a database if it no longer needs to be protected.</p>
+<p><strong>Note</strong></p>
+<p>A database that has been associated with an SLA cannot be deleted.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Delete</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.18%" headers="mcps1.3.2.4.2.4.1.1 "><div class="p">Adding a tag<div class="note" id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_note161679211561"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_p1816719214566"><span id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_ph206615454589">This function is available only in 1.6.0 and later versions.</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="50.03999999999999%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b1495945913127">Scenario</strong></p>
+<p>This operation enables you to quickly filter and manage resources.</p>
+<div class="p"><strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b1722475517469">Note</strong><ul id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_ul2317155315456"><li id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_li1146056125117">The system administrator can add a maximum of 10,000 tags to a resource.</li><li id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_li1566072118516">A non-system administrator must have the permission of <strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b117498364161">Production resource management</strong> to add tags to resources.</li><li id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_li731725313453">A non-system administrator can add a maximum of five tags to a resource.</li></ul>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.2.4.2.4.1.3 "><div class="p">Choose <strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b1978220109564">More</strong> &gt; <strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b778271011563">Add Tag</strong>.<div class="note" id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_note164681316118"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_ul22969251338"><li id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_li142961925139">On the displayed <strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b171967427617">Add Tag</strong> dialog box, you can select existing tags or click <strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b1711194810818">Create</strong> to create a tag.</li><li id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_li135161927738">To modify or delete a tag, click <strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b17675195912164">Go to Tag Management</strong> on the <strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b13536183171711">Add Tag</strong> page to go to the <strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b1386161351713">Tag Management</strong> page.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.18%" headers="mcps1.3.2.4.2.4.1.1 "><div class="p">Removing a tag<div class="note" id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_note4957114117575"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_en-us_topic_0000002200147037_p1816719214566"><span id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_en-us_topic_0000002200147037_ph206615454589">This function is available only in 1.6.0 and later versions.</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="50.03999999999999%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b472911291311">Scenario</strong></p>
+<p>This operation enables you to remove the tag of a resource when it is no longer needed.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.2.4.2.4.1.3 "><p>Choose <strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b6302131412560">More</strong> &gt; <strong id="EN-US_TOPIC_0000002164668726__en-us_topic_0000002200147037_b3303714165618">Remove Tag</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.2.4.2.4.1.1 mcps1.3.2.4.2.4.1.2 mcps1.3.2.4.2.4.1.3 "><p>Note: The procedure for restoring the SAP HANA database is the same as that in <a href="en-us_topic_0000002164828410.html">Restoration</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200069409.html">SAP HANA Database Environment (General Database Path)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

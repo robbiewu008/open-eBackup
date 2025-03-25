@@ -20,30 +20,39 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="约束与限制">
+<meta name="DC.Title" content="步骤6：（可选）开启备份链路加密开关">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="tdsql_gud_018.html">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_013.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="tdsql_gud_019">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>约束与限制</title>
+<title>步骤6：（可选）开启备份链路加密开关</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="tdsql_gud_019"></a><a name="tdsql_gud_019"></a>
 
-<h1 class="topictitle1">约束与限制</h1>
-<div><p>副本复制的相关约束限制如下。</p>
-<ul><li id="tdsql_gud_019__zh-cn_topic_0000001792503802_li798152116245">复制副本不支持任意时间点恢复。</li><li id="tdsql_gud_019__zh-cn_topic_0000001792503802_li0419847142210">复制副本不支持恢复到原位置。</li><li id="tdsql_gud_019__zh-cn_topic_0000001792503802_li36651422476">反向复制副本不支持再复制和归档。</li><li id="tdsql_gud_019__zh-cn_topic_0000001792503802_li540811092211">复制副本不支持全局检索。</li><li id="tdsql_gud_019__zh-cn_topic_0000001792503802_li5884102815018">级联复制最多不超过3级。</li><li id="tdsql_gud_019__zh-cn_topic_0000001792503802_li3346135516017">1.3.0及之后版本不支持与1.2.1版本进行复制。</li><li id="tdsql_gud_019__zh-cn_topic_0000001792503802_li9671182934116">复制副本主端、从端WORM属性一致。</li><li id="tdsql_gud_019__zh-cn_topic_0000001792503802_li7890156204416">复制任务限速针对待复制副本所在的整个文件系统生效。</li><li id="tdsql_gud_019__zh-cn_topic_0000001792503802_li81813443435">域内复制副本不支持反向复制和级联复制。</li><li id="tdsql_gud_019__zh-cn_topic_0000001792503802_li5391133835111">日志备份副本不支持复制。</li><li id="tdsql_gud_019__zh-cn_topic_0000001792503802_li87635328271">OceanProtect X系列备份一体机不支持复制到OceanProtect E1000。</li><li id="tdsql_gud_019__zh-cn_topic_0000001792503802_li178116190314">OceanProtect E1000不支持复制到备份存储为服务器的OceanProtect E1000。</li></ul>
+<h1 class="topictitle1">步骤6：（可选）开启备份链路加密开关</h1>
+<div><p>您需要开启备份链路加密开关，备份链路加密功能才会生效。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><p>请确保已为存储系统配置NFS Kerberos服务，并已在AD域中添加<strong>rdadmin</strong>、TDSQL数据库的<strong>root</strong>和<strong>tdsql</strong>用户。否则开启备份链路加密开关后，可能导致备份任务失败。<span>配置NFS Kerberos服务的操作请参见产品对应型号的<span id="tdsql_gud_019__zh-cn_topic_0000002200147021_cite5907115716400">《安装指南》</span>中的“（可选）配置NFS Kerberos服务”章节。</span></p>
+</div>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><p id="tdsql_gud_019__zh-cn_topic_0000002200147021_p1854315715349">开启备份链路加密后，客户端所在主机与KDC域服务器之间的票证存在有效期，票证过期之后可能导致备份任务失败。建议延长KDC域服务器上Kerberos策略中票证的过期时间或者配置为永不过期。如果未配置永不过期，需要在票证即将过期前，在客户端所在主机上，对添加到AD域中的用户，通过<strong id="tdsql_gud_019__zh-cn_topic_0000002200147021_b3195122210175">kinit</strong>命令或<strong id="tdsql_gud_019__zh-cn_topic_0000002200147021_b185942242179">net</strong>命令更新票证，具体操作请参见产品对应型号的<span id="tdsql_gud_019__zh-cn_topic_0000002200147021_cite890601917412">《安装指南》</span>中的“配置客户端”章节。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">创建UNIX本地认证用户组</h4><p>开启备份链路加密前，如果当前环境未加入域环境，需要将用户组添加到本地认证用户组。</p>
+<ol><li><span>登录DeviceManager管理界面。具体操作请参见<a href="tdsql_gud_091.html">登录DeviceManager管理界面</a>。</span></li><li><span>选择<span class="uicontrol">“服务 &gt; 文件服务 &gt; 认证用户”</span>。</span></li><li><span>在<span class="uicontrol">“UNIX用户”</span>页签下选择<span class="uicontrol">“本地认证用户组”</span>。</span></li><li><span>单击<span class="uicontrol">“创建”</span>。</span></li><li><span>配置UNIX本地认证用户组信息。</span><p><ul><li>名称：安装数据库时设置的用户所属组。可在数据库主机执行<strong>cat /etc/group</strong>命令查看数据库用户所属组。</li><li>ID：在数据库主机执行<strong>cat /etc/group</strong>命令查看所属组对应的ID。</li></ul>
+</p></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">开启备份链路加密开关</h4><ol><li><span>选择<span class="uicontrol" id="tdsql_gud_019__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="tdsql_gud_019__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_text113848306235"><span id="tdsql_gud_019__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_text8949174614917">系统</span></span> &gt; <span id="tdsql_gud_019__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_text484521122916"><span id="tdsql_gud_019__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_text2943115917492">安全</span></span> &gt; <span id="tdsql_gud_019__zh-cn_topic_0000002200147021_text6472734351">数据安全</span>”</span>。</span></li><li><span>在“加密设置”区域，单击页面右侧的<span class="uicontrol" id="tdsql_gud_019__zh-cn_topic_0000002200147021_uicontrol851575420436">“<span id="tdsql_gud_019__zh-cn_topic_0000002200147021_text2172104153514">修改</span>”</span>，开启<span class="uicontrol" id="tdsql_gud_019__zh-cn_topic_0000002200147021_uicontrol13743170204412">“<span id="tdsql_gud_019__zh-cn_topic_0000002200147021_text451824814419">备份链路加密</span>”</span>。</span></li><li><span>单击<span class="uicontrol" id="tdsql_gud_019__zh-cn_topic_0000002200147021_uicontrol1839019167443">“<span id="tdsql_gud_019__zh-cn_topic_0000002200147021_text1418318566358">保存</span>”</span>。</span></li></ol>
+</div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="tdsql_gud_018.html">复制</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="tdsql_gud_013.html">备份TDSQL数据库</a></div>
 </div>
 </div>
 

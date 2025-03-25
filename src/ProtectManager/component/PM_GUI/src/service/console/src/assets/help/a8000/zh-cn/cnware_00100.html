@@ -1,0 +1,245 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="查看CNware虚拟化环境信息">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="cnware_00099.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="documenttype" content="usermanual">
+<meta name="prodname" content="csbs">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="cnware_00100">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>查看CNware虚拟化环境信息</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="cnware_00100"></a><a name="cnware_00100"></a>
+
+<h1 class="topictitle1">查看CNware虚拟化环境信息</h1>
+<div><p>当CNware虚拟化环境注册至<span>OceanProtect</span>后，您可以在管理界面查看虚拟机、主机或集群的详细信息。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="cnware_00100__zh-cn_topic_0000002199964685_uicontrol14456431877">“<span id="cnware_00100__zh-cn_topic_0000002199964685_text134457431679">保护</span> &gt; 虚拟化 &gt; CNware”</span>。</span></li><li><span>在<span class="uicontrol">“<span>集群</span>”</span>页签浏览集群信息。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="cnware_00100__zh-cn_topic_0000002164820458_p4219634163218">部分参数默认不展示，您可以单击“操作”列后的<span><img id="cnware_00100__zh-cn_topic_0000002164820458_image1271105319486" src="zh-cn_image_0000002200147221.png"></span>，勾选对应参数，即可在当前界面展示。</p>
+</div></div>
+<div class="p">集群的详细信息如<a href="#cnware_00100__table5566516179">表1</a>所示。
+<div class="tablenoborder"><a name="cnware_00100__table5566516179"></a><a name="table5566516179"></a><table cellpadding="4" cellspacing="0" summary="" id="cnware_00100__table5566516179" frame="border" border="1" rules="all"><caption><b>表1 </b>集群信息</caption><colgroup><col style="width:20.31%"><col style="width:79.69000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20.31%" id="mcps1.3.2.2.2.2.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.69000000000001%" id="mcps1.3.2.2.2.2.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.2 "><p>集群名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.1 "><p><span>位置</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.2 "><p>集群所在路径。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.1 "><p><span>SLA</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.2 "><p>当对整个集群关联SLA时，则显示SLA名称，否则显示<span class="uicontrol">“--”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.1 "><p><span><span>保护状态</span></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.2 "><p>集群当前是否被保护。</p>
+<ul><li><span>未保护</span>：集群未关联SLA，或者集群已关联SLA但已禁用保护。</li><li><span>已保护</span>：集群已关联SLA，且已激活保护。</li><li><span>创建中</span>：集群已关联SLA，正在创建保护。</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.1 "><p>标签</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.2.2.2.2.2.3.1.2 "><p>当资源已添加标签时，则此处显示标签名称。否则，显示“--”。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>在<span class="uicontrol">“<span>主机</span>”</span>页签浏览主机信息。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="cnware_00100__zh-cn_topic_0000002164820458_p4219634163218_1">部分参数默认不展示，您可以单击“操作”列后的<span><img id="cnware_00100__zh-cn_topic_0000002164820458_image1271105319486_1" src="zh-cn_image_0000002200147221.png"></span>，勾选对应参数，即可在当前界面展示。</p>
+</div></div>
+<div class="p">主机的详细信息如<a href="#cnware_00100__table664941173815">表2</a>所示。
+<div class="tablenoborder"><a name="cnware_00100__table664941173815"></a><a name="table664941173815"></a><table cellpadding="4" cellspacing="0" summary="" id="cnware_00100__table664941173815" frame="border" border="1" rules="all"><caption><b>表2 </b>主机信息</caption><colgroup><col style="width:20.369999999999997%"><col style="width:79.63%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20.369999999999997%" id="mcps1.3.2.2.3.2.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.63%" id="mcps1.3.2.2.3.2.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20.369999999999997%" headers="mcps1.3.2.2.3.2.2.2.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.63%" headers="mcps1.3.2.2.3.2.2.2.2.3.1.2 "><p>主机名称。</p>
+<p>单击主机名称，界面展示虚拟机列表和虚拟设备节点。</p>
+<p>当主机属于某集群时，此处不显示虚拟机列表。</p>
+<p>虚拟设备节点为虚拟磁盘所在的槽位号，表示方式为：磁盘接口类型(总线编号:槽位号)，如IDE(0:0)。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.369999999999997%" headers="mcps1.3.2.2.3.2.2.2.2.3.1.1 "><p><span>位置</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.63%" headers="mcps1.3.2.2.3.2.2.2.2.3.1.2 "><p>主机所在路径。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.369999999999997%" headers="mcps1.3.2.2.3.2.2.2.2.3.1.1 "><p><span>状态</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.63%" headers="mcps1.3.2.2.3.2.2.2.2.3.1.2 "><p>主机处于<span class="uicontrol">“<span>在线</span>”</span>或<span class="uicontrol">“<span>离线</span>”</span>状态。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.369999999999997%" headers="mcps1.3.2.2.3.2.2.2.2.3.1.1 "><p><span>SLA</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.63%" headers="mcps1.3.2.2.3.2.2.2.2.3.1.2 "><p>当主机已关联SLA时，则显示SLA名称，否则显示<span class="uicontrol">“--”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.369999999999997%" headers="mcps1.3.2.2.3.2.2.2.2.3.1.1 "><p><span><span>保护状态</span></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.63%" headers="mcps1.3.2.2.3.2.2.2.2.3.1.2 "><p>主机当前是否被保护。</p>
+<ul><li><span>未保护</span>：主机未关联SLA，或者主机已关联SLA但已禁用保护。</li><li><span>已保护</span>：主机已关联SLA，且已激活保护。</li><li><span>创建中</span>：主机已关联SLA，正在创建保护。</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.369999999999997%" headers="mcps1.3.2.2.3.2.2.2.2.3.1.1 "><p>标签</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.63%" headers="mcps1.3.2.2.3.2.2.2.2.3.1.2 "><p>当资源已添加标签时，则此处显示标签名称。否则，显示“--”。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>在<span class="uicontrol">“<span>虚拟机</span>”</span>页签浏览虚拟机信息。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="cnware_00100__zh-cn_topic_0000002164820458_p4219634163218_2">部分参数默认不展示，您可以单击“操作”列后的<span><img id="cnware_00100__zh-cn_topic_0000002164820458_image1271105319486_2" src="zh-cn_image_0000002200147221.png"></span>，勾选对应参数，即可在当前界面展示。</p>
+</div></div>
+<ol type="a"><li>虚拟机的详细信息如<a href="#cnware_00100__table1978564181619">表3</a>所示。
+<div class="tablenoborder"><a name="cnware_00100__table1978564181619"></a><a name="table1978564181619"></a><table cellpadding="4" cellspacing="0" summary="" id="cnware_00100__table1978564181619" frame="border" border="1" rules="all"><caption><b>表3 </b>虚拟机信息</caption><colgroup><col style="width:20.31%"><col style="width:79.69000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20.31%" id="mcps1.3.2.2.4.2.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.69000000000001%" id="mcps1.3.2.2.4.2.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.2 "><p>虚拟机名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.1 "><p><span>位置</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.2 "><p>虚拟机所在路径。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.1 "><p><span>状态</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.2 "><p>虚拟机处于开机或关机状态。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.1 "><p><span>标记</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.2 "><p>虚拟机的标记。</p>
+<p>当您已在CNware虚拟化环境中为虚拟机设置标记，则此处显示虚拟机标记，否则显示<span class="uicontrol">“--”</span>。</p>
+<p>您可以通过标记过滤虚拟机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.1 "><p><span>SLA</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.2 "><p>当虚拟机已关联SLA时，则此处显示SLA名称，否则显示<span class="uicontrol">“--”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.1 "><p><span>SLA遵从度</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.2 "><div class="p">SLA遵从度指某次备份任务是否按设定的备份频率或备份窗口成功完成备份。<ul id="cnware_00100__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_ul1823814519293"><li id="cnware_00100__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_li9238184572919">遵从：如果某次备份任务（首次全量备份除外）的备份时间满足备份窗口或备份频率要求，且备份成功，则表示SLA遵从。</li><li id="cnware_00100__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_li189142052112912">不遵从：如果备份时间不满足备份窗口或备份频率要求，例如某次备份任务SLA设定的备份频率为每半小时执行一次，最终备份时间超过半小时，则表示SLA不遵从。建议调整备份频率或备份窗口。</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.1 "><p><span><span>保护状态</span></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.2 "><p>虚拟机当前是否被保护。</p>
+<ul><li><span>未保护</span>：虚拟机未关联SLA，或者虚拟机已关联SLA但已禁用保护。</li><li><span>已保护</span>：虚拟机已关联SLA，且已激活保护。</li><li><span>创建中</span>：虚拟机已关联SLA，正在创建保护。</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.1 "><p>标签</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.4.2.2.1.2.2.3.1.2 "><p>当资源已添加标签时，则此处显示标签名称。否则，显示“--”。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>单击虚拟机名称，浏览虚拟机总览信息、副本信息以及相关任务。<ul><li>虚拟机总览<p>显示虚拟机的名称、SLA信息、任务执行时间、副本总数、硬盘信息等。</p>
+</li><li>虚拟机副本数据<p>您可以依次按照年、月、天查找相应时间的副本。</p>
+<p>时间下方显示<span><img src="zh-cn_image_0000002200145721.png"></span>，表示该时间存在副本。</p>
+</li><li>虚拟机相关任务<p>虚拟机相关的所有任务展示，包括备份、恢复、即时挂载、归档等任务。</p>
+</li></ul>
+</li></ol>
+</p></li><li><span>在<span class="uicontrol">“虚拟机组”</span>页签浏览虚拟机组的信息。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="cnware_00100__zh-cn_topic_0000002164820458_p4219634163218_3">部分参数默认不展示，您可以单击“操作”列后的<span><img id="cnware_00100__zh-cn_topic_0000002164820458_image1271105319486_3" src="zh-cn_image_0000002200147221.png"></span>，勾选对应参数，即可在当前界面展示。</p>
+</div></div>
+<div class="p">虚拟机组的详细信息如<a href="#cnware_00100__table63208525418">表4</a>所示。
+<div class="tablenoborder"><a name="cnware_00100__table63208525418"></a><a name="table63208525418"></a><table cellpadding="4" cellspacing="0" summary="" id="cnware_00100__table63208525418" frame="border" border="1" rules="all"><caption><b>表4 </b>虚拟机组</caption><colgroup><col style="width:20.31%"><col style="width:79.69000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20.31%" id="mcps1.3.2.2.5.2.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.69000000000001%" id="mcps1.3.2.2.5.2.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.5.2.2.2.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.5.2.2.2.2.3.1.2 "><p>虚拟机组的名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.5.2.2.2.2.3.1.1 "><p><span>虚拟机数量</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.5.2.2.2.2.3.1.2 "><p>虚拟机组中包含的虚拟机数量。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.5.2.2.2.2.3.1.1 "><p><span>SLA</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.5.2.2.2.2.3.1.2 "><p>当对整个集群关联SLA时，则显示SLA名称，否则显示<span class="uicontrol">“--”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.5.2.2.2.2.3.1.1 "><p><span>SLA遵从度</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.5.2.2.2.2.3.1.2 "><div class="p">SLA遵从度指某次备份任务是否按设定的备份频率或备份窗口成功完成备份。<ul id="cnware_00100__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_ul1823814519293_1"><li id="cnware_00100__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_li9238184572919_1">遵从：如果某次备份任务（首次全量备份除外）的备份时间满足备份窗口或备份频率要求，且备份成功，则表示SLA遵从。</li><li id="cnware_00100__zh-cn_topic_0000002164820458_zh-cn_topic_0000002164820450_li189142052112912_1">不遵从：如果备份时间不满足备份窗口或备份频率要求，例如某次备份任务SLA设定的备份频率为每半小时执行一次，最终备份时间超过半小时，则表示SLA不遵从。建议调整备份频率或备份窗口。</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.5.2.2.2.2.3.1.1 "><p><span><span>保护状态</span></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.5.2.2.2.2.3.1.2 "><p>虚拟机组当前是否被保护。</p>
+<ul><li><span>未保护</span>：虚拟机组未关联SLA，或者虚拟机组已关联SLA但已禁用保护。</li><li><span>已保护</span>：虚拟机组已关联SLA，且已激活保护。</li><li><span>创建中</span>：虚拟机组已关联SLA，正在创建保护。</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.2.2.5.2.2.2.2.3.1.1 "><p>标签</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.2.2.5.2.2.2.2.3.1.2 "><p>当资源已添加标签时，则此处显示标签名称。否则，显示“--”。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="cnware_00099.html">CNware虚拟化环境</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

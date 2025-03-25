@@ -1,0 +1,60 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Email-Level Restoration">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164649784.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200050557">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Email-Level Restoration</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200050557"></a><a name="EN-US_TOPIC_0000002200050557"></a>
+
+<h1 class="topictitle1">Email-Level Restoration</h1>
+<div><p>This section describes how to use a mailbox backup copy to restore an email to the original mailbox.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before the restoration, ensure that the original mailbox exists and the database where the mailbox is located has been mounted.</li><li>Before the restoration, ensure that the Exchange Server service and related dependent services are running properly. For details about the corresponding services, see <a href="https://learn.microsoft.com/en-us/exchange/plan-and-deploy/deployment-ref/services-overview?view=exchserver-2019" target="_blank" rel="noopener noreferrer">Overview of Exchange services on Exchange servers</a>.</li><li>A mailbox backup copy is available.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><p>Before email restoration, if you delete a folder and emails in the folder, you need to delete the folder and emails from <strong>Deleted Items</strong> in the <span>Exchange</span> mailbox. Otherwise, the restored data will be incomplete.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200050557__en-us_topic_0000002199964685_uicontrol201131546165412"><b><span id="EN-US_TOPIC_0000002200050557__en-us_topic_0000002199964685_text4113184695420"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002200050557__en-us_topic_0000002199964685_text1311384665413"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002200050557__en-us_topic_0000002199964685_text843804914500"><strong>Applications</strong></span> &gt; <span id="EN-US_TOPIC_0000002200050557__en-us_topic_0000002199964685_text1781814011566"><strong>Exchange</strong></span></b></span>.</span></li><li><span>Search for copies by mailbox resource or copy. This section describes how to search for copies by mailbox resource.</span><p><p>On the <strong>Resources</strong> tab page, search for the mailbox where the email to be restored resides based on the mailbox name and click the mailbox name.</p>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> and select the year, month, and day in sequence to find the copy.</span><p><p>If <span><img src="en-us_image_0000002200136385.png"></span> is displayed under a month or date, copies exist in the month or date.</p>
+</p></li><li><span>In the row where the Exchange mailbox copy resides, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; Email-Level Restore</b></span>.</span></li><li><span>Select an overwrite rule to replace or ignore existing emails.</span></li><li><span>Select the email to be restored. You can select one or more emails for restoration.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Follow-up Procedure</h4><p id="EN-US_TOPIC_0000002200050557__en-us_topic_0000002200050629_p88701326556">After the restoration, you need to update the user mailbox status at the production end and create an Active Directory domain user to connect to the restored mailbox to verify the restored user mailbox data. For details, see <a href="en-us_topic_0000002164809464.html">Verifying the Restored User Mailbox Data (Applicable to Microsoft Exchange Server 2010)</a> or <a href="en-us_topic_0000002200136141.html">Verifying the Restored User Mailbox Data (Applicable to Microsoft Exchange Server 2013 and Later Versions)</a>.</p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164649784.html">Recovery</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -20,59 +20,35 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤6：创建限速策略">
+<meta name="DC.Title" content="步骤7：（可选）开启备份链路加密开关">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="sql-0013.html">
+<meta name="DC.Relation" scheme="URI" content="sql-0012.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="sql-0019">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤6：创建限速策略</title>
+<title>步骤7：（可选）开启备份链路加密开关</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="sql-0019"></a><a name="sql-0019"></a>
 
-<h1 class="topictitle1">步骤6：创建限速策略</h1>
-<div><p id="sql-0019__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_p31441444174712">如果需要限制保护任务的最大带宽以保证关键业务的性能时请参考本节配置限速策略。</p>
-<div class="section" id="sql-0019__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_section354917289471"><h4 class="sectiontitle">操作步骤</h4><ol id="sql-0019__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_ol1149154116466"><li id="sql-0019__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_li18388120104717"><span>选择<span class="uicontrol" id="sql-0019__zh-cn_topic_0000001839143197_zh-cn_topic_0000001839142377_uicontrol185917396272">“<span id="sql-0019__zh-cn_topic_0000001839143197_zh-cn_topic_0000001839142377_text659183972712">保护</span> &gt; 保护策略 &gt; 限速策略”</span>。</span></li><li id="sql-0019__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_li1438918203475"><span>单击<span class="uicontrol" id="sql-0019__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_uicontrol12389192016473">“<span id="sql-0019__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_text1214017349462">创建</span>”</span>。</span></li><li id="sql-0019__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_li117481133134716"><span>配置限速策略参数。</span><p><div class="p" id="sql-0019__zh-cn_topic_0000001839143197_p1897612503615">相关参数说明如<a href="#sql-0019__zh-cn_topic_0000001839143197_table12170124133619">表1</a>。
-<div class="tablenoborder"><a name="sql-0019__zh-cn_topic_0000001839143197_table12170124133619"></a><a name="zh-cn_topic_0000001839143197_table12170124133619"></a><table cellpadding="4" cellspacing="0" summary="" id="sql-0019__zh-cn_topic_0000001839143197_table12170124133619" frame="border" border="1" rules="all"><caption><b>表1 </b>限速策略参数说明</caption><colgroup><col style="width:32.269999999999996%"><col style="width:67.73%"></colgroup><thead align="left"><tr id="sql-0019__zh-cn_topic_0000001839143197_row716912241366"><th align="left" class="cellrowborder" valign="top" width="32.269999999999996%" id="mcps1.3.2.2.3.2.1.2.2.3.1.1"><p id="sql-0019__zh-cn_topic_0000001839143197_p5169524153616">参数</p>
-</th>
-<th align="left" class="cellrowborder" valign="top" width="67.73%" id="mcps1.3.2.2.3.2.1.2.2.3.1.2"><p id="sql-0019__zh-cn_topic_0000001839143197_p6169124103613">说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="sql-0019__zh-cn_topic_0000001839143197_row7169112416367"><td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="sql-0019__zh-cn_topic_0000001839143197_p1916911248367"><span id="sql-0019__zh-cn_topic_0000001839143197_text161691424153611">名称</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="sql-0019__zh-cn_topic_0000001839143197_p9169924133613">自定义限速策略名称。</p>
-</td>
-</tr>
-<tr id="sql-0019__zh-cn_topic_0000001839143197_row7169182416362"><td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="sql-0019__zh-cn_topic_0000001839143197_p8169924113611"><span id="sql-0019__zh-cn_topic_0000001839143197_text12169424203614">最大带宽</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="sql-0019__zh-cn_topic_0000001839143197_p1981116133814">保护任务平均每秒最大传输的数据量。</p>
-<p id="sql-0019__zh-cn_topic_0000001839143197_p816992415362">默认值：1024<span style="color:#282B33;">MB/s</span>。</p>
-<p id="sql-0019__zh-cn_topic_0000001839143197_p61691524113616">取值范围：10MB/s~5120MB/s</p>
-</td>
-</tr>
-<tr id="sql-0019__zh-cn_topic_0000001839143197_row0169524103620"><td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="sql-0019__zh-cn_topic_0000001839143197_p2169424133612"><span id="sql-0019__zh-cn_topic_0000001839143197_text1516915245366">描述</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="sql-0019__zh-cn_topic_0000001839143197_p51691624103615">描述限速策略信息。</p>
-</td>
-</tr>
-</tbody>
-</table>
+<h1 class="topictitle1">步骤7：（可选）开启备份链路加密开关</h1>
+<div><p id="sql-0019__zh-cn_topic_0000002200147021_p105016314451">当需要确保数据安全性时，可以开启备份链路加密开关，开启后，可以在数据备份过程中对传输数据进行加密。</p>
+<div class="section" id="sql-0019__zh-cn_topic_0000002200147021_section41258319515"><h4 class="sectiontitle">前提条件</h4><p id="sql-0019__zh-cn_topic_0000002200147021_p13640951351">请确保已为存储系统配置NFS Kerberos服务，并已在AD域中添加<strong id="sql-0019__zh-cn_topic_0000002200147021_b1495762152419">rdadmin</strong>用户。否则开启备份链路加密开关后，可能导致备份任务失败。<span id="sql-0019__zh-cn_topic_0000002200147021_ph527185394510">配置NFS Kerberos服务的操作请参见产品对应型号的<span id="sql-0019__zh-cn_topic_0000002200147021_cite5907115716400">《安装指南》</span>中的“（可选）配置NFS Kerberos服务”章节。</span></p>
 </div>
+<div class="section" id="sql-0019__zh-cn_topic_0000002200147021_section1376817483418"><h4 class="sectiontitle">注意事项</h4><p id="sql-0019__zh-cn_topic_0000002200147021_p1854315715349">开启备份链路加密后，客户端所在主机与KDC域服务器之间的票证存在有效期，票证过期之后可能导致备份任务失败。建议延长KDC域服务器上Kerberos策略中票证的过期时间或者配置为永不过期。如果未配置永不过期，需要在票证即将过期前，在客户端所在主机上，对添加到AD域中的用户，通过<strong id="sql-0019__zh-cn_topic_0000002200147021_b3195122210175">kinit</strong>命令或<strong id="sql-0019__zh-cn_topic_0000002200147021_b185942242179">net</strong>命令更新票证，具体操作请参见产品对应型号的<span id="sql-0019__zh-cn_topic_0000002200147021_cite890601917412">《安装指南》</span>中的“配置客户端”章节。</p>
 </div>
-</p></li><li id="sql-0019__zh-cn_topic_0000001839143197_li18215153613714"><span>单击<span class="uicontrol" id="sql-0019__zh-cn_topic_0000001839143197_uicontrol1756934320715">“<span id="sql-0019__zh-cn_topic_0000001839143197_text1686961087">确定</span>”</span>。</span></li></ol>
+<div class="section" id="sql-0019__zh-cn_topic_0000002200147021_section4718134149"><h4 class="sectiontitle">操作步骤</h4><ol id="sql-0019__zh-cn_topic_0000002200147021_ol171184511428"><li id="sql-0019__zh-cn_topic_0000002200147021_li185661554204220"><span>选择<span class="uicontrol" id="sql-0019__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="sql-0019__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_text113848306235"><span id="sql-0019__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_text8949174614917">系统</span></span> &gt; <span id="sql-0019__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_text484521122916"><span id="sql-0019__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_text2943115917492">安全</span></span> &gt; <span id="sql-0019__zh-cn_topic_0000002200147021_text6472734351">数据安全</span>”</span>。</span></li><li id="sql-0019__zh-cn_topic_0000002200147021_li109511195437"><span>在“加密设置”区域，单击页面右侧的<span class="uicontrol" id="sql-0019__zh-cn_topic_0000002200147021_uicontrol851575420436">“<span id="sql-0019__zh-cn_topic_0000002200147021_text2172104153514">修改</span>”</span>，开启<span class="uicontrol" id="sql-0019__zh-cn_topic_0000002200147021_uicontrol13743170204412">“<span id="sql-0019__zh-cn_topic_0000002200147021_text451824814419">备份链路加密</span>”</span>。</span></li><li id="sql-0019__zh-cn_topic_0000002200147021_li178813714443"><span>单击<span class="uicontrol" id="sql-0019__zh-cn_topic_0000002200147021_uicontrol1839019167443">“<span id="sql-0019__zh-cn_topic_0000002200147021_text1418318566358">保存</span>”</span>。</span></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="sql-0013.html">备份SQL Server数据库</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="sql-0012.html">备份SQL Server数据库</a></div>
 </div>
 </div>
 

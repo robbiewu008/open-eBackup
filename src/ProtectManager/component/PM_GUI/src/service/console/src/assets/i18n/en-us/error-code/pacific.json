@@ -1041,6 +1041,7 @@
   "33697334": "Cause:The upgrade packages fail the verification. The package name cannot contain spaces and special characters: `~!@#$%^&*()=+\\|[{}];:,<.>/?\".<br>Suggestion:Upload correct software packages.",
   "33697335": "Cause:The version of the software package to be uploaded is the same as the system version.<br>Suggestion:Upload correct software packages.",
   "33697340": "Cause:Upgrade confirmation is being executed.<br>Suggestion:Do not re-confirm the upgrade.",
+  "33697349": "Cause:The resource group to which the upgrade process of the active management node belongs has less than 3 GB memory.<br>Suggestion:Reduce the service load or add the node memory and try again.",
   "33697356": "Cause:The pre-upgrade check times out.<br>Suggestion:Perform the pre-upgrade check again.",
   "33697362": "Cause:Versions of all components to be upgraded in the software package are the same as those in the system.<br>Suggestion:Upload a correct upgrade package and try again.",
   "33697363": "Cause:Software package repository synchronization times out.<br>Suggestion:Try again later.",

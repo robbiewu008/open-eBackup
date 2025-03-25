@@ -1,0 +1,186 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="恢复AntDB">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="antdb-0047.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="antdb-0050">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>恢复AntDB</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="antdb-0050"></a><a name="antdb-0050"></a>
+  <h1 class="topictitle1">恢复AntDB</h1>
+  <div>
+   <p>当需要对已备份的AntDB实例进行恢复时，可以参考本节恢复AntDB实例至原位置或新位置。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <p>支持使用备份副本、复制副本、归档副本进行恢复。支持恢复至原位置（复制副本不支持恢复至原位置，复制副本的归档副本不支持恢复至原位置）或新位置。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</li>
+    </ul>
+    <ul>
+     <li>执行新位置恢复前，请确保数据库安装用户具有恢复目标路径的读写权限。</li>
+    </ul>
+   </div>
+   <ul>
+    <li>恢复时如果目标实例的端口被占用，请先解除目标实例占用的端口再执行恢复操作。确认所需端口，请参考<a href="antdb-0011.html">备份前准备</a>查询。</li>
+    <li>恢复的目标实例为集群实例时，请确保各节点上AntDB服务已停止，且AntDB端口未被占用，否则会导致恢复失败。</li>
+    <li>集中式集群需要配置数据库配置文件（需要在停止数据库之前操作），具体方法如下。
+     <ol>
+      <li>使用PuTTY登录集群任一节点，然后输入<strong>su - antdb</strong>命令切换至运行数据库的操作系统用户。</li>
+      <li id="antdb-0050__li134012354275"><a name="antdb-0050__li134012354275"></a><a name="li134012354275"></a>执行<strong>adbhamgrctl -c <em>/etc/adbhamgr/</em><em>adbhamgr_antdbcluster.yaml</em> list</strong>（<span><em>/etc/adbhamgr</em><em>/adbhamgr_antdbcluster.yaml</em>请根据实际路径替换</span>）命令，查询集群的主节点，即<span class="parmname">“Role”</span>为<span class="parmvalue">“Leader”</span>的节点。如下图所示：<p><span><img src="zh-cn_image_0000002205153209.png"></span></p></li>
+      <li>登录<a href="#antdb-0050__li134012354275">2</a>中查询到的集群的主节点，在数据库配置文件（如adbhamgr_antdbcluster.yaml）中，bootstrap项下，添加如下配置并保存。<pre class="screen"> method: OceanProtectPITR
+ OceanProtectPITR:
+    command: "mv <em>$ANTDBDATA/../OceanProtectData/DATADIR $ANTDBDATA/../</em>"
+    no_params: True
+    keep_existing_recovery_conf: True</pre>
+       <div class="note">
+        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <ul>
+          <li><em>$ANTDBDATA/../</em>为数据目录的上层目录，例如/home/antdb/app。</li>
+          <li>$<em>ANTDBDATA</em>/../OceanProtectData/DATADIR中DATADIR为数据目录名称，例如/home/antdb/app/OceanProtectData/data。</li>
+          <li>在<em>DATADIR</em>目录为空并且启动集群时触发bootstrap的操作。若启动新的空集群，请删除该配置，否则集群将启动失败，空<em>DATADIR</em>目录将被添加.failed后缀。如不再使用<span>本产品</span>，请在卸载前删除该配置，以免产生上述影响。</li>
+         </ul>
+        </div>
+       </div></li>
+     </ol></li>
+    <li>执行恢复操作前请先停止AntDB数据库，具体方法如下：
+     <ol>
+      <li>集中式单机
+       <ol type="a">
+        <li>使用PuTTY登录AntDB数据库所在主机，然后输入<strong>su - antdb</strong>命令切换至运行数据库的操作系统用户。</li>
+        <li>执行<strong>adb_ctl stop -D /home/antdb/app/data</strong>(/home/antdb/app/data为数据库的数据目录)命令停止数据库。</li>
+       </ol></li>
+      <li>集中式集群
+       <ol type="a">
+        <li id="antdb-0050__li354442411115"><a name="antdb-0050__li354442411115"></a><a name="li354442411115"></a>使用PuTTY登录AntDB数据库所在主机，然后输入<strong>su - antdb</strong>命令切换至运行数据库的操作系统用户。</li>
+        <li id="antdb-0050__li153771756429"><a name="antdb-0050__li153771756429"></a><a name="li153771756429"></a>执行<strong>systemctl stop adbhamgr</strong>命令停止数据库。</li>
+        <li>在集群每个节点执行一遍<a href="#antdb-0050__li354442411115">2.a</a>和<a href="#antdb-0050__li153771756429">2.b</a>，然后在集群任意一个节点执行<strong>adbhamgrctl -c <em>/etc/adbhamgr/</em><em>adbhamgr_antdbcluster.yaml</em> list</strong>（<span><em id="antdb-0050__antdb-0013_i0348165516338">/etc/adbhamgr/adbhamgr_antdbcluster.yaml</em>请根据实际路径和实际文件名称替换</span>）命令，观察回显表格中的节点信息是否已清除。如果回显为空表格，则说明集群已停止。<p><span><img src="zh-cn_image_0000002169907984.png"></span></p></li>
+       </ol></li>
+     </ol></li>
+    <li>集中式集群需要先删除etcd数据（需要在停止数据库之后操作），具体方法如下：
+     <ol>
+      <li>在集群任一节点执行<strong>cat </strong><strong><em>/etc/adbhamgr</em><em>/adbhamgr_antdbcluster.yaml</em></strong>（<em><span><em id="antdb-0050__antdb-0013_i0348165516338_1">/etc/adbhamgr/adbhamgr_antdbcluster.yaml</em>请根据实际路径和实际文件名称替换</span></em>）命令，查看配置文件。</li>
+      <li>找到并记录namespace参数项取值。如下图所示：<p><span><img src="zh-cn_image_0000002205154457.png"></span></p></li>
+      <li>找到并任意记录一组客户端IP地址和客户端访问adbdcs组件使用的端口号。如下图所示：<p><span><img src="zh-cn_image_0000002169748232.jpg"></span></p></li>
+      <li>执行<strong>adbdcsctl --endpoint=http://<em>客户端IP地址</em>:<em>客户端访问adbdcs组件使用的端口号</em> rm -r </strong><em><strong>namespace</strong></em>命令，删除etcd数据。例如：adbdcsctl --endpoint=http://8.40.160.159:12379 rm -r /service/。</li>
+     </ol></li>
+   </ul>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="menucascade" id="antdb-0050__zh-cn_topic_0000002199964685_menucascade6488112014173">“<span class="uicontrol" id="antdb-0050__zh-cn_topic_0000002199964685_uicontrol548819205170">数据利用 &gt; 副本数据 &gt; 数据库 &gt; AntDB</span>”</span>。</span></li>
+     <li><span>您可以以AntDB实例资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p>在<span class="wintitle">“资源”</span>页签，根据资源名称查找到需要恢复的资源，并单击资源名称。</p> <p></p></li>
+     <li><span>依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000002200068033.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>指定副本或时间点进行恢复。</span><p></p>
+      <ul>
+       <li>指定副本恢复<p>在副本数据页面单击<span><img src="zh-cn_image_0000002164667262.png"></span>，在需要恢复的副本所在行单击<span class="menucascade">“<span class="uicontrol">更多 &gt; 恢复</span>”</span>。</p></li>
+       <li>指定时间点恢复<p>在副本数据页面单击<span><img src="zh-cn_image_0000002164667266.png"></span>，在时间轴上选择蓝色覆盖区域的副本，单击<span class="menucascade">“<span class="uicontrol">更多 &gt; 恢复</span>”</span>。</p></li>
+      </ul>
+      <div class="p">
+       相关参数说明如<a href="#antdb-0050__table194961441141219">表1</a>。 
+       <div class="tablenoborder">
+        <a name="antdb-0050__table194961441141219"></a><a name="table194961441141219"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="antdb-0050__table194961441141219" frame="border" border="1" rules="all">
+         <caption>
+          <b>表1 </b>恢复AntDB实例参数说明
+         </caption>
+         <colgroup>
+          <col style="width:32.019999999999996%">
+          <col style="width:67.97999999999999%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.5.2.4.2.2.2.2.3.1.1"><p>参数</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.5.2.4.2.2.2.2.3.1.2"><p>说明</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>恢复至</p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>或<span class="uicontrol">“<span>新位置</span>”</span>。</p>
+            <div class="note">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p>执行新位置恢复时，如果副本中存在数据目录外的表空间目录，需要保证新位置安装数据库的操作系统用户可以访问新位置主机的同名表空间目录。</p>
+             </div>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>标签</p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，通过<span class="uicontrol">“标签”</span>可以实现快速筛选和管理资源。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>位置</p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>时，默认显示当前实例所在位置。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>目标实例</p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，请选择恢复到的目标实例。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>恢复前执行脚本</p></td>
+           <td class="cellrowborder" rowspan="3" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>您可以根据实际需求，在恢复任务执行前、执行成功后、执行失败后，执行自定义脚本。此处请输入脚本的绝对路径。</p>
+            <ul>
+             <li>Windows OS支持的脚本类型为<span class="uicontrol">“.bat”</span>。</li>
+             <li>非Windows OS支持的脚本类型为<span class="uicontrol">“.sh”</span>。
+              <div class="note">
+               <span class="notetitle"> 说明： </span>
+               <div class="notebody">
+                <p>当配置了<span class="uicontrol">“<span>恢复成功执行脚本</span>”</span>时，即使该脚本执行失败，<span>本产品</span>上也会显示恢复任务的状态为<span class="uicontrol">“<span>成功</span>”</span>。请您留意任务详情中是否有后置脚本执行失败的相关提示，如有请及时修正脚本。</p>
+               </div>
+              </div></li>
+            </ul></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>恢复成功执行脚本</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>恢复失败执行脚本</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“确定”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="antdb-0047.html">恢复</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

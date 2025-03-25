@@ -1,0 +1,236 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Live Mounting a NAS Share">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164645272.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200046085">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Live Mounting a NAS Share</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200046085"></a><a name="EN-US_TOPIC_0000002200046085"></a>
+  <h1 class="topictitle1">Live Mounting a NAS Share</h1>
+  <div>
+   <p>This section describes how to mount a NAS share copy to a target client for quick use.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <ul id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_ul147910567512">
+     <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li19707011103218"><span class="uicontrol" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_uicontrol1265863119342"><b>Mount Level</b></span> indicates the mount level of the current backup copy. The initial value of <span class="uicontrol" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_uicontrol18145122119307"><b>Mount Level</b></span> for a copy is <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b6868182044416">1</strong>.</li>
+     <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li888222519329">If you select a copy whose <span class="uicontrol" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_uicontrol69991637153412"><b>Mount Level</b></span> is <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b15217101162315">2</strong> for mounting, you need to manually mount it to the target client based on the share path and share IP address. For details, see <a href="en-us_topic_0000002164645284.html">Manually Mounting a NAS File System or NAS Share</a>.</li>
+     <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li127865918467">Backup copies and replication copies can be used for live mount.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002199964685_uicontrol185451845983"><b>Explore &gt; Live Mount &gt; Application Type &gt; NAS Shares</b></span>.</span></li>
+     <li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_uicontrol84017217520"><b><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text1670816112216"><strong>Create</strong></span></b></span>.</span></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Select Resource</strong></span></b></span> tab page, select the source NAS share corresponding to a copy to be mounted, and click <span class="uicontrol"><b><span><strong>Next</strong></span></b></span>.</span></li>
+     <li><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_uicontrol3329357651"><b><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text33298579515"><strong>Select Copy</strong></span></b></span> tab page, select the copy to be mounted and click <span class="uicontrol" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_uicontrol3890932596"><b><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text889093220913"><strong>Next</strong></span></b></span>.</span><p></p><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p191441659204112">The copy to be live mounted must be in the <span class="uicontrol" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_uicontrol1584841912513"><b><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text10369637192511"><strong>Normal</strong></span></b></span> status.</p> <p></p></li>
+     <li><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_uicontrol8951503336"><b><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text159570103313"><strong>Mount Options</strong></span></b></span> tab page, configure mount parameters, and click <span class="uicontrol" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_uicontrol015073516915"><b><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text1415010354910"><strong>Next</strong></span></b></span>.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_ol99770103312">
+       <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li1897140203316">Configure basic and advanced parameters for live mount.
+        <div class="p" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1096180103318">
+         <a name="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li1897140203316"></a><a name="en-us_topic_0000002200046049_li1897140203316"></a><a href="#EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_table89615043315">Table 1</a> and <a href="#EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_table4872165714509">Table 2</a> describe the related parameters.
+         <div class="note" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_note1795606331">
+          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <ul id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_ul69520163319">
+            <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li8951207331">You can set either or both of <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b1262311915109">Bandwidth (MB/s)</strong> and <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b2624519151020">Standard IOPS (8 KB)</strong>. You are advised to set only <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b06241619161014">Bandwidth (MB/s)</strong> for bandwidth-intensive services and only <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b1862531931017"><strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b16251192108">Standard</strong> IOPS (8 KB)</strong> for IOPS-intensive services. If you cannot determine the service type or the service type changes frequently, you can set both indicators and the system will control the traffic using the indicator with a smaller value.</li>
+            <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li129517043311">You can query the conversion between the standard IOPS (8 KB) model and real I/O model in the conversion table on the GUI.</li>
+            <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li2027466144713">The maximum traffic of mounted copies is limited to ensure the performance of backup and restoration jobs. In addition, the minimum traffic of mounted copies is set to ensure the minimum performance of mounted copies.</li>
+           </ul>
+          </div>
+         </div>
+         <div class="tablenoborder">
+          <a name="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_table89615043315"></a><a name="en-us_topic_0000002200046049_table89615043315"></a>
+          <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_table89615043315" frame="border" border="1" rules="all">
+           <caption>
+            <b>Table 1 </b>Basic parameters for live mount
+           </caption>
+           <colgroup>
+            <col style="width:16.439999999999998%">
+            <col style="width:20.75%">
+            <col style="width:62.81%">
+           </colgroup>
+           <thead align="left">
+            <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row2095140183312">
+             <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1"><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p5951007337">Parameter</p></th>
+             <th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.2"><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p129580193310">Description</p></th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row187197124910">
+             <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p675725818232">File System Name</p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.2 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p18258120132220">Name of a mounted file system.</p> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1775418582233">The default name prefix is <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b5302133724013">mount_</strong>.</p></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row1323136134919">
+             <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1401338152614">Share Protocol</p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.2 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p674685813234">NFS or CIFS.</p> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p497911015212">You can configure NFS and CIFS shares at the same time.</p></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row1620716414917">
+             <td class="cellrowborder" rowspan="4" valign="top" width="16.439999999999998%" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p15809142154820">NFS</p> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p492672417566"></p></td>
+             <td class="cellrowborder" valign="top" width="20.75%" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p10303174614247">Share Path</p></td>
+             <td class="cellrowborder" valign="top" width="62.81%" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.2 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p91182035132319">Share path for accessing the file system. The path name is the same as the file system name and cannot be changed.</p> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p9465834103015">Ensure that the backup resource supports the NFS share protocol. Otherwise, the NFS file permission information will not be contained during mounting.</p></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row45761098516">
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p29861355142418">Share Client</p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 ">
+              <div class="p" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p75836231289">
+               Information about the client that accesses a file system.
+               <ul id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_ul10853114216166">
+                <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li141781311161">You can enter share client IP addresses, share client IP address segments, or an asterisk (*) to represent IP addresses of all share clients.</li>
+                <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li717813151615">The IP addresses can be IPv4 addresses, IPv6 addresses, or a combination of IPv4 and IPv6 addresses.</li>
+                <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li2178531151612">You can enter multiple IP addresses or IP address segments and separate them by semicolons (;), spaces, or <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b3334203131920">Enter</strong>. Example: <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b186852403458">192.168.0.10;192.168.0.0/24;*</strong></li>
+               </ul>
+              </div></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row16960123595619">
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1496063514563">UNIX Permission</p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p51044611414">Permission level for a UNIX client to access the NFS share. Possible values are as follows:</p>
+              <ul id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_ul010946104120">
+               <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li1310246194114"><strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b12126749174614">Read-only</strong>: The client can only read files in the share.</li>
+               <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li7101046114114"><strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b82091222165112">Read-write</strong>: The client can read and write files in the share.</li>
+               <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li171012465415"><strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b33299527466">None</strong>: No operation is allowed on the share.</li>
+              </ul></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row1992552475614">
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p119261224165610">root Permission Constraint</p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p992614246566">Controls the <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b68502055153613">root</strong> permission of a client. <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b0834145213820">root_squash</strong>: does not allow the client to access the share as user <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b2834952183819">root</strong>. Otherwise, the client will be mapped as an anonymous user. <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b2053916233919">no_root_squash</strong>: allows the client to access the storage system as user <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b1715474023916">root</strong>.</p></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row55719408316">
+             <td class="cellrowborder" rowspan="4" valign="top" width="16.439999999999998%" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1540845794614">CIFS</p> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p96609782220"></p></td>
+             <td class="cellrowborder" valign="top" width="20.75%" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p7737185193217">Share Name</p></td>
+             <td class="cellrowborder" valign="top" width="62.81%" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.2 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p53284218538">Share name for accessing a file system.</p> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1508191143516">The default share name is <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b2312834122715">mount_</strong><em id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_i1731833414275">Timestamp</em>. You can change it as needed.</p> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1811116591216">Ensure that the backup resource supports the CIFS share protocol. Otherwise, the CIFS file permission information will not be contained during mounting.</p></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row1957204043111">
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1157294043118">Type</p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p11481041133414">Type of the user who accesses a CIFS share.</p>
+              <ul id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_ul183616552810">
+               <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_en-us_topic_0000002164645220_li115301547103614"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_en-us_topic_0000002164645220_text11836124163210"><strong>Everyone</strong></span></li>
+               <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_en-us_topic_0000002164645220_li1853094715369"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_en-us_topic_0000002164645220_text12625493210"><strong>Windows Local Authentication User</strong></span></li>
+               <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_en-us_topic_0000002164645220_li58994343227"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_en-us_topic_0000002164645220_text1018841611228"><strong>Windows Local Authentication User Group</strong></span></li>
+              </ul></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row1470392645812">
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p270362655811">Permission</p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p47031426195810">Permission level for the added user or user group to access the CIFS share.</p> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1357135819449">The permission level from high to low is <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b19960145164718">Forbidden</strong> &gt; <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b18961175112470">Full control</strong> &gt; <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b096116517476">Read-write</strong> &gt; <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b179611151104712">Read-only</strong>. The highest permission takes effect. If a user is granted with a higher permission than its original one, the new permission takes effect immediately without re-authentication. For example, if the access permission of a user is <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b1632019144815">Read-only</strong> and then the user is added to a user group with the <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b232012904817">Full control</strong> permission, the access permission of the user is upgraded to <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b1332069174810">Full control</strong> and the user can access the CIFS share without re-authentication.</p></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row16660157182210">
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p34401812193314">Users</p></td>
+             <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.1.4.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p55721440183113">Username for accessing a CIFS share.</p> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1441181810353">This parameter is mandatory when <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_en-us_topic_0000002164645220_b140357142311"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_en-us_topic_0000002164645220_text66251842152215"><strong>Type</strong></span></strong> is set to <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_en-us_topic_0000002164645220_b5567205814231"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_en-us_topic_0000002164645220_text1862524232215"><strong>Windows Local Authentication User</strong></span></strong> or <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_en-us_topic_0000002164645220_b14169117244"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_en-us_topic_0000002164645220_text462474214224"><strong>Windows Local Authentication User Group</strong></span></strong>.</p> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p7841427394">If the required user or user group does not exist, create one on DeviceManager. For details about how to log in to DeviceManager, see <a href="en-us_topic_0000002200131625.html">Logging In to DeviceManager</a>.</p>
+              <div class="note" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_note10760161213437">
+               <span class="notetitle"> NOTE: </span>
+               <div class="notebody">
+                <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p35037911616">For the OceanProtect X series backup appliances or OceanProtect E1000 (with the OceanProtect used as backup storage), perform the following operations:</p>
+                <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p643051834314">Choose <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b09321829202215">Services</strong> &gt; <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b1932132911221">File Service</strong> &gt; <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b1693272962215">Authentication Users</strong> &gt; <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b16932122914229">Windows Users</strong> from the navigation pane. On the <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b17932122942211">Local Authentication Users</strong> or <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b89327296224">Local Authentication User Groups</strong> tab page, create a user or user group.</p>
+               </div>
+              </div></td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1432613576503"><a href="#EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_table4872165714509">Table 2</a> describes the advanced parameters for live mount.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_table4872165714509"></a><a name="en-us_topic_0000002200046049_table4872165714509"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_table4872165714509" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 2 </b>Advanced parameters for live mount
+          </caption>
+          <colgroup>
+           <col style="width:16.439999999999998%">
+           <col style="width:20.75%">
+           <col style="width:62.81%">
+          </colgroup>
+          <thead align="left">
+           <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row787245785012">
+            <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.5.2.1.1.3.2.4.1.1"><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1787235717507">Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.5.2.1.1.3.2.4.1.2"><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p13872125712504">Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row787311575503">
+            <td class="cellrowborder" rowspan="3" valign="top" width="16.439999999999998%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1087385713509"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text88738571506"><strong>Bandwidth (MB/s)</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="20.75%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p11873105712500"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text128731557145011"><strong>Min</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="62.81%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.2 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p17874185785013">Minimum bandwidth for copy live mount.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row78741057185015">
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p14874057145013"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text687465755012"><strong>Max</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p687414575501">Maximum bandwidth for copy live mount.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row9874105755017">
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1487415719504"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text887445715504"><strong>Burst</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p48749571502">Maximum burst bandwidth for copy live mount. The value of <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b1535217211204"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text1787565992219"><strong>Burst</strong></span></strong> must be greater than that of <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b187610562002">Max</strong>.</p> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p6874115711505">The value of <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b116506872017"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text198741157135020"><strong>Burst</strong></span></strong> can be set only after that of <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b88771913142012"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text287455755018"><strong>Max</strong></span></strong> is set.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row1487411576504">
+            <td class="cellrowborder" rowspan="3" valign="top" width="16.439999999999998%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p17874457165011"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text14874135710505"><strong>Standard IOPS (8 KB)</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="20.75%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p187419572504"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text38741457105012"><strong>Min</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="62.81%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.2 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p48741357195018">Average minimum number of standard I/O requests per second for copy live mount.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row15874145712504">
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p11874185755013"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text15874757205017"><strong>Max</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p17874155715507">Average maximum number of standard I/O requests per second for copy live mount.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row4874165755014">
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p14874125719507"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text287475765012"><strong>Burst</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p4874857185015">Maximum burst IOPS for copy live mount. The value of <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b418762042015"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text187415718500"><strong>Burst</strong></span></strong> must be greater than that of <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b19152319441">Max</strong>.</p> <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p58742574504">The value of <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b1054522672018"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text887405718501"><strong>Burst</strong></span></strong> can be set only after that of <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b179021130152016"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text48742571506"><strong>Max</strong></span></strong> is set.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row16874175714503">
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1787419575501"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text16874155775017"><strong>Max. Burst Duration (s)</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.2 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p1587415795019">This parameter needs to be set only when the <strong id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_b17571153818207"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text1666111232117"><strong>Burst</strong></span></strong> parameter of the bandwidth or standard IOPS is set. It indicates the maximum duration of burst bandwidth or burst IOPS.</p></td>
+           </tr>
+           <tr id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_row10874155719503">
+            <td class="cellrowborder" valign="top" width="16.439999999999998%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p8874557155018"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text7874105735015"><strong>Normalized Latency (8 KB)</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="20.75%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p148741257155014"><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text1387465765020"><strong>Max</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="62.81%" headers="mcps1.3.3.2.5.2.1.1.3.2.4.1.2 "><p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p787465715019">Maximum latency of the local storage system.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_li1497110143316">Click <span class="uicontrol" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_uicontrol137675581017"><b><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text3376145511105"><strong>Next</strong></span></b></span>.</li>
+      </ol> <p></p></li>
+     <li><span>Preview the mount parameters. After confirming that the parameters are set correctly, click <span class="uicontrol" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_uicontrol193397923310"><b><span id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_text418014210248"><strong>Finish</strong></span></b></span>.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_note1821020234309">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002200046085__en-us_topic_0000002200046049_p15210102319306">If a copy is used for live mount immediately after it is generated, the live mount job may fail because the copy is still in the initialization state. In this case, try again in 3 minutes.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>If you want to access a live mount copy, on the <strong><span><strong>Live mount</strong></span></strong> &gt; <strong><span><strong>NAS Shares</strong></span></strong> page, choose <strong><span><strong>More</strong></span></strong> &gt; <strong><span><strong>View</strong></span></strong> in the row that contains the live mount copy to be accessed. Then, obtain such information as the share path, share client, share IP address, share name, and username of the copy.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164645272.html">Live Mount</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

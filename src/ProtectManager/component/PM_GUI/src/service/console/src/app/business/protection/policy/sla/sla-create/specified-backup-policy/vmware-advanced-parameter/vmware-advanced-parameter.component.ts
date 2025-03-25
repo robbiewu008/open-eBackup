@@ -29,7 +29,8 @@ import {
   DataMapService,
   I18NService,
   ProtectResourceAction,
-  QosService
+  QosService,
+  RouterUrl
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { assign, find, first, isEmpty, map, size } from 'lodash';
@@ -72,6 +73,8 @@ export class VmwareAdvancedParameterComponent implements OnInit, OnChanges {
   isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
   isRetry = true;
   isDisableBasicDisk = false; // 如果选择了本地盘的存储单元就禁止的功能，目前有限速策略、目标端重删、源端重删
+
+  ratePolicyRouterUrl = RouterUrl.ProtectionLimitRatePolicy;
 
   constructor(
     public baseUtilService: BaseUtilService,

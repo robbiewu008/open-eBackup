@@ -54,6 +54,9 @@ export class ProtectionAdvancedComponent implements OnInit {
   applySlaNewLabel: string;
   extParams;
 
+  slaOverwriteHelp: string;
+  slaApplyAllHelp: string;
+
   @ViewChild(ProtectFilterComponent, { static: false })
   ProtectFilterComponent: ProtectFilterComponent;
 
@@ -150,6 +153,25 @@ export class ProtectionAdvancedComponent implements OnInit {
       ],
       this.resourceType
     );
+    if (
+      includes(
+        [
+          DataMap.Resource_Type.cNwareCluster.value,
+          DataMap.Resource_Type.nutanixCluster.value
+        ],
+        this.resourceType
+      )
+    ) {
+      this.slaOverwriteHelp = this.i18n.get(
+        'protection_overwrite_policy_cluster_help_label'
+      );
+      this.slaApplyAllHelp = this.i18n.get('protection_cluster_sla_help_label');
+    } else {
+      this.slaOverwriteHelp = this.i18n.get(
+        'protection_overwrite_policy_host_help_label'
+      );
+      this.slaApplyAllHelp = this.i18n.get('protection_host_sla_help_label');
+    }
   }
 
   getLabel() {

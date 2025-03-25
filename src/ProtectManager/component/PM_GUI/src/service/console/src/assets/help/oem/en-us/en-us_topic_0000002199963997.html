@@ -1,0 +1,125 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Configuring the Full Mapping Between the Client and Product">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164597706.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199963997">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Configuring the Full Mapping Between the Client and Product</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199963997"></a><a name="EN-US_TOPIC_0000002199963997"></a>
+  <h1 class="topictitle1">Configuring the Full Mapping Between the Client and Product</h1>
+  <div>
+   <p>If source deduplication is enabled, you need to manually configure the mapping and specify the <span>product</span> to which data is backed up. For details about how to create a mapping, see <a href="#EN-US_TOPIC_0000002199963997__section1825785118571">Mapping Relationship</a>, <a href="#EN-US_TOPIC_0000002199963997__section125885195719">Mapping Rule</a>, and <a href="#EN-US_TOPIC_0000002199963997__section132586514577">Mapping Example</a>. Then, create a mapping based on <a href="#EN-US_TOPIC_0000002199963997__section5280729122712">Procedure</a>.</p>
+   <div class="section" id="EN-US_TOPIC_0000002199963997__section1825785118571">
+    <a name="EN-US_TOPIC_0000002199963997__section1825785118571"></a><a name="section1825785118571"></a>
+    <h4 class="sectiontitle">Mapping Relationship</h4>
+    <p>The mapping relationship in the <strong>agent_cfg.xml</strong> configuration file varies with the installation scenario. For details, see <a href="#EN-US_TOPIC_0000002199963997__table14257125113571">Table 1</a>. Mappings must be created in the configuration file for all devices where the client is deployed. The mapping created in the configuration file of each device must be the same.</p>
+    <div class="tablenoborder">
+     <a name="EN-US_TOPIC_0000002199963997__table14257125113571"></a><a name="table14257125113571"></a>
+     <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002199963997__table14257125113571" frame="border" border="1" rules="all">
+      <caption>
+       <b>Table 1 </b>Mapping relationship
+      </caption>
+      <colgroup>
+       <col style="width:36.76%">
+       <col style="width:29.9%">
+       <col style="width:33.33%">
+      </colgroup>
+      <thead align="left">
+       <tr>
+        <th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.3.2.4.1.1"><p>Client Deployment Scenario</p></th>
+        <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.3.2.4.1.2"><p>Mapping Content</p></th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr>
+        <td class="cellrowborder" valign="top" headers="mcps1.3.2.3.2.4.1.1 "><p>Independent deployment on production hosts</p></td>
+        <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.3.2.4.1.2 "><p>Enter the mapping between the service plane IP addresses of all hosts that function as DNs and the ESNs of all sets of the <span>product</span> in the backup storage unit group or backup storage unit.</p></td>
+       </tr>
+       <tr>
+        <td class="cellrowborder" valign="top" headers="mcps1.3.2.3.2.4.1.1 "><p>Deployment on production hosts and independent physical servers</p></td>
+        <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.3.2.4.1.2 "><p>Enter the mapping between the service plane IP addresses of all physical servers and the ESNs of all sets of the <span>product</span> in the backup storage unit group or backup storage unit.</p></td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+    <div class="note">
+     <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+     <div class="notebody">
+      <ul>
+       <li>Independent deployment on production hosts: The client must be deployed on all DNs and CNs of GaussDB (DWS).</li>
+       <li>Deployment on production hosts and independent physical servers: The client is deployed on independent physical servers and any CN in the GaussDB (DWS) cluster. To ensure system reliability, you are advised to deploy the client on two or three CNs.</li>
+      </ul>
+     </div>
+    </div>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002199963997__section125885195719">
+    <a name="EN-US_TOPIC_0000002199963997__section125885195719"></a><a name="section125885195719"></a>
+    <h4 class="sectiontitle">Mapping Rule</h4>
+    <ul>
+     <li>The service plane IP addresses of each DN or physical server can be mapped to the ESNs of any <span>product</span>, which indicates that data of the service plane can be written to the corresponding <span>product</span>.</li>
+     <li>A service plane IP address of each DN or physical server can be mapped only to the ESN of one <span>product</span>.</li>
+     <li>If there are multiple sets of the <span>product</span>, evenly create the mapping to different <span>product</span>.</li>
+    </ul>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002199963997__section132586514577">
+    <a name="EN-US_TOPIC_0000002199963997__section132586514577"></a><a name="section132586514577"></a>
+    <h4 class="sectiontitle">Mapping Example</h4>
+    <p>Assume that the service plane IP addresses of the DNs or physical servers in the GaussDB (DWS) cluster are <strong>192.168.10.186</strong>, <strong>192.168.10.187</strong>, <strong>192.168.10.188</strong>, <strong>192.168.10.189</strong>, and <strong>192.168.10.190</strong>, and the ESNs of the <span>product</span> in the backup storage unit group are <strong>2102353GTJ10M1000001</strong> and <strong>2102353GTJ10M1000002</strong>. The mappings between the service plane IP addresses and ESNs are as follows:</p>
+    <p>192.168.10.186@2102353GTJ10M1000001</p>
+    <p>192.168.10.187@2102353GTJ10M1000002</p>
+    <p>192.168.10.188@2102353GTJ10M1000001</p>
+    <p>192.168.10.189@2102353GTJ10M1000002</p>
+    <p>192.168.10.190@2102353GTJ10M1000001</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002199963997__section5280729122712">
+    <a name="EN-US_TOPIC_0000002199963997__section5280729122712"></a><a name="section5280729122712"></a>
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li id="EN-US_TOPIC_0000002199963997__li16729123619278"><a name="EN-US_TOPIC_0000002199963997__li16729123619278"></a><a name="li16729123619278"></a><span>Use PuTTY to log in to the hosts where the client is installed in sequence.</span></li>
+     <li><span>Run the <strong>vi /opt/DataBackup/ProtectClient/ProtectClient-E/conf/agent_cfg.xml</strong> command to edit the configuration file.</span></li>
+     <li id="EN-US_TOPIC_0000002199963997__li179633364522"><a name="EN-US_TOPIC_0000002199963997__li179633364522"></a><a name="li179633364522"></a><span>Modify the configuration item <span class="uicontrol"><b>agent_storage_relation</b></span> in &lt;Backup&gt;.</span><p></p><pre class="screen">&lt;agent_storage_relation value="<em>Host IP address 1</em>@<em>ESN 1</em>;<em>Host IP address 2</em>@<em>ESN 2</em>;...<em>Host IP address n</em>@<em>ESNn</em>"/&gt;</pre> <p>In the command:</p>
+      <ul>
+       <li><em>Host IP address 1</em> to <em>Host IP address n</em> indicate the service plane IP addresses of the DNs or physical servers where the client is deployed.</li>
+       <li><em>ESN 1</em> to <em>ESNn</em> indicate the ESNs of the <span>product</span> in the backup storage unit groups or backup storage units.</li>
+      </ul> <p>Take the mappings in <a href="#EN-US_TOPIC_0000002199963997__section132586514577">Mapping Example</a> as an example. The content of the configuration item <span class="uicontrol"><b>agent_storage_relation</b></span> is as follows:</p> <pre class="screen">&lt;agent_storage_relation value="192.168.10.186@2102353GTJ10M1000001;192.168.10.187@2102353GTJ10M1000002;192.168.10.188@2102353GTJ10M1000001;192.168.10.189@2102353GTJ10M1000002;192.168.10.190@2102353GTJ10M1000001"/&gt;</pre> <p></p></li>
+     <li><span>Repeat <a href="#EN-US_TOPIC_0000002199963997__li16729123619278">1</a> to <a href="#EN-US_TOPIC_0000002199963997__li179633364522">3</a> to modify the <strong>agent_cfg.xml</strong> configuration file of all hosts where the client is installed.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164597706.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

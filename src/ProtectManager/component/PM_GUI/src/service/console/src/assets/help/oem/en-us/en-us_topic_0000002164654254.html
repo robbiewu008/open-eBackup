@@ -1,0 +1,111 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Backup Fails Because the Name of a Protected VM Contains Special Characters">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164654254">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Backup Fails Because the Name of a Protected VM Contains Special Characters</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164654254"></a><a name="EN-US_TOPIC_0000002164654254"></a>
+  <h1 class="topictitle1">Backup Fails Because the Name of a Protected VM Contains Special Characters</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>When the SAN transmission mode is used for backing up a VMware VM, the VMware backup job fails and the system displays a message indicating that the VM backup progress cannot be obtained.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p>The name of a protected VM or disk contains the special character @.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol>
+     <li><span>Check whether the VM name or virtual disk name contains the special character @.</span><p></p>
+      <ol type="a">
+       <li>Use a client or browser to log in to the ESXi host or vCenter Server.</li>
+       <li>Check whether the names of the VMDK files of the corresponding VM in the datastore and their parent folders contain the at sign (@).
+        <ul>
+         <li>If yes, go to <a href="#EN-US_TOPIC_0000002164654254__li19710311824">2</a> to change the VM name.</li>
+         <li>If no, contact technical support engineers.</li>
+        </ul></li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164654254__li19710311824"><a name="EN-US_TOPIC_0000002164654254__li19710311824"></a><a name="li19710311824"></a><span>Shut down the VM.</span><p></p><p>This section assumes that the old VM name is <strong>yms123@</strong> and the new VM name is <strong>yms1234</strong> after the change.</p> <p></p></li>
+     <li><span>Use PuTTY to log in to the ESXi host where the VM resides.</span></li>
+     <li><span>Run the following command to go to the directory where the VM resides:</span><p></p><pre class="screen">cd /vmfs/volumes/<em>Datastore name</em>/<em>Original VM name</em></pre> <p></p></li>
+     <li><span>Run the following command to rename the VMDK files. (The virtual disk files include only the <em>old name</em><strong>.vmdk</strong> file and the <em>old name_</em><em>n</em><strong>.vmdk</strong> file.)</span><p></p><pre class="screen">vmkfstools -E "<em>old name</em>.vmdk" "<em>new name</em>.vmdk"</pre>
+      <div class="p">
+       For example, run the following commands to rename the VMDK files:
+       <pre class="screen"> vmkfstools -E "yms123@.vmdk" "yms1234.vmdk"</pre>
+       <pre class="screen"> vmkfstools -E "yms123@_1.vmdk" "yms1234_1.vmdk"</pre>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164654254__li19322040237"><a name="EN-US_TOPIC_0000002164654254__li19322040237"></a><a name="li19322040237"></a><span>Run the following command to copy the VM configuration file:</span><p></p><pre class="screen">cp "<em>old name</em>.vmx" "<em>new name</em>.vmx"</pre>
+      <div class="p">
+       For example, run the following command to copy the configuration file:
+       <pre class="screen">cp "yms123@.vmx" "yms1234.vmx"</pre>
+      </div> <p></p></li>
+     <li><span>Open the new VM configuration file and change all the old names to the new names.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>If you need to roll back the modification, obtain the content in the original configuration file <em>old name</em>.vmx from <a href="#EN-US_TOPIC_0000002164654254__li19322040237">6</a>.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Run the following command to rename all the other files:</span><p></p><pre class="screen">mv "<em>old name</em>.<em>nvram</em>" "<em>new name</em>.<em>nvram</em>"</pre>
+      <div class="p">
+       For example, run the following commands:
+       <pre class="screen">mv "yms123@.nvram" "yms1234.nvram"</pre>
+      </div> <pre class="screen">mv "yms123@_1-ctk.vmdk" "yms1234_1-ctk.vmdk"</pre> <p></p></li>
+     <li><span>Run the following commands to rename the VM directory:</span><p></p><pre class="screen">cd ..</pre> <pre class="screen">mv "<em>old name</em>" "<em>new name</em>"</pre> <p></p></li>
+     <li><span>Run the following command to delete the old VM configuration file:</span><p></p><pre class="screen">rm /vmfs/volumes/<em>Datastore name</em>/<em>New name</em><em>/Old name</em>.vmx</pre> <p></p></li>
+     <li><span>Run the following command to register the new VM on the ESXi host.</span><p></p><pre class="screen">vim-cmd solo/registervm /vmfs/volumes/<em>Datastore name</em>/<em>New name</em>/<em>New name</em>.vmx</pre> <p></p></li>
+     <li><span>Start the new VM.</span><p></p>
+      <ol type="a">
+       <li>Use a client or browser to log in to the ESXi host or vCenter Server.</li>
+       <li>Start the new VM.<p>When starting a new VM, select that the VM has been moved as prompted.</p></li>
+       <li>If the old VM still exists, delete it.</li>
+      </ol> <p></p></li>
+     <li><span>Scan the VMware virtualization environment again and register the VM whose name has been changed with the <span>product</span>.</span><p></p>
+      <ol type="a">
+       <li>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164654254__en-us_topic_0000002199964685_uicontrol1738217261378"><b><span id="EN-US_TOPIC_0000002164654254__en-us_topic_0000002199964685_text738292620372"><strong>Protection</strong></span> &gt; Virtualization &gt; VMware</b></span>.</li>
+       <li>On the left of the VMware page, select the vCenter Server or ESXi host to be operated.</li>
+       <li>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Resource Scan</strong></span></b></span>.</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

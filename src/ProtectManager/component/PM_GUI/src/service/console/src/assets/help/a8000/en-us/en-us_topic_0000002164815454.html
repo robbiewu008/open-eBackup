@@ -1,0 +1,78 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring the DB2 Database by Manually Mounting the File System">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164655690.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164815454">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring the DB2 Database by Manually Mounting the File System</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164815454"></a><a name="EN-US_TOPIC_0000002164815454"></a>
+
+<h1 class="topictitle1">Restoring the DB2 Database by Manually Mounting the File System</h1>
+<div><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164815454__en-us_topic_0000002199964685_uicontrol21435597359"><b><span id="EN-US_TOPIC_0000002164815454__en-us_topic_0000002199964685_text4379114911434"><strong>Protection</strong></span> &gt; Databases &gt; DB2</b></span>.</span></li><li><span>Click the <span class="uicontrol"><b><span><strong>Databases</strong></span></b></span> tab, click <span><img src="en-us_image_0000002235843817.png"></span> in the <strong>Operation</strong> column, and select the required parameter to query the ID of the backup resource.</span></li><li><span>Log in to DeviceManager by referring to <a href="en-us_topic_0000002164815442.html">Logging In to DeviceManager</a>.</span></li><li><span>Choose <span class="uicontrol"><b><span><strong>Services</strong></span> &gt; <span><strong>File Services</strong></span> &gt; <span><strong>File Systems</strong></span></b></span> and search for the file system by backup resource ID.</span></li><li id="EN-US_TOPIC_0000002164815454__li1990732885112"><span>Click the file system name. In the displayed dialog box, click the <span class="uicontrol" id="EN-US_TOPIC_0000002164815454__uicontrol09361928205213"><b><span id="EN-US_TOPIC_0000002164815454__text7948104805212"><strong>Share</strong></span></b></span> tab and view <span class="uicontrol" id="EN-US_TOPIC_0000002164815454__uicontrol12569817185310"><b><span id="EN-US_TOPIC_0000002164815454__text95981340145312"><strong>NFS Share</strong></span></b></span>.</span></li><li><span>Click the share path name. In the displayed dialog box, click the <span class="uicontrol"><b>Permissions</b></span> tab and click <span class="uicontrol"><b>Add</b></span> to add client permissions.</span></li><li><span>In the <span class="uicontrol"><b>Add Client</b></span> dialog box, set related parameters as required and click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000002164815454__li1080013437585"><a name="EN-US_TOPIC_0000002164815454__li1080013437585"></a><a name="li1080013437585"></a><span>Choose <span class="uicontrol"><b><span><strong>Services</strong></span> &gt; <span><strong>Network</strong></span> &gt; <span><strong>Logical Port</strong></span></b></span>. Select a logical port whose data protocol is NFS+CIFS and record the IP address of the logical port.</span></li><li><span>Use PuTTY to log in to the DB2 database host.</span></li><li><span>Run the <strong>mount -t nfs -o vers=3,retry=1,retrans=20,soft,nolock,timeo=60 <em>IP address</em>:/ <em>Name of the file system to be mounted</em> / <em>Mount directory of the target host</em></strong> command to mount the file system.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>The IP address in the command is the IP address recorded in <a href="#EN-US_TOPIC_0000002164815454__li1080013437585">8</a>.</p>
+</div></div>
+</p></li><li><span>After the mounting is successful, switch to the database user, go to the mount directory, and run the following commands as needed to restore data using copies.</span><p><ul><li>Restoring the PowerHA and single-node system environments<ul><li>Full restoration<ul><li>Restoration to the original location<pre class="screen">db2 restore db <em>Database name</em> FROM <em>Full backup path</em> taken at <em>Backup time point</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li><li>Restoration to a new location<pre class="screen">db2 restore db <em>Source database name</em> FROM <em>Full backup path</em> taken at <em>Backup time point</em> <em>Database path</em> INTO <em>Database name</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li></ul>
+</li></ul>
+<ul><li>Incremental restoration and differential restoration<ul><li>Restoration to the original location<pre class="screen">db2 restore db <em>Database name</em> incremental from <em>Differential backup path</em> taken at <em>Backup time point</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li><li>Restoration to a new location<pre class="screen">db2 restore db <em>Source database name</em> incremental from <em>Differential backup path</em> taken at <em>Backup time point</em> <em>Database path command</em> INTO <em>Database name</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li></ul>
+</li><li>Log restoration<ul><li>Restoration to the original location<pre class="screen">db2 restore db <em>Database name</em> FROM <em>Full backup path</em> taken at <em>Backup time point</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li><li>Restoration to a new location<pre class="screen">db2 restore db <em>Source database name</em> FROM <em>Full backup path</em> taken at <em>Backup time point</em> <em>Database path command</em> INTO <em>Database name</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li></ul>
+</li></ul>
+</li><li>Restoring the DPF environment<ul><li>Full restoration<ul><li>Restoration to the original location<pre class="screen">db2_all db2 restore db <em>Database name</em> FROM <em>Differential backup path</em> taken at <em>Backup time point</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li><li>Restoration to a new location<pre class="screen">db2_all db2 restore db <em>Source database name</em> FROM <em>Differential backup path</em> taken at <em>Backup time point</em> <em>Database path command</em> INTO <em>Database name</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li></ul>
+</li><li>Incremental restoration and differential restoration<ul><li>Restoration to the original location<pre class="screen">db2_all db2 restore db <em>Database name</em> incremental FROM <em>Differential backup path</em> taken at <em>Backup time point</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li><li>Restoration to a new location<pre class="screen">db2_all db2 restore db <em>Source database name</em> incremental FROM <em>Differential backup path</em> taken at <em>Backup time point</em> <em>Database path command</em> INTO <em>Database name</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li></ul>
+</li></ul>
+</li><li>Restoring the HADR environment<ul><li>Full restoration<ul><li>Restoration to the original location<pre class="screen">db2 restore db <em>Database name</em> FROM <em>Differential backup path</em> taken at <em>Backup time point</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li><li>Restoration to a new location<pre class="screen">db2_all db2 restore db <em>Source database name</em> FROM <em>Differential backup path</em> taken at <em>Backup time point</em> <em>Database path command</em> INTO <em>Database name</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li></ul>
+</li><li>Incremental restoration and differential restoration<ul><li>Restoration to the original location<pre class="screen">db2_all db2 restore db <em>Database name</em> incremental FROM <em>Differential backup path</em> taken at <em>Backup time point</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li><li>Restoration to a new location<pre class="screen">db2_all db2 restore db <em>Source database name</em> incremental FROM <em>Differential backup path</em> taken at <em>Backup time point</em> <em>Database path command</em> INTO <em>Database name</em> logtarget <em>Target log path</em> newlogpath <em>New log path</em> without prompting</pre>
+</li></ul>
+</li></ul>
+</li></ul>
+</p></li><li><span>After the restoration is complete, run the <strong>umount -lf / <em>Mount directory of the target host</em></strong> command to unmount the file system.</span></li><li><span>Return to the DeviceManager WebUI.</span></li><li><span>Choose <span class="uicontrol"><b><span><strong>Services</strong></span> &gt; <span><strong>File Services</strong></span> &gt; <span><strong>File Systems</strong></span></b></span> and query the file system to which the client permissions have been added.</span></li><li><span>Click the file system name. In the displayed dialog box, click the <span class="uicontrol" id="EN-US_TOPIC_0000002164815454__en-us_topic_0000002164815454_uicontrol09361928205213"><b><span id="EN-US_TOPIC_0000002164815454__en-us_topic_0000002164815454_text7948104805212"><strong>Share</strong></span></b></span> tab and view <span class="uicontrol" id="EN-US_TOPIC_0000002164815454__en-us_topic_0000002164815454_uicontrol12569817185310"><b><span id="EN-US_TOPIC_0000002164815454__en-us_topic_0000002164815454_text95981340145312"><strong>NFS Share</strong></span></b></span>.</span></li><li><span>Click the share path name. In the displayed dialog box, click the <span class="uicontrol"><b>Permissions</b></span> tab. In the <strong>Operation</strong> column, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Remove</strong></span></b></span> to cancel the NFS share access permissions added to the file system.</span></li></ol>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164655690.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

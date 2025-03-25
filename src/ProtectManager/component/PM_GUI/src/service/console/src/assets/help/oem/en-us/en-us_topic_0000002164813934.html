@@ -1,0 +1,85 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="What Can I Do If the Message &quot;Failed to restore the NVRAM file&quot; Is Displayed in Job Details During VMware VM Recovery?">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164813934">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>What Can I Do If the Message "Failed to restore the NVRAM file" Is Displayed in Job Details During VMware VM Recovery?</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164813934"></a><a name="EN-US_TOPIC_0000002164813934"></a>
+  <h1 class="topictitle1">What Can I Do If the Message "Failed to restore the NVRAM file" Is Displayed in Job Details During VMware VM Recovery?</h1>
+  <div>
+   <p>During VMware VM recovery, if <span class="uicontrol"><b>Failed to restore the NVRAM file</b></span> is displayed in the job details on the management page, the OS of the recovered VM may fail to be accessed. This section uses vSphere Client 6.7.0 as an example to describe how to resolve the problem.</p>
+   <div class="note">
+    <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+    <div class="notebody">
+     <ul>
+      <li>During VMware VM backup, if <span class="uicontrol"><b>Failed to back up the NVRAM file</b></span> is displayed in the job details on the management page, the problem will occur after the copy is used for VM recovery. You are advised not to use the copy for recovery or you can resolve the problem by referring to this section after recovery.</li>
+      <li>This section also applies to instant recovery and live mount.</li>
+     </ul>
+    </div>
+   </div>
+   <ol>
+    <li>Enable the system to enter the BIOS setting page the next time when the VM boot screen is displayed.
+     <ol type="a">
+      <li>Log in to the vCenter Server on a browser.<p id="EN-US_TOPIC_0000002164813934__en-us_topic_0000002200055033_en-us_topic_0000001839187061_p171383317558">Login address: <strong id="EN-US_TOPIC_0000002164813934__en-us_topic_0000002200055033_b1897092811206">https://</strong><em id="EN-US_TOPIC_0000002164813934__en-us_topic_0000002200055033_i5970162819207">vCenter Server IP address</em></p></li>
+      <li>Search for the restored VM based on the VM name.</li>
+      <li>Choose <span class="uicontrol"><b>ACTIONS &gt; Edit Settings</b></span>.</li>
+      <li>Choose <span class="uicontrol"><b>VM Options &gt; Boot Options &gt; Force BIOS setup</b></span> and select <span class="uicontrol"><b>During the next boot, force entry into the BIOS setup screen</b></span>.</li>
+      <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
+      <li>Restart the VM.</li>
+     </ol></li>
+   </ol>
+   <ol start="2">
+    <li>In the BIOS, configure the system disk to be scanned first when the VM is started.
+     <div class="note">
+      <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+      <div class="notebody">
+       <p>Before performing this operation, record the original startup sequence for rollback if necessary.</p>
+      </div>
+     </div>
+     <ol type="a">
+      <li>On the VM page, click <span class="uicontrol"><b>LAUNCH REMOTE CONSOLE</b></span> to display the BIOS setting page.</li>
+      <li>Press <strong>←</strong> or <strong>→</strong> to move the cursor to <strong>BooT</strong>.<p><span><img src="en-us_image_0000002164654358.png"></span></p></li>
+      <li>Press <strong>↑</strong> or <strong>↓</strong> to move the cursor to <strong>Hard Drive</strong> and press <strong>Enter</strong>.</li>
+      <li>Press <strong>↑</strong> or <strong>↓</strong> to move the cursor to the system disk, and then press <strong>Shift</strong>+<strong>+</strong> to move the disk to the first place.<p>As shown in the following figure, <strong>VMware Virtual SCSI Hard Driver (0:0)</strong> is the disk where the OS resides. Select the disk based on the actual environment.</p> <p><span><img src="en-us_image_0000002200055093.png"></span></p></li>
+      <li>Press <strong>F10</strong> to save the configuration and exit.<p>The OS of the VM is accessed normally.</p></li>
+     </ol></li>
+   </ol>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

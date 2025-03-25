@@ -20,76 +20,49 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤6：添加复制集群">
+<meta name="DC.Title" content="执行schema集备份">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="DWS_00024.html">
+<meta name="DC.Relation" scheme="URI" content="DWS_00029.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="DWS_00031">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤6：添加复制集群</title>
+<title>执行schema集备份</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="DWS_00031"></a><a name="DWS_00031"></a>
 
-<h1 class="topictitle1">步骤6：添加复制集群</h1>
-<div><p id="DWS_00031__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_p173011029113111">在本端集群侧添加目标集群，建立主端设备和从端设备之间的逻辑连接，用于设备之间的数据传输。</p>
-<div class="section" id="DWS_00031__zh-cn_topic_0000001792344106_section5343122851716"><h4 class="sectiontitle">前提条件</h4><p id="DWS_00031__zh-cn_topic_0000001792344106_p27481329181712">已准备用于复制的目标集群。</p>
+<h1 class="topictitle1">执行schema集备份</h1>
+<div><p>执行备份前将需要保护的资源关联到指定SLA，系统将对这些资源按照SLA进行保护，并根据SLA周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><ul id="DWS_00031__dws_00030_zh-cn_topic_0000001346322404_zh-cn_topic_0000001142022920_ul18727123312225"><li id="DWS_00031__dws_00030_zh-cn_topic_0000001346322404_zh-cn_topic_0000001142022920_li653882315253">手动备份产生的副本保留时长按照SLA中的定义进行保留。<p id="DWS_00031__dws_00030_zh-cn_topic_0000001346322404_p1021414520463"><a name="DWS_00031__dws_00030_zh-cn_topic_0000001346322404_zh-cn_topic_0000001142022920_li653882315253"></a><a name="dws_00030_zh-cn_topic_0000001346322404_zh-cn_topic_0000001142022920_li653882315253"></a>如果手动备份时选择的保护策略未在SLA中定义，则产生的备份副本保留时长为永久保留。如SLA中未定义增量备份，而手动备份时选择的是增量备份，则本次手动增量备份产生的副本保留时长为永久保留。</p>
+</li><li id="DWS_00031__dws_00030_zh-cn_topic_0000001346322404_zh-cn_topic_0000001142022920_li648823113014">如果SLA中定义了复制策略或归档策略，则执行手动备份时，系统会按照SLA的定义执行一次复制或归档。</li><li id="DWS_00031__dws_00030_zh-cn_topic_0000001346322404_li147271733132211">手动备份时，SLA中定义的参数（<span class="uicontrol" id="DWS_00031__dws_00030_zh-cn_topic_0000001346322404_uicontrol1201136142020">“失败后自动重试”</span>除外），如<span class="uicontrol" id="DWS_00031__dws_00030_zh-cn_topic_0000001346322404_uicontrol11126637161316">“限速策略”</span>会应用到手动备份任务中。</li></ul>
 </div>
-<div class="section" id="DWS_00031__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_section152913359312"><h4 class="sectiontitle">操作步骤</h4><ol id="DWS_00031__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_ol1038139939"><li id="DWS_00031__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_li1570821013536"><span>选择<span class="uicontrol" id="DWS_00031__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="DWS_00031__zh-cn_topic_0000001792344106_text195451245818">系统</span> &gt; <span id="DWS_00031__zh-cn_topic_0000001792344106_text1825116201482">基础设施</span> &gt; <span id="DWS_00031__zh-cn_topic_0000001792344106_text2324131633414">集群管理</span>”</span>。</span></li><li id="DWS_00031__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_li12591123311535"><span>在<span class="uicontrol" id="DWS_00031__zh-cn_topic_0000001792344106_uicontrol855335015454">“<span id="DWS_00031__zh-cn_topic_0000001792344106_text11821141684610">复制集群</span>”</span>页签，单击<span class="uicontrol" id="DWS_00031__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol1645154510534">“<span id="DWS_00031__zh-cn_topic_0000001792344106_text26407307349">添加</span>”</span>。</span></li><li id="DWS_00031__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_li10626045539"><span>配置目标集群参数。</span><p><div class="p" id="DWS_00031__zh-cn_topic_0000001792344106_p344744712197">相关参数说明如<a href="#DWS_00031__zh-cn_topic_0000001792344106_table13641194661910">表1</a>所示。
-<div class="tablenoborder"><a name="DWS_00031__zh-cn_topic_0000001792344106_table13641194661910"></a><a name="zh-cn_topic_0000001792344106_table13641194661910"></a><table cellpadding="4" cellspacing="0" summary="" id="DWS_00031__zh-cn_topic_0000001792344106_table13641194661910" frame="border" border="1" rules="all"><caption><b>表1 </b>目标集群参数说明</caption><colgroup><col style="width:34.949999999999996%"><col style="width:65.05%"></colgroup><thead align="left"><tr id="DWS_00031__zh-cn_topic_0000001792344106_row66412046151918"><th align="left" class="cellrowborder" valign="top" width="34.949999999999996%" id="mcps1.3.3.2.3.2.1.2.2.3.1.1"><p id="DWS_00031__zh-cn_topic_0000001792344106_p11641204641917">参数</p>
-</th>
-<th align="left" class="cellrowborder" valign="top" width="65.05%" id="mcps1.3.3.2.3.2.1.2.2.3.1.2"><p id="DWS_00031__zh-cn_topic_0000001792344106_p3641114610198">说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="DWS_00031__zh-cn_topic_0000001792344106_row11154135519445"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="DWS_00031__zh-cn_topic_0000001792344106_p9154135544411"><span id="DWS_00031__zh-cn_topic_0000001792344106_text1938482119472">名称</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="DWS_00031__zh-cn_topic_0000001792344106_p51549551446">自定义目标集群的名称。</p>
-</td>
-</tr>
-<tr id="DWS_00031__zh-cn_topic_0000001792344106_row15735172017508"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="DWS_00031__zh-cn_topic_0000001792344106_p1152814501268"><span id="DWS_00031__zh-cn_topic_0000001792344106_text82331522194918">角色</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="DWS_00031__zh-cn_topic_0000001792344106_p8528850102620">固定为<span class="uicontrol" id="DWS_00031__zh-cn_topic_0000001792344106_uicontrol3110113172718">“<span id="DWS_00031__zh-cn_topic_0000001792344106_text844584915492">复制目标集群</span>”</span>。</p>
-</td>
-</tr>
-<tr id="DWS_00031__zh-cn_topic_0000001792344106_row17641164617192"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="DWS_00031__zh-cn_topic_0000001792344106_p1164184612196"><span id="DWS_00031__zh-cn_topic_0000001792344106_text19959194531512">IP地址</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><div class="p" id="DWS_00031__zh-cn_topic_0000001792344106_p0641104621913">输入目标集群任一控制器的管理、备份或复制IP。<ul id="DWS_00031__zh-cn_topic_0000001792344106_ul10691523173813"><li id="DWS_00031__zh-cn_topic_0000001792344106_li1869223123818">如果输入目标集群的管理IP，请确保本端与目标端的管理网络连通。</li><li id="DWS_00031__zh-cn_topic_0000001792344106_li12657153011405">如果输入目标集群的备份网络IP，请确保本端与目标端的备份网络连通。</li><li id="DWS_00031__zh-cn_topic_0000001792344106_li1768111253458">如果输入目标集群的复制网络IP，请确保本端与目标端的复制网络连通。</li></ul>
-<div class="note" id="DWS_00031__zh-cn_topic_0000001792344106_note4160173815018"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="DWS_00031__zh-cn_topic_0000001792344106_ul114693044613"><li id="DWS_00031__zh-cn_topic_0000001792344106_li472320144611">管理IP即为登录目标集群管理界面的IP地址。</li><li id="DWS_00031__zh-cn_topic_0000001792344106_li174692084618">备份或复制网络IP请登录目标集群的管理界面，选择<span class="uicontrol" id="DWS_00031__zh-cn_topic_0000001792344106_uicontrol1664124518511">“<span id="DWS_00031__zh-cn_topic_0000001792344106_text16647456516">系统</span> &gt; <span id="DWS_00031__zh-cn_topic_0000001792344106_text146641145105111">基础设施</span> &gt; <span id="DWS_00031__zh-cn_topic_0000001792344106_text9664154515518">集群管理</span>”</span>，在“备份集群”页签单击集群名称，获取任一控制器的备份网络IP（数据备份引擎）或复制网络IP。</li></ul>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="DWS_00031__zh-cn_topic_0000001656569013_zh-cn_topic_0000001666345505_uicontrol865195012392">“<span id="DWS_00031__zh-cn_topic_0000001656569013_zh-cn_topic_0000001666345505_text4651950123919">保护</span> &gt; 大数据 &gt; GaussDB(DWS)”</span>。</span></li><li><span>选择<span class="uicontrol">“Schema集”</span>页签，在需要保护的资源所在行，单击<span class="menucascade">“<span class="uicontrol">更多</span> &gt; <span class="uicontrol">保护</span>”</span>。</span><p><p>您也可以勾选多个资源进行批量保护。</p>
+</p></li><li><span>填写<span class="uicontrol" id="DWS_00031__dws_00030_uicontrol5202191417162">“备份元数据存储路径”</span>。<span style="color:#282B33;">填写一个GaussDB(DWS)节点上的目录，用于存储备份副本元数据。如果目录不存在，会自动创建。GaussDB(DWS)集群用户需要有该目录读写权限。</span></span><p><div class="note" id="DWS_00031__dws_00030_note16947036142819"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="DWS_00031__dws_00030_ul5424191615296"><li id="DWS_00031__dws_00030_li7424191672914">建议为备份元数据存储路径至少预留20G磁盘空间。请勿配置为系统卷和生产业务卷，否则磁盘空间不足时会影响生产业务运行。</li><li id="DWS_00031__dws_00030_li89481217182914"><span style="color:#282B33;">GaussDB(DWS)集群用户对</span><span class="uicontrol" style="color:#282B33;" id="DWS_00031__dws_00030_uicontrol32051027310">“备份元数据存储路径”</span><span style="color:#282B33;">是否具有</span><span style="color:#282B33;">读写权限的相关说明和判断方式，请参见</span><a href="DWS_00019.html#DWS_00019__li836512573513">备份元数据存储路径访问权限说明</a><span style="color:#282B33;">。</span></li></ul>
 </div></div>
-</div>
-</td>
-</tr>
-<tr id="DWS_00031__zh-cn_topic_0000001792344106_row18641204619191"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="DWS_00031__zh-cn_topic_0000001792344106_p116416464192"><span id="DWS_00031__zh-cn_topic_0000001792344106_text7383379164">端口</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="DWS_00031__zh-cn_topic_0000001792344106_p16641144613195">目标集群的端口。</p>
-<p id="DWS_00031__zh-cn_topic_0000001792344106_p14641546131918">IP地址框输入管理IP地址时，默认端口为25081；IP地址框输入复制网络IP地址或备份网络IP地址时，默认端口为30068。</p>
-</td>
-</tr>
-<tr id="DWS_00031__zh-cn_topic_0000001792344106_row9641346121912"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="DWS_00031__zh-cn_topic_0000001792344106_p164113466197"><span id="DWS_00031__zh-cn_topic_0000001792344106_text1393312491611">用户名</span></p>
-</td>
-<td class="cellrowborder" rowspan="2" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="DWS_00031__zh-cn_topic_0000001792344106_p1119324620413"><a href="DWS_00030.html#DWS_00030">步骤5：创建远端设备管理员（适用于1.5.0版本）</a>或<a href="DWS_00031_a1.html#DWS_00031_a1">步骤5：创建远端设备管理员（适用于1.6.0及后续版本）</a>中创建的用户及其密码。</p>
-</td>
-</tr>
-<tr id="DWS_00031__zh-cn_topic_0000001792344106_row12641194631915"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="DWS_00031__zh-cn_topic_0000001792344106_p20641646181916"><span id="DWS_00031__zh-cn_topic_0000001792344106_text488694514166">密码</span></p>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</p></li><li id="DWS_00031__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_li731119361160"><span>单击<span class="uicontrol" id="DWS_00031__zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol138611845761">“确定”</span>。</span></li></ol>
+</p></li><li><span>选择SLA。</span><p><p>您也可以单击<span class="uicontrol">“创建”</span>，创建新的SLA。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>对Schema集保护时，不支持选择预置SLA。</li><li><span>如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></li></ul>
+</div></div>
+</p></li><li><span>单击<span class="uicontrol" id="DWS_00031__zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p><p id="DWS_00031__zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p>
+</p></li><li><strong>可选：</strong><span>执行手动备份。</span><p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
+<ol type="a"><li>在需要备份的Schema集所在行单击<span class="uicontrol">“更多 &gt; 手动备份”</span>。</li><li>设置手动备份产生的副本名称。<p id="DWS_00031__dws_00030_p420310146161">如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
+</li><li>设置保护策略。<p>对于Schema集，仅支持<span class="uicontrol">“全量备份”</span>。对于GaussDB(DWS) 8.2.1及以上版本，还支持Schema集的<span class="uicontrol">“增量备份”</span>。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="DWS_00031__zh-cn_topic_0000002200146973_p13522118194919"><span id="DWS_00031__zh-cn_topic_0000002200146973_ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
+</div></div>
+</li><li>单击<span class="uicontrol" id="DWS_00031__dws_00030_uicontrol5203121417169">“确定”</span>。<div class="note" id="DWS_00031__dws_00030_note152039149163"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="DWS_00031__dws_00030_zh-cn_topic_0000001607531736_p870125314544">支持选择多个资源批量进行手动备份。勾选多个资源，在页面左上角选择<span class="uicontrol" id="DWS_00031__dws_00030_zh-cn_topic_0000001607531736_uicontrol14182155715711">“<span id="DWS_00031__dws_00030_zh-cn_topic_0000001607531736_text662114113158">更多</span> &gt; <span id="DWS_00031__dws_00030_zh-cn_topic_0000001607531736_text1068159191519">手动备份</span>”</span>。</p>
+</div></div>
+</li></ol>
+</p></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="DWS_00024.html">复制GaussDB(DWS)备份副本</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="DWS_00029.html">步骤6：执行备份</a></div>
 </div>
 </div>
 

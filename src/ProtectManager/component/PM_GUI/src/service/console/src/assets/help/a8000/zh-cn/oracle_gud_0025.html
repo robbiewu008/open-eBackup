@@ -20,42 +20,238 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤6：（可选）开启备份链路加密开关">
+<meta name="DC.Title" content="注册数据库（适用于集群部署形态）">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="oracle_gud_0013.html">
+<meta name="DC.Relation" scheme="URI" content="oracle_gud_0024.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="oracle_gud_0025">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤6：（可选）开启备份链路加密开关</title>
+<title>注册数据库（适用于集群部署形态）</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="oracle_gud_0025"></a><a name="oracle_gud_0025"></a>
 
-<h1 class="topictitle1">步骤6：（可选）开启备份链路加密开关</h1>
-<div><p>您需要开启备份链路加密开关，备份链路加密功能才会生效。</p>
-<div class="section"><h4 class="sectiontitle">前提条件</h4><p>请确保已为存储系统配置NFS Kerberos服务，并已在AD域中添加<strong>rdadmin</strong>用户和安装数据库时使用的操作系统用户（可联系应用管理员获取操作系统用户名和ID）。否则开启备份链路加密开关后，可能导致备份任务失败。<span>配置NFS Kerberos服务的操作请参见产品对应型号的<span id="oracle_gud_0025__zh-cn_topic_0000001839143225_cite5907115716400">《安装指南》</span>中的“（可选）配置NFS Kerberos服务”章节。</span></p>
+<h1 class="topictitle1">注册数据库（适用于集群部署形态）</h1>
+<div><p>当要保护的数据库为集群部署时，请参考本节注册Oracle数据库集群。</p>
+<div class="section" id="oracle_gud_0025__section17305246175013"><h4 class="sectiontitle">前提条件</h4><p id="oracle_gud_0025__p138022121518">请确保客户端的安装用户能够正常的通过<strong id="oracle_gud_0025__b7716401510">su - oracle</strong>命令切换到Oracle的安装用户。如果安装了grid组件，请确保能够通过<strong id="oracle_gud_0025__b923919186527">su - grid</strong>命令切换到<strong id="oracle_gud_0025__b15797182405211">grid</strong>用户。</p>
 </div>
-<div class="section"><h4 class="sectiontitle">注意事项</h4><p id="oracle_gud_0025__zh-cn_topic_0000001839143225_p1854315715349">开启备份链路加密后，代理主机与KDC域服务器之间的票证存在有效期，票证过期之后可能导致备份任务失败。建议延长KDC域服务器上Kerberos策略中票证的过期时间或者配置为永不过期。如果未配置永不过期，需要在票证即将过期前，在代理主机上，对添加到AD域中的用户，通过<strong id="oracle_gud_0025__zh-cn_topic_0000001839143225_b3195122210175">kinit</strong>命令或<strong id="oracle_gud_0025__zh-cn_topic_0000001839143225_b185942242179">net</strong>命令重新获取票证，具体操作请参见产品对应型号的<span id="oracle_gud_0025__zh-cn_topic_0000001839143225_cite890601917412">《安装指南》</span>中的“配置客户端”章节。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="oracle_gud_0025__zh-cn_topic_0000002199964685_uicontrol49641842919">“<span id="oracle_gud_0025__zh-cn_topic_0000002199964685_text63901566195">保护</span> &gt; 数据库 &gt; Oracle”</span>。</span></li><li><span>在<span class="uicontrol">“<span>集群</span>”</span>页签，单击<span class="uicontrol">“<span>注册</span>”</span>。</span><p><p>相关参数说明如<a href="#oracle_gud_0025__table17561557152715">表1</a>所示。</p>
+
+<div class="tablenoborder"><a name="oracle_gud_0025__table17561557152715"></a><a name="table17561557152715"></a><table cellpadding="4" cellspacing="0" summary="" id="oracle_gud_0025__table17561557152715" frame="border" border="1" rules="all"><caption><b>表1 </b>注册集群参数说明</caption><colgroup><col style="width:36.919999999999995%"><col style="width:63.080000000000005%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="36.919999999999995%" id="mcps1.3.3.2.2.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="63.080000000000005%" id="mcps1.3.3.2.2.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="36.919999999999995%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="63.080000000000005%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>自定义集群名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="36.919999999999995%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span>类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="63.080000000000005%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>数据库集群类型。当前仅支持RAC集群。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="36.919999999999995%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span>节点</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="63.080000000000005%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>选择集群中的所有节点。</p>
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="section"><h4 class="sectiontitle">创建UNIX本地认证用户组</h4><p>开启备份链路加密前，如果当前环境未加入域环境，需要将用户组添加到本地认证用户组。</p>
-<ol><li><span>登录DeviceManager管理界面。</span><p><ul><li>对于OceanProtect X系列备份一体机，请执行以下操作：<ol type="a"><li>选择“系统 &gt; 基础设施 &gt; 集群管理”。</li><li>在“备份集群”页签的“本地集群节点”区域，单击节点名称。</li><li>在弹出的“节点详情”界面，单击“打开设备管理”，进入DeviceManager管理界面。</li></ol>
-</li><li>对于OceanProtect E1000，登录DeviceManager管理界面，具体操作请参见<a href="oracle_gud_dm.html">登录DeviceManager管理界面</a>。</li></ul>
-</p></li><li><span>选择<span class="uicontrol">“服务 &gt; 文件服务 &gt; 认证用户”</span>。</span></li><li><span>在<span class="uicontrol">“UNIX用户”</span>页签下选择<span class="uicontrol">“本地认证用户组”</span>。</span></li><li><span>单击<span class="uicontrol">“创建”</span>。</span></li><li><span>配置UNIX本地认证用户组信息。</span><p><ul><li>名称：安装数据库时设置的用户所属组。</li><li>ID：执行<strong>cat /etc/group</strong>命令查看所属组对应的ID。</li></ul>
+</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li><li><span>在<span class="uicontrol">“<span>数据库</span>”</span>页签，单击<span class="uicontrol">“<span>注册</span>”</span>。</span><p><p>相关参数说明如<a href="#oracle_gud_0025__table163891610134417">表2</a>所示。</p>
+
+<div class="tablenoborder"><a name="oracle_gud_0025__table163891610134417"></a><a name="table163891610134417"></a><table cellpadding="4" cellspacing="0" summary="" id="oracle_gud_0025__table163891610134417" frame="border" border="1" rules="all"><caption><b>表2 </b>注册数据库参数说明</caption><colgroup><col style="width:31.4%"><col style="width:68.60000000000001%"></colgroup><thead align="left"><tr id="oracle_gud_0025__oracle_gud_0026_row15756165752718"><th align="left" class="cellrowborder" valign="top" width="31.4%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p id="oracle_gud_0025__oracle_gud_0026_p10756105715272">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="68.60000000000001%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p id="oracle_gud_0025__oracle_gud_0026_p11756857132710">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="oracle_gud_0025__oracle_gud_0026_row1675655792713"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p1375645762716"><span id="oracle_gud_0025__oracle_gud_0026_text9585193192718">类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p575635710271">数据库类型，选择<span class="uicontrol" id="oracle_gud_0025__oracle_gud_0026_uicontrol22221717377">“单机”</span>或<span class="uicontrol" id="oracle_gud_0025__oracle_gud_0026_uicontrol15856131973717">“集群”</span>。</p>
+<ul id="oracle_gud_0025__oracle_gud_0026_ul498294065311"><li id="oracle_gud_0025__oracle_gud_0026_li49821940135318">数据库部署形态为集群时，请选择“集群”。</li><li id="oracle_gud_0025__oracle_gud_0026_li133593535417">数据库部署形态为单机时，请选择“单机”。</li></ul>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row1875685752712"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p1875665714274"><span id="oracle_gud_0025__oracle_gud_0026_text158331842182716">名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p15970215763">要保护的数据库名称。</p>
+<div class="p" id="oracle_gud_0025__oracle_gud_0026_p312142713516">该名称与生产环境的数据库名称保持一致。一般数据库的name与db_unique_name一致，当两者不一致时，请配置为db_unique_name。可通过以下SQL语句查看name与db_unique_name。<pre class="screen" id="oracle_gud_0025__oracle_gud_0026_screen1084516518517">select name,db_unique_name FROM v$database;</pre>
+</div>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row0756145752720"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p207561557202719">主机/集群</p>
+</td>
+<td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p142251452263">数据库所在的主机或集群。</p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row20620735162"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p133192195016">运行数据库用户名</p>
+</td>
+<td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p1973744653">当数据库所在主机的操作系统为Windows时，请联系数据库管理员获取数据库所在主机的系统管理员的用户名。</p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row64609631613"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p176725894910">运行数据库用户密码</p>
+</td>
+<td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p16789134910183">当数据库所在主机的操作系统为Windows时，请联系数据库管理员获取数据库所在主机的系统管理员用户的密码。</p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row169057587343"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p19905058123416"><span id="oracle_gud_0025__oracle_gud_0026_text355565417277">数据库认证方式</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p1090513587340">数据库认证方式，支持<span class="uicontrol" id="oracle_gud_0025__oracle_gud_0026_uicontrol11231144955014">“数据库认证”</span>和<span class="uicontrol" id="oracle_gud_0025__oracle_gud_0026_uicontrol10433552145012">“OS认证”</span>，与数据库侧的配置一致。</p>
+<p id="oracle_gud_0025__oracle_gud_0026_p68181854162214">查询数据库认证方式可参考<a href="oracle_gud_0012.html">备份前准备</a>。</p>
+<div class="note" id="oracle_gud_0025__oracle_gud_0026_note3523163482116"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="oracle_gud_0025__oracle_gud_0026_ul1271154832110"><li id="oracle_gud_0025__oracle_gud_0026_li970211010162">当要备份的数据库所在的主机为Oracle ADG或DG主备部署形态时，备端的数据库必须采用数据库认证方式。</li><li id="oracle_gud_0025__oracle_gud_0026_li13433510142011">当在<a href="oracle_gud_0033.html#oracle_gud_0033__li164660725814">4</a>中指定多个客户端所在主机执行备份任务时，则要求数据库必须采用数据库认证方式。</li><li id="oracle_gud_0025__oracle_gud_0026_li14667165013208">在集群场景下，如果不同的数据库节点查询到的数据库认证方式有差异，此处请配置为“数据库认证”。</li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row2053712715354"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p45371575356"><span id="oracle_gud_0025__oracle_gud_0026_text843211214284">数据库安装用户名</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p553719714354">安装数据库的用户，如<strong id="oracle_gud_0025__oracle_gud_0026_b85771024185317">oracle</strong>。获取方式可参考<a href="oracle_gud_0012.html">备份前准备</a>。</p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row52052917594"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p1920829185912">ORACLE_HOME路径</p>
+<div class="note" id="oracle_gud_0025__oracle_gud_0026_zh-cn_topic_0000001839143189_note379352823112"><span class="notetitle"> 说明： </span><div class="notebody"><p id="oracle_gud_0025__oracle_gud_0026_zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143213_p8320153562113">仅1.6.0及后续版本支持设置该参数。</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p18967154610558">仅当数据库节点为Linux操作系统时，界面显示该参数。</p>
+<p id="oracle_gud_0025__oracle_gud_0026_p81964551912">ORACLE_HOME为Oracle软件的环境变量，如果数据库节点安装用户未配置ORACLE_HOME环境变量，需手动配置，配置方法如下（当数据库类型为集群时，请在所有节点执行以下步骤）：</p>
+<ol type="a" id="oracle_gud_0025__oracle_gud_0026_ol165438225242"><li id="oracle_gud_0025__oracle_gud_0026_li125432022192415">登录数据库节点，查询环境变量中是否配置ORACLE_HOME：<pre class="screen" id="oracle_gud_0025__oracle_gud_0026_screen11189171019153">su - oracle -c 'env | grep ORACLE_HOME'</pre>
+<ul id="oracle_gud_0025__oracle_gud_0026_ul113195120113"><li id="oracle_gud_0025__oracle_gud_0026_li51311515113">若回显不为空，表示已配置ORACLE_HOME环境变量，则无需在管理界面中配置该参数。</li><li id="oracle_gud_0025__oracle_gud_0026_li1413175114119">若回显为空，请继续执行后续操作。</li></ul>
+</li><li id="oracle_gud_0025__oracle_gud_0026_li1438252343614"><span style="color:#282B33;">手动配置</span><span style="color:#282B33;">ORACLE_HOME环境变量</span>。<ul id="oracle_gud_0025__oracle_gud_0026_ul17826256143610"><li id="oracle_gud_0025__oracle_gud_0026_li626153819377">若支持修改环境变量配置文件，请执行以下操作：<div class="p" id="oracle_gud_0025__oracle_gud_0026_p73118199386"><a name="oracle_gud_0025__oracle_gud_0026_li626153819377"></a><a name="oracle_gud_0026_li626153819377"></a>请联系数据库管理员获取<span style="color:#282B33;">ORACLE_HOME</span>路径，在数据库安装用户所在目录下编辑环境变量配置文件（如.bash_profile），在最后一行增加该路径。例如：<pre class="screen" id="oracle_gud_0025__oracle_gud_0026_screen151311511414">export ORACLE_HOME=/<em id="oracle_gud_0025__oracle_gud_0026_i18310733193418">XXX</em></pre>
+</div>
+<p id="oracle_gud_0025__oracle_gud_0026_p735019281443">保存环境变量配置文件，执行以下命令使环境变量生效。</p>
+<pre class="screen" id="oracle_gud_0025__oracle_gud_0026_screen155033174">source <font style="font-size:8pt" Face="Courier New" >~</font>/.bash_profile</pre>
+</li><li id="oracle_gud_0025__oracle_gud_0026_li23641726143810">若不支持修改环境变量配置文件，请联系数据库管理员获取<span style="color:#282B33;">ORACLE_HOME</span>路径并填写到管理界面。</li></ul>
+</li></ol>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row1815173117599"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p1581523116591">ORACLE_BASE路径</p>
+<div class="note" id="oracle_gud_0025__oracle_gud_0026_note116368215518"><span class="notetitle"> 说明： </span><div class="notebody"><p id="oracle_gud_0025__oracle_gud_0026_p3636132120514">仅1.6.0及后续版本支持设置该参数。</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p20565131232415">仅当数据库节点为Linux操作系统时，界面显示该参数。</p>
+<p id="oracle_gud_0025__oracle_gud_0026_p1356511127249">ORACLE_BASE为Oracle软件的环境变量，如果数据库节点安装用户未配置ORACLE_BASE环境变量，需手动配置，配置方法如下（当数据库类型为集群时，请在所有节点执行以下步骤）：</p>
+<ol type="a" id="oracle_gud_0025__oracle_gud_0026_ol1356591211241"><li id="oracle_gud_0025__oracle_gud_0026_li4565141262413">登录数据库节点，查询环境变量中是否配置ORACLE_BASE：<pre class="screen" id="oracle_gud_0025__oracle_gud_0026_screen11159133010243">su - oracle -c 'env | grep ORACLE_BASE'</pre>
+<ul id="oracle_gud_0025__oracle_gud_0026_ul1565191292414"><li id="oracle_gud_0025__oracle_gud_0026_li16565312152413">若回显不为空，表示已配置ORACLE_BASE环境变量，则无需在管理界面中配置该参数。</li><li id="oracle_gud_0025__oracle_gud_0026_li125651612132410">若回显为空，请继续执行后续操作。</li></ul>
+</li><li id="oracle_gud_0025__oracle_gud_0026_li656517123246"><span style="color:#282B33;">手动配置</span><span style="color:#282B33;">ORACLE_BASE环境变量</span>。<ul id="oracle_gud_0025__oracle_gud_0026_ul1565141214248"><li id="oracle_gud_0025__oracle_gud_0026_li105651412122411">若支持修改环境变量配置文件，请执行以下操作：<div class="p" id="oracle_gud_0025__oracle_gud_0026_p5565191213245"><a name="oracle_gud_0025__oracle_gud_0026_li105651412122411"></a><a name="oracle_gud_0026_li105651412122411"></a>请联系数据库管理员获取ORACLE_BASE路径，在数据库安装用户所在目录下编辑环境变量配置文件（如.bash_profile），在最后一行增加该路径。例如：<pre class="screen" id="oracle_gud_0025__oracle_gud_0026_screen756515121247">export ORACLE_BASE=/<em id="oracle_gud_0025__oracle_gud_0026_i2565912132420">XXX</em></pre>
+</div>
+<p id="oracle_gud_0025__oracle_gud_0026_p256519126242">保存环境变量配置文件，执行以下命令使环境变量生效。</p>
+<pre class="screen" id="oracle_gud_0025__oracle_gud_0026_screen1256515127244">source <font style="font-size:8pt" Face="Courier New" >~</font>/.bash_profile</pre>
+</li><li id="oracle_gud_0025__oracle_gud_0026_li85651612152417">若不支持修改环境变量配置文件，请联系数据库管理员获取<span style="color:#282B33;">ORACLE_BASE</span>路径并填写到管理界面。</li></ul>
+</li></ol>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row39665228355"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p1396642215351"><span id="oracle_gud_0025__oracle_gud_0026_text17161131042813">数据库用户名</span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p2096617223357">当<span class="uicontrol" id="oracle_gud_0025__oracle_gud_0026_uicontrol954315314514">“数据库认证方式”</span>为<span class="uicontrol" id="oracle_gud_0025__oracle_gud_0026_uicontrol16920124617517">“数据库认证”</span>时，需要配置数据库的用户名和密码。</p>
+<p id="oracle_gud_0025__oracle_gud_0026_p699317272524">输入具有sysdba权限的用户。</p>
+<div class="note" id="oracle_gud_0025__oracle_gud_0026_note82232292012"><span class="notetitle"> 说明： </span><div class="notebody"><p id="oracle_gud_0025__oracle_gud_0026_p173724301004">如果数据库侧配置为OS认证方式，但注册时<span class="uicontrol" id="oracle_gud_0025__oracle_gud_0026_uicontrol74961659425">“数据库认证方式”</span>选择了<span class="uicontrol" id="oracle_gud_0025__oracle_gud_0026_uicontrol1868113392214">“数据库认证”</span>，由于数据库本身的机制，不会校验数据库的用户名和密码。</p>
+</div></div>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row20535172673513"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p353512265354"><span id="oracle_gud_0025__oracle_gud_0026_text49921117122810">数据库密码</span></p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row14127174411359"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p15128544133518"><span id="oracle_gud_0025__oracle_gud_0026_text837616277283">ASM认证</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p1412819441353">如果数据库使用了ASM，则需要开启ASM认证。</p>
+<p id="oracle_gud_0025__oracle_gud_0026_p694817349373">查看数据库是否使用了ASM的具体操作可参考<a href="oracle_gud_0012.html">备份前准备</a>。</p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row7356102443610"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p13357224173610"><span id="oracle_gud_0025__oracle_gud_0026_text11201123782819">认证方式</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p17357122403612">ASM认证方式，与数据库侧的配置一致。</p>
+<p id="oracle_gud_0025__oracle_gud_0026_p031663016387">查询数据库侧的ASM认证方式可参考<a href="oracle_gud_0012.html">备份前准备</a>。</p>
+<div class="note" id="oracle_gud_0025__oracle_gud_0026_note82841536182219"><span class="notetitle"> 说明： </span><div class="notebody"><p id="oracle_gud_0025__oracle_gud_0026_p82841836132219">在集群场景下，如果不同的数据库节点查询到的ASM认证方式有差异，此处请配置为“ASM认证”。</p>
+</div></div>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row1687483773612"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p187715401364"><span id="oracle_gud_0025__oracle_gud_0026_text263274612288">安装用户名</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p7874173763615">ASM的安装用户名，如<strong id="oracle_gud_0025__oracle_gud_0026_b2200113311531">grid</strong>。</p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row1781184418363"><td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p381114414362"><span id="oracle_gud_0025__oracle_gud_0026_text69052057102810">ASM用户名</span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="68.60000000000001%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p1481144453614">当认证方式为ASM认证时，需要配置该参数。输入具有sysdba权限的用户。</p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row10297155220367"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p0297195273615"><span id="oracle_gud_0025__oracle_gud_0026_text2036825102910">ASM密码</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>在“<span>存储资源</span>”区域，单击“<span>添加</span>”。存储资源参数说明如<a href="#oracle_gud_0025__table5692101024117">表3</a>所示。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="oracle_gud_0025__oracle_gud_0026_ul1522010591716"><li id="oracle_gud_0025__oracle_gud_0026_li116309119213">仅1.6.0及后续版本支持此功能。</li><li id="oracle_gud_0025__oracle_gud_0026_li132202592113">当Oracle数据库对接了<span style="color:#282B33;">OceanStor Dorado 6.x</span>存储设备，需使用存储层快照备份功能时，请添加存储资源。其他场景无需添加存储资源。</li><li id="oracle_gud_0025__oracle_gud_0026_li730103516313">当Oracle数据库对接<span style="color:#282B33;">OceanStor Dorado 6.x</span>双活存储设备时，可添加2台存储资源，备份恢复任务优先使用最先添加的存储资源。</li></ul>
+</div></div>
+
+<div class="tablenoborder"><a name="oracle_gud_0025__table5692101024117"></a><a name="table5692101024117"></a><table cellpadding="4" cellspacing="0" summary="" id="oracle_gud_0025__table5692101024117" frame="border" border="1" rules="all"><caption><b>表3 </b>添加存储资源参数说明</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr id="oracle_gud_0025__oracle_gud_0026_row469231012419"><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.3.2.5.2.2.2.3.1.1"><p id="oracle_gud_0025__oracle_gud_0026_p106923107414">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.3.2.5.2.2.2.3.1.2"><p id="oracle_gud_0025__oracle_gud_0026_p1692161011412">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="oracle_gud_0025__oracle_gud_0026_row1552933144420"><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p195293384415"><span id="oracle_gud_0025__oracle_gud_0026_text14795162563515">设备类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p1352993114413">存储资源的类型。</p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row156924105418"><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p1447416484523"><span id="oracle_gud_0025__oracle_gud_0026_text0951938233">管理IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p1572219555316"><span style="color:#282B33;">支持填写存储设备的多个管理IP地址。某个管理IP地址无法访问时，系统将自动切换到其他可访问的管理IP地址。</span></p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row11692410194115"><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p86921100411"><span id="oracle_gud_0025__oracle_gud_0026_text84171222037">端口</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p176923103418">存储资源的访问端口，默认是8088。</p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row1869291094117"><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p1169221012410"><span id="oracle_gud_0025__oracle_gud_0026_text569291014412">用户名</span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p1269218103411">访问存储资源的用户名和密码。</p>
+<div class="note" id="oracle_gud_0025__oracle_gud_0026_note1496145518305"><span class="notetitle"> 说明： </span><div class="notebody"><p id="oracle_gud_0025__oracle_gud_0026_p9961145513012"><span style="color:#282B33;">请使用管理员角色的用户，该用户具有Restful的登录方式，且已完成密码初始化，否则可能导致备份该设备下的资源失败。</span></p>
+</div></div>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row19692131044119"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p136927109413"><span id="oracle_gud_0025__oracle_gud_0026_text9692410114111">密码</span></p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row11906115412334"><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p990612542335"><span id="oracle_gud_0025__oracle_gud_0026_text86431838203518">协议</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p15906185413331">选择Oracle数据库主机对接存储资源时使用的数据传输协议。</p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row9693131015418"><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p84858527216"><span id="oracle_gud_0025__oracle_gud_0026_text1648545220215">校验证书</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p126931210144116">默认开启，注册数据库时会对存储资源的证书进行校验，确保<span id="oracle_gud_0025__oracle_gud_0026_text104402035112113">OceanProtect</span>与外部设备交互的安全性。关闭后，系统与存储设备通信可能存在安全风险，请谨慎操作。</p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row1737117014469"><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p138240311112"><span id="oracle_gud_0025__oracle_gud_0026_text13121124726">证书</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p282416316116">请导入<a href="oracle_gud_0023.html">步骤2：获取存储资源CA证书（适用于存储层快照备份）</a>章节中获取的存储资源的CA证书。</p>
+</td>
+</tr>
+<tr id="oracle_gud_0025__oracle_gud_0026_row239197184619"><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p id="oracle_gud_0025__oracle_gud_0026_p08012393018"><span id="oracle_gud_0025__oracle_gud_0026_text18813399016">吊销列表</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p id="oracle_gud_0025__oracle_gud_0026_p18813391309">导入证书吊销列表后，系统将校验客户端证书是否被吊销，如果证书已被吊销，则注册存储设备失败。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </p></li></ol>
 </div>
-<div class="section"><h4 class="sectiontitle">开启备份链路加密开关</h4><ol><li><span>选择<span class="uicontrol">“<span><span>系统</span></span> &gt; <span><span>安全</span></span> &gt; <span>数据安全</span>”</span>。</span></li><li><span>单击“加密设置”区域右侧的<span class="uicontrol">“<span>修改</span>”</span>，开启<span class="uicontrol">“<span>备份链路加密</span>”</span>。</span></li><li><span>单击<span class="uicontrol">“<span>保存</span>”</span>。</span></li></ol>
-</div>
-<p></p>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="oracle_gud_0013.html">备份Oracle数据库</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="oracle_gud_0024.html">步骤3：注册Oracle数据库</a></div>
 </div>
 </div>
 

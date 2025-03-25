@@ -148,4 +148,7 @@ public class OceanStorageSystemInfoRes {
 
     @JsonProperty("TOTALCAPACITY")
     private String totalCapacity;
+
+    @JsonProperty("SoftwarePatch")
+    private String softwarePatch;
 }

@@ -1,0 +1,64 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Oracle数据库备份失败，错误详情包含“RMAN-06059: expected archived log not found, loss of archived log compromises recoverability”">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="oracle_gud_0119.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="oracle_gud_0140">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Oracle数据库备份失败，错误详情包含“RMAN-06059: expected archived log not found, loss of archived log compromises recoverability”</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="oracle_gud_0140"></a><a name="oracle_gud_0140"></a>
+
+<h1 class="topictitle1">Oracle数据库备份失败，错误详情包含“RMAN-06059: expected archived log not found, loss of archived log compromises recoverability”</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>Oracle数据库备份任务失败，错误详情包含“RMAN-06059: expected archived log not found, loss of archived log compromises recoverability”。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>执行备份任务前，备份了日志的文件系统（DeviceManager上以L开头的文件系统为存放日志备份的文件系统）被删除，导致Oracle主机中存在失效的日志文件，进而备份失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li><span>登录Oracle数据库主机。</span><p><ul id="oracle_gud_0140__oracle_gud_0020_zh-cn_topic_0000001656760969_ul1983714162204"><li id="oracle_gud_0140__oracle_gud_0020_zh-cn_topic_0000001656760969_li7258697580">如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行<strong id="oracle_gud_0140__oracle_gud_0020_zh-cn_topic_0000001656760969_b119369483451">su - oracle</strong>命令，切换到<strong id="oracle_gud_0140__oracle_gud_0020_zh-cn_topic_0000001656760969_b2486163014495">oracle</strong>账户。</li><li id="oracle_gud_0140__oracle_gud_0020_zh-cn_topic_0000001656760969_li1366015032013">如果是Windows操作系统，请使用系统管理员登录Oracle数据库主机。</li></ul>
+</p></li><li><span>执行以下命令进入RMAN。</span><p><ul id="oracle_gud_0140__oracle_gud_0020_ul19454143574215"><li id="oracle_gud_0140__oracle_gud_0020_li44549351422">如果是Linux操作系统，请执行以下命令：<p id="oracle_gud_0140__oracle_gud_0020_p363075015428"><a name="oracle_gud_0140__oracle_gud_0020_li44549351422"></a><a name="oracle_gud_0020_li44549351422"></a><strong id="oracle_gud_0140__oracle_gud_0020_b154781158438">export ORACLE_SID=</strong><em id="oracle_gud_0140__oracle_gud_0020_i86308505427">实例名称</em></p>
+<p id="oracle_gud_0140__oracle_gud_0020_p16630205014425"><strong id="oracle_gud_0140__oracle_gud_0020_b1553717104312">rman target /</strong></p>
+</li><li id="oracle_gud_0140__oracle_gud_0020_li1991913252438">如果是Windows操作系统，请执行以下命令：<ol type="a" id="oracle_gud_0140__oracle_gud_0020_ol124110408264"><li id="oracle_gud_0140__oracle_gud_0020_li624120402267">在键盘上按<span class="uicontrol" id="oracle_gud_0140__oracle_gud_0020_oracle_gud_0016_uicontrol11819941114510">“Win+R”</span>，打开运行窗口。</li><li id="oracle_gud_0140__oracle_gud_0020_li161821338277">输入<span class="parmvalue" id="oracle_gud_0140__oracle_gud_0020_parmvalue122291222476">“cmd”</span>，执行以下命令。<p id="oracle_gud_0140__oracle_gud_0020_p18919132511435"><strong id="oracle_gud_0140__oracle_gud_0020_b4919142514320">set ORACLE_SID=</strong><em id="oracle_gud_0140__oracle_gud_0020_i11919102574313">实例名称</em></p>
+<p id="oracle_gud_0140__oracle_gud_0020_p149191125144318"><strong id="oracle_gud_0140__oracle_gud_0020_b1191932510433">rman target /</strong></p>
+</li></ol>
+</li></ul>
+</p></li><li><span>执行以下命令检验并删除失效的日志文件。</span><p><p><strong>crosscheck archivelog all;</strong></p>
+<p><strong>delete expired archivelog all;</strong></p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="oracle_gud_0119.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

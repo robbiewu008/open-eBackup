@@ -1,0 +1,91 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="NAS共享或文件集聚合副本进行文件级恢复，副本目录展开失败">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="Files-0095.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="Files-0100">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>NAS共享或文件集聚合副本进行文件级恢复，副本目录展开失败</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="Files-0100"></a><a name="Files-0100"></a>
+
+<h1 class="topictitle1">NAS共享或文件集聚合副本进行文件级恢复，副本目录展开失败</h1>
+<div><div class="section" id="Files-0100__zh-cn_topic_0000002200015165_section18319174017340"><h4 class="sectiontitle">现象描述</h4><p id="Files-0100__zh-cn_topic_0000002200015165_p328013210181">NAS共享或文件集聚合副本进行文件级恢复，副本目录展开失败。</p>
+</div>
+<div class="section" id="Files-0100__zh-cn_topic_0000002200015165_section532153810497"><h4 class="sectiontitle">可能原因</h4><p id="Files-0100__zh-cn_topic_0000002200015165_p1860632116199">聚合sqlite文件损坏。</p>
+</div>
+<div class="section" id="Files-0100__zh-cn_topic_0000002200015165_section20967124413020"><h4 class="sectiontitle">处理步骤</h4><ol id="Files-0100__zh-cn_topic_0000002200015165_ol88001418521"><li id="Files-0100__zh-cn_topic_0000002200015165_li121927421882"><span>查看对应的资源ID。</span><p><p id="Files-0100__zh-cn_topic_0000002200015165_p1948813227816"><span><img id="Files-0100__zh-cn_topic_0000002200015165_image154888221380" src="zh-cn_image_0000002200101553.png"></span></p>
+<p id="Files-0100__zh-cn_topic_0000002200015165_p1948852211812"></p>
+</p></li><li id="Files-0100__zh-cn_topic_0000002200015165_li16775132718543"><span>（适用于OceanProtect X系列备份一体机和OceanProtect E1000）查看逻辑端口，并查找资源所在的数据仓通过NFS共享出来。</span><p><ol type="a" id="Files-0100__zh-cn_topic_0000002200015165_ol2063092205819"><li id="Files-0100__zh-cn_topic_0000002200015165_li1599622617281">登录DeviceManager。<ul id="Files-0100__zh-cn_topic_0000002200015165_ul151776515584"><li id="Files-0100__zh-cn_topic_0000002200015165_zh-cn_topic_0000001839223165_li19991413113118">对于OceanProtect X系列备份一体机，请执行以下操作：<ol class="substepthirdol" id="Files-0100__zh-cn_topic_0000002200015165_zh-cn_topic_0000001839223165_ol5625945183219"><li id="Files-0100__zh-cn_topic_0000002200015165_zh-cn_topic_0000001839223165_li84033442337">选择“系统 &gt; 基础设施 &gt; 集群管理”。</li><li id="Files-0100__zh-cn_topic_0000002200015165_zh-cn_topic_0000001839223165_li938315412338">在“备份集群”页签的“本地集群节点”区域，单击节点名称。</li><li id="Files-0100__zh-cn_topic_0000002200015165_zh-cn_topic_0000001839223165_li9647100173410">在弹出的“节点详情”界面，单击“打开设备管理”，进入DeviceManager管理界面。</li></ol>
+</li><li id="Files-0100__zh-cn_topic_0000002200015165_zh-cn_topic_0000001839223165_li15921125623118">对于OceanProtect E1000（备份存储为OceanProtect），登录备份存储设备的DeviceManager管理界面，具体操作请参见<a href="Files-0097.html">登录DeviceManager管理界面</a>。</li></ul>
+</li><li id="Files-0100__zh-cn_topic_0000002200015165_li155851381587">查看逻辑端口。<p id="Files-0100__zh-cn_topic_0000002200015165_p4826149105812"><a name="Files-0100__zh-cn_topic_0000002200015165_li155851381587"></a><a name="zh-cn_topic_0000002200015165_li155851381587"></a>选择“<span id="Files-0100__zh-cn_topic_0000002200015165_text1657713416248">服务</span> &gt; <span id="Files-0100__zh-cn_topic_0000002200015165_text9737191862413">网络</span> &gt; <span id="Files-0100__zh-cn_topic_0000002200015165_text6280633122413">逻辑端口</span>”查看可用的逻辑端口，选择任意一个支持NFS数据协议且端口为IOM0对应的逻辑端口，记录此IP（例如此处的192.168.101.67）。</p>
+<p id="Files-0100__zh-cn_topic_0000002200015165_p13255130141015"><span><img id="Files-0100__zh-cn_topic_0000002200015165_image152555012106" src="zh-cn_image_0000002200101505.png"></span></p>
+<p id="Files-0100__zh-cn_topic_0000002200015165_p162551309109"></p>
+</li><li id="Files-0100__zh-cn_topic_0000002200015165_li19911134141619">查找资源所在的数据仓，并通过NFS共享出来。<ol class="substepthirdol" id="Files-0100__zh-cn_topic_0000002200015165_ol14973321141911"><li id="Files-0100__zh-cn_topic_0000002200015165_li5973521161917">选择“<span id="Files-0100__zh-cn_topic_0000002200015165_text1459474419248">服务</span> &gt; <span id="Files-0100__zh-cn_topic_0000002200015165_text114415872419">文件服务</span> &gt; <span id="Files-0100__zh-cn_topic_0000002200015165_text15865914142514">文件系统</span>”，根据资源ID搜索文件系统。<p id="Files-0100__zh-cn_topic_0000002200015165_p1555229181919"><span><img id="Files-0100__zh-cn_topic_0000002200015165_image14923193451616" src="zh-cn_image_0000002200101541.png"></span></p>
+<p id="Files-0100__zh-cn_topic_0000002200015165_p2615203119196"></p>
+</li><li id="Files-0100__zh-cn_topic_0000002200015165_li119741321151919">为搜索到的文件系统配置NFS共享。<p id="Files-0100__zh-cn_topic_0000002200015165_p109242349168"><a name="Files-0100__zh-cn_topic_0000002200015165_li119741321151919"></a><a name="zh-cn_topic_0000002200015165_li119741321151919"></a><span><img id="Files-0100__zh-cn_topic_0000002200015165_image179241134111610" src="zh-cn_image_0000002200015949.png"></span></p>
+<p id="Files-0100__zh-cn_topic_0000002200015165_p15924143413161"><span><img id="Files-0100__zh-cn_topic_0000002200015165_image292493451619" src="zh-cn_image_0000002164615180.png"></span></p>
+</li></ol>
+</li></ol>
+</p></li><li id="Files-0100__zh-cn_topic_0000002200015165_li46061728205819"><span>（适用于OceanProtect E6000备份一体机）查看逻辑端口，并查找资源所在的数据仓通过NFS共享出来。</span><p><ol type="a" id="Files-0100__zh-cn_topic_0000002200015165_ol2610165313583"><li id="Files-0100__zh-cn_topic_0000002200015165_zh-cn_topic_0000001149078659_li319522912350">登录DeviceManager。</li><li id="Files-0100__zh-cn_topic_0000002200015165_li2019819461337">查看可用的逻辑端口。<ol class="substepthirdol" id="Files-0100__zh-cn_topic_0000002200015165_ol16571147103316"><li id="Files-0100__zh-cn_topic_0000002200015165_li146274485334">选择“资源 &gt; 访问 &gt; 业务网络”。</li><li id="Files-0100__zh-cn_topic_0000002200015165_li8162556113316">选择对应租户，单击Access Zone的名称。</li><li id="Files-0100__zh-cn_topic_0000002200015165_li1132365292819">在弹出的界面中选择“IP地址池”页签，选择任意一个在使用中的逻辑端口，并记录此IP（例如此处的192.168.1.1）。<p id="Files-0100__zh-cn_topic_0000002200015165_p4222554122819"><a name="Files-0100__zh-cn_topic_0000002200015165_li1132365292819"></a><a name="zh-cn_topic_0000002200015165_li1132365292819"></a><span><img id="Files-0100__zh-cn_topic_0000002200015165_image047618523295" src="zh-cn_image_0000002164774876.png"></span></p>
+</li></ol>
+</li><li id="Files-0100__zh-cn_topic_0000002200015165_li498448185912">查找资源所在的数据仓，并通过NFS共享出来。<ol class="substepthirdol" id="Files-0100__zh-cn_topic_0000002200015165_ol2983487594"><li id="Files-0100__zh-cn_topic_0000002200015165_li998134875912">选择“资源 &gt; 资源 &gt; 命名空间”，根据资源ID搜索命名空间。<p id="Files-0100__zh-cn_topic_0000002200015165_p398184820595"><a name="Files-0100__zh-cn_topic_0000002200015165_li998134875912"></a><a name="zh-cn_topic_0000002200015165_li998134875912"></a><span><img id="Files-0100__zh-cn_topic_0000002200015165_image1049671184310" src="zh-cn_image_0000002200015961.png"></span></p>
+<p id="Files-0100__zh-cn_topic_0000002200015165_p119815486593"></p>
+</li><li id="Files-0100__zh-cn_topic_0000002200015165_li49854812597">为搜索到的文件系统配置NFS共享。<p id="Files-0100__zh-cn_topic_0000002200015165_p6989480591"><a name="Files-0100__zh-cn_topic_0000002200015165_li49854812597"></a><a name="zh-cn_topic_0000002200015165_li49854812597"></a><span><img id="Files-0100__zh-cn_topic_0000002200015165_image542072922017" src="zh-cn_image_0000002164774904.png"></span></p>
+</li></ol>
+</li></ol>
+</p></li><li id="Files-0100__zh-cn_topic_0000002200015165_li4204147121814"><span>挂载文件系统。</span><p><ol type="a" id="Files-0100__zh-cn_topic_0000002200015165_ol1181312258184"><li id="Files-0100__zh-cn_topic_0000002200015165_li181392591817">寻找一台可以访问逻辑端口的主机。</li><li id="Files-0100__zh-cn_topic_0000002200015165_li108131125161815">登录主机，使用以下命令挂载文件系统。<pre class="screen" id="Files-0100__zh-cn_topic_0000002200015165_screen617103271819">mount -t nfs -o vers=3 $IP:$share_path $local_path</pre>
+</li></ol>
+</p></li><li id="Files-0100__zh-cn_topic_0000002200015165_li3934164091817"><span>进入损坏的sqlite文件所在目录。</span><p><ol type="a" id="Files-0100__zh-cn_topic_0000002200015165_ol9883171318205"><li id="Files-0100__zh-cn_topic_0000002200015165_li178830133203">进入sqlite文件目录。<pre class="screen" id="Files-0100__zh-cn_topic_0000002200015165_screen356772911205">cd $local_path/source_policy_{Resource ID}_Context_Global_MD/{copy ID}/sqlite</pre>
+</li><li id="Files-0100__zh-cn_topic_0000002200015165_li38831013102012">进入展开失败的目录。<pre class="screen" id="Files-0100__zh-cn_topic_0000002200015165_screen726193813204">cd ./$failure_path</pre>
+</li></ol>
+</p></li><li id="Files-0100__zh-cn_topic_0000002200015165_li943321192018"><span>修复损坏的sqlite文件“copymetadata.sqlite”。</span><p><ol type="a" id="Files-0100__zh-cn_topic_0000002200015165_ol11491621102015"><li id="Files-0100__zh-cn_topic_0000002200015165_li348221192018">导出sql文件。<pre class="screen" id="Files-0100__zh-cn_topic_0000002200015165_screen153624566207">sqlite3 copymetadata.sqlite .dump &gt; newdb.sql</pre>
+</li><li id="Files-0100__zh-cn_topic_0000002200015165_li184918216201">修改newdb.sql最后一行的ROLLBACK为COMMIT。<pre class="screen" id="Files-0100__zh-cn_topic_0000002200015165_screen874925142112">sed -i '$ s/ROLLBACK/COMMIT/g' newdb.sql</pre>
+</li><li id="Files-0100__zh-cn_topic_0000002200015165_li20492210202">导入sql文件。<pre class="screen" id="Files-0100__zh-cn_topic_0000002200015165_screen186781019162117">sqlite3 new.sqlite &lt; newdb.sql</pre>
+</li><li id="Files-0100__zh-cn_topic_0000002200015165_li19496218208">检查新生成的sqlite文件是否有效，回显ok表示sqlite文件正常。<pre class="screen" id="Files-0100__zh-cn_topic_0000002200015165_screen16310132914213">sqlite3 new.sqlite
+sqlite&gt;pragma integrity_check;</pre>
+</li><li id="Files-0100__zh-cn_topic_0000002200015165_li649121132017">使用已修复的sqlite文件替换原文件。<pre class="screen" id="Files-0100__zh-cn_topic_0000002200015165_screen115441424225">mv new.sqlite copymetadata.sqlite</pre>
+</li></ol>
+</p></li></ol>
+</div>
+<div class="section" id="Files-0100__zh-cn_topic_0000002200015165_section590752117443"><h4 class="sectiontitle">建议与总结</h4><p id="Files-0100__zh-cn_topic_0000002200015165_p7238103010816">修复后的sqlite文件会丢失损坏的信息，可能存在部分文件信息丢失。建议使用sqlite文件未损坏的副本进行恢复。</p>
+</div>
+<div class="section" id="Files-0100__zh-cn_topic_0000002200015165_section1227093194410"><h4 class="sectiontitle">参考信息</h4><p id="Files-0100__zh-cn_topic_0000002200015165_p165892210816">无。</p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="Files-0095.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

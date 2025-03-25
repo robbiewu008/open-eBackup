@@ -1,0 +1,114 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 4: Downloading and Importing a Certificate">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002172782760.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002208109145">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 4: Downloading and Importing a Certificate</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002208109145"></a><a name="EN-US_TOPIC_0000002208109145"></a>
+  <h1 class="topictitle1">Step 4: Downloading and Importing a Certificate</h1>
+  <div>
+   <p id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_p3314585811">Before using the replication function, import the CA certificate of the secondary cluster to the primary cluster for replication. Otherwise, the system cannot verify the information about the devices to be accessed, causing security risks.</p>
+   <div class="section" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_section17774134611364">
+    <a name="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_section17774134611364"></a><a name="en-us_topic_0000002200147077_en-us_topic_0000001102065552_section17774134611364"></a>
+    <h4 class="sectiontitle">Downloading a Certificate from the Secondary Cluster</h4>
+    <ol id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_ol11979102814374">
+     <li id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_li1597932883716"><span>Log in to the <span id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_text20981175294311">product</span> WebUI of the secondary cluster for replication.</span></li>
+     <li id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_li10897959114110"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_en-us_topic_0000001085869992_en-us_topic_0000001092505479_uicontrol123381932135316"><b><span id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_en-us_topic_0000001085869992_en-us_topic_0000001092505479_text113848306235">System</span> &gt; <span id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_en-us_topic_0000001085869992_text484521122916">Security</span> &gt; Certificates</b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_li791619610427"><span>In the row where <span class="uicontrol" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_uicontrol219533992919"><b>Type</b></span> is <span class="uicontrol" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_uicontrol16195203932920"><b>Server Certificate</b></span>, choose <span class="uicontrol" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_uicontrol41349391483"><b>More &gt; Download CA Certificate</b></span>.</span><p></p><p id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_p184648437483">Download a CA certificate and keep it properly.</p> <p></p></li>
+    </ol>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_section0846167203710">
+    <h4 class="sectiontitle">Importing the Certificate to the Primary Cluster</h4>
+    <ol id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_ol191881157546">
+     <li id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_li918818505418"><span>Log in to the <span id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_text5894195154417">product</span> management page of the primary cluster for replication.</span></li>
+     <li id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_li5188859549"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000002200147077_en-us_topic_0000001102065552_en-us_topic_0000001085869992_en-us_topic_0000001092505479_uicontrol123381932135316"><b><span id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000002200147077_en-us_topic_0000001102065552_en-us_topic_0000001085869992_en-us_topic_0000001092505479_text113848306235">System</span> &gt; <span id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000002200147077_en-us_topic_0000001102065552_en-us_topic_0000001085869992_text484521122916">Security</span> &gt; Certificates</b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_li8602191845419"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_uicontrol754082417548"><b>Add External Certificate</b></span> to configure external certificate information.</span><p></p><p id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_p6842196195513"><a href="#EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_table146451017195515">Table 1</a> describes the related parameters.</p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_table146451017195515"></a><a name="en-us_topic_0000002200147077_en-us_topic_0000001102065552_table146451017195515"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_table146451017195515" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>External certificate parameters
+        </caption>
+        <colgroup>
+         <col style="width:50%">
+         <col style="width:50%">
+        </colgroup>
+        <thead align="left">
+         <tr id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_row9645117195517">
+          <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.3.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_p764691705516">Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.3.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_p156461317125516">Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_row1764681714553">
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_p1664631795513">Name</p></td>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_p4646151720551">Name of the certificate, which can be customized.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_row2056614550311">
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_p1954581110245">Type</p></td>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_p1854516112242">Select <span class="uicontrol" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_uicontrol117421628406"><b>Backup/Multi-domain/Replication Cluster</b></span>.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_row48663202555">
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_p8867202065516">CA Certificate</p></td>
+          <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 ">
+           <div class="p" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_p38671320165517">
+            Click <span><img id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_image158881574223" src="en-us_image_0000002200147325.png"></span> and import the certificate downloaded in <a href="#EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_section17774134611364">Downloading a Certificate from the Secondary Cluster</a>.
+            <div class="note" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_note11649816202117">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_p1364911652113">For 1.5.0, click <span><img id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_image107471433122117" src="en-us_image_0000002164820742.png"></span>.</p>
+             </div>
+            </div>
+           </div></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_li19188559547"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_en-us_topic_0000001102065552_uicontrol5457183013527"><b>OK</b></span>.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_note1311013186169">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002208109145__en-us_topic_0000002200147077_p1315615274261">During the certificate import, if the system displays an error message indicating that the certificate already exists, the primary cluster already has the same CA certificate as the secondary cluster. In this case, you can directly perform subsequent steps without importing the certificate.</p>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002172782760.html">Replicating SQL Server Database Copies</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

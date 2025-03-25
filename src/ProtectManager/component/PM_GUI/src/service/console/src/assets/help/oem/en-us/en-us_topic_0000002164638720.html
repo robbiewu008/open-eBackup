@@ -1,0 +1,147 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 2: Registering an openGauss/CMDB Cluster">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200039481.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164638720">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 2: Registering an openGauss/CMDB Cluster</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164638720"></a><a name="EN-US_TOPIC_0000002164638720"></a>
+  <h1 class="topictitle1">Step 2: Registering an openGauss/CMDB Cluster</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>Before registering an openGauss/CMDB cluster, install the client on all nodes in the openGauss/CMDB cluster. For details, see the <i><cite>Client Installation Guide</cite></i>.</li>
+    </ul>
+    <ul>
+     <li>The deployment environment must contain required dependent tools (including the gs_om management tool).</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164638720__en-us_topic_0000002199964685_uicontrol3409635183613"><b><span id="EN-US_TOPIC_0000002164638720__en-us_topic_0000002199964685_text94091435113619"><strong>Protection</strong></span> &gt; Databases &gt; CMDB/openGauss</b></span>.</span></li>
+     <li><span>Click the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register an openGauss/CMDB cluster.</span></li>
+     <li><span>Configure the cluster authentication information.</span><p></p><p><a href="#EN-US_TOPIC_0000002164638720__en-us_topic_0000001311214069_table241515964115">Table 1</a> describes the related parameters.</p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002164638720__en-us_topic_0000001311214069_table241515964115"></a><a name="en-us_topic_0000001311214069_table241515964115"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164638720__en-us_topic_0000001311214069_table241515964115" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>openGauss/CMDB cluster registration information
+        </caption>
+        <colgroup>
+         <col style="width:25.629999999999995%">
+         <col style="width:74.37%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.2.2.4.2.2.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.2.2.4.2.2.2.3.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>Custom cluster name.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span><strong>Username</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>Name of the OS user who runs the database.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span><strong>Type</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>Cluster type, which can be <span class="parmvalue"><b>Single Server</b></span>, <span class="parmvalue"><b>Distributed CMDB Cluster</b></span>, or <span class="parmvalue"><b>Active/Standby Replication</b></span>.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span><strong>Environment Variable File Path</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>During database installation, this path must be specified if separated deployment is used.</p> <p>For details about the query method, see <a href="en-us_topic_0000002200039525.html">Preparations for Backup</a>.</p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000002164638720__en-us_topic_0000001607543334_p4275815161710">This path is the environment configuration file path set by the user during separated deployment.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span><strong>Nodes</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>Host where the openGauss/CMDB instance resides.</p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <ul>
+              <li>The selected nodes must have the openGauss/CMDB database installed and belong to the same cluster.</li>
+              <li>All nodes in an active/standby replication cluster must be registered.</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><strong>DCS Address</strong></p></td>
+          <td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>These two parameters are displayed when <span class="parmname"><b>Type</b></span> is set to <span class="parmvalue"><b>Distributed CMDB Cluster</b></span>.</p> <p>For details about the query method, see <a href="en-us_topic_0000002200039525.html">Preparations for Backup</a>.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><strong>DCS Port</strong></p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><strong>Database Account</strong></p></td>
+          <td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>These two parameters are displayed when <span class="parmname"><b>Type</b></span> is set to <span class="parmvalue"><b>Distributed CMDB Cluster</b></span>.</p> <p>Enter the username and password of a database account that has the permission to back up or restore the database. For details about how to obtain the username and password, see <a href="en-us_topic_0000002200039525.html">Preparations for Backup</a>.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><strong>Database Password</strong></p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+    </ol>
+    <div class="note">
+     <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+     <div class="notebody">
+      <ul>
+       <li>After the cluster is successfully registered, the system automatically scans instances and databases every 5 minutes. The built-in databases, such as <strong>template0</strong>, <strong>template1</strong>, and <strong>postgres</strong>, are not be scanned.</li>
+      </ul>
+      <ul>
+       <li>You can also manually scan the cluster. On the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab page, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Resource Scan</strong></span></b></span> in the row of the target cluster to obtain instance and database information.</li>
+      </ul>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200039481.html">Backing Up openGauss/CMDB</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -26,7 +26,8 @@ import {
   RestoreApiV2Service,
   RestoreV2LocationType,
   SYSTEM_TIME,
-  filterVersion
+  filterVersion,
+  isOpenstackSystemDisk
 } from 'app/shared';
 import {
   ProTableComponent,
@@ -99,7 +100,6 @@ export class RestoreComponent implements OnInit {
   proxyOptions = [];
   verifyStatus;
   copyVerifyDisableLabel;
-  diskSystemPath = '/dev/vda';
 
   targetDisksOptions;
   cacheSelectedDisk = [];
@@ -447,7 +447,7 @@ export class RestoreComponent implements OnInit {
           value: disk.id,
           key: disk.id,
           label: `${disk.name || '--'}(${disk.id})`,
-          diskType: `${disk.device === this.diskSystemPath}`,
+          diskType: isOpenstackSystemDisk(disk.device, disk.bootable),
           isLeaf: true
         });
       });
@@ -580,7 +580,10 @@ export class RestoreComponent implements OnInit {
         nameId: `${item.name || '--'}(${item.uuid})`,
         volumeType: item.volume_type,
         id: item.uuid,
-        diskType: `${item.attachments[0]?.device === this.diskSystemPath}`,
+        diskType: isOpenstackSystemDisk(
+          item.attachments[0]?.device,
+          item.bootable
+        ),
         size: item.volSizeInBytes / 1024 / 1024 / 1024,
         sizeDisplay: `${parseFloat(capacity)} ${trim(
           capacity.replace(/[0-9.]/g, '')
@@ -594,19 +597,11 @@ export class RestoreComponent implements OnInit {
   }
 
   fiterDisk(value, item) {
-    // 数据盘不能恢复到系统盘
-    if (item.bootable === DataMap.Disk_Mode.false.value) {
-      return (
-        !includes(this.cacheSelectedDisk, value.id) &&
-        +value.size >= +item.size &&
-        value.bootable === DataMap.Disk_Mode.false.value &&
-        value.device !== this.diskSystemPath
-      );
-    }
+    // 磁盘不能恢复到系统盘
     return (
       !includes(this.cacheSelectedDisk, value.id) &&
       +value.size >= +item.size &&
-      value.device !== this.diskSystemPath
+      value.diskType !== DataMap.Disk_Mode.true.value
     );
   }
 

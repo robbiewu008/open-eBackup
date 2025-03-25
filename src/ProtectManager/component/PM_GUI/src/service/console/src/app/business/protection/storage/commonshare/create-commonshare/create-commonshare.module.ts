@@ -15,9 +15,10 @@ import { NgModule } from '@angular/core';
 import { AlertModule } from '@iux/live';
 import { BaseModule } from 'app/shared';
 import { CreateCommonShareComponent } from './create-commonshare.component';
+import { RouterJumpHelpModule } from 'app/shared/components/router-jump-help/router-jump-help.module';
 
 @NgModule({
   declarations: [CreateCommonShareComponent],
-  imports: [CommonModule, BaseModule, AlertModule]
+  imports: [CommonModule, BaseModule, AlertModule, RouterJumpHelpModule]
 })
 export class RegisterCommonShareModule {}

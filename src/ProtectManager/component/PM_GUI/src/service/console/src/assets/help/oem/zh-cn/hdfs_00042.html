@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="hdfs_00038.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
@@ -44,8 +44,8 @@
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>选择<span class="uicontrol" id="hdfs_00042__zh-cn_topic_0000001839142377_uicontrol8111821122820">“<span id="hdfs_00042__zh-cn_topic_0000001839142377_text71111921162814">保护</span> &gt; 保护策略 &gt; SLA”</span>。</span></li>
-     <li><span>查找到需要创建归档策略的SLA，单击<span class="uicontrol" id="hdfs_00042__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_uicontrol577717611320">“<span id="hdfs_00042__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text19646163524813">更多</span> &gt; <span id="hdfs_00042__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text068935811482">修改</span>”</span>。</span><p></p><p id="hdfs_00042__zh-cn_topic_0000001792503806_p1816920251869">系统预置的SLA不支持修改。</p> <p></p></li>
+     <li><span>选择<span class="uicontrol" id="hdfs_00042__zh-cn_topic_0000002199964685_uicontrol8111821122820">“保护 &gt; 保护策略 &gt; SLA”</span>。</span></li>
+     <li><span>查找到需要创建归档策略的SLA，单击<span class="uicontrol" id="hdfs_00042__zh-cn_topic_0000002164660726_zh-cn_topic_0000001091370109_uicontrol577717611320">“更多 &gt; 修改”</span>。</span><p></p><p id="hdfs_00042__zh-cn_topic_0000002164660726_p1816920251869">系统预置的SLA不支持修改。</p> <p></p></li>
      <li><span>单击<span class="uicontrol">“<span>归档策略</span>”</span>图标。</span></li>
      <li><span>配置归档策略信息。</span><p></p><p>相关参数说明如<a href="#hdfs_00042__zh-cn_topic_0000001188062717_zh-cn_topic_0000001091370109_table13531347181416">表1</a>。</p>
       <div class="tablenoborder">
@@ -99,20 +99,20 @@
            <div class="p">
             选择需要归档的备份副本并设置归档副本的保留时长。
             <ul>
-             <li id="hdfs_00042__zh-cn_topic_0000001792503806_li2085311499432"><span id="hdfs_00042__zh-cn_topic_0000001792503806_text193951264318">指定副本归档</span>：指定归档策略并设置副本保留时长，归档策略说明如下：
-              <ul id="hdfs_00042__zh-cn_topic_0000001792503806_ul1193014332306">
-               <li id="hdfs_00042__zh-cn_topic_0000001792503806_li393063317305"><span id="hdfs_00042__zh-cn_topic_0000001792503806_text1792918330303">仅归档最新的副本</span><p id="hdfs_00042__zh-cn_topic_0000001792503806_p893019338306">每次归档任务仅归档最近一次备份任务产生的副本。</p></li>
-               <li id="hdfs_00042__zh-cn_topic_0000001792503806_li10930203320309"><span id="hdfs_00042__zh-cn_topic_0000001792503806_text17168339174311">归档所有未曾归档副本</span><p id="hdfs_00042__zh-cn_topic_0000001792503806_p8930123320308">每次归档任务归档当前所有未曾归档的副本。</p></li>
+             <li id="hdfs_00042__zh-cn_topic_0000002164660726_li2085311499432">指定副本归档：指定归档策略并设置副本保留时长，归档策略说明如下：
+              <ul id="hdfs_00042__zh-cn_topic_0000002164660726_ul1193014332306">
+               <li id="hdfs_00042__zh-cn_topic_0000002164660726_li393063317305">仅归档最新的副本<p id="hdfs_00042__zh-cn_topic_0000002164660726_p893019338306"><a name="hdfs_00042__zh-cn_topic_0000002164660726_li393063317305"></a><a name="zh-cn_topic_0000002164660726_li393063317305"></a>每次归档任务仅归档最近一次备份任务产生的副本。</p></li>
+               <li id="hdfs_00042__zh-cn_topic_0000002164660726_li10930203320309">归档所有未曾归档副本<p id="hdfs_00042__zh-cn_topic_0000002164660726_p8930123320308"><a name="hdfs_00042__zh-cn_topic_0000002164660726_li10930203320309"></a><a name="zh-cn_topic_0000002164660726_li10930203320309"></a>每次归档任务归档当前所有未曾归档的副本。</p></li>
               </ul></li>
-             <li id="hdfs_00042__zh-cn_topic_0000001792503806_li169914211296"><span id="hdfs_00042__zh-cn_topic_0000001792503806_text876845119220">指定日期归档</span>：指定日期并设置副本保留时长，以下选项同时可选择多项：
-              <ul id="hdfs_00042__zh-cn_topic_0000001792503806_ul15411165794010">
-               <li id="hdfs_00042__zh-cn_topic_0000001792503806_li241110576407">选择每年的x月产生的备份副本进行归档，归档副本保留x年（支持保留1~70年）。</li>
-               <li id="hdfs_00042__zh-cn_topic_0000001792503806_li156079239417">选择每月的第一个或最后一个备份副本进行归档，归档副本保留x个月（支持保留1~840个月）。</li>
-               <li id="hdfs_00042__zh-cn_topic_0000001792503806_li7824743184118">选择每周的第x天产生的备份副本进行归档，归档副本保留x个周（支持保留1~3650个周）。
-                <div class="note" id="hdfs_00042__zh-cn_topic_0000001792503806_note250102619369">
+             <li id="hdfs_00042__zh-cn_topic_0000002164660726_li169914211296">指定日期归档：指定日期并设置副本保留时长，以下选项同时可选择多项：
+              <ul id="hdfs_00042__zh-cn_topic_0000002164660726_ul15411165794010">
+               <li id="hdfs_00042__zh-cn_topic_0000002164660726_li241110576407">选择每年的x月产生的备份副本进行归档，归档副本保留x年（支持保留1~70年）。</li>
+               <li id="hdfs_00042__zh-cn_topic_0000002164660726_li156079239417">选择每月的第一个或最后一个备份副本进行归档，归档副本保留x个月（支持保留1~840个月）。</li>
+               <li id="hdfs_00042__zh-cn_topic_0000002164660726_li5641618185215">选择每周的周一/二/三/四/五/六/日产生的备份副本进行归档，归档副本保留x个周（支持保留1~3650个周）。
+                <div class="note" id="hdfs_00042__zh-cn_topic_0000002164660726_note250102619369">
                  <span class="notetitle"> 说明： </span>
                  <div class="notebody">
-                  <p id="hdfs_00042__zh-cn_topic_0000001792503806_p19502026133610">当归档存储类型选择为“<span id="hdfs_00042__zh-cn_topic_0000001792503806_text290583517417">磁带库</span>”时，不能指定归档副本的保留时间，其保留时间以对应介质集的保留策略设置为准。</p>
+                  <p id="hdfs_00042__zh-cn_topic_0000002164660726_p19502026133610">当归档存储类型选择为“磁带库”时，不能指定归档副本的保留时间，其保留时间以对应介质集的保留策略设置为准。</p>
                  </div>
                 </div></li>
               </ul></li>
@@ -132,27 +132,27 @@
            </div></td>
           <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 ">
            <div class="p">
-            当归档存储类型选择为“<span id="hdfs_00042__zh-cn_topic_0000001792503806_text4453948437">磁带库</span>”时，才显示该参数，取值范围为1~32。
-            <div class="note" id="hdfs_00042__zh-cn_topic_0000001792503806_note765316318178">
+            当归档存储类型选择为“磁带库”时，才显示该参数，取值范围为1~32。
+            <div class="note" id="hdfs_00042__zh-cn_topic_0000002164660726_note765316318178">
              <span class="notetitle"> 说明： </span>
              <div class="notebody">
-              <p id="hdfs_00042__zh-cn_topic_0000001792503806_p06531331181715">驱动数量越大，归档任务或使用归档副本进行恢复的任务运行时占用的磁带库驱动就越多，性能更好。</p>
+              <p id="hdfs_00042__zh-cn_topic_0000002164660726_p06531331181715">驱动数量越大，归档任务或使用归档副本进行恢复的任务运行时占用的磁带库驱动就越多，性能更好。</p>
              </div>
             </div>
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>限速策略</span></p></td>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>限速策略</p></td>
           <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>归档任务平均每秒最大传输的数据量。当归档存储为磁带库时，不支持配置限速策略。</p> <p>选择已创建的限速策略。</p></td>
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 ">
            <div class="p">
-            <span id="hdfs_00042__zh-cn_topic_0000001792503806_text278121420338">自动索引</span>
-            <div class="note" id="hdfs_00042__zh-cn_topic_0000001792503806_note1175910385420">
+            自动索引
+            <div class="note" id="hdfs_00042__zh-cn_topic_0000002164660726_note1175910385420">
              <span class="notetitle"> 说明： </span>
              <div class="notebody">
-              <p id="hdfs_00042__zh-cn_topic_0000001792503806_p18759163818421">仅1.5.0版本存在此参数。</p>
+              <p id="hdfs_00042__zh-cn_topic_0000002164660726_p18759163818421">仅1.5.0版本存在此参数。</p>
              </div>
             </div>
            </div></td>
@@ -163,7 +163,7 @@
           <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>开启后可使用BBR（Bottleneck Bandwidth and Round-trip propagation time）网络加速，网络时延≥20毫秒时建议启用该选项。当归档存储为磁带库时，不支持配置网络加速。</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span id="hdfs_00042__zh-cn_topic_0000001792503806_text4798135584718">任务失败告警</span></p></td>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>任务失败告警</p></td>
           <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>开启后，任务执行失败后自动发送告警，下次任务成功后告警自动清除。</p></td>
          </tr>
          <tr>

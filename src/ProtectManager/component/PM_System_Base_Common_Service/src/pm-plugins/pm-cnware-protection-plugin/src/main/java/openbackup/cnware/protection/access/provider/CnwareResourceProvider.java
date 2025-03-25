@@ -35,7 +35,6 @@ public class CnwareResourceProvider extends DefaultResourceProvider {
         resource.setSubType(null);
         resource.setUserId(null);
         resource.setAuthorizedUser(null);
-        resource.setParentUuid(null);
         resource.setCreatedTime(null);
         resource.setProtectionStatus(null);
     }

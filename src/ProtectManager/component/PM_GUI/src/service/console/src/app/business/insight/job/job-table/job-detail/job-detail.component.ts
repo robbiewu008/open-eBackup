@@ -292,6 +292,18 @@ export class JobDetailComponent implements OnInit, OnDestroy {
       this.job.type === DataMap.Job_type.live_mount_job.value;
   }
 
+  setSlaApplication(res) {
+    if (
+      !isUndefined(this.jobStrategyComponent) &&
+      this.jobStrategyComponent.sla &&
+      this.jobStrategyComponent.sla.application !== res.application
+    ) {
+      this.jobStrategyComponent.sla = assign(this.jobStrategyComponent.sla, {
+        application: res.application
+      });
+    }
+  }
+
   updateSla() {
     const sla = JSON.parse(this.job?.extendStr || '{}');
     if (!sla || !sla?.slaId) {
@@ -320,6 +332,9 @@ export class JobDetailComponent implements OnInit, OnDestroy {
               this.jobStrategyComponent.slaName = this.newName;
               this.jobStrategyComponent.slaUpdated = true;
             }
+            this.setSlaApplication(res);
+          } else {
+            this.setSlaApplication(res);
           }
         },
         error: err => {

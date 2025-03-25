@@ -1,0 +1,180 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="About SLA">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164645216.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200131605">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>About SLA</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200131605"></a><a name="EN-US_TOPIC_0000002200131605"></a>
+  <h1 class="topictitle1">About SLA</h1>
+  <div>
+   <p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p450712339156">Service level agreement (SLA) is a set of configurable data protection policies that define rules for data protection and copy retention. These policies are associated with an environment to implement protection.</p>
+   <p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p0553222467">To simplify data protection configuration, the <span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text1398119317315">product</span> provides users with three types of preset SLAs: Gold, Silver, and Bronze. For example, users can select Gold SLA for protecting data of mission-critical services and Bronze SLA for protecting data of web servers.</p>
+   <p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p1479982113919">In addition, to meet enterprises' different data protection requirements for various environments, the <span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text087015321837">product</span> allows you to customize SLAs.</p>
+   <div class="section" id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_section5197184061219">
+    <h4 class="sectiontitle">Preset SLAs</h4>
+    <p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p22352378191">The system provides three preset SLAs: Gold, Silver, and Bronze. An SLA defines the backup interval, copy retention period, and backup time window of a backup job.</p>
+    <p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p48831228191910"><a href="#EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table179754488191">Table 1</a> describes the preset SLAs.</p>
+    <ul id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_ul54087306518">
+     <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_li6408193016518"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text05222406118"><strong>Backup Interval</strong></span>: First backup time and backup interval</li>
+     <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_li1708102942019"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text8913104951119"><strong>Copy Retention</strong></span>: Copy retention period</li>
+     <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_li969223218518"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text8362559181114"><strong>Backup Time Window</strong></span>: Time range during which a backup job can be executed. The backup job cannot be scheduled beyond this time range.</li>
+    </ul>
+    <div class="tablenoborder">
+     <a name="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table179754488191"></a><a name="en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table179754488191"></a>
+     <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table179754488191" frame="border" border="1" rules="all">
+      <caption>
+       <b>Table 1 </b>Parameters of preset SLAs
+      </caption>
+      <colgroup>
+       <col style="width:24%">
+       <col style="width:76%">
+      </colgroup>
+      <thead align="left">
+       <tr id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_row1497564801916">
+        <th align="left" class="cellrowborder" valign="top" width="24%" id="mcps1.3.4.5.2.3.1.1"><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_p49751148121920">SLA</p></th>
+        <th align="left" class="cellrowborder" valign="top" width="76%" id="mcps1.3.4.5.2.3.1.2"><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_p19751648161918">SLA Parameter</p></th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_row13975104861916">
+        <td class="cellrowborder" valign="top" width="24%" headers="mcps1.3.4.5.2.3.1.1 "><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_p79751948131918">Gold</p></td>
+        <td class="cellrowborder" valign="top" width="76%" headers="mcps1.3.4.5.2.3.1.2 ">
+         <ul id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_ul636863217226">
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li113681332152219"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text313524974813"><strong>Full Backup</strong></span>
+           <ul id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_ul98681339192614">
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_li037275620429"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001142022930_text837365674218"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001142022930_text4752195674813"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b205814497206">Backup Interval</strong></span></span>: once every day from April 20, 2021</li>
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li16868153952618"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text451241534912"><strong>Copy Retention</strong></span>: one month</li>
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li4416429267"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001142022930_en-us_topic_0000001089449281_text1826871163612"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001142022930_text54161321104914"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b129783172114">Backup Time Window</strong></span></span>: 00:30:00 to 00:30:00 on the next day</li>
+           </ul></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li11580634152219"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text660816358497"><strong>Incremental Backup</strong></span>
+           <ul id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_ul8553103932718">
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_li1912063864314"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text1267220143336"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text867211143338"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b56911992110">Backup Interval</strong></span></span>: once every 4 hours from April 20, 2021</li>
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li17553143916271"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text7200152195011"><strong>Copy Retention</strong></span>: one month</li>
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li8208145142720"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001142022930_en-us_topic_0000001089449281_text17366162683614"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001142022930_text1383221105010"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b23172112214">Backup Time Window</strong></span></span>: 01:00:00 to 01:00:00 on the next day</li>
+           </ul></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_li152611382816"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b1090654871915">Specify Target Location</strong> (This parameter is available only in 1.6.0 and later versions.)<p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_p11670168103016">The system automatically selects a target storage unit or storage unit group for backup through intelligent balancing.</p></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_li9101152511305"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b01427492115">Job Timeout Alarm</strong> (This parameter is available only in 1.6.0 and later versions.)<p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_p05091431163012">Disabled</p></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_li1770215191164"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b17777227162115">Job Failure Alarm</strong><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_p530714331614">Enabled</p></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_li5593153151610"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text1776115615507"><strong>Automatic Retry</strong></span><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_p1514017286176">If a periodic backup job fails, the system retries once every 5 minutes. It performs three retries in total.</p></li>
+         </ul></td>
+       </tr>
+       <tr id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_row119751748151919">
+        <td class="cellrowborder" valign="top" width="24%" headers="mcps1.3.4.5.2.3.1.1 "><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_p6975548111910">Silver</p></td>
+        <td class="cellrowborder" valign="top" width="76%" headers="mcps1.3.4.5.2.3.1.2 ">
+         <ul id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_ul17467846193010">
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li11467164603012"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text1981641819507"><strong>Full Backup</strong></span>
+           <ul id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_ul18467746153020">
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_li122744134416"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text1760519220507"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text176051922185019"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b524283510213">Backup Interval</strong></span></span>: once every week from April 20, 2021</li>
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li54671246103014"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text156918273502"><strong>Copy Retention</strong></span>: one month</li>
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li124671746143011"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text1559621373311"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text165961313203315"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b10386043132113">Backup Time Window</strong></span></span>: 00:30:00 to 00:30:00 on the next day</li>
+           </ul></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li1646715462303"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text24271836175016"><strong>Incremental Backup</strong></span>
+           <ul id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_ul204671046183020">
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_li13272171464619"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text52371313121110"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text13237513201117"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b2078594914214">Backup Interval</strong></span></span>: once every day from April 20, 2021</li>
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_li564919593455"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text1631534445013"><strong>Copy Retention</strong></span>: one month</li>
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li64671546123014"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text1383692311"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text281723428"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b2012219042220">Backup Time Window</strong></span></span>: 01:00:00 to 01:00:00 on the next day</li>
+           </ul></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_li2537205323317"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_b1090654871915">Specify Target Location</strong> (This parameter is available only in 1.6.0 and later versions.)<p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_p11670168103016">The system automatically selects a target storage unit or storage unit group for backup through intelligent balancing.</p></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_li14252019152814"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_b01427492115">Job Timeout Alarm</strong> (This parameter is available only in 1.6.0 and later versions.)<p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_p05091431163012">Disabled</p></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_li126089301778"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_b17777227162115">Job Failure Alarm</strong><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_en-us_topic_0000001337708186_p530714331614">Enabled</p></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_li163601857359"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_en-us_topic_0000001337708186_text1776115615507"><strong>Automatic Retry</strong></span><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_en-us_topic_0000001337708186_p1514017286176">If a periodic backup job fails, the system retries once every 5 minutes. It performs three retries in total.</p></li>
+         </ul></td>
+       </tr>
+       <tr id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_row11975154851913">
+        <td class="cellrowborder" valign="top" width="24%" headers="mcps1.3.4.5.2.3.1.1 "><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_p189758489191">Bronze</p></td>
+        <td class="cellrowborder" valign="top" width="76%" headers="mcps1.3.4.5.2.3.1.2 ">
+         <ul id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_ul5964164813305">
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li09641348103013"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text19844171117511"><strong>Full Backup</strong></span>
+           <ul id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_ul10964948183020">
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li196484813306"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001142022930_en-us_topic_0000001089449281_text42114620449"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001142022930_text1044417176513"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001142022930_text54441417185117"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b13676716182218">Backup Interval</strong></span></span></span>: once every 30 days from April 20, 2021</li>
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_li1077310010479"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text0173112212519"><strong>Copy Retention</strong></span>: three months</li>
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li996494853011"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text262916465912"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text96287445913"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text196280417597"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b164091026202220">Backup Time Window</strong></span></span></span>: 00:30:00 to 00:30:00 on the next day</li>
+           </ul></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li169649482305"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text660516323517"><strong>Incremental Backup</strong></span>
+           <ul id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_ul1964114812303">
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li4964204843011"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_en-us_topic_0000001089449281_text913113213458"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text172901138155116"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text4290838165110"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b1097843072211">Backup Interval</strong></span></span></span>: once every week from April 20, 2021</li>
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_li1620516487478"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_text14791943195114"><strong>Copy Retention</strong></span>: three months</li>
+            <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001337708186_li1038565719471"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text028919816349"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_text52891989343"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_b128995367223">Backup Time Window</strong></span></span>: 01:00:00 to 01:00:00 on the next day</li>
+           </ul></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_li1767163993514"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_b1090654871915_1">Specify Target Location</strong> (This parameter is available only in 1.6.0 and later versions.)<p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_p11670168103016_1">The system automatically selects a target storage unit or storage unit group for backup through intelligent balancing.</p></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_li1367243911359"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_b01427492115_1">Job Timeout Alarm</strong> (This parameter is available only in 1.6.0 and later versions.)<p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_p05091431163012_1">Disabled</p></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_li3672193933516"><strong id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_b17777227162115_1">Job Failure Alarm</strong><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_en-us_topic_0000001337708186_p530714331614_1">Enabled</p></li>
+          <li id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_li12672153914354"><span id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_en-us_topic_0000001337708186_text1776115615507_1"><strong>Automatic Retry</strong></span><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000002164660734_en-us_topic_0000001337708186_p1514017286176_1">If a periodic backup job fails, the system retries once every 5 minutes. It performs three retries in total.</p></li>
+         </ul></td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_section1969174516230">
+    <h4 class="sectiontitle">Custom SLAs</h4>
+    <p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p118482029286">You can customize SLAs for backup and replication jobs. In an SLA, you can define basic parameters such as the job execution interval, time window, and copy retention duration, as well as other advanced parameters specific to various resources to be protected.</p>
+    <p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p1186264517237"><a href="#EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table171521524193513">Table 2</a> describes the SLAs used for different types of jobs.</p>
+    <div class="tablenoborder">
+     <a name="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table171521524193513"></a><a name="en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table171521524193513"></a>
+     <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_table171521524193513" frame="border" border="1" rules="all">
+      <caption>
+       <b>Table 2 </b>Custom SLAs
+      </caption>
+      <colgroup>
+       <col style="width:19.75%">
+       <col style="width:80.25%">
+      </colgroup>
+      <thead align="left">
+       <tr id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_row615222414352">
+        <th align="left" class="cellrowborder" valign="top" width="19.75%" id="mcps1.3.5.4.2.3.1.1"><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p5152182416356">SLA</p></th>
+        <th align="left" class="cellrowborder" valign="top" width="80.25%" id="mcps1.3.5.4.2.3.1.2"><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p7152162483518">Description</p></th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_row7152102483518">
+        <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.4.2.3.1.1 "><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p14152132413510">Backup SLA</p></td>
+        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p2015222473514">Define parameters such as the backup job execution interval and backup copy retention period.</p></td>
+       </tr>
+       <tr id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_row61521124173515">
+        <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.4.2.3.1.1 "><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p71523242356">Replication SLA</p></td>
+        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p id="EN-US_TOPIC_0000002200131605__en-us_topic_0000002164660734_en-us_topic_0000001188593208_en-us_topic_0000001170622238_p1315215248355">Specify the target cluster to which a backup copy is replicated, and define parameters such as the replication job execution interval and replication copy retention period.</p></td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164645216.html">SLA</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

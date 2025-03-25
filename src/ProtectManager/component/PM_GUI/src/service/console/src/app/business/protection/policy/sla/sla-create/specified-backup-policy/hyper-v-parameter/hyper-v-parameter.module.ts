@@ -14,10 +14,11 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BaseModule } from 'app/shared';
 import { HyperVParameterComponent } from './hyper-v-parameter.component';
+import { RouterJumpHelpModule } from 'app/shared/components/router-jump-help/router-jump-help.module';
 
 @NgModule({
   declarations: [HyperVParameterComponent],
-  imports: [CommonModule, BaseModule],
+  imports: [CommonModule, BaseModule, RouterJumpHelpModule],
   exports: [HyperVParameterComponent]
 })
 export class HyperVParameterModule {}

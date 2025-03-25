@@ -1,0 +1,56 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="备份MRS平台Hbase应用中Graphbase服务的元数据表后，恢复失败">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="hbase_00064.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="hbase_00068">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>备份MRS平台Hbase应用中Graphbase服务的元数据表后，恢复失败</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hbase_00068"></a><a name="hbase_00068"></a>
+
+<h1 class="topictitle1">备份MRS平台Hbase应用中Graphbase服务的元数据表后，恢复失败</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>MRS平台安装Graphbase服务后会在Hbase应用的default命名空间下创建元数据表meta_graph和graphbaseORM_systemNotifications，执行恢复的目标集群如果没有安装Graphbase服务，将恢复失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>Graphbase服务的元数据表meta_graph和graphbaseORM_systemNotifications恢复时，需要使用Graphbase服务校验表信息。由于恢复的目标集群未安装Graphbase服务，会导致校验表信息失败，恢复任务失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li id="hbase_00068__li232091002713"><a name="hbase_00068__li232091002713"></a><a name="li232091002713"></a><span>在需要恢复的目标集群安装Graphbase服务。</span></li><li id="hbase_00068__li1787717612716"><a name="hbase_00068__li1787717612716"></a><a name="li1787717612716"></a><span>执行<a href="#hbase_00068__li232091002713">1</a>后重新下发恢复任务。</span></li><li><span>如果多次执行<a href="#hbase_00068__li232091002713">1</a>~<a href="#hbase_00068__li1787717612716">2</a>不能修复成功，请联系华为技术支持工程师协助处理。</span></li></ol>
+<p></p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="hbase_00064.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

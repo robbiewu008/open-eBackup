@@ -1,0 +1,179 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Managing AntDB Instances">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200067965.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164667202">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Managing AntDB Instances</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164667202"></a><a name="EN-US_TOPIC_0000002164667202"></a>
+
+<h1 class="topictitle1">Managing AntDB Instances</h1>
+<div><p>The <span>OceanProtect</span> allows you to perform operations such as modifying, removing, enabling, and disabling protection for AntDB databases.</p>
+<div class="section"><h4 class="sectiontitle">Related Operations</h4><p>You need to log in to the management page, choose <span class="uicontrol"><b>Protection &gt; Databases &gt; AntDB</b></span>, and find the target instance.</p>
+<p><a href="#EN-US_TOPIC_0000002164667202__en-us_topic_0000001349147593_en-us_topic_0000001263775346_table24934294919">Table 1</a> describes the related operations.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002164667202__en-us_topic_0000001349147593_en-us_topic_0000001263775346_table24934294919"></a><a name="en-us_topic_0000001349147593_en-us_topic_0000001263775346_table24934294919"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164667202__en-us_topic_0000001349147593_en-us_topic_0000001263775346_table24934294919" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Database protection operations</caption><colgroup><col style="width:20%"><col style="width:52%"><col style="width:28.000000000000004%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20%" id="mcps1.3.2.4.2.4.1.1"><p>Operation</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="52%" id="mcps1.3.2.4.2.4.1.2"><p>Description</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="28.000000000000004%" id="mcps1.3.2.4.2.4.1.3"><p>Navigation Path</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.2.4.2.4.1.1 "><p>Adding protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to protect a database instance.</p>
+</td>
+<td class="cellrowborder" valign="top" width="28.000000000000004%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Protection</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.2.4.2.4.1.1 "><p>Modifying protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to modify a custom script. After the modification, the next backup will be executed based on the new protection plan.</p>
+<p><strong>Note</strong></p>
+<ul><li>The modification does not affect the protection job that is being executed. The modified protection plan will apply to the next protection period.</li><li>If the SLA associated with a resource changes, you are advised to modify the current SLA on the <span class="uicontrol"><b>Protection &gt; Protection Policies &gt; SLA</b></span> page. You are advised not to modify the protection to associate the resource with another SLA.<p>After you associate the resource with another SLA by modifying protection, if the copy of the original SLA still exists, the license capacity may be deducted repeatedly.</p>
+</li></ul>
+</td>
+<td class="cellrowborder" valign="top" width="28.000000000000004%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify Protection</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.2.4.2.4.1.1 "><p>Removing protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to remove the protection plan when protection on the database is not required. After the removal, the system cannot execute protection jobs for the database.</p>
+<p><strong>Note</strong></p>
+<ul><li>When a protection job of the database is running, the protection cannot be removed.</li><li>If the SLA associated with a resource changes, you are advised to modify the current SLA on the <span class="uicontrol"><b>Protection &gt; Protection Policies &gt; SLA</b></span> page. You are advised not to remove the protection and then associate the resource with another SLA.<p>After you remove protection and associate the resource with another SLA, if the copy of the original SLA still exists, the license capacity may be deducted repeatedly.</p>
+</li></ul>
+</td>
+<td class="cellrowborder" valign="top" width="28.000000000000004%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Remove Protection</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.2.4.2.4.1.1 "><p>Performing manual backup</p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to perform a backup immediately.</p>
+<p><strong>Note</strong></p>
+<p>Copies generated by manual backup are retained for the duration defined in the SLA.</p>
+</td>
+<td class="cellrowborder" valign="top" width="28.000000000000004%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Manual Backup</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.2.4.2.4.1.1 "><p>Disabling protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to disable a protection plan when periodic protection on the database is not required. After the protection plan is disabled, the system does not execute the automatic backup job of the database.</p>
+<p><strong>Note</strong></p>
+<p>Disabling protection does not affect ongoing backup jobs.</p>
+</td>
+<td class="cellrowborder" valign="top" width="28.000000000000004%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Disable Protection</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.2.4.2.4.1.1 "><p>Activating protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to activate the disabled protection plan of a database. After the protection plan is activated, the system backs up the database based on the protection plan.</p>
+<p><strong>Note</strong></p>
+<p>You can perform this operation only on a database that has been associated with an SLA and is in the <span class="uicontrol"><b><span><strong>Unprotected</strong></span></b></span> state.</p>
+</td>
+<td class="cellrowborder" valign="top" width="28.000000000000004%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Activate Protection</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.2.4.2.4.1.1 "><p>Scanning resources</p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>If the information about a registered database changes, for example, the database version changes, you can perform this operation to scan the database and update the information. Otherwise, the execution of backup and restoration jobs may be affected.</p>
+</td>
+<td class="cellrowborder" valign="top" width="28.000000000000004%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Resource Scan</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.2.4.2.4.1.1 "><p>Testing connectivity</p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to test the connectivity between the <span>OceanProtect</span> and database.</p>
+</td>
+<td class="cellrowborder" valign="top" width="28.000000000000004%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Test Connectivity</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.2.4.2.4.1.1 "><p>Modifying database information</p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to modify information such as the database name and database authentication method.</p>
+</td>
+<td class="cellrowborder" valign="top" width="28.000000000000004%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify</strong></span></b></span>.</p>
+<p></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.2.4.2.4.1.1 "><p>Deleting database information</p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to delete a database that is no longer used.</p>
+<p><strong>Note</strong></p>
+<p>Before deleting a database, remove protection from the database.</p>
+</td>
+<td class="cellrowborder" valign="top" width="28.000000000000004%" headers="mcps1.3.2.4.2.4.1.3 "><p>In the row of the target database, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Delete</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.2.4.2.4.1.1 "><p>Adding a tag</p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to quickly filter and manage resources.</p>
+</td>
+<td class="cellrowborder" valign="top" width="28.000000000000004%" headers="mcps1.3.2.4.2.4.1.3 "><div class="p">Choose <span class="uicontrol"><b>More &gt; Add Tag</b></span>.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>On the displayed <strong>Add Tag</strong> page, you can select existing tags or click <strong>Create</strong> to create a tag.</li><li>To modify or delete a tag, click <strong>Go to Tag Management</strong> on the <strong>Add Tag</strong> page to go to the <strong>Tag Management</strong> page.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.2.4.2.4.1.1 "><p>Removing a tag</p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to remove the tag of a resource when the tag is no longer needed.</p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="28.000000000000004%" headers="mcps1.3.2.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b>More &gt; Remove Tag</b></span>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200067965.html">AntDB Instance Environment</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

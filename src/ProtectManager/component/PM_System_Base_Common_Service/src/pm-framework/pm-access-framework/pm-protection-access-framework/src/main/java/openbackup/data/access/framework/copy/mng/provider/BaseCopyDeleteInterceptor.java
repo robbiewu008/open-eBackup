@@ -189,18 +189,16 @@ public abstract class BaseCopyDeleteInterceptor implements CopyDeleteInterceptor
         if (needDeleteCopies != null) {
             // 剔除该副本本身，防止重复删除逻辑
             needDeleteCopies.removeAll(Collections.singletonList(copy.getUuid()));
-            for (String needDeleteCopy : needDeleteCopies) {
                 try {
-                    log.debug("need delete copies is {}, requestId is {}", needDeleteCopy,
-                            task.getRequestId());
-                    copyRestApi.deleteCopy(needDeleteCopy, userId, isForced, false, jobType);
+                    log.info("Need delete copies is {}, copy num is {}, requestId is {}",
+                        needDeleteCopies, needDeleteCopies.size(), task.getRequestId());
+                    copyRestApi.asyncDeleteCopy(userId, isForced, false, jobType, needDeleteCopies);
                 } catch (LegoUncheckedException | LegoCheckedException e) {
                     log.error(
-                        "associated copy call copy delete api occurs error. request id: {}, "
-                            + "associated copy id: {}, error message is: {}",
-                        task.getRequestId(), needDeleteCopy, e.getMessage());
+                        "associated copy call copy delete api occurs error. request id: {}, " +
+                            "associated copies is: {}, copy num is {}, error message is: {}",
+                        task.getRequestId(), needDeleteCopies, needDeleteCopies.size(), e.getMessage());
                 }
-            }
         }
     }
 

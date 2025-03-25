@@ -873,10 +873,6 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
         },
         cellRender: this.typeTpl
       },
-      {
-        key: 'instanceType',
-        name: this.i18n.get('protection_instance_type_label')
-      },
       // 所属环境, 默认为environment.name
       {
         key: 'clusterOrHostName',
@@ -2075,28 +2071,8 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
       clusterOrHostName: has(item, 'environment.extendInfo.clusterType')
         ? item.environment?.name
         : `${item.environment?.name}(${item.environment?.endpoint})`,
-      linkStatus: item.extendInfo?.linkStatus,
-      instanceType: this.getInstanceType(item)
+      linkStatus: item.extendInfo?.linkStatus
     });
-  }
-  getInstanceType(item) {
-    const clusterLabels = {
-      [DataMap.dbTwoType.standby.value]: () => {
-        if (item.extendInfo?.deployOperatingSystem === 'Red Hat') {
-          return 'RHEL HA';
-        } else {
-          return 'PowerHA';
-        }
-      },
-      [DataMap.dbTwoType.dpf.value]: () => DataMap.dbTwoType.dpf.label,
-      [DataMap.dbTwoType.hadr.value]: () => DataMap.dbTwoType.hadr.label
-    };
-    for (const [type, labelFunction] of Object.entries(clusterLabels)) {
-      if (item.extendInfo.clusterType === type) {
-        return labelFunction();
-      }
-    }
-    return this.i18n.get('explore_db2_instance_label');
   }
 
   formatDbTwoDatabaseData(item: { [key: string]: any }) {

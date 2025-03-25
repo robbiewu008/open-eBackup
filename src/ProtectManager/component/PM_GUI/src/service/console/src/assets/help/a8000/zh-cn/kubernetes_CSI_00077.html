@@ -20,71 +20,38 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤2：（可选）生成最小权限Token">
+<meta name="DC.Title" content="归档Kubernetes CSI复制副本">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00010.html">
+<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00069.html">
+<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00078.html">
+<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00079.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="kubernetes_CSI_00077">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤2：（可选）生成最小权限Token</title>
+<title>归档Kubernetes CSI复制副本</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="kubernetes_CSI_00077"></a><a name="kubernetes_CSI_00077"></a>
 
-<h1 class="topictitle1">步骤2：（可选）生成最小权限Token</h1>
-<div><p>后续注册Kubernetes集群，当选择了Token认证时，才需要执行本节操作生成最小权限Token。如无特殊需求，可使用超级管理员权限的Token。</p>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="kubernetes_CSI_00077__li6288174805511"><a name="kubernetes_CSI_00077__li6288174805511"></a><a name="li6288174805511"></a><span>查询CCE集群工作节点已绑定的EIP。</span><p><ol type="a"><li>登录ManageOne运营面。</li><li>依次选择<span class="uicontrol">“服务列表 &gt; 云容器引擎CCE &gt; CCE集群”</span>，选择需要查看的Kubernetes集群名进入集群信息页面。</li><li>依次选择<span class="uicontrol">“集群 &gt; 节点管理”</span>，单击<span class="uicontrol">“节点”</span>页签，查看CCE集群所有工作节点已绑定的EIP。</li></ol>
-</p></li><li><span>通过<a href="#kubernetes_CSI_00077__li6288174805511">1</a>查到的EIP地址，登录CCE集群任意一个节点。</span></li><li><span>创建集群角色资源。在Kubernetes生产集群创建文件“pm-k8s-sa-role.yaml”，并写入以下内容。</span><p><pre class="screen">apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: pm-k8s-sa-role
-rules:
-  - apiGroups: [ "*" ]
-    resources: [ "*" ]
-    verbs: [ "list", "create", "get" ]
-  - apiGroups: [ "*" ]
-    resources: [ "pods", "persistentvolumeclaims", "volumesnapshots" ]
-    verbs: [ "delete" ]
-  - apiGroups: [ "*" ]
-    resources: [ "statefulsets", "replicasets", "deployments", "daemonsets", "jobs", "cronjobs" ]
-    verbs: [ "patch" ]</pre>
-</p></li><li><span>在Kubernetes集群的后台界面执行<strong>kubectl apply -f pm-k8s-sa-role.yaml</strong>命令，创建ClusterRole。</span></li><li><span>创建服务账户。在Kubernetes生产集群创建文件“pm-k8s-sa.yaml”，并写入以下内容。</span><p><pre class="screen">apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: pm-k8s-sa
-  namespace: kube-system</pre>
-</p></li><li><span>在Kubernetes集群的后台界面执行<strong>kubectl apply -f pm-k8s-sa.yaml</strong>命令，创建ServiceAccount。</span></li><li><span>创建ClusterRoleBinding。在Kubernetes生产集群上创建文件“pm-k8s-cluster-role-binding.yaml”，并写入以下内容。</span><p><pre class="screen">apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: pm-k8s-cluster-role-binding
-subjects:
-- kind: ServiceAccount
-  name: pm-k8s-sa      
-  namespace: kube-system
-roleRef:
-  kind: ClusterRole
-  name: pm-k8s-sa-role
-  apiGroup: rbac.authorization.k8s.io</pre>
-</p></li><li><span>在Kubernetes集群的后台界面执行<strong>kubectl apply -f pm-k8s-cluster-role-binding.yaml</strong>命令，创建ClusterRoleBinding。</span></li><li><span>创建Secret保存Token信息。在Kubernetes生产集群上创建文件“pm-k8s-secret.yaml”，并写入以下内容。</span><p><pre class="screen">apiVersion: v1
-kind: Secret
-type: kubernetes.io/service-account-token
-metadata:
-  namespace: kube-system
-  name: pm-k8s-secret
-  annotations:
-    kubernetes.io/service-account.name: pm-k8s-sa</pre>
-</p></li><li><span>在Kubernetes集群的后台界面执行<strong>kubectl apply -f pm-k8s-secret.yaml</strong>命令，创建Secret。</span></li><li><span>获取最小权限Token。在生产集群上执行<strong>kubectl describe secret/pm-k8s-secret -n kube-system</strong>命令，回显中“token”字段的值即为所需的最小权限Token。</span></li></ol>
-</div>
+<h1 class="topictitle1">归档Kubernetes CSI复制副本</h1>
+<div><p id="kubernetes_CSI_00077__zh-cn_topic_0000002164660758_zh-cn_topic_0000001139902025_p14279250194915">副本复制到目标集群后，如果您需要长期保留目标集群的复制副本，可以将复制副本归档到归档存储。</p>
 </div>
 <div>
+<ul class="ullinks">
+<li class="ulchildlink"><strong><a href="kubernetes_CSI_00078.html">步骤1：创建复制副本归档SLA</a></strong><br>
+</li>
+<li class="ulchildlink"><strong><a href="kubernetes_CSI_00079.html">步骤2：创建复制副本周期性归档</a></strong><br>
+</li>
+</ul>
+
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="kubernetes_CSI_00010.html">备份命名空间/数据集</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="kubernetes_CSI_00069.html">归档</a></div>
 </div>
 </div>
 

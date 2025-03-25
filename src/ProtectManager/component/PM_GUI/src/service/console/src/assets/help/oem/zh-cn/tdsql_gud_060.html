@@ -17,65 +17,320 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="关于SLA">
+  <meta name="DC.Title" content="恢复TDSQL数据库">
   <meta name="product" content="">
-  <meta name="DC.Relation" scheme="URI" content="tdsql_gud_059.html">
+  <meta name="DC.Relation" scheme="URI" content="tdsql_gud_057.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="tdsql_gud_060">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>关于SLA</title>
+  <title>恢复TDSQL数据库</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="tdsql_gud_060"></a><a name="tdsql_gud_060"></a>
-  <h1 class="topictitle1">关于SLA</h1>
-  <div id="body8662426">
-   <p id="tdsql_gud_060__zh-cn_topic_0000001607691460_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p450712339156">SLA（Service Level Agreement）是一组可配置的数据保护策略，策略中定义了数据保护和副本保留的规则。将这些策略关联至受保护环境，以实现对特定受保护环境的保护。</p>
-   <p id="tdsql_gud_060__zh-cn_topic_0000001607691460_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p0553222467">为满足企业对各类受保护环境不同的数据保护诉求，<span id="tdsql_gud_060__text12502183914312">本产品</span>支持由用户自定义SLA。</p>
-   <div class="section" id="tdsql_gud_060__zh-cn_topic_0000001607691460_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_section1969174516230">
-    <h4 class="sectiontitle">自定义SLA</h4>
-    <p id="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p118482029286">用户可针对备份任务、复制任务自定义SLA。SLA中可定义任务的执行频率、时间窗口、副本保留时长等基本参数以及其他适配各类受保护资源的高级参数。</p>
-    <p id="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p1186264517237">各类任务的SLA说明如<a href="#tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_table171521524193513">表1</a>所示。</p>
-    <div class="tablenoborder">
-     <a name="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_table171521524193513"></a><a name="zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_table171521524193513"></a>
-     <table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_table171521524193513" frame="border" border="1" rules="all">
-      <caption>
-       <b>表1 </b>自定义SLA
-      </caption>
-      <colgroup>
-       <col style="width:19.75%">
-       <col style="width:80.25%">
-      </colgroup>
-      <thead align="left">
-       <tr id="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_row615222414352">
-        <th align="left" class="cellrowborder" valign="top" width="19.75%" id="mcps1.3.3.4.2.3.1.1"><p id="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p5152182416356">SLA</p></th>
-        <th align="left" class="cellrowborder" valign="top" width="80.25%" id="mcps1.3.3.4.2.3.1.2"><p id="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p7152162483518">说明</p></th>
-       </tr>
-      </thead>
-      <tbody>
-       <tr id="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_row7152102483518">
-        <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.4.2.3.1.1 "><p id="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p14152132413510">备份SLA</p></td>
-        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.4.2.3.1.2 "><p id="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p2015222473514">定义备份任务的执行频率、备份副本保留时长等参数。</p></td>
-       </tr>
-       <tr id="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_row61521124173515">
-        <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.4.2.3.1.1 "><p id="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p71523242356">复制SLA</p></td>
-        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.4.2.3.1.2 "><p id="tdsql_gud_060__zh-cn_topic_0000001839223149_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p1315215248355">指定备份副本复制到目标集群，并定义复制任务执行频率、复制副本保留时长等参数。</p></td>
-       </tr>
-      </tbody>
-     </table>
-    </div>
+  <h1 class="topictitle1">恢复TDSQL数据库</h1>
+  <div>
+   <p>当需要对已备份的数据库进行恢复时，可以参考本节使用副本恢复数据库。对于1.6.0及后续版本，支持对同一TDSQL集群下的多个实例同时执行备份或恢复任务。</p>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>集群已开启NTP服务且时钟源配置相同。</li>
+     <li>集群实例恢复时，需要保证恢复目标集群的数据同步用户在副本里存在，否则恢复会失败。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li id="tdsql_gud_060__zh-cn_topic_0000001263614142_li10796132225712"><span>选择<span class="uicontrol" id="tdsql_gud_060__zh-cn_topic_0000002199964685_uicontrol8687163819368">“<span id="tdsql_gud_060__zh-cn_topic_0000002199964685_text176879387363">数据利用</span> &gt; <span id="tdsql_gud_060__zh-cn_topic_0000002199964685_text156881638113617">副本数据</span> &gt; <span id="tdsql_gud_060__zh-cn_topic_0000002199964685_text49981969503">数据库</span> &gt; TDSQL”</span>。</span></li>
+     <li><span>您可以以TDSQL资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据资源名称查找到需要恢复的资源，并单击资源名称。</p> <p></p></li>
+     <li><span>依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000002200060017.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>指定副本或时间点进行恢复。</span><p></p>
+      <div class="p">
+       您可以指定某个副本或两个副本之间的任意时间点进行恢复。
+       <div class="note">
+        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <p>没有备份归档日志的时间点无法进行时间点恢复。</p>
+        </div>
+       </div>
+       <ol type="a">
+        <li>在“<span>时间选择</span>”页签依次选择年、月、天查找副本。<p>当时间上显示<span><img src="zh-cn_image_0000002200145609.png"></span>，即表示该月、该天存在副本。</p></li>
+        <li>指定某个副本或指定时间点进行恢复。
+         <ul>
+          <li>指定某个副本进行恢复<p><span><img class="eddx" src="zh-cn_image_0000002200145605.png"></span></p></li>
+          <li>指定时间点进行恢复。<p>时间轴上蓝色覆盖区域均可进行时间点恢复，<span><img src="zh-cn_image_0000002164818982.png"></span>表示该时间点存在副本。没有备份归档日志的时间点无法进行时间点恢复。</p> <p><span><img class="eddx" src="zh-cn_image_0000002164659258.png"></span></p> <p></p>
+           <div class="note">
+            <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+            <div class="notebody">
+             <ul id="tdsql_gud_060__oracle_gud_0083_ul75802612312">
+              <li id="tdsql_gud_060__oracle_gud_0083_li1497342618234">对于1.5.0版本，时间轴上最多仅展示100个副本，单击<span><img id="tdsql_gud_060__oracle_gud_0083_image173544102299" src="zh-cn_image_0000002199963833.png"></span>可以查看所有副本。</li>
+              <li id="tdsql_gud_060__oracle_gud_0083_li95818264231">执行时间点恢复时，由于管理界面无法获取恢复时所使用的副本信息，因此，在恢复任务和相关的事件页面，用户无法看到该恢复任务的副本信息。</li>
+             </ul>
+            </div>
+           </div></li>
+         </ul></li>
+        <li>恢复TDSQL数据库。
+         <ul>
+          <li>恢复非分布式实例：
+           <ul>
+            <li>恢复TDSQL数据库至<span class="uicontrol">“原集群”</span>。
+             <ol class="substepthirdol">
+              <li>选择恢复至<span class="uicontrol">“原集群”</span>。</li>
+              <li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li>
+             </ol></li>
+            <li>恢复TDSQL数据库至<span class="uicontrol">“新集群”</span>。
+             <ol class="substepthirdol">
+              <li>选择恢复至<span class="uicontrol">“新集群”</span>。</li>
+              <li>当选择恢复至<span class="uicontrol">“新集群”</span>时，可以通过标签筛选待恢复的资源。
+               <div class="note">
+                <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p>仅1.6.0及后续版本存在此参数。</p>
+                </div>
+               </div></li>
+              <li>选择恢复到的<span class="parmname">“<span>目标集群</span>”</span>。</li>
+              <li>设置恢复到的目标实例。<p>对于1.5.0版本，目标实例仅支持选择已有实例。</p> <p>对于1.6.0及后续版本，支持选择已有实例或新建实例，选择的目标实例的数据库版本号需与原实例保持一致。如果选择新建实例，请参考<a href="#tdsql_gud_060__table814219141233">表1</a>进行配置。</p>
+               <div class="note">
+                <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p>新建实例时请确保目标集群有足够的资源创建实例，否则会导致恢复失败。目标集群的资源详情可登录赤兔管理台，在“实例管理”界面单击“查看【设备资源】”。</p>
+                </div>
+               </div>
+               <div class="tablenoborder">
+                <a name="tdsql_gud_060__table814219141233"></a><a name="table814219141233"></a>
+                <table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_060__table814219141233" frame="border" border="1" rules="all">
+                 <caption>
+                  <b>表1 </b>新建实例参数说明
+                 </caption>
+                 <colgroup>
+                  <col style="width:31.1%">
+                  <col style="width:22.66%">
+                  <col style="width:46.239999999999995%">
+                 </colgroup>
+                 <thead align="left">
+                  <tr>
+                   <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1"><p>参数</p></th>
+                   <th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.2"><p>说明</p></th>
+                  </tr>
+                 </thead>
+                 <tbody>
+                  <tr>
+                   <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>容灾模式</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.2 "><p>仅支持选择不超过目标集群数据节点数量的容灾模式。</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>实例名称</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.2 "><p>自定义实例名称。</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>客户端</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.2 "><p>为TDSQL业务节点选择所属的客户端。</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" rowspan="5" valign="top" width="31.1%" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>高级配置</p>
+                    <div class="note">
+                     <span class="notetitle"> 说明： </span>
+                     <div class="notebody">
+                      <p>如不配置高级参数，则默认使用原实例的配置进行恢复。</p>
+                     </div>
+                    </div></td>
+                   <td class="cellrowborder" valign="top" width="22.66%" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>机型</p></td>
+                   <td class="cellrowborder" valign="top" width="46.239999999999995%" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.2 "><p>选择目标机型。</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>CPU（核）</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>取值范围：1~32。</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>内存大小（GB）</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>取值范围：1~128。</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>数据磁盘大小（GB）</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>取值范围：1~1500。</p></td>
+                  </tr>
+                  <tr>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>日志磁盘大小（GB）</p></td>
+                   <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.4.2.1.2.3.1.1.1.2.2.4.4.2.4.1.1 "><p>取值范围：1~300。</p></td>
+                  </tr>
+                 </tbody>
+                </table>
+               </div></li>
+              <li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li>
+             </ol></li>
+           </ul></li>
+          <li>恢复分布式实例：
+           <ul>
+            <li>恢复TDSQL数据库至原集群。
+             <ol class="substepthirdol">
+              <li>选择恢复至<span class="uicontrol">“原集群”</span>。</li>
+              <li id="tdsql_gud_060__li1545975010612">选择恢复的<span class="parmname" id="tdsql_gud_060__parmname4364123931018">“容灾模式”</span>。
+               <div class="note" id="tdsql_gud_060__note1427914498213">
+                <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p id="tdsql_gud_060__p2279349628">仅支持选择不超过目标集群数据节点数量的容灾模式。</p>
+                </div>
+               </div></li>
+              <li id="tdsql_gud_060__li850010299118">在<span class="wintitle" id="tdsql_gud_060__wintitle1567142671910">“数据节点”</span>区域，为TDSQL业务节点选择所属的客户端所在主机。</li>
+              <li id="tdsql_gud_060__li1473317682215">配置高级参数，参数说明请参见<a href="#tdsql_gud_060__table18661192115247">表2</a>。
+               <div class="note" id="tdsql_gud_060__note839823416220">
+                <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p id="tdsql_gud_060__p939843418226">如不配置高级参数，则默认使用原实例的配置进行恢复。</p>
+                </div>
+               </div>
+               <div class="tablenoborder">
+                <a name="tdsql_gud_060__table18661192115247"></a><a name="table18661192115247"></a>
+                <table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_060__table18661192115247" frame="border" border="1" rules="all">
+                 <caption>
+                  <b>表2 </b>高级配置参数说明
+                 </caption>
+                 <colgroup>
+                  <col style="width:50%">
+                  <col style="width:50%">
+                 </colgroup>
+                 <thead align="left">
+                  <tr id="tdsql_gud_060__row36611021192414">
+                   <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1"><p id="tdsql_gud_060__p36624213242">参数</p></th>
+                   <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2"><p id="tdsql_gud_060__p12662321122419">说明</p></th>
+                  </tr>
+                 </thead>
+                 <tbody>
+                  <tr id="tdsql_gud_060__row96621210246">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_060__p4662162118242">机型</p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="tdsql_gud_060__p36621521182414">选择目标机型。</p></td>
+                  </tr>
+                  <tr id="tdsql_gud_060__row6662132182414">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_060__p186621621162419">CPU（核）</p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="tdsql_gud_060__p86621521172410">取值范围：1~64。</p></td>
+                  </tr>
+                  <tr id="tdsql_gud_060__row26621821122419">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_060__p66628212242">内存大小（GB）</p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="tdsql_gud_060__p172071437202715">取值范围：1~128。</p></td>
+                  </tr>
+                  <tr id="tdsql_gud_060__row266262110245">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_060__p14662152182410">数据磁盘大小（GB）</p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="tdsql_gud_060__p18104921182913">取值范围：1~800。</p></td>
+                  </tr>
+                  <tr id="tdsql_gud_060__row116886327298">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.1 "><p id="tdsql_gud_060__p156881932182912">日志磁盘大小（GB）</p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.1.1.4.3.2.3.1.2 "><p id="tdsql_gud_060__p8456447102919">取值范围：1~800。</p></td>
+                  </tr>
+                 </tbody>
+                </table>
+               </div></li>
+              <li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li>
+             </ol></li>
+            <li>恢复TDSQL数据库至新集群。
+             <ol class="substepthirdol">
+              <li>选择恢复至<span class="uicontrol">“新集群”</span>。</li>
+              <li>当选择恢复至<span class="uicontrol">“新集群”</span>时，可以通过标签筛选待恢复的资源。
+               <div class="note">
+                <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p>仅1.6.0及后续版本存在此参数。</p>
+                </div>
+               </div></li>
+              <li>选择恢复到的<span class="parmname">“<span>目标集群</span>”</span>。
+               <div class="note">
+                <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p>选择的目标集群必须打开zkmeta自动备份功能，否则会导致恢复失败。</p>
+                </div>
+               </div></li>
+              <li>选择恢复的<span class="parmname" id="tdsql_gud_060__tdsql_gud_060_parmname4364123931018">“容灾模式”</span>。
+               <div class="note" id="tdsql_gud_060__tdsql_gud_060_note1427914498213">
+                <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p id="tdsql_gud_060__tdsql_gud_060_p2279349628">仅支持选择不超过目标集群数据节点数量的容灾模式。</p>
+                </div>
+               </div></li>
+              <li>在<span class="wintitle" id="tdsql_gud_060__tdsql_gud_060_wintitle1567142671910">“数据节点”</span>区域，为TDSQL业务节点选择所属的客户端所在主机。</li>
+              <li>配置高级参数，参数说明请参见<a href="#tdsql_gud_060__tdsql_gud_060_table18661192115247">表3</a>。
+               <div class="note" id="tdsql_gud_060__tdsql_gud_060_note839823416220">
+                <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p id="tdsql_gud_060__tdsql_gud_060_p939843418226">如不配置高级参数，则默认使用原实例的配置进行恢复。</p>
+                </div>
+               </div>
+               <div class="tablenoborder">
+                <a name="tdsql_gud_060__tdsql_gud_060_table18661192115247"></a><a name="tdsql_gud_060_table18661192115247"></a>
+                <table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_060__tdsql_gud_060_table18661192115247" frame="border" border="1" rules="all">
+                 <caption>
+                  <b>表3 </b>高级配置参数说明
+                 </caption>
+                 <colgroup>
+                  <col style="width:50%">
+                  <col style="width:50%">
+                 </colgroup>
+                 <thead align="left">
+                  <tr id="tdsql_gud_060__tdsql_gud_060_row36611021192414">
+                   <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.1"><p id="tdsql_gud_060__tdsql_gud_060_p36624213242">参数</p></th>
+                   <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.2"><p id="tdsql_gud_060__tdsql_gud_060_p12662321122419">说明</p></th>
+                  </tr>
+                 </thead>
+                 <tbody>
+                  <tr id="tdsql_gud_060__tdsql_gud_060_row96621210246">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.1 "><p id="tdsql_gud_060__tdsql_gud_060_p4662162118242">机型</p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.2 "><p id="tdsql_gud_060__tdsql_gud_060_p36621521182414">选择目标机型。</p></td>
+                  </tr>
+                  <tr id="tdsql_gud_060__tdsql_gud_060_row6662132182414">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.1 "><p id="tdsql_gud_060__tdsql_gud_060_p186621621162419">CPU（核）</p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.2 "><p id="tdsql_gud_060__tdsql_gud_060_p86621521172410">取值范围：1~64。</p></td>
+                  </tr>
+                  <tr id="tdsql_gud_060__tdsql_gud_060_row26621821122419">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.1 "><p id="tdsql_gud_060__tdsql_gud_060_p66628212242">内存大小（GB）</p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.2 "><p id="tdsql_gud_060__tdsql_gud_060_p172071437202715">取值范围：1~128。</p></td>
+                  </tr>
+                  <tr id="tdsql_gud_060__tdsql_gud_060_row266262110245">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.1 "><p id="tdsql_gud_060__tdsql_gud_060_p14662152182410">数据磁盘大小（GB）</p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.2 "><p id="tdsql_gud_060__tdsql_gud_060_p18104921182913">取值范围：1~800。</p></td>
+                  </tr>
+                  <tr id="tdsql_gud_060__tdsql_gud_060_row116886327298">
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.1 "><p id="tdsql_gud_060__tdsql_gud_060_p156881932182912">日志磁盘大小（GB）</p></td>
+                   <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.4.2.1.2.3.1.2.1.2.1.6.3.2.3.1.2 "><p id="tdsql_gud_060__tdsql_gud_060_p8456447102919">取值范围：1~800。</p></td>
+                  </tr>
+                 </tbody>
+                </table>
+               </div></li>
+              <li>单击<span class="uicontrol">“<span>确定</span>”</span>。
+               <div class="note">
+                <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <p>新建的实例可使用管理员用户（tdsqlsys_agent），登录TDSQL数据库。管理员用户名、管理员用户名的密码请联系数据库管理员获取。</p>
+                </div>
+               </div></li>
+             </ol></li>
+           </ul></li>
+         </ul></li>
+       </ol>
+      </div> <p></p></li>
+     <li id="tdsql_gud_060__zh-cn_topic_0000001263614142_li1481714307166"><span>单击<span class="uicontrol" id="tdsql_gud_060__zh-cn_topic_0000001263614142_uicontrol194684162818">“<span id="tdsql_gud_060__text5761862442">确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">后置操作</h4>
+    <p>非分布式实例恢复后，目标实例的用户名和密码将被副本对应实例的用户名和密码覆盖。如果目标实例状态为<span class="uicontrol">“<span>离线</span>”</span>，请更新目标实例的用户名和密码。</p>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="tdsql_gud_060__zh-cn_topic_0000002199964685_uicontrol123821426193719">“<span id="tdsql_gud_060__zh-cn_topic_0000002199964685_text3382726113718">保护</span> &gt; 数据库 &gt; TDSQL”</span>。</span></li>
+     <li><span>选择<span class="uicontrol" id="tdsql_gud_060__tdsql_gud_016_zh-cn_topic_0000001311214069_uicontrol47381735103817">“<span id="tdsql_gud_060__tdsql_gud_016_text1668605291117">非分布式实例</span>”</span>页签。</span></li>
+     <li><span>单击目标实例名称。</span></li>
+     <li><span>在弹出的界面右上角单击<span class="uicontrol">“<span>操作</span> &gt; <span>修改</span>”</span>。</span></li>
+     <li><span>在弹出的<span class="wintitle">“<span>修改</span>”</span>页面中更新用户名和密码。</span></li>
+     <li><span>单击<span class="uicontrol" id="tdsql_gud_060__tdsql_gud_060_zh-cn_topic_0000001263614142_uicontrol194684162818">“<span id="tdsql_gud_060__tdsql_gud_060_text5761862442">确定</span>”</span>。</span></li>
+    </ol>
    </div>
   </div>
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="tdsql_gud_059.html">SLA</a>
+     <strong>父主题：</strong> <a href="tdsql_gud_057.html">恢复</a>
     </div>
    </div>
   </div>

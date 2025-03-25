@@ -1,0 +1,59 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="During a Database Log Backup Job, an Error Is Reported Indicating that the Database Does Not Support the Paxos Protocol">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164657742.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164817474">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>During a Database Log Backup Job, an Error Is Reported Indicating that the Database Does Not Support the Paxos Protocol</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164817474"></a><a name="EN-US_TOPIC_0000002164817474"></a>
+
+<h1 class="topictitle1">During a Database Log Backup Job, an Error Is Reported Indicating that the Database Does Not Support the Paxos Protocol</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>During a database log backup job, an error is reported indicating that the database does not support the Paxos protocol.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Causes</h4><p>If the database kernel version is earlier than 505.1.1 and the replica consistency protocol of the instance is Paxos, log backup will fail.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Troubleshooting</h4><ol><li><span>Run the following command in the database of the instance to check the database kernel version:</span><p><pre class="screen">gaussdb -V</pre>
+<p>If the database kernel version is earlier than 505.1.1, perform subsequent operations.</p>
+</p></li><li><span>Run the following command in the database of the instance to check the consistency protocol:</span><p><pre class="screen" id="EN-US_TOPIC_0000002164817474__en-us_topic_0000002200058553_screen8129154810319">show enable_dcf;</pre>
+<ul id="EN-US_TOPIC_0000002164817474__en-us_topic_0000002200058553_ul1067119543325"><li id="EN-US_TOPIC_0000002164817474__en-us_topic_0000002200058553_li367155483213">If <strong id="EN-US_TOPIC_0000002164817474__en-us_topic_0000002200058553_b12629511111915">off</strong> is displayed in the command output, the replica consistency protocol of the backup copy is <strong id="EN-US_TOPIC_0000002164817474__en-us_topic_0000002200058553_b15561420201920">Quorum</strong>.</li><li id="EN-US_TOPIC_0000002164817474__en-us_topic_0000002200058553_li203721361338">If <strong id="EN-US_TOPIC_0000002164817474__en-us_topic_0000002200058553_b1248142114199">on</strong> is displayed in the command output, the replica consistency protocol of the backup copy is <strong id="EN-US_TOPIC_0000002164817474__en-us_topic_0000002200058553_b72482021181917">Paxos</strong>.</li></ul>
+</p></li><li><span>Select an instance whose replica consistency protocol is not Paxos to back up logs.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164657742.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

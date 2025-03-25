@@ -1,0 +1,89 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Create a FusionCompute Interconnection User">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164606278.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164606210">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Create a FusionCompute Interconnection User</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164606210"></a><a name="EN-US_TOPIC_0000002164606210"></a>
+  <h1 class="topictitle1">Step 1: Create a FusionCompute Interconnection User</h1>
+  <div>
+   <p>Before performing FusionCompute backup, create a user for interconnecting FusionCompute with the <span>product</span> on the FusionCompute management page by referring to this section.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>This section uses FusionCompute 8.6.0 as an example. <span>The GUI varies depending on the version.</span></p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li id="EN-US_TOPIC_0000002164606210__li118563575559"><span>Log in to FusionCompute using a browser.</span><p></p><p id="EN-US_TOPIC_0000002164606210__p6381515018">Login address: <strong id="EN-US_TOPIC_0000002164606210__b65373179016">https://</strong><em id="EN-US_TOPIC_0000002164606210__i7538817902">Floating IP address of the VRM node of FusionCompute</em><strong id="EN-US_TOPIC_0000002164606210__b1053891716013">:8443</strong></p> <p></p></li>
+     <li><span>Create a role on the FusionCompute WebUI. This role is used to create an account for interconnecting with the <span>product</span>.</span><p></p>
+      <ol type="a">
+       <li>Choose <strong>System Management</strong> &gt; <strong>Rights Management</strong> &gt; <strong>Role Management</strong>.</li>
+       <li>Click <strong>Add Role</strong>.</li>
+       <li>Enter the role information.
+        <div class="p">
+         Set <strong>Role Name</strong> to <strong>OceanProtect</strong>, as shown in <a href="en-us_topic_0000002200007133.html">Configuring FusionCompute Role Permissions</a>.
+         <div class="fignone">
+          <span class="figcap"><b>Figure 1 </b>Adding a role</span><br><span><img src="en-us_image_0000002229635665.png"></span>
+         </div>
+        </div> <p></p></li>
+       <li>Click <strong>OK</strong>.</li>
+      </ol> <p></p></li>
+     <li><span>On the FusionCompute WebUI, create an account for interconnecting with the <span>product</span>.</span><p></p>
+      <ol type="a">
+       <li>Choose <strong>System Management</strong> &gt; <strong>Rights Management</strong> &gt; <strong>User Management</strong>.</li>
+       <li>Click <strong>Add User</strong>.</li>
+       <li>Enter the user information.
+        <div class="p">
+         Set <strong>Permission Type</strong> to <strong>Interface interconnection user</strong> and <strong>Role</strong> to <strong>OceanProtect</strong>.
+         <div class="fignone">
+          <span class="figcap"><b>Figure 2 </b>Creating an interface interconnection user</span><br><span><img src="en-us_image_0000002229632437.png"></span>
+         </div>
+        </div> <p></p></li>
+       <li>Click <strong>OK</strong>.</li>
+       <li id="EN-US_TOPIC_0000002164606210__li3251351486">Choose <strong id="EN-US_TOPIC_0000002164606210__b19311464113">System Management</strong> &gt; <strong id="EN-US_TOPIC_0000002164606210__b162081588111">Rights Management</strong> &gt; <strong id="EN-US_TOPIC_0000002164606210__b8903121116112">Rights Management Policy</strong>.</li>
+       <li>In the <strong>Password Policy</strong> area, click <strong>Modify</strong>.</li>
+       <li>Change the current rule of <strong>Interface interconnection user forcibly change passwords upon a reset or initial login.</strong> to <strong>No</strong>.</li>
+       <li id="EN-US_TOPIC_0000002164606210__li135052114319">Click <strong id="EN-US_TOPIC_0000002164606210__b15433142119433">Save</strong>.</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164606278.html">Backing Up a FusionCompute VM</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,95 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Abnormal Status of the Dameng Database Cluster After Restoration">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200145989.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200146029">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Abnormal Status of the Dameng Database Cluster After Restoration</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200146029"></a><a name="EN-US_TOPIC_0000002200146029"></a>
+  <h1 class="topictitle1">Abnormal Status of the Dameng Database Cluster After Restoration</h1>
+  <div>
+   <div class="section" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_section530911285414">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_en-us_topic_0000001656778725_p213420588212">After a cluster is restored, the following exceptions exist:</p>
+    <ul id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_en-us_topic_0000001656778725_ul178324239918">
+     <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_en-us_topic_0000001656778725_li58321523997">Some standby nodes in the cluster are in the <strong id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_b829018013316">Offline</strong> state (excluding the scenario where both the active and standby nodes are offline). To view the Dameng cluster details, choose <span class="uicontrol" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_en-us_topic_0000001656778725_uicontrol159210265105"><b><span id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_en-us_topic_0000002199964685_text54096353367"><strong>Protection</strong></span> &gt; Databases &gt; Dameng</b></span> on the product WebUI and click a cluster name.</li>
+     <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_en-us_topic_0000001656778725_li4885745191012">The database is not started properly.<p id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_en-us_topic_0000001656778725_p92618312199"><a name="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_en-us_topic_0000001656778725_li4885745191012"></a><a name="en-us_topic_0000002200100901_en-us_topic_0000001656778725_li4885745191012"></a><span><img id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_en-us_topic_0000001656778725_image82619311195" src="en-us_image_0000002189913412.png"></span></p></li>
+    </ul>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_section04103712434">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_p168561527162310">After the cluster is restored, not all Dameng database instances are started properly.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_section447785154317">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_ol622153714286">
+     <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_li1422273716286"><span>Use PuTTY to log in to the host where the Dameng database monitor is located.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_note1813713248175">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_p121376244178">Obtain the IP address of the host where the monitor is located and the account for logging in to the host from the database administrator.</p>
+       </div>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_li8232143362713"><span>Run the following command to query the path of the monitor:</span><p></p><pre class="screen" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_screen16851236192816">find / -name dmmonitor</pre> <p id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_p925512441299">Information similar to the following is displayed. <strong id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_b5872673498">/dm7/bin/dmmonitor</strong> is the path of the monitor.</p> <pre class="screen" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_screen893215113010">[root@dm7_monitor_16183 ~]# find / -name dmmonitor
+/dm7/bin/dmmonitor</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_li12251132118289"><span>Run the following command to query the path where the monitor configuration file is stored:</span><p></p><pre class="screen" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_screen0665133742910">find / -name dmmonitor.ini</pre> <p id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_p1359419588327">Information similar to the following is displayed. <strong id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_b6749441164916">/dm7/data/dmmonitor.ini</strong> is the path of the monitor configuration file.</p> <pre class="screen" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_screen1397821515335">[root@dm7_monitor_16183 ~]# find / -name dmmonitor.ini
+/dm7/data/dmmonitor.ini</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_li05391339173715"><span>Run the following command to switch to the Dameng database administrator account. The following uses username <strong id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_b87558765210">dmdba</strong> as an example.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_screen125391039113720">su - dmdba</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_li6643122214386"><span>Run the following command to stop running processes:</span><p></p><pre class="screen" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_screen235354403810">pkill dmmonitor</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_li10751123519388"><span>Run the following command to start the monitor. In the command, <strong id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_b12769144774616">/dm7/bin/dmmonitor</strong> indicates the path of the monitor, and <strong id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_b552310391469">/dm7/data/dmmonitor.ini</strong> indicates the path of the monitor configuration file.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_screen171571337143914"> <em id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_i16516163354017">/dm7/bin/dmmonitor</em> <em id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_i4799143724016">/dm7/data/dmmonitor.ini</em></pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_li484811255912"><span>Log in to the monitor.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_ol6829161715121">
+       <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_li14291037105213">Run the <strong id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_b191298236497">login</strong> command to access the monitor login page.</li>
+       <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_li11990193925019">Enter username <strong id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_b16367184193515">SYSDBA</strong> and password to log in to the monitor.</li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_li1161813575519"><span>Run the following command to stop the database:</span><p></p><pre class="screen" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_screen1066612310539">stop instance all</pre> <p id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_p770153018532">The database is stopped if the command output indicating that exiting the activity instances of all groups is successful is displayed.</p> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_li47781137279"><span>Run the following command to start the database:</span><p></p><pre class="screen" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_screen471114155517">startup instance all</pre> <p id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_p6385131165820">The database is restarted successfully if the command output indicating that dmwatcher has been configured with automatic restart is displayed.</p> <p></p></li>
+    </ol>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_section590752117443">
+    <h4 class="sectiontitle">Suggestions</h4>
+    <p id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_p15225181517409">None</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_section1227093194410">
+    <h4 class="sectiontitle">Reference</h4>
+    <p id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_p14328448608">Parameters in the command for restarting the daemon process:</p>
+    <p id="EN-US_TOPIC_0000002200146029__en-us_topic_0000002200100901_p122872595010">[dmdba@DM2 ~]$ $DM_HOME/bin/DmWatcherServicedmrw restart</p>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200145989.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

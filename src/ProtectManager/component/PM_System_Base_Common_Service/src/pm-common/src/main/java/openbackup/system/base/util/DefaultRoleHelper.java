@@ -71,6 +71,16 @@ public class DefaultRoleHelper {
     }
 
     /**
+     * 是否为远端设备管理员
+     *
+     * @param userId 用户id
+     * @return check result
+     */
+    public static boolean isRdAdmin(String userId) {
+        return Constants.Builtin.ROLE_RD_ADMIN.equals(getDefaultRoleByUserId(userId).getRoleName());
+    }
+
+    /**
      * 是否为审计员
      *
      * @param userId 用户id

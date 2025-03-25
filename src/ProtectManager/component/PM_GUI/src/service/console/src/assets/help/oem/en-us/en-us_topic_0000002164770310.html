@@ -1,0 +1,70 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: (Optional) Enabling the Security Encryption Mode">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200011389.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164770310">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: (Optional) Enabling the Security Encryption Mode</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164770310"></a><a name="EN-US_TOPIC_0000002164770310"></a>
+  <h1 class="topictitle1">Step 1: (Optional) Enabling the Security Encryption Mode</h1>
+  <div>
+   <p>If data encryption during the communication between the <span>product</span> and the big data platform is required to ensure secure communication, see this section about how to enable the security encryption mode and import the CA certificate on the big data platform. Otherwise, skip this section.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>This section uses FusionInsight Manager 8.2.0 as an example to describe related operations. The operations vary depending on the big data platform. For details, see the product documentation of the corresponding big data platform.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Enabling the Security Encryption Mode</h4>
+    <ol>
+     <li><span>Log in to FusionInsight Manager using a browser.</span></li>
+     <li><span>Choose <span class="uicontrol"><b>Cluster &gt; Elasticsearch</b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b>Configure</b></span>.</span></li>
+     <li><span>Search for the keyword <span class="uicontrol"><b>SSL</b></span>, find the following parameters, and set them to <span class="uicontrol"><b>true</b></span>:</span><p></p><p><span><img src="en-us_image_0000002200011401.png"></span></p> <p></p></li>
+    </ol>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002164770310__section6706354142710">
+    <a name="EN-US_TOPIC_0000002164770310__section6706354142710"></a><a name="section6706354142710"></a>
+    <h4 class="sectiontitle">Obtaining and Importing a Certificate</h4>
+    <ul>
+     <li>When the big data platform is MapReduce Service (MRS):<p>Obtain the CA certificate and replace the certificate on the big data platform. Keep the obtained certificate secure for further use during Elasticsearch cluster registration. For details, see <span class="parmvalue"><b>Replacing the CA Certificate</b></span> in the <a href="https://support.huawei.com/enterprise/en/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">MapReduce Service (MRS) x.x.x-LTS Usage Guide (for Huawei Cloud Stack x.x.x)</a>.</p></li>
+     <li>When the production environment is Elasticsearch:<p>Log in to the Elasticsearch node, go to the <strong>config/certs</strong> directory in the Elasticsearch installation directory, and find and download the <strong>http-ca.crt</strong> certificate file. The certificate file has been configured during Elasticsearch installation and does not need to be imported separately.</p></li>
+    </ul>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200011389.html">Backing Up an Elasticsearch Cluster</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

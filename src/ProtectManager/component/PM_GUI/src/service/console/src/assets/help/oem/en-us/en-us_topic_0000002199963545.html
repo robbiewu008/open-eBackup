@@ -1,0 +1,80 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="A Snapshot-based Full Backup Job at the Storage Layer Fails, Indicating that LUN Snapshots Fail to Be Created">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164757014.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199963545">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>A Snapshot-based Full Backup Job at the Storage Layer Fails, Indicating that LUN Snapshots Fail to Be Created</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199963545"></a><a name="EN-US_TOPIC_0000002199963545"></a>
+  <h1 class="topictitle1">A Snapshot-based Full Backup Job at the Storage Layer Fails, Indicating that LUN Snapshots Fail to Be Created</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>An Oracle snapshot-based full backup job at the storage layer fails, with an error message displayed indicating that LUN snapshots fail to be created, and the error details contain the LUN ID.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p>According to the error details, the number of protection groups to which the to-be-backed-up LUN has been added reaches the upper limit (a LUN can be added to a maximum of eight protection groups).</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol>
+     <li><span>Log in to DeviceManager of the OceanStor Dorado storage system in the production environment.</span></li>
+     <li id="EN-US_TOPIC_0000002199963545__li10949142772018"><a name="EN-US_TOPIC_0000002199963545__li10949142772018"></a><a name="li10949142772018"></a><span>In the navigation bar, choose <span class="uicontrol"><b>Services &gt; Block Service &gt; LUN Groups</b></span>. Switch to the <span class="uicontrol"><b>LUNs</b></span> tab page and locate the LUN corresponding to the ID in the error details.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>If the error details contain multiple LUN IDs, perform the following steps for the LUN corresponding to each ID.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click the LUN name to go to the LUN details page.</span></li>
+     <li id="EN-US_TOPIC_0000002199963545__li04441340134110"><a name="EN-US_TOPIC_0000002199963545__li04441340134110"></a><a name="li04441340134110"></a><span>Switch to the <strong>Protection</strong> tab page and select <span class="uicontrol"><b>Snapshot</b></span>. On the snapshot details page that is displayed, obtain the value of <span class="uicontrol"><b>Owning Snapshot CG</b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000002199963545__li11378225134717"><a name="EN-US_TOPIC_0000002199963545__li11378225134717"></a><a name="li11378225134717"></a><span>In the navigation bar, choose <span class="uicontrol"><b>Data Protection &gt; Protection Entities &gt; Protection Groups</b></span>. Switch to the <span class="uicontrol"><b>Snapshot CGs</b></span> tab page and locate the value of <span class="uicontrol"><b>PG</b></span> corresponding to <span class="uicontrol"><b>Owning Snapshot CG</b></span> obtained in <a href="#EN-US_TOPIC_0000002199963545__li04441340134110">4</a>.</span></li>
+     <li><span>Switch to the <span class="uicontrol"><b>Protection Groups</b></span> tab page, locate the <span class="uicontrol"><b>PG</b></span> obtained in <a href="#EN-US_TOPIC_0000002199963545__li11378225134717">5</a>, and click its name. Switch to the <span class="uicontrol"><b>Members</b></span> tab page and select the LUN name obtained in <a href="#EN-US_TOPIC_0000002199963545__li10949142772018">2</a>.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>Ensure that the selected LUN can be removed from the protection group. If the prefix of a protection group name is <strong>protect_group</strong>, the protection group may be automatically created by a backup job. Contact technical support engineers to check whether the protection group can be removed.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>Remove</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164757014.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

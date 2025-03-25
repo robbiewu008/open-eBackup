@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Checking and Enabling the sudo Permission of the PostgreSQL Database Installation User">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200004613.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164603910">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Checking and Enabling the sudo Permission of the PostgreSQL Database Installation User</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164603910"></a><a name="EN-US_TOPIC_0000002164603910"></a>
+
+<h1 class="topictitle1">Step 1: Checking and Enabling the sudo Permission of the PostgreSQL Database Installation User</h1>
+<div><p>Before backing up the database, you need to check and enable the <strong>sudo</strong> permission of the database installation user. Otherwise, some commands will fail to be executed. Perform the operations in this section only in the cluster scenario.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Use PuTTY to log in to the PostgreSQL database host.</span></li><li><span>Run the following command to check whether the user has the <strong>sudo</strong> permission:</span><p><pre class="screen">sudo -l -U <em>Database installation user</em></pre>
+<ul><li>If the user has the <strong>sudo</strong> permission, the list of commands that the user can run is displayed. No further action is required.<p><span><img src="en-us_image_0000002164763694.png"></span></p>
+</li><li>If the user does not have the <strong>sudo</strong> permission, a message is displayed, indicating that the user cannot run the <strong>sudo</strong> commands. Go to <a href="#EN-US_TOPIC_0000002164603910__li89912406816">3</a>.<p><span><img src="en-us_image_0000002200004701.png"></span></p>
+</li></ul>
+</p></li><li id="EN-US_TOPIC_0000002164603910__li89912406816"><a name="EN-US_TOPIC_0000002164603910__li89912406816"></a><a name="li89912406816"></a><span>Enable the <strong>sudo</strong> permission of the database installation user.</span><p><p>Switch to user <strong>root</strong>, run the <strong>visudo</strong> command to open the configuration file, and add the following configuration to the end of the file:</p>
+<p><em>Name of the database installation user</em>  ALL=(ALL) NOPASSWD:ALL</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200004613.html">Backing Up PostgreSQL</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

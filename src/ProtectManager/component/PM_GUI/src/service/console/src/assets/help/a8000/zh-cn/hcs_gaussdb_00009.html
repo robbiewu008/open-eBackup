@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="hcs_gaussdb_00006.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -54,10 +54,10 @@
 </td>
 <td class="cellrowborder" valign="top" width="12.75%" headers="mcps1.3.2.2.5.1.2 "><p>必选</p>
 </td>
-<td class="cellrowborder" valign="top" width="53.56999999999999%" headers="mcps1.3.2.2.5.1.3 "><ol id="hcs_gaussdb_00009__ol18636115915591"><li id="hcs_gaussdb_00009__li46368592592">在华为云Stack部署工具导出的参数汇总文件《xxx_export_all_CN》的“基本参数”页签，搜索“region_id”和“external_global_domain_name”，获取对应的参数值。</li><li id="hcs_gaussdb_00009__li47458218418">在华为云Stack部署工具导出的参数汇总文件《xxx_export_all_CN》的“Portal”页签，获取Service OM管理控制台的网址、用户名和密码登录Service OM。</li><li id="hcs_gaussdb_00009__li1271015264128">在Service OM界面上单击<span class="uicontrol" id="hcs_gaussdb_00009__uicontrol10712202681214">“虚拟机”</span>。</li><li id="hcs_gaussdb_00009__li765750134">在虚拟机界面获取DBS-GaussCore对应的任一IP地址。</li><li id="hcs_gaussdb_00009__li817462116114">使用PuTTY，通过该IP地址远程登录到相应的主机。</li><li id="hcs_gaussdb_00009__li101145231168">执行命令<strong id="hcs_gaussdb_00009__b137101131121118">ping iam-apigateway-proxy.<em id="hcs_gaussdb_00009__i2993122814910">{region_id}</em>.<em id="hcs_gaussdb_00009__i105714371598">{external_global_domain_name}</em></strong>获取管理面IP。<p id="hcs_gaussdb_00009__p347164816811"><span><img id="hcs_gaussdb_00009__image17735649582" src="zh-cn_image_0000002079691417.png"></span></p>
-</li><li id="hcs_gaussdb_00009__li146299220115">确认IAM版本。<ol type="a" id="hcs_gaussdb_00009__ol172551635101111"><li id="hcs_gaussdb_00009__li6256203571110">在华为云Stack部署工具导出的参数汇总文件《xxx_export_all_CN》的“Portal”页签，获取COP的网址、用户名和密码登录COP。</li><li id="hcs_gaussdb_00009__li13321935125"><span style="color:#494949;">单击“CloudCMDB </span><span style="color:#494949;">&gt;</span><span style="color:#494949;"> 服务管理”，在服务树中搜索IAM，如果存在即为IAM2.0；</span><span style="color:#494949;">如果不存在即为IAM1.0。</span></li></ol>
-</li><li id="hcs_gaussdb_00009__li93781141171016">获取管理面地址。<ul id="hcs_gaussdb_00009__ul14644195216187"><li id="hcs_gaussdb_00009__li1864455211816">IAM1.0：https://XX.XX.XX.XX:26335即为管理面地址。</li><li id="hcs_gaussdb_00009__li14233193181920">IAM2.0：https://XX.XX.XX.XX:443即为管理面地址。</li></ul>
+<td class="cellrowborder" valign="top" width="53.56999999999999%" headers="mcps1.3.2.2.5.1.3 "><ol id="hcs_gaussdb_00009__ol18636115915591"><li id="hcs_gaussdb_00009__li46368592592">请参考华为云Stack软件安装阶段HCC Turnkey导出的参数信息汇总文件《<em id="hcs_gaussdb_00009__i12473164115012">xxx</em>_export_all_v2_CN.xlsx》的“基本参数”页签，搜索“region_id”和“external_global_domain_name”，获取对应的参数值。</li><li id="hcs_gaussdb_00009__li122681935416">请参考华为云Stac软件安装阶段HCC Turnkey导出的参数信息汇总文件《<em id="hcs_gaussdb_00009__i1035816496507">xxx</em>_export_all_v2_CN.xlsx》的“工具生成的IP参数”页签，搜索“AGW-LB-Float-IP”，获取管理面IP地址。</li><li id="hcs_gaussdb_00009__li1941018428330">完成域名映射。<ol type="a" id="hcs_gaussdb_00009__ol201493163404"><li id="hcs_gaussdb_00009__li8367141320406">登录客户端所在的主机。</li><li id="hcs_gaussdb_00009__li14676163034010">执行以下命令打开/etc/hosts文件。<pre class="screen" id="hcs_gaussdb_00009__screen1870506123418">vi /etc/hosts</pre>
+</li><li id="hcs_gaussdb_00009__li2344115264019">在/etc/hosts文件中新增如下信息，进行域名映射,其中<em id="hcs_gaussdb_00009__i117521616375">xx.x.x.xx</em>为管理面IP。<pre class="screen" id="hcs_gaussdb_00009__screen9455132794116"><em id="hcs_gaussdb_00009__i348312113711">xx.x.x.xx</em> iam-apigateway-proxy.<em id="hcs_gaussdb_00009__i11592143393812">{region_id}</em>.<em id="hcs_gaussdb_00009__i45921833183816">{external_global_domain_name}</em></pre>
 </li></ol>
+</li><li id="hcs_gaussdb_00009__li6457159192714">获取管理面地址：https://<strong id="hcs_gaussdb_00009__b1266352192611">iam-apigateway-proxy.<em id="hcs_gaussdb_00009__i666165215264">{region_id}</em>.<em id="hcs_gaussdb_00009__i56610523260">{external_global_domain_name</em></strong><strong id="hcs_gaussdb_00009__b186619529266"><em id="hcs_gaussdb_00009__i76618526266">}</em></strong>:443。</li></ol>
 </td>
 <td class="cellrowborder" rowspan="6" valign="top" width="16.34%" headers="mcps1.3.2.2.5.1.4 "><p><a href="hcs_gaussdb_00011.html">步骤1：注册华为云Stack GaussDB项目</a></p>
 </td>
@@ -66,36 +66,36 @@
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.2 "><p>必选</p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><p id="hcs_gaussdb_00009__p8596193120113">在华为云Stack部署工具导出的参数汇总文件《xxx_export_all_CN》的“工具生成的IP参数”页签，搜索“AGW-LB-Float-IP”，获取对应的参数值XX.XX.XX.XX。https://XX.XX.XX.XX即为业务面地址。</p>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><p id="hcs_gaussdb_00009__p8596193120113">请参考华为云Stack软件安装阶段HCC Turnkey导出的参数信息汇总文件《<em id="hcs_gaussdb_00009__i1101610517">xxx</em>_export_all_v2_CN.xlsx》的“工具生成的IP参数”页签，搜索“AGW-LB-Float-IP”，获取对应的参数值XX.XX.XX.XX。https://XX.XX.XX.XX即为业务面地址。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.1 "><p>IAM用户及密码</p>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.1 "><p>资源空间名称和ID</p>
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.2 "><p>必选</p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><p>在华为云创建的IAM用户。创建IAM用户的操作请参见<a href="https://support.huaweicloud.com/qs-iam/iam_01_0030.html" target="_blank" rel="noopener noreferrer">创建用户组并授权</a>和<a href="https://support.huaweicloud.com/qs-iam/iam_01_0031.html" target="_blank" rel="noopener noreferrer">创建IAM用户并登录</a>。</p>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><ol><li>登录ManageOne运营界面。</li><li>单击界面右上角用户的名称，选择<span class="uicontrol">“个人设置”</span>。资源空间列表中的<span class="uicontrol">“资源空间名称”</span>和<span class="uicontrol">“ID”</span>列即为需要的资源空间名称和资源空间ID。</li></ol>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.1 "><p>资源集名称和资源集ID</p>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.1 "><p>云平台租户及密码</p>
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.2 "><p>必选</p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><ol><li>登录ManageOne运营界面。</li><li>单击界面右上角用户的名称，选择<span class="uicontrol">“个人设置”</span>。资源集列表中的<span class="uicontrol">“名称”</span>和<span class="uicontrol">“ID”</span>列即为需要的资源集名称和资源集ID。</li></ol>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><p>待保护的华为云Stack GaussDB实例所属租户的名称，获取方式如下：</p>
+<ol><li>请登录ManageOne运营面，选择“组织 &gt; 资源空间管理”。</li><li>根据<a href="hcs_gaussdb_00009.html">备份前准备</a>获取的资源空间ID进行搜索得到对应的资源集的信息，“授权VDC”为云平台租户所属VDC名称。</li><li>单击“用户”进入用户管理界面。根据“授权VDC”查找用户，选择任一用户获取用户名。</li></ol>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.1 "><p>XBSA配置路径</p>
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.2 "><p>必选</p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><p>用户配置安装backUpAgent时会配置“xbsa.conf”文件，XBSA配置路径为该文件的路径。</p>
-<p>安装backupAgent，请参考<span>《OceanProtect DataBackup 1.5.0-1.6.0 ProtectAgent安装指南》</span>中的“安装backUpAgent”章节。</p>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><ul><li>客户端自动推送：XBSA配置路径为/opt/backupAgent/xbsa.conf。</li><li>客户端手动安装：参见<span>《OceanProtect DataBackup 1.5.0-1.6.0 客户端安装指南》</span>中的“安装backUpAgent”章节配置的xbsa.conf路径。</li></ul>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.1 "><p>证书</p>
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.2 "><p>可选</p>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><p>开启了<span>XBSA SSL 证书管理</span>时，才需要证书。证书生成及配置方法请参见<span>《OceanProtect DataBackup 1.5.0-1.6.0 ProtectAgent安装指南》</span>中的“配置SSL双向认证证书文件”章节。</p>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><p>开启了<span>XBSA SSL 证书管理</span>时，才需要证书。证书生成及配置方法请参见<span>《OceanProtect DataBackup 1.5.0-1.6.0 客户端安装指南》</span>中的“配置SSL双向认证证书文件”章节。</p>
 </td>
 </tr>
 </tbody>

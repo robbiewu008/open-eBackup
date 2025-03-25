@@ -54,11 +54,11 @@ metadata:
     app: pm-nodeproxy
   namespace: dpa
 spec:
-  serviceName: pm-nodeproxy
   replicas: {{$realreplicas}}
   selector:
     matchLabels:
       app: pm-nodeproxy
+  serviceName: pm-config
   template:
     metadata:
       labels:
@@ -68,7 +68,7 @@ spec:
         - name: node-proxy-init
           image: pm-database-version-migration:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
-          command: ["/bin/sh", "-c", "if [! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME} && chmod 750 /opt/OceanProtect/logs/${NODE_NAME} && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/dme_openstorageapi' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/dme_openstorageapi;fi && chown 18245:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/dme_openstorageapi && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/dme_openstorageapi && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/pm_config' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/pm_config;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/pm_config && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/pm_config"]
+          command: ["/bin/sh", "-c", "if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME} && chmod 750 /opt/OceanProtect/logs/${NODE_NAME} && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/pm_config' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/pm_config;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/pm_config && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/pm_config"]
           securityContext:
             capabilities:
               add: ["NET_ADMIN"]
@@ -145,12 +145,16 @@ spec:
               readOnly: true
             - mountPath: /opt/OceanProtect
               name: nas-path
+            - mountPath: /opt/ProtectManager
+              name:  pm-path
             - mountPath: /opt/common-conf
               name: common-conf
               readOnly: true
             - mountPath: /kmc_conf
               name: kmc-conf
               readOnly: true
+            - mountPath: /opt/OceanProtect/protectmanager/ntp
+              name: ntp-path
       volumes:
         - name: dee-conf
           configMap:
@@ -282,4 +286,7 @@ spec:
         - name: common-volume
           configMap:
             name: common-conf
+        - name: ntp-path
+          hostPath:
+            path: /opt/DataBackup/ntp
   {{- end }}

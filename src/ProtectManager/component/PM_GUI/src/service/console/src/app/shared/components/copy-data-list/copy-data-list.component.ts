@@ -41,6 +41,7 @@ import {
   hiddenDwsFileLevelRestore,
   hiddenHcsUserFileLevelRestore,
   hiddenOracleFileLevelRestore,
+  hideE6000Func,
   I18NService,
   isHideOracleInstanceRestore,
   isHideOracleMount,
@@ -133,6 +134,7 @@ export class CopyDataListComponent
   resourceType = DataMap.Resource_Type;
   filterParams = {};
   copyClusterName;
+  isInformix = false; // Informix数据库只有Informix形态支持日志备份,GBase8s 不需要时间轴
   copyName;
   resourceName;
   locationName;
@@ -225,21 +227,29 @@ export class CopyDataListComponent
   }
 
   initData() {
-    this.isVirtualizationAndCloud = includes(
+    this.isInformix =
       [
-        DataMap.Resource_Type.virtualMachine.value,
-        DataMap.Resource_Type.cNwareVm.value,
-        DataMap.Resource_Type.FusionComputeVM.value,
-        DataMap.Resource_Type.FusionCompute.value,
-        DataMap.Resource_Type.fusionOne.value,
-        DataMap.Resource_Type.hyperVVm.value,
-        DataMap.Resource_Type.nutanixVm.value,
-        DataMap.Resource_Type.HCSCloudHost.value,
-        DataMap.Resource_Type.APSCloudServer.value,
-        DataMap.Resource_Type.openStackCloudServer.value
-      ],
-      this.resType
-    );
+        DataMap.Resource_Type.informixInstance.value,
+        DataMap.Resource_Type.informixClusterInstance.value
+      ].includes(this.resType) &&
+      this.rowData?.databaseType ===
+        DataMap.informixDatabaseType.informix.value;
+    this.isVirtualizationAndCloud =
+      includes(
+        [
+          DataMap.Resource_Type.virtualMachine.value,
+          DataMap.Resource_Type.cNwareVm.value,
+          DataMap.Resource_Type.FusionComputeVM.value,
+          DataMap.Resource_Type.FusionCompute.value,
+          DataMap.Resource_Type.fusionOne.value,
+          DataMap.Resource_Type.hyperVVm.value,
+          DataMap.Resource_Type.nutanixVm.value,
+          DataMap.Resource_Type.HCSCloudHost.value,
+          DataMap.Resource_Type.APSCloudServer.value,
+          DataMap.Resource_Type.openStackCloudServer.value
+        ],
+        this.resType
+      ) && !this.isHcsUser;
     this.initColumns();
   }
 
@@ -2217,7 +2227,8 @@ export class CopyDataListComponent
                 DataMap.CopyData_generatedType.reverseReplication.value
               ],
               data.generated_by
-            )),
+            )) ||
+          hideE6000Func(this.appUtilsService, data, false),
         permission: OperateItems.FileLevelRestore,
         onClick: () => {
           // vmware文件级恢复打开副本详情
@@ -2464,7 +2475,7 @@ export class CopyDataListComponent
               ],
               data.generated_by
             )) ||
-          isHideOracleInstanceRestore(resourceProperties),
+          isHideOracleInstanceRestore(data, resourceProperties, properties),
         permission: OperateItems.InstanceRecovery,
         onClick: () =>
           this.restoreService.restore({
@@ -2687,6 +2698,7 @@ export class CopyDataListComponent
               ],
               data.generated_by
             )) ||
+          hideE6000Func(this.appUtilsService, data, true) ||
           this.hideBasicDiskFuction(data, this.appUtilsService.isDistributed),
         permission: OperateItems.MountingCopy,
         onClick: () => this.mount(data)
@@ -2782,7 +2794,8 @@ export class CopyDataListComponent
             data,
             this.appUtilsService.isDecouple ||
               this.appUtilsService.isDistributed
-          ),
+          ) ||
+          this.isHcsUser,
         onClick: () =>
           this.takeManualArchiveService.manualArchive(data, () => {
             this.getCopyData();
@@ -3141,7 +3154,8 @@ export class CopyDataListComponent
               [DataMap.CopyData_generatedType.Imported.value],
               data.generated_by
             )) ||
-          this.isHcsUser,
+          this.isHcsUser ||
+          hideE6000Func(this.appUtilsService, data, false),
         onClick: () => {
           this.copiesApiService
             .createCopyIndexV1CopiesCopyIdActionCreateIndexPost({

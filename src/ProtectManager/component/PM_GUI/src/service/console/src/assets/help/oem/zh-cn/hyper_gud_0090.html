@@ -17,109 +17,99 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="管理集群/主机/虚拟机/虚拟机组">
+  <meta name="DC.Title" content="登录DeviceManager管理界面">
   <meta name="product" content="">
-  <meta name="DC.Relation" scheme="URI" content="hyper_gud_0087.html">
+  <meta name="DC.Relation" scheme="URI" content="hyper_gud_0086.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="hyper_gud_0090">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>管理集群/主机/虚拟机/虚拟机组</title>
+  <title>登录DeviceManager管理界面</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="hyper_gud_0090"></a><a name="hyper_gud_0090"></a>
-  <h1 class="topictitle1">管理集群/主机/虚拟机/虚拟机组</h1>
+  <h1 class="topictitle1">登录DeviceManager管理界面</h1>
   <div>
-   <p><span>本产品</span>支持对集群、主机、虚拟机或虚拟机组执行修改保护、移除保护、激活保护或禁用保护等操作。本节以虚拟机为例说明相关操作，集群、主机或虚拟机组的操作与此相同。</p>
-   <p>您需要登录管理界面，选择<span class="uicontrol">“<span id="hyper_gud_0090__zh-cn_topic_0000001839142377_text2782025144215">保护</span> &gt; 虚拟化 &gt; Hyper-V”</span>，查找到需要执行操作的虚拟机。</p>
-   <p>具体操作说明如<a href="#hyper_gud_0090__table24934294919">表1</a>所示。</p>
-   <div class="tablenoborder">
-    <a name="hyper_gud_0090__table24934294919"></a><a name="table24934294919"></a>
-    <table cellpadding="4" cellspacing="0" summary="" id="hyper_gud_0090__table24934294919" frame="border" border="1" rules="all">
-     <caption>
-      <b>表1 </b>虚拟机保护计划相关操作
-     </caption>
-     <colgroup>
-      <col style="width:14.44%">
-      <col style="width:57.78%">
-      <col style="width:27.779999999999998%">
-     </colgroup>
-     <thead align="left">
-      <tr>
-       <th align="left" class="cellrowborder" valign="top" width="14.44%" id="mcps1.3.4.2.4.1.1"><p>任务</p></th>
-       <th align="left" class="cellrowborder" valign="top" width="57.78%" id="mcps1.3.4.2.4.1.2"><p>任务描述</p></th>
-       <th align="left" class="cellrowborder" valign="top" width="27.779999999999998%" id="mcps1.3.4.2.4.1.3"><p>界面入口</p></th>
-      </tr>
-     </thead>
-     <tbody>
-      <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p><span>修改保护</span></p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要重新为虚拟机关联SLA、增加或移除保护的虚拟机磁盘、修改代理主机等信息时，可以通过修改保护计划来实现。修改后下次备份将按照新的保护计划执行。</p> <p><strong>注意事项</strong></p> <p>修改保护时不会影响当前正在运行的保护任务，下个保护周期开始执行新的保护计划。</p></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>在虚拟机所在的行单击<span class="uicontrol">“<span>更多</span> &gt; <span>修改保护</span>”</span>。</p></td>
-      </tr>
-      <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p><span>移除保护</span></p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当不需要再对虚拟机执行保护时，可以通过移除保护来实现。移除后系统将无法对该虚拟机执行保护任务。如果需要再次对其进行保护需要重新关联SLA。</p> <p><strong>注意事项</strong></p>
-        <ul>
-         <li>当有该虚拟机的保护任务正在运行时，无法执行移除保护操作。</li>
-         <li>批量移除保护时，请确保选择的虚拟机“保护状态”均为“已保护”。</li>
-        </ul></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>单击<span class="uicontrol">“<span>更多</span> &gt; <span>移除保护</span>”</span>。</p></td>
-      </tr>
-      <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p><span>手动备份</span></p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要立即执行一次备份时，可以通过该操作实现。</p> <p><strong>注意事项</strong></p> <p>手动备份产生的副本保留时长按照SLA中的定义进行保留。</p></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。</p></td>
-      </tr>
-      <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p><span>激活保护</span></p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>虚拟机的保护计划被禁用后，您可以通过激活操作使虚拟机的保护计划重新生效。激活后系统将按照保护计划对虚拟机执行备份、复制或归档。</p> <p><strong>注意事项</strong></p> <p>已关联SLA，且处于<span class="uicontrol">“<span>未保护</span>”</span>状态的虚拟机才能执行该操作。</p></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>单击<span class="uicontrol">“<span>更多</span> &gt; <span>激活保护</span>”</span>。</p></td>
-      </tr>
-      <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p><span>禁用保护</span></p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您暂时不需要再对虚拟机执行周期性保护时，可以通过禁用其保护计划来实现。禁用后系统将不会执行该虚拟机的自动备份、复制或归档。</p> <p><strong>注意事项</strong></p> <p>禁用保护时不会影响当前正在运行的保护任务。</p></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>单击<span class="uicontrol">“<span>更多</span> &gt; <span>禁用保护</span>”</span>。</p></td>
-      </tr>
-      <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>添加标签</p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要快速筛选和管理资源时，可以通过该操作实现。</p></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 ">
-        <div class="p">
-         选择<span class="uicontrol" id="hyper_gud_0090__zh-cn_topic_0000001792344090_uicontrol84421111904">“<span id="hyper_gud_0090__zh-cn_topic_0000001792344090_text6442710012">更多</span> &gt; 添加标签”</span>。
-         <div class="note" id="hyper_gud_0090__zh-cn_topic_0000001792344090_note164681316118">
-          <span class="notetitle"> 说明： </span>
-          <div class="notebody">
-           <ul id="hyper_gud_0090__zh-cn_topic_0000001792344090_ul22969251338">
-            <li id="hyper_gud_0090__zh-cn_topic_0000001792344090_li142961925139">您可以在弹出的“添加标签”界面选择已有的标签或单击“创建”新建标签。</li>
-            <li id="hyper_gud_0090__zh-cn_topic_0000001792344090_li135161927738">如需对标签进行修改、删除等操作，可在“添加标签”界面，单击“前往标签管理”，进入“标签管理”界面操作。</li>
-           </ul>
-          </div>
-         </div>
-        </div></td>
-      </tr>
-      <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>移除标签</p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您不再需要对资源进行标记时，可以通过该操作实现。</p></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>选择<span class="uicontrol" id="hyper_gud_0090__zh-cn_topic_0000001792344090_uicontrol4993205113111">“<span id="hyper_gud_0090__zh-cn_topic_0000001792344090_text6993751201118">更多</span> &gt; 移除标签”</span>。</p></td>
-      </tr>
-      <tr>
-       <td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.4.2.4.1.1 mcps1.3.4.2.4.1.2 mcps1.3.4.2.4.1.3 "><p>注：恢复Hyper-V虚拟机的操作同<a href="hyper_gud_0055.html">恢复</a>，本节不再重复说明。</p></td>
-      </tr>
-     </tbody>
-    </table>
+   <p id="hyper_gud_0090__zh-cn_topic_0000002164820486_p747234814111">DeviceManager是华为技术有限公司开发的集成存储管理软件。在任意一台与存储系统连接的管理终端上，通过浏览器访问存储系统控制器的管理网口IP地址，使用本地用户名，可以登录DeviceManager管理界面。</p>
+   <div class="section" id="hyper_gud_0090__zh-cn_topic_0000002164820486_section1014919595360">
+    <h4 class="sectiontitle">通过浏览器访问存储系统控制器的管理网口IP地址登录备份存储设备的DeviceManager管理界面（适用于所有产品型号）</h4>
+    <p id="hyper_gud_0090__zh-cn_topic_0000002164820486_p19609162517385">在任意一台与存储系统连接的维护终端上，通过浏览器访问存储系统控制器的管理网口IP地址，使用本地用户名，可以登录备份存储的DeviceManager管理界面。</p>
+    <div class="p" id="hyper_gud_0090__zh-cn_topic_0000002164820486_p6932123015394">
+     使用DeviceManager前请先检查维护终端是否满足以下要求：
+     <ul id="hyper_gud_0090__zh-cn_topic_0000002164820486_ul69321305394">
+      <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li793223016399">维护终端操作系统及浏览器的兼容性满足要求。<p id="hyper_gud_0090__zh-cn_topic_0000002164820486_p3932153018391"><a name="hyper_gud_0090__zh-cn_topic_0000002164820486_li793223016399"></a><a name="zh-cn_topic_0000002164820486_li793223016399"></a>DeviceManager支持多种操作系统和浏览器，具体的兼容性信息可以通过<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">存储兼容性查询工具</a>进行查询。</p></li>
+      <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li1091013481382">维护终端和存储设备通信正常。</li>
+     </ul>
+    </div>
+    <div class="p" id="hyper_gud_0090__zh-cn_topic_0000002164820486_p1779910200429">
+     <strong id="hyper_gud_0090__zh-cn_topic_0000002164820486_b0759723164216">操作步骤</strong>
+     <ol id="hyper_gud_0090__zh-cn_topic_0000002164820486_ol9824952429">
+      <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li5824453422">在维护终端运行浏览器。</li>
+      <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li198241054425">在地址栏中输入“https://<em id="hyper_gud_0090__zh-cn_topic_0000002164820486_i11361551942">管理IP地址</em>:8088”，并按“Enter”。
+       <div class="note" id="hyper_gud_0090__zh-cn_topic_0000002164820486_note17119161314">
+        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <ul id="hyper_gud_0090__zh-cn_topic_0000002164820486_ul177141613316">
+          <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li167113161839"><em id="hyper_gud_0090__zh-cn_topic_0000002164820486_i2390617151010">管理IP地址</em>请根据存储系统控制框实际的管理网口IP地址替换。</li>
+          <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li372191617317">在有防火墙的环境中，系统对外提供web服务时，需要开启8088端口。</li>
+          <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li4726164314">浏览器可能会提示网站的安全证书有问题，此时只要确认IP地址正确，您仍然可以选择忽略该提示并继续访问存储系统。</li>
+         </ul>
+        </div>
+       </div></li>
+      <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li8825125184217"><strong>可选：</strong>单击右上角语言类型切换语言。<p id="hyper_gud_0090__zh-cn_topic_0000002164820486_p672181615315"><a name="hyper_gud_0090__zh-cn_topic_0000002164820486_li8825125184217"></a><a name="zh-cn_topic_0000002164820486_li8825125184217"></a>DeviceManager支持简体中文和英文两种语言类型。</p></li>
+      <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li1982505134213">在“认证模式”下选择“本地用户”或“LDAP用户”，并在“用户名”和“密码”中输入登录的用户名和密码。当出现“验证码”时请输入正确的验证码。
+       <div class="note" id="hyper_gud_0090__zh-cn_topic_0000002164820486_note10725161432">
+        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <ul id="hyper_gud_0090__zh-cn_topic_0000002164820486_ul19721516738">
+          <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li10575172652718">使用LDAP（Lightweight Directory Access Protocol）域用户名登录DeviceManager前，必须首先在存储系统外部配置好LDAP域服务器，并在存储系统侧设置LDAP服务器的相关参数，然后创建相应的LDAP域用户。</li>
+          <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li17727166316">用户名和密码区分大小写。</li>
+          <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li1072111611320">如果账号默认密码已修改，请使用更新后的密码登录。</li>
+          <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li10728161934">当用户安全策略启用密码锁定后（密码锁定默认开启），如果5分钟内密码连续输入错误次数达到“允许输入错误密码次数”（默认为3次），账号将被锁定（默认锁定5分钟由系统自动解锁）。</li>
+          <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li185031929132514">为了确保用户账号的安全性，建议定期修改账户密码。可以通过登录DeviceManager后，选择“设置 &gt; 用户与安全 &gt; 用户和角色 &gt; 用户管理”，修改登录账户密码。</li>
+         </ul>
+        </div>
+       </div></li>
+      <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li18251756428">单击“登录”。<p id="hyper_gud_0090__zh-cn_topic_0000002164820486_p1172616137"><a name="hyper_gud_0090__zh-cn_topic_0000002164820486_li18251756428"></a><a name="zh-cn_topic_0000002164820486_li18251756428"></a>系统进入DeviceManager管理界面。</p>
+       <div class="note" id="hyper_gud_0090__zh-cn_topic_0000002164820486_note117201615311">
+        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <ul id="hyper_gud_0090__zh-cn_topic_0000002164820486_ul137214161439">
+          <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li440182562418">首次登录DeviceManager时，需要使用具有管理员权限的用户签署EULA协议。<p id="hyper_gud_0090__zh-cn_topic_0000002164820486_p4367112611244"><a name="hyper_gud_0090__zh-cn_topic_0000002164820486_li440182562418"></a><a name="zh-cn_topic_0000002164820486_li440182562418"></a>请仔细阅读弹出的“华为企业业务最终用户许可协议”，勾选“本人已阅读并同意签署《华为企业业务最终用户许可协议》”，单击<span class="uicontrol" id="hyper_gud_0090__zh-cn_topic_0000002164820486_zh-cn_topic_0000001129001228_uicontrol1274111599302">“确定”</span>，才能进入DeviceManager管理界面。</p></li>
+          <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li187251619314">操作完成后，单击界面右上角的当前登录用户，下拉菜单中单击“注销”，即可退出DeviceManager。</li>
+         </ul>
+        </div>
+       </div></li>
+     </ol>
+    </div>
+   </div>
+   <div class="section" id="hyper_gud_0090__zh-cn_topic_0000002164820486_section109031113153814">
+    <h4 class="sectiontitle"><span id="hyper_gud_0090__zh-cn_topic_0000002164820486_ph2903131318382">通过<span id="hyper_gud_0090__zh-cn_topic_0000002164820486_text0372165413195">本产品</span>管理界面跳转至DeviceManager管理界面（适用于本产品部分型号）</span></h4>
+    <ul id="hyper_gud_0090__zh-cn_topic_0000002164820486_ul543812134375">
+     <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li443881313710">对于本产品部分型号，请执行以下操作：
+      <ol id="hyper_gud_0090__zh-cn_topic_0000002164820486_ol7944131832013">
+       <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li1394451815207">选择“系统 &gt; 基础设施 &gt; 集群管理”。</li>
+       <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li17944141813202">在“备份集群”页签的“本地集群节点”区域，单击节点名称。</li>
+       <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li69441618112012">在弹出的“节点详情”界面，单击“打开设备管理”，进入DeviceManager管理界面。</li>
+      </ol></li>
+     <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li15543204373714">对于本产品部分型号，请执行以下操作：
+      <ol id="hyper_gud_0090__zh-cn_topic_0000002164820486_ol1472117537613">
+       <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li138643017417">选择“系统 &gt; 基础设施 &gt; 集群管理”。</li>
+       <li id="hyper_gud_0090__zh-cn_topic_0000002164820486_li87211653461">在“备份集群”页签，单击“查看集群详情”，进入集群详情界面，单击<span class="uicontrol" id="hyper_gud_0090__zh-cn_topic_0000002164820486_uicontrol93864306414">“打开设备管理”</span>，进入DeviceManager。</li>
+      </ol></li>
+    </ul>
    </div>
   </div>
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="hyper_gud_0087.html">Hyper-V虚拟化环境</a>
+     <strong>父主题：</strong> <a href="hyper_gud_0086.html">常见问题</a>
     </div>
    </div>
   </div>

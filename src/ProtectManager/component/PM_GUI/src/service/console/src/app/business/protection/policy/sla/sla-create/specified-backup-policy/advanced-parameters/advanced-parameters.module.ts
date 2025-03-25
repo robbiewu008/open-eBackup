@@ -17,6 +17,7 @@ import { SpecifyDestinationLocationModule } from '@backup-policy/specify-destina
 import { AlertModule } from '@iux/live';
 import { BaseModule } from 'app/shared';
 import { AdvancedParametersComponent } from './advanced-parameters.component';
+import { RouterJumpHelpModule } from 'app/shared/components/router-jump-help/router-jump-help.module';
 
 @NgModule({
   declarations: [AdvancedParametersComponent],
@@ -25,7 +26,8 @@ import { AdvancedParametersComponent } from './advanced-parameters.component';
     BaseModule,
     MultiDuduplicationTipModule,
     SpecifyDestinationLocationModule,
-    AlertModule
+    AlertModule,
+    RouterJumpHelpModule
   ],
   exports: [AdvancedParametersComponent]
 })

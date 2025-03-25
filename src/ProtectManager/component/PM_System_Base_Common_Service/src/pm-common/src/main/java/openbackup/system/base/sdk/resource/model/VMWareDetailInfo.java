@@ -32,4 +32,7 @@ public class VMWareDetailInfo {
 
     private VMWareRuntime runtime;
     private String firmware;
+
+    @JsonProperty("vm_parent_location")
+    private String vmParentLocation;
 }

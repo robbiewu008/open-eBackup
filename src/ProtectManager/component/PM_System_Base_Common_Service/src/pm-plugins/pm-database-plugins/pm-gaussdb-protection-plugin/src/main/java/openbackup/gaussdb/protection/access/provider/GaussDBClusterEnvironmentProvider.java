@@ -12,6 +12,7 @@
 */
 package openbackup.gaussdb.protection.access.provider;
 
+import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterBasicService;
 import com.huawei.oceanprotect.repository.service.LocalStorageService;
 
 import com.google.common.collect.Lists;
@@ -81,6 +82,9 @@ public class GaussDBClusterEnvironmentProvider extends DatabaseEnvironmentProvid
 
     @Autowired
     private ResourceService resourceService;
+
+    @Autowired
+    private ClusterBasicService clusterBasicService;
 
     /**
      * DatabaseResourceProvider
@@ -175,8 +179,9 @@ public class GaussDBClusterEnvironmentProvider extends DatabaseEnvironmentProvid
     }
 
     private void generateUniqueUuid(ProtectedEnvironment environment, List<ProtectedEnvironment> existingEnvironments) {
+        String currentClusterEsn = clusterBasicService.getCurrentClusterEsn();
         String hcsGaussDbClusterUuid = UUID.nameUUIDFromBytes(
-            (environment.getName() + environment.getSubType() + localStorageService.getStorageInfo().getEsn()).getBytes(
+            (environment.getName() + environment.getSubType() + currentClusterEsn).getBytes(
                 Charset.defaultCharset())).toString();
         environment.setUuid(hcsGaussDbClusterUuid);
         environment.setRootUuid(hcsGaussDbClusterUuid);

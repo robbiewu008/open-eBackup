@@ -1,0 +1,100 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤3：配置复制网络VLAN端口">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002171380202.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002206980757">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤3：配置复制网络VLAN端口</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002206980757"></a><a name="ZH-CN_TOPIC_0000002206980757"></a>
+
+<h1 class="topictitle1">步骤3：配置复制网络VLAN端口</h1>
+<div><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050445554_zh-cn_topic_0000002050434918_p8060118">当复制控制网络与复制业务网络共网口，且是bond组网时，请参考本章节配置VLAN端口。否则，请跳过本章节。</p>
+<div class="section" id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050445554_zh-cn_topic_0000002050434918_section174831937114819"><h4 class="sectiontitle">注意事项</h4><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_p825922121214">同一个复制节点的多个绑定端口，都用作复制端口时，需要分别创建VLAN端口，且这些VLAN端口的VLAN ID需要一致。</p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050445554_zh-cn_topic_0000002050434918_section781124114611"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0000001079958565_zh-cn_topic_0272252216_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_ol72259457218"><li id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_li693911269474"><span>登录DeviceManager。</span></li><li id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_le3d29a07d40f499aac89d29ec93d6ae0"><span>选择“集群 &gt; 网络 &gt; 端口和路由 &gt; VLAN端口”。</span></li><li id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_l05f21a07f5434fcf9391929465fe92b4"><span>单击“创建 &gt; 创建VLAN端口”。</span><p><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0000001079958565_p63795016242">系统弹出“创建VLAN端口”对话框。</p>
+</p></li><li id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_li509142"><span>设置相关参数，如<a href="#ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_d760e99">表1</a>所示。</span><p>
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_d760e99"></a><a name="fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_d760e99"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_d760e99" frame="border" border="1" rules="all"><caption><b>表1 </b>VLAN端口参数</caption><colgroup><col style="width:16.16%"><col style="width:83.84%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_r7dd690f7d14e48dab976d3ea07d89e99"><th align="left" class="cellrowborder" valign="top" width="16.16%" id="mcps1.3.3.2.4.2.1.2.3.1.1"><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_p27790832">参数名称</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="83.84%" id="mcps1.3.3.2.4.2.1.2.3.1.2"><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_p36464923">参数说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_r47c4c31233d94e20a6bbf33360d50011"><td class="cellrowborder" valign="top" width="16.16%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_p55982962">端口类型</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.84%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_p38326069">用于创建VLAN端口的端口类型，选择“绑定端口”。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_row59721810115010"><td class="cellrowborder" valign="top" width="16.16%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_p22417311">传输协议</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.84%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_p3862884">VLAN端口的传输协议，选择“TCP”。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_r02a0ab5e3e4b49fe9dc70097da8c3200"><td class="cellrowborder" valign="top" width="16.16%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_p64579503">选择端口</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.84%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_zh-cn_topic_0259133584_zh-cn_topic_0249520008_zh-cn_topic_0249518099_zh-cn_topic_0244899386_zh-cn_topic_0230548476_zh-cn_topic_0145458768_zh-cn_topic_0127771948_p63557232">勾选一个端口。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_row9713111417915"><td class="cellrowborder" valign="top" width="16.16%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_p1871321420913">VLAN端口名称</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.84%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_p07131814493">VLAN端口的名称。</p>
+<div class="note" id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_note79282232714"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_ul881010119281"><li id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_li12974201916289">VLAN端口名称总长度不超过13位。</li><li id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_li12810161122815">VLAN端口名称只能输入小写英文字母或数字，且以“.”+“VLAN ID”结束。</li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_row1832016519448"><td class="cellrowborder" valign="top" width="16.16%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_p178161114174411">VLAN ID</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.84%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_p78169147446">使用该VLAN端口的VLAN的ID。取值范围1~4094。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_row81351371099"><td class="cellrowborder" valign="top" width="16.16%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_p1413513372913">配置IP</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.84%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_p513513715919">启用“配置IP”，设置该VLAN端口的IP地址和子网掩码/前缀。</p>
+<ul id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_ul116175479336"><li id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_li1261784703311">当IP地址为IPv4时，输入对应的子网掩码。</li><li id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_li196171147143318">当IP地址为IPv6时，输入对应的前缀。</li></ul>
+<div class="note" id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_note6591930315"><span class="notetitle"> 说明： </span><div class="notebody"><p id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_p18701199153110">单击“增加”，可以为VLAN端口配置第二个IP地址。</p>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="ZH-CN_TOPIC_0000002206980757__fc_gud_0033_4_zh-cn_topic_0000002200061385_zh-cn_topic_0000002050434918_zh-cn_topic_0000001269661172_li51714504913"><span>单击“确定”。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000002171380202.html">复制openGauss/磐维CMDB数据库副本（适用于OceanProtect E6000备份一体机）</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

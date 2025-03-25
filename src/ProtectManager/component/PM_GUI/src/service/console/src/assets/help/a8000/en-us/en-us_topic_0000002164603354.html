@@ -1,0 +1,78 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 4: Enabling Log Mode for the MySQL/MariaDB/GreatSQL Database">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164603390.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="documenttype" content="usermanual">
+<meta name="prodname" content="csbs">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164603354">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 4: Enabling Log Mode for the MySQL/MariaDB/GreatSQL Database</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164603354"></a><a name="EN-US_TOPIC_0000002164603354"></a>
+
+<h1 class="topictitle1">Step 4: Enabling Log Mode for the MySQL/MariaDB/GreatSQL Database</h1>
+<div><p>Before executing a MySQL/MariaDB/GreatSQL backup job, you need to enable the log mode for the MySQL/MariaDB/GreatSQL database. Otherwise, resources fail to be connected.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to the MySQL/MariaDB/GreatSQL database as user <strong>root</strong>.</span><p><pre class="screen">mysql -uroot -p<em>Password</em></pre>
+</p></li><li><span>Run the following command to check whether the log mode is enabled for the MySQL/MariaDB/GreatSQL database:</span><p><pre class="screen">show variables like 'log_bin';</pre>
+<p>If <strong>Value</strong> is <strong>ON</strong> in the command output, the log mode is enabled.</p>
+<pre class="screen">+-------------+-----+
+|Variable_name|Value|
++-------------+-----+
+|   log_bin   |  ON |
++-------------+-----+
+1 row in set(0.00 sec)</pre>
+</p></li><li><span>Run the following command to check whether the log mode of the MySQL/MariaDB/GreatSQL database is <strong>ROW</strong>:</span><p><pre class="screen">show variables like 'binlog_format';</pre>
+<p>If the <strong>Value</strong> is <strong>ROW</strong> in the command output, the log mode is <strong>ROW</strong>.</p>
+<pre class="screen">+-------------+-----+
+|Variable_name|Value|
++-------------+-----+
+|binlog_format| ROW |
++-------------+-----+
+1 row in set(0.00 sec)</pre>
+</p></li><li><span>Perform this step if the log mode is disabled or not set to <strong>ROW</strong>. Otherwise, skip this step.</span><p><ol type="a"><li id="EN-US_TOPIC_0000002164603354__li45055762116"><a name="EN-US_TOPIC_0000002164603354__li45055762116"></a><a name="li45055762116"></a>Log in to the host where the MySQL/MariaDB/GreatSQL database instance is located.</li><li>Run the <strong>vi /etc/my.cnf</strong> command to open the <strong>my.cnf</strong> configuration file and add the following content under <strong>[mysqld]</strong>:<pre class="screen">log_bin = mysql_bin
+binlog_format = ROW
+server-id=<em>1</em></pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p><strong>server-id</strong> is a user-defined identifier used to distinguish server instances. In the cluster scenario, ensure that the value of <strong>server-id</strong> of each node is a unique positive integer.</p>
+</div></div>
+</li><li id="EN-US_TOPIC_0000002164603354__li89011613185619"><a name="EN-US_TOPIC_0000002164603354__li89011613185619"></a><a name="li89011613185619"></a>Run the following commands to restart the MySQL/MariaDB/GreatSQL service.<ul><li>Restarting the MySQL/GreatSQL service<pre class="screen">systemctl restart mysql</pre>
+</li><li>Restarting the MariaDB service<pre class="screen">systemctl restart mariadb</pre>
+</li></ul>
+</li><li>In the cluster scenario, perform <a href="#EN-US_TOPIC_0000002164603354__li45055762116">4.a</a> to <a href="#EN-US_TOPIC_0000002164603354__li89011613185619">4.c</a> on all nodes.</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164603390.html">Backing Up the MySQL/MariaDB/GreatSQL Database</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

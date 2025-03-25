@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="hive_00011.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -39,10 +39,10 @@
 
 <h1 class="topictitle1">步骤3：注册Hive集群</h1>
 <div><p>执行Hive备份恢复前，需要将Hive集群注册至<span>OceanProtect</span>。</p>
-<div class="section" id="hive_00015__section10758914153313"><a name="hive_00015__section10758914153313"></a><a name="section10758914153313"></a><h4 class="sectiontitle">前提条件</h4><ul><li>注册Hive集群前，请确保已获取到以下文件。本节以大数据平台为FusionInsight 6.5.1为例说明，不同平台操作可能存在差异，可查看对应大数据平台的产品文档。<ol><li>使用浏览器，登录FusionInsight Manager。</li><li>单击首页页面左侧的<span><img src="zh-cn_image_0000001792521278.png"></span>，下载客户端。</li><li>解压下载到的客户端，获取以下文件：<ul><li>../Hive/config/hiveclient.properties文件</li><li>../Hive/config/hive-site.xml文件</li><li>../Hive/config/core-site.xml文件</li><li>../Hdfs/config/hdfs-site.xml文件</li></ul>
-</li></ol>
+<div class="section" id="hive_00015__section10758914153313"><a name="hive_00015__section10758914153313"></a><a name="section10758914153313"></a><h4 class="sectiontitle">前提条件</h4><ul><li>注册Hive集群前，请确保已获取到以下文件。本节以大数据平台为FusionInsight Manager 8.2.0为例说明，不同平台操作可能存在差异，可查看对应大数据平台的产品文档。<ol><li>使用浏览器，登录FusionInsight Manager。</li><li>选择“集群 &gt; <em id="hive_00015__zh-cn_topic_0000001792361418_i59334573343">待操作集群的名称</em> &gt; 概览 &gt; 更多 &gt; 下载客户端”，继续在当前页面选择“仅配置文件”下载Hive和HDFS客户端配置文件压缩包。</li><li>解压下载到的Hive客户端配置文件压缩包，获取以下文件：<ul><li>../Hive/config/hiveclient.properties文件</li><li>../Hive/config/hive-site.xml文件</li><li>../Hive/config/core-site.xml文件</li></ul>
+</li><li>解压下载到的HDFS客户端配置文件压缩包，获取../HDFS/config/hdfs-site.xml文件</li></ol>
 <div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>当大数据平台为星环大数据（TDH）时，“jaas.conf”和“hive-site.xml”配置文件的获取方法如下（此处以TDH 8.0.2版本为例说明，不同版本的操作可能存在差异，可查看Transwarp Data Hub产品文档进行操作）。</p>
-<ol><li>使用浏览器，登录Transwarp Data Hub。</li><li>选择“仪表盘 &gt; 集群”，在集群界面的服务列表页签单击在星环大数据（TDH）配置的Hive集群名。</li><li>在<span style="color:#192239;">H</span>ive集群页面右上方选择<span><img src="zh-cn_image_0000001839240593.png"></span>图标， 单击“下载服务配置”，在下载得到的压缩包中获取“jaas.conf”、“hive-site.xml”。</li><li>选择“仪表盘 &gt; 集群”，在集群界面的服务列表页签单击在星环大数据（TDH）配置的HDFS集群名。</li><li>在<span style="color:#192239;">HDFS</span>集群页面右上方选择<span><img src="zh-cn_image_0000001792521282.png"></span>图标， 单击“下载服务配置”，在下载得到的压缩包中获取“core-site.xml”、“hdfs-site.xml”。</li><li>删除core-site.xml文件中的以下内容。<pre class="screen">&lt;property&gt;
+<ol><li>使用浏览器，登录Transwarp Data Hub。</li><li>选择“仪表盘 &gt; 集群”，在集群界面的服务列表页签单击在星环大数据（TDH）配置的Hive集群名。</li><li>在<span style="color:#192239;">H</span>ive集群页面右上方选择<span><img src="zh-cn_image_0000002164605802.png"></span>图标， 单击“下载服务配置”，在下载得到的压缩包中获取“jaas.conf”、“hive-site.xml”。</li><li>选择“仪表盘 &gt; 集群”，在集群界面的服务列表页签单击在星环大数据（TDH）配置的HDFS集群名。</li><li>在<span style="color:#192239;">HDFS</span>集群页面右上方选择<span><img src="zh-cn_image_0000002199972121.png"></span>图标， 单击“下载服务配置”，在下载得到的压缩包中获取“core-site.xml”、“hdfs-site.xml”。</li><li>删除core-site.xml文件中的以下内容。<pre class="screen">&lt;property&gt;
     &lt;name&gt;hadoop.security.group.mapping.ldap.bind.password.file&lt;/name&gt;
     &lt;value&gt;/etc/hdfs1/conf/ldap-conn-pass.txt&lt;/value&gt;
 &lt;/property&gt;</pre>
@@ -50,7 +50,7 @@
 </div></div>
 </li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="hive_00015__li0198134611381"><span>选择<span class="uicontrol" id="hive_00015__zh-cn_topic_0000001839142377_uicontrol186516504391">“<span id="hive_00015__zh-cn_topic_0000001839142377_text8651165012398">保护</span> &gt; 大数据 &gt; Hive”</span>。</span></li><li><span>在<span class="uicontrol">“<span>集群</span>”</span>页面，单击<span class="uicontrol">“<span>注册</span>”</span>，注册Hive集群。</span><p><p>Hive集群注册信息如<a href="#hive_00015__table164432003147">表1</a>所示。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="hive_00015__li0198134611381"><span>选择<span class="uicontrol" id="hive_00015__zh-cn_topic_0000002199964685_uicontrol186516504391">“<span id="hive_00015__zh-cn_topic_0000002199964685_text8651165012398">保护</span> &gt; 大数据 &gt; Hive”</span>。</span></li><li><span>在<span class="menucascade">“<span class="uicontrol">集群</span>”</span>页面，单击<span class="uicontrol">“<span>注册</span>”</span>，注册Hive集群。</span><p><p>Hive集群注册信息如<a href="#hive_00015__table164432003147">表1</a>所示。</p>
 
 <div class="tablenoborder"><a name="hive_00015__table164432003147"></a><a name="table164432003147"></a><table cellpadding="4" cellspacing="0" summary="" id="hive_00015__table164432003147" frame="border" border="1" rules="all"><caption><b>表1 </b>Hive集群注册信息</caption><colgroup><col style="width:25.009999999999998%"><col style="width:74.99%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.009999999999998%" id="mcps1.3.3.2.2.2.2.2.3.1.1"><p>参数</p>
 </th>
@@ -95,7 +95,7 @@
 <tr><td class="cellrowborder" valign="top" width="25.009999999999998%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p>Hive版本</p>
 </td>
 <td class="cellrowborder" valign="top" width="74.99%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Hive的版本号。</p>
-<p>以FusionInsight 6.5.1版本为例说明如何查看Hive版本号：</p>
+<p>以FusionInsight Manager 8.2.0版本为例说明如何查看Hive版本号：</p>
 <ol type="a"><li id="hive_00015__li0580145917135"><a name="hive_00015__li0580145917135"></a><a name="li0580145917135"></a>使用浏览器，登录FusionInsight Manager。</li><li>选择<span class="uicontrol">“集群 &gt; Hive”</span>，查看Hive的版本号。</li></ol>
 <div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>当大数据平台为星环大数据（TDH），大数据平台版本为8.X或6.X时，Hive版本为1.2.0。</p>
 </div></div>
@@ -110,7 +110,7 @@
 <tr><td class="cellrowborder" valign="top" width="25.009999999999998%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span>用户名</span></p>
 </td>
 <td class="cellrowborder" valign="top" width="74.99%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>当<span class="uicontrol">“<span>认证模式</span>”</span>选择<span class="uicontrol">“<span>Simple认证</span>”</span>时，才需要配置该参数。</p>
-<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>该用户需要对备份的数据库具备SHOW_DATABASE权限，对备份的表具备SELECT权限，对恢复的数据库具备CREATE和SHOW_DATABASE权限，对恢复的表具备CREATE、DROP、ALTER和SELECT权限。</li><li>该用户需要对创建备份集时指定的元数据临时存储路径具备读、写和执行权限，对备份的数据库表的数据所在的目录及下层文件和目录具有读和执行权限，对恢复时指定的元数据临时存储路径具备读、写和执行权限，对恢复到目标数据库表的数据所在的目录具有读、写和执行权限，对表元数据、表数据所在目录具备读、写和执行权限。</li></ul>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>配置为大数据平台人机用户名称。</li><li>该用户需要对备份的数据库具备SHOW_DATABASE权限，对备份的表具备SELECT权限，对恢复的数据库具备CREATE和SHOW_DATABASE权限，对恢复的表具备CREATE、DROP、ALTER和SELECT权限。</li><li>该用户需要对创建备份集时指定的元数据临时存储路径具备读、写和执行权限，对备份的数据库表的数据所在的目录及下层文件和目录具有读和执行权限，对恢复时指定的元数据临时存储路径具备读、写和执行权限，对恢复到目标数据库表的数据所在的目录具有读、写和执行权限，对表元数据、表数据所在目录具备读、写和执行权限。</li></ul>
 </div></div>
 </td>
 </tr>
@@ -128,10 +128,10 @@
 </div></div>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="25.009999999999998%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span>代理主机</span></p>
+<tr><td class="cellrowborder" valign="top" width="25.009999999999998%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p>客户端</p>
 </td>
-<td class="cellrowborder" valign="top" width="74.99%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>选择执行数据保护的代理主机。</p>
-<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>不允许将同一台代理主机分配给多个配置了不同Kerberos认证的大数据集群或不同认证模式的大数据集群，否则会导致备份/恢复任务失败。</p>
+<td class="cellrowborder" valign="top" width="74.99%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>选择执行数据保护的客户端所在主机。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>不允许将同一台客户端所在主机分配给多个配置了不同Kerberos认证的大数据集群或不同认证模式的大数据集群，否则会导致备份/恢复任务失败。</p>
 </div></div>
 </td>
 </tr>
@@ -172,13 +172,13 @@
 <tr><td class="cellrowborder" valign="top" width="23.21%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span>主体名</span></p>
 </td>
 <td class="cellrowborder" valign="top" width="76.79%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>Kerberos认证的主体名。</p>
-<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>配置为Kerberos服务器上已配置的主体名。</li><li>该主体名需要对备份的数据库具备SHOW_DATABASE权限，对备份的表具备SELECT权限，对恢复的数据库具备CREATE和SHOW_DATABASE权限，对恢复的表具备CREATE、DROP、ALTER和SELECT权限。</li><li>该主体名需要对创建备份集时指定的元数据临时存储路径具备读、写和执行权限，对备份的数据库表的数据所在的目录及下层文件和目录具有读和执行权限，对恢复时指定的元数据临时存储路径具备读、写和执行权限，对恢复到目标数据库表的数据所在的目录具有读、写和执行权限，对表元数据、表数据所在目录具备读、写和执行权限。</li></ul>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>配置为大数据平台人机用户名称。</li><li>该主体需要对备份的数据库具备SHOW_DATABASE权限，对备份的表具备SELECT权限，对恢复的数据库具备CREATE和SHOW_DATABASE权限，对恢复的表具备CREATE、DROP、ALTER和SELECT权限。</li><li>该主体需要对创建备份集时指定的元数据临时存储路径具备读、写和执行权限，对备份的数据库表的数据所在的目录及下层文件和目录具有读和执行权限，对恢复时指定的元数据临时存储路径具备读、写和执行权限，对恢复到目标数据库表的数据所在的目录具有读、写和执行权限，对表元数据、表数据所在目录具备读、写和执行权限。</li></ul>
 </div></div>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="23.21%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span>配置方式</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="76.79%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><div class="p">Kerberos认证方式，与Kerberos服务器的配置保持一致。Kerberos支持以下两种认证方式：<ul><li><span>密码</span>：通过主体名+密码完成身份认证。</li><li><span>Keytab文件</span>：通过主体名+keytab文件完成身份认证。<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>当大数据平台为MRS时，由于MRS部分版本的问题，使用密码认证可能会导致Hive集群注册失败。因此，推荐使用keytab文件认证方式。</p>
+<td class="cellrowborder" valign="top" width="76.79%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><div class="p">Kerberos认证方式，与Kerberos服务器的配置保持一致。Kerberos支持以下两种认证方式：<ul><li><span>密码</span>：通过主体名+密码完成身份认证。</li><li><span>Keytab文件</span>：通过主体名+keytab文件完成身份认证。<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>当大数据平台为MRS（MapReduce Service）时，由于MRS部分版本的问题，使用密码认证可能会导致Hive集群注册失败。因此，推荐使用keytab文件认证方式。</p>
 </div></div>
 </li></ul>
 </div>
@@ -186,7 +186,8 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="23.21%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span>配置文件</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="76.79%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>Kerberos认证过程中使用的<span class="filepath">“.conf”</span>配置文件（如：krb5.conf）。请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000001792361534.png"></span>上传至管理界面。</p>
+<td class="cellrowborder" valign="top" width="76.79%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>Kerberos认证过程中使用的<span class="filepath">“.conf”</span>配置文件（如：krb5.conf）。请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000002164765518.png"></span>上传至管理界面。</p>
+<p><span id="hive_00015__ph64311014212">以MRS产品为例，具体获取方法可以参考对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">《MapReduce Service 产品文档》</a>的“导出认证凭据文件”章节。</span></p>
 <div class="p">由于Kerberos自身的问题，当配置文件中存在<span class="uicontrol">“renew_lifetime”</span>参数时，需将其注释，否则可能导致注册失败。如：<pre class="screen">#renew_lifetime = 7d</pre>
 </div>
 </td>
@@ -205,7 +206,8 @@
 <tr><td class="cellrowborder" valign="top" width="23.21%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p><span>Keytab文件</span></p>
 </td>
 <td class="cellrowborder" valign="top" width="76.79%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p>Kerberos认证过程中使用的<span class="filepath">“.keytab”</span>文件（如：krb5.keytab）。当<span class="uicontrol">“<span>配置方式</span>”</span>选择<span class="uicontrol">“<span>Keytab文件</span>”</span>时，才需要配置该参数。</p>
-<p>请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000001839240589.png"></span>上传至管理界面。</p>
+<p><span>以MRS产品为例，具体获取方法可以参考对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">《MapReduce Service 产品文档》</a>的“导出认证凭据文件”章节。</span></p>
+<p>请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img src="zh-cn_image_0000002200006557.png"></span>上传至管理界面。</p>
 </td>
 </tr>
 </tbody>

@@ -41,7 +41,7 @@
         ></textarea>
       </lv-form-control>
     </lv-form-item>
-    <lv-form-item>
+    <lv-form-item *ngIf="!isDistributed">
       <lv-form-label>
         {{ 'system_parallel_data_storage_label' | i18n }}
         <i
@@ -141,7 +141,7 @@
 </div>
 
 <ng-template #sourceOperateTpl let-data let-selecetd="selection" let-paginator="paginator" let-panel="panel">
-  
+
 </ng-template>
 
 <ng-template #targetOperateTpl let-data let-paginator="paginator" let-panel="panel">

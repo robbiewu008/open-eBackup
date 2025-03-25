@@ -1,0 +1,66 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Active Directory和Exchange单机合并部署场景下恢复用户邮箱数据">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="ActiveDirectory-00084.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ActiveDirectory-00093">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Active Directory和Exchange单机合并部署场景下恢复用户邮箱数据</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ActiveDirectory-00093"></a><a name="ActiveDirectory-00093"></a>
+
+<h1 class="topictitle1">Active Directory和Exchange单机合并部署场景下恢复用户邮箱数据</h1>
+<div><p>Active Directory用户恢复后，需要在生产端更新用户邮箱状态，并创建新的Active Directory用户与恢复后的邮箱建立绑定关系，以验证恢复后的用户邮箱数据。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>查询待恢复的邮箱及其绑定的旧用户信息。</span><p><ol type="a"><li>管理员登录目标Exchange Server数据库所在的客户端。</li><li>打开Exchange Management Shell。</li><li>执行以下命令。<pre class="screen">Get-Mailbox -Identity "<em>邮箱地址</em>" | Select DisplayName, Alias, PrimarySmtpAddress, UserPrincipalName, OrganizationalUnit, Database, RecipientType, HiddenFromAddressListsEnabled</pre>
+<p>以Windows Server 2016为例，回显示例如下：</p>
+<p><span><img src="zh-cn_image_0000002200010845.png"></span></p>
+</li></ol>
+</p></li><li id="ActiveDirectory-00093__li208271820145314"><a name="ActiveDirectory-00093__li208271820145314"></a><a name="li208271820145314"></a><span>对查询到的Active Directory用户进行恢复，具体操作请参见<a href="ActiveDirectory-00066.html">单域控制器场景恢复Active Directory的对象</a>。</span><p><p>此时登录恢复后的邮箱时会报错，参见步骤<a href="#ActiveDirectory-00093__li1307813125314">3</a>~<a href="#ActiveDirectory-00093__li1949012592325">4</a>完成邮箱数据的恢复。</p>
+</p></li><li id="ActiveDirectory-00093__li1307813125314"><a name="ActiveDirectory-00093__li1307813125314"></a><a name="li1307813125314"></a><span>恢复完成后，执行以下命令来清除旧用户与邮箱的绑定关系。</span><p><pre class="screen">Disable-Mailbox -Identity "<em>用户名</em>"</pre>
+<p>以Windows Server 2016为例，回显示例如下：</p>
+<p><span><img src="zh-cn_image_0000002164769854.png"></span></p>
+</p></li><li id="ActiveDirectory-00093__li1949012592325"><a name="ActiveDirectory-00093__li1949012592325"></a><a name="li1949012592325"></a><span>建立<a href="#ActiveDirectory-00093__li208271820145314">步骤2</a>恢复的用户与邮箱之间的绑定关系。</span><p><div class="p"><ol type="a"><li>登录Exchange邮箱的管理界面，登录地址：https://管理IP/ecp。</li><li>在导航栏选择<span class="uicontrol">“收件人”</span>，选择“邮箱”页签。</li><li>单击<span><img src="zh-cn_image_0000002200010857.png"></span>图标，选择“连接邮箱”。<p>系统弹出“连接邮箱”对话框。</p>
+</li><li>选择服务器后在下方选择待连接的邮箱。</li><li>单击<span><img src="zh-cn_image_0000002200096425.png"></span>图标进行连接操作。<p>系统弹出提示信息。</p>
+</li><li>选择“是，连接到上面显示的用户账户”。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>当选择“不，我想连接到其他用户账户”时，在弹出的对话框中选择需要连接的用户账户。</p>
+</div></div>
+</li><li>单击<span class="uicontrol">“完成”</span>。</li></ol>
+</div>
+</p></li><li><span>查看邮箱并登录。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="ActiveDirectory-00084.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

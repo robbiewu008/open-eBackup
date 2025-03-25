@@ -1,0 +1,74 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复虚拟机至原位置新机，恢复成功但虚拟机启动异常">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="vmware_gud_0115.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="vmware_gud_0131">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复虚拟机至原位置新机，恢复成功但虚拟机启动异常</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="vmware_gud_0131"></a><a name="vmware_gud_0131"></a>
+
+<h1 class="topictitle1">恢复虚拟机至原位置新机，恢复成功但虚拟机启动异常</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>基于全量备份副本恢复VMware虚拟机，恢复至原位置新机后，恢复成功且新虚拟机开机成功，但系统出现以下异常之一：</p>
+<ul><li>无法进入操作系统。进入操作系统过程中存在类似如下回显信息，该回显表示无法挂载/dev/sdc1分区，实际过程中可能是其他设备。<pre class="screen">EXT4-fs (sdc1): no journal found</pre>
+</li><li>系统进入紧急模式。在紧急模式下，执行<strong>journal -p err</strong>命令，出现类似如下回显信息，该回显表示无法挂载boot分区。<pre class="screen">failed to mount /boot</pre>
+</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>全量副本中存在无法被成功挂载的磁盘，原因是该磁盘的第一个块组中的inode信息被修改。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li><span>确认无法进入操作系统的原因是否为：虚拟机中存在数据盘或系统盘无法被挂载。</span><p><div class="p">本节以/dev/sdc1设备为例进行说明，实际过程中可能是其他设备。<ol type="a"><li>登录受保护的虚拟机，根据提示进入维护模式。</li><li>执行以下命令查看存在问题的磁盘是否已设置为开机自动挂载。<pre class="screen">cat /etc/fstab</pre>
+<p>存在类似如下回显，则表示磁盘已设置自动挂载。</p>
+<pre class="screen">/dev/sdc1    /opt/hr/sdc1                 ext3     defaults       0 0</pre>
+</li><li>执行以下命令查看该设备是否已挂载。<pre class="screen">mount | grep "dev/sd"</pre>
+<p>如果不存在/dev/sdc1的挂载信息，则说明该磁盘未被挂载。</p>
+</li><li>执行以下命令查看该设备是否存在。<pre class="screen">fdisk -l | grep "<em>dev/sdc1</em>"</pre>
+<p>如果不存在任何回显信息，则表示不存在该磁盘。</p>
+</li><li>如果存在该磁盘且磁盘未被挂载，则执行<a href="#vmware_gud_0131__li13985042204812">2</a>。否则联系技术支持协助解决。</li></ol>
+</div>
+</p></li><li id="vmware_gud_0131__li13985042204812"><a name="vmware_gud_0131__li13985042204812"></a><a name="li13985042204812"></a><span>执行以下命令恢复磁盘。该过程可能会比较耗时，请耐心等待。</span><p><ul><li>xfs文件系统，执行以下命令：<pre class="screen">xfs_repair -L <em>/dev/sdc1</em></pre>
+<pre class="screen">xfs_repair <em>/dev/sdc1</em></pre>
+</li><li>其他文件系统，执行以下命令：<pre class="screen">fsck -v <em>/dev/sdc1</em></pre>
+</li></ul>
+</p></li><li><span>执行以下命令重启虚拟机。</span><p><pre class="screen">reboot</pre>
+</p></li><li><span>执行以下命令查看磁盘是否挂载成功。</span><p><pre class="screen">mount | grep "<em>/dev/sdc1</em>"</pre>
+<p>正常进入操作系统后，且存在/dev/sdc1的挂载信息，则表示故障修改成功。</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="vmware_gud_0115.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

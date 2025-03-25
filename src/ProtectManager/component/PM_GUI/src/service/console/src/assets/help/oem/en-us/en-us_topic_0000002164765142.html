@@ -1,0 +1,254 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Managing SQL Server Database Copies">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200006169.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164765142">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Managing SQL Server Database Copies</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164765142"></a><a name="EN-US_TOPIC_0000002164765142"></a>
+  <h1 class="topictitle1">Managing SQL Server Database Copies</h1>
+  <div>
+   <p>This section describes the operations that you can perform on copy data on <span>product</span>.</p>
+   <p>Log in to the management page and choose <span class="uicontrol"><b><span id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002199964685_text1939210224272"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002199964685_text439314220278"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002199964685_text14652358184918"><strong>Databases</strong></span> &gt; <span id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002199964685_text6385151219337"><strong>SQL Server</strong></span></b></span> to go to the SQL Server copy page.</p>
+   <ul>
+    <li>Click <span class="uicontrol"><b>Resources</b></span> to perform operations by resource. Operations on this page are performed on replication copies of the current resource. Perform the following operations in the cluster where the replication copies reside. <p><a href="#EN-US_TOPIC_0000002164765142__en-us_topic_0000001839143185_table108701649347">Table 1</a> describes the related operations.</p>
+     <div class="tablenoborder">
+      <a name="EN-US_TOPIC_0000002164765142__en-us_topic_0000001839143185_table108701649347"></a><a name="en-us_topic_0000001839143185_table108701649347"></a>
+      <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164765142__en-us_topic_0000001839143185_table108701649347" frame="border" border="1" rules="all">
+       <caption>
+        <b>Table 1 </b>Operations related to replication copies
+       </caption>
+       <colgroup>
+        <col style="width:21.32%">
+        <col style="width:47.339999999999996%">
+        <col style="width:31.34%">
+       </colgroup>
+       <thead align="left">
+        <tr>
+         <th align="left" class="cellrowborder" valign="top" width="21.32%" id="mcps1.3.3.1.3.2.4.1.1"><p>Operation</p></th>
+         <th align="left" class="cellrowborder" valign="top" width="47.339999999999996%" id="mcps1.3.3.1.3.2.4.1.2"><p>Description</p></th>
+         <th align="left" class="cellrowborder" valign="top" width="31.34%" id="mcps1.3.3.1.3.2.4.1.3"><p>Navigation Path</p></th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>Creating protection for replication copies</p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to periodically replicate or archive replication copies.</p> <p><strong>Note</strong></p> <p>If no replication copy is generated for the selected resource, you cannot associate an SLA with the resource for protection.</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>In the row of the target resource, choose <strong>More</strong> &gt; <span><strong>Protect</strong></span> and associate a replication SLA or an archive SLA to replicate or archive replication copies.</p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>Modifying the SLA associated with replication copies</p> <p></p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to modify the SLA associated with replication copies.</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>In the row of the target resource, choose <strong>More</strong> &gt; <span><strong>Modify Protection</strong></span> and associate a new SLA with replication copies.</p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>Removing protection for replication copies</p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to remove the protection plan for replication copies when they no longer need to be protected. After removal, the system cannot protect these replication copies.</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>In the row of the target resource, choose <strong>More</strong> &gt; <span><strong>Remove Protection</strong></span>.</p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>Activating protection for replication copies</p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to activate a disabled protection plan for replication copies. After the protection plan is activated, the system protects replication copies based on the protection plan.</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>In the row of the target resource, choose <strong>More</strong> &gt; <span><strong>Activate Protection</strong></span>.</p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>Disabling protection for replication copies</p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to disable the protection plan if the replication copies no longer require periodic protection. After the protection plan is disabled, the system does not execute automatic protection jobs of these replication copies.</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>In the row of the target resource, choose <strong>More</strong> &gt; <span><strong>Disable Protection</strong></span>.</p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>Performing manual replication for replication copies</p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to replicate a replication copy immediately.</p> <p><strong>Note</strong></p> <p>Before performing this operation, ensure that an SLA based on replication copies has been created and used to create protection for the corresponding resource.</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>In the row of the target resource, choose <strong>More</strong> &gt; <span><strong>Manually Replicate</strong></span>.</p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 ">
+          <div class="p">
+           Changing owners
+           <div class="note" id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_note6966434109">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_en-us_topic_0000002200147037_p1816719214566"><span id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_en-us_topic_0000002200147037_ph206615454589">This function is available only in 1.6.0 and later versions.</span></p>
+            </div>
+           </div>
+          </div></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to change the owner for all generated copies of a resource and switch the quota occupied by the copies to a new owner.</p>
+          <div class="p">
+           <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b171371017184014">Note</strong>
+           <ul id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_ul1839631171411">
+            <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li5396121118149">Only the system administrator has the permission to change owners.</li>
+            <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li2895912181415">You can only change the owner to a user of the <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b5815111610301">Data Protection Administrator</strong> or custom role.</li>
+            <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li1673515714529">After the owner is changed, view the ownerships of the corresponding copies on the <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b0792324918">Copies</strong> tab page.</li>
+            <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li16142132114513">After the owner is changed for a resource, no information about the resource will be displayed under the original owner.</li>
+            <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li99441412172">After the owner is changed for a resource on the secondary cluster for replication, you need to change the value of <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b15719125718473">Replication Target User</strong> of the replication SLA associated with the resource on the primary cluster for replication to the new owner. Otherwise, the replication will fail.</li>
+           </ul>
+          </div></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>In the row of the target resource, choose <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b13543171104419">More</strong> &gt; <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b14494164121817">Modify Owner</strong>.</p></td>
+        </tr>
+       </tbody>
+      </table>
+     </div></li>
+    <li>Click <span class="uicontrol"><b>Copy</b></span> to perform operations by copy.
+     <div class="p">
+      <a href="#EN-US_TOPIC_0000002164765142__en-us_topic_0000001839143185_table51069596392">Table 2</a> describes the related operations. 
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002164765142__en-us_topic_0000001839143185_table51069596392"></a><a name="en-us_topic_0000001839143185_table51069596392"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164765142__en-us_topic_0000001839143185_table51069596392" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 2 </b>Operations related to SQL Server database copies
+        </caption>
+        <colgroup>
+         <col style="width:21.32%">
+         <col style="width:47.339999999999996%">
+         <col style="width:31.34%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="21.32%" id="mcps1.3.3.2.2.2.2.4.1.1"><p>Operation</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="47.339999999999996%" id="mcps1.3.3.2.2.2.2.4.1.2"><p>Description</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="31.34%" id="mcps1.3.3.2.2.2.2.4.1.3"><p>Navigation Path</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.2.4.1.1 ">
+           <div class="p">
+            Performing manual archiving
+            <div class="note">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p>This function is supported only in 1.6.0 and later versions.</p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.2.2.2.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to manually archive copies to the archive storage.</p> <p><strong>Note</strong></p>
+           <ul>
+            <li>Only full backup copies as well as their replication copies and cascaded replication copies can be manually archived.</li>
+            <li>When the <span id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_text1331521017584">product</span> starts to execute a manual copy archiving job, the job will fail to be executed if an interface module undergoing the job is powered off. In this case, power on the interface module and perform manual archiving again.</li>
+           </ul></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.2.2.2.2.4.1.3 "><p>In the row of the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; Manual Archive</b></span>.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.2.4.1.1 "><p>Modifying a retention policy</p></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.2.2.2.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to modify the retention period of a copy.</p> <p><strong>Note</strong></p>
+           <ul>
+            <li>The new copy retention period is calculated from the time when the modification takes effect.</li>
+            <li>When you change the copy retention period, the retention period of a full copy cannot be shorter than that of the incremental copy generated by the differential backup based on the full copy.</li>
+           </ul></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.2.2.2.2.4.1.3 "><p>In the row of the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify Retention Policy</strong></span></b></span>.</p> <p>You can set the retention period to be permanent or to <em>xx</em> days, <em>xx</em> weeks, <em>xx</em> months, or <em>xx</em> years.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.2.4.1.1 ">
+           <div class="p">
+            Performing WORM settings
+            <div class="note" id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_note15696816958">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <ul id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_ul15432342582">
+               <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li94333410589"><span id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_ph03981201700">This function is available only in 1.6.0 and later versions.</span></li>
+              </ul>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.2.2.2.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to set a copy as a WORM copy or change the WORM validity period.</p>
+           <div class="p">
+            <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b1321210121610">Note</strong>
+            <ul id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_ul731014177115">
+             <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_en-us_topic_0000002164820434_li103014415565">WORM copies cannot be deleted or their validity periods cannot be shortened.</li>
+             <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_en-us_topic_0000002164820434_li9171132315916">The custom WORM validity period cannot be longer than the copy retention period.</li>
+             <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_en-us_topic_0000002164820434_li976612319580">A WORM copy cannot be changed to a non-WORM copy within its validity period.</li>
+             <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_en-us_topic_0000002164820434_li8684112013014">If you select <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_en-us_topic_0000002164820434_b1834713017282">Same as the copy retention period</strong> for <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_en-us_topic_0000002164820434_b0211164119281">WORM Validity Period</strong> and choose to retain copies permanently, the actual WORM validity period is 20 years for the copies in snapshot format and 70 years for the copies in directory format. This is because copies in snapshot format can be retained for up to 20 years and those in directory format can be retained for up to 70 years on the backup storage.</li>
+            </ul>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.2.2.2.2.4.1.3 "><p>In the row of the target copy, choose <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b126021141612">More</strong> &gt; <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b15601112167">WORM Setting</strong>.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.2.4.1.1 "><p>Deleting a copy</p></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.2.2.2.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to delete an unnecessary or unavailable copy to release storage space.</p> <p><strong>Note</strong></p>
+           <ul>
+            <li>Before deleting a copy, ensure that the copy is no longer used for restoration.</li>
+            <li>Copies in the <span class="uicontrol"><b>Invalid</b></span> state can be deleted, and copies in the <span class="uicontrol"><b><span><strong>Normal</strong></span></b></span> state that have not been indexed or have been indexed can also be deleted. Copies in other states cannot be deleted.</li>
+            <li>If a resource has multiple copies, the last copy cannot be deleted.</li>
+            <li>If a resource has multiple copies among which only one copy is the full replication copy, the full replication copy cannot be deleted.</li>
+            <li>Copies generated by log backup cannot be deleted.</li>
+            <li>Log replication copies cannot be deleted separately.</li>
+            <li>Copies undergoing ransomware detection cannot be deleted.</li>
+           </ul></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.2.2.2.2.4.1.3 ">
+           <div class="p">
+            In the row of the target copy, choose <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b1834211431759">More</strong> &gt; <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b77349454339">Delete</strong>. Alternatively, select the copies to be deleted and click <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b1356135413335">Delete</strong> above the table.
+            <div class="note" id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_note172661250175414">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_p15266165085416">For 1.6.0 and later versions: To forcibly delete the copy data in the database after copy deletion fails, select <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b131208501576">Forcibly delete the copy data upon deletion failure</strong> in the displayed dialog box.</p>
+             </div>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.2.2.2.2.4.1.1 "><p>Performing reverse replication/cascaded replication on replication copies</p></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.2.2.2.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enabled you to replicate a replication copy to the source end for data restoration or replicate a replication copy to another cluster for remote DR.</p> <p><strong>Note</strong></p> <p>Before performing reverse replication, delete the backup copies corresponding to the replication copies from the source end. Otherwise, the replication will fail.</p></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.2.2.2.2.4.1.3 ">
+           <div class="p">
+            In the row of the target replication copy, choose <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b27822552514">More</strong> &gt; <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b184949193414">Replicate</strong>. Configure copy replication parameters.
+            <ol id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_ol15113142311175">
+             <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li0113202310179">Select <span class="uicontrol" id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_uicontrol1611634014176"><b>Replication Target Cluster</b></span>.
+              <ul id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_ul2991182216">
+               <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li3998812219">If <span class="uicontrol" id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_uicontrol630794164212"><b>Replication Target Cluster</b></span> is the source cluster, reverse replication is performed.</li>
+               <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li1419217379216">If <span class="uicontrol" id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_uicontrol118058437428"><b>Replication Target Cluster</b></span> is another cluster, cascaded replication is performed.</li>
+              </ul></li>
+             <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li8112182510382">For 1.6.0 and later versions: Select <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b554515211083">Replication Target User</strong>.</li>
+             <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li83719248152">For 1.6.0 and later versions: Enter the password of the replication target user and click <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b13499143617819">Authenticate</strong>.</li>
+             <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li222198163919">Set <strong id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_b8526141221619">Specify Target Location</strong> for replication.</li>
+             <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li1564916443171">Set the copy retention period.</li>
+             <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li6696135771714">Enable or disable deduplication and compression.<p id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_p325810594214"><a name="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li6696135771714"></a><a name="en-us_topic_0000002164660718_li6696135771714"></a>You are advised to enable these functions to improve replication efficiency.</p></li>
+             <li id="EN-US_TOPIC_0000002164765142__en-us_topic_0000002164660718_li3458142216186">Enable or disable the job failure alarm function.</li>
+            </ol>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.3.2.2.2.2.4.1.1 mcps1.3.3.2.2.2.2.4.1.2 mcps1.3.3.2.2.2.2.4.1.3 "><p>Note: The configuration for restoring a database is similar to that in <a href="en-us_topic_0000002200006173.html">Restoring a SQL Server Database</a> and is not described in this section.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div></li>
+   </ul>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200006169.html">Copies</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

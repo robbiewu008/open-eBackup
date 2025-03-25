@@ -306,7 +306,8 @@ public class ProtectionReplicationListener {
     private void checkExtraRepQuota(PolicyBo policyBo, String targetUserId, TargetClusterVo targetCluster) {
         String dpUserName = getDpUserName(policyBo.getExtParameters());
         // 1.5升级1.6默认是远端设备管理员用户信息
-        if (StringUtils.isEmpty(dpUserName) || dpUserName.equals(targetCluster.getUsername())) {
+        if (isReplicationPolicyUpgradeBeforeSix(dpUserName, targetCluster.getUsername()) &&
+                isProjectIdEmpty(targetUserId)) {
             return;
         }
         UserPageListResponse<UserResponse> allDPUser = userService.getAllDPUser(
@@ -329,6 +330,14 @@ public class ProtectionReplicationListener {
             return;
         }
             checkBackUserQuota(targetCluster, targetUser);
+    }
+
+    private boolean isReplicationPolicyUpgradeBeforeSix(String dpUserName, String targetUser) {
+        return StringUtils.isEmpty(dpUserName) || dpUserName.equals(targetUser);
+    }
+
+    private boolean isProjectIdEmpty(String projectId) {
+        return VerifyUtil.isEmpty(projectId) || "null".equals(projectId);
     }
 
     private String getDpUserName(JsonNode extParameters) {

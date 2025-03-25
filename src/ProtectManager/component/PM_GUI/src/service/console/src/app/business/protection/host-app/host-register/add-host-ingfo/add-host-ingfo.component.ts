@@ -174,10 +174,25 @@ export class AddHostIngfoComponent implements OnInit {
       }),
       sudoPassword: new FormControl(''),
       isDpcNode: new FormControl(false),
+      joinDomain: new FormControl(false),
+      rdadminPassword: new FormControl(
+        {
+          value: '',
+          disabled: true
+        },
+        {
+          validators: [
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.maxLength(255)
+          ]
+        }
+      ),
       networkInfo: this.fb.array([this.getNetworkInfo()])
     });
-
     this.listenForm();
+    this.hostFormGroup.get('joinDomain').value
+      ? this.hostFormGroup.get('rdadminPassword').enable()
+      : this.hostFormGroup.get('rdadminPassword').disable();
 
     if (!isEmpty(this.rowData)) {
       if (!isEmpty(this.rowData.networkInfo)) {
@@ -189,6 +204,11 @@ export class AddHostIngfoComponent implements OnInit {
   }
 
   listenForm() {
+    this.hostFormGroup.get('joinDomain').valueChanges.subscribe(res => {
+      res
+        ? this.hostFormGroup.get('rdadminPassword').enable()
+        : this.hostFormGroup.get('rdadminPassword').disable();
+    });
     this.hostFormGroup.get('userType').valueChanges.subscribe(res => {
       if (
         res === DataMap.userType.common.value &&

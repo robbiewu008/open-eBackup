@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="clickhouse-0039.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -41,8 +41,8 @@
 <div><p>当需要对已备份的ClickHouse数据库/表集进行恢复时，可以参考本节恢复ClickHouse数据库/表集至原位置或新位置。</p>
 <div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>ClickHouse数据库/表集副本恢复到新集群时，只支持向同构新集群的恢复。</li><li>恢复至原位置或新位置时，请确保恢复目标位置剩余空间应大于恢复副本缩减前大小，否则会恢复失败。</li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="clickhouse-0042__zh-cn_topic_0000001839142377_uicontrol164769252279">“<span id="clickhouse-0042__zh-cn_topic_0000001839142377_text1947682515279">数据利用</span> &gt; <span id="clickhouse-0042__zh-cn_topic_0000001839142377_text17476122515275">副本数据</span> &gt; <span id="clickhouse-0042__zh-cn_topic_0000001839142377_text16945959017">大数据</span> &gt; <span id="clickhouse-0042__zh-cn_topic_0000001839142377_text3314918173412">ClickHouse</span>”</span>。</span></li><li><span>您可以以ClickHouse资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据资源名称查找到需要恢复的数据库/表集，并单击资源名称。</p>
-</p></li><li><span>依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000001792543212.png"></span>，即表示该月、该天存在副本。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="clickhouse-0042__zh-cn_topic_0000002199964685_uicontrol164769252279">“<span id="clickhouse-0042__zh-cn_topic_0000002199964685_text1947682515279">数据利用</span> &gt; <span id="clickhouse-0042__zh-cn_topic_0000002199964685_text17476122515275">副本数据</span> &gt; <span id="clickhouse-0042__zh-cn_topic_0000002199964685_text16945959017">大数据</span> &gt; <span id="clickhouse-0042__zh-cn_topic_0000002199964685_text3314918173412">ClickHouse</span>”</span>。</span></li><li><span>您可以以ClickHouse资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据资源名称查找到需要恢复的数据库/表集，并单击资源名称。</p>
+</p></li><li><span>依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000002164666026.png"></span>，即表示该月、该天存在副本。</p>
 </p></li><li><span>指定副本进行恢复。</span><p><ol type="a"><li>普通恢复<ol class="substepthirdol"><li>单击需要恢复的副本所在行的<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"> <span>恢复</span></span>”</span>。</li><li>恢复ClickHouse数据库/表集至原位置或新位置。<div class="p">相关参数说明如<a href="#clickhouse-0042__table13681910173115">表1</a>。
 <div class="tablenoborder"><a name="clickhouse-0042__table13681910173115"></a><a name="table13681910173115"></a><table cellpadding="4" cellspacing="0" summary="" id="clickhouse-0042__table13681910173115" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复ClickHouse数据库或表集</caption><colgroup><col style="width:32.019999999999996%"><col style="width:67.97999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.3.2.4.2.1.1.1.2.1.2.2.3.1.1"><p>参数</p>
 </th>
@@ -69,10 +69,10 @@
 </table>
 </div>
 </div>
-</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li><li>系统弹出如下提示，确认提示内容后，单击<span class="uicontrol">“确定”</span>。<p><span><img src="zh-cn_image_0000001839182589.png"></span></p>
+</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li><li>系统弹出提示，确认提示内容后，单击<span class="uicontrol">“确定”</span>。<p></p>
 <p></p>
 </li></ol>
-</li><li>表级恢复。<ol class="substepthirdol"><li>单击需要进行表级恢复的副本所在行的<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"> <span>表级恢复</span></span>”</span>。</li><li>勾选需要恢复的表。</li><li>选择需要恢复的目标集群。相关参数说明如<a href="#clickhouse-0042__table13681910173115">表1</a>。</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li><li>系统弹出如下提示，确认提示内容后，单击<span class="uicontrol">“确定”</span>。<p><span><img src="zh-cn_image_0000001792383484.png"></span></p>
+</li><li>表级恢复。<ol class="substepthirdol"><li>单击需要进行表级恢复的副本所在行的<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"> <span>表级恢复</span></span>”</span>。</li><li>勾选需要恢复的表。</li><li>选择需要恢复的目标集群。相关参数说明如<a href="#clickhouse-0042__table13681910173115">表1</a>。</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li><li>系统弹出提示，确认提示内容后，单击<span class="uicontrol">“确定”</span>。<p></p>
 </li></ol>
 </li></ol>
 </p></li></ol>

@@ -279,7 +279,7 @@ export class TablesComponent implements OnInit {
       this.getTables(node, startPage);
       return;
     }
-    if (this.isSummary || !node.expanded || !!size(node.children)) {
+    if (this.isSummary || !node.expanded) {
       return;
     }
     this.getResource(node, startPage);

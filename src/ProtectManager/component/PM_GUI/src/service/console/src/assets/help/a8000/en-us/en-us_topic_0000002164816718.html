@@ -1,0 +1,124 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring Files (Applicable to 1.6.0 and Later Versions)">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200143389.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164816718">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring Files (Applicable to 1.6.0 and Later Versions)</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164816718"></a><a name="EN-US_TOPIC_0000002164816718"></a>
+
+<h1 class="topictitle1">Restoring Files (Applicable to 1.6.0 and Later Versions)</h1>
+<div><p>This section describes how to restore files on a VM by using the file-level restoration function.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Restoration to the original location is supported only when the original location resource corresponding to the copy exists.</li><li>The IP address of the backup network plane has been configured for the VM to which files are to be restored.</li><li>If the target VM runs the Windows OS, ensure that ports <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b0769135541619">445</strong> and <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b1726845781613">138</strong> have been enabled on the target VM. If the target VM runs the Linux OS, ensure that port <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b57656201878">22</strong> has been enabled on the target VM.</li><li>If the target VM runs the Windows OS, ensure that the CIFS service has been enabled on the VM. For details, see the <a href="https://docs.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3" target="_blank" rel="noopener noreferrer">Microsoft official website</a>.</li><li>If the target VM runs a non-Windows OS, ensure that rsync has been installed and started on the target VM and the rsync version is 3.2.5 or later.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002200057765_en-us_topic_0000002199964685_uicontrol1717665184916"><b><span id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002200057765_en-us_topic_0000002199964685_text61762584912"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002200057765_en-us_topic_0000002199964685_text101769504917"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002200057765_en-us_topic_0000002199964685_text368193113219"><strong>Cloud Platforms</strong></span> &gt; OpenStack</b></span>.</span></li><li><span>Search for copies by resource or copy. This section describes how to search for copies by resource.</span><p><p>Click the <strong>Resources</strong> tab, search for the VM to be restored by name, and click the VM name.</p>
+</p></li><li><span>Click the <span class="uicontrol"><b><span>Copy Data</span></b></span> tab and select the year, month, and day in sequence to find the copy.</span><p><p>If <span><img src="en-us_image_0000002164657062.png"></span> is displayed below a month or day, a copy is generated in the month or on the day.</p>
+</p></li><li><span>Find the copy used for restoration and click <span class="uicontrol"><b><span><strong>Copy Time</strong></span></b></span>.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164757038_p10749547154615">For the OceanProtect E6000 Appliance, when a replication copy is used for restoration, other copies of the resource cannot be replicated at the remote end.</p>
+</div></div>
+</p></li><li><span>On the copy information page, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>File-level Restoration</strong></span></b></span>. Alternatively, on the <strong>Resources</strong> tab page, locate the row that contains the target copy and choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>File-level Restoration</strong></span></b></span>.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>File-level restoration is not supported for linked files.</li><li>For 1.5.0: File-level restoration is supported only when the index status of a copy is <span class="uicontrol"><b><span><strong>Indexed</strong></span></b></span>. For 1.6.0 and later versions: Copies whose index status is <span><strong>Not indexed</strong></span> also support file-level restoration.</li></ul>
+</div></div>
+</p></li><li><span>Select the files to be restored and click <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b19415498509">Restore File</strong>.</span><p><ul id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_ul1521452811317"><li id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_li8386311313">For 1.5.0: Select the files to be restored from the directory tree.</li><li id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_li12142286316">For 1.6.0 and later versions: Set <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b175942210539">File Obtaining Mode</strong>, which can be <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b29462035125211">Select file paths from the directory tree</strong> or <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b1211515508528">Enter file paths</strong>.<div class="note" id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_note1195634711290"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_ul14956124712297"><li id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_li10562105983915">If you choose <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b15927176141018">Select file paths from the directory tree</strong> for <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b182581749797">File Obtaining Mode</strong> but no file-level mounting task has been created for the current copy, click <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b136187419443">Create Mount</strong>. You can select files from the directory tree only after the mounting is successful.</li><li id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_li1095674772911">For OceanProtect E1000, if there are more than 10,000 files in the selected directory, the system may time out, preventing you from selecting files or folders to be restored from the directory. In this case, you are advised to manually enter paths. For other models of this product, if there are more than one million files in the selected directory, the system may time out, preventing you from selecting files or folders to be restored from the directory. In this case, you are advised to manually enter paths. </li><li id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_li19956104762918">When entering a file path, enter a complete file path, for example, <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b745510458333">/opt/abc/efg.txt</strong> or <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b186591048123315">C:\abc\efg.txt</strong>. If you enter a folder path, for example, <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b15108423133414">/opt/abc</strong> or <strong id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_b13283162543410">C:\abc</strong>, all files in the folder are restored. The file name in the path is case sensitive.</li></ul>
+</div></div>
+</li></ul>
+</p></li><li><span>After selecting the file to be restored, configure the restoration. Restoration to the original or a new location is supported for file-level restoration.</span><p><p><a href="#EN-US_TOPIC_0000002164816718__table1413423417495">Table 1</a> describes the related parameters.</p>
+<p></p>
+<p></p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002164816718__table1413423417495"></a><a name="table1413423417495"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164816718__table1413423417495" frame="border" border="1" rules="all"><caption><b>Table 1 </b>File-level restoration parameters</caption><colgroup><col style="width:29.9%"><col style="width:70.1%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.9%" id="mcps1.3.3.2.7.2.4.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70.1%" id="mcps1.3.3.2.7.2.4.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.7.2.4.2.3.1.1 "><p><span><strong>Restore To</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.7.2.4.2.3.1.2 "><p>Select the original location or a new location.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.7.2.4.2.3.1.1 "><p><span><strong>Compute Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.7.2.4.2.3.1.2 "><p>When the data is restored to the original location, the location of the original compute node is displayed. This parameter is not configurable.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.7.2.4.2.3.1.1 "><p><span><strong>Target Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.7.2.4.2.3.1.2 "><p>Location of the VM to which the file is restored.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>Ensure that the OS of the target location is the same as that of the VM to be restored.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.7.2.4.2.3.1.1 "><p><span><strong>Cloud Server IP Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.7.2.4.2.3.1.2 "><p>Select the IP address of the target VM. You can manually enter the IP address for 1.6.0 and later versions.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>If the system cannot obtain the backup network IP address of the VM in <strong>Compute Location</strong>, manually enter the IP address.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.7.2.4.2.3.1.1 "><p><span><strong>Cloud Server Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="70.1%" headers="mcps1.3.3.2.7.2.4.2.3.1.2 "><div class="p">During file-level restoration, the target VM needs to verify the login credential of the <span>OceanProtect</span>. Enter a username and its password for logging in to the target VM.<ul><li>Windows OS: The default username is <strong>Administrator</strong>.</li><li>Linux OS: The default username is <strong>root</strong>.</li></ul>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_ul871974405518"><li id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_li8719444175514">The login user must have the read and write permissions on the directory to which data is to be restored on the target VM.</li><li id="EN-US_TOPIC_0000002164816718__en-us_topic_0000002164813938_li231424655513">After the restoration, the access permission on the file is the same as that of the login user.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.7.2.4.2.3.1.1 "><p><span><strong>Cloud Server Password</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.7.2.4.2.3.1.1 "><p><span><strong>OS</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.7.2.4.2.3.1.2 "><p>Select the OS of the target VM. The options are <strong>Linux</strong> and <strong>Windows</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.7.2.4.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.7.2.4.2.3.1.2 "><p>If files with the same names exist in the restoration path, you can choose to replace or skip existing files.</p>
+<ul><li><strong>Replace existing files</strong></li><li><strong>Skip existing files</strong></li><li><strong>Only replace the files older than the restoration file</strong></li></ul>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>If the access to the file with the same name on the target VM is denied, the file fails to be restored during file replacement.</p>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>Test</strong></span></b></span> and ensure that the network connection between the target VM to be restored and the <span>OceanProtect</span> is normal.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200143389.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

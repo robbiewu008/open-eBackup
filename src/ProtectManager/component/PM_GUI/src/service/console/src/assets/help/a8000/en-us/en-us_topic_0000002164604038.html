@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Updating the Authentication File After the Password of the MRS Production Environment Is Expired">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002199970449.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164604038">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Updating the Authentication File After the Password of the MRS Production Environment Is Expired</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164604038"></a><a name="EN-US_TOPIC_0000002164604038"></a>
+
+<h1 class="topictitle1">Updating the Authentication File After the Password of the MRS Production Environment Is Expired</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_p108972478341">The big data application cluster is offline.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Cause</h4><p id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_p1498733103512">The authentication file used for Kerberos authentication has expired.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Use PuTTY to log in to any node in the application cluster.</span></li><li><span>Run the following command for the configuration file to take effect:</span><p><pre class="screen" id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_screen64357411366">source /opt/hadoopclient/bigdata_env</pre>
+</p></li><li><span>Run the following command to log in to the big data production node as the Kerberos authentication principal used to register the application cluster. During the command execution, you need to enter the password of the principal name.</span><p><pre class="screen" id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_screen86164329376">kinit<em id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_i61103713717"> Principal name</em></pre>
+<div class="note" id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_note1041911385113"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_p13419638171116">If the system displays a message indicating that the password has expired, change the password as prompted. If no message is displayed indicating that the password has expired, skip the following steps and contact technical support engineers.</p>
+</div></div>
+</p></li><li><span>Log in to the MRS management page.</span></li><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_uicontrol211644662914"><b>System &gt; Permission &gt; User</b></span>. The user management page is displayed.</span></li><li id="EN-US_TOPIC_0000002164604038__en-us_topic_0000001839160545_li14407849390"><a name="EN-US_TOPIC_0000002164604038__en-us_topic_0000001839160545_li14407849390"></a><a name="en-us_topic_0000001839160545_li14407849390"></a><span>In the row that contains the target database application access user, choose <span class="uicontrol" id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_uicontrol163101192302"><b>More &gt; Download Authentication Credential</b></span> and download the configuration file and keytab file required for authentication.</span></li><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_uicontrol1039981818301"><b><span id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_text2761064366"><strong>System</strong></span> &gt; <span id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_text3497173011366"><strong>Security</strong></span> &gt; Kerberos</b></span>. The Kerberos authentication page is displayed.</span></li><li><span>In the row that contains the database name to be modified, choose <span class="uicontrol"><b>More &gt; Modify</b></span>, and replace the configuration file and keytab file with the files downloaded in <a href="#EN-US_TOPIC_0000002164604038__en-us_topic_0000001839160545_li14407849390">6</a>.</span></li><li><span>On all hosts where the client is installed, run the following command as user <strong id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_b6183125474416">root</strong> to stop the <strong id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_b93735347466">databackup.agent.jar</strong> program. Then, check the cluster status on the OceanProtect WebUI again. If the cluster status is still abnormal, contact technical support engineers.</span><p><pre class="screen" id="EN-US_TOPIC_0000002164604038__en-us_topic_0000002164765410_screen19511435385">ps -efww | grep 'databackup.agent.jar' | grep 'java' | grep -v 'grep' | awk '{print $2}' | xargs -i kill -9 {};</pre>
+</p></li></ol>
+<p></p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002199970449.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

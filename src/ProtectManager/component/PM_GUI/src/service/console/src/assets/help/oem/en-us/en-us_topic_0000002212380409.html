@@ -1,0 +1,79 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="A Backup Job Fails to Be Executed, and a Message Is Displayed in the Job Details, Indicating the Failure of Instructing Client xx to Complete the Job of Backing Up Disk xx or the Failure of Instructing Client xx to Back Up Disk xx">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002212380409">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>A Backup Job Fails to Be Executed, and a Message Is Displayed in the Job Details, Indicating the Failure of Instructing Client xx to Complete the Job of Backing Up Disk xx or the Failure of Instructing Client xx to Back Up Disk xx</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002212380409"></a><a name="EN-US_TOPIC_0000002212380409"></a>
+  <h1 class="topictitle1">A Backup Job Fails to Be Executed, and a Message Is Displayed in the Job Details, Indicating the Failure of Instructing Client xx to Complete the Job of Backing Up Disk xx or the Failure of Instructing Client xx to Back Up Disk xx</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>A backup job fails to be executed, and a message is displayed in the job details, indicating the failure of instructing client <em>xx</em> to complete the job of backing up disk <em>xx</em> or the failure of instructing client <em>xx</em> to back up disk <em>xx</em>.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p>After data is backed up using the client, disk shutdown by invoking the VMware production environment times out. As a result, the backup job fails.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol>
+     <li><span>Modify the configuration file of the product.</span><p></p>
+      <ol type="a">
+       <li>Use PuTTY to log in to the CLI of the <span>product</span> as user <strong>admin</strong> through the management IP address.</li>
+       <li>Run the following command to switch to the developer mode:<pre class="screen">change user_mode current_mode user_mode=developer</pre></li>
+       <li>Run the following command to set the timeout interval. The default timeout interval is 1800000 (30 minutes). In the example, the timeout interval is changed to 3600000 (60 minutes). You can change the timeout interval based on the site requirements.<pre class="screen">change container general namespace=dpa pod_name=infrastructure-0 container_name=om params=get.sh\scurl_url\sset_upgrade\svmware-conf\sPromiseWaitTimeout\s3600000</pre></li>
+      </ol> <p></p></li>
+     <li><span>Modify the configuration file of the host where the client is installed. <span class="uicontrol"><b>/opt</b></span> indicates the client installation directory. Replace it with the actual directory.</span><p></p>
+      <ol type="a">
+       <li>Run the following command to open the configuration file of the host where the client is installed:<pre class="screen">vi /opt/DataBackup/ProtectClient/ProtectClient-E/conf/agent_cfg.xml</pre></li>
+       <li>Change the values of <strong>vddkapi_timeout</strong> and <strong>api_invoking_time_interval</strong> from <strong>1800</strong> to <strong>3600</strong>. Value <strong>1800</strong> indicates 30 minutes, and value <strong>3600</strong> indicates 60 minutes. You can change the values based on the site requirements.</li>
+       <li>Press <strong>Esc</strong> and enter <strong>:wq</strong> to save the file.</li>
+       <li>Run the following command to restart the client service:<pre class="screen">sh /opt/DataBackup/ProtectClient/stop.sh &amp;&amp; sh /opt/DataBackup/ProtectClient/start.sh</pre></li>
+      </ol> <p></p></li>
+     <li><span>Perform the backup job again.</span><p></p>
+      <ul>
+       <li>If the job retry succeeds, no further action is required.</li>
+       <li>If the retry fails, collect logs and contact technical support engineers for assistance.</li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

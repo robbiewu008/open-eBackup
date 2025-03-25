@@ -1,0 +1,72 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="将SAP HANA数据库从应用重新注册为通用数据库后，备份失败">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="SAP_HANA_0100.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="SAP_HANA_0111">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>将SAP HANA数据库从应用重新注册为通用数据库后，备份失败</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="SAP_HANA_0111"></a><a name="SAP_HANA_0111"></a>
+  <h1 class="topictitle1">将SAP HANA数据库从应用重新注册为通用数据库后，备份失败</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>将SAP HANA数据库注册为应用进行备份后，数据库备份方式被配置为backint模式。如果将该数据库重新注册为通用数据库，会导致文件对应关系错误而备份失败。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>由于Backint配置未清除。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li id="SAP_HANA_0111__li1474324051518"><a name="SAP_HANA_0111__li1474324051518"></a><a name="li1474324051518"></a><span>使用PuTTY登录SAP HANA数据库所在主机，以单机数据库为例。</span></li>
+     <li><span>执行以下命令切换至SAP系统用户<em>“&lt;sid&gt;</em>adm<em>”</em>，以用户名<strong>s00adm</strong>为例。</span><p></p><pre class="screen">su - s00adm</pre> <p></p></li>
+     <li><span>执行以下命令，登录SAP HANA系统数据库终端系统，以端口号<strong>30013</strong>为例。</span><p></p><pre class="screen">hdbsql -i 00 -n localhost:<em>30013</em> -d SYSTEMDB -u SYSTEM -p <em>用户安装数据库时自定义的密码</em>;</pre> <p></p></li>
+     <li><span>执行以下命令，取消使用Backint的配置项。</span><p></p><pre class="screen">alter system alter configuration ('global.ini', 'SYSTEM') set ('backup', 'catalog_backup_using_backint') = 'false';
+alter system alter configuration ('global.ini', 'SYSTEM') set ('backup', 'log_backup_using_backint') = 'false';</pre> <p></p></li>
+     <li><span>退出数据库终端后，执行以下命令，删除数据库安装路径下Backint方式相关内容，以<span class="filepath">“/home/hana/shared/S00/”</span>路径为例。</span><p></p><pre class="screen">rm -rf /home/hana/shared/S00/global/hdb/opt/*</pre> <p></p></li>
+     <li><span>如果存在租户数据库，执行以下命令，进入该租户数据库的global.ini文件，以<strong>LTT</strong>数据库为例。</span><p></p><pre class="screen">vi /home/hana/shared/S00/global/hdb/custom/config/DB_LTT/global.ini</pre> <p></p></li>
+     <li><span>将catalog_backup_using_backint 值设置为false</span><p></p><p>回显示例如下：</p> <p><span><img src="zh-cn_image_0000002164828490.png"></span></p> <p></p></li>
+     <li><span>执行以下命令，停止系统数据库。</span><p></p><pre class="screen">HDB stop</pre> <p></p></li>
+     <li id="SAP_HANA_0111__li14341174571816"><a name="SAP_HANA_0111__li14341174571816"></a><a name="li14341174571816"></a><span>执行以下命令，启动系统数据库。</span><p></p><pre class="screen">HDB start</pre> <p></p></li>
+     <li><span>如果是集群场景，登录SAP HANA集群的主备节点，重复执行<a href="#SAP_HANA_0111__li1474324051518">1</a>~<a href="#SAP_HANA_0111__li14341174571816">9</a>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="SAP_HANA_0100.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>
