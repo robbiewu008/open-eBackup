@@ -20,45 +20,17 @@ import pwd
 
 from common.common import output_result_file, output_execution_result_ex, execute_cmd, execute_cmd_list, \
     execute_cmd_with_expect
-
-from common.cleaner import clear
 from common.common_models import SubJobDetails, LogDetail, SubJobModel
 from common.const import ParamConstant, SubJobPolicyEnum, SubJobPriorityEnum, CMDResult, SubJobTypeEnum, \
-    RepositoryDataTypeEnum
-from common.const import SubJobStatusEnum, DBLogLevel
+    RepositoryDataTypeEnum, SubJobStatusEnum, DBLogLevel
+from common.job_const import JobNameConst
 from common.util.checkout_user_utils import get_path_owner
-from tidb.common.const import ErrorCode, TiDBTaskType, ClusterRequiredHost, TiDBResourceKeyName
+from tidb.common.const import ErrorCode, ClusterRequiredHost, TiDBConst
 from tidb.common.tidb_param import JsonParam
-from tidb.common.tidb_common import exec_mysql_sql, get_tidb_structure, report_job_details, get_env_variable, \
-    get_status_up_role_one_host, check_roles_up, get_cluster_user, check_params_valid, query_local_business_ip
-from tidb.handle.restore.restore_common import write_progress_file, write_file_append
+from tidb.common.tidb_common import exec_mysql_sql, get_tidb_structure, report_job_details, query_local_business_ip, \
+    get_status_up_role_one_host, check_roles_up, get_cluster_user, check_params_valid
+from tidb.handle.restore.restore_common import write_file_append
 from tidb.logger import log
-
-
-class TiDBConst:
-    # 数据库常量
-    ALL_HOSTS = "%"
-    ALL_PRIVILEGE = "ALL PRIVILEGES"
-    DROP = "DROP"
-    SELECT = "SELECT"
-    BR_VERSION = "Release Version"
-    LOG_PATH = "storage"
-    LOG_STATUS = "status"
-    LOG_NORMAL = "NORMAL"
-    LOG_START_TIME = "log-min-ts"
-    LOG_END_TIME = "log-max-ts"
-    CHECK_POINT = "checkpoint[global]"
-    BACKUP_META = "backupmeta"
-    DATABASE_EXIST = 'ErrDatabasesAlreadyExisted'
-    PD_DOWN = "pd down"
-    TIDB_DOWN = "tidb down"
-    DROP_DB_FAILED = "Drop databases on target cluster failed."
-    LOG_TASK_EXIST = "Log task exist"
-    TIKV_DOWN = "tikv down"
-    TIFLASH_DOWN = "tiflash down"
-    USER_ID_CHECK_FAILED = "userid check failed"
-    CONFLICT_TABLES = "exist conflict tables"
-    ERROR_START = "Error:"
 
 
 class TiDBDataBaseFilter:
@@ -162,6 +134,7 @@ class Restore:
 
     @staticmethod
     def get_repository_paths(file_content, repository_type):
+        repositories = []
         if repository_type == RepositoryDataTypeEnum.LOG_REPOSITORY:
             repositories = file_content.get("job", {}).get("copies", [])[1].get("repositories", [])
         elif repository_type == RepositoryDataTypeEnum.DATA_REPOSITORY:
@@ -224,7 +197,7 @@ class Restore:
         return f"pid:{self._pid} jobId:{self._job_id} subjobId:{self._sub_job_id}"
 
     def get_progress(self):
-        log.info('Query restore progress!')
+        log.info(f'Query restore progress! {self.get_log_comm()}.')
         status = SubJobStatusEnum.RUNNING
         progress = 0
         progress_file = os.path.join(self._cache_area, f"progress_{self._sub_job_id}")
@@ -233,10 +206,10 @@ class Restore:
             status = SubJobStatusEnum.FAILED
             log.error(f"Progress file: {progress_file} not exist")
             return status, progress
-        log.info(f'Path exist')
+        log.info(f'Path exist, {self.get_log_comm()}.')
         with open(progress_file, "r", encoding='UTF-8') as file_stream:
             data = file_stream.read()
-            log.info(f"data: {data}")
+            log.info(f"data: {data}, {self.get_log_comm()}.")
         if 'FAILED' in data:
             status = SubJobStatusEnum.FAILED
             progress = 100
@@ -247,7 +220,7 @@ class Restore:
             progress = 100
         else:
             progress = 0
-        log.info(f'Progress is {progress}')
+        log.info(f'Progress is {progress}, {self.get_log_comm()}.')
         return status, progress
 
     def set_logdetail_with_params(self, log_label, sub_job_id, err_code=None, log_detail_param=None,
@@ -264,7 +237,7 @@ class Restore:
 
     def upload_restore_progress(self):
         while self._job_status == SubJobStatusEnum.RUNNING:
-            log.info("Start to report progress.")
+            log.info(f"Start to report progress, {self.get_log_comm()}.")
             task_status, progress = self.get_progress()
             progress_dict = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id,
                                           taskStatus=SubJobStatusEnum.RUNNING,
@@ -283,7 +256,7 @@ class Restore:
         执行前置任务：空
         @return:
         """
-        log.info("start step-2 restore_prerequisite_progress")
+        log.info(f"start step-2 restore_prerequisite_progress, {self.get_log_comm()}.")
         pre_job_status = SubJobStatusEnum.COMPLETED.value
         output = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id,
                                taskStatus=pre_job_status, progress=100, logDetail=self._logdetail)
@@ -302,7 +275,7 @@ class Restore:
             return self.gen_sub_job_full()
 
     def gen_sub_job_full(self):
-        log.info("start step-3 exec_gen_sub_job")
+        log.info(f"start step-3 exec_gen_sub_job, {self.get_log_comm()}.")
         """
         执行生成子任务
         @return:
@@ -310,7 +283,7 @@ class Restore:
         file_path = os.path.join(ParamConstant.RESULT_PATH, f"result{self._pid}")
         sub_job_array = []
 
-        log.info("gen_sub_job sub_job_01")
+        log.info(f"gen_sub_job sub_job_01, {self.get_log_comm()}.")
         job_type = SubJobPolicyEnum.FIXED_NODE.value
         job_name = TidbRestoreSubJobName.EXEC_CHECK
         job_priority = SubJobPriorityEnum.JOB_PRIORITY_1
@@ -318,7 +291,7 @@ class Restore:
         sub_job = self.build_sub_job(job_priority, job_type, job_name, node_id, None)
         sub_job_array.append(sub_job)
 
-        log.info("gen_sub_job sub_job_02")
+        log.info(f"gen_sub_job sub_job_02, {self.get_log_comm()}.")
         restore_roles = (ClusterRequiredHost.TIKV, ClusterRequiredHost.TIFLASH)
         cluster_info = json.loads(self._cluster_info_str)
         for node in cluster_info:
@@ -331,7 +304,7 @@ class Restore:
             sub_job = self.build_sub_job(job_priority, job_type, job_name, node_id, None)
             sub_job_array.append(sub_job)
 
-        log.info("gen_sub_job sub_job_03")
+        log.info(f"gen_sub_job sub_job_03, {self.get_log_comm()}.")
         job_type = SubJobPolicyEnum.FIXED_NODE.value
         job_name = TidbRestoreSubJobName.EXEC_DROP
         job_priority = SubJobPriorityEnum.JOB_PRIORITY_3
@@ -339,14 +312,14 @@ class Restore:
         sub_job = self.build_sub_job(job_priority, job_type, job_name, node_id, None)
         sub_job_array.append(sub_job)
 
-        log.info("gen_sub_job sub_job_04")
+        log.info(f"gen_sub_job sub_job_04, {self.get_log_comm()}.")
         job_type = SubJobPolicyEnum.FIXED_NODE.value
         job_name = TidbRestoreSubJobName.EXEC_RESTORE
         job_priority = SubJobPriorityEnum.JOB_PRIORITY_4
         node_id = self.tiup_uuid
         sub_job = self.build_sub_job(job_priority, job_type, job_name, node_id, None)
         sub_job_array.append(sub_job)
-        log.info(f"Sub-job splitting succeeded.sub-job :{sub_job_array}")
+        log.info(f"Sub-job splitting succeeded.sub-job :{sub_job_array}, {self.get_log_comm()}.")
         output_execution_result_ex(file_path, sub_job_array)
         return True
 
@@ -361,7 +334,7 @@ class Restore:
                                by_alias=True))
 
     def report_error_result(self, progress_file):
-        write_progress_file('FAILED', progress_file)
+        write_file_append('FAILED', progress_file)
         with open(progress_file, "r", encoding='UTF-8') as file_stream:
             data = file_stream.read()
 
@@ -391,8 +364,7 @@ class Restore:
             if not tmp_message.isspace():
                 message = tmp_message
 
-        log.info(f"data: {data}")
-        log.info(f"message: {message}")
+        log.info(f"data: {data}, message: {message}, {self.get_log_comm()}.")
         log_detail = LogDetail(logInfo="plugin_restore_subjob_fail_label", logInfoParam=[self._sub_job_id],
                                logLevel=DBLogLevel.ERROR.value, logDetail=ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL,
                                logDetailParam=["Restore", message])
@@ -401,11 +373,11 @@ class Restore:
 
     def restore_task(self):
         progress_file = os.path.join(self._cache_area, f"progress_{self._sub_job_id}")
-        log.info(f"restore_task progress_file {progress_file}")
+        log.info(f"restore_task progress_file {progress_file}, {self.get_log_comm()}.")
         try:
-            write_progress_file('START', progress_file)
+            write_file_append('START', progress_file)
         except Exception as ex:
-            log.error(f"write progress file failed {ex}")
+            log.error(f"write progress file failed {ex}, {self.get_log_comm()}.")
             return False
         sub_job_dict = {
             TidbRestoreSubJobName.EXEC_CHECK: self.sub_job_exec_check,
@@ -420,21 +392,21 @@ class Restore:
         progress_thread.daemon = True
         progress_thread.start()
         job_info = query_local_business_ip(self._nodes)
-        log.debug(f"job_info: {job_info}")
+        log.debug(f"job_info: {job_info}, {self.get_log_comm()}.")
         self.report_before_sub_job(job_info)
         # 执行子任务
         sub_job_name = get_sub_job_name(self._json_param_object)
-        log.info(f"get sub job name {sub_job_name}")
         if not sub_job_name:
+            log.error(f"Exec sub job {sub_job_name} failed, {self.get_log_comm()}.")
             return False
-        log.info(f"Exec sub job {sub_job_name} begin.{self.get_log_comm()}.")
+        log.info(f"Exec sub job {sub_job_name} begin, {self.get_log_comm()}.")
         try:
             ret = sub_job_dict.get(sub_job_name)()
         except Exception as ex:
             log.error(f"Exec sub job {sub_job_name} failed. {ex} {self.get_log_comm()}.")
             ret = False
         if not ret:
-            log.error(f"Exec sub job {sub_job_name} failed.{self.get_log_comm()}.")
+            log.error(f"Exec sub job {sub_job_name} failed. {self.get_log_comm()}.")
             log_detail = self.report_error_result(progress_file)
             report_job_details(self._pid,
                                SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
@@ -443,7 +415,7 @@ class Restore:
             progress_thread.join()
             os.remove(progress_file)
             return False
-        write_progress_file('SUCCEED', progress_file)
+        write_file_append('SUCCEED', progress_file)
         log_detail = LogDetail(logInfo="plugin_task_subjob_success_label", logInfoParam=[self._sub_job_id], logLevel=1)
         log.info(f"Exec sub job {sub_job_name} success.{self.get_log_comm()}.")
         report_job_details(self._pid, SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
@@ -453,7 +425,7 @@ class Restore:
         return True
 
     def sub_job_exec_check(self):
-        log.info(f"start step-4-1  sub job check {self._job_id} {self._sub_job_id}")
+        log.info(f"start step-4-1  sub job check, {self.get_log_comm()}.")
         progress_file = os.path.join(self._cache_area, f"progress_{self._sub_job_id}")
 
         # 记录集群用户名
@@ -476,14 +448,14 @@ class Restore:
                                        ClusterRequiredHost.TIFLASH])
         down_role = ret_host.get("down")
         if down_role:
-            write_progress_file(f"{down_role} down", progress_file)
+            write_file_append(f"{down_role} down", progress_file)
             return False
         # 校验目标集群上日志备份是否关闭
         pd_id = self.get_pd_id()
         log_task_name = self.get_log_task_name(pd_id)
         if log_task_name:
-            write_progress_file(TiDBConst.LOG_TASK_EXIST, progress_file)
-            log.error("Log task exist!")
+            write_file_append(TiDBConst.LOG_TASK_EXIST, progress_file)
+            log.error(f"Log task exist! {self.get_log_comm()}.")
             return False
         return True
 
@@ -515,12 +487,12 @@ class Restore:
                 log.error(f"The db_name {db_name} or table_name {table_name} verification fails")
                 return False
             drop_table_cmd = [f"use {db_name};", f"DROP TABLE IF EXISTS {table_name};"]
-            ret, output = exec_mysql_sql(TiDBTaskType.RESTORE, self._pid, drop_table_cmd, ip, port)
+            ret, output = exec_mysql_sql(JobNameConst.RESTORE, self._pid, drop_table_cmd, ip, port)
             if not ret:
-                log.error(f"Delete table {table_name} in db {db_name} Failed: {output}")
+                log.error(f"Delete table {table_name} in db {db_name} Failed: {output}, {self.get_log_comm()}.")
                 return False
-            log.debug(f"success drop table {table_name}")
-        log.info(f"{self._sub_job_id} Succeed delete tables!")
+            log.debug(f"success drop table {table_name}, {self.get_log_comm()}.")
+        log.info(f"Succeed delete tables! {self.get_log_comm()}.")
         return True
 
     def drop_table_granularity(self, tidb_id, sub_objects):
@@ -541,12 +513,12 @@ class Restore:
             if not database_name or not table_name:
                 return False
             if not check_params_valid(database_name, table_name):
-                log.error(f"The database_name {database_name} or table_name {table_name} verification fails")
+                log.error(f"The db name {database_name} or tab name {table_name} verify failed, {self.get_log_comm()}.")
                 return False
             drop_table_cmd = [f"use {database_name};", f"DROP TABLE IF EXISTS {table_name};"]
-            ret, output = exec_mysql_sql(TiDBTaskType.RESTORE, self._pid, drop_table_cmd, ip, port)
+            ret, output = exec_mysql_sql(JobNameConst.RESTORE, self._pid, drop_table_cmd, ip, port)
             if not ret:
-                log.error(f"Delete table {table_name} in db {database_name} Failed: {output}")
+                log.error(f"Delete table {table_name} in db {database_name} Failed: {output}, {self.get_log_comm()}.")
                 return False
             log.debug(f"success drop table {table_name}")
         log.info(f"{self._sub_job_id} Succeed delete granularity tables!")
@@ -558,7 +530,7 @@ class Restore:
         for obj in sub_objects:
             target_temp_table_name = obj.get("name", "")
             if not target_temp_table_name:
-                log.error(f"The table name is empty in subObjects({sub_objects}).")
+                log.error(f"The table name is empty in subObjects({sub_objects}), {self.get_log_comm()}.")
                 return {}
             sub_object = json.loads(target_temp_table_name.replace("'", "\""))
             log.debug(sub_object)
@@ -572,7 +544,7 @@ class Restore:
                 try:
                     tables_from_backup[database_name] = tables_pre
                 except Exception as err:
-                    log.error(f"Dic update error{err}.")
+                    log.error(f"Dic update error: {err}, {self.get_log_comm()}.")
             else:
                 tables_from_backup[database_name] = [table_name]
         return tables_from_backup
@@ -588,7 +560,13 @@ class Restore:
                 table_info = json.loads(f_content.read())
             for table_list in table_info:
                 database_name = table_list.get("db", "")
+                if not database_name:
+                    log.info(f"database_name is empty, {self.get_log_comm()}.")
+                    continue
                 table_list = table_list.get("tables", [])
+                if not table_list:
+                    log.info(f"table_list is empty, {self.get_log_comm()}.")
+                    continue
                 tables_from_backup[database_name] = table_list
         else:
             # 从pm下发参数获取
@@ -608,7 +586,7 @@ class Restore:
                 continue
             # 查询目标集群是否存在库
             list_cmd = [f'SHOW DATABASES LIKE "{key}";']
-            ret, output = exec_mysql_sql(TiDBTaskType.RESTORE, self._pid, list_cmd, ip, port)
+            ret, output = exec_mysql_sql(JobNameConst.RESTORE, self._pid, list_cmd, ip, port)
             if not ret:
                 log.error("Exec SQL failed!")
             # 目标集群没有该库
@@ -616,7 +594,7 @@ class Restore:
                 continue
             # 查询目标集群中库下的表
             list_cmd = [f"use {key};", "show tables;"]
-            ret, output = exec_mysql_sql(TiDBTaskType.RESTORE, self._pid, list_cmd, ip, port)
+            ret, output = exec_mysql_sql(JobNameConst.RESTORE, self._pid, list_cmd, ip, port)
             if not ret:
                 log.error(f"Use database {key} failed!")
                 continue
@@ -668,40 +646,38 @@ class Restore:
         ip_port = tidb_id.split(":")
         ip = ip_port[0]
         port = int(ip_port[1])
-        drop_table_cmd = "DROP TABLE IF EXISTS "
-        for key, value in db_tables.items():
-            db_name = key
-            full_tab_list = [f"{db_name}.{table}" for table in value]
-            full_tab_names = ','.join(full_tab_list)
-            if not check_params_valid(full_tab_names):
-                log.error(f"{full_tab_names} verification fails")
-                continue
-            drop_table_cmd += f"{full_tab_names},"
-        drop_table_cmd = drop_table_cmd.rstrip(",") + ";"
-        log.info("Get drop_table_cmd success.")
-        ret, output = exec_mysql_sql(TiDBTaskType.RESTORE, self._pid, drop_table_cmd, ip, port)
-        if not ret:
-            log.error(f"Delete tables Failed: {output}")
+        drop_table_cmd = []
+        for database, tables in db_tables.items():
+            if tables:
+                tab_list = [f"{database}.{table}" for table in tables]
+                tab_names = ','.join(tab_list)
+                tab_names = tab_names.rstrip(",")
+                drop_table_cmd.append(f"DROP TABLE IF EXISTS {tab_names};")
+        if drop_table_cmd:
+            log.info(f"Get drop_table_cmd: {drop_table_cmd}, {self.get_log_comm()}.")
+            ret, output = exec_mysql_sql(JobNameConst.RESTORE, self._pid, drop_table_cmd, ip, port)
+            if not ret:
+                log.error(f"Delete tables Failed: {output}")
 
     def sub_job_exec_drop(self):
-        log.info(f"start step-4-2 sub_job_exec_drop {self._job_id} {self._sub_job_id}")
+        log.info(f"start step-4-2 sub_job_exec_drop, {self.get_log_comm()}.")
         # 校验集群用户uid一致
-        log.info("start step-4-2-1 check uid.")
+        log.info(f"start step-4-2-1 check uid, {self.get_log_comm()}.")
         ret_uid = self.check_uid()
         progress_file = os.path.join(self._cache_area, f"progress_{self._sub_job_id}")
         if not ret_uid:
-            write_progress_file(TiDBConst.USER_ID_CHECK_FAILED, progress_file)
+            log.error(f"No ret_uid: {ret_uid}, {self.get_log_comm()}.")
+            write_file_append(TiDBConst.USER_ID_CHECK_FAILED, progress_file)
             return False
 
         tidb_id = self.get_tidb_id()
         if not tidb_id:
-            write_progress_file(TiDBConst.TIDB_DOWN, progress_file)
+            write_file_append(TiDBConst.TIDB_DOWN, progress_file)
             return False
-        log.debug(f"tidb_id: {tidb_id}")
+        log.debug(f"tidb_id: {tidb_id}, {self.get_log_comm()}.")
         table_info_file = "tidb_bkp_info"
         restore_full_flag, sub_objects = self.is_restore_full()
-        log.info(f"sub job exec drop full table flag: {restore_full_flag}")
-        log.info(f"sub job exec drop sub_objects: {sub_objects}")
+        log.info(f"full table flag: {restore_full_flag}, sub_objects: {sub_objects}, {self.get_log_comm()}.")
 
         # 获取备份副本中的表
         log.info("start step-4-2-2 get tables from backup copy.")
@@ -710,28 +686,34 @@ class Restore:
             log.info("No conflict tables.")
             return True
         # 获取目标集群与备份副本中冲突的表
-        log.info("start step-4-2-3 get conflict tables.")
+        log.info(f"start step-4-2-3 get conflict tables, {self.get_log_comm()}.")
         conflict_db_tables = self.get_conflict_tables(tidb_id, tables_from_backup)
         if not conflict_db_tables:
-            log.info("No conflict tables.")
+            log.info(f"No conflict tables, {self.get_log_comm()}.")
             return True
         # 上报冲突的表
-        log.info("start step-4-2-4 report conflict tables.")
+        log.info(f"start step-4-2-4 report conflict tables, {self.get_log_comm()}.")
         self.report_conflict_tables(conflict_db_tables)
         # 获取是否删除表的标记
         if_drop_table = self._json_param_object.get("job", {}).get("extendInfo", {}).get("shouldDeleteTable", "")
         if if_drop_table == IfDropTables.DROP_TABLES:
             # 上报删除表，删表后继续任务
-            log.info("start step-4-2-5-1 report delete conflict tables.")
+            log.info(f"start step-4-2-5-1 report delete conflict tables, {self.get_log_comm()}.")
             self.report_delete_tables()
-            log.info("start step-4-2-5-2  delete conflict tables.")
+            log.info(f"start step-4-2-5-2  delete conflict tables, {self.get_log_comm()}.")
             self.delete_tables(conflict_db_tables, tidb_id)
+            conflict_db_tables = self.get_conflict_tables(tidb_id, tables_from_backup)
+            if conflict_db_tables:
+                log.error(f"Delete conflict tables failed, step-4-2-5-1, {self.get_log_comm()}.")
+                write_file_append(TiDBConst.CONFLICT_TABLES, progress_file)
+                return False
+            log.info(f"Delete conflict tables success, step-4-2-5-1, {self.get_log_comm()}.")
             return True
         else:
             # 上报任务失败
-            log.info("start step-4-2-5-1 conflict tables exist, restore failed.")
+            log.info(f"start step-4-2-5-1 conflict tables exist, restore failed, {self.get_log_comm()}.")
             progress_file = os.path.join(self._cache_area, f"progress_{self._sub_job_id}")
-            write_progress_file(TiDBConst.CONFLICT_TABLES, progress_file)
+            write_file_append(TiDBConst.CONFLICT_TABLES, progress_file)
             return False
 
     def drop_tables(self, restore_full_flag, sub_objects, table_info_file, tidb_id):
@@ -751,7 +733,7 @@ class Restore:
         return tidb_id
 
     def sub_job_exec_restore(self):
-        log.info(f"start step-4-3 sub_job_exec_restore {self._job_id} {self._sub_job_id}")
+        log.info(f"start step-4-3 sub_job_exec_restore, {self.get_log_comm()}.")
         progress_file = os.path.join(self._cache_area, f"progress_{self._sub_job_id}")
         # 删除备份、恢复失败后可能生成的临时库
         tidb_id = self.get_tidb_id()
@@ -767,8 +749,8 @@ class Restore:
             restore_granularity = "table"
         pd_id = self.get_pd_id()
         if not pd_id:
-            write_progress_file(TiDBConst.PD_DOWN, progress_file)
-            log.error("All pd hosts down!")
+            write_file_append(TiDBConst.PD_DOWN, progress_file)
+            log.error(f"All pd hosts down! {self.get_log_comm()}.")
             return False
 
         restore_tidb_log_file = f"{self._cache_area}/restore_log.txt"
@@ -781,14 +763,14 @@ class Restore:
         restore_request_version_suffix = f" --check-requirements=true"
         restore_cmd += restore_request_version_suffix
         restore_cmd = f"su - {get_path_owner(self._tiup_path)} -c '{restore_cmd}'"
-        log.debug(f"Restore_cmd: {restore_cmd}")
+        log.debug(f"Restore_cmd: {restore_cmd}, {self.get_log_comm()}.")
         return_code, out_info, std_err = execute_cmd_with_expect(restore_cmd, "", None)
-        log.info(f"return_code:{return_code} out_info:{out_info}")
+        log.info(f"return_code:{return_code} out_info:{out_info}, {self.get_log_comm()}.")
         if return_code != 0:
-            log.error(f"Exec restore cmd failed! {std_err}")
+            log.error(f"Exec restore cmd failed! {std_err}, {self.get_log_comm()}.")
             if TiDBConst.ERROR_START in out_info:
                 error_msg = out_info.split(TiDBConst.ERROR_START)[1]
-                write_progress_file(error_msg, progress_file)
+                write_file_append(error_msg, progress_file)
             return False
         os.remove(restore_tidb_log_file)
         return True
@@ -807,7 +789,7 @@ class Restore:
             restore_request += ' --filter ' + table
         restore_request_suffix = f" --storage {restore_path} --log-file {restore_tidb_log_file}"
         restore_request += restore_request_suffix
-        log.debug(f"restore_request: {restore_request}")
+        log.debug(f"restore_request: {restore_request}, {self.get_log_comm()}.")
         return restore_request
 
     def get_restore_path(self):
@@ -818,9 +800,9 @@ class Restore:
         copy_id = self.get_copy_id()
         restore_path = os.path.join(self._data_path, f"tidb_{copy_id}")
         if not os.path.exists(restore_path):
-            log.error(f"copy info path not exist.")
+            log.error(f"copy info path not exist, {self.get_log_comm()}.")
             return ''
-        log.info(f"get restore path success {restore_path}")
+        log.info(f"get restore path success {restore_path}, {self.get_log_comm()}.")
         return restore_path
 
     def get_restore_tables_from_sub_objects(self):
@@ -836,7 +818,7 @@ class Restore:
         for obj in sub_objects:
             target_temp_table_name = obj.get("name", "")
             if not target_temp_table_name:
-                log.error(f"The table name is empty in subObjects({sub_objects}).")
+                log.error(f"The table name is empty in subObjects({sub_objects}), {self.get_log_comm()}.")
                 return []
             sub_object = json.loads(target_temp_table_name.replace("'", "\""))
             # 取表全路径
@@ -855,7 +837,7 @@ class Restore:
         """
         splited_list = table_name.split("/")
         if not splited_list or len(splited_list) != 3:
-            log.error(f"The table({table_name}) is illegal, jobid:{self._job_id}")
+            log.error(f"The table({table_name}) is illegal, {self.get_log_comm()}.")
             return "", []
         return splited_list[0], f"{splited_list[1]}.{splited_list[2]}"
 
@@ -876,7 +858,7 @@ class Restore:
         sub_objects = self._json_param_object.get("job", {}).get("restoreSubObjects", {})
         # restoreSubObjects为空数组，此次备份为全量恢复
         if not sub_objects or len(sub_objects) == 0:
-            log.error(f"Fail to get fine grained restore tables.")
+            log.error(f"Fail to get fine grained restore tables, {self.get_log_comm()}.")
             return True, []
         return False, sub_objects
 
@@ -906,7 +888,7 @@ class Restore:
         return copy_id
 
     def sub_job_exec_pre(self):
-        log.info(f"start step-4-1 mount sub job {self._job_id} {self._sub_job_id}")
+        log.info(f"start step-4-1 mount sub job, {self.get_log_comm()}.")
         # 获取集群用户名
         user_file = os.path.join(self._cache_area, f"userid_{self._job_id}", "user")
         with open(user_file, "r", encoding='UTF-8') as file_stream:
@@ -916,7 +898,7 @@ class Restore:
             uid = pwd.getpwnam(user).pw_uid
             log.info(uid)
         except Exception as err:
-            log.error(f"Failed get uid {self._sub_job_id}")
+            log.error(f"Failed get uid, {self.get_log_comm()}.")
             return False
         userid_path = os.path.join(self._cache_area, f"userid_{self._job_id}", "uid")
         uid_file = os.path.join(userid_path, f"{self._sub_job_id}")
@@ -932,16 +914,16 @@ class Restore:
                 user_id = file_stream.read()
                 uids.add(user_id)
         if len(uids) > 1:
-            log.error(f"Uid check failed! {uids}")
-        log.info(f"Uid check success!")
+            log.error(f"Uid check failed! {uids}, {self.get_log_comm()}.")
+        log.info(f"Uid check success! {self.get_log_comm()}.")
         return True
 
     def get_log_task_name(self, pd_id):
         get_log_task_name_cmd = f"{self._tiup_path} br log status --pd {pd_id} "
         get_log_task_name_cmd = f"su - {get_path_owner(self._tiup_path)} -c '{get_log_task_name_cmd}'"
-        log.debug(f"Get log task cmd: {get_log_task_name_cmd}")
+        log.debug(f"Get log task cmd: {get_log_task_name_cmd}, {self.get_log_comm()}.")
         return_code, out_info, err_info = execute_cmd(get_log_task_name_cmd)
-        log.info(f"return_code:{return_code} out_info:{out_info} err_info:{err_info}")
+        log.info(f"return_code: {return_code} out_info: {out_info} err_info: {err_info}, {self.get_log_comm()}.")
         task_name = ""
         if "name: " in out_info:
             name_idx = out_info.index("name:") + len("name: ")
@@ -951,33 +933,33 @@ class Restore:
                     break
                 name_stop_idx += 1
             task_name = out_info[name_idx:name_stop_idx - 1]
-            log.debug(f"task_name:{task_name}")
+            log.debug(f"task_name:{task_name}, {self.get_log_comm()}.")
             return task_name
         if return_code != CMDResult.SUCCESS:
-            log.error(f"The execute start crontab cmd failed!")
-            log.info(f"out_info: {out_info} err_info: {err_info}")
+            log.error(f"The execute start crontab cmd failed! {self.get_log_comm()}.")
+            log.info(f"out_info: {out_info} err_info: {err_info}, {self.get_log_comm()}.")
             return ""
         return task_name
 
     def stop_log_task(self, pd_id, log_task_name):
         stop_log_task_cmd = f"{self._tiup_path} br log stop --task-name={log_task_name} --pd {pd_id} "
         stop_log_task_cmd = f"su - {get_path_owner(self._tiup_path)} -c '{stop_log_task_cmd}'"
-        log.debug(f"Stop log task cmd: {stop_log_task_cmd}")
+        log.debug(f"Stop log task cmd: {stop_log_task_cmd}, {self.get_log_comm()}.")
         return_code, out_info, err_info = execute_cmd(stop_log_task_cmd)
-        log.info(f"return_code:{return_code} out_info:{out_info} err_info:{err_info}")
+        log.info(f"return_code: {return_code} out_info: {out_info} err_info: {err_info}, {self.get_log_comm()}.")
         if return_code != CMDResult.SUCCESS:
-            log.error(f"The execute start crontab cmd failed!")
-            log.info(f"out_info: {out_info} err_info: {err_info}")
+            log.error(f"The execute start crontab cmd failed! {self.get_log_comm()}.")
+            log.info(f"out_info: {out_info} err_info: {err_info}, {self.get_log_comm()}.")
             return False
         return True
 
     def get_restore_database(self):
         db_name = ""
         table_info_path = os.path.join(self._meta_path, "tidb_bkp_info")
-        log.info(f"table_info_path {table_info_path}")
+        log.info(f"table_info_path {table_info_path}, {self.get_log_comm()}.")
         with open(table_info_path, "r", encoding='UTF-8') as f_content:
             table_info = json.loads(f_content.read())
-        log.info(f"table_info {table_info}")
+        log.info(f"table_info {table_info}, {self.get_log_comm()}.")
         for table_list in table_info:
             db_name = table_list.get("db", "")
         return db_name
@@ -985,16 +967,16 @@ class Restore:
     def get_restore_table(self):
         table_name = ""
         table_info_path = os.path.join(self._meta_path, "tidb_bkp_info")
-        log.info(f"table_info_path {table_info_path}")
+        log.info(f"table_info_path {table_info_path}, {self.get_log_comm()}.")
         with open(table_info_path, "r", encoding='UTF-8') as f_content:
             table_info = json.loads(f_content.read())
-        log.info(f"table_info {table_info}")
+        log.info(f"table_info {table_info}, {self.get_log_comm()}.")
         for table_list in table_info:
             table_name = table_list.get("tables", "")[0]
         return table_name
 
     def gen_sub_job_log(self):
-        log.info("start step-3 exec_gen_sub_job_log")
+        log.info(f"Step-3 exec_gen_sub_job_log, {self.get_log_comm()}.")
         """
         执行生成子任务
         @return:
@@ -1002,7 +984,7 @@ class Restore:
         file_path = os.path.join(ParamConstant.RESULT_PATH, f"result{self._pid}")
         sub_job_array = []
 
-        log.info("gen_sub_job_log sub_job_01")
+        log.info(f"gen_sub_job_log sub_job_01, {self.get_log_comm()}.")
         job_type = SubJobPolicyEnum.FIXED_NODE.value
         job_name = TidbRestoreSubJobName.EXEC_CHECK
         job_priority = SubJobPriorityEnum.JOB_PRIORITY_1
@@ -1010,7 +992,7 @@ class Restore:
         sub_job = self.build_sub_job(job_priority, job_type, job_name, node_id, None)
         sub_job_array.append(sub_job)
 
-        log.info("gen_sub_job_log sub_job_02")
+        log.info(f"gen_sub_job_log sub_job_02, {self.get_log_comm()}.")
         log_restore_roles = (ClusterRequiredHost.TIKV, ClusterRequiredHost.TIFLASH)
         cluster_info = json.loads(self._cluster_info_str)
         for node in cluster_info:
@@ -1023,7 +1005,7 @@ class Restore:
             sub_job = self.build_sub_job(job_priority, job_type, job_name, node_id, None)
             sub_job_array.append(sub_job)
 
-        log.info("gen_sub_job_log sub_job_03")
+        log.info(f"gen_sub_job_log sub_job_03, {self.get_log_comm()}.")
         job_type = SubJobPolicyEnum.FIXED_NODE.value
         job_name = TidbRestoreSubJobName.EXEC_LOG_DROP
         job_priority = SubJobPriorityEnum.JOB_PRIORITY_3
@@ -1031,19 +1013,19 @@ class Restore:
         sub_job = self.build_sub_job(job_priority, job_type, job_name, node_id, None)
         sub_job_array.append(sub_job)
 
-        log.info("gen_sub_job_log sub_job_04")
+        log.info(f"gen_sub_job_log sub_job_04, {self.get_log_comm()}.")
         job_type = SubJobPolicyEnum.FIXED_NODE.value
         job_name = TidbRestoreSubJobName.EXEC_LOG_RESTORE
         job_priority = SubJobPriorityEnum.JOB_PRIORITY_4
         node_id = self.tiup_uuid
         sub_job = self.build_sub_job(job_priority, job_type, job_name, node_id, None)
         sub_job_array.append(sub_job)
-        log.info(f"Sub-job-log splitting succeeded.sub-job :{sub_job_array}")
+        log.info(f"Sub-job-log splitting succeeded.sub-job :{sub_job_array}, {self.get_log_comm()}.")
         output_execution_result_ex(file_path, sub_job_array)
         return True
 
     def sub_job_exec_log_mount(self):
-        log.info(f"start step-4-2  sub job mount log {self._job_id} {self._sub_job_id}")
+        log.info(f"start step-4-2  sub job mount log, {self.get_log_comm()}.")
         # 获取集群用户名
         user_file = os.path.join(self._cache_area, f"userid_{self._job_id}", "user")
         with open(user_file, "r", encoding='UTF-8') as file_stream:
@@ -1053,7 +1035,7 @@ class Restore:
             uid = pwd.getpwnam(user).pw_uid
             log.info(uid)
         except Exception as err:
-            log.error(f"Failed get uid {self._sub_job_id}")
+            log.error(f"Failed get uid, err:{err}, {self.get_log_comm()}.")
             return False
         userid_path = os.path.join(self._cache_area, f"userid_{self._job_id}", "uid")
         uid_file = os.path.join(userid_path, f"{self._sub_job_id}")
@@ -1061,7 +1043,6 @@ class Restore:
         return True
 
     def get_dbs(self):
-        get_db_fail_warn = False
         tidb_id = self.get_tidb_id()
         if not tidb_id:
             log_detail = LogDetail(logInfo="agent_tidb_failed_fetch_databases_on_target_cluster_label",
@@ -1075,9 +1056,9 @@ class Restore:
         ip = ip_port[0]
         port = int(ip_port[1])
         list_cmd = [f"show databases;"]
-        ret, output = exec_mysql_sql(TiDBTaskType.RESTORE, self._pid, list_cmd, ip, port)
+        ret, output = exec_mysql_sql(JobNameConst.RESTORE, self._pid, list_cmd, ip, port)
         if not ret:
-            log.error("Get database list failed!")
+            log.error(f"Get database list failed! {self.get_log_comm()}.")
             # 上报获取数据库失败警告，不影响任务继续运行
             log_detail = LogDetail(logInfo="agent_tidb_failed_fetch_databases_on_target_cluster_label",
                                    logInfoParam=[self._sub_job_id], logLevel=2)
@@ -1100,10 +1081,10 @@ class Restore:
         if not db_list:
             return True
         if not check_params_valid(*db_list):
-            log.error(f"The db_list {db_list} verification fails")
+            log.error(f"The db_list {db_list} verification fails, {self.get_log_comm()}.")
             return False
         if not tidb_id:
-            log.error("No tidb_id!")
+            log.error(f"No tidb_id! {self.get_log_comm()}.")
             return False
         ip_port = tidb_id.split(":")
         ip = ip_port[0]
@@ -1112,51 +1093,49 @@ class Restore:
         for db in db_list:
             drop_db_cmd.append(f"DROP DATABASE IF EXISTS {db};")
         log.info(drop_db_cmd)
-        ret, output = exec_mysql_sql(TiDBTaskType.RESTORE, self._pid, drop_db_cmd, ip, port)
+        ret, output = exec_mysql_sql(JobNameConst.RESTORE, self._pid, drop_db_cmd, ip, port)
         if not ret:
-            log.error("Drop database list failed!")
+            log.error(f"Drop database list failed! {self.get_log_comm()}.")
             return False
         return True
 
     def sub_job_exec_log_drop(self):
-        log.info("start step-4-2 sub job log drop")
-
-        log.info("Start to check uid.")
+        log.info(f"Step-4-2 sub job log drop, start to check uid, {self.get_log_comm()}.")
         ret_uid = self.check_uid()
         progress_file = os.path.join(self._cache_area, f"progress_{self._sub_job_id}")
         if not ret_uid:
-            write_progress_file(TiDBConst.USER_ID_CHECK_FAILED, progress_file)
+            write_file_append(TiDBConst.USER_ID_CHECK_FAILED, progress_file)
             return False
 
         # 删除目标集群中所有数据库
         progress_file = os.path.join(self._cache_area, f"progress_{self._sub_job_id}")
 
-        log.info("start step-4-2 sub job drop dbs")
+        log.info(f"start step-4-2 sub job drop dbs, {self.get_log_comm()}.")
         db_list = self.get_dbs()
         tidb_id = self.get_tidb_id()
         ret = self.drop_dbs(tidb_id, db_list)
         if not ret:
-            write_progress_file(TiDBConst.DROP_DB_FAILED, progress_file)
+            write_file_append(TiDBConst.DROP_DB_FAILED, progress_file)
             return False
         return True
 
     def sub_job_exec_log_restore(self):
-        log.info("start step-4-4 sub job log restore")
+        log.info(f"start step-4-4 sub job log restore, {self.get_log_comm()}.")
         progress_file = os.path.join(self._cache_area, f"progress_{self._sub_job_id}")
 
         # 合并日志备份
         data_path_log = self.get_repository_paths(self._json_param_object, RepositoryDataTypeEnum.DATA_REPOSITORY)
         log_path_list = self.get_repository_paths(self._json_param_object, RepositoryDataTypeEnum.LOG_REPOSITORY)
-        log.info(f"step-4-4 data_path_log： {data_path_log}, log_path_list： {log_path_list}")
+        log.info(f"step-4-4 data_path_log: {data_path_log}, log_path_list: {log_path_list}, {self.get_log_comm()}.")
         ret = Restore.merge_log(log_path_list)
         if not ret:
-            log.error("Merge log failed!")
+            log.error(f"Merge log failed! {self.get_log_comm()}.")
             return False
 
         # 组装恢复参数
         pd_id = self.get_pd_id()
         if not pd_id:
-            write_progress_file(TiDBConst.PD_DOWN, progress_file)
+            write_file_append(TiDBConst.PD_DOWN, progress_file)
             return False
         log_backup_path = log_path_list[0]
         data_backup_path = data_path_log[0]
@@ -1169,32 +1148,32 @@ class Restore:
             if self._copy_id in file:
                 data_backup_path = os.path.join(data_backup_path, file)
         restored_timestamp = self._json_param_object.get("job", {}).get("extendInfo", {}).get("restoreTimestamp", "")
-        log.info(restored_timestamp)
+        log.info(f"restored_timestamp: {restored_timestamp}, {self.get_log_comm()}.")
 
         if not restored_timestamp:
-            log.info("No restored_ts")
+            log.info(f"No restored_ts, {self.get_log_comm()}.")
             log_restore_cmd = f"{self._tiup_path} br restore point --pd={pd_id} --storage={log_backup_path}" \
                               f" --full-backup-storage={data_backup_path} --check-requirements=true"
         else:
             datetime_str = datetime.datetime.fromtimestamp(int(restored_timestamp))
             restored_ts = datetime_str.astimezone(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S%z')
             restored_ts = f"\"{restored_ts}\""
-            log.info(f"datetime_str:{datetime_str}, restored_ts: {restored_ts}.")
+            log.info(f"datetime_str:{datetime_str}, restored_ts: {restored_ts}, {self.get_log_comm()}.")
 
             log_restore_cmd = f"{self._tiup_path} br restore point --pd={pd_id} --storage={log_backup_path}" \
                               f" --full-backup-storage={data_backup_path} " \
                               f" --check-requirements=true --restored-ts {restored_ts}"
         log_restore_cmd = f"su - {get_path_owner(self._tiup_path)} -c '{log_restore_cmd}'"
         return_code, out_info, std_err = execute_cmd_with_expect(log_restore_cmd, "", None)
-        log.info(f"return_code: {return_code} out_info:{out_info}")
+        log.info(f"return_code: {return_code} out_info: {out_info}, {self.get_log_comm()}.")
         if return_code != 0:
-            log.error(f"Exec PITR cmd command failed! std_err:{std_err}.")
+            log.error(f"Exec PITR cmd command failed! std_err: {std_err}, {self.get_log_comm()}.")
             # 集群不为空，导致恢复失败场景
             if TiDBConst.DATABASE_EXIST in out_info:
-                write_progress_file(TiDBConst.DATABASE_EXIST, progress_file)
+                write_file_append(TiDBConst.DATABASE_EXIST, progress_file)
             elif TiDBConst.ERROR_START in out_info:
                 error_msg = out_info.split(TiDBConst.ERROR_START)[1]
-                write_progress_file(error_msg, progress_file)
+                write_file_append(error_msg, progress_file)
             # 删除恢复失败后可能生成的临时库
             tidb_id = self.get_tidb_id()
             self.drop_dbs(tidb_id, [TiDBDataBaseFilter.TIDB_BR_TEMP])

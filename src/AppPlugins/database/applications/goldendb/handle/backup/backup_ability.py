@@ -49,6 +49,11 @@ class BackupAbility:
 
     @staticmethod
     @exter_attack
+    def query_scan_repositories(req_id, job_id, sub_id, std_in):
+        GoldenDBBackupService.query_scan_repositories(req_id, job_id, sub_id)
+
+    @staticmethod
+    @exter_attack
     def backup_post_job(req_id, job_id, sub_id, std_in):
         GoldenDBBackupService.backup_post_job(req_id, job_id)
 

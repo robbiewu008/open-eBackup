@@ -17,8 +17,8 @@ import sys
 import time
 
 from common.common import change_dir_permission, write_content_to_file, convert_timestamp_to_time
-from common.common_models import LogDetail
-from common.const import SubJobStatusEnum
+from common.common_models import LogDetail, RepositoryPath, ScanRepositories
+from common.const import SubJobStatusEnum, RepositoryDataTypeEnum
 from common.file_common import change_path_permission
 from common.util.exec_utils import exec_mkdir_cmd
 from openGauss.backup.backup_base import BackupBase
@@ -91,14 +91,15 @@ class DatabaseFullBackup(BackupBase):
         return False
 
     def backup(self):
+        # CMDB 分布式
         if is_cmdb_distribute(self._deploy_type, self._database_type):
             try:
                 return self.cmdb_backup()
             except Exception as err:
                 self.log.info(f"Get cmdb databse backup failed {err}")
-                self.update_progress(BackupStatus.FAILED)
                 return False
         self.log.info(f"Execute database full backup. job id: {self._job_id}")
+        # 检查副本仓和cache仓
         if not self.pre_backup():
             self.log.error(f"Execute prepare backup faild. job id: {self._job_id}")
             return False
@@ -114,17 +115,22 @@ class DatabaseFullBackup(BackupBase):
         copy_file = os.path.join(copy_dir, copy_id)
         progress_file = os.path.join(self._cache_dir, self._job_id)
         backup_cmd = f'{self._backup_tool} -f {copy_file} -p {self._port} {self._object_name} -F p &> {progress_file}'
+        # 执行备份命令
         return_code, _, _ = execute_cmd_by_user(self._user_name, self._env_file, backup_cmd)
+        # 检查 进度文件，要有成功字样
         self.duplicate_check()
         if return_code != ResultCode.SUCCESS:
             self.log.error(f"Execute database full backup failed. job id: {self._job_id}")
+            (os.path.exists(progress_file) and os.unlink(progress_file)
+             and self.log.warning(f"Remove progress file because backup failed. {progress_file}"))
             return False
         self.log.info(f"Execute database full backup success. job id: {self._job_id}")
         return True
 
     def cmdb_backup(self):
-        self.update_progress(BackupStatus.RUNNING)
+        # CMDB 分布式
         self.log.info(f"Execute database full backup. job id: {self._job_id}")
+        # 检查副本仓和cache仓
         if not self.pre_backup():
             self.log.error(f"Execute prepare backup faild. job id: {self._job_id}")
             return False
@@ -143,30 +149,24 @@ class DatabaseFullBackup(BackupBase):
                                                          ParamKey.EXTEND_INFO)
         ret, dcs_user = get_value_from_dict(protect_env_extend_info, ParamKey.DCS_USER)
         dcs_pass = get_env_value(f"{AuthKey.PROTECT_ENV_DCS}{self._pid}")
-        backup_cmd = f'{self._backup_tool} {self._object_name} -f {copy_file} -U {dcs_user} -W {dcs_pass}'
+        progress_file = os.path.join(self._cache_dir, self._job_id)
+        backup_cmd = (f'{self._backup_tool} {self._object_name} -f {copy_file} '
+                      f'-p {self._resource_info.get_local_cn_port()} -U {dcs_user} -W {dcs_pass} '
+                      f'-F p &> {progress_file}')
         self.log.info(f"Get backup tool {self._backup_tool}, name: {self._object_name}, copy file {copy_file}")
+        # 执行备份命令
         return_code, out, err = execute_cmd_by_user(self._user_name, self._env_file, backup_cmd)
         self.log.info(f"Get dump result code {return_code}, result {out}, err: {err}")
         if return_code != ResultCode.SUCCESS:
             self.log.error(f"Execute database full backup failed. job id: {self._job_id}")
-            self.update_progress(BackupStatus.FAILED)
+            (os.path.exists(progress_file) and os.unlink(progress_file)
+             and self.log.warning(f"Remove progress file because backup failed. {progress_file}"))
             return False
         self.log.info(f"Execute database full backup success. job id: {self._job_id}")
-        self.update_progress(BackupStatus.COMPLETED)
         return True
 
-    def update_progress(self, status):
-        progress_file = os.path.join(self._cache_dir, self._job_id)
-        if os.path.isfile(progress_file):
-            safe_remove_path(progress_file)
-        content = f"INFO: Progress: (0/100). Process file"
-        if status == BackupStatus.COMPLETED:
-            content = content + f"INFO: Backup completed"
-        if status == BackupStatus.FAILED:
-            content = content + f"INFO: Backup failed"
-        write_content_to_file(progress_file, content)
-
     def post_backup(self):
+        # 清理 cache 仓
         return self.clean_cache_file()
 
     def stop_backup(self):
@@ -176,8 +176,6 @@ class DatabaseFullBackup(BackupBase):
 
     def backup_progress(self):
         self.log.info(f"Get backup progress. job id: {self._job_id}")
-        if is_cmdb_distribute(self._deploy_type, self._database_type):
-            return self.get_cmdb_backup_progress()
         sub_task_id = '0'
         if len(sys.argv) > 4:
             sub_task_id = sys.argv[4]
@@ -204,8 +202,12 @@ class DatabaseFullBackup(BackupBase):
             progress_list = re.findall(progress_parttern, data)
             if progress_list:
                 break
+        copy_file = os.path.join(self._backup_dir, CopyDirectory.DATABASE_DIRECTORY, self._job_id,
+                                 f'{self._object_name}.sql')
+        trans_size = str(round(os.path.getsize(copy_file)/1048576, 2)) + " MB" if os.path.exists(copy_file) else "None"
         running_detail = LogDetail(logInfo="opengauss_plugin_execute_database_backup_subjob_label",
-                                   logInfoParam=[f"{sub_task_id}"], logTimestamp=int(time.time()), logLevel=1)
+                                   logInfoParam=[f"{sub_task_id}", trans_size], logTimestamp=int(time.time()),
+                                   logLevel=1)
         if not progress_list:
             self.log.error(f'Backing Up Just Started! job id: {self._job_id}')
             return ProgressPercentage.START_PROGRESS.value, SubJobStatusEnum.RUNNING.value, running_detail
@@ -233,6 +235,7 @@ class DatabaseFullBackup(BackupBase):
             return copy
         protect_obj = copy.setdefault(MetaDataKey.PROTECT_OBJECT, {})
         protect_obj[MetaDataKey.SUB_TYPE] = ProtectSubObject.DATABASE
+        protect_obj[ParamKey.DEPLOY_TYPE] = self._deploy_type
         self.log.info(f"Get copy meta data success!. job id: {self._job_id}")
         return copy
 
@@ -279,6 +282,21 @@ class DatabaseFullBackup(BackupBase):
         if os.path.exists(database_copy_dir) and not os.listdir(database_copy_dir):
             safe_remove_path(database_copy_dir)
         return False
+
+    def query_scan_repositories(self):
+        backup_path = self.get_backup_path()
+        self.log.info(f"Query scan repos. get backup path: {backup_path}")
+        cur_meta_data = os.path.join(self._meta_dir, self._job_id)
+        if not os.path.exists(cur_meta_data):
+            os.makedirs(cur_meta_data)
+        self.log.info(f"Query scan repos. get meta path: {cur_meta_data}")
+        backup_repo_path = RepositoryPath(repositoryType=RepositoryDataTypeEnum.DATA_REPOSITORY.value,
+                                          scanPath=backup_path)
+        meta_repo_path = RepositoryPath(repositoryType=RepositoryDataTypeEnum.META_REPOSITORY.value,
+                                        scanPath=cur_meta_data)
+        scan_repos = ScanRepositories(scanRepoList=[backup_repo_path, meta_repo_path], savePath=self._meta_dir)
+        self.log.info(f"Query scan repos success. job id: {scan_repos.dict(by_alias=True)}")
+        return True, scan_repos
 
     def get_backup_path(self):
         return os.path.join(self._backup_dir, CopyDirectory.DATABASE_DIRECTORY, self._job_id)

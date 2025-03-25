@@ -30,7 +30,10 @@ def get_informix_install_path():
 
 
 def get_gbase_install_path():
-    return os.getenv("GBASEDBTDIR")
+    gbase_dir = os.getenv("GBASEDBTDIR")
+    if gbase_dir and not os.path.exists(gbase_dir):
+        gbase_dir = "/opt/GBASE/gbase"
+    return gbase_dir
 
 
 def adaptation_win_path():

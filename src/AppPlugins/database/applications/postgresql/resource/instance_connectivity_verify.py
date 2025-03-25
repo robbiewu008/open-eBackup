@@ -29,8 +29,9 @@ from common.util import check_utils
 from common.util.check_utils import is_valid_id
 from common.util.cmd_utils import cmd_format
 from common.util.exec_utils import exec_overwrite_file
-from postgresql.common.const import PexpectResult
+from postgresql.common.const import PexpectResult, CmdRetCode
 from postgresql.common.error_code import ErrorCode
+from postgresql.common.pg_exec_sql import ExecPgSql
 from postgresql.common.util.get_sensitive_utils import get_env_variable
 from postgresql.common.util.get_version_util import get_version
 from postgresql.common.util.pg_common_utils import PostgreCommonUtils
@@ -62,6 +63,7 @@ class InstanceConnectivityVerify:
         self.extend_info = self.application.get("extendInfo", {})
         self.os_username = self.extend_info.get("osUsername")
         self.client_path = os.path.realpath(os.path.join(self.extend_info.get("clientPath"), "bin", "psql"))
+        self.archive_dir = self.extend_info.get("archiveDir", "")
         self.port = self.extend_info.get("instancePort")
         self.service_ip = self.extend_info.get("serviceIp")
         self.enable_root = PostgreCommonUtils.get_root_switch()
@@ -125,9 +127,90 @@ class InstanceConnectivityVerify:
         if not res:
             return ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, bodyErr=data,
                                 message="Check connectivity failed!")
-        LOGGER.info(f"Success to check connectivity! pid: {self.pid}")
+        message_dict = {"version": version, "dataDirectory": data}
+        if self.archive_dir and not self.check_archive_dir():
+            return ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, bodyErr=ErrorCode.ARCHIVE_MODE_CONFIG_ERROR,
+                                message="Input archive directory error.")
+        self.set_config_file(message_dict)
         return ActionResult(code=ExecuteResultEnum.SUCCESS, bodyErr=ExecuteResultEnum.SUCCESS,
-                            message=json.dumps({"version": version, "dataDirectory": data}))
+                            message=json.dumps(message_dict))
+
+    def set_config_file(self, message_dict):
+        res, data = self._query_system_param("config_file")
+        if res:
+            message_dict['configFile'] = data
+        res, data = self._query_system_param("hba_file")
+        if res:
+            message_dict['hbaFile'] = data
+        res, data = self._query_system_param("ident_file")
+        if res:
+            message_dict['identFile'] = data
+
+    def check_archive_dir(self):
+        archive_dir = self.query_archive_dir()
+        if archive_dir:
+            if os.path.isdir(archive_dir) and os.path.realpath(self.archive_dir) == os.path.realpath(archive_dir):
+                return True
+            return False
+        if os.path.isdir(self.archive_dir):
+            wal_files = os.listdir(self.archive_dir)
+            file_list = []
+            for wal_file in wal_files:
+                if PostgreCommonUtils.is_wal_file(wal_file):
+                    file_list.append(os.path.join(self.archive_dir, wal_file))
+            # 用户填写归档目录存在WAL日志文件则认为是正确目录
+            if file_list:
+                return True
+        return False
+
+    def query_archive_dir(self):
+        try:
+            res, archive_info = self._query_system_param("archive_command")
+            if res:
+                return str(archive_info)
+            return ""
+        except Exception as err:
+            LOGGER.error(f"show archive_command err: {err}.")
+            return ""
+
+    def _query_system_param(self, param_name):
+        child = None
+        db_user = get_env_variable(f'application_auth_authKey_{self.pid}')
+        if not PostgreCommonUtils.check_db_user_valid(db_user):
+            LOGGER.error(f"Db user name is invalid, check db_user:{db_user}!")
+            return False, ErrorCode.CHECK_CONNECTIVITY_FAILED
+        cmd = cmd_format("su - {} -c \"{} -U {} -h {} -p {} -d postgres -W -H -c \'show {}\'\"",
+                         self.os_username, self.client_path, db_user, self.service_ip, self.port, param_name)
+        try:
+            child = pexpect.spawn(cmd, timeout=10, encoding="utf-8")
+            index = child.expect(PexpectResult.DB_LOGIN_PASSWORD)
+            if index in (0, 1):
+                LOGGER.error(
+                    f"Login database error! Check client path:{self.client_path}, port: {self.port}, "
+                    f"ip: {self.service_ip}, pid: {self.pid}")
+                child.close()
+                return False, ErrorCode.CHECK_CONNECTIVITY_FAILED
+
+            child.sendline(get_env_variable(f"application_auth_authPwd_{self.pid}"))
+            db_result = child.expect(PexpectResult.HTML_RESULT)
+            if index in (0, 1):
+                child.close()
+                LOGGER.error(
+                    f"Password incorrect! client path:{self.client_path}, db_result: {db_result}, "
+                    f"port: {self.port}, ip: {self.service_ip}")
+                return False, ErrorCode.CHECK_CONNECTIVITY_FAILED
+            data_dir = child.before
+            LOGGER.info(f"Success to login pgsql by db verify!pid:{self.pid}")
+            child.close()
+            data_file_directory = parse_html_result(data_dir)
+            if param_name == "archive_command":
+                data_file_directory = data_file_directory.split()[data_file_directory.split().index("cp") + 2].strip(
+                    '"%f')
+            code, res = PostgreCommonUtils.check_os_user(self.os_username, data_file_directory, self.enable_root)
+            return code, res
+        finally:
+            if child:
+                child.close()
 
     def _check_connectivity_by_database_verify(self):
         child = None

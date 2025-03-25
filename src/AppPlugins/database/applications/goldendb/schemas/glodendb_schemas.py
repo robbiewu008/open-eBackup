@@ -10,6 +10,7 @@
 # EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
+
 from common.const import SubJobStatusEnum
 from pydantic import BaseModel, Field
 
@@ -37,7 +38,7 @@ class SqliteTable(BaseModel):
 
 class TaskInfo(BaseModel):
     """
-    生成任务信息结构体
+    生成管理节点执行备份/恢复任务信息结构体
     """
     pid: str = Field(None, description="process id", alias="pid")
     job_id: str = Field(None, description="job id", alias="jobId")
@@ -48,6 +49,9 @@ class TaskInfo(BaseModel):
 
 
 class StatusInfo(BaseModel):
+    """
+    记录管理节点执行备份/恢复任务状态
+    """
     priority: int = Field(None, description="管理节点执行任务的优先级", alias="priority")
     status: int = Field(SubJobStatusEnum.RUNNING.value, description="任务状态", alias="status")
     log_detail: int = Field(None, description="错误码", alias="logDetail")

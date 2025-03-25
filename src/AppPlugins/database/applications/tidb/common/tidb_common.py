@@ -22,10 +22,11 @@ from common.cleaner import clear
 from common.common import check_path_legal, check_sql_cmd_param, check_command_injection_exclude_quote
 from common.common import execute_cmd, output_execution_result_ex
 from common.const import CMDResult, SysData, ParamConstant, ExecuteResultEnum
+from common.job_const import JobNameConst
 from common.util.check_utils import is_ip_address, is_port
 from common.util.checkout_user_utils import get_path_owner
 from tidb.common.const import TiDBSubType, RpcParamKey, TidbPath, ClusterRequiredHost, TiDBDataBaseFilter, \
-    TiDBResourceKeyName, TiDBTaskType, TiDBConst, MysqlTimeOut, ErrorCode
+    TiDBResourceKeyName, TiDBConst, MysqlTimeOut, ErrorCode
 from tidb.logger import log
 
 
@@ -78,13 +79,13 @@ def get_env_variable(str_env_variable: str):
 
 
 def exec_mysql_sql(task_type, pid, sql_list, host, port):
-    if task_type == TiDBTaskType.BACUKUP:
+    if task_type == JobNameConst.BACKUP:
         user = get_env_variable(TiDBResourceKeyName.APPLICATION_AUTH_AUTHKEY_BKP + pid)
         pwd = get_env_variable(TiDBResourceKeyName.APPLICATION_AUTH_AUTHPWD_BKP + pid)
-    elif task_type == TiDBTaskType.RESTORE:
+    elif task_type == JobNameConst.RESTORE:
         user = get_env_variable(TiDBResourceKeyName.APPLICATION_AUTH_AUTHKEY_RST + pid)
         pwd = get_env_variable(TiDBResourceKeyName.APPLICATION_AUTH_AUTHPWD_RST + pid)
-    elif task_type == TiDBTaskType.RESOURCE:
+    elif task_type == JobNameConst.RESOURCE:
         user = get_env_variable(TiDBResourceKeyName.APPLICATION_AUTH_AUTHKEY + pid)
         pwd = get_env_variable(TiDBResourceKeyName.APPLICATION_AUTH_AUTHPWD + pid)
     else:

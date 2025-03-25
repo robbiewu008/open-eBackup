@@ -28,6 +28,8 @@ struct Param {
     mp_bool isAsyncInterface = MP_TRUE;
     mp_bool isProgessScript = MP_FALSE;
     mp_string scriptDir;
+    mp_string scriptPath;
+    std::vector<mp_string> scriptParams;
 };
 
 class LocalCmdExector {
@@ -65,6 +67,7 @@ private:
     bool CheckTaskRunning(const std::vector<mp_string> &cmdParams);
     int ExecActual(const Param &comParam, std::map<mp_string, mp_string>& sensitiveInfos,
         const mp_string &uniqueId, Json::Value &result, std::shared_ptr<BasicJob> job = {nullptr});
+    int ExecScript(const Param &comParam, std::map<mp_string, mp_string>& sensitiveInfos, const mp_string &uniqueId, Json::Value &result);
     int SplitParam(Json::Value &inputValue, mp_string &uniqueId,
         std::map<mp_string, mp_string> &sensitiveInfos);
     int ReWriteFile(const mp_string &filePath, const mp_string &content);

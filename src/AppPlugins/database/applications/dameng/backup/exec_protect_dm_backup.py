@@ -11,11 +11,11 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
+import json
 import os
 import sys
 
-
-from dameng.commons.const import BackupStepEnum, SysData
+from dameng.commons.const import SysData, BackupStepEnum
 from dameng.commons.const import ArrayIndex
 from dameng.backup.protect_dm_backup import BackUp
 
@@ -24,7 +24,6 @@ from common.common import ParamConstant, output_execution_result
 from common.parse_parafile import ParamFileUtil
 from common.const import JobData
 from common.cleaner import clear
-
 
 log = Logger().get_logger("dameng.log")
 
@@ -39,7 +38,7 @@ def main():
     step = args[ArrayIndex.INDEX_FIRST_0]
     JobData.PID = args[ArrayIndex.INDEX_FIRST_1]
     log.info(f"Task info, step: {step}, PID: {JobData.PID}.")
-    backup_id = args[ArrayIndex.INDEX_FIRST_2]
+    job_id = args[ArrayIndex.INDEX_FIRST_2]
     sub_job_id = ''
     if len(args) == ArrayIndex.INDEX_FIRST_4:
         sub_job_id = args[ArrayIndex.INDEX_FIRST_3]
@@ -48,44 +47,36 @@ def main():
     try:
         param_dict = ParamFileUtil.parse_param_file(JobData.PID)
     except Exception:
-        log.exception(f"Job id: {backup_id} exec step: {step} failed for failed to parse param file.")
+        log.exception(f"Job id: {job_id} exec step: {step} failed for failed to parse param file.")
         return False
-    backup_type = param_dict.get("job").get("jobParam").get("backupType")
+    backup_type = param_dict.get("job", {}).get("jobParam", {}).get("backupType")
     if not backup_type:
-        log.info(f"Failed get backup type.Job id: {backup_id}.")
+        log.info(f"Failed get backup type. Job id: {job_id}.")
         return False
+
     # 3. execute task
-    backup = BackUp(backup_type, backup_id, param_dict, sub_job_id)
-
-    cmd_dict = {
-        BackupStepEnum.ALLOW_BACKUP_IN_LOCAL_NODE: backup.backup_allow,
-        BackupStepEnum.CHECK_BACKUP_JOB_TYPE: backup.check_backup_job_type,
-        BackupStepEnum.PRE_TASK: backup.backup_prerequisite,
-        BackupStepEnum.PRE_PROGRESS: backup.prerequisite_progress,
-        BackupStepEnum.GENERATOR_SUB_JOB: backup.generator_sub_job,
-        BackupStepEnum.BACKUP: backup.backup,
-        BackupStepEnum.BACKUP_PROGRESS: backup.backup_progress,
-        BackupStepEnum.POST_TASK: backup.backup_post,
-        BackupStepEnum.POST_TASK_PROGRESS: backup.post_progress,
-        BackupStepEnum.STOP_TASK: backup.backup_abort,
-        BackupStepEnum.QUERY_BACKUP_COPY: backup.query_backup_copy
-    }
-
-    func = cmd_dict.get(step, None)
+    backup = BackUp(JobData.PID, job_id, sub_job_id, param_dict)
+    job_dict = backup.get_job_dict()
+    func = job_dict.get(step, None)
     if not func:
-        log.error(f"Job id: {backup_id} exec step: {step} failed for step: {step} not support.")
+        log.error(f"Job id: {job_id} exec step: {step} failed for step: {step} not support.")
         return False
 
     result_exec = func()
-    if not result_exec:
-        log.error(f"Job id: {backup_id} exec step: {step} failed.")
-        return False
+    if step in [BackupStepEnum.ALLOW_BACKUP_IN_LOCAL_NODE, BackupStepEnum.CHECK_BACKUP_JOB_TYPE,
+                BackupStepEnum.GENERATOR_SUB_JOB, BackupStepEnum.STOP_TASK, BackupStepEnum.QUERY_BACKUP_COPY,
+                BackupStepEnum.QUERY_SCAN_REPOSITORIES, BackupStepEnum.PRE_PROGRESS, BackupStepEnum.BACKUP_PROGRESS]:
+        if not result_exec:
+            log.error(f"Job id: {job_id} exec step: {step} failed.")
+            return False
+        else:
+            log.info(f"Job id: {job_id} exec {step} interface succeed.")
+        file_name = "{}{}".format("result", JobData.PID)
+        result_file = os.path.join(ParamConstant.RESULT_PATH, file_name)
+        output_execution_result(result_file, result_exec)
+        log.info(f"Exec step: {step} succeed, job id: {job_id}")
     else:
-        log.info(f"Job id: {backup_id} exec {step} interface succeed.")
-    file_name = "{}{}".format("result", JobData.PID)
-    result_file = os.path.join(ParamConstant.RESULT_PATH, file_name)
-    output_execution_result(result_file, result_exec)
-    log.info(f"Exec step: {step} succ.")
+        log.info(f"Exec step: {step} already reported, job id: {job_id}")
     return True
 
 
@@ -99,7 +90,7 @@ if __name__ == "__main__":
         RESULT = main()
     except Exception as exception_str:
         clear(SysData.SYS_STDIN)
-        LOGGER.error(f"Exec fail, exp: {exception_str}")
+        log.error(f"Exec fail, exp: {exception_str}")
         sys.exit(1)
     clear(SysData.SYS_STDIN)
     if not RESULT:

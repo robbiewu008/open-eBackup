@@ -18,15 +18,18 @@ target_include_directories(executor_obj
     ${FRAMEWORK_BASE_PATH}/src/inc
     ${FRAMEWORK_INC_PATH}/rpc
     ${FRAMEWORK_INC_PATH}/rpc/certificateservice
+    ${FRAMEWORK_INC_PATH}/thrift_interface
     ${MODULE_BASE_PATH}/src
     ${MODULE_BASE_PATH}/common
     ${MODULE_BASE_PATH}/src/common
     ${MODULE_OPENSRC_PATH}/boost_rel/include
+    ${MODULE_OPENSRC_PATH}/jsoncpp_rel/include
     ${AGENT_SDK_PATH}/include
     ${MODULE_SECUREC_INC_PATH}
 )
 
 target_link_libraries(executor_obj
     PRIVATE
-    database_inc
+    safe_cmplib
+    # database_inc
 )

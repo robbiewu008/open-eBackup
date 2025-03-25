@@ -89,7 +89,7 @@ class CrlfFormatter(logging.Formatter):
         message = re.sub('[\r\n\b]', ' ', message)
         security_message = Anonymity.process(message)
         if security_message != message:
-            message = message.replace(record.msg, "******")
+            message = message.replace(record.msg, security_message)
         return message
 
 
@@ -102,8 +102,8 @@ class Logger(metaclass=SingletonType):
             os.makedirs(PATH)
         filename = os.path.join(PATH, application)
         self.filename = os.path.realpath(filename)
-        self.file_handler = ChangeOwnerRotatingFileHandler(filename=self.filename, maxBytes=10 * 1024 * 1024,
-                                                           backupCount=10)
+        self.file_handler = ChangeOwnerRotatingFileHandler(filename=self.filename, maxBytes=100 * 1024 * 1024,
+                                                           backupCount=100)
         self.stream_handler = logging.StreamHandler()
         self.file_handler.rotate = rotator
         self.file_handler.namer = namer

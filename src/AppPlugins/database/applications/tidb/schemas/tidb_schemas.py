@@ -14,13 +14,6 @@
 from pydantic import BaseModel, Field
 
 
-class ActionResponse(BaseModel):
-    code: int = Field(default=0, description="执行结果")
-    body_err: int = Field(None, description="错误码", alias='bodyErr')
-    message: str = Field(default='', description="错误信息")
-    body_err_params: list = Field(None, description="错误码具体参数", alias="bodyErrParams")
-
-
 class TidbBkpResultInfo(BaseModel):
     copy_id: str = Field(None, description='copy_id')
     job_id: str = Field(None, description='job_id')

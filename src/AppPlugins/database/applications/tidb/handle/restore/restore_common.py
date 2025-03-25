@@ -13,18 +13,8 @@
 
 import os
 import stat
-import pymysql
 
-from tdsql.logger import log
-
-
-def write_progress_file(message: str, file_name: str):
-    log.info(f'Write message into progress file: {message}')
-    flags = os.O_WRONLY | os.O_CREAT
-    modes = stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR
-    with os.fdopen(os.open(file_name, flags, modes), 'a+') as out_file:
-        out_file.write(message)
-        out_file.write('\n')
+from tidb.logger import log
 
 
 def write_file_append(message: str, file_name: str):

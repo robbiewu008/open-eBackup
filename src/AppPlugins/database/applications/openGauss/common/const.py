@@ -36,6 +36,7 @@ class JobType:
     BACKUP_PROGRESS = "BackupProgress"
     POST_PROGRESS = "PostProgress"
     QUERY_BACKUP_COPY = "QueryBackupCopy"
+    QUERY_SCAN_REOSITORIES = "QueryScanRepositories"
     ALLOW_RESTORE_IN_LOCAL_NODE = "AllowRestoreInLocalNode"
     RESTORE_PREREQUISITE = "RestorePrerequisite"
     RESTOREGENSUB = "RestoreGenSubJob"
@@ -53,6 +54,7 @@ class SubJobPolicy(int, Enum):
 
 
 class OpenGaussSubJobName:
+    EMPTY_SUB_JOB = "empty_sub_job"
     SUB_EXEC = "sub_exec"
     QUERY_COPY = "queryCopy"
 
@@ -110,12 +112,18 @@ class ParamKey:
     EXTEND_AUTH = "extendAuth"
     ESN_ID = "esnId"
     REMOTE_PATH = "remotePath"
+    REMOTE_HOST = "remoteHost"
+    IP = "ip"
     DATA = "data"
     DCS_ADDRESS = "dcsAddress"
     DCS_PORT = "dcsPort"
     DCS_USER = "dcsUser"
     CHANNEL_NUMBER = "channel_number"
     DEPLOY_TYPE = "deployType"
+    MINUTE = 60
+    HOUR = 60
+    DAY = 24
+    HALF_HOUR = 30
 
 
 class MetaDataKey:
@@ -212,6 +220,7 @@ class SubApplication:
     MOGDB = "MogDB"
     VASTBASE = "Vastbase"
     CMDB = "PanWeiDB"
+    DISTRIBUTED = "distributed"
 
 
 class SyncMode(int, Enum):
@@ -246,6 +255,7 @@ class Env:
 
 
 class SubJobType(str, Enum):
+    EMPTY = "empty"
     PREPARE_RESTORE = "prepare_restore"
     RESTORE = "restore"
     END_TASK = "endtask"
@@ -298,6 +308,7 @@ AUTHKEY = "authKey"
 CLUSTER_VERSION = "clusterVersion"
 DEPLOY_TYPE = "deployType"
 GUI_NODES = "guiNodes"
+DCS_PASSWORD = "application_auth_extendInfo_dcsPassword"
 
 SOURCE_RESULT = {
     'uuid': '', 'name': '', 'type': 'DataBase', 'subType': 'openGauss', 'endpoint': '',

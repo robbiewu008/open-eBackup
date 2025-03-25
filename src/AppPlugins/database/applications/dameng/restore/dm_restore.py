@@ -16,7 +16,6 @@ from common.parse_parafile import ParamFileUtil
 from dameng.restore.dm_restore_task import DMRestoreTask
 from dameng.commons.const import ProgressType, RetoreCmd
 
-
 log = Logger().get_logger("dameng.log")
 
 CMD_ARRAY = [
@@ -65,4 +64,3 @@ class DMRestore:
 
     def exec_cmd_when_failed(self, cmd):
         return self._task_obj.exec_cmd_when_failed(cmd)
-

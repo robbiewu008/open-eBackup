@@ -11,8 +11,6 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
-
-
 class JobNameConst:
     """
     任务名称常量类
@@ -84,6 +82,10 @@ class JobNameConst:
     # 恢复后置任务进度
     RESTORE_POST_PROGRESS = f"{RESTORE_POST}_Progress"
     DELIVER_TASK_STATUS = "DeliverTaskStatus"
+    # 资源接入
+    RESOURCE = "Resource"
+    # 日志备份
+    LOG_BACKUP = "LogBackup"
 
 
 class ParamKeyConst:

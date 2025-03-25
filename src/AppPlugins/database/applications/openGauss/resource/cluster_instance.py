@@ -12,6 +12,7 @@
 #
 
 import re
+import json
 
 from common.const import DeployType
 from openGauss.common.base_cmd import VastBaseCmd, GaussCmd
@@ -74,8 +75,8 @@ class GaussCluster:
         """
         if not self.nodes:
             self.get_cluster_nodes()
-        if SubApplication.CMDB in self.db_version:
-            return DeployType.SHARDING_TYPE.value if len(self.nodes) > 1 else DeployType.SINGLE_TYPE.value
+        if SubApplication.CMDB in self.db_version and SubApplication.DISTRIBUTED in self.db_version:
+            return DeployType.SHARDING_TYPE.value
         if self.nodes:
             return DeployType.CLUSTER_TYPE.value if len(self.nodes) > 1 else DeployType.SINGLE_TYPE.value
         return DeployType.INVALID_TYPE.value
@@ -157,16 +158,18 @@ class GaussCluster:
     def get_instance_port(self):
         if not self.nodes:
             self.get_cluster_nodes()
-        node = self.nodes[0]
-        port = node.instance_port
-        return port
+        for node in self.nodes:
+            if node.instance_port:
+                return node.instance_port
+        return ""
 
     def get_instance_data_path(self):
         if not self.nodes:
             self.get_cluster_nodes()
-        node = self.nodes[0]
-        data_path = node.data_path
-        return data_path
+        for node in self.nodes:
+            if node.data_path:
+                return node.data_path
+        return ""
 
     def get_system_identifier(self):
         db_path = self.get_instance_data_path()
@@ -206,13 +209,16 @@ class GaussCluster:
         if not ret:
             logger.error("Get db version failed with cmd execute result.")
             return ""
-        version_parten = re.compile("\((.*)\s.*[Bb]uild")
+        if SubApplication.CMDB in cont:
+            version_parten = re.compile("\((.*?)\)\s.*compiled")
+        else:
+            version_parten = re.compile("\((.*)\s.*[Bb]uild")
         search_obj = version_parten.search(cont)
         db_version = "" if search_obj is None else search_obj.group(1)
+        db_version = re.sub(r"_", " ", db_version, count=1)
         if db_version:
             self._version = db_version
-        if SubApplication.CMDB in cont:
-            self._version = SubApplication.CMDB + " 2.0.0"
+        logger.info(f"Get db version: {self._version}")
         return db_version
 
     def _create_cmd_obj(self):
@@ -323,6 +329,7 @@ class GaussCluster:
         if not self.nodes:
             self.get_cluster_nodes()
         if SubApplication.CMDB in self.db_version and len(self.nodes) > 1:
+            self.check_node_ip()
             logger.info(f"CMDB distribute no need to get other info")
             return
         all_status_info = self._get_gs_status_all()
@@ -346,17 +353,18 @@ class GaussCluster:
             logger.info("Dcs not active, can't get cluster nodes detail")
             return node_detail
 
-        has_server = self._get_vb_has()
-        if not has_server:
+        has_start_argv = self._get_vb_has_start_argv()
+        if not has_start_argv:
             logger.info("Not found has service, vastbase cluster not be managed  with has. ")
             return node_detail
 
-        has_service = re.search("=?(\/.*has/bin.*)\s+(\/.*has.*\w+)\s+.*\n", has_server)
-        if not has_service:
-            logger.error("Not found has service with status content")
+        match = re.search(r"argv\[]=(\S+)\s+(\S+)", has_start_argv)
+        if not match:
+            logger.error("Not found has start argv.")
             return node_detail
-        has_bin_path = has_service.group(1)
-        has_etc_path = has_service.group(2)
+
+        has_bin_path, has_etc_path = match.groups()
+
         ret, cont = self.cmd_obj.get_hasctl_cont(has_bin_path, has_etc_path)
         if not ret:
             logger.error("Get has list info failed.")
@@ -379,6 +387,14 @@ class GaussCluster:
             role = NodeRole.PRIMARY if role == "Leader" else NodeRole.STANDBY
             self._status_detail[node_ip] = (node_name, role, status)
         return self._status_detail
+
+    def _get_vb_has_start_argv(self):
+        ret, cont = self.cmd_obj.get_has_start_argv()
+        if not ret:
+            logger.error("Has service not found, make sure it install.")
+            return ""
+        cont: str
+        return cont
 
     def _get_vb_has(self):
         ret, cont = self.cmd_obj.get_has_service()
@@ -540,3 +556,62 @@ class GaussCluster:
         else:
             sync_state = SyncMode.ASYNC if len(self.nodes) > 1 else default_sync_state
         return sync_state
+
+    
+    def get_node_info(self, node):
+        if node.node_ip:
+            return
+        ret, cont = self.cmd_obj.get_status_by_name(node.node_name)
+        pattern = r'node_ip\s+:\s+(\d+\.\d+\.\d+\.\d+)\s*.*?instance_role\s+:\s+(\w+)\s*.*?instance_state\s+:\s+(\w+)'
+        matches = re.findall(pattern, cont, re.DOTALL)
+        for match in matches:
+            node.node_ip, node.instance_role, node.instance_state = match
+            return
+    
+    def check_node_ip(self):
+        for node in self.nodes:
+            self.get_node_info(node)
+                    
+
+    @staticmethod
+    def check_dcs_pattern(dcs_info, gui_nodes):
+        for item in dcs_info["dcs"]["members"]:
+            dcs_url = item["url"]
+            pattern = r"http://([\d.]+):"
+            match = re.search(pattern, dcs_url)
+            if match:
+                ip_address = match.group(1)
+                if ip_address not in gui_nodes:
+                    logger.error(f"ip_address not in gui_nodes: {ip_address}")
+                    return False
+            else:
+                logger.info("Unable to extract IP address")
+                return False
+        return True
+
+    def check_dcs(self, address, port, gui_nodes):
+        ret, cont = self.cmd_obj.get_cmdb_status(address, port)
+        if ret:
+            try:
+                dcs_info = json.loads(cont)
+                return self.check_dcs_pattern(dcs_info, gui_nodes)
+            except Exception as err:
+                logger.info(f"hcs_ctl monitor failed, err: {err}")
+        return False
+
+    def get_local_cn_port(self) -> str:
+        ret, cont = self.cmd_obj.get_status_by_group_name("coordinator")
+        logger.info(f"Get cn status: {cont}")
+        line = next((s for s in cont.split("\n") if self.host_name in s), "")
+        if not line:
+            logger.warning(f"Localhost has not cn component.")
+            return ""
+        logger.info(f"Match local cn component: {line}")
+        splits = re.split(r"\s+", line)
+        if len(splits) < 4:
+            logger.error(f"Can't parsed cn info: {line} {splits}")
+            return ""
+        cn_port = splits[3]
+        logger.info(f"Get cn port {cn_port}")
+        return cn_port
+

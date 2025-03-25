@@ -11,12 +11,14 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
+import os
 import platform
 import shlex
 
 from common.err_code import CommErrCode
 from common.exception.common_exception import ErrCodeException
 from common.util.validators import ALL_VALIDATOR_NAMES, NAME_VALIDATOR_MAP
+from common.common import execute_cmd
 
 if platform.system().lower() == "windows":
     from common.logger_wins import Logger
@@ -82,3 +84,19 @@ def _check_cmd_fmt_param(cmd, params_list):
             LOGGER.error("The command param is invalid, key: %s, value: %s, validator name: %s, func: %s.",
                          key, val, valid_name, validator)
             raise ErrCodeException(CommErrCode.PARAMS_IS_INVALID, message="The command param is invalid.")
+
+
+def get_livemount_path(job_id, path):
+    """
+    适配E6000，组装livemount路径作为恢复时，文件系统的挂载路径。
+    """
+    if not job_id:
+        return path
+    e_path = os.path.join(path, "livemount", job_id)
+    if os.path.exists(e_path):
+        # 该路径存在，部署形态为E6000
+        livemount_path = os.path.join(path, "livemount")
+        return_code, _, err_str = execute_cmd(cmd_format("chmod -R 777 {}", livemount_path))
+    else:
+        e_path = path
+    return e_path

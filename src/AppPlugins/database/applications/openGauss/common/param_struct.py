@@ -16,7 +16,7 @@ import os
 
 from openGauss.common.common import safe_get_environ
 from openGauss.common.const import EXTEND_INFO, APPENV, OPEN_GAUSS_USER, DEPLOY_TYPE, \
-    APPLICATION, EVEN_PATH, CLUSTER_VERSION, GUI_NODES
+    APPLICATION, EVEN_PATH, CLUSTER_VERSION, GUI_NODES, ParamKey, DCS_PASSWORD
 
 
 class ParamStruct:
@@ -50,6 +50,13 @@ class ParamStruct:
         if getattr(self, "pid", None):
             auth_key = safe_get_environ(f'{OPEN_GAUSS_USER}_{self.pid}')
         return auth_key
+
+    @property
+    def dcs_pass(self):
+        env_dcs_pass = ""
+        if getattr(self, "pid", None):
+            env_dcs_pass = safe_get_environ(f"{DCS_PASSWORD}_{self.pid}")
+        return env_dcs_pass
 
     @property
     def app_env(self):
@@ -100,3 +107,24 @@ class ParamStruct:
                 host_ip = ""
             node_ips.append(host_ip)
         return node_ips
+
+    @property
+    def app_dcs_address(self):
+        dcs_address = ""
+        if self.app_extend:
+            dcs_address = getattr(self.app_extend, ParamKey.DCS_ADDRESS, "")
+        return dcs_address
+
+    @property
+    def app_dcs_port(self):
+        dcs_port = ""
+        if self.app_extend:
+            dcs_port = getattr(self.app_extend, ParamKey.DCS_PORT, "")
+        return dcs_port
+
+    @property
+    def app_dcs_user(self):
+        dcs_user = ""
+        if self.app_extend:
+            dcs_port = getattr(self.app_extend, ParamKey.DCS_USER, "")
+        return dcs_port

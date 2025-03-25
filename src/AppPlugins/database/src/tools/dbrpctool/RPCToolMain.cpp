@@ -18,7 +18,6 @@
 #include "common/JsonUtils.h"
 #include "common/EnvVarManager.h"
 #include "RPCInterface.h"
-#include "PluginThriftServer.h"
 #include "PluginThriftClient.h"
 #include "ExternalPluginSDK.h"
 #include "config_reader/ConfigIniReader.h"

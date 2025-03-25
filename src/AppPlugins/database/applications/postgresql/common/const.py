@@ -79,6 +79,10 @@ class PgConst:
     ARCHIVE_STATUS_DIR_V9_AND_BELOW_PATHS = ("pg_xlog", "archive_status")
     # v10及以上archive_status相对路径列表
     ARCHIVE_STATUS_DIR_V10_AND_ABOVE_PATHS = ("pg_wal", "archive_status")
+    # v9及以下pg_xlog相对路径列表
+    PG_XLOG_V9_AND_BELOW_PATHS = ("pg_xlog")
+    # v10及以上pg_wal相对路径列表
+    PG_WAL_V10_AND_ABOVE_PATHS = ("pg_wal")
     POSTGRESQL_CONF_FILE_NAME = "postgresql.conf"
     POSTGRESQL_BASE_CONF_FILE = "postgresql.base.conf"
     POSTGRESQL_AUTO_CONF_FILE_NAME = "postgresql.auto.conf"
@@ -142,6 +146,8 @@ class PgConst:
     # CLup Server集群配置文件路径
     CLUP_SERVER_PATH = '/opt/clup/conf/clup.conf'
 
+    # CLup集群离线状态
+    CLUP_SERVER_OFFLINE = '0'
 
 
 class CmdRetCode(str, Enum):
@@ -158,6 +164,8 @@ class ErrorCode(Enum):
     PLUGIN_CANNOT_BACKUP_ERR = 0x64032B0C
     # Agent增量备份无法进行，需要转成全量备份
     INC_TO_FULL_ERR = 0x5E02502D
+    #集群主备切换后首次备份需要为全量备份
+    ERR_LOG_TO_FULL = 0x5E02502D  # 1577209901
     # 收到的请求参数不正确
     INVALID_PARAMETER_ERR = 0x5F025102
     # 数据库离线
@@ -166,12 +174,29 @@ class ErrorCode(Enum):
     ARCHIVE_MODE_ENABLED = 0x5E0250C3
 
 
+class JobType:
+    QUERY_BACKUP_COPY = "QueryBackupCopy"
+    QUERY_JOB_PERMISSION = "QueryJobPermission"
+    QUERY_SCAN_REPOSITORIES = "QueryScanRepositories"
+
+
 class PexpectResult:
     OS_LOGIN_RESULT = [pexpect.TIMEOUT, pexpect.EOF, "登录", "Last login", ""]
     DB_LOGIN_PASSWORD = [pexpect.TIMEOUT, pexpect.EOF, "Password for", "Password:", "口令:", "口令："]
     HTML_RESULT = [pexpect.TIMEOUT, pexpect.EOF, "<p>"]
     LOGIN_DATABASE_SUCCESS = [pexpect.TIMEOUT, pexpect.EOF, "=#"]
     EXECUTE_CMD_RESULT = [pexpect.TIMEOUT, pexpect.EOF, "$"]
+
+
+class BackupSubJob:
+    BACKUP = "backup"
+    QUERYCOPY = "queryCopy"
+
+
+class PgsqlBackupStatus:
+    SUCCEED = "Completed"
+    RUNNING = "Running"
+    FAILED = "Failed"
 
 
 class RestoreSubJob:
@@ -208,3 +233,8 @@ class InstallDeployType:
     PATRONI = "Patroni"
     PGPOOL = "Pgpool"
     CLUP = "CLup"
+
+
+class ReportPgsqlLabel:
+    # 前置任务检查失败。
+    PREREQUISITE_CHECK_FAILED = "virtual_plugin_restore_job_check_before_recover_failed_label"

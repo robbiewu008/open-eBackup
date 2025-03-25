@@ -11,7 +11,6 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
-# coding=utf-8
 import json
 import os
 import re
@@ -22,13 +21,14 @@ import stat
 import time
 from copy import deepcopy
 
-from common.common import exter_attack
-from common.common import output_execution_result, output_execution_result_ex, check_command_injection
-from common.common_models import ActionResult, LogDetail
-from common.common_models import SubJobDetails
-from common.const import AuthType, ReportDBLabel
-from common.const import BackupTypeEnum, SubJobStatusEnum, RepositoryDataTypeEnum
-from common.const import JobData, DBLogLevel
+from common.common import exter_attack, output_execution_result, output_execution_result_ex, check_command_injection, \
+    get_subjob_via_progress_file, save_progress_file, report_job_details
+from common.common_models import ActionResult, LogDetail, SubJobDetails, RepositoryPath, ScanRepositories, \
+    ProgressStatus
+from common.const import AuthType, ReportDBLabel, BackupTypeEnum, SubJobStatusEnum, RepositoryDataTypeEnum, JobData, \
+    DBLogLevel, RepositoryNameEnum, CMDResultInt, BackupJobResult, SubJobTypeEnum, SubJobPolicyEnum, RpcParamKey, \
+    SubJobPriorityEnum, Progress
+from common.util.exec_utils import exec_mkdir_cmd
 from common.job_const import ParamKeyConst
 from common.logger import Logger
 from common.parse_parafile import ParamFileUtil
@@ -36,12 +36,10 @@ from common.util.scanner_utils import scan_dir_size
 from dameng.commons.check_information import check_dmapserver_status
 from dameng.commons.common import check_ip_in_local, del_space, del_space_in_list, get_hostsn, \
     check_path_in_white_list, get_env_value, invoke_rpc_tool_interface, timestamp
-from dameng.commons.const import BackupStepEnum, BackupSubType, ClusterNodeMode, Progress, BackupJobResult, \
-    DMJsonConstant
-from dameng.commons.const import DbStatus, DamengStrConstant, MAX_LSN, BACKUP_MOUNT_PATH, ActionResultCode, \
-    RpcParamKey, LastCopyType
-from dameng.commons.const import SubJobType, SubJobPolicy, SubJobPriority, CheckBackupJobTypeCode, \
-    ArrayIndex, DbArchStatus, DbAuthInfo, ErrCode, JobProgressLabel, DamengStrFormat
+from dameng.commons.const import BackupStepEnum, BackupSubType, ClusterNodeMode, DMJsonConstant
+from dameng.commons.const import DbStatus, DamengStrConstant, MAX_LSN, BACKUP_MOUNT_PATH, LastCopyType
+from dameng.commons.const import CheckBackupJobTypeCode, ArrayIndex, DbArchStatus, DbAuthInfo, ErrCode, \
+    JobProgressLabel, DamengStrFormat
 from dameng.commons.dameng_tool import DmSqlTool
 from dameng.commons.path_operation import umount, backup_mount_bind, dameng_user_mkdir
 from dameng.commons.query_information import query_db_status, show_backupset, query_process_info, get_oguid, \
@@ -54,7 +52,8 @@ log = Logger().get_logger("dameng.log")
 
 class BackUp:
 
-    def __init__(self, backup_type, job_id, json_param, sub_job_id):
+    def __init__(self, pid, job_id, sub_job_id, json_param):
+        self._pid = pid
         self._sub_job_id = sub_job_id
         self._job_id = job_id
         self._json_param = json_param
@@ -77,7 +76,7 @@ class BackUp:
         self._user = ""
         self._ip = ""
         self._db_info = {}
-        self._backup_type = backup_type
+        self._backup_type = self._json_param.get("job", {}).get("jobParam", {}).get("backupType")
         self._repositories_info = dict()
         self._data_area = ""
         self._db_status = DbStatus.DB_STATUS_OPEN
@@ -90,6 +89,24 @@ class BackUp:
         self._history_cout = 0
         self._backup_prerequisite_dic = {}
         self._primary_node_num = 0
+        self.set_area_info()
+
+    def get_job_dict(self):
+        job_dict = {
+            BackupStepEnum.ALLOW_BACKUP_IN_LOCAL_NODE: self.backup_allow,
+            BackupStepEnum.CHECK_BACKUP_JOB_TYPE: self.check_backup_job_type,
+            BackupStepEnum.PRE_TASK: self.backup_prerequisite,
+            BackupStepEnum.PRE_PROGRESS: self.prerequisite_progress,
+            BackupStepEnum.GENERATOR_SUB_JOB: self.generator_sub_job,
+            BackupStepEnum.BACKUP: self.backup,
+            BackupStepEnum.BACKUP_PROGRESS: self.backup_progress,
+            BackupStepEnum.POST_TASK: self.backup_post,
+            BackupStepEnum.POST_TASK_PROGRESS: self.post_progress,
+            BackupStepEnum.STOP_TASK: self.backup_abort,
+            BackupStepEnum.QUERY_BACKUP_COPY: self.query_backup_copy,
+            BackupStepEnum.QUERY_SCAN_REPOSITORIES: self.query_scan_repositories
+        }
+        return job_dict
 
     @exter_attack
     def backup_prerequisite(self):
@@ -97,30 +114,47 @@ class BackUp:
         前置任务
         :return:
         """
-        result = {
-            "status": SubJobStatusEnum.RUNNING.value,
-            "err_code": None,
-            "err_code_param": '',
-        }
-        self._cache_area = self.get_area_info("cache_repository")
-        if not self._cache_area:
-            log.info(f"Get cache area fail.{self.get_log_common()}")
-            return ActionResult(code=200).dict(by_alias=True)
-        file_path = os.path.join(self._cache_area, f'backup_prerequisite_status_{self._job_id}')
-        output_execution_result_ex(file_path, result)
+        log.info(f"Exec backup_prerequisite.{self.get_log_common()}, {self._json_param}")
+        log_detail_code = None
+        log_detail_param = None
+
         ret, err_param = self.check_nodes_distribution()
         if not ret:
-            result["status"] = SubJobStatusEnum.FAILED.value
+            log.error(f"Check nodes distribution failed.{self.get_log_common()}.")
+            job_status = SubJobStatusEnum.FAILED.value
             if err_param:
-                result["err_code"] = ErrCode.ERR_NODES_DISTRIBUTION_EXCEPTION
-                result["err_code_param"] = err_param
+                log_detail_code = ErrCode.ERR_NODES_DISTRIBUTION_EXCEPTION
+                log_detail_param = [err_param]
+            log_detail = [LogDetail(logInfo=ReportDBLabel.PRE_REQUISIT_FAILED,
+                                    logInfoParam=[self._sub_job_id],
+                                    logTimestamp=int(time.time()),
+                                    logDetail=log_detail_code,
+                                    logDetailParam=log_detail_param,
+                                    logLevel=DBLogLevel.ERROR.value)]
         else:
-            result["status"] = SubJobStatusEnum.COMPLETED.value
-        output_execution_result_ex(file_path, result)
-        return ActionResult(code=0).dict(by_alias=True)
+            log.info(f"Check nodes distribution succeed.{self.get_log_common()}.")
+            job_status = SubJobStatusEnum.COMPLETED.value
+            log_detail = [LogDetail(logInfo=ReportDBLabel.PRE_REQUISIT_SUCCESS,
+                                    logInfoParam=[self._sub_job_id],
+                                    logTimestamp=int(time.time()),
+                                    logLevel=DBLogLevel.INFO.value)]
+        output = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id,
+                               taskStatus=job_status, progress=Progress.END, logDetail=log_detail)
+        report_job_details(self._pid, output)
+
+    @exter_attack
+    def prerequisite_progress(self):
+        """
+        前置任务进度
+        :return:
+        """
+        log.info(f"Exec prerequisite_progress.{self.get_log_common()}.")
+        output = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id,
+                               taskStatus=SubJobStatusEnum.COMPLETED.value, progress=Progress.END)
+        return output.dict(by_alias=True)
 
     def get_log_common(self):
-        return f"Pid: {JobData.PID} jobId: {self._job_id} subjobId: {self._sub_job_id}."
+        return f"Pid: {self._pid} jobId: {self._job_id} subjobId: {self._sub_job_id}"
 
     def set_db_param(self):
 
@@ -265,10 +299,10 @@ class BackUp:
         sub_job_info = dict()
         sub_job_info["jobId"] = self._job_id
         sub_job_info["subJobId"] = ""
-        sub_job_info["jobType"] = SubJobType.BUSINESS_SUB_JOB
+        sub_job_info["jobType"] = SubJobTypeEnum.BUSINESS_SUB_JOB.value
         sub_job_info["jobName"] = job_name
         sub_job_info["jobPriority"] = job_priority
-        sub_job_info["policy"] = SubJobPolicy.FIXED_NODE
+        sub_job_info["policy"] = SubJobPolicyEnum.FIXED_NODE.value
         sub_job_info["ignoreFailed"] = False
         sub_job_info["execNodeId"] = exec_node_id
         sub_job_info["jobInfo"] = job_info
@@ -311,13 +345,13 @@ class BackUp:
                 continue
             if main_task_generator_status:
                 job_type = "Backup"
-                job_priority = SubJobPriority.JOB_PRIORITY_2
+                job_priority = SubJobPriorityEnum.JOB_PRIORITY_2.value
                 main_task_node_id = host_id
                 main_task_generator_status = False
                 sub_job = self.build_sub_job(job_priority, host_id, job_info, job_type)
                 sub_job_array.append(sub_job)
             else:
-                job_priority = SubJobPriority.JOB_PRIORITY_1
+                job_priority = SubJobPriorityEnum.JOB_PRIORITY_1.value
                 job_type = "Mount"
                 sub_job = self.build_sub_job(job_priority, host_id, job_info, job_type)
                 sub_job_array.append(sub_job)
@@ -382,9 +416,7 @@ class BackUp:
         }
         log.info("Start check backup type.")
         last_copy_info = self.get_last_copy_info()
-        backup_base_backupset = last_copy_info.get("extendInfo", {}).get("backupSetName", '')
-        ret = self.check_db_magic()
-        if backup_base_backupset and ret:
+        if last_copy_info:
             output_info["code"] = CheckBackupJobTypeCode.CAN_EXEC
         else:
             output_info["bodyErr"] = CheckBackupJobTypeCode.INC_TO_FULL
@@ -477,40 +509,6 @@ class BackUp:
         log.info(f"Save db_magic succ.{self.get_log_common()}")
         return True
 
-    @exter_attack
-    def prerequisite_progress(self):
-        """
-        前置任务进度
-        :return:
-        """
-        log_detail = None
-        task_status = SubJobStatusEnum.FAILED.value
-        pre_status_dict = self.get_pre_status()
-        if not pre_status_dict:
-            output = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id,
-                                   taskStatus=task_status,
-                                   progress=Progress.END)
-            return output.dict(by_alias=True)
-
-        status = pre_status_dict.get("status", SubJobStatusEnum.FAILED.value)
-        if status == SubJobStatusEnum.FAILED.value:
-            err_code = pre_status_dict.get("err_code", '')
-            err_code_param = pre_status_dict.get("err_code_param", '')
-            if err_code:
-                log_detail = [
-                    LogDetail(logInfoParam=[self._job_id],
-                              logLevel=DBLogLevel.ERROR,
-                              logDetail=err_code,
-                              logDetailParam=[err_code_param])
-                ]
-        else:
-            task_status = status
-        output = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id,
-                               taskStatus=task_status,
-                               logDetail=log_detail,
-                               progress=Progress.END)
-        return output.dict(by_alias=True)
-
     def get_pre_status(self):
         self._cache_area = self.get_area_info("cache_repository")
         if not self._cache_area:
@@ -530,52 +528,107 @@ class BackUp:
         :return:
         """
         log.info('Start exec post task.')
+        job_name = "backup_post"
         if not self.set_area_info():
-            self.save_backup_post_progress_file(SubJobStatusEnum.FAILED, Progress.END)
-            return ActionResult(code=ActionResultCode.FAIL).dict(by_alias=True)
-        self.save_backup_post_progress_file(SubJobStatusEnum.RUNNING, Progress.RUNNING)
+            progress_status = ProgressStatus(taskStatus=SubJobStatusEnum.FAILED.value, progress=Progress.END)
+            save_progress_file(self._job_id, job_name, self._cache_area, progress_status)
+            return
+        progress_status = ProgressStatus(taskStatus=SubJobStatusEnum.RUNNING, progress=Progress.RUNNING)
+        save_progress_file(self._job_id, job_name, self._cache_area, progress_status)
         json_path = os.path.join(self._cache_area, f"backup_prerequisite{self._job_id}.json")
-        backup_job_result = self._json_param.get("backupJobResult", 1)
+        backup_job_result = self._json_param.get("backupJobResult", BackupJobResult.FAIL)
         mount_path = f"{BACKUP_MOUNT_PATH}/{self._job_id}"
         new_path = os.path.join(BACKUP_MOUNT_PATH, f"{self._job_id}_bind")
-        status = SubJobStatusEnum.COMPLETED
         ret, _ = self.check_exec_node()
         if ret:
             # 如果备份任务失败，清理备份集
             if backup_job_result != BackupJobResult.SUCCESS:
                 if not self.clear_backupset(json_path):
                     log.info(f"Failed to delete the backup set.{self.get_log_common()}.")
-                    status = SubJobStatusEnum.FAILED
+                    progress_status.task_status = SubJobStatusEnum.FAILED.value
+                    progress_status.progress = Progress.END
             else:
                 self.save_db_magic()
             # 不管清理备份集是否成功，都要做临时文件删除
             remove_status = self.backup_post_remove_path()
             if not remove_status:
-                status = SubJobStatusEnum.FAILED
-            self.save_backup_post_progress_file(status, Progress.END)
-
+                progress_status.task_status = SubJobStatusEnum.FAILED.value
+                progress_status.progress = Progress.END
+            save_progress_file(self._job_id, job_name, self._cache_area, progress_status)
         if not umount(mount_path) or not umount(new_path):
             log.error(f"Umount backup mount path fail.{self.get_log_common()}.")
-            status = SubJobStatusEnum.FAILED
+            progress_status.task_status = SubJobStatusEnum.FAILED.value
+            progress_status.progress = Progress.END
         if not self.remove_file_dir(mount_path) or not self.remove_file_dir(new_path):
-            status = SubJobStatusEnum.FAILED
-        self.save_backup_post_progress_file(status, Progress.END)
-        return ActionResult(code=ActionResultCode.SUCCESS).dict(by_alias=True)
+            progress_status.task_status = SubJobStatusEnum.FAILED.value
+            progress_status.progress = Progress.END
+        progress_status = ProgressStatus(taskStatus=SubJobStatusEnum.COMPLETED.value, progress=Progress.END)
+        save_progress_file(self._job_id, job_name, self._cache_area, progress_status)
+        return
+
+    @exter_attack
+    def post_progress(self):
+        """
+        后置任务进度
+        :return:
+        """
+        log.info('Start quert post progress.')
+        self._cache_area = self.get_area_info("cache_repository")
+        job_name = "backup_post"
+        sub_job_details = get_subjob_via_progress_file(self._job_id, self._sub_job_id, job_name, self._cache_area)
+        report_job_details(self._pid, sub_job_details)
+
+    def query_scan_repositories(self):
+        log.info(f"Exec query_scan_repositories, job_id: {self._job_id}.")
+        self._data_area = self.get_area_info("data_repository")
+        self._meta_area = self.get_area_info("meta_repository")
+        self._log_area = self.get_area_info("log_repository")
+        if self._backup_type == BackupTypeEnum.LOG_BACKUP:
+            log.info(f"Start query_scan_repositories for log bkp, job_id: {self._job_id}.")
+            # log仓的meta区 /Database_{resource_id}_LogRepository_su{num}/meta/{job_id}
+            meta_copy_path = os.path.join(os.path.dirname(self._log_area), RepositoryNameEnum.META, self._job_id)
+            # log仓的data区 /Database_{resource_id}_LogRepository_su{num}/{ip}/{job_id}
+            data_path = self._log_area
+            # /Database_{resource_id}_LogRepository_su{num}/{ip}
+            save_path = os.path.dirname(self._log_area)
+        else:
+            log.info(f"Start query_scan_repositories for data bkp, job_id: {self._job_id}.")
+            # meta/Database_{r_id}_InnerDirectory_su{num}/source_policy_{r_id}_Context_Global_MD/{ip}/{job_id}
+            meta_copy_path = self._meta_area
+            # data/Database_{resource_id}_InnerDirectory_su{num}/{ip}/{copy_name}
+            data_path = self._data_area
+            # meta/Database_{resource_id}_InnerDirectory_su{num}/source_policy_{resource_id}_Context_Global_MD/{ip}/
+            save_path = self._meta_area
+        if not os.path.exists(meta_copy_path):
+            exec_mkdir_cmd(meta_copy_path, mode=0x777)
+        meta_copy_repo = RepositoryPath(repositoryType=RepositoryDataTypeEnum.META_REPOSITORY.value,
+                                        scanPath=meta_copy_path)
+        data_repo = RepositoryPath(repositoryType=RepositoryDataTypeEnum.DATA_REPOSITORY.value,
+                                   scanPath=data_path)
+        scan_repos = ScanRepositories(scanRepoList=[data_repo, meta_copy_repo], savePath=save_path)
+        log.info(f"Report query_scan_repositories success, {scan_repos.dict(by_alias=True)}, job_id: {self._job_id}.")
+        return scan_repos.dict(by_alias=True)
 
     def set_area_info(self):
         job_dict = self._json_param.get("job", {})
-        self._repositories_info = ParamFileUtil.parse_backup_path(job_dict.get("repositories"))
+        self._repositories_info = ParamFileUtil.parse_backup_path(job_dict.get("repositories", {}))
+        if not self._repositories_info.get("cache_repository", [""]):
+            return False
+        if not self._repositories_info.get("data_repository", [""]):
+            return False
+        if not self._repositories_info.get("log_repository", [""]):
+            return False
         self._cache_area = self._repositories_info.get("cache_repository", [""])[ArrayIndex.INDEX_FIRST_0]
         self._data_area = self._repositories_info.get("data_repository", [""])[ArrayIndex.INDEX_FIRST_0]
         self._log_area = self._repositories_info.get("log_repository", [""])[ArrayIndex.INDEX_FIRST_0]
         if not self._cache_area:
-            log.error(f"Get cache area fail.{self.get_log_common()}")
+            log.error(f"Get cache area fail.{self.get_log_common()}.")
             return False
         if self._backup_type != BackupTypeEnum.LOG_BACKUP and not self._data_area:
-            log.error(f"Get data area fail.{self.get_log_common()}")
+            log.error(f"Get data area fail.{self.get_log_common()}.")
             return False
         if self._backup_type == BackupTypeEnum.LOG_BACKUP and not self._log_area:
-            log.error(f"Get log area fail.{self.get_log_common()}")
+            log.error(f"Get log area fail.{self.get_log_common()}.")
             return False
         return True
 
@@ -631,11 +684,6 @@ class BackUp:
         log.info(f"File deleted successfully.{self.get_log_common()}.")
         return True
 
-    def save_backup_post_progress_file(self, status_, progress_):
-        progress_info = {"status": status_, "progress_": progress_}
-        file_path = os.path.join(self._cache_area, f"{self._sub_job_id}.json")
-        output_execution_result_ex(file_path, progress_info)
-
     def read_post_progress_file(self):
         file_path = os.path.join(self._cache_area, f"{self._sub_job_id}.json")
         if not os.path.exists(file_path):
@@ -669,9 +717,9 @@ class BackUp:
 
     def backup_post_remove_path(self):
         data_size_path = os.path.join(self._cache_area, f"data_size{self._job_id}.json")
-        prerequisite_path = os.path.join(self._cache_area, f"backup_prerequisite{self._job_id}.json")
+        prerequisite_path = os.path.join(self._cache_area, f"backup_prerequisite_status_{self._job_id}.json")
         exec_job_node_file_path = os.path.join(self._cache_area, f'exec_node{self._job_id}.json')
-        backup_succ_path = os.path.join(self._cache_area, f"backup_status_{self._job_id}.json")
+        backup_succ_path = os.path.join(self._cache_area, f"backup_succ_{self._job_id}.json")
         sql_errcode_path = os.path.join(self._cache_area, f"sql_errcode_{self._job_id}.json")
         times_path = os.path.join(self._cache_area, f"get_errcode_times{self._job_id}.json")
         remove_path_list = [
@@ -684,27 +732,6 @@ class BackUp:
             if not self.remove_file_dir(remove_path):
                 remove_status = False
         return remove_status
-
-    @exter_attack
-    def post_progress(self):
-        """
-        后置任务进度
-        :return:
-        """
-        log.info('Start quert post progress.')
-        job_dict = self._json_param.get("job", {})
-        self._repositories_info = ParamFileUtil.parse_backup_path(job_dict.get("repositories"))
-        self._cache_area = self._repositories_info.get("cache_repository")[ArrayIndex.INDEX_FIRST_0]
-        file_path = os.path.join(self._cache_area, f"{self._job_id}.json")
-        ret = self.read_post_progress_file()
-        status = ret.get("status", SubJobStatusEnum.FAILED)
-        progress = ret.get("progress", Progress.END)
-        if status != SubJobStatusEnum.RUNNING:
-            self.remove_file_dir(file_path)
-        output = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id,
-                               taskStatus=status,
-                               progress=progress)
-        return output.dict(by_alias=True)
 
     def get_single_lsn(self):
         sql_cmd = "select CUR_LSN from v$rlog;"
@@ -747,10 +774,10 @@ class BackUp:
         self._cache_area = self._repositories_info.get("cache_repository", [""])[ArrayIndex.INDEX_FIRST_0]
         self._data_area = self._repositories_info.get("data_repository", [""])[ArrayIndex.INDEX_FIRST_0]
         if not self._cache_area:
-            log.error(f"Get cache area fail.{self.get_log_common()}")
+            log.error(f"Get cache area fail.{self.get_log_common()}.")
             return err_count
         if self._backup_type != BackupTypeEnum.LOG_BACKUP and not self._data_area:
-            log.error(f"Get data area fail.{self.get_log_common()}")
+            log.error(f"Get data area fail.{self.get_log_common()}.")
             return err_count
         backup_prerequisite_json = self.get_backup_prerequisite_json()
         if not backup_prerequisite_json:
@@ -762,10 +789,13 @@ class BackUp:
         if self.version != "V8":
             return self.get_backup_history_v7()
         query_result, status = self.exec_select_history_count_include_status(dm_tool)
+        log.info(f"query_result:{query_result}, status:{status}")
         if not status:
             query_result, status = self.exec_select_history_count_sql(dm_tool)
+            log.info(f"query_result:{query_result}, status:{status}")
             if not status:
                 query_result, status = self.exec_select_backup_count_sql(dm_tool)
+                log.info(f"query_result:{query_result}, status:{status}")
                 if not status:
                     log.error(f"Failed exec backupset sql.{self.get_log_common()}.")
                     return err_count
@@ -780,11 +810,13 @@ class BackUp:
         result_info = del_space_in_list(result_info)
         history_cout = result_info[ArrayIndex.INDEX_LAST_1]
         history_cout = del_space(history_cout)[last_row]
+        log.info(f"before history_cout:{history_cout}")
         try:
             history_cout = int(history_cout)
         except ValueError:
             log.error(f"History cout err.{self.get_log_common()}.")
             return err_count
+        log.info(f"history_cout:{history_cout}")
         return history_cout
 
     def exec_select_history_count_include_status(self, dm_tool):
@@ -821,17 +853,17 @@ class BackUp:
         ret, new_path = backup_mount_bind(self._data_area, self._job_id, new_path)
         err_count = -1
         if not ret:
-            log.error(f"Backup mount bind fail.{self.get_log_common()}")
+            log.error(f"Backup mount bind fail.{self.get_log_common()}.")
             return err_count
         oguid_list = self.get_all_oguid()
         if not oguid_list:
-            log.error(f"Get oguid list fail.{oguid_list}.{self.get_log_common()}")
+            log.error(f"Get oguid list fail.{oguid_list}.{self.get_log_common()}.")
             return err_count
         result_count = 0
         backupset_name_info = self.backupset_path.rsplit('/', 1)
         # 2:只切割一次所以预期返回结果列表长度为2
         if len(backupset_name_info) != 2:
-            log.error(f"Get backupset name fail.{self.get_log_common()}")
+            log.error(f"Get backupset name fail.{self.get_log_common()}.")
             return err_count
         backupset_name = backupset_name_info[-1]
         for oguid in oguid_list:
@@ -914,7 +946,8 @@ class BackUp:
                 "dbName": "",
                 "groupId": '',
                 "tabal_space_info": []
-            }
+            },
+            "timestamp": ""
         }
         ret, backupset_msg = self.parses_data_backupset_info(backupset_info_)
         if not ret:
@@ -924,10 +957,11 @@ class BackUp:
             return out_put_info
         extend_info = out_put_info.get("extendInfo", {})
         extend_info.update(backupset_msg)
+        out_put_info["timestamp"] = int(extend_info.get("backupTime"))
         return out_put_info
 
     def file_copy_info_from_pre_info(self, out_put_info):
-        json_dict = self.get_backup_prerequisite_json()
+        json_dict = self.json_dict if self.json_dict else self.get_backup_prerequisite_json()
         if not json_dict:
             log.error(f"Get json_dict fail.{self.get_log_common()}.")
             return False
@@ -962,8 +996,9 @@ class BackUp:
                 "baseBackupSetName": "",
                 "dbName": "",
                 "groupId": "",
-                "backupset_dir": ''
-            }
+                "backupset_dir": ""
+            },
+            "timestamp": ""
         }
         metadata_info = backupset_info_.get("backupsets", {}).get("group", {}).get("backupset", {}).get("metadata", {})
         file_info = backupset_info_.get("backupsets", {}).get("group", {}).get("backupset", {}).get("file_info", {})
@@ -972,12 +1007,17 @@ class BackUp:
             return out_put_info
         if not self.file_copy_info_from_pre_info(out_put_info):
             return out_put_info
+        last_copy_info = self.get_last_copy_info()
+        if not last_copy_info:
+            last_copy_info = self.get_last_copy_info(3)
+        self.begin_time = last_copy_info.get('extendInfo').get('backupTime')
         extend_info = out_put_info.get("extendInfo", {})
         extend_info["dbName"] = db_name
         extend_info["backupTime"] = self.end_time
         extend_info["beginTime"] = self.begin_time
         extend_info["endTime"] = self.end_time
         extend_info["backupset_dir"] = backupset_info_.get("backupset_dir")
+        out_put_info["timestamp"] = int(self.end_time)
         return out_put_info
 
     def get_arch_time(self, file_info):
@@ -1042,7 +1082,7 @@ class BackUp:
                 return False
         else:
             json_copy = self.fill_data_copy(backupset_info)
-        ret, repositories = self.set_repositories(backupset_dir)
+        ret, repositories = self.set_repositories()
         if not ret:
             log.info(f"Set repositories fail.")
             return False
@@ -1051,14 +1091,14 @@ class BackUp:
         try:
             invoke_rpc_tool_interface(self._job_id, RpcParamKey.REPORT_COPY_INFO, copy_info)
         except Exception as err_info:
-            log.error(f"Report copy info fail.{self.get_log_common()}")
+            log.error(f"Report copy info fail.{self.get_log_common()}.")
             return False
-        log.info(f"Report copy info succ.{self.get_log_common()}")
+        log.info(f"Report copy info succ. {self.get_log_common()}, copy_info: {copy_info}")
         return True
 
     def check_log_time(self, start_time):
         if not start_time:
-            log.error(f"The log start time is incorrect.{self.get_log_common()}")
+            log.error(f"The log start time is incorrect.{self.get_log_common()}.")
             return False
         get_all_type_copy = 1
         last_copy_info = self.get_last_copy_info(get_all_type_copy)
@@ -1068,10 +1108,10 @@ class BackUp:
         else:
             end_time = copy_extend_info.get("backupTime")
         if not end_time:
-            log.error(f"Failed to obtain the backup time of the data copy.{self.get_log_common()}")
+            log.error(f"Failed to obtain the backup time of the data copy.{self.get_log_common()}.")
             return False
         if end_time < start_time:
-            log.error(f"The log time is not continuous with the data copy time.{self.get_log_common()}")
+            log.error(f"The log time is not continuous with the data copy time.{self.get_log_common()}.")
             return False
         return True
 
@@ -1123,9 +1163,9 @@ class BackUp:
         """
         ret = self.kill_backup_process()
         if ret:
-            output = ActionResult(code=0).dict(by_alias=True)
+            output = ActionResult(code=CMDResultInt.SUCCESS.value).dict(by_alias=True)
         else:
-            output = ActionResult(code=1).dict(by_alias=True)
+            output = ActionResult(code=CMDResultInt.FAILED.value).dict(by_alias=True)
         return output
 
     def backup_save_tablespace(self, backupdir_):
@@ -1408,7 +1448,7 @@ class BackUp:
             return False, '', ''
         # 2. 拼接备份sql、准备备份目录
         if not self.set_version():
-            log.error(f"Set big version fail.{self.get_log_common()}")
+            log.error(f"Set big version fail.{self.get_log_common()}.")
             return '', '', ''
         if self._backup_type == BackupTypeEnum.FULL_BACKUP:
             prepare_ret, backup_sql, backup_dir = self.backup_prepare_full()
@@ -1478,54 +1518,78 @@ class BackUp:
 
     @exter_attack
     def backup_progress(self):
-        """
-        查询备份进度
-        :return:
-        """
+        self._cache_area = self.get_area_info("cache_repository")
         log.info("Start to exec progress task.")
-        job_dict = self._json_param.get("job", {})
-        object_info = job_dict.get("protectObject", {})
-        self._db_type = object_info.get("subType", '')
+        self._db_type = self._json_param.get("job", {}).get("protectObject", {}).get("subType", '')
         if not self.set_version():
-            return self.return_err_info()
+            log.error(f"Backup failed, set version failed.{self.get_log_common()}.")
+            report_job_details(self._pid, self.return_err_info())
+            return self.return_err_info().dict(by_alias=True)
         backup_history_add_num = 1
         if self._db_type == BackupSubType.CLUSTER:
-            # 判断是否是执行备份命令的节点
-            exec_node_info = self.get_exec_node_info_json()
-            exec_node_uuid = exec_node_info.get("uuid", "")
-            backup_history_add_num = exec_node_info.get("primary_node_num", "")
-            local_uuid = get_hostsn()
-            if exec_node_uuid != local_uuid:
-                status = SubJobStatusEnum.COMPLETED.value
-                output = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, taskStatus=status,
-                                       progress=Progress.END)
+            exec_node_uuid, backup_history_add_num = self.check_execution_node()
+            if exec_node_uuid != get_hostsn():
+                log.error(f"Backup failed, execute on wrong agent.{self.get_log_common()}.")
+                output = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id,
+                                       taskStatus=SubJobStatusEnum.COMPLETED.value, progress=Progress.END)
+                report_job_details(self._pid, output)
                 return output.dict(by_alias=True)
-        result_type = self.set_db_param().get("code")
-        if result_type:
+        if self.set_db_param().get("code"):
             log.error(f"Set db patam fail.{self.get_log_common()}.")
-            return self.return_err_info()
+            report_job_details(self._pid, self.return_err_info())
+            return self.return_err_info().dict(by_alias=True)
         # 获取backup_history_num
         output = self.get_backup_progress(backup_history_add_num)
-        hostsn = get_hostsn()
+        bind_path = os.path.join(BACKUP_MOUNT_PATH, f"{self._job_id}_bind")
+        result = umount(bind_path)
         pre_path_info = os.path.join(self._cache_area, f"backup_prerequisite{self._job_id}.json")
-        if output.task_status == SubJobStatusEnum.FAILED and not os.path.exists(pre_path_info):
+        if output.task_status == SubJobStatusEnum.FAILED.value and not os.path.exists(pre_path_info):
+            log.error(f"Backup failed, no backup_prerequisite file.{self.get_log_common()}.")
+            report_job_details(self._pid, output)
             return output.dict(by_alias=True)
-        if output.task_status == SubJobStatusEnum.FAILED:
-            return self.backup_progress_fail(output)
-        if output.task_status == SubJobStatusEnum.RUNNING:
-            log_detail = LogDetail(logInfo=JobProgressLabel.backup_subjob_running,
-                                   logInfoParam=[hostsn, str(self.progress)],
-                                   logTimestamp=int(time.time()), logLevel=1)
+        if output.task_status == SubJobStatusEnum.FAILED.value:
+            log.error(f"Backup failed.{self.get_log_common()}.")
+            report_job_details(self._pid, self.backup_progress_fail(output))
+            return self.backup_progress_fail(output).dict(by_alias=True)
+        if output.task_status == SubJobStatusEnum.RUNNING.value:
+            log_detail = LogDetail(logInfo=JobProgressLabel.backup_subjob_running, logTimestamp=int(time.time()),
+                                   logInfoParam=[get_hostsn(), str(self.progress)], logLevel=DBLogLevel.INFO.value)
             output.log_detail = [log_detail]
+            log.info(f"Backup running.{self.get_log_common()}.")
+            report_job_details(self._pid, output)
             return output.dict(by_alias=True)
-        copy_size = self.get_copy_size()
-        output.data_size = copy_size
-        log_detail = LogDetail(logInfo=JobProgressLabel.backup_subjob_success,
-                               logInfoParam=[hostsn],
-                               logTimestamp=int(time.time()), logLevel=1)
+        output.data_size = self.get_copy_size()
+        output.speed = self.get_bkp_average_speed(output.data_size, output)
+        log_detail = LogDetail(logInfo=JobProgressLabel.backup_subjob_success, logInfoParam=[get_hostsn()],
+                               logTimestamp=int(time.time()), logLevel=DBLogLevel.INFO.value)
         output.log_detail = [log_detail]
-        log.info(f"Backup progress info {output.dict(by_alias=True)}. {self.get_log_common()}")
+        output.progress = Progress.END
+        output.task_status = SubJobStatusEnum.COMPLETED.value
+        log.info(f"Backup progress info {output.dict(by_alias=True)}. {self.get_log_common()}.")
+        report_job_details(self._pid, output)
         return output.dict(by_alias=True)
+
+    def check_execution_node(self):
+        # 判断是否是执行备份命令的节点
+        exec_node_info = self.get_exec_node_info_json()
+        exec_node_uuid = exec_node_info.get("uuid", "")
+        backup_history_add_num = exec_node_info.get("primary_node_num", "")
+        return exec_node_uuid, backup_history_add_num
+
+    def get_bkp_average_speed(self, copy_size, output):
+        speed = 0
+        if output.log_detail:
+            log_detail_progress = output.log_detail[0]
+            log.info(f"Backup start at: {log_detail_progress.log_timestamp}, {self.get_log_common()}.")
+            try:
+                speed = (copy_size - output.data_size) / (int(time.time()) - log_detail_progress.log_timestamp)
+            except Exception:
+                log.error("Error while calculating speed! time difference is 0!")
+                return 0
+            log.info(f"Average backup speed is: {speed}, {self.get_log_common()}.")
+        else:
+            log.info(f"Speed is not required, {self.get_log_common()}.")
+        return speed
 
     def get_copy_size(self):
         """
@@ -1540,26 +1604,31 @@ class BackUp:
                 return 0
         # 单位 kb
         copy_size = 0
+        is_log_backup: bool = self._backup_type == BackupTypeEnum.LOG_BACKUP
         copy_name = json_dict.get(DMJsonConstant.BACKUPSETNAME, '')
         if self._db_type == BackupSubType.CLUSTER:
             all_oguid = json_dict.get("groupID", [])
             for oguid in all_oguid:
-                copy_path = os.path.join(self._data_area, oguid, copy_name)
+                copy_path: str = os.path.join(
+                    self._log_area, oguid, copy_name) if is_log_backup else os.path.join(self._data_area, oguid,
+                                                                                         copy_name)
                 ret, size = scan_dir_size(self._job_id, copy_path)
                 if not ret:
-                    log.error(f"Get copy size fail. {self.get_log_common()}")
+                    log.error(f"Get copy size fail. {self.get_log_common()}.")
                     return 0
                 copy_size += size
             return copy_size
-        copy_path = os.path.join(self._data_area, copy_name)
+        copy_path: str = os.path.join(self._log_area, copy_name) if is_log_backup else os.path.join(self._data_area,
+                                                                                                    copy_name)
         ret, copy_size = scan_dir_size(self._job_id, copy_path)
+        log.info(f"copy_size: copy_size")
         if not ret:
-            log.error(f"Get copy size fail. {self.get_log_common()}")
+            log.error(f"Get copy size fail. {self.get_log_common()}.")
         return copy_size
 
     def save_sql_errcode(self, sql_result):
 
-        log.info(f"Start save sql errcode.{self.get_log_common()}")
+        log.info(f"Start save sql errcode.{self.get_log_common()}.")
         re_rule = "(.*?)]"
         slot_list = re.findall(re_rule, sql_result)
         errcode = "0"
@@ -1570,18 +1639,18 @@ class BackUp:
                 str_to_int = int(errcode)
             except Exception:
                 status = False
-                log.info(f"Get sql errcode fail.{self.get_log_common()}")
+                log.info(f"Get sql errcode fail.{self.get_log_common()}.")
         else:
             status = False
-            log.info(f"Get sql errcode fail.{self.get_log_common()}")
+            log.info(f"Get sql errcode fail.{self.get_log_common()}.")
         json_file = {"errcode": errcode}
         json_path = os.path.join(self._cache_area, f"sql_errcode_{self._job_id}.json")
         output_execution_result(json_path, json_file)
-        log.info(f"Save sql errcode succ.{self.get_log_common()}")
+        log.info(f"Save sql errcode succ.{self.get_log_common()}.")
         return status
 
     def get_sql_errcode(self):
-        log.info(f"Start get sql errcode.{self.get_log_common()}")
+        log.info(f"Start get sql errcode.{self.get_log_common()}.")
         json_path = os.path.join(self._cache_area, f"sql_errcode_{self._job_id}.json")
         if not os.path.exists(json_path):
             return True, ''
@@ -1592,11 +1661,11 @@ class BackUp:
         errcode = json_dict.get("errcode", '')
         if not errcode:
             return False, ''
-        log.info(f"Get sql errcode succ.{self.get_log_common()}")
+        log.info(f"Get sql errcode succ.{self.get_log_common()}.")
         return True, errcode
 
     def save_get_sql_errcode_times(self):
-        log.info(f"Start save get sql errcode times.{self.get_log_common()}")
+        log.info(f"Start save get sql errcode times.{self.get_log_common()}.")
         path_info = os.path.join(self._cache_area, f"get_errcode_times{self._job_id}.json")
         times = 1
         if os.path.exists(path_info):
@@ -1608,7 +1677,7 @@ class BackUp:
         output_execution_result_ex(path_info, json_dict)
 
     def check_times(self):
-        log.info(f"Start check times.{self.get_log_common()}")
+        log.info(f"Start check times.{self.get_log_common()}.")
         path_info = os.path.join(self._cache_area, f"get_errcode_times{self._job_id}.json")
         if not os.path.exists(path_info):
             return False
@@ -1618,7 +1687,7 @@ class BackUp:
         if times == -1:
             return False
         if times >= 3:
-            log.error(f"More than 3 times.{self.get_log_common()}")
+            log.error(f"More than 3 times.{self.get_log_common()}.")
             return False
         return True
 
@@ -1650,11 +1719,12 @@ class BackUp:
                                taskStatus=SubJobStatusEnum.FAILED.value,
                                progress=Progress.END,
                                logDetail=[log_detail])
-        return output.dict(by_alias=True)
+        return output
 
     def get_backup_progress(self, backup_history_add_num_):
+        job_name = "backup"
         self._cache_area = self.get_area_info("cache_repository")
-        succ_file_path = os.path.join(self._cache_area, f"backup_status_{self._job_id}.json")
+        succ_file_path = os.path.join(self._cache_area, f"backup_succ_{self._job_id}.json")
         fail_file_path = os.path.join(self._cache_area, f"sql_errcode_{self._job_id}.json")
         pre_path_info = os.path.join(self._cache_area, f"backup_prerequisite{self._job_id}.json")
         output_info = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, taskStatus=SubJobStatusEnum.FAILED,
@@ -1662,12 +1732,16 @@ class BackUp:
         if os.path.exists(succ_file_path):
             backup_count_query = self.get_backup_history()
             if backup_count_query == backup_history_add_num_:
+                log.info(f"Backup history success.{self.get_log_common()}.")
                 output_info.task_status = SubJobStatusEnum.COMPLETED.value
             else:
-                log.error(f"Backup history error.{self.get_log_common()}")
+                log.error(f"Backup history error.backupset_path:{self.backupset_path},"
+                          f"backup_history_add_num_:{backup_history_add_num_}, "
+                          f"backup_count_query:{backup_count_query}.")
                 self.log_detail_errcode = ErrCode.ERR_BACKUP_HISTORY
             return output_info
         if os.path.exists(fail_file_path):
+            log.error(f"Backup failed.{self.get_log_common()}.")
             return output_info
         if not os.path.exists(pre_path_info):
             # 框架在执行备份任务30s后开始查询备份进度，针对挂载卡住导致备份在此时仍未开始的情况，返回running状态
@@ -1682,7 +1756,13 @@ class BackUp:
                                     taskStatus=SubJobStatusEnum.RUNNING,
                                     progress=Progress.RUNNING)
         if not self.set_progress(backup_history_add_num_):
+            log.info(f"Backup failed, set progress error.{self.get_log_common()}.")
             output_info.task_status = SubJobStatusEnum.FAILED.value
+        # 检查备份进度文件
+        sub_job_details = get_subjob_via_progress_file(self._job_id, self._sub_job_id, job_name, self._cache_area)
+        if sub_job_details.task_status == SubJobStatusEnum.FAILED.value:
+            log.error(f"Find error in backup progress file.{self.get_log_common()}.")
+            report_job_details(self._pid, sub_job_details)
         return output_info
 
     def set_progress(self, backup_history_add_num_):
@@ -1709,8 +1789,8 @@ class BackUp:
         return True
 
     def judge_backup_status(self, backup_history_add_num_):
-        log.info(f"Start judge backup status.{self.get_log_common()}")
-        backup_succ_path = os.path.join(self._cache_area, f"backup_status_{self._job_id}.json")
+        log.info(f"Start judge backup status.{self.get_log_common()}.")
+        backup_succ_path = os.path.join(self._cache_area, f"backup_succ_{self._job_id}.json")
         err_code_path = os.path.join(self._cache_area, f"sql_errcode_{self._job_id}.json")
         status = SubJobStatusEnum.FAILED.value
         if not os.path.exists(backup_succ_path) and not os.path.exists(err_code_path):
@@ -1745,41 +1825,54 @@ class BackUp:
 
     @exter_attack
     def backup(self):
-        """
-        执行备份任务
-        :return:
-        """
         log.info(f"job id: {self._job_id}, Start backup.")
-        result_type = self.set_db_param().get("code")
-        if result_type:
-            return ActionResult(code=ActionResultCode.FAIL).dict(by_alias=True)
+        self._cache_area = self.get_area_info("cache_repository")
+        if self.set_db_param().get("code"):
+            log.error(f"Failed to set_db_param.{self.get_log_common()}.")
+            progress_status = ProgressStatus(taskStatus=SubJobStatusEnum.FAILED.value, progress=Progress.END)
+            save_progress_file(self._job_id, "backup", self._cache_area, progress_status)
+            return
         prepare_ret, backup_sql, backup_dir = self.backup_prepare()
         if prepare_ret == "Mount":
             log.info(f'job id: {self._job_id}, mount task')
-            return ActionResult(code=ActionResultCode.SUCCESS).dict(by_alias=True)
+            progress_status = ProgressStatus(taskStatus=SubJobStatusEnum.COMPLETED.value, progress=Progress.END)
+            save_progress_file(self._job_id, "backup", self._cache_area, progress_status)
+            return
         if not prepare_ret:
             log.error(f"Failed to prepare backup information.{self.get_log_common()}.")
-            return ActionResult(code=ActionResultCode.FAIL).dict(by_alias=True)
+            progress_status = ProgressStatus(taskStatus=SubJobStatusEnum.FAILED.value, progress=Progress.END)
+            save_progress_file(self._job_id, "backup", self._cache_area, progress_status)
+            return
         ret, real_path = check_path_in_white_list(backup_dir)
         if not ret:
-            log.error(f"Invalid backup set path.")
-            return ActionResult(code=ActionResultCode.FAIL).dict(by_alias=True)
+            log.error(f"Invalid backup set path.{self.get_log_common()}.")
+            progress_status = ProgressStatus(taskStatus=SubJobStatusEnum.FAILED.value, progress=Progress.END)
+            save_progress_file(self._job_id, "backup", self._cache_area, progress_status)
+            return
         # 保存本次任务备份集路径信息
         if not self.save_backupset_path(backup_dir):
             log.info(f"Failed save backupset path info.{self.get_log_common()}.")
-            return ActionResult(code=ActionResultCode.FAIL).dict(by_alias=True)
+            progress_status = ProgressStatus(taskStatus=SubJobStatusEnum.FAILED.value, progress=Progress.END)
+            save_progress_file(self._job_id, "backup", self._cache_area, progress_status)
+            return
         tool = DmSqlTool(self._db_info)
-        log.info(f'job id: {self._job_id}, start to execute backup sql')
+        log.info(f'job id: {self._job_id}, start to execute backup sql:{backup_sql}')
+        origin_size = self.get_copy_size()
+        progress_status = ProgressStatus(taskStatus=SubJobStatusEnum.INITIALIZING.value, progress=Progress.START,
+                                         dataSize=origin_size, logTimestamp=int(time.time()))
+        save_progress_file(self._job_id, "backup", self._cache_area, progress_status)
         status, backup_res = tool.run_disql_tool((backup_sql,), timeout=None)
         log.info(f'job id: {self._job_id}, execute backup sql success, status: {status}')
         if not status:
-            log.error(f"The backup:{self._job_id} operation failed.{self.get_log_common()}.")
+            log.error(f"The backup:{self._job_id} operation failed.{backup_res}.")
             self.save_sql_errcode(backup_res[0])
-            return ActionResult(code=ActionResultCode.FAIL).dict(by_alias=True)
-        log.info(f'job id: {self._job_id}, start to after backup')
+            progress_status = ProgressStatus(taskStatus=SubJobStatusEnum.FAILED.value, progress=Progress.END)
+            save_progress_file(self._job_id, "backup", self._cache_area, progress_status)
+            return
         self.after_backup()
-        log.info(f'job id: {self._job_id}, after backup end')
-        return ActionResult(code=ActionResultCode.SUCCESS).dict(by_alias=True)
+        progress_status = ProgressStatus(taskStatus=SubJobStatusEnum.COMPLETED.value, progress=Progress.END)
+        save_progress_file(self._job_id, "backup", self._cache_area, progress_status)
+        return
 
     def after_backup(self):
         log.info(f'job id: {self._job_id}, after backup type: {self._backup_type}')
@@ -1795,10 +1888,9 @@ class BackUp:
         if not self.query_backup_copy():
             log.error(f"job id: {self._job_id}, Report copy info fail.{self.get_log_common()}.")
             self.log_detail_errcode = ErrCode.ERR_INVALID_LOG_COPY
-            self.report_job_detail()
             result_tag = False
         json_file = {"status": "succ"}
-        json_path = os.path.join(self._cache_area, f"backup_status_{self._job_id}.json")
+        json_path = os.path.join(self._cache_area, f"backup_succ_{self._job_id}.json")
         if not result_tag:
             log.error(f'job id: {self._job_id}, after backup result flag failed: {result_tag}')
             json_file = {"status": "fail"}
@@ -1836,7 +1928,7 @@ class BackUp:
         log.info("Read exec_node json fail.")
         return {}
 
-    def set_repositories(self, backupset_dir_):
+    def set_repositories(self):
         # 获取repositories信息
         job_dict = self._json_param.get("job", {})
         self._db_type = job_dict.get("protectObject", {}).get("subType", '')
@@ -2010,18 +2102,18 @@ class BackUp:
         job_dict = self._json_param.get("job", {})
         self._db_type = job_dict.get("protectObject", {}).get("subType", '')
         if self._db_type == BackupSubType.SINGLE_NODE:
-            return True, ''
+            return True, []
         if not self.set_cluster_info():
             log.error(f"Set nodes info fail.{self.get_log_common()}")
-            return False, ''
+            return False, []
         nodes_info = self._json_param.get("job", {}).get("protectEnv", {}).get("nodes", [])
         if not nodes_info:
             log.error(f"Get nodes info fail.{self.get_log_common()}")
-            return False, ''
+            return False, []
         primary_id_port = self.get_primary_info(nodes_info)
         if not primary_id_port:
             log.error(f"Get primary info fail.{self.get_log_common()}")
-            return False, ''
+            return False, []
         primary_list = []
         repeats_ip_list = []
         for node in nodes_info:
@@ -2036,10 +2128,9 @@ class BackUp:
                 primary_list.append(node_id)
         if repeats_ip_list:
             log.error(f"Multiple master nodes on the same host.{self.get_log_common()}")
-            err_param = ",".join(repeats_ip_list)
-            return False, err_param
+            return False, repeats_ip_list
         log.info(f"Check nodes distribution succ.{self.get_log_common()}")
-        return True, ''
+        return True, []
 
     def set_copy_id(self):
 
@@ -2088,14 +2179,4 @@ class BackUp:
         if not version:
             return False
         self.version = version
-        return True
-
-    def report_job_detail(self):
-        result = self.return_err_info()
-        result[ParamKeyConst.JOB_ID] = self._job_id
-        try:
-            result = invoke_rpc_tool_interface(self._job_id, RpcParamKey.REPORT_JOB_DETAILS, result)
-        except Exception as err_info:
-            log.error(f"Get last copy info fail.{self.get_log_common()}")
-            return False
         return True

@@ -10,33 +10,56 @@
 # EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
+
 import configparser
 import json
 import os
+import pwd
+import random
 import re
+import shutil
 import subprocess
 import time
 from base64 import b64decode
+from datetime import datetime
 
 import psutil
 
 from goldendb.logger import log
 from common.common import check_command_injection_exclude_quote, check_path_legal, execute_cmd, read_tmp_json_file, \
     output_execution_result_ex, output_result_file, report_job_details
-from common.common_models import SubJobDetails, LogDetail, ActionResult
+from common.common_models import SubJobDetails, LogDetail, ActionResult, SubJobModel
 from common.const import EnumPathType, ParamConstant, SubJobStatusEnum, ReportDBLabel, DBLogLevel, ExecuteResultEnum, \
-    RpcParamKey
+    RpcParamKey, CMDResult, CMDResultInt
 from common.exception.common_exception import ErrCodeException
 from common.file_common import exec_lchown_dir_recursively, check_file_or_dir, change_path_permission, get_user_info, \
     exec_lchown
+from common.job_const import JobNameConst
+from common.const import RepositoryDataTypeEnum
 from common.util.check_user_utils import check_os_user
 from common.util.exec_utils import exec_append_newline_file, exec_overwrite_file, exec_umount_cmd, exec_mount_cmd, \
     exec_mkdir_cmd, check_path_valid, ExecFuncParam, su_exec_cmd_list, exec_cp_dir_no_user, read_lines_cmd, \
     su_exec_rm_cmd, exec_cat_cmd
 from goldendb.handle.backup.parse_backup_params import get_goldendb_structure
-from goldendb.handle.common.const import CMDResult, GoldenDBPath, MountBindPath, GetIPConstant, Report, ErrorCode, \
-    FormatCapacity, ManagerPriority, GoldenDBJsonConst, GoldenDBNodeType, RoleIniName, RoleBackupDir, RoleIniSection
+from goldendb.handle.common.const import GoldenDBPath, MountBindPath, GetIPConstant, Report, ErrorCode, RoleIniName, \
+    ManagerPriority, GoldenDBJsonConst, GoldenDBNodeType, RoleBackupDir, RoleIniSection, ActTxInfoConsts, \
+    FormatCapacity, ErrCodeMessage, ErrPattern, BackupResultMessage, RestoreResultMessage, DbtoolTaskStatus, \
+    FileInfoDict
 from goldendb.schemas.glodendb_schemas import TaskInfo, StatusInfo
+
+RECOGNIZED_DBTOOL_ERRORS = [ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL, ErrorCode.ERR_BKP_CHECK, ErrorCode.ERROR_LOGIN_INFO]
+LOG_DETAIL_SUCCESS = [ReportDBLabel.SUB_JOB_SUCCESS, ReportDBLabel.COPY_VERIFICATION_SUCCESS,
+                      ReportDBLabel.PRE_REQUISIT_SUCCESS, ReportDBLabel.BACKUP_SUB_JOB_SUCCESS]
+
+
+def get_user_home(user_name):
+    try:
+        user_info = pwd.getpwnam(user_name)
+        log.info(f"Get root path {user_info.pw_dir} for {user_name} success.")
+        return user_info.pw_dir
+    except Exception as err:
+        log.error(f"User '{user_name}' not found, err: {err}.")
+        return ""
 
 
 def write_progress_file(message: str, file_name: str):
@@ -63,7 +86,7 @@ def report_job_details_file_ex(job_id: str, sub_job_details: dict):
     if not result_info:
         return False
     ret_code = result_info.get("code", -1)
-    if ret_code != int(CMDResult.SUCCESS):
+    if ret_code != CMDResultInt.SUCCESS.value:
         log.error(f"Invoke rpc_tool interface failed, result code: {ret_code}.")
         return False
     return True
@@ -103,7 +126,7 @@ def exec_rc_tool_cmd(unique_id, interface_name, param_dict):
         # 执行命令后删除输入文件
         su_exec_rm_cmd(input_file_path)
 
-    if ret != CMDResult.SUCCESS:
+    if ret != CMDResult.SUCCESS.value:
         return {}
 
     # 读取文件成功后删除文件
@@ -151,7 +174,7 @@ def umount_bind_backup_paths(job_id):
         su_exec_rm_cmd(path)
 
 
-def umount_bind_path_list(paths: list[str]):
+def umount_bind_path_list(paths):
     if not paths:
         return
     for path in paths:
@@ -165,7 +188,7 @@ def umount_bind_path(des_area):
         log.warning(f"Failed to exec umount bind path: {ex}")
         return False
 
-    if return_code != CMDResult.SUCCESS:
+    if return_code != CMDResult.SUCCESS.value:
         log.warning(f"Failed to exec umount bind path: {des_area}! std_err: {std_err}")
         return False
     log.info(f"Succeed to exec umount bind path {des_area}")
@@ -184,7 +207,7 @@ def mount_bind_path(src_area, des_area, job_id):
         log.error(f"Failed to exec mount bind path err: {ex}!")
         return False
 
-    if return_code != CMDResult.SUCCESS:
+    if return_code != CMDResult.SUCCESS.value:
         log.error(f"Failed to exec mount bind path err: {std_err}!src path={src_area}, dest path={des_area}")
         return False
     log.info(f"Succeed to exec mount bind path. src path={src_area}, dest path={des_area}")
@@ -220,7 +243,7 @@ def exec_find_backup_dir(role_name, ini_name, dir_name):
 
     return_code, backup_dir = subprocess.getstatusoutput(find_dir_cmd)
 
-    if return_code != int(CMDResult.SUCCESS):
+    if return_code != CMDResultInt.SUCCESS.value:
         log.error(f"Get source backup dir failed! return_code:{return_code}, backup_dir:{backup_dir}")
         return ""
     backup_dir = backup_dir.split("=")[1].strip()
@@ -234,34 +257,35 @@ def get_data_node_backup_dir(encode_str):
     @encode_str：base64编码的字符传
     返回值：backup根目录
     """
-    decode_str = str(b64decode(encode_str))
-    dir_re = r'backup_rootdir =(.*?)\\n'
+    decode_byte = b64decode(encode_str)
+    decode_str = decode_byte.decode('utf-8', errors='ignore')
+    dir_re = r'backup_rootdir\s*=(.*?)\s*$'
     backup_root_dir = re.findall(dir_re, decode_str)
     if backup_root_dir:
-        return backup_root_dir[0]
-    else:
-        return ''
+        if isinstance(backup_root_dir[0], str):
+            log.info(f"Get backup_root_dir.")
+            return backup_root_dir[0].strip()
+    return ''
 
 
 def get_backup_path(role_name, role_type, file_content, json_const):
     source_backup_dir = get_data_node_backup_dir(
         file_content["job"][f"{json_const}"]["extendInfo"]["local_ini_cnf"])
-    source_backup_dir = get_local_ini_path(role_name, source_backup_dir, "backup_root")
-    log.debug(f"Get source {role_type} backup dir success.")
+    source_backup_dir = get_local_ini_path(role_name, role_type, source_backup_dir)
     return source_backup_dir
 
 
-def get_local_ini_path(role_name, source_backup_dir, default_root):
+def get_local_ini_path(role_name, role_type, source_backup_dir):
     if check_command_injection_exclude_quote(role_name) or not check_os_user(role_name):
         log.error("command injection in role_name! The role_name(%s) is invalid.", role_name)
         return ''
-    find_home_cmd = f'su - {role_name} -c "pwd"'
-    return_code, role_name_home = subprocess.getstatusoutput(find_home_cmd)
+    role_home = get_user_home(role_name)
     if source_backup_dir == "":
-        source_backup_dir = os.path.join(role_name_home, default_root)
+        # 上传配置路径为空，取当前用户home路径下的backup_root（insight界面可下载该模板）
+        source_backup_dir = os.path.join(role_home, "backup_root")
     elif source_backup_dir.startswith("$HOME/"):
         backup_root = source_backup_dir.split("$HOME/")[1]
-        source_backup_dir = os.path.join(role_name_home, backup_root)
+        source_backup_dir = os.path.join(role_home, backup_root)
     return source_backup_dir
 
 
@@ -295,7 +319,7 @@ def cp_result_info(cluster_id, bkp_file, src_path, des_path):
     src_bkp_file_path = os.path.join(src_path, f'DBCluster_{cluster_id}', bkp_file)
     des_bkp_folder_path = os.path.join(des_path, f'DBCluster_{cluster_id}')
 
-    if not check_path_valid(src_bkp_file_path) or not check_path_valid(des_bkp_folder_path):
+    if not check_path_valid(src_bkp_file_path, is_check_white_list=False) or not check_path_valid(des_bkp_folder_path):
         return False
     path_type = check_file_or_dir(src_bkp_file_path)
     if path_type not in (EnumPathType.DIR_TYPE, EnumPathType.FILE_TYPE):
@@ -304,7 +328,7 @@ def cp_result_info(cluster_id, bkp_file, src_path, des_path):
 
     cp_cmd = f'cp -a {src_bkp_file_path} {des_bkp_folder_path}'
     return_code, out_info, err_info = execute_cmd(cp_cmd)
-    if int(return_code) != int(CMDResult.SUCCESS):
+    if return_code != CMDResult.SUCCESS.value:
         log.error(f'execute copy cmd failed, message: {out_info}, err: {err_info}')
         return False
     return True
@@ -375,10 +399,11 @@ def get_task_path_from_result_info(result_info_path, cluster_id_path):
             log.err(f"get backup type failed: {err}")
             return False, ""
     task_path = os.path.join(cluster_id_path, 'DATA_BACKUP', task_id)
-    log.info(f"remove task_path:{task_path}")
     if os.path.exists(task_path):
+        log.info(f"Will remove task_path: {task_path}.")
         return True, task_path
     else:
+        log.error(f"task_path: {task_path}, not exists.")
         return False, ""
 
 
@@ -437,8 +462,12 @@ def get_repository_path(file_content, repository_type):
     repositories_path = ""
     for repository in repositories:
         if repository['repositoryType'] == repository_type:
-            path_list = repository.get("path", [])
-            repositories_path = check_repository_path(path_list)
+            index = random.randint(0, len(repository["path"]) - 1)
+            if repository_type != RepositoryDataTypeEnum.DATA_REPOSITORY:
+                index = 0
+            repositories_path = repository["path"][index]
+            log.info(f"repository_type is {repository_type}, index is {index}, "
+                     f"repository_path is {repositories_path}")
             break
     return repositories_path
 
@@ -455,7 +484,7 @@ def su_exec_cmd(user, cmd, param_list=None):
         param_list = [[]]
     exec_param = ExecFuncParam(user, [cmd], param_list, chk_exe_owner=False)
     ret, out = su_exec_cmd_list(exec_param)
-    return ret == CMDResult.SUCCESS, out
+    return ret == CMDResult.SUCCESS.value, out
 
 
 def exec_chmod_dir_recursively(input_path: str, mode):
@@ -474,8 +503,9 @@ def exec_chmod_dir_recursively(input_path: str, mode):
             tmp_dir_path = os.path.join(root, tmp_dir)
             change_path_permission(tmp_dir_path, mode=mode)
         for tmp_file in files:
-            tmp_file = os.path.join(root, tmp_file)
-            change_path_permission(tmp_file, mode=mode)
+            if tmp_file != ".snapshot":
+                tmp_file = os.path.join(root, tmp_file)
+                change_path_permission(tmp_file, mode=mode)
     return True
 
 
@@ -495,7 +525,7 @@ def mkdir_chmod_chown_dir_recursively(input_path: str, mode, owner, group, pre_d
     return chmod_ret and chown_ret
 
 
-def check_repository_path(path_list: list[str]):
+def check_repository_path(path_list):
     """
     检查挂载地址是否可以访问，如果不行，则换个挂载地址
     """
@@ -504,6 +534,7 @@ def check_repository_path(path_list: list[str]):
         if can_connect(path):
             repositories_path = path
             break
+    log.info(f"Exec check_repository_path success: {repositories_path}.")
     return repositories_path
 
 
@@ -516,9 +547,11 @@ def can_connect(path):
                                    stderr=subprocess.PIPE)
         process.wait(timeout=3)
         ret_code = process.poll()
-        if ret_code == 0:
+        if ret_code == CMDResultInt.SUCCESS.value:
+            log.info(f"can connect to path: {path}.")
             return True
         else:
+            log.error(f"can't connect to path: {path}.")
             return False
     except Exception as e:
         log.error(f"can't connect path:{path}")
@@ -556,7 +589,7 @@ def count_files(path):
     count = 0
     for _, _, files in os.walk(path):
         count += len(files)
-    return str(count)
+    return count
 
 
 def get_agent_uuids(file_content):
@@ -569,9 +602,28 @@ def get_agent_uuids(file_content):
     return list(agent_uuids)
 
 
+def get_all_data_nodes(cluster_structure):
+    log.info("Get all data nodes.")
+    data_nodes = []
+    for group in cluster_structure.data_nodes.values():
+        for _, values in group.items():
+            for value in values:
+                data_nodes.append(value)
+    return data_nodes
+
+
 def get_id_status_via_priority(status_file, priority, log_msg):
     """
     功能描述：根据管理节点优先级，从任务状态文件中获取对应的uuid和任务状态
+
+    参数：
+    status_file (str): 管理节点任务状态文件的路径
+    priority (int): 管理节点的优先级
+    log_msg (str): 日志信息
+
+    返回值：
+    如果成功获取到uuid和任务状态，返回一个元组，包含uuid和任务状态
+    如果获取失败，返回一个元组，包含空字符串和SubJobStatusEnum.FAILED.value
     """
     results = read_tmp_json_file(status_file)
     if not results:
@@ -588,7 +640,7 @@ def get_id_status_via_priority(status_file, priority, log_msg):
 
 def check_task_on_all_managers(agent_id, status_file, log_msg, task_infos: TaskInfo):
     """
-    功能描述：检查所有管理节点的运行结果，有一个节点运行成功即返回成功，所有管理节点失败，在进度文件中记录详情，并返回失败。无需考虑优先级
+    功能描述：检查所有管理节点的运行结果，无需考虑优先级，有一个节点运行成功即返回成功，所有管理节点失败，返回失败，状态文件无写操作。
     """
     pid, job_id, sub_job_id, task_type = task_infos.pid, task_infos.job_id, task_infos.sub_job_id, task_infos.task_type
     log.info(f"{log_msg}, {agent_id} exec {task_type} failed, check result on all managers.")
@@ -609,8 +661,8 @@ def check_task_on_all_managers(agent_id, status_file, log_msg, task_infos: TaskI
             return False
         log.info(f"{log_msg}, wait {task_type} result on all managers.")
         time.sleep(Report.STS_CHECK_INTERVAL)
-        if time.time() - start_time > Report.TIME_OUT:  # 超时时间为12小时，单位为秒
-            log.info(f"{log_msg}, {task_type} timeout.")
+        if time.time() - start_time > Report.TIME_OUT:  # 超时时间为1200小时，单位为秒
+            log.error(f"{log_msg}, check {task_type} status on all managers timeout.")
             return False  # 跳出循环
 
 
@@ -622,6 +674,7 @@ def exec_task_on_all_managers(func, status_file, log_msg, task_infos: TaskInfo, 
         task_infos.pid, task_infos.job_id, task_infos.sub_job_id,
         task_infos.json_param_object, task_infos.task_type, task_infos.log_comm
     )
+    log.info(f"{log_msg}, exec {task_type} on all managers, {log_comm}.")
     results = read_tmp_json_file(status_file)
     if not results:
         log.error(f'{log_msg} failed to get {task_type} status file, {log_comm}.')
@@ -639,11 +692,12 @@ def exec_task_on_all_managers(func, status_file, log_msg, task_infos: TaskInfo, 
     if cur_priority == ManagerPriority.priority:
         # 当前节点优先级最高，直接执行恢复
         log.info(f'{log_msg} on {cur_agent_id} with highest priority: {cur_priority}.')
-        return func(cur_agent_id, status_file, task_params) if task_type == "Backup" else func(cur_agent_id,
-                                                                                               status_file)
+        return func(cur_agent_id, status_file, task_params) if task_type == JobNameConst.BACKUP else func(cur_agent_id,
+                                                                                                          status_file)
     # 取当前节点前一级的优先级， 检查该优先级对应节点的状态
     pre_priority = cur_priority - 1
     start_time = time.time()
+    log.info(f"{log_msg}, check {task_type} on agent with priority {pre_priority}, {log_comm}, from {start_time}.")
     while True:
         pre_id, pre_status = get_id_status_via_priority(status_file, pre_priority,
                                                         f"{log_msg}, get id and status via priority")
@@ -653,8 +707,8 @@ def exec_task_on_all_managers(func, status_file, log_msg, task_infos: TaskInfo, 
             break
         # 等待上一优先级节点的运行结果
         time.sleep(Report.STS_CHECK_INTERVAL)
-        if time.time() - start_time > Report.TIME_OUT:  # 超时时间为12小时，单位为秒
-            log.info(f'{log_msg} timeout on {pre_id} with priority: {pre_priority}, {log_comm}.')
+        if time.time() - start_time > Report.TIME_OUT:  # 超时时间为1200小时，单位为秒
+            log.error(f'{log_msg} timeout on {pre_id} with priority: {pre_priority}, {log_comm}.')
             break  # 跳出循环
 
     new_results = read_tmp_json_file(status_file)
@@ -668,8 +722,8 @@ def exec_task_on_all_managers(func, status_file, log_msg, task_infos: TaskInfo, 
     else:
         # 上一优先级节点任务失败，本节点开始执行
         log.error(f'{log_msg} failed on {pre_id}, start {task_type} on local {cur_agent_id}, {log_comm}.')
-        return func(cur_agent_id, status_file, task_params) if task_type == "Backup" else func(cur_agent_id,
-                                                                                               status_file)
+        return func(cur_agent_id, status_file, task_params) if task_type == JobNameConst.BACKUP else func(cur_agent_id,
+                                                                                                          status_file)
 
 
 def get_value_from_ini(path, session, option):
@@ -689,88 +743,54 @@ def get_value_from_ini(path, session, option):
         result = mysql_conf.get(session, option)
     except Exception as err:
         log.error(f"Failed to parse ini file {path}, {err}")
-        raise Exception(f"Failed to parse ini file {path}, {err}") from err
+        return ""
     return result
 
 
-def get_bkp_root_dir_via_role(role_type, backup_path, job_id):
+def get_etc_ini_path(role_name, file_type, backup_path, job_id):
     """
-    根据节点类型获取备份根目录。
+    根据副本文件类型获取备份根目录。
 
     参数:
-    role_type: 节点类型，可以是ZX_MANAGER_NODE、DATA_NODE或GTM_NODE。
-    backup_path: 备份路径。
-    job_id: 任务ID。
+    role_name (str): 节点类型，可以是ZX_MANAGER_NODE、DATA_NODE或GTM_NODE。
+    file_type (str): gtm，active（6.1.02版本）的文件路径从ini配置文件中获取。
+    backup_path (str): 数据节点，管理节点的数据文件，binlog和metadata， active_info(除6.1.02版本)从PM下发的备份路径中获取。
+    job_id (str): 任务ID。
 
     返回:
-    返回备份根目录。
+    backup_path (str): 备份根目录。
 
     异常:
     如果节点类型无效，则记录错误日志并返回默认备份路径。
     """
     # 记录信息，获取备份根目录
-    log.info(f"Get backup root directory in ini for {role_type}, job_id: {job_id}.")
-    # 根据节点类型获取备份根目录
-    if role_type == GoldenDBNodeType.ZX_MANAGER_NODE:
-        cluster_manager_ini_path = os.path.join(os.path.dirname(backup_path), "etc", RoleIniName.CLUSTERMANAGERINI)
-        ini_bkp_root_dir = get_value_from_ini(cluster_manager_ini_path, RoleIniSection.CLUSTERMANAGER,
-                                              RoleBackupDir.CLUSTERMANAGER)
-
-    elif role_type == GoldenDBNodeType.DATA_NODE:
-        dbagent_ini_path = os.path.join(os.path.dirname(backup_path), "etc", RoleIniName.DBAGENTINI)
-        ini_bkp_root_dir = get_value_from_ini(dbagent_ini_path, RoleIniSection.DBAGENTINI, RoleBackupDir.DBAGENT)
-    elif role_type == GoldenDBNodeType.GTM_NODE:
-        gtm_ini_path = os.path.join(os.path.dirname(backup_path), "etc", RoleIniName.GTMINI)
-        ini_bkp_root_dir = get_value_from_ini(gtm_ini_path, RoleIniSection.GTMINI, RoleBackupDir.GTM)
-    else:
-        # 如果节点类型无效，记录错误日志并返回默认备份路径
-        log.error(f"Invalid role type, job_id: {job_id}.")
-        return backup_path
-    # 如果备份根目录不为空，记录信息并更新备份路径
-    if ini_bkp_root_dir.strip():
-        log.info(f"Will use the backup root dir of {role_type} in ini, job_id: {job_id}.")
-        backup_path = ini_bkp_root_dir.strip()
-    # 返回备份路径
+    log.info(f"Get backup root directory in ini for {file_type}, job_id: {job_id}.")
+    role_home = get_user_home(role_name)
+    file_infos = FileInfoDict.file_info_dict.get(file_type, {})
+    ini_name = file_infos.get("ini_name", "")
+    section = file_infos.get("section", "")
+    field = file_infos.get("field", "")
+    ini_path = os.path.join(role_home, "etc", ini_name)
+    prod_root = get_value_from_ini(ini_path, section, field)
+    if prod_root.strip():
+        # 如果备份根目录不为空，记录信息并更新备份路径
+        backup_path = prod_root.strip()
+        log.info(f"Update bkp root for {file_type}, {role_name}: {backup_path}, job_id: {job_id}.")
     return backup_path
 
 
-def report_err_via_output_file(req_id, job_id, sub_job_id, err_message):
+def get_agent_err_code_from_sts_file(agent_id, sts_file, task_type):
     """
-    上报数据库环境异常，根据报错信息，通过ActionResult结构体，生成输出文件，完成被动上报。
+    从sts文件中获取指定agent的错误详情
 
-    异常描述:
-    输出文件已存在，output_result_file会抛出异常。
+    参数:
+    agent_id (str): agent的唯一标识符
+    sts_file (str): 状态文件的路径
+    task_type (str): 任务类型（备份/恢复）
+
+    返回值:
+    LogDetail对象, 包含三个关键字段, log_info: str, 标签; log_detail_param: list, 错误参数; log_detail: int, 错误码;
     """
-    log.error(f"{err_message}, req_id: {req_id}, job_id: {job_id} ,sub_job_id: {sub_job_id}")
-    response = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR,
-                            bodyErr=ErrorCode.ERR_ENVIRONMENT,
-                            message=err_message)
-    output_result_file(req_id, response.dict(by_alias=True))
-    log.error(f"Step 1: execute AllowTaskInLocalNode interface failed.")
-
-
-def report_err_via_rpc(req_id, job_id, sub_job_id, log_details):
-    """
-    上报数据库环境异常，根据日志详情，通过LogDetail，SubJobDetails结构体，更新输入文件，使用rpc工具，完成主动上报。
-
-    异常描述:
-    输入文件已存在，report_job_details会抛出异常。
-    """
-    log_detail, log_detail_param, log_info = log_details
-    log.info(f"Task failed, log_details: {log_details}, req_id: {req_id}, job_id: {job_id}, sub_job: {sub_job_id}.")
-    # 标签为空，默认使用子任务失败标签
-    log_info = ReportDBLabel.SUB_JOB_FALIED if not log_info else log_info
-    # logDetailParam类型不为list，默认设置为None，防止上报出错造成卡死
-    log_detail_param = None if not isinstance(log_detail_param, list) else log_detail_param
-    log_detail_model = LogDetail(logInfo=log_info, logInfoParam=[sub_job_id], logLevel=DBLogLevel.ERROR,
-                                 logDetail=log_detail, logDetailParam=log_detail_param)
-    sub_job_detail = SubJobDetails(taskId=job_id, subTaskId=sub_job_id, progress=100, logDetail=[log_detail_model],
-                                   taskStatus=SubJobStatusEnum.FAILED.value)
-    report_job_details(req_id, sub_job_detail)
-    log.error(f"Report err via rpc, {log_detail}, req_id: {req_id}, job_id: {job_id}, sub_job: {sub_job_id}.")
-
-
-def get_agent_err_detail_from_sts_file(agent_id, sts_file, task_type):
     # 从sts文件中获取agent的错误详情
     results = read_tmp_json_file(sts_file)
     log_detail_param = results.get(agent_id, {}).get('log_detail_param')
@@ -779,31 +799,53 @@ def get_agent_err_detail_from_sts_file(agent_id, sts_file, task_type):
     # 标签默认使用ReportDBLabel.SUB_JOB_FALIED
     log_info = results.get(agent_id, {}).get('log_info', ReportDBLabel.SUB_JOB_FALIED)
     log.error(f"{task_type} failed on {agent_id}, code: {log_detail}, param: {log_detail_param}, label: {log_info}.")
-    return log_detail, log_detail_param, log_info
+    return LogDetail(logInfo=log_info, logDetail=log_detail, logDetailParam=log_detail_param)
 
 
-def get_recognized_err_from_sts_file(local_agent_id, sts_file, task_type):
-    # 根据状态文件，返回报错详情，优先处理已识别出的报错，防止前端报错信息被覆盖
-    log_detail, log_detail_param, log_info = get_agent_err_detail_from_sts_file(local_agent_id, sts_file, task_type)
+def get_recognized_err_from_sts_file(loc_agent_id, sts_file, task_type):
+    """
+    根据状态文件，返回报错详情，优先处理已识别出的报错，防止前端报错信息被覆盖
+
+    参数:
+    agent_id (str): agent的唯一标识符
+    sts_file (str): 状态文件的路径
+    task_type (str): 任务类型（备份/恢复）
+
+    返回值:
+    LogDetail对象, 包含三个关键字段, log_info: str, 标签; log_detail_param: list, 错误参数; log_detail: int, 错误码;
+    """
+    # 根据状态文件，返回报错详情，优先处理已识别出的报错，防止前端报错信息被通用报错信息覆盖
+    log.error(f"{task_type} failed on {loc_agent_id}, start to get log details.")
+    loc_log_detail_model = get_agent_err_code_from_sts_file(loc_agent_id, sts_file, task_type)
+    loc_log_detail = loc_log_detail_model.log_detail
     results = read_tmp_json_file(sts_file)
     for agent_id, record in results.items():
         # agent记录的报错为未识别的通用报错，同时找到有已识别的报错时，更新当前agent记录的报错信息
         if (record.get('log_detail') in [ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL, ErrorCode.ERR_BKP_CHECK]
-                and log_detail not in [ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL, ErrorCode.ERR_BKP_CHECK]):
+                and loc_log_detail not in [ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL, ErrorCode.ERR_BKP_CHECK]):
             log_detail = record.get('log_detail')
             log_detail_param = record.get('log_detail_param', [task_type, f"{task_type} failed, check dbtool log."])
             log_info = record.get('log_info', ReportDBLabel.SUB_JOB_FALIED)
-            log.error(f"Update {task_type} err info on {local_agent_id} with dbtool err from {agent_id}.")
-            break
-    log.error(f"{task_type} failed, code: {log_detail}, param: {log_detail_param}, label: {log_info}.")
-    return log_detail, log_detail_param, log_info
+            log.error(f"Update {task_type} err info on {loc_agent_id} with dbtool err from {agent_id}.")
+            return LogDetail(logInfo=log_info, logDetail=log_detail, logDetailParam=log_detail_param)
+    log.error(f"{task_type} failed with LogDetail: {loc_log_detail_model}.")
+    return loc_log_detail_model
 
 
 def update_agent_sts(agent_id, sts_file, sts_info: StatusInfo):
+    """
+    更新指定agent_id的状态信息
+
+    参数:
+    agent_id (str): 需要更新状态的agent的uuid
+    sts_file (str): 存储状态信息的临时json文件
+    sts_info (StatusInfo): 管理节点任务状态文件中，待更新的信息
+    """
+    log.info(f"Start to update {agent_id}'s record.")
     results = read_tmp_json_file(sts_file)
     # 获取指定uuid的任务状态记录
     record = results.get(agent_id, {})
-    # 更新该uuid状态
+    # 更新该uuid的任务状态记录
     record.update(
         {'status': sts_info.status, 'log_detail_param': sts_info.log_detail_param, 'log_detail': sts_info.log_detail,
          'log_info': sts_info.log_info})
@@ -815,14 +857,14 @@ def update_agent_sts(agent_id, sts_file, sts_info: StatusInfo):
 
 def update_agent_sts_general_after_exec(agent_id, sts_file, task_type, exec_result, log_comm):
     """
-    根据子任务的执行结果更新状态文件。
+    根据子任务的执行结果更新状态文件。有报错时，只处理未识别的报错，防止漏更新。能识别的报错已更新至状态文件。
 
     参数:
-    agent_id: 代理ID
-    sts_file: 状态文件路径
-    task_type: 任务类型 （Backup/Restore）
-    exec_result: 执行结果，True表示成功，False表示失败
-    log_comm: 常用日志信息，例如job_id, subjob_id, req_id
+    agent_id (str): 代理ID
+    sts_file (str): 状态文件路径
+    task_type (str): 任务类型 （Backup/Restore）
+    exec_result (bool): 执行结果，True表示成功，False表示失败
+    log_comm (str): 常用日志信息，例如job_id, subjob_id, req_id
     """
     if exec_result:
         # 子任务成功，状态完成，无错误码，无报错参数
@@ -834,13 +876,357 @@ def update_agent_sts_general_after_exec(agent_id, sts_file, task_type, exec_resu
         log.error(f'{task_type} failed on {agent_id}, {log_comm}.')
         results = read_tmp_json_file(sts_file)
         record = results.get(agent_id, {})
-        # 通过错误码判断该代理对应的报错信息是否为已识别的报错
         log_detail = record.get('log_detail', ErrorCode.ERROR_INTERNAL)
-        if log_detail not in [ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL, ErrorCode.ERR_BKP_CHECK]:
-            # 更新未识别出的报错，防止漏更新
-            log_info = ReportDBLabel.RESTORE_SUB_FAILED if task_type == "Restore" else ReportDBLabel.BACKUP_SUB_FAILED
+        # 通过错误码判断该代理对应的报错信息是否为已识别的报错
+        if log_detail not in RECOGNIZED_DBTOOL_ERRORS:
+            if task_type == JobNameConst.RESTORE:
+                log_info = ReportDBLabel.RESTORE_SUB_FAILED
+            else:
+                log_info = ReportDBLabel.BACKUP_SUB_FAILED
             log.error(f'Update {task_type} unrecognized error on {agent_id}, {log_comm}.')
             # 子任务失败，状态失败，默认错误码为ErrorCode.ERROR_INTERNAL，无报错参数
             sts_info = StatusInfo(status=SubJobStatusEnum.FAILED.value, logDetail=ErrorCode.ERROR_INTERNAL,
                                   logInfo=log_info)
             update_agent_sts(agent_id, sts_file, sts_info)
+
+
+def report_action_result(req_id, job_id, sub_job_id, result, message):
+    """
+    上报数据库环境异常，根据报错信息，通过ActionResult结构体，生成输出文件，完成被动上报。
+
+    参数:
+    req_id (str): 请求ID
+    job_id (str): 任务ID
+    sub_job_id (str): 子任务ID
+    result (bool): 执行结果，True表示成功，False表示失败
+    message (str): 执行结果的消息
+
+    异常描述:
+    输出文件已存在，output_result_file会抛出异常。
+    """
+    if result:
+        log.info(f"{message}, req_id: {req_id}, job_id: {job_id} ,sub_job_id: {sub_job_id}")
+        response = ActionResult(code=ExecuteResultEnum.SUCCESS)
+    else:
+        log.error(f"{message}, req_id: {req_id}, job_id: {job_id} ,sub_job_id: {sub_job_id}")
+        response = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR,
+                                bodyErr=ErrorCode.ERR_ENVIRONMENT,
+                                message=message)
+    output_result_file(req_id, response.dict(by_alias=True))
+
+
+def report_subjob_via_rpc(req_id, sub_job_model: SubJobModel, key_log_details: LogDetail):
+    """
+    上报子任务（含前置任务）完成状态，根据日志详情，通过LogDetail，SubJobDetails结构体，更新输入文件，使用rpc工具，完成主动上报。
+
+    参数:
+    req_id (str): 请求ID
+    sub_job_model (SubJobModel对象): job_id: str, 任务ID; sub_job_id: str, 子任务ID;
+    key_log_details (LogDetail对象): log_info: str, 标签; log_detail_param: list, 错误参数; log_detail: int, 错误码;
+
+    异常描述:
+    输入文件（通过req_id生成）已存在，report_job_details会抛出异常。
+    """
+    job_id, sub_id = sub_job_model.job_id, sub_job_model.sub_job_id
+    # 标签为子任务执行成功，副本校验成功，执行前置任务成功，子任务备份成功时，结果为成功
+    result = True if key_log_details.log_info in LOG_DETAIL_SUCCESS else False
+    if result:
+        log.info(f"Task success, LogDetail: {key_log_details}, req_id: {req_id}, job_id: {job_id}, sub_job: {sub_id}.")
+        log_detail_model = LogDetail(logInfo=key_log_details.log_info, logInfoParam=[sub_id],
+                                     logLevel=DBLogLevel.INFO.value)
+        sub_job_details = SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=100, logDetail=[log_detail_model],
+                                        taskStatus=SubJobStatusEnum.COMPLETED.value)
+    else:
+        log.error(f"Task failed, LogDetail: {key_log_details}, req_id: {req_id}, job_id: {job_id}, sub_job: {sub_id}.")
+        # 标签为空，默认使用子任务失败标签
+        log_info = ReportDBLabel.SUB_JOB_FALIED if not key_log_details.log_info else key_log_details.log_info
+        # logDetailParam类型不为list，默认设置为None，防止上报出错造成卡死
+        log_detail_param = None if not isinstance(key_log_details.log_detail_param,
+                                                  list) else key_log_details.log_detail_param
+        log_detail_model = LogDetail(logInfo=log_info, logInfoParam=[sub_id], logLevel=DBLogLevel.ERROR,
+                                     logDetail=key_log_details.log_detail, logDetailParam=log_detail_param)
+        sub_job_details = SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=100, logDetail=[log_detail_model],
+                                        taskStatus=SubJobStatusEnum.FAILED.value)
+    report_job_details(req_id, sub_job_details)
+
+
+def check_exec_on_cm(role_name, job_id):
+    # 判断当前goldendb的dbtool备份恢复任务在cm中还是mds中运行
+    backup_cmd = f'su - {role_name} -c "dbtool -mds -backup"'
+    return_code, return_info, err_info = execute_cmd(backup_cmd)
+    log.info(f"Get return_code: {return_code}, return_info: {return_info}, err_info: {err_info}, job id: {job_id}.")
+    if ErrCodeMessage.DBTOOL_MDS_BACKUP_CAN_NOT_USE in return_info:
+        log.info(f"Will exec job id: {job_id} on cm.")
+        return True
+    else:
+        log.info(f"Will exec job id: {job_id} on mds.")
+        return False
+
+
+def check_dbtool_result_when_success(out_info):
+    dbtool_task_id = ""
+    success_flag = False
+    for out_info_line in out_info.split("\n"):
+        if "Successful response:" in out_info_line:
+            success_flag = True
+            continue
+        if success_flag:
+            dbtool_task_id = out_info_line.strip()
+            log.info(f"Exec dbtool success, dbtool_task_id: {dbtool_task_id}.")
+            return True, dbtool_task_id
+    return success_flag, dbtool_task_id
+
+
+def check_dbtool_start(req_id, job_id, sub_id, copy_feature, action):
+    log.info(f"Get {action} copy feature {copy_feature}, req_id:{req_id}, job_id: {job_id}, sub_id:{sub_id}.")
+    dbtool_task_id = ""
+    log_detail = LogDetail()
+    if copy_feature[0] != CMDResult.SUCCESS.value:
+        if "Failure response:" in copy_feature[1]:
+            log.error(f"Find failure response in dbtool {action}, req_id:{req_id}, job_id: {job_id}, sub_id:{sub_id}.")
+            message = copy_feature[1].split("Failure response:", 1)[1].replace("\\r\\n", " ").rstrip(
+                "'").strip()
+            log.error(f"message: {message}, req_id:{req_id}, job_id: {job_id}, sub_id:{sub_id}.")
+            log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[sub_id],
+                                   logLevel=DBLogLevel.ERROR.value,
+                                   logDetail=ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL,
+                                   logDetailParam=[action, message])
+        else:
+            log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[sub_id],
+                                   logLevel=DBLogLevel.ERROR.value, logDetail=0)
+        log.error(f"Exec {action} failed with {log_detail}, req_id:{req_id}, job_id: {job_id}, sub_id: {sub_id}.")
+        return False, dbtool_task_id, log_detail
+    else:
+        if "Successful response:" in copy_feature[1]:
+            log.info(f"Find success response in dbtool {action}, req_id: {req_id}, job_id: {job_id}, sub_id: {sub_id}.")
+            success_flag, dbtool_task_id = check_dbtool_result_when_success(copy_feature[1])
+    log.info(f"{action} finished: {success_flag}, dbtool_task_id: {dbtool_task_id}, job_id: {job_id}.")
+    return success_flag, dbtool_task_id, log_detail
+
+
+def check_cm_dbtool_sts(copy_feature, action, job_id, sub_id):
+    log.info(f"Get {action} copy feature: {copy_feature}, job_id: {job_id}, sub_id: {sub_id}.")
+    bkp_status = DbtoolTaskStatus.RUNNING
+    if copy_feature[0] != CMDResult.SUCCESS.value:
+        if "Failure response:" in copy_feature[1]:
+            message = copy_feature[1].split("Failure response:", 1)[1].replace("\\r\\n", " ").rstrip(
+                "'").strip()
+            log.error(f"message: {message}, job_id: {job_id}, sub_id:{sub_id}.")
+            log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[sub_id],
+                                   logLevel=DBLogLevel.ERROR.value,
+                                   logDetail=ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL,
+                                   logDetailParam=[action, message])
+        else:
+            log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[sub_id],
+                                   logLevel=DBLogLevel.ERROR.value, logDetail=0)
+        return False, DbtoolTaskStatus.FAILED, log_detail
+    else:
+        result, bkp_status, log_detail = check_cm_dbtool_out_str(bkp_status, copy_feature, action, job_id, sub_id)
+    return result, bkp_status, log_detail
+
+
+def check_cm_dbtool_out_str(dbtool_status, copy_feature, action, job_id, sub_id):
+    log.info(f"Start check_cm_dbtool_out_str for {action}, job_id: {job_id}, sub_id: {sub_id}.")
+    log_detail = LogDetail()
+    if action == JobNameConst.BACKUP:
+        dbtool_is_going = BackupResultMessage.BACKUP_IS_GOING
+        dbtool_is_done = BackupResultMessage.BACKUP_IS_DONE
+    else:
+        dbtool_is_going = RestoreResultMessage.RESTORE_IS_GOING
+        dbtool_is_done = RestoreResultMessage.RESTORE_IS_DONE
+    for out_info_line in copy_feature[1].split("\n"):
+        if "ResultDesc:" in out_info_line:
+            result_desc = out_info_line.split(":", 1)[1].strip()
+            if dbtool_is_going in result_desc:
+                dbtool_status = DbtoolTaskStatus.RUNNING
+            elif dbtool_is_done in result_desc:
+                dbtool_status = DbtoolTaskStatus.COMPLETED
+            else:
+                log.error(f"{action} failed: {result_desc}, job_id: {job_id}, sub_id: {sub_id}.")
+                dbtool_status = DbtoolTaskStatus.FAILED
+                log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[sub_id],
+                                       logLevel=DBLogLevel.ERROR.value,
+                                       logDetail=ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL,
+                                       logDetailParam=[action, result_desc])
+                return False, dbtool_status, log_detail
+            log.info(f"{action} status: {dbtool_status}, des: {result_desc}, job_id: {job_id}, sub_id: {sub_id}.")
+            return True, dbtool_status, log_detail
+    log.error(f"Not find ResultDesc in {action} result, job_id: {job_id}, sub_id: {sub_id}.")
+    log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[sub_id],
+                           logLevel=DBLogLevel.ERROR.value,
+                           logDetail=ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL,
+                           logDetailParam=[JobNameConst.BACKUP, f"Not find ResultDesc in {action} result"])
+    return False, dbtool_status, log_detail
+
+
+def get_dbtool_cm_result(action, role_name, dbtool_start_results, job_id, sub_id):
+    result, dbtool_task_id, log_detail = dbtool_start_results
+    log.info(f"Check {action} result: {result}, {action} id {dbtool_task_id}, job id: {job_id}.")
+    if not result:
+        log.error(f"Check {action} result fail, job id: {job_id}.")
+        return False, log_detail
+    dbtool_task_type = "-query-backup-task" if action == JobNameConst.BACKUP else "-query-restore-task"
+    # 轮询备份结果，直到任务成功或失败
+    while True:
+        query_cmd = f'su - {role_name} -c "dbtool -cm {dbtool_task_type} -taskid={dbtool_task_id}"'
+        log.info(f"Get {action} query cmd: {query_cmd}, job id: {job_id}.")
+        return_code, return_info, err_info = execute_cmd(query_cmd)
+        log.info(f"Get {action} return code {return_code}, return_info {return_info}, err_info: {err_info}")
+        result, bkp_sts, log_detail = check_cm_dbtool_sts((return_code, return_info), action, job_id, sub_id)
+        log.info(f"{action} status: {bkp_sts}, result: {result}, job id: {job_id}.")
+        if not result or bkp_sts == DbtoolTaskStatus.FAILED:
+            log.error(f"{action} failed, log_detail: {log_detail}, job id: {job_id}.")
+            return False, log_detail
+        if result and bkp_sts == DbtoolTaskStatus.COMPLETED:
+            break
+        time.sleep(Report.REPORT_INTERVAL / 2)  # 15秒检查一次
+    log.info(f"{action} success, result: {result}, job id: {job_id}.")
+    # 检查正确，无错误码，无错误参数，返回成功标签
+    return True, LogDetail(logInfo=ReportDBLabel.SUB_JOB_SUCCESS)
+
+
+def get_err_log_detail_from_echo(err_message, task_type):
+    """
+    根据错误信息和任务类型，获取错误日志的详细信息
+
+    参数:
+    err_message: str, cmd回显的错误信息
+    task_type: str, 任务类型（备份/恢复）
+
+    返回:
+    LogDetail对象，关键字段, log_info: str, 标签; log_detail_param: list, 错误参数; log_detail: int, 错误码;
+    """
+    log.info(f"{task_type} failed, start to get log detail based on cmd echo.")
+    log_info = ReportDBLabel.SUB_JOB_FALIED
+    log_detail_param = None
+    if ErrPattern.Auth_Check_Fail in err_message:
+        log_detail = ErrorCode.ERROR_LOGIN_INFO
+    else:
+        log_detail = ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL
+        log_detail_param = [task_type, err_message]
+    return LogDetail(logInfo=log_info, logDetail=log_detail, logDetailParam=log_detail_param)
+
+
+def shutil_copy_tree(src_dir, dest_dir, msg):
+    log.info(f"Start {msg}.")
+    if not os.path.exists(dest_dir):
+        log.info(f"{msg}, {dest_dir} not exists.")
+        exec_mkdir_cmd(dest_dir)
+    if os.path.exists(src_dir):
+        try:
+            shutil.copytree(src_dir, dest_dir, dirs_exist_ok=True)
+        except Exception as e:
+            log.error(f"{msg} failed: {e}", exc_info=True)
+            return False
+    log.info(f"{msg} success.")
+    return True
+
+
+def shutil_copy_file(src_file, dest_file, msg):
+    log.info(f"Start {msg}.")
+    try:
+        shutil.copy(src_file, dest_file)
+    except FileNotFoundError as no_found_err:
+        log.error(f"{msg} failed: {no_found_err}.", exc_info=True)
+        return False
+    except PermissionError as permission_err:
+        log.error(permission_err)
+        log.error(f"{msg} failed: {permission_err}.", exc_info=True)
+        return False
+    except Exception as e:
+        log.error(f"{msg} failed: {e}.", exc_info=True)
+        return False
+    log.info(f"{msg} success.")
+    return True
+
+
+def get_active_tx_info_files(base_path):
+    matching_files = []
+    pattern = r"DBCluster_\d+_Active_TX_info\.\d{14}(\.current)?"
+    # 遍历指定路径及其子目录
+    for root, _, files in os.walk(base_path):
+        for file in files:
+            if re.match(pattern, file):
+                matching_files.append(os.path.join(root, file))
+    return matching_files
+
+
+def is_valid_time(time_str, time_format='%Y-%m-%d %H:%M:%S'):
+    """
+    判断字符串是否符合指定的时间格式
+    :param time_str: 需要判断的字符串
+    :param time_format: 时间格式，默认为 '%Y-%m-%d %H:%M:%S'（yyyy-mm-dd HH:MM:SS）
+    :return: 如果符合时间格式返回 True，否则返回 False
+    """
+    try:
+        datetime.strptime(time_str, time_format)
+    except ValueError as exp:
+        log.error(f"{time_str} is invalid: {exp}.", exc_info=True)
+        return False
+    return True
+
+
+def get_gtid_timestamps(file_path):
+    active_tx_info = ""
+    with open(file_path, 'r') as f:
+        active_tx_info = f.read()
+    active_tx_records = [item.strip() for item in active_tx_info.split('\n') if item.strip()]
+    act_gtid_timestamps = []
+    for active_tx_record in active_tx_records:
+        # 获取活跃事务信息
+        if active_tx_record[0] == ActTxInfoConsts.active_tx_info:
+            act_tx_infos = active_tx_record.split()
+            if len(act_tx_infos) < ActTxInfoConsts.min_act_tx_info_len:
+                log.error(f"Active_Tx_Info record is invalid: {active_tx_record}.")
+                continue
+            consistent_time = act_tx_infos[ActTxInfoConsts.consistent_date_idx:ActTxInfoConsts.consistent_time_idx + 1]
+            act_tx_consistent_time = ' '.join(consistent_time)
+            if is_valid_time(act_tx_consistent_time):
+                log.info(f"Get active_tx consistent time success, {act_tx_consistent_time}.")
+                # 将字符串转换为datetime对象
+                dt_object = datetime.strptime(act_tx_consistent_time, '%Y-%m-%d %H:%M:%S')
+                # 将datetime对象转换为时间戳
+                timestamp = dt_object.timestamp()
+                act_gtid_timestamps.append(int(timestamp))
+            else:
+                log.error(f"Get invalid active_tx consistent time: {act_tx_consistent_time} from {active_tx_record}.")
+                continue
+    act_gtid_timestamps = list(set(act_gtid_timestamps))
+    act_gtid_timestamps.sort()
+    log.info(f"Get active gtid collection timestamps success, total number: {len(act_gtid_timestamps)}.")
+    return act_gtid_timestamps
+
+
+def rm_redundant_incr_result_info(cid_path, result_info, pre_bkp_files):
+    """
+    判断输入的文件是否为冗余文件，并删除。
+    如果该文件备份前已存在于生产端，且该文件为增量备份任务生成，需要在文件系统中，删除该文件。
+
+    参数:
+    cid_path: 文件系统中的集群ID路径
+    result_info: 文件系统中的备份结果文件
+    pri_bkp_files: 本次备份前，生产环境中的文件列表
+
+    返回值:
+    如果删除成功，返回True，否则返回False
+
+    异常描述:
+    如果无法备份任务文件夹，或者删除冗余增量备份任务文件夹或结果文件失败，将记录错误日志并返回False
+    """
+    # 判断该文件是否为本次备份前存在的文件
+    if result_info in pre_bkp_files:
+        # 获取该备份结果信息在文件系统中的全路径：数据仓/DBCluster_{cid}/{cid}_backup_resultsinfo.{tid}
+        result_info_path = os.path.join(cid_path, result_info)
+        # 获取当前文件的备份类型
+        bkp_file_type = get_bkp_type_from_result_info(result_info_path)
+        if bkp_file_type == 'INCREMENTAL':
+            # 读文件系统中的备份结果文件，获取对应的增量备份任务（时间戳）路径：数据仓/DBCluster_{cid}/DATA_BACKUP/{tid}
+            ret, task_path = get_task_path_from_result_info(result_info_path, cid_path)
+            if not ret:
+                log.error(f'Backup task folders {task_path} not exists.')
+            # 在文件系统中，删除冗余增量备份task id（时间戳）文件夹
+            if not su_exec_rm_cmd(task_path):
+                log.error(f'Remove redundant incremental backup task folders {task_path} failed.')
+            # 在文件系统中，删除冗余增量备份结果文件
+            if not su_exec_rm_cmd(result_info_path):
+                log.error(f'Remove redundant incremental backup info files {result_info_path} failed.')

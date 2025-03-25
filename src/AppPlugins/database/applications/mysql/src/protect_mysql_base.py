@@ -11,7 +11,6 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
-# coding=utf-8
 import json
 import os
 import signal
