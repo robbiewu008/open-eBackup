@@ -14,102 +14,49 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 # See the MPL v2 for more details.
 ########################################
-
+set -x
 CURRENT_PATH=$(cd `dirname $0`; pwd)
 source $CURRENT_PATH/commParam.sh
 LCRP_XML_PATH=${CURRENT_PATH}/../conf/
-PACKAGE_PATH="${CURRENT_PATH}/../../../../open-source-obligation/Infrastructure_OM/infrastructure"
+PACKAGE_PATH=${CURRENT_PATH}/../../package
 COMPILE_PATH=${PACKAGE_PATH}/compileLib
+BIN_PATH=${binary_path}/Infrastructure_OM/infrastructure
 if [ ! -d ${COMPILE_PATH} ];then
   mkdir -p ${COMPILE_PATH}
 fi
 REDIS_PATH=${PACKAGE_PATH}/redis
 SFTP_PATH=${PACKAGE_PATH}/sftp
 ZK_LOG4J2_PATH=${CURRENT_PATH}/upgrade_opensrc/zookeeper/zk_log4j2
+shopt -s extglob
+COMPONENT_TYPE="mspkg"
+PRODUCT="dorado"
 
-function compile_gaussdb_package() {
-  if [ -d ${COMPILE_PATH} ]; then
-    rm -rf ${COMPILE_PATH}
-  fi
-  mkdir ${COMPILE_PATH}
-  cd ${PACKAGE_PATH}
-  # GaussDB
-  if [ -d gaussdb-${gaussdb_version} ]; then
-    rm -rf gaussdb-${gaussdb_version}
-  fi
-  tar -zxf GaussDB-Kernel_${gaussdb_version}_Server_ARM_Lite.tar.gz
-  mkdir GaussDB-${gaussdb_version}-aarch-64bit-Green
-  tar -zxf GaussDB-Kernel_505.0.0.SPC1500_Euler_64bit.tar.gz -C GaussDB-${gaussdb_version}-aarch-64bit-Green
-  # DataSync
-  tar -zxf GaussDB_T_1.9.0-DATASYNC.tar.gz -C GaussDB-${gaussdb_version}-aarch-64bit-Green
-  tar -zxf GaussDB-${gaussdb_version}-aarch-64bit-Green/GaussDB_T_1.9.0-DATASYNC/DataSync.tar.gz -C GaussDB-${gaussdb_version}-aarch-64bit-Green/GaussDB_T_1.9.0-DATASYNC
-  # DataSync V5依赖
-  tar -zxf GaussDB-Kernel_505.0.0.SPC1500_Euler_64bit_Jdbc.tar.gz
-  cp -a ${PACKAGE_PATH}/gsjdbc4.jar GaussDB-${gaussdb_version}-aarch-64bit-Green
-  chmod 500 ${CURRENT_PATH}/gaussdb/ -R
-  cp -a ${CURRENT_PATH}/gaussdb/install_gaussdb.sh GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/logrotate_gaussdb.conf GaussDB-${gaussdb_version}-aarch-64bit-Green
-  sed -i "s/gaussdb_port/${gaussdb_port}/g" GaussDB-${gaussdb_version}-aarch-64bit-Green/install_gaussdb.sh
-  cp -a ${CURRENT_PATH}/gaussdb/gaussdb_kmc.py GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/install_ha.sh GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/check_health.sh GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/check_gaussdb_readiness.sh GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/check_db.txt GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/back_up.sh GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/log.sh GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/cert_install.sh GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/set_kmc_password.sh GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/change_config.sh GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/exec_database_drop.sh GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/gaussdb_data_mv.sh GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/auto_password_input.sh GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/gaussdb_common.py GaussDB-${gaussdb_version}-aarch-64bit-Green
-  cp -a ${CURRENT_PATH}/gaussdb/clear-float-ip-job.yaml GaussDB-${gaussdb_version}-aarch-64bit-Green
-  sed -i "s/gaussdb_port/${gaussdb_port}/g" GaussDB-${gaussdb_version}-aarch-64bit-Green/check_health.sh
-  sed -i "s/gaussdb_port/${gaussdb_port}/g" GaussDB-${gaussdb_version}-aarch-64bit-Green/check_gaussdb_readiness.sh
-  if [ ! -d "GaussDB-${gaussdb_version}-aarch-64bit-Green/script" ]; then
-    mkdir GaussDB-${gaussdb_version}-aarch-64bit-Green/script
-  fi
-  mkdir GaussDB-${gaussdb_version}-aarch-64bit-Green/script/requirements
-  pip3 download -r ${CURRENT_PATH}/gaussdb/requirements.txt -d GaussDB-${gaussdb_version}-aarch-64bit-Green/script/requirements
-  cp -a ${CURRENT_PATH}/gaussdb/requirements.txt GaussDB-${gaussdb_version}-aarch-64bit-Green/script
-  cp -a ${CURRENT_PATH}/gaussdb/change_permission.sh GaussDB-${gaussdb_version}-aarch-64bit-Green/script
-  cp -a ${CURRENT_PATH}/gaussdb/common_sudo.sh GaussDB-${gaussdb_version}-aarch-64bit-Green/script
-  cp -a ${CURRENT_PATH}/gaussdb/gauss_operation.sh GaussDB-${gaussdb_version}-aarch-64bit-Green/script
-  cp -a ${CURRENT_PATH}/gaussdb/manage_data.sh GaussDB-${gaussdb_version}-aarch-64bit-Green/script
-  chmod 500 GaussDB-${gaussdb_version}-aarch-64bit-Green/script/manage_data.sh
-  cp -a ${CURRENT_PATH}/gaussdb/manage_db_data.py GaussDB-${gaussdb_version}-aarch-64bit-Green/script
-  cp -a ${CURRENT_PATH}/ha/ha_sudo.sh GaussDB-${gaussdb_version}-aarch-64bit-Green/script
-  chmod 500 GaussDB-${gaussdb_version}-aarch-64bit-Green/script/ha_sudo.sh
-  cp -a ${CURRENT_PATH}/ha/manage_cluster.py GaussDB-${gaussdb_version}-aarch-64bit-Green/script
-  cp -r "${CURRENT_PATH}"/common GaussDB-${gaussdb_version}-aarch-64bit-Green/script/
-  cp -r "${CURRENT_PATH}"/kmc GaussDB-${gaussdb_version}-aarch-64bit-Green/script/
-  mv GaussDB-${gaussdb_version}-aarch-64bit-Green gaussdb-${gaussdb_version}
-  tar -zcf ${COMPILE_PATH}/gaussdb-${gaussdb_version}.tar.gz gaussdb-${gaussdb_version}/
+if [ -z "${componentVersion}" ]; then
+    componentVersion="1.1.0"
+fi
+echo "Component Version:${componentVersion}"
 
-    # HA
-    if [ -d HA-${ha_version}-aarch64 ];then
-        rm -rf HA-${ha_version}-aarch64
+function down_package_from_cmc()
+{
+    #artget下载依赖
+    cd ${LCRP_XML_PATH}
+    artget pull -d public_dependency_cmc.xml -p "{'componentVersion':'${componentVersion}'}" -ap ${PACKAGE_PATH} -user ${cmc_user} -pwd ${cmc_pwd}
+    if [ $? -ne 0 ];then
+        echo "Download artifact from cmc error"
+        exit 1
     fi
-    tar -xzf OceanProtect_X8000_*_Platform_SDK_*.tar.gz HA_rel*.gz
-    tar -zxf HA_rel*gz
-    tar -xzvf HA_rel/HA-${ha_version}-aarch64.tar.gz
-    if [ ! -d "HA-${ha_version}-aarch64/script" ];then
-        mkdir HA-${ha_version}-aarch64/script
+
+    artget pull -os public_dependency_opensource.xml -ap ${PACKAGE_PATH} -user ${opensource_user} -pwd ${opensource_pwd} -at opensource
+    if [ $? -ne 0 ];then
+        echo "Download artifact from cmc error"
+        exit 1
     fi
-    cp -a ${CURRENT_PATH}/ha/check_service.sh HA-${ha_version}-aarch64/script
-    cp -a ${CURRENT_PATH}/ha/dbcommand.sh HA-${ha_version}-aarch64/script
-    cp -a ${CURRENT_PATH}/ha/dbfunc.sh HA-${ha_version}-aarch64/script
-    cp -a ${CURRENT_PATH}/ha/event_lib.sh HA-${ha_version}-aarch64/script
-    cp -a ${CURRENT_PATH}/ha/floatIp.sh HA-${ha_version}-aarch64/script
-    cp -a ${CURRENT_PATH}/ha/gaussdb.sh HA-${ha_version}-aarch64/script
-    cp -a ${CURRENT_PATH}/ha/ha_manage.sh HA-${ha_version}-aarch64/script
-    cp -a ${CURRENT_PATH}/ha/log.sh HA-${ha_version}-aarch64/script
-    cp -a ${CURRENT_PATH}/ha/send_alarm.sh HA-${ha_version}-aarch64/script
-    chmod 500 HA-${ha_version}-aarch64/script/* -R
-    cp -r ${CURRENT_PATH}/ha/conf HA-${ha_version}-aarch64/script/
-    chmod 400 HA-${ha_version}-aarch64/script/conf/* -R
-    tar -zcvf ${COMPILE_PATH}/HA-${ha_version}-aarch64.tar.gz HA-${ha_version}-aarch64/
+
+    artget pull -d opensrouce_from_centralized.xml -p "{'CODE_BRANCH':'${CODE_BRANCH}'}" -ap ${PACKAGE_PATH} -user ${cmc_user} -pwd ${cmc_pwd}
+    if [ $? -ne 0 ];then
+        echo "Download opensource pkg from centralized cmc error."
+        exit 1
+    fi
 }
 
 function compile_kafka_package()
@@ -122,6 +69,11 @@ function compile_kafka_package()
         rm -rf kafka-scripts
     fi
     mkdir kafka-scripts
+    cd kafka-scripts
+    mkdir -p requirements
+    cd requirements
+    pip3 download -r "${CURRENT_PATH}"/kafka/requirements.txt
+    cd ${PACKAGE_PATH}
     cp -r "${CURRENT_PATH}"/kafka/* kafka-scripts/
     cp -r "${CURRENT_PATH}"/common kafka-scripts/
     cp -r "${CURRENT_PATH}"/kmc kafka-scripts/
@@ -134,6 +86,7 @@ function compile_kafka_package()
     sed -i "s/kafka_port/${kafka_port}/g" kafka-scripts/check_health.sh
     chmod -R 550 kafka-scripts/
     tar -zcvf ${COMPILE_PATH}/kafka-scripts.tar.gz kafka-scripts/*
+    cp -rf ${COMPILE_PATH}/kafka-scripts.tar.gz ${BIN_PATH}
 
     if [ -d kafka-${kafka_version} ];then
         rm -rf kafka-${kafka_version}
@@ -142,8 +95,8 @@ function compile_kafka_package()
     rm -rf kafka_${kafka_version}/site-docs
     mv kafka_${kafka_version} kafka-${kafka_version}
     # 需要则更新kafka依赖jar包
-    if [ -f "$CURRENT_PATH/upgrade_opensrc/kafka/open_replace_kafka_security_jars.sh" ]; then
-        sh $CURRENT_PATH/upgrade_opensrc/kafka/open_replace_kafka_security_jars.sh
+    if [ -f "$CURRENT_PATH/upgrade_opensrc/kafka/replace_kafka_security_jars.sh" ]; then
+        sh $CURRENT_PATH/upgrade_opensrc/kafka/replace_kafka_security_jars.sh
     fi
 
     if [ ! -d kafka-${kafka_version}/logs ];then
@@ -167,6 +120,7 @@ function compile_kafka_package()
     # libs
     chmod -R 550 kafka-${kafka_version}/libs
     tar -zcvf ${COMPILE_PATH}/kafka-${kafka_version}.tar.gz kafka-${kafka_version}/
+    cp -rf ${COMPILE_PATH}/kafka-${kafka_version}.tar.gz ${BIN_PATH}
 }
 
 function compile_zk_package()
@@ -194,7 +148,7 @@ function compile_zk_package()
 
     # step3: 执行编译(marven)，生成apache-zookeeper-${zookeeper_version}-bin.tar.gz
     cd ${PACKAGE_PATH}/apache-zookeeper-${zookeeper_version}
-    mvn install -Dmaven.test.skip=true
+    mvn install -Dmaven.test.skip=true -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true
 
     cd ${PACKAGE_PATH}
     # step4: 后处理，拷贝出源码包，删除解包的源码工程，继续原有处理
@@ -226,6 +180,7 @@ function compile_zk_package()
     [ -d "zookeeper-${zookeeper_version}/lib" ] && chmod -R 550 zookeeper-${zookeeper_version}/lib
 
     tar -zcvf ${COMPILE_PATH}/zookeeper-${zookeeper_version}.tar.gz zookeeper-${zookeeper_version}/
+    cp -rf ${COMPILE_PATH}/zookeeper-${zookeeper_version}.tar.gz ${BIN_PATH}
 }
 
 function compile_es_package()
@@ -247,8 +202,8 @@ function compile_es_package()
     sed -i "s/elasticsearch_port/${elasticsearch_port}/g" elasticsearch-${elasticsearch_version}/check_health.sh
     sed -i "s/elasticsearch_port/${elasticsearch_port}/g" elasticsearch-${elasticsearch_version}/check_elasticsearch_readiness.sh
     # 需要则更新elasticsearch依赖jar包
-    if [ -f "$CURRENT_PATH/upgrade_opensrc/elasticsearch/open_replace_elasticsearch_security_jars.sh" ]; then
-        sh $CURRENT_PATH/upgrade_opensrc/elasticsearch/open_replace_elasticsearch_security_jars.sh
+    if [ -f "$CURRENT_PATH/upgrade_opensrc/elasticsearch/replace_elasticsearch_security_jars.sh" ]; then
+        sh $CURRENT_PATH/upgrade_opensrc/elasticsearch/replace_elasticsearch_security_jars.sh
     fi
 
     if [ ! -d elasticsearch-${elasticsearch_version}/logs ];then
@@ -272,6 +227,7 @@ function compile_es_package()
     chmod -R 750 elasticsearch-${elasticsearch_version}/logs
 
     tar -zcvf ${COMPILE_PATH}/elasticsearch-${elasticsearch_version}.tar.gz elasticsearch-${elasticsearch_version}/
+    cp -rf ${COMPILE_PATH}/elasticsearch-${elasticsearch_version}.tar.gz ${BIN_PATH}
 }
 
 function compile_redis_package()
@@ -292,6 +248,7 @@ function compile_redis_package()
     sed -i "s/VERSION/${redis_version}/g" redis-scripts/update_password.sh
     chmod -R 550 redis-scripts/
     tar -zcvf ${COMPILE_PATH}/redis-scripts.tar.gz redis-scripts/
+    cp -rf ${COMPILE_PATH}/redis-scripts.tar.gz ${BIN_PATH}
 
     tar -xzvf redis-${redis_version}.tar.gz
     # 如果redis目录不存在
@@ -353,6 +310,7 @@ function compile_redis_package()
     chmod 500 redis-${redis_version}/redis-server
 
     tar -zcvf ${COMPILE_PATH}/redis-${redis_version}.tar.gz redis-${redis_version}/
+    cp -rf ${COMPILE_PATH}/redis-${redis_version}.tar.gz ${BIN_PATH}
 }
 
 function compile_sftp_package()
@@ -369,6 +327,13 @@ function compile_sftp_package()
     mkdir "${SFTP_PATH}/package/requirements"
     cd "${SFTP_PATH}/package/requirements"
     pip3 download -r ${CURRENT_PATH}/sftp/requirements.txt
+
+    tar -zxvf pyrsistent-*.tar.gz
+    cd pyrsistent-*
+    python3 setup.py sdist bdist_wheel
+    mv ./dist/pyrsistent-*-cp39-cp39-linux_aarch64.whl ..
+    cd ..
+
     cd "${PACKAGE_PATH}"
     cp -r "${CURRENT_PATH}/sftp/src" "${SFTP_PATH}/package/"
     cp "${CURRENT_PATH}/sftp/actual_install.sh" "${SFTP_PATH}/package/"
@@ -381,12 +346,12 @@ function compile_sftp_package()
     find "${SFTP_PATH}/package/src" -type f | xargs chmod 640
     find "${SFTP_PATH}/package/src" -type f -name "*.py" | xargs chmod 550
     tar -zcvf ${COMPILE_PATH}/sftp-${sftp_version}.tar.gz sftp/
+    cp -rf ${COMPILE_PATH}/sftp-${sftp_version}.tar.gz ${BIN_PATH}
 }
 
 function compile_package()
 {
-    # 编译publicLib下的三方开源软件，gaussdb、kafka、zookeeper、redis、es
-    compile_gaussdb_package
+    # 编译publicLib下的三方开源软件kafka、zookeeper、redis、es
     compile_kafka_package
     compile_es_package
     compile_zk_package
@@ -394,19 +359,11 @@ function compile_package()
     compile_sftp_package
 }
 
-function compile_image() {
-    sh ${CURRENT_PATH}/open_build_images.sh
-    if [ $? -ne 0 ]; then
-      echo "docker images build failed!"
-      exit 1
-    fi
-}
-
 
 function main()
 {
+    down_package_from_cmc
     compile_package
-    compile_image
 }
 
 main

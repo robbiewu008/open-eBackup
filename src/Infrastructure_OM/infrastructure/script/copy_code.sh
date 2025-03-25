@@ -14,30 +14,30 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 # See the MPL v2 for more details.
 ########################################
-
-CURRENT_PATH=$(
-  cd $(dirname $0)/../../../
-  pwd
-)
-TARGET_PATH="${CURRENT_PATH}/REST_API/"
+set -x
+CURRENT_PATH=$(cd `dirname $0`/../../../; pwd)
+TARGET_PATH="${CURRENT_PATH}/REST_API/Infrastructure_OM"
 AA_TARGET_PATH="${CURRENT_PATH}/REST_API/Infrastructure_OM/infrastructure/script"
 AA_SYS_PATH=${CURRENT_PATH}/Infrastructure_OM/AA-Sys
 
-if [ ! -d "${TARGET_PATH}" ]; then
+if [ ! -d "${TARGET_PATH}" ];then
   mkdir -p "${TARGET_PATH}"
+  mkdir -p "${TARGET_PATH}/om"
 fi
 
-if [ ! -d "${AA_TARGET_PATH}" ]; then
+if [ ! -d "${AA_TARGET_PATH}" ];then
   mkdir -p "${AA_TARGET_PATH}"
 fi
 
-cp -r "$CURRENT_PATH/Infrastructure_OM" "$TARGET_PATH/"
+cp -rf "$CURRENT_PATH/Infrastructure_OM/infrastructure" "$TARGET_PATH/"
+cp -rf "$CURRENT_PATH/Infrastructure_OM/ci" "$TARGET_PATH/"
+cp -rf "$CURRENT_PATH/Infrastructure_OM/om/build" "$TARGET_PATH/om"
 cp ${AA_SYS_PATH}/Product/taishan_src/devm/src/net/script/net_cnet_config_firewall.sh ${AA_TARGET_PATH}/common-init
 cp ${AA_SYS_PATH}/Product/taishan_src/devm/src/net/script/net_cnet_declare_neigbour.sh ${AA_TARGET_PATH}/common-init
 
 if [ $? -ne 0 ]; then
-  echo "cp code to WORKSPACE failed"
-  exit 1
+    echo "cp code to WORKSPACE failed"
+    exit 1
 fi
 
 echo "cp code success"
