@@ -10,6 +10,7 @@ from dataprotect_deployment.client_manager import run_in_parallel
 from dataprotect_deployment.dp_server_interface import DataProtectDeployClient
 from config import PacificNode
 from utils import retry
+from client_exception import DpserverVersionNotTheSameException
 
 
 def get_versions(
@@ -26,7 +27,7 @@ def get_versions(
 
 def extract_version_from_package(package_path: str) -> str:
     with tarfile.open(package_path, 'r:gz') as tar:
-        file_in_tar = tar.extractfile('./manifest.yml')
+        file_in_tar = tar.extractfile('./dpserver/manifest.yml')
         if file_in_tar:
             content = file_in_tar.read()
             manifest = yaml.safe_load(content)
@@ -53,10 +54,8 @@ def check_dpserver_versions(
         return
     # dpserver's versions are not all the same
     err_msg = format_check_dpserver_version_err_msg(hostname_versions)
-    raise Exception(
-        f"The versions of dpserver are not all the same:\n"
-        f"{err_msg}"
-    )
+    raise DpserverVersionNotTheSameException(err_msg)
+
 
 
 def umount(client_mgr: ClientManager, nodes: [PacificNode]):
@@ -94,25 +93,22 @@ def upgrade(
         raise Exception("Unable to upgrade dpserver. " + ''.join(err_msg))
 
     package_name = os.path.basename(package_path)
-    run_in_parallel(
-        client_mgr,
-        upgrade_nodes,
-        DataProtectDeployClient.dpserver_upgrade,
-        package_name,
-    )
-
-    # check version pre 10s, up to 2mins
     upgrade_succeed_nodes = []
-    for i in range(int(consts.DPSERVER_UPGRADE_TIMEOUT / consts.DPSERVER_UPGRADE_WAIT_INTERNAL)):
-        versions = get_versions(client_mgr, upgrade_nodes)
-        for (n, version) in versions:
-            if n not in upgrade_succeed_nodes and version == upgrade_version:
-                log.info(f'Successfully upgraded dpserver at {n}')
-                upgrade_succeed_nodes.append(n)
-        if len(upgrade_succeed_nodes) == len(upgrade_nodes):
-            log.info('Successfully upgraded dpserver at all nodes')
-            return
-        time.sleep(consts.DPSERVER_UPGRADE_WAIT_INTERNAL)
+    for node in upgrade_nodes:
+        cli = client_mgr.get_dataprotect_deployment_client(node.management_internal_ip)
+        cli.dpserver_upgrade(package_name)
+
+        for i in range(int(consts.DPSERVER_UPGRADE_TIMEOUT / consts.DPSERVER_UPGRADE_WAIT_INTERNAL)):
+            version = cli.dpserevr_get_version()
+            if version == upgrade_version:
+                log.info(f'Successfully upgraded dpserver at {node.name}')
+                upgrade_succeed_nodes.append(node)
+                break
+            time.sleep(consts.DPSERVER_UPGRADE_WAIT_INTERNAL)
+
+    if len(upgrade_succeed_nodes) == len(upgrade_nodes):
+        log.info('Successfully upgraded dpserver at all nodes')
+        return
 
     upgrade_failed_nodes = [
         n.name for n in upgrade_nodes

@@ -12,10 +12,10 @@ import pexpect
 
 from app.common.common import release_str_memory, get_data_from_api, initialize_kmc, check_ip_address
 from app.common.const import K8sConst, SftpConst, CustomErrorCode, InfraUrlConstant, HttpConst
-from app.common.logger import log
+from app.common.logger import log, PATH
+from app.common.sftp_password import PasswordChecker, PasswordPolicy
 
 HOST_KEY_PATH = '/etc/ssh'
-
 
 def get_sftp_ip():
     sftp_ip = ""
@@ -41,6 +41,7 @@ def get_sftp_ip():
     except Exception:
         log.exception("Exception when get sftp ip.")
         return sftp_ip
+
 
 
 class ServiceUtil(object):
@@ -339,68 +340,6 @@ class ServiceUtil(object):
         return "0", "", "Generate ssh key successfully."
 
     @staticmethod
-    def modify_log_config():
-        """修改/etc/rsyslog.d/sftpchroot.conf配置文件"""
-        try:
-            with open(SftpConst.SYSLOGD_CONFIG, "r+") as f:
-                # 将原文件内容清空
-                f.seek(0)
-                f.truncate()
-                # 写入新内容
-                f.write('''/var/log/messages\n''')
-                f.write(''':syslogtag, contains, "internal-sftp" -/var/log/internal-sftp.log\n''')
-            return True
-        except Exception as e:
-            log.error("Modify syslogd config file error failed")
-            return False
-
-    @staticmethod
-    def set_log_config():
-        """配置syslogd"""
-        # 不存在syslogd_config文件，先创建
-        if not os.path.exists(SftpConst.SYSLOGD_CONFIG):
-            return_code, std_out, std_err = ServiceUtil.execute_cmd('''touch /etc/rsyslog.d/sftpchroot.conf''')
-            if return_code != "0":
-                log.error("Touch syslogd config file command failed.")
-                return return_code, std_out, std_err
-        else:
-            # 已存在syslogd_config，跳过此步
-            log.info("Syslogd config file exists. No meed to execute touch.")
-        # 修改syslogd_config
-        res = ServiceUtil.modify_log_config()
-        if not res:
-            log.error("Modify syslogd config file failed.")
-            return CustomErrorCode.syslogd_config_modify_failed, "", "Modify syslogd config file failed."
-        return "0", "", "Generate ssh key successfully."
-
-    @staticmethod
-    def kill_and_restart_log():
-        """syslogd进程重启, 并查看syslogd是否已成功重启"""
-        # 查看syslogd是否已启动
-        return_code, std_out, std_err = ServiceUtil.execute_cmd('''ps -ef | grep rsyslogd | grep -v grep''')
-        if return_code != "0":
-            log.info("Rsyslogd is not at start status.")
-        else:
-            log.info("Rsyslogd is at start status.")
-            # 杀死syslogd进程
-            cmd = '''ps -ef |grep rsyslogd |grep -v grep |awk '{print $2}' |xargs kill -9'''
-            return_code, std_out, std_err = ServiceUtil.execute_cmd(cmd)
-            if return_code != "0":
-                log.error("Kill rsyslogd command failed.")
-                return return_code, std_out, std_err
-        # 重启syslogd进程
-        return_code, std_out, std_err = ServiceUtil.execute_cmd('''/usr/sbin/rsyslogd''')
-        if return_code != "0":
-            log.error("Restart rsyslogd command failed.")
-            return return_code, std_out, std_err
-        # 再次查看syslogd是否已启动
-        return_code, std_out, std_err = ServiceUtil.execute_cmd('''ps -ef | grep rsyslogd | grep -v grep''')
-        if return_code != "0":
-            log.error("Kill rsyslogd process and restart failed.")
-            return return_code, std_out, std_err
-        return "0", "", "Kill rsyslogd process and restart successfully."
-
-    @staticmethod
     def kill_and_restart_ssh():
         """sshd进程重启, 并查看sshd是否已成功重启"""
         # 查看sshd是否已启动
@@ -416,7 +355,7 @@ class ServiceUtil(object):
                 log.error("Kill sshd command failed.")
                 return return_code, std_out, std_err
         # 重启sshd进程
-        return_code, std_out, std_err = ServiceUtil.execute_cmd('''/usr/sbin/sshd''')
+        return_code, std_out, std_err = ServiceUtil.execute_cmd(f"/usr/sbin/sshd -E {PATH}/sftp_run.log")
         if return_code != "0":
             log.error("Restart sshd command failed.")
             return return_code, std_out, std_err
@@ -426,35 +365,6 @@ class ServiceUtil(object):
             log.error("Kill sshd process and restart failed.")
             return return_code, std_out, std_err
         return "0", "", "Kill sshd process and restart successfully."
-
-    @staticmethod
-    def change_pwd_ruler(pwd_ruler_config):
-        """修改Linux密码规则配置文件：允许重复使用之前的密码"""
-        try:
-            with open(pwd_ruler_config, "r+") as f:
-                config_content = f.read()
-                new_config = config_content
-                # 检查文件中是否已有use_authtok remember=1
-                if not re.search(r"pam_pwhistory\.so\suse_authtok\sremember=1\senforce_for_root", config_content):
-                    # 如果没有，则修改，设置use_authtok remember=1
-                    repl = "pam_pwhistory.so use_authtok remember=1 enforce_for_root"
-                    new_config = re.sub(r"pam_pwhistory\.so\suse_authtok\sremember=\d+\senforce_for_root",
-                                        repl, new_config)
-                else:
-                    # 如果有，则不对文件做写操作
-                    log.info(
-                        "Password ruler config pwd_ruler_config:[%s] is target. No need to modify" % pwd_ruler_config
-                    )
-                    return True
-                # 将原文件内容清空
-                f.seek(0)
-                f.truncate()
-                # 写入新内容
-                f.write(new_config)
-            return True
-        except Exception as e:
-            log.error("Modify password ruler config file error failed")
-            return False
 
     @staticmethod
     def execute_delete_line(user_history_pwd_list, user_name):
@@ -482,51 +392,20 @@ class ServiceUtil(object):
             return False
 
     @staticmethod
-    def allow_history_pwd(user_name):
-        """修改Linux密码规则配置文件：允许用户重复使用之前的密码"""
-        # 修改Linux密码规则配置文件
-        pwd_ruler_configs = SftpConst.PWD_RULER_SYSTEM_AUTH_LOCAL, SftpConst.PWD_RULER_PASSWORD_AUTH_LOCAL
-        for pwd_ruler_config in pwd_ruler_configs:
-            # 检查密码规则配置文件是否存在
-            if not os.path.exists(pwd_ruler_config):
-                # 如果不存在，则退出返回错误
-                log.error("Password ruler config file pwd_ruler_config:[%s] does not exist." % pwd_ruler_config)
-                return (CustomErrorCode.pwd_ruler_config_not_exist, "",
-                        "Password ruler confige file [%s] does not exist." % pwd_ruler_config)
-            else:
-                # 如果存在，则进行修改
-                res = ServiceUtil.change_pwd_ruler(pwd_ruler_config)
-                if not res:
-                    log.error("Change password ruler config file pwd_ruler_config:[%s] failed." % pwd_ruler_config)
-                    return (CustomErrorCode.pwd_ruler_config_modify_failed, "",
-                            "Modify password ruler confige file [%s] failed." % pwd_ruler_config)
-                log.info("Change password ruler config file pwd_ruler_config:[%s] successfully." % pwd_ruler_config)
-        # 删除密码临时保存文件中用户的密码
-        if not os.path.exists(SftpConst.PWD_TEMP_SAVE_DATA):
-            log.error("User user_name:[%s] history password data file does not exist." % user_name)
-            return (CustomErrorCode.user_history_pwd_not_exist, "",
-                    "User [%s] history password data file does not exist." % user_name)
-        res = ServiceUtil.delete_user_history_pwd(user_name)
-        if not res:
-            log.error("Delete user user_name:[%s] history password data failed." % user_name)
-            return (CustomErrorCode.user_history_pwd_delete_failed, "",
-                    "Delete user [%s] history password data failed." % user_name)
-        return "0", "", "Change password ruler config file successfully."
-
-    @staticmethod
-    def set_pwd(user_name, pwd):
-        """设置（或修改）密码"""
-        # 修改Linux密码规则配置文件：允许用户重复使用之前的密码
-        return_code, std_out, std_err = ServiceUtil.allow_history_pwd(user_name)
-        if return_code != "0":
-            log.error("Change password ruler config file for user user_name:[%s] failed." % user_name)
-            return return_code, std_out, std_err
-        log.info("Change password ruler config file for user user_name:[%s] successfully." % user_name)
-        # 设置（或修改）密码
+    def set_pwd(user_name, pwd, init=False):
+        """
+        设置（或修改）密码
+        参数：
+            init: 是否是系统初始化，初始化为True
+        """
+        if not init:
+            if not PasswordChecker.check_password_complexity(pwd, user_name):
+                return CustomErrorCode.invalid_os_pwd, "", "Set user [%s] password command failed." % user_name
         cmd_list = [f"echo '{pwd}'", f"passwd --stdin {user_name}"]
         return_code, std_out, std_err = ServiceUtil.execute_cmd_list(cmd_list)
         if return_code != "0":
             log.error("Set user user_name:[%s] password command failed." % user_name)
+            log.error(std_err)
             return CustomErrorCode.invalid_os_pwd, std_out, std_err
         return "0", "", "Set user [%s] password command successfully." % user_name
 
@@ -596,8 +475,12 @@ class ServiceUtil(object):
         return "0", "", "Set owner of user [%s] secondary directory successfully." % user_name
 
 
-def add_user(user_name, pwd):
-    """增加用户"""
+def add_user(user_name, pwd, init=False):
+    """
+    增加用户
+    参数：
+        init: 是否是系统初始化，初始化为True
+    """
     log.info("Adding user user_name:[%s] ...".center(60, "+") % user_name)
     group_name = SftpConst.SFTP_GROUP_NAME
     # 创建用户目录，设置用户目录为用户的家目录，设置家目录权限
@@ -644,7 +527,7 @@ def add_user(user_name, pwd):
     log.info("Add group name group_name:%s and user name user_name:[%s] successfully." % (group_name, user_name))
 
     # 设置密码
-    return_code, std_out, std_err = ServiceUtil.set_pwd(user_name, pwd)
+    return_code, std_out, std_err = ServiceUtil.set_pwd(user_name, pwd, init)
     if return_code != "0":
         # 回滚：删除密码临时保存文件中用户的密码，删除用户名
         rollback_return_code, rollback_std_out, rollback_std_err = delete_user(user_name)
@@ -723,9 +606,10 @@ def delete_user(user_name, group_name=SftpConst.SFTP_GROUP_NAME):
 def change_pwd(user_name, pwd):
     """修改用户密码"""
     log.info("Changing user user_name:[%s] password... ".center(60, "+") % user_name)
-    return_code, std_out, std_err = ServiceUtil.set_pwd(user_name, pwd)
+    return_code, std_out, std_err = ServiceUtil.set_pwd(user_name, pwd, init=False)
     release_str_memory(pwd)
     if return_code != "0":
+        log.error(std_err)
         return return_code, std_out, std_err
     log.info("Change user user_name:[%s] password successfully.".center(60, "+") % user_name)
     return "0", "", "Change user [%s] password successfully." % user_name
@@ -734,6 +618,13 @@ def change_pwd(user_name, pwd):
 def start_sftp():
     """启动sftp服务"""
     log.info("Starting sftp service... ".center(60, "+"))
+    # 初始化密码策略
+    log.info("Initializing password policy...")
+    password_policy_result = PasswordPolicy.update_password_policy()
+    if not password_policy_result:
+        log.error("Failed to initialize password policy.")
+        return CustomErrorCode.password_policy_modify_failed, "", "Failed to initialize password policy."
+    log.info("Password policy initialized successfully.")
     # 修改/etc/ssh/sshd_config
     if os.path.exists(SftpConst.SSHD_CONFIG):
         res = ServiceUtil.modify_ssh_config()
@@ -753,18 +644,6 @@ def start_sftp():
         log.error("Generate ssh key failed.")
         return return_code, std_out, std_err
     log.info("Generate ssh key successfully.")
-    # 修改/etc/rsyslog.d/sftpchroot.conf
-    return_code, std_out, std_err = ServiceUtil.set_log_config()
-    if return_code != "0":
-        log.error("Modify syslogd config file failed.")
-        return return_code, std_out, std_err
-    log.info("Modify syslogd config file successfully.")
-    # syslogd进程重启,并查看syslogd是否已成功重启
-    return_code, std_out, std_err = ServiceUtil.kill_and_restart_log()
-    if return_code != "0":
-        log.error("Kill rsyslogd process and restart failed.")
-        return return_code, std_out, std_err
-    log.info("Kill rsyslogd process and restart successfully.")
     # sshd进程重启, 并查看sshd是否已成功重启
     return_code, std_out, std_err = ServiceUtil.kill_and_restart_ssh()
     if return_code != "0":
@@ -848,7 +727,7 @@ def service_start():
                 add_list.remove(user_item)
                 continue
             user_name, pwd = user_item[0], user_item[1]
-            return_code, std_out, std_err = add_user(user_name, pwd)
+            return_code, std_out, std_err = add_user(user_name, pwd, init=True)
             if return_code == "0":
                 log.info("Succeed to add SFTP user user_name:%s" % user_name)
                 # 添加成功移除
@@ -881,7 +760,7 @@ def service_manage():
     if operation == "change_pwd":
         user_name = sys.argv[2]
         pwd = sys.argv[3]
-        res = change_pwd(user_name, pwd)
+        res, std_out, std_err = change_pwd(user_name, pwd)
         return_sdt_out = "{}|{}|{}".format(res[0], res[1], res[2])
         sys.stdout.write(return_sdt_out)
         return res

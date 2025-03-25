@@ -12,6 +12,10 @@ CLIENT_BUILD_PATH=${BASE_PATH}/client
 FINAL_PKGPATH="${BASE_PATH}"/../../final_pkg
 SIGN_TOOL_PATH=${SIGNATURE_HOME}
 SIGN_FILE_PATH=${BASE_PATH}/../../../../DPAProduct/
+LCRP_XML_PATH=${BASE_PATH}/../../conf/
+
+EULEROS_SERVER_VERSION=EulerOS_Server_V200R012C00SPC509B100
+
 pip3 install -r "${BASE_PATH}"/requirements.txt
 echo "start"
 function sign_pkgs() {
@@ -37,11 +41,33 @@ function sign_pkgs() {
   return 0
 }
 
+function download_euler_os_iscsi_pkg_from_cmc() {
+  artget pull -d ${LCRP_XML_PATH}/euleros_dependency_cmc.xml -user ${cmc_user} -pwd ${cmc_pwd} -ap .
+  if [ $? -ne 0 ]; then
+    echo "Download euleros package error."
+    exit 1
+  fi
+  echo "Download euleros package success."
+
+  mkdir -p setup/packages
+  tar xvf ${EULEROS_SERVER_VERSION}.tar.gz
+  cp ${EULEROS_SERVER_VERSION}/repos/euler_base/{open-isns-0.101-3.h1.eulerosv2r12.aarch64.rpm,open-iscsi-2.1.5-10.h6.eulerosv2r12.aarch64.rpm} setup/packages
+  rm -rf ${EULEROS_SERVER_VERSION}.tar.gz ${EULEROS_SERVER_VERSION}
+}
+
+download_euler_os_iscsi_pkg_from_cmc
 sh "${SERVER_BUILD_PATH}"/build.sh "${SERVER_BUILD_PATH}" "${version}"
 
-sign_pkgs ${SERVER_BUILD_PATH}/setup
-cd ${SERVER_BUILD_PATH}/setup
-tar zcvf ../dpserver.tar.gz .
+mkdir "${SERVER_BUILD_PATH}"/tmp
+mv "${SERVER_BUILD_PATH}"/setup "${SERVER_BUILD_PATH}"/tmp/dpserver
+sign_pkgs ${SERVER_BUILD_PATH}/tmp
+mv ${SERVER_BUILD_PATH}/tmp/dpserver ${SERVER_BUILD_PATH}/dpserver
+cd "${SERVER_BUILD_PATH}"
+mv tmp/sha256sum_sync.cms sha256sum_sync.cms
+mv tmp/crldata.crl crldata.crl
+mv tmp/sha256sum_sync sha256sum_sync
+zip -r dpserver.zip ./dpserver ./sha256sum_sync.cms ./crldata.crl ./sha256sum_sync ./packages
+tar zcvf dpserver.tar.gz ./dpserver ./sha256sum_sync.cms ./crldata.crl ./sha256sum_sync
 
 echo "server done"
 sh "${CLIENT_BUILD_PATH}"/build.sh "${CLIENT_BUILD_PATH}" "${version}"
@@ -49,6 +75,7 @@ echo "client done"
 
 sign_pkgs ${CLIENT_BUILD_PATH}/dpclient
 cd ${CLIENT_BUILD_PATH}
+zip -r dpclient_linux.zip dpclient
 tar zcvf dpclient_linux.tar.gz dpclient
 
 
@@ -74,9 +101,12 @@ function product_sign() {
   done
 }
 
+
 mkdir "${BASE_PATH}"/dpdeploy
 mkdir ${FINAL_PKGPATH}
 DPDEPLOY_PATH="$BASE_PATH"/dpdeploy
+cp "${SERVER_BUILD_PATH}"/dpserver.zip ${FINAL_PKGPATH}
+cp "${CLIENT_BUILD_PATH}"/dpclient_linux.zip ${FINAL_PKGPATH}
 cp "${SERVER_BUILD_PATH}"/dpserver.tar.gz ${FINAL_PKGPATH}
 cp "${CLIENT_BUILD_PATH}"/dpclient_linux.tar.gz ${FINAL_PKGPATH}
 

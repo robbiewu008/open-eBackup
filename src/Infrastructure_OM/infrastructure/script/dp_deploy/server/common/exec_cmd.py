@@ -15,6 +15,7 @@ def exec_cmd(cmd, timeout=RUN_CMD_DEFAULT_TIMEOUT):
         cmd_list = shlex.split(cmd)
     else:
         cmd_list = cmd
+    logger.info(f"Exec cmd: {cmd_list}")
     process = subprocess.Popen(cmd_list, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8")
     stdout, stderr = process.communicate(timeout=timeout)
     return process.returncode, stdout, stderr

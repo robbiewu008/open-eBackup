@@ -9,7 +9,8 @@ spec:
       address: "{{ host.simbaos_ip}}"
       internalAddress: "{{ host.internal_address }}"
       serviceAddress: "{{ host.internal_address}}"
-      interface: "{{ host.management_interface }}"
+      interface: "{{ host.internal_interface }}"
+      managementInterface: "{{ host.management_interface }}"
       managementAddress: "{{ host.simbaos_ip}}"
       user: "{{ host.kadmin}}"
       password: "{{ host.kadmin_passwd }}"
@@ -33,6 +34,11 @@ spec:
     domain: apiserver.cluster.local
     address: "{{ control_plane_endpoint }}"
     port: 16443
+  servicePlaneEndpoint:
+    address: "{{service_plane_endpoint}}"
+    {%- if service_plane_endpoint_v6 %}
+    addressV6: "{{service_plane_endpoint_v6}}"
+    {%- endif %}
   kubernetes:
     version: 1.25.3
     clusterName: cluster.local

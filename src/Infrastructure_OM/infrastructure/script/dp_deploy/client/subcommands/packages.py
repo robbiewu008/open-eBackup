@@ -2,6 +2,7 @@ import os
 import logging as log
 import hashlib
 
+from client_exception import FileTypeNotSupportException, FilePathNotExistException
 from dataprotect_deployment.dp_server_interface import DataProtectDeployClient
 from dataprotect_deployment.client_manager import ClientManager
 import consts
@@ -18,7 +19,8 @@ def calculate_file_sha256(file_path):
 
 def upload_per_client(client, packages):
     for package_path in packages:
-        upload(client, package_path)
+        if package_path:
+            upload(client, package_path)
 
 
 def get_package_name_list_from_paths(packages):
@@ -55,18 +57,8 @@ class PackageManager:
 def upload(cli: DataProtectDeployClient, package_path: str):
     log.info(f'Start to upload package {package_path}')
 
-    is_supported = False
-    for package_type in consts.SUPPORTED_PACAKAGE_TYPE:
-        if package_path.endswith(package_type):
-            is_supported = True
-            break
-    if not is_supported:
-        raise Exception("Unsupported file extention type, "
-                        "only support ['.tgz', '.tar.gz']")
-
     if not os.path.isfile(package_path):
-        log.error(f"{package_path} not exist")
-        raise FileNotFoundError(f"{package_path} not exist")
+        return
 
     package_size = os.path.getsize(package_path)
     hash_value = calculate_file_sha256(package_path)

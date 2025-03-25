@@ -1,7 +1,8 @@
-from dataprotect_deployment.pacific_interface import PacificClient, PacificNode
 import logging as log
-from config import StoragePoolConfig
 
+from config import StoragePoolConfig
+from dataprotect_deployment.pacific_interface import PacificClient, PacificNode
+from client_exception import EDSFailException, StoragePoolExpandFailException
 
 def create_storage_pool(
     pacific_cli: PacificClient,
@@ -96,7 +97,7 @@ def create_converged_eds_file_service(
         log.info('Successfully created converged EDS service')
         return
 
-    raise Exception('Failed to create converged EDS service')
+    raise EDSFailException
 
 
 def delete_converged_eds_file_service(pacific_cli: PacificClient, pool_id):
@@ -129,7 +130,7 @@ def expand_converged_eds_file_service(cli: PacificClient, pool_id, ip_list):
     if task_status == 'success':
         log.info('Successfully expand converged EDS file service')
         return
-    raise Exception('Failed to expand storage pool')
+    raise StoragePoolExpandFailException
 
 
 def scale_down_converged_eds_file_service(cli: PacificClient, pool_id, ip_list):

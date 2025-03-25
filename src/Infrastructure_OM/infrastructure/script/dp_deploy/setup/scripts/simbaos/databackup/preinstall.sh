@@ -20,4 +20,4 @@ chown -hR kadmin:kgroup ${SIMBAOS_PACKAGE_PATH}
 echo "preinstall simbaos succeed"
 
 # wait for smartkube agent to start
-sleep 10
+sleep 30

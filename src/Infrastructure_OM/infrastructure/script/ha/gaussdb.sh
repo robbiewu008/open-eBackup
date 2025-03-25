@@ -9,6 +9,7 @@ G_RESOURCE_NAME="gaussdb"
 CLUSTER_ROLE_PRIMARY="PRIMARY"
 CLUSTER_ROLE_Standby="STANDBY"
 CHANGE_ROLE_FAIL_FILE=${G_HA_TMP_PATH}/change_role
+G_NODE_MARK_FILE="/opt/third_data/ha/gaussdb_node"
 source ${G_HA_SCRIPT_PATH}/check_service.sh
 
 if ! . "${G_HA_SCRIPT_PATH}/dbcommand.sh" ; then
@@ -28,20 +29,22 @@ fi
 #  RETURN       : 0 是
 #                 1 否
 ###################################################################
-function main()
-{
-    local -i ret_val=0
-    case "$OPT_COMMAND" in
-    status)
-        # To Do 主备模式资源会用到$2
-        # 查询资源状态，返回码为上面列出来的返回码
-        check_status_process ${G_RESOURCE_NAME}
-        if [ $? -ne 0 ];then
-	        return 2
-	      fi
-        get_status; ret_val=$?
-        return $ret_val
-        ;;
+function main() {
+  local -i ret_val=0
+  case "$OPT_COMMAND" in
+  status)
+    # To Do 主备模式资源会用到$2
+    # 查询资源状态，返回码为上面列出来的返回码
+    check_status_process ${G_RESOURCE_NAME}
+    if [ $? -ne 0 ]; then
+      return 2
+    fi
+    # 更新gaussdb所在控制器至标记文件
+    echo $NODE_NAME >$G_NODE_MARK_FILE
+    get_status
+    ret_val=$?
+    return $ret_val
+    ;;
 
     start)
         # To Do 主备模式资源不会用到该action（需要使用active）

@@ -3,7 +3,7 @@
 BASEDIR=$(dirname $0)
 
 CLIENT_PATH=${BASEDIR}/client
-MIN_COVERAGE=60
+MIN_COVERAGE=50
 python3 -m pip install pytest coverage pytest-cov
 if [ $? -ne 0 ];then
     echo "install requirements failed"

@@ -7,8 +7,8 @@ set type [lindex $argv 3]
 
 cd $datasync_path
 spawn java -jar DSS.jar -p config/cfg.ini -pwd $type
-    expect "Please enter the password to be encrypted and press Enter to confirm!"
-    send -- "${passwd}\r"
-    expect eof
+expect "Please enter the password to be encrypted and press Enter to confirm!"
+send -- "${passwd}\r"
+expect eof
 
 cd $gaussdb_path
