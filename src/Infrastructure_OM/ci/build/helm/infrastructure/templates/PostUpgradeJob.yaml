@@ -36,6 +36,10 @@ spec:
           env:
             - name: DEPLOY_TYPE
               value: {{ $deploytype }}
+            {{- if .Values.global.region_id }}
+            - name: REGION_ID
+              value: {{ .Values.global.region_id }}
+            {{- end }}
             - name: NODE_NAME
               valueFrom:
                 fieldRef:

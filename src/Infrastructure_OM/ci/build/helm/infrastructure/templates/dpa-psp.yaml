@@ -16,7 +16,7 @@ metadata:
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
 spec:
-  privileged: false
+  privileged: true
   allowPrivilegeEscalation: true
   hostNetwork: true
   hostIPC: false

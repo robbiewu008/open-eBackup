@@ -2,7 +2,7 @@
 
 {{- if eq .Values.global.environment "Dorado" }}
 {{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d2") (eq $deploytype "d3") (eq $deploytype "d4")
-(eq $deploytype "d6") (eq $deploytype "d9") }}
+(eq $deploytype "d6") }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

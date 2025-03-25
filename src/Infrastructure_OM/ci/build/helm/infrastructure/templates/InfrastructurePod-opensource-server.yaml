@@ -3,12 +3,21 @@ Get running environment
 */}}
 {{- $environment:= "" }}
 {{- $cluster_enable:= "" }}
+{{- $master_node0:= "" }}
+{{- $master_node1:= "" }}
+{{- $master_node2:= "" }}
 {{- if .Values.global }}
 {{- $environment = .Values.global.environment }}
 {{- $cluster_enable = .Values.global.cluster_enable | toString }}
+{{- $master_node0 = .Values.global.master_node0 }}
+{{- $master_node1 = .Values.global.master_node1 }}
+{{- $master_node2 = .Values.global.master_node2 }}
 {{- else }}
 {{- $environment = .Values.local.environment }}
 {{- $cluster_enable:= "false" }}
+{{- $master_node0:= "" }}
+{{- $master_node1:= "" }}
+{{- $master_node2:= "" }}
 {{- end }}
 
 {{- $deploytype:= include "getDeployType" . | default "" }}
@@ -41,37 +50,28 @@ spec:
     spec:
       affinity:
         nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: role
-                    operator: In
-                    values:
-                      - MASTER
-                      - STANDBY
-                      - SLAVE
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 3
               preference:
                 matchExpressions:
-                  - key: role
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - MASTER
+                      - {{ $master_node1 }}
             - weight: 2
               preference:
                 matchExpressions:
-                  - key: role
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - STANDBY
+                      - {{ $master_node2 }}
             - weight: 1
               preference:
                 matchExpressions:
-                  - key: role
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - SLAVE
+                      - {{ $master_node0 }}
       serviceAccountName: infra-sa
       terminationGracePeriodSeconds: 0
       tolerations:
@@ -93,6 +93,13 @@ spec:
         - name: elasticsearch
           image: elasticsearch:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "3"
+              memory: "7.5G"
+            limits:
+              cpu: "6"
+              memory: "15G"
           securityContext:
             runAsUser: 99
             readOnlyRootFilesystem: true
@@ -112,8 +119,12 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             {{- if eq $cluster_enable "true" }}
-            - name: CLUSTER
-              value: "TRUE"
+            - name: MASTER_NODE
+              value: {{ $master_node1 }}
+            - name: STANDBY_NODE
+              value: {{ $master_node2 }}
+            - name: SLAVE_NODE
+              value: {{ $master_node0 }}
             {{- end }}
           livenessProbe:
             exec:
@@ -150,6 +161,13 @@ spec:
         - name: zookeeper
           image: zookeeper:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "2"
+              memory: "5G"
+            limits:
+              cpu: "5"
+              memory: "10G"
           securityContext:
             runAsUser: 99
             readOnlyRootFilesystem: true
@@ -169,8 +187,12 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             {{- if eq $cluster_enable "true" }}
-            - name: CLUSTER
-              value: "TRUE"
+            - name: MASTER_NODE
+              value: {{ $master_node1 }}
+            - name: STANDBY_NODE
+              value: {{ $master_node2 }}
+            - name: SLAVE_NODE
+              value: {{ $master_node0 }}
             {{- end }}
           livenessProbe:
             exec:
@@ -202,6 +224,13 @@ spec:
         - name: kafka
           image: kafka:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "2"
+              memory: "8G"
+            limits:
+              cpu: "5"
+              memory: "15G"
           securityContext:
             runAsUser: 99
             readOnlyRootFilesystem: true
@@ -221,8 +250,12 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             {{- if eq $cluster_enable "true" }}
-            - name: CLUSTER
-              value: "TRUE"
+            - name: MASTER_NODE
+              value: {{ $master_node1 }}
+            - name: STANDBY_NODE
+              value: {{ $master_node2 }}
+            - name: SLAVE_NODE
+              value: {{ $master_node0 }}
             {{- end }}
           livenessProbe:
             initialDelaySeconds: 600
@@ -255,6 +288,13 @@ spec:
         - name: redis
           image: redis:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "1"
+              memory: "2G"
+            limits:
+              cpu: "3"
+              memory: "6G"
           securityContext:
             runAsUser: 99
             readOnlyRootFilesystem: true
@@ -273,15 +313,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.name
-            {{- if eq $cluster_enable "true" }}
-            - name: CLUSTER
-              value: "TRUE"
-            {{- end }}
           livenessProbe:
             exec:
               command:
@@ -320,6 +351,13 @@ spec:
         - name: om
           image: om:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "2"
+              memory: "4G"
+            limits:
+              cpu: "4"
+              memory: "8G"
           envFrom:
             - configMapRef:
                 name: inf-common-conf
@@ -328,6 +366,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
             - name: ENVIRONMENT
               value: {{ $environment }}
             - name: DEPLOY_TYPE
@@ -338,11 +381,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.name
             {{- if eq $cluster_enable "true" }}
             - name: CLUSTER
               value: "TRUE"
@@ -395,7 +433,7 @@ spec:
               fieldRef:
                 fieldPath: spec.nodeName
           - name: DEPLOY_TYPE
-            value: d8
+            value: {{ $deploytype }}
           - name: ENVIRONMENT
             value: {{ $environment }}
           - name: POD_IP
@@ -409,6 +447,13 @@ spec:
                 fieldPath: metadata.name
           image: dmc_nginx:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "0.5"
+              memory: "0.5G"
+            limits:
+              cpu: "1"
+              memory: "1G"
           livenessProbe:
             tcpSocket:
               port: 18091
@@ -453,9 +498,16 @@ spec:
               fieldRef:
                 fieldPath: status.podIP
           - name: DEPLOY_TYPE
-            value: d8
+            value: {{ $deploytype }}
           image: dme_dmc:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "0.5"
+              memory: "0.5G"
+            limits:
+              cpu: "1"
+              memory: "1G"
           livenessProbe:
             exec:
               command:
@@ -463,8 +515,8 @@ spec:
                 - -c
                 - sh /opt/OceanStor/100P/ProtectEngine-E/dme_dmc/script/dmeservice/check_health.sh dme-dmc
             initialDelaySeconds: 300
-            periodSeconds: 10
-            timeoutSeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 30
             failureThreshold: 5
           securityContext:
             readOnlyRootFilesystem: true
@@ -490,6 +542,8 @@ spec:
               name: common-path
             - mountPath: /opt/network-conf
               name: network-conf
+            - mountPath: /opt/common-conf
+              name: common-conf
       initContainers:
         - name: init-gaussdb
           image: om:{{ .Values.global.version }}
@@ -513,15 +567,21 @@ spec:
               mountPath: /om-tmp
             - name: cache-volume
               mountPath: /cache
-            - mountPath: /opt/multicluster-conf
-              name: multicluster-conf
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: DEPLOY_TYPE
-              value: d8
+              value: {{ $deploytype }}
+            {{- if eq $cluster_enable "true" }}
+            - name: MASTER_NODE
+              value: {{ $master_node1 }}
+            - name: STANDBY_NODE
+              value: {{ $master_node2 }}
+            - name: SLAVE_NODE
+              value: {{ $master_node0 }}
+            {{- end }}
       volumes:
         - name: protectengine-e-conf
           configMap:
@@ -557,6 +617,9 @@ spec:
           configMap:
             name: multicluster-conf
             defaultMode: 0644
+        - name: common-conf
+          configMap:
+            name: common-conf
         {{- if eq $environment "Dorado" }}
         - name: data-nas
           persistentVolumeClaim:

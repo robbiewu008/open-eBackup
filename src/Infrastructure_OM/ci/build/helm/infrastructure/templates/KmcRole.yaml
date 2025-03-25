@@ -17,7 +17,7 @@ rules:
 - apiGroups: ["*"]
   resources: ["secrets"]
   resourceNames: ["secret-pm-ha", "common-secret"]
-  verbs: ["get"]
+  verbs: ["get", "patch"]
 - apiGroups: [ "*" ]
   resources: ["services"]
   resourceNames: ["gaussdb"]

@@ -22,19 +22,4 @@ spec:
     - port: 59610
       name: plugin-thrift
       protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: dme-openstorageapi-controller
-  namespace: dpa
-  labels:
-    app: protectengine
-spec:
-  selector:
-    app: protectengine
-  ports:
-    - port: {{ .Values.dme_openstorageapi_controller_port }}
-      name: dme-openstorageapi-controller
-      protocol: TCP
 {{- end }}

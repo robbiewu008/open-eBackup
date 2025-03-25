@@ -1,23 +1,21 @@
 #!/bin/bash
-########################################
-#  This file is part of the open-eBackup project.
-# Copyright (c) 2024 Huawei Technologies Co.,Ltd.
+#########################################
+# Copyright (c) 2012-2015 Huawei .
+# All rights reserved.
 #
-# open-eBackup is licensed under MPL v2.
-# You can use this software according to the terms and conditions of the MPL v2.
-# You may obtain a copy of MPL v2 at:
+# Please send feedback to http://www.huawei.com
 #
-#          https://www.mozilla.org/en-US/MPL/2.0
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-# See the MPL v2 for more details.
+# Function 构建本地euler2.12yum源
+# 1、下载镜像源
+# 2、解压获取rpm包，合并到一个文件PACKAGE
+# 3、构建本地源，需要安装插件createrepo
+# 4、上传到cmc
+# revise note
 ########################################
 
-PACKAGE1="EulerOS_Server_V200R011C00SPC500B750.tar.gz"
+PACKAGE1="EulerOS_Server_V200R012C00SPC500B750.tar.gz"
 PACKAGE2="devel_tools.tar.gz"
-PACKAGE5="EulerOS-Virtual-V200R011C00SPC500B062-aarch64.tar.gz"
+PACKAGE5="EulerOS-Virtual-V200R012C00SPC502B016-aarch64.tar.gz"
 PACKAGE6="Euler_compile_RPMS-aarch64.tar.gz"
 
 CURRENT_PATH=$(cd `dirname $0`; pwd)
