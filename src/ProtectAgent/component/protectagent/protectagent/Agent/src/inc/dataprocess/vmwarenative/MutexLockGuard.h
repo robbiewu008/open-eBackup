@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file MutexLockGuard.h
- * @brief  Contains function declarations MutexLockGuard Operations
- * @version 1.0.0
- * @date 2020-04-02
- * @author wangguitao 00510599
- */
 #ifndef __AGENT_VMWARENATIVE_MUTEXLOCKGUARD_H__
 #define __AGENT_VMWARENATIVE_MUTEXLOCKGUARD_H__
 

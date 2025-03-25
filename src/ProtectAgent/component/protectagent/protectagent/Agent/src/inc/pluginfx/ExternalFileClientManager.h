@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file ExternalPluginParse.h
- * @brief  The implemention about ExternalPluginParse.h
- * @version 1.1.0
- * @date 2024-07-16
- * @author dengbowen d30043983
- */
 #ifndef EXTERNAL_FILECLIENT_MANAGER_H
 #define EXTERNAL_FILECLIENT_MANAGER_H
 

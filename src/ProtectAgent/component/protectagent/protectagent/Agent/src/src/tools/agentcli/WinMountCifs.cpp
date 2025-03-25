@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
- *
- * @file WinMountCifs.h
- * @brief exec a cmd with a input param
- * @version 1.0.0
- * @date 2022-07-07
- * @author kWX884906
- */
 #include "tools/agentcli/WinMountCifs.h"
 #include "common/Log.h"
 #include "securecom/CryptAlg.h"

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepBackupPreparation.h
- * @brief  Contains function declarations for TaskStepBackupPreparation
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef __AGENT_TASKSTEP_BACKUP_PREPARATION_H__
 #define __AGENT_TASKSTEP_BACKUP_PREPARATION_H__
 

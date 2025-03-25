@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
- *
- * @file ReadPipe.h
- * @brief read named pipe
- * @version 1.0.0
- * @date 2022-05-12
- * @author kWX884906
- */
 #include "tools/agentcli/ReadPipe.h"
 #include "common/Pipe.h"
 #include "common/CMpThread.h"

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- * Description: 备份/恢复任务CLeanup VDDK步骤
- * Author: w00558987
- * Version: 0.1
- * Create: 2021-03-29
- *
- */
-
 #ifndef AGENT_BACKUP_STEP_VMWARENATIVE_CLEANUP_VMWAREDISKLIB_H
 #define AGENT_BACKUP_STEP_VMWARENATIVE_CLEANUP_VMWAREDISKLIB_H
 

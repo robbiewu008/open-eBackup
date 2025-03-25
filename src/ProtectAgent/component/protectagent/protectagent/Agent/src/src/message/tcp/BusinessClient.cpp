@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file BusinessClient.cpp
- * @brief  Contains function declarations for datamover microservice management
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
-
 #include "message/tcp/BusinessClient.h"
 #include <sstream>
 #include "common/Log.h"

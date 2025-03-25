@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file JobTimer.h
- * @brief Job timer
- * @version 1.1.0
- * @date 2022-2-23
- */
-
 #ifndef INTERVAL_TIMER_H
 #define INTERVAL_TIMER_H
 #include <chrono>

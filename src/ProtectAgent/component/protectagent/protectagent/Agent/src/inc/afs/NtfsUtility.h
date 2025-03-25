@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file NtfsUtility.h
- * @brief Analyze NTFS file system.
- *
- */
-
 #ifndef NTFS_UTILITY_H_INCLUDED
 #define NTFS_UTILITY_H_INCLUDED
 

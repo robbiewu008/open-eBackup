@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file OracleNativeBackupPlugin.cpp
- * @brief  Implementation of the Class OracleNativeBackupPlugin
- * @version 1.0.0
- * @date 2021-11-15
- * @author youlei 00412658
- */
 #include <functional>
 #include <thread>
 #include "common/Log.h"

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file StackTracer.h
- * @brief  The implemention about OracleNativeCLiveMTask
- * @version 1.0.0.0
- * @date 2015-02-06
- * @author WuZhanglin 00281912
- */
 #ifndef _AGENT_STACK_TRACER_H_
 #define _AGENT_STACK_TRACER_H_
 

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file StaticConfig.cpp
- * @brief  Contains some config which will not changge when process running.
- * @version 1.1.0
- * @date 2024-09-22
- * @author h00668904
- */
 #include <fstream>
 #include "common/Log.h"
 #include "common/ConfigXmlParse.h"

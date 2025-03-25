@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file MergeConfFiles.h
- * @brief  Contains function declarations for MergeConfFiles
- * @version 1.6.0
- * @date 2024-05-16
- * @author gongqinhua 30046491
- */
 #ifndef AGENTCLI_MERGE_CONF_FILES_H_
 #define AGENTCLI_MERGE_CONF_FILES_H_
 #include <iostream>

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file MessageHandler.h
- * @brief  The implemention MessageHandler
- * @version 1.0.0.0
- * @date 2019-11-15
- * @author wangguitao 00510599
- */
 #ifndef _AGENT_MESSAGE_HANDLER_H_
 #define _AGENT_MESSAGE_HANDLER_H_
 

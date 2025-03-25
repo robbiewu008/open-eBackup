@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file CountDown.cpp
- * @brief  Implementation of the Class CountDown
- * @version 1.0.0
- * @date 2019-11-15
- * @author wangguitao 00510599
- */
 #include "dataprocess/vmwarenative/CountDown.h"
 
 using namespace std;

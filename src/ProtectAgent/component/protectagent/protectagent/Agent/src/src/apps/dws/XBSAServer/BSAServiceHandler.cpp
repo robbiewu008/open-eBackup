@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * Description: xbsa service handler implementation.
- * Create: 2021-05-20
- * Author: wuchuan wwx563312
- */
 #include "apps/dws/XBSAServer/BSAServiceHandler.h"
 #include "apps/dws/XBSAServer/BsaSessionManager.h"
 #include "apps/dws/XBSAServer/BsaIntfAdaptor.h"

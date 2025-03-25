@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file ThinPoolSegment.h
- *
- * @brief AFS - LVM Thin Pool segment class
- *
- */
-
 #ifndef LVM_THINPOOLSEGMENT_H_
 #define LVM_THINPOOLSEGMENT_H_
 

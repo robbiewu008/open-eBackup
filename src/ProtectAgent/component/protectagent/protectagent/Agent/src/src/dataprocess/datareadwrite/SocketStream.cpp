@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file SocketStream.cpp
- * @brief  The implemention about SocketStream
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "dataprocess/datareadwrite/SocketStream.h"
 #include "dataprocess/datareadwrite/DataContext.h"
 #include "dataprocess/datareadwrite/DataStream.h"

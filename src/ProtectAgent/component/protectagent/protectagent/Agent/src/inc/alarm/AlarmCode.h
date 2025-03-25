@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- *
- * @file alarmMgr.h
- * @brief alarm management
- * @date 2022-2-21
- */
 #ifndef _ALARMCODE_H_
 #define _ALARMCODE_H_
 #include "common/Types.h"

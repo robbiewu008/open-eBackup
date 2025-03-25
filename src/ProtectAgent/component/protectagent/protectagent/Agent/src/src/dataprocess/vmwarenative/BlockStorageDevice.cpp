@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file BlockStorageDevice.cpp
- * @brief  Contains function declarations block storage device
- * @version 1.0.0
- * @date 2015-02-02
- * @author wangguitao 00510599
- */
 #include "dataprocess/vmwarenative/BlockStorageDevice.h"
 #include <vector>
 #include "dataprocess/vmwarenative/Define.h"

@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file ArchiveStreamService.cpp
- * @brief  The implemention RECOVERY Client connection handler
- * @version 1.0.0.0
- * @date 2021-05-26
- * @author lwx1045600
- */
-
 #include "message/archivestream/ArchiveStreamService.h"
 
 #include <fstream>

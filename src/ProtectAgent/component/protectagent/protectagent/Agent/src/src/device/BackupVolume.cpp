@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file BackupVolume.cpp
- * @brief  Contains function declarations for BackupVolume
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "device/BackupVolume.h"
 
 #include "common/Log.h"

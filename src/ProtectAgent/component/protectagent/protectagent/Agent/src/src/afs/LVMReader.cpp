@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file lvmreader.cpp
- * @brief AFS - Analyze LVM manager disk image.
- *
- */
-
 #include "afs/LVMReader.h"
 #include "afs/LogMsg.h"
 #include "afs/PartitionHandler.h"

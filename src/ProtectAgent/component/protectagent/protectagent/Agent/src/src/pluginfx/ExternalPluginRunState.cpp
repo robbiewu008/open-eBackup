@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file PluginRunController.h
- * @brief  The implemention about ExternalPluginRunState.h
- * @version 1.0.0.0
- * @date 2021-10-13
- * @author jwx966562
- */
 #include "pluginfx/ExternalPluginRunState.h"
 #include "pluginfx/ExternalPlugin.h"
 #include "common/Log.h"

@@ -1,12 +1,3 @@
-/* *
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DWSPlugin.h
- * @brief  Contains function declarations for DWSPlugin
- * @version 1.0.0
- * @date 2021-05-21
- * @author lixiang lws1045600
- */
 #ifndef __AGENT_DWS_PLUGIN_H__
 #define __AGENT_DWS_PLUGIN_H__
 

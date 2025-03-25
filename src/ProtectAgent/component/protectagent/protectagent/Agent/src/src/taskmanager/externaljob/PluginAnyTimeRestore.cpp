@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @brief  Factory for Plugin job
- * @version 1.0.0
- * @date 2022-1-5
- * @author twx949498
- */
 #include "taskmanager/externaljob/PluginAnyTimeRestore.h"
 #include <vector>
 #include "common/Log.h"

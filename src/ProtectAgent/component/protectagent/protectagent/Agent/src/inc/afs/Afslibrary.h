@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file Afslibrary.h
- * @brief AFS - Common function.
- *
- */
-
 #ifndef COMMON_AFSLIBRARY_H_
 #define COMMON_AFSLIBRARY_H_
 

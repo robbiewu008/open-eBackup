@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file ThriftFactory.cpp
- * @brief  implement for ThriftFactory
- * @version 1.1.0
- * @date 2021-08-31
- * @author caomin 00511255
- */
 #ifndef WIN32
 #include <unistd.h>
 #include <fcntl.h>

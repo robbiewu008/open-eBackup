@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file Job.h
- * @brief Implement for external sub job
- * @version 1.1.0
- * @date 2021-10-29
- * @author wangguitao 00510599
- */
 #include <thrift/transport/TTransportException.h>
 #include <map>
 #include <algorithm>

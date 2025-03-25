@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file VMwareNativeDataPathProcess.cpp
- * @brief  The implemention about VMwareNativeDataPathProcess
- * @version 1.0.0.0
- * @date 2021-04-16
- * @author xiajing 930484
- */
 #include <unistd.h>
 #include "common/Utils.h"
 #include "dataprocess/datapath/HanderThread.h"

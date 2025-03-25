@@ -1,15 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file BusinessClient.cpp
- * @brief  The implemention BusinessClient
- * @version 1.0.0.0
- * @date 2020-07-02
- * @author wangguitao 00510599
- */
-#if !defined(BUSINIESS_CONNECTION_H)
-#define BUSINIESS_CONNECTION_H
-
 #include "common/Types.h"
 #include "message/tcp/CConnection.h"
 #include "message/tcp/CDppMessage.h"

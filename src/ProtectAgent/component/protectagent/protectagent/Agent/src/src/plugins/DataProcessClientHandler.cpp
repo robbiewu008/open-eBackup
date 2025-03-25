@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DataProcessClientHandler.cpp
- * @brief  Contains function declarations for DataProcessClientHandler
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "plugins/DataProcessClientHandler.h"
 #include "apps/vmwarenative/VMwareDef.h"
 

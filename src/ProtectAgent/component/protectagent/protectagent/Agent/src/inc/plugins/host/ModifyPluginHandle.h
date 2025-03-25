@@ -1,9 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file ModifyPluginHandle.cpp
- * @brief Contains functions that handle the modify of agent
- */
 #ifndef MODIFY_HANDLE_H_
 #define MODIFY_HANDLE_H_
 

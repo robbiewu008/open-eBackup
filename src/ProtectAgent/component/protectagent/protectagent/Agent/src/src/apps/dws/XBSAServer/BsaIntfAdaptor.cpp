@@ -1,10 +1,3 @@
-/* *
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @Description XBSA thrift and DPP interface adaptor.
- * @Create 2021-05-21
- * @Author wuchuan wwx563312
- */
 #include "apps/dws/XBSAServer/BsaIntfAdaptor.h"
 #include "common/ConfigXmlParse.h"
 #include "apps/dws/XBSAServer/BsaSessionManager.h"

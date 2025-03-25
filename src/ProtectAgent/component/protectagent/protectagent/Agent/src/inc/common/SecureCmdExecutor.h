@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- *
- * @file SecureCmdExecutor.h
- * @brief  Contains function declarations SecureCmdExecutor Operations
- * @version 1.0
- * @date 2023-09-07
- * @author wangyunlong w30045225
- */
 #ifndef AGENT_SECURE_CMD_EXECUTOR_H
 #define AGENT_SECURE_CMD_EXECUTOR_H
 #include "common/CSystemExec.h"

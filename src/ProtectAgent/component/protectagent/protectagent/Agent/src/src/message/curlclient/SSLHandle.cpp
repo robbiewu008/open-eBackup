@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file SSLHandle.cpp
- * @brief  The implemention about SSL
- * @version 1.0.0.0
- * @date 6/12/2014
- * @author wangguitao 00510599
- */
 #ifndef WIN32
 
 #include "common/Log.h"

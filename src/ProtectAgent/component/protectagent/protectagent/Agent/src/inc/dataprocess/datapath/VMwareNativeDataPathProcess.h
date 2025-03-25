@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TVMwareNativeDataPathProcess.h
- * @brief  Contains function declarations about TVMwareNativeDataPathProcess
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef DATA_PATH_VMWARENATIVE_H
 #define DATA_PATH_VMWARENATIVE_H
 

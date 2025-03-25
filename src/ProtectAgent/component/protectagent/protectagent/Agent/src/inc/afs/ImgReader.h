@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file ImgReader.h
- * @brief AFS - Reader image data class.
- *
- */
-
 #ifndef IMGREADER_H
 #define IMGREADER_H
 

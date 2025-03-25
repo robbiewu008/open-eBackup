@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file MessageService.h
- * @brief  implement for MessageService
- * @version 1.1.0
- * @date 2021-08-31
- * @author caomin 00511255
- */
-
 #ifndef MESSAGESERVICE_H_
 #define MESSAGESERVICE_H_
 

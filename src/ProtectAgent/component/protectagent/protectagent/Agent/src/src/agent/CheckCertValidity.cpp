@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file CheckCertValidity.cpp
- * @brief  nginx证书将要过期时告警
- * @version 1.0.0.0
- * @date 2021-04-13
- * @author jiaohehe jwx1039612
- */
 #include "agent/CheckCertValidity.h"
 #include <iostream>
 #include <sstream>

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskContext.h
- * @brief  Contains function declarations for TaskContext
- * @version 1.0.0
- * @date 2020-08-01
- * @author y00412658
- */
 #ifndef _AGENT_TASKCONTEXT_H_
 #define _AGENT_TASKCONTEXT_H_
 

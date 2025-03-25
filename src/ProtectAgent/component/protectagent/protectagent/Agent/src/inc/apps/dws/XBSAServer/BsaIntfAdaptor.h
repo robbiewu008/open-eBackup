@@ -1,10 +1,3 @@
-/* *
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @Description XBSA thrift and DPP interface adaptor.
- * @Create 2021-05-21
- * @Author wuchuan wwx563312
- */
 #ifndef _BSA_INTF_ADAPTOR_H_
 #define _BSA_INTF_ADAPTOR_H_
 

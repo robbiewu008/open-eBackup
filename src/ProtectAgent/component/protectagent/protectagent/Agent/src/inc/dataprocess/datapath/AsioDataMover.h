@@ -1,4 +1,3 @@
-// Copyright (c) Huawei Technologies Co., Ltd. 2012-2023. All rights reserved.
 #ifndef DATA_MOVER_H
 #define DATA_MOVER_H
 

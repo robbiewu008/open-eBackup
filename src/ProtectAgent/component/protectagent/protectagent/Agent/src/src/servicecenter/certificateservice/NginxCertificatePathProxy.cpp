@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file NginxCertificatePathProxy.cpp
- * @brief  The implemention about NginxCertificatePathProxy.h
- * @version 1.1.0
- * @date 2021-11-1
- * @author caomin c00511255
- */
-
 #include <certificateservice/detail/NginxCertificatePathProxy.h>
 #include <certificateservice/include/ICertificateComm.h>
 #include <map>

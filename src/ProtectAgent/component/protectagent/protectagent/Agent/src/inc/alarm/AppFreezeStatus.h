@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file AppFreezeStatus.h
- * @brief  Contains function declarations AppFreezeStatus
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
 #ifndef _APP_FREEZE_STATUS_H_
 #define _APP_FREEZE_STATUS_H_
 

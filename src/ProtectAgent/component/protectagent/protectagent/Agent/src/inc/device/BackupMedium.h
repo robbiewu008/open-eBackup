@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file udev.h
- * @brief  Contains function declarations basic prepare backup fs media
- * @version 1.0.0
- * @date 2020-03-28
- * @author wangguitao 00510599
- */
-
 #ifndef AGENT_PREPARE_BACKUP_FS_MEDIA_H
 #define AGENT_PREPARE_BACKUP_FS_MEDIA_H
 #include "common/Types.h"

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file ArchiveStreamService.h
- * @brief  Contains function declarations for ArchiveStreamService
- * @version 1.0.0
- * @date 2021-5-18
- * @author lwx1045600
- */
 #ifndef __ARCHIVE_STREAM_SERVICE_H__
 #define __ARCHIVE_STREAM_SERVICE_H__
 

@@ -1,10 +1,3 @@
-/* *
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @Description manage XBSA sessions.
- * @Create 2021-06-07
- * @Author wuchuan wwx563312
- */
 #ifndef _BSA_MOUNT_MANAGER_H_
 #define _BSA_MOUNT_MANAGER_H_
 

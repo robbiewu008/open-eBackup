@@ -1,6 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
- */
 #include "apps/vmwarenative/StorageLayerNas.h"
 #include "common/Defines.h"
 #include "common/Log.h"

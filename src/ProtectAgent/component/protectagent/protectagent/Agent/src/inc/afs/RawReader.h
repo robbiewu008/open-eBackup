@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file RawReader.h
- * @brief AFS - Read data from raw format image
- *
- */
-
 #ifndef RAWREADER_H
 #define RAWREADER_H
 

@@ -1,10 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- * Description: 日志头文件
- * Author:hw
- * Create:2024-01-13
- * Notes:None。
- */
 #ifndef __LOGMSG_H__
 #define __LOGMSG_H__
 

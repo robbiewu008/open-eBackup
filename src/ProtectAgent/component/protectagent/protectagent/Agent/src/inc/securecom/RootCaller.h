@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file RootCaller.h
- * @brief root caller function
- * @version 1.0.0
- * @date 2021-05-18
- * @author wangguitao 00510599
- */
 #ifndef __ROOT_CALLER_H__
 #define __ROOT_CALLER_H__
 

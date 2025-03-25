@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file physicalVolume.cpp
- *
- * @brief AFS - LVM physical volume.
- *
- */
-
 #include "afs/PhysicalVolume.h"
 
 /* * @brief 构造函数

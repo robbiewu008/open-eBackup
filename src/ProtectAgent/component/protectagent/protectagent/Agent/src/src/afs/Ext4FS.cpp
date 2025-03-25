@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file ext4fs.cpp
- * @brief Afs - Analyze EXT file system.
- *
- */
-
 #include "afs/Ext4FS.h"
 #include <stdio.h>
 #include <cstdlib>

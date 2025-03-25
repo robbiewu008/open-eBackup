@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file ExternalPluginAlarmMng.h
- * @brief  The implemention about ExternalPluginAlarmMng.h
- * @version 1.0.0.0
- * @date 2021-12-17
- * @author jwx966562
- */
 #ifndef _EXTERNAL_PLUGIN_ALARM_MNG_H
 #define _EXTERNAL_PLUGIN_ALARM_MNG_H
 

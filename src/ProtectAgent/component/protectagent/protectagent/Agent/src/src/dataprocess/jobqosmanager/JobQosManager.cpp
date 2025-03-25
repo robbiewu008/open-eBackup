@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file JobQosManager.cpp
- * @brief  The implemention about qos
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author x00351199
- */
 #include <cmath>
 #include <chrono>
 #include <sys/time.h>

@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file IOTask.h
- * @author t00302329
- * @brief 实现备份恢复过程中的IO读写
- * @version 0.1
- * @date 2021-01-14
- *
- */
 #ifndef __IO_TASK_H__
 #define __IO_TASK_H__
 

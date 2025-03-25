@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file Bitmap.h
- * @brief AFS - Bitmap dispose class.
- *
- */
-
 #ifndef BITMAP_H
 #define BITMAP_H
 

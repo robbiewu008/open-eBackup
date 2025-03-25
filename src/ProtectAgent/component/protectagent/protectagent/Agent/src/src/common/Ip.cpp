@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Ip.cpp
- * @brief  Contains function declarations Get Ip Info
- * @version 1.0.0
- * @date 2020-08-01
- * @author yangwenjun 00275736
- */
-
 #include "common/Ip.h"
 #include <sstream>
 #include <fstream>

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Uuid.h
- * @brief  Contains function declarations for Uuid
- * @version 1.0.0
- * @date 2015/02/02
- * @author tanyuanjun 00285255
- */
 #ifndef __AGENT_UUID_H__
 #define __AGENT_UUID_H__
 #ifndef AIX53

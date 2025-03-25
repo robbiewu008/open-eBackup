@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file StartNginx.h
- * @brief  Contains function declarations StartNginx
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
 #ifndef _AGENTCLI_STARTNGINX_H_
 #define _AGENTCLI_STARTNGINX_H_
 

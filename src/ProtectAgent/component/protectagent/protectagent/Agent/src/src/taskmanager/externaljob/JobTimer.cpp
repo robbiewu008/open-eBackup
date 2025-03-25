@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file JobTimer.cpp
- * @brief Job timer
- * @version 1.1.0
- * @date 2022-2-23
- */
 #include "taskmanager/externaljob/JobTimer.h"
 
 void JobTimer::StopTimer()

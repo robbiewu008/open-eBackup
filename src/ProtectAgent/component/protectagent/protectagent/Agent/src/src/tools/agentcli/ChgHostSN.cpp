@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file ChgHostSN.cpp
- * @brief  Contains function declarations for ChgHostSN
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "tools/agentcli/ChgHostSN.h"
 #include "common/Defines.h"
 #include "common/ConfigXmlParse.h"

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file JsonUtils.cpp
- * @brief  Contains function declarations for Josn files
- * @version 0.1
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include <sstream>
 #include "common/Defines.h"
 #include "common/Log.h"

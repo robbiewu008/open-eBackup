@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file IOEngine.h
- * @author t00302329
- * @brief IO读写接口
- * @version 0.1
- * @date 2021-01-14
- *
- */
 #ifndef __IO_ENGINE_H__
 #define __IO_ENGINE_H__
 

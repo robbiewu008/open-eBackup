@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- *
- * @file jni to std.h
- * @brief  The implemention about SecurityImpl
- * @version 1.1.0
- * @date 2022-2-8
- * @author caomin c00511255
- */
-
 #ifndef JNI_TO_STD_H_
 #define JNI_TO_STD_H_
 #include <string.h>

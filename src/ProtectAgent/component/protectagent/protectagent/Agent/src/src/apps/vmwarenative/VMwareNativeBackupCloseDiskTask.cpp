@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file VMwareNativeBackupOpenDiskTask.cpp
- * @brief  提供VMwareNative高级备份打卡磁盘查询已分配数据块功能
- * @version 1.0.0
- */
-
 #include "apps/vmwarenative/VMwareNativeBackupCloseDiskTask.h"
 #include "apps/vmwarenative/TaskStepVMwareNative.h"
 #include "taskmanager/TaskStepLinkTarget.h"

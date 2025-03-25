@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TCPClient.h
- * @brief  Implementation of the Class TCPClient
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef TCP_DPP_CONNECTION_H
 #define TCP_DPP_CONNECTION_H
 

@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- *
- * @file com_huawei_oceanprotect_sdk_agent_plugin_lib_archive_ability_definition_ArchiveStreamAbility.cpp
- * @brief  The implemention about
- *    com_huawei_oceanprotect_sdk_agent_plugin_lib_archive_ability_definition_ArchiveStreamAbility
- * @version 1.1.0
- * @date 2022-2-17
- * @author kWX884906
- */
 #include "pluginfx/com_huawei_oceanprotect_sdk_agent_plugin_lib_archive_ability_definition_ArchiveStreamAbility.h"
 #include "message/archivestream/ArchiveStreamService.h"
 #include "common/Log.h"

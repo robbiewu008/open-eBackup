@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file File.h
- * @brief  Contains function declarations File Operations
- * @version 1.0.0
- * @date 2020-08-01
- * @author yangwenjun 00275736
- */
 #ifndef __AGENT_FILE_H__
 #define __AGENT_FILE_H__
 

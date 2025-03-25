@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DWSPlugin.cpp
- * @brief  The implemention DWSPlugin
- * @version 1.0.0.0
- * @date 2021-05-20
- * @author lwx1045600
- */
 #include "plugins/dws/DWSPlugin.h"
 #include <fstream>
 #include <sstream>

@@ -1,13 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
- *
- * @file pipe.h
- * @brief  Contains function declarations for Agent cli command files
- * @version 1.0.0
- * @date 2021-04-06
- * @author yangmaosheng yWX908707
- */
-
 #include <string>
 #include "common/Defines.h"
 #include "common/Log.h"

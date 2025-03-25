@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file VMwareDiskLib.h
- * @brief  The implemention Class of VMwareDiskLib
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef __AGENT_VMWARE_DISK_LIB_H__
 #define __AGENT_VMWARE_DISK_LIB_H__
 

@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- *
- * @file SecureCmdExecutor.cpp
- * @brief  The implemention about security system call
- * @version 1.0
- * @date 2023-09-07
- * @author wangyunlong w30045225
- */
-
 #include "common/SecureCmdExecutor.h"
 #include "common/CSystemExec.h"
 #include "common/Utils.h"

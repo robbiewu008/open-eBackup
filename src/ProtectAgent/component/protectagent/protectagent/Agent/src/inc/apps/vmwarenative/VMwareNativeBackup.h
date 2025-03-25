@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file VMwareNativeBackup.h
- * @brief  The implemention about Vmware backup Header file
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author x00351199
- */
 #ifndef AGENT_VMWARENATIVE_BACKUP
 #define AGENT_VMWARENATIVE_BACKUP
 

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file TaskStepPrepareAfsBitmap.h
- * @brief  Contains function declarations TaskStepPrepareAfsBitmap
- * @version 1.0.0
- * @date
- * @author
- */
 #ifndef __AGENT_TASKSTEP_BACKUP_AFSBITMAP_H__
 #define __AGENT_TASKSTEP_BACKUP_AFSBITMAP_H__
 

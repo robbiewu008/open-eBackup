@@ -1,10 +1,3 @@
-/* *
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @Description XBSA client transceiver data processing module.
- * @Create 2021-05-21
- * @Author machenglin mwx1011302
- */
 #ifndef FILE_H_
 #define FILE_H_
 

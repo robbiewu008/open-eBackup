@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file SystemCall.cpp
- * @brief  The implemention about system call cmd
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "rootexec/SystemCall.h"
 #include <algorithm>
 #include <fstream>

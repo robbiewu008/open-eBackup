@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file CommonDef.h
- * @brief Implement for application protect
- * @version 1.1.0
- * @date 2021-11-9
- * @author lwx943115
- */
-
 #ifndef DME_REST_STRUCT_H_DEF
 #define DME_REST_STRUCT_H_DEF
 

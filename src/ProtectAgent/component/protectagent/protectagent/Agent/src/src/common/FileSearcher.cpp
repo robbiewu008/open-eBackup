@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file FileSearcher.cpp
- * @brief  The implemention Class of FileSearcher
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "common/FileSearcher.h"
 #include "common/Defines.h"
 #include "common/File.h"

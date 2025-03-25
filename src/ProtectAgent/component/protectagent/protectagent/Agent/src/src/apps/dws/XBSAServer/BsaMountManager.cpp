@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @Description manage XBSA NAS mount.
- * @Create 2021-06-07
- * @Author wuchuan wwx563312
- */
 #include "apps/dws/XBSAServer/BsaMountManager.h"
 #include "common/Log.h"
 

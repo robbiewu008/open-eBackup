@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file MBRHandler.h
- * @brief AFS - Analyze MBR partition
- *
- */
 #ifndef __AFS_MBRHANDLER_H__
 #define __AFS_MBRHANDLER_H__
 

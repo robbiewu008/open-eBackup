@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file FileSystem.h
- * @brief Afs - Analyze file system interface.
- *
- */
-
 #ifndef FILESYSTEM_H
 #define FILESYSTEM_H
 

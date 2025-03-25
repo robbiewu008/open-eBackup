@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file CheckConnectStatus.h
- * @brief  Agent与Vcenter,微服务的连通性检查
- * @version 1.0.0.0
- * @date 2020-12-29
- * @author wangyanbo 30009057
- */
 #ifndef _AGENTCLI_CHECK_CONNECT_STATUS_H_
 #define _AGENTCLI_CHECK_CONNECT_STATUS_H_
 

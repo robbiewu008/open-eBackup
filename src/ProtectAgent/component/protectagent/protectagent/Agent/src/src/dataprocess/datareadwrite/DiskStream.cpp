@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DiskStream.cpp
- * @brief  Contains function declarations about DiskStream
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "dataprocess/datareadwrite/DiskStream.h"
 #include "common/TimeOut.h"
 #include "common/Utils.h"

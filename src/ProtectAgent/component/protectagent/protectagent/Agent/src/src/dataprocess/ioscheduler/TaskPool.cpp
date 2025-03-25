@@ -1,14 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file TaskPool.cpp
- * @author t00302329
- * @brief 实现IO调度的线程池
- * @version 0.1
- * @date 2021-01-11
- *
- */
-
 #include <memory>
 #include "common/Log.h"
 #include "common/ConfigXmlParse.h"

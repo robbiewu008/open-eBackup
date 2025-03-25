@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file UniqueId.cpp
- * @brief  Contains function declarations UniqueId
- * @version 1.0.0
- * @date 2020-01-27
- * @author wangguitao 00510599
- */
 #include "securecom/UniqueId.h"
 #include <sstream>
 #include "common/CMpTime.h"

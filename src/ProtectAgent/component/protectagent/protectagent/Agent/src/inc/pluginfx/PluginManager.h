@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file PluginManager.h
- * @brief  The implemention about PluginManager.h
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef AGENT_PLUGIN_MANAGER_IMPL_H
 #define AGENT_PLUGIN_MANAGER_IMPL_H
 

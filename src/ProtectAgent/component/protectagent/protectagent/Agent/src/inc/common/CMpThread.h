@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file CMpThread.h
- * @brief  Contains function declarations for CMpThread
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef AGENT_THREAD_H
 #define AGENT_THREAD_H
 

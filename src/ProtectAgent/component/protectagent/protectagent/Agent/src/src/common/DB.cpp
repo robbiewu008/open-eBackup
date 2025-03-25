@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file db.cpp
- * @brief  The implemention about db operations
- * @version 1.0.0.0
- * @date 2015-02-06
- * @author WuZhanglin 00281912
- */
 #include "common/DB.h"
 #include "common/Log.h"
 #include "common/Path.h"

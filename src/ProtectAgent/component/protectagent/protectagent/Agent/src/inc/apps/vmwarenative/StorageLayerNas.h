@@ -1,6 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
- */
 #ifndef __STORAGELAYERNAS_H__
 #define __STORAGELAYERNAS_H__
 

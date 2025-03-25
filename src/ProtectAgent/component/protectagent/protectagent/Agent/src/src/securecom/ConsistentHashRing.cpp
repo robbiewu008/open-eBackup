@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2021. All rights reserved.
- *
- * @file ConsistentHashRing.h
- * @brief Consistent Has Ring
- * @version 0.1
- * @date 2021-12-25
- * @author
- */
 #include "securecom/ConsistentHashRing.h"
 #include <openssl/evp.h>
 #include <vector>

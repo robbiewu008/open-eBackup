@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Utils.h
- * @brief secure common function
- * @version 1.0.0
- * @date 2021-05-18
- * @author wangguitao 00510599
- */
 #ifndef AGENT_UTILS_SECURE_H
 #define AGENT_UTILS_SECURE_H
 

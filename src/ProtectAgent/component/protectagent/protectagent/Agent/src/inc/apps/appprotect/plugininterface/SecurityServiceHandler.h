@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @brief  thrift SecurityService handler
- * @version 1.0.0
- * @date 2022-2-15
- * @author twx949498
- */
 #ifndef _SECURITY_SERVICE__HANDLER_HEADER_
 #define _SECURITY_SERVICE__HANDLER_HEADER_
 

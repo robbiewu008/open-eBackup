@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * Description: XBSA session class.
- * Create: 2021-05-18
- * Author: wuchuan wwx563312
- */
 #ifndef _BSA_SESSION_H_
 #define _BSA_SESSION_H_
 

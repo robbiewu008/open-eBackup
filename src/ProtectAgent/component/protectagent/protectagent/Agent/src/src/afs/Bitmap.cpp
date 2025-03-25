@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file bitmap.cpp
- * @brief AFS - Bitmap dispose class.
- *
- */
-
 #include "afs/Bitmap.h"
 #include <fstream>
 #include "afs/LogMsg.h"

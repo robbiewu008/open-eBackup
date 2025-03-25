@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file VMwareNativeVmBackupTask.cpp
- * @brief  Contains function declarations VMwareNativeVmBackupTask
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
 #include "apps/vmwarenative/VMwareNativeVmBackupTask.h"
 #include "apps/vmwarenative/TaskStepVMwareNative.h"
 #include "apps/vmwarenative/TaskStepBackupDataBlock.h"

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file StaticConfig.h
- * @brief Contains some config which will not changge when process running.
- * @version 1.0.0
- * @date 2024-09-22
- * @author h00668904
- */
 #ifndef AGENT_STATIC_CONFIG_H
 #define AGENT_STATIC_CONFIG_H
 

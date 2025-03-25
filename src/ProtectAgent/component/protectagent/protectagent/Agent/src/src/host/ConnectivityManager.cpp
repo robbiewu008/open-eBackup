@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file ConnectivityManager.cpp
- * @brief manage ip connectivity.
- * @version 1.1.0
- * @date 2024-09-28
- * @author h00668904
- */
- 
 #include "common/Log.h"
 #include "common/ConfigXmlParse.h"
 #include "common/Utils.h"

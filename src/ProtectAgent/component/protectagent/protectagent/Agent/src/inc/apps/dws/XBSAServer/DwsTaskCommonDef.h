@@ -1,10 +1,3 @@
-/* *
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @Description DWS task common definition.
- * @Create 2022-06-16
- * @Author wuchuan wwx563312
- */
 #ifndef DWS_TASK_COMMON_DEF
 #define DWS_TASK_COMMON_DEF
 

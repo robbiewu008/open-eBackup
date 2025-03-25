@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file thinlvSegment.cpp
- *
- * @brief AFS - LVM Thin Pool logical volume segment class
- *
- */
-
 #include "afs/ThinlvSegment.h"
 #include "afs/ThinPoolSegment.h"
 

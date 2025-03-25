@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- *
- * Description: app task manager.
- * Create: 2023-10-22
- * Author: jwx966562
-*/
 #ifndef INFORMIX_TASK_MANAGE_H_
 #define INFORMIX_TASK_MANAGE_H_
 

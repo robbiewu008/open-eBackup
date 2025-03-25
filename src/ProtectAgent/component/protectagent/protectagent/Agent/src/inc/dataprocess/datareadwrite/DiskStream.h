@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DiskStream.h
- * @brief  Contains function declarations DiskStream
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef DISK_DATA_INTERFACE_H
 #define DISK_DATA_INTERFACE_H
 

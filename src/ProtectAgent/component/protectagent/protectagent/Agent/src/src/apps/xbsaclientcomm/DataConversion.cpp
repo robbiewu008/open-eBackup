@@ -1,10 +1,3 @@
-/* *
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @Description XBSA client data type conversion.
- * @Create 2021-05-21
- * @Author machenglin mwx1011302
- */
 #include "xbsaclientcomm/DataConversion.h"
 
 #include <cstdio>

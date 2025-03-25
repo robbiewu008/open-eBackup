@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file LVMVolumeGroupManager.cpp
- *
- * @brief AFS - A C/C++ Library for analyze format of a disk image.
- *
- */
-
 #include "afs/LVMVolumeGroupManager.h"
 #include "afs/AfsError.h"
 #include "afs/LogMsg.h"

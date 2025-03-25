@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file ClearMountPointsJob.cpp
- * @brief Implement for excuting clear mount points
- * @version 1.1.0
- * @date 2022-01-13
- * @author lixilong lwx1101878
- */
-
 #include "taskmanager/externaljob/ClearMountPointsJob.h"
 
 #ifdef WIN32

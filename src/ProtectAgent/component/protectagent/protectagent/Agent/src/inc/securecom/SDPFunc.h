@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file SDPFunc.h
- * @brief  Contains function declarations SDPFunc class
- * @version 1.0.0
- * @date 2020-01-27
- * @author wangguitao 00510599
- */
 #ifndef _SDP_FUNC_H_
 #define _SDP_FUNC_H_
 

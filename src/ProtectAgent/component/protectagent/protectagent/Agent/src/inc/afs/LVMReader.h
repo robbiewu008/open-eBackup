@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file LVMReader.h
- * @brief AFS - Analyze LVM manager disk image.
- *
- */
-
 #ifndef LVMREADER_H
 #define LVMREADER_H
 

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file StripeSegment.h
- *
- * @brief AFS - Stripe segment class.
- *
- */
-
 #ifndef LVM_STRIPESEGMENT_H_
 #define LVM_STRIPESEGMENT_H_
 

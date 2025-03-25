@@ -1,6 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
- */
 #ifndef __VMFSHANDLER_H__
 #define __VMFSHANDLER_H__
 

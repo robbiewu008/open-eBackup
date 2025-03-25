@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TCPClientHandler.cpp
- * @brief  The implemention about log operations
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
-
 #include "common/Log.h"
 #ifdef WIN32
 #include <process.h>

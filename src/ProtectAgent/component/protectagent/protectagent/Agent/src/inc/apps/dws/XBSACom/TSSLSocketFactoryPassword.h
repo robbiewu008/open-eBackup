@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TSSLSocketFactoryPassword.h
- * @brief  Contains function declarations TSSLSocketFactoryPassword
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef TSSLSOCKET_PASSWORD_H
 #define TSSLSOCKET_PASSWORD_H
 

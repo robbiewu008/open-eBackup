@@ -1,10 +1,3 @@
-/* *
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @Description a timer implementation based on libevent.
- * @Create 2021-06-09
- * @Author wuchuan wwx563312
- */
 #include "apps/dws/XBSAServer/CTimer.h"
 
 #include <event2/event.h>

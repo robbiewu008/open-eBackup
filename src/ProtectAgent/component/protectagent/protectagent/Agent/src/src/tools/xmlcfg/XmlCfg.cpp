@@ -1,13 +1,3 @@
-/**
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file XmlCfg.cpp
- * @brief  The implemention about xml config operations
- * @version 1.0.0.0
- * @date 2015-02-06
- * @author wangguitao 00510599
- */
 #include "common/Path.h"
 #include "common/Log.h"
 #include "common/Defines.h"

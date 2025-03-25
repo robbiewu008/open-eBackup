@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- * @file DmeRestClient.h
- * @brief Implement for application protect
- * @version 1.1.0
- * @date 2021-11-9
- * @author jwx966562
- */
 #ifndef _DME_REST_CLIENT_H
 #define _DME_REST_CLIENT_H
 #include <vector>

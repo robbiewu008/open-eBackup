@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @brief  Factory for Plugin job
- * @version 1.1.0
- * @date 2021-11-19
- * @author kWX884906
- */
 #include "common/Log.h"
 #include "taskmanager/externaljob/PluginMainJob.h"
 #include "taskmanager/externaljob/PluginSubPrepJob.h"

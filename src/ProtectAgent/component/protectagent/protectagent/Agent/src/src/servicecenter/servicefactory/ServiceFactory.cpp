@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file ServiceFactory.cpp
- * @brief  implement for ServiceFactory
- * @version 1.1.0
- * @date 2021-08-31
- * @author caomin 00511255
- */
-
 #include "servicefactory/include/ServiceFactory.h"
 #include "servicefactory/detail/ServiceCenter.h"
 

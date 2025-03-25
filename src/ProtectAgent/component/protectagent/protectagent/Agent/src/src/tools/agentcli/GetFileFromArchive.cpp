@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file GetFileFromArchive.cpp
- * @brief  Contains function declarations for GetFileFromArchive
- * @version 1.0.0
- * @date 2022-07-15
- * @author hexiaoqiang wx886037
- */
 #include "tools/agentcli/GetFileFromArchive.h"
 #include "common/Defines.h"
 #include "common/ConfigXmlParse.h"

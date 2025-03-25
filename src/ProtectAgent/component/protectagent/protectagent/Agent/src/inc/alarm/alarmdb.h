@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file alarmdb.h
- * @brief  Contains function declarations alarmdb
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
 #ifndef _ALARMDB_H_
 #define _ALARMDB_H_
 

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file GetInput.cpp
- * @brief  Contains function declarations DB Data migration
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include <sstream>
 #include "common/ConfigXmlParse.h"
 #include "common/Types.h"

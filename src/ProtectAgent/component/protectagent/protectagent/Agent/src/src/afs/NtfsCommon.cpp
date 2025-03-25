@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file ntfscommon.cpp
- * @brief Analyze NTFS file system.
- *
- */
-
 #include "afs/NtfsCommon.h"
 #include <string.h>
 #include <cstdlib>

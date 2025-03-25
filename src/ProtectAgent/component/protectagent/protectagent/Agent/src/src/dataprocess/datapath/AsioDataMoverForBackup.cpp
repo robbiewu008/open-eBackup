@@ -1,4 +1,3 @@
-// Copyright (c) Huawei Technologies Co., Ltd. 2012-2023. All rights reserved.
 #include "common/ConfigXmlParse.h"
 #include "dataprocess/datapath/AsioDataMoverForBackup.h"
 

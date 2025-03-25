@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file CFTExcetpionHandle.h
- * @brief  Contains function declarations for CFTExcetpionHandle
- * @version 0.1
- * @date 2015-01-19
- * @author yangwenjun 00275736
- */
 #ifndef FT_EXCEPTION_HANDLE
 #define FT_EXCEPTION_HANDLE
 

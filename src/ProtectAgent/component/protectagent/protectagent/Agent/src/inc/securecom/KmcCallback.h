@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file KmcCallback.h
- * @brief kcm common function
- * @version 1.0.0
- * @date 2021-05-18
- * @author wangguitao 00510599
- */
 #ifndef KMC_CALL_NACK
 #define KMC_CALL_NACK
 

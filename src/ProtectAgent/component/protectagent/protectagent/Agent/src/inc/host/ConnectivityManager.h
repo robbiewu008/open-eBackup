@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file ConnectivityManager.h
- * @brief manage ip connectivity.
- * @version 1.0.0
- * @date 2024-09-28
- * @author h00668904
- */
 #ifndef AGENT_CONNECTIVITY_MANAGER_H
 #define AGENT_CONNECTIVITY_MANAGER_H
 

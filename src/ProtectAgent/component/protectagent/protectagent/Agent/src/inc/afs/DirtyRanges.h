@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file AfsProcess.h
- * @brief  Contains function declarations DirtyRange
- * @version 1.0.0
- */
-
 #ifndef DISK_DIRTY_RANGES_H_
 #define DISK_DIRTY_RANGES_H_
 #include <list>

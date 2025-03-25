@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file ArchiveStreamClient.cpp
- * @brief  Contains function declarations for datamover microservice management
- * @version 1.0.0
- * @date 2021-05-20
- * @author lixiang lwx1045600
- */
 #include "message/archivestream/ArchiveStreamClient.h"
 #include <sstream>
 #include "common/Log.h"

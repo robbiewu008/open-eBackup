@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file AbnormalHandler.h
- * @brief  Contains function declarations for AbnormalHandler
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef MONITOR_HANDLER_H
 #define MONITOR_HANDLER_H
 

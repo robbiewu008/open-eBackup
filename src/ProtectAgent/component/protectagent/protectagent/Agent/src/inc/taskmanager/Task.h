@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Task.h
- * @brief  Contains function declarations Task
- * @version 1.0.0
- * @date 2020-08-01
- * @author yangwenjun 00275736
- */
 #ifndef _AGENT_TASK_H_
 #define _AGENT_TASK_H_
 #include <vector>

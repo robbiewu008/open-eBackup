@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- *
- * @file Vmfs6IOEngine.cpp
- * @brief  VmfsIO6 interface defination
- * @version 1.0.0.0
- * @date 2023-11-20
- * @author hebaolong 00606494
- */
-
 #include "dataprocess/ioscheduler/Vmfs6IOEngine.h"
 #include "dataprocess/vmwarenative/Define.h"
 #include "common/Utils.h"

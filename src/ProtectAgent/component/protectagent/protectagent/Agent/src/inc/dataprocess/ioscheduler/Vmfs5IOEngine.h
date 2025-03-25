@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- *
- * @file Vmfs5IOEngine.h
- * @brief  VmfsIO5 interface defination
- * @version 1.0.0.0
- * @date 2023-11-20
- * @author hebaolong 00606494
- */
-
 #ifndef __VMFS5_IO_ENGINE_H__
 #define __VMFS5_IO_ENGINE_H__
 

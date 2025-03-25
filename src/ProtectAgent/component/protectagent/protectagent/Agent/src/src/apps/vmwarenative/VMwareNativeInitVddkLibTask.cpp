@@ -1,14 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
- *
- * @file VMwareNativeInitVddkLibTask.cpp
- * @author w00558987
- * @brief 备份/恢复任务初始化VDDK步骤
- * @version 0.1
- * @date 2021-01-16
- *
- */
-
 #include "apps/vmwarenative/VMwareNativeInitVddkLibTask.h"
 
 #include "apps/vmwarenative/TaskStepVMwareNative.h"

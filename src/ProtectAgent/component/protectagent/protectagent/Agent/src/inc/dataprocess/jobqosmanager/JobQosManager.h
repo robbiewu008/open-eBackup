@@ -1,18 +1,3 @@
-/*
-
- * Copyright (c) Huawei Technologies Co., Ltd. 2012-2019. All rights reserved.
-
- * Description: xxxxxxxxxxxxx
-
- * Author: x00351199
-
- * Create:  Sat Apr 20 06:14:06 2019 +0000
-
- * Notes:
-
- * History:
-
- */
 #ifndef __JOB_QOS_MANAGER_H__
 #define __JOB_QOS_MANAGER_H__
 #include <stdio.h>

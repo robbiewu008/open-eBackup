@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file FileSystemFactory.h.cpp
- * @brief AFS - Analyze file system factory class.
- *
- */
-
 #include "afs/FileSystemFactory.h"
 #include "afs/Ext4FS.h"
 #include "afs/NtfsFS.h"

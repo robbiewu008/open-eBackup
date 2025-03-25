@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file afslibmain.cpp
- *
- * @brief Main program for analyze format of a disk image.
- *
- */
 #include "afs/Afslibmain.h"
 #include <stdio.h>
 #include <cstdlib>

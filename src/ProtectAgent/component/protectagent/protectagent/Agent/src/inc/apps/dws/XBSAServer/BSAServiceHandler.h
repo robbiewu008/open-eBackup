@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * Description: xbsa service handler, it is copied from thrift auto-generated file.
- * Create: 2021-05-18
- * Author: wuchuan wwx563312
- */
 #ifndef _BSA_SERVICE_HANDLER_H_
 #define _BSA_SERVICE_HANDLER_H_
 

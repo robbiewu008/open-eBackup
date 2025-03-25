@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file Job.h
- * @brief Implement for external slave job
- * @version 1.1.0
- * @date 2021-10-29
- * @author wangguitao 00510599
- */
-
 #ifndef _PLUGIN_SUB_JOB_H_
 #define _PLUGIN_SUB_JOB_H_
 

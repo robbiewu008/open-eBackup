@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @brief  thrift SecurityService handler
- * @version 1.0.0
- * @date 2022-2-15
- * @author twx949498
- */
-
 #include "apps/appprotect/plugininterface/SecurityServiceHandler.h"
 #include "common/Log.h"
 #include "common/MpString.h"

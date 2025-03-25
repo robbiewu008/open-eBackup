@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStep.h
- * @brief  Implementation of the Class task step
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef _AGENT_TASKSTEP_H_
 #define _AGENT_TASKSTEP_H_
 

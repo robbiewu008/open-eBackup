@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file JsonUtils.h
- * @brief  处理消息体，作为agent内部通信消息
- * @version 1.0.0
- * @date 2020-08-01
- * @author yangwenjun 00275736
- */
 #ifndef _AGENT_JSON_UTILS_H_
 #define _AGENT_JSON_UTILS_H_
 #include "common/Types.h"

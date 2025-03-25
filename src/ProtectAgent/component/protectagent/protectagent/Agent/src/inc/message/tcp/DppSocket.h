@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DppSocket.h
- * @brief  socket client hander
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao w00510599
- */
-
 #ifndef AGENT_TSF_SOCKET_CLIENT_H
 #define AGENT_TSF_SOCKET_CLIENT_H
 

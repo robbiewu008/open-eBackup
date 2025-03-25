@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file XfsFS.h
- * @brief AFS - Analyze XFS file system.
- *
- */
-
 #ifndef XFSFS_H
 #define XFSFS_H
 

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepScanDisk.h
- * @brief  Contains function declarations for TaskStepScanDisk
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef AGENT_BACKUP_STEP_SCANDISK_H
 #define AGENT_BACKUP_STEP_SCANDISK_H
 #include "common/Types.h"

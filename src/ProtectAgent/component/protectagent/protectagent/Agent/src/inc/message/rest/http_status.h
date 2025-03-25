@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file http_status.h
- * @brief  Contains function declarations CryptAlg Operations
- * @version 1.0.0
- * @date 2015-02-02
- * @author xuchong 00300551
- */
 #ifndef _HTTP_STATUS_H_
 #define _HTTP_STATUS_H_
 
