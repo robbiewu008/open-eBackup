@@ -1,20 +1,11 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
-#
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 #@function: mount nas share path
 
 AGENT_ROOT_PATH=$1
 PID=$2
 PARAM_NUM=$3
+umask 0022
 . "${AGENT_ROOT_PATH}/sbin/agent_sbin_func.sh"
 sysName=`uname -s`
 #********************************define these for local script********************************
@@ -311,12 +302,15 @@ elif [ "${serviceType}" = "vmware" ]; then
             Log "Task[${ParentTaskID}:${BackupID}], target nas filesystem: ${TargetNasFileSystem} has alreadly been mounted on: ${MountPointExpected}"
             exit 0
         fi
-
+        MOUNT_VERS="vers=3,"
+        if [ ! -z "${LINK_ENCRY}" ]; then
+            MOUNT_VERS=${LINK_ENCRY}
+        fi
         # mount nfs
         if [ `CheckIsIpv6 ${AvailableStorageIp}` -ne 0 ]; then
-            mount -v -t nfs -o ${LINK_ENCRY}rw,soft,noatime,nodiratime,rsize=262144,wsize=262144,tcp,actimeo=0,timeo=60,retry=5,nolock,sync -o noexec -o nosuid ${AvailableStorageIp}":/"${NasFileSystemName} ${MountPointExpected} >> $LOG_FILE_NAME 2>&1
+            mount -v -t nfs -o ${MOUNT_VERS}rw,soft,noatime,nodiratime,rsize=262144,wsize=262144,tcp,actimeo=0,timeo=60,retry=5,nolock,sync -o noexec -o nosuid ${AvailableStorageIp}":/"${NasFileSystemName} ${MountPointExpected} >> $LOG_FILE_NAME 2>&1
         else
-            mount -v -t nfs -o ${LINK_ENCRY}rw,soft,noatime,nodiratime,rsize=262144,wsize=262144,actimeo=0,timeo=60,retry=5,nolock,sync -o noexec -o nosuid "["${AvailableStorageIp}"]:/"${NasFileSystemName} ${MountPointExpected} >> $LOG_FILE_NAME 2>&1
+            mount -v -t nfs -o ${MOUNT_VERS}rw,soft,noatime,nodiratime,rsize=262144,wsize=262144,actimeo=0,timeo=60,retry=5,nolock,sync -o noexec -o nosuid "["${AvailableStorageIp}"]:/"${NasFileSystemName} ${MountPointExpected} >> $LOG_FILE_NAME 2>&1
         fi
 
         if [ $? -ne 0 ]; then

@@ -1,14 +1,4 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
-#
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 SHELL_TYPE_SH="/bin/sh"
 UNIX_CMD=
@@ -54,7 +44,11 @@ fi
 
 . "${AGENT_ROOT_PATH}/sbin/agent_sbin_func.sh"
 RDADMIN_HOME_PATH=`cat /etc/passwd | grep "^${AGENT_USER}:" | $AWK -F ':' '{print $6}'`
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${AGENT_ROOT_PATH}/bin && export LD_LIBRARY_PATH
+if [ -z "$LD_LIBRARY_PATH" ]; then
+    export LD_LIBRARY_PATH=${AGENT_ROOT_PATH}/bin
+else
+    export LD_LIBRARY_PATH=${AGENT_ROOT_PATH}/bin:$LD_LIBRARY_PATH
+fi
 
 ########################################################################################
 # Function Definition
@@ -114,15 +108,19 @@ DeleteAutoStart()
         RM_IMCTL_LINENO=`cat $1 | grep -n -w "cat /proc/devices | grep im_ctldev" | head -n 1 | $AWK -F ':' '{print $1}'`
         if [ "${RM_IMCTL_LINENO}" != "" ]; then
             sed "${RM_IMCTL_LINENO}d" "$1" > "$1".bak
-            mv "$1".bak "$1"   
-            DeleteAutoStart $1
+            mv "$1".bak "$1"
         fi
 
         RM_LINENO=`cat $1 | grep -n -w "su - ${AGENT_USER} -s ${SHELL_TYPE_SH} ${UNIX_CMD} -c" | grep -w "bin/monitor" | head -n 1 | $AWK -F ':' '{print $1}'`
         if [ "${RM_LINENO}" != "" ]; then
             sed "${RM_LINENO}d" "$1" > "$1".bak
             mv "$1".bak "$1"
-            DeleteAutoStart $1
+        fi
+ 
+        RM_IMCTL_LINENO=`cat $1 | grep -n -w "cat /proc/devices | grep im_ctldev" | head -n 1 | $AWK -F ':' '{print $1}'`
+        RM_LINENO=`cat $1 | grep -n -w "su - ${AGENT_USER} -s ${SHELL_TYPE_SH} ${UNIX_CMD} -c" | grep -w "bin/monitor" | head -n 1 | $AWK -F ':' '{print $1}'`
+        if [ "${RM_IMCTL_LINENO}" != "" ] || [ "${RM_LINENO}" != "" ]; then
+            LogError "Delete agent information from $1 failed."
         fi
     fi
 }
@@ -401,7 +399,6 @@ UninstallPlugins()
         RET_CODE=$?
         if [ ${RET_CODE} -ne 0 ]; then
             Log "Uninstall $pluginName fail."
-            ShowError "Uninstall $pluginName fail."
             exit 1
         fi
         cd ${tmpPluginPath}
@@ -482,12 +479,9 @@ DeleteAutoStartConfig()
     if [ "${SYS_NAME}" = "Linux" ]; then
         if [ -f "/etc/redhat-release" ]; then
             str_version=`cat /etc/redhat-release 2>/dev/null | ${AWK} -F '(' '{print $1}' | ${AWK} '{print $NF}'`
-            if [ "`RDsubstr ${str_version} 1 1`" = "8" ]; then
-                # redhat 8
-                rm -rf /usr/lib/systemd/system/rdagent.service >/dev/null
-                systemctl daemon-reload
-                return
-            fi
+            # redhat
+            rm -rf /usr/lib/systemd/system/rdagent.service >/dev/null
+            systemctl daemon-reload
         fi
 
         if [ -f /etc/SuSE-release ]; then
@@ -590,11 +584,9 @@ HandleUninstallDataTurbo
 
 # uninstall fileclient
 UninstallFileClient
-ShowInfo "FileClient has been uninstalled successfully."
 
 # 3.Uninstalling external plugin
 UninstallPlugins
-ShowInfo "Plugins have been uninstalled successfully."
 
 # 4.check user's environment variables, add env file if not exists
 CheckUserEnv

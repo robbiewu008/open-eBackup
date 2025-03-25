@@ -1,14 +1,4 @@
 @echo off
-::  This file is a part of the open-eBackup project.
-::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-::  If a copy of the MPL was not distributed with this file, You can obtain one at
-::  http://mozilla.org/MPL/2.0/.
-:: 
-::  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-:: 
-::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 rem ########################################################################
 rem #
 rem #  %~1:upgrade type
@@ -41,7 +31,11 @@ set LOG_ERR_FILE=%AGENT_ROOT_PATH%\tmp\errormsg.log
 set DATATURBO_FUNC="%AGENT_NEWPKG_ROOT_PATH%\bin\dataturbo_func.bat"
 
 rem ---------------- current used package install path --------------------------
+set WIN_SYSTEM_DISK=%WINDIR:~0,1%
 set AGENT_OCEAN_PROTECT_VERSION_ROOT_PATH=C:\OceanProtect\ProtectClient\ProtectClient-E
+if not "%WIN_SYSTEM_DISK%" == "" (
+    set AGENT_OCEAN_PROTECT_VERSION_ROOT_PATH=%WIN_SYSTEM_DISK%:\OceanProtect\ProtectClient\ProtectClient-E
+)
 set IN_USE_AGENT_ROOT_PATH=
 set IN_USE_AGENT_MANAGER_PATH=
 
@@ -55,6 +49,9 @@ set IS_CLEAN=0
 set IS_SUCC=0
 
 set DEFAULT_INSTALL_PATH=C:
+if not "%WIN_SYSTEM_DISK%" == "" (
+    set DEFAULT_INSTALL_PATH=%WIN_SYSTEM_DISK%:
+)
 set PRECISE_INSTALL_PATH=
 set AGENT_IS_STOP=0
 
@@ -190,9 +187,9 @@ set MODE=
 if %UPGRADDE_TYPE% EQU 1 (
     set MODE=push
 )
-call %DATATURBO_FUNC% CheckDataTurboInstalled "%LOGFILE_PATH%" "%CURRENT_PATH%" "!MODE!"
+call %DATATURBO_FUNC% CheckDataTurboInstalled "%LOGFILE_PATH%" "%CURRENT_PATH%" "!MODE!" >> %LOGFILE_PATH% 2>&1
 if !errorlevel! EQU 0 (
-    call %DATATURBO_FUNC% UpgradeDataTurbo "%LOGFILE_PATH%" "%CURRENT_PATH%" "!MODE!"
+    call %DATATURBO_FUNC% UpgradeDataTurbo "%LOGFILE_PATH%" "%CURRENT_PATH%" "!MODE!" >> %LOGFILE_PATH% 2>&1
     if NOT !errorlevel! EQU 0 (
         echo "step7_pre: failed"
         call :Log "Exec UpgradeDataTurbo function failed."
@@ -200,7 +197,7 @@ if !errorlevel! EQU 0 (
         call :ExecExit %ERR_UPGRADE_DATATURBO_UPGRADE%
     )
 )
-echo "step7_pre: succ"
+echo "step7_pre: upgrade dataturob succ"
 
 echo "step7: Execute the upgrade process"
 call :Log "Call UpgradeAgent function."
@@ -212,7 +209,7 @@ if NOT %errorlevel% EQU 0 (
     call :ExecExit %ERR_EXEC_REGISTER_RETCODE%
 )
 call :Log "Call UpgradeAgent function succ."
-echo "step7: succ"
+echo "step7: upgrade agent succ"
 
 set IS_SUCC=1
 call :ExecExit 0
@@ -236,6 +233,7 @@ goto :EOF
     exit /b 0
 
 :CheckParam
+    call :Log "UPGRADDE_TYPE=%UPGRADDE_TYPE%."
     if not "%UPGRADDE_TYPE%" EQU "" (
         if not "%UPGRADDE_TYPE%" EQU "/P" (
             if not "%UPGRADDE_TYPE%" EQU "/push" (
@@ -298,7 +296,7 @@ goto :EOF
     set IS_CLEAN=1
 
     if exist "%CURRENT_PATH%\third_party_software\7ZIP\7z.exe" (
-        "%CURRENT_PATH%\third_party_software\7ZIP\7z.exe" x -tzip -y "%AGENT_NEWPKG_MANAGER_PATH%\%ADAPT_PACKAGE_NAME%"  -o"%AGENT_NEWPKG_ROOT_PATH%" >nul
+        "%CURRENT_PATH%\third_party_software\7ZIP\7z.exe" x -tzip -y "%AGENT_NEWPKG_MANAGER_PATH%\%ADAPT_PACKAGE_NAME%"  -o"%AGENT_NEWPKG_ROOT_PATH%"  >> %LOGFILE_PATH% 2>&1
     ) else (
         echo "    Can't find 7z.exe."
         call :Log "Can't find 7z.exe, the upgrade package is damaged."
@@ -362,6 +360,7 @@ goto :EOF
 goto :EOF
 
 :StopAgent
+    call :Log "Begin to stop agent."
     if %UPGRADDE_TYPE% EQU 0 (
         echo Please choose whether to stop DataBackup ProtectAgent now. ^(y/n^):
         set /p IsStop_flag=">>"
@@ -405,7 +404,7 @@ exit /b 0
 exit /b 0
 
 :OpenServiceAndInstallDataTurbo
-    call %DATATURBO_FUNC% InstallDataTurbo "%CURRENT_PATH%install.log" "%CURRENT_PATH%" "!MODE!"
+    call %DATATURBO_FUNC% InstallDataTurbo "%CURRENT_PATH%install.log" "%CURRENT_PATH%" "!MODE!" >> %LOGFILE_PATH% 2>&1
 	call :Judgmentoutput !errorlevel! %ERR_INSTALL_DATATURBO%
 	if NOT "!errorlevel!" == "0" (
 		call :LogError "Install dataturbo failed." %ERR_INSTALL_DATATURBO%
@@ -456,6 +455,12 @@ goto :EOF
 
     call :MergeUpgradeLog upgrade.log  %AGENT_NEWPKG_PLACE_PATH%  %AGENT_ROOT_PATH%\log
 
+    call :MergeUpgradeLog agent_robocopy.log  %AGENT_NEWPKG_PLACE_PATH%  %AGENT_ROOT_PATH%\log
+
+    call :MergeUpgradeLog install.log %AGENT_NEWPKG_PLACE_PATH%  %AGENT_ROOT_PATH%\log
+ 
+    call :MergeUpgradeLog uninstall.log %AGENT_NEWPKG_PLACE_PATH%  %AGENT_ROOT_PATH%\log
+
     set LOGFILE_PATH=%AGENT_ROOT_PATH%\log\upgrade.log
 goto :EOF
 
@@ -469,20 +474,20 @@ goto :EOF
 :ClearSource
     cd "%CURRENT_PATH%"
     call :Log "Exec ClearSource function, delete new package temporary decompress path"
-    rd /s /q "%AGENT_NEWPKG_ROOT_PATH%" >nul
+    rd /s /q "%AGENT_NEWPKG_ROOT_PATH%"  >> %LOGFILE_PATH% 2>&1
 goto :EOF
 
 :TrueMove 
     if exist "%~1" (
         call :WinSleep 1
         call :Log "Wait for 1s during file moving."
-        move /y "%~1" "%~2" >nul
+        move /y "%~1" "%~2"  >> %LOGFILE_PATH% 2>&1
         goto TrueMove
     )
     exit /b 0
 
 :WinSleep
-    timeout %1 > nul
+    timeout %1  >> %LOGFILE_PATH% 2>&1
 goto :eof
 
 :UpdateUpgradeStatus
@@ -510,17 +515,17 @@ goto :eof
     md "%AGENT_PUSHUPGRADE_LOG_PATH%"
     call :Log "Backup push upgrade log, and push upgrade process ends."
     if exist "%CURRENT_PATH%\upgrade.log" (
-        copy /y "%CURRENT_PATH%\upgrade.log" "%AGENT_PUSHUPGRADE_LOG_PATH%\upgrade.log" >nul
+        copy /y "%CURRENT_PATH%\upgrade.log" "%AGENT_PUSHUPGRADE_LOG_PATH%\upgrade.log"  >> %LOGFILE_PATH% 2>&1
     )
     if exist "%CURRENT_PATH%\upgrade.log" (
-        copy /y "%CURRENT_PATH%\agent_upgrade.log" "%AGENT_PUSHUPGRADE_LOG_PATH%\agent_upgrade.log" >nul
+        copy /y "%CURRENT_PATH%\agent_upgrade.log" "%AGENT_PUSHUPGRADE_LOG_PATH%\agent_upgrade.log"  >> %LOGFILE_PATH% 2>&1
     )
     if exist "%CURRENT_PATH%\agent_upgrade_sqlite.log" (
-        copy /y "%CURRENT_PATH%\agent_upgrade_sqlite.log" "%AGENT_PUSHUPGRADE_LOG_PATH%\agent_upgrade_sqlite.log" >nul
+        copy /y "%CURRENT_PATH%\agent_upgrade_sqlite.log" "%AGENT_PUSHUPGRADE_LOG_PATH%\agent_upgrade_sqlite.log"  >> %LOGFILE_PATH% 2>&1
     )
     call :CopyLogFile
 
-    start /min cmd.exe /Q /C "timeout /T 3 /NOBREAK & if exist "%AGENT_PUSHUPGRADE_PACKAGE_PATH%" (rd /s /q "%AGENT_PUSHUPGRADE_PACKAGE_PATH%" >nul) & exit 0"
+    start /min cmd.exe /Q /C "timeout /T 3 /NOBREAK & if exist "%AGENT_PUSHUPGRADE_PACKAGE_PATH%" (rd /s /q "%AGENT_PUSHUPGRADE_PACKAGE_PATH%"  >> %LOGFILE_PATH% 2>&1) & exit 0"
     exit /b 0
 goto :EOF
 
@@ -540,6 +545,7 @@ goto :EOF
             call :Log "Exec agent_start.bat failed"
             exit /b 1
         )
+        call :Log "Exec agent_start.bat successfully.""
     )
 goto :EOF
 
@@ -557,7 +563,7 @@ goto :EOF
         )
         call :CheckAndStartAgent
         endlocal
-        exit %1
+        exit /b %1
     )
 
     rem manual upgrade
@@ -574,4 +580,4 @@ goto :EOF
     echo "The process is complete, press any key to exit"
     pause
     endlocal
-exit 0
+exit /b 0

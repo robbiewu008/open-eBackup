@@ -81,6 +81,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
       <BrowseInformation>true</BrowseInformation>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -100,6 +101,7 @@
       <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\open_src;..\..\..\platform\securec\include;..\..\..\open_src\tinyxml;..\..\..\open_src\openssl\inc32;..\..\..\open_src\snmp++\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32</PreprocessorDefinitions>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -116,6 +118,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;HAVE_CONFIG_H</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\..\bin\;..\..\..\open_src\openssl\out32</AdditionalLibraryDirectories>
@@ -133,6 +136,7 @@
       <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\open_src;..\..\..\platform\securec\include;..\..\..\open_src\tinyxml;..\..\..\open_src\obj_snmp;..\..\..\open_src\snmp++\include;..\..\..\open_src\openssl\include;..\..\..\open_src\curl\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;STDCXX_98_HEADERS;CURL_STATICLIB;SUPPORT_SSL;FRAME_SIGN</PreprocessorDefinitions>
       <DisableSpecificWarnings>4273;4251;4819</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

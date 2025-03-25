@@ -1,17 +1,7 @@
 @echo off
-::  This file is a part of the open-eBackup project.
-::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-::  If a copy of the MPL was not distributed with this file, You can obtain one at
-::  http://mozilla.org/MPL/2.0/.
-:: 
-::  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-:: 
-::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 rem @dest:   application agent for cifs
 rem @date:   2022-06-18
-rem @authr:
+rem @authr:  kWX884906
 rem @modify:
 
 setlocal EnableDelayedExpansion
@@ -24,6 +14,8 @@ set AGENT_LOG_PATH=%AGENT_ROOT%\log\
 set AGENT_TMP_PATH=%AGENT_ROOT%\tmp\
 set COMMONFUNC="%AGENT_BIN_PATH%agent_com.bat"
 set CMD_GETVALUE=getvalue
+set MountDriver=W
+set WIN_SYSTEM_DISK=%WINDIR:~0,1%
 
 set PARAM_FILE="%AGENT_TMP_PATH%input_tmp%PID%"
 set RSTFILE="%AGENT_TMP_PATH%result_tmp%PID%"
@@ -43,15 +35,32 @@ call :DeleteFile !PARAM_FILE!
 call :GetCURRENTPID
 call :DeleteFile !CURRENTPIDRST!
 call :DeleteFile !CURRENTCMDLineRST!
+call :ProcessIp !StorageIp!
+
 call :Log "JobID=%JobID%;OperationType=%OperationType%;LinkPath=%LinkPath%;SubPath=%SubPath%;StorageIp=%StorageIp%;FilesystemName=%FilesystemName%;AuthKey=%AuthKey%;MountDriver=%MountDriver%;SharedPath=%SharedPath%"
 
-if "!OperationType!" == "mount" (
-    call :Mount
-) else if "!OperationType!" == "unmount" (
-    call :Unmount
+call :Log "WIN_SYSTEM_DISK=!WIN_SYSTEM_DISK!."
+if "!WIN_SYSTEM_DISK!" == "C" (
+	call :Log "Enter normal mode."
+	if "!OperationType!" == "mount" (
+		call :Mount
+	) else if "!OperationType!" == "unmount" (
+		call :ProcessSharedPath
+		call :Unmount
+	) else (
+		call :Log "error OperationType=!OperationType!."
+		set ERR_CODE=%ERROR_SCRIPT_EXEC_FAILED%
+	)
 ) else (
-	call :Log "error OperationType=!OperationType!."
-    set ERR_CODE=%ERROR_SCRIPT_EXEC_FAILED%
+	call :Log "Enter PE mode."
+	if "!OperationType!" == "mount" (
+		call :MountPE
+	) else if "!OperationType!" == "unmount" (
+		call :UnmountPE
+	) else (
+		call :Log "error OperationType=!OperationType!.(PE)"
+		set ERR_CODE=%ERROR_SCRIPT_EXEC_FAILED%
+	)
 )
 goto :end
 
@@ -64,6 +73,35 @@ goto :EOF
 :DeleteFile
     set FileName="%~1"
     if exist %FileName% (del /f /q %FileName%)
+goto :EOF
+
+:ProcessIp
+	set "ip=%~1"
+	set "is_ipv4=1"
+	echo !ip! | findstr "\." > nul && (
+		set IP_TYPE=IPV4
+	) || (
+		set IP_TYPE=IPV6
+	)
+	:break_loop
+		if "!IP_TYPE!" EQU "IPV4" (
+			set "StorageIp=!ip!"
+		) else (
+			set "temp_ip=!ip!"
+			set "temp_ip=!temp_ip::=-!"
+			set "StorageIp=!temp_ip!.ipv6-literal.net"
+		)
+	call :Log "ProcessIp = !StorageIp!"
+goto :EOF
+
+:ProcessSharedPath
+	for /f "tokens=1* delims=\" %%a in ("%SharedPath%") do (
+    	set "StorageIp=%%a"
+    	set "remaining=%%b"
+	)
+	call :ProcessIp !StorageIp!
+	set SharedPath=\\!StorageIp!\!remaining!
+	call :Log "ProcessSharedPath = !SharedPath!"
 goto :EOF
 
 :GetCURRENTPID
@@ -115,6 +153,59 @@ goto :EOF
 	echo !LinkPath!\!StorageIp!> !RSTFILE!
 goto :EOF
 
+:AfterMountSuccessPE
+	if exist !MountDriver!\rdagent_jobid.txt (
+		attrib "!MountDriver!\rdagent_jobid.txt" -s -h
+	)
+	echo !JobID! > !MountDriver!\rdagent_jobid.txt
+	attrib "!MountDriver!\rdagent_jobid.txt" +s +h
+
+	echo !MountDriver!> !RSTFILE!
+
+	if not "!SubPath!" == "" (
+		set SubPath=!SubPath::= !
+		for %%a in (!SubPath!) do (
+			if not exist !MountDriver!\%%a (
+			   md !MountDriver!\%%a
+			   call :Log "md !MountDriver!\%%a."
+			)
+		)
+	)
+goto :EOF
+
+:FindMountDriver
+    rem get unused disk driver
+    set str=W V U T S R Q P O N M L K J I H G F E D C
+    for %%i in (!str!) do (
+        if not exist %%i: (
+            set MountDriver=%%i:
+			net use !MountDriver! >> %LOGFILEPATH% 2>nul
+			if "!errorlevel!"=="0" (
+				call :Log "Disk !MountDriver! is exist, but unavailable, umount !MountDriver!."
+				net use !MountDriver! /del /y >> %LOGFILEPATH% 2>&1
+				net use !MountDriver! >> %LOGFILEPATH% 2>nul
+				if "!errorlevel!"=="0" (
+					call :Log "Unmount failed, !MountDriver! is still exist, find next unused disk driver."
+					set MountDriver=
+				) else (
+					goto :FindMountDriverEnd
+				)
+			) else (
+				goto :FindMountDriverEnd
+			)
+        )
+    )
+
+	:FindMountDriverEnd
+    if "!MountDriver!" == "" (
+        call :Log "there is no unused disk driver."
+        set ERR_CODE=%ERROR_SCRIPT_EXEC_FAILED%
+        goto :end
+    ) else (
+        call :Log "find unused log disk driver !MountDriver!."
+    )
+goto :EOF
+
 :CheckMount
     rem 当FilesystemName中有\时，需转化为\\，否则findstr将会失败
     set FsMatch=%FilesystemName:\=\\%
@@ -144,14 +235,26 @@ goto :EOF
 	:CheckEnd
 goto :EOF
 
+:CheckMountPE
+	for /f "tokens=1-3 delims= " %%a in ('net use ^| findstr \\\\%StorageIp%\\%FilesystemName%') do (
+        set MountDriver=%%b
+    )
+
+	if not "!MountDriver!" == "" (
+        call :Log "\\!StorageIp!\!FilesystemName! is already mount on !MountDriver!.(PE)"
+		call :AfterMountSuccessPE
+        goto :end
+    )
+goto :EOF
+
 :Mount
     set MountDriver=
-    call :CheckMount
 
 	for /f "tokens=2 delims=:" %%a in ('chcp') do (
         set oldCodedFormat=%%a
     )
 	chcp 65001
+	call :CheckMount
 	for /l %%i in (1,1,3) do (
         call !AGENT_BIN_PATH!\agentcli.exe MountCifs "net use \\!StorageIp!\!FilesystemName! \"*\" /user:localdomain\!AuthKey! /PERSISTENT:YES" >> %LOGFILEPATH% 2>&1
         if "!errorlevel!"=="0" (
@@ -178,8 +281,37 @@ goto :EOF
 	call :AfterMountSuccess !StorageIp! !FilesystemName!
 goto :EOF
 
+:MountPE
+	set MountDriver=
+    call :CheckMountPE
+    call :FindMountDriver
+
+	for /f "tokens=2 delims=:" %%a in ('chcp') do (
+        set oldCodedFormat=%%a
+    )
+	chcp 65001
+	for /l %%i in (1,1,3) do (
+        call !AGENT_BIN_PATH!\agentcli.exe MountCifs "net use !MountDriver! \\!StorageIp!\!FilesystemName! \"*\" /user:localdomain\!AuthKey! /PERSISTENT:YES" >> %LOGFILEPATH% 2>&1
+        if "!errorlevel!"=="0" (
+            goto :loopEnd
+        )
+        call :WinSleep 5
+    )
+    :loopEnd
+    chcp !oldCodedFormat!
+
+    net use | findstr \\\\%StorageIp%\\%FilesystemName% 1>nul
+    if not "!errorlevel!"=="0" (
+        call :Log "MountPE failed, \\!StorageIp!\!FilesystemName! is not exist."
+        set ERR_CODE=%ERROR_SCRIPT_EXEC_FAILED%
+        goto :end
+    )
+	call :Log "\\!StorageIp!\!FilesystemName! success mount on !MountDriver!.(PE)"
+	call :AfterMountSuccessPE
+goto :EOF
+
 :Unmount
-    net use !SharedPath! /del /y >> %LOGFILEPATH% 2>&1
+	net use !SharedPath! /del /y >> %LOGFILEPATH% 2>&1
     if !errorlevel! NEQ 0 (
 		if exist !LinkPath! (
 			rd /s /q !LinkPath!
@@ -194,12 +326,27 @@ goto :EOF
 	call :Log "Unmount !SharedPath! success."
 goto :EOF
 
+:UnmountPE
+    net use !LinkPath:~0,2! /del /y >> %LOGFILEPATH% 2>&1
+    net use !LinkPath:~0,2! >> %LOGFILEPATH% 2>&1
+    if "!errorlevel!"=="0" (
+        call :Log "UnmountPE failed, !LinkPath! is still exist."
+        set ERR_CODE=%ERROR_SCRIPT_EXEC_FAILED%
+        goto :end
+    )
+	call :Log "UnmountPE !LinkPath!: success."
+goto :EOF
+
 :WinSleep
     timeout %1 > nul
 goto :eof
 
 :end
     call :Log "Finish !OperationType! cifs filesystem."
-    exit !ERR_CODE!
+	if "!ERR_CODE!" == "" (
+		exit 0
+	) else (
+    	exit !ERR_CODE!
+	)
 
 endlocal

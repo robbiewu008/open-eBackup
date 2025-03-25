@@ -1,20 +1,11 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
-#
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 #@function: mount nas share path
 
 AGENT_ROOT_PATH=$1
 PID=$2
 PARAM_NUM=$3
+umask 0022
 . "${AGENT_ROOT_PATH}/sbin/agent_sbin_func.sh"
 
 #for log
@@ -28,22 +19,22 @@ BLOCK_LIST="^/$\|^/tmp$\|^/mnt/databackup$\|^/bin$\|^/bin/.*\|^/boot$\|^/boot/.*
 CheckFileSystem()
 {
     LvName=$1
-    retryTime=1
-    while [ $retryTime -le 3 ]; do
+    retryTimeCf=1
+    while [ $retryTimeCf -le 3 ]; do
         mount | grep $LvName | grep ${HostMountPath}
         if [ $? -eq 0 ]; then
             Log "Check mount ${LvName} mountpath ${HostMountPath} success."
             return 0
         fi
-        Log "Mount $LvName ${HostMountPath} check failed retry $retryTime time"
+        Log "Mount $LvName ${HostMountPath} check failed retry $retryTimeCf time"
         if [ "${SYS_NAME}" = "AIX" ]; then
             Timeout mount ${HostMountPath} >> $LOG_FILE_NAME 2>&1
         else
             Log "Not support os"
             return 0
         fi
-        retryTime=`expr $retryTime + 1`
-        if [ $retryTime -ge 4 ]; then
+        retryTimeCf=`expr $retryTimeCf + 1`
+        if [ $retryTimeCf -ge 4 ]; then
             Log "Check filesystem time out."
             return 1
         fi
@@ -445,6 +436,8 @@ MountLunInfo()
     set -A lunId_success
     set -A all_lunId
     lunNum=0
+    Log "LunInfo is ${LunInfo}"
+    Log "protocolType is ${protocolType}"
     for info in `echo ${LunInfo#*:} | $MYAWK -F '//' '{for(i=1;i<NF;i++){print $i}}'`; do
         wwpntmp=${info%/*}
         protocolTmp=`echo ${wwpntmp} | $MYAWK -F ',' '{print $1}'`
@@ -481,7 +474,7 @@ MountLunInfo()
         Log "Create vg failed, lun id is ${lunId}, try next."
     done
     successLunNum=`echo ${#lunId_success[*]}`
-    if [ "${successLunNum}" -eq "${lunNum}" ]; then
+    if [ "${successLunNum}" -ge 1 ]; then
         return 0
     fi
     Log "Create vg failed, with all lun, exit failed."

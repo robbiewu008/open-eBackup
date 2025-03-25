@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file message_process.cpp
+ * @brief  Contains function declarations message process
+ * @version 1.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #include "message/rest/message_process.h"
 
 #include <sstream>
@@ -607,6 +604,7 @@ mp_void CResponseMsg::PackageReponse(Json::Value& root)
         } else if (m_httpType == RSP_JSON_TYPE2) {
             root["errorMessage"] = m_msgJsonData.isNull() ? "" : m_msgJsonData.toStyledString();
         }
+        m_httpRsp.SetHead(REST_PARAM_ERROR_CODE, oss.str().c_str());
         COMMLOG(OS_LOG_DEBUG, "Response error code %d.", m_lRetCode);
         if (m_iHttpStatus == SC_OK) {
             // 如果各逻辑模块没有设置http status,默认设置为SC_NOT_ACCEPTABLE

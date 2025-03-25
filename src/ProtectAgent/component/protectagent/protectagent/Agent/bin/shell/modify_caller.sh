@@ -1,14 +1,4 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
-#
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 if [ -z "${DATA_BACKUP_AGENT_HOME}" ]; then
     DATA_BACKUP_AGENT_HOME="/opt"
@@ -20,7 +10,7 @@ MODIFY_PACKAGE_PATH=${DATA_BACKUP_AGENT_HOME}/modify
 PRODUCT_NAME=DataProtect
 AGENT_ROOT_PATH=${AGENT_INSTALL_PATH}/ProtectClient-E
 LOG_FILE_NAME=${AGENT_ROOT_PATH}/slog/modify_pre.log
-
+umask 0022
 . "${AGENT_ROOT_PATH}/sbin/agent_sbin_func.sh"
 
 ########################################################################################

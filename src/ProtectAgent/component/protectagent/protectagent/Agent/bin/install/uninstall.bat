@@ -1,14 +1,4 @@
 @echo off
-::  This file is a part of the open-eBackup project.
-::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-::  If a copy of the MPL was not distributed with this file, You can obtain one at
-::  http://mozilla.org/MPL/2.0/.
-:: 
-::  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-:: 
-::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 rem #######################################################
 rem #
 rem #  upgrade: %~1=/q  push upgrade: %~1=/r
@@ -22,6 +12,10 @@ rem the small pkg uninstall(AI_SHU)
 rem -----------------------------------------------------------
 setlocal EnableDelayedExpansion
 
+echo ********************************************************
+echo      Begin to uninstall DataBackup ProtectAgent     
+echo ********************************************************
+ 
 set DATA_BACKUP_AGENT_HOME_VAR=
 for /f "tokens=2 delims==" %%a in ('wmic environment where "name='DATA_BACKUP_AGENT_HOME' and username='<system>'" get VariableValue /value') do (
     if not "%%a" == "" (
@@ -236,19 +230,24 @@ rem -----------------
             echo Get process pid failed.
             exit /b 0
         )
-        taskkill /pid !killparam! /F >nul 
-        if "!UPGRADE_VALUE!" == "1" (
+        if not "!killparam!" == "" (
+            call :Log "uinstall-killprocess: process=!processparm!, pid=!killparam!, begin to kill it."
+            taskkill /pid !killparam! /F >nul 
+            if "!UPGRADE_VALUE!" == "1" (
+                call :WinSleep 5
+                del /f /q "%PROCESS_INFO_PATH%"
+                exit /b 0
+            )
+            if "!errorlevel!" == "0" (
+                echo kill !processparm! success
+                goto :loopEnd
+            )
+            echo kill failed, retry !retry! time
+            set /a retry = retry + 1
             call :WinSleep 5
-            del /f /q "%PROCESS_INFO_PATH%"
-            exit /b 0
+        ) else (
+            call :Log "process=!processparm! isn't running."
         )
-        if "!errorlevel!" == "0" (
-            echo kill !processparm! success
-            goto :loopEnd
-        )
-        echo kill failed, retry !retry! time
-        set /a retry = retry + 1
-        call :WinSleep 5
     )
     :loopEnd
     if not "!errorlevel!" == "0" ( 
@@ -263,7 +262,7 @@ rem -----------------
 echo Start reporting offline requests.
 call :Log "Start reporting offline requests."
 
-call "%PROTECT_BIN_PATH%agentcli.exe" registerHost DeleteHost >nul
+call "%PROTECT_BIN_PATH%agentcli.exe" registerHost DeleteHost >> "%LOGFILE_PATH%" 2>&1
 if not "!errorlevel!" == "0" (
     echo Delete host to ProtectManager failed.
 	call :Log "Delete host to ProtectManager failed."
@@ -323,8 +322,8 @@ exit /b 0
 	    if exist !PROCESS_INFO_PATH! del /q /f !PROCESS_INFO_PATH! >nul
 	)
 	if "!UPGRADE_VALUE!" == "1" (
-	    echo Upgrade process dosen't need to uninstall service.
-		call :Log "Upgrade process dosen't need to uninstall service."
+	    echo Upgrade process doesn't need to uninstall service.
+		call :Log "Upgrade process doesn't need to uninstall service."
 		exit /b 0
 	)
     call "%PROTECT_BIN_PATH%winservice.exe" !SERVICE_PARAM! uninstall
@@ -365,6 +364,13 @@ rem %~1: Agent_user
 rem --------------- 
 :deleteworkinguser
     set WORKING_USER=%~1
+    set InDomain=
+    echo "inDomain is %inDomain%"
+    if /i "!InDomain!"=="TRUE" (
+        echo "Agent working user !WORKING_USER! exist in the domain, no need to uninstall."
+        call :Log "Agent working user !WORKING_USER! exist in the domain, no need to uninstall."
+        exit /b 0
+    )
     echo.
     echo Delete user !WORKING_USER! of %PRODUCT_AGENT_NAME%...
     
@@ -441,7 +447,7 @@ rem ---------------
     rem export seservicelogonright config
     if exist "!SESERV_LOGON_RIGHT_FILE!"  del /f /q "!SESERV_LOGON_RIGHT_FILE!"
 
-    secedit /export /cfg "!UNINSTALL_TMP_FILE!" >nul 2>&1
+    secedit /export /cfg "!UNINSTALL_TMP_FILE!" >> "%LOGFILE_PATH%" 2>&1
     if not "!errorlevel!" == "0" (
         call :Log "Export seservicelogonright config failed."
         if exist "!UNINSTALL_TMP_FILE!"  del /f /q "!UNINSTALL_TMP_FILE!"
@@ -496,7 +502,7 @@ rem ---------------
     if exist "!UNINSTALL_TMP_FILE!"  del /f /q "!UNINSTALL_TMP_FILE!"
     
     rem import seservicelogonright config to .sdb file
-    secedit /import /db "!SESERV_LOGON_RIGHT_TMP_DB!" /cfg "!SESERV_LOGON_RIGHT_FILE!" >nul 2>&1
+    secedit /import /db "!SESERV_LOGON_RIGHT_TMP_DB!" /cfg "!SESERV_LOGON_RIGHT_FILE!" >> "%LOGFILE_PATH%" 2>&1 2>&1
     if not "!errorlevel!" == "0" (
         call :Log "Import the !SESERV_LOGON_RIGHT_FILE! to the !SESERV_LOGON_RIGHT_TMP_DB! failed."
         if exist "!SESERV_LOGON_RIGHT_FILE!"  del /f /q "!SESERV_LOGON_RIGHT_FILE!"
@@ -506,7 +512,7 @@ rem ---------------
     if exist "!SESERV_LOGON_RIGHT_FILE!"    del /f /q "!SESERV_LOGON_RIGHT_FILE!"
     
     rem add user seservicelogonright Log on as a service
-    secedit /configure /db "!SESERV_LOGON_RIGHT_TMP_DB!" >nul 2>&1
+    secedit /configure /db "!SESERV_LOGON_RIGHT_TMP_DB!" >> "%LOGFILE_PATH%" 2>&1
     if not "!errorlevel!" == "0" (
         call :Log "Add user !WORKING_USER! seservicelogonright to log on as a service failed."
         if exist "!SESERV_LOGON_RIGHT_TMP_DB!"  del /f /q "!SESERV_LOGON_RIGHT_TMP_DB!"
@@ -521,9 +527,13 @@ rem ---------------
 :ForceKillProcess
     for /f "tokens=1-6" %%a in (' tasklist ^| findstr "%~1" ') do (
         if not "%%a" EQU "" (
-            taskkill /f /pid %%b >nul 2>&1
-            call :WinSleep 1
-            goto :ForceKillProcess
+            if not "%%b" EQU "" (
+                taskkill /f /t /pid %%b >> "%LOGFILE_PATH%" 2>&1
+                call :WinSleep 1
+                goto :ForceKillProcess
+            ) else (
+                call :Log "process %~1 isn't running."
+            )
         )
         exit /b 0
     )
@@ -537,17 +547,17 @@ rem ---------------
     if exist "%AGENT_ERR_LOG_PATH%" (
         for /f %%i in ('dir /b "%AGENT_ERR_LOG_PATH%"') do set /a count+=1
         if !count! gtr 0 (
-            xcopy /e/h/k/x/o/q/y "%AGENT_ERR_LOG_PATH%\*" "%AGENT_OLD_LOG_PATH%\" > nul
-            del /f /s /q "%AGENT_ERR_LOG_PATH%\*.*" >nul 2>&1
+            xcopy /e/h/k/x/o/q/y "%AGENT_ERR_LOG_PATH%\*" "%AGENT_OLD_LOG_PATH%\" >> "%LOGFILE_PATH%" 2>&1
+            del /f /s /q "%AGENT_ERR_LOG_PATH%\*.*" >> "%LOGFILE_PATH%" 2>&1
         )
 	    if exist "%LOGFILE_PATH%" (
-		    copy /y "%LOGFILE_PATH%" "%AGENT_ERR_LOG_PATH%" >nul 2>&1
-            copy /y "%AGENT_LOG_PATH%winservice.log" "%AGENT_ERR_LOG_PATH%" >nul 2>&1
+		    copy /y "%LOGFILE_PATH%" "%AGENT_ERR_LOG_PATH%" >> "%LOGFILE_PATH%" 2>&1
+            copy /y "%AGENT_LOG_PATH%winservice.log" "%AGENT_ERR_LOG_PATH%" >> "%LOGFILE_PATH%" 2>&1
 		)
 	) else (
-	    md "%AGENT_ERR_LOG_PATH%" >nul 2>&1
-		copy /y "%LOGFILE_PATH%" "%AGENT_ERR_LOG_PATH%" >nul 2>&1
-        copy /y "%AGENT_LOG_PATH%winservice.log" "%AGENT_ERR_LOG_PATH%" >nul 2>&1
+	    md "%AGENT_ERR_LOG_PATH%" >> "%LOGFILE_PATH%" 2>&1
+		copy /y "%LOGFILE_PATH%" "%AGENT_ERR_LOG_PATH%" >> "%LOGFILE_PATH%" 2>&1
+        copy /y "%AGENT_LOG_PATH%winservice.log" "%AGENT_ERR_LOG_PATH%" >> "%LOGFILE_PATH%" 2>&1
 	)
     exit /b 0
 

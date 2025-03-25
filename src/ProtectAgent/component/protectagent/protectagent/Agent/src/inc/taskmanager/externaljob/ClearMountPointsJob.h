@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file ClearMountPointsJob.h
+ * @brief  Contains function declarations about Log Backup
+ * @version 1.1.0
+ * @date 2022-01-13
+ * @author lixilong lwx1101878
+ */
 #ifndef CLEAR_MOUNT_POINTS_H
 #define CLEAR_MOUNT_POINTS_H
 
@@ -17,6 +14,7 @@
 #include <list>
 #include <vector>
 #include <memory>
+#include <regex>
 #include "common/Types.h"
 #include "servicecenter/timerservice/include/ITimer.h"
 
@@ -46,6 +44,7 @@ private:
         std::list<mp_string> &vecFolderPath);
     mp_int32 GetMountPointsPath(const mp_string &vecJobIDFolderPath, std::vector<mp_string> &vecMountPoints);
     mp_int32 UmountAndDeleteJobFloder(mp_string &jobFloderPath, const std::vector<mp_string> &vecMountPoints);
+    mp_void GetTaskIdFrompath(std::list<mp_string> &jobIDFolderPathList);
 #endif
 };
 }

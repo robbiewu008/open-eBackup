@@ -66,6 +66,9 @@
     <ClCompile Include="..\..\..\..\src\src\tools\agentcli\ReRegisterHost.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\tools\agentcli\UpgradeJsonConf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\inc\tools\agentcli\ChangeIP.h">
@@ -111,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\inc\tools\agentcli\ReRegisterHost.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\tools\agentcli\UpgradeJsonConf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,15 +1,13 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file TCPClientHandler.cpp
+ * @brief  The implemention about log operations
+ * @version 1.0.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
+
 #include "common/Log.h"
 #ifdef WIN32
 #include <process.h>
@@ -75,6 +73,15 @@ CLogger::~CLogger()
 }
 
 /* ------------------------------------------------------------
+Description  :初始化日志模块
+------------------------------------------------------------- */
+void CLogger::Init(const char* pcLogFileName, const mp_string& strFilePath)
+{
+    m_strFilePath = strFilePath;
+    m_strFileName = pcLogFileName;
+}
+
+/* ------------------------------------------------------------
 Description  :设置log级别
 Input        :      iLogLevel---log级别
 Return       :    MP_SUCCESS---设置成功
@@ -87,6 +94,7 @@ mp_int32 CLogger::SetLogLevel(mp_int32 iLogLevel)
     }
 
     m_iLogLevel = iLogLevel;
+    LoadLogCfg();
 
     return MP_SUCCESS;
 }
@@ -107,6 +115,20 @@ mp_int32 CLogger::SetLogCount(mp_int32 iLogCount)
     return MP_SUCCESS;
 }
 
+mp_int32 CLogger::GetLogMaxSize()
+{
+    return m_iMaxSize;
+}
+
+mp_int32 CLogger::GetLogCount()
+{
+    return m_iLogCount;
+}
+
+mp_int32 CLogger::GetLogKeepTime()
+{
+    return m_iLogKeepTime;
+}
 /* ------------------------------------------------------------
 Description  :打开日志缓存
 Return       :    MP_SUCCESS---设置成功
@@ -320,6 +342,7 @@ mp_int32 CLogger::HandleEachLogFile(const mp_string& OldLogNameStr, const mp_str
 
     return MP_SUCCESS;
 }
+
 mp_int32 CLogger::HandleCurrentLogFile(const mp_string& LogPath, const mp_string& LogName)
 {
     mp_string strLogFile = mp_string("") + LogPath + PATH_SEPARATOR + LogName;
@@ -417,6 +440,33 @@ mp_int32 CLogger::CreateLogFile(const mp_string& pszLogFile)
 #endif
 
     return MP_SUCCESS;
+}
+
+/* ------------------------------------------------------------
+Description  :循环获取Log的CFG信息
+------------------------------------------------------------- */
+mp_void CLogger::GetLogCfgInfo()
+{
+    while (!m_stopFlag.load()) {
+        LoadLogCfg();
+        // 等待一分钟再次进行读取
+        std::unique_lock<std::mutex> lk(m_logCfgThreadCVLock);
+        m_logCfgThreadCV.wait_for(lk, std::chrono::minutes(1), [this]() { return this->m_stopFlag.load(); });
+    }
+}
+
+/* ------------------------------------------------------------
+Description  :单次获取Log的CFG信息
+------------------------------------------------------------- */
+mp_void CLogger::LoadLogCfg()
+{
+    CThreadAutoLock tlock(&m_tLock);
+    // 支持动态修改日志级别
+    ReadLevelAndCount();
+    // 支持动态修改日志文件大小限制和日志文件保存时间
+    ReadMaxSizeAndKeepTime();
+    // 支持动态修改日志缓存阈值大小
+    ReadLogCacheThreshold();
 }
 
 /* ------------------------------------------------------------
@@ -802,7 +852,7 @@ mp_void CLogger::Log(const mp_int32 iLevel, const mp_int32 iFileLine, const mp_s
 {
     va_list pszArgp;
     ostringstream strMsg;
-
+    LoadLogCfg();
     CThreadAutoLock tlock(&m_tLock);
 
     // 如果配置日志写函数，则直接调用写日志函数
@@ -817,16 +867,10 @@ mp_void CLogger::Log(const mp_int32 iLevel, const mp_int32 iFileLine, const mp_s
         return;
     }
 
-    // 支持动态修改日志级别
-    ReadLevelAndCount();
     // 根据定义的日志级别记录日志
     if (iLevel < m_iLogLevel) {
         return;
     }
-    // 支持动态修改日志文件大小限制和日志文件保存时间
-    ReadMaxSizeAndKeepTime();
-    // 支持动态修改日志缓存阈值大小
-    ReadLogCacheThreshold();
 
     va_start(pszArgp, pszFormat);
     if (InitLogContent(iLevel, iFileLine, pszFileName, pszFuncction, pszFormat, pszArgp, strMsg) != MP_SUCCESS) {

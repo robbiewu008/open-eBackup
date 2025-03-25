@@ -105,6 +105,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
       <BrowseInformation>true</BrowseInformation>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -127,6 +128,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -149,6 +151,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -175,6 +178,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>

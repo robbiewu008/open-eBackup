@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file RegisterHost.cpp
+ * @brief  Contains function declarations Register to Host
+ * @version 1.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #include "tools/agentcli/RegisterHost.h"
 
 #include <iostream>
@@ -121,6 +118,9 @@ const mp_string UNSUPPORT_APPS_INFO_FILE = "unssport_apps.info";
 
 // error code
 const mp_int32 REGISTER_ERROR_CODE_DUPLICATE_NAME = 0x64032f06;
+const mp_int32 REGISTER_ERROR_CODE_CERTIFICATION_FAIL = 60;
+const mp_int32 REGISTER_ERROR_CODE_NO_SUCH_USER = 1677929477;
+
 // port
 const mp_string REGISTER_PORT = "25082";
 
@@ -134,6 +134,7 @@ mp_string RegisterHost::pm_port;
 mp_int32 RegisterHost::m_registerFlag = INITIAL_REGISTER_FLAG;  // 注册标志
 mp_int32 RegisterHost::m_registerType = INSTALL_FLAG;
 mp_int32 RegisterHost::m_proxyRole = -1;
+mp_int32 RegisterHost::m_errCode = 200;
 
 mp_int32 RegisterHost::Handle(const mp_string& actionType, const mp_string& actionType2, const mp_string& actionType3)
 {
@@ -632,7 +633,7 @@ mp_int32 RegisterHost::GetHostInfo(Json::Value& hostMsg)
     hostMsg[PARAM_KEY_EXTENDINFO][PARAM_KEY_INNER_ESN] = esn;
     COMMLOG(OS_LOG_INFO,
         "Set inner esn :%s,registerType is :%s.",
-        esn,
+        esn.c_str(),
         hostMsg[PARAM_KEY_REGISTER_TYPE].toStyledString().c_str());
     return MP_SUCCESS;
 }
@@ -761,6 +762,11 @@ mp_void RegisterHost::PrintResult(const mp_string& actionType, const mp_int32 iR
         m_outputStr = m_outputStr + "success";
     } else {
         m_outputStr = m_outputStr + "failed";
+        if (m_errCode == REGISTER_ERROR_CODE_CERTIFICATION_FAIL ||
+            m_errCode ==  REGISTER_ERROR_CODE_NO_SUCH_USER) {
+            m_outputStr = m_outputStr + '\n' + "The user who downloaded this installation package no longer exists.\n";
+            m_outputStr = m_outputStr + "Download the package again and install the client.";
+        }
     }
 
     std::cout << m_outputStr << std::endl;
@@ -882,6 +888,9 @@ mp_int32 RegisterHost::ParseRegisterHostResponds(const mp_string& rspBody)
         COMMLOG(OS_LOG_INFO, "rspBody string have no error_code.");
         return iRet;
     }
+    mp_string strErrCode;
+    GET_JSON_STRING(jsonRspBody, PARAM_KEY_ERRORCODE, strErrCode);
+    m_errCode = atoi(strErrCode.c_str());
 
     return MP_SUCCESS;
 }
@@ -962,6 +971,7 @@ mp_int32 RegisterHost::ParseRegisterHostRespondsV2(const mp_string& rspBody, mp_
     ERRLOG("Responds errcode=%s, errmsg=%s.", strErrCode.c_str(), errMsg.c_str());
 
     mp_int32 nErrCode = atoi(strErrCode.c_str());
+    m_errCode = nErrCode;
     ERRLOG("nErrCode=%d, code=%d.", nErrCode, REGISTER_ERROR_CODE_DUPLICATE_NAME);
     if (nErrCode == REGISTER_ERROR_CODE_DUPLICATE_NAME) {
         INFOLOG("Duplicate environment exists");

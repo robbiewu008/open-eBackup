@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file SystemCall.cpp
+ * @brief  The implemention about system call cmd
+ * @version 1.0.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #include "rootexec/SystemCall.h"
 #include <algorithm>
 #include <fstream>
@@ -51,7 +48,7 @@ namespace {
     constexpr mp_int32 THIRDSCRIPT_TYPE_INDEX = 1;
     constexpr mp_int32 THIRDSCRIPT_PARAM_INDEX = 2;
     constexpr mp_int32 IMPORT_CERT_PARAM_NUMBER = 2;
-    constexpr mp_int32 WRITE_SCAN_RESULT_PARAM_NUMBER = 1;
+    constexpr mp_int32 WRITE_SCAN_RESULT_PARAM_NUMBER = 3;
     const mp_int32 MAX_READ_NUM = 1600;
     const mp_uint32 NUM_0 = 0;
     const mp_uint32 MB_TO_BYTE = 1024 * 1024;
@@ -1863,25 +1860,33 @@ mp_int32 CSystemCall::WriteScanResultForInstantlyMount(const mp_string &strUniqu
         ERRLOG("Param is invalid, size:%d.", vecParam.size());
         return MP_FAILED;
     }
-    mp_string path = vecParam.empty() ? "" : vecParam.front();
-    mp_string filepath = vecParam.front();
+    mp_string savePrePath = vecParam.front();
+    mp_string savePath = vecParam[1];
+    mp_string filePath = vecParam[2];
+    DBGLOG("param1: %s, param2: %s param3: %s.", savePrePath.c_str(), savePath.c_str(), filePath.c_str());
     std::vector<mp_string> vecFilePath;
     if (vecParam.size() == WRITE_SCAN_RESULT_PARAM_NUMBER) {
         // 扫描结果为空时，依然生成文件
         WARNLOG("Scan result is empty.");
     } else {
-        vecFilePath.assign(vecParam.begin() + 1, vecParam.end());
+        vecFilePath.assign(vecParam.begin() + WRITE_SCAN_RESULT_PARAM_NUMBER, vecParam.end());
     }
-
-    // 检查写入文件路径和目录是否有效
-    mp_int32 iRet = CheckPathIsValid(filepath);
-    if (iRet != MP_SUCCESS) {
-        ERRLOG("filepath %s is invalid.", filepath.c_str());
+    if (!CMpFile::DirExist(savePrePath.c_str()) && CMpFile::CreateDir(savePrePath.c_str()) != MP_SUCCESS) {
+        ERRLOG("Failed to create savePrePath %s.", savePrePath.c_str());
         return MP_FAILED;
     }
-
-    CIPCFile::WriteFile(filepath, vecFilePath);
-    INFOLOG("Write %s succ.", filepath.c_str());
+    if (!CMpFile::DirExist(savePath.c_str()) && CMpFile::CreateDir(savePath.c_str()) != MP_SUCCESS) {
+        ERRLOG("Failed to create savePath %s.", savePath.c_str());
+        return MP_FAILED;
+    }
+    // 检查写入文件路径和目录是否有效
+    mp_int32 iRet = CheckPathIsValid(filePath);
+    if (iRet != MP_SUCCESS) {
+        ERRLOG("filepath %s is invalid.", filePath.c_str());
+        return MP_FAILED;
+    }
+    CIPCFile::WriteFile(filePath, vecFilePath);
+    INFOLOG("Write %s succ.", filePath.c_str());
     return MP_SUCCESS;
 }
 
@@ -1889,6 +1894,8 @@ mp_int32 CSystemCall::CheckPathIsValid(const mp_string &filePath)
 {
     // E6000设备即时挂载，需要扫描副本目录用于创建文件克隆，写入扫描结果时，需要提权到root执行
     // root执行会校验目录，修改时需要同步修改PluginSubPostJob::ScanAndRecordFile()和PrepareFileSystem定义
+    static const mp_string DATA_DIR_NAME = "Data";
+    static const mp_string META_DIR_NAME = "Meta";
     static const mp_string RECORD_FILE_NAME = "RecordFile.txt";     // 保存扫描出来的文件
     static const mp_string RECORD_DIR_NAME = "RecordDir.txt";       // 保存扫描出来的目录
     static const mp_string MOUNT_PUBLIC_PATH = "/mnt/databackup/";  // 挂载目录的前置，文件在AIX和soalris上文件系统/mnt开头，文件不会走当前流程
@@ -1896,7 +1903,7 @@ mp_int32 CSystemCall::CheckPathIsValid(const mp_string &filePath)
     mp_string realPath = filePath;
     // FormattingPath的目录不存在会返回失败，当前函数只归一化目录，不判断返回值
     (mp_void) CMpString::FormattingPath(realPath);
-    INFOLOG("Format path is %s.", realPath.c_str());
+    DBGLOG("Format path is %s, file ath %s.", realPath.c_str(), filePath.c_str());
     
     if (realPath.find(MOUNT_PUBLIC_PATH) != 0) {
         ERRLOG("realPath %s isn't begin with %s.", realPath.c_str(), MOUNT_PUBLIC_PATH.c_str());
@@ -1904,7 +1911,8 @@ mp_int32 CSystemCall::CheckPathIsValid(const mp_string &filePath)
     }
 
     mp_string fileName = BaseFileName(realPath);
-    if ((fileName != RECORD_FILE_NAME) && (fileName != RECORD_DIR_NAME)) {
+    if ((fileName != DATA_DIR_NAME + RECORD_FILE_NAME) && (fileName != DATA_DIR_NAME + RECORD_DIR_NAME) &&
+        (fileName != META_DIR_NAME + RECORD_FILE_NAME) && (fileName != META_DIR_NAME + RECORD_DIR_NAME)) {
         ERRLOG("File name %s isn't fix file name.", fileName.c_str());
         return MP_FAILED;
     }

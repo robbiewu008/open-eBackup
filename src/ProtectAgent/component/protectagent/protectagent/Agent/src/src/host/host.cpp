@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file host.cpp
+ * @brief  The implemention about Host infoformation
+ * @version 1.0.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #include "host/host.h"
 #include <sstream>
 #include <fstream>
@@ -1285,7 +1282,6 @@ mp_int32 CHost::QueryWwpns(std::vector<mp_string>& vecWwpns)
     mp_int32 iRet = CSystemExec::ExecSystemWithEcho(strCmd, vecRlt);
     if (iRet != MP_SUCCESS) {
         ERRLOG("Exec sys cmd failed, iRet = %d.", iRet);
-        return MP_FAILED;
     }
 
     for (mp_string& item : vecRlt) {
@@ -1672,8 +1668,7 @@ mp_int32 CHost::QueryFusionStorageIP(vector<mp_string>& strFusionStorageIP)
 mp_int32 CHost::IsSafeDirectory(const mp_string& strInput)
 {
     // 检查是否包含 ".." 或者以 "/" 开头
-    if (strInput.find("..") != std::string::npos || strInput.find('/') != std::string::npos
-        || strInput.find('\\') != std::string::npos) {
+    if (strInput.find("..") != std::string::npos) {
         COMMLOG(OS_LOG_ERROR, "IsSafeDirectory failed");
         return MP_FAILED;
     }
@@ -2844,7 +2839,7 @@ mp_int32 CHost::GetMemUsageRateLinux(mp_double& sysMemRateRest, mp_uint64& memAv
         if (line.compare(0, SIZE_OF_MEMTOTAL, "MemTotal:") == 0) {
             memTotal = CMpString::SafeStoll(line.substr(SIZE_OF_MEMTOTAL + 1)) / SIZE_KB;
         } else if (line.compare(0, SIZE_OF_MEMAVAILABLE, "MemAvailable:") == 0) {
-            memAvail = CMpString::SafeStoll(line.substr(SIZE_OF_MEMTOTAL + 1)) / SIZE_KB;      // 单位MB
+            memAvail = CMpString::SafeStoll(line.substr(SIZE_OF_MEMAVAILABLE + 1)) / SIZE_KB;      // 单位MB
         }
     }
     sysMemRateRest = (double)memAvail / memTotal * PERCENT;

@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file interfaces.h
+ * @brief  The implemention about interfaces
+ * @version 1.0.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #ifndef __AGENT_REST_INTERFACES_H__
 #define __AGENT_REST_INTERFACES_H__
 
@@ -67,6 +64,7 @@ static const mp_string REST_APPPROTECT_CLUSTER_V1 = "/v1/tasks/cluster";
 static const mp_string REST_APPPROTECT_CONFIG_V1 = "/v1/tasks/config";
 static const mp_string REST_APPPROTECT_DELIVER_JOB_STATUS_V1 = "/v1/tasks/task-status";
 static const mp_string REST_APPPROTECT_DETAIL_V2 = "/v2/tasks/detail";
+static const mp_string REST_APPPROTECT_ASYNCDETAIL_V2 = "/v2/tasks/asyncdetail";
 static const mp_string REST_APPPROTECT_REMOVE_PROTECT_V1 = "/v1/tasks/remove-protect";
 static const mp_string REST_APPPROTECT_FINALIZE_CLEAR = "/v1/tasks/finalizeclear";
 static const mp_string REST_APPPROTECT_SANCLIENT_JOB = "/v1/tasks/[[:alnum:]]{8}-"

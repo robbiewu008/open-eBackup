@@ -1,14 +1,4 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
-#
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 
 # ----------------------------
@@ -46,6 +36,11 @@ TMP_DATA_BACKUP_AGENT_HOME=`cat /etc/profile | grep "DATA_BACKUP_AGENT_HOME=" |$
 TMP_DATA_BACKUP_SANCLIENT_HOME=`cat /etc/profile | grep "export DATA_BACKUP_SANCLIENT_HOME=" |${MYAWK} -F "=" '{print $NF}'`
 if [ -n "${TMP_DATA_BACKUP_AGENT_HOME}" ] || [ -n "${TMP_DATA_BACKUP_SANCLIENT_HOME}" ] ; then
     . /etc/profile
+    if [ -n "${DATA_BACKUP_AGENT_HOME}" ] || [ -n "${DATA_BACKUP_SANCLIENT_HOME}" ] ; then
+        DATA_BACKUP_AGENT_HOME=${TMP_DATA_BACKUP_AGENT_HOME}
+        DATA_BACKUP_SANCLIENT_HOME=${TMP_DATA_BACKUP_SANCLIENT_HOME}
+        export DATA_BACKUP_AGENT_HOME DATA_BACKUP_SANCLIENT_HOME
+    fi
 else
     DATA_BACKUP_AGENT_HOME=/opt
     DATA_BACKUP_SANCLIENT_HOME=/opt
@@ -76,6 +71,12 @@ if [ "${CLIENT_BACK_ROLE}" = "${BACKUP_ROLE_SANCLIENT_PLUGIN}" ] || [ "${TESTCFG
     DEPLOY_TOP_DIR=${DATA_BACKUP_SANCLIENT_HOME}
 fi
 LOG_FILE="${INSTALL_DIR}/uninstall.log"
+
+if [ -z "$LD_LIBRARY_PATH" ]; then
+    export LD_LIBRARY_PATH=${AGENT_ROOT}/bin
+else
+    export LD_LIBRARY_PATH=${AGENT_ROOT}/bin:$LD_LIBRARY_PATH
+fi
 
 Log()
 {

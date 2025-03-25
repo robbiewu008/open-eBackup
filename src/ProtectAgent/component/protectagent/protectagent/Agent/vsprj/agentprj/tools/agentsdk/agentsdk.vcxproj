@@ -95,10 +95,11 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;AGENT_DLL_EXPORTS;WSEC_ERR_CODE_BASE=0;_CRT_NO_VA_START_VALIDATION;_CRT_SECURE_NO_WARNINGS;SUPPORT_SSL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\..\..\src\inc;..\..\..\..\platform\securec\include;..\..\..\..\platform\kmc;..\..\..\..\platform\kmc\include;..\..\..\..\platform\kmc\src\sdp;..\..\..\..\open_src;..\..\..\..\open_src\tinyxml;..\..\..\..\open_src\openssl\include;..\..\..\..\open_src\jsoncpp\include;..\..\..\..\open_src\thrift\lib\cpp\src;..\..\..\..\open_src\boost;..\..\..\..\open_src\curl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\src\inc;..\..\..\..\platform\securec\include;..\..\..\..\platform\kmc;..\..\..\..\platform\kmc\include;..\..\..\..\platform\kmc\src\sdp;..\..\..\..\platform\kmc\src;..\..\..\..\open_src;..\..\..\..\open_src\tinyxml;..\..\..\..\open_src\openssl\include;..\..\..\..\open_src\jsoncpp\include;..\..\..\..\open_src\thrift\lib\cpp\src;..\..\..\..\open_src\boost;..\..\..\..\open_src\curl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <DisableSpecificWarnings>4273;4251;4819;4996</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -117,6 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;AGENTSDK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -131,6 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;AGENTSDK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,6 +150,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;AGENTSDK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -1,15 +1,13 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ *
+ * @file PrepareFileSystem.h
+ * @brief Mount And Umount File System
+ * @version 1.1.0
+ * @date 2021-10-30
+ * @author lixilong wx1101878
+ */
+
 #ifndef _PREPARE_FILE_SYSTEM_H
 #define _PREPARE_FILE_SYSTEM_H
 
@@ -85,6 +83,7 @@ namespace AppProtect {
         mp_string pvcTaskId;
         mp_int32 pvcOSADAuthPort = 0;
         mp_int32 pvcOSADServerPort = 0;
+        mp_int32 taskType = 0; // Default taskType=UNDEFINE
     };
 
     struct MountNasKeyParam {
@@ -166,10 +165,12 @@ public:
 
     static bool IsMountChainGood(const mp_string& jobId);      // it is used when read or write fail
 private:
+    mp_string GetMountPublicPath();
     mp_string GenerateSubPath(const MountNasParam &mountNasParam);
     mp_string SplitFileClientMountPath(const mp_string &mountPath);
     mp_void GetMountPath(const MountNasParam &mountNasParam, const mp_string iterIp, mp_string &mountPath);
     mp_int32 CheckAndCreateDataturboLink(const mp_string &storageName, const MountNasParam &mountNasParam);
+    bool GetMountOption(const MountNasParam &mountNasParam, mp_string &mountOptionKey, mp_string &mountOption);
 
 #ifdef WIN32
     mp_int32 WinMountOperation(MountNasKeyParam& mountKeyParam, mp_string& mountPath);
@@ -209,7 +210,7 @@ private:
     static std::mutex m_mountFailIpMapMutex;
 
     void HandleAfterMountSuccess(const MountNasParam &mountNasParam);
-    void HandleAfterMountFail(const MountNasParam &mountNasParam, mp_int32 errCode);
+    void HandleAfterMountFail(const MountNasParam &mountNasParam, mp_int32 &errCode);
     void HandleAfterUMountSuccess(const mp_string& jobId, const mp_string& mountPath);
 
     static void JobAddMountChainInfo(const mp_string& jobId, const MountChainInfo& mountChainInfo);

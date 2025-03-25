@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file ServicePlugin.cpp
+ * @brief  The implemention about ServicePlugin
+ * @version 1.0.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #include "plugins/ServicePlugin.h"
 #include <vector>
 #include "common/Log.h"
@@ -109,8 +106,10 @@ mp_int32 CServicePlugin::Invoke(CRequestMsg& req, CResponseMsg& rsp)
 
     COMMLOG(OS_LOG_DEBUG, "Begin invoke service plugin by rest channel.");
     iRet = DoAction(req, rsp);
+    Json::Value& rspData = rsp.GetJsonValueRef();
     if (iRet != MP_SUCCESS) {
         rsp.SetRetCode((mp_int64)iRet);
+        rspData["errorCode"] = (Json::UInt64)rsp.GetRetCode();
         COMMLOG(OS_LOG_DEBUG, "Do rest action failed, iRet %d.", iRet);
         return iRet;
     }

@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file alarmdb.cpp
+ * @brief  The implemention about alarmdb
+ * @version 1.0.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #include <typeinfo>
 #include "common/ErrorCode.h"
 #include "common/Log.h"
@@ -83,7 +80,7 @@ Create By    : yangwenjun 00275736
 ------------------------------------------------------------- */
 mp_void TaskWorker::Exit()
 {
-    // 暂时忽略线程返回?
+    // 暂时忽略线程返回�?
     m_bNeedExit = MP_TRUE;
     if (m_threadId.os_id != 0) {
         CMpThread::WaitForEnd(&m_threadId, NULL);
@@ -92,9 +89,9 @@ mp_void TaskWorker::Exit()
 
 /* ------------------------------------------------------------
 Description  : 从消息队列中获取消息
-Output       : msg -- 获取的消?
+Output       : msg -- 获取的消�?
 Return       : MP_SUCCESS -- 成功
-                MP_FAILED -- 请求队列中没有请?
+                MP_FAILED -- 请求队列中没有请�?
 Create By    : yangwenjun 00275736
 ------------------------------------------------------------- */
 mp_int32 TaskWorker::PopRequest(message_pair_t& msg)
@@ -113,7 +110,7 @@ mp_int32 TaskWorker::PopRequest(message_pair_t& msg)
 
 /* ------------------------------------------------------------
 Description  : 把消息保存到消息队列
-Input        : msg -- 要保存到队列的消?
+Input        : msg -- 要保存到队列的消�?
 Create By    : yangwenjun 00275736
 ------------------------------------------------------------- */
 mp_void TaskWorker::PushRequest(message_pair_t& msg)
@@ -138,7 +135,7 @@ mp_void TaskWorker::SetThreadStatus(mp_int32 iThreadStatus)
 }
 
 /* ------------------------------------------------------------
-Description  : 进行消息处理，task worker线程回调函数调用该函数处理请?
+Description  : 进行消息处理，task worker线程回调函数调用该函数处理请�?
 Return       : MP_SUCCESS -- 成功
                 非MP_SUCCESS -- 失败，返回特定错误码
 Create By    : yangwenjun 00275736
@@ -273,7 +270,7 @@ mp_int32 TaskWorker::DispatchRestMsg(CRequestMsg& requestMsg, CResponseMsg& resp
         return MP_FAILED;
     }
 
-    // ȡǰĲƼscn
+    // ��ȡ��ǰ�Ĳ�����Ƽ�scn
     SetPlugin(*pPlugin);
     mp_int32 iRet = pPlugin->Invoke(requestMsg, responseMsg);
     if (iRet != MP_SUCCESS) {
@@ -318,17 +315,17 @@ mp_int32 TaskWorker::DispatchTcpMsg(CDppMessage& requestMsg, CDppMessage& respon
 }
 
 /* ------------------------------------------------------------
-Description  : 判断插件是否可以卸载(插件框架动态升级预?
-Input        : newSCN -- scn?
-                plgName -- 插件?
+Description  : 判断插件是否可以卸载(插件框架动态升级预�?
+Input        : newSCN -- scn�?
+                plgName -- 插件�?
 Return       : MP_TRUE -- 可以卸载
-                MP_FALSE -- 不可以卸?
+                MP_FALSE -- 不可以卸�?
 Create By    : yangwenjun 00275736
 ------------------------------------------------------------- */
 mp_bool TaskWorker::CanUnloadPlugin(mp_uint64 newSCN, const mp_string& plgName)
 {
     CThreadAutoLock tlock(&m_tPlgLock);
-    // work没有工作或者当前使用的插件不是需要删除的插件则可以删?
+    // work没有工作或者当前使用的插件不是需要删除的插件则可以删�?
     if (m_plgName.empty() || strcmp(plgName.c_str(), m_plgName.c_str()) != 0) {
         return MP_TRUE;
     }
@@ -344,7 +341,7 @@ mp_bool TaskWorker::CanUnloadPlugin(mp_uint64 newSCN, const mp_string& plgName)
 
 /* ------------------------------------------------------------
 Description  : 根据服务名称获取插件
-Input        : pszService -- 服务?
+Input        : pszService -- 服务�?
 Return       : 成功返回获取的插件指针，失败返回NULL
 Create By    : yangwenjun 00275736
 ------------------------------------------------------------- */
@@ -389,7 +386,7 @@ CServicePlugin* TaskWorker::GetPlugin(const mp_string& pszService)
 }
 
 /* ------------------------------------------------------------
-Description  : 保存插件相关信息(插件框架动态升级预?
+Description  : 保存插件相关信息(插件框架动态升级预�?
 Input        : pPlug -- 插件指针
 Create By    : yangwenjun 00275736
 ------------------------------------------------------------- */

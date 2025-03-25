@@ -1,15 +1,13 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file AgentCli.cpp
+ * @brief  Contains function declarations for Agent cli command files
+ * @version 0.1
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
+
 #include <vector>
 #include <algorithm>
 #include "common/Path.h"
@@ -36,6 +34,7 @@
 #include "tools/agentcli/UnixTimeStamp.h"
 #include "tools/agentcli/ReadPipe.h"
 #include "tools/agentcli/MergeConfFiles.h"
+#include "tools/agentcli/UpgradeJsonConf.h"
 #ifdef WIN32
 #include "tools/agentcli/WinMountCifs.h"
 #include <windows.h>
@@ -88,16 +87,22 @@ const mp_string GET_FILE_FROM_ARCHIVE = "GetFileFromArchive";
 const mp_string READ_PIPE = "ReadPipe";
 const mp_string MOUNT_CIFS = "MountCifs";
 const mp_string GET_HOSTNAME = "gethostname";
+const mp_string MERGE_CONF_FILE = "mergefile";
+const mp_string UPGRADE_JSON_FILE = "upgradeJsonConf";
+
 const mp_string CAINFO = "agentca.pem";
 const mp_string SSLCERT = "server.pem";
 const mp_string SSLKEY = "server.key";
 const mp_string CLIENT_CRT_NAME = "/thrift/client/client.crt.pem";
 const mp_string PUSH_INSTALL_OPRATE = "push";
 const mp_string MANUAL_INSTALL_OPRATE = "manual";
-const mp_string MERGE_CONF_FILE = "mergefile";
+const mp_string PUSH_DOMAIN_INSTALL_OPRATE = "pushdomain";
+const mp_string MANUAL_DOMAIN_INSTALL_OPRATE = "manualdomain";
+
+const mp_ulong ERROR_LOGON_TYPE_GRANTED = 1385;
 
 const std::vector<std::string> CMD_LIST_NOT_USE_KMC = {
-    SHOW_STATUS, GEN_SECONDS, GET_HOSTNAME
+    SHOW_STATUS, GEN_SECONDS, COLLECT_LOG, CHECK_HOST, UNIXTIMESTAMP, GET_HOSTNAME, MERGE_CONF_FILE, UPGRADE_JSON_FILE
 };
 }  // namespace
 namespace AGENTCLI_NUM {
@@ -134,12 +139,13 @@ void PrintHelp()
     printf("[path]agentcli %s\n", REG_MK.c_str());
     printf("[path]agentcli %s\n", CREATE_MK.c_str());
     printf("[path]agentcli %s <oldconffile_path> <newconffile_path>\n", MERGE_CONF_FILE.c_str());
+    printf("[path]agentcli %s <oldjsonconffile_path> <newjsonconffile_path>\n", UPGRADE_JSON_FILE.c_str());
     printf("[path]agentcli %s <cipherfile_name> <Output/Input> <value>\n", ENC_KEY.c_str());
     printf("[path]agentcli %s <addUserr/deleteUser>\n", DPA_USER.c_str());
     printf("[path]agentcli %s <DeleteHost>\n", REGISTER_HOST.c_str());
     printf("[path]agentcli %s <RegisterHost> <pm_ip> <pm_port>\n", REGISTER_HOST.c_str());
     printf("[path]agentcli %s\n", RE_REGISTER_HOST.c_str());
-    printf("[path]agentcli %s <host_ip> <host_port> <timeout>\n", CHECK_HOST.c_str());
+    printf("[path]agentcli %s <host_ip> <host_port> <timeout> <src_host>\n", CHECK_HOST.c_str());
     printf("[path]agentcli %s <DateTime/TimeStamp> <mode>\n", UNIXTIMESTAMP.c_str());
     printf("[path]agentcli %s <PipeFileName> <timeout>\n", READ_PIPE.c_str());
 #ifdef WIN32
@@ -355,6 +361,47 @@ LPWSTR stringToLpwstr(const mp_string &inStr)
     return lpwstr;
 }
 
+bool ValidateUserCredentials(const std::string& userName, const std::string& password)
+{
+    HANDLE hToken = NULL;
+    BOOL result = LogonUser(userName.c_str(),  // 用户名
+        NULL,                                  // 域名（NULL表示本地计算机）
+        password.c_str(),                      // 密码
+        LOGON32_LOGON_INTERACTIVE,             // 登录类型
+        LOGON32_PROVIDER_DEFAULT,              // 登录提供者
+        &hToken);                                // 返回的令牌
+    if (result) {
+        CloseHandle(hToken);  // 关闭令牌句柄
+        return true;
+    } else {
+        mp_ulong error = GetLastError();
+        if (error != ERROR_LOGON_TYPE_GRANTED) {
+            COMMLOG(OS_LOG_ERROR, "LogonUser failed with error: %lu", error);
+            return false;
+        }
+        return true;
+    }
+}
+
+mp_int32 GetPasswardByObtions(mp_string& pwd, const mp_string& obtions, const mp_string& userPwd)
+{
+    if (obtions == MANUAL_INSTALL_OPRATE || obtions == MANUAL_DOMAIN_INSTALL_OPRATE) {
+        CPassword::InputUserPwd("", pwd, INPUT_PWD);
+        if (obtions == MANUAL_INSTALL_OPRATE && !CPassword::CheckCommon(pwd)) {
+            COMMLOG(OS_LOG_ERROR, "Check passwd rules failed, Ret is %d.", MP_FAILED);
+            return MP_FAILED;
+        }
+        COMMLOG(OS_LOG_INFO, "Manual installation.");
+    } else if (obtions == PUSH_INSTALL_OPRATE || obtions == PUSH_DOMAIN_INSTALL_OPRATE) {
+        pwd = userPwd;
+        COMMLOG(OS_LOG_INFO, "Push installation");
+    } else {
+        COMMLOG(OS_LOG_ERROR, "Parameter error.");
+        return MP_FAILED;
+    }
+    return MP_SUCCESS;
+}
+
 mp_int32 SetUserWin(const mp_string& userName, const mp_string& obtions = "", const mp_string& userPwd = "")
 {
     COMMLOG(OS_LOG_INFO, "Begin to set user %s", userName.c_str());
@@ -366,18 +413,16 @@ mp_int32 SetUserWin(const mp_string& userName, const mp_string& obtions = "", co
 
     ui.usri1_name = stringToLpwstr(userName); // 用户名
     mp_string pwd;
-    if (obtions == MANUAL_INSTALL_OPRATE) {
-        CPassword::InputUserPwd("", pwd, INPUT_PWD);
-        if (!CPassword::CheckCommon(pwd)) {
-            COMMLOG(OS_LOG_ERROR, "Check passwd rules failed, Ret is %d.", MP_FAILED);
-            return MP_FAILED;
-        }
-        COMMLOG(OS_LOG_INFO, "Manual installation.");
-    } else if (obtions == PUSH_INSTALL_OPRATE) {
-        pwd = userPwd;
-        COMMLOG(OS_LOG_INFO, "Push installation");
-    } else {
-        COMMLOG(OS_LOG_ERROR, "Parameter error.");
+
+    if (GetPasswardByObtions(pwd, obtions, userPwd) != MP_SUCCESS) {
+        COMMLOG(OS_LOG_ERROR, "Get password failed.");
+        return MP_FAILED;
+    }
+
+    bool domainMode = (obtions == MANUAL_DOMAIN_INSTALL_OPRATE || obtions == PUSH_DOMAIN_INSTALL_OPRATE);
+    if (domainMode && !ValidateUserCredentials(userName, pwd)) {
+        COMMLOG(OS_LOG_ERROR, "The passward is incorrectly for the user %s.", userName.c_str());
+        pwd.clear();
         return MP_FAILED;
     }
     ui.usri1_password = stringToLpwstr(pwd); // 密码
@@ -387,6 +432,10 @@ mp_int32 SetUserWin(const mp_string& userName, const mp_string& obtions = "", co
     if (MP_SUCCESS != CConfigXmlParser::GetInstance().SetValue(CFG_SYSTEM_SECTION, WORKING_USER_PASSWORD, ciphertext)) {
         COMMLOG(OS_LOG_ERROR, "Set user pwd failed!");
         return MP_FAILED;
+    }
+
+    if (domainMode) {
+        return MP_SUCCESS;
     }
 
     ui.usri1_priv = USER_PRIV_USER; // 权限
@@ -400,9 +449,11 @@ mp_int32 SetUserWin(const mp_string& userName, const mp_string& obtions = "", co
         COMMLOG(OS_LOG_INFO, "User %s has been added successfully.", userName.c_str());
     } else if (nStatus == NERR_UserExists) {
         COMMLOG(OS_LOG_ERROR, "User s already exists.", userName.c_str());
+        (void)CConfigXmlParser::GetInstance().SetValue(CFG_SYSTEM_SECTION, WORKING_USER_PASSWORD, "");
         return MP_FAILED;
     } else {
         COMMLOG(OS_LOG_ERROR, "Add user failed, error status: %d", nStatus);
+        (void)CConfigXmlParser::GetInstance().SetValue(CFG_SYSTEM_SECTION, WORKING_USER_PASSWORD, "");
         return MP_FAILED;
     }
 
@@ -419,7 +470,7 @@ mp_void GetThriftHostName()
 }
 
 mp_int32 HandleCommand(const mp_string& strCmd,
-    const mp_string& strParam, const mp_string& strParam2, const mp_string& strParam3)
+    const mp_string& strParam, const mp_string& strParam2, const mp_string& strParam3, const mp_string& strParam4)
 {
     if (strcmp(strCmd.c_str(), REGISTER_HOST.c_str()) == 0) {
         return RegisterHost::Handle(strParam, strParam2, strParam3);
@@ -431,7 +482,7 @@ mp_int32 HandleCommand(const mp_string& strCmd,
     } else if (strcmp(strCmd.c_str(), VERIFY_KEY.c_str()) == 0) {
         return VerifyPwd();
     } else if (strcmp(strCmd.c_str(), CHECK_HOST.c_str()) == 0) {
-        return TestHost::Handle(strParam, strParam2, strParam3);
+        return TestHost::Handle(strParam, strParam2, strParam3, strParam4);
     } else if (strcmp(strCmd.c_str(), GET_HOSTNAME.c_str()) == 0) {
         GetThriftHostName();
         return MP_SUCCESS;
@@ -443,6 +494,9 @@ mp_int32 HandleCommand(const mp_string& strCmd,
     } else if (strcmp(strCmd.c_str(), MERGE_CONF_FILE.c_str()) == 0) {
         MergeConfFiles mergeConfFiles;
         return mergeConfFiles.MergeFileHandle (strParam, strParam2);
+    } else if (strcmp(strCmd.c_str(), UPGRADE_JSON_FILE.c_str()) == 0) {
+        UpgradeJsonConf handler;
+        return handler.Handle(strParam, strParam2);
     }
 #ifdef WIN32
     if (strcmp(strCmd.c_str(), MOUNT_CIFS.c_str()) == 0) {
@@ -534,7 +588,7 @@ mp_int32 HandleCmd(const mp_string& strCmd,
     }
 #endif
 
-    return HandleCommand(strCmd, strParam, strParam2, strParam3);
+    return HandleCommand(strCmd, strParam, strParam2, strParam3, strParam4);
 }
 
 /* --------------------------------------------------------
@@ -556,7 +610,7 @@ mp_bool CheckParam(mp_int32 argc, mp_char** argv)
     bCheck = bCheck || ((CMD_PARAM::CMD_PARAM_NUM_ENC_KEY2 == argc) && (strcmp(argv[1], ENC_KEY.c_str())) == 0);
     bCheck = bCheck || ((CMD_PARAM::CMD_PARAM_NUM_ENC_KEY3 == argc) && (strcmp(argv[1], ENC_KEY.c_str())) == 0);
     bCheck = bCheck || ((CMD_PARAM::CMD_PARAM_NUM_DPA_USER == argc) && (strcmp(argv[1], DPA_USER.c_str())) == 0);
-    bCheck = bCheck || ((AGENTCLI_NUM::AGENTCLI_NUM_5 == argc) && (strcmp(argv[1], CHECK_HOST.c_str()) == 0));
+    bCheck = bCheck || ((strcmp(argv[1], CHECK_HOST.c_str()) == 0));
     bCheck = bCheck ||
              (((CMD_PARAM::CMD_PARAM_NUM_REGISTER_HOST_1 == argc) || (CMD_PARAM::CMD_PARAM_NUM_ENC_KEY2 == argc) ||
                   (CMD_PARAM::CMD_PARAM_NUM_REGISTER_HOST_2 == argc)) &&
@@ -565,6 +619,7 @@ mp_bool CheckParam(mp_int32 argc, mp_char** argv)
     bCheck = bCheck || ((AGENTCLI_NUM::AGENTCLI_NUM_4 == argc) && (strcmp(argv[1], UNIXTIMESTAMP.c_str()) == 0));
     bCheck = bCheck || ((AGENTCLI_NUM::AGENTCLI_NUM_4 == argc) && (strcmp(argv[1], READ_PIPE.c_str()) == 0));
     bCheck = bCheck || ((AGENTCLI_NUM::AGENTCLI_NUM_4 == argc) && (strcmp(argv[1], MERGE_CONF_FILE.c_str()) == 0));
+    bCheck = bCheck || ((AGENTCLI_NUM::AGENTCLI_NUM_4 == argc) && (strcmp(argv[1], UPGRADE_JSON_FILE.c_str()) == 0));
 
 #ifdef WIN32
     bCheck = bCheck || ((AGENTCLI_NUM::AGENTCLI_NUM_3 == argc) && (strcmp(argv[1], MOUNT_CIFS.c_str()) == 0));

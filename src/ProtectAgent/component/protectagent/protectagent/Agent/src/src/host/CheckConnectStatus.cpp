@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file CheckConnectStatus.cpp
+ * @brief  Contains function declarations UUID
+ * @version 1.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #include "host/CheckConnectStatus.h"
 #include <iostream>
 #include <sstream>
@@ -46,6 +43,7 @@ const mp_uint32 CHECH_VSPHERE_STATE_INTERVAL = 2 * 60 * 60;     // 2h/7200s
 const mp_uint32 DISABLE_CHECK_INTERVAL = 3 * 1000;
 const mp_uint32 TO_MILLISECOND = 1000;
 const int DEFAULT_TEST_CONNECTIVITY_TIMEOUT = 5;
+const mp_uint32 HTTP_CONNECT_TIMEOUT = 120; // 2min
 
 // host info
 const mp_string PARAM_KEY_HOSTID = "host_id";
@@ -512,13 +510,14 @@ mp_void* CheckConnectStatus::CheckConnectivity(mp_void* param)
         CMPTHREAD_RETURN;
     }
     CheckConnectStatus* pthis = static_cast<CheckConnectStatus*>(param);
+    if (strcmp(pthis->m_AgentRole.c_str(), VMBACKUP_AGENT.c_str())) {
+        COMMLOG(OS_LOG_INFO, "Current role is not VMBackupAgent, no need check connect status.");
+        CMPTHREAD_RETURN;
+    }
     vector<pFuncGetComList> getComList;
     // if VMBackupAgent, need check connect status
     getComList.push_back(&CheckConnectStatus::GetPmControllerIpFromConfig);
-    if (!strcmp(pthis->m_AgentRole.c_str(), VMBACKUP_AGENT.c_str())) {
-        getComList.push_back(&CheckConnectStatus::GetvSphereIp);
-        COMMLOG(OS_LOG_DEBUG, "Current role is VMBackupAgent, need check connect status.");
-    }
+    getComList.push_back(&CheckConnectStatus::GetvSphereIp);
     pthis->CheckConnectivitySub(pthis, getComList);
     CMPTHREAD_RETURN;
 }
@@ -567,7 +566,7 @@ mp_void* CheckConnectStatus::CheckConnectivitySub(CheckConnectStatus* pthis, vec
             }
             mp_uint64 tCurrentTime = CMpTime::GetTimeSec();
             COMMLOG(OS_LOG_DEBUG, "tCurrentTime %llu, lastReportFinishTime %llu", tCurrentTime, lastReportFinishTime);
-            if (lastReportFinishTime < tCurrentTime) {
+            if (lastReportFinishTime <= tCurrentTime) {
                 mp_uint32 sleepTime = ((tCurrentTime - lastReportFinishTime) * TO_MILLISECOND >= intervalTime) ? 0 :
                 (intervalTime - ((tCurrentTime - lastReportFinishTime) * TO_MILLISECOND));
                 COMMLOG(OS_LOG_DEBUG, "Will sleep %u ms", sleepTime);
@@ -878,6 +877,29 @@ mp_void CheckConnectStatus::ConfigDpcFlowControl()
 }
 #endif
 
+mp_bool CheckConnectStatus::IsInstallDataTurbo()
+{
+    // 判断源端重删是否启动
+#ifdef WIN32
+    // 查询dataturbo服务
+    mp_string strCmd = "sc query dataturbo";
+    mp_int32 iRet = CSystemExec::ExecSystemWithoutEcho(strCmd);
+    if (iRet != MP_SUCCESS) {
+        WARNLOG("The system not install dataturbo or the system does not support.");
+        return MP_FALSE;
+    }
+#else
+    mp_string strCmd = "ps -ef | grep /opt/oceanstor/dataturbo/bin/dpc | grep -v grep";
+    std::vector<mp_string> vecRes;
+    mp_int32 iRet = CSystemExec::ExecSystemWithEcho(strCmd, vecRes);
+    if (iRet != MP_SUCCESS || vecRes.size() == 0) {
+        WARNLOG("The system not install dataturbo or the system does not support.");
+        return MP_FALSE;
+    }
+#endif
+    return MP_TRUE;
+}
+
 mp_int32 CheckConnectStatus::ReportHeartBeatToPMInner()
 {
     COMMLOG(OS_LOG_INFO, "Start report heartbeat to PM.");
@@ -948,6 +970,15 @@ void CheckConnectStatus::BuildHeatBeatBody(host_info_t &hostInfo, std::vector<st
         jsonBody["connectedBusinessIps"].append(ip);
     }
     jsonBody["extendInfo"] = jIpList.toStyledString();
+
+    mp_int32 logLevel = -1;
+    auto iRet = CConfigXmlParser::GetInstance().GetValueInt32(CFG_SYSTEM_SECTION, CFG_LOG_LEVEL, logLevel);
+    if (iRet != MP_SUCCESS) {
+        COMMLOG(OS_LOG_ERROR, "Get agent log level failed.");
+    } else {
+        jsonBody["logLevel"] = logLevel;
+    }
+    jsonBody["src_deduption"] = IsInstallDataTurbo() ? true : false;
 }
 
 mp_int32 CheckConnectStatus::SendHeatBeatRequest(const std::vector<mp_string>& ipList, const Json::Value& jsonBody)
@@ -1159,7 +1190,7 @@ mp_int32 CheckConnectStatus::SendRequest(const HttpRequest& req, mp_string& resp
 
     while (retryTimes < MAX_RETRY_TIMES) {
         // 内部通过new分配
-        dpaHttpRespone = httpClient->SendRequest(req, HTTP_TIME_OUT);
+        dpaHttpRespone = httpClient->SendRequest(req, HTTP_CONNECT_TIMEOUT);
         COMMLOG(OS_LOG_DEBUG, "\n method: %s\n hostinfo: %s\n domaininfo: %s\n",
             req.method.c_str(), req.hostinfo.c_str(), req.domaininfo.c_str());
         if (dpaHttpRespone == NULL) {

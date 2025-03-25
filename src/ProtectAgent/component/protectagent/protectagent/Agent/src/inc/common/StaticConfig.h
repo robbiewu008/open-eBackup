@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file StaticConfig.h
+ * @brief Contains some config which will not changge when process running.
+ * @version 1.0.0
+ * @date 2024-09-22
+ * @author h00668904
+ */
 #ifndef AGENT_STATIC_CONFIG_H
 #define AGENT_STATIC_CONFIG_H
 
@@ -31,6 +28,8 @@ AGENT_API bool GetAgentIp(mp_string& agentIp);
 
 // check agent install type and deploy type
 AGENT_API bool IsInnerAgentMainDeploy();
+
+AGENT_API bool GetInnerAgentNodeIps(std::vector<std::string>& ips);
 };
 
 #endif

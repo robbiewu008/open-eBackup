@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file Socket.cpp
+ * @brief  Contains function declarations Socket
+ * @version 1.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #include "message/tcp/CSocket.h"
 #include "common/Log.h"
 #include "common/TimeOut.h"
@@ -247,6 +244,7 @@ mp_int32 CSocket::Connect(mp_socket clientSock, mp_uint32 uiServerAddr, mp_uint1
     if (iRet != EOK) {
         WARNLOG("Connect %u:%u succ, but get local socket info failed, errno[%d].", uiServerAddr, uiPort, iRet);
     } else {
+        DBGLOG("Begin get sock %d name.", clientSock);
         if (MP_FAILED == getsockname(clientSock, (struct sockaddr*)&localAddr, &len)) {
             INFOLOG("Connect %u:%u succ, but get local socket info failed.", uiServerAddr, uiPort);
         } else {
@@ -580,6 +578,7 @@ mp_int32 CSocket::WaitEvents(fd_set& fdRead, fd_set& fdWrite, mp_int32 iMaxFd)
     return iRet;
 }
 
+#ifdef WIN32
 // private
 mp_int32 CSocket::WaitRecvEvent(mp_socket sock, mp_uint32 uiSecondes)
 {
@@ -604,6 +603,76 @@ mp_int32 CSocket::WaitSendEvent(mp_socket sock, mp_uint32 uiSecondes)
 
     return select(sock + 1, NULL, &writefds, NULL, pTimeout);
 }
+
+#else
+mp_int32 CSocket::WaitEvents(mp_socket sock)
+{
+    static const mp_uint32 POLL_TIMEOUT = 1;
+    mp_int32 iRet = MP_SUCCESS;
+    mp_int32 iErr = 0;
+    mp_char szErr[256] = {0};
+    std::vector<struct pollfd> fds;
+
+    struct pollfd pfd;
+    pfd.fd = sock;
+    pfd.events = POLLIN; // 监听读事件
+    pfd.revents = 0;
+    fds.push_back(pfd);
+
+    for (;;) {
+        iRet = poll(fds.data(), fds.size(), POLL_TIMEOUT * MILLI_SECOND);
+        if (iRet < 0) {
+            iErr = GetOSError();
+            if (EINTR == iErr) {
+                continue;
+            }
+            COMMLOG(OS_LOG_ERROR, "Fd %d Invoke poll failed, errno[%d]:%s.",
+                pfd.fd, iErr, GetOSStrErr(iErr, szErr, sizeof(szErr)));
+            return MP_FAILED;
+        }
+
+        COMMLOG(OS_LOG_DEBUG, "Fd %d iRet is %d.", pfd.fd, iRet);
+        for (int i = 0; i < fds.size(); i++) {
+            if (fds[i].revents & POLLIN) {
+                return MP_DATA_VALID;
+            }
+        }
+
+        // poll timeout
+        if (iRet == 0) {
+            return iRet;
+        }
+
+        break;  // poll succ
+    }
+
+    COMMLOG(OS_LOG_DEBUG, "End wait events, iRet %d.", iRet);
+    return iRet;
+}
+
+// private
+mp_int32 CSocket::WaitRecvEvent(mp_socket sock, mp_uint32 uiSecondes)
+{
+    struct pollfd fds[1];
+    fds[0].fd = sock;
+    fds[0].events = POLLIN; // 监听读事件
+
+    int timeout = (uiSecondes == TIMEOUT_INFINITE) ? -1 : uiSecondes * MILLI_SECOND; // uiSecondes单位为秒
+
+    return poll(fds, 1, timeout);
+}
+
+mp_int32 CSocket::WaitSendEvent(mp_socket sock, mp_uint32 uiSecondes)
+{
+    struct pollfd fds[1];
+    fds[0].fd = sock;
+    fds[0].events = POLLOUT; // 监听读事件
+
+    int timeout = (uiSecondes == TIMEOUT_INFINITE) ? -1 : uiSecondes * MILLI_SECOND; // uiSecondes单位为秒
+
+    return poll(fds, 1, timeout);
+}
+#endif
 
 mp_int32 CSocket::ConnectIpv6(mp_socket clientSock, const mp_string& uiServerAddr, mp_uint16 uiPort)
 {
@@ -647,6 +716,7 @@ mp_int32 CSocket::ConnectIpv6(mp_socket clientSock, const mp_string& uiServerAdd
     return MP_SUCCESS;
 }
 
+#ifdef WIN32
 mp_int32 CSocket::CheckSockLinkStatus(mp_socket sock, mp_int32 timeout)
 {
     const mp_int32 unit = 1000;
@@ -677,6 +747,35 @@ mp_int32 CSocket::CheckSockLinkStatus(mp_socket sock, mp_int32 timeout)
 
     return MP_SUCCESS;
 }
+
+#else
+mp_int32 CSocket::CheckSockLinkStatus(mp_socket sock, mp_int32 timeout)
+{
+    struct pollfd fds[1];
+    fds[0].fd = sock;
+    fds[0].events = POLLOUT;
+
+    if (poll(fds, 1, timeout) <= 0) {
+        ERRLOG("poll socket %d failed, error:%d.", sock, GetOSError());
+        return MP_FAILED;
+    } else {
+        mp_int32 error = -1;
+        socklen_t optLen = sizeof(mp_int32);
+        if (getsockopt(sock, SOL_SOCKET, SO_ERROR, (mp_char*)&error, &optLen) < 0) {
+            ERRLOG("socket %d getsockopt failed, err:%d.", sock, GetOSError());
+            return MP_FAILED;
+        } else {
+            if (error != 0) {
+                // like error code #define ECONNREFUSED    111     /* Connection refused */
+                ERRLOG("socket %d getsockopt failed %d, err:%d.", sock, error, GetOSError());
+                return MP_FAILED;
+            }
+        }
+    }
+
+    return MP_SUCCESS;
+}
+#endif
 
 mp_int32 CSocket::CheckHostLinkStatus(
     const mp_string& strSrcIp, const mp_string& strHostIp, mp_uint16 uiPort, mp_int32 timeout)

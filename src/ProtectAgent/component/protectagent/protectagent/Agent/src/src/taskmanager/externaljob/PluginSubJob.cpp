@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ *
+ * @file Job.h
+ * @brief Implement for external sub job
+ * @version 1.1.0
+ * @date 2021-10-29
+ * @author wangguitao 00510599
+ */
 #include <thrift/transport/TTransportException.h>
 #include <map>
 #include <algorithm>
@@ -87,7 +84,9 @@ Executor PluginSubJob::GetJobSuccess()
 {
     return [this](int32_t) {
         StartReportTiming();
-        ChangeState(SubJobState::Running);
+        if (m_data.status != mp_uint32(SubJobState::SubJobComplete)) {
+            ChangeState(SubJobState::Running);
+        }
         return MP_SUCCESS;
     };
 }
@@ -183,15 +182,23 @@ bool PluginSubJob::AbortTimeoutHandler()
 
 void PluginSubJob::ChangeState(SubJobState state)
 {
-    if (IsSubJobFinish(state)) {
+    {
+        std::lock_guard<std::mutex> lk(m_mutexChangeState);
+        if (m_data.status == mp_uint32(state)) {
+            return;
+        }
+        INFOLOG("JobId=%s, subjobId=%s, form status=%d change to status=%d.",
+            m_data.mainID.c_str(), m_data.subID.c_str(), m_data.status, mp_uint32(state));
         m_data.status = mp_uint32(state);
+    }
+
+    if (IsSubJobFinish(state)) {
+        INFOLOG("JobId=%s, subjobId=%s finished. status=%d", m_data.mainID.c_str(),
+            m_data.subID.c_str(), m_data.status);
         RemovePluginTimer();
         return;
     }
-    if (m_data.status == mp_uint32(state)) {
-        return;
-    }
-    m_data.status = mp_uint32(state);
+
     // update m_pluginUdTimer
     if (m_pluginUdTimer.get() == nullptr) {
         auto service  =
@@ -227,6 +234,7 @@ void PluginSubJob::AbortBeforePluginRun()
 
 void PluginSubJob::NotifyPluginAbort()
 {
+    INFOLOG("NotifyPluginAbort, jobId=%s, subJobId=%s, state=%d.", m_data.mainID.c_str(), m_data.subID.c_str(), m_data.status);
     // notify plugin to stop
     mp_int32 ret = SendAbortToPlugin();
     if (ret == MP_SUCCESS) {

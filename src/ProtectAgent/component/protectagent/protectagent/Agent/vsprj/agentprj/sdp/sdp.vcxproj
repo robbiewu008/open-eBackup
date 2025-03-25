@@ -82,7 +82,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;WSEC_COMPILE_SDP;WSEC_COMPILE_CAC_OPENSSL;WSEC_ERR_CODE_BASE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\platform\kmc\src\cac;..\..\..\platform\kmc\src\sdp;..\..\..\platform\kmc\src\kmc;..\..\..\platform\kmc\src\common;..\..\..\platform\kmc\include;..\..\..\platform\securec\include;..\..\..\open_src\openssl\inc32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\platform\kmc\src\cac;..\..\..\platform\kmc\src\sdp;..\..\..\platform\kmc\src\kmc;..\..\..\platform\kmc\src\common;..\..\..\platform\kmc\include;..\..\..\platform\kmc\src;..\..\..\platform\securec\include;..\..\..\open_src\openssl\inc32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
@@ -100,7 +100,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;WSEC_WIN32;WSEC_COMPILE_SDP;WSEC_COMPILE_CAC_OPENSSL;WSEC_ERR_CODE_BASE=0;__STDC_WANT_SECURE_LIB__=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\platform\kmc\include;..\..\..\platform\kmc\src\common;..\..\..\platform\kmc\src\cac;..\..\..\platform\kmc\src\kmc;..\..\..\platform\kmc\src\sdp;..\..\..\platform\securec\include;..\..\..\open_src\openssl\inc32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\platform\kmc\include;..\..\..\platform\kmc\src\common;..\..\..\platform\kmc\src\cac;..\..\..\platform\kmc\src\kmc;..\..\..\platform\kmc\src\sdp;..\..\..\platform\kmc\src;..\..\..\platform\securec\include;..\..\..\open_src\openssl\inc32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -117,7 +117,7 @@
       </FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;WSEC_WIN32;WSEC_COMPILE_SDP;WSEC_COMPILE_CAC_OPENSSL;WSEC_ERR_CODE_BASE=0;__STDC_WANT_SECURE_LIB__=0</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\open_src\openssl\inc32;..\..\..\platform\kmc\include;..\..\..\open_src\openssl\openssl\include;..\..\..\platform\securec\include;..\..\..\platform\kmc\src\kmc;..\..\..\platform\kmc\src\common;..\..\..\platform\kmc\src\cac;..\..\..\platform\kmc\src\sdp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\open_src\openssl\inc32;..\..\..\platform\kmc\include;..\..\..\open_src\openssl\openssl\include;..\..\..\platform\securec\include;..\..\..\platform\kmc\src\kmc;..\..\..\platform\kmc\src\common;..\..\..\platform\kmc\src\cac;..\..\..\platform\kmc\src\sdp;..\..\..\platform\kmc\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -141,7 +141,7 @@
       </FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;WSEC_WIN32;WSEC_COMPILE_SDP;WSEC_COMPILE_CAC_OPENSSL;WSEC_ERR_CODE_BASE=0;__STDC_WANT_SECURE_LIB__=0;WSEC_COMPILE_MIP_WINDOWS;WSEC_USE_OPENSSL_110</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\platform\kmc\include;..\..\..\open_src\openssl\include;..\..\..\platform\securec\include;..\..\..\platform\kmc\src\kmc;..\..\..\platform\kmc\src\common;..\..\..\platform\kmc\src\cac;..\..\..\platform\kmc\src\mip;..\..\..\platform\kmc\src\sdp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\platform\kmc\include;..\..\..\open_src\openssl\include;..\..\..\platform\securec\include;..\..\..\platform\kmc\src\kmc;..\..\..\platform\kmc\src\common;..\..\..\platform\kmc\src\cac;..\..\..\platform\kmc\src\mip;..\..\..\platform\kmc\src\sdp;..\..\..\platform\kmc\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <Link>

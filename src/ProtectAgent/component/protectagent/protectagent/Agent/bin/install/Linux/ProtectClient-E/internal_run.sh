@@ -1,14 +1,4 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
-#
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 
 # ----------------------------------
@@ -367,6 +357,14 @@ function ConfigPMIp()
             if [ ! -s /opt/network-conf/backup_net_plane ] && [ "${DEPLOY_TYPE}" != "${DEPLOY_TYPE_CYBER_ENGINE}" ]; then
                 echo "/opt/network-conf/backup_net_plane is empty, waiting..."
                 sleep 30
+            elif [ -s /opt/network-conf/backup_net_plane ]; then
+                if ! grep -q "$NODE_NAME" /opt/network-conf/backup_net_plane; then
+                    echo "No backup net plane in this node, waiting..."
+                    sleep 30 
+                else
+                    echo "success to load backup netplane. "
+                    break
+                fi
             else
                 echo "success to load backup netplane. "
                 break
@@ -961,7 +959,8 @@ function ChangePrivilegeForGroup() {
 function DoSetCapsForVirtualization()
 {
     Log "Start to do set caps for virtualization."
-    sudo ${PERMISSION_SCRIPT_PATH} chmod g+rx -R ${EXAGENT_USER}:${DEFAULT_GROUP_INTERNAL} "${VIRTUAL_PLUGIN_PATH}"
+    sudo ${PERMISSION_SCRIPT_PATH} chmod -R 750 "${VIRTUAL_PLUGIN_PATH}"
+    sudo ${PERMISSION_SCRIPT_PATH} chown -R ${EXAGENT_USER}:${AGENT_GROUP} "${VIRTUAL_PLUGIN_PATH}"
     sudo ${VIRTUAL_PLUGIN_PATH}/install/sudo_set_caps.sh
     Log "Set caps for virtualization finished."
 }
@@ -969,7 +968,7 @@ function DoSetCapsForVirtualization()
 function ConfigDomainName()
 {
     Log "Start config domain name."
-    DomainName=`${AGENT_ROOT_PATH}/bin/openssl x509 -subject -in ${AGENT_ROOT_PATH}/nginx/conf/server.pem -noout | ${AWK} -F '=' '{print $NF}'`
+    DomainName=`${AGENT_ROOT_PATH}/bin/openssl x509 -in ${AGENT_ROOT_PATH}/nginx/conf/server.pem -noout -subject | sed -n 's/.*CN = \([^,]*\).*/\1/p'`
     if [ -z "${DomainName}" ];then
         Log "Get ssl domain failed."
         exit 1
@@ -1001,6 +1000,11 @@ WriteParams()
     echo "NODE_NAME=${NODE_NAME}" >> "${AGENT_ROOT_PATH}/conf/testcfg.tmp"
     echo "PODE_NAME=${PODE_NAME}" >> "${AGENT_ROOT_PATH}/conf/testcfg.tmp"
     echo "POD_IP=${POD_IP}" >> "${AGENT_ROOT_PATH}/conf/testcfg.tmp"
+
+    cat /home/rdadmin/.profile | grep "export NODE_NAME="
+    if [ $? -ne 0 ]; then
+        echo "export NODE_NAME=${NODE_NAME}" >> /home/rdadmin/.profile
+    fi
 
     # xmlxfg
     ${AGENT_ROOT_PATH}/bin/xmlcfg write Backup backup_scene ${BACKUP_SCENE}

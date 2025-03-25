@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file ServiceHandler.cpp
+ * @brief  Contains function declarations for ServiceHandler
+ * @version 1.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #ifdef WIN32
 #include "common/ServiceHandler.h"
 #include "common/Log.h"
@@ -64,7 +61,7 @@ mp_bool CWinServiceHanlder::InstallService(
         COMMLOG(OS_LOG_ERROR, "OpenSCManager failed, errorno[%d].", GetLastError());
         return MP_FALSE;
     }
-
+    
     // Create the service
     if (strWorkingUser != "") {
         hService = CreateService(hSCM, strServcieName.c_str(), strServcieName.c_str(), SERVICE_ALL_ACCESS,

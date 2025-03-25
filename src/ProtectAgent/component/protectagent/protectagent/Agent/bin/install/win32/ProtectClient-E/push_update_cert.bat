@@ -1,14 +1,4 @@
 @echo off
-::  This file is a part of the open-eBackup project.
-::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-::  If a copy of the MPL was not distributed with this file, You can obtain one at
-::  http://mozilla.org/MPL/2.0/.
-:: 
-::  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-:: 
-::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 setlocal EnableDelayedExpansion
 
 set FALLBACK_TYPE=%~1
@@ -267,14 +257,18 @@ rem 传入目标路径
         call :Log "Closed process[%~1] timeout."
         exit /b 1
     )
-	for /f "tokens=1-6" %%a in (' tasklist ^| findstr "%~1" ') do (
-		if not "%%a" EQU "" (
-			taskkill /f /pid %%b 1>nul 2>nul
-			timeout 1 /NOBREAK > nul
-            set /a LOOP_COUNT+=1
-			goto :loopcheckprocess
-		)
-	)
+    for /f "tokens=1-6" %%a in (' tasklist ^| findstr "%~1" ') do (
+        if not "%%a" EQU "" (
+            if not "%%b" EQU "" (
+                taskkill /f /pid %%b >> %LOG_FILE_NAME% 2>&1
+                timeout 1 /NOBREAK >> %LOG_FILE_NAME% 2>&1
+                set /a LOOP_COUNT+=1
+                goto :loopcheckprocess
+            ) else (
+                call :Log "Process[%~1] is not running."
+            )
+        )
+    )
     call :Log "Process[%~1] is closed."
     exit /b 0
  

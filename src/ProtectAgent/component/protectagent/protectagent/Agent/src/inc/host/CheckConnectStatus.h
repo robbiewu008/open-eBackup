@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file CheckConnectStatus.h
+ * @brief  Agent与Vcenter,微服务的连通性检查
+ * @version 1.0.0.0
+ * @date 2020-12-29
+ * @author wangyanbo 30009057
+ */
 #ifndef _AGENTCLI_CHECK_CONNECT_STATUS_H_
 #define _AGENTCLI_CHECK_CONNECT_STATUS_H_
 
@@ -105,6 +102,7 @@ private:
     mp_bool  CheckDpcProcess();
     mp_void  ConfigDpcFlowControl();
 #endif
+    mp_bool  IsInstallDataTurbo();
     mp_int32 UpdatePMInfo();
     mp_int32 UpdatePMInfo(Json::Value registerReq);
     mp_int32 InitRequest(const mp_string& reqmethod, const mp_string& requrl, const mp_string& ip, HttpRequest& req);

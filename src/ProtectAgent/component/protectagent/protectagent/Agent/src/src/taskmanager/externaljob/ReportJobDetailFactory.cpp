@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ *
+ * @brief  impl for ReportJobDetailFactory
+ * @version 1.1.0
+ * @date 2021-12-30
+ * @author caomin 00511255
+ */
+
 #include "taskmanager/externaljob/ReportJobDetailFactory.h"
 
 #include <chrono>
@@ -85,6 +82,8 @@ struct LogData {
 std::map<LogMainKey, LogData> MainJobLogMap = {
     {{PluginMainJob::ActionEvent::GENE_POST_JOB, PluginMainJob::EventResult::START},
         {"agent_execute_prepare_task_success_label", {Log_Param_Agent_IP}, JobLogLevel::type::TASK_LOG_INFO, 0}},
+    {{PluginMainJob::ActionEvent::GENE_POST_JOB, PluginMainJob::EventResult::FAILED},
+        {"agent_execute_prepare_task_fail_label", {Log_Param_Agent_IP}, JobLogLevel::type::TASK_LOG_ERROR, 0}},
     {{PluginMainJob::ActionEvent::EXEC_PRE_SCRIPTR, PluginMainJob::EventResult::SUCCESS},
         {"agent_execute_pre_script_success_label", {Script_FileName, Log_Param_Agent_IP, Script_Result},
             JobLogLevel::type::TASK_LOG_INFO, 0}},
@@ -362,12 +361,12 @@ mp_int32 ReportJobDetailFactory::SendAndhandleRequest(
         RestClientCommon::ConvertStrToRspMsg(response.body, errMsg);
         WARNLOG("ReportJobDetail failed, errcode: %s, jobId=%s, subJobId=%s.", errMsg.errorCode.c_str(),
             jobInfo.jobId.c_str(), jobInfo.subJobId.c_str());
-        if (std::stoi(errMsg.errorCode) == ERR_INCONSISTENT_STATUS) {
+        if (CMpString::SafeStoi(errMsg.errorCode, 0) == ERR_INCONSISTENT_STATUS) {
             WARNLOG("Job have been reset in ubc, need abort the job.Avoid plugin retry, regard it as success.");
             AppProtect::AppProtectJobHandler::GetInstance()->AbortJob(jobInfo.jobId, jobInfo.subJobId);
             return MP_SUCCESS;
         }
-        if (std::stoi(errMsg.errorCode) == ERR_OBJ_NOT_EXIST) {
+        if (CMpString::SafeStoi(errMsg.errorCode, 0) == ERR_OBJ_NOT_EXIST) {
             WARNLOG("Ubc lost present main job, try to retrieve the job by agent.");
             auto mainJobInfos = AppProtectJobHandler::GetInstance()->GetMainJobs();
             auto pos = std::find_if(mainJobInfos.begin(), mainJobInfos.end(), [&](const Json::Value& item) -> bool {
@@ -425,7 +424,7 @@ mp_int32 ReportJobDetailFactory::ReportMainAndPostJobInformation(const Json::Val
         RestClientCommon::ConvertStrToRspMsg(response.body, errMsg);
         ERRLOG("Report Job Information failed, jobId=%s, errorCode=%s, errorMessage=%s.",
             mainJob["taskId"].asString().c_str(), errMsg.errorCode.c_str(), errMsg.errorMessage.c_str());
-        return std::stoi(errMsg.errorCode);
+        return CMpString::SafeStoi(errMsg.errorCode, 0);
     }
     return MP_SUCCESS;
 }
@@ -441,6 +440,7 @@ mp_void ReportJobDetailFactory::TransferJobStageToJson(mp_int32 jobMainStage, Js
     }
     value["taskStage"] = jobStage;
     value["taskStatus"] = jobStatus;
+    INFOLOG("Main job stage=%d, status=%d.", jobStage, jobStatus);
     if (jobStage == static_cast<mp_int32>(DmeTaskStage::NULL_STAGE)) {
         DBGLOG("Remove taskStage field for jpob failed");
         value.removeMember("taskStage");

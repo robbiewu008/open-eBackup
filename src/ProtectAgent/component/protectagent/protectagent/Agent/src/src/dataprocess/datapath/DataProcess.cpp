@@ -1,15 +1,13 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file DataProcess.cpp
+ * @brief  The implemention about Vmware data process
+ * @version 1.0.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
+
 #if (defined LINUX) && (!defined ENABLE_TSAN)
 #include <gperftools/malloc_extension.h>
 #endif
@@ -127,12 +125,6 @@ mp_int32 main(mp_int32 argc, mp_char **argv)
     MallocExtension::instance()->SetMemoryReleaseRate(RELEASE_MEM_FRE);
 #endif
 
-    std::shared_ptr<DataPath> pDataPath = nullptr;
-    pDataPath = HandleDataProcessType(argc, argv);
-    if (pDataPath == nullptr) {
-        return MP_FAILED;
-    }
-
     if (argc > VERSION_NUM) {
         auto item = find(DATAPROCESS_VERSION_LIST.begin(), DATAPROCESS_VERSION_LIST.end(), argv[VERSION_NUM]);
         if (item == DATAPROCESS_VERSION_LIST.end()) {
@@ -147,6 +139,13 @@ mp_int32 main(mp_int32 argc, mp_char **argv)
         std::cout << "Dataprocess log file creation failed : " << std::endl;
         return iRet;
     }
+
+    std::shared_ptr<DataPath> pDataPath = nullptr;
+    pDataPath = HandleDataProcessType(argc, argv);
+    if (pDataPath == nullptr) {
+        return MP_FAILED;
+    }
+
     COMMLOG(OS_LOG_INFO, "Begin to run data process service!");
     iRet = InitDataPath(pDataPath);
 

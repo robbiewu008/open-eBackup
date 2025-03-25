@@ -1,7 +1,5 @@
 add_subdirectory(app)
 add_subdirectory(host)
-add_subdirectory(oracle)
-add_subdirectory(oraclenative)
 add_subdirectory(appprotect)
 add_subdirectory(dws)
 add_subdirectory(vmwarenative)

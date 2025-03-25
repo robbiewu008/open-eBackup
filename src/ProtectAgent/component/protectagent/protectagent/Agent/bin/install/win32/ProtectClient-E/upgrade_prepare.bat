@@ -1,14 +1,4 @@
 @echo off
-::  This file is a part of the open-eBackup project.
-::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-::  If a copy of the MPL was not distributed with this file, You can obtain one at
-::  http://mozilla.org/MPL/2.0/.
-:: 
-::  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-:: 
-::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 setlocal EnableDelayedExpansion
 
 set CURRENT_PATH=%~dp0
@@ -95,10 +85,10 @@ goto :EOF
         set UPGRADE_PACKAGE_NAME=%%b
     )
     if NOT %PACKAGE_COUNT% EQU 1 (
-        call :Log "Check package uniqueness unsuccessfully, UPGRADE_PACKAGE_COUNT=[%PACKAGE_COUNT%]."
+        call :Log "Check package uniqueness failed, UPGRADE_PACKAGE_COUNT=[%PACKAGE_COUNT%]."
         exit /b 1
     ) else (
-        call :Log "Check package uniqueness successfully."
+        call :Log "Check package uniqueness failed."
         exit /b 0
     )
 goto :EOF
@@ -120,7 +110,7 @@ goto :EOF
     )
 
     if NOT "%SHA256_VALUE_ORIGINAL%" EQU "%SHA256_VALUE_FINAL%" (
-        call :Log "Check sha256 unsuccessfully, original sha256 value [%SHA256_VALUE_ORIGINAL%], current sha256 value [%SHA256_VALUE_FINAL%]."
+        call :Log "Check sha256 failed, original sha256 value [%SHA256_VALUE_ORIGINAL%], current sha256 value [%SHA256_VALUE_FINAL%]."
         exit /b 1
     ) else (
         call :Log "Check sha256 successfully, original sha256 value [%SHA256_VALUE_ORIGINAL%], current sha256 value [%SHA256_VALUE_FINAL%]."
@@ -144,7 +134,7 @@ goto :EOF
     @REM openssl.exe dgst -sha256 -verify <公钥文件> -signature <签名文件> <sha256文件>
     %AGENT_BIN_PATH%\openssl.exe dgst -sha256 -verify %PUBLIC_KEY_FILE% -signature %SIGNATURE_FILE% %SHA256_VALUE_FILE% >> %LOG_FILE% 2>&1
     if NOT %errorlevel% EQU 0 (
-        call :Log "Verify upgrade file signature unsuccessfully."
+        call :Log "Verify upgrade file signature failed."
         del /f /q  %SIGNATURE_FILE%
         del /f /q  %SHA256_VALUE_FILE%
         exit /b 1

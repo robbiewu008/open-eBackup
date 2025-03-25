@@ -1,14 +1,4 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
-#
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 # set +x
 
 sysName=`uname -s`
@@ -127,7 +117,11 @@ RESULT_TMP_FILE_PREFIX=result_tmp
 SCRIPTPID_TMP_FILE_PREFIX=scriptpid_tmp
 MAXLOGSIZE=52428800
 LOGFILE_SUFFIX="gz"
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${AGENT_ROOT_PATH}/bin && export LD_LIBRARY_PATH
+if [ -z "$LD_LIBRARY_PATH" ]; then
+    export LD_LIBRARY_PATH=${AGENT_ROOT_PATH}/bin
+else
+    export LD_LIBRARY_PATH=${AGENT_ROOT_PATH}/bin:$LD_LIBRARY_PATH
+fi
 BACKLOGCOUNT=`${AGENT_ROOT_PATH}/bin/xmlcfg read System log_count`
 
 TIME_FORMAT="'YYYY-MM-DD_HH24:MI:SS'"

@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file ArchiveStreamClient.cpp
+ * @brief  Contains function declarations for datamover microservice management
+ * @version 1.0.0
+ * @date 2021-05-20
+ * @author lixiang lwx1045600
+ */
 #include "message/archivestream/ArchiveStreamClient.h"
 #include <sstream>
 #include "common/Log.h"
@@ -37,6 +34,7 @@ ArchiveStreamClient::ArchiveStreamClient()
 
 ArchiveStreamClient::~ArchiveStreamClient()
 {
+    INFOLOG("Enter destruct");
     if (m_recvMsg != NULL) {
         delete m_recvMsg;
         m_recvMsg = NULL;
@@ -107,11 +105,13 @@ mp_int32 ArchiveStreamClient::Connect()
         return MP_FAILED;
     }
 
+    DBGLOG("ArchiveStreamClient Connected.");
     return MP_SUCCESS;
 }
 
 mp_void ArchiveStreamClient::DisConnect()
 {
+    DBGLOG("ArchiveStreamClient Disconnect.");
     m_conn.DisConnect();
 }
 
@@ -171,6 +171,7 @@ mp_int32 ArchiveStreamClient::HandleRecvDppMessage(CDppMessage &message)
 
 mp_bool ArchiveStreamClient::RecvEventsReady()
 {
+#ifdef WIN32
     fd_set fdsRead;
     fd_set fdsWrite;
     CSocket::FdInit(fdsRead);
@@ -179,6 +180,7 @@ mp_bool ArchiveStreamClient::RecvEventsReady()
     mp_uint16 sock = GetClientSocket();
     CSocket::FdSet(sock, fdsRead);
 
+    // use select
     mp_int32 ret = CSocket::WaitEvents(fdsRead, fdsWrite, sock);
     if (ret < 0) {
         ERRLOG("Wait events failed, ret=%d.", ret);
@@ -188,6 +190,18 @@ mp_bool ArchiveStreamClient::RecvEventsReady()
     }
 
     return CSocket::FdIsSet(sock, fdsRead);
+#else
+    mp_uint16 sock = GetClientSocket();
+    // use poll
+    mp_int32 ret = CSocket::WaitEvents(sock);
+    if (ret < 0) {
+        ERRLOG("Wait events failed, ret=%d.", ret);
+        return MP_FALSE;
+    } else if (ret == 0) { // select timeout
+        return MP_FALSE;
+    }
+    return MP_TRUE;
+#endif
 }
 
 mp_int32 ArchiveStreamClient::RecvMessage()

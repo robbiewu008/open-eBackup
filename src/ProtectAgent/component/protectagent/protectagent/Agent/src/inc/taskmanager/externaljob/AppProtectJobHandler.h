@@ -1,15 +1,13 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ *
+ * @file AppProtectJobHandler.h
+ * @brief Implement for excuting external job
+ * @version 1.1.0
+ * @date 2021-10-29
+ * @author wangguitao 00510599
+ */
+
 #ifndef _APP_PROTECT_JOB_HANDLER_H
 #define _APP_PROTECT_JOB_HANDLER_H
 
@@ -66,14 +64,51 @@ private:
     mp_bool m_isDorado = MP_TRUE;
 };
 
+enum class AgentServiceStatus {
+    NORMAL,
+    LOAD_FULL
+};
+
+struct WakeupJobResult {
+    uint32_t agentStatus = static_cast<uint32_t>(AgentServiceStatus::NORMAL);
+};
+
+class MountPointInfo {
+public:
+    MountPointInfo(const std::string& jobId)
+        : m_jobId(jobId) {}
+    mp_void SetMountPoints(const std::vector<mp_string>& vecCacheMountPoints,
+        const std::vector<mp_string>& vecNonCacheMountPoints, const bool isFileClientMount)
+    {
+        m_vecCacheMountPoints = vecCacheMountPoints;
+        m_vecNonCacheMountPoints = vecNonCacheMountPoints;
+        m_isFileClientMount = isFileClientMount;
+    }
+    mp_void GetMountPoints(std::vector<mp_string>& vecCacheMountPoints,
+        std::vector<mp_string>& vecNonCacheMountPoints, bool& isFileClientMount)
+    {
+        vecCacheMountPoints = m_vecCacheMountPoints;
+        vecNonCacheMountPoints = m_vecNonCacheMountPoints;
+        isFileClientMount = m_isFileClientMount;
+    }
+private:
+    mp_string m_jobId;
+    std::vector<mp_string> m_vecCacheMountPoints;
+    std::vector<mp_string> m_vecNonCacheMountPoints;
+    bool m_isFileClientMount{false};
+};
+
 class AppProtectJobHandler {
 public:
     static AppProtectJobHandler* GetInstance();
     ~AppProtectJobHandler();
-    mp_int32 WakeUpJob(const mp_string& taskId, const Json::Value& mainJob);
+    mp_int32 WakeUpJob(const mp_string& taskId, const Json::Value& mainJob,
+        WakeupJobResult& result, CResponseMsg &rsp);
     mp_int32 AbortJob(const std::string &mainTaskId, const std::string &subtaskId);
     mp_void AbortJob(const std::string& jobId);
     mp_int32 ReportJobDetails(AppProtect::ActionResult& _return, const AppProtect::SubJobDetails& jobInfo);
+    mp_int32 ReportAsyncJobDetails(AppProtect::ActionResult& _return, const std::string &jobId,
+        mp_int32 code, const AppProtect::ResourceResultByPage& results);
     mp_int32 GetUbcIpsByMainJobId(const mp_string mainJobId, std::vector<mp_string>& ubcIps);
 
     std::shared_ptr<Job> GetRunJobById(const mp_string& mainJobId, const mp_string& subJobId) const;
@@ -141,11 +176,20 @@ private:
 
     bool HandleRetryJob(const PluginJobData& data);
 
-    mp_void Umount(const mp_string& mainID);
+    mp_void GetMountPoints(const mp_string& mainID, std::vector<mp_string>& vecCacheMountPoints,
+    std::vector<mp_string>& vecNonCacheMountPoints, bool& isFileClientMount);
+
+    mp_void Umount(const mp_string& mainID, std::shared_ptr<MountPointInfo> abortMountInfo = nullptr);
 
     mp_int32 CheckCanBeRunInLocal(std::shared_ptr<Job> job);
 
     mp_int32 GetRunningJobsCount();
+
+    mp_void AbortUmountProcess(const mp_string& mainID);
+
+    mp_void ExecuteAbortJobForUmount(const AppProtect::SubJobDetails& jobInfo);
+
+    bool CheckSubJobsRunning(MainJobInfoPtr mainJob);
 
 private:
     // inner agent only
@@ -207,6 +251,7 @@ private:
 
     mp_int32 AddMainJobInfo(const Json::Value mainJob);
     mp_void DelMainJobInfo(const mp_string& mainJobId);
+    void EndJob(const MainJobInfoPtr& mainJobInfo);
 
     void ClearJobInMemory(const MainJobInfoPtr& mainJobInfo);
 
@@ -221,6 +266,11 @@ private:
 
     mutable std::mutex m_mutexOfRunJob;
     std::vector<std::shared_ptr<Job>> m_runJobs;
+
+    std::mutex m_mutexOFAbortJob;
+    // 外层key值为主任务id，内层key值为子任务id
+    std::map<mp_string, std::pair<
+        std::map<mp_string, std::shared_ptr<Job>>, std::shared_ptr<MountPointInfo>>> m_abortJobs;
 
     std::atomic<bool> m_started;
     std::unique_ptr<std::thread> m_thread;

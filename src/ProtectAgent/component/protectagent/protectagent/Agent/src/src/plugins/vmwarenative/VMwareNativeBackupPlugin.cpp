@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file VMwareNativeBackupPlugin.cpp
+ * @brief  The implemention about VMwareNativeBackupPlugin
+ * @version 1.0.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #include "plugins/vmwarenative/VMwareNativeBackupPlugin.h"
 #include "message/tcp/CDppMessage.h"
 #include "apps/vmwarenative/VMwareDef.h"
@@ -135,7 +132,8 @@ EXTER_ATTACK mp_int32 VMwareNativeBackupPlugin::InitVMwareNativeVddkLib(CDppMess
             reqMsg.GetIpAddr(), reqMsg.GetPort(), strTaskID, rspBody);
         rspBody[MANAGECMD_KEY_ERRORCODE] = iRet;
         if (iRet != MP_SUCCESS) {
-            strError = "Init VDDK lib failed!";
+            strError = "Init VDDK lib failed, errorDetail: This function cannot be performed because the handle is "
+                       "executing another function";
             ERRLOG("Init VDDK lib failed!");
         }
     }

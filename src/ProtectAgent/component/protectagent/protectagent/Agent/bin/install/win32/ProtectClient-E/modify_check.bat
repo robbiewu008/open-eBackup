@@ -1,14 +1,4 @@
 @echo off
-::  This file is a part of the open-eBackup project.
-::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-::  If a copy of the MPL was not distributed with this file, You can obtain one at
-::  http://mozilla.org/MPL/2.0/.
-:: 
-::  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-:: 
-::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 setlocal EnableDelayedExpansion
 
 set CURRENT_PATH=%~dp0
@@ -23,7 +13,11 @@ set LOG_ERR_FILE=%AGENT_ROOT_PATH%\tmp\errormsg.log
 set AGENT_MODIFY_PACKAGE_PATH=%AGENT_PKG_INSTALL_PATH%\PushModify\
 set AGENT_MODIFY_PACKAGE_PATH_DIVER=%AGENT_MODIFY_PACKAGE_PATH:~0,2%
 
+set WIN_SYSTEM_DISK=%WINDIR:~0,1%
 set CURRENT_HOSTSN_FILE=C:\Users\Default\HostSN
+if not "%WIN_SYSTEM_DISK%" == "" (
+    set CURRENT_HOSTSN_FILE=%WIN_SYSTEM_DISK%:\Users\Default\HostSN
+)
 
 set CONF_BACKUP_HOSTSN_FILE=%AGENT_ROOT_PATH%\conf\HostSN
 

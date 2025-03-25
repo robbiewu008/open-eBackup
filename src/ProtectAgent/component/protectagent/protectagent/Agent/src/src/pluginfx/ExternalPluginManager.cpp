@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ *
+ * @file ExternalPluginParse.h
+ * @brief  The implemention about ExternalPluginParse.h
+ * @version 1.1.0
+ * @date 2021-10-13
+ * @author machenglin mwx1011302
+ */
 #include "pluginfx/ExternalPluginManager.h"
 #include <fstream>
 #ifdef WIN32
@@ -120,6 +117,43 @@ mp_int32 InvokingRpcInterface(std::shared_ptr<AppProtect::ApplicationServiceConc
 
     return MP_SUCCESS;
 }
+
+mp_int32 AsyncListApplicationResourceInner(ListResourceRequest &request, mp_string jobId,
+    CResponseMsg &responseMsg, std::shared_ptr<AppProtect::ApplicationServiceConcurrentClient> appServiceClient)
+{
+    Json::Value &jValueRsp = responseMsg.GetJsonValueRef();
+    ActionResult _return;
+    try {
+        INFOLOG("Enter AsyncListApplicationResourceInner. id=%s.", request.id.c_str());
+        appServiceClient->AsyncListApplicationResource(_return, request);
+    } catch (apache::thrift::transport::TTransportException &ex) {
+        ERRLOG("TTransportException. %s", ex.what());
+        _return.code = MP_FAILED;
+    } catch (AppProtectPluginException &ex) {
+        ERRLOG("AppProtectPluginException. code=%d, message=%s.", ex.code, ex.message.c_str());
+        _return.code = MP_FAILED;
+    } catch (const std::exception &ex) {
+        ERRLOG("Standard C++ Exception. %s", ex.what());
+        _return.code = MP_FAILED;
+    }
+    if (_return.code == MP_SUCCESS) {
+        jValueRsp["code"] = _return.code;
+        jValueRsp["message"] = _return.message;
+        INFOLOG("AsyncListApplicationResource Inner success.");
+    } else {
+        jValueRsp["code"] = _return.code;
+        jValueRsp["bodyErr"] = _return.bodyErr;
+        jValueRsp["message"] = _return.message;
+        for (mp_string str : _return.bodyErrParams) {
+            jValueRsp["bodyErrParams"].append(str);
+        }
+        WARNLOG("AsyncListApplicationResource Inner failed, jobId=%s, code=%d, bodyErr=%d, message=%s.",
+            jobId.c_str(), _return.code, _return.bodyErr, _return.message.c_str());
+    }
+
+    return _return.code;
+}
+
 } // namespace
 
 ExternalPluginManager::ExternalPluginManager()
@@ -180,6 +214,47 @@ mp_int32 ExternalPluginManager::InvokingPlugins(const Json::Value &requestParam,
         request.condition.orders.push_back(*it);
     }
     return InvokingRpcInterface(appServiceClient, request, responseMsg);
+}
+
+mp_int32 ExternalPluginManager::AsyncListApplicationResource(const Json::Value &requestParam, CResponseMsg &responseMsg,
+    const std::shared_ptr<AppProtect::ApplicationServiceConcurrentClient> &appServiceClient, const mp_string id)
+{
+    LOGGUARD("");
+    INFOLOG("Enter the ExternalPluginManager::AsyncListApplicationResource.");
+    CHECK_JSON_VALUE(requestParam, "appEnv")
+    CHECK_JSON_VALUE(requestParam, "applications")
+    CHECK_JSON_VALUE(requestParam, "conditions")
+    
+    ListResourceRequest request;
+    ApplicationEnvironment appEnv;
+    std::vector<Application> applications;
+    JsonToStruct(requestParam["appEnv"], appEnv);
+    if (!requestParam.isMember("applications") ||
+        (!requestParam["applications"].empty() && !requestParam["applications"].isArray())) {
+        ERRLOG("Check 'applications' failed.");
+        return ERROR_COMMON_INVALID_PARAM;
+    }
+    for (Json::ArrayIndex index = 0; index < requestParam["applications"].size(); ++index) {
+        Application applicationTmp;
+        JsonToStruct(requestParam["applications"][index], applicationTmp);
+        applications.push_back(applicationTmp);
+    }
+    request.__set_appEnv(appEnv);
+    request.__set_applications(applications);
+    std::vector<std::string> orders;
+    std::string conditions;
+    GET_JSON_INT32_OPTION(requestParam, "pageNo", request.condition.pageNo);
+    GET_JSON_INT32_OPTION(requestParam, "pageSize", request.condition.pageSize);
+    if (requestParam["conditions"].type() != Json::nullValue) {
+        GET_JSON_STRING_OPTION(requestParam, "conditions", conditions);
+        request.condition.__set_conditions(conditions);
+    }
+    for (std::vector<std::string>::const_iterator it = orders.begin(); it != orders.end(); ++it) {
+        request.condition.orders.push_back(*it);
+    }
+    INFOLOG("the job id in AsyncListApplicationResource is %s.", id.c_str());
+    request.__set_id(id);
+    return AsyncListApplicationResourceInner(request, id, responseMsg, appServiceClient);
 }
 
 mp_int32 ExternalPluginManager::FinalizeClear(const Json::Value &requestParam, CResponseMsg &responseMsg,
@@ -797,6 +872,31 @@ mp_int32 ExternalPluginManager::QueryPluginDetailV2(const mp_string &strAppType,
     const Json::Value &requestParam = requestMsg.GetMsgBody().GetJsonValueRef();
 
     return InvokingPlugins(requestParam, responseMsg, appServiceClient);
+}
+
+mp_int32 ExternalPluginManager::PluginAsyncListApplicationResource(const mp_string &strAppType, CRequestMsg &requestMsg,
+    CResponseMsg &responseMsg)
+{
+    LOGGUARD("");
+    INFOLOG("Start PluginAsyncListApplicationResource.");
+    mp_string strTaskID = requestMsg.GetURL().GetSpecialQueryParam("id");
+    responseMsg.SetHttpType(CResponseMsg::RSP_JSON_TYPE2);
+    auto plugin = GetPluginByRest(strAppType);
+    if (plugin == nullptr) {
+        ERRLOG("Get plugin failed. strAppType:%s", strAppType.c_str());
+        return MP_FAILED;
+    }
+    auto pClient = plugin->GetPluginClient();
+    if (pClient == nullptr) {
+        ERRLOG("Get thrift client failed. strAppType:%s", strAppType.c_str());
+        return MP_FAILED;
+    }
+    AutoReleasePlugin autoRelease(strAppType);
+    auto appServiceClient = GetApplicationServiceClient(pClient);
+ 
+    const Json::Value &requestParam = requestMsg.GetMsgBody().GetJsonValueRef();
+ 
+    return AsyncListApplicationResource(requestParam, responseMsg, appServiceClient, strTaskID);
 }
 
 mp_int32 ExternalPluginManager::PluginFinalizeClear(const mp_string &strAppType, CRequestMsg &requestMsg,

@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file CurlHttpClient.cpp
+ * @brief  Contains function declarations HTTP Send And Response
+ * @version 1.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #include <sstream>
 #include <set>
 #include <algorithm>
@@ -19,6 +16,7 @@
 #endif
 #include "common/Log.h"
 #include "common/MpString.h"
+#include "common/Ip.h"
 #include "common/Path.h"
 #include "securecom/CryptAlg.h"
 #include "common/ConfigXmlParse.h"
@@ -212,11 +210,11 @@ mp_int32 CurlHttpResponse::CheckCRLStatus()
             continue;
         } else {
             mp_string strStatus = it.substr(it.find("=", 0) + 1);
-            if (!strStatus.empty() && std::stoi(strStatus) == 0) {
+            if (!strStatus.empty() && CMpString::SafeStoi(strStatus, 0) == 0) {
                 DBGLOG("Certificate is not currently imported.");
                 return MP_SUCCESS_NO_IMPORTED;
             }
-            if (!strStatus.empty() && std::stoi(strStatus) == 1) {
+            if (!strStatus.empty() && CMpString::SafeStoi(strStatus, 0) == 1) {
                 WARNLOG("Certificate is currently imported.");
                 return MP_SUCCESS_IS_IMPORTED;
             }
@@ -229,15 +227,24 @@ mp_int32 CurlHttpResponse::CheckCRLStatus()
     return MP_ERROR;
 }
 
-bool CurlHttpResponse::TestConnectivity(const std::string& ip, const std::string& port)
+bool CurlHttpResponse::TestConnectivity(const std::string& ip, const std::string& port,
+    uint32_t testTimeout, const std::string& srcHost)
 {
     std::string url = "http://";
-    url += ip;
+    if (CIP::IsIPV4(ip)) {
+        url += ip;
+    } else {
+        url = url + "[" + ip + "]";
+    }
     url += (":" + port);
 
     int timeout = DEFAULT_TEST_CONNECTIVITY_TIMEOUT;
-    CConfigXmlParser::GetInstance().GetValueInt32(CFG_SYSTEM_SECTION, CFG_CURL_CONNECTIVITY_TIMEOUT, timeout);
-    timeout = (timeout > 0) ? timeout : DEFAULT_TEST_CONNECTIVITY_TIMEOUT;
+    if (testTimeout == 0) {
+        CConfigXmlParser::GetInstance().GetValueInt32(CFG_SYSTEM_SECTION, CFG_CURL_CONNECTIVITY_TIMEOUT, timeout);
+        timeout = (timeout > 0) ? timeout : DEFAULT_TEST_CONNECTIVITY_TIMEOUT;
+    } else {
+        timeout = testTimeout;
+    }
 
     char curl_error_str[CURL_ERROR_SIZE] = {0};
 
@@ -249,7 +256,7 @@ bool CurlHttpResponse::TestConnectivity(const std::string& ip, const std::string
     curl_easy_setopt(m_Curl, CURLOPT_TIMEOUT, timeout);
 
     if (ip != LOCAL_IPADDR) {
-        SetBindToDevice("");
+        SetBindToDevice(srcHost);
     }
 
     CURLcode ret = curl_easy_perform(m_Curl);
@@ -257,7 +264,8 @@ bool CurlHttpResponse::TestConnectivity(const std::string& ip, const std::string
         COMMLOG(OS_LOG_DEBUG, "Host can connect url : %s.", url.c_str());
         return true;
     }
-    COMMLOG(OS_LOG_WARN, "Host can not connect url : %s, ret code: %d, err msg: %s.", url.c_str(), ret, curl_error_str);
+    COMMLOG(OS_LOG_DEBUG, "Host can not connect url : %s, ret code: %d, err msg: %s.",
+        url.c_str(), ret, curl_error_str);
     return false;
 }
 
@@ -372,6 +380,8 @@ void CurlHttpResponse::SetBindToDevice(const mp_string& networkCardName)
 {
     if (networkCardName != "") {
         curl_easy_setopt(m_Curl, CURLOPT_INTERFACE, networkCardName.c_str());
+        COMMLOG(OS_LOG_DEBUG, "Bind to device %s.", networkCardName.c_str());
+        return;
     }
 
     if (!StaticConfig::IsInnerAgent()) {
@@ -577,11 +587,12 @@ void CurlHttpResponse::CleanCurl(curl_slist* headers, struct curl_slist* host, F
     }
 }
 
-bool CurlHttpClient::TestConnectivity(const std::string& ip, const std::string& port)
+bool CurlHttpClient::TestConnectivity(const std::string& ip, const std::string& port,
+    uint32_t testTimeout, const std::string& srcHost)
 {
     std::shared_ptr<CurlHttpResponse> pRsp = std::make_shared<CurlHttpResponse>();
     if (pRsp && pRsp->Init()) {
-        return pRsp->TestConnectivity(ip, port);
+        return pRsp->TestConnectivity(ip, port, testTimeout, srcHost);
     }
     COMMLOG(OS_LOG_ERROR, "Rsp init fail.");
     return false;

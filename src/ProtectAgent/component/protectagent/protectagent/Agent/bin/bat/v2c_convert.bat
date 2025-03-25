@@ -1,14 +1,4 @@
 @echo off
-::  This file is a part of the open-eBackup project.
-::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-::  If a copy of the MPL was not distributed with this file, You can obtain one at
-::  http://mozilla.org/MPL/2.0/.
-:: 
-::  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-:: 
-::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 
 rem ***************************************************************************************
 rem program name:          v2c_convert.bat     
@@ -20,8 +10,12 @@ rem author:
 rem time:
 rem explain:
 rem ***************************************************************************************
+set WIN_SYSTEM_DISK=%WINDIR:~0,1%
 
 set DISKPART_RESULT=C:\tmp_result
+if not "%WIN_SYSTEM_DISK%" == "" (
+    set DISKPART_RESULT=%WIN_SYSTEM_DISK%:\tmp_result
+)
 set UserSysFullVersion=0
 set OsVersion=0
 set UserSysFullProduct=0
@@ -166,16 +160,21 @@ dism.exe /image:%SYS_LETTER%:\ /get-drivers | findstr viostor
 set viostorExist=%errorlevel%
 
 ::install_driver
+set WINDOWS_KVM_DRIVER_DIR=C:\windows_kvm_driver
+if not "%WIN_SYSTEM_DISK%" == "" (
+    set WINDOWS_KVM_DRIVER_DIR=%WIN_SYSTEM_DISK%:\windows_kvm_driver
+)
+
 if %balloonExist% == 1 (
-dism.exe /image:%SYS_LETTER%:\ /add-driver /driver:C:\windows_kvm_driver\Balloon\%DriverName%\%ArchType%\balloon.inf )
+dism.exe /image:%SYS_LETTER%:\ /add-driver /driver:%WINDOWS_KVM_DRIVER_DIR%\Balloon\%DriverName%\%ArchType%\balloon.inf )
 if %netkvmExist% == 1 (
-dism.exe /image:%SYS_LETTER%:\ /add-driver /driver:C:\windows_kvm_driver\NetKVM\%DriverName%\%ArchType%\netkvm.inf )
+dism.exe /image:%SYS_LETTER%:\ /add-driver /driver:%WINDOWS_KVM_DRIVER_DIR%\NetKVM\%DriverName%\%ArchType%\netkvm.inf )
 if %vioscsiExist% == 1 (
-dism.exe /image:%SYS_LETTER%:\ /add-driver /driver:C:\windows_kvm_driver\vioscsi\%DriverName%\%ArchType%\vioscsi.inf )
+dism.exe /image:%SYS_LETTER%:\ /add-driver /driver:%WINDOWS_KVM_DRIVER_DIR%\vioscsi\%DriverName%\%ArchType%\vioscsi.inf )
 if %vioserExist% == 1 (
-dism.exe /image:%SYS_LETTER%:\ /add-driver /driver:C:\windows_kvm_driver\vioserial\%DriverName%\%ArchType%\vioser.inf )
+dism.exe /image:%SYS_LETTER%:\ /add-driver /driver:%WINDOWS_KVM_DRIVER_DIR%\vioserial\%DriverName%\%ArchType%\vioser.inf )
 if %viostorExist% == 1 (
-dism.exe /image:%SYS_LETTER%:\ /add-driver /driver:C:\windows_kvm_driver\viostor\%DriverName%\%ArchType%\viostor.inf )  
+dism.exe /image:%SYS_LETTER%:\ /add-driver /driver:%WINDOWS_KVM_DRIVER_DIR%\viostor\%DriverName%\%ArchType%\viostor.inf )  
 
 if not %errorlevel% == 0 ( goto ErrorExitDriver )
 goto NormalExit

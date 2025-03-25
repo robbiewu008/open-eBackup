@@ -1,15 +1,13 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ *
+ * @file AppProtectService.h
+ * @brief Implement for application protect
+ * @version 1.1.0
+ * @date 2021-10-30
+ * @author wangguitao 00510599
+ */
+
 #ifndef APPLICATION_PROTECT_SERVICE_H
 #define APPLICATION_PROTECT_SERVICE_H
 
@@ -27,6 +25,7 @@ public:
     static std::shared_ptr<AppProtectService> GetInstance();
 
     mp_int32 Init();
+    mp_void SetSanclientFailedPreJob(const mp_string &taskId);
     mp_int32 SanclientJobForUbc(Json::Value& jvReq, CRequestMsg& req);
     mp_int32 WakeUpJob(CRequestMsg& req, CResponseMsg& rsp);
     mp_int32 AbortJob(CRequestMsg& req, CResponseMsg& rsp);
@@ -100,9 +99,11 @@ private:
     static std::mutex m_mutex_luninfolist;
     static std::mutex m_mutex_errorcodelist;
     static std::mutex m_mutex_mountpoint;
+    static std::mutex m_mutex_sanclientprejobfailedset;
     std::map<mp_string, std::vector<mp_string>> m_mountPoint;
     std::map<mp_string, Json::Value> m_LuninfoList;
     std::map<mp_string, mp_int32> m_ErrorcodeList;
+    std::set<mp_string> m_sanclientPreJobFailedSet;
     std::vector<AppProtect::LunInfo> m_lunInfos;
     std::list<int> m_lunidList;
     mp_bool m_jvReqGenerated = false;

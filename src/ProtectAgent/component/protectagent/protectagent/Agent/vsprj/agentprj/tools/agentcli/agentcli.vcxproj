@@ -36,6 +36,7 @@
     <ClCompile Include="..\..\..\..\src\src\tools\agentcli\UnixTimeStamp.cpp" />
     <ClCompile Include="..\..\..\..\src\src\tools\agentcli\WinMountCifs.cpp" />
     <ClCompile Include="..\..\..\..\src\src\tools\agentcli\MergeConfFiles.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\tools\agentcli\UpgradeJsonConf.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\inc\tools\agentcli\ChangeIP.h" />
@@ -53,6 +54,7 @@
     <ClInclude Include="..\..\..\..\src\inc\tools\agentcli\TestHost.h" />
     <ClInclude Include="..\..\..\..\src\inc\tools\agentcli\UnixTimeStamp.h" />
     <ClInclude Include="..\..\..\..\src\inc\tools\agentcli\WinMountCifs.h" />
+    <ClCompile Include="..\..\..\..\src\inc\tools\agentcli\UpgradeJsonConf.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E2D7ADC9-CB08-465D-9ABE-DF4B3525C2DB}</ProjectGuid>
@@ -124,6 +126,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
       <BrowseInformation>true</BrowseInformation>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -144,6 +147,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -159,6 +163,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_DEBUG</PreprocessorDefinitions>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\..\..\bin\;..\..\..\..\open_src\openssl\out32</AdditionalLibraryDirectories>
@@ -174,6 +179,7 @@
       <DisableSpecificWarnings>4273;4251;4819</DisableSpecificWarnings>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>true</WholeProgramOptimization>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\..\..\bin\;..\..\..\..\open_src\openssl\out32\lib;..\..\..\..\open_src\curl\builds\out_static\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

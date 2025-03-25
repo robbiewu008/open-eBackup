@@ -1,14 +1,4 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
-#
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 
 ######################################################################
 # The function of this script is to install the ProtectAgent client.
@@ -533,7 +523,11 @@ AdaptingCustomDirectory()
     AGENT_ROOT=$AGENT_ROOT_PATH
     BACKUP_COPY_DIR="${INSTALL_DIR_UPPER}/Bak/${CURRENT_TIME}"
     CHECK_DIR=${CUSTOM_INSTLL_PATH}
-    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${AGENT_ROOT_PATH}/bin
+    if [ -z "$LD_LIBRARY_PATH" ]; then
+        LD_LIBRARY_PATH=${AGENT_ROOT_PATH}/bin
+    else
+        LD_LIBRARY_PATH=${AGENT_ROOT_PATH}/bin:$LD_LIBRARY_PATH
+    fi
     AGENT_USER_LD_LIBRARY_PATH=${AGENT_ROOT_PATH}/bin
     LIBPATH=${AGENT_ROOT}/bin
     PLUGIN_DIR=${INSTALL_DIR}/Plugins
@@ -1015,12 +1009,17 @@ GetConfigInfo()
             if [ -z "${IS_SHARED}" ]; then
                 IS_SHARED=`cat ${UPGRADE_BACKUP_PATH}/ProtectClient-E/conf/testcfg.tmp | grep "IS_SHARED" | ${MYAWK} -F '=' '{print $NF}'`
             fi
+            if [ ! -z "${UPGRADE_BEFORE_LOGLEVEL}" ]; then
+                LOG_LEVEL=${UPGRADE_BEFORE_LOGLEVEL}
+            fi
         fi
         if [ ! -z "${PRIVATE_IP}" ]; then
             AGENT_IP=${PRIVATE_IP}
             Log "The ip address of the agent is ${AGENT_IP} which get from PRIVATE_IP."
         fi
-        LOG_LEVEL=`cat ${INSTALL_PACKAGE_PATH}/conf/client.conf | grep "log_level" | ${MYAWK} -F '=' '{print $NF}'`
+        if [ -z "${LOG_LEVEL}" ]; then
+            LOG_LEVEL=`cat ${INSTALL_PACKAGE_PATH}/conf/client.conf | grep "log_level" | ${MYAWK} -F '=' '{print $NF}'`
+        fi
         AVAILABLE_ZONE=`cat ${INSTALL_PACKAGE_PATH}/conf/client.conf | grep "available_zone" | ${MYAWK} -F '=' '{print $NF}'`
         IS_AUTO_SYNCHRONIZE_HOST_NAME=`cat ${INSTALL_PACKAGE_PATH}/conf/client.conf | grep "is_auto_synchronize_host_name" | ${MYAWK} -F '=' '{print $NF}'`
         ENABLE_HTTP_PROXY=`cat ${INSTALL_PACKAGE_PATH}/conf/client.conf | grep "enable_http_proxy" | ${MYAWK} -F '=' '{print $NF}'`
@@ -1029,6 +1028,7 @@ GetConfigInfo()
         IS_DPC_COMPUTE_NODE=`cat ${INSTALL_PACKAGE_PATH}/conf/client.conf | grep "is_dpc_compute_node" | ${MYAWK} -F '=' '{print $NF}'`
         DPC_STORAGE_FRONT_IP=`cat ${INSTALL_PACKAGE_PATH}/conf/client.conf | grep "dpc_storage_front_ip" | ${MYAWK} -F '=' '{print $NF}'`
         DPC_STORAGE_FRONT_GATEWAY=`cat ${INSTALL_PACKAGE_PATH}/conf/client.conf | grep "dpc_storage_front_gateway" | ${MYAWK} -F '=' '{print $NF}'`
+        IS_FILECLIENT_INSTALL=`cat ${INSTALL_PACKAGE_PATH}/conf/client.conf | grep "is_fileclient_install" | ${MYAWK} -F '=' '{print $NF}'`
     else
         echo "The configuration file client.conf cannot be found."
         LogError "The configuration file client.conf cannot be found." ${ERR_UPGRADE_INSTALL_PACKAGE_INCOMPLETE}
@@ -1327,6 +1327,7 @@ WriteParamTmp()
 	echo IS_DPC_COMPUTE_NODE=${IS_DPC_COMPUTE_NODE} | tr -d '\r' >> ${PARAMS_PATH}/testcfg.tmp
 	echo DPC_STORAGE_FRONT_IP=${DPC_STORAGE_FRONT_IP} | tr -d '\r' >> ${PARAMS_PATH}/testcfg.tmp
 	echo DPC_STORAGE_FRONT_GATEWAY=${DPC_STORAGE_FRONT_GATEWAY} | tr -d '\r' >> ${PARAMS_PATH}/testcfg.tmp
+    echo IS_FILECLIENT_INSTALL=${IS_FILECLIENT_INSTALL} | tr -d '\r' >> ${PARAMS_PATH}/testcfg.tmp
     # set permissions
     chmod 600 ${PARAMS_PATH}/testcfg.tmp
 }
@@ -1364,7 +1365,7 @@ ClearOldBak()
       oldFile=`ls -rt $fileDir|head -1`
       echo "Delete file:"$oldFile
       rm -rf $fileDir/$oldFile
-      let "f_size--"
+      let "f_size-=1"
       done
   fi
 }
@@ -1526,9 +1527,11 @@ CpAndDecompressPkg()
     else
         Temporary_Path=`pwd`
         cd "${INSTALL_DIR}/ProtectClient-E"
-        xz -d $FILE_PATH
+        chmod 550 ${INSTALL_PACKAGE_PATH}/third_party_software/XZ/xz
+        ${INSTALL_PACKAGE_PATH}/third_party_software/XZ/xz -d $FILE_PATH
         protectAgentFile=${FILE_PATH%%.xz}
         tar -xf "${INSTALL_DIR}/ProtectClient-E/${protectAgentFile}"
+        cp ${INSTALL_PACKAGE_PATH}/third_party_software/XZ/xz ${INSTALL_DIR}/ProtectClient-E/bin
         rm -rf ${protectAgentFile} >/dev/null 2>&1
         cd "$Temporary_Path"
     fi
@@ -1581,8 +1584,8 @@ WriteAgentConfig()
     if [ "${ASAN_OPTIONS}" != "0" ]; then
         SUExecCmd "${AGENT_ROOT_PATH}/bin/xmlcfg write Monitor rdagent vm_size 104857600"
     fi
-    if [ "${LOG_LEVEL}" = "0" ]; then
-        SUExecCmd "${INSTALL_DIR}/ProtectClient-E/bin/xmlcfg write System log_level ${LOG_LEVEL}"
+    if [ ! -z "${LOG_LEVEL}" ]; then
+        SUExecCmd "${AGENT_ROOT_PATH}/bin/xmlcfg write System log_level ${LOG_LEVEL}"
     fi
     if [ "${ENABLE_HTTP_PROXY}" != "" ]; then
         SUExecCmd "${AGENT_ROOT_PATH}/bin/xmlcfg write System enable_http_proxy ${ENABLE_HTTP_PROXY}"
@@ -1666,6 +1669,7 @@ ContainerSecure()
     echo "rdadmin   ALL=NOPASSWD: NOPASSWD:/opt/script/change_permission.sh" >> /etc/sudoers
     echo "rdadmin   ALL=NOPASSWD: NOPASSWD:${INSTALL_DIR}/ProtectClient-E/sbin/rootexec" >> /etc/sudoers
     echo "rdadmin   ALL=NOPASSWD: NOPASSWD:/usr/sbin/iscsid" >> /etc/sudoers
+    echo "rdadmin   ALL=NOPASSWD: NOPASSWD:/usr/sbin/iscsiadm" >> /etc/sudoers
     rm -rf /usr/bin/kmcdecrypt
 
     # 3. HostSN
@@ -1718,10 +1722,9 @@ CreateSoftLinkToStdcpp()
 CreateSoftLinkToLibcrypt()
 {
     if [ "$SYS_NAME" = "Linux" ]; then
-        if [ -f "/etc/os-version" ]; then
-            # UOS
+        LIB_CRYPT_SO=`find ${AGENT_ROOT_PATH}/bin -name "libcrypt.so*"`
+        if [ "$LIB_CRYPT_SO" != "" ]; then
             [ -f "libcrypt.so.1" ] && return 0
-            LIB_CRYPT_SO=`find ${AGENT_ROOT_PATH}/bin -name "libcrypt.so*"`
             ln -fs "${LIB_CRYPT_SO}" "${AGENT_ROOT_PATH}/bin/libcrypt.so.1"
         fi
     fi

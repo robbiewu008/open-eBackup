@@ -1,14 +1,9 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ *
+ * Description: TPOPS task manager.
+ * Create: 2023-10-31
+ * Author: t30046161
 */
 #ifndef TPOPS_TASK_MANAGE_H_
 #define TPOPS_TASK_MANAGE_H_
@@ -16,7 +11,7 @@
 
 class TpopsTaskManage : public AppTaskManage {
 public:
-    TpopsTaskManage() : AppTaskManage() {}
+    TpopsTaskManage(mp_string jobType) : AppTaskManage() { m_jobType = jobType; }
     mp_int32 UpdateTaskWhenCreateObject(const BsaObjectDescriptor &objDesc) override;
     mp_int32 UpdateTaskWhenQueryObject(const BsaQueryDescriptor &objDesc) override;
     mp_void AllocFilesystem(BsaObjInfo &objInfo) override;
@@ -27,6 +22,9 @@ protected:
     mp_bool FillQuryRspCommonTpops(mp_long bsaHandle, const BsaObjInfo &queryReslt, T &rsp);
 private:
     mp_int32 GetTaskInfoLockedInner();
+    mp_bool GetTpopsCacheInfoFile(mp_string &tpopsCacheInfoFile, mp_string &instanceId);
+private:
+    mp_string m_jobType;
 };
 
 #endif

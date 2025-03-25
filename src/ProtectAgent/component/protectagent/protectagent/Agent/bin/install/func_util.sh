@@ -1,14 +1,4 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
-#
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #############################################
 # this shell for basic function
 #############################################
@@ -494,6 +484,7 @@ AddUserAndGroup()
                     Log "Add user fail."
                     exit 1
                 else
+                    chage -M -1 ${AGENT_USER}
                     Log "Add user succ."
                     return
                 fi
@@ -511,6 +502,19 @@ AddUserAndGroup()
             echo "The installation of DataBackup ProtectAgent will be stopped."
             LogError "The DataBackup ProtectAgent working user ${AGENT_USER} has already existed, please delete it before install." ${ERR_UPGRADE_FAIL_ADD_USER}
             exit $ERR_WORKINGUSER_EXISTS
+        fi
+
+        if [ "${SYS_NAME}" = "SunOS" ]; then
+            passwd -x -1 ${AGENT_USER}
+        elif [ "${SYS_NAME}" = "AIX" ]; then
+            chuser maxage=0 ${AGENT_USER}
+        else
+            chage -M -1 ${AGENT_USER}
+        fi
+
+        if [ 0 -ne $? ]; then
+            echo "The passward of DataBackup ProtectAgent working user ${AGENT_USER} set unexpired unsuccessfully, please set manually."
+            Log "The passward of DataBackup ProtectAgent working user ${AGENT_USER} set unexpired unsuccessfully, please set manually."
         fi
     else
         echo "The DataBackup ProtectAgent working user ${AGENT_USER} has already existed, please delete it before install."
@@ -662,10 +666,16 @@ SUExecCmdWithOutput()
     cmd=$1
     if [ "${SYS_NAME}" = "SunOS" ] || [ "${SYS_NAME}" = "AIX" ]; then
         output=`su - ${AGENT_USER} -c "${EXPORT_ENV}${cmd}"` 
+        ret=$?
     else
         output=`su -m ${AGENT_USER} -s ${SHELL_TYPE_SH} -c "${EXPORT_ENV}${cmd}"`
+        ret=$?
+        if [ $ret -ne 0 ]; then
+            output=`su -p ${AGENT_USER} -s ${SHELL_TYPE_SH} -c "${EXPORT_ENV}${cmd}"`
+            ret=$?
+        fi
     fi
-    ret=$?
+    
     VerifySpecialChar "$output"
     echo $output
     return $ret
@@ -757,8 +767,7 @@ ChangePrivilege()
     [ -d "${AGENT_ROOT_PATH}/log/Plugins/" ] && SUExecCmd "chmod 700 -R ${AGENT_ROOT_PATH}/log/Plugins/"
 
     ############# change dir [tmp] ###########################
-    chown -h root:${ROOT_GROUP} "${AGENT_ROOT_PATH}/tmp"
-    CHMOD 703 "${AGENT_ROOT_PATH}/tmp"
+    CHMOD 700 "${AGENT_ROOT_PATH}/tmp"
     CHMOD o+t "${AGENT_ROOT_PATH}/tmp"
 
     ############# change dir [stmp] ###########################
@@ -770,7 +779,7 @@ ChangePrivilege()
     CHMOD 700 "${AGENT_ROOT_PATH}/lib"
 
     ############# change dir [conf] ###########################
-    SUExecCmd "chmod 700 -R ${AGENT_ROOT_PATH}/conf"
+    SUExecCmd "chmod 705 -R ${AGENT_ROOT_PATH}/conf"
     [ -f "${AGENT_ROOT_PATH}/conf/HostSN" ] && SUExecCmd 600 "${AGENT_ROOT_PATH}/conf/HostSN"
     [ -f "${AGENT_ROOT_PATH}/conf/pluginmgr.xml" ] && SUExecCmd "chmod 600 ${AGENT_ROOT_PATH}/conf/pluginmgr.xml"
     [ -f "${AGENT_ROOT_PATH}/conf/agent_cfg.xml" ] && SUExecCmd "chmod 600 ${AGENT_ROOT_PATH}/conf/agent_cfg.xml"
@@ -786,7 +795,7 @@ ChangePrivilege()
     [ -f "${AGENT_ROOT_PATH}/conf/kmc/agentcli_config_bak.txt" ] && SUExecCmd "chmod 600 ${AGENT_ROOT_PATH}/conf/kmc/agentcli_config_bak.txt"
     [ -f "${AGENT_ROOT_PATH}/conf/kmc/agentcli_store.txt" ] && SUExecCmd "chmod 600 ${AGENT_ROOT_PATH}/conf/kmc/agentcli_store.txt"
     [ -f "${AGENT_ROOT_PATH}/conf/kmc/agentcli_stroe_bak.txt" ] && SUExecCmd "chmod 600 ${AGENT_ROOT_PATH}/conf/kmc/agentcli_stroe_bak.txt"
-    [ -d "${AGENT_ROOT_PATH}/conf/thrift" ] && SUExecCmd "chmod 700 ${AGENT_ROOT_PATH}/conf/thrift"
+    [ -d "${AGENT_ROOT_PATH}/conf/thrift" ] && SUExecCmd "chmod 705 ${AGENT_ROOT_PATH}/conf/thrift"
     [ -d "${AGENT_ROOT_PATH}/conf/thrift/server" ] && SUExecCmd "chmod 700 ${AGENT_ROOT_PATH}/conf/thrift/server"
     [ -d "${AGENT_ROOT_PATH}/conf/thrift/server" ] && SUExecCmd "chmod 600 ${AGENT_ROOT_PATH}/conf/thrift/server/*"
     [ -d "${AGENT_ROOT_PATH}/conf/thrift/client" ] && SUExecCmd "chmod 700 ${AGENT_ROOT_PATH}/conf/thrift/client"

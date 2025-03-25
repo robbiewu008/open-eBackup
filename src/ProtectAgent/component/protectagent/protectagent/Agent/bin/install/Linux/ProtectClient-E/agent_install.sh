@@ -1,14 +1,4 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
-#
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 AGENT_USER=rdadmin
 AGENT_GROUP=rdadmin
@@ -34,18 +24,19 @@ PKEY_VERIFY=""
 PM_IP=""
 PM_IP_LIST=""
 PM_PORT=""
+PM_MANAGER_IP_LIST=""
+PM_MANAGER_PORT=""
 RDAGENT_PORT=""
 NGINX_PORT=""
 USER_ID=""
 IP_TYPE=""
-SEMICOLON=":"
-DOT="."
 DEPLOY_TYPE=""
 IS_ENABLE_DATATURBO=""
 
 IS_DPC_COMPUTE_NODE=""
 DPC_STORAGE_FRONT_IP=""
 DPC_STORAGE_FRONT_GATEWAY=""
+IS_FILECLIENT_INSTALL=""
 
 REGIST_DIR=${DATA_BACKUP_AGENT_HOME}/register
 LO_IP_IPV4="127.0.0.1"
@@ -122,6 +113,11 @@ fi
 
 if [ -n "${TMP_DATA_BACKUP_AGENT_HOME}" ] || [ -n "${TMP_DATA_BACKUP_SANCLIENT_HOME}" ] ; then
     . /etc/profile
+    if [ -n "${DATA_BACKUP_AGENT_HOME}" ] || [ -n "${DATA_BACKUP_SANCLIENT_HOME}" ] ; then
+        DATA_BACKUP_AGENT_HOME=${TMP_DATA_BACKUP_AGENT_HOME}
+        DATA_BACKUP_SANCLIENT_HOME=${TMP_DATA_BACKUP_SANCLIENT_HOME}
+        export DATA_BACKUP_AGENT_HOME DATA_BACKUP_SANCLIENT_HOME
+    fi
 else
     DATA_BACKUP_AGENT_HOME=/opt
     DATA_BACKUP_SANCLIENT_HOME=/opt
@@ -230,7 +226,7 @@ CreateInstallInfoFile()
     CHMOD 600 ${INSTALL_INFO_FILE}
 }
 
-# check the network connectivity
+# check the network connectivity, to find accessable pm ip
 AdaptListenIp()
 {
     Log "Adapting listening ip address."
@@ -247,27 +243,18 @@ AdaptListenIp()
     fi
     while [ 1 ]
     do
-        ipAddr=`echo "${PM_IP_LIST}" | $AWK -F ',' -v i="$index" '{print $i}'`
-        if [ "${ipAddr}" = "" ]; then
+        tmpPmIpAddr=`echo "${PM_IP_LIST}" | $AWK -F ',' -v i="$index" '{print $i}'`
+        if [ "${tmpPmIpAddr}" = "" ]; then
             break
         fi
-        PMIP_TYPE=`VerifyAndPing "$ipAddr"`
-        VerifyRes=$?
-        if [ ${VerifyRes} -eq 0 ] && [ ! -z "${AGENT_IP}" ]; then
-            CheckIpsType "${AGENT_IP}" "$ipAddr"
-            checkRes=$?
-            CheckIpsValid "${AGENT_IP}" "$ipAddr"
-            if [ $? -eq 0 ] && [ ${checkRes} -eq 0 ]; then
-                PM_IP="${ipAddr}"
-                Log "PM ip address0:${PM_IP}."
-                break
-            fi
-        elif [ ${VerifyRes} -eq 0 ]; then
-            PM_IP="${ipAddr}"
+        CheckIpsConnectivity "${AGENT_IP}" "$tmpPmIpAddr" "${PM_PORT}"
+        if [ $? -eq 0 ]; then
+            PM_IP="${tmpPmIpAddr}"
             Log "PM ip address1:${PM_IP}."
             break
         fi
         index=`expr $index + 1`
+        Log "Can not access PM ip address:${tmpPmIpAddr}."
     done
  
     if [ -n "$PM_IP" ]; then
@@ -275,7 +262,7 @@ AdaptListenIp()
         echo "PM ip($PM_IP) addresse can be accessed."
     else
         echo "PING_RESULT=1" >> ${INSTALL_INFO_FILE}
-        echo "All IP addresses cannot be accessed."
+        echo "All PM IP addresses cannot be accessed."
         LogError "All IP addresses cannot be accessed." ${ERR_UPGRADE_NETWORK_ERROR}
         exit 1
     fi
@@ -303,61 +290,6 @@ CheckIpsType()
     return 1
 }
 
-CheckIpsValid()
-{
-    srcIp=$1
-    dstIps=$2
-    echo ${dstIps} | grep "\\." >/dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        G_NETWORK_TYPE="ipv4"
-        for ip in ${dstIps}; do
-            if [ "${SYS_NAME}" = "SunOS" ]; then
-                if [ -z "${srcIp}" ]; then
-                    ping -s ${ip} 56 1 > /dev/null 2>&1
-                else
-                    ping -i ${srcIp} -s ${ip} 56 1 > /dev/null 2>&1
-                fi
-            else
-                if [ -z "${srcIp}" ]; then
-                    ping -c 1 -w 3 ${ip} > /dev/null 2>&1
-                else
-                    ping -c 1 -I ${srcIp} ${ip} > /dev/null 2>&1
-                fi
-            fi
-            if [ $? -eq 0 ]; then
-                Log "Check connection from src ${srcIp} to dst ${ip} success."
-                return 0
-            fi
-            Log "Check connection from src ${srcIp} to dst ${ip} fail."
-        done
-    else
-        G_NETWORK_TYPE="ipv6"
-        for ip in ${dstIps}; do
-            if [ "${SYS_NAME}" = "SunOS" ]; then
-                if [ -z "${srcIp}" ]; then
-                    ping6 -s ${ip} 56 1 > /dev/null 2>&1
-                else
-                    ping6 -i ${srcIp} -s ${ip} 56 1 > /dev/null 2>&1
-                fi
-            else
-                if [ -z "${srcIp}" ]; then
-                    ping6 -c 1 -w 3 ${ip} > /dev/null 2>&1
-                else
-                    ping6 -c 1 -I ${srcIp} ${ip} > /dev/null 2>&1
-                fi
-            fi
-            if [ $? -eq 0 ]; then
-                Log "Check connection from src ${srcIp} to dst ${ip} success."
-                return 0
-            fi
-            Log "Check connection from src ${srcIp} to dst ${ip} fail."
-        done
-    fi
-    ShowWarning "Local ip ${srcIp} can not connect remote ip ${ip}."
-    Log "Local ip ${srcIp} can not connect remote ip ${ip}."
-    return 1
-}
-
 #获取临时配置文件信息
 GetConfigInfo()
 {
@@ -370,14 +302,29 @@ GetConfigInfo()
     BACKUP_ROLE=`SUExecCmdWithOutput "sed '/^BACKUP_ROLE=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
     BACKUP_SCENE=`SUExecCmdWithOutput "sed '/^BACKUP_SCENE=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
     AGENT_IP=`SUExecCmdWithOutput "sed '/^AGENT_IP=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
+    Log "Agent ip is $AGENT_IP."
 
     PM_IP_LIST=`SUExecCmdWithOutput "sed '/^PM_IP=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
     PM_PORT=`SUExecCmdWithOutput "sed '/^PM_PORT=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
+    PM_MANAGER_IP_LIST=`SUExecCmdWithOutput "sed '/^PM_MANAGER_IP=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
+    PM_MANAGER_PORT=`SUExecCmdWithOutput "sed '/^PM_MANAGER_PORT=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
 
     IS_DPC_COMPUTE_NODE=`SUExecCmdWithOutput "sed '/^IS_DPC_COMPUTE_NODE=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
     DPC_STORAGE_FRONT_IP=`SUExecCmdWithOutput "sed '/^DPC_STORAGE_FRONT_IP=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
     DPC_STORAGE_FRONT_GATEWAY=`SUExecCmdWithOutput "sed '/^DPC_STORAGE_FRONT_GATEWAY=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
-    CheckIpsValid "${AGENT_IP}" "`echo ${PM_IP_LIST} | sed 's/,/ /g'`"
+    IS_FILECLIENT_INSTALL=`SUExecCmdWithOutput "sed '/^IS_FILECLIENT_INSTALL=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
+
+    if [ "${BACKUP_ROLE}" = "" ]; then
+        echo "Get BACKUP_ROLE from config failed."
+        Log "Get BACKUP_ROLE from config failed."
+        LogError "Get BACKUP_ROLE from config failed." ${ERR_UPGRADE_FAIL_READ_CONFIGURE}
+        exit 1
+    fi
+    #内置参数写入
+    SUExecCmd "${AGENT_ROOT_PATH}/bin/xmlcfg write Backup backup_scene ${BACKUP_SCENE}"
+
+    # check if can access pm 
+    CheckIpsConnectivity "${AGENT_IP}" "`echo ${PM_IP_LIST} | sed 's/,/ /g'`" "${PM_PORT}"
     if [ $? -ne 0 ] && [ ${BACKUP_SCENE} -ne ${BACKUP_SCENE_INTERNAL} ]; then
         CheckIsEip ${AGENT_IP}
         RET_CODE=$?
@@ -387,7 +334,7 @@ GetConfigInfo()
             business_is_usable=0
             for i in 1 2 3; do
                 sleep 5
-                CheckIpsValid "${AGENT_IP}" "`echo ${PM_IP_LIST} | sed 's/,/ /g'`"
+                CheckIpsConnectivity "${AGENT_IP}" "`echo ${PM_IP_LIST} | sed 's/,/ /g'`" "${PM_PORT}"
                 if [ $? -eq 0 ]; then
                     business_is_usable=1
                     echo "The business IP has been restored, use the business ip."
@@ -403,18 +350,9 @@ GetConfigInfo()
                 exit 1
             fi
         elif [ ${RET_CODE} -ne 0 ]; then
-            PM_IP_LIST=`SUExecCmdWithOutput "sed '/^PM_MANAGER_IP=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
-            PM_PORT=`SUExecCmdWithOutput "sed '/^PM_MANAGER_PORT=/!d;s/.*=//' ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp"`
+            PM_IP_LIST=$PM_MANAGER_IP_LIST
+            PM_PORT=$PM_MANAGER_PORT
         fi
-    fi
-    #内置参数写入
-    SUExecCmd "${AGENT_ROOT_PATH}/bin/xmlcfg write Backup backup_scene ${BACKUP_SCENE}"
-
-    if [ "${BACKUP_ROLE}" = "" ]; then
-        echo "Get BACKUP_ROLE from config failed."
-        Log "Get BACKUP_ROLE from config failed."
-        LogError "Get BACKUP_ROLE from config failed." ${ERR_UPGRADE_FAIL_READ_CONFIGURE}
-        exit 1
     fi
 }
 
@@ -562,60 +500,6 @@ GetNetworkType()
     done
 }
 
-CheckConnectivity()
-{
-    # check ip type
-    echo $1 | grep "\\${SEMICOLON}" >/dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        IP1Type="ipv6"
-    else
-        echo $1 | grep "\\${DOT}" >/dev/null 2>&1
-        if [ $? -eq 0 ]; then
-            IP1Type="ipv4"
-        else
-            return 1
-        fi
-    fi
-
-    echo $2 | grep "\\${SEMICOLON}" >/dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        IP2Type="ipv6"
-    else
-        echo $2 | grep "\\${DOT}" >/dev/null 2>&1
-        if [ $? -eq 0 ]; then
-            IP2Type="ipv4"
-        else
-            return 1
-        fi
-    fi
-    # check ip match or not
-    if [ "${IP1Type}" != "${IP2Type}" ]; then
-        return 1
-    fi
-    # check ip connectivity
-    if [ ${IP1Type} = "ipv4" ]; then
-        if [ "${SYS_NAME}" = "SunOS" ]; then
-            ping -i $1 -s $2 56 1 > /dev/null 2>&1
-        else
-            ping -c 1 -I $1 $2 > /dev/null 2>&1
-        fi
-    elif [ ${IP1Type} = "ipv6" ]; then
-        if [ "${SYS_NAME}" = "SunOS" ]; then
-            ping6 -i $1 -s $2 56 1 > /dev/null 2>&1
-        else
-            ping6 -c 1 -I $1 $2 > /dev/null 2>&1
-        fi
-    else
-        return 1
-    fi
-
-    if [ $? -ne 0 ]; then
-        return 1
-    fi
-
-    return 0
-}
-
 ChooseEIP()
 {
     if [ "$UPGRADE_FLAG_TEMPORARY" = "1" ]; then
@@ -629,13 +513,13 @@ ChooseEIP()
     choice_number=0
     while [ $choice_number -lt 3 ]
     do
-        printf "\\033[1;32mCheck whether the host is an EIP node:(y|n), default(n)\\033[0m \n"
+        printf "\\033[1;32mCheck whether the agent ip will be redirected?(Such as EIP or the ip transformed by NAT):(y|n), default(n)\\033[0m \n"
         printf "Your choice:"
         read eip_choice
         if [ "$eip_choice" = "" ] || [ "$eip_choice" = "n" ]; then
             return 0
         elif [ "$eip_choice" = "y" ]; then
-                echo "Please enter the EIP."
+                printf "Please enter the redirect ip: "
                 read eip
                 chkResult=`CheckIpLegality ${eip}`
                 if [ $chkResult -ne 0 ]; then
@@ -718,7 +602,7 @@ GetLocalConnectableNic()
         fi
         for retryTime in 0 1 2
         do
-            IpPing "$pingCMD" "$nic" "$PM_IP"
+            CheckIpsConnectivity "$nic" "$PM_IP" "$PM_PORT"
             if [ $? -eq 0 ]; then
                 echo ${nic} > ${AGENT_ROOT_PATH}/stmp/NicTmp/${nic}
                 break
@@ -786,17 +670,6 @@ SetIp()
         return 0
     fi
 
-    if [ "${LOCALNICARRAY}" = "" ]; then
-        echo "Obtaining ProtectAgent network adapter information. Please wait..."
-        Log "Obtaining ProtectAgent network adapter information. Please wait..."
-        GetLocalConnectableNic
-        if [ "${LOCALNICARRAY}" = "" ]; then
-            echo "The local IP address that can connect to the ProtectManager is not found. error exit."
-            LogError "The local IP address that can connect to the ProtectManager is not found. error exit." ${ERR_IPADDR_SET_FAILED}
-            exit $ERR_IPADDR_SET_FAILED_RETCODE
-        fi
-    fi
-
     GetLocalNicName
 
     # HP-UX use ip, others use nic
@@ -858,7 +731,9 @@ GetLocalNicName()
                 echo "Please select the serial number is greater than 0 numbers."
                 Log "Please select the serial number is greater than 0 numbers."
                 PrintPrompt
-                read ipIndex
+                if [ "${INSTALLATION_MODE}" != "push" ]; then
+                    read ipIndex
+                fi
                 TmpIndex=${ipIndex}
             elif [ ${localIpArraySize} -eq 1 ]; then
                 ipIndex=${index}
@@ -898,7 +773,7 @@ CheckIp()
 {
     if [ "$2" = "" ]; then
        ipIndex=$1
-    else 
+    else
        ipIndex=$2 
     fi
 
@@ -910,7 +785,7 @@ CheckIp()
         LocalConnectIPList=""
         if [ ${nicIpSize} -gt 1 ]; then
             for ip in ${nicLocalIp}; do
-                CheckConnectivity ${ip} ${PM_IP}
+                CheckIpsConnectivity  "${ip}" "${PM_IP}" "${PM_PORT}"
                 if [ $? -eq 0 ]; then
                     echo "The list of available IP addresses is as follows:"
                     Log "The list of available IP addresses is as follows:"
@@ -924,7 +799,7 @@ CheckIp()
             if [ $nicIpIndex -gt 1 ]; then
                 echo "Please select the serial number is greater than 0 numbers."
                 Log "Please select the serial number is greater than 0 numbers."
-                if [ "${INSTALLATION_MODE}" = "push" ]; then
+                if [ "${INSTALLATION_MODE}" = "push" ] || [ "${UPGRADE_FLAG_TEMPORARY}" = "1" ]; then
                     nicLocalIpIndex=1
                 else
                     CheckIpChoice
@@ -1310,7 +1185,7 @@ RegisterHost()
         Log "Register host to ProtectManager successfully."
         return 0
     else
-        if [ -f "${AGENT_ROOT}log/AgentInstallMode.log" ]; then
+        if [ -f "${AGENT_ROOT_PATH}log/AgentInstallMode.log" ]; then
             Log "Duplicate host IP address exists in the ProtectManager,Register host to ProtectManager failed." 
             LogError "Duplicate host IP address exists in the ProtectManager,Register host to ProtectManager failed." ${ERR_SAMEIP_INSTALL_PUSH}
             exit ${ERR_SAMEIP_INSTALL_PUSH}
@@ -1412,6 +1287,7 @@ VerifyPasswd()
     fi
 }
 
+#该功能暂不使用
 ConfigDpcNetworkInfo()
 {
     if [ "${SYS_NAME}" != "Linux" ]
@@ -1721,7 +1597,8 @@ ConfigDwsHost()
         chmod 400 ${XBSA_INSTALL_NGINX_CONF_DIR}/*.key
         chown ${AGENT_USER}:${AGENT_GROUP} ${XBSA_INSTALL_NGINX_CONF_DIR}/*
         # set xbsa log mode
-        chmod 750 ${XBSA_INSTALL_LOG_DIR}
+        chmod 700 ${XBSA_INSTALL_LOG_DIR}
+        chown -h ${AGENT_USER}:${AGENT_GROUP} ${XBSA_INSTALL_LOG_DIR}
     else
         SUExecCmd "sed \"/libdws/d\" ${INSTALL_PATH}/ProtectClient-E/conf/pluginmgr.xml > ${INSTALL_PATH}/ProtectClient-E/conf/pluginmgr.xml.bak"
         SUExecCmd "mv -f ${INSTALL_PATH}/ProtectClient-E/conf/pluginmgr.xml.bak ${INSTALL_PATH}/ProtectClient-E/conf/pluginmgr.xml"
@@ -1784,7 +1661,12 @@ InstallFileClient()
 {
     # Fileclient support linux OS only.
     if [ "${SYS_NAME}" != "Linux" ]; then
-        Log "Do not surport this system!"
+        Log "Fileclient do not surport this system!"
+        return 0
+    fi
+
+    if [ "${IS_FILECLIENT_INSTALL}" != "" ] && [ "${IS_FILECLIENT_INSTALL}" != "true" ]; then
+        Log "Fileclient do not need install!"
         return 0
     fi
     
@@ -1839,7 +1721,7 @@ InstallFileClient()
     return 0
 }
 
-ManualDealDatatubo()
+ManualDealDataturbo()
 {
     if [ "${INSTALLATION_MODE}" = "push" ]; then
         return 0
@@ -1848,17 +1730,17 @@ ManualDealDatatubo()
         choice_number=0
         while [ $choice_number -lt 3 ]
         do
-            printf "\\033[1;32mWhether Open Datatubo Service:(y|n), default(n)\\033[0m \n"
+            printf "\\033[1;32mWhether Open Dataturbo Service:(y|n), default(n)\\033[0m \n"
             printf "Your choice:"
             read node_choice
             if [ "$node_choice" = "" ] || [ "$node_choice" = "n" ]; then
                 is_enable_dataturbo="false"
-                Log "user choose close datatubo service."
+                Log "user choose close dataturbo service."
                 sed -i "s/^is_enable_dataturbo=.*/is_enable_dataturbo=$is_enable_dataturbo/g" "${INSTALL_PACKAGE_PATH}/conf/client.conf"
                 return 0
             elif [ "$node_choice" = "y" ]; then
                 is_enable_dataturbo="true"
-                Log "user choose open datatubo service."
+                Log "user choose open dataturbo service."
                 sed -i "s/^is_enable_dataturbo=.*/is_enable_dataturbo=$is_enable_dataturbo/g" "${INSTALL_PACKAGE_PATH}/conf/client.conf"
                 return 0
             else
@@ -1901,7 +1783,7 @@ HandleInstallDataTurbo()
             return 0
         fi
     fi
-    #分布式场景不支持安装datatubo
+    #分布式场景不支持安装dataturbo
     CheckDistributedScenes
     if [ $? -ne 0 ]; then
         ShowWarning "The Distributed Scenes do not support dataturbo."
@@ -1909,14 +1791,14 @@ HandleInstallDataTurbo()
         return
     fi
     
-    #代理界面选择datatubo安装
-    ManualDealDatatubo
+    #代理界面选择dataturbo安装
+    ManualDealDataturbo
 
-    #服务关闭不会安装datatubo
-    SkipDatatuboInstall
+    #服务关闭不会安装dataturbo
+    SkipDataturboInstall
     if [ $? -ne 0 ]; then
-        ShowWarning "Service close and not install datatubo."
-        Log "Service close and not install datatubo."
+        ShowWarning "Service close and not install dataturbo."
+        Log "Service close and not install dataturbo."
         return
     fi
 
@@ -1930,7 +1812,12 @@ HandleInstallDataTurbo()
     fi
 
     ShowInfo "Start Install dataturbo ..."
-    InstallDataTurbo "${INSTALL_PACKAGE_PATH}/third_party_software/dataturbo.zip"
+    unzipdir=`which unzip 2>/dev/null | awk '{print $1}'`
+    if [ "" = "${unzipdir}" ]; then
+        InstallDataTurbo "${INSTALL_PACKAGE_PATH}/third_party_software/dataturbo.tar.gz" "tar"
+    else 
+        InstallDataTurbo "${INSTALL_PACKAGE_PATH}/third_party_software/dataturbo.zip" "zip"
+    fi
     # 安装dataturbo失败
     if [ $? -ne 0 ]; then
         ShowError "Install dataturbo failed."
@@ -2202,8 +2089,9 @@ RestoringPluginsBak()
 
 MergeConfFileByAgentcli()
 {
-    OLD_FILE_PATH=$1
-    NEW_FILE_PATH=$2
+    PLUGIN_NAME=$1
+    OLD_FILE_PATH=${AGENT_BACKUP_PATH}/Plugins/${PLUGIN_NAME}/conf/hcpconf.ini
+    NEW_FILE_PATH=${INSTALL_PATH}/Plugins/${PLUGIN_NAME}/conf/hcpconf.ini
     if [ ! -f "$OLD_FILE_PATH" ]; then
         Log "The old config file:${OLD_FILE_PATH} not exist."
         return
@@ -2213,6 +2101,14 @@ MergeConfFileByAgentcli()
         return
     fi
 
+    if [ "GeneralDBPlugin" = "$PLUGIN_NAME" ]; then
+        chmod 555 ${AGENT_BACKUP_PATH}/Plugins/${PLUGIN_NAME}/conf
+        chmod 555 ${INSTALL_PATH}/Plugins/${PLUGIN_NAME}/conf
+    fi
+
+    sed -i 's/\r//g' "${OLD_FILE_PATH}"
+    sed -i 's/\r//g' "${NEW_FILE_PATH}"
+
     SUExecCmd "${AGENT_ROOT_PATH}/bin/agentcli mergefile ${OLD_FILE_PATH} ${NEW_FILE_PATH}"
     MERGE_RES_FILE_PATH=${AGENT_ROOT_PATH}/tmp/merging_res.ini
     if [ ! -f "${MERGE_RES_FILE_PATH}" ]; then
@@ -2220,10 +2116,54 @@ MergeConfFileByAgentcli()
         return
     fi
 
+    Log "Merge the ${OLD_FILE_PATH} to ${NEW_FILE_PATH}"
     CP -f ${MERGE_RES_FILE_PATH} ${NEW_FILE_PATH};
     chown root:${AGENT_GROUP} ${NEW_FILE_PATH}
     chmod 640 ${NEW_FILE_PATH}
     rm -f ${MERGE_RES_FILE_PATH}
+
+    if [ "GeneralDBPlugin" = "$PLUGIN_NAME" ]; then
+        chmod 500 ${AGENT_BACKUP_PATH}/Plugins/${PLUGIN_NAME}/conf
+        chmod 500 ${INSTALL_PATH}/Plugins/${PLUGIN_NAME}/conf
+    fi
+}
+
+UpgradeJsonConfByAgentcli()
+{
+    PLUGIN_NAME=$1
+    Log "Upgrade the ${PLUGIN_NAME} conf file."
+    file=$(basename ./${PLUGIN_NAME}/plugin_attribute_*.json)
+
+    OLD_PLUGIN_FILE=${AGENT_BACKUP_PATH}/Plugins/${PLUGIN_NAME}/${file}
+    NEW_PLUGIN_FILE=${PLUGIN_DIR}/${PLUGIN_NAME}/${file}
+
+    chmod 660 ${NEW_PLUGIN_FILE}
+    SUExecCmd "${AGENT_ROOT_PATH}/bin/agentcli upgradeJsonConf ${OLD_PLUGIN_FILE} ${NEW_PLUGIN_FILE}"
+    chmod 440 ${NEW_PLUGIN_FILE}
+}
+
+UpgradeConfByAgentcli()
+{
+    if [ "${UPGRADE_FLAG_TEMPORARY}" != "1" ]; then
+        return
+    fi
+    Log "Upgrade json conf by agentcli start."
+    tmpPath=`pwd`
+    cd "${AGENT_BACKUP_PATH}/Plugins"
+    oldPluginNames=`ls -l . | grep -E "Plugin|Block_Service" | ${MYAWK} '/^d/ {print $NF}'`
+    for pluginName in $oldPluginNames; do
+        oldPluginExistNow=`ls -l ${PLUGIN_DIR} | grep ${pluginName} | ${MYAWK} '/^d/ {print $NF}'`
+        if [ -z "${oldPluginExistNow}" ];then
+            Log "${pluginName} not used now."
+            continue
+        fi
+        UpgradeJsonConfByAgentcli ${pluginName}
+        MergeConfFileByAgentcli ${pluginName}
+    done
+    cd ${tmpPath}
+    Log "Upgrade: The backup DataBackup ProtectAgent Plugin conf has been replaced."
+    echo "The backup DataBackup ProtectAgent Plugin conf has been upgraded successfully."
+    
 }
 
 ConfigPluginCpuLimit()
@@ -2388,9 +2328,13 @@ InstallPlugins()
         cd "${PLUGIN_DIR}/${pluginName}"
         pluginFile=${plugin}
         if [ "xz" = `echo ${plugin} | ${AWK} -F '.' '{print $NF}'` ]; then
-            xz -d $plugin
+            if [ "${SYS_NAME}" = "AIX" ]; then
+                ${INSTALL_PACKAGE_PATH}/third_party_software/XZ/xz -d $plugin
+            else
+                xz -d $plugin
+            fi
             if [ $? -ne 0 ]; then
-                echo "xz $pluginName fail." >> $AGENT_ROOT_PATH/stmp/InstallPlugins.info
+                echo "${INSTALL_PACKAGE_PATH}/third_party_software/XZ/xz $pluginName fail." >> $AGENT_ROOT_PATH/stmp/InstallPlugins.info
                 LogError "Install $pluginName fail." $ERR_INSTALL_PLUGINS
                 exit $ERR_INSTALL_PLUGIN_RETCODE
             fi
@@ -2418,22 +2362,25 @@ InstallPlugins()
             echo "${pluginName}" >> ${AGENT_ROOT_PATH}/tmp/unssport_plugins.info
             rm -f "${PLUGIN_DIR}"/"$plugin"
             rm -rf "${PLUGIN_DIR}"/"${pluginName}"
+            cd ${tmpPluginPath}
         else
             if [ ${RET_CODE} -ne 0 ]; then
                 Log "Install $pluginName fail."
+                echo "Install $pluginName fail."
                 rm -rf ${PLUGIN_DIR}/cppframework*
                 echo "Install $pluginName fail." >> $AGENT_ROOT_PATH/stmp/InstallPlugins.info
                 LogError "Install $pluginName fail." $ERR_INSTALL_PLUGINS
                 exit $ERR_INSTALL_PLUGIN_RETCODE
             fi
             Log "Install $pluginName succ."
+            echo "Install $pluginName succ."
             echo "${pluginName}" >> ${AGENT_ROOT_PATH}/tmp/installed_plugins.info
             cd ${tmpPluginPath}
             if [ -f "$plugin" ]; then
                 rm -rf "$plugin"
             fi
         fi
-    }&
+    }
     done
     wait
 
@@ -2488,6 +2435,7 @@ InstallPlugins()
     if [ "$UPGRADE_FLAG_TEMPORARY" = "1" ]; then
         RestoringPluginsBak
     fi
+    ShowInfo "The plugins are successfully installed."
 }
 
 # 升级时，保留旧的插件日志
@@ -2536,7 +2484,9 @@ ConfigurePluginList()
         elif [ "${BACKUP_ROLE}" = "${BACKUP_ROLE_GENERAL_PLUGIN}" ]; then
             # add appprotect plugin and dws plugin
             SUExecCmd "sed -i '/<PluginList>/a\        <Plugin name=\"libappprotect\" version=\"1.9.0\" service=\"tasks\" lazyload=\"0\">        </Plugin>' ${AGENT_ROOT_PATH}/conf/pluginmgr.xml"
-            SUExecCmd "sed -i '/<PluginList>/a\        <Plugin name=\"libdws\" version=\"1.9.0\" service=\"dws\" lazyload=\"0\">        </Plugin>' ${AGENT_ROOT_PATH}/conf/pluginmgr.xml"
+            if [ ${BACKUP_SCENE} -ne ${BACKUP_SCENE_INTERNAL} ];then
+                SUExecCmd "sed -i '/<PluginList>/a\        <Plugin name=\"libdws\" version=\"1.9.0\" service=\"dws\" lazyload=\"0\">        </Plugin>' ${AGENT_ROOT_PATH}/conf/pluginmgr.xml"
+            fi
         else
             SUExecCmd "sed -i '/<PluginList>/a\        <Plugin name=\"liboraclenative\" version=\"1.9.0\" service=\"oraclenative\" lazyload=\"0\">        </Plugin>' ${AGENT_ROOT_PATH}/conf/pluginmgr.xml"
             SUExecCmd "sed -i '/<PluginList>/a\        <Plugin name=\"liboracle\" version=\"1.9.0\" service=\"oracle\" lazyload=\"0\">        </Plugin>' ${AGENT_ROOT_PATH}/conf/pluginmgr.xml"
@@ -2663,9 +2613,6 @@ SetHostType
 
 ReadAndVerifyPasswd
 
-# config policy route
-ConfigDpcNetworkInfo
-
 #install fileclient
 InstallFileClient
 if [ $? -ne 0 ]; then
@@ -2693,27 +2640,23 @@ CheckIsEip ${AGENT_IP}
 if [ $? -eq 0 ]; then    
     echo EIP=${AGENT_IP} | tr -d '\r' >> ${INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp
     SUExecCmd "${AGENT_ROOT_PATH}/bin/xmlcfg write Mount eip ${AGENT_IP}"
-    echo "set eip:${AGENT_IP}."
     Log "set eip:${AGENT_IP}."
     AGENT_IP=
 fi
+
 # Setting the Listening IP Address
 Log "The nginx listening ip address is to be set."
 SetIp
-
-# Setting the Listening Port
-Log "Set port of DataBackup ProtectAgent."
-SetPort rdagent
-SetPort nginx
-
-# set network card for dpa send data
-Log "Listening ip address of the dpa local network adapter to be set."
-SetIp "${DPA_ROLE}"
 if [ "$?" != "0" ]; then
     echo "Failed to obtain the network card, the installation process stops."
     LogError "The local IP address that can connect to the ProtectManager is not found. error exit." ${ERR_NIC_SET_FAILED}
     exit $ERR_IPADDR_SET_FAILED_RETCODE
 fi
+
+# Setting the Listening Port
+Log "Set port of DataBackup ProtectAgent."
+SetPort rdagent
+SetPort nginx
 
 # Write network adapter information.
 WriteNetworkInfo
@@ -2738,8 +2681,8 @@ ConfigRunDependency
 # switch off report heatbeat to pm
 SwitchOffReportHeartbeatToPm
 
-# merge conf file of FilePlugin
-MergeConfFileByAgentcli "${DATA_BACKUP_AGENT_HOME}/AgentUpgrade/Plugins/FilePlugin/conf/hcpconf.ini" "${INSTALL_PATH}/Plugins/FilePlugin/conf/hcpconf.ini"
+# upgrade plugin confs for plugins
+UpgradeConfByAgentcli
 
 # Start the agent process.
 StartAgent
@@ -2778,7 +2721,11 @@ CheckUnssportPlugins
 
 Log "DataBackup ProtectAgent is successfully installed on the host."
 
-[ -f "${LATEST_BAK_DIR}/slog/agent_install.log" ] && cat "${LATEST_BAK_DIR}/slog/agent_install.log" >> ${LOG_FILE_NAME}
+if [ "${UPGRADE_FLAG_TEMPORARY}" = "1" ] && [ -f "${LATEST_BAK_DIR}/slog/agent_install.log" ]; then
+    cat "${LATEST_BAK_DIR}/slog/agent_install.log" > ${LOG_FILE_NAME}.tmp
+    cat "${LOG_FILE_NAME}" >> ${LOG_FILE_NAME}.tmp
+    mv -f ${LOG_FILE_NAME}.tmp ${LOG_FILE_NAME}
+fi
 
 exit ${exitCode}
 

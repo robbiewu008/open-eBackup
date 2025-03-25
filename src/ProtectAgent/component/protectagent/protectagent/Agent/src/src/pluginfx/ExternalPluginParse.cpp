@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ *
+ * @file ExternalPluginParse.h
+ * @brief  The implemention about ExternalPluginParse.h
+ * @version 1.1.0
+ * @date 2021-10-13
+ * @author machenglin mwx1011302
+ */
 #include "pluginfx/ExternalPluginParse.h"
 #include <string>
 #include <fstream>
@@ -28,6 +25,7 @@ namespace {
     const mp_string PLUGIN_MIN_VERSION = "min_version";
     const mp_string PLUGIN_MAX_VERSION = "max_version";
     const mp_string PLUGIN_MOUNT = "mount"; // 插件挂载参数
+    const mp_string PLUGIN_MOUNT_RESTORE = "mount_restore"; // 插件挂载参数
     const mp_string PLUGIN_CONFIG_NAME = "plugin_attribute_"; // 插件特性配置文件名：plugin_attribute_{version}.json
     const mp_string JSON_FORMAT_NAME = ".json";
     const mp_string PLUGIN_START_USER = "run_account";
@@ -176,6 +174,9 @@ mp_int32 ExternalPluginParse::GetConfigInfo(plugin_info &pluginInfo, const mp_st
     // 获取插件挂载参数
     GetPluginMountParam(jsonValue, pluginInfo.mountParam);
 
+    // 获取插件恢复任务挂载参数
+    GetPluginMountRestoreParam(jsonValue, pluginInfo.mountRestoreParam);
+
     // 解析应用子任务数
     GetApplicationSubJobCntMax(jsonValue, pluginInfo.application);
     infile.close();
@@ -235,6 +236,21 @@ mp_void ExternalPluginParse::GetPluginMountParam(const Json::Value &jsonValue,
     for (auto &iter : members) {
         if (jsonValue[PLUGIN_MOUNT][iter].isString()) {
             mountParam.insert(std::pair<mp_string, mp_string>(iter, jsonValue[PLUGIN_MOUNT][iter].asString()));
+        }
+    }
+}
+
+mp_void ExternalPluginParse::GetPluginMountRestoreParam(const Json::Value &jsonValue,
+    std::map<mp_string, mp_string> &mountRestoreParam)
+{
+    if (!jsonValue.isObject() || !jsonValue.isMember(PLUGIN_MOUNT_RESTORE)) {
+        return;
+    }
+    Json::Value::Members members = jsonValue[PLUGIN_MOUNT_RESTORE].getMemberNames();
+    for (auto &iter : members) {
+        if (jsonValue[PLUGIN_MOUNT_RESTORE][iter].isString()) {
+            mountRestoreParam.insert(std::pair<mp_string, mp_string>(
+                iter, jsonValue[PLUGIN_MOUNT_RESTORE][iter].asString()));
         }
     }
 }
@@ -312,6 +328,23 @@ mp_string ExternalPluginParse::GetMountParamByAppType(const mp_string &appType, 
     if (iter != m_pluginsInfo.end()) {
         auto iterMount = iter->second.mountParam.find(mountOptionKey);
         if (iterMount != iter->second.mountParam.end()) {
+            mountParam = iterMount->second;
+        }
+    }
+    return mountParam;
+}
+
+mp_string ExternalPluginParse::GetMountRestoreParamByAppType(const mp_string &appType, const mp_string &mountOptionKey)
+{
+    mp_string pluginName;
+    mp_string mountParam = "";
+    if (GetPluginNameByAppType(appType, pluginName) != MP_SUCCESS) {
+        return mountParam;
+    }
+    auto iter = m_pluginsInfo.find(pluginName);
+    if (iter != m_pluginsInfo.end()) {
+        auto iterMount = iter->second.mountRestoreParam.find(mountOptionKey);
+        if (iterMount != iter->second.mountRestoreParam.end()) {
             mountParam = iterMount->second;
         }
     }

@@ -1,14 +1,4 @@
 @echo off
-::  This file is a part of the open-eBackup project.
-::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-::  If a copy of the MPL was not distributed with this file, You can obtain one at
-::  http://mozilla.org/MPL/2.0/.
-:: 
-::  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-:: 
-::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 rem -----------------------------------------------------------
 rem the small pkg uninstall(AI_SHU)
 rem -----------------------------------------------------------
@@ -186,14 +176,14 @@ rem #################### Function ##########################
         call :Log "Create certificates backup for the DataBackup ProtectAgent."
     )
     if "%UPDATE_TYPE%" EQU "%UPDATE_AGENT_CHAIN%" (
-        copy /y "%AGENT_CA_FILE%" "%AGENT_CA_FILE_BAK%" >nul
-        copy /y "%CERT_FILE%" "%CERT_FILE_BAK%" >nul
-        copy /y "%KEY_FILE%" "%KEY_FILE_BAK%" >nul
+        copy /y "%AGENT_CA_FILE%" "%AGENT_CA_FILE_BAK%" >> "%LOG_FILE%" 2>&1
+        copy /y "%CERT_FILE%" "%CERT_FILE_BAK%" >> "%LOG_FILE%" 2>&1
+        copy /y "%KEY_FILE%" "%KEY_FILE_BAK%" >> "%LOG_FILE%" 2>&1
         call :Log "Backup certificate files successfully."
         exit /b 0
     )
     if "%UPDATE_TYPE%" EQU "%UPDATE_PMCA%" (
-        copy /y "%PM_CA_FILE%" "%PM_CA_FILE_BAK%" >nul
+        copy /y "%PM_CA_FILE%" "%PM_CA_FILE_BAK%" >> "%LOG_FILE%" 2>&1
         call :Log "Backup certificate files successfully."
         exit /b 0
     )
@@ -222,16 +212,16 @@ rem #################### Function ##########################
             echo "Can not find agentca.crt.pem in the input path."
             exit /b 1
         )
-        copy /y "%certPath%\agentca.crt.pem" "%AGENT_CA_FILE%" >nul
-        copy /y "%certPath%\client.crt.pem" "%CERT_FILE%" >nul
-        copy /y "%certPath%\client.pem" "%KEY_FILE%" >nul
+        copy /y "%certPath%\agentca.crt.pem" "%AGENT_CA_FILE%" >> "%LOG_FILE%" 2>&1
+        copy /y "%certPath%\client.crt.pem" "%CERT_FILE%" >> "%LOG_FILE%" 2>&1
+        copy /y "%certPath%\client.pem" "%KEY_FILE%" >> "%LOG_FILE%" 2>&1
     )
     if "%UPDATE_TYPE%" EQU "%UPDATE_PMCA%" (
         if NOT exist "%certPath%\ca.crt.pem" (
             echo "Can not find ca.crt.pem in the input path."
             exit /b 1
         )
-        copy /y "%certPath%\ca.crt.pem" "%PM_CA_FILE%" >nul
+        copy /y "%certPath%\ca.crt.pem" "%PM_CA_FILE%" >> "%LOG_FILE%" 2>&1
     )
     echo "Update the certificate files successfully."
     exit /b 0
@@ -271,7 +261,7 @@ rem #################### Function ##########################
     exit /b 0
 
 :RegisterHost
-    "%AGENTCLI_EXE%" registerHost RegisterHost > nul 2>&1
+    "%AGENTCLI_EXE%" registerHost RegisterHost >> "%LOG_FILE%" 2>&1
     if NOT %errorlevel% EQU 0 (
         echo "Invoke agentcli.exe to register Host failed."
         call :Log "Invoke agentcli.exe to register Host failed."
@@ -306,14 +296,18 @@ rem #################### Function ##########################
         call :Log "Closed process[%~1] timeout."
         exit /b 1
     )
-	for /f "tokens=1-6" %%a in (' tasklist ^| findstr "%~1" ') do (
-		if not "%%a" EQU "" (
-			taskkill /f /pid %%b 1>nul 2>nul
-			timeout 1 /NOBREAK > nul
-            set /a LOOP_COUNT+=1
-			goto :loopcheckprocess
-		)
-	)
+    for /f "tokens=1-6" %%a in (' tasklist ^| findstr "%~1" ') do (
+        if not "%%a" EQU "" (
+            if not "%%b" EQU "" (
+                taskkill /f /pid %%b >> "%LOG_FILE%" 2>&1
+                timeout 1 /NOBREAK >> "%LOG_FILE%" 2>&1
+                set /a LOOP_COUNT+=1
+                goto :loopcheckprocess
+            ) else (
+                call :Log "Process[%~1] is not running." 
+            )
+        )
+    )
     call :Log "Process[%~1] is closed."
     exit /b 0
 
@@ -363,13 +357,13 @@ rem #################### Function ##########################
     echo "Start to rollback certificates."
     call :Log "Start to rollback certificates."
     if "%UPDATE_TYPE%" EQU "%UPDATE_AGENT_CHAIN%" (
-        copy /y "%AGENT_CA_FILE_BAK%" "%AGENT_CA_FILE%" >nul
-        copy /y "%CERT_FILE_BAK%" "%CERT_FILE%" >nul
-        copy /y "%KEY_FILE_BAK%" "%KEY_FILE%" >nul
+        copy /y "%AGENT_CA_FILE_BAK%" "%AGENT_CA_FILE%" >> "%LOG_FILE%" 2>&1
+        copy /y "%CERT_FILE_BAK%" "%CERT_FILE%" >> "%LOG_FILE%" 2>&1
+        copy /y "%KEY_FILE_BAK%" "%KEY_FILE%" >> "%LOG_FILE%" 2>&1
         call :Log "Backup certificate files successfully."
     )
     if "%UPDATE_TYPE%" EQU "%UPDATE_PMCA%" (
-        copy /y "%PM_CA_FILE_BAK%" "%PM_CA_FILE%" >nul
+        copy /y "%PM_CA_FILE_BAK%" "%PM_CA_FILE%" >> "%LOG_FILE%" 2>&1
         call :Log "Backup certificate files successfully."
     )
     "%XMLCFG_EXE%" write Monitor nginx ssl_key_password "%PRE_PKEY_PASSWORD%"

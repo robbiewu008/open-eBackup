@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file ErrorCode.h
+ * @brief  Contains function declarations ErrorCode Operations
+ * @version 1.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #ifndef _AGENT_ERROR_CODE_H_
 #define _AGENT_ERROR_CODE_H_
 
@@ -58,6 +55,7 @@ static const mp_int32 ERR_NOT_CONFIG_DATA_TURBO_LOGIC_PORT = 0x5E025C02;  // 未
 static const mp_int32 ERR_NOT_SUPPORT_DATA_TURBO = 0x64044341;  // 内置agent不支持Dataturbo
 
 // sanclient 错误码
+static const mp_int32 ERR_SANCLIENT_PREPAREJOB_FAILED = 0x5E037303;
 static const mp_int32 ERR_CREATE_FILEIO_FAILED = 0x5E037302;
 static const mp_int32 ERR_TARGETCLI_STATUS = 0x5E037300;
 static const mp_int32 ERR_QLA2XXX_STAUTS_FAILED = 0x5E037301;
@@ -86,6 +84,7 @@ static const mp_int32 ERROR_HOST_UPGRADE_AGENT_FAILED = 0x4003296A;       // 更
 static const mp_int32 ERROR_AGENT_UPGRADE_FAIL_DOWNLOAD_PACKAGE = 0x5E02500D;  // 下载升级包失败
 static const mp_int32 ERROR_AGENT_EXPORT_LOG_SIZE_INVALID = 0x64034807;   // 日志包超过导出上限
 static const mp_int32 ERROR_AGENT_DISK_NOT_ENOUGH = 0x64033361;           // 磁盘空间不足
+static const mp_int32 ERROR_AGENT_GET_LOG_FILE_FAILED = 0x64034808;       // 压缩日志失败
 
 // ************Device*********************************范围0x40032970 - 0x4003298F//
 // filesys

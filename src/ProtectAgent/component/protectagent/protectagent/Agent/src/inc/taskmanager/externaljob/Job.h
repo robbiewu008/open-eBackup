@@ -1,15 +1,13 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ *
+ * @file Job.h
+ * @brief Implement for external job
+ * @version 1.1.0
+ * @date 2021-10-29
+ * @author wangguitao 00510599
+ */
+
 #ifndef _EXTERNAL_JOB_H
 #define _EXTERNAL_JOB_H
 
@@ -100,6 +98,15 @@ struct PluginJobData {
 
     mp_string scriptFileName;
     mp_string scriptResult;
+
+    // acquire job frenquence control
+    uint32_t nextAcquireInterval = 2;
+    uint32_t currentAcquireInterval = 0;
+    uint32_t acquireAdjustTimes = 0;
+
+    void UpdateNextAcquireInterval(bool acquireSuccess = false);
+    void UpdateCurrentAcquireInterval();
+    bool IsNeedTriggerAcquire();
 
     mp_string culDataturboPid;
     // 当前的dataturbo进程id
@@ -488,10 +495,12 @@ protected:
     void SetJobRetry(bool retry);
     mp_bool IsLogBackupJob();
     mp_void SetAgentsToExtendInfo(Json::Value &param);
+    void SetPostScanParam(const StorageRepository& repo, const Json::Value& repoJson);
 protected:
     PluginJobData m_data;
     mp_int32 m_iRet = MP_SUCCESS;
-
+    
+    bool m_isAgentNeedScan = false;
     // if start timing job detail report
     bool m_startTiming {false};
     // last success job detail report time point
@@ -517,6 +526,8 @@ private:
     mp_void ReportSubJobRunning();
     bool NeedMount(const Json::Value &jsonRep);
     bool IsNasLiveMountJob();
+    void CheckReplaceHost(const std::vector<mp_string>& containerBackendIps, const mp_string& esnLocal,
+        Json::Value &JsonRep_new, std::map<Json::ArrayIndex, std::vector<Json::Value>>::iterator& jsonVec);
     std::atomic<bool> m_stopMountKeepAliveTheadFlag {false};
     std::shared_ptr<std::thread> m_mountKeepAliveTh;
 };

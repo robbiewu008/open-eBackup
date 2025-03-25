@@ -91,6 +91,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
       <BrowseInformation>true</BrowseInformation>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -111,6 +112,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -126,6 +128,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_DEBUG</PreprocessorDefinitions>
       <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\..\..\bin\;..\..\..\..\open_src\openssl\out32</AdditionalLibraryDirectories>
@@ -139,6 +142,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4273;4251;4819</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\..\..\bin\;..\..\..\..\open_src\openssl\out32</AdditionalLibraryDirectories>

@@ -1,14 +1,4 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
-#
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 
 ##############################################################
 # The function of this script is to upgrade the client agent.
@@ -27,6 +17,7 @@ LOG_FILE_PATH=${CURRENT_PATH}
 LOG_FILE_NAME="${CURRENT_PATH}/upgrade.log"
 LOG_ERR_FILE="${CURRENT_PATH}/errormsg.log"
 SHELL_TYPE_SH="/bin/sh"
+RDAGENT_SERVICE_FILE=/lib/systemd/system/rdagent.service
 export UPGRADE_FLAG_TEMPORARY="1"
 export INSTALL_PACKAGE_PATH=${CURRENT_PATH}
 export CRL_STATUS=0
@@ -81,6 +72,11 @@ TMP_DATA_BACKUP_AGENT_HOME=`cat /etc/profile | grep "DATA_BACKUP_AGENT_HOME=" |$
 TMP_DATA_BACKUP_SANCLIENT_HOME=`cat /etc/profile | grep "export DATA_BACKUP_SANCLIENT_HOME=" |${MYAWK} -F "=" '{print $NF}'`
 if [ -n "${TMP_DATA_BACKUP_AGENT_HOME}" ] || [ -n "${TMP_DATA_BACKUP_SANCLIENT_HOME}" ] ; then
     . /etc/profile
+    if [ -n "${DATA_BACKUP_AGENT_HOME}" ] || [ -n "${DATA_BACKUP_SANCLIENT_HOME}" ] ; then
+        DATA_BACKUP_AGENT_HOME=${TMP_DATA_BACKUP_AGENT_HOME}
+        DATA_BACKUP_SANCLIENT_HOME=${TMP_DATA_BACKUP_SANCLIENT_HOME}
+        export DATA_BACKUP_AGENT_HOME DATA_BACKUP_SANCLIENT_HOME
+    fi
 else
     DATA_BACKUP_AGENT_HOME=/opt
     DATA_BACKUP_SANCLIENT_HOME=/opt
@@ -380,6 +376,22 @@ AdaptClientPackage()
     return 0
 }
 
+ModifyServiceFile()
+{
+    # obtain the service config from service file
+    if [ -f "/etc/os-release" ]; then
+        cat /etc/os-release | grep "EulerOS 2.0"
+        if [ $? = 0 ] && [ -f "${RDAGENT_SERVICE_FILE}" ]; then
+            cat ${RDAGENT_SERVICE_FILE} | grep 'KillMode=' >/dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                sed -i 's/\[Service\]/\[Service\]\nKillMode=process/g' ${RDAGENT_SERVICE_FILE}
+                systemctl daemon-reload
+            fi
+        fi
+    fi
+    return
+}
+
 CompareUpdateVersion()
 {
     # obtain old version of agent
@@ -432,7 +444,8 @@ CompareUpdateVersion()
         Temporary_Path=`pwd`
         cp $PAC_NAME_TMP ${CURRENT_PATH}/ProtectClient-e/DIR_TMP
         cd ${CURRENT_PATH}/ProtectClient-e/DIR_TMP
-        xz -d ${PAC_NAME_TMP}
+        chmod 550 ${INSTALL_PACKAGE_PATH}/third_party_software/XZ/xz
+        ${INSTALL_PACKAGE_PATH}/third_party_software/XZ/xz -d ${PAC_NAME_TMP}
         packName=${PAC_NAME_TMP%%.xz}
         tar -xf ${packName}
         cd $Temporary_Path
@@ -505,9 +518,7 @@ Ping()
         return 1
     fi
     index=1      # the index of awk -v
-    while [ 1 ]
-    do
-        ipAddr=`echo "$ipList" | ${MYAWK} -F ',' -v i="$index" '{print $i}'`
+    for ipAddr in ${ipList}; do
         if [ "${ipAddr}" = "" ]; then
             break
         fi
@@ -517,19 +528,90 @@ Ping()
         fi
         index=`expr $index + 1`
     done
+    ShowWarning "Local ip can not connect remote ips ${ipList}."
+    Log "Check connection to dst ${ipList} fail."
     return 1
 }
+
+# $1: dst_ips  $2: port
+CheckIpsWithCurl()
+{
+    dstIps=$1
+    dstPort=$2
+    Log "will check dstIps $dstIps dstport $dstPort"
+
+    for dstIp in ${dstIps}; do
+        protocolFamily="--ipv4"
+        echo ${dstIp} | grep "\\." >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            G_NETWORK_TYPE="ipv4"
+        else
+            G_NETWORK_TYPE="ipv6"
+            protocolFamily="--ipv6"
+        fi
+
+        curl -kv ${dstIp}:${dstPort} --connect-timeout 3 ${protocolFamily} >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            Log "Check connection dst ${dstIp} port $dstPort success."
+            return 0
+        fi
+        Log "Check connection to dst ${dstIp} port $dstPort fail."
+    done
+    ShowWarning "Local ip can not connect remote ips ${dstIps} port $dstPort."
+    Log "Local ip can not connect remote ips ${dstIps} port $dstPort."
+    return 1
+}
+
+# $1: dst_ips  $2: port
+TestHosts()
+{
+    dstIps=$1
+    dstPort=$2
+    Log "will test dstIps $dstIps dstport $dstPort"
+
+    for dstIp in ${dstIps}; do
+        SUExecCmd "${AGENT_ROOT_PATH}/ProtectClient-E/bin/agentcli testhost ${dstIp} $dstPort 5000"
+        if [ $? -eq 0 ]; then
+            Log "Check connection dst ${dstIp} port $dstPort success."
+            return 0
+        fi
+        Log "Check connection to dst ${dstIp} port $dstPort fail."
+    done
+    ShowWarning "Local ip can not connect remote ips ${dstIps} port $dstPort."
+    Log "Local ip can not connect remote ips ${dstIps} port $dstPort."
+    return 1
+}
+
+# $1 dstIps, $2 dstPort
+CheckIpsConnectivity()
+{
+    which curl >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        CheckIpsWithCurl "$1" "$2"
+        return $?
+    else
+        if [ "$2" = "" ] || [ "$2" = "null" ]; then
+            Ping "$1"
+        else
+            TestHosts "$1" "$2"
+        fi
+        return $?
+    fi
+}
+
 # Check connectivity to avoid the installation failure of the new client
 CheckConnectivity()
 {
-    IP=`sed '/^PM_IP=/!d;s/.*=//' ${OLD_INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp`
-    Ping ${IP}
+    PM_IP_LIST=`sed '/^PM_IP=/!d;s/.*=//' ${OLD_INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp`
+    PM_PORT=`sed '/^PM_PORT=/!d;s/.*=//' ${OLD_INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp`
+    CheckIpsConnectivity "`echo ${PM_IP_LIST} | sed 's/,/ /g'`"  "${PM_PORT}"
     if [ $? -eq 0 ]; then
         return 0
     fi
 
-    IP=`sed '/^PM_MANAGER_IP=/!d;s/.*=//' ${OLD_INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp`
-    Ping ${IP}
+    PM_MANAGER_IP_LIST=`sed '/^PM_MANAGER_IP=/!d;s/.*=//' ${OLD_INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp`
+    PM_MANAGER_PORT=`sed '/^PM_MANAGER_PORT=/!d;s/.*=//' ${OLD_INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp`
+    CheckIpsConnectivity "`echo ${PM_MANAGER_IP_LIST} | sed 's/,/ /g'`"  "${PM_MANAGER_PORT}"
     if [ $? -eq 0 ]; then
         return 0
     fi
@@ -799,7 +881,7 @@ ExecUpgrade()
         cp -r "${CLIENT_NAME}" "${TAR_PATH}"
 
         cd "${TAR_PATH}"
-        xz -d ${CLIENT_NAME}
+        ${INSTALL_PACKAGE_PATH}/third_party_software/XZ/xz -d ${CLIENT_NAME}
         packName=${CLIENT_NAME%%.xz}
         tar -xf ${packName}
         rm -rf "${TAR_PATH}/${packName}"
@@ -888,6 +970,7 @@ else
 fi
 GetBackupRole || ExitHandle 1
 CheckHostResource
+
 # 4.Check connectivity between ProtectAgent and ProtectManager
 CheckConnectivity
 if [ $? -eq 1 ]; then
@@ -917,7 +1000,8 @@ if [ $? -eq 1 ]; then
 else
     Log "Adapt install package successfully,continue to upgrade."
 fi
-
+# Modify Euler 2.0 service file
+ModifyServiceFile
 # stop agent
 echo "OLD_INSTALL_PATH=$OLD_INSTALL_PATH"
 sh $OLD_INSTALL_PATH/stop.sh

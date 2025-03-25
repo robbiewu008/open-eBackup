@@ -1,15 +1,12 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file ConfigXmlParse.h
+ * @brief  Contains function declarations ConfigXmlParse Operations
+ * @version 1.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
 #ifndef __AGENT_CONFIG_XML_PARSE_H__
 #define __AGENT_CONFIG_XML_PARSE_H__
 
@@ -147,6 +144,7 @@ static const mp_string CFG_MOUNT_SECTION = "Mount";
 static const mp_string CFG_LINK_HOST_PORT = "link_host_port";
 static const mp_string CFG_CHECK_LINK_STATUS_TIMEOUT = "check_link_status_timeout";
 static const mp_string CFG_EIP = "eip";
+static const mp_string CFG_WIN_MOUNT_PUBLIC_PATH = "win_mount_public_path";
 static const mp_string CFG_GENERAL_MOUNT_OPTION = "general_mount_option";
 static const mp_string CFG_LINKENCRY_MOUNT_OPTION = "linkencyption_mount_option";
 static const mp_string CFG_GENERAL_MOUNT_PROTOCOL = "general_mount_protocol";
@@ -166,6 +164,12 @@ static const mp_string CFG_OPENSTACK_METADATA_SERVER_IP = "openstack_metadata_se
 static const mp_string CFG_OPENSTACK_METADATA_SERVER_PORT = "openstack_metadata_server_port";
 static const mp_string CFG_DATAPROCESS_USE_AIO_BACKUP = "use_aio_backup";
 static const mp_string CFG_DATAPROCESS_USE_AIO_RESTORE = "use_aio_restore";
+
+// job frame
+static const mp_string CFG_JOB_FRAM_SECTION = "JobFrame";
+static const mp_string CFG_GET_JOB_BASE_INTERVAL = "get_job_base_interval";
+static const mp_string CFG_GET_JOB_INC_INTERVAL = "get_job_inc_interval";
+static const mp_string CFG_GET_JOB_INTERVAL_MAX_ADJUST_TIMES = "get_job_interval_max_adjust_times";
 
 static const mp_string XBSACFG_APP_TYPE_SECTION = "Apptype";
 static const mp_string XBSACFG_APP_TYPE = "app_type";

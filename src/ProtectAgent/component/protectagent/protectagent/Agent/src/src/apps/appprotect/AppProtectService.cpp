@@ -1,18 +1,18 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ *
+ * @file AppProtect.h
+ * @brief Implement for application protect
+ * @version 1.1.0
+ * @date 2021-11-23
+ * @author youlei 00412658
+ */
+
 #include "apps/appprotect/AppProtectService.h"
 #include "common/Log.h"
+#include "common/Path.h"
 #include "common/Utils.h"
+#include "common/LogRotater.h"
 #include "taskmanager/externaljob/AppProtectJobHandler.h"
 #include "apps/appprotect/CommonDef.h"
 #include "pluginfx/AutoReleasePlugin.h"
@@ -21,6 +21,7 @@
 #include "common/CSystemExec.h"
 #include "securecom/CryptAlg.h"
 #include "servicecenter/services/device/PrepareFileSystem.h"
+#include "common/CMpTime.h"
 #include "common/Ip.h"
 #include "common/File.h"
 #include "apps/appprotect/plugininterface/ApplicationProtectBaseDataType_types.h"
@@ -33,6 +34,7 @@ std::mutex AppProtectService::m_mutex_lunidlist;
 std::mutex AppProtectService::m_mutex_luninfolist;
 std::mutex AppProtectService::m_mutex_errorcodelist;
 std::mutex AppProtectService::m_mutex_mountpoint;
+std::mutex AppProtectService::m_mutex_sanclientprejobfailedset;
 namespace {
 constexpr int MIN_TASKID_SIZE = 36;
 constexpr int KEY_NOT_EXSITS = 0;
@@ -54,7 +56,10 @@ const mp_int32 PASS_SEED_NUM_LOWER = 26;
 const mp_int32 PASS_SEED_NUM_DIGIT = 10;
 const mp_int32 RANDOM_PASS_LENGTH = 12;
 const mp_int32 RANDOM_PASS_DIGIT_LENGTH = 4;
+const mp_int32 MAX_RETRY_TIMES = 3;
+const mp_int32 DELAY_TIME = 30 * 1000;
 const mp_string DATA_SIZE  = "dataSize";
+const mp_string ACCESS_LOG_NAME  = "access.log";
 }
 
 std::shared_ptr<AppProtectService> AppProtectService::GetInstance()
@@ -86,7 +91,14 @@ mp_int32 AppProtectService::Init()
     for (int i = 1; i < MAX_LUNID_NAME; i++) {
         m_lunidList.push_back(i);
     }
+    LogRotater::GetInstance().Init(CPath::GetInstance().GetNginxLogsPath(), ACCESS_LOG_NAME);
     return ret;
+}
+
+mp_void AppProtectService::SetSanclientFailedPreJob(const mp_string &taskId)
+{
+    std::lock_guard<std::mutex> lock(m_mutex_sanclientprejobfailedset);
+    m_sanclientPreJobFailedSet.insert(taskId);
 }
 
 mp_int32 AppProtectService::WakeUpJob(CRequestMsg &req, CResponseMsg &rsp)
@@ -111,7 +123,11 @@ mp_int32 AppProtectService::WakeUpJob(CRequestMsg &req, CResponseMsg &rsp)
         ERRLOG("AppProtectJobHandler is null.");
         return MP_FAILED;
     }
-    ins->WakeUpJob(match.str(), jv);
+
+    Json::Value& rspData = rsp.GetJsonValueRef();
+    AppProtect::WakeupJobResult result;
+    ins->WakeUpJob(match.str(), jv, result, rsp);
+    rspData["AgentStatus"] = result.agentStatus;
     return MP_SUCCESS;
 }
 
@@ -139,6 +155,13 @@ mp_int32 AppProtectService::SanclientJobForUbc(Json::Value &jvReq, CRequestMsg &
                     jvReq = m_LuninfoList[strTaskID];
                 }
             } else {
+                jvReq["code"] = errorCode;
+                jvReq["bodyErr"] = errorCode;
+            }
+        } else {
+            std::lock_guard<std::mutex> lock(m_mutex_sanclientprejobfailedset);
+            if (m_sanclientPreJobFailedSet.count(strTaskID) != 0) {
+                errorCode = ERR_SANCLIENT_PREPAREJOB_FAILED;
                 jvReq["code"] = errorCode;
                 jvReq["bodyErr"] = errorCode;
             }
@@ -356,8 +379,8 @@ mp_int32 AppProtectService::SanclientMount(const Json::Value &jvReq, const mp_st
         }
     }
     if (taskType == RESTORE_JOB && isLogRepositoryMounted) {
-        // 日志恢复时需要将.meta文件从日志仓拷贝到cache仓以适配日志恢复
-        return CopyLogMeta(logRepositoryPath, cacheRepositoryPath, backupCopiesID);
+        // 日志恢复时需要将.meta文件从日志仓拷贝到cache仓以适配日志恢复 没有.meta文件使用ubc下发的associated_log_copies
+        CopyLogMeta(logRepositoryPath, cacheRepositoryPath, backupCopiesID);
     }
     return MP_SUCCESS;
 }
@@ -378,7 +401,7 @@ mp_int32 AppProtectService::InitFilesystemInfo(AppProtect::FilesystemInfo &fileI
 mp_int32 AppProtectService::StringToLonglong(mp_int64 &result, const std::string &str)
 {
     try {
-        result = std::stoll(str, 0);
+        result = CMpString::SafeStoll(str, 0);
     } catch (const std::exception& erro) {
         ERRLOG("Invalid str, erro: %s.", erro.what());
         return MP_FAILED;
@@ -900,8 +923,14 @@ mp_int32 AppProtectService::CleanEnv(const mp_string &taskid)
 #ifndef WIN32
     CRootCaller rootCaller;
     Json::Value jvReq;
-    if (m_LuninfoList.find(taskid) != m_LuninfoList.end()) {
-        jvReq = m_LuninfoList[taskid];
+    mp_int32 retryTimes = 0;
+    while (retryTimes < MAX_RETRY_TIMES) {
+        if (m_LuninfoList.find(taskid) != m_LuninfoList.end()) {
+            jvReq = m_LuninfoList[taskid];
+            break;
+        }
+        ++retryTimes;
+        CMpTime::DoSleep(DELAY_TIME);
     }
     mp_int32 iRet = DeleteLunInfo(jvReq);
     std::vector<mp_string> vecMountPath;
@@ -930,6 +959,10 @@ mp_int32 AppProtectService::CleanEnv(const mp_string &taskid)
         std::lock_guard<std::mutex> lock(m_mutex_errorcodelist);
         m_ErrorcodeList.erase(taskid);
     }
+    {
+        std::lock_guard<std::mutex> lock(m_mutex_sanclientprejobfailedset);
+        m_sanclientPreJobFailedSet.erase(taskid);
+    }
 #endif
     return MP_SUCCESS;
 }
@@ -955,7 +988,7 @@ mp_int32 AppProtectService::DeleteLunInfo(const Json::Value &jvReq)
         }
         {
             std::lock_guard<std::mutex> lock(m_mutex_lunidlist);
-            m_lunidList.push_back(std::stoi(iter["lunId"].asString()));
+            m_lunidList.push_back(CMpString::SafeStoi(iter["lunId"].asString(), 0));
         }
     }
 #endif
