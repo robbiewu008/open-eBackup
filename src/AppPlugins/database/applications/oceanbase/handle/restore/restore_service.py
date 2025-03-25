@@ -18,11 +18,12 @@ import time
 from common.common import output_result_file, report_job_details, execute_cmd, read_tmp_json_file, \
     output_execution_result_ex, is_clone_file_system
 from common.common_models import SubJobDetails, SubJobModel, LogDetail, ActionResult
-from common.const import RepositoryDataTypeEnum, SubJobPriorityEnum, SubJobPolicyEnum, ExecuteResultEnum, CMDResult
+from common.const import RepositoryDataTypeEnum, SubJobPriorityEnum, SubJobPolicyEnum, ExecuteResultEnum
 from common.const import SubJobStatusEnum
 from common.parse_parafile import ParamFileUtil, CopyParamParseUtil
+from common.util.cmd_utils import cmd_format
 from oceanbase.common.const import SubJobType, LogLevel, ArchiveType, OceanBaseReportLabel, RestoreConstant, \
-    OceanBaseSubJobName, SYSTEM_TENANT_ID, INCARNATION_1, CLUSTER
+    OceanBaseSubJobName, INCARNATION_1, CLUSTER
 from oceanbase.common.oceanbase_client import OceanBaseClient
 from oceanbase.common.oceanbase_common import get_agent_id, remove_dir
 from oceanbase.logger import log
@@ -189,13 +190,13 @@ class OceanBaseRestoreService(object):
         success_list, tem = OceanBaseRestoreService.handle_tenant_info_list(client, file_content, **kwargs)
         task_progress = int(tem / tenant_info_list_len)
         for tenant_info in success_list:
-            restore_job = None
+            restore_job = []
             while True:
                 restore_jobs = client.query_restore_job(tenant_info['targetName'], tenant_info['originalName'],
                                                         max_restore_job_id)
-                if restore_jobs is not None:
+                if restore_jobs:
                     restore_job = restore_jobs[0]
-                if restore_job is None:
+                if not restore_job:
                     job_detail = SubJobDetails(taskId=job_id, subTaskId=sub_id, taskStatus=SubJobStatusEnum.RUNNING,
                                                progress=task_progress)
                     report_job_details(req_id, job_detail)
@@ -366,59 +367,16 @@ class OceanBaseRestoreService(object):
             log_uri_strs = log_uri.split('/')
             log_uri = log_uri.replace(f'/{log_uri_strs[len(log_uri_strs) - 1]}', '')
             id_list = OceanBaseRestoreService.get_id_list(log_uri, restore_copy_id)
-            if not is_clone_file_system(file_content):
-                # 非克隆文件系统，在cache仓组装恢复副本
-                uri = OceanBaseRestoreService.symlink_data_copy(cluster_id, cluster_name, copies, restore_copy_id, uri)
             for current_copy_id in id_list:
                 cp_cmd = f'/bin/cp -rf {log_uri}/{current_copy_id}/{current_copy_id}/{tenant_id} {uri}/{CLUSTER}' \
                          f'/{cluster_name}/{cluster_id}/{INCARNATION_1}'
                 execute_cmd(cp_cmd)
                 chmod_cmd = f'chmod -R 755 {uri}/{CLUSTER}/{cluster_name}/{cluster_id}/{INCARNATION_1}/{tenant_id}/clog'
                 execute_cmd(chmod_cmd)
+        if "livemount" in uri:
+            execute_cmd(cmd_format("chown -R admin:admin {}", uri))
         sub_type = copies[len(copies) - 1]['protectObject']['subType']
-        if sub_type == RestoreConstant.CLUSTER_SUB_TYPE:
-            uri = uri + os.sep + CLUSTER
-        else:
-            uri = uri + os.sep + copy_id
-        return uri
-
-    @staticmethod
-    def symlink_data_copy(cluster_id, cluster_name, copies, restore_copy_id, uri):
-        # 获取cache仓，创建目录
-        cache_path = CopyParamParseUtil.get_cache_path(copies[0])
-        temp_uri = os.path.join(cache_path, restore_copy_id, CLUSTER, cluster_name, cluster_id,
-                                INCARNATION_1)
-        if not os.path.exists(temp_uri):
-            os.makedirs(temp_uri)
-            data_copy_path = os.path.join(cache_path, restore_copy_id)
-            return_code, _, std_err = execute_cmd(f'chmod -R 755 {data_copy_path}')
-            if return_code != CMDResult.SUCCESS:
-                log.error(f"Fail to chmod, err: {std_err}")
-            parts_child_names = os.listdir(f'{uri}/{CLUSTER}/{cluster_name}/{cluster_id}/{INCARNATION_1}/')
-            for store_child_name in parts_child_names:
-                OceanBaseRestoreService.symlink_data(cluster_id, cluster_name, store_child_name, temp_uri, uri)
-            uri = os.path.join(cache_path, restore_copy_id)
-        return uri
-
-    @staticmethod
-    def symlink_data(cluster_id, cluster_name, store_child_name, temp_uri, uri):
-        if store_child_name.isdigit() and store_child_name != SYSTEM_TENANT_ID:
-            # 非系统租户需要执行以下逻辑
-            src = f'{uri}/{CLUSTER}/{cluster_name}/{cluster_id}/{INCARNATION_1}/{store_child_name}/data'
-            dst = f'{temp_uri}/{store_child_name}/data'
-            if not os.path.exists(f'{temp_uri}/{store_child_name}/'):
-                os.makedirs(f'{temp_uri}/{store_child_name}/')
-                execute_cmd(f'chmod 755 {temp_uri}/{store_child_name}/')
-            # 创建软链接
-            os.symlink(src, dst)
-            cp_cmd = (f'/bin/cp -rf {uri}/{CLUSTER}/{cluster_name}/{cluster_id}/{INCARNATION_1}/'
-                      f'{store_child_name}/clog {temp_uri}/{store_child_name}/')
-            return_code, _, std_err = execute_cmd(cp_cmd)
-            if return_code != CMDResult.SUCCESS:
-                log.error(f"Fail to cp, err: {std_err}")
-        else:
-            dst = f'{temp_uri}/{store_child_name}'
-            os.symlink(f'{uri}/{CLUSTER}/{cluster_name}/{cluster_id}/{INCARNATION_1}/{store_child_name}', dst)
+        return uri + os.sep + CLUSTER if sub_type == RestoreConstant.CLUSTER_SUB_TYPE else uri + os.sep + copy_id
 
     @staticmethod
     def get_id_list(log_path_parent_dir, restore_copy_id):

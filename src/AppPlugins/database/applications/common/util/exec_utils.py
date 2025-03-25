@@ -11,15 +11,6 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
-__all__ = (
-    "check_path_valid", "exec_append_file", "exec_append_newline_file", "exec_cat_cmd", "exec_cp_cmd",
-    "exec_cp_cmd_no_user", "exec_ln_cmd", "exec_mkdir_cmd", "exec_mount_cmd", "exec_mv_cmd", "exec_overwrite_file",
-    "exec_umount_cmd", "exec_write_file", "exec_write_file_without_x_permission", "exec_write_new_file",
-    "exec_write_new_file_without_x_permission", "ExecFuncParam", "get_exe_abs_path", "get_user_env_param_by_key",
-    "get_user_home", "su_exec_cat_cmd", "su_exec_cmd_list", "su_exec_rm_cmd", "su_exec_touch_cmd",
-    "exec_mount_cmd_with_aix", "exec_cp_dir_no_user", "read_lines_cmd"
-)
-
 import json
 import os
 import platform
@@ -62,7 +53,7 @@ LINUX_CMD_WHITE_LIST = (
     f"{get_install_head_path()}/DataBackup/ProtectClient/ProtectClient-E/bin/agentcli"
 )
 LINUX_PROFILE_WHITE_LIST = ("/etc/profile",)
-LINUX_SHELL_WHITE_LIST = ("/bin/bash", "/bin/sh")
+LINUX_SHELL_WHITE_LIST = ("/bin/bash", "/bin/sh", "/bin/csh")
 LOGGER = Logger().get_logger()
 # Linux系统临时命令提示符
 TEMP_PROMPT = r"\[PEXPECT\][\$\#]"
@@ -191,6 +182,18 @@ def _temp_change_prompt(ssh):
     """临时修改命令提示符"""
     ssh.sendline("unset PROMPT_COMMAND")
     change_ps_cmd = r"PS1='[PEXPECT]\$ '"
+    ssh.sendline(change_ps_cmd)
+    index = ssh.expect([TEMP_PROMPT, pexpect.EOF, pexpect.TIMEOUT], timeout=NumberConst.TEN)
+    if index != 0:
+        out = ssh.before
+        LOGGER.error("Execute command(%s) failed, index: %s, out: %s.", change_ps_cmd, index, out)
+        raise ErrCodeException(CommErrCode.FAILED_EXECUTE_COMMAND, *[change_ps_cmd, out])
+
+
+def _temp_change_prompt_csh(ssh):
+    """临时修改命令提示符"""
+    ssh.sendline("unset PROMPT_COMMAND")
+    change_ps_cmd = r"set prompt='[PEXPECT]\$ '"
     ssh.sendline(change_ps_cmd)
     index = ssh.expect([TEMP_PROMPT, pexpect.EOF, pexpect.TIMEOUT], timeout=NumberConst.TEN)
     if index != 0:
@@ -380,15 +383,15 @@ def handle_extended_scenarios(ssh, param, expect_list):
         expect_list = expect_list[:1] + param.treat_as_error_echo_list + expect_list[1:]
     if param.need_input_password_echo_list:
         index = ssh.expect(expect_list + param.need_input_password_echo_list,
-                           timeout=param.timeout or NumberConst.THIRTY)
+                           timeout=param.timeout)
         if index in range(len(expect_list), len(expect_list) + len(param.need_input_password_echo_list)):
             if param.password:
                 ssh.sendline(param.password)
             else:
                 ssh.sendline()
-            index = ssh.expect(expect_list, timeout=param.timeout or NumberConst.THIRTY)
+            index = ssh.expect(expect_list, timeout=param.timeout)
     else:
-        index = ssh.expect(expect_list, timeout=param.timeout or NumberConst.THIRTY)
+        index = ssh.expect(expect_list, timeout=param.timeout)
     return index
 
 
@@ -408,7 +411,10 @@ def su_exec_cmd_list(param: ExecFuncParam):
             out = ssh.before
             LOGGER.error("Execute command(%s) failed, index: %s, out: %s.", su_cmd, index, out)
             raise ErrCodeException(CommErrCode.FAILED_EXECUTE_COMMAND, *[su_cmd, out])
-        _temp_change_prompt(ssh)
+        if param.shell_file == "/bin/csh":
+            _temp_change_prompt_csh(ssh)
+        else:
+            _temp_change_prompt(ssh)
         expect_list = [TEMP_PROMPT, pexpect.EOF, pexpect.TIMEOUT]
         # 存在环境变量，先导环境变量
         if param.env_file_list:
@@ -434,7 +440,10 @@ def su_exec_cmd_list(param: ExecFuncParam):
             raise ErrCodeException(CommErrCode.FAILED_EXECUTE_COMMAND, *[cmd_str, out])
         last_before = _handle_output(ssh.before, cmd_str)
         ssh.close()
-        return str(ssh.exitstatus), last_before
+        if param.shell_file == "/bin/csh":
+            return str(index), last_before
+        else:
+            return str(ssh.exitstatus), last_before
     finally:
         if ssh:
             ssh.close()
@@ -612,7 +621,7 @@ def exec_umount_cmd(mount_path: str, option: str = None):
     return execute_cmd(cmd)
 
 
-def check_path_valid(check_path, is_check_white_list: bool = True):
+def check_path_valid(check_path, is_check_white_list: bool = True, is_check_real_path: bool = True):
     """
     对指定路径进行校验
     1、如果有特殊字符直接返回失败
@@ -623,7 +632,7 @@ def check_path_valid(check_path, is_check_white_list: bool = True):
     if re.search(expression, check_path):
         LOGGER.error(f"Path: {check_path} contains special characters.")
         return False
-    if not check_real_path(check_path):
+    if is_check_real_path and not check_real_path(check_path):
         LOGGER.error(f"Path: {check_path} is not real Path")
         return False
     if is_check_white_list:
@@ -677,9 +686,11 @@ def exec_mkdir_cmd(dir_path: str, os_user: str = None, mode=None, is_check_white
     return True
 
 
-def exec_cp_cmd(src_path, dest_path, user_name=None, option='-rp', is_check_white_list: bool = True):
+def exec_cp_cmd(src_path, dest_path, user_name=None, option='-rp', is_check_white_list=True,
+                is_check_path_owner=True):
     """
     复制文件到指定路径 默认指定路径存在文件会覆盖
+    :param is_check_path_owner: 是否检查路径属主
     :param src_path: 源文件路径 文件夹或着文件均可以
     :param dest_path: 目标路径 文件夹或这文件均可以
     :param user_name: 用户名
@@ -704,12 +715,13 @@ def exec_cp_cmd(src_path, dest_path, user_name=None, option='-rp', is_check_whit
             LOGGER.error(f"Use user copy file failed src path: {src_path} des path: {dest_path}, error: {std_err}")
             return False
         return True
-    if not check_path_owner(src_path, [user_name]):
-        LOGGER.error("The owner of src_path: %s is not %s.", src_path, user_name)
-        return False
-    if os.path.exists(dest_path) and not check_path_owner(dest_path, [user_name]):
-        LOGGER.error("The owner of desc_path: %s is not %s.", dest_path, user_name)
-        return False
+    if is_check_path_owner:
+        if not check_path_owner(src_path, [user_name]):
+            LOGGER.error("The owner of src_path: %s is not %s.", src_path, user_name)
+            return False
+        if os.path.exists(dest_path) and not check_path_owner(dest_path, [user_name]):
+            LOGGER.error("The owner of desc_path: %s is not %s.", dest_path, user_name)
+            return False
     if not option:
         cmd = f"su - {user_name} -c 'cp {src_path} {dest_path}'"
     else:
@@ -741,7 +753,7 @@ def exec_cp_dir_no_user(src_path, dest_path, option='-rp', is_check_white_list: 
 
     LOGGER.info("Use default user copy file")
     if is_overwrite:
-        cp_file = "/bin/cp"
+        cp_file = "/bin/cp -f"
     else:
         cp_file = "cp"
 

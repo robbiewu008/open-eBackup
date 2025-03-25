@@ -180,6 +180,13 @@ class ExecPgSql(object):
             break
         return CmdRetCode.EXEC_SUCCESS.value, cmd_result, ""
 
+    def exec_backup_cmd_catch_error(self, os_user_name, sql_cmd, timeout=-1, pager_off=False):
+        try:
+            return self.exec_backup_cmd(os_user_name, sql_cmd, timeout, pager_off)
+        except Exception as e:
+            LOGGER.error(e, exc_info=True)
+            return CmdRetCode.CONFIG_ERROR.value, "", "Base backup done, but archive mode error."
+
     def exec_sql_cmd_pass(self, exec_cmd, timeout=-1):
         db_pwd = get_env_variable(f"job_protectObject_auth_authPwd_{self._pid}")
         try:

@@ -13,6 +13,7 @@
 
 import json
 import pwd
+import time
 
 import pexpect
 
@@ -251,8 +252,14 @@ class OceanBaseClient(object):
         if max_restore_job_id is not None:
             cmd = cmd + f" and JOB_ID > {max_restore_job_id}"
         cmd = cmd + ";"
+        # 查询恢复任务，如果失败，重试5次，间隔30秒
+        for _ in range(6):
+            ret, out, err = self.exec_oceanbase_cmd(self.observer_ip, self.observer_port, cmd, timeout=self.timeout)
+            if out and "Empty set" not in out and "ERROR" not in out:
+                return parse_sql_result(out)
+            time.sleep(30)
         ret, out, err = self.exec_oceanbase_cmd(self.observer_ip, self.observer_port, cmd, timeout=self.timeout)
-        restore_jobs = None
+        restore_jobs = []
         if out and "Empty set" not in out:
             restore_jobs = parse_sql_result(out)
         return restore_jobs

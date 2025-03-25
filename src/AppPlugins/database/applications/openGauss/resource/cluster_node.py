@@ -57,3 +57,10 @@ class ClusterNode:
         database = Database(db_user=db_user, db_port=self.instance_port, db_env_path=db_env_path)
         all_databases = [db for db in database.show_databases() if db not in INNER_DB]
         return all_databases
+
+    def get_archive_mode(self, db_user, db_env_path):
+        database = Database(db_user=db_user, db_port=self.instance_port, db_env_path=db_env_path)
+        return database.show_archive_mode()
+
+    def set_node_ip(self, ip):
+        setattr(self, "node_ip", ip)

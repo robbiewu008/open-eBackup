@@ -11,9 +11,14 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
+import os
+import pathlib
+
+import psutil
+
 from common.common import output_result_file, report_job_details
 from common.common_models import SubJobDetails, LogDetail, CopyInfoRepModel, Copy
-from common.const import SubJobStatusEnum, ExecuteResultEnum
+from common.const import SubJobStatusEnum, ExecuteResultEnum, RepositoryDataTypeEnum
 from common.parse_parafile import ParamFileUtil
 
 from oceanbase.common.const import ActionResponse, OceanBaseCode, OceanBaseSubJobName, LogLevel, JobInfo, ErrorCode
@@ -172,6 +177,55 @@ class OceanBaseBackupService(object):
                                                  logDetail=[log_detail], dataSize=total_dir_size, speed=speed,
                                                  taskStatus=SubJobStatusEnum.COMPLETED.value))
         log.info(f"exec_backup end")
+        return True
+    
+    @staticmethod
+    def query_scan_repositories(req_id, job_id, sub_id, json):
+        param = OceanBaseBackupService.safe_get_info(req_id)
+        backup_inst = BackUp(req_id, job_id, sub_id, json, param)
+        backup_inst.query_scan_repositories()
+        log.info("execute queryScanRepositories interface success")
+        return True
+
+    @staticmethod
+    def abort_job(req_id, job_id):
+        param = OceanBaseBackupService.safe_get_info(req_id)
+        cache_area = BackUp.get_repository_path(param, RepositoryDataTypeEnum.CACHE_REPOSITORY)
+        abort_file = os.path.join(cache_area, "abort.ing")
+        pathlib.Path(abort_file).touch()
+        pid_list = psutil.pids()
+        for pid in pid_list:
+            process = psutil.Process(pid)
+            try:
+                cmd = process.cmdline()
+            except Exception as ex:
+                log.warn(f"The pid {pid} of process not exist! err:{ex}")
+                continue
+            if 'python3' in cmd and (job_id in cmd and req_id not in cmd):
+                try:
+                    process.kill()
+                except Exception as ex:
+                    log.warn(f"Kill process kill error!err:{ex}")
+                    break
+                log.info(f"The backup task has been terminated, job id: {job_id}.")
+                break
+        os.rename(abort_file, os.path.join(cache_area, "abort.done"))
+        log.info(f"Succeed to abort backup job, job id: {job_id}.")
+        return True
+
+    @staticmethod
+    def query_abort_job_progress(req_id, job_id, sub_id):
+        param = OceanBaseBackupService.safe_get_info(req_id)
+        cache_area = BackUp.get_repository_path(param, RepositoryDataTypeEnum.CACHE_REPOSITORY)
+        if os.path.exists(os.path.join(cache_area, "abort.ing")):
+            status = SubJobStatusEnum.ABORTING.value
+        elif os.path.exists(os.path.join(cache_area, "abort.done")):
+            status = SubJobStatusEnum.ABORTED.value
+        else:
+            status = SubJobStatusEnum.ABORTED_FAILED.value
+        output = SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=100, taskStatus=status)
+        log.info(f"SubJobDetails: {output.dict(by_alias=True)}, job id: {job_id}.")
+        output_result_file(req_id, output.dict(by_alias=True))
         return True
 
     @staticmethod

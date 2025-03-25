@@ -463,4 +463,16 @@ static mp_void JsonToStruct(const Json::Value& jsonValue, AppProtect::CheckCopyJ
     JSON_TO_STRUCT_ARRAY(copies, copies, Copy);
     JSON_TO_STRUCT_OBJ(extendInfo, extendInfo);
 }
+
+static mp_void JsonToStruct(const Json::Value& jsonValue, AppProtect::RepositoryPath& st)
+{
+    JSON_TO_STRUCT_ENUM(repositoryType, repositoryType, RepositoryDataType::type);
+    JSON_TO_STRUCT(scanPath, scanPath);
+}
+
+static mp_void JsonToStruct(const Json::Value& jsonValue, AppProtect::ScanRepositories& st)
+{
+    JSON_TO_STRUCT_ARRAY(scanRepoList, scanRepoList, AppProtect::RepositoryPath);
+    JSON_TO_STRUCT(savePath, savePath)
+}
 #endif

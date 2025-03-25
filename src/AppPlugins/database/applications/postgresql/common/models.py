@@ -102,3 +102,19 @@ class QueryClupClusterResponse(BaseModel):
     role: RoleType = Field(default=3, description='env role')
     nodes: List[ClupClusterNodeInfo] = Field(default=[], description='node info')
     extend_info: dict = Field({}, description='extend info', alias='extendInfo')
+
+
+class NodeInfo(BaseModel):
+    # 以下由pm传递
+    # ip 形式："172.0.0.1"，唯一标记
+    node_host: str = Field(description="node service ip", alias="nodeHost")
+    set_id: str = Field(description="patroni cluster instance id", alias="setId")
+    agent_uuid: str = Field(description="agent uuid", alias="agentUuid")
+    # 以下由备份执行中写入
+    is_exec_node: int = Field(default=0, description="是否有备份权限，0否1是", alias="isExecNode")
+    last_modified_time: str = Field(default="", description="上次修改时间", alias="lastModTime")
+    ever_backup: int = Field(default=0, description="0无1有", alias="everBackup")
+    is_completed: int = Field(default=0, description="0未1已完成2已失败", alias="isCompleted")
+    # 以下由接口返回
+    is_master: int = Field(default=0, description="0从1主", alias="isMaster")
+    is_alive: int = Field(default=0, description="节点是否存活，0活1挂", alias="isAlive")

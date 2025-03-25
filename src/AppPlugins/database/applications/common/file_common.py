@@ -292,3 +292,36 @@ def change_owner_by_name(file_path: str, owner: str, group: str):
 @retry_when_exception(retry_times=3, delay=1)
 def change_mod(path, mode):
     os.chmod(path, mode)
+
+
+def exec_chmod_dir_recursively(input_path: str, mode):
+    """
+    递归修改目录所属用户和用户组
+    :param mode: chmod参数
+    :param input_path: 待修改目录
+    """
+    path_type = check_file_or_dir(input_path)
+    if path_type == EnumPathType.INVALID_TYPE:
+        log.error(f"input path: {input_path} is invalid can not exec chmod dir recursively")
+        return False
+    try:
+        change_path_permission(input_path, mode=mode)
+    except Exception as e:
+        log.error(f"Change input_path owner failed, exception: {e}")
+        return False
+    for root, dirs, files in os.walk(input_path):
+        for tmp_dir in dirs:
+            tmp_dir_path = os.path.join(root, tmp_dir)
+            try:
+                change_path_permission(tmp_dir_path, mode=mode)
+            except Exception as e:
+                log.error(f"Change tmp_dir_path owner failed, exception: {e}")
+                continue
+        for tmp_file in files:
+            tmp_file = os.path.join(root, tmp_file)
+            try:
+                change_path_permission(tmp_file, mode=mode)
+            except Exception as e:
+                log.error(f"Change tmp_file owner failed, exception: {e}")
+                continue
+    return True

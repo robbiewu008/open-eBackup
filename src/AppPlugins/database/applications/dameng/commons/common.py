@@ -25,10 +25,9 @@ import json
 import shutil
 import locale
 
-from dameng.commons.const import DamengStrConstant, SubJobType, SubJobPolicy, \
-    ExecCmdResult, DELETING_PATH_WHITE_LIST, SysData, RpcParamKey
-from common.common import execute_cmd, output_execution_result, check_command_injection, execute_cmd_list, \
-    get_local_ips, check_size
+from dameng.commons.const import DamengStrConstant, ExecCmdResult, DELETING_PATH_WHITE_LIST, SysData
+from common.common import execute_cmd, output_execution_result, check_command_injection, get_local_ips, check_size
+from common.const import SubJobTypeEnum, SubJobPolicyEnum, RpcParamKey
 from common.logger import Logger
 
 LOGGER = Logger().get_logger("dameng.log")
@@ -108,7 +107,6 @@ def del_space(str_):
 
 
 def del_space_in_list(list_):
-
     for i in range(len(list_) - 1, -1, -1):
         if list_[i] == "":
             del list_[i]
@@ -161,10 +159,10 @@ def build_sub_job(job_id, job_priority, exec_node_id, job_info, job_name):
     sub_job_info = dict()
     sub_job_info["jobId"] = job_id
     sub_job_info["subJobId"] = ""
-    sub_job_info["jobType"] = SubJobType.BUSINESS_SUB_JOB.value
+    sub_job_info["jobType"] = SubJobTypeEnum.BUSINESS_SUB_JOB.value
     sub_job_info["jobName"] = job_name
     sub_job_info["jobPriority"] = job_priority
-    sub_job_info["policy"] = SubJobPolicy.FIXED_NODE.value
+    sub_job_info["policy"] = SubJobPolicyEnum.FIXED_NODE.value
     sub_job_info["ignoreFailed"] = False
     sub_job_info["execNodeId"] = exec_node_id
     sub_job_info["jobInfo"] = job_info
@@ -199,7 +197,7 @@ def mkdir_set_permissions(path_, username_):
             os.makedirs(realpath)
         except Exception as e:
             return False
-    #获取uid和gid
+    # 获取uid和gid
     cmd = f"id {username_}"
     result_type, out_info, err_info = execute_cmd(cmd)
     if result_type != ExecCmdResult.SUCCESS:
@@ -247,7 +245,7 @@ def dameng_execute_cmd(cmd, encoding=None):
 
     try:
         data = subprocess.check_output(shlex.split(cmd), encoding=encoding, \
-            shell=False, text=True, stderr=subprocess.STDOUT, errors='ignore')
+                                       shell=False, text=True, stderr=subprocess.STDOUT, errors='ignore')
     except subprocess.CalledProcessError as ex:
         data = ex.output
         exitcode = ex.returncode
@@ -271,10 +269,10 @@ def overwrite_file(file_path, payload):
 
 
 def invoke_rpc_tool_interface(unique_id: str, interface_name: str, param_dict: dict):
-
     def clear_file(path):
         if os.path.isfile(path):
             os.remove(path)
+
     if check_command_injection(unique_id):
         return {}
     input_file_path = os.path.join(RpcParamKey.PARAM_FILE_PATH, RpcParamKey.INPUT_FILE_PREFFIX + unique_id)

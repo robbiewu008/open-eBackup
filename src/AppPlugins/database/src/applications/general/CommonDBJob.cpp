@@ -22,6 +22,8 @@ using namespace GeneralDB;
 namespace {
     const mp_string MOUDLE_DB = "CommonDBJob";
     const mp_string CLUSTER_HANDLE = "ClusterHandle";
+    const mp_string SCAN_DIR_AND_FILE = "ScanDirAndFile";
+    const mp_int32 SCAN_DIR_AND_FILE_JOB_PRIORITY = 999;
     const mp_int32 CAN_SWITCH = 1;
     const mp_uint32 SEND_ADDNEWJOB_DELAY_TIME = 10 * 1000;  // 10s delay
     const mp_uint32 ADDNEWJOB_TIMEOUT = 5 * 60;  // 5min
@@ -45,7 +47,7 @@ CommonDBJob::CommonDBJob()
 }
 
 int CommonDBJob::GenSubJob(mp_string typeHandle, const mp_string &appType, Json::Value& extendInfo,
-    const std::vector<ApplicationEnvironment>& agentList)
+    const std::vector<ApplicationEnvironment>& agentList, bool isNeedScan)
 {
     defer _(nullptr, [&](...) {
         SetJobToFinish();
@@ -73,7 +75,7 @@ int CommonDBJob::GenSubJob(mp_string typeHandle, const mp_string &appType, Json:
         HCP_Log(ERR, MOUDLE_DB) << "GenerateSubJob failed for get splitLogic failed.jobId = " << m_jobId << HCPENDLOG;
         return MP_FAILED;
     }
-    if (GenerateSubJobInner(extendInfo, agentList) != MP_SUCCESS) {
+    if (GenerateSubJobInner(extendInfo, agentList, isNeedScan) != MP_SUCCESS) {
         HCP_Log(ERR, MOUDLE_DB) << "GenerateSubJobInner failed.jobId = " << m_jobId << HCPENDLOG;
         return MP_FAILED;
     }
@@ -289,7 +291,7 @@ int CommonDBJob::GenFixNodeTask(Json::Value& extendInfo, const std::vector<Appli
     return MP_SUCCESS;
 }
 
-int CommonDBJob::GetJobFromResultFile(std::vector<SubJob>& tasks)
+int CommonDBJob::GetJobFromResultFile(std::vector<SubJob>& tasks, bool isNeedScan)
 {
     if (m_manualResult.isNull() || !m_manualResult.isArray()) {
         HCP_Log(ERR, MOUDLE_DB) << "Result is empty or not array!jobId = " << m_jobId << HCPENDLOG;
@@ -300,12 +302,23 @@ int CommonDBJob::GetJobFromResultFile(std::vector<SubJob>& tasks)
         JsonToStruct(result, sub);
         tasks.emplace_back(sub);
     }
+
+    if (isNeedScan) {
+        HCP_Log(INFO, MOUDLE_DB) << "Add ScanDirAndFile subjob." << HCPENDLOG;
+        SubJob sub;
+        sub.__set_jobId(m_jobId);
+        sub.__set_jobType(SubJobType::BUSINESS_SUB_JOB);
+        sub.__set_jobName(SCAN_DIR_AND_FILE); // 任务类型放在jobname，透传conf name，由应用自行分析执行
+        sub.__set_ignoreFailed(0);
+        sub.__set_jobPriority(SCAN_DIR_AND_FILE_JOB_PRIORITY);
+        tasks.emplace_back(sub);
+    }
     HCP_Log(INFO, MOUDLE_DB) << "Get job from result file success!jobId = " << m_jobId << HCPENDLOG;
     return MP_SUCCESS;
 }
 
 int CommonDBJob::GetJobFromConfigureFile(Json::Value& extendInfo, const std::vector<ApplicationEnvironment>& agentList,
-    std::vector<SubJob>& tasks)
+    std::vector<SubJob>& tasks, bool isNeedScan)
 {
     for (auto &mem : m_splitLogics) {
         SubJob sub;
@@ -320,19 +333,37 @@ int CommonDBJob::GetJobFromConfigureFile(Json::Value& extendInfo, const std::vec
             return MP_FAILED;
         }
     }
+
+    if (isNeedScan) {
+        HCP_Log(INFO, MOUDLE_DB) << "Add ScanDirAndFile subjob." << HCPENDLOG;
+        SplitLogic mem{SCAN_DIR_AND_FILE, 0, ExecutePolicy::ANY_NODE, 1, 0, false, SCAN_DIR_AND_FILE_JOB_PRIORITY};
+        SubJob sub;
+        sub.__set_jobId(m_jobId);
+        sub.__set_jobType(SubJobType::BUSINESS_SUB_JOB);
+        sub.__set_jobName("ScanDirAndFile");
+        sub.__set_ignoreFailed(mem.ignoreFailed);
+        sub.__set_jobPriority(mem.priority);
+        HCP_Log(DEBUG, MOUDLE_DB) << DBG(sub.ignoreFailed) << HCPENDLOG;
+        if (SetPolicyByRunType(extendInfo, agentList, tasks, mem, sub) != MP_SUCCESS) {
+            HCP_Log(ERR, MOUDLE_DB) << "SetPolicyByRunType Failed!jobId = " << m_jobId << HCPENDLOG;
+            return MP_FAILED;
+        }
+    }
+
     HCP_Log(INFO, MOUDLE_DB) << "Get job from configure file success!jobId = " << m_jobId << HCPENDLOG;
     return MP_SUCCESS;
 }
 
-int CommonDBJob::GenerateSubJobInner(Json::Value& extendInfo, const std::vector<ApplicationEnvironment>& agentList)
+int CommonDBJob::GenerateSubJobInner(Json::Value &extendInfo, const std::vector<ApplicationEnvironment> &agentList,
+                                     bool isNeedScan)
 {
     std::vector<SubJob> tasks;
     if (!m_isManual) {
-        if (GetJobFromConfigureFile(extendInfo, agentList, tasks) != MP_SUCCESS) {
+        if (GetJobFromConfigureFile(extendInfo, agentList, tasks, isNeedScan) != MP_SUCCESS) {
             return MP_FAILED;
         }
     } else {
-        if (GetJobFromResultFile(tasks) != MP_SUCCESS) {
+        if (GetJobFromResultFile(tasks, isNeedScan) != MP_SUCCESS) {
             return MP_FAILED;
         }
     }

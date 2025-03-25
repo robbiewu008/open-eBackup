@@ -14,6 +14,7 @@
 import functools
 import json
 import os
+import shutil
 import time
 import uuid
 
@@ -21,7 +22,7 @@ import pexpect
 
 from common import cleaner
 from common import common as restore_svc_common
-from common.common import exter_attack, check_del_dir, execute_cmd_list, execute_cmd
+from common.common import exter_attack, check_del_dir, execute_cmd_list, execute_cmd, clean_dir_not_walk_link
 from common.common_models import SubJobDetails, ActionResult, SubJobModel, LogDetail
 from common.const import RepositoryDataTypeEnum, SubJobStatusEnum, ExecuteResultEnum, RoleType, SubJobTypeEnum, \
     SubJobPolicyEnum, ReportDBLabel, DBLogLevel, CMDResult
@@ -32,7 +33,7 @@ from common.number_const import NumberConst
 from common.util import check_user_utils
 from common.util import check_utils
 from common.util.checkout_user_utils import get_path_owner
-from common.util.cmd_utils import cmd_format
+from common.util.cmd_utils import cmd_format, get_livemount_path
 from common.util.exec_utils import exec_cp_cmd, exec_mkdir_cmd, exec_mv_cmd, read_lines_cmd, exec_overwrite_file
 from postgresql.common.const import PgConst, CmdRetCode, RestoreAction, RestoreSubJob, \
     ConfigKeyStatus, DirAndFileNameConst, InstallDeployType
@@ -225,7 +226,8 @@ class PostgreRestoreService:
     def standby_node_restore(pid, param_dict):
         cache_path = PostgreRestoreService.get_cache_mount_path(param_dict)
         # 1.清空data目录
-        tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(param_dict)
+        tgt_install_path, tgt_data_path, _ = PostgreRestoreService.get_db_install_and_data_path(param_dict)
+        PostgreRestoreService.cleanup_archive_after_restore(param_dict)
         PostgreRestoreService.clear_data_dir(PostgreRestoreService.parse_os_user(param_dict), tgt_data_path)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                RestoreProgress(progress=NumberConst.FIFTEEN,
@@ -299,7 +301,7 @@ class PostgreRestoreService:
 
     @staticmethod
     def delete_copy_dir_for_patroni(param_dict):
-        _, data_dir = PostgreRestoreService.get_db_install_and_data_path(param_dict)
+        _, data_dir, _ = PostgreRestoreService.get_db_install_and_data_path(param_dict)
         copy_dir = os.path.join(os.path.dirname(data_dir), PgConst.OCEAN_PROTECT_DATA_COPY)
         if os.path.exists(copy_dir):
             LOGGER.info("Start to delete copy dir for patroni.")
@@ -307,7 +309,7 @@ class PostgreRestoreService:
 
     @staticmethod
     def start_db_after_restore(pid, param_dict, cache_path, node_role=RoleType.NONE_TYPE.value):
-        tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(param_dict)
+        tgt_install_path, tgt_data_path, _ = PostgreRestoreService.get_db_install_and_data_path(param_dict)
         # 启动数据库实例
         tgt_obj_extend_info_dict = param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {})
         tgt_db_os_user = tgt_obj_extend_info_dict.get("osUsername", "")
@@ -326,19 +328,19 @@ class PostgreRestoreService:
                 LOGGER.error("Execute start patroni command failed.")
                 raise ErrCodeException(ErrorCode.EXEC_START_PATRONI_CMD_FAILED,
                                        message="Execute start patroni command failed")
-            LOGGER.info(f"Begin to start patroni success.")
             # 等待当前节点启动完成
             PostgreRestoreService.wait_start_over(tgt_data_path, tgt_db_os_user, host_ips, patroni_config)
         else:
-            PostgreCommonUtils.start_postgresql_database(tgt_db_os_user, tgt_install_path, tgt_data_path)
+            PostgreCommonUtils.start_postgresql_database(tgt_db_os_user, tgt_install_path, tgt_data_path, param_dict)
         LOGGER.info(f"Start patroni finally success.")
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                RestoreProgress(progress=NumberConst.EIGHTY,
                                                                message="start database success"))
 
         # 检查数据库实例是否启动成功
+        config_file = param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {}).get("configFile", "")
         is_running = PostgreRestoreService.check_is_running(install_deploy_type, tgt_data_path, tgt_db_os_user,
-                                                            tgt_install_path)
+                                                            tgt_install_path, config_file)
         if not is_running:
             PostgreCommonUtils.write_progress_info(
                 cache_path, RestoreAction.QUERY_RESTORE,
@@ -351,8 +353,8 @@ class PostgreRestoreService:
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                RestoreProgress(progress=NumberConst.EIGHTY_FIVE,
                                                                message="check database is running"))
-        if str(node_role) != str(RoleType.STANDBY.value):
-            PostgreRestoreService.cleanup_archive_after_restore(param_dict)
+        # 集群中存在主备切换状况，当备节点的归档目录下存在WAL日志时，将会导致恢复失败，主备节点都应执行归档目录清理操作
+        PostgreRestoreService.cleanup_archive_after_restore(param_dict)
         tgt_version = tgt_obj_extend_info_dict.get("version", "")
         PostgreRestoreService.reset_recovery_config(param_dict.get("job", {}), tgt_version,
                                                     tgt_data_path, bool(res_timestamp), role=node_role)
@@ -366,9 +368,10 @@ class PostgreRestoreService:
                                                  code=ExecuteResultEnum.SUCCESS.value)
 
     @staticmethod
-    def check_is_running(install_deploy_type, tgt_data_path, tgt_db_os_user, tgt_install_path):
+    def check_is_running(install_deploy_type, tgt_data_path, tgt_db_os_user, tgt_install_path, config_file):
         if install_deploy_type == InstallDeployType.PGPOOL:
-            is_running = PostgreCommonUtils.is_db_running(tgt_db_os_user, tgt_install_path, tgt_data_path)
+            is_running = PostgreCommonUtils.is_db_running(tgt_db_os_user, tgt_install_path, tgt_data_path,
+                                                          config_file=config_file)
         else:
             for _ in range(12):
                 is_running = PostgreCommonUtils.is_db_running(tgt_db_os_user, tgt_install_path, tgt_data_path)
@@ -379,18 +382,9 @@ class PostgreRestoreService:
 
     @staticmethod
     def wait_start_over(tgt_data_path, user, host_ips, patroni_config):
+        LOGGER.info(f"Begin to start patroni success.")
+        time.sleep(120)
         while True:
-            cluster_nodes = ClusterNodesChecker.get_nodes(patroni_config)
-            if not cluster_nodes:
-                time.sleep(10)
-                continue
-            for cluster_node in cluster_nodes:
-                hostname = cluster_node.get('hostname', "")
-                status = cluster_node.get('status', "")
-                if hostname in host_ips:
-                    break
-            if status in ['running', 'streaming']:
-                break
             data_failed_name = f"{os.path.basename(tgt_data_path)}.failed"
             data_failed_path = os.path.join(os.path.dirname(tgt_data_path), data_failed_name)
             if os.path.exists(data_failed_path):
@@ -402,14 +396,27 @@ class PostgreRestoreService:
                 LOGGER.info(f"Rename failed data directory success.")
                 raise ErrCodeException(ErrorCode.DB_STATUS_ERR_AFTER_RESTORE,
                                        message="Start patroni failed. Please check patroni log for details.")
-            time.sleep(10)
+            cluster_nodes = ClusterNodesChecker.get_nodes(patroni_config)
+            if not cluster_nodes:
+                time.sleep(30)
+                continue
+            for cluster_node in cluster_nodes:
+                hostname = cluster_node.get('hostname', "")
+                status = cluster_node.get('status', "")
+                if hostname in host_ips:
+                    break
+            if status in ['running', 'streaming']:
+                break
+            time.sleep(30)
 
     @staticmethod
     def pre_check_db_not_running(pid, param_dict, cache_path, is_cluster=False):
         progress_dict = PRE_PROGRESS_MAP.get("one", {}).get(str(is_cluster), {})
         db_os_user = param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {}).get("osUsername", "")
-        db_install_path, db_data_path = PostgreRestoreService.get_db_install_and_data_path(param_dict)
-        is_running = PostgreCommonUtils.is_db_running(db_os_user, db_install_path, db_data_path)
+        db_install_path, db_data_path, _ = PostgreRestoreService.get_db_install_and_data_path(param_dict)
+        config_file = param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {}).get("configFile", "")
+        is_running = PostgreCommonUtils.is_db_running(db_os_user, db_install_path, db_data_path,
+                                                      config_file=config_file)
         # 数据库正在运行，提示用户先停止数据库
         if is_running:
             PostgreCommonUtils.write_progress_info(cache_path, progress_dict.get("progress_file"), RestoreProgress(
@@ -493,10 +500,12 @@ class PostgreRestoreService:
             PostgreCommonUtils.write_progress_info(cache_path, progress_dict.get("progress_file"), RestoreProgress(
                 progress=progress_dict.get("fail", {}).get("progress"),
                 message=progress_dict.get("fail", {}).get("message"),
-                err_code=ErrorCode.PATRONI_YML_NOT_SET_BEFORE_PITR))
+                err_code=ErrorCode.PATRONI_YML_NOT_SET_BEFORE_PITR,
+                err_code_param=["patroni.yml", "PostgreSQL"]))
             PostgreRestoreService.record_task_result(
                 pid, "The patroni.yml is not set up properly. Please set up correctly according to the document",
-                err_code=ErrorCode.PATRONI_YML_NOT_SET_BEFORE_PITR)
+                err_code=ErrorCode.PATRONI_YML_NOT_SET_BEFORE_PITR,
+                body_err_params=["patroni.yml", "PostgreSQL"])
             return False
         LOGGER.info("Check patroni.yml succeed.")
         PostgreCommonUtils.write_progress_info(cache_path, progress_dict.get("progress_file"), RestoreProgress(
@@ -557,7 +566,7 @@ class PostgreRestoreService:
     def pre_check_target_data_path_is_rw(pid, param_dict, cache_path, is_cluster=False):
         progress_dict = PRE_PROGRESS_MAP.get("five", {}).get(str(is_cluster), {})
         tgt_os_user = PostgreRestoreService.parse_os_user(param_dict)
-        _, db_data_path = PostgreRestoreService.get_db_install_and_data_path(param_dict)
+        _, db_data_path, _ = PostgreRestoreService.get_db_install_and_data_path(param_dict)
         db_data_upper_path = os.path.realpath(os.path.join(db_data_path, ".."))
         is_dir_w_and_r = PostgreCommonUtils.is_dir_readable_and_writable_for_input_user(
             db_data_upper_path, tgt_os_user)
@@ -636,8 +645,11 @@ class PostgreRestoreService:
     @staticmethod
     @not_handle_exception_decorator
     def cleanup_archive_after_restore(param_dict):
-        tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(param_dict)
-        tgt_archive_path = PostgreCommonUtils.get_archive_path_offline(tgt_data_path)
+        tgt_install_path, tgt_data_path, tgt_archive_dir = PostgreRestoreService.get_db_install_and_data_path(
+            param_dict)
+        config_file = param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {}).get("configFile", "")
+        tgt_archive_path = PostgreCommonUtils.get_archive_path_offline(tgt_data_path, config_file=config_file,
+                                                                       archive_dir=tgt_archive_dir)
         if not tgt_archive_path or not os.path.isdir(tgt_archive_path):
             LOGGER.warning(f"The obtained archive dir: {tgt_archive_path} is empty or does not exist.")
             return
@@ -703,7 +715,7 @@ class PostgreRestoreService:
                 LOGGER.warning(f"Backup config file: {f_name} on restore but doesn't exist.")
 
     @staticmethod
-    def restore_conf_file(data_path, job_id):
+    def restore_conf_file(data_path, job_id, param_dict=None):
         data_upper_path = os.path.realpath(os.path.join(data_path, ".."))
         for f_name in PgConst.NEED_BAK_CFG_FILES:
             bak_f_name = f"{f_name}_{job_id}.bak"
@@ -714,6 +726,25 @@ class PostgreRestoreService:
                 LOGGER.info(f"Restore config file: {bak_f_name} successfully.")
             else:
                 LOGGER.warning(f"The config file: {bak_f_name} that has been backed up does not exist when restoring.")
+        if param_dict:
+            # 恢复的时候，看看那个位置上是否有配置文件，如果有，就用原来的，如果没有，就用看data目录的（也就是副本里的），并拷贝到记录的位置上。
+            # 从资源中获取config_file，如果config_file不存在，就从data数据目录中拷贝到config_file所在的位置
+            PostgreRestoreService.restore_config_file(data_path, param_dict, 'configFile')
+            PostgreRestoreService.restore_config_file(data_path, param_dict, 'hbaFile')
+            PostgreRestoreService.restore_config_file(data_path, param_dict, 'identFile')
+
+    @staticmethod
+    def restore_config_file(data_path, param_dict, config_name):
+        config_file = param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {}).get(config_name, "")
+        if config_file and not os.path.exists(config_file):
+            # 从全量副本中获取配置文件的信息，并将配置文件移动到指定位置
+            copies = PostgreRestoreService.parse_copies(param_dict.get("job", {}))
+            copy_config_file = copies[0].get("extendInfo", {}).get(config_name, "")
+            LOGGER.info(f"{config_name} : {copy_config_file}")
+            if copy_config_file:
+                source_config_file = os.path.join(os.path.abspath(data_path), os.path.basename(copy_config_file))
+                if os.path.exists(source_config_file):
+                    shutil.move(source_config_file, config_file)
 
     @staticmethod
     def merge_log_copies(os_user, log_copies, merged_path, job_id=""):
@@ -729,8 +760,10 @@ class PostgreRestoreService:
             LOGGER.error(f"Create copy merge path failed")
             raise Exception("Create copy merge path failed.")
         LOGGER.info("Create copy merge path success.")
+        loop_time = 1
         for tmp_copy in log_copies:
-            PostgreCommonUtils.copy_files(os_user, tmp_copy, merged_path, wildcard=".", job_id=job_id)
+            PostgreCommonUtils.copy_files(tmp_copy, merged_path, str(loop_time), job_id=job_id)
+            loop_time += 1
         LOGGER.info("Merge log copies success.")
 
     @staticmethod
@@ -746,6 +779,11 @@ class PostgreRestoreService:
         tgt_db_os_user = tgt_obj_extend_info_dict.get("osUsername", "")
         # 日志副本路径去重
         log_copy_paths = list(set(log_copy_paths))
+        # log_copy_path处理成E6000需要的格式
+        copy_mount_paths = []
+        for log_copy_path in log_copy_paths:
+            copy_mount_paths.append(get_livemount_path(job_id, log_copy_path))
+        log_copy_paths = copy_mount_paths
         if log_copy_paths:
             cache_path = PostgreRestoreService.get_copy_mount_paths(
                 copies[0], RepositoryDataTypeEnum.CACHE_REPOSITORY.value)[0]
@@ -767,6 +805,21 @@ class PostgreRestoreService:
             PostgreCommonUtils.copy_directory(src_path, tgt_path, wildcard=wildcard, job_id=job_id)
         except Exception as ex:
             LOGGER.error(f'Restore data failed, wildcard: "{wildcard}", source: {src_path}, target: {tgt_path}.')
+            raise ErrCodeException(ErrorCode.RESTORE_DATA_FAILED, message="Restore data failed") from ex
+
+    @staticmethod
+    def restore_pg_wal_dir(tgt_wal_path: str, tgt_wal_real_path: str, job_id=""):
+        if tgt_wal_path == tgt_wal_real_path:
+            return
+        try:
+            if not os.path.islink(tgt_wal_real_path):
+                clean_dir_not_walk_link(tgt_wal_real_path)
+            PostgreCommonUtils.copy_directory(tgt_wal_path, tgt_wal_real_path, wildcard=".", job_id=job_id)
+            clean_dir_not_walk_link(tgt_wal_path)
+            shutil.rmtree(tgt_wal_path)
+            os.symlink(tgt_wal_real_path, tgt_wal_path)
+        except Exception as ex:
+            LOGGER.error(f'Restore data failed, tgt_wal_path: {tgt_wal_path}, tgt_wal_real_path: {tgt_wal_real_path}.')
             raise ErrCodeException(ErrorCode.RESTORE_DATA_FAILED, message="Restore data failed") from ex
 
     @staticmethod
@@ -835,14 +888,17 @@ class PostgreRestoreService:
     @staticmethod
     def sync_master_data(pid, param_dict):
         enable_root = PostgreCommonUtils.get_root_switch()
-        tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(param_dict)
+        tgt_install_path, tgt_data_path, _ = PostgreRestoreService.get_db_install_and_data_path(param_dict)
         pg_backup_path = os.path.realpath(os.path.join(tgt_install_path, "bin", "pg_basebackup"))
         tgt_obj = param_dict.get("job", {}).get("targetObject", {})
         os_user = tgt_obj.get("extendInfo", {}).get("osUsername", "")
         primary_ip, inst_port = PostgreRestoreService.get_primary_ip_and_instance_port(param_dict)
         repl_user = tgt_obj.get("auth", {}).get("extendInfo", {}).get("dbStreamRepUser")
         repl_pwd = get_env_variable(f"job_targetObject_auth_extendInfo_dbStreamRepPwd_{pid}")
-
+        copy_repl_user, copy_repl_pwd = PostgreCommonUtils.get_repl_info(param_dict.get("job", {}))
+        if copy_repl_user:
+            repl_user = copy_repl_user
+            repl_pwd = copy_repl_pwd
         if not PostgreRestoreService.check_params_for_standby([os_user, repl_user], [tgt_install_path, tgt_data_path],
                                                               primary_ip, inst_port):
             raise ErrCodeException(ErrorCode.RESTORE_DATA_FAILED, message="Sync master data to target data path failed")
@@ -878,14 +934,21 @@ class PostgreRestoreService:
                 raise ErrCodeException(ErrorCode.RESTORE_DATA_FAILED,
                                        message="Sync master data to target data path failed")
             if install_deploy_type == InstallDeployType.CLUP:
-                postgresql_auto_conf_path = os.path.join(tgt_data_path, PgConst.POSTGRESQL_AUTO_CONF_FILE_NAME)
-                ret, mount_list = read_lines_cmd(postgresql_auto_conf_path)
-                primary_conn_info = mount_list[len(mount_list) - 1]
                 local_node_ip = PostgreRestoreService.get_local_node_ip(param_dict)
-                primary_conn_info = primary_conn_info.replace('user=', f'application_name={local_node_ip} user=')
-                exec_overwrite_file(postgresql_auto_conf_path, primary_conn_info, json_flag=False)
+                PostgreRestoreService.replace_primary_conninfo(tgt_data_path, local_node_ip)
         finally:
             cleaner.clear(repl_pwd)
+
+    @staticmethod
+    def replace_primary_conninfo(tgt_data_path, local_node_ip):
+        postgresql_auto_conf_path = os.path.join(tgt_data_path, PgConst.POSTGRESQL_AUTO_CONF_FILE_NAME)
+        ret, mount_list = read_lines_cmd(postgresql_auto_conf_path)
+        for i, line in enumerate(mount_list):
+            if line.startswith("primary_conninfo ="):
+                mount_list[i] = mount_list[i].replace('user=', f'application_name={local_node_ip} user=')
+                break
+        lines_conn = '\n'.join(mount_list) + '\n'
+        exec_overwrite_file(postgresql_auto_conf_path, lines_conn, json_flag=False)
 
     @staticmethod
     def check_params_for_standby(special_characters: list, paths: list, primary_ip: str, inst_port: str):
@@ -949,7 +1012,7 @@ class PostgreRestoreService:
 
     @staticmethod
     def check_sync_data_is_success(param_dict):
-        _, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(param_dict)
+        _, tgt_data_path, _ = PostgreRestoreService.get_db_install_and_data_path(param_dict)
         pg_conf_file = os.path.realpath(os.path.join(tgt_data_path, PgConst.POSTGRESQL_CONF_FILE_NAME))
         if not os.path.isfile(pg_conf_file):
             LOGGER.warning("The postgresql.conf file does not exist in the database data directory")
@@ -959,7 +1022,7 @@ class PostgreRestoreService:
     @staticmethod
     def clear_data_dir_in_slave(param_dict):
         # 1.清空data目录
-        tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(param_dict)
+        tgt_install_path, tgt_data_path, _ = PostgreRestoreService.get_db_install_and_data_path(param_dict)
         PostgreRestoreService.clear_data_dir(PostgreRestoreService.parse_os_user(param_dict), tgt_data_path)
         # 1.1 清空tablespace目录
         cache_path = PostgreRestoreService.get_cache_mount_path(param_dict)
@@ -1299,7 +1362,9 @@ class PostgreRestoreService:
         if deploy_type == InstallDeployType.PATRONI:
             pg_conf_file = os.path.realpath(os.path.join(tgt_data_path, PgConst.POSTGRESQL_BASE_CONF_FILE))
         else:
-            pg_conf_file = os.path.realpath(os.path.join(tgt_data_path, PgConst.POSTGRESQL_CONF_FILE_NAME))
+            config_file = cfg_param.extend_info.get("configFile", "")
+            pg_conf_file = config_file if config_file else os.path.realpath(
+                os.path.join(tgt_data_path, PgConst.POSTGRESQL_CONF_FILE_NAME))
         if not os.path.isfile(pg_conf_file):
             LOGGER.error("The postgresql.conf file does not exist in the database data directory")
             raise Exception("Postgresql configuration file does not exist in the database data directory")
@@ -1360,8 +1425,9 @@ class PostgreRestoreService:
         if deploy_type == InstallDeployType.PATRONI:
             pg_conf_file = os.path.realpath(os.path.join(tgt_data_path, PgConst.POSTGRESQL_BASE_CONF_FILE))
         else:
-            pg_conf_file = os.path.realpath(os.path.join(tgt_data_path, PgConst.POSTGRESQL_CONF_FILE_NAME))
-
+            config_file = job_dict.get("targetObject", {}).get("extendInfo", {}).get("configFile", "")
+            pg_conf_file = config_file if config_file else os.path.realpath(
+                os.path.join(tgt_data_path, PgConst.POSTGRESQL_CONF_FILE_NAME))
         if not is_pit:
             # 复位恢复命令时log路径没有用，所以设为“”
             PostgreRestoreService.set_restore_command(pg_conf_file, "", rollback=True)
@@ -1506,7 +1572,7 @@ class PostgreRestoreService:
 
     @staticmethod
     def get_db_install_and_data_path(param_dict):
-        install_path, data_path = "", ""
+        install_path, data_path, archive_dir = "", "", ""
         if PostgreRestoreService.is_restore_cluster(param_dict):
             sub_objs = param_dict.get("job", {}).get("restoreSubObjects", [])
             nodes = param_dict.get("job", {}).get("targetEnv", {}).get("nodes", [])
@@ -1517,12 +1583,35 @@ class PostgreRestoreService:
                 if tmp_node_ip in local_ips:
                     install_path = obj.get("extendInfo", {}).get("clientPath", "")
                     data_path = obj.get("extendInfo", {}).get("dataDirectory", "")
+                    data_real_path = os.path.realpath(data_path) if data_path else data_path
+                    archive_dir = obj.get("extendInfo", {}).get("archiveDir", "")
                     break
         else:
             tgt_env_extend_info_dict = param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {})
             install_path = tgt_env_extend_info_dict.get("clientPath", "")
             data_path = tgt_env_extend_info_dict.get("dataDirectory", "")
-        return install_path, os.path.join(install_path, "data") if not data_path and install_path else data_path
+            data_real_path = os.path.realpath(data_path) if data_path else data_path
+            archive_dir = tgt_env_extend_info_dict.get("extendInfo", {}).get("archiveDir", "")
+        data_path = os.path.join(install_path, "data") if not data_real_path and install_path else data_real_path
+        return install_path, data_path, archive_dir
+
+    @staticmethod
+    def get_db_pg_wal_dir_real_path(param_dict, tgt_data_path):
+        tgt_version = param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {}).get("version", "")
+        if not os.path.isdir(tgt_data_path):
+            LOGGER.error(f"Get postgresql database wal directory, target data path: {tgt_data_path} is invalid.")
+            raise Exception("Target data path is invalid when getting postgresql database wal directory")
+        if not tgt_version or len(tgt_version.split('.')) < 2:
+            LOGGER.error(f"Get postgresql database wal directory, target version: {tgt_version} is invalid.")
+            raise Exception("Target version is invalid when getting postgresql database wal directory")
+        major_ver = tgt_version.split(".")[0]
+        if int(major_ver) <= PgConst.MAJOR_VERSION_NINE:
+            pg_wal_dir_list = PgConst.PG_XLOG_V9_AND_BELOW_PATHS
+        else:
+            pg_wal_dir_list = PgConst.PG_WAL_V10_AND_ABOVE_PATHS
+        pg_wal_path = os.path.join(tgt_data_path, pg_wal_dir_list)
+        pg_wal_real_path = os.path.realpath(os.path.join(tgt_data_path, pg_wal_dir_list))
+        return pg_wal_path, pg_wal_real_path
 
     @staticmethod
     def get_db_port(param_dict):
@@ -1592,12 +1681,13 @@ class PostgreRestoreService:
         task_status = SubJobStatusEnum.RUNNING.value
         progress = NumberConst.ZERO
         err_code = None
+        err_code_param = None
         if task_name in PgConst.RESTORE_PROGRESS_ACTIONS:
             process_cxt = PostgreCommonUtils.read_process_info(cache_path, task_name)
-            progress, message, err_code = process_cxt.get("progress"), process_cxt.get("message", ""), \
-                process_cxt.get("err_code")
+            progress, message, err_code, err_code_param = process_cxt.get("progress"), process_cxt.get("message", ""), \
+                process_cxt.get("err_code"), process_cxt.get("err_code_param", [])
             LOGGER.debug(f"[query]Executing {task_name} task, progress: {progress}, message: {message}, "
-                         f"error code: {err_code}.")
+                         f"error code: {err_code}, err_code_param: {err_code_param}.")
             if message == "completed":
                 task_status = SubJobStatusEnum.COMPLETED.value
                 # 当前恢复子任务结束，上报成功label
@@ -1617,7 +1707,8 @@ class PostgreRestoreService:
         if err_code:
             job_detail = LogDetail(logInfo=RESTORE_REPORT_LABEL_MAP.get(task_name, ReportDBLabel.RESTORE_SUB_FAILED),
                                    logInfoParam=[sub_job_id],
-                                   logTimestamp=int(time.time()), logDetail=err_code, logLevel=DBLogLevel.ERROR.value)
+                                   logTimestamp=int(time.time()), logDetail=err_code, logLevel=DBLogLevel.ERROR.value,
+                                   logDetailParam=err_code_param)
             sub_job_details.log_detail.append(job_detail)
         LOGGER.info(f"[query]Executing query progress task success, task name: {task_name}, pid: {pid}, "
                     f"job id: {job_id}, status: {task_status}, process: {progress}, message: {message}.")

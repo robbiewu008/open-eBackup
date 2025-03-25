@@ -38,6 +38,8 @@ class SubJobName:
     EXEC_ACTIVE_BACKUP = "execActiveBackup"
     EXEC_SEQUENCE_BACKUP = "execSequenceBackup"
     EXEC_BINLOG_COPY = "execBinlogCopy"
+    QUERY_COPY = "queryCopy"
+    QUERY_SCAN_REOSITORIES = "queryScanRepositories"
 
 
 class ManagerPriority:
@@ -64,6 +66,7 @@ class RoleBackupDir:
     METADATASERVER = "metadata_backup_dir"
     GTM = "seq_backup_dir"
     DBAGENT = "backup_rootdir"
+    ACTIVE = "active_file_directory"
 
 
 class FormatCapacity(int, Enum):
@@ -99,7 +102,7 @@ class ErrorCode(int, Enum):
     ERROR_DIFFERENT_TOPO = 1577209972
     # 数据库用户名不一致
     ERROR_DIFFERENT_USER = 1577209973
-    # 挂载路径失败
+    # 挂载路径失败，原因：内部错误导致挂载路径权限与请求有差异
     ERROR_MOUNT_PATH = 1577209974
     # 数据库状态异常
     ERR_DATABASE_STATUS = 1577210000
@@ -164,6 +167,8 @@ class ErrorCode(int, Enum):
     ERR_NEW_LOC_RST_VER_CONFLICT = 1677933074
     # 检查文件系统中副本异常
     ERR_BKP_CHECK = 1677873258
+    # 用户密码错误
+    ERROR_LOGIN_INFO = 1577209986
 
 
 class GoldenSubJobName:
@@ -171,7 +176,6 @@ class GoldenSubJobName:
     SUB_CHECK = "sub_check"
     SUB_EXEC = "sub_exec"
     SUB_BINLOG_MERGE = "sub_binlog_merge"
-    SUB_BINLOG_MOUNT = "sub_binlog_mount"
 
 
 class V5SubJobStep:
@@ -193,34 +197,6 @@ class MasterSlavePolicy:
     SLAVE = "slave"
 
 
-class CommandReturnCode(Enum):
-    ERROR = -1
-    # plugin or proxy framework executes successfully
-    SUCCESS = 0
-    # plugin or proxy framework executes successfully, client need to perform this operation continue
-    CONTINUE = 100
-    # plugin or proxy framework is busy, client should perform this operation after a period of time
-    BUSY = 101
-    # an internal error occurred in the plugin or proxy framework
-    INTERNAL_ERROR = 200
-
-
-class NormalErr(int, Enum):
-    NO_ERR = 0
-    FALSE = -1
-    WAITING = -2
-
-
-class CMDResult(str, Enum):
-    """
-    执行命令的错误码
-    """
-    SUCCESS = "0"
-    FAILED = "1"
-    STORAGE_CONFIG_FAILED = "3"
-    CLUSTER_ABNORMAL = "84"
-
-
 class LogLevel(int, Enum):
     INFO = 1
     WARN = 2
@@ -232,14 +208,6 @@ class GoldenDBPath:
     GoldenDB_FILESYSTEM_MOUNT_PATH = "/mnt/databackup/"
     GoldenDB_LINK_PATH = "/mnt/databackup/gbase"
     XTRBACKUP_golden = "xtrabackup"
-
-
-class GoldenDBCode(Enum):
-    """
-    返回给框架的code
-    """
-    SUCCESS = 0
-    FAILED = 200
 
 
 class ClusterInfoStr:
@@ -442,7 +410,7 @@ class SqliteServiceField(Enum):
 class Report:
     REPORT_INTERVAL = 30
     STS_CHECK_INTERVAL = 10
-    TIME_OUT = 3600 * 12
+    TIME_OUT = 3600 * 1200
 
 
 class LastCopyType:
@@ -452,3 +420,89 @@ class LastCopyType:
         3: [RpcParamKey.LOG_COPY],
         4: [RpcParamKey.FULL_COPY, RpcParamKey.INCREMENT_COPY, RpcParamKey.LOG_COPY]
     }
+
+
+class BackupStrategyPolicy:
+    FULL = "full"
+    INCREMENT = "inrc"
+
+
+class ErrCodeMessage:
+    """
+    GoldenDB返回错误
+    """
+    DBTOOL_MDS_BACKUP_CAN_NOT_USE = "Please use dbtool -cm -backup"
+
+
+class BackupResultMessage:
+    """
+    GoldenDB查询备份状态返回结果
+    """
+    BACKUP_IS_GOING = "backup is going"
+    BACKUP_IS_DONE = "[100%] OK"
+    BACKUP_NOT_EXIST = "no record"
+
+
+class DbtoolTaskStatus:
+    """
+    GoldenDB备份/恢复状态
+    """
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+class RestoreResultMessage:
+    """
+    GoldenDB查询恢复状态返回结果
+    """
+    RESTORE_IS_GOING = "restore is going"
+    RESTORE_IS_DONE = "OK"
+    # Fail to download file DBCluster_1/LOGICAL_BACKUP/Sequence/sequence_history.json
+    Sequence_history_NOT_EXIST = "sequence_history.json"
+
+
+class ErrPattern:
+    Select_Bkp_DB_Fail = "select backup db fail"
+    Auth_Check_Fail = "authentication check fail"
+
+
+class GoldendbLabel:
+    pre_check_sla = "goldendb_backup_pre_check_sla_failed_label"
+    active_tx_info_record_lost = "goldendb_active_tx_info_record_lost_label"
+
+
+class ActTxInfoConsts:
+    # 1: 标识符，标识这一行是活跃事务信息
+    active_tx_info = "1"
+    # 2: 标识符，标识这一行是集群中每个分片当时主DN节点的gtid位置信息
+    gtid_position = "2"
+    # 活跃事务信息最小长度为6
+    min_act_tx_info_len = 6
+    # 一致性时刻日期的索引
+    consistent_date_idx = 2
+    # 一致性时刻时间的索引
+    consistent_time_idx = 3
+
+
+class FileInfoDict:
+    file_info_dict = {
+        "active": {"ini_name": RoleIniName.CLUSTERMANAGERINI, "section": RoleIniSection.CLUSTERMANAGER,
+                   "field": RoleBackupDir.ACTIVE},
+        GoldenDBNodeType.GTM_NODE: {"ini_name": RoleIniName.GTMINI, "section": RoleIniSection.GTMINI,
+                                    "field": RoleBackupDir.GTM},
+        GoldenDBNodeType.DATA_NODE: {"ini_name": RoleIniName.DBAGENTINI, "section": RoleIniSection.DBAGENTINI,
+                                     "field": RoleBackupDir.DBAGENT},
+        GoldenDBNodeType.ZX_MANAGER_NODE: {"ini_name": RoleIniName.CLUSTERMANAGERINI,
+                                           "section": RoleIniSection.CLUSTERMANAGER,
+                                           "field": RoleBackupDir.CLUSTERMANAGER},
+    }
+
+
+class RepositoryDataTypeEnum(int, Enum):
+    META_REPOSITORY = 0
+    DATA_REPOSITORY = 1
+    CACHE_REPOSITORY = 2
+    LOG_REPOSITORY = 3
+    INDEX_REPOSITORY = 4
+    LOG_META_REPOSITORY = 5

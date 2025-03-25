@@ -250,7 +250,7 @@ def query_auth_permisson(db_info):
     ret, out = disql_tool.run_disql_tool((cmd,))
     succ_code = 0
     if not ret:
-        LOGGER.error(f"Query auth permisson fail")
+        LOGGER.error(f"Query auth permission fail.")
         return ErrCode.AUTH_INFO_ERR
     if "no rows" in out[0] or "未选定行" in out[0]:
         LOGGER.error(f"The auth permission is not DBA.")

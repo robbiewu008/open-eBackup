@@ -16,9 +16,9 @@ import os
 
 from goldendb.logger import log
 from common.common import exter_attack, output_result_file
-from common.const import ParamConstant
+from common.const import ParamConstant, ExecuteResultEnum
 from common.util.exec_utils import exec_overwrite_file
-from goldendb.handle.common.const import GoldenDBSubType, GoldenDBCode, ErrorCode
+from goldendb.handle.common.const import GoldenDBSubType, ErrorCode
 from goldendb.handle.common.goldendb_exception import ErrCodeException
 from goldendb.handle.resource.parse_params import ResourceParam
 from goldendb.handle.resource.resource_info import GoldenDBResourceInfo
@@ -34,19 +34,19 @@ class ResourceAbility:
         resource_info = GoldenDBResourceInfo(req_id, params_from_pm)
         node_info = resource_info.param.get_node_info()
         node_type = node_info.get("nodeType")
-        body_err_code = GoldenDBCode.SUCCESS.value
-        err_code = GoldenDBCode.SUCCESS.value
+        body_err_code = ExecuteResultEnum.SUCCESS.value
+        err_code = ExecuteResultEnum.SUCCESS.value
         err_dict = {"msg": "Check connection success!", "nodeType": node_type}
         err_msg = json.dumps(err_dict)
         try:
             resource_info.check_node_status()
         except ErrCodeException as err_code_ex:
-            err_code = GoldenDBCode.FAILED.value
+            err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             err_dict = {"msg": err_code_ex.error_message_json, "nodeType": node_type}
             body_err_code = err_code_ex.error_code
             err_msg = json.dumps(err_dict)
         except Exception as ex:
-            err_code = GoldenDBCode.FAILED.value
+            err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             body_err_code = ErrorCode.ERR_INPUT_STRING
             err_dict = {"msg": "exception occurs.", "nodeType": node_type}
             err_msg = json.dumps(err_dict)

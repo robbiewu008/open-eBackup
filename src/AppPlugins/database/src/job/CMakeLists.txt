@@ -21,10 +21,12 @@ target_include_directories(job_obj
     ${MODULE_BASE_PATH}/common
     ${MODULE_THRIFT_INC_PATH}
     ${MODULE_OPENSRC_PATH}/boost_rel/include
+    ${MODULE_OPENSRC_PATH}/jsoncpp_rel/include
     ${AGENT_SDK_PATH}/include
     ${MODULE_SECUREC_INC_PATH}
 )
 target_link_libraries(job_obj
     PRIVATE
-    database_inc
+    safe_cmplib
+    # database_inc
 )

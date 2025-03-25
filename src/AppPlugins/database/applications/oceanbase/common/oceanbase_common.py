@@ -203,10 +203,15 @@ def invoke_rpc_tool_interface(unique_id: str, interface_name: str, param_dict: d
 
 
 def get_dir_size(dir_path):
-    present_size = 0
-    for root, _, files in os.walk(dir_path):
-        present_size += sum([os.path.getsize(os.path.join(root, name)) for name in files])
-    return int(present_size / 1024)
+    return_code, out_info, err_info = execute_cmd(f"du -sh --block-size=1K {dir_path}")
+    if return_code == CMDResult.SUCCESS:
+        result = int(out_info.split('\t')[0])
+    else:
+        present_size = 0
+        for root, _, files in os.walk(dir_path):
+            present_size += sum([os.path.getsize(os.path.join(root, name)) for name in files])
+        result = int(present_size / 1024)
+    return result
 
 
 def init_sqlite_file(sqlite_file_name, obclient_alive_num):

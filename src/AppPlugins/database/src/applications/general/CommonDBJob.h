@@ -65,17 +65,18 @@ public:
     uint64_t m_appType { 0 };
 protected:
     int GenSubJob(mp_string typeHandle, const mp_string &appType, Json::Value& extendInfo,
-        const std::vector<ApplicationEnvironment>& agentList);
+        const std::vector<ApplicationEnvironment>& agentList, bool isNeedScan = false);
     int GetSplitLogic(const mp_string& appType, Json::Value& extendInfo, Json::Value& clusterHandle,
         const Json::Value& handleMap);
     int SetPriorityByPolicy(const SplitLogic& mem, const std::vector<ApplicationEnvironment>& agentList,
         std::vector<SubJob> &subVec);
     int SetPolicyByRunType(Json::Value& extendInfo, const std::vector<ApplicationEnvironment>& agentList,
         std::vector<SubJob>& tasks, const SplitLogic& mem, SubJob& sub);
-    int GetJobFromResultFile(std::vector<SubJob>& tasks);
+    int GetJobFromResultFile(std::vector<SubJob>& tasks, bool isNeedScan = false);
     int GetJobFromConfigureFile(Json::Value& extendInfo, const std::vector<ApplicationEnvironment>& agentList,
-        std::vector<SubJob>& tasks);
-    int GenerateSubJobInner(Json::Value& extendInfo, const std::vector<ApplicationEnvironment>& agentList);
+        std::vector<SubJob>& tasks, bool isNeedScan = false);
+    int GenerateSubJobInner(Json::Value &extendInfo, const std::vector<ApplicationEnvironment> &agentList,
+                            bool isNeedScan = false);
     void ReportJobFailed(const mp_string &jobId, const mp_string &subJobId);
     virtual int GenerateSubJobManually();
 protected:

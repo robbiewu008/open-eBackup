@@ -42,10 +42,12 @@ class InstanceIncrementBackup(InstanceBackup):
         if not ret:
             self.log.info(f"Present_lsn less than copy_start_lsn! job id: {self._job_id}")
             return error_code
+        # 同步 单机 返回成功
         if self._resource_info.get_deploy_type() == DeployType.SINGLE_TYPE or\
                 self._resource_info.get_sync_state() == SyncMode.SYNC:
             self.log.info(f"Single-node cluster or synchronous data replication mode. job id: {self._job_id}")
             return SUCCESS_RET
+        # 全量 增量 节点不一致 增量转全量
         _, last_endpoint = get_value_from_dict(previous_copy, MetaDataKey.EXTEND_INFO, MetaDataKey.ENDPOINT)
         if last_endpoint != endpoint:
             self.log.error(f'Present endpoint is not last endpoint. job id: {self._job_id}')
@@ -63,11 +65,12 @@ class InstanceIncrementBackup(InstanceBackup):
         # CMDB分布式场景
         if is_cmdb_distribute(self._deploy_type, self._database_type):
             try:
-                return self.exec_cmdb_instance_backup(BackupTypeEnum.INCRE_BACKUP)
+                return self.exec_cmdb_instance_backup(BackupTypeEnum.INCRE_BACKUP.value)
             except Exception as err:
                 self.log.error(f'exec cmdb failed, error: {err}')
                 self.update_progress(BackupStatus.FAILED)
                 return False
+        # 检查副本仓和cache仓
         if not self.pre_backup():
             self.log.error(f"Backup prepose failed. job id: {self._job_id}")
             return False

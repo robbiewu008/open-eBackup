@@ -31,7 +31,7 @@ def get_version(pid, client_path, os_username, enable_root=0):
         if not check_user_utils.check_path_owner(client_path, [os_username]):
             LOGGER.error("Client path and os user is not matching.")
             return False, ErrorCode.GET_VERSION_FAILED
-    if not check_path_valid(client_path, False):
+    if not check_path_valid(client_path, False, False):
         LOGGER.error(f"pg_ctl path[{client_path}] is invalid")
         return False, ErrorCode.GET_VERSION_FAILED
     cmd = cmd_format("su - {} -c '{} --version'", os_username, client_path)

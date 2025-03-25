@@ -167,3 +167,21 @@ class ReportCopyInfoModel(BaseModel):
     """
     copy_info: Copy = Field(None, alias="copy")
     job_id: str = Field(None, alias="jobId")
+
+
+class RepositoryPath(BaseModel):
+    repository_type: int = Field(None, alias='repositoryType')
+    scan_path: str = Field(None, alias='scanPath')
+
+
+class ScanRepositories(BaseModel):
+    scan_repo_list: List[RepositoryPath] = Field(None, alias='scanRepoList')
+    save_path: str = Field(None, alias='savePath')
+
+
+class ProgressStatus(BaseModel):
+    task_status: int = Field(description="任务状态", alias="taskStatus")
+    progress: int = Field(description="进度")
+    log_detail: int = Field(None, description="", alias="logDetail")
+    log_detail_param: list = Field(None, description="", alias="logDetailParam")
+

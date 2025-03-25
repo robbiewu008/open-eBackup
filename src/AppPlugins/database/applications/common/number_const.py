@@ -11,7 +11,6 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
-
 class NumberConst:
     NEGATIVE_ONE = -1
     ZERO = 0
@@ -38,6 +37,7 @@ class NumberConst:
     EIGHTY = 80
     EIGHTY_FOUR = 84
     EIGHTY_FIVE = 85
+    EIGHTY_SIX = 86
     NINETY = 90
     NINETY_TWO = 92
     NINETY_THREE = 93

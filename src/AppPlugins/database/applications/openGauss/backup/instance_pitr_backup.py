@@ -34,6 +34,10 @@ class InstancePitrBackup(InstanceBackup):
     def check_backup_type(self):
         self.log.info(f"Check backup type. job id: {self._job_id}")
         if is_cmdb_distribute(self._deploy_type, self._database_type):
+            archive_mode = self.query_archive_mode()
+            if not archive_mode:
+                self.log.error(f'Archive mode is off. job id: {self._job_id}')
+                return BodyErr.ERROR_ARCHIVE_MODE
             return SUCCESS_RET
         endpoint = self._resource_info.get_local_endpoint()
         if self._resource_info.get_node_status(endpoint) != Status.NORMAL:
@@ -70,7 +74,7 @@ class InstancePitrBackup(InstanceBackup):
         # CMDB分布式场景
         if is_cmdb_distribute(self._deploy_type, self._database_type):
             try:
-                return self.exec_cmdb_instance_backup(BackupTypeEnum.LOG_BACKUP)
+                return self.exec_cmdb_instance_backup(BackupTypeEnum.LOG_BACKUP.value)
             except Exception as err:
                 self.log.error(f'exec cmdb failed, error: {err}')
                 self.update_progress(BackupStatus.FAILED)
@@ -208,6 +212,7 @@ class InstancePitrBackup(InstanceBackup):
             return self.first_log_backup(wal_dir, start_file)
 
         copy_meta_info = read_tmp_json_file(copy_meta_file)
+        self.log.info(f"query_log_file_list copy_meta_info: {copy_meta_info}")
         last_log_stop_time = copy_meta_info.get("stop_time")
         last_wal = copy_meta_info.get("wal_file")
         # 检查前一次日志备份的时间是否早于最近非日志备份时间
@@ -269,6 +274,7 @@ class InstancePitrBackup(InstanceBackup):
             return False
         if os.path.exists(file_name):
             safe_remove_path(file_name)
+        self.log.info(f"LastBackupCopy.info: {file_name}, copy_meta_info: {copy_meta_info}")
         write_content_to_file(file_name, json.dumps(copy_meta_info))
         self.log.info(f"Success to get and save last backup stop time, stop_time:{stop_time}.")
         self.update_progress(BackupStatus.COMPLETED)
@@ -289,7 +295,7 @@ class InstancePitrBackup(InstanceBackup):
             if not result:
                 self.log.error("Failed to backup wal files for log backup")
         except Exception as ex:
-            self.log.error("Back up data Failed!")
+            self.log.error(f"Back up data Failed! Exception is {ex}")
             self.exec_sql_cmd("select pg_stop_backup();")
             self.update_progress(BackupStatus.FAILED)
             raise ex
@@ -323,6 +329,7 @@ class InstancePitrBackup(InstanceBackup):
         if os.path.isfile(progress_file):
             safe_remove_path(progress_file)
         if status == BackupStatus.FAILED:
+            content = f"ERR: Backup failed."
             return
         content = f"INFO: Progress: (0/100). Process file"
         if status == BackupStatus.COMPLETED:
@@ -356,6 +363,7 @@ class InstancePitrBackup(InstanceBackup):
             self.log.error(f"The path[{file_name}] is invalid, job id: {self._job_id}.")
             return False, ""
         copy_meta_info = read_tmp_json_file(file_name)
+        self.log.info(f"Enter get_copy_time. LastBackupCopy.info: {file_name}, copy_meta_info: {copy_meta_info}")
         self._stop_time = copy_meta_info.get("stop_time")
         self._start_time = copy_meta_info.get("start_time")
         self._parent_id_list = copy_meta_info.get("parent_backup")

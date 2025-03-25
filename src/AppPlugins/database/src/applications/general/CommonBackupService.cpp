@@ -24,6 +24,7 @@ namespace {
     constexpr auto GENERAL_APP_TYPE = "GeneralDb";
     constexpr auto ALLOW_CHECK_COPY_IN_LOCAL_NODE = "AllowCheckCopyInLocalNode";
     constexpr auto ALLOW_CHECK_COPY_SUBJOB_IN_LOCAL_NODE = "AllowCheckCopySubJobInLocalNode";
+    constexpr auto QUERY_SCAN_REPOSITORIES = "QueryScanRepositories";
 } // namespace
 
 
@@ -292,4 +293,28 @@ void CommonBackupService::AllowCheckCopySubJobInLocalNode(ActionResult& returnVa
         return;
     }
     JsonToStruct(retValue, returnValue);
+}
+
+void CommonBackupService::QueryScanRepositories(AppProtect::ScanRepositories& scanRepositories,
+    const AppProtect::BackupJob& job)
+{
+    LOGGUARD("");
+    if (!IsScriptExist(job.protectObject.subType, QUERY_SCAN_REPOSITORIES)) {
+        WARNLOG("QueryScanRepositories config is not exist, appType=%s.", job.protectObject.subType.c_str());
+        return;
+    }
+    Json::Value backupJobStr;
+    StructToJson(job, backupJobStr);
+    Json::Value jsValue;
+    jsValue["job"] = backupJobStr;
+    // 调用执行器
+    Json::Value retValue;
+    Param param = {jsValue, job.protectObject.subType, QUERY_SCAN_REPOSITORIES, job.jobId, "", MP_FALSE};
+    LocalCmdExector::GetInstance().GetGeneralDBScriptDir(job.protectObject.subType,
+        backupJobStr["protectObject"], param.scriptDir);
+    if (LocalCmdExector::GetInstance().Exec(param, retValue) != MP_SUCCESS) {
+        ERRLOG("Exec query scan repositories failed, appType=%s.", job.protectObject.subType.c_str());
+        return;
+    }
+    JsonToStruct(retValue, scanRepositories);
 }

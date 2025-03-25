@@ -19,19 +19,21 @@ import re
 import stat
 import shutil
 
-from common.common import output_execution_result_ex, \
-    output_result_file, execute_cmd, exter_attack, check_command_injection, is_clone_file_system
+from common.common import output_execution_result_ex, output_result_file, execute_cmd, exter_attack, \
+    check_command_injection, is_clone_file_system, report_job_details
 from common.common_models import SubJobDetails, ActionResult, LogDetail
-from common.const import ExecuteResultEnum, ParamConstant, AuthType, JobData, ReportDBLabel, DBLogLevel
-from common.const import SubJobStatusEnum, RepositoryDataTypeEnum, BackupTypeEnum, RoleType
+from common.const import ExecuteResultEnum, ParamConstant, AuthType, JobData, ReportDBLabel, DBLogLevel, Progress, \
+    SubJobStatusEnum, RepositoryDataTypeEnum, BackupTypeEnum, RoleType, SubJobPriorityEnum, CMDResultInt, RpcParamKey
+from common.file_common import exec_chmod_dir_recursively
+from common.job_const import JobNameConst
 from common.logger import Logger
+from common.util.cmd_utils import get_livemount_path
 from dameng.commons.check_information import cheak_instance_status, cheak_backupset_info, read_cheak_backupset_progress
 from dameng.commons.common import IniParses, get_hostsn, build_sub_job, clean_dir, check_path_in_white_list, \
     get_env_value, del_file, matching_dameng_field, remove_file_dir, cmd_grep, invoke_rpc_tool_interface
-from dameng.commons.const import DMFunKey, ProgressType, RetoreCmd, DMJsonConstant, \
-    BackupSubType, SubJobPriority, BACKUP_MOUNT_PATH, ExecCmdResult, DM_FILE_PATH, \
-    DMRestoreSubjobName, DamengStrConstant, ArrayIndex, DmRestoreType, LOG_MOUNT_PATH, \
-    DMArchIniStr, ErrCode, ActionResultCode, DamengStrFormat, RpcParamKey, Progress
+from dameng.commons.const import DMFunKey, ProgressType, RetoreCmd, DMJsonConstant, BackupSubType, BACKUP_MOUNT_PATH, \
+    ExecCmdResult, DM_FILE_PATH, DMRestoreSubjobName, DamengStrConstant, ArrayIndex, DmRestoreType, LOG_MOUNT_PATH, \
+    DMArchIniStr, ErrCode, DamengStrFormat
 from dameng.commons.dameng_tool import DmSqlTool
 from dameng.commons.dm_init import DmInitTool
 from dameng.commons.dm_rman_tool import DmRmanTool
@@ -42,7 +44,7 @@ log = Logger().get_logger("dameng.log")
 
 
 class DMRestoreTask:
-    
+
     def __init__(self, p_id, job_id, sub_job_id, json_param):
         self._p_id = p_id
         self._job_id = job_id
@@ -150,83 +152,83 @@ class DMRestoreTask:
                     DMFunKey.EXEC_FAILED: [self.empty_func]
                 },
             RetoreCmd.RESTORE_PRE:
-            {
-                DMFunKey.EXEC_TASK:[self.restore_pre_task],
-                DMFunKey.EXEC_EXCEPT:[self.exec_pre_when_except],
-                DMFunKey.EXEC_SUCCESS:[self.exec_pre_when_success],
-                DMFunKey.EXEC_FAILED:[self.exec_pre_when_failed]
-            },
+                {
+                    DMFunKey.EXEC_TASK: [self.restore_pre_task],
+                    DMFunKey.EXEC_EXCEPT: [self.exec_pre_when_except],
+                    DMFunKey.EXEC_SUCCESS: [self.exec_pre_when_success],
+                    DMFunKey.EXEC_FAILED: [self.exec_pre_when_failed]
+                },
             RetoreCmd.RESTORE_GEN_SUB:
-            {
-                DMFunKey.EXEC_TASK:[self.gen_sub_job],
-                DMFunKey.EXEC_SUCCESS:[DMRestoreTask.empty_func]
-            },
+                {
+                    DMFunKey.EXEC_TASK: [self.gen_sub_job],
+                    DMFunKey.EXEC_SUCCESS: [DMRestoreTask.empty_func]
+                },
             RetoreCmd.RESTORE_EXEC_SUB:
-            {
-                DMFunKey.EXEC_TASK:[self.restore_sub_job],
-                DMFunKey.EXEC_EXCEPT:[self.exec_sub_when_except],
-                DMFunKey.EXEC_SUCCESS:[self.exec_sub_when_success],
-                DMFunKey.EXEC_FAILED:[self.exec_sub_when_failed]
-            },
+                {
+                    DMFunKey.EXEC_TASK: [self.restore_sub_job],
+                    DMFunKey.EXEC_EXCEPT: [self.exec_sub_when_except],
+                    DMFunKey.EXEC_SUCCESS: [self.exec_sub_when_success],
+                    DMFunKey.EXEC_FAILED: [self.exec_sub_when_failed]
+                },
             RetoreCmd.RESTORE_POST:
-            {
-                DMFunKey.EXEC_TASK:[self.restore_post_job],
-                DMFunKey.EXEC_EXCEPT:[DMRestoreTask.empty_func],
-                DMFunKey.EXEC_SUCCESS:[DMRestoreTask.empty_func],
-                DMFunKey.EXEC_FAILED:[DMRestoreTask.empty_func]
-            }
+                {
+                    DMFunKey.EXEC_TASK: [self.restore_post_job],
+                    DMFunKey.EXEC_EXCEPT: [DMRestoreTask.empty_func],
+                    DMFunKey.EXEC_SUCCESS: [DMRestoreTask.empty_func],
+                    DMFunKey.EXEC_FAILED: [DMRestoreTask.empty_func]
+                }
         }
         self.exec_cmd_dict_spe.update(self.restore_cmd_progress)
 
     def init_restore_cmd_dict(self):
         self.restore_cmd_progress = {
             f"{RetoreCmd.RESTORE_PROGRESS}_{ProgressType.PRE}":
-            {
-                DMFunKey.EXEC_TASK:[self.report_progress_pre],
-                DMFunKey.EXEC_EXCEPT:[self.report_progress_when_except],
-                DMFunKey.EXEC_SUCCESS:[DMRestoreTask.empty_func],
-                DMFunKey.EXEC_FAILED:[self.report_progess_when_failed]
-            },
+                {
+                    DMFunKey.EXEC_TASK: [self.report_progress_pre],
+                    DMFunKey.EXEC_EXCEPT: [self.report_progress_when_except],
+                    DMFunKey.EXEC_SUCCESS: [DMRestoreTask.empty_func],
+                    DMFunKey.EXEC_FAILED: [self.report_progess_when_failed]
+                },
             f"{RetoreCmd.RESTORE_PROGRESS}_{ProgressType.RESTORE_SUB}":
-            {
-                DMFunKey.EXEC_TASK:[self.report_progress_restore_sub],
-                DMFunKey.EXEC_EXCEPT:[self.report_progress_when_except],
-                DMFunKey.EXEC_SUCCESS:[DMRestoreTask.empty_func],
-                DMFunKey.EXEC_FAILED:[self.report_progess_when_failed]
-            },
+                {
+                    DMFunKey.EXEC_TASK: [self.report_progress_restore_sub],
+                    DMFunKey.EXEC_EXCEPT: [self.report_progress_when_except],
+                    DMFunKey.EXEC_SUCCESS: [DMRestoreTask.empty_func],
+                    DMFunKey.EXEC_FAILED: [self.report_progess_when_failed]
+                },
             f"{RetoreCmd.RESTORE_PROGRESS}_{ProgressType.POST}":
-            {
-                DMFunKey.EXEC_TASK:[self.report_progress_post],
-                DMFunKey.EXEC_EXCEPT:[self.report_progress_when_except],
-                DMFunKey.EXEC_SUCCESS:[DMRestoreTask.empty_func],
-                DMFunKey.EXEC_FAILED:[self.report_progess_when_failed]
-            }
+                {
+                    DMFunKey.EXEC_TASK: [self.report_progress_post],
+                    DMFunKey.EXEC_EXCEPT: [self.report_progress_when_except],
+                    DMFunKey.EXEC_SUCCESS: [DMRestoreTask.empty_func],
+                    DMFunKey.EXEC_FAILED: [self.report_progess_when_failed]
+                }
         }
 
     def init_exec_cmd_dict_comm(self):
         self.exec_cmd_dict_comm = {
-            #该字典为每个命令默认执行的方法，如有命令要特殊执行某个方法请配置在EXEC_CMD_DICT_SPE字典中
-            DMFunKey.INIT:[self.init_param, self.set_big_version],
-            DMFunKey.EXEC_TASK:[],
-            DMFunKey.EXEC_EXCEPT:[self.exec_cmd_when_execpt_comm],
-            DMFunKey.EXEC_SUCCESS:[self.exec_cmd_when_success_comm],
-            DMFunKey.EXEC_FAILED:[self.exec_cmd_when_failed_comm]
+            # 该字典为每个命令默认执行的方法，如有命令要特殊执行某个方法请配置在EXEC_CMD_DICT_SPE字典中
+            DMFunKey.INIT: [self.init_param, self.set_big_version],
+            DMFunKey.EXEC_TASK: [],
+            DMFunKey.EXEC_EXCEPT: [self.exec_cmd_when_execpt_comm],
+            DMFunKey.EXEC_SUCCESS: [self.exec_cmd_when_success_comm],
+            DMFunKey.EXEC_FAILED: [self.exec_cmd_when_failed_comm]
         }
 
     def init_restore_func_dict(self):
         self.restore_func_dict = {
-            DMRestoreSubjobName.RESTORE:self.restore_data,
-            DMRestoreSubjobName.START:self.restore_start_dm,
-            DMRestoreSubjobName.UNMOUNT:self.restore_unmount_bind,
-            DMRestoreSubjobName.GENERARESTORE:self.single_restore_sub_job
+            DMRestoreSubjobName.RESTORE: self.restore_data,
+            DMRestoreSubjobName.START: self.restore_start_dm,
+            DMRestoreSubjobName.UNMOUNT: self.restore_unmount_bind,
+            DMRestoreSubjobName.GENERARESTORE: self.single_restore_sub_job
         }
 
     def init_restore_type_dict(self):
         self.restore_type_dict = {
-            DmRestoreType.DATABASE:self.cmd_retore_database,
-            DmRestoreType.TIMESTAMP:self.cmd_retore_database,
-            DmRestoreType.SCN:self.cmd_retore_database,
-            DmRestoreType.TABALSPACE:self.restore_tablespace
+            DmRestoreType.DATABASE: self.cmd_retore_database,
+            DmRestoreType.TIMESTAMP: self.cmd_retore_database,
+            DmRestoreType.SCN: self.cmd_retore_database,
+            DmRestoreType.TABALSPACE: self.restore_tablespace
         }
 
     def get_func_by_key(self, cmd, key):
@@ -285,10 +287,10 @@ class DMRestoreTask:
 
     def restore_allow(self):
 
-        code = ActionResultCode.SUCCESS
+        code = CMDResultInt.SUCCESS.value
         err_code = None
         if not self.set_sub_type():
-            json_str = ActionResult(code=ActionResultCode.FAIL,
+            json_str = ActionResult(code=CMDResultInt.FAILED.value,
                                     bodyErr=err_code).dict(by_alias=True)
             output_result_file(self._p_id, json_str)
             return False
@@ -298,14 +300,14 @@ class DMRestoreTask:
             return True
         ret, self._target_env_msg = self.get_target_env()
         if not ret:
-            json_str = ActionResult(code=ActionResultCode.FAIL,
+            json_str = ActionResult(code=CMDResultInt.FAILED.value,
                                     bodyErr=err_code).dict(by_alias=True)
             output_result_file(self._p_id, json_str)
             return False
         if not self.set_node_extendinfo(self._target_env_msg):
-            code = ActionResultCode.FAIL
+            code = CMDResultInt.FAILED.value
         if not self.check_db_server_name():
-            code = ActionResultCode.FAIL
+            code = CMDResultInt.FAILED.value
             err_code = self.err_code
         json_str = ActionResult(code=code, bodyErr=err_code).dict(by_alias=True)
         output_result_file(self._p_id, json_str)
@@ -313,16 +315,17 @@ class DMRestoreTask:
 
     @exter_attack
     def restore_pre_task(self):
+        log.info(f"Restore params: {self._json_param}.")
         if not self.set_sub_type():
-            log.error(f"Set sub type fail {self.get_log_comm()}")
+            log.error(f"Set sub type fail {self.get_log_comm()}.")
             return False
         ret, self._mount_path = self.restore_mount_bind()
         if not ret:
-            log.error(f"Mount bind fail {self.get_log_comm()}")
+            log.error(f"Mount bind fail {self.get_log_comm()}.")
             return False
         ret, self._target_env_msg = self.get_target_env()
         if not ret:
-            log.error(f"Get target env fail {self.get_log_comm()}")
+            log.error(f"Get target env fail {self.get_log_comm()}.")
             return False
         if self._sub_type == BackupSubType.SINGLE_NODE:
             return self.restore_pre_single_task()
@@ -340,20 +343,20 @@ class DMRestoreTask:
             log.error(f"Instance running.{self.get_log_comm()}.")
             log_detail = LogDetail(logInfoParam=[self._job_id],
                                    logLevel=DBLogLevel.ERROR,
-                                   logDetail=ErrCode.ERR_DB_IS_RUNNING,)
+                                   logDetail=ErrCode.ERR_DB_IS_RUNNING, )
             self.log_detail = [log_detail]
             return False
-        #检查服务名是否重复
+        # 检查服务名是否重复
         if not self.check_db_server_name():
             return False
-        #检查备份集信息
+        # 检查备份集信息
         backupset_path = os.path.join(self._mount_path, self._backup_set_name)
         ret, info = cheak_backupset_info(backupset_path, f"dmcheck_{self._job_id}")
         if not ret:
             log.error(f"check backupset info error info: {info}")
             log_detail = LogDetail(logInfoParam=[self._job_id],
                                    logLevel=DBLogLevel.ERROR,
-                                   logDetailParam=["Restore", info],
+                                   logDetailParam=[JobNameConst.RESTORE, info],
                                    logDetail=ErrCode.EXEC_BACKUP_RECOVER_CMD_FAIL, )
             self.log_detail = [log_detail]
             return False
@@ -375,15 +378,15 @@ class DMRestoreTask:
         if not self.set_node_extendinfo(node):
             log.error(f'Set nodes extendinfo fail.{self.get_log_comm()}.')
             return False
-        #判断实例进程是否存在，如果存在不允许执行恢复任务
+        # 判断实例进程是否存在，如果存在不允许执行恢复任务
         if cheak_instance_status(self._dmini_path):
             log_detail = LogDetail(logInfoParam=[self._job_id],
                                    logLevel=DBLogLevel.ERROR,
-                                   logDetail=ErrCode.ERR_DB_IS_RUNNING,)
+                                   logDetail=ErrCode.ERR_DB_IS_RUNNING, )
             self.log_detail = [log_detail]
             log.error(f"Instance running.{self.get_log_comm()}.")
             return False
-        #检查备份集信息
+        # 检查备份集信息
         ret, copy_info = self.get_copy()
         if not ret:
             log.error(f'Get copy info fail.{self.get_log_comm()}.')
@@ -402,7 +405,7 @@ class DMRestoreTask:
             log_detail = LogDetail(logInfoParam=[self._job_id],
                                    logLevel=DBLogLevel.ERROR,
                                    logDetailParam=[str(primary_num), str(local_primary_num)],
-                                   logDetail=ErrCode.ERR_INCONSISTENT_CLUSTER_TOPOLOGY,)
+                                   logDetail=ErrCode.ERR_INCONSISTENT_CLUSTER_TOPOLOGY, )
             self.log_detail = [log_detail]
             log.error(f"Inconsistent cluster topology.{self.get_log_comm()}.")
             return False
@@ -419,7 +422,7 @@ class DMRestoreTask:
             oguid_path = os.path.join(self._mount_path, group_id)
             if is_clone_file_system(self._json_param):
                 if not self.chown_file(oguid_path):
-                    log.error(f"Failed to modify the file permission.{self.get_log_comm()}")
+                    log.error(f"Failed to modify the file permission.{self.get_log_comm()}.")
                     return False
             backupset_path = os.path.join(oguid_path, self._backup_set_name)
             ret, info = cheak_backupset_info(backupset_path, f"dmcheck_{self._job_id}")
@@ -427,7 +430,7 @@ class DMRestoreTask:
                 log.error(f"Check backupset info fail.{self.get_log_comm()}.")
                 log_detail = LogDetail(logInfoParam=[self._job_id],
                                        logLevel=DBLogLevel.ERROR,
-                                       logDetailParam=["Restore", info],
+                                       logDetailParam=[JobNameConst.RESTORE, info],
                                        logDetail=ErrCode.EXEC_BACKUP_RECOVER_CMD_FAIL, )
                 self.log_detail = [log_detail]
                 return False
@@ -439,11 +442,11 @@ class DMRestoreTask:
             return True
         ret, uname, _ = DamengSource.discover_application()
         if not ret:
-            log.error(f"Get install username fail. {self.get_log_comm()}")
+            log.error(f"Get install username fail. {self.get_log_comm()}.")
             return False
         bin_path = DamengSource.get_bin_path(uname)
         if not bin_path:
-            log.error(f"Get bin path fail. {self.get_log_comm()}")
+            log.error(f"Get bin path fail. {self.get_log_comm()}.")
             return False
         server_list = DamengSource.discover_all_server(bin_path)
         if not server_list:
@@ -499,7 +502,7 @@ class DMRestoreTask:
                 log.error(f"Get group id failed.{self.get_log_comm()}.")
                 return False, result_array
             result_array.append((int)(group_id))
-        #直接返回对列表去重排序之后的值
+        # 直接返回对列表去重排序之后的值
         new_array = sorted(set(result_array))
         return True, new_array
 
@@ -507,9 +510,9 @@ class DMRestoreTask:
     def gen_sub_job(self):
         """
         拆分子任务实现
-        :return: 
+        :return:
         """
-        backup_sub_type = self._json_param.get(DMJsonConstant.JOB, {}).\
+        backup_sub_type = self._json_param.get(DMJsonConstant.JOB, {}). \
             get(DMJsonConstant.TARGETOBJECT, {}).get(DMJsonConstant.SUBTYPE, "")
         if backup_sub_type != BackupSubType.CLUSTER:
             log.error(f"The database type does not support subtask splitting."
@@ -529,19 +532,19 @@ class DMRestoreTask:
             host_id = node.get(DMJsonConstant.ID, "")
             node_port = node.get(DMJsonConstant.EXTENDINFO, {}).get(DMJsonConstant.PORT, 0)
             job_type = DMRestoreSubjobName.RESTORE
-            job_priority = SubJobPriority.JOB_PRIORITY_1.value
+            job_priority = SubJobPriorityEnum.JOB_PRIORITY_1.value
             job_info = self.gen_job_info(node, group_id_array, node_port, node_index)
             sub_job = build_sub_job(self._job_id, job_priority, host_id, job_info, job_type)
             sub_job_array.append(sub_job)
             job_type = DMRestoreSubjobName.START
-            job_priority = SubJobPriority.JOB_PRIORITY_2.value
+            job_priority = SubJobPriorityEnum.JOB_PRIORITY_2.value
             sub_job = build_sub_job(self._job_id, job_priority, host_id, job_info, job_type)
             sub_job_array.append(sub_job)
             role_type = node.get(DMJsonConstant.EXTENDINFO, {}).get(DMJsonConstant.ROLE, 0)
             if int(role_type) == RoleType.PRIMARY.value:
-                #主节点再拆分卸载任务
+                # 主节点再拆分卸载任务
                 job_type = DMRestoreSubjobName.UNMOUNT
-                job_priority = SubJobPriority.JOB_PRIORITY_3.value
+                job_priority = SubJobPriorityEnum.JOB_PRIORITY_3.value
                 sub_job = build_sub_job(self._job_id, job_priority, host_id, job_info, job_type)
                 sub_job_array.append(sub_job)
             node_index += 1
@@ -552,13 +555,13 @@ class DMRestoreTask:
             log.error(f"Write file fail.{self.get_log_comm()}.")
             return False
         return True
-    
+
     def mkdir_and_chmod(self, path, username, user_group):
         ret, real_path = check_path_in_white_list(path)
         if not ret:
             log.error(f"The path is not in the white list.{self.get_log_comm()}.")
             return False
-        #创建文件夹 并修改权限
+        # 创建文件夹 并修改权限
         if not os.path.exists(real_path):
             try:
                 os.mkdir(real_path)
@@ -625,7 +628,7 @@ class DMRestoreTask:
     def restore_mount_bind(self):
         """
         重新挂载data仓,达梦不允许副本在/tmp目录下
-        :return: 
+        :return:
         """
         mount_path = os.path.join(BACKUP_MOUNT_PATH, self._job_id)
         if os.path.ismount(mount_path):
@@ -670,14 +673,14 @@ class DMRestoreTask:
     def restore_unmount_bind(self):
         """
         清理自己挂载上来的目录
-        :return: 
+        :return:
         """
         mount_path = os.path.join(BACKUP_MOUNT_PATH, self._job_id)
         _ = self.restore_unmount_bind_comm(mount_path)
         if self._restore_type_key in [DmRestoreType.SCN, DmRestoreType.TIMESTAMP]:
             _ = self.restore_unmount_bind_comm(self._log_mount_path)
 
-        #卸载目录不影响子任务执行结果
+        # 卸载目录不影响子任务执行结果
         return True
 
     def gen_db_info(self, port, node_index):
@@ -736,7 +739,7 @@ class DMRestoreTask:
         if not target_location:
             log.error(f"Target location failed.{self.get_log_comm()}.")
             return False
-        #新位置重新取一下db_name,单机的新位置恢复,db_name前面已经在副本里面获取
+        # 新位置重新取一下db_name,单机的新位置恢复,db_name前面已经在副本里面获取
         if target_location == DMJsonConstant.NEW:
             self._db_name = job_extend_info.get(DMJsonConstant.DBNAME, '')
             self._dmini_path = os.path.join(self._db_path, self._db_name, 'dm.ini')
@@ -746,7 +749,7 @@ class DMRestoreTask:
         return True
 
     def parse_job_info(self):
-        backup_sub_type = self._json_param.get(DMJsonConstant.JOB, {}).\
+        backup_sub_type = self._json_param.get(DMJsonConstant.JOB, {}). \
             get(DMJsonConstant.TARGETOBJECT, {}).get(DMJsonConstant.SUBTYPE, "")
         if backup_sub_type != BackupSubType.CLUSTER:
             return self.parse_restore_param_signal()
@@ -756,21 +759,21 @@ class DMRestoreTask:
     def find_backup_parent_dir(self, mount_path):
         """
         查找备份集的父路劲，因为集群备份根据组ID做了分割
-        :return: 
+        :return:
         """
-        backup_sub_type = self._json_param.get(DMJsonConstant.JOB, {}).\
+        backup_sub_type = self._json_param.get(DMJsonConstant.JOB, {}). \
             get(DMJsonConstant.TARGETOBJECT, {}).get(DMJsonConstant.SUBTYPE, "")
         if backup_sub_type != BackupSubType.CLUSTER:
             path = mount_path
         else:
-            #前置任务中校验了备份拓扑结构一致
+            # 前置任务中校验了备份拓扑结构一致
             group_id_str = self._copy_group_id_array[self._group_index]
             path = os.path.join(mount_path, group_id_str)
         if not os.path.exists(path):
             log.error(f"Get backup set parent dir failed.{self.get_log_comm()}.")
             return False, ""
         return True, path
-    
+
     def chown_file(self, file_path):
         ret, username, user_group = DamengSource.discover_application()
         if not ret or not username:
@@ -788,16 +791,16 @@ class DMRestoreTask:
         if os.path.exists(dmarch_ini):
             log.warn(f"Dmarch.ini already exist.{self.get_log_comm()}.")
             return True
-        #生成dmarch.ini文件
+        # 生成dmarch.ini文件
         arch_path = self._dmini_path.replace("dm.ini", "arch")
         ini_conf = configparser.ConfigParser()
         ini_conf.add_section(DMArchIniStr.ARCHIVE_LOCAL)
         ini_conf.set(DMArchIniStr.ARCHIVE_LOCAL, DMArchIniStr.ARCH_TYPE, DMArchIniStr.ARCH_TYPE_VALUE)
         ini_conf.set(DMArchIniStr.ARCHIVE_LOCAL, DMArchIniStr.ARCH_DEST, arch_path)
         ini_conf.set(DMArchIniStr.ARCHIVE_LOCAL, DMArchIniStr.ARCH_FILE_SIZE, \
-            DMArchIniStr.ARCH_FILE_SIZE_VALUE)
+                     DMArchIniStr.ARCH_FILE_SIZE_VALUE)
         ini_conf.set(DMArchIniStr.ARCHIVE_LOCAL, DMArchIniStr.ARCH_SPACE_LIMIT, \
-            DMArchIniStr.ARCH_SPACE_LIMIT_VALUE)
+                     DMArchIniStr.ARCH_SPACE_LIMIT_VALUE)
         ini_conf.set(DMArchIniStr.ARCHIVE_LOCAL, DMArchIniStr.ARCH_HANG_FLAG, DMArchIniStr.ARCH_HANG_FLAG_VALUE)
 
         flags = os.O_WRONLY | os.O_CREAT
@@ -857,7 +860,7 @@ class DMRestoreTask:
         flag = True
         bak_file = f'{self._dmini_path}.bak'
         shutil.copy(self._dmini_path, bak_file)
-        with open(self._dmini_path, mode='r', encoding='utf-8') as f1,\
+        with open(self._dmini_path, mode='r', encoding='utf-8') as f1, \
                 open(f'{bak_file}', mode='w', encoding='utf-8') as f2:
             for line in f1:
                 if not line.strip().startswith('PORT_NUM'):
@@ -895,7 +898,7 @@ class DMRestoreTask:
         restore_cmd = f"RESTORE DATABASE '{self._dmini_path}' FROM BACKUPSET " \
                       f"'{base_backupset_path}'"
         result_info = DmRmanTool().run_rman_tool((restore_cmd, "exit;"), DM_FILE_PATH,
-                                           file_name_id=f"{JobData.JOB_ID}_{JobData.SUB_JOB_ID}")
+                                                 file_name_id=f"{JobData.JOB_ID}_{JobData.SUB_JOB_ID}")
         if not result_info.get("result", False):
             rman_out = result_info.get('out_info')
             self.set_rman_err_info(rman_out)
@@ -908,19 +911,23 @@ class DMRestoreTask:
         ret, copy = self.get_copy(True)
         if not ret:
             return False
+        log.info(f"copy: {copy}, {self.get_log_comm()}.")
         repositories = copy.get(DMJsonConstant.REPORITTORIES, [])
         if len(repositories) <= 0:
             log.error(f"Repositories count error.{self.get_log_comm()}.")
             return False
+        log.info(f"repositories: {repositories}, {self.get_log_comm()}.")
         for repositorie in repositories:
             if repositorie.get(DMJsonConstant.REPORITORYTYPE, "") == \
-                RepositoryDataTypeEnum.LOG_REPOSITORY.value:
+                    RepositoryDataTypeEnum.LOG_REPOSITORY.value:
                 path_array = repositorie.get(DMJsonConstant.PATH, [])
+                log.info(f"path_array: {path_array}, {self.get_log_comm()}.")
                 if len(path_array) <= 0:
                     continue
                 path = path_array[0]
                 path_ex = (path.split("/"))[-1]
                 if "-" in path_ex:
+                    log.info(f"path_ex: {path_ex}, {self.get_log_comm()}.")
                     self._log_parent_array.append(path_ex)
         if len(self._log_parent_array) <= 0:
             log.error(f"Get log parent array failed.{self.get_log_comm()}.")
@@ -953,6 +960,7 @@ class DMRestoreTask:
             log.error(f"Dm log dir not exist.{self.get_log_comm()}.")
             return False
         backup_set_path = os.path.join(par_path, log_path)
+        exec_chmod_dir_recursively(par_path, 0o777)
         cmd = f"RESTORE ARCHIVE LOG FROM BACKUPSET '{backup_set_path}' TO ARCHIVEDIR '{arch_path}' OVERWRITE 3"
         result_info = DmRmanTool().run_rman_tool((cmd, "exit;"), DM_FILE_PATH,
                                                  file_name_id=f"{JobData.JOB_ID}_{JobData.SUB_JOB_ID}")
@@ -967,12 +975,12 @@ class DMRestoreTask:
     def cmd_restore_archive(self, arch_path):
         for path in self._log_parent_array:
             log_path = os.path.join(self._log_mount_path, path)
-            if not os.path.exists(log_path):
-                log.error(f"Path not exist.{self.get_log_comm()}.")
-                return False
-            ret = self.exec_restore_archive(arch_path, log_path)
-            if not ret:
-                return False
+            log.info(f"log_path: {log_path}, {self.get_log_comm()}")
+            if os.path.exists(log_path):
+                log.info(f"Path: {log_path} exists, {self.get_log_comm()}.")
+                ret = self.exec_restore_archive(arch_path, log_path)
+                if not ret:
+                    return False
         return True
 
     def gen_recover_rman_cmd_log(self):
@@ -992,7 +1000,7 @@ class DMRestoreTask:
             log.error(f"Recover archive failed.{self.get_log_comm()}.")
             return False
         log.info(f"Recover archive success.{self.get_log_comm()}.")
-        #获取LSN 或者TIME
+        # 获取LSN 或者TIME
         value_str = self.gen_recover_rman_cmd_log()
         if not value_str:
             log.error(f"Gen value str failed.{self.get_log_comm()}.")
@@ -1003,7 +1011,7 @@ class DMRestoreTask:
         ]
         for cmd in recover_cmd_array:
             result_info = DmRmanTool().run_rman_tool((cmd, "exit;"), DM_FILE_PATH,
-                                               file_name_id=f"{JobData.JOB_ID}_{JobData.SUB_JOB_ID}")
+                                                     file_name_id=f"{JobData.JOB_ID}_{JobData.SUB_JOB_ID}")
             out = result_info.get("out_info", "")
             if not result_info.get("result", False):
                 self.set_rman_err_info(out)
@@ -1016,11 +1024,11 @@ class DMRestoreTask:
 
     def cmd_recover(self, backup_set_path):
         recover_dict = {
-            DmRestoreType.DATABASE:self.cmd_recover_database,
-            DmRestoreType.TIMESTAMP:self.cmd_recover_log,
-            DmRestoreType.SCN:self.cmd_recover_log
+            DmRestoreType.DATABASE: self.cmd_recover_database,
+            DmRestoreType.TIMESTAMP: self.cmd_recover_log,
+            DmRestoreType.SCN: self.cmd_recover_log
         }
-        #表空间恢复区别于数据库恢复和指定时间点恢复
+        # 表空间恢复区别于数据库恢复和指定时间点恢复
         if self._restore_type_key == DmRestoreType.TABALSPACE:
             return True
         func = recover_dict.get(self._restore_type_key, None)
@@ -1033,13 +1041,13 @@ class DMRestoreTask:
             return False
         log.info(f"Recover success.{self.get_log_comm()}.")
         return True
-        
+
     def cmd_recover_database(self, backup_set_path):
         recover_cmd = f"RECOVER  DATABASE '{self._dmini_path}' FROM BACKUPSET \
             '{os.path.join(backup_set_path, self._backup_set_name)}'"
         for _ in [1, 2]:
             result_info = DmRmanTool().run_rman_tool((recover_cmd, "exit;"), DM_FILE_PATH,
-                                               file_name_id=f"{JobData.JOB_ID}_{JobData.SUB_JOB_ID}")
+                                                     file_name_id=f"{JobData.JOB_ID}_{JobData.SUB_JOB_ID}")
             out = result_info.get("out_info", "")
             if not result_info.get("result", False):
                 self.set_rman_err_info(out)
@@ -1054,8 +1062,15 @@ class DMRestoreTask:
     def restore_data(self):
         """
         恢复数据的函数
-        :return: 
+        :return:
         """
+        backup_sub_type = self._json_param.get(DMJsonConstant.JOB, {}). \
+            get(DMJsonConstant.TARGETOBJECT, {}).get(DMJsonConstant.SUBTYPE, "")
+        log_detail = LogDetail(logInfo=ReportDBLabel.RESTORE_SUB_START_COPY, logInfoParam=[self._sub_job_id],
+                               logLevel=DBLogLevel.INFO.value)
+        report_job_details(self._p_id, SubJobDetails(taskId=self._job_id, progress=100,
+                                                     subTaskId=self._sub_job_id, logDetail=[log_detail],
+                                                     taskStatus=SubJobStatusEnum.RUNNING.value))
         ret = self.parse_job_info()
         if not ret:
             return False
@@ -1074,15 +1089,21 @@ class DMRestoreTask:
         if not cmd_retore_func:
             return False
         exec_dict = [self.cmd_init_database, cmd_retore_func, self.cmd_recover]
+        exec_chmod_dir_recursively(parent_path, 0o777)
         for func in exec_dict:
             ret = func(parent_path)
             if not ret:
                 return False
+        log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_SUCCESS, logInfoParam=[self._sub_job_id],
+                               logLevel=DBLogLevel.INFO.value)
+        report_job_details(self._p_id, SubJobDetails(taskId=self._job_id, progress=100,
+                                                     subTaskId=self._sub_job_id, logDetail=[log_detail],
+                                                     taskStatus=SubJobStatusEnum.RUNNING.value))
         return True
 
     def get_restore_type(self):
         extend_info = self._json_param.get(DMJsonConstant.JOB,
-                                                 {}).get(DMJsonConstant.EXTENDINFO, {})
+                                           {}).get(DMJsonConstant.EXTENDINFO, {})
         restore_timestamp = extend_info.get(DMJsonConstant.RESTORETIMESTAMP, "")
         restore_type = DmRestoreType.DATABASE
         if restore_timestamp:
@@ -1167,11 +1188,11 @@ class DMRestoreTask:
         return True
 
     def update_db_standby(self):
-        #为备机设置备状态
+        # 为备机设置备状态
         sqls = [
-                "SP_SET_PARA_VALUE(1, 'ALTER_MODE_STATUS', 1);",
-                "alter database standby;",
-                "SP_SET_PARA_VALUE(1, 'ALTER_MODE_STATUS', 0);"
+            "SP_SET_PARA_VALUE(1, 'ALTER_MODE_STATUS', 1);",
+            "alter database standby;",
+            "SP_SET_PARA_VALUE(1, 'ALTER_MODE_STATUS', 0);"
         ]
         tool = DmSqlTool(self._db_info)
         sql_status, result = tool.run_disql_tool(sqls, mpp_type='local')
@@ -1188,7 +1209,7 @@ class DMRestoreTask:
         server_name_list = DamengSource.discover_all_server(bin_path, DamengStrConstant.DM_WATCHER)
         server_path = bin_path
         if not server_name_list:
-            #redhat6版本数据库服务文件存放路径为/etc/rc.d/init.d
+            # redhat6版本数据库服务文件存放路径为/etc/rc.d/init.d
             server_path = "/etc/rc.d/init.d"
             server_name_list = DamengSource.discover_all_server(server_path, DamengStrConstant.DM_WATCHER)
         ret, server_name = self.get_watcher_server_name(server_path, server_name_list)
@@ -1198,7 +1219,7 @@ class DMRestoreTask:
         ret = self.stop_watcher_server(wantch_path)
         if not ret:
             return False
-        #更新数据库失败 不影响人物结果
+        # 更新数据库失败 不影响人物结果
         _ = self.update_db_standby()
         ret = self.start_watcher_server(wantch_path)
         if not ret:
@@ -1210,7 +1231,7 @@ class DMRestoreTask:
         if not self.set_tablespace_name_list():
             log.error(f'Get tablespace name list fail.{self.get_log_comm()}.')
             return False
-        #如果同时有系统表空间和其他表空间做恢复，优先恢复系统表空间
+        # 如果同时有系统表空间和其他表空间做恢复，优先恢复系统表空间
         if "SYSTEM" in self._tablespace_name_list:
             index_num = self._tablespace_name_list.index("SYSTEM")
             self._tablespace_name_list.pop(index_num)
@@ -1227,7 +1248,7 @@ class DMRestoreTask:
         restore_cmd = f"RESTORE DATABASE '{self._dmini_path}' TABLESPACE {self._tablespace_name} FROM BACKUPSET " \
                       f"'{os.path.join(backup_set_path, self._backup_set_name)}'"
         result_info = DmRmanTool().run_rman_tool((restore_cmd, "exit;"), DM_FILE_PATH,
-                                           file_name_id=f"{JobData.JOB_ID}_{JobData.SUB_JOB_ID}")
+                                                 file_name_id=f"{JobData.JOB_ID}_{JobData.SUB_JOB_ID}")
         out = result_info.get("out_info", "")
         if "invalid tablespace name" in out:
             log_detail = LogDetail(logInfoParam=[self._job_id],
@@ -1364,11 +1385,11 @@ class DMRestoreTask:
         return self.call_func_by_key(cmd, DMFunKey.EXEC_SUCCESS)
 
     def exec_cmd_when_failed(self, cmd):
-        return self.call_func_by_key(cmd, DMFunKey.EXEC_FAILED)        
+        return self.call_func_by_key(cmd, DMFunKey.EXEC_FAILED)
 
     def dispatch_task(self, cmd):
         return self.call_func_by_key(cmd, DMFunKey.EXEC_TASK)
-    
+
     def get_log_comm(self):
         return f"pid:{self._p_id} jobId:{self._job_id} subjobId:{self._sub_job_id}"
 
@@ -1431,7 +1452,7 @@ class DMRestoreTask:
         if extend_info:
             table_len_list = extend_info.get(DMJsonConstant.TABAL_SPACE_INFO, [])
         if not table_len_list:
-            log.error(f"Get extendInfo failed. {self.get_log_comm()}")
+            log.error(f"Get extendInfo failed. {self.get_log_comm()}.")
             return False, data_len
         if self._restore_type_key == DmRestoreType.DATABASE:
             for table_len in table_len_list:
@@ -1445,7 +1466,7 @@ class DMRestoreTask:
             try:
                 data_len = data_len / len(self._tablespace_name_list)
             except ZeroDivisionError:
-                log.error(f"Tablespace name list is empty.{self.get_log_comm()}")
+                log.error(f"Tablespace name list is empty.{self.get_log_comm()}.")
                 return False, 0
         if self._restore_type_key == DmRestoreType.TIMESTAMP:
             data_len = 0
@@ -1461,7 +1482,7 @@ class DMRestoreTask:
         tablespace_name_list = self._json_param.get(DMJsonConstant.JOB,
                                                     {}).get(DMJsonConstant.RESTORESUBOBJECTS, [])
         self._tablespace_name_list = []
-        #只能有一个tablespace_name_list 结构体
+        # 只能有一个tablespace_name_list 结构体
         if len(tablespace_name_list) != 1:
             log.error(f'Tablespace name list err.{self.get_log_comm()}.')
             return False
@@ -1517,7 +1538,7 @@ class DMRestoreTask:
     def exec_pre_when_success(self):
         self.write_progress_file(SubJobStatusEnum.COMPLETED.value, 100, ProgressType.PRE)
         return True
-    
+
     def exec_pre_when_except(self):
         return self.exec_pre_when_failed()
 
@@ -1528,7 +1549,7 @@ class DMRestoreTask:
     def exec_sub_when_success(self):
         self.write_progress_file(SubJobStatusEnum.COMPLETED.value, 100, ProgressType.RESTORE_SUB)
         return True
-    
+
     def exec_sub_when_except(self):
         return self.exec_sub_when_failed()
 
@@ -1541,11 +1562,11 @@ class DMRestoreTask:
         if copy_num <= 0:
             log.error(f"Copy count error.{self.get_log_comm()}.")
             return False, ""
-        if not is_log and self._restore_type_key in [DmRestoreType.SCN, DmRestoreType.TIMESTAMP]: 
-            #日志备份最后一个日志副本，倒数第二个才是所需的数据副本
+        if not is_log and self._restore_type_key in [DmRestoreType.SCN, DmRestoreType.TIMESTAMP]:
+            # 日志备份最后一个日志副本，倒数第二个才是所需的数据副本
             return True, copies[-2]
         else:
-            #根据dme的下发规则，最后一个副本是恢复的当前副本
+            # 根据dme的下发规则，最后一个副本是恢复的当前副本
             return True, copies[-1]
 
     def get_restore_mount_path(self, mount_type, is_log=False):
@@ -1587,7 +1608,7 @@ class DMRestoreTask:
             log.error(f"Get extendInfo failed.{self.get_log_comm()}.")
             return False
         if self._backup_type == BackupTypeEnum.DIFF_BACKUP.value or \
-            self._backup_type == BackupTypeEnum.INCRE_BACKUP.value:
+                self._backup_type == BackupTypeEnum.INCRE_BACKUP.value:
             self._base_backup_set_name = extend_info.get(DMJsonConstant.BASEBACKUPSETNAME, "")
             if not self._base_backup_set_name:
                 log.error(f"Get baseBackupSetName failed.{self.get_log_comm()}.")
@@ -1619,8 +1640,10 @@ class DMRestoreTask:
         if self._data_path:
             return True
         ret, path = self.get_restore_mount_path(RepositoryDataTypeEnum.DATA_REPOSITORY.value)
+        path = get_livemount_path(self._job_id, path)
         if ret:
             self._data_path = path
+            log.info(f"Get data path success: {self._data_path}")
             return True
         log.error(f"Set data path failed.{self.get_log_comm()}.")
         return False
@@ -1639,8 +1662,10 @@ class DMRestoreTask:
         if self._log_path:
             return True
         ret, path = self.get_restore_mount_path(RepositoryDataTypeEnum.LOG_REPOSITORY.value)
+        path = get_livemount_path(self._job_id, path)
         if ret:
             self._log_path = path
+            log.info(f"Get log path success: {self._log_path}.")
             return True
         log.error(f"Set log path failed.{self.get_log_comm()}.")
         return False
@@ -1654,7 +1679,7 @@ class DMRestoreTask:
         return False
 
     def restore_get_log_mount(self):
-        #日志仓每个都一样 取一个就行
+        # 日志仓每个都一样 取一个就行
         ret, log_path = self.get_restore_mount_path(RepositoryDataTypeEnum.LOG_REPOSITORY.value, True)
         if not ret:
             log.error(f"Get log repository failed.{self.get_log_comm()}.")
@@ -1675,7 +1700,7 @@ class DMRestoreTask:
             return False
         return True
 
-    def set_node_extendinfo(self, node_:dict):
+    def set_node_extendinfo(self, node_: dict):
         job_extend_info = self._json_param.get(DMJsonConstant.JOB,
                                                {}).get(DMJsonConstant.EXTENDINFO, {})
         target_location = job_extend_info.get(DMJsonConstant.TARGETLOCATION, "")
@@ -1710,7 +1735,7 @@ class DMRestoreTask:
     def set_big_version(self):
         self.big_version = DamengSource().get_big_version()
         if not self.big_version:
-            log.error(f"Get big version fail.{self.get_log_comm()}")
+            log.error(f"Get big version fail.{self.get_log_comm()}.")
             return False
         return True
 
@@ -1732,13 +1757,13 @@ class DMRestoreTask:
         slot_list = re.findall(re_rule, rman_out)
         errcode = "0"
         if not slot_list:
-            log.error(f"Get rman errcode fail.{self.get_log_comm()}")
+            log.error(f"Get rman errcode fail.{self.get_log_comm()}.")
             return errcode
         errcode_info = slot_list[0]
         if errcode_info.isdigit():
             errcode = f'-{errcode_info}'
             return errcode
-        log.error(f"Get rman errcode fail.{self.get_log_comm()}")
+        log.error(f"Get rman errcode fail.{self.get_log_comm()}.")
         return errcode
 
     def report_tablespace_not_incomplete(self):

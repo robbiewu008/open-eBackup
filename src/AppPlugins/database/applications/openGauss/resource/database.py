@@ -37,3 +37,9 @@ class Database:
             return []
         # 获取实例节点下数据库名
         return [line for line in cont.split("\n") if line][2:-1]
+
+    def show_archive_mode(self):
+        base_cmd = BaseCmd(self.db_user, self.env_path)
+        result = base_cmd.show_archive_mode(self.db_port)
+        logger.info(f"archive_mode: {result}")
+        return result

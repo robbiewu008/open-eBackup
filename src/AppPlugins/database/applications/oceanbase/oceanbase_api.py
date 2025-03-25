@@ -32,11 +32,13 @@ fun = {
     'BackupPrerequisiteProgress': BackupAbility.backup_prerequisite_progress,
     'BackupGenSubJob': BackupAbility.backup_gen_sub_job,
     'Backup': BackupAbility.backup,
+    'QueryScanRepositories': BackupAbility.query_scan_repositories,
     'BackupPostJob': BackupAbility.backup_post_job,
     'BackupPostJobProgress': BackupAbility.backup_post_job_progress,
 
     'QueryJobPermission': JobAbility.query_job_permission,
-    'AbortJob': JobAbility.abort_job,
+    'AbortJob': BackupAbility.abort_job,
+    'AbortJobProgress': BackupAbility.abort_job_progress,
     'PauseJob': JobAbility.pause_job,
 
     'AllowRestoreInLocalNode': RestoreAbility.allow_restore_in_local_node,
