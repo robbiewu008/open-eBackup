@@ -18,6 +18,7 @@ import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceFeature;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.provider.DatabaseResourceProvider;
@@ -61,6 +62,18 @@ public class ClickHouseResourceProvider extends DatabaseResourceProvider {
     @Override
     public boolean applicable(ProtectedResource protectedResource) {
         return ResourceSubTypeEnum.CLICK_HOUSE.equalsSubType(protectedResource.getSubType());
+    }
+
+    /**
+     * 资源重名检查配置
+     *
+     * @return clickhouse表集注册重名检查配置
+     */
+    @Override
+    public ResourceFeature getResourceFeature() {
+        ResourceFeature resourceFeature = new ResourceFeature();
+        resourceFeature.setShouldCheckResourceNameDuplicate(false);
+        return resourceFeature;
     }
 
     @Override

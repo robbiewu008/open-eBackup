@@ -461,6 +461,11 @@
             </dependency>
             <dependency>
                 <groupId>com.huawei.oceanprotect</groupId>
+                <artifactId>pm-antdb-protection-plugin</artifactId>
+                <version>${project.base.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.huawei.oceanprotect</groupId>
                 <artifactId>pm-report-sdk</artifactId>
                 <version>${project.base.version}</version>
             </dependency>
@@ -500,6 +505,16 @@
                 <version>${project.base.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.huawei.oceanprotect</groupId>
+                <artifactId>pm-eccoracle-protection-plugin</artifactId>
+                <version>${project.base.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.huawei.oceanprotect</groupId>
+                <artifactId>pm-nutanix-protection-plugin</artifactId>
+                <version>${project.base.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit_version}</version>
@@ -511,7 +526,12 @@
             </dependency>
             <dependency>
                 <groupId>com.huawei.oceanprotect</groupId>
-                <artifactId>pm-label</artifactId>
+                <artifactId>pm-label-impl</artifactId>
+                <version>${project.base.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.huawei.oceanprotect</groupId>
+                <artifactId>pm-label-sdk</artifactId>
                 <version>${project.base.version}</version>
             </dependency>
         </dependencies>

@@ -10,7 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-package openbackup.opengauss.resources.access.interceptor;
+package openbackup.gaussdb.protection.access.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
@@ -19,8 +19,8 @@ import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
 import openbackup.data.protection.access.provider.sdk.copy.DeleteCopyTask;
 import openbackup.data.protection.access.provider.sdk.enums.BackupTypeEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.interceptor.AbstractDbCopyDeleteInterceptor;
-import openbackup.opengauss.resources.access.constants.OpenGaussConstants;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
@@ -28,39 +28,29 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * OpenGauss副本删除Provider
+ * GaussDB副本删除Provider
  *
  */
 @Slf4j
 @Component
-public class OpenGaussCopyDeleteInterceptor extends AbstractDbCopyDeleteInterceptor {
-    /**
-     * 构造器注入
-     *
-     * @param copyRestApi 副本查询接口
-     * @param resourceService resourceService
-     */
-    public OpenGaussCopyDeleteInterceptor(CopyRestApi copyRestApi, ResourceService resourceService) {
+public class GaussDBCopyDeleteInterceptor extends AbstractDbCopyDeleteInterceptor {
+    public GaussDBCopyDeleteInterceptor(CopyRestApi copyRestApi, ResourceService resourceService) {
         super(copyRestApi, resourceService);
     }
 
     @Override
-    public boolean applicable(String subType) {
-        return Arrays.asList(ResourceSubTypeEnum.OPENGAUSS_DATABASE.getType(),
-            ResourceSubTypeEnum.OPENGAUSS_INSTANCE.getType()).contains(subType);
+    public boolean applicable(String resourceSubType) {
+        return ResourceSubTypeEnum.HCS_GAUSSDB_INSTANCE.equalsSubType(resourceSubType);
     }
 
     @Override
-    protected List<String> getCopiesCopyTypeIsDifferenceIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
-        List<Copy> differenceCopies = CopyUtil.getCopiesByCopyType(copies, BackupTypeConstants.DIFFERENCE_INCREMENT);
-        return CopyUtil.getCopyUuidsBetweenTwoCopy(differenceCopies, thisCopy, nextFullCopy);
+    protected boolean shouldSupplyAgent(DeleteCopyTask task, CopyInfoBo copy) {
+        return false;
     }
 
     /**
@@ -73,6 +63,7 @@ public class OpenGaussCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercep
      */
     @Override
     protected List<String> getCopiesCopyTypeIsFull(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
+        log.info("Start to delete GaussDB full copy");
         // 前一个日志副本
         Copy previousLogBackupCopy = copyRestApi.queryLatestFullBackupCopies(thisCopy.getResourceId(),
                 thisCopy.getGn(), BackupTypeEnum.LOG.getAbbreviation()).orElse(null);
@@ -82,26 +73,21 @@ public class OpenGaussCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercep
                 .findFirst().orElse(null);
         // 如果之前没有日志副本或者之后没有日志副本
         if (previousLogBackupCopy == null || nextLogBackupCopy == null) {
+            log.info("Delete GaussDB log copy.");
             return CopyUtil.getCopyUuidsBetweenTwoCopy(copies, thisCopy, nextFullCopy);
         }
         long previousLogCopyEndTime = Long.parseLong(JSONObject.fromObject(previousLogBackupCopy.getProperties())
-                .getString("end_time"));
+                .getString(DatabaseConstants.LOG_COPY_END_TIME_KEY));
         long nextLogCopyStartTime = Long.parseLong(JSONObject.fromObject(nextLogBackupCopy.getProperties())
-                .getString("begin_time"));
+                .getString(DatabaseConstants.LOG_COPY_BEGIN_TIME_KEY));
         // 如果后一个日志副本连不上前一个日志副本
+        log.info("previousLogCopyEndTime is {}", previousLogCopyEndTime);
+        log.info("nextLogCopyStartTime is {}", nextLogCopyStartTime);
         if (previousLogCopyEndTime < nextLogCopyStartTime) {
             return CopyUtil.getCopyUuidsBetweenTwoCopy(copies, thisCopy, nextFullCopy);
         }
         List<BackupTypeConstants> associatedTypes = new ArrayList<>(Arrays.asList(
                 BackupTypeConstants.DIFFERENCE_INCREMENT, BackupTypeConstants.CUMULATIVE_INCREMENT));
         return getAssociatedTypeCopiesByBackup(copies, thisCopy, nextFullCopy, associatedTypes);
-    }
-
-    @Override
-    protected void handleTask(DeleteCopyTask task, CopyInfoBo copy) {
-        // 不需要UBC后置任务删除日志备份副本，设置为false
-        Map<String, String> map = new HashMap<>(1);
-        map.put(OpenGaussConstants.IS_DELETE_RELATIVE_COPIES, String.valueOf(false));
-        task.addParameters(map);
     }
 }

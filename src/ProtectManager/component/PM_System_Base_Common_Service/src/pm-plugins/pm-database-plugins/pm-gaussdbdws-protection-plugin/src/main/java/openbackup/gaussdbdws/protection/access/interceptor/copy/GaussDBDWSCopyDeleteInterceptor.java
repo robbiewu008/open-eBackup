@@ -12,9 +12,11 @@
 */
 package openbackup.gaussdbdws.protection.access.interceptor.copy;
 
+import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
 import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
@@ -42,8 +44,10 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.cluster.api.ClusterNativeApi;
 import openbackup.system.base.sdk.cluster.model.ClusterDetailInfo;
 import openbackup.system.base.sdk.cluster.model.ClustersInfoVo;
+import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
 import openbackup.system.base.sdk.cluster.model.TargetClusterRequestParm;
 import openbackup.system.base.sdk.copy.CopyRestApi;
+import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
@@ -56,8 +60,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -78,6 +84,8 @@ public class GaussDBDWSCopyDeleteInterceptor extends AbstractDbCopyDeleteInterce
     private GaussDBBaseService gaussDBBaseService;
 
     private DeployTypeService deployTypeService;
+
+    private StorageUnitService storageUnitService;
 
     /**
      * Constructor
@@ -110,6 +118,11 @@ public class GaussDBDWSCopyDeleteInterceptor extends AbstractDbCopyDeleteInterce
     @Autowired
     public void setDeployTypeService(DeployTypeService deployTypeService) {
         this.deployTypeService = deployTypeService;
+    }
+
+    @Autowired
+    public void setStorageUnitService(StorageUnitService storageUnitService) {
+        this.storageUnitService = storageUnitService;
     }
 
     @Override
@@ -181,6 +194,16 @@ public class GaussDBDWSCopyDeleteInterceptor extends AbstractDbCopyDeleteInterce
         protectEnv.getExtendInfo().put(DatabaseConstants.DEPLOY_TYPE, DatabaseDeployTypeEnum.SINGLE.getType());
         task.setProtectEnv(protectEnv);
         task.getProtectEnv().setNodes(gaussDBBaseService.supplyNodes(resource.getRootUuid()));
+        task.getAdvanceParams().put(DwsConstant.IS_NEED_CLEAN_OTHER_NODE, Boolean.TRUE.toString());
+        // 删除dws最后一个副本的时候，下发所有存储的esn
+        if (isLastCopy(copy, resource)) {
+            Set<String> esnList = storageUnitService.queryStorageUnits()
+                .stream()
+                .map(StorageUnitVo::getDeviceId)
+                .collect(Collectors.toSet());
+            Gson gson = new Gson();
+            task.getAdvanceParams().put(DwsConstant.ALL_DEVICE_ESN, gson.toJson(esnList));
+        }
     }
 
     @Override
@@ -233,5 +256,13 @@ public class GaussDBDWSCopyDeleteInterceptor extends AbstractDbCopyDeleteInterce
             .map(env -> new Endpoint(env.getUuid(), env.getEndpoint(), env.getPort()))
             .filter(endpoint -> endpointIps.contains(endpoint.getIp()))
             .collect(Collectors.toList());
+    }
+
+    private boolean isLastCopy(CopyInfoBo copy, ProtectedResource resource) {
+        Map<String, Object> conditions = new HashMap<>();
+        conditions.put("resource_id", resource.getUuid());
+        BasePage<Copy> copies = copyRestApi.queryCopies(0, 2, conditions);
+        List<Copy> items = copies.getItems();
+        return items.size() == 1 && copy.getUuid().equals(items.get(0).getUuid());
     }
 }

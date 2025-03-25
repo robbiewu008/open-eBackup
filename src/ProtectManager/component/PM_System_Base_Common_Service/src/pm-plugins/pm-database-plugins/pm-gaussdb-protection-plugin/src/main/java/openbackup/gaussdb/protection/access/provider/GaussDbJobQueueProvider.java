@@ -10,7 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-package openbackup.tpops.protection.access.provider;
+package openbackup.gaussdb.protection.access.provider;
 
 import com.huawei.oceanprotect.job.sdk.JobQueueProvider;
 
@@ -41,22 +41,18 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * 功能描述 轻量化排队逻辑
+ * 功能描述 HCS GAUSS排队逻辑
  *
  */
 @Component
 @AllArgsConstructor
 @Slf4j
-public class TpopsGaussDbJobQueueProvider implements JobQueueProvider {
+public class GaussDbJobQueueProvider implements JobQueueProvider {
     private static final int JOB_LIMIT_ONE = -1;
 
     private static final String RESOURCE_ID = "resource_id";
 
-    private static final String KEY_QUEUE_JOB_TYPE = "tpops_job_type";
-
-    private static final String TARGET_ENV = "targetEnv";
-
-    private static final String ROOT_UUID = "rootUuid";
+    private static final String KEY_QUEUE_JOB_TYPE = "hcs_job_type";
 
     private static final String RESTORE_TO_LOCAL_POSITION = "Local";
 
@@ -64,14 +60,14 @@ public class TpopsGaussDbJobQueueProvider implements JobQueueProvider {
      * 排队任务类型
      */
     private static final Set<String> ALLOWED_JOB_TYPE = ImmutableSet.of(JobTypeEnum.BACKUP.getValue(),
-        JobTypeEnum.RESTORE.getValue(), JobTypeEnum.COPY_DELETE.getValue(), JobTypeEnum.COPY_EXPIRE.getValue());
+            JobTypeEnum.RESTORE.getValue(), JobTypeEnum.COPY_DELETE.getValue(), JobTypeEnum.COPY_EXPIRE.getValue());
 
     private final ResourceService resourceService;
 
     @Override
     public boolean applicable(Job object) {
-        return ResourceSubTypeEnum.TPOPS_GAUSSDB_INSTANCE.equalsSubType(object.getSourceSubType())
-            && ALLOWED_JOB_TYPE.contains(object.getType());
+        return ResourceSubTypeEnum.HCS_GAUSSDB_INSTANCE.equalsSubType(object.getSourceSubType())
+                && ALLOWED_JOB_TYPE.contains(object.getType());
     }
 
     @Override
@@ -82,8 +78,8 @@ public class TpopsGaussDbJobQueueProvider implements JobQueueProvider {
 
         // 备份、恢复、删除副本参与排序
         JSONArray typeArray = new JSONArray(new String[] {
-            JobTypeEnum.BACKUP.getValue(), JobTypeEnum.RESTORE.getValue(), JobTypeEnum.COPY_DELETE.getValue(),
-            JobTypeEnum.COPY_EXPIRE.getValue()
+                JobTypeEnum.BACKUP.getValue(), JobTypeEnum.RESTORE.getValue(), JobTypeEnum.COPY_DELETE.getValue(),
+                JobTypeEnum.COPY_EXPIRE.getValue()
         });
 
         // 这个KEY_QUEUE_JOB_TYPE， 每个应用都不要一样。
@@ -101,50 +97,45 @@ public class TpopsGaussDbJobQueueProvider implements JobQueueProvider {
         backUpPolicy.setJobType(job.getType());
         backUpPolicy.setScope(queueScope);
         jobSchedulePolicies.add(backUpPolicy);
-        log.info("Tpops get jobSchedulePolicies: {}", JsonUtil.json(jobSchedulePolicies));
+        log.info("HCS get jobSchedulePolicies: {}", JsonUtil.json(jobSchedulePolicies));
         setPayLoad(job);
         return jobSchedulePolicies;
     }
 
     private void setPayLoad(Job job) {
         JobMessage jobMessage = Optional.ofNullable(JSONObject.toBean(job.getMessage(), JobMessage.class))
-            .orElse(new JobMessage());
+                .orElse(new JobMessage());
         JSONObject payload = Optional.ofNullable(jobMessage.getPayload()).orElse(new JSONObject());
         payload.put(KEY_QUEUE_JOB_TYPE, job.getType());
+
         // pm传下来的参数，项目ID可能为空，用实例ID的root uuid 作为项目ID
         String projectId = payload.getString(CopyPropertiesKeyConstant.KEY_RESOURCE_PROPERTIES_ROOT_UUID);
-        JSONObject targetEnv = Optional.ofNullable(payload.getJSONObject(TARGET_ENV)).orElse(new JSONObject());
-        if (StringUtils.isEmpty(projectId)) {
-            projectId = targetEnv.getString(ROOT_UUID);
-        }
         if (StringUtils.isEmpty(projectId)) {
             String resourceUuid = job.getSourceId();
-            log.info("resourceUuid is {}", resourceUuid);
             Optional<ProtectedResource> resourceOptional = resourceService.getBasicResourceById(resourceUuid);
             if (resourceOptional.isPresent()) {
                 projectId = resourceOptional.get().getRootUuid();
             }
         }
-        log.info("TpopsGaussDbJobQueueProvider targetLocation {}", job.getTargetLocation());
+        log.info("GaussDbJobQueueProvider targetLocation {}", job.getTargetLocation());
 
         // 用项目ID + 实例名 作为排队key值
         payload.put(RESOURCE_ID, job.getSourceId());
         if (!StringUtils.equals(RESTORE_TO_LOCAL_POSITION, job.getTargetLocation())) {
-            log.info("TpopsGaussDbJobQueueProvider getCustomizedSchedulePolicy targetObject {}", job.getTargetName());
+            log.info("GaussDbJobQueueProvider getCustomizedSchedulePolicy targetObject {}", job.getTargetName());
             HashMap<String, Object> conditions = new HashMap<>();
-            log.info("TpopsGaussDbJobQueueProvider getCustomizedSchedulePolicy target projectId is {}", projectId);
             conditions.put(DatabaseConstants.PARENT_UUID, projectId);
             conditions.put(DatabaseConstants.NAME, job.getTargetName());
             PageListResponse<ProtectedResource> result = resourceService
-                .query(true, 0, 1, conditions);
+                    .query(true, 0, 1, conditions);
             String instanceId = job.getSourceId();
             if (result.getTotalCount() != 0) {
                 instanceId = result.getRecords().get(0).getUuid();
             }
-            log.info("TpopsGaussDbJobQueueProvider getCustomizedSchedulePolicy target instance: {}", instanceId);
+            log.info("GaussDbJobQueueProvider getCustomizedSchedulePolicy target instance: {}", instanceId);
             payload.put(RESOURCE_ID, instanceId);
         }
-        log.info("TpopsGaussDbJobQueueProvider get resourceId: {}", payload.get(RESOURCE_ID));
+        log.info("GaussDbJobQueueProvider get resourceId: {}", payload.get(RESOURCE_ID));
         jobMessage.setPayload(payload);
         job.setMessage(JSONObject.writeValueAsString(jobMessage));
     }

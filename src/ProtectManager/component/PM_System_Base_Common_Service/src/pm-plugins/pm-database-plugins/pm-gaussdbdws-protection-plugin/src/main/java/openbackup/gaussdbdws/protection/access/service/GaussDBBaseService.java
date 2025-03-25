@@ -52,6 +52,10 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
+import openbackup.system.base.common.utils.JSONArray;
+import openbackup.system.base.common.utils.JSONObject;
+import openbackup.system.base.sdk.copy.CopyRestApi;
+import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
@@ -104,6 +108,9 @@ public class GaussDBBaseService {
 
     @Autowired
     private IVpcService iVpcService;
+
+    @Autowired
+    private CopyRestApi copyRestApi;
 
     /**
      * DWS 应用基本的Service有参构造方法
@@ -263,10 +270,20 @@ public class GaussDBBaseService {
         // 添加存储集群的X8000型号; esn role角色;
         List<StorageRepository> repositories = backupTask.getRepositories();
         for (StorageRepository repository : repositories) {
+            log.info("repository id: {}", repository.getId());
             repository.setRole(DwsConstant.SLAVE_ROLE);
         }
-        // 将本机对应的节点移到最前面，并且把第一个设为主节点
-        moveCurrentEsnRepositoryToIndex0(repositories);
+        // 获取上一次备份meta仓所在节点esn，并将该节点设为本次备份主节点
+        Optional<String> lastEsn = getLastCopyMetaRepoEsn(backupTask);
+        if (lastEsn.isPresent() && repositoriesContainEsn(repositories, lastEsn.get())) {
+            log.info("Last copy esn is in repositories.");
+            // 将上一次备份移到最前面，并且设为主节点
+            moveGivenEsnRepositoryToIndex0(repositories, lastEsn.get());
+        } else {
+            log.info("Last copy esn is not in repositories.");
+            // 将本机对应的节点移到最前面，并且把第一个设为主节点
+            moveCurrentEsnRepositoryToIndex0(repositories);
+        }
         repositories.add(DwsBuildRepositoryUtil.getCacheRepository(repositories.get(0)));
         Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams()).orElse(new HashMap<>());
         // 默认支持多文件系统
@@ -311,6 +328,54 @@ public class GaussDBBaseService {
             }
         }));
         repositories.get(0).setRole(DwsConstant.MASTER_ROLE);
+    }
+
+    private void moveGivenEsnRepositoryToIndex0(List<StorageRepository> repositories, String esn) {
+        repositories.sort(((o1, o2) -> {
+            if (esn.equals(o1.getId())) {
+                return -1;
+            } else if (esn.equals(o2.getId())) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }));
+        repositories.get(0).setRole(DwsConstant.MASTER_ROLE);
+    }
+
+    private Optional<String> getLastCopyMetaRepoEsn(BackupTask task) {
+        Copy lastCopy = copyRestApi.queryLatestBackupCopy(task.getProtectObject().getUuid(), null, null);
+        if (lastCopy == null) {
+            log.info("No last copy.");
+            return Optional.empty();
+        }
+        try {
+            return getEsnFromProperties(lastCopy.getProperties());
+        } catch (Exception e) {
+            log.error("Failed to get Last Copy Meta Repo Esn.", ExceptionUtil.getErrorMessage(e));
+        }
+        return Optional.empty();
+    }
+
+    private Optional<String> getEsnFromProperties(String Properties) {
+        JSONObject properties = JSONObject.fromObject(Properties);
+        JSONArray repositories = properties.getJSONArray("repositories");
+        for (JSONObject repository : (Iterable<JSONObject>) repositories) {
+            String esn = repository.getString("id");
+            JSONArray remotePath = repository.getJSONArray("remotePath");
+            for (JSONObject path : (Iterable<JSONObject>) remotePath) {
+                if (path.getInt("type") == DwsConstant.META_REPO_TYPE) {
+                    log.info("Last Copy Meta Repo Esn is {}", esn);
+                    return Optional.of(esn);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    private boolean repositoriesContainEsn(List<StorageRepository> repositories, String esn) {
+        return repositories.stream().anyMatch(
+            repository -> repository.getId() != null && repository.getId().equals(esn));
     }
 
     /**
