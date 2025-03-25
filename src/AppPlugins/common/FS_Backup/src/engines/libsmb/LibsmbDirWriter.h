@@ -59,7 +59,6 @@ private:
     std::shared_ptr<Module::SmbContextWrapper> m_asyncContext;
     std::thread m_thread;
     bool m_threadDone { false };
-    bool m_failed { false };
     BackupPhaseStatus m_failReason = BackupPhaseStatus::FAILED;
 
     time_t m_isCompleteTimer { 0 };

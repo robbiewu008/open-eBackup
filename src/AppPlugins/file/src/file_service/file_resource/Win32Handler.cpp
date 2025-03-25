@@ -22,10 +22,14 @@
 #include <codecvt>
 #include <winioctl.h>
 #include <rpcdce.h>
+#include <Wbemidl.h>
+#include <comdef.h>
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
 #include <functional>
+#include <iomanip>
+#include <cwctype>
 #include "Module/src/common/JsonHelper.h"
 #include "ProtectPluginFactory.h"
 #include "ApplicationServiceDataType.h"
@@ -34,25 +38,34 @@
 #include "PluginNasTypes.h"
 #include "PluginUtilities.h"
 #include "ErrorCode.h"
+#include "win32/BCD.h"
 
+#pragma comment(lib, "wbemuuid.lib")
+#pragma comment(lib, "comsupp.lib")
 
 using namespace std;
 using namespace Module;
+using namespace PluginUtils;
+using namespace Win32;
 using namespace Module::FileSystemUtil;
 
 namespace {
     constexpr auto WKERNEL_SPACE_DEVICE_PATH_PREFIX = LR"(\Device)";
     constexpr auto WUSER_SPACE_DEVICE_PATH_PREFIX = LR"(\\.)";
+    const int EFI = 0; // EFI system partition or bios system reserved
+    const int RECOVERY_VOLUME = 1;
+    const int SYSTEM_VOLUME = 2;
+    const int SIMPLE_VOLUME = 3;
+    const int NUMBER0 = 0;
     const int NUMBER2 = 2;
     const int NUMBER3 = 3;
-    const int NUMBER39 = 39;
+    const int NUMBER4 = 4;
+    const int NUMBER5 = 5;
+    const int NUMBER6 = 6;
+    const int NUMBER7 = 7;
+    const int NUMBER8 = 8;
+    const int NUMBER40 = 40;
     const int NUMBER1024 = 1024;
-    // EFI 分区 GUID
-    const GUID
-        EFI_PARTITION_GUID = { 0xC12A7328, 0xF81F, 0x11D2, { 0xBA, 0x4B, 0x00, 0xA0, 0xC9, 0x3E, 0xC9, 0x3B } };
-    // Recovery 分区 GUID
-    const GUID
-        RECOVERY_PARTITION_GUID = { 0xDE94BBA4, 0x06D1, 0x4D40, { 0xA1, 0x6A, 0xBF, 0xD5, 0x01, 0x79, 0xD6, 0xAC } };
 }
 
 namespace {
@@ -63,7 +76,17 @@ namespace {
     const std::string FILE_ITEM_TYPE = "f";
     const std::string DIRECTORY_ITEM_TYPE = "d";
     const std::string UNC_PATH_PREFIX = R"(\\?\)";
+    const std::wstring Device_Path_Prefix = L"\\\\.\\";
     const std::wstring UNKNOWN = L"Unknown";
+    const std::string UEFI_BOOT = "UEFI";
+    const std::string BIOS_BOOT = "BIOS";
+    const std::string UNKNOW_BOOT = "UNKNOW";
+    const std::string EFI_PARTITION_GUID = "C12A7328-F81F-11D2-BA4B-00A0C93EC93B";
+    const std::wstring W_EFI_PARTITION_GUID = L"C12A7328-F81F-11D2-BA4B-00A0C93EC93B";
+    const std::wstring FORMAT_GUID = L"{%08lX-%04X-%04X-%04X-%012llX}";
+    // Recovery 分区 GUID
+    const GUID
+        RECOVERY_PARTITION_GUID = { 0xDE94BBA4, 0x06D1, 0x4D40, { 0xA1, 0x6A, 0xBF, 0xD5, 0x01, 0x79, 0xD6, 0xAC } };
 }
 namespace FilePlugin {
     static AutoRegAppManager<Win32Handler> g_autoReg{ ResourceType::WINDOWS };
@@ -183,7 +206,7 @@ namespace FilePlugin {
             case DRIVE_FIXED:       return L"Fixed";
             case DRIVE_CDROM:       return L"CD-ROM";
             case DRIVE_RAMDISK:     return L"RAM Disk";
-            default: return UNKNOWN;
+            default:                return UNKNOWN;
         }
     }
 
@@ -251,25 +274,6 @@ namespace FilePlugin {
         }
         CloseHandle(hVolume);
         return std::move(diskNumbers);
-    }
-
-    // 打开物理磁盘
-    HANDLE Win32Handler::OpenDisk(const std::wstring& physicalDrivePath)
-    {
-        std::string tmp = FileSystemUtil::Utf16ToUtf8(physicalDrivePath);
-        INFOLOG("Enter GetDriveLayout: %s.", tmp.c_str());
-        HANDLE hDisk = CreateFileW(
-            physicalDrivePath.c_str(),
-            GENERIC_READ,
-            FILE_SHARE_READ | FILE_SHARE_WRITE,
-            nullptr,
-            OPEN_EXISTING,
-            0,
-            nullptr);
-        if (hDisk == INVALID_HANDLE_VALUE) {
-            ERRLOG("Failed to open physical drive: %s, %d", tmp.c_str(), GetLastError());
-        }
-        return hDisk;
     }
 
     using ErrorHandler = std::function<void(std::shared_ptr<DRIVE_LAYOUT_INFORMATION_EX>&)>;
@@ -342,7 +346,7 @@ namespace FilePlugin {
                 } else {
                     bufferSize *= NUMBER2;  // 如果 bytesReturned 为 0，倍增缓冲区大小
                 }
-                ERRLOG("Buffer too small, reallocating to %d bytes...", bufferSize);
+                WARNLOG("Buffer too small, reallocating to %d bytes...", bufferSize);
                 driveLayout.reset((DRIVE_LAYOUT_INFORMATION_EX*)malloc(bufferSize), free);
                 if (!driveLayout) {
                     ERRLOG("Failed to reallocate memory.");
@@ -366,6 +370,7 @@ namespace FilePlugin {
     void Win32Handler::PrintPartitionInfo(std::shared_ptr<DRIVE_LAYOUT_INFORMATION_EX>& driveLayout)
     {
         INFOLOG("Number of Partition: %d", driveLayout->PartitionCount);
+        wchar_t guidString[NUMBER40];
         for (DWORD i = 0; i < driveLayout->PartitionCount; ++i) {
             PARTITION_INFORMATION_EX partition = driveLayout->PartitionEntry[i];
             INFOLOG("Partition: %d, Partition style: %s",
@@ -375,34 +380,19 @@ namespace FilePlugin {
                 WARNLOG("MBR partition name to be implement.");
             } else if (partition.PartitionStyle == PARTITION_STYLE_GPT) {
                 INFOLOG("GPT");
-                Win32Handler::m_pMap.emplace(partition.StartingOffset.QuadPart, partition.Gpt.PartitionType);
+                Win32Handler::m_pMap.emplace(partition.StartingOffset.QuadPart, partition.Gpt.Name);
+                StringFromGUID2(partition.Gpt.PartitionId, guidString, NUMBER40);
+                Win32Handler::m_gMap.emplace(partition.StartingOffset.QuadPart, guidString);
             }
-            INFOLOG("Partition offset : %lld, length: %lld, number : %u",
+            INFOLOG("Partition offset : %lld, length: %lld, number : %u, guid : %s",
                 partition.StartingOffset.QuadPart,
                 partition.PartitionLength.QuadPart,
-                partition.PartitionNumber);
+                partition.PartitionNumber,
+                Utf16ToUtf8(guidString).c_str());
         }
     }
 
-    // 获取并输出磁盘分区布局
-    void Win32Handler::GetDriveLayout(const std::wstring& physicalDrivePath)
-    {
-        // 打开物理磁盘
-        HANDLE hDisk = Win32Handler::OpenDisk(physicalDrivePath);
-        if (hDisk == INVALID_HANDLE_VALUE) {
-            return;
-        }
-        std::shared_ptr<DRIVE_LAYOUT_INFORMATION_EX> driveLayout = Win32Handler::GetDiskLayout(hDisk);
-
-        // 输出磁盘分区信息
-        if (driveLayout != nullptr) {
-            PrintPartitionInfo(driveLayout);
-        }
-        CloseHandle(hDisk);
-        return;
-    }
-
-    std::wstring Win32Handler::CheckPartitionType(const std::wstring& drive)
+     std::wstring Win32Handler::CheckPartitionType(const std::wstring& drive)
     {
         // 打开分区
         auto hDevice = std::unique_ptr<void, decltype(&CloseHandle)>(
@@ -421,11 +411,8 @@ namespace FilePlugin {
             if (partitionInfo.PartitionStyle == PARTITION_STYLE_GPT) {
                 GUID partitionGuid = partitionInfo.Gpt.PartitionType;
 
-                // 判断是否是 EFI 分区
-                if (partitionGuid == EFI_PARTITION_GUID) {
-                    INFOLOG("%s is an EFI System Partition.", Utf16ToUtf8(drive).c_str());
-                    return L"EFI";
-                } else if (partitionGuid == RECOVERY_PARTITION_GUID) {
+                // 判断是否是 Recovery分区
+                if (partitionGuid == RECOVERY_PARTITION_GUID) {
                     INFOLOG("%s is a Microsoft Recovery Partition.", Utf16ToUtf8(drive).c_str());
                     return L"Recovery";
                 } else {
@@ -440,6 +427,28 @@ namespace FilePlugin {
             INFOLOG("Failed to get partition info for:%s", Utf16ToUtf8(drive).c_str());
             return UNKNOWN;
         }
+    }
+
+    // 获取partition number
+    DWORD Win32Handler::GetPartitionNumber(const std::wstring& drive)
+    {
+        // 打开分区
+        auto hDevice = std::unique_ptr<void, decltype(&CloseHandle)>(
+            CreateFile(drive.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL),
+            CloseHandle);
+        if (hDevice.get() == INVALID_HANDLE_VALUE) {
+            ERRLOG("Failed to open device:%d", GetLastError());
+            return 0;
+        }
+
+        // 获取分区信息
+        PARTITION_INFORMATION_EX partitionInfo;
+        DWORD bytesReturned;
+        if (DeviceIoControl(hDevice.get(), IOCTL_DISK_GET_PARTITION_INFO_EX, NULL, 0, &partitionInfo,
+            sizeof(partitionInfo), &bytesReturned, NULL)) {
+            return partitionInfo.PartitionNumber;
+        }
+        return 0;
     }
 
     // 判断给定的分区是否是系统启动分区
@@ -458,26 +467,28 @@ namespace FilePlugin {
 
     int Win32Handler::getVolumeType(const WinVolumeInfo& info)
     {
-        if (info.partitionNameType == L"EFI") {
-            return 0; // EFI system partition
-        } else if (info.partitionNameType == L"Recovery") {
-            return 1; // recovery
+        if (info.partitionName == FileSystemUtil::Utf8ToUtf16(EFI_SYSTEM_PARTITION)) {
+            return EFI; // EFI system partition
+        } else if (info.label== L"System Reserved") {
+            return EFI; // bios system reserved
+        } else if (info.partitionName == L"Recovery" && info.driveLetter == UNKNOWN) {
+            return RECOVERY_VOLUME; // recovery
         } else if (IsSystemVolume(info.driveLetter)) {
-            return NUMBER2; // 系统盘
+            return SYSTEM_VOLUME; // 系统盘
         } else {
-            return NUMBER3; // 普通卷
+            return SIMPLE_VOLUME; // 普通卷
         }
     }
 
     StringVolumeInfo Win32Handler::ConvertVolumeInfo(const WinVolumeInfo& info)
     {
         StringVolumeInfo stringInfo;
-        try {
-            std::string tempVolumeName = FileSystemUtil::Utf16ToUtf8(info.volumeName);
+        std::string tempVolumeName = FileSystemUtil::Utf16ToUtf8(info.volumeName);
+        if (info.volumeName.empty() || info.volumeName == FileSystemUtil::Utf8ToUtf16(EFI_SYSTEM_PARTITION)) {
+            stringInfo.volumeName = tempVolumeName;
+        } else {
             stringInfo.volumeName = tempVolumeName.substr(tempVolumeName.find("Volume{"),
                 tempVolumeName.find("}") - tempVolumeName.find("Volume{") + 1);
-        } catch (const std::out_of_range& e) {
-            ERRLOG("Out of range error: %s", e.what());
         }
         stringInfo.label = FileSystemUtil::Utf16ToUtf8(info.label);
         stringInfo.fileSystem = FileSystemUtil::Utf16ToUtf8(info.fileSystem);
@@ -487,14 +498,15 @@ namespace FilePlugin {
         stringInfo.isHealthy = info.isHealthy;
         stringInfo.totalSize = info.totalSize;
         stringInfo.freeSpace = info.freeSpace;
-        stringInfo.displayName = stringInfo.label + "(" + stringInfo.driveLetter + ")";
+        stringInfo.displayName = stringInfo.label+"("+ stringInfo.driveLetter+")";
         stringInfo.drivePath = FileSystemUtil::Utf16ToUtf8(info.drivePath);
         std::string tmp = FileSystemUtil::Utf16ToUtf8(info.partitionName);
         stringInfo.partitionName = FileSystemUtil::Utf16ToUtf8(info.partitionName);
+        stringInfo.partitionNumber = info.partitionNumber;
         stringInfo.partitionGuid = FileSystemUtil::Utf16ToUtf8(info.partitionGuid);
-        stringInfo.partitionNameType = FileSystemUtil::Utf16ToUtf8(info.partitionNameType);
-        INFOLOG("transfer info: %s, %s", stringInfo.partitionName.c_str(), tmp.c_str());
+        INFOLOG("transfer info: %s, %s", stringInfo.partitionName.c_str(), stringInfo.partitionGuid.c_str());
         stringInfo.volumeType = getVolumeType(info);
+        INFOLOG("volume type:%d", stringInfo.volumeType);
         return stringInfo;
     }
 
@@ -518,7 +530,6 @@ namespace FilePlugin {
         volumeInfo.drivePath = FileSystemUtil::Utf8ToUtf16(info.drivePath);
         volumeInfo.partitionGuid = FileSystemUtil::Utf8ToUtf16(info.partitionGuid);
         volumeInfo.partitionName = FileSystemUtil::Utf8ToUtf16(info.partitionName);
-        volumeInfo.partitionNameType = FileSystemUtil::Utf8ToUtf16(info.partitionNameType);
         return volumeInfo;
     }
 
@@ -583,11 +594,11 @@ namespace FilePlugin {
                 &freeBytesAvailable,
                 &totalNumberOfBytes,
                 &totalNumberOfFreeBytes)) {
-                info.totalSize = totalNumberOfBytes.QuadPart;
                 info.freeSpace = totalNumberOfFreeBytes.QuadPart;
             }
             PopulateVolumeInfo(info, info.volumeName);
-            info.partitionNameType = CheckPartitionType(info.drivePath);
+            info.partitionName = CheckPartitionType(info.drivePath);
+            info.totalSize = GetWinVolumeSize(Utf16ToUtf8(info.drivePath));
             volumes.push_back(info);
         } while (FindNextVolumeW(hVolume, volumeName, ARRAYSIZE(volumeName)));
 
@@ -616,68 +627,58 @@ namespace FilePlugin {
         INFOLOG("VolumeInfo: %s", logMessageresult.c_str());
     }
 
-    std::wstring Win32Handler::GuidToWString(const GUID& guid)
-    {
-        wchar_t guidString[NUMBER39];
-        if (StringFromGUID2(guid, guidString, NUMBER39)) {
-            return std::wstring(guidString);
-        }
-        return L"";
-    }
-
     void Win32Handler::ListVolumeResource(FileResourceInfo& resourceInfo, const ListResourceParam& listResourceParam)
     {
         std::vector<WinVolumeInfo> volumes = GetAllVolumes();
-        std::unordered_set<int> diskNumbers;
-        for (int i = 0; i < volumes.size(); ++i) {
-            LONGLONG offset;
-            std::vector<int> tmpDiskNumbers = GetPhysicalDriveForVolume(volumes[i].drivePath, offset);
-            if (tmpDiskNumbers.empty()) {
-                continue;
-            }
-            for (int diskNumber : tmpDiskNumbers) {
-                diskNumbers.emplace(diskNumber);
-            }
-            volumes[i].partitionOffset = offset;
-            m_vMap.emplace(offset, &volumes[i]);
-        }
-
-        if (diskNumbers.empty()) {
-            ERRLOG("no physical disk found ");
-            return;
-        }
-
-        for (int diskNumber : diskNumbers) {
-            std::wstring physicalDrivePath = L"\\\\.\\PhysicalDrive" + std::to_wstring(diskNumber);
-            GetDriveLayout(physicalDrivePath);
-        }
-        for (auto it = m_vMap.begin(); it != m_vMap.end(); ++it) {
-            WinVolumeInfo* v = it->second;
-            if (m_pMap.count(it->first) == 0) {
-                INFOLOG("not found offset for: %u", v->partitionOffset);
-                continue;
-            }
-            v->partitionName = GuidToWString(m_pMap[it->first]);
-        }
         if (volumes.empty()) {
             WARNLOG("Volume not found or an error has occurred.");
-        } else {
-            for (const auto& info : volumes) {
-                StringVolumeInfo stringInfo = ConvertVolumeInfo(info);
-                if (info.driveType != L"Fixed") {
-                    continue;
-                }
-
-                //"1"为可以备份，“0”为不可以
-                if ((info.fileSystem == L"NTFS") || (info.volumeType == 0)) {
-                    stringInfo.isBackupable = "1";
-                } else {
-                    stringInfo.isBackupable = "0";
-                }
-
-                LogStringVolumeInfo(stringInfo);
-                resourceInfo.volumeResourceDetailVec.push_back(stringInfo);
+            return;
+        }
+        std::string efiPath;
+        if (IsUEFIBoot() && (!PluginUtils::DetectWinPE())) {
+            INFOLOG("This system is booted by UEFI.");
+            efiPath = GetEFIDrivePath();
+            StringVolumeInfo efiVol;
+            efiVol.displayName = EFI_SYSTEM_PARTITION;
+            efiVol.drivePath = efiPath;
+            efiVol.volumeName = EFI_SYSTEM_PARTITION;
+            efiVol.fileSystem = "FAT32";
+            efiVol.volumeType = 0;
+            efiVol.totalSize = EFI_SYSTEM_PARTITION_SIZE;
+            efiVol.isBackupable = "1";
+            std::wstring wEfiLetter = GetDriveLetterFromGUID(FileSystemUtil::Utf8ToUtf16(EFI_PARTITION_GUID));
+            efiVol.driveLetter = FileSystemUtil::Utf16ToUtf8(wEfiLetter);
+            resourceInfo.volumeResourceDetailVec.push_back(efiVol);
+        }
+        for (const auto& info : volumes) {
+            StringVolumeInfo stringInfo = ConvertVolumeInfo(info);
+            if (info.driveType != L"Fixed") {
+                continue;
             }
+
+            //"1"为可以备份，“0”为不可以
+            if ((info.fileSystem == L"NTFS") || (info.volumeType == 0)) {
+                stringInfo.isBackupable = "1";
+            } else {
+                stringInfo.isBackupable = "0";
+            }
+            // EFI 分区统一用上面构造的
+            if (stringInfo.partitionName.find(EFI_PARTITION_GUID) != std::string::npos ||
+                stringInfo.drivePath == efiPath) {
+                continue;
+            }
+
+            // 恢复时对识别到的EFI单独处理
+            GUID partitionTypeGuid;
+            std::wstring efiDriveLetter = info.driveLetter;
+            GetPartitionTypeGUID(&efiDriveLetter[0], partitionTypeGuid);
+            if (IsEqualGUIDString(partitionTypeGuid, W_EFI_PARTITION_GUID)) {
+                stringInfo.isBackupable = "1";
+                stringInfo.volumeType = 0;
+            }
+
+            LogStringVolumeInfo(stringInfo);
+            resourceInfo.volumeResourceDetailVec.push_back(stringInfo);
         }
         return;
     }
@@ -698,11 +699,10 @@ namespace FilePlugin {
         }
     }
 
-
     /*
-        * Symbolic link & junction point treated as link file,
-        * while device mount point treated as directory
-        */
+    * Symbolic link & junction point treated as link file,
+    * while device mount point treated as directory
+    */
     static std::string GetSubItemType(const StatResult& statResult)
     {
         if (!statResult.IsReparsePoint()) {
@@ -753,8 +753,8 @@ namespace FilePlugin {
                 ++totalNum;
                 continue;
             }
-
-            NasShareResourceInfo resourceDetailInfo{};
+            
+            NasShareResourceInfo resourceDetailInfo {};
             resourceDetailInfo.path = fullpath;
             resourceDetailInfo.size = openDirEntry->Size();
             resourceDetailInfo.type = GetSubItemType(subStatResult.value());
@@ -781,4 +781,94 @@ namespace FilePlugin {
         }
         return true;
     }
+
+    std::wstring Win32Handler::GuidToWString(GUID guid)
+    {
+        wchar_t buffer[64] = { 0 };
+        int ret = swprintf_s(buffer, sizeof(buffer) / sizeof(buffer[0]),
+            FORMAT_GUID.c_str(),
+            guid.Data1, guid.Data2, guid.Data3,
+            (guid.Data4[0] << NUMBER8) | guid.Data4[NUMBER1],
+            *(unsigned long long*)&guid.Data4[NUMBER2]);
+        if (ret == -1) {
+            ERRLOG("GuidToWString failed");
+            return L"";
+        }
+        return buffer;
+    }
+
+    bool Win32Handler::GetPartitionTypeGUID(wchar_t* drivePath, GUID& partitionTypeGuid)
+    {
+        if (drivePath == nullptr) {
+            return false;
+        }
+
+        size_t len = wcslen(drivePath);
+        if (len > 0 && drivePath[len - 1] == L'\\') {
+            drivePath[len - 1] = L'\0'; // 去掉最后的反斜杠
+        }
+        std::wstring devicePath = Device_Path_Prefix + std::wstring(drivePath);
+
+        HANDLE hDevice = CreateFileW(devicePath.c_str(),
+            GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+            NULL, OPEN_EXISTING, 0, NULL);
+        if (hDevice == INVALID_HANDLE_VALUE) {
+            ERRLOG("Open device fiald: %d", GetLastError());
+            return false;
+        }
+
+        PARTITION_INFORMATION_EX partitionInfo;
+        DWORD bytesReturned = 0;
+
+        BOOL result = DeviceIoControl(hDevice,
+            IOCTL_DISK_GET_PARTITION_INFO_EX,
+            NULL, 0,
+            &partitionInfo, sizeof(partitionInfo),
+            &bytesReturned, NULL);
+
+        CloseHandle(hDevice);
+
+        if (!result) {
+            ERRLOG("DeviceIoControl faild:%d", GetLastError());
+            return false;
+        }
+
+        if (partitionInfo.PartitionStyle != PARTITION_STYLE_GPT) {
+            ERRLOG("this partition is not gpt partition:%d", GetLastError());
+            return false;
+        }
+
+        partitionTypeGuid = partitionInfo.Gpt.PartitionType;
+        return true;
+    }
+
+    // 将GUID转换为大写字符串
+    std::wstring Win32Handler::GuidToString(const GUID& guid)
+    {
+        wchar_t buffer[64] = { 0 };
+        swprintf_s(buffer, sizeof(buffer) / sizeof(wchar_t),
+            L"%08lX-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
+            guid.Data1, guid.Data2, guid.Data3,
+            guid.Data4[NUMBER0], guid.Data4[NUMBER1], guid.Data4[NUMBER2], guid.Data4[NUMBER3],
+            guid.Data4[NUMBER4], guid.Data4[NUMBER5], guid.Data4[NUMBER6], guid.Data4[NUMBER7]);
+        return buffer;
+    }
+
+    // 比较两个GUID是否相等（不区分大小写）
+    bool Win32Handler::IsEqualGUIDString(const GUID& guid, const std::wstring& guidStr)
+    {
+        std::wstring guidConverted = GuidToString(guid);
+
+        auto toUpper = [](wchar_t ch) {
+            return std::towupper(ch);
+        };
+    
+        std::wstring guid1Upper;
+        std::wstring guid2Upper;
+        std::transform(guidConverted.begin(), guidConverted.end(), std::back_inserter(guid1Upper), toUpper);
+        std::transform(guidStr.begin(), guidStr.end(), std::back_inserter(guid2Upper), toUpper);
+
+        return guid1Upper == guid2Upper;
+    }
+
 }

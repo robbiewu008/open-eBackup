@@ -136,7 +136,7 @@ BackupPhaseStatus LibsmbCopyWriter::GetStatus()
     if (m_abort) {
         return BackupPhaseStatus::ABORTED;
     }
-    if (m_failed || m_controlInfo->m_failed || m_controlInfo->m_controlReaderFailed) {
+    if (m_controlInfo->m_failed || m_controlInfo->m_controlReaderFailed) {
         return m_failReason;
     }
     return BackupPhaseStatus::COMPLETED;
@@ -144,9 +144,9 @@ BackupPhaseStatus LibsmbCopyWriter::GetStatus()
 
 bool LibsmbCopyWriter::IsAbort() const
 {
-    if (m_abort || m_failed || m_controlInfo->m_failed || m_controlInfo->m_controlReaderFailed) {
-        INFOLOG("abort %d failed %d controlInfoFailed %d controlReaderFailed %d",
-            m_abort, m_failed, m_controlInfo->m_failed.load(), m_controlInfo->m_controlReaderFailed.load());
+    if (m_abort || m_controlInfo->m_failed || m_controlInfo->m_controlReaderFailed) {
+        INFOLOG("abort %d, controlInfoFailed %d, controlReaderFailed %d",
+            m_abort, m_controlInfo->m_failed.load(), m_controlInfo->m_controlReaderFailed.load());
         return true;
     }
     return false;
@@ -319,14 +319,14 @@ int LibsmbCopyWriter::ServerCheck()
     if (noSpaceErrCount >= DEFAULT_MAX_NOSPACE) {
         ERRLOG("Threshold reached for DEFAULT_MAX_NOSPACE");
         m_failReason = BackupPhaseStatus::FAILED_NOSPACE;
-        m_failed = true;
+        m_controlInfo->m_failed = true;
         return FAILED;
     }
     uint32_t noAccessErrCount = m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::NO_ACCESS_ERR);
     if (noAccessErrCount >= DEFAULT_MAX_NOACCESS) {
         ERRLOG("Threshold reached for DEFAULT_MAX_NOACCESS");
         m_failReason = BackupPhaseStatus::FAILED_NOACCESS;
-        m_failed = true;
+        m_controlInfo->m_failed = true;
         return FAILED;
     }
 
@@ -338,7 +338,7 @@ int LibsmbCopyWriter::ServerCheck()
         int ret = HandleConnectionException(m_asyncContext, m_params.dstSmbContextArgs, RECONNECT_CONTEXT_RETRY_TIMES);
         if (ret != SUCCESS) {
             ERRLOG("Stop and Abort read phase due to server inaccessible");
-            m_failed = true;
+            m_controlInfo->m_failed = true;
             m_suspend = false;
             FSBackupUtils::SetServerNotReachableErrorCode(m_backupParams.backupType, m_failReason, false);
             return FAILED;
@@ -362,6 +362,9 @@ int64_t LibsmbCopyWriter::ProcessTimers()
         delay = POLL_MAX_TIMEOUT;
     }
     for (FileHandle& fh : fileHandles) {
+        if (IsAbort()) {
+            return 0;
+        }
         if (IsWriterRequestReachThreshold()) {
             m_timer.Insert(fh, PENDING_PACKET_REACH_THRESHOLD_TIMER_MILLISECOND);
             continue;
@@ -421,11 +424,11 @@ void LibsmbCopyWriter::ThreadFunc()
 
 int LibsmbCopyWriter::ProcessConnectionException()
 {
-    ERRLOG("dst connection exception");
+    WARNLOG("dst connection exception");
     int retVal = HandleConnectionException(m_asyncContext, m_params.dstSmbContextArgs, RECONNECT_CONTEXT_RETRY_TIMES);
     if (retVal != SUCCESS) {
         ERRLOG("Stop and Abort read phase due to server inaccessible");
-        m_failed = true;
+        m_controlInfo->m_failed = true;
         FSBackupUtils::SetServerNotReachableErrorCode(m_backupParams.backupType, m_failReason, false);
         return FAILED;
     }
@@ -491,6 +494,8 @@ void LibsmbCopyWriter::ProcessFileDescState(FileHandle fileHandle)
                 CloseFile(fileHandle);
             }
         }
+        m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+        return;
     }
     if (state == FileDescState::DST_OPENED || state == FileDescState::PARTIAL_WRITED) {
         WriteData(fileHandle);
@@ -622,7 +627,10 @@ void LibsmbCopyWriter::ClearWriteCache()
             itr = m_writeCache.erase(itr);
         } else if (IsFileReadOrWriteFailed(itr->second[0]) ||
             state == FileDescState::WRITE_SKIP || state == FileDescState::WRITED) {
-            // ignore或者replace_older，存在不需要写的文件，需要把这些文件清掉
+            // ignore或者replace_older，存在不需要写的文件，需要把这些文件清掉，同时buffermap也需要清理buffer
+            for (auto& fileHandle : itr->second) {
+                m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+            }
             DBGLOG("erase from cache %s", itr->second[0].m_file->m_fileName.c_str());
             itr = m_writeCache.erase(itr);
         } else {

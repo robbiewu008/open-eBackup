@@ -249,6 +249,8 @@ namespace Module {
         int Base64Decryption(std::string encryptedkey, std::string &plainKey);
         void DelayTimeSendRequest(const std::string &delayForJobName);
         int DestroyDeviceSession();
+        int ValidateQueryVolumeResponse(Json::Value &data, const std::string &volName);
+        bool ValidateQueryVolumeResponseDataCheck(Json::Value &data, const Json::Value::ArrayIndex &i);
 
     protected:
         std::string m_encryptedKey {};

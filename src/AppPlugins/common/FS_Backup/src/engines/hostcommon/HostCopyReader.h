@@ -63,7 +63,7 @@ protected:
 
     virtual void ProcessReadEntries(FileHandle& fileHandle) = 0; // can be unify later
     virtual void HandleSuccessEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr) = 0;
-    void HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr);
+    virtual void HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr) = 0;
     bool WriteFailedAndSkipRead(FileHandle& fileHandle);
     bool ProcessReadEntriesScannerMode(FileHandle& fileHandle);
 

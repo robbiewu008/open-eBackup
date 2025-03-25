@@ -50,9 +50,11 @@ namespace Module {
         virtual ~ThreadPool();
         SingleItemQueue<ExecutableItem>* GetInputQueue();
         STPInput m_input;
+        std::atomic<bool>* m_threadWorkingFlags; // 每个线程的工作状态标志
+        bool GetThreadWorkStatus(ThreadPool* pool, size_t threadID);
     protected:
         virtual void Run(std::shared_ptr<ExecutableItem>& item);
-        virtual void WorkerLoop();
+        virtual void WorkerLoop(size_t threadID);
         ThreadPool(const ThreadPool& other);
         ThreadPool& operator=(const ThreadPool& other);
         

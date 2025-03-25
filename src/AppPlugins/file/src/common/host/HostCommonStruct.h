@@ -30,20 +30,34 @@ struct HostApplicationExtent {
     END_SERIAL_MEMEBER
 };
 
+struct FileDiskInfo {
+    std::string diskId;
+    std::string diskName;
+    uint64_t diskSize;
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(diskId, diskId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(diskName, diskName)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(diskSize, diskSize)
+    END_SERIAL_MEMEBER
+};
+
 struct AggCopyExtendInfo {
     std::string isAggregation;
     std::string metaPathSuffix;
     std::string dataPathSuffix;
     std::string maxSizeAfterAggregate;
     std::string maxSizeToAggregate;
+    std::vector<FileDiskInfo> diskInfoSet;
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(isAggregation, isAggregation)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(metaPathSuffix, metaPathSuffix)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(dataPathSuffix, dataPathSuffix)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(maxSizeAfterAggregate, maxSizeAfterAggregate)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(maxSizeToAggregate, maxSizeToAggregate)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(diskInfoSet, diskInfoSet)
     END_SERIAL_MEMEBER
 };
+
 
 struct HostBackupJobExtend {
     /* PM传的string，需要修改 */
@@ -90,6 +104,7 @@ struct HostBackupCopy {
     std::string m_backupFilter {};
     std::string m_isConsistent {};
     uint64_t m_lastBackupTime {};
+    uint64_t m_adsmetaFileVersion {0};
     std::string m_isArchiveSupportHardlink {};
 
     BEGIN_SERIAL_MEMEBER
@@ -98,6 +113,7 @@ struct HostBackupCopy {
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_backupFilter, backupFilter)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_isConsistent, isConsistent)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_lastBackupTime, lastBackupTime)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_adsmetaFileVersion, m_adsmetaFileVersion)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_isArchiveSupportHardlink, isArchiveSupportHardlink)
     END_SERIAL_MEMEBER
 };
@@ -266,12 +282,14 @@ struct BackupSubJob {
     uint32_t subTaskType {};         // CopyPhase, DelPhase, HardLinkPhase, DirMTimePhase
     std::string prefix {};           // backup prefix
     std::string fsId {};             // archive fs id in S3
+    std::string parentDir {};
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(controlFile, controlFile)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(subTaskType, subTaskType)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(prefix, prefix)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(fsId, fsId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(parentDir, parentDir)
     END_SERIAL_MEMEBER
 };
 

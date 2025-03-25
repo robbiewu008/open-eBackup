@@ -24,6 +24,9 @@ namespace {
 constexpr auto FAILED_TO_SEND_MESSAGE     = "Failed to send message";
 constexpr auto FAILED_TO_READ_HEADER      = "Failed to read message header";
 constexpr auto FAILED_TO_READ_MESSAGE     = "Failed to read message";
+constexpr int32_t TCP_KEEPALIVE_IDLE_TIME = 8;    // 空闲多久后开始发送keepalive探测（秒）
+constexpr int32_t TCP_KEEPALIVE_PROBE_COUNT = 2;  // 最大探测次数
+constexpr int32_t TCP_KEEPALIVE_INTERVAL = 2;     // 每次探测之间的间隔（秒）
 
 // --- Send functions ---
 template <typename SocketType>
@@ -195,6 +198,17 @@ void Session::TurnDelayOff()
             : m_socket->lowest_layer().set_option(boost::asio::ip::tcp::no_delay(true));
 }
 
+void Session::ConfigureTcpKeepAlive()
+{
+    boost::asio::ip::tcp::socket::lowest_layer_type& lowestLayer = IsSsl() ? m_sslSocket->lowest_layer() :
+                                                                   m_socket->lowest_layer();
+    lowestLayer.set_option(boost::asio::socket_base::keep_alive(true));
+    int32_t nativeHandle = lowestLayer.native_handle();
+    setsockopt(nativeHandle, SOL_TCP, TCP_KEEPIDLE, &TCP_KEEPALIVE_IDLE_TIME, sizeof(TCP_KEEPALIVE_IDLE_TIME));
+    setsockopt(nativeHandle, SOL_TCP, TCP_KEEPCNT, &TCP_KEEPALIVE_PROBE_COUNT, sizeof(TCP_KEEPALIVE_PROBE_COUNT));
+    setsockopt(nativeHandle, SOL_TCP, TCP_KEEPINTVL, &TCP_KEEPALIVE_INTERVAL, sizeof(TCP_KEEPALIVE_INTERVAL));
+}
+
 bool Session::Connect(const boost::asio::ip::tcp::resolver::results_type& endpoints)
 {
     boost::asio::ip::tcp::socket::lowest_layer_type& lowestLayer = IsSsl() ? m_sslSocket->lowest_layer() :
@@ -208,7 +222,6 @@ bool Session::Connect(const boost::asio::ip::tcp::resolver::results_type& endpoi
     }
 
     INFOLOG("New connection established(id: %zu)", reinterpret_cast<std::size_t>(this));
-
     TurnDelayOff();
 
     m_connected = true;
@@ -218,6 +231,7 @@ bool Session::Connect(const boost::asio::ip::tcp::resolver::results_type& endpoi
 
 bool Session::Disconnect()
 {
+    std::lock_guard<std::recursive_mutex> disconnectLockGuard(m_disconnectMutex);
     m_deadlineTimer.cancel();
     if (m_connected && m_sslSocket != nullptr) {
         boost::system::error_code error;

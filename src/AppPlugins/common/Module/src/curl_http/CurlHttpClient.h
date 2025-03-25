@@ -88,9 +88,9 @@ private:
 
     void SetTwoWayAuthentication(const HttpRequest& req);
 
-    void SendTwoWayCertRequest(const HttpRequest& req, const uint32_t timeOut);
+    void SendTwoWayCertRequest(const HttpRequest& req, const uint32_t connTimeOut, const uint32_t timeOut = 0);
 
-    void SendRequest(const HttpRequest& req, const uint32_t timeOut );
+    void SendRequest(const HttpRequest& req, const uint32_t connTimeOut, const uint32_t timeOut);
 
     bool PerformUpload(const std::string& attachmentPath);
 
@@ -112,7 +112,7 @@ private:
 
     void SetCertParam(const HttpRequest& req);
 
-    void SetTimeOut(CURL* curlPtr, const uint32_t timeOut);
+    void SetTimeOut(CURL* curlPtr, const uint32_t connTimeOut, const uint32_t timeOut);
 
     const CURL* GetPtr();
 
@@ -136,9 +136,10 @@ public:
 
     virtual ~CurlHttpClient();
 
-    virtual std::shared_ptr<IHttpResponse> SendMemCertRequest(const HttpRequest& req, const uint32_t timeOut = 90);
+    virtual std::shared_ptr<IHttpResponse> SendMemCertRequest(const HttpRequest& req, const uint32_t connTimeOut = 90, const uint32_t timeOut = 0);
 
-    virtual std::shared_ptr<IHttpResponse> SendRequest(const HttpRequest& req, const uint32_t timeOut = 90);
+    virtual std::shared_ptr<IHttpResponse> SendRequest(const HttpRequest& req, const uint32_t connTimeOut = 90,
+        const uint32_t timeOut = 0);
 
     virtual std::shared_ptr<IHttpResponse> DownloadAttchment(const HttpRequest& req, const uint32_t timeOut = 90);
 

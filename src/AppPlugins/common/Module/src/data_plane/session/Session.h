@@ -59,6 +59,7 @@ public:
     bool IsConnected() const;
 
     void TurnDelayOff();
+    void ConfigureTcpKeepAlive();
 
     bool Connect(const boost::asio::ip::tcp::resolver::results_type& endpoints);
     bool Disconnect();
@@ -106,6 +107,7 @@ private:
     mutable std::mutex m_readQueueMutex;
     std::queue<std::function<void()>> m_readQueue;
 
+    mutable std::recursive_mutex m_disconnectMutex;
     bool m_isServer;
     std::unique_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> m_sslSocket;
     std::unique_ptr<boost::asio::ip::tcp::socket> m_socket;

@@ -218,7 +218,7 @@ int LibnfsServiceTask::DeleteDirectory(const std::string &filePath)
         ret = nftw(fullPath.c_str(), UnlinkCb, NUMBER_EIGHT, FTW_DEPTH | FTW_PHYS);
         if (ret != NUMBER_ZERO) {
             if (errno != ENOENT) {
-                ERRLOG("Deletion Failed for: %s ret: %d, errno: %d", fullPath.c_str(), ret, errno);
+                WARNLOG("Deletion Failed for: %s ret: %d, errno: %d", fullPath.c_str(), ret, errno);
             }
         } else {
             DBGLOG("Deleted Dir/File: %s ret= %d", filePath.c_str(), ret);

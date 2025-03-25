@@ -269,7 +269,7 @@ bool HostCancelLivemount::ExecuteUmountCmd(const std::string& mp)
     if (ret != 0) {
         ERRLOG("call umount failed! %s", mp.c_str());
         for (auto msg : errOutput) {
-            ERRLOG("errmsg : %s", msg.c_str());
+            WARNLOG("errmsg : %s", msg.c_str());
         }
         return false;
     }

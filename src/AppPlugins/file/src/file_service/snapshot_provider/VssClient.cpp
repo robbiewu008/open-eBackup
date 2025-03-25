@@ -309,6 +309,7 @@ std::wstring SnapshotSetResult::SnapshotSetIDW() const
 std::optional<SnapshotSetResult> VssClient::CreateSnapshotsW(const std::vector<std::wstring>& wVolumePathList,
     const std::string& snapshotPercent)
 {
+    isVolumeFull = false;
     InitializeBackupContect(VSS_CTX_APP_ROLLBACK);
     SnapshotSetResult result;
     /* no need to call GatherWriterMetadata due to no writers involved */
@@ -325,7 +326,6 @@ std::optional<SnapshotSetResult> VssClient::CreateSnapshotsW(const std::vector<s
             return std::nullopt;
         }
         float percent = SafeStof(snapshotPercent);
-    
         // 获取卷信息
         ULARGE_INTEGER freeBytes, totalBytes, totalFreeBytes;
         if (GetDiskFreeSpaceEx(wVolumePath.c_str(), &freeBytes, &totalBytes, &totalFreeBytes)) {
@@ -334,6 +334,7 @@ std::optional<SnapshotSetResult> VssClient::CreateSnapshotsW(const std::vector<s
             if (availableSpace < percent) {
                 ERRLOG("Not enough space for backup. Available: %f percent, errorcode: %d",
                     availableSpace, GetLastError());
+                isVolumeFull = true;
                 return std::nullopt;
             }
 

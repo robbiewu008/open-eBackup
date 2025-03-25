@@ -13,7 +13,7 @@ target_include_directories(component_obj
     ${PLUGIN_SRC_PATH}
     ${PLUGIN_SRC_PATH}/component
     ${PLUGIN_SRC_PATH}/common
-    ${PLUGIN_ROOT_PATH}/common
+    ${PLUGIN_ROOT_PATH}
     ${OPEN_SRC_PATH}/jsoncpp_rel/include
     ${MODULE_ROOT_PATH}/src
     ${OPEN_SRC_PATH}/boost_rel/include

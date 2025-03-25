@@ -176,7 +176,7 @@ void HardlinkAggregator::HandleSuccessEvent(shared_ptr<SqliteTask> taskPtr)
 
 void HardlinkAggregator::HandleFailureEvent(shared_ptr<SqliteTask> taskPtr)
 {
-    ERRLOG("Handle event is failure.");
+    WARNLOG("Handle event is failure.");
 }
 
 void HardlinkAggregator::PollHardlinkAggregateTask()
@@ -380,7 +380,6 @@ bool HardlinkAggregator::IsBlobListEmpty() const
 
 void HardlinkAggregator::PrintSqliteTaskDistribution() const
 {
-    INFOLOG("Hash Distribution of Sqlite job");
     for (uint16_t i = 0; i < m_blobFileList.size(); i++) {
         DBGLOG(" Slot[%u]--%u", i, m_blobFileList[i]->m_numOfBlobsFilesInserted);
     }

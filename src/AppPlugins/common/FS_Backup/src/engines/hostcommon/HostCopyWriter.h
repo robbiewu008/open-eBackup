@@ -55,6 +55,8 @@ protected:
     void PollWriteTask();
     virtual void HandleSuccessEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr);
     virtual void HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr);
+    void HandleFailedEventInner(FileDescState state, FileHandle fileHandle,
+        std::shared_ptr<OsPlatformServiceTask> taskPtr);
     bool IsOpenBlock(const FileHandle& fileHandle);
     virtual void ProcessWriteData(FileHandle& fileHandle) = 0;
 

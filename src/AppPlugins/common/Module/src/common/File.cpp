@@ -128,6 +128,35 @@ int CFile::CreateDir(const char* pszDirPath)
     return SUCCESS;
 }
 
+int CFile::CreateDir2(const char* pszDirPath)
+{
+    if (NULL == pszDirPath) {
+        COMMLOG(OS_LOG_ERROR, "Parameter is null.");
+        return FAILED;
+    }
+
+#ifdef WIN32
+    char szErr[256] = {0};
+    if (0 != _access(pszDirPath, 0)) {
+        if (0 != _mkdir(pszDirPath)) {
+            mp_int32 iErr = GetOSError();
+            ERRLOG("Failed to create folder:%s, errno[%d]:%s.",
+                pszDirPath, iErr, GetOSStrErr(iErr, szErr, sizeof(szErr)));
+            return FAILED;
+        }
+    }
+#else
+    char szErr[256] = {0};
+    if (0 != mkdir(pszDirPath, S_IRWXU)) {
+        int iErr = GetOSError();
+        COMMLOG(OS_LOG_ERROR, "Failed to create folder:%s, errno[%d]:%s.", pszDirPath, iErr,
+                GetOSStrErr(iErr, szErr, sizeof(szErr)));
+        return FAILED;
+    }
+#endif
+    return SUCCESS;
+}
+
 void CFile::Getfilepath(const char* path, const char* filename, char* filepath, int strfileLen)
 {
     if (path == nullptr) {
@@ -543,28 +572,64 @@ int CFile::GetFolderFile(string& strFolder, vector<string>& vecFileList)
     FindClose(hSearch);
     return SUCCESS;
 }
-#else
-int CFile::GetFolderFile(string& strFolder, vector<string>& vecFileList)
+#elif defined(SOLARIS)
+mp_int32 CFile::GetFolderFile(string& strFolder, vector<string>& vecFileList)
 {
-    struct dirent* ptr = NULL;
-    struct stat strFileInfo = {0};
-    char acFullName[MAX_PATH_LEN] = {0};
-
+    // 1. opens a directory stream
     DIR* dir = opendir(strFolder.c_str());
-    if (NULL == dir) {
-        COMMLOG(OS_LOG_ERROR, "opendir failed.");
+    if (nullptr == dir) {
+        COMMLOG(OS_LOG_ERROR, "opendir failed, dir: %s", strFolder.c_str());
         return FAILED;
     }
+    std::shared_ptr<void> defer1(nullptr, [&](...) { if (dir != nullptr) closedir(dir); });
+ 
+    // 2. malloc memory for traversalFile
+    struct dirent* ptr = (struct dirent*)malloc(sizeof(struct dirent) + MAX_PATH_LEN);
+    if (ptr == nullptr) {
+        ERRLOG("Failed to malloc for memory.");
+        return FAILED;
+    }
+    std::shared_ptr<void> defer2(nullptr, [&](...) { if (ptr != nullptr) free(ptr); });
 
-    while ((ptr = readdir(dir)) != ptr) {
-        if (FAILED ==
-            snprintf_s(acFullName, MAX_PATH_LEN, MAX_PATH_LEN - 1, "%s/%s", strFolder.c_str(), ptr->d_name)) {
-            closedir(dir);
-            COMMLOG(OS_LOG_ERROR, "SNPRINTF_S failed.");
+    struct dirent* dp = (struct dirent*)malloc(sizeof(struct dirent) + MAX_PATH_LEN);
+    if (dp == nullptr) {
+        ERRLOG("Failed to malloc for memory.");
+        return FAILED;
+    }
+    std::shared_ptr<void> defer3(nullptr, [&](...) { if (dp != nullptr) free(dp); });
+
+    // 3. traverse all files in the directory
+    struct stat strFileInfo = {0};
+    while ((SUCCESS == readdir_r(dir, dp, &ptr)) && (NULL != ptr)) {
+        string fileName = strFolder + PATH_SEPARATOR + ptr->d_name;
+        if (lstat(fileName.c_str(), &strFileInfo) < 0) {
+            COMMLOG(OS_LOG_ERROR, "lstat failed.");
             return FAILED;
         }
 
-        if (lstat(acFullName, &strFileInfo) < 0) {
+        if (!S_ISDIR(strFileInfo.st_mode)) {
+            if (strcmp(ptr->d_name, ".") && strcmp(ptr->d_name, "..")) {
+                vecFileList.push_back(ptr->d_name);
+            }
+        }
+    }
+    return SUCCESS;
+}
+#else
+mp_int32 CFile::GetFolderFile(string& strFolder, vector<string>& vecFileList)
+{
+    struct dirent* ptr = NULL;
+    struct stat strFileInfo = {0};
+    DIR* dir = opendir(strFolder.c_str());
+    if (NULL == dir) {
+        COMMLOG(OS_LOG_ERROR, "opendir failed, dir: %s, errno[%d]:%s.", strFolder.c_str(), errno, strerror(errno));
+        return FAILED;
+    }
+
+    struct dirent dp;
+    while ((SUCCESS == readdir_r(dir, &dp, &ptr)) && (NULL != ptr)) {
+        string fileName = strFolder + PATH_SEPARATOR + ptr->d_name;
+        if (lstat(fileName.c_str(), &strFileInfo) < 0) {
             closedir(dir);
             COMMLOG(OS_LOG_ERROR, "lstat failed.");
             return FAILED;

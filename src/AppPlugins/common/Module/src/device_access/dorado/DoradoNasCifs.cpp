@@ -211,7 +211,7 @@ namespace Module {
                 return FAILED;
             }
         } else {
-            HCP_Log(ERR, DORADO_MODULE_NAME) << "QueryCifsShare failed: " << info.deviceName << HCPENDLOG;
+            HCP_Log(WARN, DORADO_MODULE_NAME) << "QueryCifsShare failed: " << info.deviceName << HCPENDLOG;
         }
 
         return SUCCESS;

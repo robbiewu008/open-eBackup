@@ -47,6 +47,13 @@ void PosixDirWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskPtr
 
     DBGLOG("Posix dir failed %s retry cnt %d", fileHandle.m_file->m_fileName.c_str(), fileHandle.m_retryCnt);
 
+    if (FSBackupUtils::IsStuck(m_controlInfo)) {
+        ERRLOG("set backup to failed due to stucked!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+        return;
+    }
+
     if (fileHandle.m_retryCnt >= DEFAULT_ERROR_SINGLE_FILE_CNT ||
         taskPtr->IsCriticalError()) {
         FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);

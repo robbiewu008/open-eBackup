@@ -36,10 +36,10 @@ void StreamHostFilePendingMap::MarkHostWriteComplete(const std::string& filepath
     it->second.first = true;
 }
 
-void StreamHostFilePendingMap::MarkHostWriteFailed(const std::string& filepath)
+void StreamHostFilePendingMap::MarkHostFailed(const std::string& filepath)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
-    DBGLOG("MarkHostWriteFailed %s", filepath.c_str());
+    DBGLOG("MarkHostFailed %s", filepath.c_str());
     m_failedAdsHost.insert(filepath);
 }
 
@@ -77,7 +77,7 @@ void StreamHostFilePendingMap::DecStreamPending(const std::string& streampath)
     }
 }
 
-bool StreamHostFilePendingMap::IsHostWriteFailed(const std::string& streampath)
+bool StreamHostFilePendingMap::IsHostFailed(const std::string& streampath)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     std::string filepath = StreamPath2HostFilePath(streampath);

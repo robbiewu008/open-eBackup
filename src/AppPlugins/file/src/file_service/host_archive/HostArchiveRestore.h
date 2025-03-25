@@ -21,7 +21,9 @@
 #include "HostCommonService.h"
 #include "ArchiveClient.h"
 #include "ArchiveDownloadFile.h"
-
+#ifdef __linux__
+#include "OsRestore.h"
+#endif
 
 namespace FilePlugin {
 enum class ArchiveJobState {
@@ -54,6 +56,8 @@ private:
     bool SendJobReportForAliveness();
     // init
     bool InitJobInfo();
+    std::string RemoveShareName(const std::string& path);
+    void SetArchiveSourceInfo();
     bool InitRepoInfo();
     bool InitRestoreInfo();
     bool InitArchiveInfo();
@@ -96,9 +100,18 @@ private:
     void PrintBackupStatistics(const BackupStatistic &backupStatistic);
     bool ReportBackupRunningStatus();
     bool IsSkipHardlinkPhase(uint32_t subTaskType);
+    void FillCommonParams(CommonParams &commonParams);
 
     // post
     void ReportPostJob();
+    bool GetRestorePath();
+
+#ifdef __linux__
+    bool CheckBMRCompatible();
+    bool OSConfigRestore();
+    int RepairGrubAndRebootSystem();
+    int GenerateOsConfig();
+#endif
 
 private:
     // common info
@@ -115,6 +128,7 @@ private:
     // restore info
     std::string m_statsPath;
     std::vector<std::string> m_restorePathList;
+    std::string m_restorePath;
     std::vector<std::string> m_fineRestoreObj;
     std::string m_cacheMdPath;
     std::string m_volumePath;
@@ -131,10 +145,12 @@ private:
     std::string m_cacheFs;
     std::string m_cacheFsPath;
     std::string m_cacheFsRemotePath;
+    std::string m_parentDir;
     // archive info
     ArchiveServerInfo m_archiveServerInfo;
     std::string m_archiveFsId;
     // restore job context
+    BackupPhase m_backupPhase;
     std::string m_jobStartTime;
     ArchiveJobState m_jobState {ArchiveJobState::NONE};
     // gen
@@ -148,6 +164,13 @@ private:
     std::shared_ptr<ArchiveClient> m_archiveClient {nullptr}; // TO-DO 后续使用对象池存放多个归档客户端
 
     std::unique_ptr<FS_Backup::Backup> m_backup {nullptr};
+    // OsRestore
+    std::string m_sysInfoPath;
+    std::string m_lvmInfoPath;
+    bool m_isTapeRestore { false };
+#ifdef __linux__
+    std::unique_ptr<OsRestore> m_restoreTask {nullptr};
+#endif
 };
 }
 #endif // HOST_ARCHIVE_RESTORE_H

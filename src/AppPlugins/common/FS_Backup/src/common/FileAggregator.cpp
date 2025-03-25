@@ -58,6 +58,7 @@ namespace {
     const uint16_t MAX_BLOB_FILE_PER_SQLITE_TASK = 1;
     const uint16_t MAX_SQL_TASK_RUNNING = 10;
     constexpr auto MODULE = "FileAggregator";
+    const int RETRY_TIME_MILLISENCOND = 1000;
 }
 
 FileAggregator::FileAggregator(
@@ -79,29 +80,9 @@ FileAggregator::FileAggregator(
     m_idGenerator = make_shared<Snowflake>();
     m_idGenerator->SetMachine(Module::GetMachineId());
 
-    BackupType backupType = m_backupParams.backupType;
-    if (m_backupParams.commonParams.useSubJobSqlite && (m_backupParams.phase != BackupPhase::DELETE_STAGE) &&
-        ((backupType == BackupType::BACKUP_FULL) || (backupType == BackupType::BACKUP_INC))) {
-        std::string sqliteTmpPath = m_backupParams.commonParams.sqliteLocalPath;
-        std::string& subJobId = m_backupParams.commonParams.subJobId;
-        if (sqliteTmpPath != SQLITE_TMP_DIR && CheckSqliteDir(sqliteTmpPath)) {
-            m_sqliteDBRootPath = sqliteTmpPath + PATH_SEPERATOR + subJobId + PATH_SEPERATOR + SQLITE_DIR;
-            m_sqliteDBAliasPath = sqliteTmpPath + PATH_SEPERATOR + SQLITE_ALIAS_DIR + PATH_SEPERATOR + subJobId;
-        } else if (CheckSqliteDir(SQLITE_TMP_DIR)) {
-            DBGLOG("Used SQLITE_TMP_DIR");
-            sqliteTmpPath = SQLITE_TMP_DIR;
-            m_sqliteDBRootPath = sqliteTmpPath + PATH_SEPERATOR + subJobId + PATH_SEPERATOR + SQLITE_DIR;
-            m_sqliteDBAliasPath = sqliteTmpPath + PATH_SEPERATOR + SQLITE_ALIAS_DIR + PATH_SEPERATOR + subJobId;
-        } else {
-            m_sqliteDBRootPath = backupParams.commonParams.metaPath + PATH_SEPERATOR + SQLITE_DIR;
-            m_sqliteDBAliasPath = backupParams.commonParams.metaPath + PATH_SEPERATOR + SQLITE_ALIAS_DIR
-                + PATH_SEPERATOR + m_backupParams.commonParams.subJobId;
-        }
-    } else {
-        m_sqliteDBRootPath = backupParams.commonParams.metaPath + PATH_SEPERATOR + SQLITE_DIR;
-        m_sqliteDBAliasPath = backupParams.commonParams.metaPath + PATH_SEPERATOR + SQLITE_ALIAS_DIR
-            + PATH_SEPERATOR + m_backupParams.commonParams.subJobId;
-    }
+    m_sqliteDBRootPath = backupParams.commonParams.metaPath + PATH_SEPERATOR + SQLITE_DIR;
+    m_sqliteDBAliasPath = backupParams.commonParams.metaPath + PATH_SEPERATOR + SQLITE_ALIAS_DIR
+        + PATH_SEPERATOR + m_backupParams.commonParams.subJobId;
     m_sqliteDb = make_shared<SQLiteDB>(m_sqliteDBRootPath, m_sqliteDBAliasPath, m_idGenerator);
     m_maxFileSizeToAggregate = m_backupParams.commonParams.maxFileSizeToAggregate * KB_IN_BYTES;
     m_maxAggregateFileSize = m_backupParams.commonParams.maxAggregateFileSize * KB_IN_BYTES;
@@ -111,45 +92,6 @@ FileAggregator::FileAggregator(
         INFOLOG("This is a re-executed task, jobId: %s, subJobId: %s",
             m_backupParams.commonParams.jobId.c_str(), m_backupParams.commonParams.subJobId.c_str());
     }
-}
-
-bool FileAggregator::CheckSqliteDir(const std::string& path)
-{
-    uint64_t size;
-    uint64_t availSize;
-    if (!GetDirCapacity(path.c_str(), size, availSize)) {
-        ERRLOG("Failed GetDirCapacity");
-        return false;
-    }
-    DBGLOG("File system info: %llu %llu ", size, availSize);
-
-    float tmpSizeInG = static_cast<float>(availSize) / (1024.0f * 1024.0f * 1024.0f);
-    INFOLOG("Tmp dir size: %f GB", tmpSizeInG);
-    if (tmpSizeInG < 10.0f) {
-        return false;
-    }
-    m_isUsedLocalDir = true;
-
-    return true;
-}
-
-bool FileAggregator::GetDirCapacity(const char *pathName, uint64_t &capacity, uint64_t &free)
-{
-#ifndef __WINDOWS__
-    struct statvfs fsInfo;
-    int rv = statvfs(pathName, &fsInfo);
-    if (rv == 0) {
-        capacity = fsInfo.f_frsize * static_cast<uint64_t>(fsInfo.f_blocks);
-        free = fsInfo.f_frsize * static_cast<uint64_t>(fsInfo.f_bavail);
-        INFOLOG("capacity free : %llu %llu ", capacity, free);
-        return true;
-    } else {
-        int err = errno;
-        HCP_Log(ERR, MODULE) << "Get FS mount size [statvfs()] has errors, errno: " << strerror(err) << HCPENDLOG;
-        return false;
-    }
-#endif
-        return false;
 }
 
 FileAggregator::~FileAggregator()
@@ -212,23 +154,6 @@ bool FileAggregator::IsAbort() const
 
 void FileAggregator::HandleComplete()
 {
-    BackupType backupType = m_backupParams.backupType;
-    bool isBackup = ((backupType == BackupType::BACKUP_FULL) || (backupType == BackupType::BACKUP_INC));
-    if (m_backupParams.commonParams.useSubJobSqlite && isBackup && m_isUsedLocalDir) {
-        std::string cmd = "cp -r " + m_sqliteDBRootPath + " " + m_backupParams.commonParams.metaPath;
-        std::vector<std::string> output;
-        std::vector<std::string> errOutput;
-        INFOLOG("run cmd : %s", cmd.c_str());
-        int ret = Module::runShellCmdWithOutput(INFO, MODULE_NAME, 0, cmd, { }, output, errOutput);
-        if (ret != 0) {
-            ERRLOG("run failed, cmd : %s, set m_controlInfo->m_failed", cmd.c_str());
-            for (size_t i = 0; i < errOutput.size(); ++i) {
-                ERRLOG("%s", errOutput[i].c_str());
-            }
-            m_controlInfo->m_failed = true;
-        }
-        FSBackupUtils::RemoveDir(FSBackupUtils::GetParentDirV2(m_sqliteDBRootPath));
-    }
     FSBackupUtils::RemoveDir(m_sqliteDBAliasPath);
     INFOLOG("File aggregator complete, subJobId: %s", m_backupParams.commonParams.subJobId.c_str());
 }
@@ -437,7 +362,7 @@ void FileAggregator::CreateAggregateTask(std::shared_ptr<AggregateDirInfo> aggre
             m_writeQueue, m_blockBufferMap, m_controlInfo, m_sqliteDb, m_sqliteDBRootPath,
             m_idGenerator, m_sqliteTaskProduce, m_sqliteTaskConsume, m_blobFileList);
         DBGLOG("put aggregate task to js %s", aggregateDirInfo->m_dirName.c_str());
-        if (m_jsPtr->Put(task) == false) {
+        if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
             ERRLOG("put aggregate file task %s failed", aggregateDirInfo->m_dirName.c_str());
         } else {
             ++m_aggTaskProduce;
@@ -836,7 +761,7 @@ void FileAggregator::ProcessFile(FileHandle &fileHandle)
     } else if ((backupType == BackupType::RESTORE) || (backupType == BackupType::FILE_LEVEL_RESTORE))  {
         ProcessAggRestore(fileHandle);
     } else {
-        ERRLOG("Invalid type: %d", (int)backupType);
+        WARNLOG("Invalid type: %d", (int)backupType);
     }
 }
 
@@ -960,7 +885,7 @@ void FileAggregator::ProcessAggRestoreEmptyFile(FileHandle &fileHandle)
     ++m_controlInfo->m_emptyFiles;
     std::shared_ptr<AggregateDirInfo> aggregateDirInfo = m_aggregateDirMap.GetDirInfo(fileHandle.m_file->m_dirName);
     if (aggregateDirInfo == nullptr) {
-        ERRLOG("fileName %s, aggregateDirInfo is null", fileHandle.m_file->m_fileName.c_str());
+        WARNLOG("fileName %s, aggregateDirInfo is null", fileHandle.m_file->m_fileName.c_str());
     } else {
         aggregateDirInfo->m_readCompletedFilesCount++;
         CleanUpTheDirMap(aggregateDirInfo);
@@ -1079,7 +1004,7 @@ void FileAggregator::CreateUnAggregateTask(std::shared_ptr<AggregateNormalInfo> 
     params.isDeleteBlobFile = isAllFilesRcvd;
     auto task = make_shared<FileAggregateTask>(params);
     DBGLOG("put aggregate restore task to js for zip filename %s", zipFileName.c_str());
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put aggregate file task failed for zip file %s", zipFileName.c_str());
         return ;
     }
@@ -1721,7 +1646,7 @@ void FileAggregator::CreateTaskForSqliteIndex(std::shared_ptr<std::vector<FileHa
             fAttr.meta.emplace_back(mdata);
         }
         if (!Module::JsonHelper::StructToJsonString(fAttr, t_fileDesc.m_metaData)) {
-            ERRLOG("Save meta data failed for %s", fileHandle.m_file->m_obsKey.c_str());
+            WARNLOG("Save meta data failed for %s", fileHandle.m_file->m_obsKey.c_str());
         }
 #endif
         DBGLOG("smallFileDesc: %s", t_fileDesc.m_onlyFileName.c_str());

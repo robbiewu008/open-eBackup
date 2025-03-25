@@ -140,6 +140,8 @@ public:
     //Get string value of configuration item
     static std::string getString(const std::string & sectionName, const std::string & keyName,bool logFlag=true);
 
+    static std::string getStringFromAgentXml(const std::string & sectionName, const std::string & keyName);
+
     //Get management IP
     static std::string getManagementIP();
 
@@ -158,6 +160,9 @@ public:
 
     static std::string getLoadbalanceIP();
 
+    static void refresh(const std::vector<std::string>& confFileName);
+
+    static std::vector<std::string> getConfigFiles();
 
     static std::set<int> getOceanStorDiskArrayNotRetryErrorCode();
 

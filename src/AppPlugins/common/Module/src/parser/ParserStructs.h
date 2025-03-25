@@ -247,8 +247,14 @@ enum class XMETA_TYPE {
     /* 对象存储中的对象key */
     XMETA_TYPE_KEY = 9,
 
+    XMETA_TYPE_ADS_STREAM_NAME = 10,
+
+    XMETA_TYPE_ADS_METAFILE_INDEX = 11,
+
+    XMETA_TYPE_ADS_METAFILE_OFFSET = 12,
+
+    XMETA_TYPE_MAX_LENGTH = 13
     /* upper bound of XMETA_TYPE enum */
-    XMETA_TYPE_MAX_LENGTH = 10,
 };
 
 class XMetaField {
@@ -261,7 +267,7 @@ class FileMetaWrapper {
 public:
     FileMeta m_meta;
     std::vector<XMetaField> m_xMeta;
-
+    Hash m_filePathHash {0};
     FileMetaWrapper() {};
     ~FileMetaWrapper() {};
 };
@@ -269,31 +275,7 @@ public:
 struct CompareFileMetaWrapper {
     bool operator() (const FileMetaWrapper& fm1, const FileMetaWrapper& fm2) const
     {
-        std::string fmFileName1;
-        std::string fmFileName2;
-        for (uint32_t i = 0; i < fm1.m_xMeta.size(); i++) {
-            if (fm1.m_xMeta[i].m_xMetaType == XMETA_TYPE::XMETA_TYPE_NAME) {
-                fmFileName1 = fm1.m_xMeta[i].m_value;
-                break;
-            }
-        }
-        for (uint32_t i = 0; i < fm2.m_xMeta.size(); i++) {
-            if (fm2.m_xMeta[i].m_xMetaType == XMETA_TYPE::XMETA_TYPE_NAME) {
-                fmFileName2 = fm2.m_xMeta[i].m_value;
-                break;
-            }
-        }
-        unsigned char sha1[SHA_DIGEST_LENGTH + 1];
-        unsigned char sha2[SHA_DIGEST_LENGTH + 1];
-        // Get FilePath SHA-1 Hash Value
-        memset_s(sha1, SHA_DIGEST_LENGTH + 1, 0x0, SHA_DIGEST_LENGTH + 1);
-        SHA1((unsigned char *)(fmFileName1.c_str()), fmFileName1.length(), sha1);
-
-        // Get FilePath SHA-1 Hash Value
-        memset_s(sha2, SHA_DIGEST_LENGTH + 1, 0x0, SHA_DIGEST_LENGTH + 1);
-        SHA1((unsigned char *)(fmFileName2.c_str()), fmFileName2.length(), sha2);
-        
-        return (memcmp(sha1, sha2, SHA_DIGEST_LENGTH) > 0);
+        return (memcmp(fm1.m_filePathHash.sha1, fm2.m_filePathHash.sha1, SHA_DIGEST_LENGTH) > 0);
     }
 };
 
@@ -546,6 +528,25 @@ public:
         m_fileId = fcache->m_fileId;
     }
     ~FileCache() {};
+};
+
+class FileCacheRecord {
+public:
+    FileCache fcache;             // fcache记录
+    uint32_t fileIndex = 0;       // FileCache所在的文件句柄的索引
+};
+
+struct AdsStruct {
+    bool isLastStruct;              // 是否是最后一个块
+    uint32_t currentBlock;          // 当前是第几个块
+    uint32_t nextIndex;             // 下一个流在哪个ads文件中
+    uint32_t currentStreamLength;   // 当前streamData 的length
+    uint32_t numOfStreams;          // ads流的个数， 总数
+    uint32_t currentStreamIndex;    // 当前是第几个流 index / total
+    uint64_t currentStreamOffset;   // 当前streamData 的offset
+    uint64_t nextOffset;            // 下一个流的offset
+    unsigned char sha1[SHA_DIGEST_LENGTH + 1]; // 校验位
+    uint8_t* streamData = nullptr;  // 流的内容
 };
 
 struct HardlinkCtrlEntry {

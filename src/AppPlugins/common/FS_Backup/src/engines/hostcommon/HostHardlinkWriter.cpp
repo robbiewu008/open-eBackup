@@ -152,8 +152,9 @@ int HostHardlinkWriter::OpenFile(FileHandle& fileHandle)
     DBGLOG("Enter OpenFile: %s", fileHandle.m_file->m_fileName.c_str());
     std::shared_ptr<OsPlatformServiceTask> task = make_shared<OsPlatformServiceTask>(
         HostEvent::OPEN_DST, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put open file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -165,8 +166,9 @@ int HostHardlinkWriter::WriteMeta(FileHandle& fileHandle)
     DBGLOG("Enter WriteMeta: %s", fileHandle.m_file->m_fileName.c_str());
     std::shared_ptr<OsPlatformServiceTask> task = make_shared<OsPlatformServiceTask>(
         HostEvent::WRITE_META, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write meta file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -177,8 +179,9 @@ int HostHardlinkWriter::WriteData(FileHandle& fileHandle)
 {
     std::shared_ptr<OsPlatformServiceTask> task = make_shared<OsPlatformServiceTask>(
         HostEvent::WRITE_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write data file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -191,8 +194,9 @@ int HostHardlinkWriter::CloseFile(FileHandle& fileHandle)
 {
     std::shared_ptr<OsPlatformServiceTask> task = make_shared<OsPlatformServiceTask>(
         HostEvent::CLOSE_DST, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put close file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -206,8 +210,9 @@ int HostHardlinkWriter::LinkFile(FileHandle& fileHandle)
     DBGLOG("execute link file : %s", fileHandle.m_file->m_fileName.c_str());
     std::shared_ptr<OsPlatformServiceTask> task = make_shared<OsPlatformServiceTask>(
         HostEvent::LINK, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write link file task failed %s", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -246,6 +251,9 @@ int64_t HostHardlinkWriter::ProcessTimers()
     vector<FileHandle> fileHandles;
     int64_t delay = m_timer.GetExpiredEventAndTime(fileHandles);
     for (FileHandle& fileHandle : fileHandles) {
+        if (IsAbort()) {
+            return 0;
+        }
         DBGLOG("Process timer %s", fileHandle.m_file->m_fileName.c_str());
         ProcessWriteEntries(fileHandle);
     }
@@ -327,7 +335,7 @@ void HostHardlinkWriter::ProcessHardlinkMap()
         }
         int ret = m_hardlinkMap->GetTargetPath(fileHandles[i][0].m_file->m_inode, targetPath);
         if (ret != 0) {
-            ERRLOG("not found hardlink target path for inode : %d", fileHandles[i][0].m_file->m_inode);
+            WARNLOG("not found hardlink target path for inode : %d", fileHandles[i][0].m_file->m_inode);
             continue;
         }
         targetPath = FSBackupUtils::PathConcat(m_params.dstRootPath, targetPath);
@@ -346,7 +354,7 @@ void HostHardlinkWriter::ProcessHardlinkMap()
         }
         for (size_t j = 0; j < fileHandles[i].size(); ++j) {
             if (!fileHandles[i][j].m_file) {
-                ERRLOG("fileHandle ptr is null");
+                WARNLOG("fileHandle ptr is null");
                 continue;
             }
             DBGLOG("Process hardlink file : %d, %s", j, fileHandles[i][j].m_file->m_fileName.c_str());
@@ -414,6 +422,13 @@ void HostHardlinkWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> tas
     ERRLOG("host hardlink writer failed %s event %d state %d retry cnt %d",
         fileHandle.m_file->m_fileName.c_str(), static_cast<int>(event), state, fileHandle.m_retryCnt);
     
+    if (FSBackupUtils::IsStuck(m_controlInfo)) {
+        ERRLOG("set backup to failed due to stucked!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+        return;
+    }
+
     if (state != FileDescState::WRITE_FAILED &&  /* If state is WRITE_FAILED, needn't retry */
         state != FileDescState::LINK && /* don't allow retry for link task, (cannot retry in ProcessWriteEntries) */
         fileHandle.m_retryCnt < DEFAULT_ERROR_SINGLE_FILE_CNT && !taskPtr->IsCriticalError()) {

@@ -161,7 +161,7 @@ void HandleWriteFailure(NfsWriteCbData *cbData, FileHandle &fileHandle, int stat
         commonData->pktStats->Increment(PKT_TYPE::WRITE, PKT_COUNTER::FAILED, 1, PKT_ERROR::RETRIABLE_ERR);
         fileHandle.m_retryCnt++;
         if (fileHandle.m_retryCnt > DEFAULT_MAX_READ_RETRY) {
-            ERRLOG("WriteReq failed for: %s, Offset: %lu, retryCnt: %d ERR: %s, status: %d",
+            WARNLOG("WriteReq failed for: %s, Offset: %lu, retryCnt: %d ERR: %s, status: %d",
                 fileHandle.m_file->m_fileName.c_str(), fileHandle.m_block.m_offset,
                 fileHandle.m_retryCnt, nfs_get_error(nfs), status);
         } else {
@@ -243,7 +243,7 @@ void SendFileSyncCb(int status, struct nfs_context *nfs, void *data, void *priva
     }
 
     if (status < MP_SUCCESS) {
-        ERRLOG("Fsync req failed for: %s, Status: %d ERR: %s", fileHandle.m_file->m_fileName.c_str(), status,
+        WARNLOG("Fsync req failed for: %s, Status: %d ERR: %s", fileHandle.m_file->m_fileName.c_str(), status,
             nfs_get_error(nfs));
     }
 }

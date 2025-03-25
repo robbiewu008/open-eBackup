@@ -442,13 +442,13 @@ namespace Module {
     int NetAppNas::ValidateDeleteVolumeResponse(Json::Value &data, std::string volumeName)
     {
         int iRet;
-        for (Json::Value::ArrayIndex i = 0; i != data["jobs"].size(); i++) {
-            if (!data["jobs"][i].isMember("uuid") || data["jobs"][i]["uuid"].empty()) {
-                HCP_Log(DEBUG, NETAPP_MODULE) << "response data format does not"
-                    "have uuid or it is empty" << data["jobs"][i] << HCPENDLOG;
-                continue;
-            }
-            if (!data["jobs"][i]["uuid"].empty()) {
+        if (data.isMember("jobs") && data["jobs"].isArray()) {
+            for (Json::Value::ArrayIndex i = 0; i != data["jobs"].size(); i++) {
+                if (!data["jobs"][i].isMember("uuid") || data["jobs"][i]["uuid"].empty()) {
+                    HCP_Log(DEBUG, NETAPP_MODULE) << "response data format does not"
+                        "have uuid or it is empty" << data["jobs"][i] << HCPENDLOG;
+                    continue;
+                }
                 iRet = CheckJobStatus(data["jobs"][i]["uuid"].asString(), "DeleteVolume");
                 if (iRet != SUCCESS) {
                     return FAILED;
@@ -458,6 +458,15 @@ namespace Module {
                     return SUCCESS;
                 }
             }
+        } else if (!data["job"]["uuid"].empty()) {
+            iRet = CheckJobStatus(data["job"]["uuid"].asString(), "DeleteVolume");
+            if (iRet != SUCCESS) {
+                return FAILED;
+            } else {
+                HCP_Log(INFO, NETAPP_MODULE) << "Delete Volume: "
+                    << volumeName << " success" << HCPENDLOG;
+                return SUCCESS;
+            }
         }
         HCP_Log(ERR, NETAPP_MODULE) << "Couldn't delete Vol: "<<volumeName<<HCPENDLOG;
         return FAILED;
@@ -466,11 +475,11 @@ namespace Module {
     int NetAppNas::DeleteVolumeCheck(const int& iRet, Json::Value& data, const std::string& volumeName)
     {
         if (iRet == SUCCESS || iRet == HTTP_202) {
-            if (data.size() > 0 && data.isMember("jobs") && data["jobs"].isArray()) {
+            if (data.size() > 0 && (data.isMember("job") || (data.isMember("jobs") && data["jobs"].isArray()))) {
                 return ValidateDeleteVolumeResponse(data, volumeName);
             } else {
-                if (!data.isMember("jobs") || !data["jobs"].isArray()) {
-                    HCP_Log(ERR, NETAPP_MODULE) << "response does not have jobs field"
+                if (!data.isMember("job") || (!data.isMember("jobs") || !data["jobs"].isArray())) {
+                    HCP_Log(ERR, NETAPP_MODULE) << "response does not have job field"
                         "or it is not an array" << HCPENDLOG;
                 }
                 if (data.isMember("num_records") && data["num_records"].asInt() == 0) {
@@ -526,7 +535,7 @@ namespace Module {
                 (data["records"][i]["svm"].isMember("name") && !data["records"][i]["svm"]["name"].empty()) &&
                 data["records"][i]["svm"]["name"].asString() == m_vserverName &&
                 data["records"][i]["svm"]["uuid"].asString() == m_vserverUuid) {
-                HCP_Log(INFO, NETAPP_MODULE) << "++++++volumeName: " << volumeName
+                HCP_Log(INFO, NETAPP_MODULE) << "volumeName: " << volumeName
                     << " exists, volumeUuid: " << data["records"][i]["uuid"].asString() << HCPENDLOG;
                 errorCode = NUMB_ZERO;
                 return SUCCESS;
@@ -1123,6 +1132,43 @@ namespace Module {
         }
     }
 
+    int NetAppNas::ValidateQueryVolumeResponse(Json::Value &data, const std::string &volName)
+    {
+        HCP_Log(ERR, NETAPP_MODULE) << "Enter validate" << HCPENDLOG;
+        for (Json::Value::ArrayIndex i = 0; i != data["records"].size(); i++) {
+            if (!ValidateQueryVolumeResponseDataCheck(data, i)) {
+                continue;
+            }
+            if (data["records"][i]["name"].asString() == volName &&
+                data["records"][i]["svm"]["name"].asString() == m_vserverName &&
+                data["records"][i]["svm"]["uuid"].asString() == m_vserverUuid) {
+                m_volumeUuid = data["records"][i]["uuid"].asString();
+                m_volumeName = data["records"][i]["name"].asString();
+
+                HCP_Log(INFO, NETAPP_MODULE) << "volName: " << m_volumeName << " volUuid: " << m_volumeUuid << HCPENDLOG;
+                return SUCCESS;
+            }
+        }
+        m_volumeUuid = "";
+        m_volumeName = "";
+        HCP_Log(ERR, NETAPP_MODULE)<<"No volume found for: "<< volName << HCPENDLOG;
+        return FAILED;
+    }
+
+    bool NetAppNas::ValidateQueryVolumeResponseDataCheck(Json::Value &data, const Json::Value::ArrayIndex &i)
+    {
+        if (!data["records"][i].isMember("name") || !data["records"][i].isMember("uuid") ||
+            data["records"][i]["name"].empty() || data["records"][i]["uuid"].empty() ||
+            !data["records"][i].isMember("svm") ||
+            !data["records"][i]["svm"].isMember("name") || data["records"][i]["svm"]["name"].empty() ||
+            !data["records"][i]["svm"].isMember("uuid") || data["records"][i]["svm"]["uuid"].empty()) {
+            HCP_Log(DEBUG, NETAPP_MODULE) << "response data format not proper: "
+                << data["records"][i] << HCPENDLOG;
+            return false;
+        }
+        return true;
+    }
+
     int NetAppNas::ValidateJobStatusResponse(Json::Value &data, std::string jobUuid, std::string &status)
     {
         if (data.size() > 0 && data.isMember("uuid") && data.isMember("state") &&
@@ -1159,10 +1205,7 @@ namespace Module {
 
     int NetAppNas::CheckJobStatus(std::string jobUuid, std::string jobName)
     {
-        int retryNum = 0;
-        int retryTimes = 4;
         int ret = SUCCESS;
-
         HttpRequest req;
         req.method = "GET";
         req.url = "/api/cluster/jobs/" + jobUuid;
@@ -1170,8 +1213,8 @@ namespace Module {
         int errorCode;
         Json::Value data;
         std::string jobStatus;
-        HCP_Log(INFO, NETAPP_MODULE) << "Checking Job status for: " <<jobName<<HCPENDLOG;
-        while (retryNum < retryTimes) {
+        HCP_Log(INFO, NETAPP_MODULE) << "Checking Job status for: " << jobName << HCPENDLOG;
+        while (true) {
             ret = SendRequestOnce(req, data, errorDes, errorCode);
             if (ret == SUCCESS || ret == HTTP_202) {
                 jobStatus = "";
@@ -1181,13 +1224,11 @@ namespace Module {
                     break;
                 } else if (jobStatus == JOB_RUNNING || jobStatus == JOB_QUEUED) {
                     DelayTimeSendRequest(jobName);
-                    retryNum++;
                     continue;
                 } else if (jobStatus == JOB_FAILURE) {
                     ret = FAILED;
                     break;
                 } else if (jobStatus == JOB_RETRY) {
-                    retryNum++;
                     continue;
                 } else if (jobStatus == JOB_INVALID) {
                     ret = FAILED;
@@ -1201,11 +1242,7 @@ namespace Module {
                 break;
             }
         }
-        if (ret == SUCCESS) {
-            return SUCCESS;
-        } else {
-            return FAILED;
-        }
+        return ret;
     }
 
     void NetAppNas::AssignDeviceInfo(ControlDeviceInfo &deviceInfo, std::string deviceName)

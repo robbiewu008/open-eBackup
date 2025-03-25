@@ -22,7 +22,8 @@ enum class MessageType : std::uint8_t {
     AUTHORIZATION,
     FUSE,
     ERROR,
-    FILE_ADMIN
+    FILE_ADMIN,
+    OSAD_ADMIN
 };
 
 enum class ProtocolVersion : std::uint8_t {

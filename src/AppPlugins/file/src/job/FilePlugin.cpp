@@ -18,6 +18,13 @@
 #include "utils/PluginUtilities.h"
 #include "config_reader/ConfigIniReader.h"
 #include "host_backup/HostBackup.h"
+#include "ChannelManager.h"
+#ifdef __linux__
+#include "volume_backup/LinuxVolumeBackup.h"
+#endif
+#ifdef WIN32
+#include "volume_backup/WinVolumeBackup.h"
+#endif
 
 using namespace std;
 using namespace AppProtect;
@@ -26,7 +33,10 @@ using namespace FilePlugin;
 
 namespace {
 const std::string FILESET_STR = "Fileset";
+const std::string VOLUME_STR = "Volume";
 static const std::string GENERALDN_LOG_NAME = "AppPlugins.log";
+static const int RET_BUSY = 101;
+static const int TASK_FAILED_NO_REPORT = -15;
 /* agent安装目录的相对路径，使用时需要在前面加上agent的安装目录 */
 #ifdef WIN32
 const std::string DEFAULT_GENERAL_LOG_PATH = "/DataBackup/ProtectClient/ProtectClient-E/slog/FilePlugin";
@@ -66,6 +76,7 @@ const int SNAP_WAIT_TIME_MAX = 60000;
 const int SNAP_WAIT_TIME_DEFAULT = 30;
 const std::string LVM_SNAPSHOT_CAPACITY_PERCENT_DEFAULT = "5";
 const std::string KEEP_RFI_IN_CACHE_REPO_DEFAULT = "0";
+const std::string DEFAULT_CHANNEL_NUM = "10";
 const uint64_t MIN_SCAN_META_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const uint64_t MAX_SCAN_META_FILE_SIZE = 10 * 1024 * 1024 * 1024; // 10GB
 const uint64_t DEFAULT_SCAN_META_FILE_SIZE = 100 * 1024 * 1024; // 100MB
@@ -94,12 +105,12 @@ void InitConfigInfoForFilePlugin1()
         MIN_CTRLENTRIES_MIN_SIZE, MAX_CTRLENTRIES_MIN_SIZE, DEFAULT_CTRLENTRIES_MIN_SIZE);
 
     ConfigReader::setIntConfigInfo(
-        FILE_PLUGIN_CONFIG_KEY, "PosixReaderThreadNum", MIN_THREAD_NUM, MAX_THREAD_NUM, DEFAULT_THREAD_NUM);
+        FILE_PLUGIN_CONFIG_KEY, "HostReaderThreadNum", MIN_THREAD_NUM, MAX_THREAD_NUM, DEFAULT_THREAD_NUM);
     ConfigReader::setIntConfigInfo(
-        FILE_PLUGIN_CONFIG_KEY, "PosixWriterThreadNum", MIN_THREAD_NUM, MAX_THREAD_NUM, DEFAULT_THREAD_NUM);
+        FILE_PLUGIN_CONFIG_KEY, "HostWriterThreadNum", MIN_THREAD_NUM, MAX_THREAD_NUM, DEFAULT_THREAD_NUM);
     ConfigReader::setIntConfigInfo(
-        FILE_PLUGIN_CONFIG_KEY, "PosixAggregatorThreadNum", MIN_THREAD_NUM, MAX_THREAD_NUM, DEFAULT_THREAD_NUM);
-    ConfigReader::setIntConfigInfo(FILE_PLUGIN_CONFIG_KEY, "PosixMaxMemory", MIN_MEMORY, MAX_MEMORY, DEFAULT_MEMORY);
+        FILE_PLUGIN_CONFIG_KEY, "HostAggregatorThreadNum", MIN_THREAD_NUM, MAX_THREAD_NUM, DEFAULT_THREAD_NUM);
+    ConfigReader::setIntConfigInfo(FILE_PLUGIN_CONFIG_KEY, "HostMaxMemory", MIN_MEMORY, MAX_MEMORY, DEFAULT_MEMORY);
 
     ConfigReader::setIntConfigInfo(FILE_PLUGIN_CONFIG_KEY, "ScanWriteQueueSize",
         1, MAX_SCAN_WRITE_QUEUE_SIZE, DEFAULT_SCAN_WRITE_QUEUE_SIZE);
@@ -131,6 +142,8 @@ void InitConfigInfoForFilePlugin2()
         FILE_PLUGIN_CONFIG_KEY, "AIXSnapshotParentPath", AIX_SNAPSHOT_PARENT_PATH_DEFAULT);
     ConfigReader::setStringConfigInfo(
         FILE_PLUGIN_CONFIG_KEY, "SOLARISSnapshotParentPath", SOLARIS_SNAPSHOT_PARENT_PATH_DEFAULT);
+    ConfigReader::setStringConfigInfo(
+        FILE_PLUGIN_CONFIG_KEY, "ChannelNumber", DEFAULT_CHANNEL_NUM);
 
     ConfigReader::setIntConfigInfo(FILE_PLUGIN_CONFIG_KEY, "BACKUP_STUCK_TIME",
         BACKUP_STUCK_TIME_MIN, BACKUP_STUCK_TIME_MAX, BACKUP_STUCK_TIME_DEFAULT);
@@ -168,6 +181,7 @@ FILEPLUGIN_API int AppInit(std::string &logPath)
 
     InitConfigInfoForFilePlugin1();
     InitConfigInfoForFilePlugin2();
+    Module::ConfigReader::refresh(Module::ConfigReader::getConfigFiles());
     HCP_Log(INFO, "AppInit") << "App init success." << HCPENDLOG;
     return Module::SUCCESS;
 }
@@ -225,7 +239,19 @@ FILEPLUGIN_API void CheckBackupJobType(ActionResult& returnValue, const AppProte
     int ret = Module::SUCCESS;
     auto jobCommonInfoPtr = make_shared<JobCommonInfo>(make_shared<BackupJob>(job));
     std::string appType = job.protectObject.subType;
-    if (appType == FILESET_STR) {
+    if (appType == VOLUME_STR) {
+#ifdef __linux__
+        auto jobptr = std::make_shared<LinuxVolumeBackup>();
+        jobptr->SetJobInfo(jobCommonInfoPtr);
+        ret = jobptr->CheckBackupJobType();
+#elif defined(WIN32)
+        auto jobptr = std::make_shared<WinVolumeBackup>();
+        jobptr->SetJobInfo(jobCommonInfoPtr);
+        ret = jobptr->CheckBackupJobType();
+#else
+    ERRLOG("Volume backup is not implemented on this platform");
+#endif
+    } else if (appType == FILESET_STR) {
         auto jobptr = std::make_shared<HostBackup>();
         jobptr->SetJobInfo(jobCommonInfoPtr);
         ret = jobptr->CheckBackupJobType();
@@ -249,11 +275,45 @@ FILEPLUGIN_API void AllowBackupInLocalNode(ActionResult& returnValue, const AppP
     return ;
 }
 
+string GetBackupChannelNum(const AppProtect::BackupJob& job)
+{
+    ProtectedFileset m_fileset {};
+    if (!Module::JsonHelper::JsonStringToStruct(job.extendInfo, m_fileset.m_advParms)) {
+        WARNLOG("JsonStringToStruct failed, m_advParms");
+        m_fileset.m_advParms.m_channels = DEFAULT_CHANNEL_NUM;
+    }
+    if (m_fileset.m_advParms.m_channels.empty()) {
+        m_fileset.m_advParms.m_channels = DEFAULT_CHANNEL_NUM;
+        WARNLOG("channel num is empty, set to default");
+    }
+    return m_fileset.m_advParms.m_channels;
+}
+
 FILEPLUGIN_API void AllowBackupSubJobInLocalNode(
     ActionResult& returnValue, const AppProtect::BackupJob& job, const AppProtect::SubJob& subJob)
 {
     HCP_Log(INFO, MODULE) << "Enter file plugin AllowBackupSubJobInLocalNode." << HCPENDLOG;
-    returnValue.__set_code(0);
+    string numOfChannels = GetBackupChannelNum(job);
+    if (ChannelManager::getInstance().addSubJob(job.jobId, subJob.subJobId, numOfChannels)) {
+        int numInMap = ChannelManager::getInstance().getSubJobCount(job.jobId);
+        INFOLOG("Channel limit num: %s,current size: %d,jobId: %s,subJobId: %s",
+                numOfChannels.c_str(),
+                numInMap,
+                job.jobId.c_str(),
+                subJob.subJobId.c_str());
+        returnValue.__set_code(0);
+        return;
+    } else {
+        int numInMap = ChannelManager::getInstance().getSubJobCount(job.jobId);
+        WARNLOG("channel num is reached max number: %s,current size: %d,jobId: %s,subJobId: %s",
+                numOfChannels.c_str(),
+                numInMap,
+                job.jobId.c_str(),
+                subJob.subJobId.c_str());
+        returnValue.__set_bodyErr(TASK_FAILED_NO_REPORT);// set body err to let agent not to report auth failed.
+        returnValue.__set_code(RET_BUSY);
+    }
+
     return ;
 }
 
@@ -264,11 +324,45 @@ FILEPLUGIN_API void AllowRestoreInLocalNode(ActionResult& returnValue, const App
     return ;
 }
 
+string GetRestoreChannelNum(const AppProtect::RestoreJob& job)
+{
+    ProtectedFileset m_fileset {};
+    if (!Module::JsonHelper::JsonStringToStruct(job.extendInfo, m_fileset.m_advParms)) {
+        WARNLOG("JsonStringToStruct failed, m_advParms");
+        m_fileset.m_advParms.m_channels = DEFAULT_CHANNEL_NUM;
+    }
+    if (m_fileset.m_advParms.m_channels.empty()) {
+        m_fileset.m_advParms.m_channels = DEFAULT_CHANNEL_NUM;
+        WARNLOG("channel num is empty, set to default");
+    }
+    return m_fileset.m_advParms.m_channels;
+}
+
 FILEPLUGIN_API void AllowRestoreSubJobInLocalNode(
     ActionResult& returnValue, const AppProtect::RestoreJob& job, const AppProtect::SubJob& subJob)
 {
     HCP_Log(INFO, MODULE) << "Enter file plugin AllowRestoreSubJobInLocalNode." << HCPENDLOG;
-    returnValue.__set_code(0);
+    string numOfChannels = GetRestoreChannelNum(job);
+    if (ChannelManager::getInstance().addSubJob(job.jobId, subJob.subJobId, numOfChannels)) {
+        int numInMap = ChannelManager::getInstance().getSubJobCount(job.jobId);
+        INFOLOG("Channel limit num: %s,current size: %d,jobId: %s,subJobId: %s",
+                numOfChannels.c_str(),
+                numInMap,
+                job.jobId.c_str(),
+                subJob.subJobId.c_str());
+        returnValue.__set_code(0);
+        return;
+    } else {
+        int numInMap = ChannelManager::getInstance().getSubJobCount(job.jobId);
+        WARNLOG("channel num is reached max number: %s,current size: %d,jobId: %s,subJobId: %s",
+                numOfChannels.c_str(),
+                numInMap,
+                job.jobId.c_str(),
+                subJob.subJobId.c_str());
+        ChannelManager::getInstance().printSubJobs(job.jobId);
+        returnValue.__set_bodyErr(TASK_FAILED_NO_REPORT);// set body err to let agent not to report auth failed.
+        returnValue.__set_code(RET_BUSY);
+    }
     return ;
 }
 

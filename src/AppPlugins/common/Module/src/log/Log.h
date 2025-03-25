@@ -141,24 +141,25 @@ namespace Sensitive {
         "[Pp][Ww][Dd]", "[Kk][Ee][Yy]", "[Cc][Rr][Yy][Pp][Tt][Oo]", "[Ss][Ee][Ss][Ss][Ii][Oo][Nn]",
         "[Tt][Oo][Kk][Ee][Nn]", "[Ff][Ii][Nn][Gg][Ee][Rr][Pp][Rr][Ii][Nn][Tt]", "[Aa][Uu][Tt][Hh]",
         "[Ee][Nn][Cc]", "[Dd][Ee][Cc]", "[Tt][Gg][Tt]", "[Ii][Qq][Nn]", "[Ii][Nn][Ii][Tt][Ii][Aa][Tt][Oo][Rr]",
-        "[Ss][Ee][Cc][Rr][Ee][Tt]", "[Cc][Ee][Rr][Tt]", "^[Ss][Kk]$", "^[Ii][Vv]$", "[Ss][Aa][Ll][Tt]", "^[Mm][Kk]$",
+        "[Ss][Ee][Cc][Rr][Ee][Tt]", "[Cc][Ee][Rr][Tt]", "[Ss][Kk]", "^[Ii][Vv]$", "[Ss][Aa][Ll][Tt]", "^[Mm][Kk]$",
         "[Pp][Rr][Ii][Vv][Aa][Tt][Ee]", "[Uu][Ss][Ee][Rr][_][Ii][Nn][Ff][Oo]", "[Ee][Mm][Aa][Ii][Ll]",
         "[Pp][Hh][Oo][Nn][Ee]", "[Rr][Aa][Nn][Dd]", "[Vv][Ee][Rr][Ff][Ii][Yy][Cc][Oo][Dd][Ee]" };
-
     const int FuzzSize = sizeof(FuzzPattern) / sizeof(FuzzPattern[0]);
-
-    inline std::string WipeSensitive(const std::string& name, const std::string& value)
-    {
-        for (std::size_t i = 0; i < FuzzSize; ++i) {
-            if (Match(FuzzPattern[i], name)) {
-                return "*";
-            }
-            if (Match(FuzzPattern[i], value)) {
-                return "*";
-            }
-        }
-        return value;
-    }
+    const std::string RegexPattern[25] = { "[Pp][Aa][Ss][Ss].*",
+        "[Pp][Ww][Dd].*", "[Kk][Ee][Yy].*", "[Cc][Rr][Yy][Pp][Tt][Oo].*", "[Ss][Ee][Ss][Ss][Ii][Oo][Nn].*",
+        "[Tt][Oo][Kk][Ee][Nn].*", "[Ff][Ii][Nn][Gg][Ee][Rr][Pp][Rr][Ii][Nn][Tt].*", "[Aa][Uu][Tt][Hh].*",
+        "[Ee][Nn][Cc].*", "[Dd][Ee][Cc].*", "[Tt][Gg][Tt].*", "[Ii][Qq][Nn].*",
+        "[Ii][Nn][Ii][Tt][Ii][Aa][Tt][Oo][Rr].*", "[Ss][Ee][Cc][Rr][Ee][Tt].*", "[Cc][Ee][Rr][Tt].*",
+        "[Ss][Kk].*", "^[Ii][Vv]$.*", "[Ss][Aa][Ll][Tt].*", "^[Mm][Kk]$.*",
+        "[Pp][Rr][Ii][Vv][Aa][Tt][Ee].*", "[Uu][Ss][Ee][Rr][_][Ii][Nn][Ff][Oo].*", "[Ee][Mm][Aa][Ii][Ll].*",
+        "[Pp][Hh][Oo][Nn][Ee].*", "[Rr][Aa][Nn][Dd].*", "[Vv][Ee][Rr][Ff][Ii][Yy][Cc][Oo][Dd][Ee].*" };
+    const std::string RepalcePattern[25] = { "pass: ******",
+        "pwd: ******", "key: ******", "crypto: ******", "session: ******",
+        "token: ******", "fingerprint: ******", "auth: ******",
+        "enc: ******", "dec: ******", "tgt: ******", "iqn: ******", "initiator: ******",
+        "secret: ******", "cert: ******", "sk: ******", "iv: ******", "salt: ******", "mk: ******",
+        "private: ******", "user_info: ******", "email: ******",
+        "phone: ******", "rand: ******", "verfiycode: ******" };
 
     inline bool ISensitive(const std::string& name, const std::string& value)
     {
@@ -171,6 +172,35 @@ namespace Sensitive {
             }
         }
         return false;
+    }
+
+    inline std::string WipeSlash(const std::string& value)
+    {
+        std::string tmpStr = value;
+        std::string::iterator newEnd = std::remove(tmpStr.begin(), tmpStr.end(), '\\');
+        tmpStr.erase(newEnd, tmpStr.end());
+        return tmpStr;
+    }
+
+    inline std::string WipeLong(const std::string& value)
+    {
+        if (value.size()>=UNIT_K)
+            return "*";
+        return value;
+    }
+
+    inline std::string WipeSensitive(const std::string& name, const std::string& value)
+    {
+        std::string tmpStr = WipeLong(value);
+        if ((ISensitive(name, value)) && (tmpStr != "*")) {
+            tmpStr = WipeSlash(value);
+            for (std::size_t i = 0; i < FuzzSize; ++i) {
+                std::regex reg(RegexPattern[i]);
+                tmpStr = std::regex_replace(tmpStr, reg, RepalcePattern[i]);
+            }
+            return (tmpStr == value) ? std::string("******") : tmpStr;
+        }
+        return tmpStr;
     }
 }
 
@@ -192,7 +222,7 @@ template<typename T>
 inline std::string Trans2KV(const char * varName, const T & var)
 {
     std::ostringstream oss;
-    oss << varName << ": " << var;
+    oss << varName << ":" << var;
     return oss.str();
 }
 

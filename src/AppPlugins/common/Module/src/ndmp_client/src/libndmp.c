@@ -1097,20 +1097,19 @@ int shutdown_connection()
 {
     int rc = 0;
     // flush ndmp messages on both connections
-
+    (void) pthread_mutex_lock(&g_connectionMutex);
     if (NULL != g_srcConnection) {
         if (check_connect_socket(g_srcConnection)) {
             DBGLOG("Backup:pass ndmpPoll.");
             rc = ndmpSendRequest(g_srcConnection, NDMP_CONNECT_CLOSE, NDMP_NO_ERR, NULL, NULL);
             if (rc != 0) {
-                ERRLOG("Error closing src connection.");
+                WARNLOG("Error closing src connection.");
             } else {
                 ndmpFreeMessage(g_srcConnection);
             }
         }
-        ndmpDestroyConnection(g_srcConnection);
     }
-
+    (void) pthread_mutex_unlock(&g_connectionMutex);
     return 0;
 }
 
@@ -1149,6 +1148,10 @@ void* get_backup_stat(void* arg)
             ndmp_get_connect_stat(&g_srcConnection, true);
         }
     }
+    (void) pthread_mutex_lock(&g_connectionMutex);
+    ndmpDestroyConnection(g_srcConnection);
+    g_srcConnection = NULL;
+    (void) pthread_mutex_unlock(&g_connectionMutex);
     INFOLOG("exit get stat cycle");
     return NULL;
 }
@@ -1239,26 +1242,40 @@ int NdmpWriteTmpFhAddDirFile(NdmpGetFhAddDir *dirs)
         ERRLOG("Open file failed!");
         return -1;
     }
- 
+    char *escaped = (char *)malloc(NDMP_CACHE_NODE_DEFAULE_INFO_LINE_SIZE);
+    if (!escaped) {
+        ERRLOG("escaped malloc failed!");
+        return -1;
+    }
     for (int i = 0; i < dirs->dir_len; i++) {
+        unsigned int newLen = dirs->dirs[i].pathLen;
+        unsigned int k = 0;
+        for (unsigned int j = 0; j < dirs->dirs[i].pathLen; j++) {
+            char ch = dirs->dirs[i].path[j];
+            if (ch == '"' || ch == '\\') {
+                escaped[k++] = '\\';
+                newLen++;
+            }
+            escaped[k++] = ch;
+        }
+        escaped[k] = '\0';  // 确保字符串结束
         bzero(input, NDMP_CACHE_NODE_DEFAULE_INFO_LINE_SIZE);
         rc = sprintf_s(input, NDMP_CACHE_NODE_DEFAULE_INFO_LINE_SIZE,
             "{\"nodeId\": \"%lld\", \"parentId\": \"%lld\", \"nameLen\": \"%u\", \"name\": \"%s\"}\n",
-            dirs->dirs[i].node, dirs->dirs[i].parent, dirs->dirs[i].pathLen, dirs->dirs[i].path);
+            dirs->dirs[i].node, dirs->dirs[i].parent, newLen, escaped);
         if (rc == -1) {
             ERRLOG("format input failed!");
             break;
         }
-
         memcpy_s(aggr + offset, strlen(input), input, strlen(input));
         offset += strlen(input);
     }
-
+    free(escaped);
+    escaped = NULL;
     if (fputs(aggr, cacheFile) < 0) {
         rc = -1;
         ERRLOG("input line failed!");
     }
- 
     fclose(cacheFile);
     return rc < 0 ? rc : 0;
 }

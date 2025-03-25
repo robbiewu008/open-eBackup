@@ -56,6 +56,7 @@ private:
     void PushToReader(FileHandle& fileHandle);
     void HandleSuccessEvent(std::shared_ptr<ObjectServiceTask> taskPtr);
     void HandleFailedEvent(std::shared_ptr<ObjectServiceTask> taskPtr);
+    bool HandleFailedEventInner(FileHandle& fileHandle, std::shared_ptr<ObjectServiceTask>& taskPtr);
 
     std::thread m_thread;
     std::thread m_pollThread;

@@ -26,6 +26,7 @@ enum class HostEvent {
     READ_META,
     WRITE_DATA,
     WRITE_META,
+    WRITE_SUB_STREAM,
     CLOSE_SRC,
     CLOSE_DST,
     LINK,
@@ -48,10 +49,12 @@ struct HostParams {
     std::string     linkTarget;
     std::string     srcTrimPrefix;
     std::string     dstTrimPrefix;
+    std::string     metaPath;
 
     BackupType           backupType { BackupType::UNKNOWN_TYPE };
     BackupDataFormat     backupDataFormat { BackupDataFormat::UNKNOWN_FORMAT };
     RestoreReplacePolicy restoreReplacePolicy { RestoreReplacePolicy::NONE };
+    AdsProcessType       adsProcessType { AdsProcessType::ADS_PROCESS_TYPE_FROM_SCANNER };
 };
 
 class HostServiceTask : public Module::ExecutableItem {
@@ -91,6 +94,10 @@ protected:
     virtual void HandleCloseDst() = 0;
     virtual void HandleDelete() = 0;
     virtual void HandleCreateDir() = 0;
+    virtual void HandleWriteSubStreams()
+    {
+        return;
+    }
 };
 
 #endif // HOST_SERVICE_TASK_H

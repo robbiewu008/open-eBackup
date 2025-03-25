@@ -150,8 +150,9 @@ int ArchiveHardlinkReader::OpenFile(FileHandle& fileHandle)
     DBGLOG("Enter OpenFile: %s", fileHandle.m_file->m_fileName.c_str());
     auto openTask = make_shared<ArchiveServiceTask>(
         ArchiveEvent::OPEN_SRC, m_blockBufferMap, fileHandle, m_params, m_archiveClient);
-    if (!(m_jsPtr->Put(openTask))) {
+    if (!(m_jsPtr->Put(openTask, true, TIME_LIMIT_OF_PUT_TASK))) {
         ERRLOG("put open file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_readTaskProduce;
@@ -170,8 +171,9 @@ int ArchiveHardlinkReader::CloseFile(FileHandle& fileHandle)
     DBGLOG("Enter CloseFile: %s", fileHandle.m_file->m_fileName.c_str());
     auto task = make_shared<ArchiveServiceTask>(
         ArchiveEvent::CLOSE_SRC, m_blockBufferMap, fileHandle, m_params, m_archiveClient);
-    if (!m_jsPtr->Put(task)) {
+    if (!m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK)) {
         ERRLOG("put close file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_readTaskProduce;
@@ -215,9 +217,10 @@ int ArchiveHardlinkReader::ReadSymlinkData(FileHandle& fileHandle)
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto task = make_shared<ArchiveServiceTask>(
         ArchiveEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params, m_archiveClient);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName);
         ERRLOG("ReadSymlinkData task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_readTaskProduce;
@@ -240,9 +243,10 @@ int ArchiveHardlinkReader::ReadEmptyData(FileHandle& fileHandle)
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto task = make_shared<ArchiveServiceTask>(
         ArchiveEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params, m_archiveClient);
-    if (!m_jsPtr->Put(task)) {
+    if (!m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK)) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName);
         ERRLOG("ReadEmptyData put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_readTaskProduce;
@@ -273,9 +277,10 @@ int ArchiveHardlinkReader::ReadNormalData(FileHandle& fileHandle)
         m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
         auto task = make_shared<ArchiveServiceTask>(
             ArchiveEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params, m_archiveClient);
-        if (m_jsPtr->Put(task) == false) {
+        if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
             m_blockBufferMap->Delete(fileHandle.m_file->m_fileName);
             ERRLOG("ReadNormalData put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+            m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
             return FAILED;
         }
         ++m_controlInfo->m_readTaskProduce;
@@ -291,9 +296,10 @@ int ArchiveHardlinkReader::ReadNormalData(FileHandle& fileHandle)
         auto task = make_shared<ArchiveServiceTask>(
             ArchiveEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params, m_archiveClient);
         m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
-        if (m_jsPtr->Put(task) == false) {
+        if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
             m_blockBufferMap->Delete(fileHandle.m_file->m_fileName);
             ERRLOG("ReadNormalData put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+            m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
             return FAILED;
         }
         ++m_controlInfo->m_readTaskProduce;

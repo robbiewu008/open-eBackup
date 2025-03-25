@@ -31,6 +31,7 @@ static const int DEFAULT_MAX_READ_RETRY = 30;
 static const int DEFAULT_MAX_REQUEST_RETRY = 30;
 static const int DEFAULT_MAX_RETRY_TIMEOUT = 3000;
 
+constexpr int TIME_LIMIT_OF_PUT_TASK = 60000;
 constexpr uint32_t DEFAULT_ABORT_SLEEP  = 3;
 constexpr uint32_t DEFAULT_MAX_NOSPACE = 100;
 constexpr uint32_t DEFAULT_MAX_NOACCESS = 100;
@@ -73,5 +74,6 @@ constexpr uint32_t FILE_HAVE_ADS    = 0220000;
 
 constexpr uint64_t DEFAULT_BACKUP_QUEUE_SIZE = 10000;
 constexpr uint64_t DEFAULT_BACKUP_QUEUE_MEMORY_SIZE = 400 * 1024 * 1024;
+constexpr int TIME_OF_SET_FAILED = 600;
 
 #endif // BACKUP_CONSTANTS_H

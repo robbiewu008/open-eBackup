@@ -103,8 +103,9 @@ int HostDeleteWriter::WriteData(FileHandle& fileHandle)
     DBGLOG("Enter %sDeleteWriter WriteData: %s", OS_PLATFORM_NAME.c_str(), fileHandle.m_file->m_fileName.c_str());
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::DELETE_ITEM, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write data (delete) task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -158,6 +159,9 @@ int64_t HostDeleteWriter::ProcessTimers()
     vector<FileHandle> fileHandles;
     int64_t delay = m_timer.GetExpiredEventAndTime(fileHandles);
     for (FileHandle& fh : fileHandles) {
+        if (IsAbort()) {
+            return 0;
+        }
         DBGLOG("Process timer %s", fh.m_file->m_fileName.c_str());
         FileDescState state = fh.m_file->GetDstState();
         if (state == FileDescState::INIT) {
@@ -250,7 +254,14 @@ void HostDeleteWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskP
     DBGLOG("%s delete failed %s retry cnt %d",
         OS_PLATFORM_NAME.c_str(), fileHandle.m_file->m_fileName.c_str(), fileHandle.m_retryCnt);
 
-    if (fileHandle.m_retryCnt>= DEFAULT_ERROR_SINGLE_FILE_CNT ||
+    if (FSBackupUtils::IsStuck(m_controlInfo)) {
+        ERRLOG("set backup to failed due to stucked!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+        return;
+    }
+
+    if (fileHandle.m_retryCnt >= DEFAULT_ERROR_SINGLE_FILE_CNT ||
         taskPtr->IsCriticalError()) {
         FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);
 

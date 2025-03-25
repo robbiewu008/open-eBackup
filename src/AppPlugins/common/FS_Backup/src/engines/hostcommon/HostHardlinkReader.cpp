@@ -150,8 +150,9 @@ int HostHardlinkReader::OpenFile(FileHandle& fileHandle)
     DBGLOG("Enter OpenFile: %s", fileHandle.m_file->m_fileName.c_str());
     std::shared_ptr<OsPlatformServiceTask> openTask = make_shared<OsPlatformServiceTask>(
         HostEvent::OPEN_SRC, m_blockBufferMap, fileHandle, m_params);
-    if ((m_jsPtr->Put(openTask) == false)) {
+    if ((m_jsPtr->Put(openTask, true, TIME_LIMIT_OF_PUT_TASK) == false)) {
         ERRLOG("put open file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_readTaskProduce;
@@ -185,8 +186,9 @@ int HostHardlinkReader::CloseFile(FileHandle& fileHandle)
     DBGLOG("Enter CloseFile: %s", fileHandle.m_file->m_fileName.c_str());
     std::shared_ptr<OsPlatformServiceTask> task = make_shared<OsPlatformServiceTask>(
         HostEvent::CLOSE_SRC, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put close file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_readTaskProduce;
@@ -286,6 +288,13 @@ void HostHardlinkReader::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> tas
     DBGLOG("Host hardlink reader failed %s event %d retry cnt %d",
         fileHandle.m_file->m_fileName.c_str(), static_cast<int>(event), fileHandle.m_retryCnt);
     FileDescState state = fileHandle.m_file->GetSrcState();
+
+    if (FSBackupUtils::IsStuck(m_controlInfo)) {
+        ERRLOG("set backup to failed due to stucked!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+    }
+
     if (state != FileDescState::READ_FAILED &&  /* If state is READ_FAILED, needn't retry */
         fileHandle.m_retryCnt < DEFAULT_ERROR_SINGLE_FILE_CNT && !taskPtr->IsCriticalError()) {
         m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);

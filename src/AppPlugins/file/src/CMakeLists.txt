@@ -1,19 +1,19 @@
-# cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.14)
 project(FilePlugin)
 
 add_definitions(-DBOOST_ASIO_DISABLE_STD_ALIGNED_ALLOC)
 # 定义工程需要的变量
-SET(PLUGIN_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../..)
-SET(PLUGIN_FRAMEWORK_PATH ${PLUGIN_ROOT_PATH}/common/framework)
+SET(PLUGIN_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
+SET(PLUGIN_FRAMEWORK_PATH ${PLUGIN_ROOT_PATH}/framework)
 include(${PLUGIN_FRAMEWORK_PATH}/build/cmake/global.cmake)
 
-SET(PLUGIN_SCANNER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../common/FS_Scanner)
-SET(PLUGIN_BACKUP_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../common/FS_Backup)
+SET(PLUGIN_SCANNER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../FS_Scanner)
+SET(PLUGIN_BACKUP_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../FS_Backup)
 SET(PLUGIN_COMMON_PATH ${CMAKE_CURRENT_SOURCE_DIR}/common)
 SET(PLUGIN_SRC_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 SET(PLUGIN_FRAMEWORK_LIB_PATH ${PLUGIN_FRAMEWORK_PATH}/lib)
 
-SET(MODULE_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../common/Module)
+SET(MODULE_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../Module)
 SET(OPEN_SRC_PATH ${MODULE_ROOT_PATH}/third_open_src)
 
 SET(DME_LIB_PATH ${PLUGIN_FRAMEWORK_LIB_PATH})
@@ -33,15 +33,15 @@ add_library(scanner_interface
  
 target_include_directories(scanner_interface
     INTERFACE
-    ${PLUGIN_SCANNER_PATH}/include
-    ${PLUGIN_SCANNER_PATH}/include/common
-    ${PLUGIN_SCANNER_PATH}/include/filter
-    ${PLUGIN_SCANNER_PATH}/include/interface
-    ${PLUGIN_SCANNER_PATH}/include/model
-    ${PLUGIN_SCANNER_PATH}/include/service
-    ${PLUGIN_SCANNER_PATH}/include/statistics
-    ${PLUGIN_SCANNER_PATH}/include/utils
-    ${PLUGIN_SCANNER_PATH}/include/checkpoint
+    ${PLUGIN_SCANNER_PATH}/localhost_src
+    ${PLUGIN_SCANNER_PATH}/localhost_src/common
+    ${PLUGIN_SCANNER_PATH}/localhost_src/filter
+    ${PLUGIN_SCANNER_PATH}/localhost_src/interface
+    ${PLUGIN_SCANNER_PATH}/localhost_src/model
+    ${PLUGIN_SCANNER_PATH}/localhost_src/service
+    ${PLUGIN_SCANNER_PATH}/localhost_src/statistics
+    ${PLUGIN_SCANNER_PATH}/localhost_src/utils
+    ${PLUGIN_SCANNER_PATH}/localhost_src/checkpoint
 )
  
 target_link_directories(scanner_interface
@@ -67,7 +67,7 @@ add_library(file_plugin
 
 target_link_directories(file_plugin
     PRIVATE
-    ${PLUGIN_SCANNER_PATH}/lib
+    ${PLUGIN_SCANNER_PATH}/build-cmake-file
     ${PLUGIN_BACKUP_PATH}/build-cmake
     ${PLUGIN_FRAMEWORK_PATH}/dep/agent_sdk/lib
 )
@@ -92,6 +92,17 @@ target_link_libraries(file_plugin
     Backup
     pluginsdk
 )
+
+if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
+    target_link_libraries(file_plugin
+        PRIVATE
+        volume_obj
+        volume_backup_obj
+        volume_restore_obj
+        volume_livemount_obj
+        volume_index_obj
+    )
+endif()
 
 # 插件使用的外部依赖项，比如开源三方、插件框架、Module
 add_library(common_dep

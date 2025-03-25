@@ -48,11 +48,6 @@ unique_ptr<Backup> BackupMgr::CreateBackupInst(const BackupParams& backupParams)
         case BackupPhase::DIR_STAGE:
             backupInst = make_unique<Dir>(backupParams);
             break;
-#ifdef _NAS
-        case BackupPhase::ANTI_STAGE:
-            backupInst = make_unique<AntiRansomware>(backupParams);
-            break;
-#endif
         default:
             break;
     }
@@ -360,7 +355,7 @@ void* CreateAntiBackupInst(BackupConf backupConf)
         backupParams.dstEngine = BackupIOEngine::NFS_ANTI_ANSOMWARE;
         backupHandle = new (nothrow)AntiRansomware(backupParams);
     } else {
-        ERRLOG("Not included Phase.");
+        WARNLOG("Not included Phase.");
     }
 #endif
     return backupHandle;

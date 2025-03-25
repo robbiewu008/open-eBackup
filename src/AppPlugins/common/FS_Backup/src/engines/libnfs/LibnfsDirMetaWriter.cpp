@@ -27,6 +27,7 @@ namespace {
     constexpr uint64_t MAX_FILEHANDLECACHE_SIZE = 110000;
     const int MP_SUCCESS = 0;
     const int MP_FAILED = 1;
+    const int RETRY_TIME_MILLISENCOND = 1000;
 }
 
 LibnfsDirMetaWriter::LibnfsDirMetaWriter(const WriterParams &dirWriterParams,
@@ -132,8 +133,9 @@ int LibnfsDirMetaWriter::WriteMeta(FileHandle &fileHandle)
     }
     auto task = make_shared<LibnfsServiceTask>(LibnfsEvent::WRITE_META, m_controlInfo, fileHandle, m_params,
         m_pktStats);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write data (write meta) task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return MP_FAILED;
     }
 

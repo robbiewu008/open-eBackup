@@ -60,7 +60,7 @@ namespace Module {
 
             mp_int32 ret = pLogout(m_sessionInfo);
             if (ret != SUCCESS) {
-                HCP_Log(ERR, deviceType) << "Logout not success, But entry is deleted "
+                HCP_Log(WARN, deviceType) << "Logout not success, But entry is deleted "
                                          << ret << HCPENDLOG;
             }
             m_sessionCache.erase(itr);

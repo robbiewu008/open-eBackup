@@ -35,6 +35,7 @@ namespace Module {
     class BasicRequest {
     public:
         std::string bucketName;  // 桶名
+        bool encodeEnable = false; // 编码格式，根据配置文件判断，如果当前桶名在配置文件中，则encodingType设置为url。
         RetryConfig retryConfig; // 重试设置
     };
 

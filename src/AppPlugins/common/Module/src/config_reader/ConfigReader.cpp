@@ -47,6 +47,11 @@ string ConfigReader::getString(const string & sectionName, const string & keyNam
     return ConfigReaderImpl::instance()->getString(sectionName, keyName,logFlag);
 }
 
+string ConfigReader::getStringFromAgentXml(const string & sectionName, const string & keyName)
+{
+    return ConfigReaderImpl::instance()->GetStringFromAgentXml(sectionName, keyName);
+}
+
 //Get management IP
 string ConfigReader::getManagementIP()
 {
@@ -254,8 +259,19 @@ void ConfigReader::setIntConfigInfo(const string & sectionName, const string & k
 void ConfigReader::setStringConfigInfo(const string & sectionName, const string & keyName, const string & defaultValue){
     ConfigReaderImpl::instance()->putStringConfigInfo(sectionName, keyName, defaultValue);
 }
-    
-void ConfigReader::setPConfigInfo(const string & sectionName, const string & keyName, const string & defaultValue){
+
+void ConfigReader::refresh(const std::vector<std::string>& confFileName)
+{
+    ConfigReaderImpl::instance()->refresh(confFileName);
+}
+
+std::vector<std::string> ConfigReader::getConfigFiles()
+{
+    return ConfigReaderImpl::instance()->getConfigFiles();
+}
+
+void ConfigReader::setPConfigInfo(const string& sectionName, const string& keyName, const string& defaultValue)
+{
     ConfigReaderImpl::instance()->putIPConfigInfo(sectionName, keyName, defaultValue);
 }
 

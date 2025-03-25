@@ -1,22 +1,26 @@
-# 递归添加nas_service目录下所有的cpp文件
-
-add_library(host_restore_obj
-    OBJECT
-    ${CMAKE_CURRENT_SOURCE_DIR}/HostRestore.cpp
-
-
-)
+if ("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
+    add_library(host_restore_obj
+        OBJECT
+        ${CMAKE_CURRENT_SOURCE_DIR}/HostRestore.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/OsRestore.cpp
+    )
+else()
+    add_library(host_restore_obj
+        OBJECT
+        ${CMAKE_CURRENT_SOURCE_DIR}/HostRestore.cpp
+    )
+endif()
 
 target_include_directories(host_restore_obj
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../
-    ${PLUGIN_FRAMEWORK_PATH}/inc/job/
-    ${PLUGIN_FRAMEWORK_PATH}/inc/thrift_interface
-    ${PLUGIN_FRAMEWORK_PATH}/inc
-    ${PLUGIN_FRAMEWORK_PATH}/inc/client
-    ${PLUGIN_FRAMEWORK_PATH}/inc/common
-    ${PLUGIN_FRAMEWORK_PATH}/inc/rpc
-    ${PLUGIN_FRAMEWORK_PATH}/inc/rpc/certificateservice
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../framework/inc/job/
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../framework/inc/thrift_interface
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../framework/inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../framework/inc/client
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../framework/inc/common
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../framework/inc/rpc
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../framework/inc/rpc/certificateservice
 
 
     ${PLUGIN_SRC_PATH}/utils

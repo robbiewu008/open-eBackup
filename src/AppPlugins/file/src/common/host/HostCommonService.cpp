@@ -42,6 +42,7 @@ namespace {
     const uint64_t DEFAULT_MAX_FAILURE_RECORDS_NUM = 1000000; /* take about 200MB disk space */
     const std::string DEFAULT_FAILURE_DEFAULT_ROOT =
         R"(\DataBackup\ProtectClient\ProtectClient-E\log\Plugins\FilePlugin)";
+    const std::string FAILED_FILE_SET = "recordFailedFileSet";
 };
 
 std::mutex HostCommonService::m_pluginAtrributeJsonFileMutex {};
@@ -224,7 +225,7 @@ bool HostCommonService::IsValidCtrlFile(const std::string ctrlFileFullPath) cons
 }
 
 bool HostCommonService::InitSubTask(SubJob &subJob, const string& ctrlFile, bool ignoFail,
-    const string& prefix, const string& fsId)
+    const string& prefix, const string& fsId, const string& parentDir)
 {
     string subTaskName {};
     uint32_t subTaskPrio {};
@@ -232,7 +233,7 @@ bool HostCommonService::InitSubTask(SubJob &subJob, const string& ctrlFile, bool
     GetSubTaskInfoByFileName(ctrlFile, subTaskName, subTaskType, subTaskPrio);
     DBGLOG("InitSubTask, ctrlFile: %s, subTaskType: %d, prefix: %s, fsId: %s",
         ctrlFile.c_str(), subTaskType, prefix.c_str(), fsId.c_str());
-    BackupSubJob backupSubJob {ctrlFile, subTaskType, prefix, fsId};
+    BackupSubJob backupSubJob {ctrlFile, subTaskType, prefix, fsId, parentDir};
     string backupSubJobStr;
     if (!Module::JsonHelper::StructToJsonString(backupSubJob, backupSubJobStr)) {
         ERRLOG("Convert to json failed for file: %s", backupSubJob.controlFile.c_str());
@@ -492,13 +493,13 @@ void HostCommonService::MergeBackupFailureRecords()
         if (!fs::exists(jobRecordRootPath) || !fs::is_directory(jobRecordRootPath)) {
             return;
         }
-        if (!Module::BackupFailureRecorder::Merge(m_failureRecordRoot, m_jobId)) {
+        if (!Module::BackupFailureRecorder::Merge(m_failureRecordRoot, m_jobId, m_failureRecordRoot)) {
             ERRLOG("merge backup failure records failed");
             return;
         }
         WARNLOG("FailureRecord file exist!");
         ReportJobLabel(JobLogLevel::TASK_LOG_WARNING,
-            "file_plugin_report_failure_record_file_label", jobRecordRootPath);
+            "file_plugin_report_failure_record_file_label", PathJoin(m_failureRecordRoot, FAILED_FILE_SET));
     } catch (const std::exception& e) {
         ERRLOG("merge backup failure records failed with exception: %s", e.what());
     }

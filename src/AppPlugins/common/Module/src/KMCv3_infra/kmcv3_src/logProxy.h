@@ -14,6 +14,7 @@
 #define RC_SRC_KMCV3_INFRA_KMCV3_SRC_LOGPROXY_H
 
 #include <sstream>
+#include "securec.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -34,6 +35,16 @@ private:
     int m_logLevel;
     std::string m_funcName;
     unsigned int m_line;
+private:
+    void StoreLogFile();
+    bool GetFileSize(const char* filePath, uint32_t& size);
+    void WriteToLogFile();
+    bool FileExist(const std::string& filePath);
+    bool ZipLogFile(const std::string& filePath);
+    int ChmodFile(std::string strFileName, uint32_t mode);
+    void AsyncZipLogFile(std::string tmpLogFile);
+    bool CheckExpired(std::string logFile);
+    int GetlLastModifyTime(const char* FilePath, time_t& lastModifyTime);
 };
 
 enum SeverityLevel {

@@ -31,6 +31,7 @@ void SmbOpenCb(struct smb2_context *smb2, int status, void *data, SmbReaderCommo
 void SmbReadCb(struct smb2_context *smb2, int status, void *data, SmbReaderCommonData *cbData);
 void SmbCloseCb(struct smb2_context *smb2, int status, void *data, SmbReaderCommonData *cbData);
 void SmbAdsCb(struct smb2_context *smb2, int status, void *data, SmbReaderCommonData *cbData);
+void SmbDataRangeCb(struct smb2_context *smb2, int status, void *data, SmbReaderCommonData *cbData);
 
 void HandleSmbOpenStatusFailed(struct smb2_context *smb2, int status, SmbReaderCommonData *cbData);
 void HandleSmbReadStatusSuccess(SmbReaderCommonData *cbData);
@@ -40,6 +41,11 @@ void HandleSmbAdsStatusFailed(struct smb2_context *smb2, int status, SmbReaderCo
 
 void SmbOpenCbSendBlock(SmbReaderCommonData *cbData);
 
+void SmbOpenCbSendBlockNormal(SmbReaderCommonData *cbData);
+
+void SmbOpenCbSendBlockSparse(SmbReaderCommonData *cbData);
+
 void SmbAdsCbDispachFilehandle(SmbReaderCommonData *cbData, uint32_t adsFileCount);
 
+uint64_t SmbOpenCbEnqueBlockBufferMap(SmbReaderCommonData *cbData, uint64_t fileSize, uint64_t &startOffSet, uint64_t &seq);
 #endif // LIBSMB_READER_INTERFACE_H

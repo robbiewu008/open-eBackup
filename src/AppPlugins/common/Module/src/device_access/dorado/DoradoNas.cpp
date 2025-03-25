@@ -360,7 +360,7 @@ Description:
         std::string errorDes;
         int errorCode = FAILED;
         Json::Value data;
-        int iRet = SendRequest(req, data, errorDes, errorCode);
+        int iRet = SendRequest(req, data, errorDes, errorCode, true);
         if (iRet == SUCCESS && data.isArray() && data.size() > 0 && data[0].size() > 0) {
             id = data[0]["ID"].asString();
             return SUCCESS;

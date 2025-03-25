@@ -40,15 +40,6 @@ public interface DSwareApi {
     void deleteVolume(String[] dsaIps, String volName);
 
     /**
-     * deleteVolume
-     *
-     * @param dsaIps String[]
-     * @param volName String
-     * @param deleteType int
-     */
-    void deleteVolume(String[] dsaIps, String volName, int deleteType);
-
-    /**
      * queryVolume
      *
      * @param dsaIps String[]

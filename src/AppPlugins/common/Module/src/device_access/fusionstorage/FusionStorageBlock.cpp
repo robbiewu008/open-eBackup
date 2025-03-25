@@ -912,14 +912,15 @@ Description:
             req.revocationList = crl;
         }
         int retryNum = 0;
-        while (retryNum < retryTimes) {
+        bool needRetry = true;
+        do {
             HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "send request for " << (retryNum + 1) << " time to " <<
                                                       WIPE_SENSITIVE(req.url) << HCPENDLOG;
             int ret = SUCCESS;
             if (this->sessionPtr == nullptr) {
                 LoginAndGetSessionInfo();
                 if (this->sessionPtr == nullptr) {
-                    HCP_Log(ERR, FUSION_STORAGE_MODULE_NAME) << "Invalid session" << HCPENDLOG;
+                    HCP_Log(WARN, FUSION_STORAGE_MODULE_NAME) << "Invalid session" << HCPENDLOG;
                 }
             }
             if (this->sessionPtr != nullptr) {
@@ -939,16 +940,17 @@ Description:
             // 2.when when curl success and ret is FAILED,
             // FusionStorageResposeNeedRetry, not judge http retry code, directly retry.
             // 3.when errorCode not 0,mean curl failed,directly retry.
-            if (errorCode == 0 && !FusionStorageResposeNeedRetry(ret) &&
-                std::find(httpRspStatusCodeForRetry.begin(), httpRspStatusCodeForRetry.end(), ret)
-                == httpRspStatusCodeForRetry.end()) {
+            needRetry = !(errorCode == 0 && !FusionStorageResposeNeedRetry(ret) &&
+                        std::find(httpRspStatusCodeForRetry.begin(), httpRspStatusCodeForRetry.end(), ret)
+                        == httpRspStatusCodeForRetry.end());
+            if (needRetry) {
+                DelayTimeSendRequest();
+                retryNum++;
+            } else {
                 HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "not retry send msg for httpstatuscode:" << ret
                                                           << HCPENDLOG;
-                break;
             }
-            DelayTimeSendRequest();
-            retryNum++;
-        }
+        } while (retryNum < retryTimes && needRetry);
         HCP_Log(ERR, FUSION_STORAGE_MODULE_NAME) << "send request failed. " << HCPENDLOG;
         return FAILED;
     }
@@ -1030,20 +1032,10 @@ Description:
             Ret = ParseBodyV1(rsp->GetBody(), data, errorDes, errorCode);
         }
         if (errorCode != SUCCESS) {
-            SessionInfo sessionInfo = Login();
-            if (sessionInfo.device_id.empty() || sessionInfo.token.empty() || sessionInfo.cookie.empty()) {
-                HCP_Log(ERR, FUSION_STORAGE_MODULE_NAME) << "Login FusionStorage Failed! deviceId: " <<
-                                                         sessionInfo.device_id << HCPENDLOG;
-                return FAILED;
-            }
             if (this->sessionPtr == nullptr) {
                 HCP_Log(ERR, FUSION_STORAGE_MODULE_NAME) << "Invalid session" << HCPENDLOG;
                 return FAILED;
             }
-            // Refresh session
-            this->sessionPtr->deviceId = sessionInfo.device_id;
-            this->sessionPtr->cookie = sessionInfo.cookie;
-            this->sessionPtr->token = sessionInfo.token;
             HttpRequest request = req;
             request.url = "https://" + FusionStorageIP + ":" + FusionStoragePort + req.url;
             request.heads.insert(std::make_pair("Accept", "application/json"));

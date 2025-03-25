@@ -18,6 +18,9 @@ void ApplicationManager::ListApplicationResource(ResourceResultByPage& returnVal
     const ListResourceParam& listResourceParam)
 {
     std::string fileType = listResourceParam.resourceExtendInfo.fileType;
+
+    INFOLOG("listResourceParam.resourceExtendInfo.fileType: %s", fileType.c_str());
+
     FileResourceInfo resourceInfo;
     if (fileType == RESOURCE_NATIVE_FILE_TYPE) {
         ListNativeResource(resourceInfo, listResourceParam);
@@ -29,6 +32,12 @@ void ApplicationManager::ListApplicationResource(ResourceResultByPage& returnVal
         returnValue.pageNo = listResourceParam.pageNo;
         returnValue.pageSize = listResourceParam.pageSize;
         TransformResultForVolume(returnValue, resourceInfo);
+    } else if (fileType == RESOURCE_FILE_DISK_TYPE) {
+        INFOLOG("fileType is RESOURCE_FILE_DISK_TYPE");
+        ListDiskResource(resourceInfo, listResourceParam);
+        returnValue.pageNo = listResourceParam.pageNo;
+        returnValue.pageSize = listResourceParam.pageSize;
+        TransformResultForDisk(returnValue, resourceInfo);
     } else {
         ListAggregateResource(resourceInfo, listResourceParam);
         returnValue.pageNo = listResourceParam.pageNo;
@@ -55,6 +64,17 @@ void ApplicationManager::TransformResult(ResourceResultByPage& returnValue,
 
 void ApplicationManager::TransformResultForVolume(ResourceResultByPage& returnValue,
     const FileResourceInfo& resourceInfo)
+{
+    WARNLOG("empty function , implement by SubClass");
+}
+void ApplicationManager::ListDiskResource(FilePlugin::FileResourceInfo& resourceInfo,
+    const FilePlugin::ListResourceParam& listResourceParam)
+{
+    WARNLOG("empty function , implement by SubClass");
+}
+
+void ApplicationManager::TransformResultForDisk(AppProtect::ResourceResultByPage& returnValue,
+    const FilePlugin::FileResourceInfo& resourceInfo)
 {
     WARNLOG("empty function , implement by SubClass");
 }

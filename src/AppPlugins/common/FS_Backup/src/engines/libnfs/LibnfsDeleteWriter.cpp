@@ -27,6 +27,7 @@ namespace {
     constexpr uint64_t MAX_THREADPOOL_TASK = 32;
     const int MP_SUCCESS = 0;
     const int MP_FAILED = 1;
+    const int RETRY_TIME_MILLISENCOND = 1000;
 }
 
 LibnfsDeleteWriter::LibnfsDeleteWriter(const WriterParams &deleteWriterParams,
@@ -129,8 +130,9 @@ int LibnfsDeleteWriter::WriteMeta(FileHandle& fileHandle)
 int LibnfsDeleteWriter::WriteData(FileHandle& fileHandle)
 {
     auto task = make_shared<LibnfsServiceTask>(LibnfsEvent::DELETE, m_controlInfo, fileHandle, m_params, m_pktStats);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write data (delete) task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     m_writerProduce++;

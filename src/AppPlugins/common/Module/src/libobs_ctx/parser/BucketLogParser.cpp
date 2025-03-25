@@ -65,7 +65,7 @@ bool PacificParseBucketLogOneLine(const std::string& lineContent, BucketLogInfo&
 
     // 日志样例：
     // pacific:
-    // 0000018C954AE689E3C17345F28F0FA8 log-test [04/Feb/2024:07:32:51 +0000] 8.42.99.169
+    // 0000018C954AE689E3C17345F28F0FA8 log-test [04/Feb/2024:07:32:51 +0000] *.**.**.***
     // 0000018C954AE689E3C17345F28F0FA8 082a63bf170703197199000006021000 REST.PUT.ACL + % ceshi 测试.txt
     // "PUT /log-test/%2B%20%25%20ceshi%20%E6%B5%8B%E8%AF%95.txt?acl HTTP/1.1" 200 - - - 14258 12008 "-"
     // "obs-browser-plus/3.23.9" - -
@@ -126,7 +126,7 @@ bool HWParseBucketLogOneLine(const std::string& lineContent, BucketLogInfo& buck
 
     // 日志样例：
     // hcs:
-    // 85248fa9872945188723fe7068537565 bucket1 [03/Feb/2024:23:50:22 +0000] 22.2.159.33
+    // 85248fa9872945188723fe7068537565 bucket1 [03/Feb/2024:23:50:22 +0000] **.*.***.**
     // 85248fa9872945188723fe7068537565 0000018D71615D4F80058FBC87D5A7A6 REST.PUT.METADATA %2B+%25ceshi.txt
     // "PUT /bucket1/%2B%20%25ceshi.txt?metadata HTTP/1.1" 200 - - - 20 20 "-" "obs-browser-plus/3.22.9" - -
     // STANDARD - "-" f733150db0b849bba2554290869a124a

@@ -47,11 +47,11 @@ public:
     static void StringToUInteger(std::string strVal, uint64_t& integerVal);
     static void UIntegerToString(uint64_t IntegerVal, std::string& strVal);
     static void StrToken(std::string strToken, std::string strSeparator, std::list<std::string>& plstStr);
-    // 根据指定分割符分割字符串，并将结果存放vector中
+    // ����ָ���ָ���ָ��ַ���������������vector��
     static void StrSplit(std::vector<std::string>& vecTokens, const std::string& strText, char cSep);
-    // 根据指定分割符分割字符串，并将结果存放vector中(支持连续分隔符)
+    // ����ָ���ָ���ָ��ַ���������������vector��(֧�������ָ���)
     static void StrSplitEx(std::vector<std::string>& tokens, const std::string& str, const std::string& delimiters);
-    // 字符串中包含空格，前后添加引号，解决路径中包含空格问题
+    // �ַ����а����ո�ǰ���������ţ����·���а����ո�����
     static std::string StrReplace(const std::string& str, const std::string& to_replaced, const std::string& newchars);
     static std::string BlankComma(const std::string& strPath);
     static std::string StrJoin(const std::vector<std::string>& vecStr, std::string cSep);
@@ -61,7 +61,7 @@ public:
     static std::string to_string(const int& intVal);
     static std::string to_string(const unsigned long long& ulonglongVal);
     static bool FormattingPath(std::string& strPath);
-
+    static bool FormattingPath2(mp_string& strPath);
 #ifdef WIN32
     static std::string UnicodeToANSI(const std::wstring& wStrSrc);
     static std::wstring ANSIToUnicode(const std::string& strSrc);

@@ -43,6 +43,9 @@ HostCopyWriter::HostCopyWriter(
     m_params.restoreReplacePolicy = m_backupParams.commonParams.restoreReplacePolicy;
     m_params.backupType = m_backupParams.backupType;
     m_params.blockSize = m_backupParams.commonParams.blockSize;
+    m_params.metaPath = m_backupParams.scanAdvParams.metaFilePath;
+    m_params.adsProcessType = m_backupParams.commonParams.adsProcessType;
+    INFOLOG("set task meta path : %s", m_params.metaPath.c_str());
     m_threadPoolKey = m_backupParams.commonParams.subJobId + "_copyWriter";
     m_failureRecorder = failureRecorder;
 }
@@ -175,8 +178,9 @@ int HostCopyWriter::OpenFile(FileHandle& fileHandle)
     DBGLOG("Enter OpenFile: %s", fileHandle.m_file->m_fileName.c_str());
     auto taskPtr = make_shared<OsPlatformServiceTask>(
         HostEvent::OPEN_DST, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(taskPtr) == false) {
+    if (m_jsPtr->Put(taskPtr, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put open file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -190,8 +194,9 @@ int HostCopyWriter::WriteData(FileHandle& fileHandle)
     DBGLOG("Enter WriteData: %s", fileHandle.m_file->m_fileName.c_str());
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::WRITE_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write data task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -204,8 +209,9 @@ int HostCopyWriter::CloseFile(FileHandle& fileHandle)
     DBGLOG("Enter CloseFile: %s", fileHandle.m_file->m_fileName.c_str());
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::CLOSE_DST, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put close task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -219,8 +225,9 @@ int HostCopyWriter::CreateDir(FileHandle& fileHandle)
     DBGLOG("Enter CreateDir: %s", fileHandle.m_file->m_fileName.c_str());
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::CREATE_DIR, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put create dir task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -233,6 +240,9 @@ int64_t HostCopyWriter::ProcessTimers()
     vector<FileHandle> fileHandles;
     int64_t delay = m_timer.GetExpiredEventAndTime(fileHandles);
     for (FileHandle& fh : fileHandles) {
+        if (IsAbort()) {
+            return 0;
+        }
         ProcessWriteEntries(fh);
     }
     return delay;
@@ -302,12 +312,17 @@ void HostCopyWriter::PollWriteTask()
 {
     shared_ptr<ExecutableItem> threadPoolRes;
     HCPTSP::getInstance().reset(m_backupParams.commonParams.reqID);
-    INFOLOG("Start %sCopyReader PollWriteTask thread", OS_PLATFORM_NAME.c_str());
+    INFOLOG("Start %sCopyWriter PollWriteTask thread", OS_PLATFORM_NAME.c_str());
 
     while (true) {
         if (m_controlInfo == nullptr) {
             ERRLOG("m_controlInfo nullptr");
             break;
+        }
+        if (IsAbort()) {
+            INFOLOG("Abort %sCopyWriter PollWriteTask thread!", OS_PLATFORM_NAME.c_str());
+            m_pollThreadDone = true;
+            return;
         }
         if (m_controlInfo->m_writePhaseComplete) {
             INFOLOG("Finish %sCopyWriter PollWriteTask thread", OS_PLATFORM_NAME.c_str());
@@ -403,15 +418,40 @@ void HostCopyWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskPtr
     HostEvent event = taskPtr->m_event;
     ++fileHandle.m_retryCnt;
 
-    ERRLOG("Host copy writer failed %s event %d retry cnt %d seq %d",
+    WARNLOG("Host copy writer failed %s event %d retry cnt %d seq %d",
         fileHandle.m_file->m_fileName.c_str(),
         static_cast<int>(event), fileHandle.m_retryCnt, fileHandle.m_block.m_seq);
     FileDescState state = fileHandle.m_file->GetDstState();
+
+    if (FSBackupUtils::IsStuck(m_controlInfo)) {
+        ERRLOG("set backup to failed due to stucked!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+        return;
+    }
+
     if (state != FileDescState::WRITE_FAILED &&  /* If state is WRITE_FAILED, needn't retry */
         fileHandle.m_retryCnt < DEFAULT_ERROR_SINGLE_FILE_CNT && !taskPtr->IsCriticalError()) {
         m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return;
     }
+    HandleFailedEventInner(state, fileHandle, taskPtr);
+    m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+    CloseWriteFailedHandle(fileHandle);
+    if (!m_backupParams.commonParams.skipFailure || taskPtr->IsCriticalError()) {
+        ERRLOG("set backup to failed!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+    }
+    ERRLOG("copy write failed for file %s, totalFailed: %llu %llu",
+        fileHandle.m_file->m_fileName.c_str(),
+        m_controlInfo->m_noOfFilesFailed.load(), m_controlInfo->m_noOfDirFailed.load());
+    return;
+}
+
+void HostCopyWriter::HandleFailedEventInner(FileDescState state, FileHandle fileHandle,
+    shared_ptr<OsPlatformServiceTask> taskPtr)
+{
     if (state != FileDescState::WRITE_FAILED) {
         FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);
         // 通过设置公共锁，防止read和write同时失败设置FAILED时导致两边都不计数的问题
@@ -427,17 +467,6 @@ void HostCopyWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskPtr
         }
         fileHandle.m_file->UnlockCommonMutex();
     }
-    m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
-    CloseWriteFailedHandle(fileHandle);
-    if (!m_backupParams.commonParams.skipFailure || taskPtr->IsCriticalError()) {
-        ERRLOG("set backup to failed!");
-        m_controlInfo->m_failed = true;
-        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
-    }
-    ERRLOG("copy write failed for file %s, totalFailed: %llu %llu",
-        fileHandle.m_file->m_fileName.c_str(),
-        m_controlInfo->m_noOfFilesFailed.load(), m_controlInfo->m_noOfDirFailed.load());
-    return;
 }
 
 void HostCopyWriter::CloseOpenedHandle()

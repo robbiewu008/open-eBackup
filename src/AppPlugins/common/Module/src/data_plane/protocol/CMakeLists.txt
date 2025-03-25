@@ -23,6 +23,10 @@ add_library(${PROTOCOL_TARGET_NAME}
                    include/protocol/fuse/FuseMessage.h
                    src/fuse/FuseMessage.cpp
 
+                   # OsadAdmin message
+                   include/protocol/OsadAdminMessage.h
+                   src/OsadAdminMessage.cpp
+
                    # fuse requests and responses
                    include/protocol/fuse/Flush.h
                    include/protocol/fuse/Lookup.h

@@ -294,9 +294,9 @@ Description:
         }
         req.revocationList = !crl.empty() ? crl : req.revocationList;
         int retryNum = 0;
-        while (retryNum < retryTimes) {
-            HCP_Log(INFO, OCEANSTOR_MODULE_NAME) << "send request for " << (retryNum + 1) << "time" <<
-                                                 HCPENDLOG;
+        bool needRetry = true;
+        do {
+            HCP_Log(INFO, OCEANSTOR_MODULE_NAME) << "send request for " << (retryNum + 1) << "time" << HCPENDLOG;
             int ret = SUCCESS;
             if (this->sessionPtr == nullptr) {
                 if (OceanstorIP == INNER_SAFE_IP) {
@@ -330,16 +330,15 @@ Description:
             // 2.when when curl success and ret is FAILED,
             // OceanstorResposeNeedRetry, not judge http retry code, directly retry.
             // 3.when errorCode not 0,mean curl failed,directly retry.
-            if (errorCode == 0 && !OceanstorResposeNeedRetry(ret) &&
-                std::find(httpRspStatusCodeForRetry.begin(), httpRspStatusCodeForRetry.end(), ret)
-                == httpRspStatusCodeForRetry.end()) {
-                HCP_Log(WARN, OCEANSTOR_MODULE_NAME) << "not retry send msg for httpstatuscode:" <<
-                                                     ret << HCPENDLOG;
-                break;
+            needRetry =  !(std::find(httpRspStatusCodeForRetry.begin(), httpRspStatusCodeForRetry.end(), ret)
+                        == httpRspStatusCodeForRetry.end() && errorCode == 0 && !OceanstorResposeNeedRetry(ret));
+            if (needRetry) {
+                DelayTimeSendRequest();
+                retryNum++;
+            } else {
+                HCP_Log(WARN, OCEANSTOR_MODULE_NAME) << "not retry send msg for httpstatuscode:" << ret << HCPENDLOG;
             }
-            DelayTimeSendRequest();
-            retryNum++;
-        }
+        } while (retryNum < retryTimes && needRetry);
         HCP_Log(ERR, OCEANSTOR_MODULE_NAME) << "send request failed. " << HCPENDLOG;
         return FAILED;
     }

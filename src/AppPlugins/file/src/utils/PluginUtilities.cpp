@@ -17,6 +17,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string.hpp>
 #include <filesystem>
+#include "common/Thread.h"
 #ifdef __linux__
 #include <sys/ioctl.h>
 #include <linux/fs.h>
@@ -27,14 +28,18 @@
 #include "common/EnvVarManager.h"
 #include "PluginConstants.h"
 #include "Defines.h"
+#include "common/FileSystemUtil.h"
 
 #ifdef WIN32
-#include "FileSystemUtil.h"
 #include <windows.h>
 #include <winioctl.h>
+#include "win32/BCD.h"
+#include "win32/Registry.h"
+#include "FileSystemUtil.h"
 #endif
 
 using namespace std;
+using namespace Module;
 
 namespace {
 constexpr int TIME_STR_LEN = 80;
@@ -43,6 +48,8 @@ constexpr auto MODULE = "Utilities";
 constexpr uint8_t NUMBER0 = 0;
 constexpr uint8_t NUMBER1 = 1;
 constexpr uint8_t NUMBER2 = 2;
+constexpr uint8_t NUMBER3 = 3;
+constexpr uint8_t NUMBER5 = 5;
 constexpr uint32_t NUMBER4 = 4;
 constexpr int32_t NUMBER6 = 6;
 constexpr uint32_t NUMBER8 = 8;
@@ -56,10 +63,17 @@ const std::string SLASH = "/";
 const std::string BACKSLASH = "\\";
 const std::wstring UNC_PATH_PREFIX = LR"(\\?\)";
 const std::string PATH_PREFIX = R"(\\?\)";
+const std::string UEFI_BOOT = "UEFI";
+const std::string BIOS_BOOT = "BIOS";
+const std::string UNKNOW_BOOT = "UNKNOW";
 const std::string SNAPSHOT_DIRNAME = ".snapshot";
+
 }
 
 namespace PluginUtils {
+#ifdef WIN32
+using namespace Win32;
+#endif
 // 输入是ip列表，以逗号分割。检查通过管理网络访问8088端口是否连通
 bool CheckDeviceNetworkConnect(const std::string &managerIps)
 {
@@ -294,29 +308,30 @@ bool ReadFile(const std::string &path, std::string &data)
 
 bool CreateDirectory(const std::string& path)
 {
+    INFOLOG("Enter Create CreateDirectory: %s", path.c_str());
     if (path.empty()) {
         return true;
     }
-
-    if (IsDirExist(path)) {
-        DBGLOG("CreateDirectory success, dir exist: %s", path.c_str());
+    std::string dirPath = path;
+#ifdef WIN32
+    dirPath = ReverseSlash(path);
+#endif
+    if (IsDirExist(dirPath)) {
+        INFOLOG("CreateDirectory success, dir exist: %s", path.c_str());
         return true;
     }
-
-    string parentDir = GetPathName(path);
+    std::string parentDir = GetPathName(dirPath);
     if (!CreateDirectory(parentDir)) {
         return false;
     }
-
 #ifndef WIN32
     int res = mkdir(path.c_str(), S_IRUSR | S_IWUSR | S_IXUSR);
-    if (res != Module::SUCCESS) {
-        ERRLOG("CreateDirectory fail for: %s", path.c_str());
+    if (res != Module::SUCCESS && errno != EEXIST) {
+        ERRLOG("CreateDirectory fail for: %s, errno: %u", path.c_str(), errno);
         return false;
     }
     return true;
 #else
-    std::string dirPath = ReverseSlash(path);
     INFOLOG("call create_directory, %s", dirPath.c_str());
     std::wstring wDirPath = Module::FileSystemUtil::Utf8ToUtf16(dirPath);
     if (wDirPath.find(UNC_PATH_PREFIX) != 0) { // check UNC prefix
@@ -332,6 +347,67 @@ bool CreateDirectory(const std::string& path)
     }
     return true;
 #endif
+}
+
+bool SafeCreateDirectory(const std::string& path, const std::string& basePath)
+{
+    if (path.empty()) {
+        return true;
+    }
+
+    if (IsDirExist(path)) {
+        DBGLOG("CreateDirectory success, dir exist: %s", path.c_str());
+        return true;
+    }
+
+    if (basePath == path) {
+        WARNLOG("CreateDirectory failed for base path not exist! %s, %s", path.c_str(), basePath.c_str());
+        return false;
+    }
+    std::string parentDir = GetPathName(path);
+    if (!SafeCreateDirectory(parentDir, basePath)) {
+        WARNLOG("Create dir failed! %s, %s", path.c_str(), basePath.c_str());
+        return false;
+    }
+
+    return DoRealCreateDirectory(path);
+}
+
+bool DoRealCreateDirectory(const std::string& path)
+{
+    int retryTimes = 0;
+    while (retryTimes < NUMBER3) {
+#ifndef WIN32
+        INFOLOG("call create_directory, %s", path.c_str());
+        int res = mkdir(path.c_str(), S_IRUSR | S_IWUSR | S_IXUSR);
+        if (res != Module::SUCCESS && errno != EEXIST) {
+            ERRLOG("CreateDirectory fail for: %s, errno: %u, retryTimes: %d", path.c_str(), errno, retryTimes);
+            retryTimes++;
+            Module::SleepFor(std::chrono::seconds(NUMBER5));
+            continue;
+        }
+        return true;
+#else
+        std::string dirPath = ReverseSlash(path);
+        INFOLOG("call create_directory, %s", dirPath.c_str());
+        std::wstring wDirPath = Module::FileSystemUtil::Utf8ToUtf16(dirPath);
+        if (wDirPath.find(UNC_PATH_PREFIX) != 0) { // check UNC prefix
+            wDirPath = UNC_PATH_PREFIX + wDirPath;
+        }
+        if (!::CreateDirectoryW(wDirPath.c_str(), nullptr)) {
+            DWORD errorCode = ::GetLastError();
+            if (errorCode == ERROR_ALREADY_EXISTS) {
+                return true;
+            }
+            ERRLOG("dir %s create failed, errno %d, retryTimes: %d", dirPath.c_str(), errorCode, retryTimes);
+            retryTimes++;
+            Module::SleepFor(std::chrono::seconds(NUMBER5));
+            continue;
+        }
+        return true;
+#endif
+    }
+    return false;
 }
 
 bool Remove(std::string path)
@@ -444,7 +520,7 @@ std::string GetPathName(const std::string &filePath)
 #endif
     size_t fileoffset = filePath.rfind(sep, filePath.length());
     if (fileoffset != string::npos) {
-        return (filePath.substr(0, fileoffset));
+        return filePath.substr(0, fileoffset);
     }
 
     return ("");
@@ -821,7 +897,7 @@ uint64_t GetWinVolumeSize(const std::string& devicePath)
     HANDLE hDevice = CreateFileA(
         winDevicePath.c_str(),
         GENERIC_READ,
-        FILE_SHARE_READ|FILE_SHARE_WRITE,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
         nullptr,
         OPEN_EXISTING,
         0,
@@ -848,6 +924,184 @@ uint64_t GetWinVolumeSize(const std::string& devicePath)
     }
     CloseHandle(hDevice);
     return lengthInfo.Length.QuadPart;
+}
+
+std::string GetWinSystemDriveForInd()
+{
+    std::string drive;
+    static char buffer[MAX_PATH];
+    DWORD ret = ::GetEnvironmentVariableA("WINDIR", buffer, MAX_PATH);
+    if (ret == 0 || ret > MAX_PATH) {
+        WARNLOG("Failed get environment variable 'WINDIR', errno: %d", ::GetLastError());
+        drive = "";
+    } else {
+        DBGLOG("'WINDIR' environment variable is: %s", buffer);
+        std::string sysDir(buffer);
+        drive = sysDir.substr(0, 1);
+    }
+    if (drive.empty()) {
+        drive = "C";
+    }
+    return drive;
+}
+
+std::wstring TrimTrailingSpaces(const std::wstring& str)
+{
+    size_t end = str.find_last_not_of(L" \t\n\r\f\v");
+    if (end != std::wstring::npos) {
+        return str.substr(0, end + 1);
+    }
+    return str;
+}
+
+std::wstring ConvertDevicePath(const std::wstring& devicePath)
+{
+    // 查找 "\Device" 并替换为 "\\.\"
+    size_t pos = devicePath.find(L"\\Device");
+    if (pos != std::wstring::npos) {
+        // 跳过 "\Device"
+        std::wstring temp = L"\\\\.\\" + devicePath.substr(pos + NUMBER8);
+        return TrimTrailingSpaces(temp);
+    }
+    return TrimTrailingSpaces(devicePath);
+}
+
+std::string GetEFIDrivePath()
+{
+    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    BCDStore store = BCDStore::OpenStore();
+    for (BCDObject obj : store.GetObjects()) {
+        if (obj.GetType() == BCDObject::BCDObjectType::GLOBAL_SETTINGS) {
+            std::wstring drivePath = FileSystemUtil::Utf8ToUtf16(obj.GetElement(
+                Win32::BCDElementType::BCDLIBRARY_DEVICE_APPLICATIONDEVICE).ToDeviceData().GetPartitionPath());
+            INFOLOG("Windows boot: %s", FileSystemUtil::Utf16ToUtf8(drivePath).c_str());
+            std::wstring efiPartition = ConvertDevicePath(drivePath);
+            return FileSystemUtil::Utf16ToUtf8(efiPartition);
+        }
+    }
+    ERRLOG("Failed to Get EFI Drive path!");
+    return "";
+}
+
+// 检查WinPE环境的引导方式
+std::string GetBootTypeForWinPE()
+{
+    HKEY hKey;
+    DWORD firmwareType = 0;
+    DWORD size = sizeof(firmwareType);
+
+    LONG result = ::RegOpenKeyExW(
+        HKEY_LOCAL_MACHINE,
+        L"SYSTEM\\CurrentControlSet\\Control",
+        0,
+        KEY_READ,
+        &hKey);
+    if (result != ERROR_SUCCESS) {
+        ERRLOG("Failed to RegOpenKeyExW, err: %ld", result);
+        return "Unknown boot";
+    }
+
+    result = ::RegQueryValueExW(
+        hKey,
+        L"PEFirmwareType",
+        NULL,
+        NULL,
+        reinterpret_cast<LPBYTE>(&firmwareType),
+        &size);
+
+    ::RegCloseKey(hKey);
+
+    if (result != ERROR_SUCCESS) {
+        ERRLOG("Failed to get PEFirmwareType from registry, err: %ld", result);
+        return "Unknown boot";
+    }
+
+    switch (firmwareType) {
+        case NUMBER1:
+            return BIOS_BOOT;
+        case NUMBER2:
+            return UEFI_BOOT;
+        default:
+            return UNKNOW_BOOT;
+    }
+}
+
+// 检查是否是WinPE环境
+bool DetectWinPE()
+{
+    char buffer[MAX_PATH];
+    DWORD ret = ::GetEnvironmentVariableA("WINDIR", buffer, MAX_PATH);
+    if (ret == 0 || ret > MAX_PATH) {
+        WARNLOG("Failed get environment variable 'WINDIR', errno: %d", ::GetLastError());
+    } else {
+        DBGLOG("'WINDIR' environment variable is: %s", buffer);
+        if (_stricmp(buffer, "X:\\Windows") == 0) {
+            INFOLOG("WinPE environment detected");
+            return true;
+        }
+    }
+
+    try {
+        std::wstring regVal =
+            Win32::RegGetString(HKEY_LOCAL_MACHINE, L"SYSTEM\\CurrentControlSet\\Control", L"SystemStartOptions");
+        INFOLOG("'SystemStartOptions' registry value is: %s", Module::FileSystemUtil::Utf16ToUtf8(regVal).c_str());
+        std::transform(regVal.begin(), regVal.end(), regVal.begin(), ::toupper);
+        if (regVal.find(L"MININT") != std::wstring::npos) {
+            INFOLOG("WinPE environment detected");
+            return true;
+        }
+    } catch (const Win32::RegistryError &e) {
+        ERRLOG("Failed to get SystemStartOptions from registry, err: %d", e.ErrorCode());
+        return false;
+    }
+
+    INFOLOG("No WinPE environment detected");
+    return false;
+}
+
+// 判断Windows环境是否是UEFI引导
+bool WinIsUEFIBoot()
+{
+    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    BCDStore store = BCDStore::OpenStore();
+    std::wstring recoveryPartition;
+    std::wstring efiPartition;
+    for (BCDObject obj : store.GetObjects()) {
+        if (obj.GetType() == BCDObject::BCDObjectType::GLOBAL_SETTINGS) {
+            std::string efiPath = obj.GetElement(Win32::BCDElementType::BCDLIBRARY_STRING_APPLICATIONPATH).ToString();
+            if (efiPath.find("bootmgfw.efi") != std::string::npos) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool IsUEFIBoot()
+{
+    if (!DetectWinPE()) {
+        INFOLOG("Not WinPE environment");
+        if (WinIsUEFIBoot()) {
+            INFOLOG("Windows is boot by UEFI.");
+            return true;
+        } else {
+            INFOLOG("Windows is boot by BIOS.");
+            return false;
+        }
+    } else {
+        INFOLOG("WinPE environment");
+        std::string bootType = GetBootTypeForWinPE();
+        if (bootType == UEFI_BOOT) {
+            INFOLOG("winPE is boot by UEFI.");
+            return true;
+        } else if (bootType == BIOS_BOOT) {
+            INFOLOG("winPE is boot by BIOS.");
+            return false;
+        } else {
+            INFOLOG("winPE is boot by unknown.");
+            return false;
+        }
+    }
 }
 #endif
 

@@ -12,9 +12,13 @@
 */
 #ifndef APPPLUGIN_NAS_WIN32HANDLER_H
 #define APPPLUGIN_NAS_WIN32HANDLER_H
-#include "ApplicationManager.h"
+
 #include <vector>
 #include <string>
+#include "ApplicationManager.h"
+#include <Wbemidl.h>
+
+#pragma comment(lib, "wbemuuid.lib")
 
 namespace FilePlugin {
 class Win32Handler : public ApplicationManager {
@@ -36,6 +40,8 @@ public:
     StringVolumeInfo ConvertVolumeInfo(const WinVolumeInfo &info);
     WinVolumeInfo ConvertStringVolumeInfo(const StringVolumeInfo &info);
     void LogStringVolumeInfo(const StringVolumeInfo &info);
+    std::wstring GetVolumeLabel(const std::wstring &volumePath);
+    DWORD GetPartitionNumber(const std::wstring& drive);
 
 private:
     void GetReourceList(FileResourceInfo &resourceInfo, int pageNo, int pageSize, const std::string &convertPath);
@@ -52,7 +58,6 @@ private:
     void GetVolumeSpaceInfo(const std::wstring &volumePath, ULONGLONG &totalSize, ULONGLONG &freeSize);
     void PopulateVolumeInfo(WinVolumeInfo &info, const std::wstring &volumePath);
     void PrintPartitionInfo(std::shared_ptr<DRIVE_LAYOUT_INFORMATION_EX> &driveLayout);
-    void GetDriveLayout(const std::wstring &physicalDrivePath);
     void HandleDeviceIoControlError(DWORD errorCode, std::shared_ptr<DRIVE_LAYOUT_INFORMATION_EX> &driveLayout);
     void TransformResultForVolume(
         AppProtect::ResourceResultByPage &returnValue, const FileResourceInfo &resourceInfo) override;
@@ -60,24 +65,26 @@ private:
     std::wstring FindRecoveryPartition(const std::string& bcdOutput);
     std::wstring NormalizePath(const std::wstring &path);
     std::wstring GetSafeVolumePath(const std::wstring &volumePath);
-    std::wstring GetVolumeLabel(const std::wstring &volumePath);
     std::wstring GetFileSystemType(const std::wstring &volumePath);
     std::wstring GetVolumeSerialNumber(const std::wstring &volumePath);
     std::wstring GetDriveTypeString(UINT driveType);
     std::wstring GetDriveLetterFromGUID(const std::wstring &volumePath);
     std::wstring GetVolumeName(const std::wstring volumeName);
-    std::wstring ConvertDevicePath(const std::wstring& devicePath);
     std::wstring ExtractPartition(const std::string& line, const std::string& key);
-    std::wstring TrimTrailingSpaces(const std::wstring& str);
     std::wstring CheckPartitionType(const std::wstring& drive);
     std::wstring GuidToWString(const GUID& guid);
     std::vector<int> GetPhysicalDriveForVolume(const std::wstring &volumePath, LONGLONG &offset);
     std::shared_ptr<DRIVE_LAYOUT_INFORMATION_EX> GetDiskLayout(HANDLE hDisk);
-    HANDLE OpenDisk(const std::wstring &physicalDrivePath);
     std::string ExecCommand(const std::string& command);
 
+    bool IsEqualGUIDString(const GUID& guid, const std::wstring& guidStr);
+    std::wstring GuidToString(const GUID& guid);
+    bool GetPartitionTypeGUID(wchar_t* drivePath, GUID& partitionTypeGuid);
+    std::wstring GuidToWString(GUID guid);
+
     std::unordered_map<LONGLONG, WinVolumeInfo *> m_vMap;  // 卷偏移量和卷信息
-    std::unordered_map<LONGLONG, GUID> m_pMap;     // 磁盘分区偏移量和分区GUID
+    std::unordered_map<LONGLONG, std::wstring> m_pMap;     // 磁盘分区偏移量和分区名
+    std::unordered_map<LONGLONG, std::wstring> m_gMap;     // 磁盘分区偏移量和分区GUID
 };
 }  // namespace FilePlugin
 

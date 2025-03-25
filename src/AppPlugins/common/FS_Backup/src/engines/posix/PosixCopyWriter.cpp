@@ -42,7 +42,7 @@ PosixCopyWriter::~PosixCopyWriter()
     INFOLOG("Destruct PosixCopyWriter!");
     if (m_thread.joinable()) {
         m_thread.join();
-    }
+    };
     if (m_pollThread.joinable()) {
         m_pollThread.join();
     }
@@ -53,8 +53,9 @@ int PosixCopyWriter::WriteMeta(FileHandle& fileHandle)
 {
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::WRITE_META, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write meta file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -132,6 +133,7 @@ void PosixCopyWriter::ProcessWriteData(FileHandle& fileHandle)
         if (!m_params.writeMeta && (fileHandle.m_file->m_size <= m_params.blockSize)) {
             fileHandle.m_file->SetDstState(FileDescState::END);
             m_controlInfo->m_noOfFilesCopied += fileHandle.m_file->m_originalFileCount;
+            DBGLOG("mark file copied for file: %s, file count %llu, total backup file: %llu", fileHandle.m_file->m_fileName.c_str(), fileHandle.m_file->m_originalFileCount, m_controlInfo->m_noOfFilesCopied.load());
         } else {
             fileHandle.m_file->SetDstState(FileDescState::WRITED);
 

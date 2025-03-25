@@ -51,6 +51,5 @@ function main ()
         exit 0
     fi
 }
- 
 
 main
