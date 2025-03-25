@@ -1,4 +1,16 @@
 @echo off
+:: 
+::  This file is a part of the open-eBackup project.
+::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+::  If a copy of the MPL was not distributed with this file, You can obtain one at
+::  http://mozilla.org/MPL/2.0/.
+:: 
+::  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+:: 
+::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+::
 
 rem ***************************************************************************************
 rem program name:          SqlserverRecover.bat     
@@ -8,9 +20,9 @@ rem time:                  2012-3-28
 rem function and description:  
 rem function              description
 rem GetTreadId            Get the specified value from input parameter
-rem                            parameter: %~1¡¢%~2   result£ºArgValue
+rem                            parameter: %~1ï¿½ï¿½%~2   resultï¿½ï¿½ArgValue
 rem GetValue              Get the specified value from input parameter
-rem                            parameter£º%~1¡¢%~2   result£ºArgValue
+rem                            parameterï¿½ï¿½%~1ï¿½ï¿½%~2   resultï¿½ï¿½ArgValue
 rem Separate              Separate the input parameter
 rem                            parameter:serial number; result:ARGFILENAME
 rem WaitService           Waitting until the status of database is running
