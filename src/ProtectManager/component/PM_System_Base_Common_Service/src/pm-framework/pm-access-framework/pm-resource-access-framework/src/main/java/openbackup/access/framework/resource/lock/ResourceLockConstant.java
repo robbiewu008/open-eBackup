@@ -32,6 +32,11 @@ public class ResourceLockConstant {
      */
     public static final String LOCK_REPLICATION_TASK_FLAG = "FS_DELETE_";
 
+    /**
+     * VMware恢复资源锁后缀
+     */
+    public static final String VMWARE_RESTORE_LOCK_SUFFIX = "restore.process@ignore";
+
     private ResourceLockConstant() {
     }
 }

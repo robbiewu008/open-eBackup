@@ -506,7 +506,9 @@ public class ProjectedObjectServiceImpl implements ProjectedObjectService {
         schedule.setAction(topic);
         schedule.setParams(params.toString());
         if (Trigger.CUSTOMIZE_INTERVAL.equals(dto.getTrigger()) && !TriggerAction.YEAR.equals(dto.getTriggerAction())) {
-            schedule.setDatOfWeek(String.join(",", dto.getDaysOfWeek()));
+            if (!VerifyUtil.isEmpty(dto.getDaysOfWeek())) {
+                schedule.setDatOfWeek(String.join(",", dto.getDaysOfWeek()));
+            }
             schedule.setDayOfMonth(dto.getDaysOfMonth());
             schedule.setDailyStartTime(dto.getWindowStart());
             schedule.setDailyEndTime(dto.getWindowEnd());

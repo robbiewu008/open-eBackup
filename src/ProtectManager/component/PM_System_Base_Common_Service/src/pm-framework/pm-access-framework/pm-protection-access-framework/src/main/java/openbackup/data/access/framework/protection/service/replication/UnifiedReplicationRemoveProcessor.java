@@ -26,6 +26,7 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
+import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.StringUtil;
 import openbackup.system.base.common.utils.UserUtils;
@@ -122,26 +123,76 @@ public class UnifiedReplicationRemoveProcessor implements ReplicationProtectionR
         if (deployTypeService.isE1000()) {
             List<Copy> copies = copyRestApi.queryCopiesByResourceId(resourceEntity.getUuid());
             Map<String, List<Copy>> copyByUnit = copies.stream().collect(Collectors.groupingBy(Copy::getStorageUnitId));
-            copyByUnit.keySet().forEach(unitId -> {
-                repCommonService.fillLocalDevice(request.getLocalDevice(), unitId);
-                Optional<StorageUnitVo> storageUnitVo = repCommonService.getStorageUnitVo(unitId);
-                if (!storageUnitVo.isPresent()) {
-                    throw new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Local storage not exist.");
-                }
-                String deviceId = storageUnitVo.get().getDeviceId();
-                List<ReplicationPairResponse> replicationPairs = getPairs(resourceEntity, deviceId);
-                if (!VerifyUtil.isEmpty(replicationPairs)) {
-                    List<String> targetEsns = new ArrayList<>();
-                    replicationPairs.forEach(pair -> targetEsns.add(pair.getRemoteDeviceEsn()));
-                    request.setTargetEsns(targetEsns);
-                }
-                dmeReplicationRestApi.removePair(request);
-            });
+            if (ResourceSubTypeEnum.VMWARE.equalsSubType(resourceEntity.getSubType())) {
+                removePairForVm(request, copyByUnit);
+            } else {
+                removePairForCommon(resourceEntity.getUuid(), request, copyByUnit);
+            }
             log.info("Send local remove pair request to dme success");
             return;
         }
         memberClusterService.consumeInAllMembers(memberClusterService::dispatchRemoveReplicationPair, request);
         log.info("remove pair request send to dme success, resource id:{}", request.getResourceId());
+    }
+
+    private void removePairForCommon(String fileSystemName, DmeRemovePairRequest request,
+        Map<String, List<Copy>> copyByUnit) {
+        copyByUnit.keySet().forEach(unitId -> {
+            repCommonService.fillLocalDevice(request.getLocalDevice(), unitId);
+            Optional<StorageUnitVo> storageUnitVo = repCommonService.getStorageUnitVo(unitId);
+            if (!storageUnitVo.isPresent()) {
+                throw new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Local storage not exist.");
+            }
+            String deviceId = storageUnitVo.get().getDeviceId();
+            removePair(fileSystemName, request, deviceId);
+        });
+    }
+
+    private void removePairForVm(DmeRemovePairRequest request, Map<String, List<Copy>> copyByUnit) {
+        copyByUnit.keySet().forEach(unitId -> {
+            repCommonService.fillLocalDevice(request.getLocalDevice(), unitId);
+            Optional<StorageUnitVo> storageUnitVo = repCommonService.getStorageUnitVo(unitId);
+            if (!storageUnitVo.isPresent()) {
+                throw new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Local storage not exist.");
+            }
+            String deviceId = storageUnitVo.get().getDeviceId();
+            Copy copy = copyByUnit.get(unitId).get(0);
+            String fileSystemName = getVmFileSystemName(copy);
+            removePair(fileSystemName, request, deviceId);
+        });
+    }
+
+    private void removePair(String fileSystemName, DmeRemovePairRequest request, String deviceId) {
+        List<ReplicationPairResponse> replicationPairs = getPairs(fileSystemName, deviceId);
+        if (!VerifyUtil.isEmpty(replicationPairs)) {
+            List<String> targetEsns = new ArrayList<>();
+            replicationPairs.forEach(pair -> targetEsns.add(pair.getRemoteDeviceEsn()));
+            log.info("Replication pair size:{}", replicationPairs.size());
+            request.setTargetEsns(targetEsns);
+        }
+        dmeReplicationRestApi.removePair(request);
+    }
+
+    private String getVmFileSystemName(Copy copy) {
+        JSONObject properties;
+        try {
+            properties = JSONObject.fromObject(copy.getProperties());
+        } catch (Exception e) {
+            return StringUtils.EMPTY; // 解析 JSON 失败
+        }
+        JSONObject vmwareMetadata = properties.getJSONObject("vmware_metadata");
+        if (VerifyUtil.isEmpty(vmwareMetadata)) {
+            return StringUtils.EMPTY;
+        }
+        JSONArray diskInfoArray = vmwareMetadata.getJSONArray("disk_info");
+        if (VerifyUtil.isEmpty(diskInfoArray)) {
+            return StringUtils.EMPTY;
+        }
+        JSONObject diskInfo = diskInfoArray.getJSONObject(0);
+        if (VerifyUtil.isEmpty(diskInfo)) {
+            return StringUtils.EMPTY;
+        }
+        return diskInfo.getString("DISKDEVICENAME", StringUtils.EMPTY);
     }
 
     @Override
@@ -197,8 +248,13 @@ public class UnifiedReplicationRemoveProcessor implements ReplicationProtectionR
         List<String> targetEsns = new ArrayList<>();
         if (!deployTypeService.isE1000()) {
             try {
-                String deviceId = memberClusterService.getCurrentClusterEsn();
-                List<ReplicationPairResponse> replicationPairs = getPairs(resourceEntity, deviceId);
+                List<ReplicationPairResponse> replicationPairs;
+                if (ResourceSubTypeEnum.VMWARE.equalsSubType(resourceEntity.getSubType())) {
+                    replicationPairs = getReplicationPairForVm(resourceEntity.getUuid());
+                } else {
+                    String deviceId = memberClusterService.getCurrentClusterEsn();
+                    replicationPairs = getPairs(resourceEntity.getUuid(), deviceId);
+                }
                 if (!VerifyUtil.isEmpty(replicationPairs)) {
                     log.info("Replication pair size:{}", replicationPairs.size());
                     replicationPairs.forEach(pair -> targetEsns.add(pair.getRemoteDeviceEsn()));
@@ -215,10 +271,22 @@ public class UnifiedReplicationRemoveProcessor implements ReplicationProtectionR
         return request;
     }
 
-    private List<ReplicationPairResponse> getPairs(ResourceEntity resourceEntity, String deviceId) {
+    private List<ReplicationPairResponse> getReplicationPairForVm(String resUuid) {
+        List<ReplicationPairResponse> replicationPairs = new ArrayList<>();
+        List<Copy> copies = copyRestApi.queryCopiesByResourceId(resUuid);
+        if (!VerifyUtil.isEmpty(copies)) {
+            Copy copy = copies.get(0);
+            String fileSystemName = getVmFileSystemName(copy);
+            String deviceId = memberClusterService.getCurrentClusterEsn();
+            replicationPairs = getPairs(fileSystemName, deviceId);
+        }
+        return replicationPairs;
+    }
+
+    private List<ReplicationPairResponse> getPairs(String fileSystemName, String deviceId) {
         QueryReplicationPairReq param = new QueryReplicationPairReq();
         param.setLocalResType("40");
-        param.setLocalResName(resourceEntity.getUuid());
+        param.setLocalResName(fileSystemName);
         return repCommonService.queryReplicationPair(deviceId, UserUtils.getBusinessUsername(), param);
     }
 

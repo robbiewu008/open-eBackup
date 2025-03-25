@@ -90,7 +90,7 @@ public class ProtectObjectConsistentStatusScheduler implements InitializingBean 
     }
 
     private boolean isNeedVerify() {
-        return isEnableVerifySwitch() && isSupportedDeployType();
+        return false;
     }
 
     private boolean isEnableVerifySwitch() {

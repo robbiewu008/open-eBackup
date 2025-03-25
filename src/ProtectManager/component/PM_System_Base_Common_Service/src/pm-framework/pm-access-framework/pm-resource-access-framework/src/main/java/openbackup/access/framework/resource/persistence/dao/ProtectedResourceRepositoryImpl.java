@@ -1314,6 +1314,28 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
         log.info("legoHostSighWithOld protectedResourcePos size: {}", protectedResourcePos.size());
     }
 
+    @Override
+    public List<ProtectedResource> queryResourcesByParentUuid(String parentId) {
+        LambdaQueryWrapper<ProtectedResourcePo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(!VerifyUtil.isEmpty(parentId), ProtectedResourcePo::getParentUuid, parentId);
+        List<ProtectedResourcePo> pos = protectedResourceMapper.selectList(queryWrapper);
+        return pos.stream().map(ProtectedResourcePo::toProtectedResource).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProtectedResource> queryResourcesByRootUuidAndSourceType(String rootUuid, String sourceType) {
+        LambdaQueryWrapper<ProtectedResourcePo> wrapper = new LambdaQueryWrapper<ProtectedResourcePo>()
+            .eq(ProtectedResourcePo::getRootUuid, rootUuid)
+            .eq(ProtectedResourcePo::getSourceType, sourceType);
+
+        return protectedResourceMapper.selectList(wrapper).stream()
+            .map(protectedResourcePo -> {
+                ProtectedResource resource = new ProtectedResource();
+                BeanUtils.copyProperties(protectedResourcePo, resource);
+                return resource;
+            }).collect(Collectors.toList());
+    }
+
     private void sighWithOldPrivateKey(ProtectedResourcePo protectedResourcePo) {
         log.info("legoHostSighWithOld uuid: {}", protectedResourcePo.getUuid());
         ProtectedResourceExtendInfoPo resourceExtendInfoPo = new ProtectedResourceExtendInfoPo();
