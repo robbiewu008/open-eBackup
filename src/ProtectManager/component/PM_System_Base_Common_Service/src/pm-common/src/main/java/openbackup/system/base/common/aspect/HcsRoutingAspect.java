@@ -17,9 +17,12 @@ import openbackup.system.base.common.annotation.HcsRouting;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONObject;
+import openbackup.system.base.service.DeviceHelper;
 import openbackup.system.base.service.IpRuleService;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.aspectj.lang.JoinPoint;
@@ -75,6 +78,9 @@ class HcsRoutingAspect {
     @Autowired
     IpRuleService ipRuleService;
 
+    @Autowired
+    DeviceHelper deviceHelper;
+
     /**
      * 访问外部方法切点 注解拦截
      */
@@ -100,6 +106,12 @@ class HcsRoutingAspect {
         + "&& (routingOnMethod() || routingOnType())")
     public Object invokeMethodWithRoute(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = new Object();
+        try {
+            // 先直接调用iam接口，若调不通再添加路由后调用
+            return joinPoint.proceed();
+        } catch (LegoCheckedException exception) {
+            log.error("Can not invoke Hcs iam rest api, need add ip rule.", ExceptionUtil.getErrorMessage(exception));
+        }
         Optional<HcsRouting> annotation = getAnnotation(joinPoint);
         if (!annotation.isPresent()) {
             log.warn("Annotation not found, wrong use of annotation.");
@@ -118,12 +130,16 @@ class HcsRoutingAspect {
         log.info("Adding routing before method call, destinationDomain:{}, port:{}, taskType:{}.", destinationDomain,
             port, taskType);
         try {
-            ipRuleService.addIpRule(destinationDomain, port, taskType);
-            result = joinPoint.proceed();
+            List<String> logicPortAddRequests = deviceHelper.getOpServiceLogicPortIp();
+            if (CollectionUtils.isNotEmpty(logicPortAddRequests)) {
+                ipRuleService.addIpRule(destinationDomain, port, taskType, logicPortAddRequests);
+            } else {
+                ipRuleService.addIpRule(destinationDomain, port, taskType);
+            }
+            return joinPoint.proceed();
         } finally {
             ipRuleService.deleteIpRule(destinationDomain, taskType);
         }
-        return result;
     }
 
     /**

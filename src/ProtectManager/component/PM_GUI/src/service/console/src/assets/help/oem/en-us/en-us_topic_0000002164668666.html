@@ -1,0 +1,69 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="No Restoration Sub-job Progress Is Reported for a Long Time During the SAP HANA Database Restoration">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164828418.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164668666">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>No Restoration Sub-job Progress Is Reported for a Long Time During the SAP HANA Database Restoration</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164668666"></a><a name="EN-US_TOPIC_0000002164668666"></a>
+  <h1 class="topictitle1">No Restoration Sub-job Progress Is Reported for a Long Time During the SAP HANA Database Restoration</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>During the restoration of an SAP HANA database, no further restoration sub-job progress is reported for a long time and the job is suspended with the following message displayed: Data protection agent host (<em>xx.xx.xx.xx</em>) started executing the restoration sub-job (<em>Job ID</em>); Client <em>(xx.xx.xx.xx</em>) started executing the restoration sub-job (<em>Job ID</em>); or Client <em>(xx.xx.xx.xx</em>) timed out when updating the restoration progress. Try again as instructed in the <em>Data Backup Feature Guide (for SAP HANA)</em>.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p>The memory space of the host where the client is installed is insufficient.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Use PuTTY to log in to the host where the client used for running the current restoration job is installed.</span><p></p><p>The IP address of the host where the client is installed is the IP address displayed in the restoration sub-job information. (You can view the IP address on the <strong>Jobs</strong> page of the OceanProtect WebUI.)</p> <p></p></li>
+     <li><span>Run the following command to view the memory usage:</span><p></p><pre class="screen">free -g</pre> <p>If the remaining memory is not enough to start a tenant database, the memory space is insufficient.</p> <p></p></li>
+     <li><span>Run the following command to query the process ID of the subjob:</span><p></p><pre class="screen">ps -ef|grep <em>Sub-job ID</em></pre> <p>The sub-job ID is displayed in the restoration job information. (You can view the sub-job ID on the <strong>Jobs</strong> page of the OceanProtect WebUI.) Example:</p> <pre class="screen">ps -ef|grep 381e7752-f2a6-11ef-8fb4-5413108d9acd
+root     1632604    3221  0 19:49 ?        00:00:00 sh -c python3 /opt/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/applications/informix/api.py Backup 1740397794345_11465832245704297853 779560ad-bc7d-4eff-84d4-3abf1aa1ad09 381e7752-f2a6-11ef-8fb4-5413108d9acd  1&gt;&gt;/opt/DataBackup/ProtectClient/ProtectClient-E//slog/Plugins/GeneralDBPlugin/generaldbplugin.log 2&gt;&amp;1
+root     1632605 1632604  1 19:49 ?        00:00:00 python3 /opt/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/applications/informix/api.py Backup 1740397794345_11465832245704297853 779560ad-bc7d-4eff-84d4-3abf1aa1ad09 381e7752-f2a6-11ef-8fb4-5413108d9acd
+root     1633656 1003005  0 19:50 pts/2    00:00:00 grep 381e7752-f2a6-11ef-8fb4-5413108d9acd</pre> <p>In the command output, <strong>1632604</strong>, <strong>1632605</strong>, and <strong>1633656</strong> following <strong>root</strong> are the process IDs of the sub-jobs.</p> <p></p></li>
+     <li><span>Run the following command to stop the current restoration job:</span><p></p><pre class="screen"><strong>kill -9 </strong><em>Process ID</em></pre> <p>If there are multiple process IDs, separate them with spaces. Example:</p> <pre class="screen">kill -9 1632604 1632605 1633656</pre> <p></p></li>
+     <li><span>Perform the restoration job again when the memory space is sufficient.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164828418.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

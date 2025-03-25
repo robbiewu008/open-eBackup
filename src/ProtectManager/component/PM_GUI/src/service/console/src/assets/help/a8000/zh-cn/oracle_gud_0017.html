@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="oracle_gud_0015.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -72,10 +72,11 @@ Next log sequence to archive   21
 Current log sequence           21</pre>
 </p></li><li><span>当未开启归档模式时，需执行命令开启归档模式。</span><p><ul><li>如果是单机场景，请执行以下命令。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>在开启数据库归档模式过程中会关闭数据库。此操作会有一定的停机时间，需要注意停机时间再进行处理。</p>
 </div></div>
-<pre class="screen"><strong>shutdown immediate;</strong>
-<strong>startup mount;</strong>
-<strong>alter database archivelog;</strong>
-<strong>alter database open;</strong></pre>
+<pre class="screen">shutdown immediate;
+startup mount;
+alter system set log_archive_dest_1='location=<em>归档日志存放路径</em>';
+alter database archivelog;
+alter database open;</pre>
 </li><li>如果是RAC集群场景，需要在每个节点执行以下命令。对于ASM实例，<em>归档日志存放路径</em>请使用ASM共享磁盘组路径。<pre class="screen">shutdown immediate;
 startup mount;
 alter system set log_archive_dest_1='location=<em>归档日志存放路径</em>';

@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="goldendb-00011.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -38,7 +38,7 @@
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="goldendb-00013"></a><a name="goldendb-00013"></a>
 
 <h1 class="topictitle1">步骤2：创建GoldenDB实例</h1>
-<div><div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="goldendb-00013__zh-cn_topic_0000001839142377_uicontrol338212673720">“<span id="goldendb-00013__zh-cn_topic_0000001839142377_text1538282653712">保护</span> &gt; 数据库 &gt; GoldenDB”</span>。</span></li><li><span>选择<span class="uicontrol">“<span>实例</span>”</span>页签。</span></li><li><span>单击<span class="uicontrol">“<span>创建</span>”</span>，创建<span>GoldenDB实例</span>。</span></li><li><span>配置实例信息。</span><p><p>相关参数说明如<a href="#goldendb-00013__table12398130131217">表1</a>所示。</p>
+<div><div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="goldendb-00013__zh-cn_topic_0000002199964685_uicontrol338212673720">“<span id="goldendb-00013__zh-cn_topic_0000002199964685_text1538282653712">保护</span> &gt; 数据库 &gt; GoldenDB”</span>。</span></li><li><span>选择<span class="uicontrol">“<span>实例</span>”</span>页签。</span></li><li><span>单击<span class="uicontrol">“<span>创建</span>”</span>，创建<span>GoldenDB实例</span>。</span></li><li><span>配置实例信息。</span><p><p>相关参数说明如<a href="#goldendb-00013__table12398130131217">表1</a>所示。</p>
 
 <div class="tablenoborder"><a name="goldendb-00013__table12398130131217"></a><a name="table12398130131217"></a><table cellpadding="4" cellspacing="0" summary="" id="goldendb-00013__table12398130131217" frame="border" border="1" rules="all"><caption><b>表1 </b>GoldenDB实例注册信息</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.1.2.4.2.2.2.3.1.1"><p>参数</p>
 </th>
@@ -53,7 +53,7 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><span>集群</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>选择要注册的集群。</p>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>选择已注册的集群。</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><span>实例</span></p>
@@ -77,15 +77,13 @@
 <tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><span>存储配置</span></p>
 </td>
 <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>在GoldenDB管理界面配置的集群实例级存储配置ini文件。</p>
-<div class="p">获取集群实例级存储配置ini文件：<ol type="a"><li>登录GoldenDB Insight运维平台。</li><li>在GoldenDB Insight管理台“资源管理 &gt; 存储配置”界面中，单击“新增”。</li><li>在“新增存储配置”的弹框中，输入“名称”，“存储方式”选择<span class="uicontrol">“LOCAL”</span>，单击“下载模板”，下载集群实例级存储配置ini文件。</li></ol>
-</div>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><span>数据节点</span></p>
 </td>
 <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.1.2.4.2.2.2.3.1.2 "><p>配置数据节点的主机和用户名。</p>
-<div class="p">获取配置数据节点的主机和用户名：<ol type="a"><li>登录GoldenDB Insight运维平台。</li><li>单击"租户管理 &gt; GoldenDB &gt; 实例 &gt; 数据节点 &gt; 分片"。</li><li>在<span class="uicontrol">“分片”</span>区域中单击对应的数据节点的主机。</li><li>在<span class="uicontrol">“属性”</span>界面中，获取配置数据节点的主机和用户名。<span class="uicontrol">“身份信息”</span>栏中<span class="uicontrol">“IP地址”</span>和<span class="uicontrol">“安装信息”</span>栏中的<span class="uicontrol">“实力用户”</span>分别对应配置数据节点的主机和用户名。</li></ol>
-</div>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>请在<a href="goldendb-00010.html#goldendb-00010__table209001815248">表2</a>获取数据节点的主机和用户名。</p>
+</div></div>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.1.2.4.2.2.2.3.1.1 "><p><span>GTM节点</span></p>

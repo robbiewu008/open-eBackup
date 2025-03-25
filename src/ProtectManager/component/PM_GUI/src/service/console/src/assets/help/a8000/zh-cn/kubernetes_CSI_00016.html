@@ -20,71 +20,41 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤8：执行备份">
+<meta name="DC.Title" content="获取kubeconfig配置文件">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00010.html">
+<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00014.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="kubernetes_CSI_00016">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤8：执行备份</title>
+<title>获取kubeconfig配置文件</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="kubernetes_CSI_00016"></a><a name="kubernetes_CSI_00016"></a>
 
-<h1 class="topictitle1">步骤8：执行备份</h1>
-<div><p>执行备份前将需要保护的资源关联到指定SLA策略，系统将对这些资源按照SLA策略进行保护，并根据SLA策略周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
-<div class="section"><h4 class="sectiontitle">注意事项</h4><ul><li>请确保生产存储预留空间大于待备份资源所占用的大小。</li></ul>
+<h1 class="topictitle1">获取kubeconfig配置文件</h1>
+<div><p id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_p536332173720">当后续需要通过kubeconfig认证的方式注册集群时，可参考本节操作获取kubeconfig配置文件。</p>
+<div class="section" id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_section174892715611"><h4 class="sectiontitle">操作步骤</h4><ol id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_ol178313466564"><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li1982204711151"><span>查询kubeconfig配置文件信息前，需要确认当前集群控制平面是否通过用户使用场景的地址连接。使用PuTTY，登录待获取配置文件的Kubernetes集群管理节点。</span></li><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li12832650151712"><span>执行<strong id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_b49313146184">kubectl cluster-info</strong>命令查询当前集群的控制平面。</span><p><p id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_p1750172941910"><span><img id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_image2167195018217" src="zh-cn_image_0000001736110414.png"></span></p>
+</p></li><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li1473418241010"><span>登录ManageOne运营面。</span></li><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li12845132665713"><span>依次选择<span class="uicontrol" id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_uicontrol23179619593">“服务列表 &gt; 云容器引擎CCE &gt; CCE集群”</span>，单击需要获取配置文件的Kubernetes集群名进入集群信息页面。</span></li><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li681519164"><span>查询连接信息，确认当前集群控制平面是否通过用户使用场景的地址连接。</span><p><div class="p" id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_p310122204213"><span><img id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_image4633442114210" src="zh-cn_image_0000001782965817.png"></span><ul id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_ul8525628162613"><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li18525928112618">否（如集群控制平面使用内网地址连接，而用户场景使用公网地址连接），需要根据使用场景切换kubectl的访问方式。操作步骤如下：<ol type="a" id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_ol1642539123216"><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li064233953213">登录Kubernetes集群管理节点，根据使用场景，切换kubectl的访问模式。<ul id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_ul15101113373313"><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li910193333318">VPC网络内接入访问请执行以下命令。<pre class="screen" id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_screen206203453343">kubectl config use-context internal </pre>
+</li><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li5958171893413">互联网接入访问请执行以下命令。<pre class="screen" id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_screen99707576352">kubectl config use-context external </pre>
+<div class="p" id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_p696983320377">互联网接入访问，如需开启双向认证请继续执行以下命令。<pre class="screen" id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_screen11851359153720">kubectl config use-context externalTLSVerify </pre>
 </div>
-<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>用于运行备份Pod的节点必须安装CSIDriver，并且备份的PVC也同时使用的是该CSIDriver。不支持没有安装CSIDriver的PVC备份。在CCE部署的Kubernetes集群中的CSIDriver将附带安装。在FusionCompute部署的Kubernetes集群中，CSIDriver可访问以下地址，参考FusionCompute对应版本的产品文档中的“管理Huawei Storage eSDK CSI组件”章节进行安装。<ul><li>企业用户：<a href="https://support.huawei.com/enterprise/zh/virtualization/fusioncompute-pid-8576912" target="_blank" rel="noopener noreferrer">点此前往</a></li><li>运营商用户：<a href="https://support.huawei.com/carrier/productNewOffering?col=product&amp;resTab=PD&amp;path=PBI1-21430725/PBI1-251363742/PBI1-21431663/PBI1-254217483/PBI1-8576912&amp;lang=zh&amp;scene=DS-HDX" target="_blank" rel="noopener noreferrer">点此前往</a></li></ul>
-</li><li>在生产环境导入备份Pod镜像时，应选择与生产节点同架构的镜像。</li><li>手动备份时，SLA中定义的参数（<span class="uicontrol">“<span>失败后自动重试</span>”</span>除外）会应用到手动备份任务中。</li><li>手动备份产生的副本保留时长按照SLA中定义的保留时长进行保留。<p>如果手动备份时选择的保护策略未在SLA中定义，则产生的备份副本保留时长为永久保留。如SLA中未定义全量备份，而手动备份时选择的是全量备份，则本次手动全量备份产生的副本保留时长为永久保留。</p>
-</li><li>如果SLA定义了复制策略或归档策略，则执行手动备份时，系统会按照SLA的定义执行一次复制或归档。</li></ul>
+</li></ul>
+</li><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li8389621183313">设置完成后再次执行<strong id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_b20119801395">kubectl cluster-info</strong>查询集群信息，确认切换访问模式成功。</li></ol>
+</li><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li18848195304">是，执行下一步。</li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">周期性备份命名空间</h4><ol><li><span>选择<span class="uicontrol" id="kubernetes_CSI_00016__zh-cn_topic_0000001963707218_zh-cn_topic_0000002000387257_zh-cn_topic_0000001963711934_uicontrol846217343614">“<span id="kubernetes_CSI_00016__zh-cn_topic_0000001963707218_zh-cn_topic_0000002000387257_zh-cn_topic_0000001963711934_text1046212303610">保护</span> &gt; 容器 &gt; <span id="kubernetes_CSI_00016__zh-cn_topic_0000001963707218_zh-cn_topic_0000002000387257_zh-cn_topic_0000001963711934_text149606591485">Kubernetes CSI</span>”</span>。</span></li><li><span>选择“<span>命名空间</span>”页签，选择需要保护的命名空间。</span></li><li><span>单击<span class="uicontrol">“<span>保护</span>”</span>。</span></li><li><span>选择SLA。</span><p><div class="p" id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_p16181740836">您也可以单击<span class="uicontrol" id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_uicontrol744210206420">“<span id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_text1873812341015">创建</span>”</span>，创建新的SLA。<div class="note" id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_note25947145710"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_p125947145711"><span id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
-</div></div>
-</div>
-</p></li><li><span>选择SLA后可根据使用场景启用或关闭<span class="uicontrol">“<span>应用一致性备份</span>”</span>功能。</span><p><div class="p">应用一致性备份的功能是在备份过程中捕获Kubernetes集群上同一时间点的数据，并且备份内存数据、静默应用程序，保证应用程序数据的一致性。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>进行应用一致性备份，需要用户在生产环境<span style="color:#282B33;">的Pod上配置前/后置命令</span>，配置操作示例请参见<a href="kubernetes_CSI_00066.html">应用一致性备份的生产环境Pod配置（通用）</a>。</p>
-</div></div>
-</div>
-</p></li><li><span>单击<span class="uicontrol" id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p><p id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p>
-</p></li><li><strong>可选：</strong><span>执行手动备份。</span><p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
-<ol type="a"><li>根据需要备份的类型，选择<span class="uicontrol">“<span>命名空间</span>”</span>、<span class="uicontrol">“数据集”</span>页签。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>选择<span class="uicontrol">“<span>命名空间</span>”</span>进行备份时，仅会备份与命名空间SLA相同的表，不会备份与命名空间SLA不同的表。</p>
-</div></div>
-</li><li>在需要备份的命名空间或数据集所在行右侧，单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_zh-cn_topic_0000001607531736_p870125314544">支持选择多个资源批量进行手动备份。勾选多个已保护的资源，在资源列表左上角选择“更多 &gt; <span id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_text122852865419">手动备份</span>”。</p>
-</div></div>
-</li><li>设置手动备份产生的副本名称。<p>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
-</li><li>选择保护策略：全量备份或永久增量（合成全量）备份。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_p13522118194919"><span id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
-</div></div>
-</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li></ol>
-</p></li></ol>
-</div>
-<div class="section"><h4 class="sectiontitle">周期性备份数据集</h4><ol><li><span>选择<span class="uicontrol" id="kubernetes_CSI_00016__kubernetes_csi_00011_zh-cn_topic_0000001839142377_uicontrol846217343614">“<span id="kubernetes_CSI_00016__kubernetes_csi_00011_zh-cn_topic_0000001839142377_text1046212303610">保护</span> &gt; 容器 &gt; <span id="kubernetes_CSI_00016__kubernetes_csi_00011_zh-cn_topic_0000001839142377_text149606591485">Kubernetes CSI</span>”</span>。</span></li><li><span>选择<span class="uicontrol">“<span>数据集</span>”</span>页签，选择需要保护的数据集。</span></li><li><span>单击<span class="uicontrol">“<span>保护</span>”</span>。</span></li><li><span>选择SLA。</span><p><div class="p" id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_p16181740836_1">您也可以单击<span class="uicontrol" id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_uicontrol744210206420_1">“<span id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_text1873812341015_1">创建</span>”</span>，创建新的SLA。<div class="note" id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_note25947145710_1"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_p125947145711_1"><span id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_ph1413818422327_1">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
-</div></div>
-</div>
-</p></li><li><span>选择SLA后可根据使用场景启用或关闭<span class="uicontrol" id="kubernetes_CSI_00016__kubernetes_csi_00017_uicontrol56798203554">“<span id="kubernetes_CSI_00016__kubernetes_csi_00017_text065615184191">应用一致性备份</span>”</span>功能。</span><p><div class="p" id="kubernetes_CSI_00016__kubernetes_csi_00017_p18841229193913">应用一致性备份的功能是在备份过程中捕获Kubernetes集群上同一时间点的数据，并且备份内存数据、静默应用程序，保证应用程序数据的一致性。<div class="note" id="kubernetes_CSI_00016__kubernetes_csi_00017_note15981240115620"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="kubernetes_CSI_00016__kubernetes_csi_00017_p75981840145610">进行应用一致性备份，需要用户在生产环境<span style="color:#282B33;">的Pod上配置前/后置命令</span>，配置操作示例请参见<a href="kubernetes_CSI_00066.html">应用一致性备份的生产环境Pod配置（通用）</a>。</p>
-</div></div>
-</div>
-</p></li><li><span>单击<span class="uicontrol" id="kubernetes_CSI_00016__zh-cn_topic_0000001792503842_uicontrol471113581111">“确定”</span>。</span><p><p id="kubernetes_CSI_00016__zh-cn_topic_0000001792503842_p25041111535">如果当前系统时间已晚于该SLA首次备份的开始时间，则关联备份SLA后可以选择在当前立即执行备份或者根据SLA中设置的备份策略等待下次调度。</p>
-</p></li><li><strong>可选：</strong><span>执行手动备份。</span><p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
-<ol type="a"><li>根据需要备份的类型，选择<span class="uicontrol">“<span>命名空间</span>”</span>、<span class="uicontrol">“数据集”</span>页签。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>选择<span class="uicontrol">“<span>命名空间</span>”</span>进行备份时，仅会备份与命名空间SLA相同的表，不会备份与命名空间SLA不同的表。</p>
-</div></div>
-</li><li>在需要备份的命名空间或数据集所在行右侧，单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_zh-cn_topic_0000001607531736_p870125314544_1">支持选择多个资源批量进行手动备份。勾选多个已保护的资源，在资源列表左上角选择“更多 &gt; <span id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_text122852865419_1">手动备份</span>”。</p>
-</div></div>
-</li><li>设置手动备份产生的副本名称。<p>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
-</li><li>选择保护策略：全量备份或永久增量（合成全量）备份。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_p13522118194919_1"><span id="kubernetes_CSI_00016__zh-cn_topic_0000001964713008_ph19374310343_1">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
-</div></div>
-</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li></ol>
-</p></li></ol>
+</p></li><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li3171177208"><a name="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li3171177208"></a><a name="zh-cn_topic_0000001779829653_li3171177208"></a><span>在Kubernetes集群管理节点，执行以下命令查询信息，并生成配置文件。</span><p><pre class="screen" id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_screen16171137132010">kubectl config view --flatten &gt; kubeconfig.yaml</pre>
+</p></li><li id="kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li159819349216"><span>使用传输工具（如SFTP），下载<a href="#kubernetes_CSI_00016__zh-cn_topic_0000001779829653_li3171177208">6</a>中执行的命令所在目录的“kubeconfig.yaml”文件。</span></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="kubernetes_CSI_00010.html">备份命名空间/数据集</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="kubernetes_CSI_00014.html">备份前准备（适用于CCE）</a></div>
 </div>
 </div>
 

@@ -1,0 +1,125 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Viewing NAS File Systems">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164645224.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164805028">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Viewing NAS File Systems</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164805028"></a><a name="EN-US_TOPIC_0000002164805028"></a>
+
+<h1 class="topictitle1">Viewing NAS File Systems</h1>
+<div><p>After a storage device is added to the <span>OceanProtect</span>, it is automatically scanned by the <span>OceanProtect</span> and the detected file systems are displayed.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol"><b><span id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002199964685_text847555644011"><strong>Protection</strong></span> &gt; File Systems &gt; NAS File Systems</b></span>.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002199964685_p1811010145186">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002199964685_uicontrol1211016146184"><b><span id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002199964685_text51105144188"><strong>Protection</strong></span> &gt; File Services &gt; NAS File Systems</b></span>.</p>
+</div></div>
+<p><a href="#EN-US_TOPIC_0000002164805028__table2382789197">Table 1</a> describes NAS file system information.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002164805028__table2382789197"></a><a name="table2382789197"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164805028__table2382789197" frame="border" border="1" rules="all"><caption><b>Table 1 </b>NAS file system information</caption><colgroup><col style="width:20.169999999999998%"><col style="width:79.83%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20.169999999999998%" id="mcps1.3.2.2.1.2.3.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.83%" id="mcps1.3.2.2.1.2.3.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>Name of a NAS file system.</p>
+<p>Click the name of a NAS file system to view its overview, copy data, jobs, file system information, NFS share information, and CIFS share information.</p>
+<ul><li><strong>Overview</strong><p>The name, SLA information, job execution time, and total number of copies are displayed.</p>
+</li><li><strong>Copy Data</strong><p>You can search for copies by year, month, or day.</p>
+<p>If <span><img src="en-us_image_0000002200131677.png"></span> is displayed below the time, copies exist at that time.</p>
+<p id="EN-US_TOPIC_0000002164805028__p148931546102114">Click <strong id="EN-US_TOPIC_0000002164805028__b0934328123913"><span id="EN-US_TOPIC_0000002164805028__text6231156172516"><strong>Clear Index</strong></span></strong> to delete all indexes of a resource.</p>
+<div class="note" id="EN-US_TOPIC_0000002164805028__note442313152720"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="EN-US_TOPIC_0000002164805028__ul183831433163112"><li id="EN-US_TOPIC_0000002164805028__li1838353343113">If a copy is being indexed, it cannot be deleted until the indexing is complete.</li><li id="EN-US_TOPIC_0000002164805028__li12383153315316">If <span id="EN-US_TOPIC_0000002164805028__text1910522642811"><strong>Automatic Indexing</strong></span> is enabled for the SLA associated with a resource and <span id="EN-US_TOPIC_0000002164805028__text1157112002916"><strong>Automatic Indexing</strong></span> is enabled for the backup policy, you need to disable <span id="EN-US_TOPIC_0000002164805028__text1914650122916"><strong>Automatic Indexing</strong></span> or disassociate the resource from the SLA before deleting the index. If <span id="EN-US_TOPIC_0000002164805028__text14895235309"><strong>Automatic Indexing</strong></span> is enabled for the archiving policy, you need to disassociate the resource from the SLA before deleting the index.</li></ul>
+</div></div>
+</li><li><strong>Jobs</strong><p>All jobs, including backup and restoration jobs, are displayed.</p>
+</li><li><strong>File System Information</strong><p>The owning device, vStore, and capacity of file systems are displayed.</p>
+</li><li><strong>NFS Share Information</strong><p>The NFS share path, client, type, and permission level are displayed.</p>
+</li><li><strong>CIFS Share Information</strong><p>The CIFS share name, share path, user or user group, type, and permission level are displayed.</p>
+</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span><strong>Storage Device</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>Name of the owning storage device of the NAS file system.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span><strong>Share Protocol</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>Share protocol used by the NAS file system. The value can be NFS, CIFS, NFS and CIFS, or none.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><strong>vStore</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>vStore to which the NAS file system belongs.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span><strong>SLAs</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>Name of the SLA associated with the NAS file system.</p>
+<p>Click an SLA name to view its basic information and associated resources.</p>
+<ul><li>Basic information<p>The backup policy and advanced settings are displayed.</p>
+</li><li>Associated resources<p>Resources associated with the SLA are displayed.</p>
+</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span><strong>SLA Compliance</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><div class="p">Whether a backup job is successfully executed based on the backup interval or backup window set in the SLA.<ul id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002164820458_en-us_topic_0000002164820450_ul1823814519293"><li id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002164820458_en-us_topic_0000002164820450_li9238184572919"><strong id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002164820458_en-us_topic_0000002164820450_b1092516394564">Met</strong>: If the backup time of a backup job (except for the first full backup) meets the backup time window or backup interval requirements and the backup job is executed successfully, SLA compliance is met.</li><li id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002164820458_en-us_topic_0000002164820450_li189142052112912"><strong id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002164820458_en-us_topic_0000002164820450_b541520442564">Missed</strong>: If the backup time does not meet the backup time window or backup interval requirements, for example, if the backup interval set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup interval or backup window.</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><p><span><strong>Protection Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>Indicates whether the NAS file system is protected.</p>
+<ul><li><span><strong>Unprotected</strong></span>: The NAS file system is not associated with any SLA, or the NAS file system is associated with an SLA but protection is disabled.</li><li><span><strong>Protected</strong></span>: The NAS file system is associated with an SLA and protection is enabled.</li><li><span><strong>Creating</strong></span>: The NAS file system is associated with an SLA and protection is being created.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.169999999999998%" headers="mcps1.3.2.2.1.2.3.2.3.1.1 "><div class="p"><strong id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002164820458_b827118125517">Tag</strong><div class="note" id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002164820458_note1330311543247"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002164820458_p630385412417"><span id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002164820458_ph5374928181810">This parameter is available only in 1.6.0 and later versions.</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="79.83%" headers="mcps1.3.2.2.1.2.3.2.3.1.2 "><p>If a tag has been added for the resource, the tag name is displayed. Otherwise, <strong id="EN-US_TOPIC_0000002164805028__en-us_topic_0000002164820458_b1959642011219">--</strong> is displayed.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164645224.html">NAS File Systems (Applicable to OceanProtect X Series Backup Appliances)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

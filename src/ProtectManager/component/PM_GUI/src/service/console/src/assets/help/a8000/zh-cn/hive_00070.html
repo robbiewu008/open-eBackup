@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="MRS生产环境kerberos认证的主体密码过期后，更新认证文件">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="hive_00066.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="hive_00070">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>MRS生产环境kerberos认证的主体密码过期后，更新认证文件</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hive_00070"></a><a name="hive_00070"></a>
+
+<h1 class="topictitle1">MRS生产环境kerberos认证的主体密码过期后，更新认证文件</h1>
+<div id="body0000001596457712"><div class="section" id="hive_00070__section13513973417"><h4 class="sectiontitle">现象描述</h4><p id="hive_00070__p108972478341">大数据的应用集群离线。</p>
+</div>
+<div class="section" id="hive_00070__section03342543510"><h4 class="sectiontitle">可能原因</h4><p id="hive_00070__p1498733103512">用于kerberos认证的认证文件过期。</p>
+</div>
+<div class="section" id="hive_00070__section7993114463512"><h4 class="sectiontitle">处理步骤</h4><ol id="hive_00070__ol2210125813513"><li id="hive_00070__li13210958183518"><span>使用PuTTY，登录应用集群中任意一个节点。</span></li><li id="hive_00070__li798532010361"><span>执行以下命令使配置文件生效。</span><p><pre class="screen" id="hive_00070__screen64357411366">source /opt/hadoopclient/bigdata_env</pre>
+</p></li><li id="hive_00070__li195212329361"><span>执行以下命令通过注册应用集群的kerberos认证主体登录大数据生产节点。命令执行过程中需要输入主体名的密码。</span><p><pre class="screen" id="hive_00070__screen86164329376">kinit<em id="hive_00070__i61103713717"> 主体名</em></pre>
+<div class="note" id="hive_00070__note1041911385113"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="hive_00070__p13419638171116">如果提示密码过期，请按照界面提示修改密码。如果没有提示密码过期，则不执行之后的步骤，并联系技术支持工程师协助解决。</p>
+</div></div>
+</p></li><li id="hive_00070__li193155133815"><span>登录MRS管理页面。</span></li><li id="hive_00070__li11414161718127"><span>选择<span class="uicontrol" id="hive_00070__uicontrol211644662914">“系统 &gt; 权限 &gt; 用户”</span>进入用户管理页面。</span></li><li id="hive_00070__li14407849390"><a name="hive_00070__li14407849390"></a><a name="li14407849390"></a><span>在数据库应用接入用户所在行单击<span class="uicontrol" id="hive_00070__uicontrol163101192302">“更多 &gt; 下载认证凭据”</span>，下载认证所需的配置文件和keytab文件。</span></li><li id="hive_00070__li2216164735213"><span>选择<span class="uicontrol" id="hive_00070__uicontrol1039981818301">“<span id="hive_00070__text2761064366">系统</span> &gt; <span id="hive_00070__text3497173011366">安全</span> &gt; Kerberos”</span>进入Kerberos认证页面。</span></li><li id="hive_00070__li6280759195313"><span>在需要修改的数据库名所在行单击<span class="uicontrol" id="hive_00070__uicontrol41305515301">“<span id="hive_00070__text743811156375">更多</span> &gt; <span id="hive_00070__text17618141574216">修改</span>”</span>，使用<a href="#hive_00070__li14407849390">步骤6</a>下载的相关文件替换配置文件和keytab文件。</span></li><li id="hive_00070__li107209501379"><span>在所有客户端所在的主机以<strong id="hive_00070__b1656115211511">root</strong>用户执行以下命令停止databackup.agent.jar程序，然后重新在OceanProtect管理界面查看集群状态。若集群状态仍然异常，请联系技术支持工程师协助解决。</span><p><pre class="screen" id="hive_00070__screen19511435385">ps -efww | grep 'databackup.agent.jar' | grep 'java' | grep -v 'grep' | awk '{print $2}' | xargs -i kill -9 {};</pre>
+</p></li></ol>
+<p id="hive_00070__p1455343093617"></p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="hive_00066.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

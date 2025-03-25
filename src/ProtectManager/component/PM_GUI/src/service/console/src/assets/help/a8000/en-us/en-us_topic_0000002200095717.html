@@ -1,0 +1,99 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Registering an SAP on Oracle Database">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164609394.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200095717">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Registering an SAP on Oracle Database</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200095717"></a><a name="EN-US_TOPIC_0000002200095717"></a>
+
+<h1 class="topictitle1">Step 1: Registering an SAP on Oracle Database</h1>
+<div><p>Before backing up and restoring an SAP on Oracle database, you need to register the SAP on Oracle database with the <span>OceanProtect</span>.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200095717__en-us_topic_0000002199964685_uicontrol5488174711523"><b><span id="EN-US_TOPIC_0000002200095717__en-us_topic_0000002199964685_text54881947155210"><strong>Protection</strong></span> &gt; <span id="EN-US_TOPIC_0000002200095717__en-us_topic_0000002199964685_text1248814713526"><strong>Applications</strong></span> &gt; SAP on Oracle</b></span>.</span></li><li><span>Register an SAP on Oracle instance.</span><p><p>Click <span class="uicontrol"><b>Register</b></span>. <a href="#EN-US_TOPIC_0000002200095717__table129516129585">Table 1</a> describes the parameters for registering an SAP on Oracle instance.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200095717__table129516129585"></a><a name="table129516129585"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200095717__table129516129585" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Registration parameters</caption><colgroup><col style="width:23.7%"><col style="width:57.330000000000005%"><col style="width:18.970000000000002%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.2.2.2.2.4.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.2.2.2.2.4.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="23.7%" headers="mcps1.3.2.2.2.2.2.2.4.1.1 "><p>Name</p>
+</td>
+<td class="cellrowborder" valign="top" width="57.330000000000005%" headers="mcps1.3.2.2.2.2.2.2.4.1.2 "><p>User-defined database instance name.</p>
+</td>
+<td class="cellrowborder" valign="top" width="18.970000000000002%" headers="mcps1.3.2.2.2.2.2.2.4.1.2 "><p>-</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.7%" headers="mcps1.3.2.2.2.2.2.2.4.1.1 "><p>Hosts</p>
+</td>
+<td class="cellrowborder" valign="top" width="57.330000000000005%" headers="mcps1.3.2.2.2.2.2.2.4.1.2 "><p>Host where the database resides.</p>
+</td>
+<td class="cellrowborder" valign="top" width="18.970000000000002%" headers="mcps1.3.2.2.2.2.2.2.4.1.2 "><p>-</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.7%" headers="mcps1.3.2.2.2.2.2.2.4.1.1 "><p>SAP Instance ID</p>
+</td>
+<td class="cellrowborder" valign="top" width="57.330000000000005%" headers="mcps1.3.2.2.2.2.2.2.4.1.2 "><p><strong>SAPSID</strong> set during SAP ERP installation.</p>
+</td>
+<td class="cellrowborder" rowspan="4" valign="top" width="18.970000000000002%" headers="mcps1.3.2.2.2.2.2.2.4.1.2 "><p>Set them by referring to <a href="en-us_topic_0000002164609358.html">Preparations for Backup</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.4.1.1 "><p>Oracle Instance ID</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.4.1.2 "><p><strong>DBSID</strong> set during SAP ERP installation.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.4.1.1 "><p>Database Username</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.4.1.2 "><p>Name of the created Oracle database user.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.4.1.1 "><p>Database Password</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.4.1.2 "><p>Password of the created Oracle database user.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164609394.html">Backing Up an SAP on Oracle Database</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

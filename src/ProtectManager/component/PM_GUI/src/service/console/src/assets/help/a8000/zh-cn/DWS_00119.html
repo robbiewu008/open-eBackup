@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="对于GaussDB(DWS) 8.0.0版本，集群副本恢复到新集群，因下发恢复命令的节点拷贝cluster_static_config文件出错，恢复任务失败">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="DWS_00109.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="DWS_00119">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>对于GaussDB(DWS) 8.0.0版本，集群副本恢复到新集群，因下发恢复命令的节点拷贝cluster_static_config文件出错，恢复任务失败</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="DWS_00119"></a><a name="DWS_00119"></a>
+
+<h1 class="topictitle1">对于GaussDB(DWS) 8.0.0版本，集群副本恢复到新集群，因下发恢复命令的节点拷贝cluster_static_config文件出错，恢复任务失败</h1>
+<div><div class="section"><h4 class="sectiontitle"><span style="color:#5B9BD5;">故障现象</span></h4><p>GaussDB(DWS) 8.0.0版本集群副本恢复到新集群，恢复任务失败，任务详情中显示“Roach命令执行失败”。</p>
+</div>
+<div class="section"><h4 class="sectiontitle"><span style="color:#5B9BD5;">可能原因</span></h4><p>下发恢复命令的GaussDB(DWS)节点元数据恢复已成功，但将cluster_static_config文件拷贝到其他节点时出错，导致数据恢复失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle"><span style="color:#5B9BD5;">处理建议</span></h4><ol><li><span>使用PuTTY，登录已部署客户端的GaussDB(DWS)集群的CN节点。</span></li><li id="DWS_00119__li1047516520486"><a name="DWS_00119__li1047516520486"></a><a name="li1047516520486"></a><span>依次执行以下命令切换到集群用户并加载环境变量。</span><p><pre class="screen">su - <em>集群用户名</em></pre>
+<pre class="screen">source <em>环境变量文件路径</em></pre>
+</p></li><li id="DWS_00119__li17991838125416"><a name="DWS_00119__li17991838125416"></a><a name="li17991838125416"></a><span>执行<strong>cd $GAUSSLOG/roach/controller/</strong>命令进入日志文件目录，查看以<span class="uicontrol">“roach_controller”</span>开头的日志文件中是否包含以下错误信息：</span><p><p>cluster_static_config: No such file or directory</p>
+<p>示例如下：</p>
+<p><span><img src="zh-cn_image_0000002199998529.png"></span></p>
+<ul><li>如果包含错误信息，请重新执行一次恢复任务。</li><li>如果不包含错误信息，请执行<a href="#DWS_00119__li1246910361002">4</a>。</li></ul>
+</p></li><li id="DWS_00119__li1246910361002"><a name="DWS_00119__li1246910361002"></a><a name="li1246910361002"></a><span>登录已部署客户端的GaussDB(DWS)集群的其他CN节点，执行<a href="#DWS_00119__li1047516520486">2</a>~<a href="#DWS_00119__li17991838125416">3</a>。如果所有节点都不包含该错误信息，请收集日志并联系华为技术支持工程师协助处理。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="DWS_00109.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

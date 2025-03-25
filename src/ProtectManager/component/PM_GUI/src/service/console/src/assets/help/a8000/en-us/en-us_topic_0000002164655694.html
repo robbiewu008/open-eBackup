@@ -1,0 +1,69 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Enabling the Archive Mode and Incremental Mode">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164655722.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164655694">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Enabling the Archive Mode and Incremental Mode</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164655694"></a><a name="EN-US_TOPIC_0000002164655694"></a>
+
+<h1 class="topictitle1">Step 1: Enabling the Archive Mode and Incremental Mode</h1>
+<div><p id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_p69553228414">Before performing backup, you need to enable the archive mode for the database. Before performing differential backup and incremental backup, you need to enable the incremental mode for the database.</p>
+<div class="section" id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_section1745019477327"><h4 class="sectiontitle">Enabling the Incremental Mode</h4><ol id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_ol175521639203517"><li id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_li1555213397356"><span>Use PuTTY to log in to the DB2 database host.</span></li><li id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_li141141942163515"><span>Run the following command to switch to the DB2 database user, for example, <strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b12209172110534">db2inst1</strong>:</span><p><pre class="screen" id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_screen227810563419">su - <strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b184971445123019"><em id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_i1283155415251">db2inst1</em></strong></pre>
+</p></li><li id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_li528573184217"><span>Run the following command on all nodes in the cluster to enable the incremental mode. <em id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_i18385152681815"><strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b146757528541">test</strong></em> indicates the user-defined database name.</span><p><pre class="screen" id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_screen1740862914312">db2 update db cfg for <em id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_i385212458519"><strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b431416420517">test</strong></em> using trackmod on</pre>
+</p></li></ol>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_section14818145013482"><h4 class="sectiontitle">Enabling the Archive Mode</h4><ol id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_ol2793194320491"><li id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_li1779314318493"><span>Use PuTTY to log in to the DB2 database host.</span></li><li id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_li19381194162817"><span>Run the following command to switch to the DB2 database user, for example, <strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b15154644191714">db2inst1</strong>:</span><p><pre class="screen" id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_screen838118412285">su - <em id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_i184513541264"><strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b1885252867">db2inst1</strong></em></pre>
+</p></li><li id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_li03615183296"><span>Run the following commands to enter and query the database user directory:</span><p><pre class="screen" id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_screen199781311143015">cd
+pwd</pre>
+<p id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_p17905104510363">In the following command output, <strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b1816117400418">/home/db2inst1</strong> indicates the database user directory.</p>
+<p id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_p16711115443616"><span><img id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_image3754145563617" src="en-us_image_0000002118835246.png"></span></p>
+</p></li><li id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_li194328477126"><span>Create a folder path with the same name as the database under the database user directory to store archive logs. The following uses the <strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b1853874916581">/home/db2inst1/TEST</strong> path as an example.</span><p><pre class="screen" id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_screen12674199181319">mkdir -p<em id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_i1874988194710"> /home/db2inst1/TEST</em></pre>
+<p id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_p17536382404">Under the database user directory, run the <strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b1857193816419">ls</strong> command to check whether the folder path is successfully created. The command output is as follows:</p>
+<p id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_p7431111884012"><span><img id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_image10446019114020" src="en-us_image_0000002118838862.png"></span></p>
+</p></li><li id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_li631159143612"><span>Run the following command to enable the archive mode. <em id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_i102922025194"><strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b112921125492">test</strong></em> indicates the user-defined database name.</span><p><pre class="screen" id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_screen431135911363">db2 update db cfg for <em id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_i1431159133610"><strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b19311859153614">test</strong></em> using LOGARCHMETH1 disk:<em id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_i53115912363">/home/db2inst1/TEST</em></pre>
+</p></li><li id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_li4211103311014"><span>Create a folder path with the same name as the database under the database user directory for offline backup. The following uses the <strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b12512354175815">/home/db2inst1/TEAT1</strong> path as an example.</span><p><pre class="screen" id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_screen3212183331010">mkdir -p <em id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_i103449273467">/home/db2inst1/TEAT1</em></pre>
+<p id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_p15212153319101">Under the database user directory, run the <strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b172122033171018">ls</strong> command to check whether the folder path is successfully created. The command output is as follows:</p>
+<p id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_p42121733121015"><span><img id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_image11212113381018" src="en-us_image_0000002154368001.png"></span></p>
+</p></li><li id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_li1115433119114"><span>Run the following command to enable offline backup. <em id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_i761814295455"><strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b146175295458">test</strong></em> indicates the user-defined database name.</span><p><pre class="screen" id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_screen6154143118116">db2 backup db <em id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_i8262152352415"><strong id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_b1470610224247">test</strong></em> on all nodes to <em id="EN-US_TOPIC_0000002164655694__en-us_topic_0000002118282942_i1761192817246">/home/db2inst1/TEAT1</em></pre>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164655722.html">Backing Up DB2 Databases or Tablespace Sets</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

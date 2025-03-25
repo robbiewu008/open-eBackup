@@ -43,4 +43,6 @@ public class LocalStorageInfoRes {
     private String clusterName;
 
     private String clusterId;
+
+    private String softwarePatch;
 }

@@ -71,7 +71,7 @@ export class DbTwoRestoreComponent implements OnInit {
   isClusterInstance = false;
   originalLocation;
   disableOriginLocation = false;
-
+  connectTipsLabel = null;
   readonly PAGESIZE = CommonConsts.PAGE_SIZE * 10;
 
   scriptErrorTip = {
@@ -199,6 +199,21 @@ export class DbTwoRestoreComponent implements OnInit {
     this.resourceData = isString(this.rowCopy.resource_properties)
       ? JSON.parse(this.rowCopy.resource_properties)
       : {};
+    if (
+      this.rowCopy?.resource_sub_type ===
+      DataMap.Resource_Type.dbTwoDatabase.value
+    ) {
+      this.connectTipsLabel = this.i18n.get(
+        'protection_db_two_retsore_connect_database_tips_label'
+      );
+    } else if (
+      this.rowCopy?.resource_sub_type ===
+      DataMap.Resource_Type.dbTwoTableSet.value
+    ) {
+      this.connectTipsLabel = this.i18n.get(
+        'protection_db_two_retsore_connect_tablespace_tips_label'
+      );
+    }
   }
 
   getClusters(recordsTemp?, startPage?, labelParams?: any) {

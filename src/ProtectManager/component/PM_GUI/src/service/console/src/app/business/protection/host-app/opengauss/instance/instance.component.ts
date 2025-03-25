@@ -51,7 +51,7 @@ export class InstanceComponent implements OnInit {
         }
       },
       {
-        key: 'instanceStatus',
+        key: 'instanceState',
         name: this.i18n.get('common_status_label'),
         filter: {
           type: 'select',

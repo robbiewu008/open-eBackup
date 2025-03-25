@@ -1,0 +1,109 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="即时挂载/即时恢复任务失败，界面提示存储设备扫描存储资源失败">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="cnware_00103.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="cnware_00111">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>即时挂载/即时恢复任务失败，界面提示存储设备扫描存储资源失败</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="cnware_00111"></a><a name="cnware_00111"></a>
+  <h1 class="topictitle1">即时挂载/即时恢复任务失败，界面提示存储设备扫描存储资源失败</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">故障现象</h4>
+    <p>对CNware虚拟机执行即时挂载/即时恢复，<span>本产品</span>任务界面提示存储设备扫描存储资源失败，多次重试后仍然无法扫描出存储资源，任务失败。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <ul>
+     <li>当即时挂载/即时恢复选择的目标CNware主机与<span>本产品</span>的逻辑端口连接不通时，会导致扫描失败。</li>
+     <li><span>本产品</span>的NFS服务未全部开启。</li>
+     <li><span>本产品</span>共享路径过多，超出内部限制，导致CNware扫描文件系统数据不完整。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li><span>检查即时挂载/即时恢复选择的目标CNware主机网络，确认其与<span>本产品</span>的备份网络连通。</span><p></p>
+      <ol type="a">
+       <li>使用PuTTY登录宿主机。</li>
+       <li>执行以下命令检查网络，其中xxx.xxx.xx.xx为<span>本产品</span>的备份网络IP。<pre class="screen">ping <em>xxx.xxx.xx.xx</em></pre></li>
+      </ol> <p></p></li>
+     <li><span>确认NFS服务全部开启。</span><p></p>
+      <ol type="a">
+       <li>登录DeviceManager管理界面。</li>
+       <li>单击“设置 &gt; 文件服务 &gt; NFS服务”。</li>
+       <li>单击<span class="uicontrol">“修改”</span>按钮。</li>
+       <li>勾选所有的NFS服务。</li>
+       <li>单击<span class="uicontrol">“保存”</span>。</li>
+      </ol> <p></p></li>
+     <li><span>清理<span>本产品</span>共享路径。</span><p></p>
+      <ol type="a">
+       <li>登录目标主机。</li>
+       <li>执行以下命令观察返回值。<pre class="screen">showmount -e <em>备份存储NFS逻辑端口ip</em></pre>
+        <ul>
+         <li>无返回值，说明当前没有共享路径，参考<a href="#cnware_00111__li93637435237">4</a>。</li>
+         <li>有返回值，参考<a href="#cnware_00111__li38481727193911">3.c</a>。</li>
+        </ul></li>
+       <li id="cnware_00111__li38481727193911"><a name="cnware_00111__li38481727193911"></a><a name="li38481727193911"></a>对比返回值。
+        <ol class="substepthirdol">
+         <li>登录DeviceManager管理界面。</li>
+         <li>单击“服务 &gt; 文件服务 &gt; 文件系统”。</li>
+         <li>单击<span class="uicontrol">“创建时间”</span>排序图标进行降序排序。</li>
+         <li>对比查询到的返回值。若返回值中最新的文件系统和界面中的文件系统不一致，证明已超出内部限制。</li>
+         <li>请联系技术支持工程师协助修改。
+          <ol>
+           <li>单击“服务 &gt; 文件服务 &gt; 共享”。</li>
+           <li>在不使用的共享路径所在行，单击“更多 &gt; 删除”。</li>
+          </ol></li>
+        </ol></li>
+       <li>删除不必要的IP地址。
+        <ol class="substepthirdol">
+         <li>查看返回值，每个共享路径都有对应的客户端IP列表，找到IP列表（IP数量大于20个）较大的共享，复制共享名称。</li>
+         <li>登录DeviceManager管理界面。</li>
+         <li>单击“服务 &gt; 文件服务 &gt; 共享 &gt; NFS共享”。</li>
+         <li>单击共享名称的搜索按钮，输入复制的共享名称进行搜索。</li>
+         <li>单击共享路径，删除不必要的IP地址，或改用IP地址段替代同网段的IP地址，例如：192.168.0.0/24,*。</li>
+        </ol></li>
+      </ol> <p></p></li>
+     <li id="cnware_00111__li93637435237"><a name="cnware_00111__li93637435237"></a><a name="li93637435237"></a><span>重新执行即时挂载/即时恢复任务。</span></li>
+    </ol>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="cnware_00103.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

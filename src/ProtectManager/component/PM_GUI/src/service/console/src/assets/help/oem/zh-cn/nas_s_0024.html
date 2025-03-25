@@ -17,34 +17,34 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="步骤5：注册NAS共享（适用于除OceanStor V5/OceanStor Pacific/NetApp ONTAP以外的存储设备）">
+  <meta name="DC.Title" content="（可选）步骤5：注册NAS共享">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="nas_s_0020.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="nas_s_0024">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>步骤5：注册NAS共享（适用于除OceanStor V5/OceanStor Pacific/NetApp ONTAP以外的存储设备）</title>
+  <title>（可选）步骤5：注册NAS共享</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="nas_s_0024"></a><a name="nas_s_0024"></a>
-  <h1 class="topictitle1">步骤5：注册NAS共享（适用于除OceanStor V5/OceanStor Pacific/NetApp ONTAP以外的存储设备）</h1>
+  <h1 class="topictitle1">（可选）步骤5：注册NAS共享</h1>
   <div>
-   <p>当您需要保护的NAS共享所在存储设备类型不是OceanStor V5、OceanStor Pacific或者NetApp ONTAP，或者您只需要保护某个NAS共享时，可以手动注册NAS共享到<span>本产品</span>。</p>
+   <p>如果您已经通过添加存储设备（OceanStor V5、OceanStor Pacific或者NetApp ONTAP）注册NAS共享，则跳过本章节。当您需要保护的NAS共享所在存储设备类型不是OceanStor V5、OceanStor Pacific或者NetApp ONTAP，或者您只需要保护某个NAS共享时，可以手动注册NAS共享到<span>本产品</span>。</p>
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>选择<span class="uicontrol" id="nas_s_0024__zh-cn_topic_0000001839142377_uicontrol79081114124111">“<span id="nas_s_0024__zh-cn_topic_0000001839142377_text99081414144119">保护</span> &gt; 文件系统 &gt; NAS共享”</span>。</span><p></p>
-      <div class="note" id="nas_s_0024__zh-cn_topic_0000001839142377_note397892312184">
+     <li><span>选择<span class="uicontrol" id="nas_s_0024__zh-cn_topic_0000002199964685_uicontrol79081114124111">“<span id="nas_s_0024__zh-cn_topic_0000002199964685_text99081414144119">保护</span> &gt; 文件系统 &gt; NAS共享”</span>。</span><p></p>
+      <div class="note" id="nas_s_0024__zh-cn_topic_0000002199964685_note397892312184">
        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="nas_s_0024__zh-cn_topic_0000001839142377_p5978112341818">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0024__zh-cn_topic_0000001839142377_uicontrol129783237180">“<span id="nas_s_0024__zh-cn_topic_0000001839142377_text10978172391818">保护</span> &gt; 文件服务 &gt; NAS共享”</span>。</p>
+        <p id="nas_s_0024__zh-cn_topic_0000002199964685_p5978112341818">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0024__zh-cn_topic_0000002199964685_uicontrol129783237180">“<span id="nas_s_0024__zh-cn_topic_0000002199964685_text10978172391818">保护</span> &gt; 文件服务 &gt; NAS共享”</span>。</p>
        </div>
       </div> <p></p></li>
      <li><span>单击<span class="uicontrol">“<span>注册</span>”</span>，注册NAS共享。</span><p></p>
@@ -68,14 +68,8 @@
          </thead>
          <tbody>
           <tr>
-           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p><span>FQDN/IP</span></p></td>
-           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.2 "><p id="nas_s_0024__p10295125555515">访问NAS共享的FQDN名称或者业务IP地址。</p> <p id="nas_s_0024__p1278513189326">FQDN名称格式为<em id="nas_s_0024__i1721710819358">NAS共享所在的存储设备名称</em>.<em id="nas_s_0024__i12733111103514">存储设备所加入域的域名</em>。如NAS共享所在的存储设备名称为Huawei.Storage，存储设备所加入域的域名为huawei.com，则FQDN名称为Huawei.Storage.huawei.com。</p>
-            <div class="note" id="nas_s_0024__note93324353618">
-             <span class="notetitle"> 说明： </span>
-             <div class="notebody">
-              <p id="nas_s_0024__p53320310365">如果需要填写FQDN名称，请在<span id="nas_s_0024__text45421758151311">本产品</span>设备管理界面配置DNS服务，使<span id="nas_s_0024__text4110125920135">本产品</span>可以访问外部域名地址。配置DNS服务的详细操作，请参见<a href="nas_s_0099.html">配置DNS服务</a>。</p>
-             </div>
-            </div></td>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p>域名/IP</p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.2 "><p id="nas_s_0024__p10295125555515">访问NAS共享的域名或者业务IP地址。</p></td>
           </tr>
           <tr>
            <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p><span>共享名称</span></p></td>
@@ -94,8 +88,8 @@
            <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.2 "><p>当待保护的NAS共享开启<span class="uicontrol">“协议加密”</span>后，需要勾选此选项。</p></td>
           </tr>
           <tr>
-           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p><span>代理主机</span></p></td>
-           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.2 "><p>选择执行备份任务的代理主机。</p></td>
+           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p>客户端</p></td>
+           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.2 "><p>选择执行备份任务的客户端。</p></td>
           </tr>
           <tr>
            <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.2.2.1.2.2.3.1.1 "><p><span>过滤规则</span></p></td>
@@ -133,7 +127,7 @@
             <span class="notetitle"> 说明： </span>
             <div class="notebody">
              <ul id="nas_s_0024__hdfs_00014_ul53571451001">
-              <li id="nas_s_0024__hdfs_00014_li133577516015">配置为Kerberos服务器上已配置的主体名，并且该主体名需要对要访问的资源具备读写权限。</li>
+              <li id="nas_s_0024__hdfs_00014_li133577516015">配置为大数据平台人机用户名称，并且该用户需要对要访问的资源具备读、写和执行权限。</li>
               <li id="nas_s_0024__hdfs_00014_li17687183713589">如果恢复HDFS文件时要同时恢复HDFS ACL信息，那么此处注册的主体名需要具备HDFS超级用户权限。举例如下：
                <ul id="nas_s_0024__hdfs_00014_ul10684153715580">
                 <li id="nas_s_0024__hdfs_00014_li176852373586">如果大数据平台为FusionInsight或CDH，您可以在大数据平台将主体名加入supergroup中，使其具备HDFS超级用户权限。</li>
@@ -156,7 +150,7 @@
          </tr>
          <tr id="nas_s_0024__hdfs_00014_row183523512112">
           <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.2.2.3.2.3.1.1 "><p id="nas_s_0024__hdfs_00014_p15351835151118"><span id="nas_s_0024__hdfs_00014_text114821547144418">配置文件</span></p></td>
-          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.3.2.3.1.2 "><p id="nas_s_0024__hdfs_00014_p1958995015013">Kerberos认证过程中使用的<span class="filepath" id="nas_s_0024__hdfs_00014_filepath1558985065011">“.conf”</span>配置文件（如：krb5.conf）。请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img id="nas_s_0024__hdfs_00014_image958945045017" src="zh-cn_image_0000001792397360.png"></span>上传至管理界面。</p>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.3.2.3.1.2 "><p id="nas_s_0024__hdfs_00014_p133131443215">Kerberos认证过程中使用的<span class="filepath" id="nas_s_0024__hdfs_00014_filepath1558985065011">“.conf”</span>配置文件（如：krb5.conf）。请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img id="nas_s_0024__hdfs_00014_image958945045017" src="zh-cn_image_0000002200055329.png"></span>上传至管理界面。</p> <p id="nas_s_0024__hdfs_00014_p1958995015013"><span id="nas_s_0024__ph1061015712220">以MRS产品为例，具体获取方法可以参考对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">《MapReduce Service 产品文档》</a>的“导出认证凭据文件”章节。</span></p>
            <div class="p" id="nas_s_0024__hdfs_00014_p335113531110">
             由于Kerberos自身的问题，当配置文件中存在<span class="uicontrol" id="nas_s_0024__hdfs_00014_uicontrol1462119340419">“renew_lifetime”</span>参数时，需将其注释，否则可能导致注册失败。如：
             <pre class="screen" id="nas_s_0024__hdfs_00014_screen43313539415">#renew_lifetime = 7d</pre>
@@ -172,7 +166,7 @@
          </tr>
          <tr id="nas_s_0024__hdfs_00014_row1728863716141">
           <td class="cellrowborder" valign="top" width="23.24%" headers="mcps1.3.2.2.2.2.3.2.3.1.1 "><p id="nas_s_0024__hdfs_00014_p112881037171415"><span id="nas_s_0024__hdfs_00014_text19503531104618">Keytab文件</span></p></td>
-          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.3.2.3.1.2 "><p id="nas_s_0024__hdfs_00014_p374615219184">当<span class="uicontrol" id="nas_s_0024__hdfs_00014_uicontrol6701435124612">“<span id="nas_s_0024__hdfs_00014_text1170193513465">配置方式</span>”</span>选择<span class="uicontrol" id="nas_s_0024__hdfs_00014_uicontrol67464241815">“<span id="nas_s_0024__hdfs_00014_text8150194415468">Keytab文件</span>”</span>时，才需要配置该参数。Kerberos认证过程中使用的<span class="filepath" id="nas_s_0024__hdfs_00014_filepath19934532131518">“.keytab”</span>文件（如：krb5.keytab）。</p> <p id="nas_s_0024__hdfs_00014_p1836535991910">请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img id="nas_s_0024__hdfs_00014_image2782840141712" src="zh-cn_image_0000001792557096.png"></span>上传至管理界面。</p></td>
+          <td class="cellrowborder" valign="top" width="76.75999999999999%" headers="mcps1.3.2.2.2.2.3.2.3.1.2 "><p id="nas_s_0024__hdfs_00014_p374615219184">当<span class="uicontrol" id="nas_s_0024__hdfs_00014_uicontrol6701435124612">“<span id="nas_s_0024__hdfs_00014_text1170193513465">配置方式</span>”</span>选择<span class="uicontrol" id="nas_s_0024__hdfs_00014_uicontrol67464241815">“<span id="nas_s_0024__hdfs_00014_text8150194415468">Keytab文件</span>”</span>时，才需要配置该参数。Kerberos认证过程中使用的<span class="filepath" id="nas_s_0024__hdfs_00014_filepath19934532131518">“.keytab”</span>文件（如：krb5.keytab）。</p> <p id="nas_s_0024__hdfs_00014_p1836535991910">请联系Kerberos服务器管理员从Kerberos服务器获取该文件，单击<span><img id="nas_s_0024__hdfs_00014_image2782840141712" src="zh-cn_image_0000002164814330.png"></span>上传至管理界面。</p> <p id="nas_s_0024__hdfs_00014_p2080111116220"><span id="nas_s_0024__ph437661619211">以MRS产品为例，具体获取方法可以参考对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">《MapReduce Service 产品文档》</a>的“导出认证凭据文件”章节。</span></p></td>
          </tr>
         </tbody>
        </table>

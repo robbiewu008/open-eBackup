@@ -48,6 +48,9 @@
                 <lv-form-item>
                     <lv-form-label>
                         {{'protection_overwrite_policy_label' | i18n}}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_overwrite_policy_hcs_help_label' | i18n}}"
+                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                            lvColorState='true'></i>
                     </lv-form-label>
                     <lv-form-control>
                         <lv-radio-group formControlName="slaOverwrite">
@@ -71,6 +74,8 @@
                             <lv-group [lvGutter]="'8px'" lvDirection='vertical' class="mgt-8">
                                 <lv-checkbox lvValue="APPLY_TO_ALL">
                                     {{'protection_apply_sla_in_hcs_project_label' | i18n:[selectedTitle] }}
+                                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_hcs_sla_help_label' | i18n}}"
+                                        lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
                                 </lv-checkbox>
                                 <lv-checkbox lvValue="APPLY_TO_NEW">
                                     {{'protection_apply_sla_in_new_hcs_project_label' | i18n:[selectedTitle] }}

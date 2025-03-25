@@ -82,7 +82,10 @@ public class ResourceRedisLockServiceImpl implements ResourceRedisLockService {
             log.info("Lock id: {} format is abnormal", lockId);
             return false;
         }
-        if (!jobService.isJobPresent(lockId.replaceFirst(ResourceLockConstant.REDIS_LOCK_ID_PREFIX, ""))) {
+
+        String jobId = lockId.replaceFirst(ResourceLockConstant.REDIS_LOCK_ID_PREFIX, "")
+                .replaceFirst(ResourceLockConstant.VMWARE_RESTORE_LOCK_SUFFIX, "");
+        if (!jobService.isJobPresent(jobId)) {
             log.info("Lock id: {} related job is not exist", lockId);
             // 如果查询不到任务ID,则校验复制场景。如果无法根据资源id查询到副本，则不加锁
             filterAbnormalResourcesInRepCase(resources, lockId);

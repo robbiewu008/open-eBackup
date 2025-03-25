@@ -26,12 +26,12 @@ import { Router } from '@angular/router';
 import { MessageboxService, MessageService } from '@iux/live';
 import { RegisterDatabaseComponent as RegisterSaphanaDatabaseComponent } from 'app/business/protection/application/saphana/register-database/register-database.component';
 import { RegisterInstanceComponent as RegisterSaphanaInstanceComponent } from 'app/business/protection/application/saphana/register-instance/register-instance.component';
-import { RegisterComponent as RegisterAntDBInstanceComponent } from 'app/business/protection/database/ant-db/register/register.component';
 import { BackupSetComponent } from 'app/business/protection/big-data/hbase/backup-set/backup-set.component';
 import { ClustersComponent } from 'app/business/protection/big-data/hbase/clusters/clusters.component';
 import { FilesetsComponent } from 'app/business/protection/big-data/hdfs/filesets/filesets.component';
 import { HuaWeiStackListComponent } from 'app/business/protection/cloud/huawei-stack/stack-list/huawei-stack-list.component';
 import { OpenstackListComponent } from 'app/business/protection/cloud/openstack/openstack-list/openstack-list.component';
+import { RegisterComponent as RegisterAntDBInstanceComponent } from 'app/business/protection/database/ant-db/register/register.component';
 import { ClusterComponent as ClickHouseClusterComponent } from 'app/business/protection/host-app/click-house/cluster/cluster.component';
 import { DatabaseComponent as ClickHouseDatabaseComponent } from 'app/business/protection/host-app/click-house/database/database.component';
 import { TabelSetComponent as ClickHouseTablesetComonent } from 'app/business/protection/host-app/click-house/tabel-set/tabel-set.component';
@@ -104,7 +104,6 @@ import {
   MODAL_COMMON,
   OperateItems,
   OpHcsServiceApiService,
-  Page_Size_Options,
   ProjectedObjectApiService,
   ProtectedEnvironmentApiService,
   ProtectedResourceApiService,
@@ -116,11 +115,11 @@ import {
   SearchResource,
   SnmpApiService,
   SwitchService,
-  Table_Size,
   VirtualResourceService,
   WarningMessageService
 } from 'app/shared';
 import { WarningBatchConfirmsService } from 'app/shared/components/warning-batch-confirm/warning-batch-confirm.component';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { InfoMessageService } from 'app/shared/services/info-message.service';
@@ -141,21 +140,19 @@ import {
   has,
   includes,
   isEmpty,
+  isNil,
   map as _map,
   mapValues,
   omit,
   set,
   size,
   trim,
-  values,
-  isNil,
-  find
+  values
 } from 'lodash';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SaponoracleRegisterDatabaseComponent } from '../../protection/application/saponoracle/register-database/register-database.component';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { GetLabelOptionsService } from '../../../shared/services/get-labels.service';
+import { SaponoracleRegisterDatabaseComponent } from '../../protection/application/saponoracle/register-database/register-database.component';
 
 @Component({
   selector: 'aui-resource-list',
@@ -585,20 +582,18 @@ export class ResourceListComponent implements OnInit, OnDestroy {
         sub_type: item.subType,
         belong_cluster: item['environment']['name'],
         owned_instance: item.parentName,
-        instanceStatus: DataMap.openGauss_InstanceStatus.offline.value,
-        sync_mode: item.environment.extendInfo.syncMode
+        instanceState: DataMap.openGauss_InstanceStatus.offline.value
       });
     } else {
       assign(item, {
         sub_type: item.subType,
         belong_cluster: item['environment']['name'],
         owned_instance: item.parentName,
-        instanceStatus:
+        instanceState:
           item.extendInfo.instanceState ===
           DataMap.openGauss_InstanceStatus.normal.value
             ? DataMap.openGauss_InstanceStatus.normal.value
-            : DataMap.openGauss_InstanceStatus.offline.value,
-        sync_mode: item.environment.extendInfo.syncMode
+            : DataMap.openGauss_InstanceStatus.offline.value
       });
     }
   }

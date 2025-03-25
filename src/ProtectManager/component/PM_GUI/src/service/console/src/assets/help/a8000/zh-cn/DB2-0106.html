@@ -1,0 +1,78 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="通过手动挂载文件系统方式对DB2进行恢复">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="DB2-0101.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="DB2-0106">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>通过手动挂载文件系统方式对DB2进行恢复</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="DB2-0106"></a><a name="DB2-0106"></a>
+
+<h1 class="topictitle1">通过手动挂载文件系统方式对DB2进行恢复</h1>
+<div><ol><li><span>选择<span class="uicontrol" id="DB2-0106__zh-cn_topic_0000002199964685_uicontrol21435597359">“<span id="DB2-0106__zh-cn_topic_0000002199964685_text4379114911434">保护</span> &gt; 数据库 &gt; DB2”</span>。</span></li><li><span>单击<span class="uicontrol">“<span>数据库</span>”</span>页签，单击“操作”列后的<span><img src="zh-cn_image_0000002235843817.png"></span>，勾选对应参数，查询对应备份资源的资源ID。</span></li><li><span>登录DeviceManager，具体操作请参考<a href="DB2-0103.html">登录DeviceManager管理界面</a>。</span></li><li><span>单击<span class="uicontrol">“<span>服务</span> &gt; <span>文件服务</span> &gt; <span>文件系统</span>”</span>通过备份资源ID查找对应的文件系统。</span></li><li id="DB2-0106__li1990732885112"><span>单击文件系统名称，在弹出的对话框中单击<span class="uicontrol" id="DB2-0106__uicontrol09361928205213">“<span id="DB2-0106__text7948104805212">共享</span>”</span>页签，查看<span class="uicontrol" id="DB2-0106__uicontrol12569817185310">“<span id="DB2-0106__text95981340145312">NFS共享</span>”</span>。</span></li><li><span>单击共享路径名称，在弹出的对话框中单击<span class="uicontrol">“权限”</span>页签，单击<span class="uicontrol">“增加”</span>，增加客户端权限。</span></li><li><span>在<span class="uicontrol">“增加客户端”</span>对话框中，按照需求配置相应参数，配置完成后单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li><li id="DB2-0106__li1080013437585"><a name="DB2-0106__li1080013437585"></a><a name="li1080013437585"></a><span>单击<span class="uicontrol">“<span>服务</span> &gt; <span>网络</span> &gt; <span>逻辑端口</span>”</span>选择一个数据协议为NFS+CIFS的逻辑端口，并记录其IP地址取值。</span></li><li><span>使用PuTTY，登录DB2数据库主机。</span></li><li><span>执行<strong>mount -t nfs -o vers=3,retry=1,retrans=20,soft,nolock,timeo=60 <em>IP地址</em>:/<em>待挂载的文件系统名称</em> /<em>目标主机的挂载目录</em></strong>命令，挂载文件系统。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>命令中填写的IP地址为<a href="#DB2-0106__li1080013437585">8</a>记录的IP地址取值。</p>
+</div></div>
+</p></li><li><span>挂载成功后，切换至数据库用户，进入到挂载目录根据需求执行以下命令恢复副本。</span><p><ul><li>PowerHA与单机环境恢复<ul><li>全量恢复<ul><li>原位置恢复<pre class="screen">db2 restore db <em style="color:#24292E;">数据库名称</em> FROM <em style="color:#24292E;">全量备份的路径</em> taken at <em style="color:#24292E;">备份时间点</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li><li>新位置恢复<pre class="screen">db2 restore db <em style="color:#24292E;">源数据库名称</em> FROM <em style="color:#24292E;">全量备份的路径</em> taken at <em style="color:#24292E;">备份时间点</em> <em style="color:#24292E;">数据库路径</em> INTO <em style="color:#24292E;">数据库名称</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li></ul>
+</li></ul>
+<ul><li>增量恢复与差异恢复<ul><li>原位置恢复<pre class="screen">db2 restore db <em style="color:#24292E;">数据库名称</em> incremental from <em style="color:#24292E;">差异备份路径</em> taken at <em>备份时间点</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li><li>新位置恢复<pre class="screen">db2 restore db <em style="color:#24292E;">源数据库名称</em> incremental from <em style="color:#24292E;">差异备份路径</em> taken at <em style="color:#24292E;">备份时间点</em> <em style="color:#24292E;">数据库路径命令</em> INTO <em style="color:#24292E;">数据库名称</em> <span style="color:#24292E;"> logtarget </span><em style="color:#24292E;">日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li></ul>
+</li><li>日志恢复<ul><li>原位置恢复<pre class="screen">db2 restore db <em style="color:#24292E;">数据库名称</em> FROM <em style="color:#24292E;">全量备份的路径</em> taken at <em style="color:#24292E;">备份时间点</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li><li>新位置恢复<pre class="screen">db2 restore db <em style="color:#24292E;">源数据库名称</em> FROM <em style="color:#24292E;">全量备份的路径</em> taken at <em style="color:#24292E;">备份时间点</em> <em style="color:#24292E;">数据库路径命令</em> INTO <em style="color:#24292E;">数据库名称</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li></ul>
+</li></ul>
+</li><li>DPF环境恢复<ul><li>全量恢复<ul><li>原位置恢复<pre class="screen">db2_all db2 restore db <em style="color:#24292E;">数据库名称</em> FROM <em style="color:#24292E;">差异备份路径</em> taken at <em style="color:#24292E;">备份时间点</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li><li>新位置恢复<pre class="screen">db2_all db2 restore db <em style="color:#24292E;">源数据库名称</em> FROM <em style="color:#24292E;">差异备份路径</em> taken at <em style="color:#24292E;">备份时间点</em> <em style="color:#24292E;">数据库路径命令</em> INTO <em style="color:#24292E;">数据库名称</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li></ul>
+</li><li>增量恢复与差异恢复<ul><li>原位置恢复<pre class="screen">db2_all db2 restore db <em style="color:#24292E;">数据库名称</em> incremental FROM <em style="color:#24292E;">差异备份路径</em> taken at <em>备份时间点</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li><li>新位置恢复<pre class="screen">db2_all db2 restore db <em style="color:#24292E;">源数据库名称</em> incremental FROM <em style="color:#24292E;">差异备份路径</em> taken at <em style="color:#24292E;">备份时间点</em> <em style="color:#24292E;">数据库路径命令</em> INTO <em style="color:#24292E;">数据库名称</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li></ul>
+</li></ul>
+</li><li>HADR环境恢复<ul><li>全量恢复<ul><li>原位置恢复<pre class="screen">db2 restore db <em style="color:#24292E;">数据库名称</em> FROM <em style="color:#24292E;">差异备份路径</em> taken at <em>备份时间点</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li><li>新位置恢复<pre class="screen">db2_all db2 restore db <em style="color:#24292E;">源数据库名称</em> FROM <em style="color:#24292E;">差异备份路径</em> taken at <em style="color:#24292E;">备份时间点</em> <em style="color:#24292E;">数据库路径命令</em> INTO <em style="color:#24292E;">数据库名称</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li></ul>
+</li><li>增量恢复与差异恢复<ul><li>原位置恢复<pre class="screen">db2_all db2 restore db <em style="color:#24292E;">数据库名称</em> incremental FROM <em style="color:#24292E;">差异备份路径</em> taken at <em>备份时间点</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li><li>新位置恢复<pre class="screen">db2_all db2 restore db <em style="color:#24292E;">源数据库名称</em> incremental FROM <em style="color:#24292E;">差异备份路径</em> taken at <em style="color:#24292E;">备份时间点</em> <em style="color:#24292E;">数据库路径命令</em> INTO <em style="color:#24292E;">数据库名称</em> logtarget <em>日志目标路径</em> newlogpath <em style="color:#24292E;">新日志路径</em> without prompting</pre>
+</li></ul>
+</li></ul>
+</li></ul>
+</p></li><li><span>执行完恢复操作后，继续执行<strong>umount -lf /<em>目标主机的挂载目录</em></strong>命令，卸载文件系统。</span></li><li><span>返回DeviceManager管理界面。</span></li><li><span>单击<span class="uicontrol">“<span>服务</span> &gt; <span>文件服务</span> &gt; <span>文件系统</span>”</span>查询已增加客户端权限的文件系统。</span></li><li><span>单击文件系统名称，在弹出的对话框中单击<span class="uicontrol" id="DB2-0106__db2-0106_uicontrol09361928205213">“<span id="DB2-0106__db2-0106_text7948104805212">共享</span>”</span>页签，查看<span class="uicontrol" id="DB2-0106__db2-0106_uicontrol12569817185310">“<span id="DB2-0106__db2-0106_text95981340145312">NFS共享</span>”</span>。</span></li><li><span>单击共享路径名称，在弹出的对话框中单击<span class="uicontrol">“权限”</span>页签，在操作列单击<span class="uicontrol">“<span>更多</span> &gt; <span>移除</span>”</span>取消文件系统增加的NFS共享访问权限。</span></li></ol>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="DB2-0101.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

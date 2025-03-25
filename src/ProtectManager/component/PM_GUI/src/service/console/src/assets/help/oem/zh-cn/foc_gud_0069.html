@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="foc_gud_0066.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
@@ -37,7 +37,7 @@
   <h1 class="topictitle1">管理集群/主机/虚拟机/虚拟机组</h1>
   <div>
    <p><span>本产品</span>支持对集群、主机、虚拟机或虚拟机组执行修改保护、移除保护、激活保护或禁用保护等操作。本节以虚拟机为例说明相关操作，集群、主机或虚拟机组的操作与此相同。</p>
-   <p>您需要登录管理界面，选择<span class="uicontrol">“<span id="foc_gud_0069__zh-cn_topic_0000001839142377_text1833943234612">保护</span> &gt; 虚拟化 &gt; FusionOne Compute”</span>，查找到需要执行操作的虚拟机。</p>
+   <p>您需要登录管理界面，选择<span class="uicontrol">“保护 &gt; 虚拟化 &gt; FusionOne Compute”</span>，查找到需要执行操作的虚拟机。</p>
    <p>具体操作说明如<a href="#foc_gud_0069__table24934294919">表1</a>所示。</p>
    <div class="tablenoborder">
     <a name="foc_gud_0069__table24934294919"></a><a name="table24934294919"></a>
@@ -59,52 +59,65 @@
      </thead>
      <tbody>
       <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p><span>修改保护</span></p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要重新为虚拟机关联SLA、增加或移除保护的虚拟机磁盘、修改代理主机等信息时，可以通过修改保护计划来实现。修改后下次备份将按照新的保护计划执行。</p> <p><strong>注意事项</strong></p>
+       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>修改保护</p></td>
+       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要重新为虚拟机关联SLA、增加或移除保护的虚拟机磁盘、修改客户端等信息时，可以通过修改保护计划来实现。修改后下次备份将按照新的保护计划执行。</p> <p><strong>注意事项</strong></p>
         <ul>
-         <li id="foc_gud_0069__hcs_gud_0064_li11841562511">修改保护时不会影响当前正在运行的保护任务，下个保护周期开始执行新的保护计划。</li>
-         <li id="foc_gud_0069__hcs_gud_0064_li18622582511">如果执行过备份任务，修改保护时，重新配置SLA策略（由未开启副本校验的SLA更换为已开启副本校验的SLA），修改保护后，首次备份任务为非全量备份的任务会转为全量备份任务。</li>
-         <li id="foc_gud_0069__hcs_gud_0064_li12711557142017">如果执行过备份任务，资源关联的SLA参数发生变化（由未开启副本校验变为开启副本校验），SLA参数变化后，对资源进行保护时，首次备份任务为非全量备份的任务会转为全量备份任务。</li>
+         <li id="foc_gud_0069__zh-cn_topic_0000002200147037_li16343131892419">修改保护时不会影响当前正在运行的保护任务，下个保护周期开始执行新的保护计划。</li>
+         <li id="foc_gud_0069__zh-cn_topic_0000002200147037_li10803202534614">如果执行过备份任务，修改保护时，重新配置SLA策略（由未开启副本校验的SLA更换为已开启副本校验的SLA），修改保护后，首次备份任务为非全量备份的任务会转为全量备份任务。</li>
+         <li id="foc_gud_0069__zh-cn_topic_0000002200147037_li4487145984212"><p id="foc_gud_0069__zh-cn_topic_0000002200147037_p94855141463"><a name="foc_gud_0069__zh-cn_topic_0000002200147037_li4487145984212"></a><a name="zh-cn_topic_0000002200147037_li4487145984212"></a>如果执行过备份任务，资源关联的SLA参数发生变化（由未开启副本校验变为开启副本校验），SLA参数变化后，对资源进行保护时，首次备份任务为非全量备份的任务会转为全量备份任务。</p></li>
+         <li id="foc_gud_0069__zh-cn_topic_0000002200147037_li140522162517">当资源关联的SLA保护策略需要变更时，建议您在<span class="uicontrol" id="foc_gud_0069__zh-cn_topic_0000002200147037_uicontrol10405524254">“<span id="foc_gud_0069__zh-cn_topic_0000002200147037_text6405425255">保护</span> &gt; <span id="foc_gud_0069__zh-cn_topic_0000002200147037_text885333645815">保护策略</span> &gt; <span id="foc_gud_0069__zh-cn_topic_0000002200147037_text164051025259">SLA</span>”</span>界面修改当前SLA，不建议通过修改保护操作重新关联其他SLA。<p id="foc_gud_0069__zh-cn_topic_0000002200147037_p34052272519">通过修改保护操作重新关联其他SLA后，如果原SLA的副本仍存在，可能会出现重复扣减License容量的情况。</p></li>
         </ul></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>在虚拟机所在的行单击<span class="uicontrol">“<span>更多</span> &gt; <span>修改保护</span>”</span>。</p></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>在虚拟机所在的行单击“更多 &gt; 修改保护”。</p></td>
       </tr>
       <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p><span>移除保护</span></p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当不需要再对虚拟机执行保护时，可以通过移除保护来实现。移除后系统将无法对该虚拟机执行保护任务。如果需要再次对其进行保护需要重新关联SLA。</p> <p><strong>注意事项</strong></p> <p>当有该虚拟机的保护任务正在运行时，无法执行移除保护操作。</p></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>在虚拟机所在的行单击<span class="uicontrol">“<span>更多</span> &gt; <span>移除保护</span>”</span>。</p></td>
+       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>移除保护</p></td>
+       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当不需要再对资源执行保护时，可以通过移除保护计划来实现。移除后系统将无法对该资源执行保护任务。如果需要再次对其进行保护需要重新关联SLA。</p> <p><strong>注意事项</strong></p>
+        <ul>
+         <li id="foc_gud_0069__zh-cn_topic_0000002200147037_li194311728491">当资源有保护任务正在运行时，无法执行移除保护操作。</li>
+         <li id="foc_gud_0069__zh-cn_topic_0000002200147037_li79479497198">当资源关联的SLA保护策略需要变更时，建议您在<span class="uicontrol" id="foc_gud_0069__zh-cn_topic_0000002200147037_uicontrol5174547101015">“保护 &gt; 保护策略 &gt; SLA”</span>界面修改当前SLA，不建议移除保护后重新关联SLA。<p id="foc_gud_0069__zh-cn_topic_0000002200147037_p636319506192">移除保护并重新关联SLA后，如果原SLA的副本仍存在，可能会出现重复扣减License容量的情况。</p></li>
+        </ul></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>单击“更多 &gt; 移除保护”。</p></td>
       </tr>
       <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p><span>激活保护</span></p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>虚拟机的保护计划被禁用后，您可以通过激活操作使虚拟机的保护计划重新生效。激活后系统将按照保护计划对虚拟机执行备份、复制。</p></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>在虚拟机所在的行单击<span class="uicontrol">“<span>更多</span> &gt; <span>激活保护</span>”</span>。</p></td>
+       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>激活保护</p></td>
+       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>资源的保护计划被禁用后，您可以通过激活操作使保护计划重新生效。激活后系统将按照保护计划对资源执行备份、复制。</p></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>单击“更多 &gt; 激活保护”。</p></td>
       </tr>
       <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p><span>禁用保护</span></p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您暂时不需要再对虚拟机执行周期性保护时，可以通过禁用其保护计划来实现。禁用后系统将不会执行该虚拟机的自动备份、复制。</p> <p><strong>注意事项</strong></p> <p>禁用保护时不会影响当前正在运行的保护任务。</p></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>在虚拟机所在的行单击<span class="uicontrol">“<span>更多</span> &gt; <span>禁用保护</span>”</span>。</p></td>
+       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>禁用保护</p></td>
+       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您暂时不需要再对资源执行周期性保护时，可以通过禁用其保护计划来实现。禁用后系统将不会执行该资源的自动备份、复制。</p> <p><strong>注意事项</strong></p> <p>禁用保护时不会影响当前正在运行的备份、复制任务。</p></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>单击“更多 &gt; 禁用保护”。</p></td>
       </tr>
       <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p><span>恢复</span></p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要使用副本恢复虚拟机时，可以通过该操作实现。</p></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>在虚拟机所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>恢复</span>”</span>。</p></td>
+       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>恢复</p></td>
+       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要使用副本恢复受保护对象时，可以通过该操作实现。</p></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>在虚拟机所在行单击“更多 &gt; 恢复”。</p></td>
       </tr>
       <tr>
-       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p><span>手动备份</span></p></td>
+       <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>手动备份</p></td>
        <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要立即执行一次备份时，可以通过该操作实现。</p> <p><strong>注意事项</strong></p> <p>手动备份产生的副本保留时长按照SLA中的定义进行保留。</p></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>在虚拟机所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。</p></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>单击“更多 &gt; 手动备份”。</p></td>
       </tr>
       <tr>
        <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>添加标签</p></td>
-       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要快速筛选和管理资源时，可以通过该操作实现。</p></td>
+       <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要快速筛选和管理资源时，可以通过该操作实现。</p>
+        <div class="p">
+         <strong id="foc_gud_0069__zh-cn_topic_0000002200147037_b916471544512">注意事项</strong>
+         <ul id="foc_gud_0069__zh-cn_topic_0000002200147037_ul2317155315456">
+          <li id="foc_gud_0069__zh-cn_topic_0000002200147037_li1146056125117">系统管理员最多支持给同一资源添加10000个标签。</li>
+          <li id="foc_gud_0069__zh-cn_topic_0000002200147037_li1566072118516">非系统管理员为资源添加标签时需具有“管理生产资源”的权限。</li>
+          <li id="foc_gud_0069__zh-cn_topic_0000002200147037_li731725313453">非系统管理员最多支持给同一资源添加5个标签。</li>
+         </ul>
+        </div></td>
        <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 ">
         <div class="p">
-         选择<span class="uicontrol" id="foc_gud_0069__zh-cn_topic_0000001792344090_uicontrol84421111904">“<span id="foc_gud_0069__zh-cn_topic_0000001792344090_text6442710012">更多</span> &gt; 添加标签”</span>。
-         <div class="note" id="foc_gud_0069__zh-cn_topic_0000001792344090_note164681316118">
+         单击“更多 &gt; 添加标签”。
+         <div class="note" id="foc_gud_0069__zh-cn_topic_0000002200147037_note164681316118">
           <span class="notetitle"> 说明： </span>
           <div class="notebody">
-           <ul id="foc_gud_0069__zh-cn_topic_0000001792344090_ul22969251338">
-            <li id="foc_gud_0069__zh-cn_topic_0000001792344090_li142961925139">您可以在弹出的“添加标签”界面选择已有的标签或单击“创建”新建标签。</li>
-            <li id="foc_gud_0069__zh-cn_topic_0000001792344090_li135161927738">如需对标签进行修改、删除等操作，可在“添加标签”界面，单击“前往标签管理”，进入“标签管理”界面操作。</li>
+           <ul id="foc_gud_0069__zh-cn_topic_0000002200147037_ul22969251338">
+            <li id="foc_gud_0069__zh-cn_topic_0000002200147037_li142961925139">您可以在弹出的“添加标签”界面选择已有的标签或单击“创建”新建标签。</li>
+            <li id="foc_gud_0069__zh-cn_topic_0000002200147037_li135161927738">如需对标签进行修改、删除等操作，可在“添加标签”界面，单击“前往标签管理”，进入“标签管理”界面操作。</li>
            </ul>
           </div>
          </div>
@@ -113,7 +126,7 @@
       <tr>
        <td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>移除标签</p></td>
        <td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您不再需要对资源进行标记时，可以通过该操作实现。</p></td>
-       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>选择<span class="uicontrol" id="foc_gud_0069__zh-cn_topic_0000001792344090_uicontrol4993205113111">“<span id="foc_gud_0069__zh-cn_topic_0000001792344090_text6993751201118">更多</span> &gt; 移除标签”</span>。</p></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>单击“更多 &gt; 移除标签”。</p></td>
       </tr>
      </tbody>
     </table>

@@ -1,0 +1,216 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Registering the SAP HANA Database (Backint Backup Mode)">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200069425.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200155077">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Registering the SAP HANA Database (Backint Backup Mode)</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200155077"></a><a name="EN-US_TOPIC_0000002200155077"></a>
+
+<h1 class="topictitle1">Step 1: Registering the SAP HANA Database (Backint Backup Mode)</h1>
+<div><p>In Backint backup mode, backup data is written through third-party backup tools. Each SAP HANA service starts the Backint for SAP HANA agent and sends the backup data to third-party backup tools.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002199964685_uicontrol5648197104718"><b><span id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002199964685_text264897164717"><strong>Protection</strong></span> &gt; <span id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002199964685_text1364812716472"><strong>Applications</strong></span> &gt; <span id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002199964685_text1079695192219"><strong>SAP HANA</strong></span></b></span>.</span></li><li><span>Register an SAP HANA instance.</span><p><div class="p">On the <span class="uicontrol"><b>Instance</b></span> tab page, click <span class="uicontrol"><b>Register</b></span>. <a href="#EN-US_TOPIC_0000002200155077__table115061832132613">Table 1</a> describes the parameters for registering an SAP HANA instance.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200155077__table115061832132613"></a><a name="table115061832132613"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200155077__table115061832132613" frame="border" border="1" rules="all"><caption><b>Table 1 </b>SAP HANA instance registration information</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.2.2.2.2.1.4.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.2.2.2.2.1.4.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>User-defined instance name.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><strong>Instance ID</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>ID set during database installation. For details about how to query the instance ID, see <a href="en-us_topic_0000002164828450.html">Preparing for Backup</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span><strong>Hosts</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>Host where the database resides.</p>
+<p>If the database is deployed in a cluster, select all hosts where the database resides.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span><strong>Authentication Mode</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p id="EN-US_TOPIC_0000002200155077__p25061832172611">Select <span class="uicontrol" id="EN-US_TOPIC_0000002200155077__uicontrol201800072195111"><b><span id="EN-US_TOPIC_0000002200155077__text184170737495111"><strong>Database authentication</strong></span></b></span> or <strong id="EN-US_TOPIC_0000002200155077__b99644534895111">Hdbuserstore</strong> mode. </p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li id="EN-US_TOPIC_0000002200155077__li1272758914">When the <strong id="EN-US_TOPIC_0000002200155077__b13740192216185">Database authentication</strong> mode is selected, you need to enter the username, password, and port number of the system database during registration.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p id="EN-US_TOPIC_0000002200155077__p178508137816"><strong id="EN-US_TOPIC_0000002200155077__b97876381535">Hdbuserstore KEY</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><div class="p">If the <strong>Hdbuserstore</strong> mode is selected when the database is deployed in a cluster, you need to set the <strong>Hdbuserstore KEY</strong> parameter on all hosts where the instance resides.<ol type="a" id="EN-US_TOPIC_0000002200155077__ol556191216136"><li id="EN-US_TOPIC_0000002200155077__li956131217138">Use PuTTY to log in to the host where the SAP HANA database is located as user <strong id="EN-US_TOPIC_0000002200155077__b71588346225">root</strong>.</li><li id="EN-US_TOPIC_0000002200155077__li650761992914">Run the following command to switch to the SAP system user <em id="EN-US_TOPIC_0000002200155077__i192442031718">&lt;sid&gt;</em><strong id="EN-US_TOPIC_0000002200155077__b33127205319">adm</strong> to log in to the SAP HANA database terminal system. The username <strong id="EN-US_TOPIC_0000002200155077__b1866704594213">s00adm</strong> is used as an example.<pre class="screen" id="EN-US_TOPIC_0000002200155077__screen556111127132">su - <em id="EN-US_TOPIC_0000002200155077__i5967165483218">s00adm</em></pre>
+</li><li id="EN-US_TOPIC_0000002200155077__li456101219137">Run the following command to set the <strong id="EN-US_TOPIC_0000002200155077__b1427812162614">Hdbuserstore KEY</strong> parameter:<pre class="screen" id="EN-US_TOPIC_0000002200155077__screen656116121137">hdbuserstore set <em id="EN-US_TOPIC_0000002200155077__i256141216131">S00SAPDB</em> "<em id="EN-US_TOPIC_0000002200155077__i1856115128131">hana1</em>:30013" SYSTEM <em id="EN-US_TOPIC_0000002200155077__i1256111121131">1234</em></pre>
+<p id="EN-US_TOPIC_0000002200155077__p05619121136">In the preceding command, <em id="EN-US_TOPIC_0000002200155077__i41931751168">S00SAPDB</em> is the <strong id="EN-US_TOPIC_0000002200155077__b1822330192517">KEY</strong> parameter set by the user, <em id="EN-US_TOPIC_0000002200155077__i1671112915169">hana1</em> is the host name, <strong id="EN-US_TOPIC_0000002200155077__b3221030152511">30013</strong> is the default port number, and <em id="EN-US_TOPIC_0000002200155077__i14362414201612">1234</em> is the database password. Replace them with the actual values.</p>
+</li><li id="EN-US_TOPIC_0000002200155077__li756171241312">Run the following command to check the <strong id="EN-US_TOPIC_0000002200155077__b126331397276">Hdbuserstore KEY</strong> parameter:<pre class="screen" id="EN-US_TOPIC_0000002200155077__screen45611512171320">hdbuserstore list</pre>
+<p id="EN-US_TOPIC_0000002200155077__p12561201211135">In the following command output, the <strong id="EN-US_TOPIC_0000002200155077__b9867172696">Hdbuserstore KEY</strong> parameter is displayed in the line that contains <strong id="EN-US_TOPIC_0000002200155077__b122591972317">KEY</strong>.</p>
+<p id="EN-US_TOPIC_0000002200155077__p17561512171316"><span><img id="EN-US_TOPIC_0000002200155077__image3561171216130" src="en-us_image_0000002200069537.png"></span></p>
+</li></ol>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span><strong>System Database Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p id="EN-US_TOPIC_0000002200155077__p1124516374411">When <strong id="EN-US_TOPIC_0000002200155077__b10813448284">Authentication Mode</strong> is set to <span class="uicontrol" id="EN-US_TOPIC_0000002200155077__uicontrol7754151012283"><b><span id="EN-US_TOPIC_0000002200155077__text1511991692611"><strong>Database authentication</strong></span></b></span>, enter the username and password of the system database. </p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span><strong>System Database Password</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span><strong>System database port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p id="EN-US_TOPIC_0000002200155077__p123716127594">Port number set during database installation. The default port number is <strong id="EN-US_TOPIC_0000002200155077__b848153811915">30013</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span><strong>Log Backup</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>Logs can be backed up only after this function is enabled.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>Incremental or differential backup can be performed only after the log backup function is enabled.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><strong>Regular Log Backup Interval</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>Set the interval for backing up logs.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>It is recommended that the interval be set to 50% to 100% of the log backup interval set in <a href="en-us_topic_0000002200154985.html#EN-US_TOPIC_0000002200154985__en-us_topic_0000002004293194_en-us_topic_0000002004090332_en-us_topic_0000001839268545_table2663151516335">Table 1</a>. For example, if the log backup interval set in the backup policy is 60 minutes, you are advised to set the interval to a value ranging from 30 minutes to 60 minutes.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><strong>Log Backup Path</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>Set the path for storing data log backup files.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>Ensure that the available space in the log backup path is greater than the space to be occupied by all log backup copies, and ensure that the SAP HANA log backup path permission is at least 755.</li><li>If the log backup path has been set in the production environment, it will be changed after this parameter is set.</li><li>The log backup path takes effect only after a backup job is executed.</li><li>The log backup directory must be a shared directory. To query the shared directory, perform the following steps:<ol type="a"><li id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_li51671838151120">Use PuTTY to log in to the host where the SAP HANA database is located as user <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_b36143819186">root</strong>.</li><li id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_li1411414546215"><a name="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_li1411414546215"></a><a name="en-us_topic_0000002164828462_li1411414546215"></a>Run the following command to switch to the SAP system user:<pre class="screen" id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_screen148394565408">su - <em id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_i462684119271">&lt;sid&gt;</em>adm</pre>
+<p id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_p10839195616407">In the preceding command, <em id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_i128711110122113">sid</em> indicates the SAP system ID. For example:</p>
+<pre class="screen" id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_screen1839115644015">hana1:~ # su - s00adm
+s00adm@hana1:/usr/sap/S00/HDB00&gt; </pre>
+<p id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_p195411748132413">In the command output, <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_b19355113322115">/usr/sap/S00/HDB00</strong> is the soft link of the SAP system user directory.</p>
+</li><li id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_li1216811387113">Run the following command to check the actual direction of the SAP system user directory and obtain the shared directory of SAP HANA:<pre class="screen" id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_screen7168123818112">ll <em id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_i639144710283">usr_Directory</em> </pre>
+<p id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_p22102495165">In the preceding command, <em id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_i13389183782317">usr_Directory</em> indicates the soft link path obtained in <a href="#EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_li1411414546215">2</a>. For example:</p>
+<pre class="screen" id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_screen124041114175">s00adm@hana1:/usr/sap/S00/HDB00&gt; ll /usr/sap/S00
+total 4
+lrwxrwxrwx 1 s00adm sapsys  27 Dec 11 09:41 HDB00 -&gt; /home/hana/shared/K00/HDB00
+drwxr-x--- 1 s00adm sapsys  38 Dec 11 09:48 hdblcm_uploads
+drwxr-xr-x 1 s00adm sapsys 338 Dec 11 09:44 home
+drwxr-x--- 1 s00adm sapsys  32 Dec 11 09:39 SYS</pre>
+<p id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_p14534259172819">In the command output, the upper level of the <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_b34881648102612">shared</strong> directory is <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002164828462_b853063715265">/home/hana</strong>, which the shared directory of SAP HANA.</p>
+</li></ol>
+</li></ul>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li><li><span>Register an SAP HANA database.</span><p><div class="p">On the <span class="uicontrol"><b>Databases</b></span> tab page, click <span class="uicontrol"><b>Register</b></span>. <a href="#EN-US_TOPIC_0000002200155077__table1180165510331">Table 2</a> describes the parameters for registering an SAP HANA database.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200155077__table1180165510331"></a><a name="table1180165510331"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200155077__table1180165510331" frame="border" border="1" rules="all"><caption><b>Table 2 </b>SAP HANA database registration information</caption><colgroup><col style="width:25.6%"><col style="width:74.4%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.6%" id="mcps1.3.2.2.4.2.1.4.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.4%" id="mcps1.3.2.2.4.2.1.4.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span><strong>Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>Select a database type.</p>
+<ul><li><span class="uicontrol"><b>System Database</b></span></li><li><span class="uicontrol"><b>Tenant Database</b></span></li></ul>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>When registering a system database, tenant database, or cluster, you must have the backup administrator permission. You are advised to use <strong>SYSTEM</strong> as the system database username.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span><strong>Instance</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>Select the corresponding registered instance.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><div class="p">Name of the database to be protected, which must be the same as that of the database in the production environment. For details about how to query the name, see <a href="en-us_topic_0000002164828450.html">Preparing for Backup</a>.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>If <span><strong>Type</strong></span> is set to <span class="uicontrol"><b>System Database</b></span>, select the database name that is set when the database is registered and installed.</li><li>If <strong>Type</strong> is set to <span class="uicontrol"><b>Tenant Database</b></span>, select the tenant database name set during tenant database registration.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span><strong>Hosts</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>Host where the database resides.</p>
+<p>If the database is deployed in a cluster, select all hosts where the database is distributed.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span><strong>Authentication Mode</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>Select <span class="uicontrol" id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_uicontrol201800072195111"><b><span id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_text184170737495111"><strong>Database authentication</strong></span></b></span> or <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b99644534895111">Hdbuserstore</strong> mode. </p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>When the <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b13740192216185">Database authentication</strong> mode is selected, you need to enter the username, password, and port number of the system database during registration.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b97876381535">Hdbuserstore KEY</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><div class="p">If the <strong>Hdbuserstore</strong> mode is selected when the database is deployed in a cluster, you need to set the <strong>Hdbuserstore KEY</strong> parameter on all hosts where the database resides.<ol type="a"><li id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_li956131217138">Use PuTTY to log in to the host where the SAP HANA database is located as user <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b71588346225">root</strong>.</li><li id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_li650761992914">Run the following command to switch to the SAP system user <em id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_i192442031718">&lt;sid&gt;</em><strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b33127205319">adm</strong> to log in to the SAP HANA database terminal system. The username <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b1866704594213">s00adm</strong> is used as an example.<pre class="screen" id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_screen556111127132">su - <em id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_i5967165483218">s00adm</em></pre>
+</li><li id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_li456101219137">Run the following command to set the <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b1427812162614">Hdbuserstore KEY</strong> parameter:<pre class="screen" id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_screen656116121137">hdbuserstore set <em id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_i256141216131">S00SAPDB</em> "<em id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_i1856115128131">hana1</em>:30013" SYSTEM <em id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_i1256111121131">1234</em></pre>
+<p id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_p05619121136">In the preceding command, <em id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_i41931751168">S00SAPDB</em> is the <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b1822330192517">KEY</strong> parameter set by the user, <em id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_i1671112915169">hana1</em> is the host name, <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b3221030152511">30013</strong> is the default port number, and <em id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_i14362414201612">1234</em> is the database password. Replace them with the actual values.</p>
+</li><li id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_li756171241312">Run the following command to check the <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b126331397276">Hdbuserstore KEY</strong> parameter:<pre class="screen" id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_screen45611512171320">hdbuserstore list</pre>
+<p id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_p12561201211135">In the following command output, the <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b9867172696">Hdbuserstore KEY</strong> parameter is displayed in the line that contains <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b122591972317">KEY</strong>.</p>
+<p id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_p17561512171316"><span><img id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_image3561171216130" src="en-us_image_0000002200069537.png"></span></p>
+</li></ol>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span><strong>System Database Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>When <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b10813448284">Authentication Mode</strong> is set to <span class="uicontrol" id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_uicontrol7754151012283"><b><span id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_text1511991692611"><strong>Database authentication</strong></span></b></span>, enter the username and password of the system database. </p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span><strong>System Database Password</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span><strong>System database port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>Port number set during database installation. The default port number is <strong id="EN-US_TOPIC_0000002200155077__en-us_topic_0000002200155077_b848153811915">30013</strong>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200069425.html">Backing Up the SAP HANA Database (SAP HANA from Applications) (for 1.6.0 and Later Versions)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

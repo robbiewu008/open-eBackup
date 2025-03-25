@@ -18,9 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.constants.RequestForwardRetryConstant;
+import openbackup.system.base.common.constants.ForwardErrorPriorityEnum;
+import openbackup.system.base.common.exception.ErrorResponse;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.exception.NonForwardableException;
+import openbackup.system.base.common.response.NodeForwardResponse;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.network.Ipv6AddressUtil;
@@ -28,7 +31,6 @@ import openbackup.system.base.redis.RedisSetService;
 import openbackup.system.base.sdk.infrastructure.InfrastructureRestApi;
 import openbackup.system.base.service.ManageIpStartInitService;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -48,7 +50,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -101,62 +102,116 @@ public class ForwardOtherNodeUtil {
             log.warn("Request is failed on current node: {}, will remove from high priority node", currentIp);
         }
         if (needForwardToOtherNodes(ex, request.getHeader(RequestForwardRetryConstant.HTTP_HEADER_INTERNAL_RETRY))) {
-            Optional<String> resp = forwardToOtherNodes(request, body, actionName);
-            if (resp.isPresent()) {
-                return resp.get();
+            ResponseEntity<NodeForwardResponse> resp = forwardToOtherNodes(request, body, actionName);
+            if (HttpStatus.OK.equals(resp.getStatusCode())) {
+                if (!VerifyUtil.isEmpty(resp.getBody())) {
+                    return resp.getBody().getResponse();
+                } else {
+                    log.error("request action:{} get empty response with 200 response!", actionName);
+                    return "SUCCESS";
+                }
             }
+            // 如果http code不是ok 则证明发生了异常 此时应该取出异常信息 如果有则抛出 否则抛出本身的异常信息
+            dealWithExceptionInForward(resp);
         }
+        log.error("Fail to retry action:{} on other node and get error code, will use original error:{} with code:{}",
+            actionName, ExceptionUtil.getErrorMessage(ex), ex.getErrorCode());
         throw ex;
     }
 
-    private Optional<String> forwardToOtherNodes(HttpServletRequest httpServletRequest, Object body,
+    private void dealWithExceptionInForward(ResponseEntity<NodeForwardResponse> resp) {
+        if (VerifyUtil.isEmpty(resp.getBody())) {
+            log.info("get empty error responses body, will skip.");
+            return;
+        }
+        List<ErrorResponse> errorResponses = resp.getBody().getErrorResponses();
+        if (VerifyUtil.isEmpty(errorResponses)) {
+            log.info("get empty error responses, will skip.");
+            return;
+        }
+        ErrorResponse errorResponse = ForwardErrorPriorityEnum.selectCriticalError(errorResponses);
+        if (VerifyUtil.isEmpty(errorResponse.getErrorCode())) {
+            log.error("fail to find error response from list will use:{}. ", errorResponses.get(0));
+            throw new LegoCheckedException(Long.parseLong(errorResponses.get(0).getErrorCode()),
+                errorResponses.get(0).getErrorMessage());
+        }
+        log.info("success to find error response from list will use:{}. ", errorResponses.get(0));
+        throw new LegoCheckedException(Long.parseLong(errorResponse.getErrorCode()), errorResponse.getErrorMessage());
+    }
+
+    private ResponseEntity<NodeForwardResponse> forwardToOtherNodes(HttpServletRequest httpServletRequest, Object body,
         String actionName) {
         Set<String> highPriorityIps = redisSetService.getAllFromSet(Constants.HIGH_PRIORITY_NODE_CACHE_KEY);
         Set<String> mangeIpNodes = redisSetService.getAllFromSet(Constants.NODE_WITH_MANAGE_IP_CACHE_KEY);
-        Optional<String> result = Optional.empty();
+        ResponseEntity<NodeForwardResponse> currentResult = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         Set<String> priorityIps = new HashSet<>();
         priorityIps.addAll(highPriorityIps);
         priorityIps.addAll(mangeIpNodes);
         if (!VerifyUtil.isEmpty(priorityIps)) {
-            result = forwardToNode(httpServletRequest, body, actionName, new ArrayList<>(priorityIps));
+            currentResult = forwardToNode(httpServletRequest, body, actionName, new ArrayList<>(priorityIps));
         }
-        if (result.isPresent()) {
-            return result;
+        if (HttpStatus.OK.equals(currentResult.getStatusCode())) {
+            return new ResponseEntity<>(currentResult.getBody(), HttpStatus.OK);
         }
-        log.debug("request {} retry on high priority nodes:{} failed, will continue on the rest nodes", actionName,
+        log.warn("request {} retry on high priority nodes:{} failed, will continue on the rest nodes", actionName,
             priorityIps);
+        List<ErrorResponse> errorResponses = new ArrayList<>();
+        if (!VerifyUtil.isEmpty(currentResult.getBody())) {
+            errorResponses.addAll(currentResult.getBody().getErrorResponses());
+        }
         // 如果高优先级队列和有管理ip的列表都没有成功 则继续尝试剩余的节点
         List<String> ipSet = getForwardIps(priorityIps);
-        result = forwardToNode(httpServletRequest, body, actionName, ipSet);
-        if (result.isPresent()) {
-            return result;
+        currentResult = forwardToNode(httpServletRequest, body, actionName, ipSet);
+        if (HttpStatus.OK.equals(currentResult.getStatusCode())) {
+            return new ResponseEntity<>(currentResult.getBody(), HttpStatus.OK);
         }
-        log.debug("request {} retry on rest nodes:{} failed, will return fail", actionName, ipSet);
-        return result;
+        if (!VerifyUtil.isEmpty(currentResult.getBody())) {
+            errorResponses.addAll(currentResult.getBody().getErrorResponses());
+        }
+        log.error("request {} retry on rest nodes:{} failed, will return fail", actionName, ipSet);
+        return new ResponseEntity<>(
+            NodeForwardResponse.builder().success(Boolean.FALSE).errorResponses(errorResponses).build(),
+            HttpStatus.UNAUTHORIZED);
     }
 
-    private Optional<String> forwardToNode(HttpServletRequest httpServletRequest, Object body, String actionName,
-        List<String> forwardIps) {
+    private ResponseEntity<NodeForwardResponse> forwardToNode(HttpServletRequest httpServletRequest, Object body,
+        String actionName, List<String> forwardIps) {
+        List<ErrorResponse> errorResponseList = new ArrayList<>();
         for (String ip : forwardIps) {
             try {
                 URI uri = buildUri(httpServletRequest.getRequestURI(), ip);
                 ResponseEntity<String> responseEntity = forwardTryAllNodeRequestByIp(httpServletRequest, body, uri);
                 if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                    log.debug("Request {} retry on node {} success.", actionName, ip);
+                    log.info("Request {} retry on node {} success.", actionName, ip);
                     // 调用成功 加入到优先级列表 供下次调用
                     manageIpStartInitService.addToPriorityList(Constants.HIGH_PRIORITY_NODE_CACHE_KEY, ip);
-                    return Optional
-                        .of(StringUtils.isNotEmpty(responseEntity.getBody()) ? responseEntity.getBody() : "SUCCESS");
+                    return new ResponseEntity<>(
+                        NodeForwardResponse.builder().success(Boolean.TRUE).response(responseEntity.getBody()).build(),
+                        HttpStatus.OK);
                 }
             } catch (LegoCheckedException ex) {
-                log.warn("node :{} get network related exception,  will try on other node, ex:", ip,
-                    ExceptionUtil.getErrorMessage(ex));
+                log.warn("node :{} get network related exception,  will try on other node, code:{} ex:", ip,
+                    ex.getErrorCode(), ExceptionUtil.getErrorMessage(ex));
+                recordException(ex, errorResponseList);
             } catch (Exception ex) {
                 // 转发其它节点只是尝试看能否成功，如果发生未知异常忽略即可
                 log.error("Request {} retry on node {} failed.", actionName, ip, ExceptionUtil.getErrorMessage(ex));
             }
         }
-        return Optional.empty();
+        // 所有的尝试都不成功返回false
+        return new ResponseEntity<>(
+            NodeForwardResponse.builder().success(Boolean.FALSE).errorResponses(errorResponseList).build(),
+            HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private static void recordException(LegoCheckedException ex, List<ErrorResponse> errorResponseList) {
+        if (!networkErrorCodes.contains(ex.getErrorCode())) {
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setErrorCode(String.valueOf(ex.getErrorCode()));
+            errorResponse.setErrorMessage(ExceptionUtil.getErrorMessage(ex).getMessage());
+            errorResponseList.add(errorResponse);
+        }
     }
 
     private ResponseEntity<String> forwardTryAllNodeRequestByIp(HttpServletRequest httpServletRequest, Object body,

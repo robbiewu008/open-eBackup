@@ -14,10 +14,11 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BaseModule } from 'app/shared/base.module';
 import { TakeManualArchiveComponent } from './take-manual-archive.component';
+import { RouterJumpHelpModule } from '../router-jump-help/router-jump-help.module';
 
 @NgModule({
   declarations: [TakeManualArchiveComponent],
-  imports: [CommonModule, BaseModule],
+  imports: [CommonModule, BaseModule, RouterJumpHelpModule],
   exports: [TakeManualArchiveComponent]
 })
 export class TakeManualArchiveModule {}

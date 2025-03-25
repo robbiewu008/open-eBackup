@@ -36,8 +36,6 @@
       resourceType.oracle.value,
       resourceType.generalDatabase.value,
       resourceType.dbTwoDatabase.value,
-      resourceType.informixInstance.value,
-      resourceType.informixClusterInstance.value,
       resourceType.gaussdbForOpengaussInstance.value,
       resourceType.lightCloudGaussdbInstance.value,
       resourceType.tdsqlInstance.value,
@@ -52,7 +50,7 @@
       resourceType.saphanaDatabase.value,
       resourceType.MongodbSingleInstance.value,
       resourceType.oraclePDB.value
-    ].includes(resType)
+    ].includes(resType) && !isInformix
   "
 >
   <button

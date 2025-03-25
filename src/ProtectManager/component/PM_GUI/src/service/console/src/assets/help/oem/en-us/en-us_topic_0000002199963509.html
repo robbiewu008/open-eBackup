@@ -1,0 +1,60 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Setting Permissions for Windows PowerShell (Applicable to Snapshot-based Backup at the Storage Layer)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164757014.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199963509">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Setting Permissions for Windows PowerShell (Applicable to Snapshot-based Backup at the Storage Layer)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199963509"></a><a name="EN-US_TOPIC_0000002199963509"></a>
+  <h1 class="topictitle1">Setting Permissions for Windows PowerShell (Applicable to Snapshot-based Backup at the Storage Layer)</h1>
+  <div>
+   <p>In the Windows OS scenario, if snapshot-based backup at the storage layer is used, ensure that Windows PowerShell has the script execution permission (RemoteSigned, Bypass, or Unrestricted).</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_ol3845155813619">
+     <li id="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_li1487878141211"><span>Open Windows PowerShell and run the <strong id="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_b99541622111210">Get-ExecutionPolicy</strong> command to check whether Windows PowerShell has the script execution permission controlled by <strong id="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_b148092213917">RemoteSigned</strong>, <strong id="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_b59952418397">Bypass</strong>, or <strong id="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_b19277142518394">Unrestricted</strong>. Windows 2019 and SQL Server 2019 are used as examples.</span><p></p>
+      <ul id="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_ul8490122691811">
+       <li id="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_li9490326111815">If any of the preceding permissions exists, no further action is required.</li>
+       <li id="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_li1749052616186">If the preceding permissions do not exist, go to <a href="#EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_li48454583610">2</a>.</li>
+      </ul> <p></p></li>
+     <li id="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_li48454583610"><a name="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_li48454583610"></a><a name="en-us_topic_0000002200006217_li48454583610"></a><span>Run the <strong id="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_b1828154333411">Set-ExecutionPolicy RemoteSigned</strong> command to grant the <strong id="EN-US_TOPIC_0000002199963509__en-us_topic_0000002200006217_b4293642203618">RemoteSigned</strong> permission.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164757014.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

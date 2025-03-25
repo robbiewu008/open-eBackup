@@ -53,6 +53,7 @@ import {
   keys,
   now,
   reject,
+  some,
   uniq
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
@@ -78,6 +79,7 @@ export class TakeManualBackupComponent implements OnInit {
     [PolicyAction.INCREMENT, 'disableIncrementAction'],
     [PolicyAction.DIFFERENCE, 'disableDiffAction']
   ]);
+  isRHELHA = false;
   tipMap = {
     [PolicyAction.FULL]: this.i18n.get('common_full_backup_tips_label'),
     [PolicyAction.LOG]: this.i18n.get('common_log_backup_tips_label'),
@@ -1104,6 +1106,17 @@ export class TakeManualBackupComponent implements OnInit {
     this.items =
       this.actions[this.params.resource_type] || this.basicActionConfig;
 
+    // GBase 8s数据库不支持日志备份
+    if (
+      [
+        DataMap.Resource_Type.informixClusterInstance.value,
+        DataMap.Resource_Type.informixInstance.value
+      ].includes(this.params.resource_type) &&
+      this.params?.databaseType === DataMap.informixDatabaseType.gbase.value
+    ) {
+      this.items = reject(this.items, item => item.id === PolicyAction.LOG);
+    }
+
     // openGauss数据库不是PanWeiDB的不支持日志备份
     if (
       this.params.resource_type ===
@@ -1114,20 +1127,41 @@ export class TakeManualBackupComponent implements OnInit {
     }
 
     // DB2 RHEL HA集群不支持增量、差异
-    if (
-      includes(
-        [DataMap.Resource_Type.dbTwoDatabase.value],
-        this.params.resource_type
-      ) &&
-      this.params?.extendInfo.clusterType === DataMap.dbTwoType.standby.value &&
-      this.params?.extendInfo?.deployOperatingSystem === 'Red Hat'
-    ) {
-      this.items = reject(
-        this.items,
-        item =>
-          item.id === PolicyAction.INCREMENT ||
-          item.id === PolicyAction.DIFFERENCE
-      );
+    if (isArray(this.params)) {
+      if (
+        includes(
+          [DataMap.Resource_Type.dbTwoDatabase.value],
+          get(this.params, 'resource_type', '')
+        ) &&
+        some(
+          this.params,
+          item => item?.extendInfo.clusterType === DataMap.dbTwoType.rhel.value
+        )
+      ) {
+        this.isRHELHA = true;
+        this.items = reject(
+          this.items,
+          item =>
+            item.id === PolicyAction.INCREMENT ||
+            item.id === PolicyAction.DIFFERENCE
+        );
+      }
+    } else {
+      if (
+        includes(
+          [DataMap.Resource_Type.dbTwoDatabase.value],
+          this.params.resource_type
+        ) &&
+        this.params?.extendInfo.clusterType === DataMap.dbTwoType.rhel.value
+      ) {
+        this.isRHELHA = true;
+        this.items = reject(
+          this.items,
+          item =>
+            item.id === PolicyAction.INCREMENT ||
+            item.id === PolicyAction.DIFFERENCE
+        );
+      }
     }
 
     // Mysql EAPP集群不支持日志备份
@@ -1244,18 +1278,33 @@ export class TakeManualBackupComponent implements OnInit {
     this.items.map(e => {
       if (!e.tips) {
         return assign(e, {
-          tips:
-            includes(
-              [DataMap.Resource_Type.ObjectSet.value],
-              this.params.resource_type
-            ) && e.id === PolicyAction.INCREMENT
-              ? this.i18n.get('protection_object_sla_incremental_tip_label')
-              : this.tipMap[e.id]
+          tips: this.specialTip(e)
         });
       }
     });
   }
 
+  specialTip(e) {
+    if (
+      includes(
+        [DataMap.Resource_Type.ObjectSet.value],
+        this.params.resource_type
+      ) &&
+      e.id === PolicyAction.INCREMENT
+    ) {
+      return this.i18n.get('protection_object_sla_incremental_tip_label');
+    } else if (
+      includes(
+        [DataMap.Resource_Type.goldendbInstance.value],
+        this.params.resource_type
+      ) &&
+      e.id === PolicyAction.INCREMENT
+    ) {
+      return this.i18n.get('common_diff_backup_tips_label');
+    } else {
+      return this.tipMap[e.id];
+    }
+  }
   getDisableActionByActionId(id) {
     // 检查 id 是否存在于 Map 中
     if (!this.actionDisabledMap.has(id)) {

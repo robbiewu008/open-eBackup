@@ -1,0 +1,67 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Enabling Local Archiving for the Database">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164819454.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164659694">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Enabling Local Archiving for the Database</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164659694"></a><a name="EN-US_TOPIC_0000002164659694"></a>
+
+<h1 class="topictitle1">Step 2: Enabling Local Archiving for the Database</h1>
+<div><p>Before performing a backup job, you need to enable local archiving for the Dameng database. Otherwise, the backup will fail.</p>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><ul><li id="EN-US_TOPIC_0000002164659694__en-us_topic_0000002200146045_en-us_topic_0000002164659722_li18475121815115"><span id="EN-US_TOPIC_0000002164659694__en-us_topic_0000002200146045_en-us_topic_0000002164659722_ph158001916133217">Unless otherwise specified, the operations in this section use Dameng 8 as an example. The operations may vary according to the database version.</span></li><li id="EN-US_TOPIC_0000002164659694__en-us_topic_0000002200146045_en-us_topic_0000002164659722_li135951626152410"><span id="EN-US_TOPIC_0000002164659694__en-us_topic_0000002200146045_en-us_topic_0000002164659722_ph1496613312326">If the Dameng database is deployed in a cluster, you need to log in to all hosts where the cluster instances reside and perform the following operations unless otherwise specified.</span></li></ul>
+</div>
+<ul><li>If the value of configuration item <strong>ARCH_INI</strong> in configuration file <strong>dm.ini</strong> is <strong>1</strong> and configuration file <strong>dmarch.ini</strong> contains the content in <a href="#EN-US_TOPIC_0000002164659694__li275233975019">7</a>, the archive mode has been enabled on the database host.</li></ul>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to the Dameng database host.</span></li><li><span>Switch to user <strong>root</strong> and run the following command to query the path to the <strong>dm.ini</strong> configuration file:</span><p><pre class="screen">ps -ef | grep dm.ini</pre>
+</p></li><li><span>Go to the directory where the configuration file is stored and run the following command to open and edit the configuration file:</span><p><pre class="screen">vim dm.ini</pre>
+</p></li><li><span>In the <strong>#configuration file</strong> section of the configuration file, change the value of <strong>ARCH_INI</strong> to <strong>1</strong>.</span><p><pre class="screen">ARCH_INI = 1</pre>
+</p></li><li><span>Run the following command to query the path to the <strong>dmarch.ini</strong> configuration file:</span><p><pre class="screen">find / -name dmarch.ini</pre>
+</p></li><li><span>Go to the directory where the configuration file is stored and run the following command to open and edit the configuration file:</span><p><pre class="screen">vim dmarch.ini</pre>
+</p></li><li id="EN-US_TOPIC_0000002164659694__li275233975019"><a name="EN-US_TOPIC_0000002164659694__li275233975019"></a><a name="li275233975019"></a><span>Change the following items in the configuration file:</span><p><pre class="screen">[ARCHIVE_LOCAL1]
+ARCH_TYPE = LOCAL 
+ARCH_DEST = <em>Archive file path</em>
+ARCH_FILE_SIZE = <em>128</em> 
+ARCH_SPACE_LIMIT = <em>0</em> </pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Replace <em>Archive file path</em> with the actual path.</p>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164819454.html">Backing Up Dameng</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

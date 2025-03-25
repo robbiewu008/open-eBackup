@@ -680,7 +680,17 @@ export class CertificateComponent implements OnInit {
         });
         const typeNames = [];
         each(item.type.split(','), value => {
-          typeNames.push(this.dataMapService.getLabel('Component_Type', value));
+          if (
+            (this.appUtilsService.isDecouple ||
+              this.appUtilsService.isDistributed) &&
+            value === DataMap.Component_Type.a8000.value
+          ) {
+            typeNames.push(this.i18n.get('common_e_series_cluster_type_label'));
+          } else {
+            typeNames.push(
+              this.dataMapService.getLabel('Component_Type', value)
+            );
+          }
         });
         extend(item, {
           expiredDate: Math.min.apply(null, certArr),

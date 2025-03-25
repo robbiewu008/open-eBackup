@@ -21,6 +21,7 @@
         </lv-form-control>
     </lv-form-item>
     <lv-form-item>
+      <lv-alert lvType="info" lvClosable="false" *ngIf="isRHELHA" ><h3 class="lv-alert-title">{{ 'protection_unsupport_rhel_policy_label' | i18n }}</h3></lv-alert>
         <lv-form-label>
             {{ 'protection_backup_mode_label' | i18n }}
             <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_take_manual_backup_worm_tip_label' | i18n}}"

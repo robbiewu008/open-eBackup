@@ -298,7 +298,7 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
             request.setSameChainCopies(context.getSameChainCopies());
             initCopyFormat(request, context);
             UpdateJobRequest deliverReq = JobUpdateUtil.getDeliverReq();
-            // 在extendStr中加入复制目标位置,hcs跨云复制跳过
+            // 在extendStr中加入复制目标位置
             updateReplicationDestination(context, deliverReq);
             jobCenterRestApi.updateJob(jobId, deliverReq);
             executeReplica(request, context);
@@ -339,16 +339,27 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
     }
 
     private void initReplicationDestinationWithIntra(JsonNode extParameters, UpdateJobRequest deliverReq) {
+        JSONObject repDestinationJson = new JSONObject();
+        String repDestination = StringUtils.EMPTY;
+        if (!extParameters.has(STORAGE_INFO) || !extParameters.get(STORAGE_INFO).has(STORAGE_ID)) {
+            log.info("Sla has no storage info, rep destination is empty");
+            repDestinationJson.put("rep_destination", repDestination);
+            deliverReq.setExtendStr(repDestinationJson.toString());
+            return;
+        }
         // 如果是开了并行存储开关的备份存储单元组，位置信息显示备份存储单元组的名称，其他场景不返回
         if (isStorageUnitGroup(extParameters)) {
             String storageId = extParameters.get(STORAGE_INFO).get(STORAGE_ID).textValue();
             NasDistributionStorageDetail storageUnitGroup = backupStorageApi.getDetail(storageId);
-            if (storageUnitGroup.isHasEnableParallelStorage()) {
-                JSONObject repDestination = new JSONObject();
-                repDestination.put("rep_destination", storageUnitGroup.getName());
-                deliverReq.setExtendStr(repDestination.toString());
-            }
+            repDestination = storageUnitGroup.getName();
+        } else {
+            String storageId = extParameters.get(STORAGE_INFO).get(STORAGE_ID).textValue();
+            StorageUnitVo storageUnitVo = storageUnitService.getStorageUnitById(storageId)
+                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Storage unit not exist"));
+            repDestination = storageUnitVo.getName();
         }
+        repDestinationJson.put("rep_destination", repDestination);
+        deliverReq.setExtendStr(repDestinationJson.toString());
     }
 
     private void initReplicationDestinationWithExtra(ReplicateContext context, UpdateJobRequest deliverReq) {
@@ -359,8 +370,7 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
     }
 
     private boolean isStorageUnitGroup(JsonNode extParameters) {
-        return extParameters.has(STORAGE_INFO) && extParameters.get(STORAGE_INFO).has(STORAGE_ID)
-                && BackupConstant.BACKUP_EXT_PARAM_STORAGE_UNIT_GROUP_VALUE
+        return BackupConstant.BACKUP_EXT_PARAM_STORAGE_UNIT_GROUP_VALUE
                 .equals(extParameters.get(STORAGE_INFO).get(STORAGE_TYPE).textValue());
     }
 
@@ -385,7 +395,10 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
             log.info("storage unit group name: {}, jobId: {}", storageName, jobId);
         } else {
             String storageUnitId = extParameters.get(STORAGE_INFO).get(STORAGE_ID).textValue();
-            Map<String, String> queryParams = Collections.singletonMap("id", storageUnitId);
+            Map<String, String> queryParams = new HashMap<>();
+            if (!VerifyUtil.isEmpty(storageUnitId) && !"null".equals(storageUnitId)) {
+                queryParams = Collections.singletonMap("id", storageUnitId);
+            }
             List<StorageUnitVo> storageUnitVo = repCommonService.getStorageUnitVos(context.getTargetCluster(),
                 queryParams);
             if (!VerifyUtil.isEmpty(storageUnitVo)) {

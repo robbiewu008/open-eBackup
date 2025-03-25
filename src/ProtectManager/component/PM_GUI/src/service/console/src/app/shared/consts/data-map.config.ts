@@ -861,7 +861,7 @@ export const DataMap = {
     },
     mounted: {
       value: 'Mounted',
-      label: 'common_mounted_label',
+      label: 'common_status_mounted_label',
       color: ColorConsts.NORMAL
     },
     deleteFailed: {
@@ -1670,6 +1670,11 @@ export const DataMap = {
     disable: {
       value: 'DISABLE',
       label: 'system_tape_disabled_label',
+      color: ColorConsts.OFFLINE
+    },
+    unavailable: {
+      value: 'TEMPDISABLE',
+      label: 'protection_unvaliable_label',
       color: ColorConsts.OFFLINE
     }
   },
@@ -4983,7 +4988,7 @@ export const DataMap = {
   Browse_LiveMount_Status: {
     mounted: {
       value: 'Mounted',
-      label: 'common_mounted_label',
+      label: 'common_status_mounted_label',
       color: ColorConsts.NORMAL
     },
     unmount: {
@@ -5003,7 +5008,7 @@ export const DataMap = {
     },
     unmounting: {
       value: 'Mount_deleting',
-      label: 'common_status_deleting_mount_label',
+      label: 'common_unmounting_label',
       color: ColorConsts.RUNNING
     },
     unmountFail: {
@@ -7541,6 +7546,11 @@ export const DataMap = {
       color: ColorConsts.ABNORMAL,
       label: 'common_fail_label'
     },
+    downloading: {
+      value: 'DOWNLOADING',
+      color: ColorConsts.RUNNING,
+      label: 'common_status_downloading_label'
+    },
     partSucess: {
       value: 'PART_SUCCESS',
       color: ColorConsts.WARN,
@@ -8109,11 +8119,15 @@ export const DataMap = {
     },
     standby: {
       value: 'powerHA',
-      label: 'PowerHA/RHEL HA'
+      label: 'PowerHA'
     },
     hadr: {
       value: 'hadr',
       label: 'HADR'
+    },
+    rhel: {
+      value: 'rhelHA',
+      label: 'RHEL HA'
     }
   },
   productName: {

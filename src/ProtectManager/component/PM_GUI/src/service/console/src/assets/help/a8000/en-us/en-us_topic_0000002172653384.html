@@ -1,0 +1,103 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 3: Configuring VLAN Ports for the Replication Network">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002208053881.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002172653384">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 3: Configuring VLAN Ports for the Replication Network</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002172653384"></a><a name="EN-US_TOPIC_0000002172653384"></a>
+
+
+  <h1 class="topictitle1">Step 3: Configuring VLAN Ports for the Replication Network</h1>
+
+  <div><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050445554_en-us_topic_0000002050434918_p8060118">If the replication network and service network share network ports and bond networking is used, refer to this section to configure VLAN ports. Otherwise, skip this section.</p>
+<div class="section" id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050445554_en-us_topic_0000002050434918_section174831937114819"><h4 class="sectiontitle">Precautions</h4><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_p825922121214">If multiple bond ports of a replication node are used as replication ports, you need to create VLAN ports separately based on the bond ports and ensure that the VLAN IDs of these VLAN ports are the same.</p>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050445554_en-us_topic_0000002050434918_section781124114611"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0000001079958565_en-us_topic_0272252216_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_ol72259457218"><li id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_li693911269474"><span>Log in to DeviceManager.</span></li><li id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_le3d29a07d40f499aac89d29ec93d6ae0"><span>Choose <strong id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_b15309150173714">Cluster</strong> &gt; <strong id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_b13316135013716">Network</strong> &gt; <strong id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_b1231665093712">Port and Route</strong> &gt; <strong id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_b5316165093719">VLAN Port</strong>.</span></li><li id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_l05f21a07f5434fcf9391929465fe92b4"><span>Choose <strong id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_b8427152123818">Create</strong> &gt; <strong id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_b16427142153816">Create VLAN Port</strong>.</span><p><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0000001079958565_p63795016242">The <strong id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_b10994126193818">Create VLAN Port</strong> page is displayed.</p>
+</p></li><li id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_li509142"><span>Set the parameters listed in <a href="#EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_d760e99">Table 1</a>.</span><p>
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_d760e99"></a><a name="en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_d760e99"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_d760e99" frame="border" border="1" rules="all"><caption><b>Table 1 </b>VLAN port parameters</caption><colgroup><col style="width:16.16%"><col style="width:83.84%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_r7dd690f7d14e48dab976d3ea07d89e99"><th align="left" class="cellrowborder" valign="top" width="16.16%" id="mcps1.3.3.2.4.2.1.2.3.1.1"><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_p27790832">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="83.84%" id="mcps1.3.3.2.4.2.1.2.3.1.2"><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_p36464923">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_r47c4c31233d94e20a6bbf33360d50011"><td class="cellrowborder" valign="top" width="16.16%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_p55982962">Port Type</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.84%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_p38326069">Type of the port used to create a VLAN port. Select <strong id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_b55235518395">Bond port</strong>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_row59721810115010"><td class="cellrowborder" valign="top" width="16.16%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_p22417311">Transmission Protocol</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.84%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_p3862884">Transmission protocol of the VLAN port. Select <strong id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_b158971344143920">TCP</strong>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_r02a0ab5e3e4b49fe9dc70097da8c3200"><td class="cellrowborder" valign="top" width="16.16%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_p64579503">Select Port</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.84%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_en-us_topic_0259133584_en-us_topic_0249520008_en-us_topic_0249518099_en-us_topic_0244899386_en-us_topic_0230548476_en-us_topic_0145458768_en-us_topic_0127771948_p63557232">Selects a port.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_row9713111417915"><td class="cellrowborder" valign="top" width="16.16%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_p1871321420913">VLAN Port Name</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.84%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_p07131814493">Name of the VLAN port.</p>
+<div class="note" id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_note79282232714"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_ul881010119281"><li id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_li12974201916289">The VLAN port name can contain a maximum of 13 characters.</li><li id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_li12810161122815">The VLAN port name can contain only lowercase letters or digits and must end with period (.) + VLAN ID.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_row1832016519448"><td class="cellrowborder" valign="top" width="16.16%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_p178161114174411">VLAN ID</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.84%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_p78169147446">ID of the VLAN that uses the VLAN port. The value ranges from 1 to 4094.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_row81351371099"><td class="cellrowborder" valign="top" width="16.16%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_p1413513372913">Configure IP Address</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.84%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_p513513715919">Sets the IP address and subnet mask/prefix of the VLAN port after enabling <strong id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_b12683211184215">Configure IP Address</strong>.</p>
+<ul id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_ul116175479336"><li id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_li1261784703311">If the IP addresses are IPv4 addresses, enter the corresponding subnet mask.</li><li id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_li196171147143318">If the IP addresses are IPv6 addresses, enter the corresponding prefix.</li></ul>
+<div class="note" id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_note6591930315"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_p18701199153110">Click <strong id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_b0768649194219">Add</strong> to configure a second IP address for the VLAN port.</p>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_en-us_topic_0000001269661172_li51714504913"><span>Click <strong id="EN-US_TOPIC_0000002172653384__en-us_topic_0000002200061385_en-us_topic_0000002050434918_b8586125694211">OK</strong>.</span></li></ol>
+</div>
+</div>
+
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002208053881.html">Replicating GoldenDB Database Copies (Applicable to the OceanProtect E6000 Appliance)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

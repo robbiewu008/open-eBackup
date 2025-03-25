@@ -1,0 +1,164 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring openGauss/CMDB">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164798496.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164798512">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring openGauss/CMDB</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164798512"></a><a name="EN-US_TOPIC_0000002164798512"></a>
+  <h1 class="topictitle1">Restoring openGauss/CMDB</h1>
+  <div>
+   <p>This section describes how to restore a backed-up openGauss/CMDB database or instance to the original or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <div class="p">
+     Backup copies, replication copies, and imported copies can be used for restoration. Restoration to the original or a new location is supported.
+     <div class="note">
+      <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+      <div class="notebody">
+       <p>Replication copies cannot be used for restoration to the original location.</p>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <ul>
+     <li>During instance restoration based on openGauss 3.0, if a restoration job fails and the cluster is in the degraded state (the active node is started but the standby node fails to be started and is in the degraded state), manually rebuild the standby node.</li>
+     <li>Log in to the standby node as the database system user and run the <strong>gs_ctl build</strong> <em>Data directory</em> command to rebuild the standby node.</li>
+    </ul>
+    <div class="note">
+     <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+     <div class="notebody">
+      <p>The data directory is specified upon instance running. If no data directory is specified, the data directory configured on the database active node during installation and deployment is used by default.</p>
+     </div>
+    </div>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li>
+    </ul>
+    <ul>
+     <li>Before restoring data to a new location, ensure that the database installation user has the read and write permissions on the target path for restoration.</li>
+     <li>Ensure that the target database system status is <span class="parmvalue"><b>Normal</b></span> before restoration. This does not apply to distributed CMDB clusters.
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>On a database single-node system or any node in the cluster, run <strong>gs_om -t status</strong> as the OS account for running the database. Check and ensure that the value of <span class="parmname"><b>cluster_state</b></span> is <span class="parmvalue"><b>Normal</b></span> in the command output.</p>
+       </div>
+      </div></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164798512__en-us_topic_0000002199964685_uicontrol13535171992714"><b><span id="EN-US_TOPIC_0000002164798512__en-us_topic_0000002199964685_text19535171918274"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164798512__en-us_topic_0000002199964685_text175351119172711"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002164798512__en-us_topic_0000002199964685_text59261952124911"><strong>Databases</strong></span> &gt; CMDB/<span id="EN-US_TOPIC_0000002164798512__en-us_topic_0000002199964685_text11575567321"><strong>openGauss</strong></span></b></span>.</span></li>
+     <li><span>You can search for copies by openGauss/CMDB resource or copy. This section describes how to search for copies by resource.</span><p></p><p>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> tab page, find the resource to be restored by resource name and click the resource name.</p> <p></p></li>
+     <li><span>Select the year, month, and day in sequence to find the copy.</span><p></p><p><span><img src="en-us_image_0000002200039553.png"></span> above the time indicates that copies exist in the month or on the day.</p> <p></p></li>
+     <li><span>Specify a copy or a point in time for restoration.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul>
+         <li>openGauss supports only restoration using a specified copy. CMDB supports both restoration using a specified copy and restoration to a specified point in time.</li>
+        </ul>
+       </div>
+      </div>
+      <ul>
+       <li>Restoration using a specified copy<p>On the <strong>Copy Data</strong> page, click <span><img src="en-us_image_0000002164798528.png"></span>. In the row where the copy used for restoration resides, choose <span class="menucascade"><b><span class="uicontrol"><span><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Restore</strong></span></span></b></span>.</p></li>
+       <li>Restoration to a specified point in time<p>On the <strong>Copy Data</strong> page, click <span><img src="en-us_image_0000002200125125.png"></span>. In the blue part on the timeline, select a copy and choose <span class="menucascade"><b><span class="uicontrol"><span><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Restore</strong></span></span></b></span>.</p></li>
+      </ul>
+      <div class="p">
+       <a href="#EN-US_TOPIC_0000002164798512__en-us_topic_0000001385658689_table194961441141219">Table 1</a> describes the related parameters. 
+       <div class="tablenoborder">
+        <a name="EN-US_TOPIC_0000002164798512__en-us_topic_0000001385658689_table194961441141219"></a><a name="en-us_topic_0000001385658689_table194961441141219"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164798512__en-us_topic_0000001385658689_table194961441141219" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>Restoring openGauss/CMDB
+         </caption>
+         <colgroup>
+          <col style="width:32.019999999999996%">
+          <col style="width:67.97999999999999%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.5.2.4.2.3.2.2.3.1.1"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.5.2.4.2.3.2.2.3.1.2"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.1 "><p><span><strong>Restore To</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.2 "><p>Select <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> or <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.1 "><p><span><strong>Location</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.2 "><p>If you select restoration to <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span>, the target location is displayed by default.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.1 "><p><strong>Tag</strong></p>
+            <div class="note">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p><span>This function is available only in 1.6.0 and later versions.</span></p>
+             </div>
+            </div></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.2 "><p>This parameter is displayed when you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for <strong>Restore To</strong>.</p> <p>You can filter databases by tag.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.1 "><p><span><strong>Target Cluster</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.2 "><p>If you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for <strong>Restore To</strong>, you can select a target cluster.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.1 "><p><span><strong>Target Instance</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.2 "><p>If you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for <strong>Restore To</strong>, you can select a target instance.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.1 "><p><span><strong>Rename Database</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.2 "><p>This parameter is displayed only for database restoration. After this function is enabled, you can rename the restored database.</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164798496.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

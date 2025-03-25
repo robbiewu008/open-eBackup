@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="nas_s_0094.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -39,8 +39,8 @@
 
 <h1 class="topictitle1">管理NAS共享</h1>
 <div><p>系统支持修改、移除、激活或禁用NAS共享的保护等操作。</p>
-<p>选择<span class="uicontrol">“<span id="nas_s_0096__zh-cn_topic_0000001839142377_text99081414144119">保护</span> &gt; 文件系统 &gt; NAS共享”</span>，查找到需要执行操作的NAS共享。</p>
-<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="nas_s_0096__zh-cn_topic_0000001839142377_p5978112341818">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0096__zh-cn_topic_0000001839142377_uicontrol129783237180">“<span id="nas_s_0096__zh-cn_topic_0000001839142377_text10978172391818">保护</span> &gt; 文件服务 &gt; NAS共享”</span>。</p>
+<p>选择<span class="uicontrol">“<span id="nas_s_0096__zh-cn_topic_0000002199964685_text99081414144119">保护</span> &gt; 文件系统 &gt; NAS共享”</span>，查找到需要执行操作的NAS共享。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="nas_s_0096__zh-cn_topic_0000002199964685_p5978112341818">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0096__zh-cn_topic_0000002199964685_uicontrol129783237180">“<span id="nas_s_0096__zh-cn_topic_0000002199964685_text10978172391818">保护</span> &gt; 文件服务 &gt; NAS共享”</span>。</p>
 </div></div>
 <p>具体操作说明如<a href="#nas_s_0096__table24934294919">表1</a>所示。</p>
 
@@ -57,7 +57,7 @@
 <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>操作背景</strong></p>
 <p>当您需要修改NAS共享的保护信息时，可以通过修改保护计划来实现。修改后下次备份将按照新的保护计划执行。</p>
 <p><strong>注意事项</strong></p>
-<ul><li>修改保护时不会影响当前正在运行的保护任务，下个保护周期开始执行新的保护计划。</li><li>当资源关联的SLA有变化时，建议您在界面修改当前SLA，不建议通过修改保护操作重新关联其他SLA。</li><li>对于OceanProtect X3000 备份一体机，使用合并部署到<span>OceanProtect</span>的代理主机对NAS共享的进行保护时，默认<span class="parmname">“<span>通道数</span>”</span>为10，最大值为15。如果配置超过最大值可能存在进程可用内存不足的情况。</li></ul>
+<ul><li>修改保护时不会影响当前正在运行的保护任务，下个保护周期开始执行新的保护计划。</li><li>当资源关联的SLA有变化时，建议您在界面修改当前SLA，不建议通过修改保护操作重新关联其他SLA。</li><li>对于OceanProtect X3000 备份一体机，使用客户端合并部署到<span>OceanProtect</span>对NAS共享进行保护时，默认<span class="parmname">“<span>通道数</span>”</span>为10，最大值为15。如果配置超过最大值可能存在进程可用内存不足的情况。</li></ul>
 </td>
 <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>在资源所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>修改保护</span>”</span>。</p>
 </td>
@@ -67,7 +67,7 @@
 <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>操作背景</strong></p>
 <p>当不需要再对SLA共享执行保护时，可以通过移除保护计划来实现。移除后系统将无法对该NAS共享执行保护任务。</p>
 <p><strong>注意事项</strong></p>
-<ul><li>当有该NAS共享的保护任务正在运行时，无法执行移除保护操作。</li><li>当资源关联的SLA有变化时，建议您在<span class="uicontrol">“<span id="nas_s_0096__zh-cn_topic_0000001839142377_text71111921162814">保护</span> &gt; 保护策略 &gt; SLA”</span>界面修改当前SLA，不建议移除保护后重新关联SLA。</li></ul>
+<ul><li>当有该NAS共享的保护任务正在运行时，无法执行移除保护操作。</li><li>当资源关联的SLA有变化时，建议您在<span class="uicontrol">“保护 &gt; 保护策略 &gt; SLA”</span>界面修改当前SLA，不建议移除保护后重新关联SLA。</li></ul>
 </td>
 <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>单击<span class="uicontrol">“<span>更多</span> &gt; <span>移除保护</span>”</span>。</p>
 </td>
@@ -103,32 +103,32 @@
 <tr><td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p>修改</p>
 </td>
 <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>操作背景</strong></p>
-<p>当已注册的NAS共享的<span style="color:#6C7280;">FQDN/IP</span>、认证模式有变更时，需要通过该操作同步变更。</p>
+<p>当已注册的NAS共享的域名/IP、认证模式有变更时，需要通过该操作同步变更。</p>
 <p>当通过存储设备注册的NAS共享有认证信息时，需要通过该操作配置认证信息。</p>
 </td>
 <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>单击<span class="uicontrol">“<span>更多</span> &gt; <span>修改</span> ”</span>。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><div class="p">添加标签<div class="note" id="nas_s_0096__zh-cn_topic_0000001792344090_note161679211561"><span class="notetitle"> 说明： </span><div class="notebody"><p id="nas_s_0096__zh-cn_topic_0000001792344090_p1816719214566">仅1.6.0及后续版本支持此功能。</p>
+<tr><td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><div class="p">添加标签<div class="note" id="nas_s_0096__zh-cn_topic_0000002200147037_note161679211561"><span class="notetitle"> 说明： </span><div class="notebody"><p id="nas_s_0096__zh-cn_topic_0000002200147037_p1816719214566"><span id="nas_s_0096__zh-cn_topic_0000002200147037_ph206615454589">仅1.6.0及后续版本支持此功能。</span></p>
 </div></div>
 </div>
 </td>
 <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>操作背景</strong></p>
 <p>当您需要快速筛选和管理资源时，可以通过该操作实现。</p>
 </td>
-<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><div class="p">选择<span class="uicontrol" id="nas_s_0096__zh-cn_topic_0000001792344090_uicontrol84421111904">“<span id="nas_s_0096__zh-cn_topic_0000001792344090_text6442710012">更多</span> &gt; 添加标签”</span>。<div class="note" id="nas_s_0096__zh-cn_topic_0000001792344090_note164681316118"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="nas_s_0096__zh-cn_topic_0000001792344090_ul22969251338"><li id="nas_s_0096__zh-cn_topic_0000001792344090_li142961925139">您可以在弹出的“添加标签”界面选择已有的标签或单击“创建”新建标签。</li><li id="nas_s_0096__zh-cn_topic_0000001792344090_li135161927738">如需对标签进行修改、删除等操作，可在“添加标签”界面，单击“前往标签管理”，进入“标签管理”界面操作。</li></ul>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><div class="p">单击“更多 &gt; 添加标签”。<div class="note" id="nas_s_0096__zh-cn_topic_0000002200147037_note164681316118"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="nas_s_0096__zh-cn_topic_0000002200147037_ul22969251338"><li id="nas_s_0096__zh-cn_topic_0000002200147037_li142961925139">您可以在弹出的“添加标签”界面选择已有的标签或单击“创建”新建标签。</li><li id="nas_s_0096__zh-cn_topic_0000002200147037_li135161927738">如需对标签进行修改、删除等操作，可在“添加标签”界面，单击“前往标签管理”，进入“标签管理”界面操作。</li></ul>
 </div></div>
 </div>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><div class="p">移除标签<div class="note" id="nas_s_0096__zh-cn_topic_0000001792344090_note4957114117575"><span class="notetitle"> 说明： </span><div class="notebody"><p id="nas_s_0096__zh-cn_topic_0000001792344090_zh-cn_topic_0000001792344090_p1816719214566">仅1.6.0及后续版本支持此功能。</p>
+<tr><td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><div class="p">移除标签<div class="note" id="nas_s_0096__zh-cn_topic_0000002200147037_note4957114117575"><span class="notetitle"> 说明： </span><div class="notebody"><p id="nas_s_0096__zh-cn_topic_0000002200147037_zh-cn_topic_0000002200147037_p1816719214566"><span id="nas_s_0096__zh-cn_topic_0000002200147037_zh-cn_topic_0000002200147037_ph206615454589">仅1.6.0及后续版本支持此功能。</span></p>
 </div></div>
 </div>
 </td>
 <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>操作背景</strong></p>
 <p>当您不再需要对资源进行标记时，可以通过该操作实现。</p>
 </td>
-<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>选择<span class="uicontrol" id="nas_s_0096__zh-cn_topic_0000001792344090_uicontrol4993205113111">“<span id="nas_s_0096__zh-cn_topic_0000001792344090_text6993751201118">更多</span> &gt; 移除标签”</span>。</p>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>单击“更多 &gt; 移除标签”。</p>
 </td>
 </tr>
 </tbody>

@@ -1,0 +1,80 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="XtraBackup工具无法运行，备份失败">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="mysql-0105.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="documenttype" content="usermanual">
+  <meta name="prodname" content="csbs">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="mysql-0111">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>XtraBackup工具无法运行，备份失败</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="mysql-0111"></a><a name="mysql-0111"></a>
+  <h1 class="topictitle1">XtraBackup工具无法运行，备份失败</h1>
+  <div>
+   <div class="section" id="mysql-0111__zh-cn_topic_0000002200015265_zh-cn_topic_0000001340303593_section45966096">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p id="mysql-0111__zh-cn_topic_0000002200015265_p292735114419">备份失败，查看日志报错“Exec backup cmd failed.”。</p>
+   </div>
+   <div class="section" id="mysql-0111__zh-cn_topic_0000002200015265_zh-cn_topic_0000001340303593_section32266333">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p id="mysql-0111__zh-cn_topic_0000002200015265_zh-cn_topic_0000001340303593_p217144903418">主机环境GCC库文件版本过低，无法支持XtraBackup备份工具。</p>
+   </div>
+   <div class="section" id="mysql-0111__zh-cn_topic_0000002200015265_section14431947175614">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol id="mysql-0111__zh-cn_topic_0000002200015265_ol1232218542574">
+     <li id="mysql-0111__zh-cn_topic_0000002200015265_li65735405819"><span>以root用户登录客户端所在主机。</span></li>
+     <li id="mysql-0111__zh-cn_topic_0000002200015265_li1120117237586"><span>执行<strong id="mysql-0111__zh-cn_topic_0000002200015265_b17781538012">yum install devtoolset-</strong><em id="mysql-0111__zh-cn_topic_0000002200015265_i181562041709">x</em>命令，安装高版本的GCC库。</span><p></p>
+      <div class="p" id="mysql-0111__zh-cn_topic_0000002200015265_p813311015110">
+       例如：<strong id="mysql-0111__zh-cn_topic_0000002200015265_b97616217115">yum install devtoolset-8</strong>
+       <div class="note" id="mysql-0111__zh-cn_topic_0000002200015265_note871798908">
+        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <p id="mysql-0111__zh-cn_topic_0000002200015265_p15717181506">参数<strong id="mysql-0111__zh-cn_topic_0000002200015265_b108544139016">devtoolset-</strong><em id="mysql-0111__zh-cn_topic_0000002200015265_i10854131313015">x</em>，其中x表示GCC库版本，具体以为实际为准。</p>
+        </div>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+   <div class="section" id="mysql-0111__zh-cn_topic_0000002200015265_zh-cn_topic_0000001340303593_section63436170">
+    <h4 class="sectiontitle">建议与总结</h4>
+    <p class="msonormal" id="mysql-0111__zh-cn_topic_0000002200015265_zh-cn_topic_0000001340303593_p2212424">无。</p>
+   </div>
+   <div class="section" id="mysql-0111__zh-cn_topic_0000002200015265_zh-cn_topic_0000001340303593_section34054620">
+    <h4 class="sectiontitle">参考信息</h4>
+    <p id="mysql-0111__zh-cn_topic_0000002200015265_p78751025135312">无。</p>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="mysql-0105.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

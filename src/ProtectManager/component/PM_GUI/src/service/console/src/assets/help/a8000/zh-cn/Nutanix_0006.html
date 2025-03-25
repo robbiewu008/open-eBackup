@@ -1,0 +1,53 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="约束与限制">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="Nutanix_0003.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="Nutanix_0006">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>约束与限制</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="Nutanix_0006"></a><a name="Nutanix_0006"></a>
+
+<h1 class="topictitle1">约束与限制</h1>
+<div><ul><li>不支持对一个资源同时执行备份和恢复任务。</li><li>不支持即时挂载与即时恢复。</li><li>如果副本触发了过期或删除任务，不支持使用该副本进行复制、恢复和归档任务。</li><li>Nutanix虚拟机不支持使用PC（Prism Central）平台注册，仅支持使用PE（Prism Element）平台注册。</li><li>对于OceanProtect X3000/X6000备份一体机，文件数量超过2000万的副本无法索引，对于OceanProtect X8000/X9000备份一体机，文件数量超过5000万的副本无法索引，对于OceanProtect E1000，文件数量超过3000万的副本无法索引。</li><li>文件级恢复的约束限制如下：<ul id="Nutanix_0006__nutanix_0077_zh-cn_topic_0000001792387532_ul7776115717115"><li id="Nutanix_0006__nutanix_0077_zh-cn_topic_0000001792387532_li117377572035">支持的操作系统类型为Linux和Windows，支持RAW和QCOW2格式的磁盘备份文件，不支持无法产生备份文件的外挂磁盘。</li><li id="Nutanix_0006__nutanix_0077_zh-cn_topic_0000001792387532_li152815111217">副本中必须包含操作系统所在盘的备份文件。不然无法获取到挂载点或磁盘驱动器信息，导致无法挂载，进而无法获取到目录及文件的绝对路径。</li><li id="Nutanix_0006__nutanix_0077_li1251917852210">支持的Linux文件系统类型为ext 2/3/4、XFS，支持的Windows文件系统类型为NTFS、FAT和FAT32。</li><li id="Nutanix_0006__nutanix_0077_li4816102918225">swap（Linux交换分区）、BitLocker （Windows驱动器加密）、ReFS（Windows复原文件系统）不支持解析。</li><li id="Nutanix_0006__nutanix_0077_li2082113592217">对于逻辑卷，1个逻辑卷管理器可以对应多个物理卷，只有多物理卷所在磁盘都进行备份，才能支持逻辑卷的解析。</li><li id="Nutanix_0006__nutanix_0077_li21659446233">对于Linux操作系统：<ul id="Nutanix_0006__nutanix_0077_fc_gud_0047_ul1653313431210"><li id="Nutanix_0006__nutanix_0077_fc_gud_0047_li5158203225115">仅支持将挂载点写入fstab中的文件系统的解析。如果设备总线类型为virtio类型，仅支持设备采用UUID的形式将挂载点写入fstab中的文件系统的解析。</li><li id="Nutanix_0006__nutanix_0077_fc_gud_0047_li2072741414211">非持久化挂载的文件系统不支持解析。以/proc、/sys、/dev、/lib/udev/devices、/invisible开头的路径忽略不解析。</li></ul>
+</li><li id="Nutanix_0006__nutanix_0077_li599716375222">对于Windows操作系统：<ul id="Nutanix_0006__nutanix_0077_fc_gud_0047_ul19183152681211"><li id="Nutanix_0006__nutanix_0077_fc_gud_0047_li118122811212">仅支持磁盘或分区映射到驱动器（如C:\）的文件系统的解析，无法确定驱动器映射则不支持解析。可移动磁盘（如DVD ROM）忽略不解析。</li><li id="Nutanix_0006__nutanix_0077_fc_gud_0047_li62246171024">不支持解析跨区卷、镜像卷、带区卷、RAID5卷。</li></ul>
+</li><li id="Nutanix_0006__nutanix_0077_li8702452209">仅支持对单操作系统的副本进行解析。</li><li id="Nutanix_0006__nutanix_0077_li9484163713254">单次恢复的文件数量不能超过20万个。</li></ul>
+</li></ul>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="Nutanix_0003.html">概述</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

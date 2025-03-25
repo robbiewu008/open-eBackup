@@ -1,0 +1,117 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Viewing Redis Environment Information">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164604078.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002199970453">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Viewing Redis Environment Information</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002199970453"></a><a name="EN-US_TOPIC_0000002199970453"></a>
+
+<h1 class="topictitle1">Viewing Redis Environment Information</h1>
+<div><div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002199964685_uicontrol465185015397"><b><span id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002199964685_text265115073919"><strong>Protection</strong></span> &gt; Big Data &gt; Redis</b></span>.</span></li><li><span>Query Redis cluster information.</span><p><ol type="a"><li>View information about Redis clusters registered with the <span>OceanProtect</span>.<p><a href="#EN-US_TOPIC_0000002199970453__table14170211115420">Table 1</a> describes the related parameters.</p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_p4219634163218">Some parameters are not displayed by default. You can click <span><img id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_image1271105319486" src="en-us_image_0000002200147221.png"></span> next to <strong id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_b9551254456">Operation</strong> and select a parameter to display it on the current page.</p>
+</div></div>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002199970453__table14170211115420"></a><a name="table14170211115420"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002199970453__table14170211115420" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Redis cluster information</caption><colgroup><col style="width:29.59%"><col style="width:70.41%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.59%" id="mcps1.3.1.2.2.2.1.1.4.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70.41%" id="mcps1.3.1.2.2.2.1.1.4.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="29.59%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.41%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.2 "><p>Redis cluster name.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.59%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.1 "><p><span><strong>Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.41%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.2 "><p>Redis cluster status.</p>
+<ul><li><span><strong>Online</strong></span>: If the host where the client is installed is properly connected to the Redis cluster, <span class="uicontrol"><b><span><strong>Status</strong></span></b></span> is <span class="uicontrol"><b><span><strong>Online</strong></span></b></span>.</li><li><span><strong>Offline</strong></span>: If the host where the client is installed is improperly connected to the Redis cluster, <span class="uicontrol"><b><span><strong>Status</strong></span></b></span> is <span class="uicontrol"><b><span><strong>Offline</strong></span></b></span>.</li><li><strong>Abnormal</strong>: If some nodes in the Redis cluster are offline, <span class="uicontrol"><b><span><strong>Status</strong></span></b></span> is <span class="uicontrol"><b>Abnormal</b></span>.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.59%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.1 "><p><span><strong>Version</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.41%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.2 "><p>Redis version number.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.59%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.1 "><div class="p"><span id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_text1045121611529"><strong>Owner</strong></span><div class="note" id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_note6159153035311"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_p815914301534">This parameter is available only in 1.5.0.</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="70.41%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.2 "><p>User to whom resources of a vStore are allocated for management.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.59%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.1 "><p><span><strong>SLAs</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.41%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.2 "><p>If an SLA is associated with a cluster, the SLA name is displayed. Otherwise, <span class="uicontrol"><b>--</b></span> is displayed.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.59%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.1 "><p><span><strong>SLA Compliance</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.41%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.2 "><div class="p">Whether a backup job is successfully executed based on the backup interval or backup window set in the SLA.<ul id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_en-us_topic_0000002164820450_ul1823814519293"><li id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_en-us_topic_0000002164820450_li9238184572919"><strong id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_en-us_topic_0000002164820450_b1092516394564">Met</strong>: If the backup time of a backup job (except for the first full backup) meets the backup time window or backup interval requirements and the backup job is executed successfully, SLA compliance is met.</li><li id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_en-us_topic_0000002164820450_li189142052112912"><strong id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_en-us_topic_0000002164820450_b541520442564">Missed</strong>: If the backup time does not meet the backup time window or backup interval requirements, for example, if the backup interval set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup interval or backup window.</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.59%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.1 "><p><span><strong>Protection Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.41%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.2 "><p>Whether a Redis cluster is protected.</p>
+<ul><li><strong><span><strong>Unprotected</strong></span></strong>: The Redis cluster is not associated with an SLA, or it is associated with an SLA but protection is disabled.</li><li><strong><span><strong>Protected</strong></span></strong>: The Redis cluster is associated with an SLA and protection is enabled.</li><li><strong><span><strong>Creating</strong></span></strong>: The cluster is associated with an SLA and protection is being created.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.59%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.1 "><div class="p"><strong id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_b827118125517">Tag</strong><div class="note" id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_note1330311543247"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_p630385412417"><span id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_ph5374928181810">This parameter is available only in 1.6.0 and later versions.</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="70.41%" headers="mcps1.3.1.2.2.2.1.1.4.2.3.1.2 "><p>If a tag has been added for the resource, the tag name is displayed. Otherwise, <strong id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_b1959642011219">--</strong> is displayed.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Click the name and check the overview, copy information, and related jobs. <ul id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_ul865415431221"><li id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_li165311431228">Overview<p id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_p18940145516325"><a name="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_li165311431228"></a><a name="en-us_topic_0000002164820458_li165311431228"></a>Display the SLA information, job execution time, and total number of copies.</p>
+</li><li id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_li15654174342214">Copy data<p id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_p565454392218"><a name="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_li15654174342214"></a><a name="en-us_topic_0000002164820458_li15654174342214"></a>You can search for copies by year, month, and day.</p>
+<p id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_p6521122942916">If <span><img id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_image7611125417346" src="en-us_image_0000002164820646.png"></span> is displayed below the time, a copy exists at the time.</p>
+</li><li id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_li0654134382213">Related jobs<p id="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_p1747754963312"><a name="EN-US_TOPIC_0000002199970453__en-us_topic_0000002164820458_li0654134382213"></a><a name="en-us_topic_0000002164820458_li0654134382213"></a>Displays backup and restoration jobs.</p>
+</li></ul>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164604078.html">Redis Cluster Environments</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

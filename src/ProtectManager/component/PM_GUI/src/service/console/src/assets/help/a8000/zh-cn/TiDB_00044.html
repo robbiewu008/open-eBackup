@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="TiDB_00041.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -43,13 +43,13 @@
 </div>
 <div class="section" id="TiDB_00044__section1756842892313"><h4 class="sectiontitle">前提条件</h4><ul id="TiDB_00044__ul132661420141115"><li id="TiDB_00044__li762383391617">恢复前请确认恢复目标位置正确。</li><li id="TiDB_00044__li7712113644310">恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小</li><li id="TiDB_00044__li5441111618120">执行恢复任务前，请关闭TiDB日志备份开关。恢复任务完成后，重新打开该开关，开启和关闭的操作方法请参见<a href="TiDB_00072.html">在生产环境开启或关闭日志备份开关</a>。</li><li id="TiDB_00044__li16230658087">集群需保持同样的时钟源配置。</li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="TiDB_00044__tidb_00040_zh-cn_topic_0000001839142377_uicontrol548619473589">“<span id="TiDB_00044__tidb_00040_zh-cn_topic_0000001839142377_text44861447115812">数据利用</span> &gt; <span id="TiDB_00044__tidb_00040_zh-cn_topic_0000001839142377_text2048614765813">副本数据</span> &gt; <span id="TiDB_00044__tidb_00040_zh-cn_topic_0000001839142377_text163101122194918">数据库</span> &gt; TiDB”</span>。</span></li><li><span>您可以以TiDB备份资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在“资源”页签，根据备份资源名称查找到需要恢复的备份资源，并单击备份资源名称。</p>
-</p></li><li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000001792504822.png"></span>，即表示该月、该天存在副本。</p>
-</p></li><li><span>指定副本或时间点进行恢复。</span><p><div class="p">您可以指定副本或指定时间点进行恢复。<ol type="a"><li>指定副本或指定时间点进行恢复。<ul><li>指定副本进行恢复<p><span><img class="eddx" src="zh-cn_image_0000001792504830.png"></span></p>
-</li><li>指定时间点进行恢复。<p><span><img class="eddx" src="zh-cn_image_0000001839224165.png"></span></p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="TiDB_00044__tidb_00040_zh-cn_topic_0000002199964685_uicontrol548619473589">“<span id="TiDB_00044__tidb_00040_zh-cn_topic_0000002199964685_text44861447115812">数据利用</span> &gt; <span id="TiDB_00044__tidb_00040_zh-cn_topic_0000002199964685_text2048614765813">副本数据</span> &gt; <span id="TiDB_00044__tidb_00040_zh-cn_topic_0000002199964685_text163101122194918">数据库</span> &gt; TiDB”</span>。</span></li><li><span>您可以以TiDB备份资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在“资源”页签，根据备份资源名称查找到需要恢复的备份资源，并单击备份资源名称。</p>
+</p></li><li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000002164824166.png"></span>，即表示该月、该天存在副本。</p>
+</p></li><li><span>指定副本或时间点进行恢复。</span><p><div class="p">您可以指定副本或指定时间点进行恢复。<ol type="a"><li>指定副本或指定时间点进行恢复。<ul><li>指定副本进行恢复<p><span><img class="eddx" src="zh-cn_image_0000002164664434.png"></span></p>
+</li><li>指定时间点进行恢复。<p><span><img class="eddx" src="zh-cn_image_0000002200150737.png"></span></p>
 <p></p>
-<p>时间轴上蓝色覆盖区域均可进行时间点恢复，<span><img src="zh-cn_image_0000001839144209.png"></span>表示该时间点存在副本。没有进行日志备份的时间点无法进行时间点恢复。</p>
-<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="TiDB_00044__oracle_gud_0058_ul75802612312"><li id="TiDB_00044__oracle_gud_0058_li1497342618234">对于1.5.0版本，时间轴上最多仅展示100个副本，单击<span><img id="TiDB_00044__oracle_gud_0058_image173544102299" src="zh-cn_image_0000001886153709.png"></span>可以查看所有副本。</li><li id="TiDB_00044__oracle_gud_0058_li95818264231">执行时间点恢复时，由于管理界面无法获取恢复时所使用的副本信息，因此，在恢复任务和相关的事件页面，用户无法看到该恢复任务的副本信息。</li></ul>
+<p>时间轴上蓝色覆盖区域均可进行时间点恢复，<span><img src="zh-cn_image_0000002200150741.png"></span>表示该时间点存在副本。没有进行日志备份的时间点无法进行时间点恢复。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="TiDB_00044__oracle_gud_0083_ul75802612312"><li id="TiDB_00044__oracle_gud_0083_li1497342618234">对于1.5.0版本，时间轴上最多仅展示100个副本，单击<span><img id="TiDB_00044__oracle_gud_0083_image173544102299" src="zh-cn_image_0000002199963833.png"></span>可以查看所有副本。</li><li id="TiDB_00044__oracle_gud_0083_li95818264231">执行时间点恢复时，由于管理界面无法获取恢复时所使用的副本信息，因此，在恢复任务和相关的事件页面，用户无法看到该恢复任务的副本信息。</li></ul>
 </div></div>
 </li></ul>
 </li><li>恢复TiDB备份资源至原位置或新位置。<div class="p">相关参数说明如<a href="#TiDB_00044__table194961441141219">表1</a>。
@@ -64,6 +64,14 @@
 <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.1.2.1.2.2.3.1.2 "><p>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>或<span class="uicontrol">“<span>新位置</span>”</span>。</p>
 </td>
 </tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.1.2.1.2.2.3.1.1 "><div class="p">标签<div class="note" id="TiDB_00044__mysql-0074_zh-cn_topic_0000002164660718_note6966434109"><span class="notetitle"> 说明： </span><div class="notebody"><p id="TiDB_00044__mysql-0074_zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_p1816719214566"><span id="TiDB_00044__mysql-0074_zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_ph206615454589">仅1.6.0及后续版本支持此功能。</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.1.2.1.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol" id="TiDB_00044__mysql-0074_uicontrol245831518502">“<span id="TiDB_00044__mysql-0074_text15458191510501">新位置</span>”</span>时展示该参数。</p>
+<p>可通过标签筛选集群。</p>
+</td>
+</tr>
 <tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.1.2.1.2.2.3.1.1 "><p><span>目标集群</span></p>
 </td>
 <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.1.2.1.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，请选择恢复到的目标TiDB集群。</p>
@@ -73,7 +81,7 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.1.2.1.2.2.3.1.1 "><p><span>是否删除重名表</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.1.2.1.2.2.3.1.2 "><p>通过该参数选择是否删除重名表。全量副本恢复时，当选择了该选项，ProtectAgent代理主机默认会删除目标位置中和原副本中重名的表。</p>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.1.2.1.2.2.3.1.2 "><p>通过该参数选择是否删除重名表。全量副本恢复时，当开启了该功能，客户端所在的主机默认会删除目标位置中和原副本中重名的表。</p>
 <div class="note" id="TiDB_00044__note571410144371"><span class="notetitle"> 说明： </span><div class="notebody"><p id="TiDB_00044__p147141414193715">当存在重名表时，不选择删除重名表将导致恢复失败，请慎重选择。</p>
 </div></div>
 </td>

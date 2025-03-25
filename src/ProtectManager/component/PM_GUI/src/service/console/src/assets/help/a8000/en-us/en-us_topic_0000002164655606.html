@@ -1,0 +1,56 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Viewing the List of Failed Files When an Object Storage Backup or Restoration Job Is Partially Successful">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200056305.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164655606">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Viewing the List of Failed Files When an Object Storage Backup or Restoration Job Is Partially Successful</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164655606"></a><a name="EN-US_TOPIC_0000002164655606"></a>
+
+<h1 class="topictitle1">Viewing the List of Failed Files When an Object Storage Backup or Restoration Job Is Partially Successful</h1>
+<div><p>An object storage backup or restoration job is partially successful. You can perform the operations in this section to view the list of failed files.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Export logs.</span><p><ul><li>A built-in client is used by the job.<ol type="a"><li>Choose <strong>System</strong> &gt; <strong>Log Management</strong>.</li><li>In the <span class="uicontrol"><b><span><strong>Log Export</strong></span></b></span> area, select the node, controller, and software module whose logs are to be exported from the <span class="uicontrol"><b><span><strong>Node</strong></span></b></span>, <span class="uicontrol"><b><span><strong>Software Module Name</strong></span></b></span>, and <span class="uicontrol"><b><span><strong>Controller</strong></span></b></span> drop-down lists, respectively. The exported logs include system debug logs and system running parameters.</li></ol>
+</li></ul>
+<ul><li>An external client is used by the job.<ol type="a"><li>Choose <strong>Protection</strong> &gt; <strong>Clients</strong>.</li><li>Select the external client used by the job and choose <strong>More</strong> &gt; <strong>Export Log</strong>.</li></ol>
+</li></ul>
+</p></li><li><span>Download the exported logs and decompress them to any local directory.</span></li><li id="EN-US_TOPIC_0000002164655606__li198915013503"><a name="EN-US_TOPIC_0000002164655606__li198915013503"></a><a name="li198915013503"></a><span>Go to the log directory, for example, <strong>logs\node-0\protectengine-e\agent\slog\Plugins\ObsPlugin</strong>.</span></li><li><span>Search for the ID of the partially successful job in the log directory and go to the directory corresponding to the job ID.</span></li><li id="EN-US_TOPIC_0000002164655606__li6930921546"><a name="EN-US_TOPIC_0000002164655606__li6930921546"></a><a name="li6930921546"></a><span>Open the <strong>.csv</strong> file in the directory and query all objects that fail to be backed up or restored.</span></li><li><span>If there are multiple hosts where the client is installed, perform <a href="#EN-US_TOPIC_0000002164655606__li198915013503">3</a> to <a href="#EN-US_TOPIC_0000002164655606__li6930921546">5</a> on each host to query all objects that fail to be backed up or restored.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200056305.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

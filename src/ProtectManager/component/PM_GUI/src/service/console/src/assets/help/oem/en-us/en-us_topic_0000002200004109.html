@@ -1,0 +1,102 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Logging In to DeviceManager">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200004109">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Logging In to DeviceManager</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200004109"></a><a name="EN-US_TOPIC_0000002200004109"></a>
+  <h1 class="topictitle1">Logging In to DeviceManager</h1>
+  <div>
+   <p id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_p747234814111">DeviceManager is a piece of integrated storage management software developed by Huawei. On any management terminal connected to the storage system, you can use a browser to log in to DeviceManager as a local user using the management network port IP address of the controller of the storage system.</p>
+   <div class="section" id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_section1014919595360">
+    <h4 class="sectiontitle">Logging in to DeviceManager of the Backup Storage System Using the Management Network Port IP Address of the Storage System Controller via a Browser (Applicable to All Product Models)</h4>
+    <p id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_p19609162517385">On any maintenance terminal connected to the storage system, you can use a browser to log in to DeviceManager of the backup storage as a local user using the management network port IP address of the controller of the storage system.</p>
+    <div class="p" id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_p6932123015394">
+     Before using DeviceManager, verify that the maintenance terminal meets the following requirements:
+     <ul id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_ul69321305394">
+      <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li793223016399">The OS and browser running on the maintenance terminal meet the compatibility requirements.<p id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_p3932153018391"><a name="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li793223016399"></a><a name="en-us_topic_0000002164820486_li793223016399"></a>DeviceManager supports multiple OSs and browsers. For details about the compatibility information, visit <a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">Compatibility Query</a>.</p></li>
+      <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li1091013481382">The maintenance terminal communicates with the storage system properly.</li>
+     </ul>
+    </div>
+    <div class="p" id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_p1779910200429">
+     <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b692515464211">Procedure</strong>
+     <ol id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_ol9824952429">
+      <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li5824453422">Open a browser on the maintenance terminal.</li>
+      <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li198241054425">Enter <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b177471133184217">https://</strong><em id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_i11361551942">Management IP address</em><strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b177111373426">:8088</strong> in the address box and press <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b10234193920423">Enter</strong>.
+       <div class="note" id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_note17119161314">
+        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <ul id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_ul177141613316">
+          <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li167113161839">Replace <em id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_i2390617151010">Management IP address</em> with the actual IP address of the management network port on the controller enclosure of the storage system.</li>
+          <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li372191617317">If a firewall is configured, you must enable port <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b1923572842411">8088</strong> for the system to provide web services.</li>
+          <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li4726164314">The browser may prompt that the website has a security certificate issue. If the IP address is correct, you can neglect the prompt and continue accessing the storage system.</li>
+         </ul>
+        </div>
+       </div></li>
+      <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li8825125184217"><strong>Optional: </strong>Click the language type in the upper right corner to switch the language.<p id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_p672181615315"><a name="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li8825125184217"></a><a name="en-us_topic_0000002164820486_li8825125184217"></a>DeviceManager supports simplified Chinese and English.</p></li>
+      <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li1982505134213">Select <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b1448718544281">Local user</strong> or <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b9487155413282">LDAP user</strong> in <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b1448725412812">Authentication Mode</strong>, and enter the username and password in <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b134871754142815">Username</strong> and <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b104881054152818">Password</strong>. If <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b1278120541370">Verification Code</strong> is displayed, enter the correct verification code.
+       <div class="note" id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_note10725161432">
+        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <ul id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_ul19721516738">
+          <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li10575172652718">To use a lightweight directory access protocol (LDAP) domain user account to log in to DeviceManager, you must first configure the LDAP domain server, and then set the LDAP server parameters and create an LDAP domain user account on the storage system.</li>
+          <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li17727166316">The username and password are case-sensitive.</li>
+          <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li1072111611320">If the default password has been changed, use the new password to log in.</li>
+          <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li10728161934">If <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b3488941122518">Account Lockout</strong> is enabled (enabled by default) for an account in the security policy, the account will be locked if the number of consecutive incorrect password attempts (<strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b1489204115252">Lockout Threshold</strong>) reaches the upper limit (<strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b1448984110254">3</strong> by default) within 5 minutes. (By default, the account is automatically unlocked after being locked for 5 minutes.)</li>
+          <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li185031929132514">To ensure security of a user account, you are advised to change the account password periodically. You can log in to DeviceManager, choose <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b3682149165512">Settings</strong> &gt; <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b66838495550">User and Security</strong> &gt; <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b6683449155515">Users and Roles</strong> &gt; <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b126831949105520">User Management</strong>, and change the login password.</li>
+         </ul>
+        </div>
+       </div></li>
+      <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li18251756428">Click <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b18443174923120">Log In</strong>.<p id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_p1172616137">The DeviceManager WebUI is displayed.</p>
+       <div class="note" id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_note117201615311">
+        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <ul id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_ul137214161439">
+          <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li440182562418">When logging in to DeviceManager for the first time, you need to sign the EULA as a user with administrator permissions.<p id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_p4367112611244"><a name="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li440182562418"></a><a name="en-us_topic_0000002164820486_li440182562418"></a>Read the Huawei Enterprise End User License Agreement carefully, select <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b89397916408">I have read and agree to sign the Huawei Enterprise End User License Agreement</strong>, and click <span class="uicontrol" id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_en-us_topic_0000001129001228_uicontrol1274111599302"><b>OK</b></span>.</p></li>
+          <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li187251619314">After the operation, click the current login user in the upper right corner of the page, and then click <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b1692810253418">Log Out</strong> in the drop-down list box to log out of DeviceManager.</li>
+         </ul>
+        </div>
+       </div></li>
+     </ol>
+    </div>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_section109031113153814">
+    <h4 class="sectiontitle"><span id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_ph2903131318382">Switching from the <span id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_text0372165413195">product</span> WebUI to DeviceManager (applicable to some models of this product)</span></h4>
+    <ul id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_ul543812134375">
+     <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li443881313710">For some models of this product, perform the following operations:
+      <ol id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_ol7944131832013">
+       <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li1394451815207">Choose <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b0471134215512">System</strong> &gt; <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b1047116421657">Infrastructure</strong> &gt; <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b104715421155">Cluster Management</strong>.</li>
+       <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li17944141813202">On the <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b179924444513">Backup Clusters</strong> tab page, click a node name under the <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b999217447513">Local Cluster Nodes</strong> area.</li>
+       <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li69441618112012">On the displayed <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b448010541851">Node Details</strong> page, click <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b164805541259">Open the device management platform</strong> to go to DeviceManager.</li>
+      </ol></li>
+     <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li15543204373714">For some models of this product, perform the following operations:
+      <ol id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_ol1472117537613">
+       <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li138643017417">Choose <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_en-us_topic_0000002164820486_b0471134215512">System</strong> &gt; <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_en-us_topic_0000002164820486_b1047116421657">Infrastructure</strong> &gt; <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_en-us_topic_0000002164820486_b104715421155">Cluster Management</strong>.</li>
+       <li id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_li87211653461">On the <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b7934112969">Backup Clusters</strong> tab page, click <strong id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_b49341012163">View Cluster Details</strong> to go to the cluster details page. Click <span class="uicontrol" id="EN-US_TOPIC_0000002200004109__en-us_topic_0000002164820486_uicontrol189341124614"><b>Open the device management platform</b></span> to go to DeviceManager.</li>
+      </ol></li>
+    </ul>
+   </div>
+  </div>
+ </body>
+</html>

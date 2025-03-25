@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="postgresql-0042.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -41,76 +41,101 @@
 <div><p>当需要对已备份的PostgreSQL实例进行恢复时，可以参考本节恢复PostgreSQL实例至原位置或新位置。</p>
 <div class="section"><h4 class="sectiontitle">背景信息</h4><p>支持使用备份副本、复制副本、归档副本进行恢复。支持恢复至原位置（复制副本不支持恢复至原位置，复制副本的归档副本不支持恢复至原位置）或新位置。</p>
 </div>
-<div class="section"><h4 class="sectiontitle">前提条件</h4><ul id="postgresql-0045__dameng-00045_ul155946913719"><li id="postgresql-0045__dameng-00045_li178221624154012">恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</li></ul>
+<div class="section" id="postgresql-0045__section721285884410"><a name="postgresql-0045__section721285884410"></a><a name="section721285884410"></a><h4 class="sectiontitle">前提条件</h4><ul id="postgresql-0045__dameng-00045_ul155946913719"><li id="postgresql-0045__dameng-00045_li178221624154012">恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</li></ul>
 <ul id="postgresql-0045__dameng-00045_ul1648381342319"><li id="postgresql-0045__dameng-00045_li69561792311">执行新位置恢复前，请确保数据库安装用户具有恢复目标路径的读写权限。</li><li id="postgresql-0045__dameng-00045_li97319774218">当恢复的资源为MPP主备集群时，关闭数据库前，请确保主备数据库信息正确，否则需要对恢复目标资源执行资源扫描操作。</li></ul>
 </div>
-<ul><li>恢复时如果目标实例的端口被占用，请先解除目标实例占用的端口再执行恢复操作。</li><li>恢复的目标实例为集群实例时，请确保各节点上Pgpool服务已停止，且Pgpool端口未被占用，否则会导致恢复失败。</li><li>执行恢复操作前请先停止PostgreSQL数据库。如果是HACS场景下的PostgreSQL数据库，执行恢复操作前，需要先冻结HACS集群，手动执行冻结命令<strong>crm configure property maintenance-mode=true</strong>，完成冻结后才可以手动停止PostgreSQL数据库，再执行恢复操作，PostgreSQL实例恢复成功后，需要手动执行解冻HACS集群命令<strong>crm configure property maintenance-mode=false</strong>。</li><li>执行Patroni集群恢复操作前请先清除etcd数据。<ol><li>在每个节点执行<strong>systemctl stop patroni</strong>命令，停止集群所有节点。</li><li>在任意一个集群节点执行<strong>patronictl -c /etc/patroni/patroni.yml list</strong>命令，观察节点信息是否已清除。如果回显为空表格，则说明节点信息已清除。<div class="p"><span><img src="zh-cn_image_0000001927295206.png"></span><ul><li>已清除，处理结束。</li><li>未清除，继续执行后续操作。</li></ul>
-</div>
-</li><li>执行<strong>cat </strong><strong>/etc/patroni/patroni.yml</strong>命令，进入patroni.yml文件。</li><li>找到并记录namespace参数项取值。如下图所示：<p><span><img src="zh-cn_image_0000001953608009.png"></span></p>
-</li><li>执行<strong>etcdctl del --prefix " </strong><em>namespace</em><strong> "</strong>命令，删除etcd数据。<p>例如：<strong>etcdctl del --prefix " </strong><strong>/service148new/ "</strong></p>
+<ul><li>恢复时如果目标实例的端口被占用，请先解除目标实例占用的端口再执行恢复操作。</li><li>恢复的目标实例为单实例时，停止数据库，具体操作如下：（/usr/local/pgsql/bin/pg_ctl代表数据库安装目录，/usr/local/pgsql/data代表数据目录，用户需要根据实际安装目录和数据目录，适配停止数据库命令）<pre class="screen">su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile stop  </pre>
+</li><li>恢复的目标实例为集群实例时，请确保各节点上的服务已停止，先停备库，再停主库，具体操作如下：<p><strong>pgpool</strong><strong>集群</strong></p>
+<ol><li>先停所有节点pgpool服务：<pre class="screen"><em>/usr/local/pgpool/bin/pgpool</em> -m fast stop</pre>
+</li><li>然后停数据库：<pre class="screen">su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile stop</pre>
 </li></ol>
-</li><li>1.6.0及后续版本基于Patroni部署的PostgreSQL集群执行日志副本恢复至原位置或新位置时，需要提前配置patroni.yml文件，具体配置如下：<p>在patroni.yml文件中，bootstrap项下，添加如下配置：</p>
+<p><strong>patroni集群</strong></p>
+<ol><li>停所有节点patroni服务，同时会停数据库：<pre class="screen">systemctl stop patroni</pre>
+</li><li>任一节点执行<strong>patronictl -c /etc/patroni/patroni.yml list</strong>命令，观察节点服务是否已停止。如果回显为空表格，则说明节点服务已停止：<p><span><img src="zh-cn_image_0000002168601462.png"></span></p>
+</li><li>执行<strong>cat </strong><strong>/etc/patroni/patroni.yml</strong>命令，查看patroni.yml文件，找到namespace参数项取值。如下图所示：<p><span><img src="zh-cn_image_0000002168441738.png"></span></p>
+</li><li>执行<strong>etcdctl del --prefix " </strong><em>namespace</em><strong> "</strong>命令，删除etcd中关于PostgreSQL集群的数据。<p>例如：<strong>etcdctl del --prefix " </strong><strong>/service148new/ "</strong></p>
+</li></ol>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>日志副本恢复至原位置或新位置时，需要提前配置patroni.yml文件，具体配置如下：</p>
 <pre class="screen"> method: OceanProtectPITR
  OceanProtectPITR:
     command: "mv <em>$PGDATA/../OceanProtectData/DATADIR $PGDATA/../</em>"
     no_params: True
     keep_existing_recovery_conf: True</pre>
+</div></div>
+<p><strong>CLup集群</strong></p>
+<ol><li>登录CLup数据库管理系统。<ol type="a"><li>在<span class="uicontrol">“HA集群 &gt; HA管理”</span>找到对应集群，单击<span class="uicontrol">“离线”</span>，离线成功后，集群状态为Offline。</li><li>在<span class="uicontrol">“数据库管理 &gt; 实例列表”</span>找到对应的数据库实例，先停备库，再停主库，单击<span class="uicontrol">“停止”</span>，停止成功后，数据库实例状态为“停止”。</li></ol>
+</li><li>恢复任务完成后，需要对CLup执行上线操作：<p>在<span class="uicontrol">“HA集群 &gt; HA管理”</span>找到对应集群，单击<span class="uicontrol">“上线”</span>，上线成功后，集群状态为Online。</p>
+</li></ol>
+<p><strong>HACS</strong></p>
+<p>执行恢复操作前，需要先冻结HACS集群，手动执行冻结命令<strong>crm configure property maintenance-mode=true</strong>，完成冻结后才可以手动停止PostgreSQL数据库，操作如下（停数据库，先停备库、后停主库）：</p>
+<pre class="screen">su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile stop</pre>
+<p>再执行恢复操作，PostgreSQL实例恢复成功后，需要手动执行解冻HACS集群命令<strong>crm configure property maintenance-mode=false</strong>。</p>
 </li></ul>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="postgresql-0045__zh-cn_topic_0000001839142377_uicontrol6167212279">“<span id="postgresql-0045__zh-cn_topic_0000001839142377_text1816152172710">数据利用</span> &gt; <span id="postgresql-0045__zh-cn_topic_0000001839142377_text1816021152712">副本数据</span> &gt; <span id="postgresql-0045__zh-cn_topic_0000001839142377_text19649165519496">数据库</span> &gt; PostgreSQL”</span>。</span></li><li><span>您可以以PostgreSQL实例资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据资源名称查找到需要恢复的资源，并单击资源名称。</p>
-</p></li><li><span>依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000001839202085.png"></span>，即表示该月、该天存在副本。</p>
-</p></li><li><span>指定副本或时间点进行恢复。</span><p><div class="p">相关参数说明如<a href="#postgresql-0045__table194961441141219">表1</a>。
-<div class="tablenoborder"><a name="postgresql-0045__table194961441141219"></a><a name="table194961441141219"></a><table cellpadding="4" cellspacing="0" summary="" id="postgresql-0045__table194961441141219" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复PostgreSQL实例参数说明</caption><colgroup><col style="width:32.019999999999996%"><col style="width:67.97999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.5.2.4.2.1.2.2.3.1.1"><p>参数</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="postgresql-0045__zh-cn_topic_0000002199964685_uicontrol6167212279">“<span id="postgresql-0045__zh-cn_topic_0000002199964685_text1816152172710">数据利用</span> &gt; <span id="postgresql-0045__zh-cn_topic_0000002199964685_text1816021152712">副本数据</span> &gt; <span id="postgresql-0045__zh-cn_topic_0000002199964685_text19649165519496">数据库</span> &gt; PostgreSQL”</span>。</span></li><li><span>您可以以PostgreSQL实例资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据资源名称查找到需要恢复的资源，并单击资源名称。</p>
+</p></li><li><span>依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000002164603930.png"></span>，即表示该月、该天存在副本。</p>
+</p></li><li><span>指定副本或时间点进行恢复。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>对于OceanProtect E6000备份一体机，使用复制副本执行恢复时，不支持在远端对该资源下的其他副本进行复制。</p>
+</div></div>
+<div class="p">相关参数说明如<a href="#postgresql-0045__table194961441141219">表1</a>。
+<div class="tablenoborder"><a name="postgresql-0045__table194961441141219"></a><a name="table194961441141219"></a><table cellpadding="4" cellspacing="0" summary="" id="postgresql-0045__table194961441141219" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复PostgreSQL实例参数说明</caption><colgroup><col style="width:32.019999999999996%"><col style="width:67.97999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.5.2.4.2.2.2.2.3.1.1"><p>参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.5.2.4.2.1.2.2.3.1.2"><p>说明</p>
+<th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.5.2.4.2.2.2.2.3.1.2"><p>说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span>恢复至</span></p>
+<tbody><tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p><span>恢复至</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>或<span class="uicontrol">“<span>新位置</span>”</span>。</p>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>或<span class="uicontrol">“<span>新位置</span>”</span>。</p>
 <div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>执行新位置恢复时，如果副本中存在数据目录外的表空间目录，需要保证新位置实例安装数据库的操作系统用户可以访问新位置主机上的同名的表空间目录。</p>
 </div></div>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p>标签</p>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>标签</p>
 </td>
-<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，通过<span class="uicontrol">“标签”</span>可以实现快速筛选和管理资源。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span>位置</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>时，默认显示当前实例所在位置。</p>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，通过<span class="uicontrol">“标签”</span>可以实现快速筛选和管理资源。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span>目标主机</span></p>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p><span>位置</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，请选择恢复到的目标主机。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span>目标实例</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，请选择恢复到的目标实例。</p>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>时，默认显示当前实例所在位置。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span>恢复前执行脚本</span></p>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p><span>目标主机</span></p>
 </td>
-<td class="cellrowborder" rowspan="3" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>您可以根据实际需求，在恢复任务执行前、执行成功后、执行失败后，执行自定义脚本。此处请输入脚本的绝对路径。</p>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，请选择恢复到的目标主机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p><span>目标实例</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，请选择恢复到的目标实例。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p><span>恢复前执行脚本</span></p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>您可以根据实际需求，在恢复任务执行前、执行成功后、执行失败后，执行自定义脚本。此处请输入脚本的绝对路径。</p>
 <ul><li>Windows OS支持的脚本类型为<span class="uicontrol">“.bat”</span>。</li><li>非Windows OS支持的脚本类型为<span class="uicontrol">“.sh”</span>。<div class="note" id="postgresql-0045__note116601417195112"><span class="notetitle"> 说明： </span><div class="notebody"><p id="postgresql-0045__zh-cn_topic_0000001264099602_p196461512103113">当配置了<span class="uicontrol" id="postgresql-0045__zh-cn_topic_0000001264099602_uicontrol180112781919">“<span id="postgresql-0045__zh-cn_topic_0000001264099602_text10711756153116">恢复成功执行脚本</span>”</span>时，即使该脚本执行失败，<span id="postgresql-0045__text712055613536">OceanProtect</span>上也会显示恢复任务的状态为<span class="uicontrol" id="postgresql-0045__zh-cn_topic_0000001264099602_uicontrol488919204209">“<span id="postgresql-0045__zh-cn_topic_0000001264099602_text186291135132417">成功</span>”</span>。请您留意任务详情中是否有后置脚本执行失败的相关提示，如有请及时修正脚本。</p>
 </div></div>
 </li></ul>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span>恢复成功执行脚本</span></p>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p><span>恢复成功执行脚本</span></p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span>恢复失败执行脚本</span></p>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p><span>恢复失败执行脚本</span></p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><div class="p">对于PostgreSQL CLup集群恢复至新位置的场景，恢复成功后，当原位置对应的集群用户名以及密码和新位置对应的集群用户名以及密码不一致时，需要执行以下操作：<ol type="a"><li>登录CLup数据库管理系统界面修改新位置的集群对应的用户名及密码。<ol><li>在<span class="uicontrol">“HA集群 &gt; 集群定义”</span>修改新位置的集群对应的<span class="uicontrol">“DB中的用户”</span>以及<span class="uicontrol">“DB中的密码”</span>和<span class="uicontrol">“流复制的用户”</span>以及<span class="uicontrol">“流复制的密码”</span>，与原位置对应的集群用户名以及密码保持一致，保存修改。</li><li>在<span class="uicontrol">“HA集群 &gt; HA管理”</span>找到对应集群，单击<span class="uicontrol">“上线”</span>，上线成功后，集群状态为Online。</li></ol>
+</li><li>登录<span>OceanProtect</span>管理界面修改新位置的集群对应的用户名及密码。<ol><li>选择<span class="uicontrol">“保护&gt; 数据库 &gt; PostgreSQL”</span>，在<span class="uicontrol">“实例”</span>页签下找到对应恢复的数据库集群实例。</li><li>修改<span class="uicontrol">“数据库用户名”</span>以及<span class="uicontrol">“数据库密码”</span>和<span class="uicontrol" style="color:#4D4D4D;">“数据库流复制用户名”</span>和<span class="uicontrol">“数据库流复制用户密码”</span>，与原位置对应的集群用户名以及密码保持一致，修改完成后，实例状态为在线。</li></ol>
+</li></ol>
+</div>
+</div></div>
+</p></li></ol>
 </div>
 </div>
 <div>

@@ -1,0 +1,57 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="虚拟机磁盘覆盖恢复后业务数据异常">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="hyper_gud_0086.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="hyper_gud_0092">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>虚拟机磁盘覆盖恢复后业务数据异常</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hyper_gud_0092"></a><a name="hyper_gud_0092"></a>
+
+<h1 class="topictitle1">虚拟机磁盘覆盖恢复后业务数据异常</h1>
+<div><div class="section" id="hyper_gud_0092__fc_gud_0078_4_section152112481487"><h4 class="sectiontitle">现象描述</h4><p id="hyper_gud_0092__fc_gud_0078_4_p1653019539483">虚拟机磁盘覆盖恢复后业务数据异常。</p>
+</div>
+<div class="section" id="hyper_gud_0092__fc_gud_0078_4_section21962215112"><h4 class="sectiontitle">可能原因</h4><p id="hyper_gud_0092__fc_gud_0078_4_p1850394411618">执行磁盘覆盖恢复，原磁盘与目标磁盘的总线类型不同，导致恢复后硬盘设备名称变化。例如：SCSI总线类型的磁盘恢复至VIRTIO总线类型的磁盘，恢复完成后原<span class="parmvalue" id="hyper_gud_0092__fc_gud_0078_4_parmvalue39131814201217">“/dev/sdb”</span>的硬盘设备会变为<span class="parmvalue" id="hyper_gud_0092__fc_gud_0078_4_parmvalue1457481715129">“/dev/vdb”</span>，导致引用原硬盘设备名称的业务数据异常。</p>
+</div>
+<div class="section" id="hyper_gud_0092__fc_gud_0078_4_section12542145825413"><h4 class="sectiontitle">处理步骤</h4><ul id="hyper_gud_0092__fc_gud_0078_4_ul2712145841610"><li id="hyper_gud_0092__fc_gud_0078_4_li1762615501713">方式一：请进行整机恢复。</li><li id="hyper_gud_0092__fc_gud_0078_4_li164261326152515">方式二：更新业务使用的硬盘设备名称。<p id="hyper_gud_0092__fc_gud_0078_4_p1396122892510"><a name="hyper_gud_0092__fc_gud_0078_4_li164261326152515"></a><a name="fc_gud_0078_4_li164261326152515"></a>例如：<span class="filepath" id="hyper_gud_0092__fc_gud_0078_4_filepath125431214172511">“/etc/fstab”</span>配置文件中，原挂载的硬盘名称为<span class="parmvalue" id="hyper_gud_0092__fc_gud_0078_4_parmvalue16543914142513">“/dev/sdb”</span>，恢复后请修改为<span class="parmvalue" id="hyper_gud_0092__fc_gud_0078_4_parmvalue3543614192515">“/dev/vdb”</span>。</p>
+<p id="hyper_gud_0092__fc_gud_0078_4_p14566171716255"><span><img id="hyper_gud_0092__fc_gud_0078_4_image183281119255" src="zh-cn_image_0000002164766186.png"></span></p>
+</li></ul>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="hyper_gud_0086.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

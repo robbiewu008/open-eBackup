@@ -1,0 +1,57 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="非分布式实例日志备份开启“备份完成后删除归档日志”，生成备份副本失败（适用于1.6.0及后续版本）">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_086.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="tdsql_gud_096">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>非分布式实例日志备份开启“备份完成后删除归档日志”，生成备份副本失败（适用于1.6.0及后续版本）</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="tdsql_gud_096"></a><a name="tdsql_gud_096"></a>
+
+<h1 class="topictitle1">非分布式实例日志备份开启“备份完成后删除归档日志”，生成备份副本失败（适用于1.6.0及后续版本）</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>用户创建非分布式实例保护时，开启了“备份完成后删除归档日志”开关，执行TDSQL非分布式实例日志备份，在生成备份副本阶段出现任务失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>UBC（Unified Backup Controller）生成副本元数据失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><p>请重新执行全量备份后，再执行日志备份。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>如需要恢复非分布式实例到此次备份失败的时间段，请联系技术支持工程师处理。</p>
+</div></div>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="tdsql_gud_086.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

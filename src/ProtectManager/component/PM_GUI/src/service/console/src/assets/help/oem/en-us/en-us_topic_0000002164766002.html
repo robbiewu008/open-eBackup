@@ -1,0 +1,78 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="The product Service Is Interrupted or FusionCompute Fails to Be Registered">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200007065.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164766002">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>The product Service Is Interrupted or FusionCompute Fails to Be Registered</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164766002"></a><a name="EN-US_TOPIC_0000002164766002"></a>
+  <h1 class="topictitle1">The <span>product</span> Service Is Interrupted or FusionCompute Fails to Be Registered</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>If the user type for connection between FusionCompute and the <span>product</span> is set to <strong>Interface interconnection user</strong> or <strong>Local user</strong>, services are interrupted or registration fails.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Cause</h4>
+    <ul>
+     <li>Cause 1: FusionCompute supports the configuration of <strong>Man-Machine and Machine-Machine Interface Access Isolation Policy</strong>. If the current value of the policy is <strong>Yes</strong>, the interface interconnection user cannot access FusionCompute through port <strong>7443</strong>.</li>
+     <li>Cause 2: If a local user is used, you need to change the password upon the first login to FusionCompute.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ul>
+     <li><strong>For cause 1, perform the following steps:</strong>
+      <ol>
+       <li>Log in to FusionCompute using a browser.<p id="EN-US_TOPIC_0000002164766002__en-us_topic_0000002164606210_p6381515018">Login address: <strong id="EN-US_TOPIC_0000002164766002__en-us_topic_0000002164606210_b65373179016">https://</strong><em id="EN-US_TOPIC_0000002164766002__en-us_topic_0000002164606210_i7538817902">Floating IP address of the VRM node of FusionCompute</em><strong id="EN-US_TOPIC_0000002164766002__en-us_topic_0000002164606210_b1053891716013">:8443</strong></p></li>
+       <li>Choose <strong id="EN-US_TOPIC_0000002164766002__en-us_topic_0000002164606210_b19311464113">System Management</strong> &gt; <strong id="EN-US_TOPIC_0000002164766002__en-us_topic_0000002164606210_b162081588111">Rights Management</strong> &gt; <strong id="EN-US_TOPIC_0000002164766002__en-us_topic_0000002164606210_b8903121116112">Rights Management Policy</strong>.</li>
+       <li>In the <strong>Other Strategies</strong> area, click <strong>Modify</strong>.</li>
+       <li>Change the value of <strong>Man-Machine and Machine-Machine Interface Access Isolation Policy</strong> to <strong>No</strong>.</li>
+       <li>Click <strong id="EN-US_TOPIC_0000002164766002__en-us_topic_0000002164606210_b15433142119433">Save</strong>.</li>
+      </ol></li>
+     <li><strong>For cause 2, perform the following steps:</strong>
+      <ol>
+       <li>Log in to FusionCompute as a local user.</li>
+       <li>Change the login password as prompted.</li>
+       <li>Use the new password to register FusionCompute with the <span>product</span> again.</li>
+      </ol></li>
+    </ul>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200007065.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

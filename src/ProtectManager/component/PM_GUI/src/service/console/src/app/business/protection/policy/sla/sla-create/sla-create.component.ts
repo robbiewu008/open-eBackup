@@ -1199,6 +1199,10 @@ export class SlaCreateComponent implements OnInit {
 
   // NAS共享、NAS文件系统、文件集、对象存储的备份SLA目标端重删关闭，复制的SLA链路重删不能开启
   validLinkRedelete(): boolean {
+    // E6000不会下发这两个参数，所以不用管
+    if (this.appUtilsService.isDistributed) {
+      return true;
+    }
     const backupPolicy = find(
       this.policy_list,
       item => item.type === PolicyType.BACKUP

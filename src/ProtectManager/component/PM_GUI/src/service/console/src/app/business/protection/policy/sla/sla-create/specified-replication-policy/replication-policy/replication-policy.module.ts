@@ -17,6 +17,7 @@ import { AddStorageModule } from 'app/business/system/infrastructure/external-st
 import { BaseModule } from 'app/shared';
 import { CurrentSystemTimeModule } from 'app/shared/components/current-system-time/current-system-time.module';
 import { ReplicationPolicyComponent } from './replication-policy.component';
+import { RouterJumpHelpModule } from 'app/shared/components/router-jump-help/router-jump-help.module';
 
 @NgModule({
   declarations: [ReplicationPolicyComponent],
@@ -25,7 +26,8 @@ import { ReplicationPolicyComponent } from './replication-policy.component';
     BaseModule,
     AddStorageModule,
     CurrentSystemTimeModule,
-    AddTargetClusterModule
+    AddTargetClusterModule,
+    RouterJumpHelpModule
   ],
   exports: [ReplicationPolicyComponent]
 })

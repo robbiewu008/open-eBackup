@@ -97,7 +97,7 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
   data;
   formItems = [];
   verifyItems = [];
-
+  expirationTime;
   isViewParentCopy = false;
   isClickedFilesetFile = false;
   isIndexCreating = false;
@@ -111,7 +111,13 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
   copyStatus = DataMap.copydata_validStatus;
   fileIndex = DataMap.CopyData_fileIndex;
   copyDataGeneratedType = DataMap.CopyData_generatedType;
-
+  wormTips = {
+    ['worm_expiration_time']: this.i18n.get(
+      'common_worm_expiration_time_detail_tips_label'
+    ),
+    ['worm_clock']: this.i18n.get('common_worm_clock_tips_label'),
+    ['remain_time']: this.i18n.get('common_remain_time_tips_label')
+  };
   treeTableData = [];
   treeTableSelection = [];
   tableColumns = [
@@ -383,9 +389,26 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
       }
     }
 
-    const expirationDate = new Date(this.data.worm_expiration_time);
+    let offsetNum;
+    if (SYSTEM_TIME.offset > 0) {
+      if (SYSTEM_TIME.offset >= 10) {
+        offsetNum = '+' + SYSTEM_TIME.offset;
+      } else {
+        offsetNum = `+0${SYSTEM_TIME.offset}`;
+      }
+    } else {
+      if (SYSTEM_TIME.offset <= -10) {
+        offsetNum = SYSTEM_TIME.offset;
+      } else {
+        offsetNum = `-0${SYSTEM_TIME.offset.toString().slice(-1)}`;
+      }
+    }
+    const timezoneOffset = `${offsetNum}:00`;
+    const expirationDate = new Date(
+      this.data.worm_expiration_time + timezoneOffset
+    );
     const expirationTimestamp = expirationDate.getTime();
-
+    this.expirationTime = expirationTimestamp;
     this.antiRansomwarePolicyApiService
       .getWormClockTime({
         fileSystemName: tmpFileSystemName,
@@ -401,6 +424,21 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  getDuration(msTime) {
+    const time = isNaN(msTime) ? 0 : msTime / 1000;
+    const day = Math.floor(time / 60 / 60 / 24);
+    const hour = Math.round(time / 60 / 60) % 24;
+    const dayLabel =
+      day > 1
+        ? `${day} ${this.i18n.get('common_days_label')}`
+        : `${day} ${this.i18n.get('common_day_lower_label')}`;
+    const hourLabel =
+      hour > 1
+        ? `${hour} ${this.i18n.get('common_hours_label')}`
+        : `${hour} ${this.i18n.get('common_hour_lower_label')}`;
+    return dayLabel + ' ' + hourLabel;
+  }
+
   private setWormClockValue(res: any) {
     this.formItems.map(item => {
       each(item, val => {
@@ -410,6 +448,8 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
             'yyyy-MM-dd HH:mm:ss',
             SYSTEM_TIME.timeZone
           );
+        } else if (val.key === 'remain_time') {
+          val.value = this.getDuration(this.expirationTime - res);
         }
       });
     });
@@ -594,6 +634,11 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
           hidden:
             this.data.generated_by !==
             DataMap.CopyData_generatedType.replicate.value
+        },
+        {
+          key: 'size',
+          label: this.i18n.get('insight_job_databeforereduction_label'),
+          value: this.getCopySize()
         }
       ],
       [
@@ -620,6 +665,11 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
           hidden: this.appUtilsService.isDistributed
         },
         {
+          key: 'remain_time',
+          label: this.i18n.get('common_remain_time_label'),
+          hidden: this.appUtilsService.isDistributed
+        },
+        {
           key: 'indexed',
           label: this.i18n.get('common_index_label'),
           value: this.data.indexed,
@@ -637,11 +687,6 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
             [DataMap.Deploy_Type.hyperdetect.value],
             this.i18n.get('deploy_type')
           )
-        },
-        {
-          key: 'size',
-          label: this.i18n.get('insight_job_databeforereduction_label'),
-          value: this.getCopySize()
         },
         {
           key: 'isBackupAcl',
@@ -678,6 +723,10 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
     const size = parseFloat(sizeStr.substring(0, sizeStr.indexOf('.') + 3));
     const unit = trim(sizeStr.replace(/[0-9.]/g, ''));
     return `${size} ${unit}`;
+  }
+
+  getWormTipsLabel(key) {
+    return get(this.wormTips, key, false);
   }
 
   getIsBackupAcl() {

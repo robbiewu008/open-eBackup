@@ -25,8 +25,8 @@
 <meta name="DC.Relation" scheme="URI" content="postgresql-0009.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -41,51 +41,92 @@
 <div><div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>注册PostgreSQL集群实例前，请确保集群中每个主机已进行注册。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>要求集群中所有主机已注册相同名称的数据库。</p>
 </div></div>
 <p>具体操作请参见<a href="postgresql-0011.html">步骤3：注册PostgreSQL单实例下的数据库</a>。</p>
-</li><li>执行实例注册前，请检查数据库安装路径下bin/lib/share文件属主是否为root，若是root请在/opt/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/applications/postgresql/conf/switch.conf配置文件中将enable_root配置项取值设置为1。</li><li>注册PostgreSQL集群前，请先查询集群类型。<p><strong>Pgpool集群</strong></p>
-<ol><li>使用PuTTY，登录PostgreSQL数据库主机。</li><li>执行ps -ef | grep pgpool命令，查询是否是Pgpool集群。如果回显进程包含pgpool相关字段，则说明当前集群为Pgpool集群，反之，则不是Pgpool集群。<ul><li>当回显如下时，则说明当前集群为Pgpool集群。</li></ul>
-<p><span><img src="zh-cn_image_0000002100843889.png"></span></p>
-<ul><li>当只有如下回显时，则说明当前集群不为Pgpool集群。</li></ul>
-<p><span><img src="zh-cn_image_0000002053191312.png"></span></p>
+</li><li>执行实例注册前，请检查数据库安装路径下bin/lib/share文件属主是否为root，若是root请在/opt/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/applications/postgresql/conf/switch.conf配置文件中将enable_root配置项取值设置为1。</li><li>注册数据库账户前，请先确保账户具有以下所需的最小权限。配置方法如下，以账户<strong>teste_bkp</strong>为例说明：<ol><li>登录权限：由于注册PostgreSQL集群实例下的数据库、执行备份以及恢复过程都需要通过数据库账号登录到指定数据库，需执行<strong>CREATE ROLE teste_bkp LOGIN PASSWORD 'teste_bkp'</strong><strong>;</strong>，使账户必须具有最基本的登录权限，并通过以下方式登录数据库，然后可查看数据库版本号，其中<em>/usr/local/pgsql/bin/psql</em>代表psql脚本的路径，-h参数代表数据库实例所在主机IP，-p参数代表数据库实例的端口号。<pre class="screen">su - postgres
+<span>s</span><span>u - postgres -c '</span><em id="postgresql-0012__postgresql-0011_i7325132282020">/usr/local/pgsql/bin/psql</em><span> -h </span><em id="postgresql-0012__postgresql-0011_i338515391176">数据库IP</em><span> -p </span><em id="postgresql-0012__postgresql-0011_i1842183141616">端口号</em><span> -U </span><strong id="postgresql-0012__postgresql-0011_b1263531512614">teste_bkp</strong><span> -d postgres'</span> </pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="postgresql-0012__postgresql-0011_p11636396502">如果查询到的数据库版本号为10.0以下，则数据库账户必须为SUPERUSER，且不需要执行后续的操作<a href="postgresql-0011.html#postgresql-0011__li14737182342715">2</a>和<a href="postgresql-0011.html#postgresql-0011__li3687112632718">3</a>。</p>
+</div></div>
+</li><li>读取配置文件权限：登录数据库后，通过<strong id="postgresql-0012__postgresql-0011_b549614151116">GRANT pg_read_all_settings TO teste_bkp;</strong>设置权限。</li><li>函数执行权限：需要具备pg_backup_start函数执行权限和pg_backup_stop函数执行权限才可以执行备份，故需要赋予函数执行权限：<p id="postgresql-0012__postgresql-0011_p710125393320">通过<a href="postgresql-0011.html#postgresql-0011__li1919772032716">1</a>查询到的版本号，如果版本号为15.0及以上，通过以下命令赋予权限：</p>
+<p id="postgresql-0012__postgresql-0011_p3548204552719">1）赋予pg_backup_start函数权限：<strong id="postgresql-0012__postgresql-0011_b106874354124">GRANT EXECUTE ON FUNCTION pg_backup_start TO teste_bkp;</strong></p>
+<p id="postgresql-0012__postgresql-0011_p6581458122212">2）赋予pg_backup_stop函数权限：<strong id="postgresql-0012__postgresql-0011_b72921811134">GRANT EXECUTE ON FUNCTION pg_backup_stop TO teste_bkp;</strong></p>
+<p id="postgresql-0012__postgresql-0011_p1381017559336">如果版本号为15.0以下9.6及以上，通过以下命令赋予权限：</p>
+<p id="postgresql-0012__postgresql-0011_p11600185385218">1）赋予pg_backup_start函数权限：<strong id="postgresql-0012__postgresql-0011_b260016535521">GRANT EXECUTE ON FUNCTION pg_start_backup(text,boolean,boolean) TO teste_bkp;</strong></p>
+<p id="postgresql-0012__postgresql-0011_p17600195335218">2）赋予pg_backup_stop函数权限：<strong id="postgresql-0012__postgresql-0011_b36001153135210">GRANT EXECUTE ON FUNCTION pg_stop_backup() TO teste_bkp;</strong></p>
+<p id="postgresql-0012__postgresql-0011_p113810115324">如果版本号为9.6以下，通过以下命令赋予权限：</p>
+<p id="postgresql-0012__postgresql-0011_p1338151113210">1）赋予pg_backup_start函数权限：<strong id="postgresql-0012__postgresql-0011_b638141111326">GRANT EXECUTE ON FUNCTION pg_start_backup(text,boolean)  TO teste_bkp;</strong></p>
+<p id="postgresql-0012__postgresql-0011_p33831112327">2）赋予pg_backup_stop函数权限：<strong id="postgresql-0012__postgresql-0011_b23811118322">GRANT EXECUTE ON FUNCTION pg_stop_backup() TO teste_bkp;</strong></p>
+</li></ol>
+</li><li>赋予数据库流复制用户登录权限和流复制权限：以账户<strong>teste_bkp_repl</strong>为例说明，登录数据库，数据库流复制用户在执行恢复过程中，备节点需要通过数据库流复制用户从主节点同步数据，需要赋予数据库流复制用户登录和流复制的权限，需执行<strong>CREATE ROLE teste_bkp_repl LOGIN REPLICATION PASSWORD 'teste_bkp_repl';</strong>。</li><li>注册PostgreSQL集群前，请先查询集群类型。<p><strong>Pgpool集群</strong></p>
+<ol><li>使用PuTTY，登录PostgreSQL数据库主机。</li><li>执行ps -ef | grep pgpool命令，查询是否是Pgpool集群。如果回显进程包含pgpool相关字段，则说明当前集群为Pgpool集群，反之，则不是Pgpool集群。<ul><li>例如，当回显如下时，则说明当前集群为Pgpool集群。</li></ul>
+<p><span><img src="zh-cn_image_0000002164763674.png"></span></p>
+<ul><li>例如，当只有如下回显时，则说明当前集群不为Pgpool集群。</li></ul>
+<p><span><img src="zh-cn_image_0000002199970273.png"></span></p>
 </li></ol>
 <p><strong>Patroni集群</strong></p>
-<ol><li>使用PuTTY，登录PostgreSQL数据库主机。</li><li>执行ps -ef | grep patroni命令，查询是否是Patroni集群。如果回显进程包含patroni相关字段，则说明当前集群为Patroni集群，反之，则不是Patroni集群。<ul><li>当回显如下时，则说明当前集群为Patroni集群。</li></ul>
-<p><span><img src="zh-cn_image_0000002101715833.png"></span></p>
-<ul><li>当只有如下回显时，则说明当前集群不为Patroni集群。</li></ul>
-<p><span><img src="zh-cn_image_0000002089366285.png"></span></p>
+<ol><li>使用PuTTY，登录PostgreSQL数据库主机。</li><li>执行ps -ef | grep patroni命令，查询是否是Patroni集群。如果回显进程包含patroni相关字段，则说明当前集群为Patroni集群，反之，则不是Patroni集群。<ul><li>例如，当回显如下时，则说明当前集群为Patroni集群。</li></ul>
+<p><span><img src="zh-cn_image_0000002164603922.png"></span></p>
+<ul><li>例如，当只有如下回显时，则说明当前集群不为Patroni集群。</li></ul>
+<p><span><img src="zh-cn_image_0000002200004685.png"></span></p>
+</li></ol>
+<p><strong>CLup集群</strong></p>
+<ol><li>使用PuTTY，登录PostgreSQL数据库主机。</li><li>执行ps -ef | grep clup命令，查询是否是CLup集群。如果回显进程包含clup相关字段，则说明当前集群为CLup集群，反之，则不是CLup集群。<ul><li>例如，当回显如下时，则说明当前集群为CLup集群。<p><span><img src="zh-cn_image_0000002164603926.png"></span></p>
+</li><li>例如，当只有如下回显时，则说明当前集群不为CLup集群。<p><span><img src="zh-cn_image_0000002200004681.png"></span></p>
+</li></ul>
+</li></ol>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>当CLup管理界面无法正常打开（如：CLup Server节点所在主机宕机、CLup Server节点所在主机防火墙未关闭等均会导致无法进入CLup管理界面）或CLup管理界面上集群状态为离线时，将导致已在<span>OceanProtect</span>注册的相应CLup集群实例为离线状态，若要恢复在线状态以执行备份等任务，只需在CLup管理界面上将集群状态设置为上线，随后，OP界面中数据库实例的状态将自动更新为在线。</p>
+</div></div>
+</li><li>CLup部署形态的PostgreSQL集群进入数据库实例的方法如下：<p>方式一：</p>
+<ol><li id="postgresql-0012__li164317393534"><a name="postgresql-0012__li164317393534"></a><a name="li164317393534"></a>登录CLup数据库管理页面，通过选择<span class="uicontrol">“数据库管理 &gt; 实例列表”</span>进入数据库实例列表界面。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p><span style="color:#040306;">登录CLup数据库管理页面的方法：</span></p>
+<ul><li>登录链接：http://IP:8090（<span style="color:#040306;">IP: 单网卡主机为当前主机的IP，多网卡主机则是安装过程中所选择的IP地址</span>）；</li><li>登录用户名：admin（默认为admin，如果不正确，需向数据库管理员获取）；</li><li>登录密码：cstech（默认为cstech，如果不正确，需向数据库管理员获取）。</li></ul>
+</div></div>
+</li><li>选择相应的实例，单击<span class="uicontrol">“更多&gt;psql”</span>，即可进入数据库实例，登录后界面如下：<p><span><img src="zh-cn_image_0000002199970277.png"></span></p>
+</li></ol>
+<p>方式二：</p>
+<ol><li>使用PuTTY，登录CLup Agent主机。</li><li>执行以下命令，登录数据库管理员界面。其中，<em>/usr/local/pgsql/bin/psql</em>代表psql脚本的路径，-h参数代表数据库实例所在主机IP，-p参数代表数据库实例的端口号，-h和-p参数可以通过<a href="#postgresql-0012__li164317393534">方式一</a>登录后获取相关的<span class="uicontrol">“所在主机”</span>和<span class="uicontrol">“端口”</span>。<pre class="screen">su - postgres -c '<em>/usr/local/pgsql/bin/psql</em> -U postgres -h <em>IP</em> -d postgres -p <em>端口号</em>'    </pre>
+<p>登录成功后界面如下所示：</p>
+<p><span><img src="zh-cn_image_0000002228033537.png"></span></p>
 </li></ol>
 </li></ul>
 </div>
 <div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>创建集群。</span><p><ol type="a"><li>在PostgreSQL页面选择<span class="uicontrol">“集群”</span>页签。</li><li>单击<span class="uicontrol">“注册”</span>。</li><li>配置集群及其认证信息。<p>相关参数说明如<a href="#postgresql-0012__table415124821919">表1</a>所示。</p>
 
-<div class="tablenoborder"><a name="postgresql-0012__table415124821919"></a><a name="table415124821919"></a><table cellpadding="4" cellspacing="0" summary="" id="postgresql-0012__table415124821919" frame="border" border="1" rules="all"><caption><b>表1 </b>PostgreSQL集群注册信息</caption><colgroup><col style="width:28.050000000000004%"><col style="width:71.95%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="28.050000000000004%" id="mcps1.3.2.2.1.2.1.3.2.2.3.1.1"><p>参数</p>
+<div class="tablenoborder"><a name="postgresql-0012__table415124821919"></a><a name="table415124821919"></a><table cellpadding="4" cellspacing="0" summary="" id="postgresql-0012__table415124821919" frame="border" border="1" rules="all"><caption><b>表1 </b>PostgreSQL集群注册信息</caption><colgroup><col style="width:28.03%"><col style="width:71.97%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="28.03%" id="mcps1.3.2.2.1.2.1.3.2.2.3.1.1"><p>参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="71.95%" id="mcps1.3.2.2.1.2.1.3.2.2.3.1.2"><p>说明</p>
+<th align="left" class="cellrowborder" valign="top" width="71.97%" id="mcps1.3.2.2.1.2.1.3.2.2.3.1.2"><p>说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span>名称</span></p>
+<tbody><tr><td class="cellrowborder" valign="top" width="28.03%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span>名称</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>自定义集群名称。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span>集群类型</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>集群类型可选择Pgpool、Patroni。</p>
+<td class="cellrowborder" valign="top" width="71.97%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>自定义集群名称。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span>类型</span></p>
+<tr><td class="cellrowborder" valign="top" width="28.03%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span>类型</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>选择<span class="uicontrol">“主备复制”</span>。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span>虚拟IP地址</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>自定义输入虚拟IP地址，需要和PostgreSQL实例所在的主机同网段且未被使用。</p>
+<td class="cellrowborder" valign="top" width="71.97%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>选择<span class="uicontrol">“主备复制”</span>。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span>节点</span></p>
+<tr><td class="cellrowborder" valign="top" width="28.03%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span>虚拟IP地址</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>选择PostgreSQL实例所在的主机。</p>
+<td class="cellrowborder" valign="top" width="71.97%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>虚拟IP地址，需要和PostgreSQL实例所在的主机同网段且未被使用。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ol><li>Pgpool集群的虚拟IP地址获取方式：使用PuTTY，登录PostgreSQL数据库主机，通过查看<strong>pgpool.conf</strong>文件中的<strong>delegate_IP</strong>字段获取，例如，通过命令<strong>cat /usr/local/pgpool/etc/pgpool.conf | grep delegate_IP</strong>获取；<p><span><img src="zh-cn_image_0000002193082442.png"></span></p>
+</li><li>Patroni集群的虚拟IP地址获取方式：使用PuTTY，登录PostgreSQL数据库主机，查看Patroni配置文件中的回调脚本名称，再通过查看回调脚本中的VIP字段来获取虚拟IP地址，例如，可以通过<strong>cat /etc/patroni/patroni_callback.sh</strong> <strong>| grep</strong> <strong>VIP</strong>获取回调脚本<strong>patroni_callback.sh</strong>中的<strong>VIP</strong>字段；<p><span><img src="zh-cn_image_0000002192567316.png"></span></p>
+</li><li>CLup集群的虚拟IP地址获取方式：登录CLup数据库管理页面，选择<span class="uicontrol">“HA集群 &gt; HA管理”</span>获取对应的VIP字段：</li></ol>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.03%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span>节点</span>/集群节点</p>
+</td>
+<td class="cellrowborder" valign="top" width="71.97%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>选择部署PostgreSQL集群实例所需要的主机。当集群类型为CLup时，选择的该节点代表CLup Agent所在的节点。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.03%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span>集群类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.97%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>集群类型可选择Pgpool、Patroni、CLup。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.03%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span style="color:#4D4D4D;">CLup Server节点</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.97%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>当集群类型为CLup时，需要配置该参数。该参数表示CLup集群的管理节点。</p>
 </td>
 </tr>
 </tbody>
@@ -94,51 +135,51 @@
 </li><li>单击<span class="uicontrol">“确定”</span>。</li></ol>
 </p></li><li><span>注册集群实例下的数据库。</span><p><ol type="a"><li>在PostgreSQL页面选择<span class="uicontrol">“实例”</span>页签。</li><li>单击<span class="uicontrol">“注册”</span>。</li><li><span class="uicontrol">“<span>类型</span>”</span>选择<span class="uicontrol">“<span>集群实例</span>”</span>。</li><li>配置数据库实例及其认证信息。<p>相关参数说明如<a href="#postgresql-0012__table12398130131217">表2</a>所示。</p>
 
-<div class="tablenoborder"><a name="postgresql-0012__table12398130131217"></a><a name="table12398130131217"></a><table cellpadding="4" cellspacing="0" summary="" id="postgresql-0012__table12398130131217" frame="border" border="1" rules="all"><caption><b>表2 </b>PostgreSQL集群实例注册信息</caption><colgroup><col style="width:28.050000000000004%"><col style="width:71.95%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="28.050000000000004%" id="mcps1.3.2.2.2.2.1.4.2.2.3.1.1"><p>参数</p>
+<div class="tablenoborder"><a name="postgresql-0012__table12398130131217"></a><a name="table12398130131217"></a><table cellpadding="4" cellspacing="0" summary="" id="postgresql-0012__table12398130131217" frame="border" border="1" rules="all"><caption><b>表2 </b>PostgreSQL集群实例注册信息</caption><colgroup><col style="width:28.01%"><col style="width:71.99%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="28.01%" id="mcps1.3.2.2.2.2.1.4.2.2.3.1.1"><p>参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="71.95%" id="mcps1.3.2.2.2.2.1.4.2.2.3.1.2"><p>说明</p>
+<th align="left" class="cellrowborder" valign="top" width="71.99%" id="mcps1.3.2.2.2.2.1.4.2.2.3.1.2"><p>说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>名称</span></p>
+<tbody><tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>名称</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>安装数据库的用户名称。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>集群</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>选择要注册的数据库主机。</p>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>自定义安装数据库的用户名称。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>用户名</span></p>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>集群</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>运行数据库的操作系统用户名。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>Pgpool端口</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>当集群选择为<span style="color:#282B33;">Patroni集群的数据库主机时不展示该参数</span>。</p>
-<p>Pgpool服务侦听TCP/IP连接的端口号。</p>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>选择要注册的数据库所在的集群。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>数据库用户名</span></p>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>用户名</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>数据库的管理员用户名称。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>数据库密码</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>数据库管理员用户的密码。</p>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>运行数据库的操作系统用户名，默认为postgres。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>数据库流复制用户名</span></p>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>Pgpool端口</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>数据库用于流复制的用户名称。</p>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>当集群选择为<span style="color:#282B33;">Patroni集群或CLup集群时不展示该参数</span>。</p>
+<p>Pgpool服务侦听TCP/IP连接的端口号，默认为9999。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>数据库流复制用户密码</span></p>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>数据库用户名</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>数据库用于流复制用户的密码。</p>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>数据库的管理员用户名称，需要向数据库管理员获取。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>数据库密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>数据库的管理员用户密码，需要向数据库管理员获取。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>数据库流复制用户名</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>数据库用于流复制的用户名称，需要向数据库管理员获取。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span>数据库流复制用户密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>数据库用于流复制的用户密码，需要向数据库管理员获取。</p>
 </td>
 </tr>
 </tbody>
@@ -146,43 +187,45 @@
 </div>
 </li><li>单击“添加”，在弹出的添加对话框中添加集群实例下的所有节点。<p>相关参数说明如<a href="#postgresql-0012__zh-cn_topic_0000001311214069_table241515964115">表3</a>所示。</p>
 
-<div class="tablenoborder"><a name="postgresql-0012__zh-cn_topic_0000001311214069_table241515964115"></a><a name="zh-cn_topic_0000001311214069_table241515964115"></a><table cellpadding="4" cellspacing="0" summary="" id="postgresql-0012__zh-cn_topic_0000001311214069_table241515964115" frame="border" border="1" rules="all"><caption><b>表3 </b>集群实例的节点信息</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.2.2.2.2.1.5.2.2.3.1.1"><p>参数</p>
+<div class="tablenoborder"><a name="postgresql-0012__zh-cn_topic_0000001311214069_table241515964115"></a><a name="zh-cn_topic_0000001311214069_table241515964115"></a><table cellpadding="4" cellspacing="0" summary="" id="postgresql-0012__zh-cn_topic_0000001311214069_table241515964115" frame="border" border="1" rules="all"><caption><b>表3 </b>集群实例的节点信息</caption><colgroup><col style="width:17.2%"><col style="width:82.8%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="17.2%" id="mcps1.3.2.2.2.2.1.5.2.2.3.1.1"><p>参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.2.2.2.2.1.5.2.2.3.1.2"><p>说明</p>
+<th align="left" class="cellrowborder" valign="top" width="82.8%" id="mcps1.3.2.2.2.2.1.5.2.2.3.1.2"><p>说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.1 "><p><span>主机</span></p>
+<tbody><tr><td class="cellrowborder" valign="top" width="17.2%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.1 "><p><span>主机</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.2 "><p>选择集群下的主机节点。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.1 "><p><span>数据库安装路径</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.2 "><p>要注册的数据库安装路径。</p>
+<td class="cellrowborder" valign="top" width="82.8%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.2 "><p>选择集群下的主机节点。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.1 "><p>Patroni配置文件完整路径</p>
+<tr><td class="cellrowborder" valign="top" width="17.2%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.1 "><p><span>数据库安装路径</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="82.8%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.2 "><p>要注册的数据库的安装路径，可以使用PuTTY，登录PostgreSQL数据库主机，通过<strong>ps -ef | grep postgres</strong>查询，如下图所示。</p>
+<p><span><img src="zh-cn_image_0000002228376781.png"></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="17.2%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.1 "><p>Patroni配置文件完整路径</p>
 <div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>仅在1.6.0及后续版本展示该参数。</p>
 </div></div>
 </td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.2 "><p>配置集群实例时，集群选择为<span style="color:#282B33;">Patroni集群的数据库主机，添加集群实例节点可展示该参数</span>。</p>
-<p>Patroni配置文件完整路径。</p>
+<td class="cellrowborder" valign="top" width="82.8%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.2 "><p>记录Patroni集群账号、密码、etcd等信息的配置文件的路径，即为patroni.yml文件的安装路径，可以使用PuTTY，登录PostgreSQL数据库主机，通过<strong>ps -ef | grep patroni</strong>查询，如下图所示。</p>
+<p><span><img src="zh-cn_image_0000002193220926.png"></span></p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.1 "><p><span>Pgpool安装路径</span></p>
+<tr><td class="cellrowborder" valign="top" width="17.2%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.1 "><p><span>Pgpool安装路径</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.2 "><p>Pgpool服务的安装路径。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.1 "><p><span>业务IP地址</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.2 "><p>数据库服务接收TCP/IP连接的主机IP地址。</p>
+<td class="cellrowborder" valign="top" width="82.8%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.2 "><p>Pgpool服务的安装路径，可以使用PuTTY，登录PostgreSQL数据库主机，通过<strong>ps -ef | grep pgpool</strong>查询，如下图所示。</p>
+<p><span><img src="zh-cn_image_0000002193227046.png"></span></p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.1 "><p><span>数据库端口</span></p>
+<tr><td class="cellrowborder" valign="top" width="17.2%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.1 "><p><span>业务IP地址</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.2 "><p>数据库服务侦听TCP/IP连接的端口号。</p>
+<td class="cellrowborder" valign="top" width="82.8%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.2 "><p>数据库服务接收TCP/IP连接的主机IP地址，即为注册到<span>OceanProtect</span>上的主机IP地址，需要向数据库管理员获取。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="17.2%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.1 "><p><span>数据库端口</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="82.8%" headers="mcps1.3.2.2.2.2.1.5.2.2.3.1.2 "><p>数据库服务侦听TCP/IP连接的端口号，默认为5432。</p>
 </td>
 </tr>
 </tbody>

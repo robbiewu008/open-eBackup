@@ -1,0 +1,75 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Disks Fail to Be Opened Using VDDK During VMware VM Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164814062">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Disks Fail to Be Opened Using VDDK During VMware VM Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164814062"></a><a name="EN-US_TOPIC_0000002164814062"></a>
+  <h1 class="topictitle1">Disks Fail to Be Opened Using VDDK During VMware VM Backup</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>During a VMware VM backup job, disks fail to be opened using VDDK. In subsequent backup jobs, VDDK fails to be initialized.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p>The number of VM disks opened in NBDSSL mode on a single ESXi host reaches the upper limit of 52.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol>
+     <li><span>Restart the client service.</span><p></p>
+      <ol type="a">
+       <li>Use PuTTY to log in to the host where the client is to be installed as user <strong id="EN-US_TOPIC_0000002164814062__en-us_topic_0000002164790296_en-us_topic_0000002200031305_b916917212">root</strong>.</li>
+       <li>Run the following command to go to the <strong id="EN-US_TOPIC_0000002164814062__en-us_topic_0000002200116653_b14842192941413">ProtectClient</strong> directory:
+        <div class="note" id="EN-US_TOPIC_0000002164814062__en-us_topic_0000002200116653_note13958111815513">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="EN-US_TOPIC_0000002164814062__en-us_topic_0000002200116653_en-us_topic_0000001792390220_p1655195845015"><span id="EN-US_TOPIC_0000002164814062__en-us_topic_0000002200116653_ph58441642194017">In the command, <em id="EN-US_TOPIC_0000002164814062__en-us_topic_0000002200116653_en-us_topic_0000002164630536_i2153220484">/opt</em> is the default installation directory of the client. Replace it with the actual installation directory.</span> The following operations use <strong id="EN-US_TOPIC_0000002164814062__en-us_topic_0000002200116653_b925794917581">/opt</strong> as an example.</p>
+         </div>
+        </div> <pre class="screen" id="EN-US_TOPIC_0000002164814062__en-us_topic_0000002200116653_screen79234411411">cd /opt/DataBackup/ProtectClient</pre></li>
+       <li>Run the following command to stop the client service:<pre class="screen" id="EN-US_TOPIC_0000002164814062__en-us_topic_0000002200116653_screen39264412140">sh stop.sh</pre></li>
+       <li>Run the following command to start the client service:<pre class="screen">sh start.sh</pre></li>
+      </ol> <p></p></li>
+     <li><span>Perform the backup job again. If the problem persists, reinstall the client.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

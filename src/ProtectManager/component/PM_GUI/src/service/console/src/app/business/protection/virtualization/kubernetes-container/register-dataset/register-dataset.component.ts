@@ -98,8 +98,9 @@ export class RegisterDatasetComponent implements OnInit {
   }
 
   openHelp() {
-    const lang = this.i18n.isEn ? 'en-us' : 'zh-cn';
-    const targetUrl = `/console/assets/help/a8000/${lang}/index.html#kubernetes_CSI_00012.html`;
+    const targetUrl = this.i18n.isEn
+      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002199956329.html'
+      : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00012.html';
     if (this.AppUtilsService.isHcsUser) {
       const herf: string = first(window.location.href.split('#'));
       window.open(herf.replace('/console/', targetUrl), '_blank');

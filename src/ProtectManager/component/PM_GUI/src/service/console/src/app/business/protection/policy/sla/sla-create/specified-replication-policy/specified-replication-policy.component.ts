@@ -177,6 +177,10 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
 
   // NAS共享、NAS文件系统、文件集、对象存储的备份SLA目标端重删关闭，复制的SLA链路重删不能开启
   validLinkRedelete(): boolean {
+    // E6000不会下发这两个参数，所以不用管
+    if (this.appUtilsService.isDistributed) {
+      return true;
+    }
     const backpExtParams: any = isArray(this.backupData)
       ? this.backupData[0]?.ext_parameters
       : {};
@@ -401,13 +405,25 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
     if (this.isHcsUser) {
       delete params.ext_parameters.external_system_id;
       delete params.ext_parameters.replication_storage_type;
-      set(
-        params,
-        'ext_parameters.region_code',
-        item.external_system_id[0]?.parent?.region_id ||
-          item.external_system_id[0]?.region_id
-      );
-      set(params, 'ext_parameters.project_id', item.external_system_id[0]?.id);
+      if (item.replicationMode === ReplicationModeType.INTRA_DOMAIN) {
+        set(
+          params,
+          'ext_parameters.replication_storage_type',
+          item?.replication_storage_type
+        );
+      } else {
+        set(
+          params,
+          'ext_parameters.region_code',
+          item.external_system_id[0]?.parent?.region_id ||
+            item.external_system_id[0]?.region_id
+        );
+        set(
+          params,
+          'ext_parameters.project_id',
+          item.external_system_id[0]?.id
+        );
+      }
       if (item.replicationMode === ReplicationModeType.CROSS_CLOUD) {
         assign(params.ext_parameters, {
           source_cluster_ip: item.external_system_id[0]?.source_cluster_ip,

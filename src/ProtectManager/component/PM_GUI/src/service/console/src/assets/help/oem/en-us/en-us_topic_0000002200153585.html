@@ -1,0 +1,142 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Enabling the Archive Mode">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200153577.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200153585">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Enabling the Archive Mode</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200153585"></a><a name="EN-US_TOPIC_0000002200153585"></a>
+  <h1 class="topictitle1">Step 1: Enabling the Archive Mode</h1>
+  <div>
+   <p>Before backing up the database, you must enable the archive mode. Otherwise, the backup will fail.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>Unless otherwise specified, the operations in this section use AntDB 7.0 as an example. The operations may vary according to the database version.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <div class="p">
+     <strong>For a centralized single-node system, modify the parameters in the configuration file to enable the archive mode:</strong>
+     <ol>
+      <li>Use PuTTY to log in to the AntDB database host and switch to user <strong>root</strong>.</li>
+      <li>Create a path for storing archive logs (WAL logs). The <strong>/mnt/server/archivedir/</strong> path is used as an example in subsequent operations.<pre class="screen">mkdir -p<em> /mnt/server/archivedir/</em></pre></li>
+      <li>Grant the read and write permissions to the operating system (OS) user <strong>antdb</strong> who runs the database.<pre class="screen">chmod 750 <em>/mnt/server/archivedir/</em>
+chown antdb:antdb <em>/mnt/server/archivedir/</em></pre></li>
+      <li>Run the <strong>su - antdb</strong> command to switch to user <strong>antdb</strong>. Information similar to the following is displayed:<pre class="screen">[root@localhost ~]# su - antdb
+[antdb@localhost ~]$<em>  </em></pre></li>
+      <li>Log in to the database as user <strong>antdb</strong>.<pre class="screen">adb -d antdb -U antdb -p 6655</pre></li>
+      <li>Run the <strong>show config_file</strong><strong>;</strong> command to query the path to the <strong>postgresql.conf</strong> file. Information similar to the following is displayed:<pre class="screen">postgres=# show config_file;
+              config_file
+---------------------------------------
+ /home/antdb/app/data/postgresql.conf
+(1 row)</pre></li>
+      <li id="EN-US_TOPIC_0000002200153585__en-us_topic_0000001607842332_li17263199293">Press <span class="uicontrol" id="EN-US_TOPIC_0000002200153585__en-us_topic_0000001607842332_uicontrol173011037123011"><b>Ctrl+D</b></span> to log out of user <strong id="EN-US_TOPIC_0000002200153585__b157281743141717">antdb</strong> and log in to the AntDB database host.</li>
+      <li>Open the <strong>postgresql.conf</strong> file. The <strong>/home/antdb/app/data/postgresql.conf</strong> path is used as an example.<pre class="screen">vi /home/antdb/app/data/postgresql.conf</pre></li>
+      <li>Find and modify the <strong>wal_level</strong>, <strong>archive_mode</strong>, and <strong>archive_command</strong> parameters in the <strong>postgresql.conf</strong> file as follows:<pre class="screen">wal_level = replica                     # minimal, replica, or logical
+archive_mode = on               # enables archiving; off, on, or always
+archive_command = 'cp %p <em>/mnt/server/archivedir</em>/%f'          # command to use to archive a logfile segment</pre>
+       <div class="note">
+        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <ul>
+          <li>Set <strong>wal_level</strong> to <strong>replica</strong>.</li>
+          <li>Set <strong>archive_mode</strong> to <strong>on</strong>.</li>
+          <li>Set <strong>archive_command</strong> to <strong>'cp %p /mnt/server/archivedir/%f'</strong> and ensure that the archive log path is a single path.</li>
+          <li><strong>archive_command</strong> can be used only for the <strong>cp</strong> command.</li>
+          <li>When modifying the <strong>postgresql.conf</strong> file, change the values of existing fields in the file. Do not add the same fields to the file. Otherwise, the restoration job will be affected.</li>
+         </ul>
+        </div>
+       </div></li>
+      <li>After the modification, press <strong>Esc</strong>, enter <strong>:wq!</strong> to save the configuration, and exit.</li>
+      <li>Restart the database. <strong>-D</strong> indicates the user-defined data directory.<pre class="screen">adb_ctl restart -D /home/antdb/app/data</pre>
+       <div class="notice">
+        <span class="noticetitle"><img src="public_sys-resources/notice_3.0-en-us.png"> </span>
+        <div class="noticebody">
+         <p>During restart of the database, database services will be interrupted. Exercise caution when performing this operation.</p>
+        </div>
+       </div></li>
+     </ol>
+    </div>
+    <p><strong>For a centralized cluster, run database commands to enable the archive mode:</strong></p>
+    <ol>
+     <li>Query the leader and non-leader nodes in the cluster.
+      <ol type="a">
+       <li>Use PuTTY to log in to any node in the cluster and run the <strong>su - antdb</strong> command to switch to the OS user who runs the database.</li>
+       <li>Run the <strong>adbhamgrctl -c </strong><em>/etc/adbhamgr/adbhamgr_antdbcluster.yaml</em><strong> list</strong> command (<span id="EN-US_TOPIC_0000002200153585__ph8640182163413">replace <em id="EN-US_TOPIC_0000002200153585__i33161025123317">/etc/adbhamgr/adbhamgr_antdbcluster.yaml</em> with the actual path and file name</span>) to query the leader node in the cluster. Specifically, the node whose <span class="parmname"><b>Role</b></span> is <span class="parmvalue"><b>Leader</b></span> is a leader node, and the node whose <span class="parmname"><b>Role</b></span> is another value is a non-leader node. The following figure shows an example.<p><span><img src="en-us_image_0000002170179306.png"></span></p></li>
+      </ol></li>
+     <li>Stop the AntDB service on all non-leader nodes. Perform the following operations on each non-leader node.
+      <ol type="a">
+       <li id="EN-US_TOPIC_0000002200153585__li20888192351819">Use PuTTY to log in to a non-leader node in the cluster and run the <strong id="EN-US_TOPIC_0000002200153585__b814195617522">su - antdb</strong> command to switch to the OS user who runs the database.</li>
+       <li>Run the <strong>systemctl stop adbhamgr</strong> command to stop the AntDB service.</li>
+      </ol></li>
+     <li>Configure the leader node in the cluster and restart the AntDB service.
+      <ol type="a">
+       <li>Use PuTTY to log in to the AntDB database host of the leader node in the cluster.</li>
+       <li id="EN-US_TOPIC_0000002200153585__li4180164110276"><a name="EN-US_TOPIC_0000002200153585__li4180164110276"></a><a name="li4180164110276"></a>Run the <strong>su - root</strong> command to switch to user <strong>root</strong> and create a path for storing archive logs (WAL logs). The following operations use the <strong>/mnt/server/archivedir/</strong> path as an example.<pre class="screen">mkdir -p /mnt/server/archivedir/</pre></li>
+       <li>Grant the read and write permissions to the OS user <strong>antdb</strong> who runs the database.<pre class="screen">chmod 750 /mnt/server/archivedir/
+chown antdb:antdb/mnt/server/archivedir/</pre></li>
+       <li>Run the <strong>su - antdb</strong> command to switch to user <strong>antdb</strong>. Information similar to the following is displayed:<pre class="screen">[root@localhost ~]# su - antdb
+[antdb@localhost ~]$</pre></li>
+       <li>Log in to the database as user <strong>antdb</strong>.<pre class="screen">adb -d antdb -U antdb -p 6655</pre></li>
+       <li>Run the following commands in sequence to enable the database archive mode:<pre class="screen">alter system set wal_level= 'replica';</pre> <pre class="screen">alter system set archive_mode= 'on';</pre> <pre class="screen">alter system set archive_command ='cp %p /mnt/server/archivedir/%f';</pre>
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p><strong>archive_command</strong> can be used only for the <strong>cp</strong> command.</p>
+         </div>
+        </div></li>
+       <li>Press <span class="uicontrol" id="EN-US_TOPIC_0000002200153585__en-us_topic_0000002200153585_en-us_topic_0000001607842332_uicontrol173011037123011"><b>Ctrl+D</b></span> to log out of user <strong id="EN-US_TOPIC_0000002200153585__en-us_topic_0000002200153585_b157281743141717">antdb</strong> and log in to the AntDB database host.</li>
+       <li id="EN-US_TOPIC_0000002200153585__li153292512311"><a name="EN-US_TOPIC_0000002200153585__li153292512311"></a><a name="li153292512311"></a>Restart the AntDB service.<pre class="screen">systemctl restart adbhamgr</pre>
+        <div class="notice">
+         <span class="noticetitle"><img src="public_sys-resources/notice_3.0-en-us.png"> </span>
+         <div class="noticebody">
+          <p>Restarting the AntDB service on the leader node in the cluster will interrupt database services. Exercise caution when performing this operation.</p>
+         </div>
+        </div></li>
+      </ol></li>
+     <li>Start the AntDB service on all non-leader nodes. Perform the following operations on each non-leader node.
+      <ol type="a">
+       <li>Use PuTTY to log in to a non-leader node in the cluster and run the <strong id="EN-US_TOPIC_0000002200153585__en-us_topic_0000002200153585_b814195617522">su - antdb</strong> command to switch to the OS user who runs the database.</li>
+       <li>Run the <strong>systemctl start adbhamgr</strong> command to start the AntDB service.</li>
+      </ol></li>
+     <li>Configure all non-leader nodes in sequence and restart the AntDB service. Use PuTTY to log in to each non-leader node and perform operations from <a href="#EN-US_TOPIC_0000002200153585__li4180164110276">3.b</a> to <a href="#EN-US_TOPIC_0000002200153585__li153292512311">3.h</a>.</li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200153577.html">Backing Up AntDB</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -113,13 +113,10 @@
 <ng-template #footerTpl>
     <div class="lv-modal-btns">
         <lv-group lvGutter='8px'>
-            <button lv-button (click)='test()' [disabled]="formGroup.get('destIp').invalid
-                || formGroup.get('destUsername').invalid
-                || formGroup.get('destPwd').invalid
-                || formGroup.get('destPort').invalid">
+            <button lv-button lvType='primary' (click)='test()' [disabled]="formGroup.invalid">
                 {{ 'common_test_label' | i18n }}
             </button>
-            <button lv-button lvType='primary' (click)='ok()' [disabled]="formGroup.invalid">
+            <button lv-button lvType='primary' (click)='ok()' [disabled]="!isTest || formGroup.invalid">
                 {{'common_ok_label' | i18n }}
             </button>
             <button lv-button (click)='modal.close()'>

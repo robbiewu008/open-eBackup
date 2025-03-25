@@ -77,7 +77,7 @@
                         <ng-container *ngTemplateOutlet="backupTemplate"> </ng-container>
                     </lv-tab>
                     <lv-tab lvTitle="{{'common_replicate_label' | i18n}}" [lvId]="'copy'"
-                        *ngIf="!storagePoolHiddenChart">
+                        *ngIf="!storagePoolHiddenChart && !appUtilsService.isDistributed">
                         <ng-container *ngTemplateOutlet="operationTemplate"> </ng-container>
                         <ng-container *ngTemplateOutlet="copyTemplate"> </ng-container>
                     </lv-tab>
@@ -88,7 +88,7 @@
                 </div>
             </div>
             <div class="performance-no-data aui-block" *ngIf="!showMonitor && hasRemoveHistoryData">
-                <lv-empty [lvDescription]="(appUtilsService.isDecouple ? 'insight_decouple_performance_no_data_tip_label' : 'common_open_performance_link_label') | i18n"></lv-empty>
+                <lv-empty [lvDescription]="(appUtilsService.isDecouple ? 'common_home_no_data_label' : 'common_open_performance_link_label') | i18n"></lv-empty>
                 <button *ngIf="isDataBackupOrDecouple && !appUtilsService.isDecouple" lv-button lvType="primary" class="btn" (click)="switchMonitor()">
                     {{'common_open_label'|i18n}}
                 </button>

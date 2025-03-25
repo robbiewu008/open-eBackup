@@ -1,0 +1,53 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Setting Windows PowerShell Permissions">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164765158.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200006217">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Setting Windows PowerShell Permissions</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200006217"></a><a name="EN-US_TOPIC_0000002200006217"></a>
+
+<h1 class="topictitle1">Step 2: Setting Windows PowerShell Permissions</h1>
+<div><p>Ensure that Windows PowerShell has script execution permissions (controlled by <strong>RemoteSigned</strong>, <strong>Bypass</strong>, or <strong>Unrestricted</strong>). </p>
+<div class="section" id="EN-US_TOPIC_0000002200006217__section196361853169"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002200006217__ol3845155813619"><li id="EN-US_TOPIC_0000002200006217__li1487878141211"><span>Open Windows PowerShell and run the <strong id="EN-US_TOPIC_0000002200006217__b99541622111210">Get-ExecutionPolicy</strong> command to check whether Windows PowerShell has the script execution permission controlled by <strong id="EN-US_TOPIC_0000002200006217__b148092213917">RemoteSigned</strong>, <strong id="EN-US_TOPIC_0000002200006217__b59952418397">Bypass</strong>, or <strong id="EN-US_TOPIC_0000002200006217__b19277142518394">Unrestricted</strong>. Windows 2019 and SQL Server 2019 are used as examples.</span><p><ul id="EN-US_TOPIC_0000002200006217__ul8490122691811"><li id="EN-US_TOPIC_0000002200006217__li9490326111815">If any of the preceding permissions exists, no further action is required.</li><li id="EN-US_TOPIC_0000002200006217__li1749052616186">If the preceding permissions do not exist, go to <a href="#EN-US_TOPIC_0000002200006217__li48454583610">2</a>.</li></ul>
+</p></li><li id="EN-US_TOPIC_0000002200006217__li48454583610"><a name="EN-US_TOPIC_0000002200006217__li48454583610"></a><a name="li48454583610"></a><span>Run the <strong id="EN-US_TOPIC_0000002200006217__b1828154333411">Set-ExecutionPolicy RemoteSigned</strong> command to grant the <strong id="EN-US_TOPIC_0000002200006217__b4293642203618">RemoteSigned</strong> permission.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164765158.html">Backing Up a SQL Server Database</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

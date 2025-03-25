@@ -39,6 +39,7 @@ import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
+import openbackup.tdsql.resources.access.dto.cluster.SchedulerNode;
 import openbackup.tdsql.resources.access.provider.TdsqlAgentProvider;
 import openbackup.tdsql.resources.access.service.TdsqlService;
 
@@ -208,6 +209,13 @@ public class TdsqlRestoreInterceptor extends AbstractDbRestoreInterceptorProvide
         }
         List<String> agentUuids = restoreHosts.stream().map(item -> item.get("parentUuid")).collect(
                 Collectors.toList());
+        ProtectedEnvironment environment = tdsqlService.getEnvironmentById(task.getTargetEnv().getUuid());
+        List<SchedulerNode> schedulerNodes = tdsqlService.getSchedulerNode(environment);
+        schedulerNodes.forEach(schedulerNode -> {
+            agentUuids.add(schedulerNode.getParentUuid());
+        });
+        removeDuplicateString(agentUuids);
+        log.info("buildNewRestoreCreateInstAgents agentUuids is {}", agentUuids);
         List<Endpoint> endpointList = new ArrayList<>();
         for (String agentUuid : agentUuids) {
             ProtectedEnvironment agentEnv = tdsqlService.getEnvironmentById(agentUuid);
@@ -218,5 +226,17 @@ public class TdsqlRestoreInterceptor extends AbstractDbRestoreInterceptorProvide
             endpointList.add(endpoint);
         }
         return endpointList;
+    }
+
+    private void removeDuplicateString(List<String> stringList) {
+        for (int head = 0; head < stringList.size(); head++) {
+            String stringHead = stringList.get(head);
+            for (int tail = stringList.size() - 1; tail > head; tail--) {
+                String stringTail = stringList.get(tail);
+                if (stringHead.equals(stringTail)) {
+                    stringList.remove(tail);
+                }
+            }
+        }
     }
 }

@@ -20,129 +20,137 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="全局搜索副本数据">
+<meta name="DC.Title" content="步骤7：创建复制SLA">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="informix-0050.html">
+<meta name="DC.Relation" scheme="URI" content="informix-0045.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="informix-0052">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>全局搜索副本数据</title>
+<title>步骤7：创建复制SLA</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="informix-0052"></a><a name="informix-0052"></a>
 
-<h1 class="topictitle1">全局搜索副本数据</h1>
-<div><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_p282572592218">通过本节操作您可以对副本数据进行全局浏览、搜索。</p>
-<div class="section" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_section1212453520218"><h4 class="sectiontitle">背景信息</h4><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_p121383652119">副本数据全局搜索功能支持的应用包括：<span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_ph768312227106">FusionCompute/VMware/华为云Stack/HDFS/NAS文件系统/NAS共享/对象存储/文件集/OpenStack（仅1.6.0及后续版本）/卷/CNware/Hyper-V/阿里云/FusionOne Compute/NDMP</span>。在使用本节内容，如果您只涉及其中部分应用，请忽略其他应用的相关描述。</p>
+<h1 class="topictitle1">步骤7：创建复制SLA</h1>
+<div><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p3314585811">如果您需要对本地备份副本进行复制，请参考本节配置复制策略的SLA。</p>
+<div class="section" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0024_10_foc_gud_0033_zh-cn_topic_0000001839143213_zh-cn_topic_0000001092505481_section15371826121012"><h4 class="sectiontitle">前提条件</h4><ul id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_ul291144913113"><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li16911134993112">已创建备份策略的SLA。具体操作请参考<a href="informix-0017.html">步骤6：创建备份SLA</a>。</li></ul>
 </div>
-<div class="section" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_section67451534172317"><h4 class="sectiontitle">前提条件</h4><ul id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_ul479141612617"><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_li1279141642612">当需要对副本进行浏览或搜索时，要求在副本生成前已开启自动索引或者在生成副本后手动创建了索引。</li><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_li123513331485">对于<span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_ph1356417108452">VMware、FusionCompute、华为云Stack、OpenStack、CNware、Hyper-V或FusionOne Compute</span>副本，支持全局搜索的Linux文件系统类型为ext 2/3/4、XFS，支持全局搜索的Windows文件系统类型为NTFS、FAT、FAT32。</li></ul>
-</div>
-<div class="section" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_section183631637101611"><h4 class="sectiontitle">操作步骤</h4><ol id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_ol5328144017163"><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_li18249124612161"><span>单击页面上方的<span><img id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_image13826175211232" src="zh-cn_image_0000002002618500.png"></span>，进入<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_uicontrol11742193014173">“<span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text71661417114516">全局搜索</span>”</span>页面。</span><p><ol type="a" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_ol1465595115436"><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001138108167_li7197818615">在搜索栏选择<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_uicontrol926854522013">“<span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text068652964518">副本数据</span>”</span>。</li><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_li1852010111264">输入副本中文件对象（文件、目录或链接）的名称或路径并单击<span><img id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_image15276194719246" src="zh-cn_image_0000002038840065.png"></span>，支持模糊搜索。<p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p169211217267">当前页面将展示满足条件的文件对象。</p>
-<div class="note" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_note370841320251"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_p2070813130251">当同时输入多个条件进行搜索时，界面会将至少满足其中一个条件的搜索结果展示出来，并且与搜索条件匹配度越高的搜索结果展示越靠前。</p>
+<div class="section" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_zh-cn_topic_0000001092505481_section16583194675411"><h4 class="sectiontitle">操作步骤</h4><ol id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_zh-cn_topic_0000001092505481_ol112221128161219"><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_zh-cn_topic_0000001092505481_li149381918143112"><span>选择<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002199964685_uicontrol8111821122820">“保护 &gt; 保护策略 &gt; SLA”</span>。</span></li><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_zh-cn_topic_0000001092505481_li649983114125"><span>查找到需要创建复制策略的SLA，单击<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_zh-cn_topic_0000001092505481_uicontrol577717611320">“<span id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_text1946835272814">更多</span> &gt; <span id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_text163361313293">修改</span>”</span>。</span><p><p id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_p1755616914533">系统预置的SLA不支持修改。</p>
+</p></li><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_li164021656192215"><span>单击<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_uicontrol111335151290">“<span id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_text1466823185112">复制策略</span>”</span>图标。</span><p><div class="note" id="informix-0052__zh-cn_topic_0000002202220949_note1777411521614"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="informix-0052__zh-cn_topic_0000002202220949_p67745522614"><span id="informix-0052__zh-cn_topic_0000002202220949_ph224020402720">对于OceanProtect E1000，当指定的应用不是“华为云Stack”时，如果备份策略中指定的“备份存储单元”或“备份存储单元组”的设备类型为“服务器”，则不支持创建复制策略。</span></p>
 </div></div>
+</p></li><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_zh-cn_topic_0000001092505481_li3425152010144"><span>配置复制策略信息，完成后单击<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_uicontrol1633894917301">“确定”</span>。</span><p><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p16153162215210">单击页面右侧的<span><img id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_image1973420581876" src="zh-cn_image_0000002222524017.png"></span>，可创建多个复制策略，最多允许创建4个。</p>
+<p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p44581620125214">相关参数说明如<a href="#informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_table13459122015523">表1</a>。</p>
+
+<div class="tablenoborder"><a name="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_table13459122015523"></a><a name="zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_table13459122015523"></a><table cellpadding="4" cellspacing="0" summary="" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_table13459122015523" frame="border" border="1" rules="all"><caption><b>表1 </b>复制策略参数说明</caption><colgroup><col style="width:20.11%"><col style="width:79.89%"></colgroup><thead align="left"><tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row104584201527"><th align="left" class="cellrowborder" valign="top" width="20.11%" id="mcps1.3.3.2.4.2.3.2.3.1.1"><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p845842019525">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.89%" id="mcps1.3.3.2.4.2.3.2.3.1.2"><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p184581020205218">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row20458142019527"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p187621359192419">名称</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p1045810202521">用户自定义复制策略名称。</p>
+</td>
+</tr>
+<tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row17459132012528"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p2018513490281">复制目标集群</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p121584014295">复制到的目标集群。</p>
+<p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p1637910586293">选择已添加的目标集群，或单击<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_uicontrol64582020185212">“<span id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_text44583204523">添加</span>”</span>，添加新的集群。</p>
+<div class="note" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_note1850777104915"><span class="notetitle"> 说明： </span><div class="notebody"><p id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_p2050714764917">复制模式为<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_uicontrol126221458169">“跨域”</span>时，才支持设置该参数。</p>
+</div></div>
+</td>
+</tr>
+<tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row5452202122116"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p104521222115">复制目标端用户</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p14461840320">选择复制目标端的系统管理员或数据保护管理员用户。</p>
+</td>
+</tr>
+<tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row1447722162217"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p154771821132213">密码</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p4905495352">填写复制目标端的系统管理员或数据保护管理员用户密码。输入密码后，单击<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_uicontrol171601242183913">“认证”</span>，认证密码的正确性。</p>
+</td>
+</tr>
+<tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row1160064311360"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p1760014313617">本地存储类型</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p1678172563619">选择本地存储的类型。</p>
+</td>
+</tr>
+<tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row1097972085812"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p10954447143611">指定目标位置</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><div class="p" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p697992085820"><span id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_ph17306153613715">可选择复制的目标位置为备份存储单元或备份存储单元组。当选择备份存储单元组，对备份副本进行首次复制时，系统将从备份存储单元组中选择其中一个备份存储单元，作为复制的目标位置，后续复制时优先选择首次复制使用的备份存储单元。</span><div class="note" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_note119618230211"><span class="notetitle"> 说明： </span><div class="notebody"><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p1231111153718"><span id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_ph538975012447">当备份策略的目标位置指定备份存储单元时，复制策略的目标位置不能为同一备份存储单元。</span></p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row945914209522"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p1877174513">频率</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><div class="p" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p172291737532">多长时间执行一次复制。<ul id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_ul14459102015215"><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li14459182018523">备份完成后立即进行复制。</li><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li745932075219">每xx分钟/小时/天/周执行一次复制。</li></ul>
+</div>
+</td>
+</tr>
+<tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row1560645125616"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p02791848540">复制规则&amp;保留规则</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p9438320165414">选择需要复制的备份副本并设置复制副本的保留时长。</p>
+<div class="p" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p74571017201913">一旦超过设定的保留时间，系统将自动删除过期的副本。副本保留时长必须大于复制频率。<ul id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_zh-cn_topic_0000001091370109_ul6461175912421"><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_li14284119318">复制所有副本：指定从某个时间产生的副本进行复制，并设置副本保留时长。<ul id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_ul8709174274820"><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li16854124684810">复制副本保留x天（支持保留1~25550天）。</li><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li134729194920">复制副本保留x周（支持保留1~3650周）。</li><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li23071149174913">复制副本保留x月（支持保留1~840月）。</li><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li1685424684816">复制副本保留x年（支持保留1~70年）。</li><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li785454616488">复制副本保留永久。</li></ul>
+</li><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_li169914211296">复制指定日期的副本：指定日期并设置副本保留时长。以下选项同时可选择多项：<ul id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_ul15411165794010"><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li241110576407">选择每年的x月产生的备份副本进行复制，复制副本保留x年（支持保留1~70年）。</li><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li156079239417">选择每月的第一个或最后一个备份副本进行复制，复制副本保留x个月（支持保留1~840个月）。</li><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li7824743184118">选择每周的第x天产生的备份副本进行复制，复制副本保留x个周（支持保留1~3650个周）。</li></ul>
+<div class="note" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_note17337109145313"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_ul731631665311"><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_li9869521530">“复制指定日期的副本”仅支持复制指定日期的全量和永久增量（合成全量）备份副本。</li><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_li6117461006">如果同时选择了多个选项，待复制副本的时间范围为多个选项的并集，生成的复制副本的保留时长为多个选项中保留时间最久的保留时长。</li><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_li1631641615534">选择每月的最后一个全量备份副本复制时，当月待复制的全量备份副本的复制任务将在下一个月执行。</li></ul>
+</div></div>
+</li></ul>
+</div>
+</td>
+</tr>
+<tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row204591820145215"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p543220260017">首次执行时间</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p54098431709">首次执行复制任务的开始时间。</p>
+<div class="p" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p12951841116">如果首次执行时间晚于当前时间，则按照首次执行时间开始复制；如果首次执行时间早于当前时间，则等待下次复制周期到达后进行复制。<div class="note" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_note3459142085219"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_zh-cn_topic_0000001607531760_ul28273511414"><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_zh-cn_topic_0000001607531760_li58279510418">请确保客户端所在主机、本地集群和目标集群的设备时间一致。</li><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_zh-cn_topic_0000001607531760_li1362912714119">如果规划了Air Gap，请确保首次执行时间在目标集群Air Gap复制时间窗内，并确保每次复制任务开始时间均在Air Gap复制时间窗内。如果复制任务在Air Gap复制时间窗内未结束，且Air Gap策略启用了<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_zh-cn_topic_0000001607531760_uicontrol1574053616579">“强制中止复制”</span>，复制任务将会被强制中止且会立即失败。如果确实需要执行完成该复制任务，请暂时关闭目标集群Air Gap策略的<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_zh-cn_topic_0000001607531760_uicontrol0647911025">“强制中止复制”</span>开关。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row16459820195220"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p3109125618">限速策略</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p82401830911">复制任务平均每秒最大传输的数据量。</p>
+<p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p194591520115218">选择已创建的限速策略，创建限速策略的具体操作请参考<a href="informix-0015.html">步骤4：（可选）创建限速策略</a>章节。</p>
+</td>
+</tr>
+<tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row12459820115213"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p1645922075210">链路重删</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><div class="p" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p6459720115211">开启后，远程复制过程中系统会对副本数据进行重删以提升复制效率。建议开启此开关。<div class="note" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_note19674741123810"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_ul1096989193510"><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li135803529411">开启此功能前请确保已开启目标端重删。<ul id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_ul155108557412"><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li96071722428">如果SLA的备份策略中存在“目标端重删”开关，请打开“目标端重删”，否则将导致链路重删功能不生效。</li><li id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_li18970109163510">如果SLA的备份策略中不存在“目标端重删”开关，则默认已开启目标端重删。</li></ul>
+</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row4459102095213"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_p1545992016524">链路压缩</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p91515217319">开启后，远程复制过程中系统会对副本数据进行压缩以提升复制效率。建议开启此开关。</p>
+</td>
+</tr>
+<tr id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_row245914204526"><td class="cellrowborder" valign="top" width="20.11%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p53471257138">任务失败告警</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.89%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_p1228354113316">开启后，任务执行失败后自动发送告警，下次任务成功后告警自动清除。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_zh-cn_topic_0000001092505481_li14772135418213"><span>单击<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_zh-cn_topic_0000001092505481_uicontrol13919162932">“确定”</span>，根据界面提示完成确认。</span></li><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_li585617920201"><span>关联资源到复制SLA，以对副本进行周期性复制。</span><p><ul id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_ul7677171614357"><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_li359191719515">如果已有资源关联至该SLA策略，则系统将按照SLA策略的定义对资源进行保护。</li><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_li1778718152365">如果该SLA策略未关联资源，则请关联资源至该SLA策略以对其进行保护。具体操作请参考<a href="informix-0018.html">步骤7：执行备份</a>。<div class="note" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_note1465611242259"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_ul12729526113420"><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_li11502190184711">执行复制任务时需确保本地集群和目标集群的存储池已使用的容量不能超过License中的<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_uicontrol134618370529">“数据备份容量”</span>，否则复制任务将失败。参考以下步骤确认容量是否充足。<ol type="a" id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_ol14312567529"><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_zh-cn_topic_0000001839143213_li118994632112">登录本地集群和目标集群备份存储设备的DeviceManager管理界面。具体操作请参考<a href="zh-cn_topic_0000002164820486.html">登录DeviceManager管理界面</a>。</li><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_li27724461254">选择<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_uicontrol14133214551">“系统 &gt; 存储池”</span>，查看存储池已使用的容量。</li><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_li359187265">选择<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_uicontrol1379134385710">“设置 &gt; License管理”</span>，查看<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_uicontrol1740442155618">“数据备份容量（Data Backup Capacity）”</span>。<p id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_p936183955611">存储池已用容量不能超过<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002202220949_zh-cn_topic_0000002200146989_uicontrol3577155018562">“数据备份容量（Data Backup Capacity）”</span>。</p>
 </li></ol>
-</p></li><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_li133740124418"><span>在界面左侧导航树上可以根据需要对展示结果进行再次筛选。</span><p><div class="note" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_note22901688495"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001792344094_p73506213355">参数间是“或”的关系，即筛选出来的结果是所选条件的并集。</p>
+</li><li id="informix-0052__zh-cn_topic_0000002202220949_foc_gud_0033_li4651153312611">复制任务产生的复制副本，仅支持在目标集群进行查看、恢复等，本地集群无法查看。</li></ul>
 </div></div>
-
-<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_table14455956104413" frame="border" border="1" rules="all"><caption><b>表1 </b>搜索参数说明</caption><colgroup><col style="width:23.77%"><col style="width:76.23%"></colgroup><thead align="left"><tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_row164569560448"><th align="left" class="cellrowborder" valign="top" width="23.77%" id="mcps1.3.4.2.2.2.2.2.3.1.1"><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p5456756154414">参数</p>
-</th>
-<th align="left" class="cellrowborder" valign="top" width="76.23%" id="mcps1.3.4.2.2.2.2.2.3.1.2"><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p8456175617443">说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_row1245615564446"><td class="cellrowborder" valign="top" width="23.77%" headers="mcps1.3.4.2.2.2.2.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p14456115694416"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text9453432185314">资源类型</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="76.23%" headers="mcps1.3.4.2.2.2.2.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p4145723124615">选择要搜索的资源类型。</p>
-</td>
-</tr>
-<tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_row845665613445"><td class="cellrowborder" valign="top" width="23.77%" headers="mcps1.3.4.2.2.2.2.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p124598519225"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text1251554015310">文件对象类型</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="76.23%" headers="mcps1.3.4.2.2.2.2.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p164595518222">选择<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_uicontrol1245911572213">“<span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text196171634612">全部</span>”</span>、<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_uicontrol20459105192210">“<span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text20914193815468">文件</span>”</span>、<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_uicontrol64591352228">“<span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text1723816598460">目录</span>”</span>或<span class="uicontrol" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_uicontrol1845917517220">“<span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text19682323194718">链接</span>”</span>进行过滤。</p>
-</td>
-</tr>
-<tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_row624501910455"><td class="cellrowborder" valign="top" width="23.77%" headers="mcps1.3.4.2.2.2.2.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p14534131092213"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text1882484718539">资源名称</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="76.23%" headers="mcps1.3.4.2.2.2.2.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p1253411107221">输入资源名称。</p>
-</td>
-</tr>
-<tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_row198535222453"><td class="cellrowborder" valign="top" width="23.77%" headers="mcps1.3.4.2.2.2.2.2.3.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p540911672217"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text142931556531">文件对象绝对路径</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="76.23%" headers="mcps1.3.4.2.2.2.2.2.3.1.2 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p24095163228">输入文件对象的绝对路径。</p>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</p></li><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_li3669164884712"><span>完成搜索后页面右侧展示资源的搜索结果。相关参数说明如<a href="#informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_table5660420174819">表2</a>所示。</span><p><div class="note" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_note23021533151216"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_p123028331126">备份<span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_ph7303171713451">VMware、FusionCompute、华为云Stack、OpenStack、CNware、Hyper-V或FusionOne Compute</span>时，未写入/etc/fstab文件的挂载点信息存储在内存中，<span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text184239241392">OceanProtect</span>不会备份该内容，也不支持文件级恢复。如新增的文件系统需支持文件级恢复，请将新增的文件系统挂载点信息写入/etc/fstab。</p>
-</div></div>
-
-<div class="tablenoborder"><a name="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_table5660420174819"></a><a name="zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_table5660420174819"></a><table cellpadding="4" cellspacing="0" summary="" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_table5660420174819" frame="border" border="1" rules="all"><caption><b>表2 </b>副本数据参数说明</caption><colgroup><col style="width:9.6%"><col style="width:21.52%"><col style="width:68.88%"></colgroup><thead align="left"><tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_row1166012209485"><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.4.2.3.2.2.2.4.1.1"><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_p4660520144813">参数</p>
-</th>
-<th align="left" class="cellrowborder" valign="top" id="mcps1.3.4.2.3.2.2.2.4.1.2"><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_p566019205488">说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_row9660142017487"><td class="cellrowborder" rowspan="4" valign="top" width="9.6%" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p1294012163911"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text832110239543">文件对象</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="21.52%" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p157391741133910"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text1055920522562">名称</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="68.88%" headers="mcps1.3.4.2.3.2.2.2.4.1.2 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p106741343475">副本中文件、目录或链接的名称。</p>
-</td>
-</tr>
-<tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_row166606204483"><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p5422339154019"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text626149569">绝对路径</span></p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p124538716514">文件、目录或链接的绝对路径。</p>
-</td>
-</tr>
-<tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_row8660132017489"><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p176041058204010"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text75451918195617">类型</span></p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_p96601620204816">文件对象类型。</p>
-<ul id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_ul89816321523"><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_li7982323217"><span><img id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_image88040725" src="zh-cn_image_0000001839187157.png"></span>：目录</li><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_li5332145328"><span><img id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_image196152511310" src="zh-cn_image_0000001792388064.png"></span>：文件</li><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_li07474281436"><span><img id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_image7607174320316" src="zh-cn_image_0000001839267097.png"></span>：链接</li></ul>
-</td>
-</tr>
-<tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_row7660142014810"><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p1742152034116"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text1788314354568">修改时间</span></p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_p1166042011482">生成副本时，副本中的文件、目录或链接的最后修改时间。</p>
-</td>
-</tr>
-<tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_row535316286491"><td class="cellrowborder" rowspan="2" valign="top" width="9.6%" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p1282112919415"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text8720323185720">资源</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="21.52%" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p451354918416"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text7184185285515">名称</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="68.88%" headers="mcps1.3.4.2.3.2.2.2.4.1.2 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_p1735322814918">副本数据对应的源资源的名称。</p>
-</td>
-</tr>
-<tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_row898063016497"><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p172181162426"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text159731256185610">类型</span></p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_p1098033044916">资源的类型。</p>
-</td>
-</tr>
-<tr id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_row93723018239"><td class="cellrowborder" valign="top" width="9.6%" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p1637133015231"><span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text1119843195714">索引副本</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="21.52%" headers="mcps1.3.4.2.3.2.2.2.4.1.1 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p5373305233">-</p>
-</td>
-<td class="cellrowborder" valign="top" width="68.88%" headers="mcps1.3.4.2.3.2.2.2.4.1.2 "><p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_p13387756131311">副本数据中文件、目录或链接的索引副本数量。</p>
-<ul id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_ul1374104412164"><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_li137484414166">如果备份前开启了自动索引，则每次自动备份时，都会检查备份副本中的文件或目录等是否有更新，如果有更新则为文件或目录建立新的索引，索引副本数量为1，如果没有更新，则索引副本数量+1。</li><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_li12536227101810">如果是在管理界面手动创建的索引，则系统为备份副本中的文件或目录等建立新的索引，索引副本数量为1。</li></ul>
-<p id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_p144306459234">单击<span id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_text550783613592">索引副本</span>，可以查看资源的副本数据，界面展示的副本均是已对该对象建立索引的副本。</p>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</p></li><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_zh-cn_topic_0000001337708150_zh-cn_topic_0000001191301131_li10490102593417"><span>在搜索结果所在行，单击“更多”，可以下载文件或进行文件级恢复。</span><p><div class="note" id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_note995215451517"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_ul337715513114"><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_li23777551912">对于FusionCompute、华为云Stack、HDFS、对象存储、OpenStack、卷、CNware、Hyper-V、阿里云、FusionOne Compute，不支持下载副本文件。</li><li id="informix-0052__zh-cn_topic_0000002002312572_vmware_gud_0076_li483317561315">对于NAS共享和文件集，聚合格式的副本文件不支持下载。</li></ul>
-</div></div>
+</li></ul>
 </p></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="informix-0050.html">全局搜索</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="informix-0045.html">复制Informix/GBase 8s数据库副本（适用于OceanProtect E1000）</a></div>
 </div>
 </div>
 

@@ -1,0 +1,80 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="在SFTP服务端添加SFTP客户端用户的公钥">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002164669354">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>在SFTP服务端添加SFTP客户端用户的公钥</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000002164669354"></a><a name="ZH-CN_TOPIC_0000002164669354"></a>
+  <h1 class="topictitle1">在SFTP服务端添加SFTP客户端用户的公钥</h1>
+  <div>
+   <p>如果有多个SFTP客户端需要以某个SFTP用户访问服务端，强烈建议参考本节操作，将多个SFTP客户端用户的公钥添加到服务端。首次添加公钥与非首次添加公钥的操作稍有不同，此处将分别介绍。本章节以在客户端<strong>root</strong>用户下，服务端<strong>sftpuser</strong>用户登录服务端为例。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>执行以下命令，进入<strong>sftpuser</strong>用户目录。</span><p></p><pre class="screen">cd /sftpuser</pre> <p></p></li>
+     <li><span>执行以下命令，查看<strong>sftpuser</strong>用户目录下是否已添加过公钥。</span><p></p><pre class="screen">ls</pre>
+      <div class="p">
+       如果回显不包含如下内容，说明<strong>sftpuser</strong>用户目录下，当前未添加公钥，请执行<a href="#ZH-CN_TOPIC_0000002164669354__li177571338172219">首次添加公钥</a>。否则，请执行<a href="#ZH-CN_TOPIC_0000002164669354__li1414218493223">非首次添加公钥</a>。
+       <pre class="screen">authorized_keys</pre>
+      </div>
+      <ul>
+       <li id="ZH-CN_TOPIC_0000002164669354__li177571338172219"><a name="ZH-CN_TOPIC_0000002164669354__li177571338172219"></a><a name="li177571338172219"></a><strong>首次添加公钥</strong>
+        <ol type="a">
+         <li>执行以下命令生成公钥。<pre class="screen">ssh-keygen -t rsa</pre></li>
+         <li>在SFTP命令行执行以下命令，在<strong>sftpuser</strong>用户目录下，添加客户端<strong>root</strong>用户的公钥。<pre class="screen">put /root/.ssh/id_rsa.pub /sftpuser/authorized_keys</pre>
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <p>添加完成后，在该客户端<strong>root</strong>用户下，可以通过<strong>sftpuser</strong>用户免密登录SFTP服务端。在该客户端的其他用户下，仍然需要使用密码登录。</p>
+           </div>
+          </div></li>
+        </ol></li>
+       <li id="ZH-CN_TOPIC_0000002164669354__li1414218493223"><a name="ZH-CN_TOPIC_0000002164669354__li1414218493223"></a><a name="li1414218493223"></a><strong>非首次添加公钥</strong>
+        <ol type="a">
+         <li id="ZH-CN_TOPIC_0000002164669354__li1692011810253"><a name="ZH-CN_TOPIC_0000002164669354__li1692011810253"></a><a name="li1692011810253"></a>执行以下命令，将<strong>sftpuser</strong>用户目录下已有的公钥暂时存放在本地服务器的<span class="uicontrol">“/root/authorized_keys”</span>文件。<pre class="screen">get /sftpuser/authorized_keys /root/authorized_keys</pre></li>
+         <li>执行以下命令，退出SFTP命令行。<pre class="screen">exit</pre></li>
+         <li>登录非<strong>root</strong>用户执行以下命令生成公钥，生成后切换为<strong>root</strong>用户。<pre class="screen">ssh-keygen -t rsa</pre></li>
+         <li id="ZH-CN_TOPIC_0000002164669354__li1152402412311"><a name="ZH-CN_TOPIC_0000002164669354__li1152402412311"></a><a name="li1152402412311"></a>执行以下命令，将本客户端当前非<strong>root</strong>用户的公钥与<strong>sftpuser</strong>用户目录下已有的公钥进行拼接。拼接后的公钥存放在本地服务器的<span class="uicontrol">“/root/authorized_keys”</span>文件。<pre class="screen">cat /home/<em>xxx</em>/.ssh/id_rsa.pub &gt;&gt; /root/authorized_keys</pre>
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <p><em>xxx</em>表示非<strong>root</strong>用户名。</p>
+           </div>
+          </div></li>
+         <li>执行<a href="#ZH-CN_TOPIC_0000002164669354__li1692011810253">2.a</a>进入SFTP命令行。</li>
+         <li>执行以下命令，添加<a href="#ZH-CN_TOPIC_0000002164669354__li1152402412311">2.d</a>中拼接好的公钥。<pre class="screen">put /root/authorized_keys /sftpuser/authorized_keys</pre></li>
+        </ol></li>
+      </ul> <p></p></li>
+     <li><span>执行以下命令，以<strong>sftpuser</strong>用户连接SFTP备份服务器。验证公钥是否添加成功。</span><p></p><pre class="screen">sftp -oPort=<em>端口号</em> <em>SFTP用户名</em>@<em>SFTP服务器的IP地址</em></pre> <p>如果能直接进入SFTP命令行，表明公钥已添加成功。</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>命令中的<em>端口号</em>、<em>SFTP用户名</em>、<em>SFTP服务器的IP地址</em>请根据实际替换<em>。</em></p>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

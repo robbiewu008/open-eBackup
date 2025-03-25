@@ -1,0 +1,122 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Performing Instance-Level Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164765222.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002213813341">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Performing Instance-Level Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002213813341"></a><a name="EN-US_TOPIC_0000002213813341"></a>
+  <h1 class="topictitle1">Performing Instance-Level Backup</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002199964685_uicontrol114088356363"><b><span id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002199964685_text1840913533616"><strong>Protection</strong></span> &gt; Databases &gt; SQL Server</b></span>.</span></li>
+     <li><span>Switch to the <span class="uicontrol"><b>Instances</b></span> tab page, select the instance to be protected, and click <span class="uicontrol"><b><span>Protect</span></b></span>.</span><p></p><p>You can also select multiple instances for batch protection.</p> <p></p></li>
+     <li id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_li343674154015"><span>Select a custom SLA.</span><p></p><p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p33248794210">You can also click <span class="uicontrol" id="EN-US_TOPIC_0000002213813341__uicontrol19354152213444"><b><span id="EN-US_TOPIC_0000002213813341__text3354722114411">Create</span></b></span> to create an SLA.</p>
+      <div class="note" id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_note445111812544">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_ul1593912171370">
+         <li id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_li209391317153710">SQL Server does not support the preset SLAs (including Gold, Silver, and Bronze).</li>
+         <li id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_li893971714374"><span id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_en-us_topic_0000001964713008_ph1413818422327">If a WORM policy has been configured for the resource to be protected, select an SLA without a WORM policy to create protection to avoid WORM policy conflicts.</span></li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li><span>Set parameters in the <span class="uicontrol"><b><span>Advanced</span></b></span> area by referring to <a href="#EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_table187795413336">Table 1</a>.</span><p></p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_table187795413336"></a><a name="en-us_topic_0000002164765222_table187795413336"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_table187795413336" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Advanced backup parameters
+        </caption>
+        <colgroup>
+         <col style="width:22.07%">
+         <col style="width:77.92999999999999%">
+        </colgroup>
+        <thead align="left">
+         <tr id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_row147781341193315">
+          <th align="left" class="cellrowborder" valign="top" width="22.07%" id="mcps1.3.1.2.4.2.1.2.3.1.1"><p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p877818417339">Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="77.92999999999999%" id="mcps1.3.1.2.4.2.1.2.3.1.2"><p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p277818416332">Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_row8778134133312">
+          <td class="cellrowborder" valign="top" width="22.07%" headers="mcps1.3.1.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p77787417337"><span id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_text10778341113316"><strong>Script to Run Before Backup</strong></span></p></td>
+          <td class="cellrowborder" rowspan="3" valign="top" width="77.92999999999999%" headers="mcps1.3.1.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p17778741113313">You can configure <span id="EN-US_TOPIC_0000002213813341__text1193205654415"><strong>Script to Run Before Backup</strong></span>, <span id="EN-US_TOPIC_0000002213813341__text1293656104410"><strong>Script to Run upon Backup Success</strong></span>, and <span id="EN-US_TOPIC_0000002213813341__text893175610442"><strong>Script to Run upon Backup Failure</strong></span> based on actual requirements. When a message indicating that the pre-processing task starts to be executed is displayed during a backup job, the configured script is executed in the corresponding scenario.</p> <p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p199507143112">Enter a script name that ends with <strong id="EN-US_TOPIC_0000002213813341__b7655931184518">.bat</strong>. Ensure that the script has been stored in <em id="EN-US_TOPIC_0000002213813341__i7400193994517">Installation directory</em><strong id="EN-US_TOPIC_0000002213813341__b34001039114516">\DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty</strong> and the user who logs in to the database host has permissions to execute the script.</p>
+           <div class="note" id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_note07781341113314">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p377812416334">If <span class="uicontrol" id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_uicontrol77781041143317"><b><span id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_text15778441143313">Script to Run upon Backup Success</span></b></span> is configured, the backup job status is displayed as <span class="uicontrol" id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_uicontrol1977874110336"><b><span id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_text13778641193312">Successful</span></b></span> on the WebUI even if the script fails to be executed. Check whether the job details contain information indicating that a post-processing script fails to be executed. If yes, modify the script in a timely manner.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_row14778114143310">
+          <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p4778114113312"><span id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_text97788418334"><strong>Script to Run upon Backup Success</strong></span></p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_row1877914183316">
+          <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p14779154113330"><span id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_text1877964114335"><strong>Script to Run upon Backup Failure</strong></span></p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_li1333921134717"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002213813341__uicontrol131884393461"><b>OK</b></span>.</span><p></p><p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_en-us_topic_0000002200146973_en-us_topic_0000001656691397_p25041111535">If the current system time is later than the start time of the first backup specified in the SLA, you can select <strong id="EN-US_TOPIC_0000002213813341__b599684094611">Execute manual backup now</strong> in the dialog box that is displayed or choose to perform automatic backup periodically based on the backup policy set in the SLA.</p> <p></p></li>
+     <li id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_li139272172458"><span>Perform manual backup.</span><p></p><p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p11582152174516">If you want to execute a backup job immediately, perform manual backup through the following operations. Otherwise, skip this step.</p>
+      <ol type="a" id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_ol1221414820461">
+       <li id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_li1321438154613">In the row that contains the database to be backed up, choose <span class="uicontrol" id="EN-US_TOPIC_0000002213813341__uicontrol52221314124710"><b><span id="EN-US_TOPIC_0000002213813341__text922261474718">More</span> &gt; <span id="EN-US_TOPIC_0000002213813341__text422213143475">Manual Backup</span></b></span>.
+        <div class="note" id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_en-us_topic_0000001792503838_note187025312547">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p220112494336">You can select multiple resources for manual backup in batches. Select multiple resources and choose <strong id="EN-US_TOPIC_0000002213813341__b1440314128189"><span id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_en-us_topic_0000001792503838_text662114113158">More</span></strong> &gt; <strong id="EN-US_TOPIC_0000002213813341__b129441071183"><span id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_en-us_topic_0000001792503838_text1068159191519">Manual Backup</span></strong> in the upper left corner of the page.</p>
+         </div>
+        </div></li>
+       <li id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_li152151189467">Set the name of the copy generated by manual backup.<p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p175010712528"><a name="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_li152151189467"></a><a name="en-us_topic_0000002164765222_li152151189467"></a>If this parameter is left unspecified, the system sets the name to <strong id="EN-US_TOPIC_0000002213813341__b1122614874811">backup_</strong><em id="EN-US_TOPIC_0000002213813341__i10226586481">Timestamp</em> by default.</p></li>
+       <li id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_li132154812466">Select a protection policy, which can be <span id="EN-US_TOPIC_0000002213813341__text59412144812"><strong>Full Backup</strong></span>, <span id="EN-US_TOPIC_0000002213813341__text1199121484"><strong>Differential Backup</strong></span>, or <span id="EN-US_TOPIC_0000002213813341__text14951254813"><strong>Log Backup</strong></span>.
+        <div class="note" id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_note139500128280">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_p89501512162812"><span id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_en-us_topic_0000002200146973_ph19374310343">For 1.6.0 and later versions, if the selected protection policy is different from that configured in the associated SLA, the WORM configuration does not take effect.</span></p>
+         </div>
+        </div></li>
+       <li id="EN-US_TOPIC_0000002213813341__en-us_topic_0000002164765222_li621598124615">Click <span class="uicontrol" id="EN-US_TOPIC_0000002213813341__uicontrol1377820391464"><b>OK</b></span>.</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164765222.html">Step 9: Performing Backup</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

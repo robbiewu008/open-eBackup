@@ -14,10 +14,11 @@ import { BaseModule } from 'app/shared';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LocalFileSystemAdvancedParameterComponent } from './local-file-system-advanced-parameter.component';
+import { RouterJumpHelpModule } from 'app/shared/components/router-jump-help/router-jump-help.module';
 
 @NgModule({
   declarations: [LocalFileSystemAdvancedParameterComponent],
-  imports: [CommonModule, BaseModule],
+  imports: [CommonModule, BaseModule, RouterJumpHelpModule],
   exports: [LocalFileSystemAdvancedParameterComponent]
 })
 export class LocalFileSystemAdvancedParameterModule {}

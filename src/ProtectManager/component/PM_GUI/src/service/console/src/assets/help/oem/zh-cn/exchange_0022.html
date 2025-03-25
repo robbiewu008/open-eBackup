@@ -17,43 +17,154 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="配置邮箱备份与恢复账户">
+  <meta name="DC.Title" content="步骤1：注册Exchange单机/可用性组">
   <meta name="product" content="">
-  <meta name="DC.Relation" scheme="URI" content="exchange_0017.html">
+  <meta name="DC.Relation" scheme="URI" content="exchange_0021.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="exchange_0022">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>配置邮箱备份与恢复账户</title>
+  <title>步骤1：注册Exchange单机/可用性组</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="exchange_0022"></a><a name="exchange_0022"></a>
-  <h1 class="topictitle1">配置邮箱备份与恢复账户</h1>
+  <h1 class="topictitle1">步骤1：注册Exchange单机/可用性组</h1>
   <div>
+   <p id="exchange_0022__zh-cn_topic_0000001263936778_p8060118">当Exchange数据库所在主机安装客户端后，<span id="exchange_0022__text3709153812404">本产品</span>会自动扫描Exchange数据库和用户邮箱，<span id="exchange_0022__text45801711317">本产品</span>以扫描出来的数据库和邮箱作为待保护对象。</p>
    <div class="section">
-    <h4 class="sectiontitle">操作步骤</h4>
+    <h4 class="sectiontitle">注册Exchange单机</h4>
     <ol>
-     <li><span>新建一个邮箱备份恢复账户，并为该用户创建一个可用邮箱，创建完成后该账户会自动成为域用户的新账户。</span><p></p>
-      <ul>
-       <li>Exchange 2010：登录Exchange代理端主机，打开Exchange管理控制台，展开“收件⼈配置”，右键单击“邮箱”，选择“新建邮箱”，根据提示创建⼀个新的Exchange邮箱，用户名如“MailBackupUser”。</li>
-       <li>Exchange 2013/2016/2019：登录Exchange Web管理中心,在收件⼈界⾯单击新建邮箱,根据提示创建⼀个新的Exchange邮箱，用户名如MailBackupUser。</li>
-      </ul> <p></p></li>
-     <li><span>将新创建的用户添加为域管理员的成员。</span><p></p><p>在所属域控制器上，打开“Active Directory 用户和计算机”，双击刚创建的账⼾，选择“隶属于”选项卡，单击“添加”，并将此用户添加到域管理员组“Domain Admins”，单击“确定”。</p> <p></p></li>
-     <li><span>将MailBackupUser加入到Discovery Management、Organization Management、Public Folder Management安全组中,在Members选项中单击"+"新增成员。</span><p></p><p><span><img src="zh-cn_image_0000001873048805.png"></span></p> <p></p></li>
-     <li><span>给用户MailBackupUser赋予邮箱访问权限，执行如下命令进行设置。</span><p></p><pre class="screen">Get-Mailbox | Add-MailboxPermission –User "MailBackupUser" -AccessRights FullAccess</pre> <p></p></li>
+     <li><span>选择<span class="uicontrol" id="exchange_0022__zh-cn_topic_0000002199964685_uicontrol26447265316">“<span id="exchange_0022__zh-cn_topic_0000002199964685_text8644926538">保护</span> &gt; <span id="exchange_0022__zh-cn_topic_0000002199964685_text1310114196546">应用</span> &gt; <span id="exchange_0022__zh-cn_topic_0000002199964685_text2114145125312">Exchange</span>”</span>。</span></li>
+     <li id="exchange_0022__zh-cn_topic_0000001456625456_zh-cn_topic_0000001311214069_li14911974018"><span>在<span class="uicontrol" id="exchange_0022__uicontrol17892101012215">“单机/可用性组”</span>页签，单击<span class="uicontrol" id="exchange_0022__zh-cn_topic_0000001456625456_zh-cn_topic_0000001311214069_uicontrol614723714017">“<span id="exchange_0022__zh-cn_topic_0000001456625456_text151021042113112"><span id="exchange_0022__text75391156132212">注册</span></span>”</span>。</span></li>
+     <li><span><span class="uicontrol">“<span>类型</span>”</span>选择<span class="uicontrol">“<span>单机</span>”</span>。</span></li>
+     <li><span>配置Exchange单机信息。</span><p></p><p>相关参数说明如<a href="#exchange_0022__zh-cn_topic_0000001456625456_zh-cn_topic_0000001311214069_table241515964115">表1</a>所示。</p> <p></p>
+      <div class="tablenoborder">
+       <a name="exchange_0022__zh-cn_topic_0000001456625456_zh-cn_topic_0000001311214069_table241515964115"></a><a name="zh-cn_topic_0000001456625456_zh-cn_topic_0000001311214069_table241515964115"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="exchange_0022__zh-cn_topic_0000001456625456_zh-cn_topic_0000001311214069_table241515964115" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>Exchange单机注册信息
+        </caption>
+        <colgroup>
+         <col style="width:25.629999999999995%">
+         <col style="width:74.37%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.2.2.4.2.3.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.2.2.4.2.3.2.3.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.3.2.3.1.1 "><p><span>类型</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.3.2.3.1.2 "><p>选择“单机”。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.3.2.3.1.1 "><p><span>名称</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.3.2.3.1.2 "><p>自定义要注册的Exchange单机名称。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.3.2.3.1.1 "><p><span>主机</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.3.2.3.1.2 "><p>选择要注册的主机，单机场景选择1个主机节点。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.3.2.3.1.1 "><p><span>用户名</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.3.2.3.1.2 ">
+           <div class="p">
+            执行备份和恢复的Exchange主机用户名。输入格式如下（以用户名为Administrator，域名为EX为例）：
+            <ul>
+             <li><em>EX</em>\Administrator</li>
+             <li>Administrator@ex.com</li>
+            </ul>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.3.2.3.1.1 "><p><span>密码</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.3.2.3.1.2 "><p>执行备份和恢复的Exchange主机用户密码。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.4.2.3.2.3.1.1 "><p>并发数</p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.4.2.3.2.3.1.2 "><p>单机下的数据库或邮箱备份/恢复的并发数。并发数取值范围1-10。</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“确定”</span>。</span></li>
     </ol>
    </div>
+   <div class="section">
+    <h4 class="sectiontitle">注册Exchange可用性组</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="exchange_0022__zh-cn_topic_0000002199964685_uicontrol26447265316_1">“<span id="exchange_0022__zh-cn_topic_0000002199964685_text8644926538_1">保护</span> &gt; <span id="exchange_0022__zh-cn_topic_0000002199964685_text1310114196546_1">应用</span> &gt; <span id="exchange_0022__zh-cn_topic_0000002199964685_text2114145125312_1">Exchange</span>”</span>。</span></li>
+     <li><span>在<span class="uicontrol" id="exchange_0022__exchange_0022_uicontrol17892101012215">“单机/可用性组”</span>页签，单击<span class="uicontrol" id="exchange_0022__exchange_0022_zh-cn_topic_0000001456625456_zh-cn_topic_0000001311214069_uicontrol614723714017">“<span id="exchange_0022__exchange_0022_zh-cn_topic_0000001456625456_text151021042113112"><span id="exchange_0022__exchange_0022_text75391156132212">注册</span></span>”</span>。</span></li>
+     <li><span><span class="uicontrol">“<span><span>类型</span></span>”</span>选择<span class="uicontrol">“<span>可用性组</span>”</span>。</span></li>
+     <li><span>配置Exchange可用性组信息。</span><p></p><p>相关参数说明如<a href="#exchange_0022__table3529123191917">表2</a>所示。</p>
+      <div class="tablenoborder">
+       <a name="exchange_0022__table3529123191917"></a><a name="table3529123191917"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="exchange_0022__table3529123191917" frame="border" border="1" rules="all">
+        <caption>
+         <b>表2 </b>Exchange可用性组信息
+        </caption>
+        <colgroup>
+         <col style="width:28.799999999999997%">
+         <col style="width:71.2%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="28.799999999999997%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="71.2%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="28.799999999999997%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>类型</span></p></td>
+          <td class="cellrowborder" valign="top" width="71.2%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>选择<span class="uicontrol">“<span>可用性组</span>”</span>。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="28.799999999999997%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>名称</span></p></td>
+          <td class="cellrowborder" valign="top" width="71.2%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>自定义要注册的Exchange可用性组名称。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="28.799999999999997%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>主机</span></p></td>
+          <td class="cellrowborder" valign="top" width="71.2%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>选择要注册的主机，可选择多个主机节点。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="28.799999999999997%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>用户名</span></p></td>
+          <td class="cellrowborder" valign="top" width="71.2%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 ">
+           <div class="p">
+            执行备份和恢复的Exchange主机用户名。输入格式如下（以用户名为Administrator，域名为EX为例）：
+            <ul>
+             <li><em>EX</em>\Administrator</li>
+             <li>Administrator@ex.com</li>
+            </ul>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="28.799999999999997%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>密码</span></p></td>
+          <td class="cellrowborder" valign="top" width="71.2%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>执行备份和恢复的Exchange主机用户密码。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="28.799999999999997%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>并发数</p></td>
+          <td class="cellrowborder" valign="top" width="71.2%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>可用性组中的数据库或邮箱备份/恢复的并发数。并发数取值范围1-10。</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“确定”</span>。</span></li>
+    </ol>
+   </div>
+   <p></p>
   </div>
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="exchange_0017.html">备份前准备</a>
+     <strong>父主题：</strong> <a href="exchange_0021.html">备份Exchange单机/可用性组或数据库</a>
     </div>
    </div>
   </div>

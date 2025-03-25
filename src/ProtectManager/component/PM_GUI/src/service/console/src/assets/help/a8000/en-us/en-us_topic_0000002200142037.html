@@ -1,0 +1,89 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 3: Creating a DB2 Tablespace Set">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164655722.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200142037">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 3: Creating a DB2 Tablespace Set</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200142037"></a><a name="EN-US_TOPIC_0000002200142037"></a>
+
+<h1 class="topictitle1">Step 3: Creating a DB2 Tablespace Set</h1>
+<div><p>If you want to perform DB2 tablespace set protection, create a tablespace set first.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200142037__en-us_topic_0000002199964685_uicontrol21435597359"><b><span id="EN-US_TOPIC_0000002200142037__en-us_topic_0000002199964685_text4379114911434"><strong>Protection</strong></span> &gt; Databases &gt; DB2</b></span>.</span></li><li><span>Click the <span class="uicontrol"><b>Tablespace Set</b></span> tab.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> to create a DB2 tablespace set.</span><p><div class="p">Configure related parameters as described in <a href="#EN-US_TOPIC_0000002200142037__table43343410374">Table 1</a>.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200142037__table43343410374"></a><a name="table43343410374"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200142037__table43343410374" frame="border" border="1" rules="all"><caption><b>Table 1 </b>DB2 tablespace set parameters</caption><colgroup><col style="width:12.959999999999999%"><col style="width:18.6%"><col style="width:68.44%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.3.2.1.2.2.4.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.3.2.1.2.2.4.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.1.2.2.4.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.1.2.2.4.1.2 "><p>User-defined name of a DB2 tablespace set.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.1.2.2.4.1.1 "><p><span><strong>Hosts/Clusters</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.1.2.2.4.1.2 "><p>Host or cluster to which the tablespace set belongs.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.1.2.2.4.1.1 "><p><span><strong>Instance</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.1.2.2.4.1.2 "><p>DB2 instance to be protected.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.1.2.2.4.1.1 "><p><span><strong>Databases</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.1.2.2.4.1.2 "><p>Database to be protected in the DB2 cluster.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.1.2.2.4.1.1 "><p><span><strong>Tablespace</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.1.2.2.4.1.2 "><p>Tablespace created in the database.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164655722.html">Backing Up DB2 Databases or Tablespace Sets</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

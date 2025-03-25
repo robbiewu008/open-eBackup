@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="hive_00007.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
@@ -67,7 +67,7 @@
        <td class="cellrowborder" valign="top" width="18.3%" headers="mcps1.3.3.2.5.1.1 "><p>hive-site.xml</p></td>
        <td class="cellrowborder" valign="top" width="14.63%" headers="mcps1.3.3.2.5.1.2 "><p>必选</p></td>
        <td class="cellrowborder" rowspan="4" valign="top" width="50.73%" headers="mcps1.3.3.2.5.1.3 "><p>具体获取方式请参见<a href="hive_00015.html#hive_00015__section10758914153313">前提条件</a>。</p> <p></p> <p></p> <p></p> <p></p></td>
-       <td class="cellrowborder" rowspan="5" valign="top" width="16.34%" headers="mcps1.3.3.2.5.1.4 "><p><a href="hive_00015.html">步骤3：注册Hive集群</a></p> <p></p> <p></p> <p></p></td>
+       <td class="cellrowborder" rowspan="6" valign="top" width="16.34%" headers="mcps1.3.3.2.5.1.4 "><p><a href="hive_00015.html">步骤3：注册Hive集群</a></p> <p></p> <p></p> <p></p> <p></p></td>
       </tr>
       <tr>
        <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>hdfs-site.xml</p></td>
@@ -85,6 +85,11 @@
        <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>Hive版本号</p></td>
        <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>必选</p></td>
        <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>具体获取方式请参见<a href="hive_00015.html#hive_00015__li0580145917135">2.a</a></p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.1 "><p>检查Hive集群是否开启kerberos认证</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.2 "><p>必选</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.1.3 "><p>查看Hadoop集群的core-site.xml文件的<span class="parmname">“hadoop.security.authentication”</span>的值是否为<span class="parmvalue">“kerberos”</span>，显示类似如下，则已启用Kerberos认证。</p> <p><span><img src="zh-cn_image_0000002199972069.png"></span></p></td>
       </tr>
      </tbody>
     </table>
@@ -117,7 +122,7 @@
         <div class="note">
          <span class="notetitle"> 说明： </span>
          <div class="notebody">
-          <p>用户名需要对要访问的资源具备读写权限。</p>
+          <p>配置为大数据平台人机用户名称，用户需要对要访问的资源具备读、写和执行权限。</p>
          </div>
         </div></td>
        <td class="cellrowborder" valign="top" width="16.34%" headers="mcps1.3.4.2.5.1.4 "><p><a href="hive_00015.html">步骤3：注册Hive集群</a></p></td>
@@ -165,8 +170,9 @@
          <span class="notetitle"> 说明： </span>
          <div class="notebody">
           <ul>
-           <li>该主体名需要对备份的数据库具备SHOW_DATABASE权限，对备份的表具备SELECT权限，对恢复的数据库具备CREATE和SHOW_DATABASE权限，对恢复的表具备CREATE、DROP、ALTER和SELECT权限。</li>
-           <li>该主体名需要对创建备份集时指定的元数据临时存储路径具备读、写和执行权限，对备份的数据库表的数据所在的目录及下层文件和目录具有读和执行权限，对恢复时指定的元数据临时存储路径具备读、写和执行权限，对恢复到目标数据库表的数据所在的目录具有读、写和执行权限，对表元数据、表数据所在目录具备读、写和执行权限。</li>
+           <li>配置为大数据平台人机用户名称。</li>
+           <li>该主体需要对备份的数据库具备SHOW_DATABASE权限，对备份的表具备SELECT权限，对恢复的数据库具备CREATE和SHOW_DATABASE权限，对恢复的表具备CREATE、DROP、ALTER和SELECT权限。</li>
+           <li>该主体需要对创建备份集时指定的元数据临时存储路径具备读、写和执行权限，对备份的数据库表的数据所在的目录及下层文件和目录具有读和执行权限，对恢复时指定的元数据临时存储路径具备读、写和执行权限，对恢复到目标数据库表的数据所在的目录具有读、写和执行权限，对表元数据、表数据所在目录具备读、写和执行权限。</li>
           </ul>
          </div>
         </div></td>
@@ -174,7 +180,7 @@
       <tr>
        <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.5.1.1 "><p>Kerberos认证过程中使用的<span class="filepath">“.conf”</span>配置文件（如：krb5.conf）</p></td>
        <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.5.1.2 "><p>必选</p></td>
-       <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.5.1.3 "><p>请联系Kerberos服务器管理员从Kerberos服务器获取该文件。</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.5.1.3 "><p>请联系Kerberos服务器管理员从Kerberos服务器获取该文件。</p> <p><span id="hive_00010__ph128414121584">以MRS产品为例，具体获取方法可以参考对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">《MapReduce Service 产品文档》</a>的“导出认证凭据文件”章节。</span></p></td>
       </tr>
       <tr>
        <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.5.1.1 "><p>主体名的密码</p></td>
@@ -184,7 +190,7 @@
       <tr>
        <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.5.1.1 "><p><span class="filepath">“.keytab”</span>文件</p></td>
        <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.5.1.2 "><p>可选</p></td>
-       <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.5.1.3 "><p>当Kerberos认证是通过keytab文件方式认证的，需要获取<span class="filepath">“.keytab”</span>文件。</p> <p>请联系Kerberos服务器管理员从Kerberos服务器获取该文件。</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.5.1.3 "><p>当Kerberos认证是通过keytab文件方式认证的，需要获取<span class="filepath">“.keytab”</span>文件。</p> <p>请联系Kerberos服务器管理员从Kerberos服务器获取该文件。</p> <p><span>以MRS产品为例，具体获取方法可以参考对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/mapreduce-service-pid-22396131" target="_blank" rel="noopener noreferrer">《MapReduce Service 产品文档》</a>的“导出认证凭据文件”章节。</span></p></td>
       </tr>
      </tbody>
     </table>

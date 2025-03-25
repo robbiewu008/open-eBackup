@@ -20,54 +20,35 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤3：（可选）创建CNware虚拟机组">
+<meta name="DC.Title" content="步骤2：获取CNware证书">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="cnware_00011.html">
+<meta name="DC.Relation" scheme="URI" content="cnware_00012.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="documenttype" content="usermanual">
 <meta name="prodname" content="csbs">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="cnware_00014">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤3：（可选）创建CNware虚拟机组</title>
+<title>步骤2：获取CNware证书</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="cnware_00014"></a><a name="cnware_00014"></a>
 
-<h1 class="topictitle1">步骤3：（可选）创建CNware虚拟机组</h1>
-<div><p>虚拟机组是CNware平台中指定的虚拟机群组。可通过注册虚拟机组对指定的多个虚拟机进行数据保护。</p>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="cnware_00014__zh-cn_topic_0000001839142377_uicontrol14456431877">“<span id="cnware_00014__zh-cn_topic_0000001839142377_text134457431679">保护</span> &gt; 虚拟化 &gt; CNware”</span>。</span></li></ol><ol start="2"><li><span>选择<span class="uicontrol">“虚拟机组”</span>页签，单击<span class="uicontrol">“创建”</span>。</span><p><div class="p">虚拟机组的创建信息如<a href="#cnware_00014__table613227155112">表1</a>所示。
-<div class="tablenoborder"><a name="cnware_00014__table613227155112"></a><a name="table613227155112"></a><table cellpadding="4" cellspacing="0" summary="" id="cnware_00014__table613227155112" frame="border" border="1" rules="all"><caption><b>表1 </b>虚拟机组创建信息</caption><colgroup><col style="width:25.6%"><col style="width:74.4%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.6%" id="mcps1.3.2.3.1.2.1.2.2.3.1.1"><p>参数</p>
-</th>
-<th align="left" class="cellrowborder" valign="top" width="74.4%" id="mcps1.3.2.3.1.2.1.2.2.3.1.2"><p>说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.3.1.2.1.2.2.3.1.1 "><p>虚拟机组名称</p>
-</td>
-<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.3.1.2.1.2.2.3.1.2 "><p>用户自定义虚拟机组名称。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.3.1.2.1.2.2.3.1.1 "><p>选择资源</p>
-</td>
-<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.3.1.2.1.2.2.3.1.2 "><p>用户选择单个或多个虚拟机创建虚拟机组，可通过资源ID或虚拟机名称筛选需要保护的虚拟机资源。<span style="color:#282B33;">不支持选择已保护或已加入其他虚拟机组的资源。</span></p>
-<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>单个虚拟机组可选择虚拟机数的限制为40个。</p>
+<h1 class="topictitle1">步骤2：获取CNware证书</h1>
+<div><p>注册CNware虚拟化平台时，建议导入CNware虚拟化平台的CA证书，否则系统将无法验证其所访问设备的信息，安全性存在风险。本节介绍如何获取CNware虚拟化平台的CA证书。</p>
+<div class="section"><h4 class="sectiontitle">自行下载存储资源CA证书</h4><ol><li><span>在Chrome浏览器中，输入CNware虚拟化平台的URL地址，按回车。</span></li><li id="cnware_00014__zh-cn_topic_0000001379834377_li187591020174713"><span><span style="color:#494949;">单击URL输入栏左侧的</span><span style="color:#494949;">“不安全”</span>，单击“证书无效”或者<span class="uicontrol" id="cnware_00014__uicontrol196331345155110">“证书详情”</span>。</span><p><p id="cnware_00014__zh-cn_topic_0000001379834377_p5892152854716">不同浏览器提示方式不同，此处以Google Chrome 120为例进行说明。</p>
+<p id="cnware_00014__p6388181019412"><span><img id="cnware_00014__image193883101346" src="zh-cn_image_0000002164819114.png"></span></p>
+</p></li><li id="cnware_00014__li102972552585"><span><span style="color:#494949;">在弹出的对话框</span><span style="color:#494949;">中，</span>选择“详细信息”页签，单击“导出”。</span></li><li id="cnware_00014__li1829712555583"><span>根据向导提示，导出证书并重命名证书文件为<em id="cnware_00014__i202977553589">XXX</em>.pem。</span><p><div class="note" id="cnware_00014__note14297195512584"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="cnware_00014__p52973551583"><em id="cnware_00014__i12297185565815">XXX</em>为实际的证书名，证书格式必须为.pem格式。</p>
 </div></div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</p></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="cnware_00011.html">备份CNware虚拟机</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="cnware_00012.html">备份CNware虚拟机</a></div>
 </div>
 </div>
 

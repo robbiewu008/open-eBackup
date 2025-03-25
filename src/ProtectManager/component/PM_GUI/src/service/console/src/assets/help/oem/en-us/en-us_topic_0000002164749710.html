@@ -1,0 +1,86 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Uploading and Updating the Kubernetes Image Package">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002199956317.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164749710">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Uploading and Updating the Kubernetes Image Package</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164749710"></a><a name="EN-US_TOPIC_0000002164749710"></a>
+  <h1 class="topictitle1">Uploading and Updating the Kubernetes Image Package</h1>
+  <div>
+   <p>Before performing backup or restoration, you need to upload the Kubernetes image package to the image repository. During backup or restoration, you need to use images to deploy the backup pod in the production environment for data migration during the running of backup or restoration jobs. Therefore, you need to upload the Kubernetes image package to the image repository to deploy the backup pod.</p>
+   <div class="section" id="EN-US_TOPIC_0000002164749710__section86041226145019">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p id="EN-US_TOPIC_0000002164749710__en-us_topic_0000002199956421_p155091416131516">Before uploading the Kubernetes image package, query the version on the <span id="EN-US_TOPIC_0000002164749710__en-us_topic_0000002199956421_text177672018144616">product</span> WebUI, download the <strong id="EN-US_TOPIC_0000002164749710__en-us_topic_0000002199956421_b7767121815466"></strong><em id="EN-US_TOPIC_0000002164749710__en-us_topic_0000002199956421_i11767101812461">XXX</em><em id="EN-US_TOPIC_0000002164749710__en-us_topic_0000002199956421_i1976717188463">_X.X.X_</em><strong id="EN-US_TOPIC_0000002164749710__en-us_topic_0000002199956421_b1976718181463">K8s_BackupImage.tgz</strong> installation package based on the queried version, and decompress the installation package to obtain the <strong id="EN-US_TOPIC_0000002164749710__en-us_topic_0000002199956421_b14768151814619">k8s_backup_image_x86.tar</strong> or <strong id="EN-US_TOPIC_0000002164749710__en-us_topic_0000002199956421_b2768518104611">k8s_backup_image_arm64.tar</strong> image package. To obtain the installation package:</p>
+    <ul id="EN-US_TOPIC_0000002164749710__en-us_topic_0000002199956421_ul1470191016457">
+     <li id="EN-US_TOPIC_0000002164749710__en-us_topic_0000002199956421_li12701151074511">For enterprise users: <a href="https://support.huawei.com/enterprise/en/flash-storage/oceanprotect-databackup-pid-258115661/software/" target="_blank" rel="noopener noreferrer">Click here</a>.</li>
+     <li id="EN-US_TOPIC_0000002164749710__en-us_topic_0000002199956421_li8194016184520">For carrier users: <a href="https://support.huawei.com/carrier/navi?coltype=software#col=software&amp;path=PBI1-21430725/PBI1-251363742/PBI1-250389226/PBI1-251366310/PBI1-258115661" target="_blank" rel="noopener noreferrer">Click here</a>.</li>
+    </ul>
+    <div class="note" id="EN-US_TOPIC_0000002164749710__note6710171014395">
+     <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+     <div class="notebody">
+      <div class="p" id="EN-US_TOPIC_0000002164749710__p8557192519583">
+       You can query the version in the following way:
+       <ol id="EN-US_TOPIC_0000002164749710__ol1134712489218">
+        <li id="EN-US_TOPIC_0000002164749710__li858118598213">Click <span><img id="EN-US_TOPIC_0000002164749710__image1458902641019" src="en-us_image_0000002204920450.png"></span> in the upper right corner and choose <span id="EN-US_TOPIC_0000002164749710__text1501142871111"><strong>About</strong></span>.<p id="EN-US_TOPIC_0000002164749710__p99764566169">In the dialog box that is displayed, the version is displayed in the line where <span id="EN-US_TOPIC_0000002164749710__text8170123961415"><strong>Version</strong></span> is located.</p></li>
+       </ol>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>The tenant of each Cloud Container Engine (CCE) cluster that needs to use the backup or restoration function needs to perform the following steps to upload and update the installation package.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Log in to ManageOne Operation Portal.</span></li>
+     <li><span>Choose <span class="uicontrol"><b>Service List &gt; Cloud Container Engine &gt; SoftWare Repository for Container</b></span> to go to the <strong>Dashboard</strong> page of the image repository.</span></li>
+     <li><span>Upload an image by following steps 1 and 2 in the <strong>Getting Started</strong> area on the <span class="uicontrol"><b>Overview</b></span> page.</span></li>
+     <li><span>After the image package is uploaded, choose <span class="uicontrol"><b>My Images</b></span> and click the name of the uploaded image package to go to the details page.</span></li>
+     <li id="EN-US_TOPIC_0000002164749710__li4890151815206"><a name="EN-US_TOPIC_0000002164749710__li4890151815206"></a><a name="li4890151815206"></a><span>Locate the row that contains the <strong>latest</strong> image version, click <span class="uicontrol"><b>containerd Command</b></span>, and copy the command for downloading the image.</span></li>
+     <li><span>Click <span class="uicontrol"><b>Edit</b></span> in the upper right corner of the page to set <span class="uicontrol"><b>Type</b></span> to <span class="uicontrol"><b>Public</b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000002164749710__li17365195215269"><a name="EN-US_TOPIC_0000002164749710__li17365195215269"></a><a name="li17365195215269"></a><span>Log in to each node in the Kubernetes cluster and run the <strong>crictl images</strong> command to view the local image information. If the command output contains information, record the value of <strong>IMAGE ID</strong> corresponding to the image whose <strong>TAG</strong> value is <strong>latest</strong>. If the command output is empty, you do not need to record any information.</span><p></p><p><span><img src="en-us_image_0000002199990961.png"></span></p> <p></p></li>
+     <li><span>Run the image download command copied in <a href="#EN-US_TOPIC_0000002164749710__li4890151815206">5</a> on all nodes that you have logged in to.</span></li>
+     <li><span>After the image download command is successfully executed, run the <strong>crictl images</strong> command again to view the local image information. If <strong>IMAGE ID</strong> of the image whose <strong>TAG</strong> value is <strong>latest</strong> is different from the image ID queried in <a href="#EN-US_TOPIC_0000002164749710__li17365195215269">7</a>, the local image is successfully updated. If the command output in <a href="#EN-US_TOPIC_0000002164749710__li17365195215269">7</a> is empty, an image whose <strong>TAG</strong> value is <strong>latest</strong> is added to the local image information, indicating that the image is successfully downloaded.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002199956317.html">Preparing for Backup (Applicable to CCE)</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

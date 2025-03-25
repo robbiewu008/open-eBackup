@@ -1,0 +1,186 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring AntDB">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164826918.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164667182">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring AntDB</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164667182"></a><a name="EN-US_TOPIC_0000002164667182"></a>
+  <h1 class="topictitle1">Restoring AntDB</h1>
+  <div>
+   <p>This section describes how to restore an AntDB instance that has been backed up to its original or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>Backup, replication, and archive copies can be used for restoration. Restoration to the original or a new location is supported. Replication copies and archive copies of replication copies cannot be used for restoration to the original location.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li>
+    </ul>
+    <ul>
+     <li>Before restoring data to a new location, ensure that the database installation user has the read and write permissions on the target path for restoration.</li>
+    </ul>
+   </div>
+   <ul>
+    <li>If the port of the target instance for restoration is occupied, release the occupied port before the restoration. Confirm the required ports. For details, see <a href="en-us_topic_0000002200068001.html">Preparing for Backup</a>.</li>
+    <li>If the target instance for restoration is a cluster instance, the AntDB service on each node must have been stopped and the AntDB port must not be occupied. Otherwise, the restoration will fail.</li>
+    <li>For a centralized cluster, you need to configure the database configuration file before stopping the database. The procedure is as follows:
+     <ol>
+      <li>Use PuTTY to log in to any node in the cluster and run the <strong>su - antdb</strong> command to switch to the OS user who runs the database.</li>
+      <li id="EN-US_TOPIC_0000002164667182__li134012354275"><a name="EN-US_TOPIC_0000002164667182__li134012354275"></a><a name="li134012354275"></a>Run the <strong>adbhamgrctl -c </strong><em>/etc/adbhamgr/adbhamgr_antdbcluster.yaml</em><strong> list</strong> command (<span>replace <em>/etc/adbhamgr/adbhamgr_antdbcluster.yaml</em> with the actual path</span>) to query the leader node in the cluster, that is, the node whose <span class="parmname"><b>Role</b></span> is <span class="parmvalue"><b>Leader</b></span>. The following figure shows an example.<p><span><img src="en-us_image_0000002205153209.png"></span></p></li>
+      <li>Log in to the leader node in the cluster obtained in <a href="#EN-US_TOPIC_0000002164667182__li134012354275">2</a>, add the following configuration under <strong>bootstrap</strong> in the database configuration file (for example, <strong>adbhamgr_antdbcluster.yaml</strong>), and save the file.<pre class="screen"> method: OceanProtectPITR
+ OceanProtectPITR:
+    command: "mv <em>$ANTDBDATA/../OceanProtectData/DATADIR $ANTDBDATA/../</em>"
+    no_params: True
+    keep_existing_recovery_conf: True</pre>
+       <div class="note">
+        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <ul>
+          <li><em>$ANTDBDATA/../</em> is the upper-level directory of the data directory, for example, <strong>/home/antdb/app</strong>.</li>
+          <li><em>DATADIR</em> in <strong>$</strong><em>ANTDBDATA</em><strong>/../OceanProtectData/</strong><em>DATADIR</em> indicates the data directory name, for example, <strong>/home/antdb/app/OceanProtectData/data</strong>.</li>
+          <li><strong>bootstrap</strong> is triggered when the <em>DATADIR</em> directory is empty and the cluster is started. If you start a new empty cluster, delete the configurations. Otherwise, the cluster will fail to be started, and the empty <em>DATADIR</em> directory will be suffixed with <strong>.failed</strong>. If the <span>product</span> is no longer used, delete the configurations before uninstalling it to avoid the preceding impact.</li>
+         </ul>
+        </div>
+       </div></li>
+     </ol></li>
+    <li>Before the restoration, stop the AntDB database. The procedure is as follows:
+     <ol>
+      <li>Centralized single-node system
+       <ol type="a">
+        <li>Use PuTTY to log in to the host where the AntDB database resides and run the <strong>su - antdb</strong> command to switch to the OS user who runs the database.</li>
+        <li>Run the <strong>adb_ctl stop -D /home/antdb/app/data</strong> command to stop the database. In the command, <strong>/home/antdb/app/data</strong> indicates the data directory of the database.</li>
+       </ol></li>
+      <li>Centralized cluster
+       <ol type="a">
+        <li id="EN-US_TOPIC_0000002164667182__li354442411115"><a name="EN-US_TOPIC_0000002164667182__li354442411115"></a><a name="li354442411115"></a>Use PuTTY to log in to the host where the AntDB database resides and run the <strong>su - antdb</strong> command to switch to the OS user who runs the database.</li>
+        <li id="EN-US_TOPIC_0000002164667182__li153771756429"><a name="EN-US_TOPIC_0000002164667182__li153771756429"></a><a name="li153771756429"></a>Run the <strong>systemctl stop adbhamgr</strong> command to stop the database.</li>
+        <li>Perform operations in <a href="#EN-US_TOPIC_0000002164667182__li354442411115">2.a</a> and <a href="#EN-US_TOPIC_0000002164667182__li153771756429">2.b</a> on each node in the cluster, run the <strong>adbhamgrctl -c </strong><em>/etc/adbhamgr/adbhamgr_antdbcluster.yaml</em><strong> list</strong> command (<span>replace <em id="EN-US_TOPIC_0000002164667182__en-us_topic_0000002200153585_i33161025123317">/etc/adbhamgr/adbhamgr_antdbcluster.yaml</em> with the actual path and file name</span>) on any node in the cluster, and check whether the node information in the command output is cleared. If the command output is empty, the cluster has been stopped.<p><span><img src="en-us_image_0000002169907984.png"></span></p></li>
+       </ol></li>
+     </ol></li>
+    <li>For a centralized cluster, you need to delete the <strong>etcd</strong> data before stopping the database. The procedure is as follows:
+     <ol>
+      <li>Run the <strong>cat </strong><em>/etc/adbhamgr/adbhamgr_antdbcluster.yaml</em> command (<em><span>replace <em id="EN-US_TOPIC_0000002164667182__en-us_topic_0000002200153585_i33161025123317_1">/etc/adbhamgr/adbhamgr_antdbcluster.yaml</em> with the actual path and file name</span></em>) on any node in the cluster to view the configuration file.</li>
+      <li>Find and record the value of <strong>namespace</strong>. The following figure shows an example.<p><span><img src="en-us_image_0000002205154457.png"></span></p></li>
+      <li>Find and record a group of client IP addresses and port numbers used by the clients to access the <strong>adbdcs</strong> component. The following figure shows an example.<p><span><img src="en-us_image_0000002169748232.jpg"></span></p></li>
+      <li>Run the <strong>adbdcsctl --endpoint=http://</strong><em>Client IP address</em><strong>:</strong><em>Port number used by the client to access the adbdcs component</em><strong> rm -r </strong><em>Namespace</em> command to delete the <strong>etcd</strong> data. Example: <strong>adbdcsctl --endpoint=http://8.40.160.159:12379 rm -r /service/</strong></li>
+     </ol></li>
+   </ul>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="menucascade" id="EN-US_TOPIC_0000002164667182__en-us_topic_0000002199964685_menucascade6488112014173"><b><span class="uicontrol" id="EN-US_TOPIC_0000002164667182__en-us_topic_0000002199964685_uicontrol548819205170">Explore &gt; Copy Data &gt; Databases &gt; AntDB</span></b></span>.</span></li>
+     <li><span>Search for copies by AntDB instance resource or copy. This section describes how to search for copies by resource.</span><p></p><p>On the <span class="wintitle"><b>Resources</b></span> tab page, locate the resource to be restored by resource name and click the name.</p> <p></p></li>
+     <li><span>Select the year, month, and day in sequence to find the copy.</span><p></p><p>If <span><img src="en-us_image_0000002200068033.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p> <p></p></li>
+     <li><span>Restore data to a specified point in time or using a specific copy.</span><p></p>
+      <ul>
+       <li>Restoration using a specified copy<p>On the <strong>Copy Data</strong> page, click <span><img src="en-us_image_0000002164667262.png"></span>. In the row where the copy used for restoration resides, choose <span class="menucascade"><b><span class="uicontrol">More</span></b> &gt; <b><span class="uicontrol">Restore</span></b></span>.</p></li>
+       <li>Restoration to a specified point in time<p>On the <strong>Copy Data</strong> page, click <span><img src="en-us_image_0000002164667266.png"></span>. In the blue part on the timeline, select a copy and choose <span class="menucascade"><b><span class="uicontrol">More</span></b> &gt; <b><span class="uicontrol">Restore</span></b></span>.</p></li>
+      </ul>
+      <div class="p">
+       <a href="#EN-US_TOPIC_0000002164667182__table194961441141219">Table 1</a> describes the related parameters. 
+       <div class="tablenoborder">
+        <a name="EN-US_TOPIC_0000002164667182__table194961441141219"></a><a name="table194961441141219"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164667182__table194961441141219" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>Parameters for restoring an AntDB instance
+         </caption>
+         <colgroup>
+          <col style="width:32.019999999999996%">
+          <col style="width:67.97999999999999%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.5.2.4.2.2.2.2.3.1.1"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.5.2.4.2.2.2.2.3.1.2"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>Restore To</p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>Select either <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> or <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</p>
+            <div class="note">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p>When performing restoration to a new location, if the copy has a tablespace directory other than the data directory, ensure that the OS user who installs the database at the new location can access the tablespace directory with the same name on the host at the new location.</p>
+             </div>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>Tag</p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>If you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for restoration, you can use <span class="uicontrol"><b>Tag</b></span> to quickly filter and manage resources.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>Location</p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>If you select <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> for restoration, the location of the current instance is displayed by default.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>Target Instance</p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>Specify the target instance, which is mandatory if you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for restoration.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>Script to Run Before Restoration</p></td>
+           <td class="cellrowborder" rowspan="3" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>You can execute a custom script as required before a restoration job is executed or after the restoration job succeeds or fails. You need to enter the absolute path of the script.</p>
+            <ul>
+             <li>The Windows OS supports <span class="uicontrol"><b>.bat</b></span> scripts.</li>
+             <li>Non-Windows OSs support <span class="uicontrol"><b>.sh</b></span> scripts.
+              <div class="note">
+               <span class="notetitle"> NOTE: </span>
+               <div class="notebody">
+                <p>If <span class="uicontrol"><b><span><strong>Script to Run upon Restoration Success</strong></span></b></span> is configured, the status of the restoration job is displayed as <span class="uicontrol"><b><span><strong>Succeeded</strong></span></b></span> on the <span>product</span> even if the script fails to be executed. Check whether the job details contain a message indicating that the post-processing script fails to be executed. If yes, modify the script in a timely manner.</p>
+               </div>
+              </div></li>
+            </ul></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>Script to Run upon Restoration Success</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p>Script to Run upon Restoration Failure</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164826918.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

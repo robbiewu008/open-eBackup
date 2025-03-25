@@ -1,0 +1,303 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="管理华为云Stack副本">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="HCS_Stack_gud_0081.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="HCS_Stack_gud_0083">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>管理华为云Stack副本</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="HCS_Stack_gud_0083"></a><a name="HCS_Stack_gud_0083"></a>
+  <h1 class="topictitle1">管理华为云Stack副本</h1>
+  <div>
+   <p>系统支持对副本数据执行相关操作。</p>
+   <p>选择<span class="uicontrol">“<span id="HCS_Stack_gud_0083__zh-cn_topic_0000002199964685_text38837195013">数据利用</span> &gt; <span id="HCS_Stack_gud_0083__zh-cn_topic_0000002199964685_text888319135019">副本数据</span> &gt; <span id="HCS_Stack_gud_0083__zh-cn_topic_0000002199964685_text01201142214">云平台</span> &gt; <span id="HCS_Stack_gud_0083__zh-cn_topic_0000002199964685_text2995643181015">华为云Stack</span>”</span>，进入华为云Stack副本页面。</p>
+   <ul>
+    <li>单击<span class="uicontrol" id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_uicontrol2899165220510">“资源”</span>以资源维度执行相关操作，该页面的操作均是针对当前资源的复制副本，请在复制副本所在的集群执行以下操作。<p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p1449155317445">具体操作任务如<a href="#HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_table108701649347">表1</a>所示。</p>
+     <div class="tablenoborder">
+      <a name="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_table108701649347"></a><a name="zh-cn_topic_0000002164660718_table108701649347"></a>
+      <table cellpadding="4" cellspacing="0" summary="" id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_table108701649347" frame="border" border="1" rules="all">
+       <caption>
+        <b>表1 </b>复制副本相关操作
+       </caption>
+       <colgroup>
+        <col style="width:21.32%">
+        <col style="width:47.339999999999996%">
+        <col style="width:31.34%">
+       </colgroup>
+       <thead align="left">
+        <tr id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_row6870349042">
+         <th align="left" class="cellrowborder" valign="top" width="21.32%" id="mcps1.3.3.1.3.2.4.1.1"><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p118701849749">任务</p></th>
+         <th align="left" class="cellrowborder" valign="top" width="47.339999999999996%" id="mcps1.3.3.1.3.2.4.1.2"><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p1387013498414">任务描述</p></th>
+         <th align="left" class="cellrowborder" valign="top" width="31.34%" id="mcps1.3.3.1.3.2.4.1.3"><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p12870184910411">界面入口</p></th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_row08701149540">
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p48706491742">为复制副本创建保护</p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p1087015494412"><strong id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_b13871149741">操作背景</strong></p> <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p270074703612">当您需要对复制副本执行周期性复制或归档时，可以通过该操作实现。</p> <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p267094031613"><strong id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_b7670174018163">注意事项</strong></p> <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p9670184021612">如果当前选择的资源未产生复制副本，则无法关联SLA对该资源进行保护。</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p487194915415">在资源所在行单击“更多 &gt; 保护”，关联复制SLA或归档SLA，对复制副本进行复制或归档。</p></td>
+        </tr>
+        <tr id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_row178717491342">
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p18713493416">修改复制副本关联的SLA</p> <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p887110492414"></p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p987134915415"><strong id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_b168711049240">操作背景</strong></p> <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p287104910419">您可以通过该操作修改复制副本关联的SLA。</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p19871144910419">在资源所在行单击“更多 &gt; 修改保护”，为复制副本关联新的SLA。</p></td>
+        </tr>
+        <tr id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_row1987112491546">
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p108711049749">移除对复制副本的保护</p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p88711849945"><strong id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_b1787117491414">操作背景</strong></p> <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p53695313586">当不需要再对复制副本执行保护时，可以通过移除保护计划来实现。移除后系统将无法对该复制副本执行保护。</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p15871144920417">在资源所在行单击“更多 &gt; 移除保护”。</p></td>
+        </tr>
+        <tr id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_row191077557610">
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p136950484237">激活对复制副本的保护</p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p86648169242"><strong id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_b4468151716249">操作背景</strong></p> <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p10694948192314">复制副本的保护计划被禁用后，您可以通过激活操作使复制副本的保护计划重新生效。激活后系统将按照保护计划对复制副本执行保护。</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p61071551265">在资源所在行单击“更多 &gt; 激活保护”。</p></td>
+        </tr>
+        <tr id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_row811414581465">
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p71076551464">禁用对复制副本的保护</p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p842845116222"><strong id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_b1797565114222">操作背景</strong></p> <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p10107055766">当您暂时不需要再对复制副本执行周期性保护时，可以通过禁用其保护计划来实现。禁用后系统将不会执行该复制副本的自动保护任务。</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p1111475810613">在资源所在行单击“更多 &gt; 禁用保护”。</p></td>
+        </tr>
+        <tr id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_row153332773">
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p43312218714">对复制副本执行手动复制</p></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p9940133218250"><strong id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_b109408327259">操作背景</strong></p> <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p139401328256">当您需要对复制副本立即执行一次复制，可以通过该操作实现。</p> <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p6763172119279"><strong id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_b17763721122714">注意事项</strong></p> <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p781862319279">执行该操作前，请确保已创建基于复制副本的SLA，并且使用该SLA为对应资源创建保护。</p></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p1534321671">在资源所在行单击“更多 &gt; 手动复制”。</p></td>
+        </tr>
+        <tr id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_row102432183107">
+         <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 ">
+          <div class="p" id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p162441918181014">
+           更改所属用户
+           <div class="note" id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_note6966434109">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_p1816719214566"><span id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_ph206615454589">仅1.6.0及后续版本支持此功能。</span></p>
+            </div>
+           </div>
+          </div></td>
+         <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p0746184915106"><strong id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_b67462496106">操作背景</strong></p> <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p187461749141013">当您需要对资源当前已生成的所有副本更改所属用户，并将副本原本占用的配额切换至新的所属用户，可以通过该操作实现。</p>
+          <div class="p" id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p3746164921019">
+           <strong id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_b127465492103">注意事项</strong>
+           <ul id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_ul1839631171411">
+            <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li5396121118149">仅系统管理员有修改所属用户的权限。</li>
+            <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li2895912181415">仅支持修改为数据保护管理员或自定义角色的用户。</li>
+            <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li1673515714529">更改所属用户后，请在“副本”页签查看对应副本的所属用户。</li>
+            <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li16142132114513">更改所属用户后，该资源的所有信息均不在原所属用户下展示。</li>
+            <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li99441412172">在复制从端集群更改所属用户后，需修改该资源在复制主端集群关联的复制SLA中的“复制目标端用户”与其一致，否则将导致复制失败。</li>
+           </ul>
+          </div></td>
+         <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p9971641161418">在资源所在行单击“更多 &gt; 更改所属用户”。</p></td>
+        </tr>
+       </tbody>
+      </table>
+     </div></li>
+   </ul>
+   <ul>
+    <li>单击“副本”以副本维度执行相关操作。
+     <div class="p">
+      具体操作任务如<a href="#HCS_Stack_gud_0083__table51069596392">表2</a>所示。 
+      <div class="tablenoborder">
+       <a name="HCS_Stack_gud_0083__table51069596392"></a><a name="table51069596392"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="HCS_Stack_gud_0083__table51069596392" frame="border" border="1" rules="all">
+        <caption>
+         <b>表2 </b>华为云Stack副本相关操作
+        </caption>
+        <colgroup>
+         <col style="width:21.32%">
+         <col style="width:47.339999999999996%">
+         <col style="width:31.34%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="21.32%" id="mcps1.3.4.1.1.2.2.4.1.1"><p>任务</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="47.339999999999996%" id="mcps1.3.4.1.1.2.2.4.1.2"><p>任务描述</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="31.34%" id="mcps1.3.4.1.1.2.2.4.1.3"><p>界面入口</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.4.1.1.2.2.4.1.1 ">
+           <div class="p">
+            文件级卸载
+            <div class="note" id="HCS_Stack_gud_0083__fc_gud_0059_zh-cn_topic_0000002164660718_note191318399197">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p id="HCS_Stack_gud_0083__fc_gud_0059_zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_p1816719214566"><span id="HCS_Stack_gud_0083__fc_gud_0059_zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_ph206615454589">仅1.6.0及后续版本支持此功能。</span></p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.4.1.1.2.2.4.1.2 "><p><strong>操作背景</strong></p> <p>成功创建的文件级挂载点超过1小时后，系统会自动卸载该挂载点。当您需要手动卸载已创建的文件级挂载点时，可以通过该操作实现。</p></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.4.1.1.2.2.4.1.3 "><p>在副本所在行单击“更多 &gt; 文件级卸载”。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.4.1.1.2.2.4.1.1 ">
+           <div class="p">
+            手动归档
+            <div class="note" id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_note1993101364115">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_p1816719214566_1"><span id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_ph206615454589_1">仅1.6.0及后续版本支持此功能。</span></p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.4.1.1.2.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要手动将副本归档至归档存储时，可以通过该操作实现。</p>
+           <div class="p">
+            <strong id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_b123446343316">注意事项</strong>
+            <ul id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_ul97316251531">
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li77442575310">仅全量备份副本及其对应的复制副本、级联复制副本，以及永久增量（合成全量）备份副本及其对应的复制副本、级联复制副本支持手动归档。</li>
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li1210302812532"><span id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_text1331521017584">本产品</span>开始执行手动归档副本任务时，如果下电正在执行该任务的接口卡，将导致任务执行失败，请待接口卡上电后重新执行手动归档。</li>
+            </ul>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.4.1.1.2.2.4.1.3 "><p>在副本所在行单击“更多 &gt; 手动归档”。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.4.1.1.2.2.4.1.1 "><p>副本校验</p></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.4.1.1.2.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要确认副本完整性时，可以通过该操作实现。</p> <p><strong>注意事项</strong></p> <p>归档副本不支持副本校验。</p></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.4.1.1.2.2.4.1.3 "><p>在副本所在行单击“更多 &gt; 副本校验”。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.4.1.1.2.2.4.1.1 "><p>修改副本保留策略</p></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.4.1.1.2.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要重新设置副本的保留时长时，可以通过该操作实现。</p> <p><strong>注意事项</strong></p> <p>修改后从当前时间开始计算副本保留时长。</p></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.4.1.1.2.2.4.1.3 "><p>在副本所在行单击“更多 &gt; 修改保留策略”。</p> <p>您可以设置为永久保留或保留xx天/周/月/年。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.4.1.1.2.2.4.1.1 ">
+           <div class="p">
+            WORM设置
+            <div class="note" id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_note15696816958">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <ul id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_ul15432342582">
+               <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li94333410589"><span id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_ph03981201700">仅1.6.0及后续版本支持此功能。</span></li>
+              </ul>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.4.1.1.2.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您需要设置副本为WORM副本或修改WORM有效期时，可以通过该操作实现。</p>
+           <div class="p">
+            <strong id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_b198961640299">注意事项</strong>
+            <ul id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_ul731014177115">
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_zh-cn_topic_0000002164820434_li103014415565">WORM副本不支持删除或缩短有效期。</li>
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_zh-cn_topic_0000002164820434_li9171132315916">自定义WORM有效期不能大于副本保留时长。</li>
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_zh-cn_topic_0000002164820434_li976612319580">在WORM有效期内不支持修改为非WORM副本。</li>
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_zh-cn_topic_0000002164820434_li8684112013014">如果“WORM有效期”设置为“与副本留存期一致”且副本为永久保留，由于备份存储对快照格式的副本最长保留20年，目录格式的副本最长保留70年，因此该场景下快照格式的副本WORM有效期实际为20年，目录格式的副本WORM有效期实际为70年。</li>
+            </ul>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.4.1.1.2.2.4.1.3 "><p>在副本所在行单击“更多 &gt; WORM设置”。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.4.1.1.2.2.4.1.1 "><p>删除副本</p></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.4.1.1.2.2.4.1.2 "><p><strong>操作背景</strong></p> <p>当您不再需要某个副本或某个副本不可用时，可以删除该副本，以释放存储空间。</p>
+           <div class="p">
+            <strong id="HCS_Stack_gud_0083__fc_gud_0059_zh-cn_topic_0000001090712911_b2013821417386">注意事项</strong>
+            <ul id="HCS_Stack_gud_0083__fc_gud_0059_zh-cn_topic_0000001090712911_ul117392017113917">
+             <li id="HCS_Stack_gud_0083__fc_gud_0059_li181162710385">删除副本前，请确认不再使用该副本执行恢复操作。</li>
+             <li id="HCS_Stack_gud_0083__fc_gud_0059_li1112710313324">副本状态为<span class="uicontrol" id="HCS_Stack_gud_0083__fc_gud_0059_zh-cn_topic_0000002164660718_uicontrol012115711910">“无效”</span>时可以被删除，<span class="uicontrol" id="HCS_Stack_gud_0083__fc_gud_0059_zh-cn_topic_0000002164660718_uicontrol857871161110">“<span id="HCS_Stack_gud_0083__fc_gud_0059_zh-cn_topic_0000002164660718_text1354116340501">正常</span>”</span>且未索引或已索引时可以被删除，其他状态的副本不允许被删除。</li>
+             <li id="HCS_Stack_gud_0083__fc_gud_0059_li145318315341">同一资源有多个副本时，最新的副本不允许被删除。</li>
+             <li id="HCS_Stack_gud_0083__fc_gud_0059_li1527194114345">同一资源下存在多个副本时，仅存在一个全量复制副本时，不允许删除该全量复制副本。</li>
+             <li id="HCS_Stack_gud_0083__fc_gud_0059_li1215545583411">正在执行防勒索检测的副本不允许被删除。</li>
+            </ul>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.4.1.1.2.2.4.1.3 ">
+           <div class="p">
+            在副本所在行单击“更多 &gt; 删除”，或勾选待删除副本后单击列表上方的“删除”。
+            <div class="note" id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_note172661250175414">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p15266165085416">对于1.6.0及后续版本，如果在副本删除失败后需强制删除数据库中的副本数据，请在弹出的对话框中勾选“删除失败后强制删除副本数据”。</p>
+             </div>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.4.1.1.2.2.4.1.1 "><p>手动创建索引</p></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.4.1.1.2.2.4.1.2 ">
+           <div class="p">
+            <strong id="HCS_Stack_gud_0083__fc_gud_0059_b1579245884618">操作背景</strong>
+            <ul id="HCS_Stack_gud_0083__fc_gud_0059_ul1440610408353">
+             <li id="HCS_Stack_gud_0083__fc_gud_0059_li9406144014352">对于1.5.0版本，当您需要进行搜索副本中的文件或目录时，且SLA中未开启<span class="uicontrol" id="HCS_Stack_gud_0083__fc_gud_0059_uicontrol5806478538">“<span id="HCS_Stack_gud_0083__fc_gud_0059_text1775294812545">自动索引</span>”</span>时，可以手动创建索引。</li>
+             <li id="HCS_Stack_gud_0083__fc_gud_0059_li94084317357">对于1.6.0及后续版本，当您需要进行搜索副本中的文件或目录时，且创建保护时未开启<span class="uicontrol" id="HCS_Stack_gud_0083__fc_gud_0059_uicontrol153282623612">“备份副本自动索引”</span>时，可以手动创建索引。</li>
+            </ul>
+           </div>
+           <div class="p">
+            <strong id="HCS_Stack_gud_0083__fc_gud_0059_b979211586468">注意事项</strong>
+            <ul id="HCS_Stack_gud_0083__fc_gud_0059_ul15202141913720">
+             <li id="HCS_Stack_gud_0083__fc_gud_0059_li53511825101012">反向复制副本和级联复制副本不支持创建索引。</li>
+             <li id="HCS_Stack_gud_0083__fc_gud_0059_li1420213192717">归档到磁带的副本不支持创建索引。</li>
+            </ul>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.4.1.1.2.2.4.1.3 "><p>在副本所在行单击<span class="uicontrol" id="HCS_Stack_gud_0083__fc_gud_0059_uicontrol12725151123015">“<span id="HCS_Stack_gud_0083__fc_gud_0059_text77251153015">更多</span> &gt; <span id="HCS_Stack_gud_0083__fc_gud_0059_text483115178319">手动创建索引</span>”</span>。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.4.1.1.2.2.4.1.1 ">
+           <div class="p">
+            反向复制/级联复制复制副本
+            <div class="note" id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_note10989781717">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p69891381719"><span id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_ph13542121717119">本产品部分型号支持此功能，详细支持信息请参考技术支持网站发布的产品文档或咨询产品提供商。</span></p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.4.1.1.2.2.4.1.2 "><p><strong>操作背景</strong></p> <p>如果您希望将复制副本复制回源端以恢复源端数据，或者将复制副本复制至其他集群以进行异地容灾，可以通过本操作实现。</p> <p><strong>注意事项</strong></p> <p>执行反向复制前请先从源端删除复制副本对应的备份副本，否则会导致复制失败。</p></td>
+          <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.4.1.1.2.2.4.1.3 ">
+           <div class="p">
+            在复制副本所在行单击“更多 &gt; 复制”。配置副本复制参数：
+            <ol id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_ol15113142311175">
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li0113202310179">选择<span class="uicontrol" id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_uicontrol1611634014176">“复制目标集群”</span>。
+              <ul id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_ul2991182216">
+               <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li3998812219">当<span class="uicontrol" id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_uicontrol630794164212">“复制目标集群”</span>为源端集群时，即为反向复制。</li>
+               <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li1419217379216">当<span class="uicontrol" id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_uicontrol118058437428">“复制目标集群”</span>为其他集群时，即为级联复制。</li>
+              </ul></li>
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li8112182510382">对于1.6.0及后续版本，请选择“复制目标端用户”。</li>
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li83719248152">对于1.6.0及后续版本，请输入复制目标端用户的密码，并单击“认证”。</li>
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li222198163919">选择复制的“指定目标位置”。</li>
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li1564916443171">设置副本保留时长。</li>
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li6696135771714">开启/关闭重删、压缩开关。<p id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_p325810594214"><a name="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li6696135771714"></a><a name="zh-cn_topic_0000002164660718_li6696135771714"></a>建议开启，以提升复制效率。</p></li>
+             <li id="HCS_Stack_gud_0083__zh-cn_topic_0000002164660718_li3458142216186">开启/关闭任务失败告警。</li>
+            </ol>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.4.1.1.2.2.4.1.1 mcps1.3.4.1.1.2.2.4.1.2 mcps1.3.4.1.1.2.2.4.1.3 "><p>注：云硬盘恢复、文件级恢复的操作类似<a href="HCS_Stack_gud_0068.html">恢复云硬盘</a>、<a href="HCS_Stack_gud_0069.html">恢复云硬盘中的文件</a>，本节不再重复说明。</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div></li>
+   </ul>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="HCS_Stack_gud_0081.html">副本</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,65 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="添加普通用户至sudoers（适用于Linux OS）">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002200116753">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>添加普通用户至sudoers（适用于Linux OS）</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002200116753"></a><a name="ZH-CN_TOPIC_0000002200116753"></a>
+
+<h1 class="topictitle1">添加普通用户至sudoers（适用于Linux OS）</h1>
+<div><p>通过自动推送方式安装客户端时，如果<span class="uicontrol">“用户类型”</span>配置为<span class="uicontrol">“普通用户”</span>，需要先将该普通用户添加到sudoers中，否则注册客户端将失败。本章节以EulerOS为例进行说明。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>使用PuTTY工具以<strong id="ZH-CN_TOPIC_0000002200116753__zh-cn_topic_0000002164790296_zh-cn_topic_0000002200031305_b916917212">root</strong>账户登录待安装客户端的主机。</span></li><li><span>执行以下命令，查找sudoers配置文件的目录。</span><p><pre class="screen">whereis sudoers</pre>
+<p>回显类似如下，其中“/etc/sudoers”为sudoers配置文件的目录。</p>
+<pre class="screen">sudoers: <strong>/etc/sudoers</strong> /etc/sudoers.d /uer/share/man/man5/sudoers.5.gz</pre>
+</p></li><li><span>执行以下命令，查询sudoers配置文件权限。</span><p><pre class="screen">ll /etc/sudoers</pre>
+<p>回显类似如下，表示<strong>root</strong>用户仅有sudoers配置文件的只读权限，则请执行<a href="#ZH-CN_TOPIC_0000002200116753__li45591852202917">4</a>为<strong>root</strong>用户添加该配置文件的可写权限。如已有该配置文件的可写权限，则直接执行<a href="#ZH-CN_TOPIC_0000002200116753__li1783801718592">5</a>。</p>
+<pre class="screen">-r--r-----. 1 root root 20724 Nov 19 21:04 /etc/sudoers</pre>
+</p></li><li id="ZH-CN_TOPIC_0000002200116753__li45591852202917"><a name="ZH-CN_TOPIC_0000002200116753__li45591852202917"></a><a name="li45591852202917"></a><span>执行以下命令，为sudoers配置文件添加可写权限。</span><p><pre class="screen">chmod u+w /etc/sudoers</pre>
+</p></li><li id="ZH-CN_TOPIC_0000002200116753__li1783801718592"><a name="ZH-CN_TOPIC_0000002200116753__li1783801718592"></a><a name="li1783801718592"></a><span>执行以下命令，备份源文件。</span><p><pre class="screen">mkdir /etc/backup_sudoers</pre>
+<pre class="screen">cp /etc/sudoers /etc/backup_sudoers</pre>
+</p></li><li id="ZH-CN_TOPIC_0000002200116753__li4145165012521"><a name="ZH-CN_TOPIC_0000002200116753__li4145165012521"></a><a name="li4145165012521"></a><span>执行以下命令，打开sudoers配置文件。</span><p><pre class="screen">vim /etc/sudoers</pre>
+</p></li><li><span>检查配置文件中是否存在<span class="parmname">“Defaults requiretty”</span>字段。如果存在，请删除该配置。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p><span id="ZH-CN_TOPIC_0000002200116753__ph848412019206">启用<span class="parmname" id="ZH-CN_TOPIC_0000002200116753__parmname1261512592520">“Defaults requiretty”</span>字段，则只能通过实际终端登录主机后才能执行sudo命令，会导致自动推送安装客户端失败。</span></p>
+</div></div>
+</p></li><li id="ZH-CN_TOPIC_0000002200116753__li188920444274"><a name="ZH-CN_TOPIC_0000002200116753__li188920444274"></a><a name="li188920444274"></a><span>增加以下内容到配置文件，修改完成后保存并退出。</span><p><div class="p">以普通用户<strong>common_user</strong>为例，实际请根据安装客户端时的普通用户名替换。<div class="notice"><span class="noticetitle"><img src="public_sys-resources/notice_3.0-zh-cn.png"> </span><div class="noticebody"><ul><li>请严格按照要求修改配置文件，否则可能导致自动推送安装客户端失败或sudo命令执行失败。</li><li>在配置文件中增加的以下内容为一整行分三列，第一列与第二列间隔4个字符，第二列与第三列间隔7个字符。如果拷贝以下内容至配置文件中存在换行时，请手动删除换行。</li></ul>
+</div></div>
+<ul><li>如果采用sudo非免密方式，请增加以下内容到配置文件：<pre class="screen"><em>common_user</em>    ALL=(ALL)       /bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre>
+<p>示例如下：</p>
+<p><span><img src="zh-cn_image_0000002200031449.png"></span></p>
+</li><li>如果采用sudo免密方式，请增加以下内容到配置文件：<pre class="screen"><em>common_user</em>    ALL=(ALL)       NOPASSWD:/bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre>
+</li></ul>
+</div>
+</p></li><li id="ZH-CN_TOPIC_0000002200116753__li11391140173419"><a name="ZH-CN_TOPIC_0000002200116753__li11391140173419"></a><a name="li11391140173419"></a><span>如果执行了<a href="#ZH-CN_TOPIC_0000002200116753__li45591852202917">4</a>修改sudoers配置文件权限，则请执行本步骤，删除sudoers配置文件的可写权限。否则，请跳过本步骤。</span><p><pre class="screen">chmod u-w /etc/sudoers</pre>
+</p></li><li><span>查看配置文件，确认<span class="parmname">“Defaults requiretty”</span>字段是否删除，以及<a href="#ZH-CN_TOPIC_0000002200116753__li188920444274">8</a>中添加的用户是否存在。</span><p><pre class="screen">cat /etc/sudoers</pre>
+<ul><li>如果修改失败，请回退配置文件，确认回退成功后，重新执行<a href="#ZH-CN_TOPIC_0000002200116753__li4145165012521">6</a>~<a href="#ZH-CN_TOPIC_0000002200116753__li11391140173419">9</a>。<pre class="screen">cp /etc/backup_sudoers/sudoers /etc/sudoers</pre>
+<pre class="screen">cat /etc/sudoers</pre>
+</li><li>如果修改成功，请删除备份文件。<pre class="screen">rm -fr /etc/backup_sudoers</pre>
+</li></ul>
+</p></li></ol>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

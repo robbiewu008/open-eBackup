@@ -52,6 +52,8 @@ export class ApsAdvanceParameterComponent implements OnInit {
 
   extParams;
 
+  isResourceSet = false;
+
   constructor(
     private appUtilsService: AppUtilsService,
     private fb: FormBuilder,
@@ -169,6 +171,8 @@ export class ApsAdvanceParameterComponent implements OnInit {
   initData(data: any, resourceType: string) {
     this.resourceData = isArray(data) ? data[0] : data;
     this.resourceType = resourceType;
+    this.isResourceSet =
+      this.resourceType === DataMap.Resource_Type.APSResourceSet.value;
   }
 
   onOK() {

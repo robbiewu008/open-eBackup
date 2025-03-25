@@ -22,7 +22,7 @@
                         lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
                 </lv-form-label>
                 <lv-form-control>
-                    <lv-switch formControlName="isConsistent" [lvDisabled]='!isSupport' ></lv-switch>
+                    <lv-switch formControlName="isConsistent" [lvDisabled]='!isSupport'></lv-switch>
                     <div *ngIf="formGroup.value.isConsistent">
                         <i lv-icon="lv-icon-status-warning-info" lvColorState='true' class="type-icon"></i>
                         <span>
@@ -73,6 +73,8 @@
                 <lv-form-item>
                     <lv-form-label>
                         {{'protection_overwrite_policy_label' | i18n}}
+                        <i lv-icon="aui-icon-help" [lv-tooltip]="slaOverwriteHelp" lvTooltipPosition="rightTop"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
                     </lv-form-label>
                     <lv-form-control>
                         <lv-radio-group formControlName="slaOverwrite">
@@ -99,6 +101,8 @@
                                 <lv-checkbox lvValue="APPLY_TO_ALL">
                                     {{ (resourceType === ResourceType.HOST ? 'protection_apply_sla_in_cna_vmware_label'
                                     : 'protection_apply_sla_in_cluster_vmware_label') | i18n }}
+                                    <i lv-icon="aui-icon-help" [lv-tooltip]="slaApplyAllHelp"
+                                        lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
                                 </lv-checkbox>
                                 <lv-checkbox lvValue="APPLY_TO_NEW">
                                     {{ (resourceType === ResourceType.HOST ?

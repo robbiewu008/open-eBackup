@@ -17,75 +17,112 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="步骤3：（可选）创建限速策略">
+  <meta name="DC.Title" content="步骤1：（可选）创建文件集模板">
   <meta name="product" content="">
-  <meta name="DC.Relation" scheme="URI" content="Files-0008.html">
+  <meta name="DC.Relation" scheme="URI" content="Files-0010.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="Files-0011">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>步骤3：（可选）创建限速策略</title>
+  <title>步骤1：（可选）创建文件集模板</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="Files-0011"></a><a name="Files-0011"></a>
-  <h1 class="topictitle1">步骤3：（可选）创建限速策略</h1>
-  <div id="body0000001440152293">
-   <p id="Files-0011__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_p31441444174712">如果需要限制保护任务的最大带宽以保证关键业务的性能时请参考本节配置限速策略。</p>
-   <div class="section" id="Files-0011__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_section354917289471">
+  <h1 class="topictitle1">步骤1：（可选）创建文件集模板</h1>
+  <div>
+   <p>如果您要对多个主机上的文件进行保护，且多个主机上要保护的文件路径相同、过滤规则等均相同，则可以参考本节创建文件集模板。通过模板可批量为多个主机创建文件集，提高配置效率。</p>
+   <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
-    <ol id="Files-0011__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_ol1149154116466">
-     <li id="Files-0011__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_li18388120104717"><span>选择<span class="uicontrol" id="Files-0011__zh-cn_topic_0000001839143197_zh-cn_topic_0000001839142377_uicontrol185917396272">“<span id="Files-0011__zh-cn_topic_0000001839143197_zh-cn_topic_0000001839142377_text659183972712">保护</span> &gt; 保护策略 &gt; 限速策略”</span>。</span></li>
-     <li id="Files-0011__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_li1438918203475"><span>单击<span class="uicontrol" id="Files-0011__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_uicontrol12389192016473">“<span id="Files-0011__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_text1214017349462">创建</span>”</span>。</span></li>
-     <li id="Files-0011__zh-cn_topic_0000001839143197_zh-cn_topic_0000001127901927_li117481133134716"><span>配置限速策略参数。</span><p></p>
-      <div class="p" id="Files-0011__zh-cn_topic_0000001839143197_p1897612503615">
-       相关参数说明如<a href="#Files-0011__zh-cn_topic_0000001839143197_table12170124133619">表1</a>。 
-       <div class="tablenoborder">
-        <a name="Files-0011__zh-cn_topic_0000001839143197_table12170124133619"></a><a name="zh-cn_topic_0000001839143197_table12170124133619"></a>
-        <table cellpadding="4" cellspacing="0" summary="" id="Files-0011__zh-cn_topic_0000001839143197_table12170124133619" frame="border" border="1" rules="all">
-         <caption>
-          <b>表1 </b>限速策略参数说明
-         </caption>
-         <colgroup>
-          <col style="width:32.269999999999996%">
-          <col style="width:67.73%">
-         </colgroup>
-         <thead align="left">
-          <tr id="Files-0011__zh-cn_topic_0000001839143197_row716912241366">
-           <th align="left" class="cellrowborder" valign="top" width="32.269999999999996%" id="mcps1.3.2.2.3.2.1.2.2.3.1.1"><p id="Files-0011__zh-cn_topic_0000001839143197_p5169524153616">参数</p></th>
-           <th align="left" class="cellrowborder" valign="top" width="67.73%" id="mcps1.3.2.2.3.2.1.2.2.3.1.2"><p id="Files-0011__zh-cn_topic_0000001839143197_p6169124103613">说明</p></th>
-          </tr>
-         </thead>
-         <tbody>
-          <tr id="Files-0011__zh-cn_topic_0000001839143197_row7169112416367">
-           <td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="Files-0011__zh-cn_topic_0000001839143197_p1916911248367"><span id="Files-0011__zh-cn_topic_0000001839143197_text161691424153611">名称</span></p></td>
-           <td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="Files-0011__zh-cn_topic_0000001839143197_p9169924133613">自定义限速策略名称。</p></td>
-          </tr>
-          <tr id="Files-0011__zh-cn_topic_0000001839143197_row7169182416362">
-           <td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="Files-0011__zh-cn_topic_0000001839143197_p8169924113611"><span id="Files-0011__zh-cn_topic_0000001839143197_text12169424203614">最大带宽</span></p></td>
-           <td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="Files-0011__zh-cn_topic_0000001839143197_p1981116133814">保护任务平均每秒最大传输的数据量。</p> <p id="Files-0011__zh-cn_topic_0000001839143197_p816992415362">默认值：1024<span style="color:#282B33;">MB/s</span>。</p> <p id="Files-0011__zh-cn_topic_0000001839143197_p61691524113616">取值范围：10MB/s~5120MB/s</p></td>
-          </tr>
-          <tr id="Files-0011__zh-cn_topic_0000001839143197_row0169524103620">
-           <td class="cellrowborder" valign="top" width="32.269999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="Files-0011__zh-cn_topic_0000001839143197_p2169424133612"><span id="Files-0011__zh-cn_topic_0000001839143197_text1516915245366">描述</span></p></td>
-           <td class="cellrowborder" valign="top" width="67.73%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="Files-0011__zh-cn_topic_0000001839143197_p51691624103615">描述限速策略信息。</p></td>
-          </tr>
-         </tbody>
-        </table>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="Files-0011__zh-cn_topic_0000002199964685_uicontrol1535113494115">“<span id="Files-0011__zh-cn_topic_0000002199964685_text735434144116">保护</span> &gt; 文件系统 &gt; 文件集”</span>。</span><p></p>
+      <div class="note" id="Files-0011__zh-cn_topic_0000002199964685_note12707194325517">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="Files-0011__zh-cn_topic_0000002199964685_p370854395513">对于1.5.0版本，请选择<span class="uicontrol" id="Files-0011__zh-cn_topic_0000002199964685_uicontrol117931445568">“<span id="Files-0011__zh-cn_topic_0000002199964685_text197938425615">保护</span> &gt; 裸机 &gt; 文件集”</span>。</p>
        </div>
       </div> <p></p></li>
-     <li id="Files-0011__zh-cn_topic_0000001839143197_li18215153613714"><span>单击<span class="uicontrol" id="Files-0011__zh-cn_topic_0000001839143197_uicontrol1756934320715">“<span id="Files-0011__zh-cn_topic_0000001839143197_text1686961087">确定</span>”</span>。</span></li>
+     <li><span>单击<span class="uicontrol">“<span>模板</span>”</span>。</span></li>
+     <li><span>单击<span class="uicontrol">“<span>创建</span>”</span>，创建模板。</span><p></p><p>相关参数说明如<a href="#Files-0011__zh-cn_topic_0000001172683312_table635115223177">表1</a>。</p>
+      <div class="tablenoborder">
+       <a name="Files-0011__zh-cn_topic_0000001172683312_table635115223177"></a><a name="zh-cn_topic_0000001172683312_table635115223177"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="Files-0011__zh-cn_topic_0000001172683312_table635115223177" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>文件集模板参数
+        </caption>
+        <colgroup>
+         <col style="width:16.99%">
+         <col style="width:26.740000000000002%">
+         <col style="width:56.269999999999996%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.3.2.2.2.4.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.3.2.2.2.4.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>名称</p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.2 "><p>自定义模板名称，最长不能超过32个字符。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>操作系统</p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.2 "><p>选择要保护的文件集所在主机的操作系统类型。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>文件路径</p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.2 "><p>单击“<span>添加</span>”，输入要保护的文件的绝对路径，单击“确定”完成输入。</p> <p>如果需要对多个不同路径下的文件进行保护，单击“<span>添加</span>”添加其他路径，最多支持添加64个路径，支持批量添加，以“,”分隔。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" rowspan="2" valign="top" width="16.99%" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>过滤规则</p> <p></p> <p></p> <p></p> <p></p></td>
+          <td class="cellrowborder" valign="top" width="26.740000000000002%" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>文件</p></td>
+          <td class="cellrowborder" valign="top" width="56.269999999999996%" headers="mcps1.3.2.2.3.2.2.2.4.1.2 "><p>选择要包含或排除的文件，支持过滤的文件类型，请参考<a href="Files-0012.html#Files-0012__zh-cn_topic_0000001218047555_section875992475510">支持过滤的文件类型</a>。</p> <p>过滤文件时，按照如下规则配置：</p>
+           <ul>
+            <li>输入文件的完整路径。</li>
+            <li>配置多个路径时，单击<span class="uicontrol">“<span>保存</span>”</span>后再填写新的路径。</li>
+            <li>路径中可包含通配符<strong>*</strong></li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>目录</p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>选择要包含或排除的目录，单击<span class="uicontrol">“<span>保存</span>”</span>。</p> <p>过滤目录时，按照如下规则配置：</p>
+           <ul>
+            <li>输入目录的完整路径。</li>
+            <li>配置多个路径时，单击<span class="uicontrol">“<span>保存</span>”</span>后再填写新的路径。</li>
+            <li>路径中可包含通配符<strong>*</strong></li>
+           </ul></td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+      <div class="note" id="Files-0011__zh-cn_topic_0000001172683312_note418821735818">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <div class="p" id="Files-0011__zh-cn_topic_0000001172683312_p1162952215820">
+         设置多个过滤规则时，可以通过以下原则判断最终生效结果：
+         <ul id="Files-0011__zh-cn_topic_0000001172683312_ul86299228580">
+          <li id="Files-0011__zh-cn_topic_0000001172683312_li15526150172217">仅存在包含条件时，多个包含条件之间是<span class="uicontrol" id="Files-0011__zh-cn_topic_0000001172683312_uicontrol1150415398234">“并”</span>的关系，即筛选出来的结果是所选条件的并集。</li>
+          <li id="Files-0011__zh-cn_topic_0000001172683312_li186794317268">仅存在排除条件时，多个排除条件之间是<span class="uicontrol" id="Files-0011__zh-cn_topic_0000001172683312_uicontrol1027319440268">“并”</span>的关系，即筛选出来的结果是所选条件的并集。</li>
+          <li id="Files-0011__zh-cn_topic_0000001172683312_li1862915229582">既有包含又有排除条件时，需在包含条件中判定排除。</li>
+         </ul>
+        </div>
+       </div>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
     </ol>
    </div>
+   <p></p>
   </div>
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="Files-0008.html">备份文件集</a>
+     <strong>父主题：</strong> <a href="Files-0010.html">备份文件集</a>
     </div>
    </div>
   </div>

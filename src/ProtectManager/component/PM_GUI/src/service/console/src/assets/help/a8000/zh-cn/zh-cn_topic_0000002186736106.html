@@ -1,0 +1,56 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="数据库执行恢复任务后，实例状态显示正常，但是恢复失败">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="TPOPS_GaussDB_00063.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002186736106">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>数据库执行恢复任务后，实例状态显示正常，但是恢复失败</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002186736106"></a><a name="ZH-CN_TOPIC_0000002186736106"></a>
+
+<h1 class="topictitle1">数据库执行恢复任务后，实例状态显示正常，但是恢复失败</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>数据库执行恢复任务后，实例状态显示正常，但是恢复失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>执行恢复任务后，未在云数据库GaussDB管理平台（TPOPS）进行实例的释放。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li><span>登录TPOPS管理界面。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>https://<em>TPOPS管理面IP地址</em>:8002/gaussdb，例如https://192.168.10.2:8002/gaussdb</p>
+</div></div>
+</p></li><li><span>查看实例状态。</span><p><ul><li>若为“恢复失败”，执行<a href="#ZH-CN_TOPIC_0000002186736106__li310452316174">3</a>~<a href="#ZH-CN_TOPIC_0000002186736106__li172741120111917">6</a>步骤。</li><li>若为“异常”，执行步骤<a href="#ZH-CN_TOPIC_0000002186736106__li1565174321819">7</a>。</li></ul>
+</p></li><li id="ZH-CN_TOPIC_0000002186736106__li310452316174"><a name="ZH-CN_TOPIC_0000002186736106__li310452316174"></a><a name="li310452316174"></a><span>选择<span class="uicontrol">“任务中心”</span>。</span></li><li><span>选择失败的任务后单击<span class="uicontrol">“任务详情”</span>。</span></li><li><span>单击“释放锁”。</span></li><li id="ZH-CN_TOPIC_0000002186736106__li172741120111917"><a name="ZH-CN_TOPIC_0000002186736106__li172741120111917"></a><a name="li172741120111917"></a><span>参见<a href="TPOPS_GaussDB_00048.html">恢复GaussDB实例</a>执行恢复任务。</span></li><li id="ZH-CN_TOPIC_0000002186736106__li1565174321819"><a name="ZH-CN_TOPIC_0000002186736106__li1565174321819"></a><a name="li1565174321819"></a><span>参见<a href="https://support.huawei.com/enterprise/zh/cloud-computing/gaussdb-pid-251517148" target="_blank" rel="noopener noreferrer">云数据库GaussDB对应版本的产品文档</a>的“GaussDB安装”章节重装实例。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="TPOPS_GaussDB_00063.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

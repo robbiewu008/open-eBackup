@@ -1,0 +1,59 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Backup Fails Because the Number of Asynchronous I/O Requests in the Production Environment Reaches the Maximum">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164828418.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164828434">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Backup Fails Because the Number of Asynchronous I/O Requests in the Production Environment Reaches the Maximum</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164828434"></a><a name="EN-US_TOPIC_0000002164828434"></a>
+
+<h1 class="topictitle1">Backup Fails Because the Number of Asynchronous I/O Requests in the Production Environment Reaches the Maximum</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>A backup job fails. You can view the description of the failed event on the job page, as shown in the following figure.</p>
+<p><span><img src="en-us_image_0000002200155097.png"></span></p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Cause</h4><p>The number of asynchronous I/O requests in the production environment reaches the maximum. As a result, the backup fails.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to the production environment and run the <strong>vi /etc/sysctl.conf</strong> command to check the value of <strong>fs.aio-max-nr</strong> in insert mode.</span></li><li><span>Determine the cause of the problem according to the following scenarios:</span><p><ul><li>If the <strong>fs.aio-max-nr</strong> parameter is abnormal (less than the reference value or not found), reconfigure the parameter based on the reference value <strong>18446744073709551615</strong> of the parameter in <a href="https://help.sap.com/docs/SAP_HANA_PLATFORM/6b94445c94ae495c83a19646e7c3fd56/82e4575eec664846a9918e9ed1d90d41.html" target="_blank" rel="noopener noreferrer">Linux Kernel Parameters</a>, and then go to <a href="#EN-US_TOPIC_0000002164828434__li265812449712">3</a>.</li><li>If the <strong>fs.aio-max-nr</strong> parameter exists and its value is normal (you can refer to the parameter value in <a href="https://help.sap.com/docs/SAP_HANA_PLATFORM/6b94445c94ae495c83a19646e7c3fd56/82e4575eec664846a9918e9ed1d90d41.html" target="_blank" rel="noopener noreferrer">Linux Kernel Parameters</a>), collect logs and contact Huawei technical support engineers.</li></ul>
+</p></li><li id="EN-US_TOPIC_0000002164828434__li265812449712"><a name="EN-US_TOPIC_0000002164828434__li265812449712"></a><a name="li265812449712"></a><span>Run the <strong>sysctl -p /etc/sysctl.conf</strong> command for the configuration to take effect. After the command is executed, perform the backup again.</span></li></ol>
+<p></p>
+</div>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164828418.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -1,0 +1,66 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="CNware VM Copies">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164755546.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002199996605">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>CNware VM Copies</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002199996605"></a><a name="EN-US_TOPIC_0000002199996605"></a>
+
+<h1 class="topictitle1">CNware VM Copies</h1>
+<div><p>This section describes how to perform ransomware detection on CNware VM copies.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><p id="EN-US_TOPIC_0000002199996605__en-us_topic_0000001607859818_p48791656152012">An anti-ransomware policy has been created for the resource.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><ul id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199996581_en-us_topic_0000001263616354_ul448021115266"><li id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199996581_en-us_topic_0000001263616354_li14483114103711">Linux and Windows OSs are supported.</li><li id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199996581_en-us_topic_0000001263616354_li1948051110265">The following can be detected: ext2, ext3, ext4, and XFS Linux file systems, and NTFS, FAT, and FAT32 Windows file systems.</li><li id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199996581_en-us_topic_0000001263616354_li0743654102718">Encrypted volumes do not support detection.</li><li id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199996581_li1866615545919">If the storage device is upgraded from 1.2.0 through a fast upgrade, upgrade the kernel version of the storage device to its current version by following instructions in the <a href="https://support.huawei.com/enterprise/en/flash-storage/oceanprotect-x8000-pid-251807257?category=installation-upgrade&amp;subcategory=upgrade-guide" target="_blank" rel="noopener noreferrer">OceanProtect Backup Storage X.X.X Upgrade Guide</a>. <em id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199996581_i75026511313">X</em>.<em id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199996581_i13618548115">X</em>.<em id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199996581_i20251105616113">X</em> indicates the product version.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Performing Detection</h4><p>In addition to copy detection based on scheduled ransomware protection policies, you can perform manual detection on all copies of individual resources. To perform manual detection, perform the following steps:</p>
+<ol><li><span>Choose <strong id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199964685_b29942010155519">Data Security</strong> &gt; <strong id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199964685_b99941210125510">Ransomware Protection</strong> &gt; <strong id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199964685_b1299413101551">Detection Overview</strong>.</span></li><li id="EN-US_TOPIC_0000002199996605__li95138547415"><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__uicontrol8405194619136"><b>Detection Overview</b></span> page, select <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__uicontrol2040514468138"><b>CNware VM</b></span> from the <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__uicontrol640514615131"><b>Select Resource Type</b></span> drop-down list.</span></li><li><span>Locate the row of the target resource and choose <span class="menucascade" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_menucascade20215830192810"><b><span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_uicontrol1521573016281"><span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_text17613115182818"><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_uicontrol7517173272811"><span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_text345103202915"><strong>Manually Detect</strong></span></span></b></span>.</span><p><div class="p" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_en-us_topic_0000001263616354_p18295134812142">In the displayed dialog box, select the copies to be detected and click <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_uicontrol9104113618261"><b>OK</b></span>.<div class="note" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_en-us_topic_0000001263616354_note72063315202"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_en-us_topic_0000001263616354_p420613182014">Alternatively, you can locate the row of the target resource and click the number of copies. In the displayed window on the right, choose <span class="menucascade" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_menucascade1540072615307"><b><span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_uicontrol164004269308"><span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_text17400112615308"><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_uicontrol17400162612305"><span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996581_text1440012263306"><strong>Manually Detect</strong></span></span></b></span> on the right of the target copy.</p>
+</div></div>
+</div>
+</p></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Viewing the Detection Report</h4><ol><li><span>Choose <strong id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199964685_b29942010155519_1">Data Security</strong> &gt; <strong id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199964685_b99941210125510_1">Ransomware Protection</strong> &gt; <strong id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000002199964685_b1299413101551_1">Detection Overview</strong>.</span></li><li><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996605_uicontrol8405194619136"><b>Detection Overview</b></span> page, select <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996605_uicontrol2040514468138"><b>CNware VM</b></span> from the <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996605_uicontrol640514615131"><b>Select Resource Type</b></span> drop-down list.</span></li><li><span>Locate the row that contains the target resource and click the number of copies.</span></li><li><span>In the displayed window, choose <span class="menucascade" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_menucascade18775161315392"><b><span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_uicontrol777531314392"><span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_text124791531103915"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_text1938810487392"><strong>Detection Report</strong></span></span></b></span> on the right of a copy. The detection report displays the detection details and suspicious file list.</span></li><li><span>(Optional) Handle false detection.</span><p><p id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000001263616354_p663985722615">If an uninfected copy is detected as <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_uicontrol4131163815202"><b><span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_text826814112116"><strong>Infected</strong></span></b></span>, check whether file information, such as the file owner, changes based on the suspicious file list in the detection report. If the file information does not change, false detection occurs. In this case, you can correct the ransomware detection status of the copy by handling false detection.</p>
+<ol type="a" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000001263616354_ol1757712526272"><li id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000001263616354_li10577165219278">Locate the row that contains the target resource and choose <span class="menucascade" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_menucascade8158446102312"><b><span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_uicontrol18158546192314"><span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_text1678038122412"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_text103422792518"><strong>Handle False Detection</strong></span></span></b></span> in the <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_uicontrol18766121722211"><b><span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_text18371653132210"><strong>Operation</strong></span></b></span> column on the right.</li><li id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000001263616354_li19091545153613">In the displayed dialog box, confirm the information and click <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_uicontrol7671597255"><b><span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_text0915171610261"><strong>OK</strong></span></b></span>. The system changes the copy state from <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_uicontrol335394274"><b><span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_text103530412715"><strong>Infected</strong></span></b></span> (incorrect detection) to <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_uicontrol435344277"><b><span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_text2353134078"><strong>Uninfected</strong></span></b></span>.</li></ol>
+<div class="note" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000001263616354_note8907111033116"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_en-us_topic_0000001263616354_p190741093120">False detection handling is supported only for copies in the <span class="uicontrol" id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_uicontrol15500161213308"><b><span id="EN-US_TOPIC_0000002199996605__en-us_topic_0000002199996593_text1011033017304"><strong>Infected</strong></span></b></span> state.</p>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164755546.html">Performing Ransomware Protection for Copies (Applicable to 1.6.0 and Later Versions)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

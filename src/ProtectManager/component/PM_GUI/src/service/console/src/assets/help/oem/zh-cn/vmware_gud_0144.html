@@ -1,0 +1,93 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="vCenter Server上虚拟机出现“虚拟机需要整合”状态的提示">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0115.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="vmware_gud_0144">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>vCenter Server上虚拟机出现“虚拟机需要整合”状态的提示</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="vmware_gud_0144"></a><a name="vmware_gud_0144"></a>
+  <h1 class="topictitle1">vCenter Server上虚拟机出现“虚拟机需要整合”状态的提示</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>执行备份任务后，vCenter Server上虚拟机出现“虚拟机需要整合”状态的提示。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>执行备份任务结束时解除客户端所在虚拟机上的受保护磁盘失败。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li><span>使用浏览器，登录vCenter Server。</span><p></p><p>登录地址：<strong>https://</strong><em>vcenter_server_ip_address</em></p> <p></p></li>
+     <li><span>在左侧导航树上选择对应的虚拟机。</span></li>
+     <li><span>在界面右侧区域选择“监控”页签。</span></li>
+     <li><span>选择“任务和事件 &gt; 任务”。</span></li>
+     <li id="vmware_gud_0144__li1110963318287"><a name="vmware_gud_0144__li1110963318287"></a><a name="li1110963318287"></a><span>在任务列表中查找任务名称为“整合虚拟机磁盘文件”的任务。</span><p></p>
+      <ul>
+       <li>如果状态为“文件 被锁定，无法访问”，则记录整合任务最近一次失败任务的开始时间。</li>
+       <li>否则，请联系技术支持工程师处理。</li>
+      </ul> <p></p></li>
+     <li><span>获取受保护磁盘文件VMDK后缀路径和客户端所在主机的IP地址，并登录vCenter Server进行解磁盘操作。</span><p></p>
+      <ul>
+       <li>对于1.5.0版本，请执行以下操作：
+        <ol type="a">
+         <li>选择<span class="uicontrol" id="vmware_gud_0144__zh-cn_topic_0000001666345505_uicontrol1738217261378">“<span id="vmware_gud_0144__zh-cn_topic_0000001666345505_text738292620372">保护</span> &gt; 虚拟化 &gt; VMware”</span>。</li>
+         <li>左侧导航树上选择该虚拟机所在的vCenter Server。</li>
+         <li>在“虚拟机”页签，单击“名称”列的<span><img src="zh-cn_image_0000002200140765.png"></span>。</li>
+         <li>在搜索框中输入该虚拟机名称并搜索。</li>
+         <li>单击该虚拟机名称。</li>
+         <li>在右侧弹出页面中选择“任务 &gt; 历史任务”。</li>
+         <li>在“历史任务”界面根据<a href="#vmware_gud_0144__li1110963318287">5</a>中记录的时间，找到相应时间段的备份任务。</li>
+         <li>单击该备份任务，在任务信息的事件中，查找到描述包含“任务结束时解除客户端所在虚拟机上的受保护磁盘失败”的事件，获取受保护磁盘文件VMDK后缀路径和客户端所在主机的IP地址。</li>
+         <li>根据事件描述中的建议，登录vCenter Server进行解磁盘操作。</li>
+        </ol></li>
+       <li>对于1.6.0及后续版本，请执行以下操作：
+        <ol type="a">
+         <li>选择<span class="uicontrol">“<span>监控</span> &gt; <span>告警和事件</span> &gt; <span>告警</span>”</span>。</li>
+         <li>在“告警”页签，根据<a href="#vmware_gud_0144__li1110963318287">5</a>中记录的时间，查找包含“从客户端所在虚拟机上解除磁盘绑定失败”描述的告警。</li>
+         <li>单击告警描述。</li>
+         <li>在弹出的界面中，获取受保护磁盘文件VMDK后缀路径和客户端所在主机的IP地址。</li>
+         <li>根据告警修复建议，登录vCenter Server进行解磁盘操作。</li>
+        </ol></li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="vmware_gud_0115.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

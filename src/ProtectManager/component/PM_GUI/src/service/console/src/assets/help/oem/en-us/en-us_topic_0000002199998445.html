@@ -1,0 +1,65 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="How Do I Add Environment Variables on a Production Host When the Client Is Independently Deployed on the Production Host? (Applicable to 1.5.0SPC13 and Later Versions)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164597706.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199998445">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>How Do I Add Environment Variables on a Production Host When the Client Is Independently Deployed on the Production Host? (Applicable to 1.5.0SPC13 and Later Versions)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199998445"></a><a name="EN-US_TOPIC_0000002199998445"></a>
+  <h1 class="topictitle1">How Do I Add Environment Variables on a Production Host When the Client Is Independently Deployed on the Production Host? (Applicable to 1.5.0SPC13 and Later Versions)</h1>
+  <div>
+   <p>If the client is independently deployed on production hosts, you need to add environment variables on each host where the client is deployed. Otherwise, the Roach command will fail to be executed.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Use PuTTY to log in to all CNs in the GaussDB (DWS) cluster where the client has been deployed.</span></li>
+     <li><span>Run the following command to open the <strong>env</strong> file (user <strong>omm</strong> is used as an example):</span><p></p><pre class="screen">vi /home/<em>omm</em>/profile/env</pre>
+      <div class="p">
+       Ensure that the following content has been added to the <strong>env</strong> file. The client installation directory <strong>/opt</strong> is used as an example.
+       <pre class="screen">export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/<em>opt</em>/DataBackup/ProtectClient/interfaces/xbsa/lib</pre>
+      </div> <p></p></li>
+     <li><span>Run the following command to open the <strong>.bashrc</strong> file (user <strong>omm</strong> is used as an example):</span><p></p><pre class="screen">vi /home/<em>omm</em>/.bashrc</pre>
+      <div class="p">
+       Ensure that the following content has been added to the <strong>.bashrc</strong> file. The client installation directory <strong>/opt</strong> is used as an example.
+       <pre class="screen">export DATA_BACKUP_AGENT_HOME=/<em>opt</em></pre>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164597706.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

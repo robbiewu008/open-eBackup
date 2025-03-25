@@ -8,7 +8,7 @@ RUN chmod 750 /usr/local/nginx \
     && chown 65500:99 /usr/local/nginx
 
 COPY --chown=65500:99 package/ /usr/local/nginx
-RUN yum install iproute -y
+
 RUN rpm -qa | grep ^libxcrypt-devel-[0-9] | xargs -i rpm -e {} --nodeps \
     && rpm -qa | grep ^glibc-devel-[0-9] | xargs -i rpm -e {} --nodeps \
     && rpm -qa | grep ^gcc-[0-9] | xargs -i rpm -e {} --nodeps \

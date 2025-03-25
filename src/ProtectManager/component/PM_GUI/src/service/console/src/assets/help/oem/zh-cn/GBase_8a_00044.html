@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="GBase_8a_00041.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="documenttype" content="usermanual">
   <meta name="prodname" content="csbs">
   <meta name="DC.Format" content="XHTML">
@@ -44,18 +44,21 @@
      <li>恢复前请确保源数据库的版本和目标数据库的版本匹配，否则会导致恢复失败。</li>
      <li>执行恢复操作时，恢复时需要和备份时集群的拓扑结构和数据库名称相同，包括管理节点、数据节点、数据的distribution信息等。</li>
      <li>执行恢复操作时，GBase 8a数据库需正常运行，集群各节点网络连接正常。</li>
-     <li>执行恢复操作时，操作系统和数据库用户的密码不能更改。</li>
     </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p>执行恢复操作时，操作系统和数据库用户的密码不能更改。</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>选择<span class="uicontrol" id="GBase_8a_00044__zh-cn_topic_0000001839142377_uicontrol01751955491">“<span id="GBase_8a_00044__zh-cn_topic_0000001839142377_text717565144913">数据利用</span> &gt; <span id="GBase_8a_00044__zh-cn_topic_0000001839142377_text217518584917">副本数据</span> &gt; <span id="GBase_8a_00044__zh-cn_topic_0000001839142377_text11107161017483">数据库</span> &gt; 通用数据库”</span>。</span></li>
+     <li><span>选择<span class="uicontrol" id="GBase_8a_00044__zh-cn_topic_0000002199964685_uicontrol01751955491">“<span id="GBase_8a_00044__zh-cn_topic_0000002199964685_text717565144913">数据利用</span> &gt; <span id="GBase_8a_00044__zh-cn_topic_0000002199964685_text217518584917">副本数据</span> &gt; <span id="GBase_8a_00044__zh-cn_topic_0000002199964685_text11107161017483">数据库</span> &gt; 通用数据库”</span>。</span></li>
      <li><span>支持以数据库维度或以副本维度查找副本，本节以数据库维度为例进行说明。</span><p></p><p>在“<span>资源</span>”页签，根据数据库名称查找到需要恢复的数据库，并单击数据库名称。</p> <p></p></li>
-     <li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p>当时间下方显示<span><img src="zh-cn_image_0000001792343246.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p>当时间下方显示<span><img src="zh-cn_image_0000002200098041.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
      <li><span>指定副本进行恢复。</span><p></p>
       <ol type="a">
-       <li>指定某个副本进行恢复。<p><span><img class="eddx" src="zh-cn_image_0000001839142361.png"></span></p></li>
+       <li>指定某个副本进行恢复。<p><span><img class="eddx" src="zh-cn_image_0000002200012453.png"></span></p></li>
       </ol>
       <ol type="a" start="2">
        <li>恢复GBase 8a数据库至原位置或新位置。
@@ -81,18 +84,31 @@
               </colgroup>
               <thead align="left">
                <tr>
-                <th align="left" class="cellrowborder" valign="top" width="18.41%" id="mcps1.3.3.2.4.2.2.1.1.2.1.2.2.2.3.1.1"><p>参数</p></th>
-                <th align="left" class="cellrowborder" valign="top" width="81.58999999999999%" id="mcps1.3.3.2.4.2.2.1.1.2.1.2.2.2.3.1.2"><p>说明</p></th>
+                <th align="left" class="cellrowborder" valign="top" width="18.41%" id="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.3.1.1"><p>参数</p></th>
+                <th align="left" class="cellrowborder" valign="top" width="81.58999999999999%" id="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.3.1.2"><p>说明</p></th>
                </tr>
               </thead>
               <tbody>
                <tr>
-                <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.3.2.4.2.2.1.1.2.1.2.2.2.3.1.1 "><p><span>主机</span></p></td>
-                <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.3.2.4.2.2.1.1.2.1.2.2.2.3.1.2 "><p>恢复到目标集群中的单个主机。</p></td>
+                <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.3.1.1 ">
+                 <div class="p">
+                  标签
+                  <div class="note" id="GBase_8a_00044__mysql-0074_zh-cn_topic_0000002164660718_note6966434109">
+                   <span class="notetitle"> 说明： </span>
+                   <div class="notebody">
+                    <p id="GBase_8a_00044__mysql-0074_zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_p1816719214566"><span id="GBase_8a_00044__mysql-0074_zh-cn_topic_0000002164660718_zh-cn_topic_0000002200147037_ph206615454589">仅1.6.0及后续版本支持此功能。</span></p>
+                   </div>
+                  </div>
+                 </div></td>
+                <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时展示该参数。</p> <p>可通过标签筛选数据库。</p></td>
                </tr>
                <tr>
-                <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.3.2.4.2.2.1.1.2.1.2.2.2.3.1.1 "><p><span>目标数据库</span></p></td>
-                <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.3.2.4.2.2.1.1.2.1.2.2.2.3.1.2 "><p>恢复到的目标数据库。</p>
+                <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.3.1.1 "><p>目标主机</p></td>
+                <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.3.1.2 "><p>恢复到目标集群中的单个主机。</p></td>
+               </tr>
+               <tr>
+                <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.3.1.1 "><p><span>目标数据库</span></p></td>
+                <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.3.1.2 "><p>恢复到的目标数据库。</p>
                  <div class="note">
                   <span class="notetitle"> 说明： </span>
                   <div class="notebody">
@@ -103,8 +119,8 @@
                  </div></td>
                </tr>
                <tr>
-                <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.3.2.4.2.2.1.1.2.1.2.2.2.3.1.1 "><p><span>自定义参数</span></p></td>
-                <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.3.2.4.2.2.1.1.2.1.2.2.2.3.1.2 "><p>配置数据库部分场景的参数信息。</p></td>
+                <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.3.1.1 "><p><span>自定义参数</span></p></td>
+                <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.4.2.2.1.1.2.1.2.2.2.3.1.2 "><p>配置数据库部分场景的参数信息。</p></td>
                </tr>
               </tbody>
              </table>

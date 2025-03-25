@@ -209,30 +209,70 @@ public class OpenGaussDatabaseEnvironmentProvider extends DatabaseEnvironmentPro
         List<JobBo> jobs = jobService.queryJobs(queryJobRequest, pagingParamRequest, sortingParamRequest).getRecords();
         // 恢复中资源ID
         List<String> restoringUuids = jobs.stream().map(JobBo::getSourceId).distinct().collect(Collectors.toList());
+        log.info("query restoring resource id: {}", String.join(COMMA, restoringUuids));
+        Map<String, ProtectedResource> resourceMap = protectedResources.stream()
+            .collect(Collectors.toMap(ProtectedResource::getUuid, e -> e));
         for (String restoringUuid : restoringUuids) {
             // 如果恢复中资源id，不在扫描到的插件中，加回来
             if (!uuids.contains(restoringUuid)) {
                 log.info("restoring resource {} not in scan results", restoringUuid);
                 addBack(restoringUuid, protectedResources);
+            } else {
+                checkResource(restoringUuid, resourceMap);
             }
         }
     }
 
-    private void addBack(String uuid, List<ProtectedResource> protectedResources) {
-        Optional<ProtectedResource> restoringResource = resourceService.getResourceById(uuid);
-        restoringResource.ifPresent(protectedResources::add);
+    private void checkResource(String restoringUuid, Map<String, ProtectedResource> resourceMap) {
+        List<ProtectedResource> records = getProtectedResources(restoringUuid);
+        if (!CollectionUtils.isEmpty(records)) {
+            ProtectedResource protectedResource = records.get(0);
+            if (!resourceMap.get(restoringUuid).getName().equals(protectedResource.getName())) {
+                resourceMap.get(restoringUuid).setName(protectedResource.getName());
+            }
 
-        // 根据id查询出文件系统的真实id
+            // 更新res_extend_info表时，数据库中key存在，extendInfo中不存在，更新会报错，合并数据库中和从插件中查到的扩展信息
+            mergerExtendInfo(records.get(0), resourceMap.get(restoringUuid));
+        }
+    }
+
+    private void mergerExtendInfo(ProtectedResource originResource, ProtectedResource updateResource) {
+        Map<String, String> extendInfo = mergeExtendInfo(updateResource.getExtendInfo(),
+            originResource.getExtendInfo());
+        if (StringUtils.isNotEmpty(updateResource.getExtendInfoByKey(OpenGaussConstants.CLUSTER_STATE))) {
+            extendInfo.put(OpenGaussConstants.INSTANCE_STATE,
+                updateResource.getExtendInfoByKey(OpenGaussConstants.CLUSTER_STATE));
+        }
+        updateResource.setExtendInfo(extendInfo);
+    }
+
+    private Map<String, String> mergeExtendInfo(Map<String, String> updateExtendInfo,
+        Map<String, String> exsitExtendInfo) {
+        Map<String, String> res = new HashMap<>();
+        if (exsitExtendInfo != null) {
+            res.putAll(exsitExtendInfo);
+        }
+        if (updateExtendInfo != null) {
+            res.putAll(updateExtendInfo);
+        }
+        return res;
+    }
+
+    private void addBack(String uuid, List<ProtectedResource> protectedResources) {
+        List<ProtectedResource> records = getProtectedResources(uuid);
+        if (!CollectionUtils.isEmpty(records)) {
+            ProtectedResource protectedResource = records.get(0);
+            protectedResources.add(protectedResource);
+        }
+    }
+
+    private List<ProtectedResource> getProtectedResources(String uuid) {
         Map<String, Object> conditions = ImmutableMap.of("uuid",
             Lists.newArrayList(Collections.singletonList(PageQueryOperator.EQ.getValue()), uuid));
         ResourceQueryParams context = new ResourceQueryParams();
         context.setConditions(conditions);
         PageListResponse<ProtectedResource> protectedResourcePageRes = resourceService.query(context);
-        List<ProtectedResource> records = protectedResourcePageRes.getRecords();
-        if (!CollectionUtils.isEmpty(records)) {
-            ProtectedResource protectedResource = records.get(0);
-            protectedResources.add(protectedResource);
-        }
+        return protectedResourcePageRes.getRecords();
     }
 
     private List<ProtectedResource> convertProtectedResources(ProtectedResource agent, URI requestUri,

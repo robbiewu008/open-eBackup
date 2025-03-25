@@ -227,11 +227,7 @@ export class CreateTablesetComponent implements OnInit {
         this.clusterOptions = filter(clusterArray, item => {
           return (
             item.extendInfo?.clusterType !== DataMap.dbTwoType.hadr.value &&
-            !(
-              item.extendInfo?.clusterType ===
-                DataMap.dbTwoType.standby.value &&
-              item.extendInfo?.deployOperatingSystem === 'Red Hat'
-            )
+            item.extendInfo?.clusterType !== DataMap.dbTwoType.rhel.value
           );
         });
 

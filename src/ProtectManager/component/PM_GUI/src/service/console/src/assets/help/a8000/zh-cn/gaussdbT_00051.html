@@ -20,85 +20,76 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="查看SLA信息">
+<meta name="DC.Title" content="步骤5：创建远端设备管理员">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="gaussdbT_00049.html">
+<meta name="DC.Relation" scheme="URI" content="gaussdbT_00046.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="gaussdbT_00051">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>查看SLA信息</title>
+<title>步骤5：创建远端设备管理员</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="gaussdbT_00051"></a><a name="gaussdbT_00051"></a>
 
-<h1 class="topictitle1">查看SLA信息</h1>
-<div><div class="section" id="gaussdbT_00051__zh-cn_topic_0000001792344062_section128761441211"><h4 class="sectiontitle">操作步骤</h4><ol id="gaussdbT_00051__zh-cn_topic_0000001792344062_ol9516123410217"><li id="gaussdbT_00051__zh-cn_topic_0000001792344062_li149381918143112"><span>选择<span class="uicontrol" id="gaussdbT_00051__zh-cn_topic_0000001792344062_zh-cn_topic_0000001839142377_uicontrol8111821122820">“<span id="gaussdbT_00051__zh-cn_topic_0000001792344062_zh-cn_topic_0000001839142377_text71111921162814">保护</span> &gt; 保护策略 &gt; SLA”</span>。</span></li><li id="gaussdbT_00051__zh-cn_topic_0000001792344062_li4524532214"><span>查看SLA信息。</span><p><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p11387181813226">相关参数说明如<a href="#gaussdbT_00051__zh-cn_topic_0000001792344062_table293653514225">表1</a>所示。</p>
-
-<div class="tablenoborder"><a name="gaussdbT_00051__zh-cn_topic_0000001792344062_table293653514225"></a><a name="zh-cn_topic_0000001792344062_table293653514225"></a><table cellpadding="4" cellspacing="0" summary="" id="gaussdbT_00051__zh-cn_topic_0000001792344062_table293653514225" frame="border" border="1" rules="all"><caption><b>表1 </b>SLA参数说明</caption><colgroup><col style="width:35.33%"><col style="width:64.67%"></colgroup><thead align="left"><tr id="gaussdbT_00051__zh-cn_topic_0000001792344062_row1393783513223"><th align="left" class="cellrowborder" valign="top" width="35.33%" id="mcps1.3.1.2.2.2.2.2.3.1.1"><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p993719355227">参数</p>
+<h1 class="topictitle1">步骤5：创建远端设备管理员</h1>
+<div><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p1976143411408">在复制的从端集群创建远端设备管理员，用于复制过程中对从端集群进行验证。</p>
+<div class="section" id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_section2539113917248"><h4 class="sectiontitle">操作步骤</h4><ol id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_ol666545192420"><li id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_zh-cn_topic_0000001092505479_li13830188165220"><span>登录复制从端集群的<span id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_text1496671015491">OceanProtect</span>管理界面。</span></li><li id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_zh-cn_topic_0000001092505479_li1570821013536"><span>选择“系统 &gt; 安全 &gt; RBAC”。</span></li><li id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_li1348620371574"><span>在“用户”页签，单击<span class="uicontrol" id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_uicontrol8486133715576">“<span id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_text0486193710574">创建</span>”</span>。</span></li><li id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_li15799464290"><span>在打开的“用户基本信息”界面，参考<a href="#gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_table146051654173010">表1</a>设置基本信息，完成后单击“下一步”。</span><p>
+<div class="tablenoborder"><a name="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_table146051654173010"></a><a name="fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_table146051654173010"></a><table cellpadding="4" cellspacing="0" summary="" id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_table146051654173010" frame="border" border="1" rules="all"><caption><b>表1 </b>基本信息参数说明</caption><colgroup><col style="width:40.93%"><col style="width:59.07%"></colgroup><thead align="left"><tr id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row1560535415303"><th align="left" class="cellrowborder" valign="top" width="40.93%" id="mcps1.3.2.2.4.2.1.2.3.1.1"><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p560518547300">参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="64.67%" id="mcps1.3.1.2.2.2.2.2.3.1.2"><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p09378358223">说明</p>
+<th align="left" class="cellrowborder" valign="top" width="59.07%" id="mcps1.3.2.2.4.2.1.2.3.1.2"><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p1605195418305">说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr id="gaussdbT_00051__zh-cn_topic_0000001792344062_row5937235112214"><td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p993733512219"><span id="gaussdbT_00051__zh-cn_topic_0000001792344062_text26536491231">名称</span></p>
+<tbody><tr id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row518361118419"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p618331184117">用户类型</p>
 </td>
-<td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p17937535112213">SLA的名称。</p>
-<p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p520781119174">支持基于SLA名称进行排序便于查找相应SLA。</p>
-</td>
-</tr>
-<tr id="gaussdbT_00051__zh-cn_topic_0000001792344062_row1937835142217"><td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p593743542212"><span id="gaussdbT_00051__zh-cn_topic_0000001792344062_text1815881102417">应用类型</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p393763514221">SLA关联的应用类型。</p>
-<p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p1865194815259">系统预置的SLA：Gold、Silver、Bronze，关联的应用类型为<span class="uicontrol" id="gaussdbT_00051__zh-cn_topic_0000001792344062_uicontrol17371126102610">“<span id="gaussdbT_00051__zh-cn_topic_0000001792344062_text14862114811269">通用</span>”</span>。</p>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p6183211114111">选择“本地用户”。</p>
 </td>
 </tr>
-<tr id="gaussdbT_00051__zh-cn_topic_0000001792344062_row12937113542210"><td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p15937173592218"><span id="gaussdbT_00051__zh-cn_topic_0000001792344062_text145161413112419">保护策略</span></p>
+<tr id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row76051154203011"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p156051454113019">名称</p>
 </td>
-<td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p89371351229">SLA中创建的保护策略。</p>
-</td>
-</tr>
-<tr id="gaussdbT_00051__zh-cn_topic_0000001792344062_row19937335132213"><td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p49371435152219"><span id="gaussdbT_00051__zh-cn_topic_0000001792344062_text14526142562410">关联资源</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p593753520227">SLA关联的资源数量。</p>
-<p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p338215112919">单击资源数量，可查看详细的资源信息。</p>
-<div class="note" id="gaussdbT_00051__zh-cn_topic_0000001792344062_note9502201213314"><span class="notetitle"> 说明： </span><div class="notebody"><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p175023128338">当<span class="uicontrol" id="gaussdbT_00051__zh-cn_topic_0000001792344062_uicontrol4536161916401">“<span id="gaussdbT_00051__zh-cn_topic_0000001792344062_text1137233117400">应用类型</span>”</span>为<span class="uicontrol" id="gaussdbT_00051__zh-cn_topic_0000001792344062_uicontrol1073033553910">“<span id="gaussdbT_00051__zh-cn_topic_0000001792344062_text114076934015">复制副本</span>”</span>时，SLA关联的资源仅支持在远程复制的源端集群查看。</p>
-</div></div>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p196051254183018">自定义用户名称。</p>
 </td>
 </tr>
-<tr id="gaussdbT_00051__zh-cn_topic_0000001792344062_row15991228152413"><td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p175995288247"><span id="gaussdbT_00051__zh-cn_topic_0000001792344062_text1960584317244">归档目标数量</span></p>
+<tr id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row359718368413"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p19597143610419">登录认证方式</p>
 </td>
-<td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p95991028112415">SLA中创建的归档策略数量。</p>
-<p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p16772182216335">一个归档策略中会指定一个归档存储。</p>
-</td>
-</tr>
-<tr id="gaussdbT_00051__zh-cn_topic_0000001792344062_row15237133213243"><td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p123793210243"><span id="gaussdbT_00051__zh-cn_topic_0000001792344062_text147171658152413">复制目标数量</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p82371322246">SLA中创建的复制策略数量。</p>
-<p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p1049075303312">一个复制策略中会指定一个复制的目标集群。</p>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p9561817134711">选择“登录密码”。</p>
 </td>
 </tr>
-<tr id="gaussdbT_00051__zh-cn_topic_0000001792344062_row758605515316"><td class="cellrowborder" valign="top" width="35.33%" headers="mcps1.3.1.2.2.2.2.2.3.1.1 "><div class="p" id="gaussdbT_00051__zh-cn_topic_0000001792344062_p11586175517310">创建用户<div class="note" id="gaussdbT_00051__zh-cn_topic_0000001792344062_note12966131135113"><span class="notetitle"> 说明： </span><div class="notebody"><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p199681613513">对于1.5.0版本，该参数名称为“<span id="gaussdbT_00051__zh-cn_topic_0000001792344062_text89541045103415">所属用户</span>”。</p>
-</div></div>
-</div>
+<tr id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row11605195433015"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p1660565410309">密码</p>
 </td>
-<td class="cellrowborder" valign="top" width="64.67%" headers="mcps1.3.1.2.2.2.2.2.3.1.2 "><p id="gaussdbT_00051__zh-cn_topic_0000001792344062_p358605518319">SLA的创建用户。系统预置的SLA创建用户显示为“--”。</p>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p7605754153016">设置用户的密码。</p>
+</td>
+</tr>
+<tr id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row19605145412304"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p18605165416301">确认密码</p>
+</td>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p260511541306">确认用户的密码。</p>
+</td>
+</tr>
+<tr id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row96054545308"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p136055546308">角色</p>
+</td>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p6575171152415">在“名称”列选择“远端设备管理员”。</p>
+</td>
+</tr>
+<tr id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row126056541304"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p1560518547306">描述</p>
+</td>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p560513546306">可填写该用户的描述信息。</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-</p></li></ol>
+</p></li><li id="gaussdbT_00051__fc_gud_0033_16_zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_li4503143713309"><span>在“总览”界面，确认用户信息无误后，单击“完成”。</span></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="gaussdbT_00049.html">SLA</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="gaussdbT_00046.html">复制GaussDB T数据库副本（适用于OceanProtect E1000）</a></div>
 </div>
 </div>
 

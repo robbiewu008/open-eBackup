@@ -27,7 +27,9 @@ public enum Db2ClusterTypeEnum {
 
     POWER_HA("powerHA"),
 
-    HADR("hadr");
+    HADR("hadr"),
+
+    RHEL_HA("rhelHA");
 
     Db2ClusterTypeEnum(String type) {
         this.type = type;
@@ -64,6 +66,7 @@ public enum Db2ClusterTypeEnum {
             case DPF:
                 return DatabaseDeployTypeEnum.AP.getType();
             case POWER_HA:
+            case RHEL_HA:
                 return DatabaseDeployTypeEnum.SHARDING.getType();
             case HADR:
                 return DatabaseDeployTypeEnum.AA.getType();

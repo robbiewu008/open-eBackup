@@ -17,72 +17,165 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="创建挂载更新策略">
+  <meta name="DC.Title" content="恢复卷">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="volume_0050.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="volume_0053">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>创建挂载更新策略</title>
+  <title>恢复卷</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="volume_0053"></a><a name="volume_0053"></a>
-  <h1 class="topictitle1">创建挂载更新策略</h1>
+  <h1 class="topictitle1">恢复卷</h1>
   <div>
-   <p id="volume_0053__zh-cn_topic_0000001792344082_zh-cn_topic_0000001123352147_p629911415014">创建即时挂载时可以为即时挂载关联挂载更新策略，关联后将按照更新策略更新挂载的副本。</p>
-   <div class="section" id="volume_0053__zh-cn_topic_0000001792344082_section67181941524">
+   <p>当需要对已备份的卷进行恢复时，可以参考本节恢复卷至原位置或新位置。</p>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p>恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</p>
+   </div>
+   <div class="section" id="volume_0053__section205672348712">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p id="volume_0053__p1521143817711">恢复目标主机的文件系统版本低于原主机的文件系统版本时，若原卷使用了原主机的高版本文件系统特性，目标主机上恢复的卷将不可用。</p>
+   </div>
+   <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
-    <ol id="volume_0053__zh-cn_topic_0000001792344082_zh-cn_topic_0000001090318017_ol2942173118420">
-     <li id="volume_0053__zh-cn_topic_0000001792344082_li10796132225712"><span>选择<span class="uicontrol" id="volume_0053__zh-cn_topic_0000001792344082_zh-cn_topic_0000001839142377_uicontrol363118811524">“<span id="volume_0053__zh-cn_topic_0000001792344082_zh-cn_topic_0000001839142377_text1363188195219">数据利用</span> &gt; <span id="volume_0053__zh-cn_topic_0000001792344082_zh-cn_topic_0000001839142377_text1632191017433">数据利用策略</span> &gt; <span id="volume_0053__zh-cn_topic_0000001792344082_zh-cn_topic_0000001839142377_text591602852419">挂载更新策略</span>”</span>。</span></li>
-     <li id="volume_0053__zh-cn_topic_0000001792344082_li883010469286"><span>单击<span class="uicontrol" id="volume_0053__zh-cn_topic_0000001792344082_uicontrol6830134610289">“创建”</span>，创建挂载更新策略。</span><p></p><p id="volume_0053__zh-cn_topic_0000001792344082_p1932511477282">相关参数说明如<a href="#volume_0053__zh-cn_topic_0000001792344082_table1885805992814">表1</a>所示。</p>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="volume_0053__zh-cn_topic_0000002199964685_uicontrol2728131538">“<span id="volume_0053__zh-cn_topic_0000002199964685_text27283316312">数据利用</span> &gt; <span id="volume_0053__zh-cn_topic_0000002199964685_text157282318317">副本数据</span> &gt; 文件系统 &gt; <span id="volume_0053__zh-cn_topic_0000002199964685_text198473585287">卷</span>”</span>。</span></li>
+     <li><span>您可以以卷资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据资源名称查找到需要恢复的资源，并单击资源名称。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>副本数据</span>”</span>，依次选择年、月、天找到副本。</span><p></p><p>当时间下方显示<span><img src="zh-cn_image_0000002200141709.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>在副本所在行，单击<span class="uicontrol">“<span>更多</span> &gt; <span>恢复</span>”</span>。</span><p></p><p>相关参数说明如<a href="#volume_0053__table93951625101715">表1</a>所示。</p>
       <div class="tablenoborder">
-       <a name="volume_0053__zh-cn_topic_0000001792344082_table1885805992814"></a><a name="zh-cn_topic_0000001792344082_table1885805992814"></a>
-       <table cellpadding="4" cellspacing="0" summary="" id="volume_0053__zh-cn_topic_0000001792344082_table1885805992814" frame="border" border="1" rules="all">
+       <a name="volume_0053__table93951625101715"></a><a name="table93951625101715"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="volume_0053__table93951625101715" frame="border" border="1" rules="all">
         <caption>
-         <b>表1 </b>挂载更新策略参数
+         <b>表1 </b>恢复卷参数说明
         </caption>
         <colgroup>
-         <col style="width:32.15%">
-         <col style="width:67.85%">
+         <col style="width:13.170000000000002%">
+         <col style="width:15.7%">
+         <col style="width:71.13000000000001%">
         </colgroup>
         <thead align="left">
-         <tr id="volume_0053__zh-cn_topic_0000001792344082_row885895992810">
-          <th align="left" class="cellrowborder" valign="top" width="32.15%" id="mcps1.3.2.2.2.2.2.2.3.1.1"><p id="volume_0053__zh-cn_topic_0000001792344082_p3858359172817">参数</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="67.85%" id="mcps1.3.2.2.2.2.2.2.3.1.2"><p id="volume_0053__zh-cn_topic_0000001792344082_p2085815914286">说明</p></th>
+         <tr>
+          <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.4.2.4.2.2.2.4.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" id="mcps1.3.4.2.4.2.2.2.4.1.2"><p>说明</p></th>
          </tr>
         </thead>
         <tbody>
-         <tr id="volume_0053__zh-cn_topic_0000001792344082_row1285818592286">
-          <td class="cellrowborder" valign="top" width="32.15%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p id="volume_0053__zh-cn_topic_0000001792344082_p158581596282"><span id="volume_0053__zh-cn_topic_0000001792344082_text8516142712455">名称</span></p></td>
-          <td class="cellrowborder" valign="top" width="67.85%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p id="volume_0053__zh-cn_topic_0000001792344082_p14858195916284">自定义策略名称。</p></td>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>裸机恢复</p>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p>仅Linux OS存在此参数。</p>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.2 "><p>默认关闭，开启后将会恢复整个操作系统。</p>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p>使用未开启操作系统备份的副本进行恢复时，不支持开启裸机恢复。</p>
+            </div>
+           </div></td>
          </tr>
-         <tr id="volume_0053__zh-cn_topic_0000001792344082_row2858185972814">
-          <td class="cellrowborder" valign="top" width="32.15%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p id="volume_0053__zh-cn_topic_0000001792344082_p13858135911283"><span id="volume_0053__zh-cn_topic_0000001792344082_text142181132104811">副本数据</span></p></td>
-          <td class="cellrowborder" valign="top" width="67.85%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p id="volume_0053__zh-cn_topic_0000001792344082_p148581059192814">选择某个时间段的最新副本进行挂载。如果时间段内没有生成副本，则不更新挂载。</p>
-           <ul id="volume_0053__zh-cn_topic_0000001792344082_ul121553611533">
-            <li id="volume_0053__zh-cn_topic_0000001792344082_li676011513562"><span id="volume_0053__zh-cn_topic_0000001792344082_text1382910524244">最近一小时</span>：选择最近一个小时的最新副本。<p id="volume_0053__zh-cn_topic_0000001792344082_p7510044174917">如：当前是16:30，则选择15:00~16:00生成的最新副本。</p></li>
-            <li id="volume_0053__zh-cn_topic_0000001792344082_li4974134015316"><span id="volume_0053__zh-cn_topic_0000001792344082_text822918464231">最近一天</span>：选择最近一天的最新副本。<p id="volume_0053__zh-cn_topic_0000001792344082_p19545195611522">如：当前是1月30日，则选择1月29日生成的最新副本。</p></li>
-            <li id="volume_0053__zh-cn_topic_0000001792344082_li6990144615531"><span id="volume_0053__zh-cn_topic_0000001792344082_text18591115614220">最近一周</span>：选择最近一周的最新副本。<p id="volume_0053__zh-cn_topic_0000001792344082_p4313723978">如：当前是2021年的第5个周，则选择2021年第4个周生成的最新副本。</p></li>
-            <li id="volume_0053__zh-cn_topic_0000001792344082_li138681249205315"><span id="volume_0053__zh-cn_topic_0000001792344082_text176871540182112">最近一月</span>：选择最近一月的最新副本。<p id="volume_0053__zh-cn_topic_0000001792344082_p7985115311718">如：当前是12月，则选择11月生成的最新副本。</p></li>
-            <li id="volume_0053__zh-cn_topic_0000001792344082_li16343856121910"><span id="volume_0053__zh-cn_topic_0000001792344082_text99148448203">最新的一个副本</span>：选择最新的副本。</li>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>恢复非系统卷</p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.2 "><p>开启裸机恢复后展示该参数，默认关闭，开启后将会恢复卷类型为非系统的卷。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>恢复成功后重启系统</p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.2 "><p>开启裸机恢复后展示该参数，默认关闭，开启后裸机恢复成功后将会重启系统。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>恢复类型</p>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p>仅Windows OS存在此参数。</p>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.2 "><p>选择备份类型：卷、裸机。</p>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <ul>
+              <li>在裸机恢复前，请启动目标主机。</li>
+              <li>在裸机恢复完成后，如果部分磁盘处于Foreign状态，请恢复磁盘的状态。</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>选择需要恢复的卷</p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.2 "><p>选择待恢复的卷，可通过搜索卷名称查找需要恢复的卷。</p>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p>开启裸机恢复，则无需选择需要恢复的卷。</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" rowspan="2" valign="top" width="13.170000000000002%" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>恢复配置</p> <p></p></td>
+          <td class="cellrowborder" valign="top" width="15.7%" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>恢复至</p></td>
+          <td class="cellrowborder" valign="top" width="71.13000000000001%" headers="mcps1.3.4.2.4.2.2.2.4.1.2 "><p>卷的恢复位置。</p>
+           <ul>
+            <li>原位置：恢复至原机原位置。</li>
+            <li>新位置：恢复至新位置，需要指定恢复的目标主机。
+             <div class="note">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <ul>
+                <li><span style="color:#282B33;">使用LiveCD启动原主机时，恢复副本数据将无法选择原位置恢复，若需要使用原主机配置，请在新位置恢复中选择原主机作为目标主机进行恢复。</span></li>
+                <li>由于系统license和部分软件license与硬件绑定，恢复至新位置后，请重新激活目标主机。</li>
+                <li id="volume_0053__li13794193514275">如果待恢复卷的容量和目标恢复位置卷的容量不一致，在恢复完成后，目标恢复位置的卷容量大小会变为待恢复卷的容量大小。此时，“磁盘管理”界面中目标恢复位置的卷的“容量”值和“磁盘”区域显示的该卷容量大小不一致。如需保持一致，可手动对该卷扩容。</li>
+                <li>Windows使用MBR（Master Boot Record）或GPT（GUID Partition Table）和分区偏移量来唯一标识卷。当裸机恢复到新位置时，由于目标主机中没有相同标识的卷，则会分配新的卷。</li>
+               </ul>
+              </div>
+             </div></li>
            </ul></td>
          </tr>
-         <tr id="volume_0053__zh-cn_topic_0000001792344082_row14858135922818">
-          <td class="cellrowborder" valign="top" width="32.15%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p id="volume_0053__zh-cn_topic_0000001792344082_p2858859172814"><span id="volume_0053__zh-cn_topic_0000001792344082_text260315392481">调度计划</span></p></td>
-          <td class="cellrowborder" valign="top" width="67.85%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p id="volume_0053__zh-cn_topic_0000001792344082_p1297531492118">多长时间更新一次挂载副本。</p>
-           <ul id="volume_0053__zh-cn_topic_0000001792344082_ul129366442212">
-            <li id="volume_0053__zh-cn_topic_0000001792344082_li149361144220">每xx小时/天/周更新一次挂载副本，并设置首次更新挂载副本的具体时间。<p id="volume_0053__zh-cn_topic_0000001792344082_p15763113165913"><a name="volume_0053__zh-cn_topic_0000001792344082_li149361144220"></a><a name="zh-cn_topic_0000001792344082_li149361144220"></a>如果设置的时间早于当前时间，按照调度计划执行任务。</p></li>
-            <li id="volume_0053__zh-cn_topic_0000001792344082_li1642915355220">备份完成后立即更新一次挂载副本。</li>
-           </ul></td>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>目标主机</p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>仅在新位置恢复时需要选择恢复的目标主机。</p> <p>可通过搜索主机名称或主机IP地址选择相应主机。</p></td>
          </tr>
-         <tr id="volume_0053__zh-cn_topic_0000001792344082_row158587593285">
-          <td class="cellrowborder" valign="top" width="32.15%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p id="volume_0053__zh-cn_topic_0000001792344082_p14858185919281"><span id="volume_0053__zh-cn_topic_0000001792344082_text1329164718484">保留</span></p></td>
-          <td class="cellrowborder" valign="top" width="67.85%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p id="volume_0053__zh-cn_topic_0000001792344082_p10629310142313">更新挂载后，被卸载的副本的保留时长。</p> <p id="volume_0053__zh-cn_topic_0000001792344082_p11637242202712">支持设置为保留xx天/周/月/年、永久保留或保留最新一个副本。</p></td>
+         <tr>
+          <td class="cellrowborder" rowspan="3" valign="top" width="13.170000000000002%" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>高级配置</p></td>
+          <td class="cellrowborder" valign="top" width="15.7%" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>恢复前执行脚本</p></td>
+          <td class="cellrowborder" rowspan="3" valign="top" width="71.13000000000001%" headers="mcps1.3.4.2.4.2.2.2.4.1.2 "><p id="volume_0053__p16797181010379">您可以根据实际需求，在备份任务执行前、执行成功后、执行失败后，执行自定义脚本。</p> <p id="volume_0053__p1742941713447">请将执行脚本放在DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty目录下，例如：/opt/DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty/执行脚本的相对路径。</p> <p id="volume_0053__p525748151117"><span style="color:#282B33;">可根据实际情况，在恢复任务执行前、或恢复任务执行成功后、或恢复任务执行失败后，执行用户自定义的脚本，脚本类型为sh。并将脚本放置在DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty目录下。</span></p>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p id="volume_0053__files-0067_zh-cn_topic_0000001792548340_zh-cn_topic_0000001792402656_zh-cn_topic_0000001264099602_p196461512103113">当配置了<span class="uicontrol" id="volume_0053__files-0067_zh-cn_topic_0000001792548340_zh-cn_topic_0000001792402656_zh-cn_topic_0000001264099602_uicontrol180112781919">“<span id="volume_0053__files-0067_zh-cn_topic_0000001792548340_zh-cn_topic_0000001792402656_zh-cn_topic_0000001264099602_text10711756153116">恢复成功执行脚本</span>”</span>时，即使该脚本执行失败，<span id="volume_0053__files-0067_text10105204810495">本产品</span>上也会显示恢复任务的状态为<span class="uicontrol" id="volume_0053__files-0067_zh-cn_topic_0000001792548340_zh-cn_topic_0000001792402656_zh-cn_topic_0000001264099602_uicontrol488919204209">“<span id="volume_0053__files-0067_zh-cn_topic_0000001792548340_zh-cn_topic_0000001792402656_zh-cn_topic_0000001264099602_text186291135132417">成功</span>”</span>。请您留意任务详情中是否有后置脚本执行失败的相关提示，如有请及时修正脚本。</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>恢复成功执行脚本</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.2.2.4.1.1 "><p>恢复失败执行脚本</p></td>
          </tr>
         </tbody>
        </table>
       </div> <p></p></li>
-     <li id="volume_0053__zh-cn_topic_0000001792344082_li212919502345"><span>单击<span class="uicontrol" id="volume_0053__zh-cn_topic_0000001792344082_uicontrol36992586342">“确定”</span>。</span></li>
+     <li><span>单击<span class="uicontrol">“确定”</span>。</span></li>
     </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="volume_0050.html">恢复</a>
+    </div>
    </div>
   </div>
  </body>

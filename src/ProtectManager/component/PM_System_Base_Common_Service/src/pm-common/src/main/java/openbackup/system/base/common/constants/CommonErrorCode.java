@@ -1329,6 +1329,13 @@ public final class CommonErrorCode {
     public static final long SLA_NOT_SUPPORT_BACKUP_POLICY = 1677931542L;
 
     /**
+     * 错误场景：执行修改SLA策略操作时，由于该SLA绑定的资源类型不支持对应的归档/复制策略，操作失败。
+     * 原因：该SLA绑定的（{0}）资源类型不支持（{1}）策略。
+     * 建议：请移除（{1}）策略后重试。
+     */
+    public static final long SLA_NOT_SUPPORT_ARCHIVING_REPLICATION_POLICY = 1677931557L;
+
+    /**
      * 错误场景：执行注册Kubernetes集群操作时，由于配置文件有误或者集群状态异常，操作失败。
      * 原因：配置文件有误或者集群状态异常。
      * 建议：请修改配置文件或检查Kubernetes集群状态后重试。

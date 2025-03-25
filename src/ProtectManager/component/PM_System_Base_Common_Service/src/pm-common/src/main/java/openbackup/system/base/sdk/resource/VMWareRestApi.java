@@ -102,18 +102,21 @@ public interface VMWareRestApi {
     /**
      * 查询虚拟机rdm磁盘的ProductInitiator详情
      *
-     * @param vmUuid 虚拟机的UUID
      * @param computeResUuid 主机id
-     * @param datastoreName datastore名称
-     * @param hostMoRef host名称
+     * @param vmUuid         虚拟机的UUID，已废弃参数
+     * @param datastoreName  datastore名称
+     * @param hostMoRef      host名称
      * @return 返回虚拟机的磁盘详情
      */
     @ExterAttack
     @GetMapping("/internal/virtual-machines/{computeResUuid}/product-initiator/{vm_uuid}/{datastoreName}/{hostMoRef}")
     @ResponseBody
     List<ProductInitiator> queryVmRdmDiskProductInitiator(
-        @PathVariable("computeResUuid") String computeResUuid, @PathVariable("vm_uuid") String vmUuid,
-        @PathVariable("datastoreName") String datastoreName, @PathVariable("hostMoRef") String hostMoRef);
+            @PathVariable("computeResUuid") String computeResUuid,
+            @PathVariable("vm_uuid") String vmUuid,
+            @PathVariable("datastoreName") String datastoreName,
+            @PathVariable("hostMoRef") String hostMoRef
+    );
 
     /**
      * 恢复到新位置时，查询虚拟机rdm磁盘的ProductInitiator详情

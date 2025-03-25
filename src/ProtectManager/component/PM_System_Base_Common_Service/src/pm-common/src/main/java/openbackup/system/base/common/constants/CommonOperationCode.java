@@ -541,4 +541,19 @@ public class CommonOperationCode {
      * 删除角色
      */
     public static final String DELETE_ROLE = "0x2064032B0020";
+
+    /**
+     * 在自动扫描资源时，系统对资源创建保护
+     */
+    public static final String AUTO_SCAN_AND_CREATE_PROTECT = "0x20640334000E";
+
+    /**
+     * 在自动扫描资源时，系统对资源移除保护
+     */
+    public static final String AUTO_SCAN_AND_REMOVE_PROTECT = "0x20640334000F";
+
+    /**
+     * 在自动扫描资源时，系统对资源修改保护
+     */
+    public static final String AUTO_SCAN_AND_MODIFY_PROTECT = "0x206403340010";
 }

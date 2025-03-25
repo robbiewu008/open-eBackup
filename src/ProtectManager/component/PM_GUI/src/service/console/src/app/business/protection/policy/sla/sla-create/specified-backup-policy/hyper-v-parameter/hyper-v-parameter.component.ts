@@ -16,7 +16,8 @@ import {
   BaseUtilService,
   I18NService,
   ProtectResourceAction,
-  QosService
+  QosService,
+  RouterUrl
 } from 'app/shared';
 import { assign, find, first, map, size } from 'lodash';
 
@@ -46,6 +47,8 @@ export class HyperVParameterComponent implements OnInit {
   waitTimesErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 30])
   });
+
+  ratePolicyRouterUrl = RouterUrl.ProtectionLimitRatePolicy;
 
   constructor(
     private baseUtilService: BaseUtilService,

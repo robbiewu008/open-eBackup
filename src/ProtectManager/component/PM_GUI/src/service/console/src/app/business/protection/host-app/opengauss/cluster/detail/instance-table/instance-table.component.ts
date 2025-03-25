@@ -32,7 +32,7 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
-import { assign, each, filter, isEmpty, isUndefined, map, size } from 'lodash';
+import { assign, each, filter, isEmpty, isUndefined, size } from 'lodash';
 
 @Component({
   selector: 'aui-instance-table',
@@ -69,7 +69,7 @@ export class InstanceTableComponent implements OnInit, AfterViewInit {
         name: this.i18n.get('common_name_label')
       },
       {
-        key: 'instanceStatus',
+        key: 'instanceState',
         name: this.i18n.get('common_status_label'),
         filter: {
           type: 'select',
@@ -135,9 +135,6 @@ export class InstanceTableComponent implements OnInit, AfterViewInit {
     };
     if (!isEmpty(filters.conditions_v2)) {
       const conditionsTemp = JSON.parse(filters.conditions_v2);
-      if (conditionsTemp.instanceStatus) {
-        delete conditionsTemp.instanceStatus;
-      }
       if (conditionsTemp.equipment) {
         assign(conditionsTemp, {
           environment: {
@@ -180,7 +177,7 @@ export class InstanceTableComponent implements OnInit, AfterViewInit {
           each(resource, item => {
             assign(item, {
               sub_type: item.subType,
-              instanceStatus: DataMap.openGauss_InstanceStatus.offline.value
+              instanceState: DataMap.openGauss_InstanceStatus.offline.value
             });
             extendSlaInfo(item);
           });
@@ -188,16 +185,16 @@ export class InstanceTableComponent implements OnInit, AfterViewInit {
           each(resource, item => {
             assign(item, {
               sub_type: item.subType,
-              instanceStatus: item.extendInfo.instanceState
+              instanceState: item.extendInfo.instanceState
             });
             extendSlaInfo(item);
           });
         }
         if (filters.conditions) {
           const conditions = JSON.parse(filters.conditions);
-          if (size(conditions.instanceStatus) === 1) {
+          if (size(conditions.instanceState) === 1) {
             resource = resource.filter(item => {
-              return item.instanceStatus === conditions.instanceStatus[0];
+              return item.instanceState === conditions.instanceState[0];
             });
           }
         }

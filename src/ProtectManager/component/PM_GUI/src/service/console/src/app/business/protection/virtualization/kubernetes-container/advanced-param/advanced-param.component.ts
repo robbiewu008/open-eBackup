@@ -45,8 +45,8 @@ export class AdvancedParamComponent implements OnInit {
 
   backupHelpHover() {
     const url = this.i18n.isEn
-      ? '/console/assets/help/a8000/en-us/index.html#kubernetes_CSI_00066.html'
-      : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00066.html';
+      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002164589986.html'
+      : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00108.html';
     this.appUtilsService.openSpecialHelp(url);
   }
 

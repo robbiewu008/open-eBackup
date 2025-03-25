@@ -17,24 +17,24 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="步骤2：添加存储设备（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）">
+  <meta name="DC.Title" content="步骤2：（可选）添加存储设备（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="nas_s_0020.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="nas_s_0022">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>步骤2：添加存储设备（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</title>
+  <title>步骤2：（可选）添加存储设备（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="nas_s_0022"></a><a name="nas_s_0022"></a>
-  <h1 class="topictitle1">步骤2：添加存储设备（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</h1>
+  <h1 class="topictitle1">步骤2：（可选）添加存储设备（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</h1>
   <div>
    <p>执行NAS共享备份恢复前，如果需要<span>本产品</span>自动扫描存储设备上的文件系统，则可以参考本章节添加存储设备。否则，可以跳过本章节。</p>
    <div class="section">
@@ -48,16 +48,26 @@
    </div>
    <div class="section">
     <h4 class="sectiontitle">注意事项</h4>
-    <p>当存储设备为NetApp ONTAP时，请确保在NetApp ONTAP管理界面中已配置<span class="uicontrol">“管理接口”</span>，否则会导致添加存储设备失败。</p>
+    <ol>
+     <li>当存储设备为NetApp ONTAP时，请确保在NetApp ONTAP管理界面中已配置<span class="uicontrol">“管理接口”</span>，否则会导致添加存储设备失败。</li>
+     <li>当存储设备为NetApp ONTAP时，不支持扫描状态为<span class="uicontrol">“脱机”</span>的卷对应的NAS共享。</li>
+     <li>当存储设备为NetApp ONTAP时，需要给用户对应角色设置以下权限：
+      <ol type="a">
+       <li>/api/cluster 只读</li>
+       <li>/api/network/ip/interfaces 只读</li>
+       <li>/api/protocols/cifs/shares 读写</li>
+       <li>/api/storage/volumes 读写</li>
+      </ol></li>
+    </ol>
    </div>
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>选择<span class="uicontrol" id="nas_s_0022__nas_s_0013_zh-cn_topic_0000001839142377_uicontrol14672036027">“<span id="nas_s_0022__nas_s_0013_zh-cn_topic_0000001839142377_text19671936024">保护</span> &gt; 文件系统 &gt; 存储设备”</span>。</span><p></p>
-      <div class="note" id="nas_s_0022__nas_s_0013_zh-cn_topic_0000001839142377_note172851315173">
+     <li><span>选择<span class="uicontrol" id="nas_s_0022__nas_s_0013_zh-cn_topic_0000002199964685_uicontrol14672036027">“<span id="nas_s_0022__nas_s_0013_zh-cn_topic_0000002199964685_text19671936024">保护</span> &gt; 文件系统 &gt; 存储设备”</span>。</span><p></p>
+      <div class="note" id="nas_s_0022__nas_s_0013_zh-cn_topic_0000002199964685_note172851315173">
        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="nas_s_0022__nas_s_0013_zh-cn_topic_0000001839142377_p77283132179">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0022__nas_s_0013_zh-cn_topic_0000001839142377_uicontrol13191103461714">“<span id="nas_s_0022__nas_s_0013_zh-cn_topic_0000001839142377_text121911134171715">保护</span> &gt; 文件服务 &gt; 存储设备”</span>。</p>
+        <p id="nas_s_0022__nas_s_0013_zh-cn_topic_0000002199964685_p77283132179">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0022__nas_s_0013_zh-cn_topic_0000002199964685_uicontrol13191103461714">“<span id="nas_s_0022__nas_s_0013_zh-cn_topic_0000002199964685_text121911134171715">保护</span> &gt; 文件服务 &gt; 存储设备”</span>。</p>
        </div>
       </div> <p></p></li>
      <li><span>单击<span class="uicontrol" id="nas_s_0022__nas_s_0013_uicontrol264533912494">“<span id="nas_s_0022__nas_s_0013_text6739926144512">添加设备</span>”</span>，添加存储设备。</span></li>
@@ -112,12 +122,12 @@
          </tr>
          <tr>
           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p><span>校验证书</span></p></td>
-          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p>默认开启，请导入<a href="nas_s_0012.html">步骤1：获取存储设备CA证书</a>章节中获取的存储设备证书以确保<span id="nas_s_0022__nas_s_0013_text1420811157135">本产品</span>与存储设备交互的安全性。关闭后，系统与存储设备通信可能存在安全风险，请谨慎操作。</p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p>默认开启，请导入<a href="nas_s_0012.html">步骤1：（可选）获取存储设备CA证书</a>章节中获取的存储设备证书以确保<span id="nas_s_0022__nas_s_0013_text1420811157135">本产品</span>与存储设备交互的安全性。关闭后，系统与存储设备通信可能存在安全风险，请谨慎操作。</p></td>
          </tr>
         </tbody>
        </table>
       </div> <p></p></li>
-     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span><p></p><p>注册成功后，已注册的存储设备信息将在<span class="uicontrol">“<span>存储设备</span>”</span>页面显示。</p> <p><span>本产品</span>将自动扫描存储设备中的NAS共享，并在<span class="uicontrol">“<span id="nas_s_0022__zh-cn_topic_0000001839142377_text99081414144119">保护</span> &gt; 文件系统 &gt; NAS共享”</span>页面展示。对于1.5.0版本，则在<span class="uicontrol">“<span id="nas_s_0022__zh-cn_topic_0000001839142377_text51105144188">保护</span> &gt; 文件服务 &gt; NAS文件系统”</span>页面展示。如果访问NAS共享需要认证信息时，还需要在<span>本产品</span>上配置NAS共享的认证信息，详细操作请参见<a href="nas_s_0023.html">步骤3：配置NAS共享信息（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</a>。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span><p></p><p>注册成功后，已注册的存储设备信息将在<span class="uicontrol">“<span>存储设备</span>”</span>页面显示。</p> <p><span>本产品</span>将自动扫描存储设备中的NAS共享，并在<span class="uicontrol">“<span id="nas_s_0022__zh-cn_topic_0000002199964685_text99081414144119">保护</span> &gt; 文件系统 &gt; NAS共享”</span>页面展示。对于1.5.0版本，则在<span class="uicontrol">“<span id="nas_s_0022__zh-cn_topic_0000002199964685_text51105144188">保护</span> &gt; 文件服务 &gt; NAS文件系统”</span>页面展示。如果访问NAS共享需要认证信息时，还需要在<span>本产品</span>上配置NAS共享的认证信息，详细操作请参见<a href="nas_s_0023.html">（可选）步骤3：配置NAS共享信息（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</a>。</p> <p></p></li>
     </ol>
    </div>
   </div>

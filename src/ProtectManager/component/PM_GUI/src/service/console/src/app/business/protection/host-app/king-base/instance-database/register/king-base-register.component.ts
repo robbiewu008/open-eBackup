@@ -387,16 +387,18 @@ export class KingBaseRegisterComponent implements OnInit {
   }
 
   pathHelpHover() {
-    const languageType = this.i18n.isEn ? 'en-us' : 'zh-cn';
     this.appUtilsService.openSpecialHelp(
-      `/console/assets/help/a8000/${languageType}/index.html#kingbase-00009.html`
+      this.i18n.isEn
+        ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002200106653.html'
+        : `/console/assets/help/a8000/zh-cn/index.html#kingbase-00011.html`
     );
   }
 
   ipAddressHelpHover() {
-    const languageType = this.i18n.isEn ? 'en-us' : 'zh-cn';
     this.appUtilsService.openSpecialHelp(
-      `/console/assets/help/a8000/${languageType}/index.html#kingbase-00009.html`
+      this.i18n.isEn
+        ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002200106653.html'
+        : `/console/assets/help/a8000/zh-cn/index.html#kingbase-00011.html`
     );
   }
   getProxyOptions(uuid) {

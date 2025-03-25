@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="airgap_0018.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="documenttype" content="usermanual">
   <meta name="prodname" content="csbs">
   <meta name="DC.Format" content="XHTML">
@@ -107,14 +107,18 @@
           <td class="cellrowborder" valign="top" width="75.53%" headers="mcps1.3.1.2.3.2.1.2.3.1.2 "><p>Air Gap策略是否已应用于存储设备。</p>
            <ul>
             <li>应用中：已关联并开启Air Gap策略。</li>
-            <li>未应用：已关联Air Gap策略，Air Gap策略关闭。
-             <div class="note">
-              <span class="notetitle"> 说明： </span>
-              <div class="notebody">
-               <p>存储设备未关联Air Gap策略时，显示<span class="uicontrol">“--”</span>。</p>
-              </div>
-             </div></li>
-           </ul></td>
+            <li>未应用：已关联Air Gap策略，Air Gap策略关闭。</li>
+            <li>已失效：对于已关联的Air Gap策略，通过单击“断开链路”或开启“联动侦测”后系统侦测到当前设备文件系统已感染，断开了存储设备复制链路，导致Air Gap策略不生效。</li>
+           </ul>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <ul>
+              <li>存储设备未关联Air Gap策略时，显示<span class="uicontrol">“--”</span>。</li>
+              <li>仅1.6.0及后续版本支持“已失效”状态。</li>
+             </ul>
+            </div>
+           </div></td>
          </tr>
         </tbody>
        </table>

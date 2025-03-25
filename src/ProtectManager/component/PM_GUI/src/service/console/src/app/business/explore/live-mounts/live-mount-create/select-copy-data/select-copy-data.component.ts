@@ -229,7 +229,6 @@ export class SelectCopyDataComponent implements OnInit {
               return includes(
                 [
                   DataMap.CopyData_generatedType.backup.value,
-                  DataMap.CopyData_generatedType.replicate.value,
                   DataMap.CopyData_generatedType.liveMount.value
                 ],
                 v.value
@@ -362,6 +361,13 @@ export class SelectCopyDataComponent implements OnInit {
       ) {
         assign(this.copyFilterParams, {
           generated_by: [DataMap.CopyData_generatedType.backup.value]
+        });
+      } else if (this.appUtilsService.isDistributed) {
+        assign(this.copyFilterParams, {
+          generated_by: [
+            DataMap.CopyData_generatedType.backup.value,
+            DataMap.CopyData_generatedType.liveMount.value
+          ]
         });
       } else {
         assign(this.copyFilterParams, {

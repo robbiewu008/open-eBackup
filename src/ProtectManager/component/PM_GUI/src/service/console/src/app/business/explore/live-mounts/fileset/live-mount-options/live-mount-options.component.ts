@@ -1136,7 +1136,10 @@ export class LiveMountOptionsComponent implements OnInit {
               label: replace(last(split(item.extendInfo?.path, '/')), '/', ''),
               disabled:
                 (isAuthHost && isNotMntPath) ||
-                includes(['/mnt', '/opt', '/tmp'], item.extendInfo.path) ||
+                includes(
+                  ['/mnt', '/opt', '/tmp', '/home'],
+                  item.extendInfo.path
+                ) ||
                 !!find(
                   sysDir,
                   str =>

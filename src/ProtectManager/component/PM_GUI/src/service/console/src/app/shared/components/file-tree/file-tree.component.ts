@@ -55,6 +55,7 @@ import {
 } from 'app/shared/consts';
 import { extendNodeParams } from 'app/shared';
 import { finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'aui-file-tree',
@@ -135,7 +136,8 @@ export class FileTreeComponent implements OnInit, OnDestroy {
     private i18n: I18NService,
     private globalService: GlobalService,
     private copiesApiService: CopiesService,
-    private copyControllerService: CopyControllerService
+    private copyControllerService: CopyControllerService,
+    public appUtilsService: AppUtilsService
   ) {}
 
   ngOnInit(): void {

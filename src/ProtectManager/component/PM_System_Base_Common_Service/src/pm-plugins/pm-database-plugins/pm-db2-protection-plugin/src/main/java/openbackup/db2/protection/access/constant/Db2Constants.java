@@ -40,7 +40,7 @@ public class Db2Constants {
     /**
      * powerHA集群允许最大节点规格数
      */
-    public static final int POWER_HA_NODE_MAX_COUNT = 2;
+    public static final int POWER_HA_NODE_MAX_COUNT = 3;
 
     /**
      * HADR集群允许最大节点规格数

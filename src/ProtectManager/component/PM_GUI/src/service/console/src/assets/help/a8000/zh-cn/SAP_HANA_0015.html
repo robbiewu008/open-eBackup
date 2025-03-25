@@ -1,0 +1,88 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤4：配置日志备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="SAP_HANA_0011.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="SAP_HANA_0015">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤4：配置日志备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="SAP_HANA_0015"></a><a name="SAP_HANA_0015"></a>
+
+<h1 class="topictitle1">步骤4：配置日志备份</h1>
+<div><p>如果在<a href="SAP_HANA_0017.html">步骤5：创建备份SLA</a>中配置了日志备份，请参考本节在SAP HANA数据库开启日志备份，日志备份才能生效。非该场景请忽略本节。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><p><span>OceanProtect</span>对SAP HANA数据库的日志备份依赖SAP HANA自身的日志备份能力。SAP HANA备份日志后，<span>OceanProtect</span>将其备份至备份存储。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>登录系统数据库。</span><p><ol type="a"><li>使用PuTTY，登录SAP HANA数据库主机。</li><li>执行以下命令，切换到SAP系统用户。<pre class="screen">su - <em>&lt;sid&gt;</em>adm</pre>
+<p>其中，“sid”为SAP系统ID。例如：</p>
+<pre class="screen">su - s00adm</pre>
+</li><li>执行以下命令，登录系统数据库。<pre class="screen">hdbsql -i <em>实例id</em> -n <em>系统数据库主节点的hostname</em>:<em>系统数据库的SQL Port</em> -d SYSTEMDB -u <em>系统数据库用户名</em> -p<em> 系统数据库密码</em></pre>
+<p>如：</p>
+<pre class="screen">hdbsql -i 00 -n localhost:30013 -d SYSTEMDB -u SYSTEM -p xxxxxxx</pre>
+</li></ol>
+</p></li></ol><ol start="2"><li id="SAP_HANA_0015__li1684818481011"><a name="SAP_HANA_0015__li1684818481011"></a><a name="li1684818481011"></a><span>开启并配置日志备份功能。</span><p><ol type="a"><li>执行以下命令开启SAP HANA数据库日志备份。<pre class="screen">alter system alter configuration ('global.ini', 'SYSTEM') set ('persistence', 'enable_auto_log_backup') = 'yes' with reconfigure;</pre>
+</li><li>执行以下命令设置日志备份副本的存放目录。<div class="p">请确保日志备份副本的存放目录可用空间大于所有日志备份副本将占用的空间，并且确保SAP HANA日志备份路径权限至少为755。同时，日志备份副本的存放目录必须为共享目录。<div class="notice"><span class="noticetitle"><img src="public_sys-resources/notice_3.0-zh-cn.png"> </span><div class="noticebody"><p>执行以下命令设置的“日志备份副本存放目录”必须为同一目录，否则日志备份任务会失败。</p>
+</div></div>
+<pre class="screen">alter system alter configuration ('global.ini', 'SYSTEM') set ('persistence', 'basepath_logbackup') = '<em>日志备份副本存放目录</em>' with reconfigure;
+alter system alter configuration ('global.ini', 'SYSTEM') set ('persistence', 'basepath_catalogbackup') = '<em>日志备份副本存放目录</em>' with reconfigure;</pre>
+</div>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><div class="p">共享目录的查询方式如下：<ol id="SAP_HANA_0015__ol191671738121118"><li id="SAP_HANA_0015__li51671838151120">使用PuTTY工具，以root用户登录SAP HANA数据库所在主机。</li><li id="SAP_HANA_0015__li1411414546215"><a name="SAP_HANA_0015__li1411414546215"></a><a name="li1411414546215"></a>执行以下命令，切换到SAP系统用户。<pre class="screen" id="SAP_HANA_0015__screen148394565408">su - <em id="SAP_HANA_0015__i462684119271">&lt;sid&gt;</em>adm</pre>
+<p id="SAP_HANA_0015__p10839195616407">其中，“sid”为SAP系统ID。例如：</p>
+<pre class="screen" id="SAP_HANA_0015__screen1839115644015">hana1:<font style="font-size:8pt" Face="Courier New" >~</font> # su - s00adm
+s00adm@hana1:/usr/sap/S00/HDB00&gt; </pre>
+<p id="SAP_HANA_0015__p195411748132413">回显样例中，“/usr/sap/S00/HDB00” 即为SAP系统用户目录的软链接。</p>
+</li><li id="SAP_HANA_0015__li1216811387113">执行以下命令，查看SAP系统用户目录的真实指向、获取SAP HANA的共享目录。<pre class="screen" id="SAP_HANA_0015__screen7168123818112">ll <em id="SAP_HANA_0015__i639144710283">usr_Directory</em> </pre>
+<p id="SAP_HANA_0015__p22102495165">其中，“usr_Directory”为<a href="#SAP_HANA_0015__li1411414546215">2.b.ii</a>获取的软链接相关路径。例如：</p>
+<pre class="screen" id="SAP_HANA_0015__screen124041114175">s00adm@hana1:/usr/sap/S00/HDB00&gt; ll /usr/sap/S00
+total 4
+lrwxrwxrwx 1 s00adm sapsys  27 Dec 11 09:41 HDB00 -&gt; /home/hana/shared/K00/HDB00
+drwxr-x--- 1 s00adm sapsys  38 Dec 11 09:48 hdblcm_uploads
+drwxr-xr-x 1 s00adm sapsys 338 Dec 11 09:44 home
+drwxr-x--- 1 s00adm sapsys  32 Dec 11 09:39 SYS</pre>
+<p id="SAP_HANA_0015__p14534259172819">回显样例中，“shared”目录的上一级，“/home/hana”，即为SAP HANA的共享目录。</p>
+</li></ol>
+</div>
+</div></div>
+</li><li>执行以下命令设置日志备份的频率，即间隔多久备份一次。<pre class="screen">alter system alter configuration ('global.ini', 'SYSTEM') set ('persistence', 'log_backup_timeout_s') = '<em>日志备份频率</em><em>（单位为秒）</em>' with reconfigure;</pre>
+<p>建议该时间间隔的取值在<a href="SAP_HANA_0017.html#SAP_HANA_0017__zh-cn_topic_0000002058628320_zh-cn_topic_0000002004293194_zh-cn_topic_0000002004090332_zh-cn_topic_0000001839268545_table2663151516335">表1</a>中设置的日志备份时间间隔的50%~100%之间。例如当备份策略中设置的日志备份时间间隔为60分钟，则此参数建议配置的时间间隔取值范围为30分钟~60分钟。</p>
+</li></ol>
+</p></li></ol>
+</div>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="SAP_HANA_0011.html">备份SAP HANA数据库（通用数据库入口）</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

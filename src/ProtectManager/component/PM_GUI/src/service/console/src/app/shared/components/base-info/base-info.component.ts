@@ -611,7 +611,7 @@ export class BaseInfoComponent implements OnInit, OnDestroy {
           'insight_report_belong_cluster_label'
         );
         this.formItems[0][2].content =
-          this.source.instanceStatus ===
+          this.source.instanceState ===
           DataMap.openGauss_InstanceStatus.normal.value
             ? 1
             : 0;

@@ -1,0 +1,73 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoration Is Successful but the VM Fails to Be Started When the Original VM Is Overwritten for Restoration">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200140529">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoration Is Successful but the VM Fails to Be Started When the Original VM Is Overwritten for Restoration</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200140529"></a><a name="EN-US_TOPIC_0000002200140529"></a>
+  <h1 class="topictitle1">Restoration Is Successful but the VM Fails to Be Started When the Original VM Is Overwritten for Restoration</h1>
+  <div>
+   <div class="section" id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_section1791253715569">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_p782816204341">When restoring a VM to the original location, select <span class="uicontrol" id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_uicontrol14933520364"><b><span id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_text269914634715"><strong>Rewrite Original VM</strong></span></b></span> and <span class="parmvalue" id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_parmvalue935701633717"><b><span id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_text0650155819478"><strong>Power on Automatically After Restoration</strong></span></b></span> in the restoration job. The restoration job is successfully executed, but the VM fails to be started. In addition, the restoration job uses the Hot-Add transmission mode, which can be found in the restoration job details.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_section1231124115569">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_p176200559402">When a VM is restored in Hot-Add transmission mode, the VM disk is unmounted from the host where the client is installed after the data restoration is complete. However, the disk fails to be unmounted due to an internal error of the VDDK library and then gets locked. Consequently, the VM cannot be started.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_section1451519202617">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_ol201448262269">
+     <li id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_li2083185225310"><span>Use a browser to log in to the vCenter Server.</span><p></p><p id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_p171383317558">Login address: <strong id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_b2701413546">https://</strong><em id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_i0871435412">vCenter Server IP address</em></p> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_li1596383017591"><span>Manually unmount the VM disk from the host where the client is installed.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_ol101035585918">
+       <li id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_li13968359145813">Locate the host where the client is installed.</li>
+       <li id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_li133402016013">Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_uicontrol77185439557"><b>ACTIONS &gt; Edit Settings</b></span>.</li>
+       <li id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_li18762183110019">Locate the disk to be unmounted based on the restoration job ID.<p id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_p14361686211"><a name="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_li18762183110019"></a><a name="en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_li18762183110019"></a>The restoration job ID can be obtained from the job details on OceanProtect, for example, b6f83bfa-c42d-476f-854a-f4f9f6b2e427.</p></li>
+       <li id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_li19151937134">Click <span><img id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_image152991585311" src="en-us_image_0000002200101909.png"></span> on the right of the disk to unmount the disk. When unmounting the disk, deselect <span class="uicontrol" id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_uicontrol16386143819418"><b>Delete files from datastore</b></span>.</li>
+       <li id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_li43123401241">Click <span class="uicontrol" id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_uicontrol1086185611514"><b>OK</b></span>.</li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_li328614331251"><span>Find the restored VM on the vCenter Server.</span></li>
+     <li id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_li26565371511"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_uicontrol92728488516"><b>ACTIONS &gt; Snapshots &gt; Consolidate</b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_li645511581511"><span>After the consolidation is complete, choose <span class="uicontrol" id="EN-US_TOPIC_0000002200140529__en-us_topic_0000002200100997_en-us_topic_0000001338331861_en-us_topic_0000001311455137_uicontrol15513122017617"><b>ACTIONS &gt; Power &gt; Power On</b></span> to start the VM.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

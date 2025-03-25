@@ -1,0 +1,90 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring One or More Databases in an SQL Server Instance or Availability Group">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164765206.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002199971749">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring One or More Databases in an SQL Server Instance or Availability Group</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002199971749"></a><a name="EN-US_TOPIC_0000002199971749"></a>
+
+<h1 class="topictitle1">Restoring One or More Databases in an SQL Server Instance or Availability Group</h1>
+<div><p>This section describes how to restore one or more databases of a backed-up SQL Server instance to the original or a different host using copies.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Supported resource types include the single instance, cluster instance, and availability group.</li><li>Before restoring data to a different host, ensure that a database instance exists on the target host.</li><li>Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li><li>The target location must have a reserved capacity greater than three times the size of the copy to be used for restoration.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002199964685_uicontrol17392202272717"><b><span id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002199964685_text1939210224272"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002199964685_text439314220278"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002199964685_text14652358184918"><strong>Databases</strong></span> &gt; <span id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002199964685_text6385151219337"><strong>SQL Server</strong></span></b></span>.</span></li><li><span>On the <span class="uicontrol"><b>Copies</b></span> tab page, find the copy for restoration based on the copy information.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Database-level restoration supports the restoration of backup copies and replication copies of an instance.</p>
+</div></div>
+</p></li><li><span>In the row of the desired copy, choose <span class="uicontrol"><b>More &gt; Database-level Restoration</b></span>.</span></li><li><span>On the <span class="uicontrol"><b>Database-level Restoration</b></span> tab page, select the database objects to be restored in the left pane and the target location for restoration in the right pane.</span></li><li><span>Set the parameters for database-level restoration. For details, see <a href="#EN-US_TOPIC_0000002199971749__en-us_topic_0000001792366534_table93951625101715">Table 1</a>.</span><p>
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002199971749__en-us_topic_0000001792366534_table93951625101715"></a><a name="en-us_topic_0000001792366534_table93951625101715"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002199971749__en-us_topic_0000001792366534_table93951625101715" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for database-level restoration</caption><colgroup><col style="width:32.53%"><col style="width:67.47%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.3.2.5.2.1.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.3.2.5.2.1.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_text15471356412"><strong>Restore To</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>Select either <span class="uicontrol" id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_uicontrol84961241181211"><b><span id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_text19159183316300"><strong>Original location</strong></span></b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_uicontrol12496341161217"><b><span id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_text17983138143120"><strong>New location</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_text105489481943"><strong>Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>If <strong id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_b29321215184518">Restore To</strong> is set to <span class="uicontrol" id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_uicontrol5674181313310"><b><span id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_text48352563919"><strong>Original location</strong></span></b></span>, the original location is displayed by default.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><strong>Tag</strong></p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>This parameter is available only in 1.6.0 and later versions.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>If you set <strong>Restore To</strong> to <span class="uicontrol"><b>New location</b></span>, you can filter the resources to be restored by tag.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_text329817453610"><strong>Target Host/Cluster</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>If <strong id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_b1120593512444">Restore To</strong> is set to <span class="uicontrol" id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_uicontrol63818461965"><b><span id="EN-US_TOPIC_0000002199971749__en-us_topic_0000002200006173_text625115598103"><strong>New location</strong></span></b></span>, select the instance on the target host.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>Before performing restoration, ensure that you have exited Microsoft SQL Server Management Studio. During restoration, the target database is shut down.</p>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164765206.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

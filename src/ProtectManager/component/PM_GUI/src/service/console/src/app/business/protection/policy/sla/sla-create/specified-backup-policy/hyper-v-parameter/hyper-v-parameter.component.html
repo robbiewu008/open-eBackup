@@ -17,8 +17,8 @@
             <lv-form-item>
                 <lv-form-label>
                     {{'common_limit_rate_policy_single_label' | i18n}}
-                    <i lv-icon="aui-icon-help" [lv-tooltip]="limitTooltip"
-                    lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint" lvColorState='true'></i>
+                    <aui-router-jump-help [routerUrl]="ratePolicyRouterUrl"
+                        helpTips="{{'common_limit_rate_policy_tip_label' | i18n}}"></aui-router-jump-help>
                 </lv-form-label>
                 <lv-form-control>
                     <ng-container *ngIf="isSlaDetail">
@@ -151,9 +151,5 @@
     </lv-collapse-panel>
 </lv-collapse>
 <ng-template #advanceTpl>
-  <h2>{{'common_advanced_label'|i18n}}</h2>
-</ng-template>
-
-<ng-template #limitTooltip>
-    <span [innerHTML]="'common_limit_rate_policy_tip_label' | i18n"></span>
+    <h2>{{'common_advanced_label'|i18n}}</h2>
 </ng-template>

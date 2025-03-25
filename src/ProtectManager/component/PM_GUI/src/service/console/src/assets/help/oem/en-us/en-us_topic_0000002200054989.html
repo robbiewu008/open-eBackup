@@ -1,0 +1,80 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="An Error Is Reported During VM Snapshot Creation, Indicating that Snapshots Cannot Be Created">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200054989">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>An Error Is Reported During VM Snapshot Creation, Indicating that Snapshots Cannot Be Created</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200054989"></a><a name="EN-US_TOPIC_0000002200054989"></a>
+  <h1 class="topictitle1">An Error Is Reported During VM Snapshot Creation, Indicating that Snapshots Cannot Be Created</h1>
+  <div>
+   <div class="section" id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_section7132320145912">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_p109411357131112">New snapshots cannot be created for the VM, and the following messages are displayed:</p>
+    <p id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_p126319181218">"Detected an invalid snapshot configuration."</p>
+    <p id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_p974216451218">"An error occurred while taking a snapshot: A required file was not found."</p>
+    <p id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_p11773133842217">"An error occurred while saving a snapshot: A required file was not found."</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_section04103712434">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_p2086834911574">Due to the VMware mechanism problems, isolated snapshots may occur when the disk space is insufficient or the storage is faulty during snapshot creation. As a result, snapshots cannot be created.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_section798410146487">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <p id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_p57121556202314">If the disk space is used up, clear the disk.</p>
+    <ol id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_ol1993315212415">
+     <li id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_li159331323242"><span>Log in to the ESXi host background where the VM for which snapshots cannot be created resides.</span></li>
+     <li id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_li1993720124247"><span>Run the <strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b43189203521">cd /vmfs/volumes/</strong><em id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_i131992065219">Storage name</em><strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b5319120195217">/</strong><em id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_i13319132010529">VM name</em> command to log in to the faulty VM.</span></li>
+     <li id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_li265148144814"><span>Run the <strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b14271072617">mkdir tmp</strong> command to create a temporary folder <strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b1144131212619">tmp</strong>.</span></li>
+     <li id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_li10678135194817"><span>Run the <strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b1256211952618">ls</strong> command to list the files in the current directory and find the files with the <strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b10130195616264">-sesparse.vmdk</strong> extension.</span></li>
+     <li id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_li17607124820479"><span>Run the <strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b1063185685210">mv</strong> <em id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_i563125619522">xxxx</em><strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b863195695218">-sesparse.vmdk tmp/</strong> command to move the file to the <strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b5634563528">tmp</strong> folder.</span></li>
+     <li id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_li16448142095019"><span>Return to the VM management page to create a snapshot. After the snapshot is created successfully, return to the ESXi host background and run the <strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b7530193217538">cd ../</strong> command to return to the upper-level directory, that is, the <strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b1853053211538">/vmfs/volumes/</strong><em id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_i8530032145315">Storage name</em> directory.</span></li>
+     <li id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_li486415149495"><span>Run the <strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b165062206291">rm -rf tmp/</strong> command to delete the <strong id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_b792212572919">tmp</strong> folder.</span></li>
+    </ol>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_section590752117443">
+    <h4 class="sectiontitle">Suggestions</h4>
+    <p id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_p15225181517409">None</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_section1227093194410">
+    <h4 class="sectiontitle">Reference</h4>
+    <p id="EN-US_TOPIC_0000002200054989__en-us_topic_0000002200100813_p165892210816">None</p>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

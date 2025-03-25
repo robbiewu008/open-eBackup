@@ -22,8 +22,8 @@
   <meta name="DC.Relation" scheme="URI" content="volume_0011.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
@@ -42,20 +42,27 @@
     <ul>
      <li>手动备份时，SLA中定义的参数（<span class="uicontrol">“<span>失败后自动重试</span>”</span>除外）会应用到手动备份任务中。</li>
      <li>手动备份产生的副本保留时长按照SLA中的定义进行保留。</li>
+     <li>如果客户端所在主机为Windows OS，<span id="volume_0016__zh-cn_topic_0000002200146973_text1448272102617">本产品</span>会默认将备份存储的文件系统挂载至“C:\mnt\databackup\”路径。如需修改挂载路径，可在“<em id="volume_0016__zh-cn_topic_0000002200146973_i1542112916218">客户端安装目录</em>\DataBackup\ProtectClient\ProtectClient-E\conf”目录下打开agent_cfg.xml配置文件，修改<strong id="volume_0016__zh-cn_topic_0000002200146973_b3394105619195">win_mount_public_path value</strong>配置项的值。
+      <div class="note" id="volume_0016__zh-cn_topic_0000002200146973_note197102742415">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="volume_0016__zh-cn_topic_0000002200146973_p1197162742413">目录中的<em id="volume_0016__zh-cn_topic_0000002200146973_i1232194212249">客户端安装目录</em>请根据实际替换。</p>
+       </div>
+      </div></li>
     </ul>
    </div>
    <div class="section">
-    <h4 class="sectiontitle">作步骤</h4>
+    <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>选择<span class="uicontrol" id="volume_0016__zh-cn_topic_0000001839142377_uicontrol34250519116">“<span id="volume_0016__zh-cn_topic_0000001839142377_text154255511911">保护</span> &gt; 文件系统 &gt; 卷”</span>。</span></li>
+     <li><span>选择<span class="uicontrol" id="volume_0016__zh-cn_topic_0000002199964685_uicontrol34250519116">“<span id="volume_0016__zh-cn_topic_0000002199964685_text154255511911">保护</span> &gt; 文件系统 &gt; 卷”</span>。</span></li>
      <li><span>勾选需要保护的卷，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p></p><p>您也可以勾选多个卷进行批量保护。</p> <p></p></li>
      <li><span>选择SLA。</span><p></p>
-      <div class="p" id="volume_0016__zh-cn_topic_0000001964713008_p16181740836">
-       您也可以单击<span class="uicontrol" id="volume_0016__zh-cn_topic_0000001964713008_uicontrol744210206420">“<span id="volume_0016__zh-cn_topic_0000001964713008_text1873812341015">创建</span>”</span>，创建新的SLA。
-       <div class="note" id="volume_0016__zh-cn_topic_0000001964713008_note25947145710">
+      <div class="p" id="volume_0016__zh-cn_topic_0000002200146973_p16181740836">
+       您也可以单击<span class="uicontrol" id="volume_0016__zh-cn_topic_0000002200146973_uicontrol744210206420">“<span id="volume_0016__zh-cn_topic_0000002200146973_text1873812341015">创建</span>”</span>，创建新的SLA。
+       <div class="note" id="volume_0016__zh-cn_topic_0000002200146973_note25947145710">
         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
         <div class="notebody">
-         <p id="volume_0016__zh-cn_topic_0000001964713008_p125947145711"><span id="volume_0016__zh-cn_topic_0000001964713008_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
+         <p id="volume_0016__zh-cn_topic_0000002200146973_p125947145711"><span id="volume_0016__zh-cn_topic_0000002200146973_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
         </div>
        </div>
       </div> <p></p></li>
@@ -103,33 +110,14 @@
             </div></td>
           </tr>
           <tr>
-           <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 ">
-            <div class="p">
-             备份副本自动索引
-             <div class="note" id="volume_0016__vmware_gud_0028_note17447255201">
-              <span class="notetitle"> 说明： </span>
-              <div class="notebody">
-               <p id="volume_0016__vmware_gud_0028_vmware_gud_0028_p168431642184919">仅1.6.0及后续版本支持此参数。</p>
-              </div>
-             </div>
-            </div></td>
-           <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p><span style="color:#282B33;">开启后，系统自动为副本创建文件索引，创建索引后，支持搜索副本中的文件、目录或链接。</span><span style="color:#282B33;">您也可以为副本手动创建索引。</span></p></td>
-          </tr>
-          <tr>
-           <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p>对象存储归档副本自动索引</p></td>
-           <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>对于文件集/NAS文件系统/NAS共享，当归档存储类型选择为“<span>对象存储</span>”时，显示该参数。对于其他应用不显示该参数。</p> <p>开启后<span style="color:#282B33;">不支持关闭。</span>系统会自动为副本创建文件索引，创建索引后，支持恢复单个或多个文件。</p>
-            <div class="note">
-             <span class="notetitle"> 说明： </span>
-             <div class="notebody">
-              <p>索引需要占用备份存储空间，当系统中的索引文件总数超过10亿时，请按照《故障处理》中的“创建副本索引失败”章节进行处理。</p>
-             </div>
-            </div></td>
+           <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p>备份副本自动索引</p></td>
+           <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p><span style="color:#282B33;">开启后，系统自动为副本创建文件索引，创建索引后，支持搜索副本中的文件、目录或链接。</span></p></td>
           </tr>
          </tbody>
         </table>
        </div>
       </div> <p></p></li>
-     <li><span>单击<span class="uicontrol" id="volume_0016__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p></p><p id="volume_0016__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol" id="volume_0016__zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p></p><p id="volume_0016__zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p> <p></p></li>
      <li><span>执行手动备份</span><p></p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
       <ol type="a">
        <li>在需要备份的卷所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。
@@ -147,7 +135,7 @@
         <div class="note">
          <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
          <div class="notebody">
-          <p><span id="volume_0016__zh-cn_topic_0000001964713008_ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
+          <p id="volume_0016__foc_gud_0020_zh-cn_topic_0000001964713008_p13522118194919"><span id="volume_0016__foc_gud_0020_zh-cn_topic_0000001964713008_ph19374310343">如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
          </div>
         </div></li>
        <li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li>

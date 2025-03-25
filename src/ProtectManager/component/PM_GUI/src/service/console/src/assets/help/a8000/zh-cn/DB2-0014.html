@@ -1,0 +1,69 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤1：开启归档模式与增量模式">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="DB2-0013.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="DB2-0014">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤1：开启归档模式与增量模式</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="DB2-0014"></a><a name="DB2-0014"></a>
+
+<h1 class="topictitle1">步骤1：开启归档模式与增量模式</h1>
+<div><p id="DB2-0014__zh-cn_topic_0000002118282942_p69553228414">执行备份之前，数据库需要开启归档模式，执行差异备份与增量备份之前，数据库需要开启增量模式。</p>
+<div class="section" id="DB2-0014__zh-cn_topic_0000002118282942_section1745019477327"><h4 class="sectiontitle">开启增量模式</h4><ol id="DB2-0014__zh-cn_topic_0000002118282942_ol175521639203517"><li id="DB2-0014__zh-cn_topic_0000002118282942_li1555213397356"><span>使用PuTTY，登录DB2数据库主机。</span></li><li id="DB2-0014__zh-cn_topic_0000002118282942_li141141942163515"><span>执行以下命令切换至DB2数据库用户，以用户名<strong id="DB2-0014__zh-cn_topic_0000002118282942_b19771462301">db2inst1</strong>为例。</span><p><pre class="screen" id="DB2-0014__zh-cn_topic_0000002118282942_screen227810563419">su - <strong id="DB2-0014__zh-cn_topic_0000002118282942_b184971445123019"><em id="DB2-0014__zh-cn_topic_0000002118282942_i1283155415251">db2inst1</em></strong></pre>
+</p></li><li id="DB2-0014__zh-cn_topic_0000002118282942_li528573184217"><span>在集群所有节点执行以下命令开启增量模式，<strong id="DB2-0014__zh-cn_topic_0000002118282942_b146757528541">test</strong>是用户自定义数据库名称。</span><p><pre class="screen" id="DB2-0014__zh-cn_topic_0000002118282942_screen1740862914312">db2 update db cfg for <em id="DB2-0014__zh-cn_topic_0000002118282942_i385212458519"><strong id="DB2-0014__zh-cn_topic_0000002118282942_b431416420517">test</strong></em> using trackmod on</pre>
+</p></li></ol>
+</div>
+<div class="section" id="DB2-0014__zh-cn_topic_0000002118282942_section14818145013482"><h4 class="sectiontitle">开启归档模式</h4><ol id="DB2-0014__zh-cn_topic_0000002118282942_ol2793194320491"><li id="DB2-0014__zh-cn_topic_0000002118282942_li1779314318493"><span>使用PuTTY，登录DB2数据库主机。</span></li><li id="DB2-0014__zh-cn_topic_0000002118282942_li19381194162817"><span>执行以下命令切换至DB2数据库用户，以用户名<strong id="DB2-0014__zh-cn_topic_0000002118282942_b687016291868">db2inst1</strong>为例。</span><p><pre class="screen" id="DB2-0014__zh-cn_topic_0000002118282942_screen838118412285">su - <em id="DB2-0014__zh-cn_topic_0000002118282942_i184513541264"><strong id="DB2-0014__zh-cn_topic_0000002118282942_b1885252867">db2inst1</strong></em></pre>
+</p></li><li id="DB2-0014__zh-cn_topic_0000002118282942_li03615183296"><span>执行以下命令进入并查询数据库用户目录。</span><p><pre class="screen" id="DB2-0014__zh-cn_topic_0000002118282942_screen199781311143015">cd
+pwd</pre>
+<p id="DB2-0014__zh-cn_topic_0000002118282942_p17905104510363">回显如下所示，“/home/db2inst1”为数据库用户目录。</p>
+<p id="DB2-0014__zh-cn_topic_0000002118282942_p16711115443616"><span><img id="DB2-0014__zh-cn_topic_0000002118282942_image3754145563617" src="zh-cn_image_0000002118835246.png"></span></p>
+</p></li><li id="DB2-0014__zh-cn_topic_0000002118282942_li194328477126"><span>在数据库用户目录下创建数据库同名文件夹路径，用于存放归档日志，以“/home/db2inst1/TEST”路径为例。</span><p><pre class="screen" id="DB2-0014__zh-cn_topic_0000002118282942_screen12674199181319">mkdir -p<em id="DB2-0014__zh-cn_topic_0000002118282942_i1874988194710"> /home/db2inst1/TEST</em></pre>
+<p id="DB2-0014__zh-cn_topic_0000002118282942_p17536382404">在数据库用户目录下，执行<strong id="DB2-0014__zh-cn_topic_0000002118282942_b1857193816419">ls</strong>查询文件夹路径是否创建成功，其回显如下所示：</p>
+<p id="DB2-0014__zh-cn_topic_0000002118282942_p7431111884012"><span><img id="DB2-0014__zh-cn_topic_0000002118282942_image10446019114020" src="zh-cn_image_0000002118838862.png"></span></p>
+</p></li><li id="DB2-0014__zh-cn_topic_0000002118282942_li631159143612"><span>执行以下命令开启归档模式，<strong id="DB2-0014__zh-cn_topic_0000002118282942_b53113597361">test</strong>是用户自定义数据库名称。</span><p><pre class="screen" id="DB2-0014__zh-cn_topic_0000002118282942_screen431135911363">db2 update db cfg for <em id="DB2-0014__zh-cn_topic_0000002118282942_i1431159133610"><strong id="DB2-0014__zh-cn_topic_0000002118282942_b19311859153614">test</strong></em> using LOGARCHMETH1 disk:<em id="DB2-0014__zh-cn_topic_0000002118282942_i53115912363">/home/db2inst1/TEST</em></pre>
+</p></li><li id="DB2-0014__zh-cn_topic_0000002118282942_li4211103311014"><span>在数据库用户目录下创建数据库同名文件夹路径，用于离线备份路径，以“/home/db2inst1/TEAT1”路径为例。</span><p><pre class="screen" id="DB2-0014__zh-cn_topic_0000002118282942_screen3212183331010">mkdir -p <em id="DB2-0014__zh-cn_topic_0000002118282942_i103449273467">/home/db2inst1/TEAT1</em></pre>
+<p id="DB2-0014__zh-cn_topic_0000002118282942_p15212153319101">在数据库用户目录下，执行<strong id="DB2-0014__zh-cn_topic_0000002118282942_b172122033171018">ls</strong>查询文件夹路径是否创建成功，其回显如下所示：</p>
+<p id="DB2-0014__zh-cn_topic_0000002118282942_p42121733121015"><span><img id="DB2-0014__zh-cn_topic_0000002118282942_image11212113381018" src="zh-cn_image_0000002154368001.png"></span></p>
+</p></li><li id="DB2-0014__zh-cn_topic_0000002118282942_li1115433119114"><span>执行以下命令开启离线备份，<strong id="DB2-0014__zh-cn_topic_0000002118282942_b18154133110114">test</strong>是用户自定义数据库名称。</span><p><pre class="screen" id="DB2-0014__zh-cn_topic_0000002118282942_screen6154143118116">db2 backup db <em id="DB2-0014__zh-cn_topic_0000002118282942_i8262152352415"><strong id="DB2-0014__zh-cn_topic_0000002118282942_b1470610224247">test</strong></em> on all nodes to <em id="DB2-0014__zh-cn_topic_0000002118282942_i1761192817246">/home/db2inst1/TEAT1</em></pre>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="DB2-0013.html">备份DB2数据库/表空间集</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

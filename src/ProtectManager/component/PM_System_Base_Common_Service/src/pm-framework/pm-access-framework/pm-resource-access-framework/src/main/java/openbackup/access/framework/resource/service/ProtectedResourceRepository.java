@@ -306,4 +306,21 @@ public interface ProtectedResourceRepository {
      * @param isFileExits isFileExits
      */
     void legoHostSighWithOldPrivateKey(boolean isFileExits);
+
+    /**
+     * 根据父资源查询子资源 使用queryWrapper进行最简查询
+     *
+     * @param parentUuid 父资源id
+     * @return 父资源下的子资源id
+     */
+    List<ProtectedResource> queryResourcesByParentUuid(String parentUuid);
+
+    /**
+     * 根据副资源和资源的来源，查询对应资源
+     *
+     * @param rootUuid rootUuid
+     * @param sourceType sourceType
+     * @return uuid set
+     */
+    List<ProtectedResource> queryResourcesByRootUuidAndSourceType(String rootUuid, String sourceType);
 }

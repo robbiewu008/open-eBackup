@@ -1,0 +1,138 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="注册数据库（适用于集群部署形态）">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="DB2-0015_a1.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="DB2-0015_a3">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>注册数据库（适用于集群部署形态）</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="DB2-0015_a3"></a><a name="DB2-0015_a3"></a>
+  <h1 class="topictitle1">注册数据库（适用于集群部署形态）</h1>
+  <div>
+   <p>当要保护的数据库为集群部署时，请参考本节注册DB2数据库集群。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>在DB2页面选择<span class="uicontrol">“<span>集群</span>”</span>页签。</span></li>
+     <li><span>单击<span class="uicontrol">“<span>注册</span>”</span>。</span></li>
+     <li><span>在<span class="uicontrol">“<span>注册</span>”</span>页面，自定义集群名称并选择类型和集群节点。</span></li>
+     <li><span>相关参数说明如<a href="#DB2-0015_a3__table8422135145120">表1</a>。</span><p></p>
+      <div class="tablenoborder">
+       <a name="DB2-0015_a3__table8422135145120"></a><a name="table8422135145120"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="DB2-0015_a3__table8422135145120" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>注册集群参数说明
+        </caption>
+        <colgroup>
+         <col style="width:17.16%">
+         <col style="width:82.84%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="17.16%" id="mcps1.3.2.2.4.2.1.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="82.84%" id="mcps1.3.2.2.4.2.1.2.3.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="17.16%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p><span>名称</span></p></td>
+          <td class="cellrowborder" valign="top" width="82.84%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p>自定义集群名称。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="17.16%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p><span>类型</span></p></td>
+          <td class="cellrowborder" valign="top" width="82.84%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 ">
+           <div class="p">
+            集群类型可选择<span style="color:#282B33;">Database Partitioning Feature、</span><span style="color:#282B33;">PowerHA、</span><span style="color:#282B33;">HADR和</span>RHEL HA类型。
+            <div class="note">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p>对于1.6.0及后续版本支持RHEL HA集群。</p>
+             </div>
+            </div>
+           </div>
+           <div class="p">
+            判断集群类型方式如下：
+            <ul>
+             <li>HADR集群
+              <ol type="a">
+               <li>使用PuTTY登录DB2数据库所在主机。</li>
+               <li>执行以下命令切换至DB2数据库用户，以用户名<strong>db2inst1</strong>为例。<pre class="screen">su - <strong><em>db2inst1</em></strong></pre></li>
+               <li>执行以下命令判断是否为HADR集群，以数据库名<strong>HADRDB</strong>为例。<pre class="screen">db2 get db cfg for <strong><em>HADRDB</em></strong> | grep -i 'HADR'</pre> <p>其回显如下所示，右边列显示HADR的配置参数，表示该集群类型是HADR。</p> <p><span><img src="zh-cn_image_0000002202659726.png"></span></p></li>
+               <li>执行以下命令查看HADR集群的状态，以数据库名<strong>HADRDB</strong>为例。<pre class="screen">db2pd -db <strong><em>HADRDB</em></strong> -hadr</pre>
+                <ul>
+                 <li>其回显如下所示为HADR集群主节点。<p><span><img src="zh-cn_image_0000002202860144.png"></span></p></li>
+                 <li>其回显如下所示为HADR集群的备节点。<p><span><img src="zh-cn_image_0000002202669294.png"></span></p></li>
+                </ul></li>
+              </ol></li>
+             <li>Database Partitioning Feature集群
+              <ol type="a">
+               <li>使用PuTTY登录DB2数据库所在主机。</li>
+               <li>执行以下命令切换至DB2数据库用户，以用户名<strong>db2inst1</strong>为例。<pre class="screen">su - <strong><em>db2inst1</em></strong></pre></li>
+               <li>执行以下命令判断是否为Database Partitioning Feature集群。<pre class="screen">$ db2 get db cfg for <em>数据库名称</em> | grep -i 'partition'</pre>
+                <div class="p">
+                 其回显如下所示，显示<strong>Database Partitioning Feature</strong>表示该集群类型是Database Partitioning Feature。
+                 <pre class="screen">Catalog database partition number                (CATALOGPARTITION) = 0
+ Partitioning strategy                               (DATABASEPARTITIONINGSTRATEGY) = Database Partitioning Feature</pre>
+                </div></li>
+              </ol></li>
+             <li><span style="color:#282B33;">PowerHA</span>集群
+              <ol type="a">
+               <li>使用PuTTY登录DB2数据库所在主机。</li>
+               <li>执行以下命令查询是否为AIX操作系统。<pre class="screen">uname -s</pre> <p>若回显为<strong>AIX，</strong>则继续执行<a href="#DB2-0015_a3__li16833191931114">3</a>，若回显不是<strong>AIX，</strong>则表示该集群类型不是<span style="color:#282B33;">PowerHA</span>。</p></li>
+               <li id="DB2-0015_a3__li16833191931114"><a name="DB2-0015_a3__li16833191931114"></a><a name="li16833191931114"></a>执行以下命令判断是否为PowerHA集群。<pre class="screen">lssrc -g cluster</pre> <p>回显如下所示，<strong>clstrmgrES</strong>、<strong>clconfd</strong>是PowerHA集群<span style="color:#24292E;">子系统</span>，表示该集群类型是PowerHA。</p> <p><span><img src="zh-cn_image_0000002211989701.png"></span></p></li>
+              </ol></li>
+             <li>RHEL HA集群
+              <ol type="a">
+               <li>使用PuTTY登录DB2数据库所在主机。</li>
+               <li>执行以下命令判断是否为RHEL HA集群。<pre class="screen">pcs cluster status</pre> <p>回显如下所示，表示该集群类型是RHEL HA。</p> <p><span><img src="zh-cn_image_0000002196884176.png"></span></p></li>
+              </ol></li>
+            </ul>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="17.16%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p><span>节点</span></p></td>
+          <td class="cellrowborder" valign="top" width="82.84%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p>DB2实例所在的主机。</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="DB2-0015_a1.html">步骤2：注册DB2数据库</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

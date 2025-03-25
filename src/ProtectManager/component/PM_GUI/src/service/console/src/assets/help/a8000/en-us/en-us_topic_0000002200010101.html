@@ -1,0 +1,164 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Configuring the Host Where the Client Is Installed">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002177403690.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200010101">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Configuring the Host Where the Client Is Installed</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200010101"></a><a name="EN-US_TOPIC_0000002200010101"></a>
+
+<h1 class="topictitle1">Configuring the Host Where the Client Is Installed</h1>
+<div><p>On the host where SAP ERP has been installed, manually create a <strong>run</strong> directory and copy files to the directory, start the database, create a database user, and add host environment variables based on the obtained SAP ERP information.</p>
+<div class="section" id="EN-US_TOPIC_0000002200010101__section17145114099"><a name="EN-US_TOPIC_0000002200010101__section17145114099"></a><a name="section17145114099"></a><h4 class="sectiontitle">Context</h4><p>When installing Oracle, you will set the SID in the cmd window. When installing SAP ERP, you will set the installation path, SAP instance ID, and database instance ID.</p>
+<p>After the installations are complete, the system generates directories based on the SID, installation path, SAP instance ID, and database instance ID. For details about the directories generated based on the input parameters, see <a href="#EN-US_TOPIC_0000002200010101__table4322245390">Table 1</a>.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200010101__table4322245390"></a><a name="table4322245390"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200010101__table4322245390" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameter description</caption><colgroup><col style="width:28.84%"><col style="width:21.9%"><col style="width:49.25%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="28.842884288428845%" id="mcps1.3.2.4.2.4.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="21.902190219021904%" id="mcps1.3.2.4.2.4.1.2"><p>Description</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="49.254925492549255%" id="mcps1.3.2.4.2.4.1.3"><p>Generated Directory</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="28.842884288428845%" headers="mcps1.3.2.4.2.4.1.1 "><p>SID</p>
+</td>
+<td class="cellrowborder" valign="top" width="21.902190219021904%" headers="mcps1.3.2.4.2.4.1.2 "><p>Oracle ID</p>
+</td>
+<td class="cellrowborder" rowspan="4" valign="top" width="49.254925492549255%" headers="mcps1.3.2.4.2.4.1.3 "><p>&lt;Destination Drive&gt;:\usr\sap\&lt;SAPSID&gt;\...</p>
+<p>&lt;Destination Drive&gt;:\oracle\&lt;DBSID&gt;\...</p>
+<p>&lt;Destination Drive&gt;:\oracle\&lt;SID&gt;\&lt;Database Version<sup>a</sup>&gt;...</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.4.2.4.1.1 "><p>Destination Drive</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.4.2.4.1.2 "><p>Installation path</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.4.2.4.1.1 "><p>SAP System ID (SAPSID)</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.4.2.4.1.2 "><p>SAP instance ID</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.4.2.4.1.1 "><p>Database ID (DBSID)</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.4.2.4.1.2 "><p>Database instance ID</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.2.4.2.4.1.1 mcps1.3.2.4.2.4.1.2 mcps1.3.2.4.2.4.1.3 "><p>a: database version, which is automatically obtained by the system and does not need to be manually entered.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>The table lists only the parameters for creating the <strong>run</strong> directory and adding environment variables.</li><li>If you forget the values of <strong>SID</strong>, <strong>SAPSID</strong>, and <strong>DBSID</strong>, you can obtain them from the directories listed in <a href="#EN-US_TOPIC_0000002200010101__table4322245390">Table 1</a>. Example:<ul><li><strong>C:\usr\sap\EH7</strong> indicates that <strong>SAPSID</strong> is set to <strong>EH7</strong> during the installation.</li><li><strong>C:\oracle\EH8</strong> indicates that <strong>DBSID</strong> is set to <strong>EH8</strong> during the installation.</li><li><strong>C:\oracle\EH9\11203</strong> indicates that <strong>SID</strong> is set to <strong>EH9</strong> during the installation.</li></ul>
+</li></ul>
+</div></div>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002200010101__section10539810434"><a name="EN-US_TOPIC_0000002200010101__section10539810434"></a><a name="section10539810434"></a><h4 class="sectiontitle">Manually Creating a run Directory and Copying Files to the Directory</h4><p>After SAP ERP is installed, the <strong>uc</strong> directory is generated in the <strong>&lt;</strong><em>Destination Drive</em><strong>&gt;:\usr\sap\&lt;</strong><em>SAPSID</em><strong>&gt;\SYS\exe</strong> directory. For details about <em>Destination Drive</em> and <em>SAPSID</em>, see <a href="#EN-US_TOPIC_0000002200010101__table4322245390">Table 1</a>. Create a <strong>run</strong> directory at the same level as the <strong>uc</strong> directory in the directory, and copy the following files in the <strong>uc</strong> directory to the <strong>run</strong> directory:</p>
+<ul><li>brarchive</li><li>brbackup</li><li>beconnect</li><li>brrecover</li><li>brresotre</li><li>brspace</li><li>brtools</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002200010101__section1513725616430"><a name="EN-US_TOPIC_0000002200010101__section1513725616430"></a><a name="section1513725616430"></a><h4 class="sectiontitle">Configuring Environment Variables</h4><p>Add the <strong>ORACLE_SID</strong>, <strong>ORACLE_HOME</strong>, and <strong>SAPDATA_HOME</strong> variables to host environment variables. <a href="#EN-US_TOPIC_0000002200010101__table202391617101213">Table 2</a> describes the contents to be entered.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200010101__table202391617101213"></a><a name="table202391617101213"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200010101__table202391617101213" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Environment variables</caption><colgroup><col style="width:22.36%"><col style="width:45.45%"><col style="width:32.190000000000005%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="22.36%" id="mcps1.3.4.3.2.4.1.1"><p>Variable Name</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="45.45%" id="mcps1.3.4.3.2.4.1.2"><p>Variable Value</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="32.190000000000005%" id="mcps1.3.4.3.2.4.1.3"><p>Example Value</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="22.36%" headers="mcps1.3.4.3.2.4.1.1 "><p>ORACLE_SID</p>
+</td>
+<td class="cellrowborder" valign="top" width="45.45%" headers="mcps1.3.4.3.2.4.1.2 "><p>DBSID</p>
+</td>
+<td class="cellrowborder" valign="top" width="32.190000000000005%" headers="mcps1.3.4.3.2.4.1.3 "><p>EH8</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.36%" headers="mcps1.3.4.3.2.4.1.1 "><p>SAPDATA_HOME</p>
+</td>
+<td class="cellrowborder" valign="top" width="45.45%" headers="mcps1.3.4.3.2.4.1.2 "><p>&lt;Destination Drive&gt;:\oracle\&lt;DBSID&gt;</p>
+</td>
+<td class="cellrowborder" valign="top" width="32.190000000000005%" headers="mcps1.3.4.3.2.4.1.3 "><p>C:\oracle\EH8</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.36%" headers="mcps1.3.4.3.2.4.1.1 "><p>ORACLE_HOME</p>
+</td>
+<td class="cellrowborder" valign="top" width="45.45%" headers="mcps1.3.4.3.2.4.1.2 "><p>&lt;Destination Drive&gt;:\oracle\&lt;SID&gt;\&lt;Database Version&gt;</p>
+</td>
+<td class="cellrowborder" valign="top" width="32.190000000000005%" headers="mcps1.3.4.3.2.4.1.3 "><p>C:\oracle\EH9\11203</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002200010101__section09572159441"><a name="EN-US_TOPIC_0000002200010101__section09572159441"></a><a name="section09572159441"></a><h4 class="sectiontitle">Starting the Database and Creating a Database User</h4><p>Press <strong>Win+R</strong>, enter <strong>cmd</strong>, and press <strong>Enter</strong> to open <strong>Command Prompt</strong> on a Windows host. Enter the following commands to start the database and create a database user:</p>
+<pre class="screen">sqlplus / as sysdba
+startup;
+create user <em>userName</em> identified by "<em>passWord</em>";
+grant dba,sysoper,create session to <em>userName</em>;
+commit;</pre>
+<p><em>userName</em> and <em>passWord</em> indicate the name and password of the created database user. Example:</p>
+<pre class="screen"><strong>C:\&gt;sqlplus / as sysdba</strong>
+SQL*Plus: Release 11.2.0.3.0 Production on Tue Dec 24 07:33:40 2024
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+Connected to an idle instance.
+<strong>SQL&gt; startup;</strong>
+ORA-32004: obsolete or deprecated parameter(s) specified for RDBMS instance
+ORACLE instance started.
+Total System Global Area 2639106048 bytes
+Fixed Size                  2258032 bytes
+Variable Size            1325403024 bytes
+Database Buffers         1291845632 bytes
+Redo Buffers               19599360 bytes
+Database mounted.
+Database opened.
+SQL&gt; startup;
+ORA-32004: obsolete or deprecated parameter(s) specified for RDBMS instance
+ORA-01081: cannot start already-running ORACLE - shut it down first
+<strong>SQL&gt; create user user1 identified by "Test123";</strong>
+User created.
+<strong>SQL&gt; grant dba,sysoper,create session to user1;</strong>
+Grant succeeded.
+<strong>SQL&gt; commit;</strong>
+Commit complete.</pre>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002177403690.html">Installing the Client</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

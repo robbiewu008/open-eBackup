@@ -1,0 +1,66 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="GDS运行在GaussDB(DWS)节点上的注意事项">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="DWS_00122.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="DWS_00123">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>GDS运行在GaussDB(DWS)节点上的注意事项</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="DWS_00123"></a><a name="DWS_00123"></a>
+  <h1 class="topictitle1">GDS运行在GaussDB(DWS)节点上的注意事项</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <p><strong>对于沙箱中运行了GDS的GaussDB(DWS)节点</strong></p>
+   </div>
+   <ol>
+    <li><span>在宿主机内查询GDS是否运行。在<span class="uicontrol">“gds -d”</span>后显示的目录在宿主机内需要创建同路径目录。</span><p></p><p>示例如下：</p> <p><span><img src="zh-cn_image_0000002199964097.png"></span></p> <p></p></li>
+    <li><span>执行<strong>mkdir /home/Ruby/gds_data1</strong>等命令，在宿主机内和沙箱内分别创建GDS目录，使映射后的GDS能够读取到相关信息。</span><p></p><p>示例如下：</p> <p><span><img src="zh-cn_image_0000002164597782.png"></span></p> <p></p></li>
+    <li id="DWS_00123__li8616161613517"><a name="DWS_00123__li8616161613517"></a><a name="li8616161613517"></a><span>在宿主机内创建映射。</span><p></p><pre class="screen">mount --bind /home/Ruby/gds_data1 /var/chroot/home/Ruby/gds_data1
+mount --bind /home/Ruby/gds_data2 /var/chroot/home/Ruby/gds_data2
+mount --bind /home/Ruby/gds_data3 /var/chroot/home/Ruby/gds_data3
+mount --bind /home/Ruby/gds_data4 /var/chroot/home/Ruby/gds_data4</pre> <p></p></li>
+    <li id="DWS_00123__li17337123635316"><a name="DWS_00123__li17337123635316"></a><a name="li17337123635316"></a><span>修改<strong>dws.conf</strong>文件的“sandboxPath”参数，参数值为“/var/chroot”。修改方式请参见<a href="DWS_00125.html">修改GaussDB(DWS)配置文件</a>。</span></li>
+   </ol>
+   <p><strong>对于</strong><strong>沙箱中未运行GDS且已安装客户端的GaussDB(DWS)节点</strong></p>
+   <ol>
+    <li><span>在宿主机内创建映射，详情参见<a href="#DWS_00123__li8616161613517">3</a>。</span></li>
+    <li><span>修改<strong>dws.conf</strong>文件，详情参见<a href="#DWS_00123__li17337123635316">4</a>。</span></li>
+   </ol>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="DWS_00122.html">GDS运行在GaussDB(DWS)沙箱部署场景的注意事项</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

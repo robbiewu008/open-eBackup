@@ -1,0 +1,76 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="可恢复时间段内日志不连续">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="hcs_gaussdb_00060.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002189332534">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>可恢复时间段内日志不连续</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000002189332534"></a><a name="ZH-CN_TOPIC_0000002189332534"></a>
+  <h1 class="topictitle1">可恢复时间段内日志不连续</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>可恢复时间段内存在日志不连续的现象。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>GaussDB实例的CPU、内存、IO负载过高导致数据库内部barrier打点异常进一步导致可恢复时间段内存在日志不连续的现象。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li><span>登录客户端所在的主机。</span></li>
+     <li><span>执行<strong id="ZH-CN_TOPIC_0000002189332534__tpops_gaussdb_00076_b1792217164163">cd <em id="ZH-CN_TOPIC_0000002189332534__tpops_gaussdb_00076_i220810187432">/opt/</em>DataBackup/ProtectClient/ProtectClient-E/slog/Plugins/GeneralDBPlugin</strong>命令进入客户端所在的主机的日志目录（本步骤命令以客户端安装在“/opt”目录下为例，请按照实际客户端安装目录进行修改）。</span></li>
+     <li><span>执行以下命令，查询可恢复的时间戳区间。</span><p></p><pre class="screen">grep -nr "time_range_info:"</pre> <p></p></li>
+     <li><span>查看不连续的时间戳，使用时间戳转换工具将时间戳转换为年月日时分秒形式的时间。</span></li>
+     <li><span>使用<strong id="ZH-CN_TOPIC_0000002189332534__tpops_gaussdb_00081_b979819366818">root</strong>用户登录实例节点。集中式实例为主DN(一般是dn_6001)，分布式为实例first CN(一般是cn_5001),访问$GAUSSLOG/gs_log/<em id="ZH-CN_TOPIC_0000002189332534__tpops_gaussdb_00081_i2324716173914">节点名</em>。</span></li>
+     <li><span>查看不连续时间段附近的barrier打点日志搜索<span class="uicontrol">“successfully append barrier record”</span>或者<span class="uicontrol">“[BarrierCreator]barrier”</span>。</span></li>
+     <li><span>查看不连续的时间内是否有超过1s未打点的情况。</span><p></p>
+      <ul>
+       <li>如果有，执行以下命令查看cm_agent监控日志，确认打点异常的时间范围内是否存在CPU、内存、IO等硬件指标偏高的问题。<pre class="screen">$GAUSSLOG/gs_log/cm/cm_agent</pre>
+        <ul>
+         <li>是，则降低CPU、内存、IO的负载。</li>
+         <li>否，联系技术支持工程师。</li>
+        </ul></li>
+       <li>如果没有，联系技术支持工程师。</li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="hcs_gaussdb_00060.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

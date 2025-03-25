@@ -1269,11 +1269,7 @@ export class BackupPolicyComponent implements OnInit, OnChanges {
         label: isPermanentBackupResource
           ? this.i18n.get('common_permanent_backup_label')
           : this.i18n.get('common_incremental_backup_label'),
-        tips: isPermanentBackupResource
-          ? this.i18n.get('common_permanent_backup_tips_label')
-          : includes([ApplicationType.ObjectStorage], this.applicationType)
-          ? this.i18n.get('protection_object_sla_incremental_tip_label')
-          : this.i18n.get('common_incremental_backup_tips_label'),
+        tips: this.specialTip(isPermanentBackupResource),
         onClick: () => {
           this.addBackupItem(
             includes(
@@ -1335,6 +1331,19 @@ export class BackupPolicyComponent implements OnInit, OnChanges {
     ];
   }
 
+  specialTip(isPermanentBackupResource) {
+    if (isPermanentBackupResource) {
+      return this.i18n.get('common_permanent_backup_tips_label');
+    } else if (
+      includes([ApplicationType.ObjectStorage], this.applicationType)
+    ) {
+      return this.i18n.get('protection_object_sla_incremental_tip_label');
+    } else if (includes([ApplicationType.GoldenDB], this.applicationType)) {
+      return this.i18n.get('common_diff_backup_tips_label');
+    } else {
+      return this.i18n.get('common_incremental_backup_tips_label');
+    }
+  }
   updateMonthDays() {
     const monthDays = Array.from({ length: 31 }, (_, i) => i + 1);
     const chunkSize = Math.ceil(monthDays.length / 5);

@@ -17,111 +17,46 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="步骤2：注册CNware虚拟化环境">
+  <meta name="DC.Title" content="步骤1：申请备份账号">
   <meta name="product" content="">
-  <meta name="DC.Relation" scheme="URI" content="cnware_00011.html">
+  <meta name="DC.Relation" scheme="URI" content="cnware_00012.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
-  <meta name="documenttype" content="usermanual">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="cnware_00013">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>步骤2：注册CNware虚拟化环境</title>
+  <title>步骤1：申请备份账号</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="cnware_00013"></a><a name="cnware_00013"></a>
-  <h1 class="topictitle1">步骤2：注册CNware虚拟化环境</h1>
+  <h1 class="topictitle1">步骤1：申请备份账号</h1>
   <div>
-   <p>执行CNware备份前，需要将CNware虚拟化环境注册至<span>本产品</span>。</p>
-   <div class="section">
-    <h4 class="sectiontitle">背景信息</h4>
-    <p>注册CNware虚拟化环境后，可以在管理界面浏览CNware虚拟机的信息并对其进行保护。</p>
-   </div>
-   <div class="section">
-    <h4 class="sectiontitle">前提条件</h4>
-    <ul>
-     <li>已在需要保护的CNware云平台添加存储池，且保护的目标主机和代理主机使用相同的存储池。</li>
-    </ul>
-   </div>
+   <p>CNware平台未提供机机专用账号功能，当有用户登录失败时，后续登录接口请求会要求验证码校验，可能使得备份软件调用接口失败，从而导致备份失败。因此，建议您单独申请备份账号提供给备份软件使用。</p>
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>选择<span class="uicontrol" id="cnware_00013__zh-cn_topic_0000001839142377_uicontrol14456431877">“<span id="cnware_00013__zh-cn_topic_0000001839142377_text134457431679">保护</span> &gt; 虚拟化 &gt; CNware”</span>。</span></li>
-     <li><span>单击<span class="uicontrol">“注册”</span>，注册CNware虚拟化平台信息。</span><p></p>
-      <div class="p">
-       CNware注册信息如<a href="#cnware_00013__table613227155112">表1</a>所示。 
-       <div class="tablenoborder">
-        <a name="cnware_00013__table613227155112"></a><a name="table613227155112"></a>
-        <table cellpadding="4" cellspacing="0" summary="" id="cnware_00013__table613227155112" frame="border" border="1" rules="all">
-         <caption>
-          <b>表1 </b>CNware注册信息
-         </caption>
-         <colgroup>
-          <col style="width:25.6%">
-          <col style="width:74.4%">
-         </colgroup>
-         <thead align="left">
-          <tr>
-           <th align="left" class="cellrowborder" valign="top" width="25.6%" id="mcps1.3.4.2.2.2.1.2.2.3.1.1"><p>参数</p></th>
-           <th align="left" class="cellrowborder" valign="top" width="74.4%" id="mcps1.3.4.2.2.2.1.2.2.3.1.2"><p>说明</p></th>
-          </tr>
-         </thead>
-         <tbody>
-          <tr>
-           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span>名称</span></p></td>
-           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>用户自定义虚拟化平台名称。</p></td>
-          </tr>
-          <tr>
-           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span>IP/域名</span></p></td>
-           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>CNware平台的管理IP地址/域名。</p></td>
-          </tr>
-          <tr>
-           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span>端口</span></p></td>
-           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p><span>本产品</span>与CNware平台通信的端口号。</p> <p>默认端口号为443。</p></td>
-          </tr>
-          <tr>
-           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span>用户名</span></p></td>
-           <td class="cellrowborder" rowspan="2" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>需要注册的CNware平台的用户名及密码。</p></td>
-          </tr>
-          <tr>
-           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span>密码</span></p></td>
-          </tr>
-          <tr>
-           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span>代理主机</span></p></td>
-           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>已注册到<span>本产品</span>的代理主机。</p></td>
-          </tr>
-          <tr>
-           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p>资源扫描频率</p></td>
-           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p><span style="color:#282B33;">系统自动扫描资源的间隔时间。</span></p></td>
-          </tr>
-          <tr>
-           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span>校验证书</span></p></td>
-           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>默认开启，注册CNware受保护环境时，系统将对其所访问设备的信息进行校验。关闭后，系统与CNware通信可能存在安全风险，请谨慎操作。</p></td>
-          </tr>
-          <tr>
-           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span>证书</span></p></td>
-           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>开启<span class="uicontrol">“<span>校验证书</span>”</span>后，导入<a href="cnware_00012.html">步骤1：获取CNware证书</a>中获取的证书。</p></td>
-          </tr>
-          <tr>
-           <td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span>吊销列表</span></p></td>
-           <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>导入证书吊销列表后，系统将校验客户端证书是否被吊销，如果证书已被吊销，则注册集群失败。</p></td>
-          </tr>
-         </tbody>
-        </table>
-       </div>
-      </div> <p></p></li>
-     <li><span>单击<span class="uicontrol">“确定”</span>。</span><p></p><p>注册成功后，已注册的CNware虚拟化环境信息将在页面左侧显示。您可以浏览集群或主机，及其虚拟机列表。</p> <p></p></li>
+     <li><span>使用admin管理员用户或安全管理员用户登录CNware平台。</span></li>
+     <li><span>选择“所有功能 &gt; 系统管理 &gt; 用户管理”。</span></li>
+     <li><span>选择“角色管理”。</span></li>
+     <li><span>单击“添加”。</span><p></p><p>页面弹出“添加角色”对话框。</p> <p></p></li>
+     <li id="cnware_00013__li1921013458396"><a name="cnware_00013__li1921013458396"></a><a name="li1921013458396"></a><span>设置“角色名称”、“是否启用”和“角色描述”。</span></li>
+     <li><span>单击“更多 &gt; 配置权限”，参见<a href="cnware_00108.html">注册CNware虚拟化环境时，注册用户的最小权限要求</a>完成权限的配置。</span></li>
+     <li><span>选择“用户管理”。</span></li>
+     <li><span>单击“新增”，新增用户账号，关联<a href="#cnware_00013__li1921013458396">5</a>中添加的角色。</span></li>
     </ol>
    </div>
+   <p></p>
+   <p></p>
   </div>
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="cnware_00011.html">备份CNware虚拟机</a>
+     <strong>父主题：</strong> <a href="cnware_00012.html">备份CNware虚拟机</a>
     </div>
    </div>
   </div>

@@ -1,0 +1,108 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Failed to Expand the Copy Directory During File-Level Restoration Using a NAS Share or Fileset Aggregation Copy">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200131601.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164805024">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Failed to Expand the Copy Directory During File-Level Restoration Using a NAS Share or Fileset Aggregation Copy</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164805024"></a><a name="EN-US_TOPIC_0000002164805024"></a>
+  <h1 class="topictitle1">Failed to Expand the Copy Directory During File-Level Restoration Using a NAS Share or Fileset Aggregation Copy</h1>
+  <div>
+   <div class="section" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_section18319174017340">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p328013210181">The copy directory fails to be expanded during file-level restoration using a NAS share or fileset aggregation copy.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_section532153810497">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p1860632116199">The sqlite aggregation file is damaged.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_section20967124413020">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_ol88001418521">
+     <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li121927421882"><span>View the corresponding resource ID.</span><p></p><p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p1948813227816"><span><img id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_image154888221380" src="en-us_image_0000002200101553.png"></span></p> <p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p1948852211812"></p> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li16775132718543"><span>View the logical port, search for the data warehouse where the resource is located, and share the resource over NFS.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_ol2063092205819">
+       <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li1599622617281">Log in to DeviceManager. 
+        <ul id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_ul151776515584">
+         <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_en-us_topic_0000001839223165_li19991413113118">For some models of this product, perform the following operations:
+          <ol class="substepthirdol" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_en-us_topic_0000001839223165_ol5625945183219">
+           <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_en-us_topic_0000001839223165_li84033442337">Choose <strong id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_b4709163516536">System</strong> &gt; <strong id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_b6709123519531">Infrastructure</strong> &gt; <strong id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_b15709435135311">Cluster Management</strong>.</li>
+           <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_en-us_topic_0000001839223165_li938315412338">On the <strong id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_b249041913563">Backup Clusters</strong> tab page, click a node name under the <strong id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_b16490191995613">Local Cluster Nodes</strong> area.</li>
+           <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_en-us_topic_0000001839223165_li9647100173410">On the displayed <strong id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_b13816165117560">Node Details</strong> page, click <strong id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_b081675155610">Open the device management platform</strong> to go to DeviceManager.</li>
+          </ol></li>
+         <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_en-us_topic_0000001839223165_li15921125623118">For some models of this product, log in to DeviceManager of the backup storage device by referring to <a href="en-us_topic_0000002200131625.html">Logging In to DeviceManager</a>.</li>
+        </ul></li>
+       <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li155851381587">View the logical ports.<p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p4826149105812"><a name="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li155851381587"></a><a name="en-us_topic_0000002200015165_li155851381587"></a>Choose <span id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_text1657713416248"><strong>Services</strong></span> &gt; <span id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_text9737191862413"><strong>Network</strong></span> &gt; <span id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_text6280633122413"><strong>Logical Port</strong></span> to view available logical ports. Select a logical port that supports the NFS data protocol and corresponds to IOM0, and record the IP address of the port (for example, 192.168.101.67).</p> <p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p13255130141015"><span><img id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_image152555012106" src="en-us_image_0000002200101505.png"></span></p> <p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p162551309109"></p></li>
+       <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li19911134141619">Search for the data warehouse where the resource is located and share the resource over NFS.
+        <ol class="substepthirdol" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_ol14973321141911">
+         <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li5973521161917">Choose <span id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_text1459474419248"><strong>Services</strong></span> &gt; <span id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_text114415872419"><strong>File Services</strong></span> &gt; <span id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_text15865914142514"><strong>File Systems</strong></span> to search for a file system based on the resource ID.<p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p1555229181919"><span><img id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_image14923193451616" src="en-us_image_0000002200101541.png"></span></p> <p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p2615203119196"></p></li>
+         <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li119741321151919">Configure an NFS share for the found file system.<p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p109242349168"><a name="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li119741321151919"></a><a name="en-us_topic_0000002200015165_li119741321151919"></a><span><img id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_image992473410167" src="en-us_image_0000002164774916.png"></span></p> <p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p15924143413161"><span><img id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_image2924153411168" src="en-us_image_0000002200101485.png"></span></p></li>
+        </ol></li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li4204147121814"><span>Mount the file system.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_ol1181312258184">
+       <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li181392591817">Find a host that can access the logical port.</li>
+       <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li108131125161815">Log in to the host and run the following command to mount the file system:<pre class="screen" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_screen617103271819">mount -t nfs -o vers=3 $IP:$share_path $local_path</pre></li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li3934164091817"><span>Go to the directory where the damaged sqlite file resides.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_ol9883171318205">
+       <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li178830133203">Go to the sqlite file directory.<pre class="screen" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_screen356772911205">cd $local_path/source_policy_{Resource ID}_Context_Global_MD/{copy ID}/sqlite</pre></li>
+       <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li38831013102012">Go to the directory that fails to be expanded.<pre class="screen" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_screen726193813204">cd ./$failure_path</pre></li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li943321192018"><span>Repair the damaged sqlite file <strong id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_b175491021172312">copymetadata.sqlite</strong>.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_ol11491621102015">
+       <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li348221192018">Export the SQL file.<pre class="screen" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_screen153624566207">sqlite3 copymetadata.sqlite .dump &gt; newdb.sql</pre></li>
+       <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li184918216201">Change <strong id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_b19919539192620">ROLLBACK</strong> in the last line of the <strong id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_b16513113352610">newdb.sql</strong> file to <strong id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_b1930713364262">COMMIT</strong>.<pre class="screen" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_screen874925142112">sed -i '$ s/ROLLBACK/COMMIT/g' newdb.sql</pre></li>
+       <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li20492210202">Import the SQL file.<pre class="screen" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_screen186781019162117">sqlite3 new.sqlite &lt; newdb.sql</pre></li>
+       <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li19496218208">Check whether the newly generated sqlite file is valid. If <strong id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_b1598745214117">ok</strong> is displayed in the command output, the sqlite file is normal.<pre class="screen" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_screen16310132914213">sqlite3 new.sqlite
+sqlite&gt;pragma integrity_check;</pre></li>
+       <li id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_li649121132017">Replace the original file with the repaired sqlite file.<pre class="screen" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_screen115441424225">mv new.sqlite copymetadata.sqlite</pre></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_section590752117443">
+    <h4 class="sectiontitle">Suggestions</h4>
+    <p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p7238103010816">Damaged information will be lost in the repaired sqlite file. So, some file information may be lost. You are advised to use an undamaged copy of the sqlite file for restoration.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_section1227093194410">
+    <h4 class="sectiontitle">Reference</h4>
+    <p id="EN-US_TOPIC_0000002164805024__en-us_topic_0000002200015165_p165892210816">None</p>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200131601.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,70 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Data Restoration to the Original Host or Instant Recovery Fails and the Error Details Contain &quot;ORA-01034: ORACLE not available&quot;">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164757014.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199997941">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Data Restoration to the Original Host or Instant Recovery Fails and the Error Details Contain "ORA-01034: ORACLE not available"</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199997941"></a><a name="EN-US_TOPIC_0000002199997941"></a>
+  <h1 class="topictitle1">Data Restoration to the Original Host or Instant Recovery Fails and the Error Details Contain "ORA-01034: ORACLE not available"</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>After a user performs the following operations, data restoration to the original host or instant recovery fails, and the error details contain "ORA-01034: ORACLE not available".</p>
+    <ol>
+     <li>Perform backup for database A on a single node (the volume type is ASM) to generate backup copy a.</li>
+     <li>Use the single node as the target location for a live mount. The mounted copy and target host has a database that shares the same name with database A.</li>
+     <li>Cancel the live mount after performing the live mount.</li>
+     <li>Use backup copy a to restore data to the original host or perform instant recovery.</li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p>During restoration to the original host or instant recovery, the <span>product</span> modifies the spfile parameter file. In the preceding scenario, the database fails to be started because the spfile parameter file does not exist in the database. As a result, the restoration job fails.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol>
+     <li><span>Use PuTTY to log in to the Oracle database host.</span></li>
+     <li><span>Run the following command to switch to user <strong>oracle</strong>:</span><p></p><p><strong>su - oracle</strong></p> <p></p></li>
+     <li><span>Run the following command to add the database:</span><p></p><p><strong>srvctl add database -d </strong><em>Database name</em><strong> -o ${ORACLE_HOME} -p </strong><em>spfile parameter file path</em></p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164757014.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

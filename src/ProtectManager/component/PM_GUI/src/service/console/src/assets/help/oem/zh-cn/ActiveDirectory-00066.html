@@ -1,0 +1,117 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="单域控制器场景恢复Active Directory的对象">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="ActiveDirectory-00062.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ActiveDirectory-00066">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>单域控制器场景恢复Active Directory的对象</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ActiveDirectory-00066"></a><a name="ActiveDirectory-00066"></a>
+  <h1 class="topictitle1">单域控制器场景恢复Active Directory的对象</h1>
+  <div>
+   <p>单域控制器场景当需要对Active Directory进行对象级恢复时，可以参考本节恢复Active Directory对象（包括用户账号、计算机账号等）至原位置。</p>
+   <p>支持使用备份副本进行恢复。支持恢复至原位置。</p>
+   <div class="section" id="ActiveDirectory-00066__section13258102544115">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul id="ActiveDirectory-00066__ul155946913719">
+     <li id="ActiveDirectory-00066__li178221624154012">恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</li>
+     <li id="ActiveDirectory-00066__li16688125151511">恢复前，请确保待恢复的副本的备份数据为“系统状态+对象”。</li>
+     <li id="ActiveDirectory-00066__li17523102517320">Active Directory对象级恢复适用于在对象（包括用户、用户组、OU（organizational unit））或其属性被误删除等场景。</li>
+     <li id="ActiveDirectory-00066__li16356195914216">恢复前，请确保Active Directory回收站已开启。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="ActiveDirectory-00066__zh-cn_topic_0000002199964685_uicontrol193721239145518">“数据利用 &gt; 应用 &gt; Active Directory”</span>。</span></li>
+     <li><span>您可以以Active Directory资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p>根据需要恢复的对象所在资源名称查找到资源，并单击资源名称。</p> <p></p></li>
+     <li><span>选择“副本数据”页签。</span></li>
+     <li><span>依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000002200096345.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>在待恢复的副本所在行选择“<span>更多</span> &gt; 对象级恢复”，进行恢复参数的配置。</span><p></p>
+      <div class="p">
+       相关参数说明如<a href="#ActiveDirectory-00066__table194961441141219">表1</a>所示。 
+       <div class="tablenoborder">
+        <a name="ActiveDirectory-00066__table194961441141219"></a><a name="table194961441141219"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="ActiveDirectory-00066__table194961441141219" frame="border" border="1" rules="all">
+         <caption>
+          <b>表1 </b>恢复Active Directory对象参数说明
+         </caption>
+         <colgroup>
+          <col style="width:19.97%">
+          <col style="width:80.03%">
+         </colgroup>
+         <thead align="left">
+          <tr id="ActiveDirectory-00066__row849615417124">
+           <th align="left" class="cellrowborder" valign="top" width="19.97%" id="mcps1.3.4.2.5.2.1.2.2.3.1.1"><p id="ActiveDirectory-00066__p3496134113127">参数</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="80.03%" id="mcps1.3.4.2.5.2.1.2.2.3.1.2"><p id="ActiveDirectory-00066__p184961241131217">说明</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr id="ActiveDirectory-00066__row84968417127">
+           <td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.4.2.5.2.1.2.2.3.1.1 "><p id="ActiveDirectory-00066__p124963413125"><span id="ActiveDirectory-00066__text1586717301177">恢复至</span></p></td>
+           <td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.4.2.5.2.1.2.2.3.1.2 "><p id="ActiveDirectory-00066__p16496164110123">仅支持恢复至<span class="uicontrol" id="ActiveDirectory-00066__uicontrol84961241181211">“<span id="ActiveDirectory-00066__text19159183316300">原位置</span>”</span>。</p></td>
+          </tr>
+          <tr id="ActiveDirectory-00066__row349644119122">
+           <td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.4.2.5.2.1.2.2.3.1.1 "><p id="ActiveDirectory-00066__p249664112126"><span id="ActiveDirectory-00066__text15801515817">位置</span></p></td>
+           <td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.4.2.5.2.1.2.2.3.1.2 "><p id="ActiveDirectory-00066__p16496184121216">默认显示恢复的位置。</p></td>
+          </tr>
+          <tr id="ActiveDirectory-00066__row2607163816448">
+           <td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.4.2.5.2.1.2.2.3.1.1 "><p id="ActiveDirectory-00066__p1160911389443">恢复对象选择方式</p></td>
+           <td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.4.2.5.2.1.2.2.3.1.2 ">
+            <div class="p" id="ActiveDirectory-00066__p76091238114417">
+             请先设置恢复对象的选择方式，再从目录树选择待恢复对象或手动输入待恢复对象的名称。
+             <div class="note" id="ActiveDirectory-00066__zh-cn_topic_0000001792387972_note1195634711290">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <ul id="ActiveDirectory-00066__ul64460213919">
+                <li id="ActiveDirectory-00066__li244632591">如果副本中的对象数量较多，系统可能超时，无法从目录树上选择待恢复对象，建议手动输入恢复对象名称。</li>
+                <li id="ActiveDirectory-00066__li1953685992">手动输入待恢复对象的名称时，如果副本存在两个同名的对象（例如不同目录下同名的计算机和用户组），恢复时只能随机恢复其中一个，建议在备份时确认Active Directory域不存在同名对象。</li>
+               </ul>
+              </div>
+             </div>
+            </div></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p>在“选择对象”区域，可直接选择对象或通过搜索框搜索对象名进行选择。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol">“确定”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="ActiveDirectory-00062.html">恢复</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

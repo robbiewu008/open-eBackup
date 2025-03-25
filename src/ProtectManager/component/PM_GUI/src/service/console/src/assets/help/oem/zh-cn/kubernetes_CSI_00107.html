@@ -1,0 +1,80 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Token认证时获取证书值（适用于CCE）">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00102.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="kubernetes_CSI_00107">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Token认证时获取证书值（适用于CCE）</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="kubernetes_CSI_00107"></a><a name="kubernetes_CSI_00107"></a>
+  <h1 class="topictitle1">Token认证时获取证书值（适用于CCE）</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>使用PuTTY，登录待获取配置文件的Kubernetes集群管理节点。</span></li>
+     <li><span>执行<strong id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_b49313146184">kubectl cluster-info</strong>命令查询当前集群的控制平面。</span><p></p><p id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_p1750172941910"><span><img id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_image2167195018217" src="zh-cn_image_0000001736110414.png"></span></p> <p></p></li>
+     <li><span>登录ManageOne运营面。</span></li>
+     <li><span>查询kubeconfig配置文件信息前，需要确认当前集群控制平面是否通过用户使用场景的地址连接。使用PuTTY，登录待获取配置文件的Kubernetes集群管理节点。</span></li>
+     <li><span>查询连接信息，确认当前集群控制平面是否通过用户使用场景的地址连接。</span><p></p>
+      <div class="p" id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_p310122204213">
+       <span><img id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_image4633442114210" src="zh-cn_image_0000001782965817.png"></span>
+       <ul id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_ul8525628162613">
+        <li id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_li18525928112618">否（如集群控制平面使用内网地址连接，而用户场景使用公网地址连接），需要根据使用场景切换kubectl的访问方式。操作步骤如下：
+         <ol type="a" id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_ol1642539123216">
+          <li id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_li064233953213">登录Kubernetes集群管理节点，根据使用场景，切换kubectl的访问模式。
+           <ul id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_ul15101113373313">
+            <li id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_li910193333318">VPC网络内接入访问请执行以下命令。<pre class="screen" id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_screen206203453343">kubectl config use-context internal </pre></li>
+            <li id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_li5958171893413">互联网接入访问请执行以下命令。<pre class="screen" id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_screen99707576352">kubectl config use-context external </pre>
+             <div class="p" id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_p696983320377">
+              互联网接入访问，如需开启双向认证请继续执行以下命令。
+              <pre class="screen" id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_screen11851359153720">kubectl config use-context externalTLSVerify </pre>
+             </div></li>
+           </ul></li>
+          <li id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_li8389621183313">设置完成后再次执行<strong id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_b20119801395">kubectl cluster-info</strong>查询集群信息，确认切换访问模式成功。</li>
+         </ol></li>
+        <li id="kubernetes_CSI_00107__zh-cn_topic_0000001779829653_li18848195304">是，执行下一步。</li>
+       </ul>
+      </div> <p></p></li>
+     <li><span>执行以下命令查询配置文件的信息，其中回显里“cluster”字段中参数“certificate-authority-data”的值即为证书值。</span><p></p><pre class="screen">kubectl config view --minify --flatten</pre> <p><span><img src="zh-cn_image_0000002164750098.png"></span></p> <p></p></li>
+    </ol>
+    <p></p>
+    <p></p>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="kubernetes_CSI_00102.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

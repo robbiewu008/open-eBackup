@@ -326,8 +326,23 @@ export class BackupClusterComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe(res => {
+        // 判断赋值不随着筛选或搜索重新赋值
+        if (
+          !this.ipSearchName &&
+          !this.clusterSearchName &&
+          isEmpty(this.theadFilterMap)
+        ) {
+          this.hasMemberNode = !!find(res.records, item =>
+            [
+              this.ROLE_TYPE.backupNode.value,
+              this.ROLE_TYPE.memberNode.value
+            ].includes(item.role)
+          );
+          this.isHasBackupNode = !!find(res.records, {
+            role: this.ROLE_TYPE.backupNode.value
+          });
+        }
         each(res.records, item => {
-          this.isHasBackupNode = item.role === this.ROLE_TYPE.backupNode.value;
           assign(item, {
             ipArr: item['clusterIp']
               .replace(/\s/g, '')
@@ -340,10 +355,6 @@ export class BackupClusterComponent implements OnInit, OnDestroy {
             progressBarColor: [[0, ColorConsts.NORMAL]],
             sizePercent: this.getSizePercent(item)
           });
-          this.hasMemberNode = [
-            this.ROLE_TYPE.memberNode.value,
-            this.ROLE_TYPE.backupNode.value
-          ].includes(item.role);
         });
         if (!this.localCluster) {
           this.localCluster = find(res.records, {

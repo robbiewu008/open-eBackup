@@ -1,0 +1,184 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Installing the Client (Manual Mode, Applicable to the Windows OS)">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200116849">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Installing the Client (Manual Mode, Applicable to the Windows OS)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200116849"></a><a name="EN-US_TOPIC_0000002200116849"></a>
+  <h1 class="topictitle1">Installing the Client (Manual Mode, Applicable to the Windows OS)</h1>
+  <div>
+   <p><span id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_ph9864114785610">The client functions as a data connection component between the <span id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_en-us_topic_0000002200116717_text5223175701015">product</span> and production environment and performs process control and data transmission during backup and restoration. Before backing up and restoring data, you need to install the client on the host.</span> This section describes how to log in to the background of the host where the client is to be installed and manually install the client.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>If the Windows host where the client is to be installed is a domain controller and the client needs to be installed on multiple domain controllers in the domain, install the client on domain controllers one by one.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>Ensure that the client is not installed on the host. You can run the <strong>sc query rdagent</strong> command on the host for query. If the command output indicates that the specified service is not installed, the client is not installed.</li>
+     <li>Ensure that the <strong>C:\mnt</strong> directory on the host is not mounted. You can run the <strong>mountvol</strong> command on the host for query.</li>
+     <li>You have obtained the IP address of the host where the client is to be installed. The IP address must be able to communicate with the backup network of the <span id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116717_text17183577108">product</span>.</li>
+     <li>You have obtained the username and password for logging in to the host.</li>
+     <li>The language for installing the client and the <span>product</span> must be the same as the OS language of the host where the client is to be installed. Otherwise, information may be displayed in multiple languages or as garbled characters on the client or the <span>product</span>. In this case, reinstall the client and the <span>product</span> with the same language or change the OS language.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Download the client software package on the <span>product</span> WebUI. For details, see <a href="en-us_topic_0000002200116889.html">Downloading a Client Software Package</a>.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>If the client software package fails to be downloaded using Internet Explorer 11 on Windows Server, rectify the fault by referring to <a href="en-us_topic_0000002164790160.html">What Should I Do If I Fail to Download the Client Software Package Using Internet Explorer 11 on the Windows Server?</a>.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Ensure that the time of the host where the client is to be installed is the same as that of the <span>product</span> device.</span></li>
+     <li><span>If the Windows host where the client is to be installed is a domain controller and the client needs to be installed on multiple domain controllers in the domain, perform this step to delete user <strong>rdadmin</strong>. Otherwise, skip this step.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116717_p1917124811416">You can run the <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116717_b281795271912">wmic computersystem get domainrole /value</strong> command on the host to check whether the host is a domain controller. If <span class="msgph" id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116717_msgph1571662219">DomainRole=4</span> or <span class="msgph" id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116717_msgph119186106216">DomainRole=5</span> is displayed in the command output, the host is a domain controller.</p>
+       </div>
+      </div>
+      <ol type="a">
+       <li>Log in to the host where the client is to be installed as a system administrator.</li>
+       <li>Press <span class="uicontrol" id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002164597290_uicontrol11819941114510"><b>Win+R</b></span> to open the <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002164597290_b1015191219408">Run</strong> window.</li>
+       <li>Enter <span class="parmvalue"><b>cmd</b></span> to access the command prompt window.</li>
+       <li>Run the following command to delete user <strong>rdadmin</strong>:<pre class="screen">net user rdadmin /delete</pre></li>
+      </ol> <p></p></li>
+     <li><span>Install the client.</span><p></p>
+      <ol type="a">
+       <li>Log in to the host where the client is to be installed as a user in the <strong>Administrators</strong> user group.</li>
+       <li>Upload the client software package to the host and decompress it.
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>The software package name cannot contain spaces. Otherwise, the client installation will fail.</p>
+         </div>
+        </div></li>
+       <li>Go to the software package directory and install the software.
+        <ol class="substepthirdol">
+         <li>To specify the service IP address used for registration, perform this step. Otherwise, go to <a href="#EN-US_TOPIC_0000002200116849__en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_li14880301717">4.c.ii</a>.
+          <ol>
+           <li>Go to the <strong>..\DataProtect_</strong><em>xxx</em><strong>_client_general_windows\DataProtect_</strong><em>xxx</em><strong>_client_general_windows\conf</strong> directory, where <em>xxx</em> indicates the client version.</li>
+           <li>Open the <strong>client.conf</strong> file and add <strong>eip=</strong><em>XXX.XXX.XXX.XXX</em> to the end of the file, where <em>XXX.XXX.XXX.XXX</em> indicates the service IP address used for registration.</li>
+          </ol></li>
+         <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_li14880301717"><a name="EN-US_TOPIC_0000002200116849__en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_li14880301717"></a><a name="en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_li14880301717"></a>Install the software.
+          <ol>
+           <li>Go to the <strong>..\DataProtect_</strong><em>xxx</em><strong>_client_general_windows\DataProtect_</strong><em>xxx</em><strong>_client_general_windows</strong> directory, where <em>xxx</em> indicates the client version.</li>
+           <li>Double-click <span class="uicontrol"><b>install.bat</b></span> and install the software as prompted.
+            <ol type="a">
+             <li>When the following information is displayed, enter the client installation directory as prompted: If you press <span class="uicontrol"><b>Enter</b></span> without entering any information, the software is installed in <span class="filepath"><b>C:</b></span> by default.<pre class="screen">"You need to enter the installation path (directly press 'Enter' use default installation path C:)."
+Please enter custom install path:</pre></li>
+             <li>If information similar to the following is displayed, ensure that the time of the host where the client is to be installed is the same as the <span>product</span> device time and enter <span class="parmvalue"><b>y</b></span>:<pre class="screen">The current host time and time zone are Thu 08/17/2023 17:17:34.87. Check whether the time and time zone are the same as those on DataBackup time:(y|n):
+Your choice:</pre></li>
+             <li>When the following information is displayed, enter the private key password set when you download the client software package:<pre class="screen">Please enter the private key password set on ProtectManager, you still have 3 chances:
+Enter password:</pre></li>
+             <li>When the following information is displayed, set the password of user <strong>rdadmin</strong>:<pre class="screen">Add User rdadmin Enter password:</pre>
+              <div class="note">
+               <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+               <div class="notebody"></div>
+              </div></li>
+             <li>For 1.5.0SPC19 and later versions: When the following information is displayed, determine whether to enable source deduplication:<pre class="screen">Whether enable dataturbo service:(y|n):
+Your choice:</pre> <p>If you enter <span class="parmvalue"><b>y</b></span>, source deduplication is enabled. Ensure that the free memory of the host where the client is to be installed is greater than 2 GB. The system will automatically install OceanStor DataTurbo. For details about the OSs that support source deduplication, refer to <a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect Compatibility Query</a>.</p> <p>If you enter <span class="parmvalue"><b>n</b></span>, source deduplication is disabled. You can also manually install OceanStor DataTurbo after installing the client. For details, see <a href="en-us_topic_0000002200031329.html">Installing OceanStor DataTurbo</a>.</p>
+              <div class="note">
+               <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+               <div class="notebody">
+                <p><span>If LAN-free configuration needs to be performed for the client, enable this function.</span></p>
+                <p>After source deduplication is enabled, the system automatically installs OceanStor DataTurbo on the host where the client is installed and creates user <strong>dataturbo</strong> whose directory is <strong>C:\Users\dataturbo</strong>. Do not delete or modify the user and user directory.</p>
+                <p><span>after source deduplication is enabled, add the SID (S-1-5-18) of user <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200031329_b11752811812">system</strong> to the <span class="filepath" id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200031329_filepath8365201855911"><b>...\oceanstor\dataturbo\conf\whitelist</b></span> whitelist and run the <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200031329_b171722812819">sc stop dataturbo</strong> and <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200031329_b117628289">sc start dataturbo</strong> commands in sequence to restart the DataTurbo service.</span></p>
+               </div>
+              </div></li>
+             <li>For 1.5.0SPC19 and later versions: If the following information is displayed, determine whether to use an EIP or an IP address after NAT based on actual requirements.
+              <div class="p">
+               If EIPs are mapped to VPC IP addresses, enter an EIP. If the host where the client is to be installed communicates with the <span>product</span> through NAT and the IP addresses before and after NAT are mapped in one-to-one mode, enter the IP address after NAT.
+               <pre class="screen">Check whether the agent ip will be redirected?(Such as EIP or the ip transformed by NAT):(y|n), default(n)
+Your choice:</pre>
+               <div class="note">
+                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+                <div class="notebody">
+                 <ul id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_ul125331052814">
+                  <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li35331702287"><span id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_en-us_topic_0000001839189313_ph163811744610">If the client has been installed, the system is upgraded to 1.5.0SPC19 or later, and an EIP or IP address after NAT that is mapped to a VPC IP address is used, you need to uninstall the client by referring to <a href="en-us_topic_0000002164630332.html">Uninstalling the Client</a>, and then perform the operations in this section to install the client of 1.5.0SPC19 or a later version.</span></li>
+                  <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li248315212284">An EIP is a static IP address based on an external network (this extranet can be the Internet or the local area network (LAN) of an enterprise). An EIP can be directly accessed through the extranet, and is mapped to the instance bound to the EIP using NAT.</li>
+                 </ul>
+                </div>
+               </div>
+              </div></li>
+            </ol> <p>If the following command output is displayed, the client is installed successfully:</p> <pre class="screen">The DataBackup ProtectAgent has been installed successfully.</pre></li>
+          </ol></li>
+        </ol></li>
+      </ol> <p></p></li>
+     <li><span>If the Windows host where the client is installed is a domain controller, perform this step after the client installation is successful to update the password of user <strong>rdadmin</strong> that is used to log in to services in other domain controllers where the client is installed in the domain. Otherwise, skip this step.</span><p></p>
+      <ol type="a">
+       <li>Log in to the host where the client is installed as a system administrator.</li>
+       <li>Press <span class="uicontrol" id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002164597290_uicontrol11819941114510_1"><b>Win+R</b></span> to open the <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002164597290_b1015191219408_1">Run</strong> window.</li>
+       <li>Enter <span class="parmvalue"><b>services.msc</b></span> to open the service window.</li>
+       <li>Right-click the service that is logged in as user <strong>rdadmin</strong>, and choose <strong>Properties</strong>.</li>
+       <li>On the <strong>Log On</strong> tab page, change the password and click <strong>OK</strong>.<p><span><img src="en-us_image_0000002214714888.png"></span></p></li>
+       <li>Right-click the service whose password of user <strong>rdadmin</strong> user has been updated and choose <strong>Restart</strong> from the shortcut menu.<p>If the service status is <strong>Running</strong>, the update is successful.</p></li>
+      </ol> <p></p></li>
+     <li><span>After the client is installed, the <span id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_text1453912431623">product</span> WebUI automatically discovers the client. Perform the following steps to check the result.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_en-us_topic_0000001187942849_ol24016297360">
+       <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_en-us_topic_0000001166356758_en-us_topic_0000001084775528_li10690245104713">Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_en-us_topic_0000002199964685_uicontrol08941439165212"><b>Protection &gt; Clients &gt; Clients</b></span>.</li>
+       <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_en-us_topic_0000001187942849_li162702510381">Check whether the host where the client has been installed is displayed on the <span id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_text1857815461628">product</span> WebUI.
+        <div class="p" id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_en-us_topic_0000001187942849_p19934115894410">
+         If the host where the client has been installed is not displayed on the <span id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_text16771165326">product</span> WebUI, contact the system administrator to authorize resources to the user.
+         <ul id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_ul11315151683118">
+          <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li7489102073110">Perform the following operations for 1.5.0:
+           <ol class="substepthirdol" id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_ol52668371313">
+            <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_en-us_topic_0000001187942849_li13303622114615">On the <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b16209195173810">Clients</strong> page, locate the row of the target client and choose <span class="uicontrol" id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_en-us_topic_0000001187942849_uicontrol183035225468"><b><span id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_en-us_topic_0000001187942849_text18303422124612"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_en-us_topic_0000001187942849_text330392284615"><strong>Authorize Resource</strong></span></b></span>.</li>
+            <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li12823859173115">Authorize the client to the corresponding user.</li>
+           </ol></li>
+          <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li1431512169316">Perform the following operations for 1.6.0 and later versions:
+           <ol class="substepthirdol" id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_ol156361033313">
+            <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li2850165311349">Choose <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b74891625182811">System</strong> &gt; <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b1348910252283">Security</strong> &gt; <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b11490122512812">RBAC</strong>.</li>
+            <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li17341115143513">On the <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b2506323194018">Users</strong> tab page, locate the row that contains the target user, and click <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b1181144011404">Modify</strong>.</li>
+            <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li1660463123511">On the <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b923343292813">Modify User</strong> page, click <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b2233932182817">Next</strong>.</li>
+            <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li5421154015356">Click <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b10361184514117">Create Resource Set</strong>.</li>
+            <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li1749893713610"><a name="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li1749893713610"></a><a name="en-us_topic_0000002200116873_li1749893713610"></a>Set <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b19771754174110">Resource Set Name</strong>. On the <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b197356894611">Client</strong> tab page, select the corresponding client.</li>
+            <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li43218366416">Click <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b4589103652819">OK</strong>.</li>
+            <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li11991352174115">Select the resource set created in <a href="#EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li1749893713610">6.b.v</a> and click <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b83754204910">Next</strong>.</li>
+            <li id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_li11197205624116">Click <strong id="EN-US_TOPIC_0000002200116849__en-us_topic_0000002200116873_b958010437288">Finish</strong>.</li>
+           </ol></li>
+         </ul>
+        </div></li>
+      </ol> <p></p></li>
+    </ol>
+    <ol start="7">
+     <li><span>Repeat the preceding steps to install the client on other hosts.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p><span>After the host is registered successfully, wait 5 minutes and then use the client.</span></p>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Follow-up Procedure</h4>
+    <p>After the client is installed, you can delete the directory for storing the software package to release system space.</p>
+   </div>
+  </div>
+ </body>
+</html>

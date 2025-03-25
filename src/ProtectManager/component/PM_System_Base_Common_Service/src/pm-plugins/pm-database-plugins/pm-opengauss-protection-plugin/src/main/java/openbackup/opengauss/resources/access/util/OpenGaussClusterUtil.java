@@ -25,6 +25,7 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.asserts.PowerAssert;
+import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.util.StreamUtil;
 
 import java.util.HashMap;
@@ -100,6 +101,7 @@ public class OpenGaussClusterUtil {
         List<ProtectedResource> resourceList = dependencies.get(DatabaseConstants.AGENTS);
         return resourceList.stream()
             .flatMap(StreamUtil.match(ProtectedEnvironment.class))
+            .filter(env -> LinkStatusEnum.ONLINE.getStatus().toString().equals(env.getLinkStatus()))
             .map(OpenGaussClusterUtil::applyAgentEndpoint)
             .collect(Collectors.toList());
     }

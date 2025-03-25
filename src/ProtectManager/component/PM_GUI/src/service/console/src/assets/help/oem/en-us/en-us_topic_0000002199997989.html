@@ -1,0 +1,101 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Failed to Execute an Oracle 19C Backup Job and the Error Details Contain Error Code ORA-65250">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164757014.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199997989">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Failed to Execute an Oracle 19C Backup Job and the Error Details Contain Error Code ORA-65250</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199997989"></a><a name="EN-US_TOPIC_0000002199997989"></a>
+  <h1 class="topictitle1">Failed to Execute an Oracle 19C Backup Job and the Error Details Contain Error Code ORA-65250</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>An Oracle backup job fails to be executed. The error details are as follows:</p>
+    <pre class="screen">RMAN-00571: ===========================================================
+RMAN-00569: =============== ERROR MESSAGE STACK FOLLOWS ===============
+RMAN-00571: ===========================================================
+RMAN-03009: failure of backup command  on eBackup03 channel at <em>xx</em>/<em>xx</em>/2023 11:17:16
+ORA-65250: invalid path specified for file - /mnt/databackup/oracle_backup_path<em>xxxx</em></pre>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p>The container database (CDB) mode is enabled for Oracle 19C, and the <strong>db_create_file_dest</strong> parameter is set for a pluggable database (PDB) in the backed-up CDB.</p>
+    <p>According to Oracle's official document, this is a known bug (BUG 30419450).</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol>
+     <li><span>Log in to the Oracle database host.</span><p></p>
+      <ul id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597202_en-us_topic_0000001656760969_ul1983714162204">
+       <li id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597202_en-us_topic_0000001656760969_li7258697580">If the Linux OS is used, use PuTTY to log in to the Oracle database host and run the <strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597202_b14682476107">su - oracle</strong> command to switch to user <strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597202_b1646874718106">oracle</strong>.</li>
+       <li id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597202_en-us_topic_0000001656760969_li1366015032013">If the Windows OS is used, log in to the Oracle database host as the system administrator.</li>
+      </ul> <p></p></li>
+     <li><span>Run the following commands to log in to the Oracle database instance.</span><p></p>
+      <ul id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_ul7420345341">
+       <li id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_li15682124913711">OS authentication:
+        <ul id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_ul89443983816">
+         <li id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_li18420124173415">If the Linux OS is used, run the following commands:<p id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_p95148598366"><a name="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_li18420124173415"></a><a name="en-us_topic_0000002164597290_li18420124173415"></a><strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_b14236563719">export ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_i85144598369">Database instance name</em></p> <p id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_p145141259153613"><strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_b1597618293715">sqlplus / as sysdba</strong></p></li>
+         <li id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_li7402151163816">If the Windows OS is used, perform the following operations:
+          <ol type="a" id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_ol124110408264">
+           <li id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_li624120402267">Press <span class="uicontrol" id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_en-us_topic_0000002164597290_uicontrol11819941114510"><b>Win+R</b></span> to open the <strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_en-us_topic_0000002164597290_b1015191219408">Run</strong> window.</li>
+           <li id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_li161821338277">Enter <span class="parmvalue" id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_parmvalue122291222476"><b>cmd</b></span> and run the following commands:<p id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_p1755152313372"><strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_b19591532143713">set ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_i16755423133718">Database instance name</em></p> <p id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_p1075515234379"><strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_b540852910371">sqlplus / as sysdba</strong></p></li>
+          </ol></li>
+        </ul></li>
+       <li id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_li105571236103417">Database authentication:
+        <ul id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_ul1136516538386">
+         <li id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_li1723334817382">If the Linux OS is used, run the following commands:<p id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_p920984963717"><a name="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_li1723334817382"></a><a name="en-us_topic_0000002164597290_li1723334817382"></a><strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_b162511338427">export ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_i142521037423">Database instance name</em></p> <p id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_p182093496371"><strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_b034785743716">sqlplus</strong></p> <p id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_p17915722412">Enter the name of a user with the <strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_b0440649114212">sysdba</strong> permissions as prompted:</p> <pre class="screen" id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_screen9915112104114"><em id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_i1915102164113">username </em>as sysdba</pre> <p id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_p159150224117">Enter the password as prompted.</p></li>
+         <li id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_li122822426407">If the Windows OS is used, perform the following operations:
+          <ol type="a" id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_ol587720252273">
+           <li id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_li5168124414479">Press <span class="uicontrol" id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_en-us_topic_0000002164597290_uicontrol11819941114510_1"><b>Win+R</b></span> to open the <strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_en-us_topic_0000002164597290_b1015191219408_1">Run</strong> window.</li>
+           <li id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_li3877172517270">Enter <span class="parmvalue" id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_parmvalue89061315114212"><b>cmd</b></span> and run the following commands:<p id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_p8745723103813"><strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_b0361183517422">set ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_i8361163518426">Database instance name</em></p> <p id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_p15745182333814"><strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_b11154427163811">sqlplus</strong></p> <p id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_p71274192512">Enter the name of a user with the <strong id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_b330420012221">sysdba</strong> permissions as prompted:</p> <pre class="screen" id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_screen18896121620243"><em id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_i380114413256">username </em>as sysdba</pre> <p id="EN-US_TOPIC_0000002199997989__en-us_topic_0000002164597290_p15251105852511">Enter the password as prompted.</p></li>
+          </ol></li>
+        </ul></li>
+      </ul> <p></p></li>
+     <li><span>Run the following commands to find the PDB for which the <strong>db_create_file_dest</strong> parameter is set and leave it empty:</span><p></p><p><strong>alter session set container =</strong><em> &lt;PDB NAME&gt;</em><strong>;</strong></p> <p><strong>alter system set db_create_file_dest='' scope=both;</strong></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>Replace <em>&lt;PDB NAME&gt;</em> in the command with the actual name of the PDB that is backed up.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Run the following command to ensure that the <strong>db_create_db_file_dest</strong> parameter is empty and perform the backup job again:</span><p></p><p><strong>show parameter db_create_file_dest;</strong></p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164757014.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

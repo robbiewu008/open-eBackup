@@ -1,0 +1,172 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Managing DB2 Databases, Tablespace Sets, or Instances">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200142005.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164655710">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Managing DB2 Databases, Tablespace Sets, or Instances</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164655710"></a><a name="EN-US_TOPIC_0000002164655710"></a>
+  <h1 class="topictitle1">Managing DB2 Databases, Tablespace Sets, or Instances</h1>
+  <div>
+   <p>The <span>product</span> allows you to modify, remove, activate, or disable protection for DB2 databases or tablespace sets.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Related Operations</h4>
+    <p>Log in to the management page, choose <span class="uicontrol"><b><span id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002199964685_text4379114911434"><strong>Protection</strong></span> &gt; Databases &gt; DB2</b></span>, click the <strong>Databases</strong>, <strong>Tablespace Set</strong>, or <strong>Instance</strong> tab, and locate the database, tablespace set, or instance on which you want to perform related operations.</p>
+   </div>
+   <p><a href="#EN-US_TOPIC_0000002164655710__table24934294919">Table 1</a> describes the related operations.</p>
+   <div class="tablenoborder">
+    <a name="EN-US_TOPIC_0000002164655710__table24934294919"></a><a name="table24934294919"></a>
+    <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164655710__table24934294919" frame="border" border="1" rules="all">
+     <caption>
+      <b>Table 1 </b>Operations performed on database/tablespace set/instance protection plans
+     </caption>
+     <colgroup>
+      <col style="width:20%">
+      <col style="width:50%">
+      <col style="width:30%">
+     </colgroup>
+     <thead align="left">
+      <tr>
+       <th align="left" class="cellrowborder" valign="top" width="20%" id="mcps1.3.4.2.4.1.1"><p>Operation</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.4.2.4.1.2"><p>Description</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="30%" id="mcps1.3.4.2.4.1.3"><p>Navigation Path</p></th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.4.2.4.1.1 "><p>Modifying protection</p></td>
+       <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>If you need to reselect an SLA associated with a database or tablespace set, you can modify the protection plan. After the modification, the next backup will be performed based on the new protection plan.</p> <p><strong>Note</strong></p> <p>The modification does not affect the protection job that is being performed. The modified protection plan will take effect in the next protection period.</p></td>
+       <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target database or tablespace set, choose <strong>More</strong> &gt; <strong>Modify Protection</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.4.2.4.1.1 "><p>Removing protection</p></td>
+       <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to remove protection for a database or tablespace set when it does not need to be protected. After the removal, the system cannot perform protection jobs for the database or tablespace set. To protect the database or tablespace set again, associate an SLA with it again.</p> <p><strong>Note</strong></p> <p>Protection cannot be removed when a protection job of the database or tablespace set is running.</p></td>
+       <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target database or tablespace set, choose <strong>More</strong> &gt; <strong>Remove Protection</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.4.2.4.1.1 "><p>Activating protection</p></td>
+       <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to activate a disabled protection plan of a database or tablespace set. After the protection plan is activated, the system backs up the database or tablespace set based on the protection plan.</p> <p><strong>Note</strong></p> <p>You can perform this operation only on a database or tablespace set that has been associated with an SLA and is in the <strong>Unprotected</strong> state.</p></td>
+       <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target database or tablespace set, choose <strong>More</strong> &gt; <strong>Activate Protection</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.4.2.4.1.1 "><p>Disabling protection</p></td>
+       <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to disable the protection plan for a database or tablespace set when its periodic protection is not needed. After the protection plan is disabled, the system does not perform the automatic backup job for the database or tablespace set.</p> <p><strong>Note</strong></p> <p>Disabling protection does not affect ongoing backup or replication jobs.</p></td>
+       <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target database or tablespace set, choose <strong>More</strong> &gt; <strong>Disable Protection</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.4.2.4.1.1 "><p>Performing manual backup</p></td>
+       <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to perform a backup immediately.</p> <p><strong>Note</strong></p> <p>Copies generated by manual backup are retained for the duration defined in the SLA.</p></td>
+       <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target database or tablespace set, choose <strong>More</strong> &gt; <strong>Manual Backup</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.4.2.4.1.1 "><p>Performing resource scan</p></td>
+       <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>The <span>product</span> automatically scans databases in a registered instance every hour. If a database is added, deleted, or modified in the instance, the database is automatically updated to the <span>product</span> after the scanning. This operation enables you to immediately update the changed database information to the <span>product</span>.</p> <p><strong>Note</strong></p> <p>If you do not select to apply the SLA policy to the newly created VM when creating a periodic backup job, the system will not associate the newly discovered VM with an SLA after scanning.</p></td>
+       <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target instance, choose <strong>More</strong> &gt; <strong>Resource Scan</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.4.2.4.1.1 "><p>Testing connectivity</p></td>
+       <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>Manual connectivity test of the registered DB2 instance is used to check the connectivity between the instance and the production environment.</p></td>
+       <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target instance, choose <strong>More</strong> &gt; <strong>Test Connectivity</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.4.2.4.1.1 "><p>Modification</p></td>
+       <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to modify resource information.</p></td>
+       <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target instance or tablespace set, and choose <strong>More</strong> &gt; <strong>Modify</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.4.2.4.1.1 "><p>Deletion</p></td>
+       <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to delete a resource when you no longer need to protect the resource or use the resource as the restoration target. After the resource is deleted, you cannot view information about it on the management page.</p> <p><strong>Note</strong></p> <p>Before deleting a tablespace set or an instance set, remove the protection for them.</p></td>
+       <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target instance or tablespace set, and choose <strong>More</strong> &gt; <strong>Delete</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.4.2.4.1.1 ">
+        <div class="p">
+         Adding a tag
+         <div class="note" id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_note161679211561">
+          <span class="notetitle"> NOTE: </span>
+          <div class="notebody">
+           <p id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_p1816719214566"><span id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_ph206615454589">This function is available only in 1.6.0 and later versions.</span></p>
+          </div>
+         </div>
+        </div></td>
+       <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to quickly filter and manage resources.</p>
+        <div class="p">
+         <strong id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_b1722475517469">Note</strong>
+         <ul id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_ul2317155315456">
+          <li id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_li1146056125117">The system administrator can add a maximum of 10,000 tags to a resource.</li>
+          <li id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_li1566072118516">A non-system administrator must have the permission of <strong id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_b117498364161">Production resource management</strong> to add tags to resources.</li>
+          <li id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_li731725313453">A non-system administrator can add a maximum of five tags to a resource.</li>
+         </ul>
+        </div></td>
+       <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.4.1.3 ">
+        <div class="p">
+         Choose <strong id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_b1978220109564">More</strong> &gt; <strong id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_b778271011563">Add Tag</strong>.
+         <div class="note" id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_note164681316118">
+          <span class="notetitle"> NOTE: </span>
+          <div class="notebody">
+           <ul id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_ul22969251338">
+            <li id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_li142961925139">On the displayed <strong id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_b171967427617">Add Tag</strong> dialog box, you can select existing tags or click <strong id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_b1711194810818">Create</strong> to create a tag.</li>
+            <li id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_li135161927738">To modify or delete a tag, click <strong id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_b17675195912164">Go to Tag Management</strong> on the <strong id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_b13536183171711">Add Tag</strong> page to go to the <strong id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_b1386161351713">Tag Management</strong> page.</li>
+           </ul>
+          </div>
+         </div>
+        </div></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="20%" headers="mcps1.3.4.2.4.1.1 ">
+        <div class="p">
+         Removing a tag
+         <div class="note" id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_note4957114117575">
+          <span class="notetitle"> NOTE: </span>
+          <div class="notebody">
+           <p id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_en-us_topic_0000002200147037_p1816719214566"><span id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_en-us_topic_0000002200147037_ph206615454589">This function is available only in 1.6.0 and later versions.</span></p>
+          </div>
+         </div>
+        </div></td>
+       <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to remove the tag of a resource when it is no longer needed.</p></td>
+       <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <strong id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_b6302131412560">More</strong> &gt; <strong id="EN-US_TOPIC_0000002164655710__en-us_topic_0000002200147037_b3303714165618">Remove Tag</strong>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.4.2.4.1.1 mcps1.3.4.2.4.1.2 mcps1.3.4.2.4.1.3 "><p>Note: The procedure for restoring DB2 databases or tablespace sets is similar to that in <a href="en-us_topic_0000002164655730.html">Restoring DB2 Databases or Tablespace Sets</a> and is not described here.</p></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200142005.html">DB2 Cluster Environment</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

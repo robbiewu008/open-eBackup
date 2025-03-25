@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Setting a Windows Server to Enter the Directory Services Repair Mode (GUI)">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164769606.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200096169">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Setting a Windows Server to Enter the Directory Services Repair Mode (GUI)</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200096169"></a><a name="EN-US_TOPIC_0000002200096169"></a>
+
+<h1 class="topictitle1">Setting a Windows Server to Enter the Directory Services Repair Mode (GUI)</h1>
+<div><p id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_p977173054912">To restore Active Directory, you need to set the Windows server where Active Directory is located to the DSRM.</p>
+<ol id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_ol191373619508"><li id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_li7131936115010"><span>Restart the Windows server. Before the Windows icon is displayed, press <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b3381205902116">F8</strong> to display the <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b9382959142118">Advanced Boot Options</strong> screen.</span></li><li id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_li51323611503"><span>Select <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b16497193862317">Directory Services Repair Mode</strong>, as shown in <a href="#EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig1737111478559">Figure 1</a>.</span><p><div class="p" id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_p746014145214">If <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b293745211233">Directory Services Repair Mode</strong> is not displayed, select <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b59371352152315">Repair Your Computer</strong> to enter the repair mode.<div class="fignone" id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig1737111478559"><a name="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig1737111478559"></a><a name="en-us_topic_0000001839194585_fig1737111478559"></a><span class="figcap"><b>Figure 1 </b>Advanced Boot Options screen</span><br><span><img id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_image183925054116" src="en-us_image_0000001835554194.png"></span></div>
+</div>
+<div class="note" id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_note0644163335311"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_p13342124415320">Once the server is in repair mode, you do not need to select this mode again every time you restart the server.</p>
+</div></div>
+</p></li><li id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_li16136360506"><span>On the displayed <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b12934204112415">Choose an option</strong> screen, select <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b69356411245">Troubleshoot</strong>, as shown in <a href="#EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig340517919567">Figure 2</a>.</span><p><div class="fignone" id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig340517919567"><a name="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig340517919567"></a><a name="en-us_topic_0000001839194585_fig340517919567"></a><span class="figcap"><b>Figure 2 </b>Startup screen - Choose an option</span><br><span><img id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_image1630835315404" src="en-us_image_0000001792395572.png"></span></div>
+</p></li><li id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_li613153655010"><span>Select <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b59155342255">Startup Settings</strong> (as shown in <a href="#EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig19803328195615">Figure 3</a>), then select <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b1962216452615">Enable Safe Mode</strong> and click <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b129941189262">OK</strong>, as shown in <a href="#EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig5948174815566">Figure 4</a>.</span><p><div class="fignone" id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig19803328195615"><a name="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig19803328195615"></a><a name="en-us_topic_0000001839194585_fig19803328195615"></a><span class="figcap"><b>Figure 3 </b>Startup screen - Advanced options</span><br><span><img id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_image1247017498403" src="en-us_image_0000001839194697.png"></span></div>
+<div class="p" id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_p153921637145415"><div class="fignone" id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig5948174815566"><a name="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig5948174815566"></a><a name="en-us_topic_0000001839194585_fig5948174815566"></a><span class="figcap"><b>Figure 4 </b>Startup screen - Startup Settings</span><br><span><img id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_image556144594015" src="en-us_image_0000001792555312.png"></span></div>
+</div>
+</p></li><li id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_li121433695016"><span>After the restart, press <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b111185442620">F8</strong> before the Windows icon is displayed and select <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b141554132619">Directory Services Repair Mode</strong> to continue the startup process.</span></li><li id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_li61413665013"><span>On the login page that is displayed, select <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b10595153573115">Other user</strong> and log in as the administrator, as shown in <a href="#EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig19691172611572">Figure 5</a>.</span><p><div class="fignone" id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig19691172611572"><a name="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig19691172611572"></a><a name="en-us_topic_0000001839194585_fig19691172611572"></a><span class="figcap"><b>Figure 5 </b>Login page</span><br><span><img id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_image6220102417279" src="en-us_image_0000001835713990.png"></span></div>
+</p></li><li id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_li6141136185017"><span>After DSRM is enabled, <strong id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_b119641212277">Safe Mode</strong> is displayed in the four corners of the screen, as shown in <a href="#EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig154552556572">Figure 6</a>.</span><p><div class="fignone" id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig154552556572"><a name="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_fig154552556572"></a><a name="en-us_topic_0000001839194585_fig154552556572"></a><span class="figcap"><b>Figure 6 </b>Safe Mode screen</span><br><span><img id="EN-US_TOPIC_0000002200096169__en-us_topic_0000001839194585_image4105536184013" src="en-us_image_0000001792395584.png"></span></div>
+</p></li></ol>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164769606.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

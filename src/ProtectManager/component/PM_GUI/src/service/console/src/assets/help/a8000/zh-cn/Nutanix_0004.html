@@ -1,0 +1,88 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="简介">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="Nutanix_0003.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="Nutanix_0004">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>简介</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="Nutanix_0004"></a><a name="Nutanix_0004"></a>
+
+<h1 class="topictitle1">简介</h1>
+<div><div class="section"><h4 class="sectiontitle">应用简介</h4><p>Nutanix提供了基于硬件层面的物理基础设施（Nutanix超融合服务器）和基于软件层面的虚拟基础设施（Nutanix AHV虚拟化）的一体化解决方案。</p>
+<p>Hyper-V的关键组件及相关概念请参考<a href="#Nutanix_0004__zh-cn_topic_0000001216063555_table1769117153117">表1</a>，组件之间的逻辑关系如<a href="#Nutanix_0004__fig1668171015910">图1</a>，如需深入了解请参考Nutanix官方网站。</p>
+
+<div class="tablenoborder"><a name="Nutanix_0004__zh-cn_topic_0000001216063555_table1769117153117"></a><a name="zh-cn_topic_0000001216063555_table1769117153117"></a><table cellpadding="4" cellspacing="0" summary="" id="Nutanix_0004__zh-cn_topic_0000001216063555_table1769117153117" frame="border" border="1" rules="all"><caption><b>表1 </b>Hyper-V的关键组件及相关概念</caption><colgroup><col style="width:25.95%"><col style="width:74.05000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.95%" id="mcps1.3.1.4.2.3.1.1"><p>组件名称</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.05000000000001%" id="mcps1.3.1.4.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.95%" headers="mcps1.3.1.4.2.3.1.1 "><p>存储阵列</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.05000000000001%" headers="mcps1.3.1.4.2.3.1.2 "><p>存储阵列是一种数据存储系统，它由多个硬盘驱动器（通常是磁盘）组成，这些硬盘驱动器被组织成一个逻辑单元来提供高效的数据存储和访问。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.95%" headers="mcps1.3.1.4.2.3.1.1 "><p>PE（Prism Element）平台</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.05000000000001%" headers="mcps1.3.1.4.2.3.1.2 "><p>是Nutanix针对单集群提供的一种管理和监控工具，它提供了一个统一的管理界面，简化了数据中心的运维工作。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.95%" headers="mcps1.3.1.4.2.3.1.1 "><p>PC（Prism Central）平台</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.05000000000001%" headers="mcps1.3.1.4.2.3.1.2 "><p>是Nutanix针对多集群提供的一种管理和监控工具，它提供了一个统一的管理界面，简化了数据中心的运维工作。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fignone" id="Nutanix_0004__fig1668171015910"><a name="Nutanix_0004__fig1668171015910"></a><a name="fig1668171015910"></a><span class="figcap"><b>图1 </b>Nutanix关键组件</span><br><span><img class="eddx" src="zh-cn_image_0000002215120540.png"></span></div>
+</div>
+<div class="section"><h4 class="sectiontitle">受保护对象</h4><p><span style="color:#414142;">OceanProtect</span><span style="color:#414142;">支持保护Nutanix虚拟机数据，包括虚拟机中的操作系统、应用程序文件、用户数据以及配置信息。</span></p>
+<p><span>OceanProtect</span>支持对Nutanix虚拟机数据进行全面保护，通过部署客户端，提供备份、复制、归档、恢复等数据保护功能。<span>OceanProtect</span>基于客户端进行备份恢复流程的控制和数据交换，实现数据保护。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">备份/恢复粒度</h4><p><span>OceanProtect</span>支持以不同粒度备份、恢复Nutanix虚拟机数据：</p>
+<ul><li>备份粒度<p>虚拟机级别：备份虚拟机整机</p>
+</li><li>恢复粒度<ul><li>虚拟机级别：恢复虚拟机整机</li><li>文件级别：恢复磁盘中的单个或多个文件</li></ul>
+</li></ul>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>Nutanix以虚拟机级别备份后，其备份副本可用于虚拟机级别或文件级别的恢复。</p>
+</div></div>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="Nutanix_0003.html">概述</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

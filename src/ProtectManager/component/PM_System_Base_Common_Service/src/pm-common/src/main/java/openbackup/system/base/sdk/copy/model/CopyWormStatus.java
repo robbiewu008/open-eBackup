@@ -12,6 +12,8 @@
 */
 package openbackup.system.base.sdk.copy.model;
 
+import openbackup.system.base.util.EnumUtil;
+
 /**
  * 副本Worm状态
  *
@@ -52,5 +54,15 @@ public enum CopyWormStatus {
      */
     public int getStatus() {
         return status;
+    }
+
+    /**
+     * 获取枚举类
+     *
+     * @param status status
+     * @return CopyWormStatus
+     */
+    public static CopyWormStatus get(int status) {
+        return EnumUtil.get(CopyWormStatus.class, CopyWormStatus::getStatus, status, false);
     }
 }

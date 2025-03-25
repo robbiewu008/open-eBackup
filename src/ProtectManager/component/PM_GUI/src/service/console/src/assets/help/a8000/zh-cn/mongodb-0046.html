@@ -20,77 +20,79 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="恢复MongoDB">
+<meta name="DC.Title" content="步骤5：创建远端设备管理员">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="mongodb-0043.html">
+<meta name="DC.Relation" scheme="URI" content="mongodb-0041.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="mongodb-0046">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>恢复MongoDB</title>
+<title>步骤5：创建远端设备管理员</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="mongodb-0046"></a><a name="mongodb-0046"></a>
 
-<h1 class="topictitle1">恢复MongoDB</h1>
-<div><p>当需要对已备份的实例进行恢复时，可以参考本节恢复MongoDB实例至原位置或新位置。</p>
-<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</li><li><span style="color:#282B33;">恢复前，请确认目标位置实例已关闭，否则恢复将失败。以MongoDB 4.4版本为例，关闭实例操作如下所示</span>：<ol><li>登录MongoDB实例所在主机。</li><li>执行<strong>use admin</strong>命令，切换到MongoDB数据库管理员用户。</li><li>执行<strong>db.shutdownServer()</strong>命令，关闭MongoDB实例。</li></ol>
-<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>如果是MongoDB集群实例，请依次在从节点和主节点上分别执行以上操作，关闭MongoDB集群实例。</p>
-</div></div>
-</li></ul>
-</div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="mongodb-0046__zh-cn_topic_0000001839142377_uicontrol3329549395">“<span id="mongodb-0046__zh-cn_topic_0000001839142377_text732145416391">数据利用</span> &gt; <span id="mongodb-0046__zh-cn_topic_0000001839142377_text1932135423913">副本数据</span> &gt; <span id="mongodb-0046__zh-cn_topic_0000001839142377_text12694336586">大数据</span> &gt; MongoDB”</span>。</span></li><li><span>您可以以MongoDB资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据资源名称查找到需要恢复的资源，并单击资源名称。</p>
-</p></li><li><span>选择副本恢复的资源。</span></li><li><span>指定副本或指定时间点进行恢复。</span><p><ul><li>指定副本恢复<ol type="a"><li>依次选择年、月、天找到副本。<p>当日期上显示<span><img src="zh-cn_image_0000002016318709.png"></span>，即表示该月、该天存在副本。</p>
-</li><li>单击<span><img src="zh-cn_image_0000002016199189.png"></span>，进入副本数据页面。</li><li>在副本数据页面单击<span><img src="zh-cn_image_0000001979838952.png"></span>，单击需要恢复的副本所在行的<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"> <span>恢复</span></span>”</span>。</li></ol>
-</li><li>指定时间点恢复<ol type="a"><li>依次选择年、月、天找到副本。<p>当时间上显示<span><img src="zh-cn_image_0000001979679240.png"></span>，即表示该月、该天存在副本。</p>
-</li><li>单击<span><img src="zh-cn_image_0000002016318717.png"></span>，进入副本数据页面。</li><li>在副本数据页面单击<span><img src="zh-cn_image_0000002016199193.png"></span>，在时间轴上选择蓝色覆盖区域的副本，单击<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"><span>恢复</span></span>”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>对于1.5.0版本，时间轴上最多仅展示100个副本，单击<span><img src="zh-cn_image_0000001984477544.png"></span>可以查看所有副本。</li><li>执行时间点恢复时，由于管理界面无法获取恢复时所使用的副本信息，因此，在恢复任务和相关的事件页面，用户无法看到该恢复任务的副本信息。</li><li>开启日志备份的单实例生成的副本支持任意时间点恢复。</li></ul>
-</div></div>
-</li></ol>
-</li></ul>
-</p></li><li><span>恢复MongoDB实例至原位置或新位置。</span><p><p>相关参数说明如<a href="#mongodb-0046__zh-cn_topic_0000001263614142_table93951625101715">表1</a>所示。</p>
 
-<div class="tablenoborder"><a name="mongodb-0046__zh-cn_topic_0000001263614142_table93951625101715"></a><a name="zh-cn_topic_0000001263614142_table93951625101715"></a><table cellpadding="4" cellspacing="0" summary="" id="mongodb-0046__zh-cn_topic_0000001263614142_table93951625101715" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复MongoDB实例参数说明</caption><colgroup><col style="width:32.53%"><col style="width:67.47%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.3.2.5.2.2.2.3.1.1"><p>参数</p>
+  <h1 class="topictitle1">步骤5：创建远端设备管理员</h1>
+
+  <div><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p1976143411408">在复制的从端集群创建远端设备管理员，用于复制过程中对从端集群进行验证。</p>
+<div class="section" id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_section2539113917248"><h4 class="sectiontitle">操作步骤</h4><ol id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_ol666545192420"><li id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_zh-cn_topic_0000001092505479_li13830188165220"><span>登录复制从端集群的<span id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_text1496671015491">OceanProtect</span>管理界面。</span></li><li id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_zh-cn_topic_0000001092505479_li1570821013536"><span>选择“系统 &gt; 安全 &gt; RBAC”。</span></li><li id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_li1348620371574"><span>在“用户”页签，单击<span class="uicontrol" id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_uicontrol8486133715576">“<span id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_text0486193710574">创建</span>”</span>。</span></li><li id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_li15799464290"><span>在打开的“用户基本信息”界面，参考<a href="#mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_table146051654173010">表1</a>设置基本信息，完成后单击“下一步”。</span><p>
+<div class="tablenoborder"><a name="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_table146051654173010"></a><a name="zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_table146051654173010"></a><table cellpadding="4" cellspacing="0" summary="" id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_table146051654173010" frame="border" border="1" rules="all"><caption><b>表1 </b>基本信息参数说明</caption><colgroup><col style="width:40.93%"><col style="width:59.07%"></colgroup><thead align="left"><tr id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row1560535415303"><th align="left" class="cellrowborder" valign="top" width="40.93%" id="mcps1.3.2.2.4.2.1.2.3.1.1"><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p560518547300">参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.3.2.5.2.2.2.3.1.2"><p>说明</p>
+<th align="left" class="cellrowborder" valign="top" width="59.07%" id="mcps1.3.2.2.4.2.1.2.3.1.2"><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p1605195418305">说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span>恢复至</span></p>
+<tbody><tr id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row518361118419"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p618331184117">用户类型</p>
 </td>
-<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>或<span class="uicontrol">“<span>新位置</span>”</span>。</p>
-<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>支持日志备份的单实例副本恢复至不支持日志备份的单实例时，不支持日志备份的单实例仍不支持单实例日志备份。</li><li>不支持日志备份的单实例副本恢复至支持日志备份的单实例时，支持日志备份的单实例仍支持单实例日志备份。</li></ul>
-</div></div>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p6183211114111">选择“本地用户”。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span>位置</span></p>
+<tr id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row76051154203011"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p156051454113019">名称</p>
 </td>
-<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>时，默认显示恢复的位置。</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span>目标位置</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>当选择恢复至“<span>新位置</span>”时，请选择恢复到的目标位置。</p>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p196051254183018">自定义用户名称。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span>启动实例用户</span></p>
+<tr id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row359718368413"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p19597143610419">登录认证方式</p>
 </td>
-<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p><span style="color:#282B33;">如果未填写启动实例用户，则默认采用MongoDB目录位置的dbpath目录属组用户启动。</span></p>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p9561817134711">选择“登录密码”。</p>
+</td>
+</tr>
+<tr id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row11605195433015"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p1660565410309">密码</p>
+</td>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p7605754153016">设置用户的密码。</p>
+</td>
+</tr>
+<tr id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row19605145412304"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p18605165416301">确认密码</p>
+</td>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p260511541306">确认用户的密码。</p>
+</td>
+</tr>
+<tr id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row96054545308"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p136055546308">角色</p>
+</td>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p6575171152415">在“名称”列选择“远端设备管理员”。</p>
+</td>
+</tr>
+<tr id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_row126056541304"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p1560518547306">描述</p>
+</td>
+<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_p560513546306">可填写该用户的描述信息。</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+</p></li><li id="mongodb-0046__zh-cn_topic_0000002167014344_zh-cn_topic_0000002164660666_li4503143713309"><span>在“总览”界面，确认用户信息无误后，单击“完成”。</span></li></ol>
 </div>
 </div>
+
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="mongodb-0043.html">恢复</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="mongodb-0041.html">复制MongoDB数据库副本（适用于OceanProtect E1000）</a></div>
 </div>
 </div>
 

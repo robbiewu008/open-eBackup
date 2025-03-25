@@ -814,10 +814,12 @@ export class CreateDrillComponent implements OnInit {
           orders: ['-display_timestamp'],
           conditions: JSON.stringify({
             resource_id: item.uuid,
-            generated_by: [
-              DataMap.CopyData_generatedType.backup.value,
-              DataMap.CopyData_generatedType.replicate.value
-            ],
+            generated_by: this.appUtilsService.isDistributed
+              ? [DataMap.CopyData_generatedType.backup.value]
+              : [
+                  DataMap.CopyData_generatedType.backup.value,
+                  DataMap.CopyData_generatedType.replicate.value
+                ],
             source_copy_type: [
               DataMap.CopyData_Backup_Type.full.value,
               DataMap.CopyData_Backup_Type.incremental.value,

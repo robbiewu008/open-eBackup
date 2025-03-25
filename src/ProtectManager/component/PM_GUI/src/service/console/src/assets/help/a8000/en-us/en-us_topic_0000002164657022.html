@@ -1,0 +1,60 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="How to Stop an OpenStack Backup Job When the Job Is Always in the Phase of Starting to Use a Snapshot to Create a Temporary Volume">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164656978.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164657022">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>How to Stop an OpenStack Backup Job When the Job Is Always in the Phase of Starting to Use a Snapshot to Create a Temporary Volume</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164657022"></a><a name="EN-US_TOPIC_0000002164657022"></a>
+
+<h1 class="topictitle1">How to Stop an OpenStack Backup Job When the Job Is Always in the Phase of Starting to Use a Snapshot to Create a Temporary Volume</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>When the host where the client is installed is backing up an OpenStack cloud server, the job progress stays at 30% and the job phase is starting to use a snapshot to create a temporary volume.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Causes</h4><p>A large-capacity LUN clone job exists on the storage backend connected to OpenStack. As a result, the current clone job of using a snapshot to create a volume is in the queue for a long time.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Troubleshooting</h4><p>Perform the following steps to stop a backup job:</p>
+<ol><li><span>Log in to FusionSphere OpenStack OM.</span></li><li id="EN-US_TOPIC_0000002164657022__li185448101365"><a name="EN-US_TOPIC_0000002164657022__li185448101365"></a><a name="li185448101365"></a><span>Choose <span class="uicontrol"><b>Resources &gt; Storage &gt; Disks</b></span>. On the <strong>Disks</strong> page, locate the volume named <strong>Backup_volume_<em>snapID</em></strong> (<strong>snapID</strong> indicates the snapshot ID displayed in the backup job) in the creating state and record the volume ID.</span></li><li><span>Log in to DeviceManager connected to OpenStack.</span></li><li><span>Choose <span class="uicontrol"><b>Services &gt; Block Service &gt; LUN Groups</b></span> and click <span class="uicontrol"><b>LUNs</b></span>. The <strong>LUNs</strong> tab page is displayed.</span></li><li id="EN-US_TOPIC_0000002164657022__li753572162813"><a name="EN-US_TOPIC_0000002164657022__li753572162813"></a><a name="li753572162813"></a><span>Click each LUN name to view the general information about the LUN. Find the LUN corresponding to the volume based on the LUN creation time and the volume ID (corresponding to the LUN description) recorded in <a href="#EN-US_TOPIC_0000002164657022__li185448101365">2</a>, and record the LUN name.</span></li><li><span>Choose <span class="uicontrol"><b>Data Protection &gt; Protection Entities &gt; LUNs</b></span> and click <span class="uicontrol"><b>Clone Pairs</b></span>. The <strong>Clone Pairs</strong> tab page is displayed.</span></li><li><span>Locate the clone pair based on the LUN name (corresponding to the target LUN) recorded in <a href="#EN-US_TOPIC_0000002164657022__li753572162813">5</a>. In the row that contains the target clone pair, choose <span class="uicontrol"><b>More &gt; Stop Sync</b></span>. Wait until the synchronization is successfully stopped, and delete the clone pair.</span></li><li><span>Use PuTTY to log in to the active OpenStack node.</span></li><li><span>Run the following commands in sequence to delete the temporary volume (the value of <strong>volumeId</strong> is the volume ID recorded in <a href="#EN-US_TOPIC_0000002164657022__li185448101365">2</a>):</span><p><pre class="screen">cinder reset-state <em>volumeId</em> --attach-status detached</pre>
+<pre class="screen">cinder reset-state <em>volumeId</em> --state available</pre>
+<pre class="screen">cinder delete <em>volumeId</em></pre>
+</p></li><li><span>After the temporary volume is deleted, the backup job finishes because the temporary volume fails to be created.</span></li></ol>
+</div>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164656978.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

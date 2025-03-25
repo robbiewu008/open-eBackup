@@ -17,67 +17,47 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="上传和更新Kubernetes安装包">
+  <meta name="DC.Title" content="常见问题">
   <meta name="product" content="">
-  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_000092.html">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002164767522.html">
+  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00104.html">
+  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00107.html">
+  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00108.html">
+  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00109.html">
+  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00110.html">
+  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00110_a1.html">
+  <meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00110_a2.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
-  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-  <meta name="DC.Publisher" content="20240320">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
   <meta name="prodname" content="csbs">
   <meta name="documenttype" content="usermanual">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="kubernetes_CSI_00102">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>上传和更新Kubernetes安装包</title>
+  <title>常见问题</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="kubernetes_CSI_00102"></a><a name="kubernetes_CSI_00102"></a>
-  <h1 class="topictitle1">上传和更新Kubernetes安装包</h1>
+  <h1 class="topictitle1">常见问题</h1>
   <div>
-   <p id="kubernetes_CSI_00102__p11409133032918">执行备份恢复前，需要上传Kubernetes安装包至镜像库。备份恢复时需要在生产环境上使用镜像部署备份pod，用于备份恢复任务运行过程中的数据搬迁，因此需要上传Kubernetes安装包至镜像仓库用于部署备份pod。</p>
-   <div class="section">
-    <h4 class="sectiontitle">前提条件</h4>
-    <p>上传Kubernetes安装包前，请用户在查询版本及补丁号，再根据查询到的版本及补丁号下载“<em>XXX_K8s_BackupImage.tgz</em>”安装包，解压安装包后，获得对应产品架构的“k8s_backup_image_x86.tar”或“k8s_backup_image_arm64.tar”压缩包，Kubernetes安装包通过以下方式获取。</p>
-    <ul>
-     <li>企业用户：<a href="https://support.huawei.com/enterprise/zh/flash-storage/oceanprotect-databackup-pid-258115661/software/" target="_blank" rel="noopener noreferrer">点此前往</a></li>
-     <li>运营商用户：<a href="https://support.huawei.com/carrier/navi?coltype=software#col=software&amp;path=PBI1-21430725/PBI1-251363742/PBI1-250389226/PBI1-251366310/PBI1-258115661" target="_blank" rel="noopener noreferrer">点此前往</a>
-      <div class="note">
-       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
-       <div class="notebody">
-        <p>可通过以下方式查询版本及补丁号。</p>
-        <ol>
-         <li>单击右上角<span><img src="zh-cn_image_0000002090106933.png"></span>图标，选择“<span>关于</span>”。</li>
-         <li>在弹框中“<span>版本</span>”所在行显示出版本及补丁号。</li>
-        </ol>
-       </div>
-      </div></li>
-    </ul>
-   </div>
-   <div class="section">
-    <h4 class="sectiontitle">注意事项</h4>
-    <p>每一个需要使用备份或恢复功能的CCE集群所属租户，都需要执行以下操作步骤进行安装包的上传和更新操作。</p>
-   </div>
-   <div class="section">
-    <h4 class="sectiontitle">操作步骤</h4>
-    <ol>
-     <li><span>登录ManageOne运营面。</span></li>
-     <li><span>依次选择<span class="uicontrol">“服务列表 &gt; 云容器引擎CCE &gt; 镜像仓库”</span>，跳转至镜像仓库的总览页面。</span></li>
-     <li><span>通过<span class="uicontrol">“总览”</span>页面的快速入门指导的步骤1和步骤2进行镜像上传操作。</span></li>
-     <li><span>上传Kubernetes安装压缩包后，单击<span class="uicontrol">“我的镜像”</span>，选择传入的压缩包名，跳转到对应的压缩包详情页面。</span></li>
-     <li id="kubernetes_CSI_00102__li4890151815206"><a name="kubernetes_CSI_00102__li4890151815206"></a><a name="li4890151815206"></a><span>在镜像版本“latest”所在行单击<span class="uicontrol">“containerd指令”</span>，拷贝弹出的下载镜像命令。</span></li>
-     <li><span>单击页面右上角的<span class="uicontrol">“编辑”</span>，将<span class="uicontrol">“类型”</span>改为<span class="uicontrol">“公开”</span>。</span></li>
-     <li id="kubernetes_CSI_00102__li17365195215269"><a name="kubernetes_CSI_00102__li17365195215269"></a><a name="li17365195215269"></a><span>分别登录Kubernetes集群的各个节点，执行<strong>crictl images</strong>命令查看本地镜像信息，如果回显内容存在，则记录“TAG”值为“latest”的镜像名对应的“IMAGE ID”，如果回显内容为空，则无需记录。</span><p></p><p><span><img src="zh-cn_image_0000001792381708.png"></span></p> <p></p></li>
-     <li><span>在登录的所有节点执行<a href="#kubernetes_CSI_00102__li4890151815206">5</a>拷贝的镜像下载命令。</span></li>
-     <li><span>镜像下载命令执行成功后，再次执行<strong>crictl images</strong>命令查看本地镜像信息，当“TAG”值为“latest”的镜像的“IMAGE ID”与<a href="#kubernetes_CSI_00102__li17365195215269">7</a>查询的镜像ID不一致时，表示本地镜像更新成功。如果<a href="#kubernetes_CSI_00102__li17365195215269">7</a>回显内容为空，此时查看本地镜像信息会新增一条“TAG”值为“latest”的镜像，表明本次镜像下载成功。</span></li>
-    </ol>
-   </div>
+   <p></p>
   </div>
   <div>
+   <ul class="ullinks">
+    <li class="ulchildlink"><strong><a href="kubernetes_CSI_00104.html">登录DeviceManager管理界面</a></strong><br></li>
+    <li class="ulchildlink"><strong><a href="kubernetes_CSI_00107.html">Token认证时获取证书值（适用于CCE）</a></strong><br></li>
+    <li class="ulchildlink"><strong><a href="kubernetes_CSI_00108.html">应用一致性备份的生产环境Pod配置（通用）</a></strong><br></li>
+    <li class="ulchildlink"><strong><a href="kubernetes_CSI_00109.html">应用一致性备份的生产环境Pod配置（容器应用为MySQL）</a></strong><br></li>
+    <li class="ulchildlink"><strong><a href="kubernetes_CSI_00110.html">应用一致性备份的生产环境Pod配置（容器应用为openGauss）</a></strong><br></li>
+    <li class="ulchildlink"><strong><a href="kubernetes_CSI_00110_a1.html">应用一致性备份的生产环境Pod配置（容器应用为PostgreSQL）</a></strong><br></li>
+    <li class="ulchildlink"><strong><a href="kubernetes_CSI_00110_a2.html">应用一致性备份的生产环境Pod配置（容器应用为MairaDB）</a></strong><br></li>
+   </ul>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="kubernetes_CSI_000092.html">备份前准备（适用于CCE）</a>
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000002164767522.html">Kubernetes CSI数据保护</a>
     </div>
    </div>
   </div>

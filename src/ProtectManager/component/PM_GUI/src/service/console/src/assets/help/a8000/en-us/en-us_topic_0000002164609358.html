@@ -1,0 +1,118 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Preparations for Backup">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200095705.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164609358">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Preparations for Backup</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164609358"></a><a name="EN-US_TOPIC_0000002164609358"></a>
+
+<h1 class="topictitle1">Preparations for Backup</h1>
+<div><p>Before backing up SAP on Oracle databases, prepare related information by following instructions in <a href="#EN-US_TOPIC_0000002164609358__en-us_topic_0000001455091930_table10744125193920">Table 1</a>.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002164609358__en-us_topic_0000001455091930_table10744125193920"></a><a name="en-us_topic_0000001455091930_table10744125193920"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164609358__en-us_topic_0000001455091930_table10744125193920" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Preparations for backup</caption><colgroup><col style="width:19.64%"><col style="width:61.85000000000001%"><col style="width:18.509999999999998%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="19.64%" id="mcps1.3.2.2.4.1.1"><p>Item</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="61.85000000000001%" id="mcps1.3.2.2.4.1.2"><p>How to Obtain</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="18.509999999999998%" id="mcps1.3.2.2.4.1.3"><p>To Be Used In</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="19.64%" headers="mcps1.3.2.2.4.1.1 "><p>SAP instance ID</p>
+</td>
+<td class="cellrowborder" valign="top" width="61.85000000000001%" headers="mcps1.3.2.2.4.1.2 "><p><strong>SAPSID</strong> in <a href="en-us_topic_0000002200010101.html#EN-US_TOPIC_0000002200010101__section17145114099">Context</a></p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="18.509999999999998%" headers="mcps1.3.2.2.4.1.3 "><p><a href="en-us_topic_0000002200095717.html">Step 1: Registering an SAP on Oracle Database</a></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>Oracle instance ID</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p><strong>DBSID</strong> in <a href="en-us_topic_0000002200010101.html#EN-US_TOPIC_0000002200010101__section17145114099">Context</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>Username and password of the database</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Name and password of the user created in <a href="en-us_topic_0000002200010101.html#EN-US_TOPIC_0000002200010101__section09572159441">Starting the Database and Creating a Database User</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.64%" headers="mcps1.3.2.2.4.1.1 "><p>Database status</p>
+</td>
+<td class="cellrowborder" valign="top" width="61.85000000000001%" headers="mcps1.3.2.2.4.1.2 "><p>Check whether the database is in the <strong>OPEN</strong> state.</p>
+<ol><li>Go to the <strong>run</strong> directory created in <a href="en-us_topic_0000002200010101.html#EN-US_TOPIC_0000002200010101__section10539810434">Manually Creating a run Directory and Copying Files to the Directory</a>. Example:<pre class="screen">C:\&gt;cd usr\sap\EH7\SYS\exe\run</pre>
+</li><li>Run the following command and check the value of <strong>Instance status (status)</strong>. If the value is <strong>OPEN</strong>, the database is in the <strong>OPEN</strong> state.<pre class="screen">brspace -c force -l E -u <em>userName</em>/<em>passWord</em> -f dbshow -c dbstate</pre>
+<div class="p"><em>userName</em> and <em>passWord</em> indicate the name and password of the database user created in <a href="en-us_topic_0000002200010101.html#EN-US_TOPIC_0000002200010101__section09572159441">Starting the Database and Creating a Database User</a>. Example:<pre class="screen">C:\usr\sap\EH7\SYS\exe\run&gt;brspace -c force -l E -u user1/Test123 -f dbshow -c dbstate
+BR1001I BRSPACE 7.40 (1)
+BR1002I Start of BRSPACE processing: sfqavhbp.dbw 2024-12-24 07.39.25
+BR1301W Error message from likeywlib:
+......
+-----------------------------------------------------------Information about the status of database instance EH7
+ 1 - Instance number (number) ........... 1
+ 2 - Instance thread (thread) ........... 1
+ <strong>3 - </strong><strong>Instance status (status) ........... OPEN</strong>
+ 4 - Instance start time (start) ........ 2024-12-24 07.33.45
+ 5 - Oracle version (version) ........... 11.2.0.3.0
+ 6 - Database creation time (create) .... 2024-10-24 10.38.10
+ 7 - Last resetlogs time (resetlogs) .... 2024-10-24 10.38.10
+ 8 - Archivelog mode (archmode) ......... ARCHIVELOG
+ 9 - Archiver status (archiver) ......... STARTED
+10 - Current redolog sequence (redoseq) . 111
+11 - Current redolog SCN (redoscn) ...... 9034696
+12 - Flashback status (flashback) ....... OFF
+13 - Block change tracking (tracking) ... OFF
+14 - Data encryption (encryption) ....... OFF
+15 - Database vault (dbvault) ........... OFF
+16 - Number of SAP connections (sapcon) . 0
+Standard keys: c - cont, b - back, s - stop, r - refr, h - help
+-------------------------------------------------------------------------------
+BR0280I BRSPACE time stamp: 2024-12-24 07.39.26
+... ...</pre>
+</div>
+</li><li>If the database is not in the <strong>OPEN</strong> state, run the following commands to start the database:<pre class="screen">sqlplus / as sysdba
+startup;</pre>
+</li></ol>
+</td>
+<td class="cellrowborder" valign="top" width="18.509999999999998%" headers="mcps1.3.2.2.4.1.3 "><p>-</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200095705.html">Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

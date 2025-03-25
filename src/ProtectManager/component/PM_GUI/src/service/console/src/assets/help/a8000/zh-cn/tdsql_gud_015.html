@@ -20,82 +20,53 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤7：执行备份">
+<meta name="DC.Title" content="步骤2：开启zkmeta自动备份功能（适用于分布式实例）">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="tdsql_gud_009.html">
+<meta name="DC.Relation" scheme="URI" content="tdsql_gud_013.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
-<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
-<meta name="DC.Publisher" content="20240320">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="tdsql_gud_015">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤7：执行备份</title>
+<title>步骤2：开启zkmeta自动备份功能（适用于分布式实例）</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="tdsql_gud_015"></a><a name="tdsql_gud_015"></a>
 
-<h1 class="topictitle1">步骤7：执行备份</h1>
-<div><p>执行备份前将需要保护的资源关联到指定SLA策略，系统将对这些资源按照SLA策略进行保护，并根据SLA策略周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。对于1.6.0及后续版本，支持对同一TDSQL集群下的多个实例同时执行备份或恢复任务。</p>
-<div class="section"><h4 class="sectiontitle">背景信息</h4><p id="tdsql_gud_015__tdsql_gud_010_p9667843103811"><span id="tdsql_gud_015__tdsql_gud_010_ph1292522251311">本节操作如无特殊说明均以TDSQL 10.3.22.1版本为例进行，不同版本操作可能存在差异，请以实际为准。</span></p>
+<h1 class="topictitle1">步骤2：开启zkmeta自动备份功能（适用于分布式实例）</h1>
+<div><p>TDSQL在执行分布式实例备份任务前，需开启zkmeta自动备份功能，否则会导致跨集群恢复数据库失败。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><p id="tdsql_gud_015__tdsql_gud_014_p9667843103811"><span id="tdsql_gud_015__tdsql_gud_014_ph1292522251311">本节操作如无特殊说明均以TDSQL 10.3.22.1版本为例进行，不同版本操作可能存在差异，请以实际为准。</span></p>
 </div>
-<div class="section"><h4 class="sectiontitle">注意事项</h4><ul><li>TDSQL分布式实例备份过程中不支持执行DDL操作，包括：CREATE、DROP、ALTER、TRUNCATE。</li><li>如果备份TDSQL分布式实例，请勿将<span class="filepath">“/tdsqlbackup”</span>目录作为挂载路径。</li><li>如果TDSQL分布式实例没有数据变化，未生新的日志文件，日志备份会失败。</li></ul>
-</div>
-<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>TDSQL数据库安装目录为<span class="filepath">“/data/tdsql_run”</span>。</li><li><span>集群已开启NTP服务且时钟源配置相同。</span></li><li>已在赤兔管理平台“实例管理”中选择实例，进入“备份&amp;恢复 &gt; 备份设置”界面，将待备份实例的<span class="parmname">“binlog和冷备的保存天数”</span>设置为最大值。</li><li><span id="tdsql_gud_015__ph1111737722">由于数据库厂商不支持备份容灾模式为1主0备的分布式实例、或没有冷备节点的分布式实例，因此备份前请确保待备份的TDSQL分布式实例已选取冷备节点。</span>具体操作请参考<a href="tdsql_gud_108.html">如何配置冷备节点</a>章节。</li></ul>
-</div>
-<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="tdsql_gud_015__zh-cn_topic_0000001839142377_uicontrol123821426193719">“<span id="tdsql_gud_015__zh-cn_topic_0000001839142377_text3382726113718">保护</span> &gt; 数据库 &gt; TDSQL”</span>。</span></li><li><span>在<span class="wintitle">“<span>非分布式实例</span>”</span>或<span class="wintitle">“<span>分布式实例</span>”</span>页签，选择需要保护的实例，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p><p>您也可以勾选多个实例进行批量保护。</p>
-</p></li><li><span>选择SLA。</span><p><p>您也可以单击<span class="uicontrol">“<span>创建</span>”</span>，创建新的SLA。</p>
-<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>TDSQL分布式实例不支持永久增量（合成全量）备份，无法选择保护策略包含“<span>永久增量（合成全量）备份</span>”的SLA进行保护。</li><li><span>如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></li></ul>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>使用<strong>root</strong>用户登录所有schedule节点。</span></li><li><span>执行以下命令，修改<span class="filepath">“confscheduler.xml”</span>配置文件。</span><p><pre class="screen">cd /data/application/scheduler/conf/</pre>
+<pre class="screen">vi scheduler.xml</pre>
+<p>在配置文件中的&lt;manager&gt;&lt;/manager&gt;标签内增加以下内容：</p>
+<pre class="screen">&lt;back_zkmeta value="on"/&gt;</pre>
+</p></li><li><span>使用<strong>root</strong>用户登录所有zk节点。</span><p><pre class="screen">cd /data/application/zookeeper/bin/</pre>
+<pre class="screen">./zkCli.sh -server 127.0.0.1:<em>端口号</em></pre>
+<p>示例：</p>
+<pre class="screen">cd /data/application/zookeeper/bin/
+./zkCli.sh -server 127.0.0.1:2118</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>命令中的<em>端口号</em>为对应zk的端口号，请根据赤兔管理平台“调度与管理系统 &gt; Zookeeper监控”中实际查询到的端口号替换。</p>
 </div></div>
-</p></li><li><span>对于1.6.0及后续版本，请参考<a href="#tdsql_gud_015__table1322314598279">表1</a>，配置高级参数。</span><p>
-<div class="tablenoborder"><a name="tdsql_gud_015__table1322314598279"></a><a name="table1322314598279"></a><table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_015__table1322314598279" frame="border" border="1" rules="all"><caption><b>表1 </b>参数说明</caption><colgroup><col style="width:37.37%"><col style="width:62.629999999999995%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="37.37%" id="mcps1.3.5.2.4.2.1.2.3.1.1"><p>参数</p>
-</th>
-<th align="left" class="cellrowborder" valign="top" width="62.629999999999995%" id="mcps1.3.5.2.4.2.1.2.3.1.2"><p>说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="37.37%" headers="mcps1.3.5.2.4.2.1.2.3.1.1 "><p>备份完成后删除归档日志</p>
-</td>
-<td class="cellrowborder" valign="top" width="62.629999999999995%" headers="mcps1.3.5.2.4.2.1.2.3.1.2 "><div class="p">开启后，日志备份完成后会自动删除生产环境的归档日志。<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>仅保护非分布式实例时，显示此参数。</p>
+</p></li><li><span>在所有zk节点执行以下操作，修改json配置。</span><p><ol type="a"><li id="tdsql_gud_015__li8335103775513"><a name="tdsql_gud_015__li8335103775513"></a><a name="li8335103775513"></a>执行以下命令，查询json配置项内容。<pre class="screen">get /tdsqlzk/configs/agent@global</pre>
+<p>查询结果示例：</p>
+<pre class="screen">{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966"}</pre>
+</li><li>执行以下命令，将<strong>"local_backup":"1"</strong>配置项添加到json配置中。<div class="p">即使<a href="#tdsql_gud_015__li8335103775513">4.a</a>中查询到的json配置中已存在<strong>"local_backup":"1"</strong>配置项，请仍执行以下命令进行配置，以确保配置生效。<pre class="screen">set /tdsqlzk/configs/agent@global<strong> </strong><em>{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966","local_backup":"1"}</em></pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>命令中的<em>{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966","local_backup":"1"}</em>仅为示例，请根据实际替换。</p>
 </div></div>
 </div>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="37.37%" headers="mcps1.3.5.2.4.2.1.2.3.1.1 "><p>备份zkmeta</p>
-</td>
-<td class="cellrowborder" valign="top" width="62.629999999999995%" headers="mcps1.3.5.2.4.2.1.2.3.1.2 "><p>如果需要跨集群恢复数据库，请打开此开关，并已开启zkmeta自动备份功能。具体操作请参考<a href="tdsql_gud_080.html">步骤2：开启zkmeta自动备份功能（适用于分布式实例）</a>。</p>
-<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>仅保护分布式实例时，显示此参数。</p>
-</div></div>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="37.37%" headers="mcps1.3.5.2.4.2.1.2.3.1.1 "><div class="p">安全归档<div class="note" id="tdsql_gud_015__fc_gud_0019_note2052965314120"><span class="notetitle"> 说明： </span><div class="notebody"><p id="tdsql_gud_015__fc_gud_0019_zh-cn_topic_0000001792344090_p1816719214566">仅1.6.0及后续版本支持此功能。</p>
-</div></div>
-</div>
-</td>
-<td class="cellrowborder" valign="top" width="62.629999999999995%" headers="mcps1.3.5.2.4.2.1.2.3.1.2 "><div class="p">当选择的SLA包含归档策略时，显示该参数。勾选后仅归档防勒索检测未感染的备份副本。<div class="note" id="tdsql_gud_015__fc_gud_0019_note1550211211513"><span class="notetitle"> 说明： </span><div class="notebody"><p id="tdsql_gud_015__fc_gud_0019_p10502162125111"><span style="color:#1A1A1A;">如果SLA归档策略中“归档时间”未选择“备份成功后立即执行归档”或“归档策略”未选择“仅归档最新的副本”，以及并未设置防勒索策略时，</span>请单击“前往配置”为待保护资源设置防勒索策略。具体操作请参考<span id="tdsql_gud_015__fc_gud_0019_cite15733201398">《OceanProtect DataBackup 1.5.0-1.6.0 数据备份特性指南(副本防勒索)》</span>中的“创建防勒索&amp;WORM策略”章节。</p>
-</div></div>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</p></li><li><span>单击<span class="uicontrol" id="tdsql_gud_015__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p><p id="tdsql_gud_015__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p>
-</p></li><li><strong>可选：</strong><span>执行手动备份。</span><p><div class="p">当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。<ol type="a"><li>在需要备份的资源所在行单击“更多 &gt; <span id="tdsql_gud_015__zh-cn_topic_0000001964713008_text18439122416533">手动备份</span>”。<div class="note" id="tdsql_gud_015__zh-cn_topic_0000001964713008_note1527151103"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="tdsql_gud_015__zh-cn_topic_0000001964713008_zh-cn_topic_0000001607531736_p870125314544">支持选择多个资源批量进行手动备份。勾选多个已保护的资源，在资源列表左上角选择“更多 &gt; <span id="tdsql_gud_015__zh-cn_topic_0000001964713008_text122852865419">手动备份</span>”。</p>
-</div></div>
-</li><li>设置手动备份产生的副本名称。<p id="tdsql_gud_015__zh-cn_topic_0000001964713008_p444210492470">如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
-</li><li>选择保护策略：<span>全量备份</span>、<span>永久增量（合成全量）备份</span>或<span>日志备份</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>TDSQL分布式实例不支持永久增量（合成全量）备份。</li><li><span>对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></li></ul>
-</div></div>
-</li><li>单击<span class="uicontrol" id="tdsql_gud_015__zh-cn_topic_0000001964713008_uicontrol37271318124613">“<span id="tdsql_gud_015__zh-cn_topic_0000001964713008_text6821948112410">确定</span>”</span>。</li></ol>
-</div>
+</li></ol>
+</p></li><li><span>使用<strong>root</strong>用户登录集群所在的所有节点，执行以下命令，重启生产主机。</span><p><pre class="screen">reboot</pre>
 </p></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="tdsql_gud_009.html">备份TDSQL数据库</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="tdsql_gud_013.html">备份TDSQL数据库</a></div>
 </div>
 </div>
 

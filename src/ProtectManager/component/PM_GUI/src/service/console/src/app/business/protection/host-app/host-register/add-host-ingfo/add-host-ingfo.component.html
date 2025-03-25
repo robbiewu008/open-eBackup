@@ -136,6 +136,30 @@
             <aui-inupt-with-eye formControlName="password"></aui-inupt-with-eye>
         </lv-form-control>
     </lv-form-item>
+    <ng-container *ngIf="isWindows">
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_host_join_domain_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-radio-group formControlName="joinDomain">
+                    <lv-group lvGutter="48px">
+                        <ng-container *ngFor="let item of passwordTypeOptions;">
+                            <lv-radio [lvValue]="item.value">{{ item.label|i18n }}</lv-radio>
+                        </ng-container>
+                    </lv-group>
+                </lv-radio-group>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="hostFormGroup.get('joinDomain').value">
+            <lv-form-label lvRequired>
+                {{'common_rdadmin_password_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="passwordErrorTip">
+                <aui-inupt-with-eye formControlName="rdadminPassword"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
     <lv-form-item
         *ngIf="includes([dataMap.OS_Type.Linux.value, dataMap.OS_Type.Unix.value], formGroup.value.osType) && hostFormGroup.value.userType === dataMap.userType.common.value && !hostFormGroup.value.passwordType">
         <lv-form-label lvRequired>

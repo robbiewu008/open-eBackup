@@ -1,0 +1,56 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="客户端离线原因排查">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002164790312">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>客户端离线原因排查</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002164790312"></a><a name="ZH-CN_TOPIC_0000002164790312"></a>
+
+<h1 class="topictitle1">客户端离线原因排查</h1>
+<div><p>当客户端出现离线状态，可参考本章节排查离线原因。</p>
+<div class="section"><h4 class="sectiontitle">Linux OS/AIX OS/Solaris OS</h4><ol><li><span>使用PuTTY工具以<strong id="ZH-CN_TOPIC_0000002164790312__zh-cn_topic_0000002164790296_zh-cn_topic_0000002200031305_b916917212">root</strong>账户登录待安装客户端的主机。</span></li><li id="ZH-CN_TOPIC_0000002164790312__li1514711154617"><span>查看客户端所在主机的防火墙是否关闭。</span><p><p id="ZH-CN_TOPIC_0000002164790312__p11686134515526">防火墙开启状态下可能会拦截<span id="ZH-CN_TOPIC_0000002164790312__text19822419115513">OceanProtect</span>与客户端所在主机的通信请求。如果防火墙开启且不能直接关闭防火墙的场景下，请开放<a href="https://support.huawei.com/enterprise/zh/centralized-storage/oceanprotect-databackup-pid-258115661" target="_blank" rel="noopener noreferrer">《OceanProtect DataBackup 1.5.0-1.6.0 通信矩阵》</a>中对应的端口。</p>
+<div class="note" id="ZH-CN_TOPIC_0000002164790312__note17533155617316"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000002164790312__p2533135623113">如果要确保客户端状态为“在线”，至少需确保<span id="ZH-CN_TOPIC_0000002164790312__text5264174523617">OceanProtect</span>的<strong id="ZH-CN_TOPIC_0000002164790312__b1476954933620">25082</strong>端口以及客户端所在主机上的<strong id="ZH-CN_TOPIC_0000002164790312__b26339582368">59520-59559</strong>端口段已开放。</p>
+</div></div>
+</p></li><li><span>执行以下命令，查看客户端进程是否正常。</span><p><pre class="screen">ps aux | grep rdadmin</pre>
+<p>当回显4个客户端进程信息时，表示客户端进程正常。否则，请运行“<em>客户端安装目录</em>/DataBackup/ProtectClient”路径下的<strong>start.sh</strong>脚本，启动客户端进程。</p>
+<pre class="screen">rdadmin  12920  0.7  0.5 2170416 47148 ?       Sl   10:56   4:43 /opt/DataBackup/ProtectClient/ProtectClient-E//bin/rdagent
+rdadmin  13272  0.0  0.0  44272  1156 ?        Ss   10:56   0:00 nginx: master process ./rdnginx
+rdadmin  13273  0.0  0.0  45408  4176 ?        S    10:56   0:00 nginx: worker process
+rdadmin  13307  0.0  0.1 185064 11888 ?        Sl   10:56   0:11 /opt/DataBackup/ProtectClient/ProtectClient-E//bin/monitor</pre>
+</p></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Windows OS</h4><ol><li><span>以<strong>Administrator</strong>账户登录客户端所在主机。</span></li><li><span>查看客户端所在主机的防火墙是否关闭。</span><p><p id="ZH-CN_TOPIC_0000002164790312__zh-cn_topic_0000002164790312_p11686134515526">防火墙开启状态下可能会拦截<span id="ZH-CN_TOPIC_0000002164790312__zh-cn_topic_0000002164790312_text19822419115513">OceanProtect</span>与客户端所在主机的通信请求。如果防火墙开启且不能直接关闭防火墙的场景下，请开放<a href="https://support.huawei.com/enterprise/zh/centralized-storage/oceanprotect-databackup-pid-258115661" target="_blank" rel="noopener noreferrer">《OceanProtect DataBackup 1.5.0-1.6.0 通信矩阵》</a>中对应的端口。</p>
+<div class="note" id="ZH-CN_TOPIC_0000002164790312__zh-cn_topic_0000002164790312_note17533155617316"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000002164790312__zh-cn_topic_0000002164790312_p2533135623113">如果要确保客户端状态为“在线”，至少需确保<span id="ZH-CN_TOPIC_0000002164790312__zh-cn_topic_0000002164790312_text5264174523617">OceanProtect</span>的<strong id="ZH-CN_TOPIC_0000002164790312__zh-cn_topic_0000002164790312_b1476954933620">25082</strong>端口以及客户端所在主机上的<strong id="ZH-CN_TOPIC_0000002164790312__zh-cn_topic_0000002164790312_b26339582368">59520-59559</strong>端口段已开放。</p>
+</div></div>
+</p></li><li><span>查看客户端进程是否正常。</span><p><ol type="a"><li>在任务栏单击鼠标右键。</li><li>在弹出的菜单中选择“任务管理器”。</li><li>在“进程”页签查看客户端相关进程（monitor、rdagent、rdnginx）是否正常运行。<p>如果客户端进程未正常运行，则请运行“<em>客户端安装目录</em>\DataBackup\ProtectClient”路径下的<strong>start.sh</strong>脚本，启动客户端进程。</p>
+<p><span><img src="zh-cn_image_0000002164630976.png"></span></p>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

@@ -40,8 +40,8 @@ export class CreateRoleFormComponent implements OnInit {
     invalidName: this.i18n.get('common_storage_pool_name_invalid_label')
   };
   helpUrl = this.i18n.isEn
-    ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002059543622.html'
-    : '/console/assets/help/a8000/zh-cn/index.html#zh-cn_topic_0000002059543622.html';
+    ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002164788864.html'
+    : '/console/assets/help/a8000/zh-cn/index.html#zh-cn_topic_0000002164788864.html';
 
   constructor(
     public i18n: I18NService,

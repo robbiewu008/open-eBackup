@@ -354,22 +354,6 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
         }
       },
       {
-        key: 'sync_mode',
-        name: this.i18n.get('protection_data_sync_mode_label'),
-        filter: {
-          type: 'select',
-          isMultiple: true,
-          options: this.dataMapService.toArray('sync_mode')
-        },
-        cellRender: {
-          type: 'status',
-          config: this.dataMapService.toArray('sync_mode')
-        },
-        hidden:
-          this.resourceSubType ===
-          DataMap.Resource_Type.OpenGauss_database.value
-      },
-      {
         key: 'sla_name',
         name: this.i18n.get('common_sla_label'),
         filter: {
@@ -542,12 +526,6 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
         });
         delete conditionsTemp.owned_instance;
       }
-      if (conditionsTemp.sync_mode) {
-        assign(defaultConditions, {
-          syncMode: conditionsTemp.sync_mode
-        });
-        delete conditionsTemp.sync_mode;
-      }
       if (conditionsTemp.equipmentType) {
         if (isEmpty(conditionsTemp.environment)) {
           assign(conditionsTemp, {
@@ -599,20 +577,18 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
               sub_type: item.subType,
               belong_cluster: item['environment']['name'],
               owned_instance: item.parentName,
-              instanceStatus: DataMap.openGauss_InstanceStatus.offline.value,
-              sync_mode: item.environment.extendInfo.syncMode
+              instanceState: DataMap.openGauss_InstanceStatus.offline.value
             });
           } else {
             assign(item, {
               sub_type: item.subType,
               belong_cluster: item['environment']['name'],
               owned_instance: item.parentName,
-              instanceStatus:
+              instanceState:
                 item.extendInfo.instanceState ===
                 DataMap.openGauss_InstanceStatus.normal.value
                   ? DataMap.openGauss_InstanceStatus.normal.value
-                  : DataMap.openGauss_InstanceStatus.offline.value,
-              sync_mode: item.environment.extendInfo.syncMode
+                  : DataMap.openGauss_InstanceStatus.offline.value
             });
           }
           extendSlaInfo(item);
@@ -620,9 +596,9 @@ export class BaseTemplateComponent implements OnInit, AfterViewInit {
         let records = res.records;
         if (filters.conditions) {
           const conditions = JSON.parse(filters.conditions);
-          if (size(conditions.instanceStatus) === 1) {
+          if (size(conditions.instanceState) === 1) {
             records = res.records.filter(item => {
-              return item.instanceStatus === conditions.instanceStatus[0];
+              return item.instanceState === conditions.instanceState[0];
             });
           }
         }
