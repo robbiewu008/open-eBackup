@@ -13,7 +13,7 @@ Get running environment
 
 {{- $deploytype:= include "getDeployType" . | default "" }}
 
-{{- if or (eq $deploytype "d8") (eq $deploytype "d7")  }}
+{{- if eq $deploytype "d10" }}
 kind: ServiceAccount
 apiVersion: v1
 metadata:

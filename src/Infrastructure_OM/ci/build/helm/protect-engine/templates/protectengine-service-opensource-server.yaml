@@ -74,6 +74,7 @@ spec:
     - port: {{ .Values.dme_openstorageapi_port }}
       name: dme-openstorageapi
       protocol: TCP
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -97,10 +98,8 @@ metadata:
 spec:
   selector:
     app: protectengine
-  type: NodePort
   ports:
     - port: 30066
       name: dme-archive
       targetPort: 30066
-      nodePort: 30066
 {{- end }}

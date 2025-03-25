@@ -6,9 +6,9 @@ metadata:
     "helm.sh/hook": pre-install, pre-upgrade
     "helm.sh/hook-delete-policy": "before-hook-creation"
 subjects:
-- kind: ServiceAccount
-  name: kmc-sa
-  namespace: dpa
+  - kind: ServiceAccount
+    name: kmc-sa
+    namespace: dpa
 roleRef:
   kind: ClusterRole
   name: cluster-role

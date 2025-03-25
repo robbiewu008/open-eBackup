@@ -13,13 +13,14 @@ Get running environment
 
 {{- $deploytype:= include "getDeployType" . | default "" }}
 
-{{- if or (eq $deploytype "d8") (eq $deploytype "d7")  }}
+{{- if eq $deploytype "d10" }}
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   name: snapshot-controller
   namespace: kube-system
 spec:
+  serviceName: "snapshot-controller"
   replicas: 1
   selector:
     matchLabels:

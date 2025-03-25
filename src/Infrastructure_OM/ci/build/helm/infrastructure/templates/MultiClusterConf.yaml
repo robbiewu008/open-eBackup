@@ -1,14 +1,23 @@
+{{/*
+Get running environment
+*/}}
+{{- $cluster_enable:= "" }}
+{{- if .Values.global }}
+{{- $cluster_enable = .Values.global.cluster_enable | toString }}
+{{- else }}
+{{- $cluster_enable:= "false" }}
+{{- end }}
+
 {{- $deploytype:= include "getDeployType" . | default "" }}
 
-{{- if eq $deploytype "d8" }}
+{{- if or (eq $deploytype "d8") (eq $deploytype "d10") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: multicluster-conf
   namespace: dpa
-  annotations:
-    "helm.sh/hook": pre-install
-    "helm.sh/hook-delete-policy": "hook-failed"
 data:
-  cluster_flag: "true"
+  {{- if eq $cluster_enable "true" }}
+  CLUSTER: "true"
+  {{- end }}
 {{- end }}

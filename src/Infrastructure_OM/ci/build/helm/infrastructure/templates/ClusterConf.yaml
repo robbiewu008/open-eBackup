@@ -1,6 +1,6 @@
 {{- $deploytype:= include "getDeployType" . | default "" }}
 
-{{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d2") (eq $deploytype "d6") }}
+{{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d2") (eq $deploytype "d6") (eq $deploytype "d9")}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

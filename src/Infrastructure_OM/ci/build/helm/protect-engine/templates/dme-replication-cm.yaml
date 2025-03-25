@@ -4,7 +4,7 @@ metadata:
   name: replication-conf
   namespace: dpa
 data:
-  GetMaxRunningJobOneNode: "20" # 0-40
-  ClientIOThreadNum: "60" # 0-1G
-  ServerIOThreadNum: "150" # 0-1G
-  APITimeoutDuration: "90" # 90-180
+  GetMaxRunningJobOneNode: "20"
+  ClientIOThreadNum: "20"
+  ServerIOThreadNum: "40"
+  APITimeoutDuration: "90"

@@ -2,12 +2,15 @@
 Get running environment
 */}}
 {{- $environment:= "" }}
+{{- $cluster_enable:= "" }}
 {{- $realreplicas:= "" }}
 {{- if .Values.global }}
+{{- $cluster_enable = .Values.global.cluster_enable | toString }}
 {{- $environment = .Values.global.environment }}
 {{- $realreplicas = .Values.global.replicas }}
 {{- else }}
 {{- $environment = .Values.local.environment }}
+{{- $cluster_enable:= "false" }}
 {{- $realreplicas = .Values.local.replicas }}
 {{- end }}
 
@@ -29,6 +32,10 @@ spec:
     metadata:
       labels:
         app: protectengine # has to match .spec.selector.matchLabels
+      {{- if eq $cluster_enable "true" }}
+      annotations:
+        tag: cluster
+      {{- end }}
     spec:
       affinity:
         podAntiAffinity:
@@ -84,8 +91,8 @@ spec:
                 - -c
                 - sh /opt/OceanStor/100P/ProtectEngine-E/dme_vmware/script/dmeservice/check_health.sh dme-vmware
             initialDelaySeconds: 100
-            periodSeconds: 30
-            timeoutSeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 10
           securityContext:
             seccompProfile:
               type: RuntimeDefault
@@ -111,13 +118,15 @@ spec:
               readOnly: true
             - mountPath: /opt/logpath
               name: common-path
+            - mountPath: /opt/huawei-data-protection/vmware/bricks/
+              name: metadata-path
+            - mountPath: /opt/huawei-data-protection/vmware/
+              name: metadata-path
             - mountPath: /etc/common-secret
               name: vmware-secret
               readOnly: true
             - mountPath: /opt/network-conf
               name: network-conf
-            - mountPath: /opt/common-conf
-              name: common-conf
         - name: dme-nginx
           env:
             - name: NODE_NAME
@@ -216,8 +225,8 @@ spec:
                 - -c
                 - sh /opt/OceanStor/100P/ProtectEngine-E/dme_jobmanager/script/dmeservice/check_health.sh dme-jobmanager
             initialDelaySeconds: 100
-            periodSeconds: 30
-            timeoutSeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 10
           securityContext:
             seccompProfile:
               type: RuntimeDefault
@@ -240,14 +249,16 @@ spec:
               readOnly: true
             - mountPath: /opt/logpath
               name: common-path
-            - mountPath: /opt/common-conf
-              name: common-conf
         - name: dme-replication
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+            - name: FILECLIENT_CONF_PATH
+              value: /opt/logpath/FileClient/$(NODE_NAME)/dme_replication/conf
+            - name: FILECLIENT_LOG_PATH
+              value: /opt/OceanStor/100P/ProtectEngine-E/dme_replication/logs
             - name: MY_POD_NAME
               valueFrom:
                 fieldRef:
@@ -263,6 +274,13 @@ spec:
                   fieldPath: status.podIP
           image: dme_replication:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "0.3"
+              memory: "2G"
+            limits:
+              cpu: "7"
+              memory: "6G"
           securityContext:
             seccompProfile:
               type: RuntimeDefault
@@ -289,8 +307,8 @@ spec:
                 - -c
                 - sh /opt/OceanStor/100P/ProtectEngine-E/dme_replication/script/dmeservice/check_health.sh dme-replication
             initialDelaySeconds: 100
-            periodSeconds: 30
-            timeoutSeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 10
           volumeMounts:
             - mountPath: /kmc_conf
               name: kmc-conf
@@ -307,14 +325,20 @@ spec:
               name: common-path
             - mountPath: /opt/network-conf
               name: network-conf
-            - mountPath: /opt/common-conf
-              name: common-conf
+            - mountPath: /opt/huawei-data-protection/metadata/bricks/
+              name: metadata-path
+            - mountPath: /opt/huawei-data-protection/vmware/
+              name: metadata-path
         - name: dme-unifiedbackupcontroller
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+            - name: FILECLIENT_CONF_PATH
+              value: /opt/OceanProtect/FileClient/$(NODE_NAME)/dme_unifiedbackupcontroller/conf
+            - name: FILECLIENT_LOG_PATH
+              value: /opt/OceanProtect/logs/$(NODE_NAME)/protectengine-e/dme_unifiedbackupcontroller
             - name: MICRO_SERVICE_NAME
               value: dme_unifiedbackupcontroller
             - name: SUB_SYSTEM_NAME
@@ -335,9 +359,14 @@ spec:
               value: "10"
             - name: ENVIRONMENT
               value: {{ $environment }}
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           image: dme_unifiedbackupcontroller:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
           securityContext:
+            privileged: true
             seccompProfile:
               type: RuntimeDefault
             capabilities:
@@ -360,6 +389,9 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 10
           volumeMounts:
+            - mountPath: /dev/fuse
+              name: fuse
+              readOnly: true
             - mountPath: /cache
               name: ubc-tmp
             - mountPath: /mnt/repository
@@ -403,6 +435,13 @@ spec:
                   fieldPath: status.podIP
           image: dme_archive:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "0.6"
+              memory: "2G"
+            limits:
+              memory: "2G"
+              cpu: "2"
           securityContext:
             readOnlyRootFilesystem: true
             {{- if ne $environment "Dorado" }}
@@ -422,15 +461,8 @@ spec:
             exec:
               command: ['sh','/opt/OceanStor/100P/ProtectEngine-E/dme_archive/script/dmeservice/check_health.sh', 'dme-archive']
             initialDelaySeconds: 100
-            periodSeconds: 30
-            timeoutSeconds: 30
-          resources:
-            requests:
-              memory: "2Gi"
-              cpu: "2"
-            limits:
-              memory: "2Gi"
-              cpu: "2"
+            periodSeconds: 5
+            timeoutSeconds: 10
           volumeMounts:
             - mountPath: /mnt
               name: archive-mnt
@@ -450,10 +482,62 @@ spec:
               readOnly: true
             - mountPath: /opt/logpath
               name: common-path
+            - mountPath: /opt/huawei-data-protection/vmware/bricks/
+              name: metadata-path
             - mountPath: /opt/network-conf
               name: network-conf
+        - name: dme-openstorageapi-controller
+          image: dme_openstorageapi_controller:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: MICRO_SERVICE_NAME
+              value: dme_openstorageapi_controller
+            - name: SUB_SYSTEM_NAME
+              value: protectengine-e
+            - name: DEPLOY_TYPE
+              value: d8
+            - name: DEPLOY_ENV
+              value: k8s_cluster
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+            - name: APP_VERSION
+              value: {{ .Values.global.version }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.dme_openstorageapi_controller_port}}
+            initialDelaySeconds: 100
+            periodSeconds: 10
+            failureThreshold: 20
+            timeoutSeconds: 10
+          securityContext:
+            runAsUser: 0
+            privileged: true
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /dev
+              name: dev-dir
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/OceanProtect
+              name: common-path
             - mountPath: /opt/common-conf
               name: common-conf
+              readOnly: true
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - mountPath: /opt/network-conf
+              name: network-conf
         - name: dme-openstorageapi
           env:
             - name: NODE_NAME
@@ -476,6 +560,13 @@ spec:
               value: {{ $environment }}
           image: dme_openstorageapi:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "0.3"
+              memory: "2G"
+            limits:
+              memory: "6G"
+              cpu: "7"
           ports:
             - containerPort: 30173
           livenessProbe:
@@ -526,6 +617,10 @@ spec:
               name: common-path
             - mountPath: /cache
               name: cache-volume
+            - mountPath: /opt/huawei-data-protection/vmware/bricks/
+              name: metadata-path
+            - mountPath: /opt/huawei-data-protection/vmware/
+              name: metadata-path
             - mountPath: /mnt/filesystem/
               name: cache-filesystem
             - mountPath: /opt/protectagent
@@ -550,6 +645,9 @@ spec:
             - name: ENVIRONMENT
               value: {{ $environment }}
       volumes:
+        - name: dev-dir
+          hostPath:
+            path: /dev
         - name: kmc-conf
           configMap:
             name: kmc-store-conf
@@ -558,9 +656,14 @@ spec:
           emptyDir: {}
         - name: ubc-tmp
           emptyDir: {}
+        - name: metadata-path
+          emptyDir: {}
         - name: date-config
           hostPath:
             path: /etc/localtime
+        - name: fuse
+          hostPath:
+            path: /dev/fuse
         - name: cache-volume
           emptyDir: {}
         - name: cache-filesystem
@@ -600,6 +703,10 @@ spec:
         - name: modules
           hostPath:
             path: /lib/modules
+        - name: multicluster-conf
+          configMap:
+            name: multicluster-conf
+            defaultMode: 0644
         {{- if eq $environment "Dorado" }}
         - name: common-path
           persistentVolumeClaim:
