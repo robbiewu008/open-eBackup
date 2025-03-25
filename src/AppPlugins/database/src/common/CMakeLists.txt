@@ -16,5 +16,5 @@ target_include_directories(common_obj
 
 target_link_libraries(common_obj
     PRIVATE
-    database_inc
+    safe_cmplib
 )

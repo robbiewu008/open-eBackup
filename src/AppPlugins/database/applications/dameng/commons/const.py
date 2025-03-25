@@ -12,8 +12,8 @@
 #
 
 from enum import Enum
-from pydantic import BaseModel, Field
 from common.env_common import get_install_head_path
+from common.const import RpcParamKey
 
 
 class BackupStepEnum(str, Enum):
@@ -31,6 +31,7 @@ class BackupStepEnum(str, Enum):
     GENERATOR_SUB_JOB = "GeneratorSubJob"
     CHECK_APPLICATION = "CheckApplication"
     DAMANG_CLUSTER = "DamengCluster"
+    QUERY_SCAN_REPOSITORIES = "QueryScanRepositories"
 
 
 class BackupSubType(str, Enum):
@@ -39,7 +40,6 @@ class BackupSubType(str, Enum):
 
 
 class ResourcesSubType(str, Enum):
-
     CHECKAPPLICATION = "CheckApplication"
     SINGLE_NODE = "Dameng-singleNode"
     CLUSTER = "Dameng-cluster"
@@ -110,27 +110,6 @@ class DamengStrFormat:
                            "BACKUPSET \'{}\' BACKUPSET \'{}\' PARALLEL {};"
     CUMULATIVE_BUCKUP_SQL = "BACKUP DATABASE INCREMENT CUMULATIVE BASE ON " \
                             "BACKUPSET '{}' BACKUPSET '{}' PARALLEL {};"
-
-
-class SubJobType(int, Enum):
-    PRE_SUB_JOB = 0,
-    GENERATE_SUB_JOB = 1,
-    BUSINESS_SUB_JOB = 2,
-    POST_SUB_JOB = 3
-
-
-class SubJobPolicy(int, Enum):
-    LOCAL_NODE = 1,
-    EVERY_NODE_ONE_TIME = 2,
-    RETRY_OTHER_NODE_WHEN_FAILED = 3,
-    FIXED_NODE = 4
-
-
-class SubJobPriority(int, Enum):
-    JOB_PRIORITY_1 = 1,
-    JOB_PRIORITY_2 = 2,
-    JOB_PRIORITY_3 = 3,
-    JOB_PRIORITY_4 = 4,
 
 
 class CheckBackupJobTypeCode:
@@ -270,17 +249,6 @@ class DMRestoreSubjobName:
     START = "dm_start"
     UNMOUNT = "dm_unmount"
     GENERARESTORE = "restore"
-      
-      
-class Progress:
-    START = "0"
-    RUNNING = "50"
-    END = "100"
-
-
-class ActionResultCode:
-    SUCCESS = 0
-    FAIL = 1
 
 
 class DMArchIniStr:
@@ -319,34 +287,8 @@ class ErrCode:
     INSTANCE_REGISTER_ERROR = 1577213550
 
 
-class BackupJobResult:
-    SUCCESS = 0
-    FAIL = 1
-
-
 class Secret:
     empty = ''
-
-
-class RpcParamKey:
-    APPLICATION = "application"
-    TYPES = "types"
-    FULL_COPY = "full"
-    LOG_COPY = "log"
-    DIFF_COPY = 'diff'
-    INCREMENT_COPY = "increment"
-    COPY_ID = "copyId"
-    INPUT_FILE_PREFFIX = "rpcInput_"
-    OUTPUT_FILE_PREFFIX = "rpcOutput_"
-    QUERY_PREVIOUS_CPOY = "QueryPreviousCopy"
-    REPORT_JOB_DETAILS = "ReportJobDetails"
-    REPORT_COPY_INFO = 'ReportCopyAdditionalInfo'
-    #查询脚本
-    RPC_TOOL = f"{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/rpctool.sh"
-    #输入参数文件目录
-    PARAM_FILE_PATH = f"{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/tmp"
-    #输出结果文件目录
-    RESULT_PATH = f"{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/stmp"
 
 
 class RestoreProgress:
@@ -367,10 +309,10 @@ class JobProgressLabel:
 
 class LastCopyType:
     last_copy_type_dict = {
-    1:[RpcParamKey.FULL_COPY, RpcParamKey.INCREMENT_COPY, RpcParamKey.DIFF_COPY, RpcParamKey.LOG_COPY],
-    2:[RpcParamKey.FULL_COPY, RpcParamKey.INCREMENT_COPY],
-    3:[RpcParamKey.FULL_COPY],
-    4:[RpcParamKey.LOG_COPY]
+        1: [RpcParamKey.FULL_COPY, RpcParamKey.INCREMENT_COPY, RpcParamKey.DIFF_COPY, RpcParamKey.LOG_COPY],
+        2: [RpcParamKey.FULL_COPY, RpcParamKey.INCREMENT_COPY],
+        3: [RpcParamKey.FULL_COPY],
+        4: [RpcParamKey.LOG_COPY]
     }
 
 

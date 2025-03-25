@@ -15,11 +15,12 @@ import copy
 import sys
 
 from common.common import output_result_file, exter_attack
-from common.const import ParamConstant
+from common.const import ParamConstant, DeployType
 from common.parse_parafile import ParamFileUtil
 from common.util.check_utils import is_valid_id
 from openGauss.common.common import set_uuid, path_check
-from openGauss.common.const import SOURCE_RESULT, BASE_RET, OpenGaussType, logger, SUCCESS_RET
+from openGauss.common.const import SOURCE_RESULT, BASE_RET, OpenGaussType, logger, SUCCESS_RET, \
+    Status, OpenGaussDeployType
 from openGauss.common.error_code import BodyErr, OpenGaussErrorCode
 from openGauss.common.opengauss_param import JsonParam
 from openGauss.common.param_struct import ParamStruct
@@ -35,6 +36,10 @@ class Resource:
         self.deploy_type = param_obj.app_deploy_type
         self.param = param_obj
         self.cluster_version = param_obj.app_version
+        self.dcs_address = param_obj.app_dcs_address
+        self.dcs_port = param_obj.app_dcs_port
+        self.dcs_user = param_obj.app_dcs_user
+        self.dcs_pass = param_obj.dcs_pass
         self.cluster = GaussCluster(self.auth, self.env_path, self.cluster_version)
 
     def get_cluster_nodes(self):
@@ -45,6 +50,16 @@ class Resource:
             return []
         self.cluster.get_cluster_nodes()
         return self.cluster.nodes
+
+    @staticmethod
+    def check_deploy_type(deploy_type, output):
+        output['message'] = "not camper with the deploy type ,check it"
+        # 当集群本身为单机时
+        if str(deploy_type) == OpenGaussDeployType.SINGLE:
+            output['bodyErr'] = OpenGaussErrorCode.DB_TYPE_AND_AGENTS_NOT_MATCH
+        else:
+            output['bodyErr'] = OpenGaussErrorCode.CHECK_CLUSTER_FAILED
+        return output
 
     @exter_attack
     def check_application(self):
@@ -76,10 +91,27 @@ class Resource:
             return output
         deploy_type = self.cluster.deploy_type
         if str(deploy_type) != self.deploy_type:
-            output['message'] = "not camper with the deploy type ,check it"
-            output['bodyErr'] = OpenGaussErrorCode.CHECK_CLUSTER_FAILED
             logger.error("Check deploy type failed.")
+            return self.check_deploy_type(deploy_type, output)
+        if self.cluster.cluster_state not in (Status.NORMAL, Status.DEGRADED):
+            output['message'] = "Check cluster status"
+            output['bodyErr'] = OpenGaussErrorCode.ERR_DATABASE_STATUS
+            logger.error("Cluster state is not normal!")
             return output
+        if self.deploy_type == OpenGaussDeployType.DISTRIBUTED:
+            monitor_ret, cont = self.cluster.cmd_obj.check_cmdb_user(self.dcs_user, self.dcs_pass,
+                                                                     self.cluster.get_instance_port())
+            if not monitor_ret:
+                output['message'] = "Check cmdb user and password"
+                output['bodyErr'] = OpenGaussErrorCode.ERR_CMDB_WRONG_DATABASE_PWD
+                logger.error(f"Check cmdb user and password failed! Reason is {cont}")
+                return output
+            dcs_ret = self.cluster.check_dcs(self.dcs_address, self.dcs_port, self.param.gui_nodes)
+            if not dcs_ret:
+                output['message'] = "Check cmdb dcs"
+                output['bodyErr'] = OpenGaussErrorCode.ERROR_DCS_NOT_SUITABLE
+                logger.error("Check cmdb dcs failed!")
+                return output
         output["code"] = SUCCESS_RET
         return output
 
@@ -137,8 +169,7 @@ class Resource:
         if not node:
             return {"resourceList": []}
         cluster_name = self.cluster.cluster_name if self.cluster.cluster_name else name
-        instance_id = set_uuid(self.cluster.get_instance_data_path(), self.cluster.get_instance_port(),
-                               cluster_name, self.cluster.get_system_identifier(), uid)
+        instance_id = set_uuid(self.cluster.get_instance_data_path(), self.cluster.get_instance_port(), uid)
         # 取环境id后4位为当前instance标识
         instance_tag = uid[-4:]
         instance_name = f"{cluster_name}_{instance_tag}_{node.instance_id}"
@@ -157,6 +188,10 @@ class Resource:
             "id": instance_id
 
         }
+        # 如果是CMDB分布式，再添加上archiveMode字段
+        if new_instance.get("extendInfo").get("deployType") == DeployType.SHARDING_TYPE.value:
+            new_instance["extendInfo"]["archiveMode"] = node.get_archive_mode(self.param.env_auth,
+                                                                              self.param.app_env_path)
         resources.append(new_instance)
         databases = node.get_databases(self.param.env_auth, self.param.app_env_path)
         for db in databases:
@@ -166,7 +201,7 @@ class Resource:
                 "name": db,
                 "parentId": instance_id,
                 "parentName": instance_name,
-                "extendInfo": "",
+                "extendInfo": {"deployType":self.cluster.deploy_type},
                 "id": set_uuid(db, instance_name, instance_id)
             }
             resources.append(new_db)
@@ -212,8 +247,9 @@ def run():
     res_exec = execute_func.get(func_type)
     try:
         output = res_exec()
-    except Exception:
-        logger.error(f"Execute cmd {func_type} with exception.")
+        logger.info(f"Excute cmd {func_type} finish.")
+    except Exception as e:
+        logger.error(f"Execute cmd {func_type} with exception. Exception: {e}")
         return OpenGaussErrorCode.OPERATION_FAILED
     try:
         output_result_file(pid, output)

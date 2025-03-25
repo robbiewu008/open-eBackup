@@ -94,19 +94,41 @@ class BackupBase(metaclass=abc.ABCMeta):
         if os.path.exists(cmdb_backup_path):
             ret, data_size = scan_dir_size(self._job_id, cmdb_backup_path)
         logger.info(f"Get data size {data_size}")
-        tmp_file = os.path.join(self._cache_dir, "dataSize")
-        if os.path.exists(tmp_file):
-            os.remove(tmp_file)
-        write_content_to_file(tmp_file, str(data_size))
-        self.log.info(f"Write backup copy size: {data_size} to file: {tmp_file}")
+        data_size_file = os.path.join(self._cache_dir, "dataSize")
+        if os.path.exists(data_size_file):
+            os.remove(data_size_file)
+        write_content_to_file(data_size_file, str(data_size))
+        self.log.info(f"Write backup copy size: {data_size} to file: {data_size_file}")
+        start_time_file = os.path.join(self._cache_dir, "startTime")
+        if os.path.exists(start_time_file):
+            os.remove(start_time_file)
+        now_timestamp = int(time.time())
+        write_content_to_file(start_time_file, str(now_timestamp))
+        self.log.info(f"Write backup start time: {now_timestamp} to file: {start_time_file}")
 
     def get_start_backup_size(self):
         start_size = 0
         tmp_file = os.path.join(self._cache_dir, "dataSize")
         if os.path.exists(tmp_file):
-            start_size = read_result_file(tmp_file)
+            try:
+                start_size = read_result_file(tmp_file)
+            except Exception as err:
+                logger.info(f"Read start size Failed, err: {err}")
+                start_size = 0
         self.log.info(f"Read backup copy size: {start_size} from: {tmp_file}")
         return start_size
+
+    def get_start_backup_time(self):
+        start_time = 0
+        start_time_file = os.path.join(self._cache_dir, "startTime")
+        if os.path.exists(start_time_file):
+            try:
+                start_time = int(read_result_file(start_time_file))
+            except Exception as err:
+                logger.info(f"Read start time Failed, err: {err}")
+                start_time = int(time.time())
+        self.log.info(f"Read backup copy size: {start_time} from: {start_time_file}")
+        return start_time
 
     def get_backup_size_diff(self):
         start_size = int(self.get_start_backup_size())
@@ -154,25 +176,27 @@ class BackupBase(metaclass=abc.ABCMeta):
         # 检查数据目录
         return os.path.isdir(self._backup_dir) and os.path.isdir(self._cache_dir) and os.path.isdir(self._meta_dir)
 
-    def gen_sub_job(self):
+    def gen_sub_job(self, need_empty: bool = False):
         """
         执行分发子任务
         """
         self.log.info(f"Start to gen sub task. job param: {self._param}")
         sub_job_array = []
+        if need_empty:
+            sub_job = self.build_sub_job(OpenGaussSubJobName.EMPTY_SUB_JOB, 1, SubJobPolicy.EVERY_NODE_ONE_TIME.value)
+            sub_job_array.append(sub_job)
         # 子任务1：执行备份
-        sub_job = self.build_sub_job(OpenGaussSubJobName.SUB_EXEC, SubJobPriorityEnum.JOB_PRIORITY_1,
+        sub_job = self.build_sub_job(OpenGaussSubJobName.SUB_EXEC, 2,
                                      SubJobPolicy.ANY_NODE.value)
         sub_job_array.append(sub_job)
 
         # 子任务2：上报备份副本
-        sub_job = self.build_sub_job(OpenGaussSubJobName.QUERY_COPY, SubJobPriorityEnum.JOB_PRIORITY_2,
+        sub_job = self.build_sub_job(OpenGaussSubJobName.QUERY_COPY, 3,
                                      SubJobPolicy.ANY_NODE.value)
         sub_job_array.append(sub_job)
 
         self.log.info(f"Backup sub task split succeeded. sub_job_array: {sub_job_array}")
-        output_result_file(self._pid, sub_job_array)
-        return True
+        return sub_job_array
 
     def build_sub_job(self, job_name, job_priority, job_policy, job_info=None):
         return SubJobModel(
@@ -204,7 +228,9 @@ class BackupBase(metaclass=abc.ABCMeta):
         self.log.info(f"Get object type {object_type}")
         if is_cmdb_distribute(self._deploy_type, self._database_type) and object_type == ProtectSubObject.INSTANCE:
             backup_key = BackupTypeEnum.FULL_BACKUP.value
-            backup_mode = BackupTypeEnum.FULL_BACKUP.value
+            backup_mode = "DATA"
+            if self._backup_type == BackupTypeEnum.LOG_BACKUP.value:
+                backup_mode = "LOG"
         else:
             ret, backup_key, backup_mode = self.present_copy_info()
             if not ret:
@@ -267,7 +293,11 @@ class BackupBase(metaclass=abc.ABCMeta):
         return True
 
     def exec_sql_cmd(self, cmd):
-        cmd = f'{self._sql_tool} -c \"{cmd}\" postgres -p {self._port}'
+        if is_cmdb_distribute(self._deploy_type, self._database_type):
+            cmd = f'{self._sql_tool} -d postgres -c \"{cmd}\" -p {self._port}'
+        else:
+            cmd = f'{self._sql_tool} -c \"{cmd}\" postgres -p {self._port}'
+        self.log.info(f"exec_sql_cmd: {cmd}")
         return execute_cmd_by_user(self._user_name, self._env_file, cmd)
 
     @abc.abstractmethod
@@ -362,20 +392,16 @@ class BackupBase(metaclass=abc.ABCMeta):
             data = f.read()
         self.log.info(f"Get Progress: {data} from {progress_file}")
         if "completed" in data:
-            complete_detail = LogDetail(logInfo="opengauss_plugin_backup_subjob_success_label",
-                                        logInfoParam=[f"{sub_task_id}", f"{BackupFileCount.ONE_FILE.value}"],
-                                        logTimestamp=int(time.time()), logLevel=DBLogLevel.INFO.value)
-            self.log.info(f"The backup is complete. job id: {self._job_id}")
-
+            complete_detail = LogDetail(logInfo="opengauss_plugin_database_backup_subjob_success_label",
+                                           logInfoParam=[f"{sub_task_id}"], logTimestamp=int(time.time()),
+                                           logLevel=DBLogLevel.INFO.value)
+            self.log.info(f"The backup is complete. job id: {self._job_id}") 
             return ProgressPercentage.COMPLETE_PROGRESS.value, SubJobStatusEnum.COMPLETED.value, complete_detail
         if "failed" in data:
             self.log.info(f"The backup is failed. job id: {self._job_id}")
             return ProgressPercentage.COMPLETE_PROGRESS.value, SubJobStatusEnum.FAILED.value, backup_failed_detail
-        running_detail = LogDetail(logInfo="opengauss_plugin_execute_backup_subjob_label",
-                                   logInfoParam=[f"{sub_task_id}", f"{BackupFileCount.ONE_FILE.value}",
-                                                 f"{BackupFileCount.ZERO_FILE.value}"],
-                                   logTimestamp=int(time.time()), logLevel=DBLogLevel.INFO.value)
-        return ProgressPercentage.START_PROGRESS.value, SubJobStatusEnum.RUNNING.value, running_detail
+        empty_detail = {}
+        return ProgressPercentage.START_PROGRESS.value, SubJobStatusEnum.RUNNING.value, empty_detail
 
     @abc.abstractmethod
     def get_copy_meta_data(self, copy_time):
@@ -404,6 +430,14 @@ class BackupBase(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def duplicate_check(self):
+        """
+        副本状态检查
+        :return:
+        """
+        pass
+
+    @abc.abstractmethod
+    def query_scan_repositories(self):
         """
         副本状态检查
         :return:

@@ -131,7 +131,10 @@ class ClusterNodesChecker:
                 else:
                     param = self.clup_query_cluster()
             elif self.deploy_type == InstallDeployType.CLUP and self.check_type == "CheckApplication":
-                param = self.clup_check_application()
+                if self.extend_info.get(PgConst.ACTION_TYPE) == PgConst.QUERY_CLUP_SERVER:
+                    param = self.clup_query_cluster_status()
+                else:
+                    param = self.clup_check_application()
             else:
                 param = self._check_cluster_nodes()
         except Exception as e:
@@ -165,7 +168,7 @@ class ClusterNodesChecker:
         clusters = self.query_clup_cluster()
         for cluster in clusters:
             cluster_data = cluster.cluster_data
-            if self.virtual_ip in cluster_data.get('vip'):
+            if self.virtual_ip == cluster_data.get('vip'):
                 if self.check_username_pwd(cluster_data):
                     result = QueryClupClusterResponse(name=self.env.get('name'), subType='PostgreClusterInstance')
                     result.extend_info = {
@@ -178,6 +181,20 @@ class ClusterNodesChecker:
                 cluster_state = cluster.cluster_state
                 break
         return self.query_clup_cluster_db(cluster_id, cluster_state)
+
+    def clup_query_cluster_status(self):
+        self.rep_user = self.application.get("auth", {}).get("extendInfo", {}).get("dbStreamRepUser", "repl")
+        clusters = self.query_clup_cluster()
+        for cluster in clusters:
+            cluster_data = cluster.cluster_data
+            if self.virtual_ip == cluster_data.get('vip'):
+                if self.check_username_pwd(cluster_data) or cluster.cluster_state == PgConst.CLUP_SERVER_OFFLINE:
+                    return ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR.value,
+                                        bodyErr=PgConst.CLUP_SERVER_OFFLINE, message='query success.')
+                return ActionResult(code=ExecuteResultEnum.SUCCESS.value, bodyErr=cluster.cluster_state,
+                                    message='query success.')
+        return ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR.value, bodyErr=ErrorCode.LOGIN_FAILED,
+                            message="Login denied.")
 
     def check_username_pwd(self, cluster_data):
         db_user_name = get_env_variable(f"application_auth_authKey_{self.pid}")

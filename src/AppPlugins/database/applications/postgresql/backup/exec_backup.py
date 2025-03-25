@@ -20,7 +20,7 @@ from common.common import output_result_file
 from common.common_models import ActionResult
 from common.util.check_utils import is_valid_id
 from postgresql.backup.pg_backup import PgBackup
-from postgresql.common.const import ErrorCode
+from postgresql.common.const import ErrorCode, JobType
 from postgresql.common.util.pg_param import JsonParam
 
 LOGGER = Logger().get_logger("postgresql.log")
@@ -44,13 +44,15 @@ def exec_backup_task(command, pid, job_id, sub_job_id):
         "CheckBackupJobType": pg_backup.check_backup_job_type,
         "BackupPrerequisite": pg_backup.backup_prerequisite,
         "BackupPrerequisiteProgress": pg_backup.query_prerequisite_progress,
+        "BackupGenSubJob": pg_backup.backup_gen_sub_job,
         "Backup": pg_backup.backup,
         "BackupProgress": pg_backup.query_backup_progress,
         "BackupPostJob": pg_backup.backup_post_job,
         "BackupPostJobProgress": pg_backup.query_post_job_progress,
         "QueryBackupCopy": pg_backup.query_backup_copy,
         "AbortJob": pg_backup.abort_job,
-        "AbortJobProgress": pg_backup.query_abort_job_progress
+        "AbortJobProgress": pg_backup.query_abort_job_progress,
+        "QueryScanRepositories": pg_backup.query_scan_repositories
     }
     backup_func = func_dict.get(command)
     if not backup_func:
@@ -64,7 +66,8 @@ def exec_backup_task(command, pid, job_id, sub_job_id):
     else:
         LOGGER.info(f"Succeed to Exec task {command}, job id: {job_id}.")
         output = ActionResult(code=ExecuteResultEnum.SUCCESS.value)
-    if command != "QueryBackupCopy" and command != "QueryJobPermission" and not command.endswith("Progress"):
+    if command not in [JobType.QUERY_BACKUP_COPY, JobType.QUERY_JOB_PERMISSION,
+                       JobType.QUERY_SCAN_REPOSITORIES] and not command.endswith("Progress"):
         output_result_file(pid, output.dict(by_alias=True))
 
 

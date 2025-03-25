@@ -17,9 +17,10 @@ import os
 from common.common import execute_cmd, output_execution_result_ex
 from common.const import ParamConstant, ExecuteResultEnum, CMDResult
 from common.exception.common_exception import ErrCodeException
+from common.job_const import JobNameConst
 from common.util.checkout_user_utils import get_path_owner
 from tidb.common.const import TiDBSubType, ErrorCode, ClusterRequiredHost, TiDBResourceKeyName, TiDBConst, \
-    TiDBDataBaseFilter, TiDBTaskType
+    TiDBDataBaseFilter
 from tidb.common.tidb_common import get_env_variable, output_result_file, write_error_to_result_file, exec_mysql_sql, \
     get_status_up_role_one_host, check_roles_up, check_paths_valid, check_params_valid
 from tidb.handle.resource.parse_params import ResourceParam
@@ -313,7 +314,7 @@ class TiDBResourceInfo:
         for priv_ip in priv_ips:
             cnt = 0
             priv_cmd = [f"show grants for '{user}'@'{priv_ip}';"]
-            ret, output = exec_mysql_sql(TiDBTaskType.RESOURCE, self.pid, priv_cmd, host, port)
+            ret, output = exec_mysql_sql(JobNameConst.RESOURCE, self.pid, priv_cmd, host, port)
             if TiDBConst.ALL_PRIVILEGE in str(output):
                 return True
             if not ret:
@@ -379,7 +380,7 @@ class TiDBResourceInfo:
         port = int(tidb_id[1])
 
         list_cmd = [f"show databases;"]
-        ret, output = exec_mysql_sql(TiDBTaskType.RESOURCE, self.pid, list_cmd, host, port)
+        ret, output = exec_mysql_sql(JobNameConst.RESOURCE, self.pid, list_cmd, host, port)
         if not ret:
             log.error("Get database list failed!")
             return []
@@ -499,7 +500,7 @@ class TiDBResourceInfo:
             f"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=\"{db_name}\" "
             f"ORDER BY TABLE_NAME;"
         ]
-        ret, output = exec_mysql_sql(TiDBTaskType.RESOURCE, self.pid, tables_limit_cmd, host, port)
+        ret, output = exec_mysql_sql(JobNameConst.RESOURCE, self.pid, tables_limit_cmd, host, port)
         table_list = []
         if not ret:
             log.error(f"Get tables in database {db_name} failed!")
@@ -511,7 +512,7 @@ class TiDBResourceInfo:
         # 获取表的总数
         table_num = 0
         table_number_cmd = [f"SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=\"{db_name}\";"]
-        ret, output = exec_mysql_sql(TiDBTaskType.RESOURCE, self.pid, table_number_cmd, host, port)
+        ret, output = exec_mysql_sql(JobNameConst.RESOURCE, self.pid, table_number_cmd, host, port)
         if not ret:
             log.error(f"Get table num in database {db_name} failed!")
         else:
@@ -737,7 +738,7 @@ class TiDBResourceInfo:
             f"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=\"{db_name}\" "
             f"AND TABLE_NAME IN {tb_name_tuple};"
         ]
-        ret, output = exec_mysql_sql(TiDBTaskType.RESOURCE, self.pid, tables_exist_cmd, host, port)
+        ret, output = exec_mysql_sql(JobNameConst.RESOURCE, self.pid, tables_exist_cmd, host, port)
         if not ret:
             log.error(f"execute tables_exist_cmd {tables_exist_cmd} failed!")
             return False

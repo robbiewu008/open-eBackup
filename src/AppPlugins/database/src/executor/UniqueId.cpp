@@ -71,7 +71,7 @@ mp_int32 UniqueId::GetRandom(mp_uint64& num)
         return MP_FAILED;
     }
 #else
-    mp_int32 fd = open("/dev/random", O_RDONLY);
+    mp_int32 fd = open("/dev/urandom", O_RDONLY);
     if (fd == -1) {
         HCP_Log(ERR, MODULE_NAME) << "open /dev/random failed.strerrno = " << strerror(errno);
         return MP_FAILED;

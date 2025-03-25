@@ -38,6 +38,8 @@ public:
     static void AllowCheckCopyInLocalNode(ActionResult& returnValue, const AppProtect::CheckCopyJob& job);
     static void AllowCheckCopySubJobInLocalNode(ActionResult& returnValue, const AppProtect::CheckCopyJob& job,
         const AppProtect::SubJob& subJob);
+    static void QueryScanRepositories(AppProtect::ScanRepositories& scanRepositories,
+        const AppProtect::BackupJob& job);
 };
 }
 #endif // COMMON_BACKUP_SERVICE_H

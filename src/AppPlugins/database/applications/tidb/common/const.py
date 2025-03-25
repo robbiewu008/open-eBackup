@@ -32,6 +32,7 @@ class EnvName:
 class TiDBSubType:
     # TiDB涉及的类型
     TYPE = "Database"
+    # br工具中的备份类型
     SUBTYPE_CLUSTER = "TiDB-cluster"
     SUBTYPE_DATABASE = "TiDB-database"
     SUBTYPE_TABLE = "TiDB-table"
@@ -48,13 +49,6 @@ class TiDBRegisterActionType:
     CHECK_CLUSTER = "check_cluster"
     CHECK_DB = "check_db"
     CHECK_TABLE = "check_table"
-
-
-class TiDBTaskType:
-    # TiDB任务类型
-    BACUKUP = "BACKUP"
-    RESTORE = "RESTORE"
-    RESOURCE = "RESOURCE"
 
 
 class ErrorCode(int, Enum):
@@ -115,6 +109,8 @@ class ErrorCode(int, Enum):
     ERR_ENVIRONMENT = 1577213475
     # 校验ctl版本失败
     ERR_CHECK_CTL_VERSION = 1677873254
+    # 跨v6.0.0版本异机恢复new_collation_enabled冲突
+    ERR_CONFLICT_COLLATIONS = 1677873257
 
 
 class ClusterRequiredHost:
@@ -153,10 +149,24 @@ class TiDBConst:
     # meta 常量
     LOG_MIN_TS = "log-min-ts"
     LOG_MAX_TS = "log-max-ts"
+    BACKUP_META = "backupmeta"
     # 时间
     SYSTEM = "system"
     START = "start"
     CHECKPOINT = "checkpoint[global]"
+    # 节点信息常量
+    PD_DOWN = "pd down"
+    TIDB_DOWN = "tidb down"
+    TIKV_DOWN = "tikv down"
+    TIFLASH_DOWN = "tiflash down"
+    # 报错回显相关常量
+    DATABASE_EXIST = 'ErrDatabasesAlreadyExisted'
+    DROP_DB_FAILED = "Drop databases on target cluster failed."
+    LOG_TASK_EXIST = "Log task exist"
+    USER_ID_CHECK_FAILED = "userid check failed"
+    CONFLICT_TABLES = "exist conflict tables"
+    ERROR_START = "Error:"
+    CONFLICT_COLLATIONS = "'new_collations_enabled_on_first_bootstrap' not match"
 
 
 class TiDBDataBaseFilter:
@@ -217,3 +227,26 @@ class TidbSubJobNames:
         TidbSubJobName.SUB_CHECK_UID, TidbSubJobName.SUB_CREATE, TidbSubJobName.SUB_EXEC, TidbSubJobName.SUB_RECORD,
         TidbSubJobName.SUB_UP_LOG, TidbSubJobName.SUB_KF_LOG
     )
+
+
+class TiupGeneralErrPatterns:
+    RST_PATTERNS = {
+        TiDBConst.PD_DOWN: "All pd hosts down. Please check target cluster status.",
+        TiDBConst.TIDB_DOWN: "All tidb hosts down. Please check target cluster status.",
+        TiDBConst.TIKV_DOWN: "Tikv host down. Please check target cluster status.",
+        TiDBConst.TIFLASH_DOWN: "Tiflash host down. Please check target cluster status.",
+        TiDBConst.DROP_DB_FAILED: TiDBConst.DROP_DB_FAILED,
+        TiDBConst.LOG_TASK_EXIST:
+            "Log task exists on target cluster! Stop log task and try again.",
+        TiDBConst.DATABASE_EXIST: "[BR:Restore:ErrDatabasesAlreadyExisted] "
+                                  "databases already existed in restored cluster.",
+        TiDBConst.USER_ID_CHECK_FAILED: "Uid check failed. Please make sure target cluster Deploy user has "
+                                        "the same uid on all tikv and tiflash hosts.",
+        TiDBConst.CONFLICT_TABLES: "Conflicts tables exist in the target cluster."
+    }
+
+
+class TiupRecognizedErrPatterns:
+    RST_PATTERNS = {
+        TiDBConst.CONFLICT_COLLATIONS: ErrorCode.ERROR_AUTH
+    }

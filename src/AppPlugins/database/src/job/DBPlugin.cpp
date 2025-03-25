@@ -151,3 +151,9 @@ DBPLUGIN_API void FinalizeClear(ActionResult& _return, const ApplicationEnvironm
 {
     return ClusterOperation::FinalizeClear(_return, appEnv, application, extendInfo);
 }
+
+DBPLUGIN_API void QueryScanRepositories(AppProtect::ScanRepositories& scanRepositories,
+    const AppProtect::BackupJob& job)
+{
+    return CommonBackupService::QueryScanRepositories(scanRepositories, job);
+}

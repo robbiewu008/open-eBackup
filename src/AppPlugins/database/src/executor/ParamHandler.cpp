@@ -23,13 +23,33 @@ using namespace GeneralDB;
 
 namespace {
     const mp_string MODULE = "ParamHandler";
-    const mp_string SensitiveFields[25] = { "[Pp][Aa][Ss][Ss]",
-        "[Pp][Ww][Dd]", "[Kk][Ee][Yy]", "[Cc][Rr][Yy][Pp][Tt][Oo]", "[Ss][Ee][Ss][Ss][Ii][Oo][Nn]",
-        "[Tt][Oo][Kk][Ee][Nn]", "[Ff][Ii][Nn][Gg][Ee][Rr][Pp][Rr][Ii][Nn][Tt]", "[Aa][Uu][Tt][Hh]",
-        "[Ee][Nn][Cc]", "[Dd][Ee][Cc]", "[Tt][Gg][Tt]", "[Ii][Qq][Nn]", "[Ii][Nn][Ii][Tt][Ii][Aa][Tt][Oo][Rr]",
-        "[Ss][Ee][Cc][Rr][Ee][Tt]", "[Cc][Ee][Rr][Tt]", "^[Ss][Kk]$", "^[Ii][Vv]$", "[Ss][Aa][Ll][Tt]", "^[Mm][Kk]$",
-        "[Pp][Rr][Ii][Vv][Aa][Tt][Ee]", "[Uu][Ss][Ee][Rr][_][Ii][Nn][Ff][Oo]", "[Ee][Mm][Aa][Ii][Ll]",
-        "[Pp][Hh][Oo][Nn][Ee]", "[Rr][Aa][Nn][Dd]", "[Vv][Ee][Rr][Ff][Ii][Yy][Cc][Oo][Dd][Ee]" };
+    const std::regex SensitiveFields[25] = {
+        std::regex("[Pp][Aa][Ss][Ss]", std::regex_constants::optimize),
+        std::regex("[Pp][Ww][Dd]", std::regex_constants::optimize),
+        std::regex("[Kk][Ee][Yy]", std::regex_constants::optimize),
+        std::regex("[Cc][Rr][Yy][Pp][Tt][Oo]", std::regex_constants::optimize),
+        std::regex("[Ss][Ee][Ss][Ss][Ii][Oo][Nn]", std::regex_constants::optimize),
+        std::regex("[Tt][Oo][Kk][Ee][Nn]", std::regex_constants::optimize),
+        std::regex("[Ff][Ii][Nn][Gg][Ee][Rr][Pp][Rr][Ii][Nn][Tt]", std::regex_constants::optimize),
+        std::regex("[Aa][Uu][Tt][Hh]", std::regex_constants::optimize),
+        std::regex("[Ee][Nn][Cc]", std::regex_constants::optimize),
+        std::regex("[Dd][Ee][Cc]", std::regex_constants::optimize),
+        std::regex("[Tt][Gg][Tt]", std::regex_constants::optimize),
+        std::regex("[Ii][Qq][Nn]", std::regex_constants::optimize),
+        std::regex("[Ii][Nn][Ii][Tt][Ii][Aa][Tt][Oo][Rr]", std::regex_constants::optimize),
+        std::regex("[Ss][Ee][Cc][Rr][Ee][Tt]", std::regex_constants::optimize),
+        std::regex("[Cc][Ee][Rr][Tt]", std::regex_constants::optimize),
+        std::regex("^[Ss][Kk]$", std::regex_constants::optimize),
+        std::regex("^[Ii][Vv]$", std::regex_constants::optimize),
+        std::regex("[Ss][Aa][Ll][Tt]", std::regex_constants::optimize),
+        std::regex("^[Mm][Kk]$", std::regex_constants::optimize),
+        std::regex("[Pp][Rr][Ii][Vv][Aa][Tt][Ee]", std::regex_constants::optimize),
+        std::regex("[Uu][Ss][Ee][Rr][_][Ii][Nn][Ff][Oo]", std::regex_constants::optimize),
+        std::regex("[Ee][Mm][Aa][Ii][Ll]", std::regex_constants::optimize),
+        std::regex("[Pp][Hh][Oo][Nn][Ee]", std::regex_constants::optimize),
+        std::regex("[Rr][Aa][Nn][Dd]", std::regex_constants::optimize),
+        std::regex("[Vv][Ee][Rr][Ff][Ii][Yy][Cc][Oo][Dd][Ee]", std::regex_constants::optimize)
+        };
     const mp_int32 SensitiveFieldsSize = sizeof(SensitiveFields) / sizeof(SensitiveFields[0]);
     const mp_string FILE_LIST_PARAMS = "filelistParams";
     const mp_string COPIES = "copies";
@@ -137,9 +157,8 @@ mp_void ParamHandler::WipeCopiesInfo(Json::Value& jsonValArray, const mp_string 
 mp_bool ParamHandler::IsSensitiveInfo(const mp_string& name)
 {
     for (mp_size i = 0; i < SensitiveFieldsSize; ++i) {
-        std::regex reg(SensitiveFields[i]);
         std::smatch match;
-        std::regex_search(name, match, reg);
+        std::regex_search(name, match, SensitiveFields[i]);
         if (!match.empty()) {
             return MP_TRUE;
         }

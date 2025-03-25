@@ -11,8 +11,6 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
-#!/usr/bin/env python
-# _*_ coding:utf-8 _*_
 import copy
 import json
 import inspect

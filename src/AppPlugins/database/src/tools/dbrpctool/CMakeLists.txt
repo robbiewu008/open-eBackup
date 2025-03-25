@@ -25,11 +25,13 @@ target_include_directories(${PRCCALL_NAME}
     ${MODULE_OPENSRC_PATH}/fcgi_rel/include
     ${MODULE_OPENSRC_PATH}/thrift_rel/include
     ${MODULE_OPENSRC_PATH}/jsoncpp_rel/include
+    ${MODULE_OPENSRC_PATH}/boost_rel/include
     ${MODULE_BASE_PATH}/src
     ${MODULE_BASE_PATH}/src/curl_http
     ${MODULE_BASE_PATH}/common
     ${MODULE_SECUREC_INC_PATH}
     ${FRAMEWORK_THRIFT_INC_PATH}
+    ${AGENT_SDK_PATH}/include
 )
 
 if(INTERNAL_PLUGIN)
@@ -41,28 +43,77 @@ if(INTERNAL_PLUGIN)
     add_definitions(-DINTERNAL_PLUGIN)
 endif()
 
+target_link_directories(${PRCCALL_NAME}
+    PRIVATE
+    ${FRAMEWORK_LIB_PATH}
+    ${FRAMEWORK_LIB_PATH}/agent_sdk
+    ${MODULE_OPENSRC_PATH}/jsoncpp_rel/libs
+)
+
 if(AIX_COMPILE)
     target_link_libraries(${PRCCALL_NAME}
         PRIVATE
-        database_inc
+        safe_cmplib
+        basic_job
+        log_util
+        common_util
+        config_reader_util
+        json
+        rpc
+        thrift_interface
+        thrift_client
+        pluginsdk
         database-1.0.0
     )
 else()
+    target_link_directories(${PRCCALL_NAME}
+        PRIVATE
+        ${MODULE_BASE_PATH}/platform/KMCv3_infra_rel/lib
+        ${MODULE_BASE_PATH}/platform/SecureCLib_rel/lib
+        ${MODULE_OPENSRC_PATH}/openssl_rel/lib
+        ${MODULE_OPENSRC_PATH}/libssh2_rel/lib
+        ${MODULE_OPENSRC_PATH}/curl_rel/lib
+        ${MODULE_OPENSRC_PATH}/libevent_rel/lib
+        ${MODULE_OPENSRC_PATH}/c-ares_rel/lib
+        ${MODULE_OPENSRC_PATH}/boost_rel/lib
+        ${MODULE_OPENSRC_PATH}/icu_rel/libs/lib
+        ${FRAMEWORK_LIB_PATH}
+    )
     target_link_libraries(${PRCCALL_NAME}
         PRIVATE
+        safe_cmplib
+        rpc
+        basic_job
+        log_util
+        common_util
+        config_reader_util
         kmcv3
         cares
         ssh2
         pluginsdk
         ${internal_link_lib}
         thrift_server
-        config_reader_util
+        thrift_client
+        thrift_interface
         utils
         curl
+        ssl
         crypto
-        database_inc
         event
         pthread
+        boost_chrono
+        boost_regex
+        boost_filesystem
+        boost_atomic
+        boost_system
+        boost_thread
+        boost_log
+        boost_date_time
+        icudata
+        icuuc
+        icui18n
+        securec
+        jsoncpp
         param_checker
         database-1.0.0
     )

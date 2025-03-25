@@ -16,11 +16,13 @@ target_include_directories(cluster_obj
     ${MODULE_BASE_PATH}/src
     ${MODULE_BASE_PATH}/src/common
     ${FRAMEWORK_INC_PATH}/job
+    ${FRAMEWORK_INC_PATH}
+    ${FRAMEWORK_INC_PATH}/thrift_interface
     ${AGENT_SDK_PATH}/include
     ${MODULE_SECUREC_INC_PATH}
 )
 
 target_link_libraries(cluster_obj
     PRIVATE
-    database_inc
+    safe_cmplib
 )

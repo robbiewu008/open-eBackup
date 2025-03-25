@@ -213,7 +213,7 @@ class CopyParamParseUtil:
     def get_cache_path(param):
         for rep in param.get("repositories", []):
             if rep.get("repositoryType") == RepositoryDataTypeEnum.CACHE_REPOSITORY:
-                if len(rep.get("path")) > 0 and check_path_legal(rep.get("path")[0], "/mnt/databackup/"):
+                if len(rep.get("path", [])) > 0 and check_path_legal(rep.get("path")[0], "/mnt/databackup/"):
                     return rep.get("path")[0]
         raise Exception('Param of cache_path err')
 
@@ -222,7 +222,7 @@ class CopyParamParseUtil:
     def get_meta_path(param):
         for rep in param.get("repositories", []):
             if rep.get("repositoryType") == RepositoryDataTypeEnum.META_REPOSITORY:
-                if len(rep.get("path")) > 0 and check_path_legal(rep.get("path")[0], "/mnt/databackup/"):
+                if len(rep.get("path", [])) > 0 and check_path_legal(rep.get("path")[0], "/mnt/databackup/"):
                     return rep.get("path")[0]
         raise Exception('Param of meta_path err')
 
@@ -232,7 +232,7 @@ class CopyParamParseUtil:
         data_reps = []
         for rep in param.get("repositories", []):
             if rep.get("repositoryType") == RepositoryDataTypeEnum.DATA_REPOSITORY:
-                if len(rep.get("path")) > 0 and check_path_legal(rep.get("path")[0], "/mnt/databackup/"):
+                if len(rep.get("path", [])) > 0 and check_path_legal(rep.get("path")[0], "/mnt/databackup/"):
                     data_reps.append(rep)
 
         if len(data_reps) == 0:
@@ -245,7 +245,7 @@ class CopyParamParseUtil:
         log_reps = []
         for rep in param.get("repositories", []):
             if rep.get("repositoryType") == RepositoryDataTypeEnum.LOG_REPOSITORY:
-                if len(rep.get("path")) > 0 and check_path_legal(rep.get("path")[0], "/mnt/databackup/"):
+                if len(rep.get("path", [])) > 0 and check_path_legal(rep.get("path")[0], "/mnt/databackup/"):
                     log_reps.append(rep)
 
         if len(log_reps) == 0:

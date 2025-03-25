@@ -239,14 +239,16 @@ mp_void ClusterOperation::ListApplicationConfig(std::map<std::string, std::strin
             returnValue.insert(std::pair<mp_string, mp_string>(it, fileContent));
         }
     } else {
+        std::vector<mp_string> parentDirs;
 #ifdef WIN32
-        mp_string parentDir  = "..\\";
-#else
-        mp_string parentDir  = "../";
+        parentDirs.emplace_back("..\\");
 #endif
-        if (script.find(parentDir) != std::string::npos) {
-            ERRLOG("application config file can not contains '../', script=%s.", script.c_str());
-            return;
+        parentDirs.emplace_back("../");
+        for (mp_string parentDir : parentDirs) {
+            if (script.find(parentDir) != std::string::npos) {
+                ERRLOG("application config file can not contains '../', script=%s.", script.c_str());
+                return;
+            }
         }
         mp_string configFilePath = generalDBPath + "/" + script + "/" + GENERAL_APP_CONF_FILE;
         mp_string fileContent;

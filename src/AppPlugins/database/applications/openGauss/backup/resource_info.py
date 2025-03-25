@@ -12,6 +12,7 @@
 #
 
 import re
+from functools import cache
 
 from openGauss.common.common import get_hostname, check_path, check_injection_char
 from openGauss.resource.resources import GaussCluster
@@ -83,3 +84,7 @@ class ResourceInfo:
 
     def get_cluster_status(self):
         return self._cluster.cluster_state
+
+    @cache
+    def get_local_cn_port(self):
+        return self._cluster.get_local_cn_port()

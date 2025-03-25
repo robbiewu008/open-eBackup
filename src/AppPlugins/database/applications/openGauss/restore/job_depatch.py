@@ -95,7 +95,8 @@ class JobDepatch:
             return False, output.dict(by_alias=True)
 
         endpoint = self._resource_obj.get_local_endpoint()
-        if self._resource_obj.get_node_status(endpoint) != Status.NORMAL:
+        allow_status = self._resource_obj.get_node_status(endpoint)
+        if allow_status and self._resource_obj.get_node_status(endpoint) != Status.NORMAL:
             self.log.error(f"Node status is abnormal. job id: {self._job_id}")
             output = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR,
                                   bodyErr=OpenGaussErrorCode.ERR_DATABASE_STATUS,
@@ -106,6 +107,12 @@ class JobDepatch:
                 self.log.error(f"Database restore must in primary node. job id: {self._job_id}")
                 output = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR,
                                       message="The current can not exec restore job")
+                return False, output.dict(by_alias=True)
+        elif self._resource_obj.get_deploy_type() == DeployType.SHARDING_TYPE:
+            self.log.info("Start CMDB dist database allow_restore_in_local_node")
+            if not self._resource_obj.get_local_cn_port():
+                self.log.error(f"Database restore must in node with cn. job id: {self._job_id}")
+                output = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR)
                 return False, output.dict(by_alias=True)
         self.log.info(f"Execute allow restore in local node job success. job id: {self._job_id}")
         output = ActionResult(code=ExecuteResultEnum.SUCCESS)

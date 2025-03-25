@@ -11,7 +11,9 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
+import multiprocessing
 import os
+import threading
 import uuid
 
 import grp
@@ -24,21 +26,26 @@ import time
 import socket
 import psutil
 
+from common.file_common import copy_user_file_to_dest_path
 from common.logger import Logger
 from common.const import ExecuteResultEnum, SubJobStatusEnum, BackupTypeEnum, DeployType, RepositoryDataTypeEnum, \
-    DBLogLevel, ReportDBLabel, CopyDataTypeEnum, ParamConstant, RoleType
+    DBLogLevel, ReportDBLabel, CopyDataTypeEnum, ParamConstant, RoleType, SubJobPolicyEnum, SubJobPriorityEnum, \
+    SubJobTypeEnum, RepositoryNameEnum
 from common.common import output_result_file, execute_cmd, convert_time_to_timestamp, exter_attack, \
     write_content_to_file, read_tmp_json_file, output_execution_result_ex, clean_dir_not_walk_link
 from common.number_const import NumberConst
+from common.parse_parafile import get_env_variable
 from common.util import check_utils, check_user_utils
 from common.util.backup import backup, backup_files, query_progress
-from common.common_models import ActionResult, SubJobDetails, LogDetail
+from common.common_models import ActionResult, SubJobDetails, LogDetail, SubJobModel, RepositoryPath, ScanRepositories
 from common.util.cmd_utils import cmd_format
-from common.util.exec_utils import check_path_valid, exec_cp_cmd
+from common.util.exec_utils import check_path_valid, exec_cp_cmd, exec_mkdir_cmd
+from common.util.kmc_utils import Kmc
 from common.util.scanner_utils import scan_dir_size
-from postgresql.common.const import CmdRetCode, ErrorCode, PgConst, BackupStatus, DirAndFileNameConst, InstallDeployType
+from postgresql.common.const import CmdRetCode, ErrorCode, PgConst, BackupStatus, DirAndFileNameConst, \
+    InstallDeployType, BackupSubJob, PgsqlBackupStatus, ReportPgsqlLabel
 from postgresql.common.pg_exec_sql import ExecPgSql
-from postgresql.common.models import BackupJobPermission, BackupProgressInfo
+from postgresql.common.models import BackupJobPermission, BackupProgressInfo, NodeInfo
 from postgresql.common.util.get_version_util import get_version
 from postgresql.common.util.pg_common_utils import PostgreCommonUtils
 from postgresql.common.error_code import ErrorCode as ErrCode
@@ -54,13 +61,22 @@ class PgBackup(object):
         self._sub_job_id = sub_job_id
         self._param_dict = param_dict
         self._job_dict = param_dict.get("job", {})
+        self._extend_info = self._job_dict.get("protectObject", {}).get("extendInfo", {})
         self._os_user_name = self._job_dict.get("protectObject", {}).get("extendInfo", {}).get("osUsername", "")
-        self._port = self._job_dict.get("protectObject", {}).get("extendInfo", {}).get("instancePort",
-                                                                                       PgConst.DB_DEFAULT_PORT)
+        self._instance_id = self._job_dict.get("protectObject", {}).get("id", "")
+        self._sub_job_name = ""
+        self._job_status = SubJobStatusEnum.RUNNING
+        self._backup_status = BackupStatus.RUNNING
+        self._err_code = 0
+        self._query_progress_interval = 15
+        self._logdetail = None
+        self._loop_time = 0
+        self._port = self._extend_info.get("instancePort", PgConst.DB_DEFAULT_PORT)
         deploy_type = self._job_dict.get("protectEnv", {}).get("extendInfo", {}).get("deployType", 0)
         if int(deploy_type) == DeployType.SINGLE_TYPE.value:
             self._client_path = self._job_dict.get("protectObject", {}).get("extendInfo", {}).get("clientPath", "")
             self._data_path = self._job_dict.get("protectObject", {}).get("extendInfo", {}).get("dataDirectory", "")
+            self._archive_dir = self._job_dict.get("protectObject", {}).get("extendInfo", {}).get("archiveDir", "")
             self._service_ip = self._job_dict.get("protectObject", {}).get("extendInfo", {}).get("serviceIp", "")
         elif int(deploy_type) == DeployType.CLUSTER_TYPE.value:
             host_ips = PostgreCommonUtils.get_local_ips()
@@ -71,6 +87,7 @@ class PgBackup(object):
                 if service_ip in host_ips:
                     self._client_path = node_extend_info.get('clientPath', "")
                     self._data_path = node_extend_info.get('dataDirectory', "")
+                    self._archive_dir = node_extend_info.get("archiveDir", "")
                     self._port = node_extend_info.get("instancePort", PgConst.DB_DEFAULT_PORT)
                     break
             self._service_ip = self._job_dict.get("protectEnv", {}).get("endpoint", "")
@@ -84,8 +101,7 @@ class PgBackup(object):
         self.install_deploy_type = (self._job_dict.get("protectEnv", {}).get("extendInfo", {}).
                                     get("installDeployType", InstallDeployType.PGPOOL))
         if self.install_deploy_type == InstallDeployType.PGPOOL:
-            self._port = self._job_dict.get("protectObject", {}).get("extendInfo", {}).get("instancePort",
-                                                                                           PgConst.DB_DEFAULT_PORT)
+            self._port = self._extend_info.get("instancePort", PgConst.DB_DEFAULT_PORT)
         self.enable_root = PostgreCommonUtils.get_root_switch()
         self._backup_type = self._job_dict.get("jobParam", {}).get("backupType", "")
         self._last_stop_wal = None
@@ -168,6 +184,24 @@ class PgBackup(object):
             start = start + 1
         return start
 
+    @staticmethod
+    def get_port(nodes, service_ip):
+        for node in nodes:
+            node_extend_info = node.get("extendInfo", {})
+            if service_ip == node_extend_info.get('serviceIp', ""):
+                port = node_extend_info.get('instancePort', "")
+                break
+        return port
+
+    @staticmethod
+    def get_ip_and_port(cluster_nodes, nodes):
+        for cluster_node in cluster_nodes:
+            if cluster_node.get('role', "") == str(RoleType.PRIMARY.value):
+                service_ip = cluster_node.get('hostname', "")
+                port = PgBackup.get_port(nodes, service_ip)
+                break
+        return port, service_ip
+
     def set_action_result(self, code, body_err, message):
         self._output_code.code = code
         self._output_code.body_err = body_err
@@ -203,7 +237,7 @@ class PgBackup(object):
             if not check_user_utils.check_path_owner(self._data_path, [self._os_user_name]):
                 LOGGER.error("Check data path failed!Because data path owner is not valid!")
                 return False
-        if not check_path_valid(self._data_path, False):
+        if not check_path_valid(self._data_path, False, False):
             LOGGER.error(f"data_path[{self._data_path}] is invalid")
             return False
 
@@ -218,16 +252,24 @@ class PgBackup(object):
         LOGGER.error(f"Failed to exec cmd: {cmd}, job id: {self._job_id}.")
         return False
 
-    def query_archive_mode(self):
-        sql_cmd = "show archive_mode;"
-        pg_sql = self.get_pg_sql()
+    def query_system_param(self, param_name, pg_sql=None):
+        sql_cmd = f"show {param_name};"
+        if not pg_sql:
+            pg_sql = self.get_pg_sql()
         return_code, std_out, st_err = pg_sql.exec_sql_cmd(self._os_user_name, sql_cmd)
         if return_code != CmdRetCode.EXEC_SUCCESS.value:
             LOGGER.error(f"Failed to exec cmd: {sql_cmd}, job_id: {self._job_id}.")
             return False, ErrorCode.PLUGIN_CANNOT_BACKUP_ERR.value
-        if "archive_mode" not in std_out:
+        if param_name not in std_out:
             return False, ErrorCode.PLUGIN_CANNOT_BACKUP_ERR.value
-        archive_mode = pg_sql.parse_sql_result(std_out, "archive_mode")
+        value = pg_sql.parse_sql_result(std_out, param_name)
+        LOGGER.info(f"{param_name} is {value}, job_id: {self._job_id}.")
+        return True, value
+
+    def query_archive_mode(self):
+        result, archive_mode = self.query_system_param("archive_mode")
+        if not result:
+            return result, archive_mode
         LOGGER.info(f"Archive mode is {archive_mode}, job_id: {self._job_id}.")
         return archive_mode == "on", ErrorCode.ARCHIVE_MODE_ENABLED.value
 
@@ -245,6 +287,33 @@ class PgBackup(object):
                 else:
                     return False
         return False
+
+    def check_all_patroni_node_are_online(self):
+        """
+        针对Patroni集群，为了实现备份时Patroni集群触发切主操作仍可以备份成功，执行AllowBackupInLocalNode时不去寻找主节点，
+        只判断是否所有patroni节点都在线，而在后续备份时通过查询数据库动态更新节点情况完成备份
+        """
+        LOGGER.info(
+            f'step 1: execute check_all_patroni_node_are_online, job_id: {self._job_id}')
+        agent_infos = self._job_dict.get('extendInfo', {}).get('agents', [])
+        agent_uuids = set()
+        for agent_info in agent_infos:
+            agent_uuids.add(agent_info['id'])
+        LOGGER.info(f"patroni cluster agent_uuids {agent_uuids}")
+        nodes = self._job_dict.get("protectSubObject", [])
+        LOGGER.info(f"patroni cluster instance protectSubObject nodes {nodes}")
+        for node in nodes:
+            node_id = node.get("extendInfo", {}).get('hostId', "")
+            LOGGER.info(f"node_id {node_id}")
+            if node_id not in agent_uuids:
+                log_detail = LogDetail(logInfo="plugin_generate_subjob_fail_label", logLevel=DBLogLevel.ERROR)
+                PostgreCommonUtils.report_job_details(self._pid, SubJobDetails(taskId=self._job_id, progress=100,
+                                                      logDetail=[log_detail],
+                                                      taskStatus=SubJobStatusEnum.FAILED.value).dict(by_alias=True))
+                LOGGER.error(f"patroni cluster instance {node_id} is offline")
+                return False
+        LOGGER.info(f"step 1: execute check_all_patroni_node_are_online success, job_id: {self._job_id}")
+        return True
 
     def check_node_is_primary_clup(self):
         local_service_ip = ''
@@ -310,11 +379,11 @@ class PgBackup(object):
         if int(deploy_type) == DeployType.CLUSTER_TYPE.value:
             install_deploy_type = (self._job_dict.get("protectEnv", {}).get("extendInfo", {}).
                                    get("installDeployType", InstallDeployType.PGPOOL))
-            if install_deploy_type == InstallDeployType.PATRONI and not self.check_node_is_primary_patroni():
+            if install_deploy_type == InstallDeployType.PATRONI and not self.check_all_patroni_node_are_online():
                 body_err = ErrorCode.PLUGIN_CANNOT_BACKUP_ERR.value
-                message = "Cluster node is standby."
+                message = "Current patroni cluster has offline nodes."
                 self.set_action_result(ExecuteResultEnum.INTERNAL_ERROR.value, body_err, message)
-                LOGGER.error(f"Failed to check cluster status, job_id: {self._job_id}.")
+                LOGGER.error(f"Failed to check patroni cluster status, job_id: {self._job_id}.")
                 return False
             elif install_deploy_type == InstallDeployType.PGPOOL and not self.check_node_is_primary():
                 body_err = ErrorCode.PLUGIN_CANNOT_BACKUP_ERR.value
@@ -357,20 +426,54 @@ class PgBackup(object):
         output_result_file(self._pid, output.dict(by_alias=True))
         return True
 
-    def query_archive_dir(self):
-        sql_cmd = "show archive_command;"
-        pg_sql = self.get_pg_sql()
-        return_code, std_out, std_err = pg_sql.exec_sql_cmd(self._os_user_name, sql_cmd)
-        if return_code != CmdRetCode.EXEC_SUCCESS.value:
-            LOGGER.error(f"Failed to exec cmd: {sql_cmd}, job id: {self._job_id}.")
-            return ""
-        archive_info = pg_sql.parse_sql_result(std_out, "archive_command")
-        archive_dir = archive_info.split()[archive_info.split().index("cp") + 2]
-        return archive_dir.strip('"%f')
+    def query_archive_dir(self, pg_sql=None):
+        try:
+            sql_cmd = "show archive_command;"
+            if not pg_sql:
+                pg_sql = self.get_pg_sql()
+            return_code, std_out, std_err = pg_sql.exec_sql_cmd(self._os_user_name, sql_cmd)
+            if return_code != CmdRetCode.EXEC_SUCCESS.value:
+                LOGGER.error(f"Failed to exec cmd: {sql_cmd}, job id: {self._job_id}.")
+                return self._archive_dir
+            archive_info = pg_sql.parse_sql_result(std_out, "archive_command")
+            archive_dir = archive_info.split()[archive_info.split().index("cp") + 2]
+            return archive_dir.strip('"%f')
+        except Exception as err:
+            LOGGER.error(f"show archive_command err: {err}.")
+            return self._archive_dir
 
     @exter_attack
     def check_backup_job_type(self):
-        return True
+        LOGGER.info(f"Begin to check backup job type, self.job_id: {self._job_id}")
+        if self._backup_type == BackupTypeEnum.FULL_BACKUP.value:
+            return True
+        deploy_type = self._job_dict.get("protectEnv", {}).get("extendInfo", {}).get("deployType", 0)
+        if int(deploy_type) == DeployType.SINGLE_TYPE.value:
+            return True
+        ret, pre_log_or_full_copy = self.get_last_copy_info(
+            [CopyDataTypeEnum.LOG_COPY.value, CopyDataTypeEnum.FULL_COPY.value])
+        if ret and pre_log_or_full_copy:
+            pre_copy_backup_node = pre_log_or_full_copy.get("extendInfo", {}).get("backup_node")
+            LOGGER.info(f"pre log or full copy backup node: {pre_copy_backup_node}")
+            if self.install_deploy_type == InstallDeployType.PATRONI:
+                # 如果是patroni要去找主节点的ip和端口，因为是动态变化的，所以得实时去查，不能根据PM传的入参
+                host_ips = PostgreCommonUtils.get_local_ips()
+                nodes = self._job_dict.get("protectSubObject", [{}])
+                patroni_config, _, _ = PostgreCommonUtils.get_patroni_config(host_ips, nodes)
+                # 先通过ip找到对应的对应的patroni_config文件
+                cluster_nodes = ClusterNodesChecker.get_nodes(patroni_config)
+                port, service_ip = PgBackup.get_ip_and_port(cluster_nodes, nodes)
+                if service_ip == pre_copy_backup_node:
+                    return True
+            else:
+                host_ips = PostgreCommonUtils.get_local_ips()
+                if pre_copy_backup_node in host_ips:
+                    return True
+
+        body_err = ErrorCode.ERR_LOG_TO_FULL.value
+        message = "After the primary-secondary switch in a cluster, the first backup needs to be a full backup."
+        self.set_action_result(ExecuteResultEnum.INTERNAL_ERROR.value, body_err, message)
+        return False
 
     @exter_attack
     def backup_prerequisite(self):
@@ -388,9 +491,168 @@ class PgBackup(object):
         if stat_info.st_uid != user_id:
             LOGGER.error(f"Dir permission is incorrect, job id: {self._job_id}.")
             return False
-        result_file = os.path.join(self._cache_area, "BackupPrerequisiteProgress")
-        pathlib.Path(result_file).touch()
+        if self.install_deploy_type == InstallDeployType.PATRONI:
+            # 如果是patroni要去找主节点的ip和端口，因为是动态变化的，所以得实时去查，不能根据PM传的入参
+            host_ips = PostgreCommonUtils.get_local_ips()
+            nodes = self._job_dict.get("protectSubObject", [{}])
+            patroni_config, _, _ = PostgreCommonUtils.get_patroni_config(host_ips, nodes)
+            # 先通过ip找到对应的对应的patroni_config文件
+            cluster_nodes = ClusterNodesChecker.get_nodes(patroni_config)
+            port, service_ip = PgBackup.get_ip_and_port(cluster_nodes, nodes)
+            pg_sql = ExecPgSql(self._pid, self._client_path, service_ip, port)
+            # 查询是否开启归档模式
+            result, archive_mode = self.query_system_param("archive_mode", pg_sql=pg_sql)
+            if not result or archive_mode != "on":
+                log_detail = LogDetail(logInfo=ReportPgsqlLabel.PREREQUISITE_CHECK_FAILED,
+                                       logDetail=ErrorCode.ARCHIVE_MODE_ENABLED.value, logLevel=DBLogLevel.ERROR)
+                sub_dict = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
+                                         logDetail=[log_detail], taskStatus=SubJobStatusEnum.FAILED.value)
+                PostgreCommonUtils.report_job_details(self._pid, sub_dict.dict(by_alias=True))
+                LOGGER.error(f"Archive mode is {archive_mode}, job_id: {self._job_id}.")
+                return False
+            archive_dir = self.query_archive_dir(pg_sql=pg_sql)
+            if not archive_dir or not os.path.isdir(archive_dir):
+                log_detail = LogDetail(logInfo=ReportPgsqlLabel.PREREQUISITE_CHECK_FAILED,
+                                       logDetail=ErrCode.ARCHIVE_MODE_CONFIG_ERROR, logLevel=DBLogLevel.ERROR)
+                sub_dict = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
+                                         logDetail=[log_detail], taskStatus=SubJobStatusEnum.FAILED.value)
+                PostgreCommonUtils.report_job_details(self._pid, sub_dict.dict(by_alias=True))
+                LOGGER.error(f"Archive command is useless, archive_dir: {archive_dir}, job_id: {self._job_id}.")
+                return False
+            LOGGER.info(f'step 2: execute backup_pre_job_patroni, job_id:{self._job_id}')
+            self.backup_pre_job_patroni()
+        LOGGER.info(f'Succeed to execute backup_prerequisite, job_id:{self._job_id}')
+        log_detail = LogDetail(logInfo="plugin_execute_prerequisit_task_success_label", logLevel=DBLogLevel.INFO)
+        sub_dict = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100, logDetail=[log_detail],
+                                 taskStatus=SubJobStatusEnum.COMPLETED.value)
+        PostgreCommonUtils.report_job_details(self._pid, sub_dict.dict(by_alias=True))
         return True
+
+    def backup_pre_job_patroni(self):
+        # 共享文档逻辑如下：
+        # 1、node_info文件创建处，以job id唯一标记
+        # 2、建立一个线程在备份，循环请求node info，进行更新，循环时间15S
+        # 3、主从节点切换选择新节点：读取文件后进行选择，并更新共享文档
+        # 4、主从节点切换或备份发生错误时，更新共享文档
+        LOGGER.info("step 2: start to backup_pre_job_patroni")
+        nodes_info_file = os.path.join(self._meta_area, "nodesInfo", f"job_id_{self._job_id}")
+        nodes_info_path = os.path.join(self._meta_area, "nodesInfo")
+        if not os.path.exists(nodes_info_path):
+            try:
+                os.makedirs(nodes_info_path)
+            except Exception as err:
+                LOGGER.error(f"Make dir for {nodes_info_path} err: {err}.")
+
+        nodes = PostgreCommonUtils.get_online_data_nodes(self._job_dict.get("protectSubObject", []))
+        nodes_info = {}
+        for node in nodes:
+            node_extend_info = node.get("extendInfo", {})
+            node_host = node_extend_info.get('serviceIp', "")
+            host_id = node_extend_info.get('hostId', "")
+            node_info = NodeInfo(nodeHost=node_host,
+                                 setId=self._instance_id,
+                                 agentUuid=host_id,
+                                 )
+            nodes_info[node_host] = node_info.dict(by_alias=True)
+        LOGGER.info(f"step 2: Obtained information of all online Patroni cluster nodes: {nodes_info}")
+        PostgreCommonUtils.init_node_data(nodes_info_file, nodes_info, 100)
+        LOGGER.info("step 2: Successfully initialized the patroni cluster node information database.")
+        LOGGER.info(f"step 2: finish to execute backup_pre_job_patroni, job_id:{self._job_id}")
+        return
+
+    @exter_attack
+    def backup_gen_sub_job(self):
+        """
+        目前Patroni集群备份流程与其余两种集群存在差异，Patroni集群需要额外生成子任务
+        """
+        LOGGER.info(f"start to execute backup_gen_sub_job, job_id: {self._job_id}")
+        deploy_type = self._job_dict.get("protectEnv", {}).get("extendInfo", {}).get("deployType", 0)
+        if int(deploy_type) == DeployType.CLUSTER_TYPE.value:
+            install_deploy_type = (self._job_dict.get("protectEnv", {}).get("extendInfo", {}).
+                                   get("installDeployType", InstallDeployType.PGPOOL))
+            if install_deploy_type == InstallDeployType.PATRONI:
+                self.backup_gen_sub_job_patroni()
+            else:
+                self.backup_gen_sub_job_other()
+        LOGGER.info(f"finish to execute backup_gen_sub_job, job_id:{self._job_id}")
+        return True
+
+    def backup_gen_sub_job_patroni(self):
+        LOGGER.info(f"step 3: start to gen_sub_job for patroni cluster data backup, job_id:{self._job_id}")
+        nodes = PostgreCommonUtils.get_online_data_nodes(self._job_dict.get("protectSubObject", []))
+        host_ips = PostgreCommonUtils.get_local_ips()
+        file_path = os.path.join(ParamConstant.RESULT_PATH, f"result{self._pid}")
+        sub_job_array = []
+
+        # 子任务：BACKUP
+        # 在每个节点执行，具体执行权限在执行子任务中实现判断
+        LOGGER.info("start to gen backup_sub_job: backup")
+        job_policy = SubJobPolicyEnum.FIXED_NODE.value
+        job_name = "backup"
+        job_priority = SubJobPriorityEnum.JOB_PRIORITY_1
+        for node in nodes:
+            node_extend_info = node.get("extendInfo", {})
+            host = node_extend_info.get('serviceIp', "")
+            node_id = node_extend_info.get('hostId', "")
+            job_info = f"{host}"
+            sub_job = SubJobModel(jobId=self._job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB.value,
+                                  execNodeId=node_id, jobPriority=job_priority, jobName=job_name,
+                                  policy=job_policy, jobInfo=job_info, ignoreFailed=False).dict(by_alias=True)
+            sub_job_array.append(sub_job)
+
+        # 子任务：QUERYCOPY
+        # 在任意节点均可执行
+        LOGGER.info("start to gen backup_sub_job: queryCopy")
+        job_policy = SubJobPolicyEnum.ANY_NODE.value
+        job_name = "queryCopy"
+        job_priority = SubJobPriorityEnum.JOB_PRIORITY_2
+        for node in nodes:
+            node_extend_info = node.get("extendInfo", {})
+            host = node_extend_info.get('serviceIp', "")
+            if host in host_ips:
+                node_id = node_extend_info.get('hostId', "")
+                job_info = f"{host}"
+                sub_job = SubJobModel(jobId=self._job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB.value,
+                                      execNodeId=node_id, jobPriority=job_priority, jobName=job_name,
+                                      policy=job_policy, jobInfo=job_info, ignoreFailed=False).dict(by_alias=True)
+                sub_job_array.append(sub_job)
+                break
+
+        LOGGER.info(f"succeed to gen_sub_job for patroni cluster data backup, get sub_job_array: {sub_job_array}")
+        LOGGER.info(f"step 3: Sub-task splitting succeeded.sub-task num:{len(sub_job_array)}")
+        output_execution_result_ex(file_path, sub_job_array)
+        LOGGER.info(f"step 3: end to gen_sub_job for patroni cluster data backup, job_id:{self._job_id}")
+
+    def backup_gen_sub_job_other(self):
+        LOGGER.info(f"start to gen_sub_job for other cluster data backup, job_id:{self._job_id}")
+        nodes = self._job_dict.get("protectSubObject", [])
+        file_path = os.path.join(ParamConstant.RESULT_PATH, f"result{self._pid}")
+        host_ips = PostgreCommonUtils.get_local_ips()
+        sub_job_array = []
+        for node in nodes:
+            node_extend_info = node.get("extendInfo", {})
+            host = node_extend_info.get('serviceIp', "")
+            if host in host_ips:
+                node_id = node_extend_info.get('hostId', "")
+                job_info = f"{host}"
+                sub_job = SubJobModel(jobId=self._job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB.value,
+                                      execNodeId=node_id,
+                                      jobPriority=SubJobPriorityEnum.JOB_PRIORITY_1, jobName="backup",
+                                      policy=SubJobPolicyEnum.LOCAL_NODE.value,
+                                      jobInfo=job_info,
+                                      ignoreFailed=False).dict(by_alias=True)
+                sub_job_array.append(sub_job)
+                sub_job = SubJobModel(jobId=self._job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB.value,
+                                      execNodeId=node_id,
+                                      jobPriority=SubJobPriorityEnum.JOB_PRIORITY_2, jobName="queryCopy",
+                                      policy=SubJobPolicyEnum.ANY_NODE.value,
+                                      jobInfo=job_info,
+                                      ignoreFailed=False).dict(by_alias=True)
+                sub_job_array.append(sub_job)
+                break
+        LOGGER.info(f"succeed to gen_sub_job for other cluster data backup, get sub_job_array: {sub_job_array}")
+        output_execution_result_ex(file_path, sub_job_array)
+        LOGGER.info(f"end to gen_sub_job for other cluster data backup, job_id:{self._job_id}")
 
     def exec_start_backup(self):
         pg_ctl_path = os.path.join(self._client_path, "bin", "pg_ctl")
@@ -415,13 +677,13 @@ class PgBackup(object):
             sql_cmd = f"select pg_start_backup(\'\\\'{self._job_id}\\\'\', false, true);"
         pg_sql = self.get_pg_sql()
         if is_ge_15:
-            return_code, start_file, std_err = pg_sql.exec_backup_cmd(self._os_user_name, sql_cmd,
-                                                                      timeout=PgConst.CHECK_POINT_TIME_OUT)
+            return_code, start_file, std_err = pg_sql.exec_backup_cmd_catch_error(self._os_user_name, sql_cmd,
+                                                                                  timeout=PgConst.CHECK_POINT_TIME_OUT)
         else:
             return_code, start_file, std_err = pg_sql.exec_sql_cmd(self._os_user_name, sql_cmd,
                                                                    timeout=PgConst.CHECK_POINT_TIME_OUT)
         if return_code != CmdRetCode.EXEC_SUCCESS.value:
-            LOGGER.error(f"Failed to exec start backup cmd, job id: {self._job_id}.")
+            LOGGER.error(f"Failed to exec start backup cmd, job id: {self._job_id}, error : {std_err}.")
             return False, ""
         try:
             if is_ge_15:
@@ -472,15 +734,17 @@ class PgBackup(object):
             return False
         return self.get_backup_status(job_id=job_id)
 
-    def backup_file_list(self, files, target):
+    def backup_file_list(self, files, target, number):
+        temp_job_id = f"{self._job_id}_{number}"
+        LOGGER.info(f"Start backup, temp_job_id: {temp_job_id}.")
         if not files or not target:
-            LOGGER.error(f"Param error, job id: {self._job_id}.")
+            LOGGER.error(f"Param error, temp_job_id: {temp_job_id}.")
             return False
-        res = backup_files(self._job_id, files, target, write_meta=True, thread_num=self._thread_number)
+        res = backup_files(temp_job_id, files, target, write_meta=True, thread_num=self._thread_number)
         if not res:
-            LOGGER.error(f"Failed to start backup, jobId: {self._job_id}.")
+            LOGGER.error(f"Failed to start backup, temp_job_id: {temp_job_id}.")
             return False
-        return self.get_backup_status(self._job_id)
+        return self.get_backup_status(temp_job_id)
 
     def get_backup_status(self, job_id):
         backup_status = False
@@ -583,6 +847,7 @@ class PgBackup(object):
             if not self.backup_table_space():
                 LOGGER.error(f"Failed to backup table space, job id: {self._job_id}.")
                 return False, ErrCode.BACKUP_TABLE_SPACE_FAILED
+            self.backup_config_file()
             LOGGER.info(f"Succeed to backup database's all files, job id: {self._job_id}.")
         elif backup_type == BackupTypeEnum.LOG_BACKUP.value:
             if not check_utils.check_path_in_white_list(self._log_area):
@@ -598,15 +863,33 @@ class PgBackup(object):
                 return True, NumberConst.ZERO
             files = [os.path.realpath(os.path.join(archive_dir, file)) for file in file_list]
             for i in range(0, len(files), PgConst.MAX_FILE_NUMBER_OF_LOG_BACKUP):
-                result = self.backup_file_list(files[i:i + PgConst.MAX_FILE_NUMBER_OF_LOG_BACKUP], self._log_area)
+                result = self.backup_file_list(files[i:i + PgConst.MAX_FILE_NUMBER_OF_LOG_BACKUP], self._log_area,
+                                               str(self._loop_time))
                 if not result:
                     LOGGER.error(f"Failed to backup wal file: {len(files)}, job id: {self._job_id}.")
                     return False, ErrCode.BACKUP_TOOL_FAILED
+                self._loop_time += 1
             LOGGER.info(f"Succeed to backup wal's files, job id: {self._job_id}.")
         else:
             LOGGER.error(f"Unsupported backup type: {backup_type}, job id: {self._job_id}.")
             return False, ErrCode.BACKUP_FAILED
         return True, NumberConst.ZERO
+
+    def backup_config_file(self):
+        result, data_directory = self.query_system_param("data_directory")
+        if result:
+            result, config_file = self.query_system_param("config_file")
+            if result and not os.path.abspath(os.path.dirname(config_file)) == os.path.abspath(
+                    data_directory) and os.path.exists(config_file):
+                copy_user_file_to_dest_path(config_file, self._data_area)
+            result, hba_file = self.query_system_param("hba_file")
+            if result and not os.path.abspath(os.path.dirname(hba_file)) == os.path.abspath(
+                    data_directory) and os.path.exists(hba_file):
+                copy_user_file_to_dest_path(hba_file, self._data_area)
+            result, ident_file = self.query_system_param("ident_file")
+            if result and not os.path.abspath(os.path.dirname(ident_file)) == os.path.abspath(
+                    data_directory) and os.path.exists(ident_file):
+                copy_user_file_to_dest_path(ident_file, self._data_area)
 
     def backup_table_space(self):
         table_space = self.get_table_space()
@@ -685,8 +968,8 @@ class PgBackup(object):
             sql_cmd = "select pg_stop_backup();"
         pg_sql = self.get_pg_sql()
         if is_ge_15:
-            return_code, out, std_err = pg_sql.exec_backup_cmd(self._os_user_name, sql_cmd,
-                                                               timeout=PgConst.STOP_PG_BACKUP_TIME_OUT)
+            return_code, out, std_err = pg_sql.exec_backup_cmd_catch_error(self._os_user_name, sql_cmd,
+                                                                           timeout=PgConst.STOP_PG_BACKUP_TIME_OUT)
             pg_sql.close_session()
         else:
             return_code, _, std_err = pg_sql.exec_sql_cmd(self._os_user_name, sql_cmd,
@@ -694,7 +977,7 @@ class PgBackup(object):
         if return_code == CmdRetCode.CONFIG_ERROR.value:
             return False, ErrCode.ARCHIVE_MODE_CONFIG_ERROR
         if return_code != CmdRetCode.EXEC_SUCCESS.value:
-            LOGGER.error(f"Failed to exec stop backup cmd, job id: {self._job_id}.")
+            LOGGER.error(f"Failed to exec stop backup cmd, job id: {self._job_id}, error : {std_err}.")
             return False, ErrCode.BACKUP_FAILED
         LOGGER.info(f"Succeed to exec stop backup cmd, job id: {self._job_id}.")
         return True, CmdRetCode.EXEC_SUCCESS.value
@@ -753,6 +1036,12 @@ class PgBackup(object):
             self._last_stop_wal = stop_wal
         end = file_list.index(stop_wal) + 1
         backup_wal_list = file_list[start:end]
+        # 若归档目录存在与本次需备份的日志文件TimeLineID相同的".history"文件，需备份
+        time_line_id = start_wal[:8]
+        file_list = os.listdir(wal_dir)
+        for idx, obj in enumerate(file_list):
+            if obj.endswith(".history") and obj[:8] == time_line_id:
+                backup_wal_list.append(file_list[idx])
         return backup_wal_list
 
     def backup_wal_files(self):
@@ -775,10 +1064,7 @@ class PgBackup(object):
         if not res:
             LOGGER.error(f"Failed to get version, job id: {self._job_id}.")
             return False
-        if int(version_info.split('.')[0]) < PgConst.DATABASE_V10:
-            pg_wal_dir = "pg_xlog"
-        else:
-            pg_wal_dir = "pg_wal"
+        pg_wal_dir = "pg_xlog" if int(version_info.split('.')[0]) < PgConst.DATABASE_V10 else "pg_wal"
         backup_type = self._job_dict.get("jobParam", {}).get("backupType", 0)
         if backup_type == BackupTypeEnum.FULL_BACKUP.value:
             if not check_utils.check_path_in_white_list(self._data_area):
@@ -788,17 +1074,28 @@ class PgBackup(object):
             target = os.path.join(self._data_area, pg_wal_dir)
             if not os.path.islink(target):
                 clean_dir_not_walk_link(target)
+            else:
+                # 备份的pg_wal或pg_xlog目录为软链接时，删除软链接直接创一个同名空目录
+                real_wal_path = os.path.realpath(target)
+                file_stat = os.stat(real_wal_path)
+                uid, gid, permissions = file_stat.st_uid, file_stat.st_gid, file_stat.st_mode
+                os.remove(target)
+                os.makedirs(target, permissions)
+                os.chown(target, uid, gid)
         else:
             if not check_utils.check_path_in_white_list(self._log_area):
                 LOGGER.error(f"Data area is incorrect :{self._log_area}.")
                 return False
             target = self._log_area
         # 备份wal日志
-        files = [os.path.join(archive_dir, file) for file in file_list]
-        result = self.backup_file_list(files, target)
-        if not result:
-            LOGGER.error(f"Failed to wal file: {len(files)}, job id: {self._job_id}.")
-            return False
+        files = [os.path.realpath(os.path.join(archive_dir, file)) for file in file_list]
+        for i in range(0, len(files), PgConst.MAX_FILE_NUMBER_OF_LOG_BACKUP):
+            result = self.backup_file_list(files[i:i + PgConst.MAX_FILE_NUMBER_OF_LOG_BACKUP], target,
+                                           str(self._loop_time))
+            if not result:
+                LOGGER.error(f"Failed to backup wal file: {len(files)}, job id: {self._job_id}.")
+                return False
+            self._loop_time += 1
         LOGGER.info(f"Succeed to backup wal file: {len(files)}, job id: {self._job_id}.")
         return True
 
@@ -830,7 +1127,7 @@ class PgBackup(object):
         if not backup_file:
             LOGGER.error(f"Failed to get backup info file, job id: {self._job_id}.")
             return False, ErrCode.BACKUP_FAILED
-        backup_file_path = os.path.join(archive_dir, backup_file)
+        backup_file_path = os.path.realpath(os.path.join(archive_dir, backup_file))
         if not PostgreCommonUtils.check_path_in_white_list(self._cache_area)[0]:
             LOGGER.error(f"Save backup copy failed!cache repo :{self._cache_area} is not in white list!")
             return False, ErrCode.BACKUP_FAILED
@@ -872,9 +1169,16 @@ class PgBackup(object):
                 return False, ErrCode.LOG_INCONSISTENT
             copy_dict["extendInfo"] = extend_info
         elif backup_type == BackupTypeEnum.FULL_BACKUP.value:
-            copy_dict = self.write_full_backup_time(copy_dict, stop_time)
-            copy_dict["extendInfo"]["timeline"] = copy_timeline
-            copy_dict["extendInfo"]["stopWalFile"] = wal_file
+            copy_dict = self.write_full_backup_time(copy_dict, stop_time, copy_timeline, wal_file)
+            result, config_file = self.query_system_param("config_file")
+            if result:
+                copy_dict["extendInfo"]["configFile"] = config_file
+            result, hba_file = self.query_system_param("hba_file")
+            if result:
+                copy_dict["extendInfo"]["hbaFile"] = hba_file
+            result, ident_file = self.query_system_param("ident_file")
+            if result:
+                copy_dict["extendInfo"]["identFile"] = ident_file
         else:
             return False, ErrCode.BACKUP_FAILED
         LOGGER.info(f"Backup copy info, job id: {self._job_id}.")
@@ -894,13 +1198,28 @@ class PgBackup(object):
     def build_log_copy_ext_info(self, stop_time, wal_file):
         extend_info = dict()
         copy_timeline = wal_file[:8] if PostgreCommonUtils.is_wal_file(wal_file) else ""
-        ret, pre_copy_bak_time, pre_copy_timeline = self.get_pre_copy_bak_time_for_log_backup_from_lastest_copy()
+        ret, pre_copy_bak_time, pre_copy_stop_wal, pre_copy_timeline = (
+            self.get_pre_copy_bak_time_for_log_backup_from_lastest_copy())
         if not ret or not pre_copy_bak_time:
             return False, extend_info
+        archive_dir = self.query_archive_dir()
+        files = [file for file in os.listdir(archive_dir) if PostgreCommonUtils.is_wal_file(file)]
+        is_disconnected_timeline = (pre_copy_timeline and copy_timeline and pre_copy_timeline != copy_timeline)
 
         # 查询到日志副本检查timeline是否连续
-        if pre_copy_timeline and copy_timeline and pre_copy_timeline != copy_timeline:
-            return False, extend_info
+        if is_disconnected_timeline or pre_copy_stop_wal not in files:
+            ret, pre_log_copy = self.get_last_copy_info([CopyDataTypeEnum.FULL_COPY.value])
+            if ret and pre_log_copy:
+                pre_copy_bak_time = pre_log_copy.get("extendInfo", {}).get("backupTime")
+                pre_copy_stop_wal = pre_log_copy.get("extendInfo", {}).get("stopWalFile")
+                pre_copy_timeline = pre_copy_stop_wal[:8] if PostgreCommonUtils.is_wal_file(
+                    pre_copy_stop_wal) else ""
+                LOGGER.info(
+                    f"Succeed to get previous full copy info, backup time: {pre_copy_bak_time}, stop wal: "
+                    f"{pre_copy_stop_wal}, pid: {self._pid}, job id: {self._job_id}.")
+                is_disconnected_timeline = (pre_copy_timeline and copy_timeline and pre_copy_timeline != copy_timeline)
+                if (is_disconnected_timeline or pre_copy_stop_wal not in files):
+                    return False, extend_info
 
         extend_info["beginTime"] = pre_copy_bak_time
         stop_timestamp = convert_time_to_timestamp(stop_time)
@@ -908,6 +1227,7 @@ class PgBackup(object):
         extend_info["backupTime"] = stop_timestamp
         extend_info["timeline"] = copy_timeline
         extend_info["stopWalFile"] = wal_file
+        extend_info["backup_node"] = self.get_local_node_service_ip()
         return True, extend_info
 
     def get_pre_copy_bak_time_for_log_backup_from_lastest_copy(self):
@@ -918,12 +1238,22 @@ class PgBackup(object):
             ret, pre_log_copy = self.get_last_copy_info([CopyDataTypeEnum.FULL_COPY.value])
         if ret and pre_log_copy:
             pre_copy_bak_time = pre_log_copy.get("extendInfo", {}).get("backupTime")
-            pre_copy_stop_wal = pre_log_copy.get("", {}).get("stopWalFile")
+            pre_copy_stop_wal = pre_log_copy.get("extendInfo", {}).get("stopWalFile")
             pre_copy_timeline = pre_copy_stop_wal[:8] if PostgreCommonUtils.is_wal_file(pre_copy_stop_wal) else ""
             LOGGER.info(f"Succeed to get previous log copy info, backup time: {pre_copy_bak_time}, stop wal: "
                         f"{pre_copy_stop_wal}, pid: {self._pid}, job id: {self._job_id}.")
-            return True, pre_copy_bak_time, pre_copy_timeline
-        return False, "", ""
+            return True, pre_copy_bak_time, pre_copy_stop_wal, pre_copy_timeline
+        return False, "", "", ""
+
+    def get_local_node_service_ip(self):
+        host_ips = PostgreCommonUtils.get_local_ips()
+        nodes = self._job_dict.get("protectSubObject", [{}])
+        for node in nodes:
+            node_extend_info = node.get("extendInfo", {})
+            service_ip = node_extend_info.get('serviceIp', "")
+            if service_ip in host_ips:
+                return service_ip
+        return ""
 
     def get_last_copy_info(self, copy_type_array):
         LOGGER.info("Start to get data copy host_sn")
@@ -947,7 +1277,7 @@ class PgBackup(object):
             return False, ""
         return True, out_info
 
-    def write_full_backup_time(self, copy_dict, stop_time):
+    def write_full_backup_time(self, copy_dict, stop_time, copy_timeline, wal_file):
         """
         记录全量备份的结束时间和恢复后首次全量备份的结束时间
         :return:
@@ -955,6 +1285,9 @@ class PgBackup(object):
         param = dict()
         param["backupTime"] = convert_time_to_timestamp(stop_time)
         copy_dict["extendInfo"] = param
+        copy_dict["extendInfo"]["timeline"] = copy_timeline
+        copy_dict["extendInfo"]["stopWalFile"] = wal_file
+        copy_dict["extendInfo"]["backup_node"] = self.get_local_node_service_ip()
         LOGGER.info(f"Success get first full backup time, pid:{self._pid} jobId:{self._job_id}")
         return copy_dict
 
@@ -976,6 +1309,253 @@ class PgBackup(object):
 
     @exter_attack
     def backup(self):
+        """
+        目前Patroni集群备份流程与其余两种集群以及单实例数据库存在差异
+        """
+        deploy_type = self._job_dict.get("protectEnv", {}).get("extendInfo", {}).get("deployType", 0)
+        if int(deploy_type) == DeployType.CLUSTER_TYPE.value:
+            install_deploy_type = (self._job_dict.get("protectEnv", {}).get("extendInfo", {}).
+                                   get("installDeployType", InstallDeployType.PGPOOL))
+            if install_deploy_type == InstallDeployType.PATRONI:
+                LOGGER.info(f"step 4: execute backup_sub_job_patroni, job_id: {self._job_id}")
+                return self.backup_sub_job_patroni()
+        return self.backup_action()
+
+    def backup_task_subjob_dict(self):
+        sub_job_dict = {
+            BackupSubJob.BACKUP: self.backup_patroni,
+        }
+        return sub_job_dict
+
+    def backup_sub_job_patroni(self):
+        LOGGER.info(f"step 4: start to execute backup_sub_job_patroni, job_id: {self._job_id}")
+        self.write_progress_file(SubJobStatusEnum.RUNNING, 0)
+        # 启动一个线程查询备份进度
+        sub_job_dict = self.backup_task_subjob_dict()
+        progress_thread = threading.Thread(name='pre_progress', target=self.upload_backup_progress)
+        progress_thread.daemon = True
+        progress_thread.start()
+        # 执行子任务
+        sub_job_name = self._param_dict.get("subJob", {}).get("jobName", "")
+        if not sub_job_name:
+            return False
+        self._sub_job_name = sub_job_name
+
+        try:
+            ret = sub_job_dict.get(sub_job_name)()
+        except Exception as err:
+            LOGGER.error(f"do {sub_job_name} fail: {err}, job_id: {self._job_id}")
+            log_detail_param = []
+            if sub_job_name == BackupSubJob.BACKUP:
+                log_detail_param.append(self._instance_id)
+            log_detail = LogDetail(logInfo="plugin_task_subjob_fail_label", logInfoParam=[self._sub_job_id],
+                                   logLevel=DBLogLevel.ERROR.value, logDetailParam=log_detail_param)
+
+            PostgreCommonUtils.report_job_details(self._pid, SubJobDetails(taskId=self._job_id,
+                                                  subTaskId=self._sub_job_id, progress=100, logDetail=[log_detail],
+                                                  taskStatus=SubJobStatusEnum.FAILED.value).dict(by_alias=True))
+            return False
+        if not ret:
+            LOGGER.error(f"Exec sub job {sub_job_name} failed.{self.get_log_comm()}.")
+            log_detail_param = []
+            if sub_job_name == BackupSubJob.BACKUP:
+                log_detail_param.append(self._instance_id)
+            log_detail = LogDetail(logInfo="plugin_task_subjob_fail_label", logInfoParam=[self._sub_job_id],
+                                   logLevel=DBLogLevel.ERROR.value, logDetailParam=log_detail_param)
+
+            PostgreCommonUtils.report_job_details(self._pid, SubJobDetails(taskId=self._job_id,
+                                                  subTaskId=self._sub_job_id, progress=100, logDetail=[log_detail],
+                                                  taskStatus=SubJobStatusEnum.FAILED.value).dict(by_alias=True))
+            return False
+
+        progress_thread.join()
+        return True
+
+    def fetch_current_host(self):
+        host = str(self._param_dict.get("subJob", {}).get("jobInfo", ""))
+        LOGGER.info(f"the local host is {host}")
+        return host
+
+    def backup_patroni(self):
+        # 执行数据备份子任务
+        LOGGER.info(f"step 5: start to exec_back_up, job_id: {self._job_id}")
+        # 发送备份请求
+        host = self.fetch_current_host()
+        # NodesInfo共享文档
+        nodes_info_file = os.path.join(self._meta_area, "nodesInfo", f"job_id_{self._job_id}")
+        backup_thread = ""
+        timeout = 10
+
+        while True:
+            nodes = self._job_dict.get("protectSubObject", [])
+            cluster_nodes = PostgreCommonUtils.get_nodes(nodes)
+            sql_lists = []
+            for cluster_node in cluster_nodes:
+                curr_node = cluster_node.get('hostname')
+                is_master = 1 if cluster_node.get('role') in [str(RoleType.PRIMARY.value)] else 0
+                is_alive = 0 if cluster_node.get('status') in ['running', 'streaming'] else 1
+                sql = f"update nodeinfo set is_master={is_master},is_alive={is_alive} " \
+                      f"where node_host='{curr_node}'"
+                sql_lists.append(sql)
+            PostgreCommonUtils.exec_sqlite_sql(nodes_info_file, timeout, sql_lists)
+            LOGGER.info("step 5: before can_exec_backup")
+            if PostgreCommonUtils.can_exec_backup(host, nodes_info_file, nodes, self._job_id):
+                LOGGER.info(f"step 5: can_exec_backup")
+                backup_thread = multiprocessing.Process(target=self.backup_patroni_action,
+                                                        args=(nodes_info_file, host))
+                LOGGER.info(f"step 5: after multiprocessing.Process")
+                try:
+                    backup_thread.start()
+                except Exception as ex:
+                    LOGGER.error(f"when start backup thread, exception {ex} occurs")
+                LOGGER.info(f"step 5: after backup_thread.start")
+                if backup_thread:
+                    monitor_thread = multiprocessing.Process(target=PostgreCommonUtils.monitor,
+                                                             args=(backup_thread, nodes_info_file, host, nodes))
+                    monitor_thread.daemon = True
+                    monitor_thread.start()
+                backup_thread.join()
+            if PostgreCommonUtils.is_job_finished(nodes_info_file):
+                break
+            time.sleep(15)
+        LOGGER.info("step 5: end to exec_back_up")
+        return True
+
+    def backup_patroni_action(self, file_name, node_info):
+        try:
+            res = self.backup_action()
+            if not res:
+                PostgreCommonUtils.set_failed_and_choose_node(file_name, node_info)
+                return False
+            PostgreCommonUtils.after_backup(file_name, node_info)
+            return True
+        except Exception as ex:
+            LOGGER.exception(f"Back up data Failed!, exception: {ex}")
+            PostgreCommonUtils.set_failed_and_choose_node(file_name, node_info)
+            return False
+
+    def write_progress_file(self, task_status, progress):
+        LOGGER.info("start write_progress_file")
+        if task_status == SubJobStatusEnum.FAILED.value:
+            log_detail_param = []
+            if self._sub_job_name == BackupSubJob.BACKUP:
+                self._err_code = None
+                log_detail_param.append(self._instance_id)
+                LOGGER.info(f"start self._sub_job_name: {self._sub_job_name}")
+            self.set_log_detail_with_params("plugin_task_subjob_fail_label", self._sub_job_id, self._err_code,
+                                            log_detail_param,
+                                            DBLogLevel.ERROR.value)
+        if task_status == SubJobStatusEnum.COMPLETED.value:
+            self.set_log_detail_with_params("plugin_task_subjob_success_label", self._sub_job_id, 0, [],
+                                            DBLogLevel.INFO.value)
+            LOGGER.info("task_status == SubJobStatusEnum.COMPLETED.value")
+
+        progress_str = SubJobDetails(taskId=self._job_id,
+                                     subTaskId=self._sub_job_id,
+                                     taskStatus=task_status,
+                                     progress=progress,
+                                     logDetail=self._logdetail)
+        json_str = progress_str.dict(by_alias=True)
+        progress_file = os.path.join(self._cache_area, f"progress_{self._job_id}_{self._sub_job_id}")
+        LOGGER.debug(f"Write file.{progress_str}{self.get_log_comm()}.")
+        output_execution_result_ex(progress_file, json_str)
+
+    def set_log_detail_with_params(self, log_label, sub_job_id, err_code=None, log_detail_param=None,
+                                   log_level=DBLogLevel.INFO.value):
+        err_dict = LogDetail(logInfo=log_label,
+                             logInfoParam=[sub_job_id],
+                             logTimestamp=int(time.time()),
+                             logDetail=err_code,
+                             logDetailParam=log_detail_param,
+                             logLevel=log_level)
+        self._logdetail = []
+        self._logdetail.append(err_dict)
+        return True
+
+    def get_log_comm(self):
+        return f"pid:{self._pid} jobId:{self._job_id} subjobId:{self._sub_job_id}"
+
+    def upload_backup_progress(self):
+
+        # 定时上报备份进度
+        while self._job_status == SubJobStatusEnum.RUNNING:
+            if self._sub_job_name == BackupSubJob.BACKUP:
+                self._backup_status = self.get_progress()
+                if self._backup_status == PgsqlBackupStatus.RUNNING:
+                    progress = 20
+                    status = SubJobStatusEnum.RUNNING
+                elif self._backup_status == PgsqlBackupStatus.SUCCEED:
+                    status = SubJobStatusEnum.COMPLETED
+                    progress = 100
+                else:
+                    status = SubJobStatusEnum.FAILED
+                    progress = 0
+                LOGGER.info(f"progress_info.job(status): {self._backup_status}")
+                LOGGER.info(f"status：{status}   progress: {progress}")
+                self.write_progress_file(status, progress)
+
+            LOGGER.info("Start to report progress.")
+            progress_file = os.path.join(self._cache_area, f"progress_{self._job_id}_{self._sub_job_id}")
+            # 没有进度文件可能是还没有生成,不返回失败
+            comm_progress_dict = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id,
+                                               taskStatus=SubJobStatusEnum.RUNNING,
+                                               progress=0, logDetail=self._logdetail)
+            if not os.path.exists(progress_file):
+                PostgreCommonUtils.report_job_details(self._job_id, comm_progress_dict.dict(by_alias=True))
+                time.sleep(self._query_progress_interval)
+                continue
+            with open(progress_file, "r") as f_object:
+                progress_dict = json.loads(f_object.read())
+
+            self._job_status = progress_dict.get("taskStatus")
+            LOGGER.info(f"Get progress_dict in upload_backup_progress.{self._job_status}")
+            LOGGER.info(f"upload_backup_progress{self.get_log_comm()}")
+            if not self._job_status:
+                LOGGER.error(f"Failed to obtain the task status.{self.get_log_comm()}")
+                self._job_status = SubJobStatusEnum.FAILED
+                fail_dict = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id,
+                                          taskStatus=SubJobStatusEnum.FAILED, progress=100,
+                                          logDetail=self._logdetail)
+                progress_dict = fail_dict.dict(by_alias=True)
+            LOGGER.info(f"progress_dict{progress_dict}")
+
+            time.sleep(self._query_progress_interval)
+            PostgreCommonUtils.report_job_details(self._job_id, progress_dict)
+
+    def get_progress(self):
+        nodes_info_file = os.path.join(self._meta_area, "nodesInfo", f"job_id_{self._job_id}")
+        nodes_info = PostgreCommonUtils.get_nodelist(nodes_info_file, 10)
+        num = len(nodes_info)
+        LOGGER.info("start get_progress")
+        is_failed = 0
+        for value in nodes_info:
+            if value[3] == 1:
+                LOGGER.info("job succeed")
+                return PgsqlBackupStatus.SUCCEED
+            elif value[3] == 2:
+                is_failed += 1
+        if is_failed == num and num != 0:
+            LOGGER.error("job failed")
+            return PgsqlBackupStatus.FAILED
+        LOGGER.info("job running")
+        return PgsqlBackupStatus.RUNNING
+
+    def check_node_status_patroni(self):
+        host_ips = PostgreCommonUtils.get_local_ips()
+        nodes = self._job_dict.get("protectSubObject", [{}])
+        patroni_config, _, _ = PostgreCommonUtils.get_patroni_config(host_ips, nodes)
+        # 先通过ip找到对应的对应的patroni_config文件
+        cluster_nodes = ClusterNodesChecker.get_nodes(patroni_config)
+        for cluster_node in cluster_nodes:
+            host = cluster_node.get('hostname', "")
+            if host in host_ips:
+                if cluster_node.get('role', "") == str(RoleType.PRIMARY.value):
+                    return True
+                else:
+                    return False
+        return False
+
+    def backup_action(self):
         if not self.check_params():
             LOGGER.error(f"Check the path, IP address, and port!")
             return False
@@ -987,6 +1567,12 @@ class PgBackup(object):
             message = "Archive mode is off."
             self.set_backup_result(SubJobStatusEnum.FAILED.value, code, message)
             LOGGER.error(f"Archive mode is off, job_id: {self._job_id}.")
+            return False
+        archive_dir = self.query_archive_dir()
+        if not archive_dir or not os.path.isdir(archive_dir):
+            self.set_backup_result(SubJobStatusEnum.FAILED.value, ErrCode.ARCHIVE_MODE_CONFIG_ERROR, "Archive command "
+                                                                                                     "is error.")
+            LOGGER.error(f"Archive command is useless, archive_dir: {archive_dir}, job_id: {self._job_id}.")
             return False
         # 开始备份
         result, pg_start_file = self.exec_start_backup()
@@ -1022,6 +1608,11 @@ class PgBackup(object):
         # 备份完成
         self.set_backup_result(SubJobStatusEnum.COMPLETED.value, "", "")
         # 如果是日志备份，备份完成后，要更新stop_wal
+        self.update_last_log_backup_stop_wal_info()
+        LOGGER.info(f"Succeed to exec backup sub task, job id: {self._job_id}")
+        return True
+
+    def update_last_log_backup_stop_wal_info(self):
         if self._backup_type == BackupTypeEnum.LOG_BACKUP:
             last_log_backup_stop_wal_info_path = os.path.join(self._meta_area,
                                                               DirAndFileNameConst.LAST_LOG_BACKUP_STOP_WAL_INFO)
@@ -1029,8 +1620,6 @@ class PgBackup(object):
                 "last_stop_wal": self._last_stop_wal
             }
             output_execution_result_ex(last_log_backup_stop_wal_info_path, last_log_backup_stop_wal_info)
-        LOGGER.info(f"Succeed to exec backup sub task, job id: {self._job_id}")
-        return True
 
     @exter_attack
     def backup_post_job(self):
@@ -1072,6 +1661,17 @@ class PgBackup(object):
                 os.remove(realpath)
                 LOGGER.info(f"Remove file: {realpath}, job id: {self._job_id}.")
         write_content_to_file(file_name, json.dumps(context))
+        repl_user = self._job_dict.get("protectObject", {}).get("auth", {}).get("extendInfo", {}).get("dbStreamRepUser")
+        if repl_user:
+            # 集群才需要将生产端的用户名密码保存到副本里
+            repl_info_name = os.path.join(self._data_area, f"Repl_{self._job_id}.info")
+            if not check_path_valid(repl_info_name):
+                LOGGER.error(f"The path[{repl_info_name}] is invalid, job id: {self._job_id}.")
+                return
+            repl_pwd = get_env_variable(f"job_protectObject_auth_extendInfo_dbStreamRepPwd_{self._pid}")
+            repl_user = Kmc().encrypt(repl_user)
+            repl_pwd = Kmc().encrypt(repl_pwd)
+            write_content_to_file(repl_info_name, json.dumps({'repl_user': repl_user, 'repl_pwd': repl_pwd}))
         LOGGER.info(f"Save copy meta info to file: {file_name}, job id: {self._job_id}.")
 
     @exter_attack
@@ -1231,6 +1831,36 @@ class PgBackup(object):
                 break
         os.rename(abort_file, os.path.join(self._cache_area, "abort.done"))
         LOGGER.info(f"Succeed to abort backup job, job id: {self._job_id}.")
+        return True
+
+    @exter_attack
+    def query_scan_repositories(self):
+        # E6000适配
+        LOGGER.info(f"Query scan repositories, job_id: {self._job_id}.")
+        backup_type = self._job_dict.get("jobParam", {}).get("backupType", 0)
+        if backup_type == BackupTypeEnum.LOG_BACKUP.value:
+            # log仓的meta区 /Database_{resource_id}_LogRepository_su{num}/{ip}/meta/{job_id}
+            meta_copy_path = os.path.join(os.path.dirname(self._log_area), RepositoryNameEnum.META, self._job_id)
+            # log仓的data区 /Database_{resource_id}_LogRepository_su{num}/{ip}/{job_id}
+            data_path = self._log_area
+            # /Database_{resource_id}_LogRepository_su{num}/{ip}
+            save_path = os.path.dirname(self._log_area)
+        else:
+            # meta/Database_{resource_id}_InnerDirectory_su{num}/source_policy_{job_id}/Context_Global_MD/{ip}
+            meta_copy_path = self._meta_area
+            # data/Database_{resource_id}_InnerDirectory_su{num}/source_policy_{job_id}/Context/{ip}
+            data_path = self._data_area
+            # meta/Database_{resource_id}_InnerDirectory_su{num}/source_policy_{job_id}/Context_Global_MD/{ip}
+            save_path = self._meta_area
+        if not os.path.exists(meta_copy_path):
+            exec_mkdir_cmd(meta_copy_path, mode=0x777)
+        log_meta_copy_repo = RepositoryPath(repositoryType=RepositoryDataTypeEnum.META_REPOSITORY.value,
+                                            scanPath=meta_copy_path)
+        log_data_repo = RepositoryPath(repositoryType=RepositoryDataTypeEnum.LOG_REPOSITORY.value,
+                                       scanPath=data_path)
+        scan_repos = ScanRepositories(scanRepoList=[log_data_repo, log_meta_copy_repo], savePath=save_path)
+        output_result_file(self._pid, scan_repos.dict(by_alias=True))
+        LOGGER.info(f"Query scan repos success, return result {scan_repos}, job id: {self._job_id}")
         return True
 
     @exter_attack

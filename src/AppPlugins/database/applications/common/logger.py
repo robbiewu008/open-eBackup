@@ -154,7 +154,7 @@ class CrlfFormatter(logging.Formatter):
         message = re.sub('[\r\n\b\t\f\\x7f\\v]', ' ', message)
         msg_end = Anonymity.process(record.msg)
         if msg_end != record.msg:
-            message = message.replace(record.msg, "******")
+            message = message.replace(record.msg, msg_end)
         return message
 
 

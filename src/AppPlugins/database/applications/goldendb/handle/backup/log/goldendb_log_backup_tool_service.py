@@ -24,15 +24,16 @@ from common.common import output_result_file, invoke_rpc_tool_interface, execute
     read_tmp_json_file, report_job_details
 from common.common_models import SubJobDetails, SubJobModel, LogDetail
 from common.const import SubJobPriorityEnum, SubJobStatusEnum, RepositoryDataTypeEnum, RpcParamKey, CMDResult, \
-    CopyDataTypeEnum, ReportDBLabel, SubJobTypeEnum, SubJobPolicyEnum
+    CopyDataTypeEnum, ReportDBLabel, SubJobTypeEnum, SubJobPolicyEnum, DBLogLevel
 from common.util.exec_utils import exec_cat_cmd, exec_cp_dir_no_user, su_exec_rm_cmd
+from common.job_const import JobNameConst
 from common.util.scanner_utils import scan_dir_size
 from common.util.validators import ValidatorEnum
 from goldendb.handle.backup.parse_backup_params import get_goldendb_structure, write_file, check_goldendb_structure
-from goldendb.handle.common.const import SubJobName, MasterSlavePolicy, Report, LogLevel, GoldenDBJsonConst, \
+from goldendb.handle.common.const import SubJobName, MasterSlavePolicy, Report, GoldenDBJsonConst, \
     GoldenDBNodeType, ErrorCode, LastCopyType
 from goldendb.handle.common.goldendb_common import get_repository_path, su_exec_cmd, verify_path_trustlist, \
-    get_backup_path, mkdir_chmod_chown_dir_recursively, get_agent_uuids, get_bkp_root_dir_via_role
+    get_backup_path, mkdir_chmod_chown_dir_recursively, get_agent_uuids, get_etc_ini_path
 from goldendb.handle.common.goldendb_param import JsonParam
 
 
@@ -49,11 +50,11 @@ class GoldenDBLogBackupToolService:
         self._sub_job_name = ""
         self._cache_data_path = get_repository_path(file_content, RepositoryDataTypeEnum.CACHE_REPOSITORY)
         if not verify_path_trustlist(self._cache_data_path):
-            log.error(f"Invalid path: {self._cache_data_path}, {self.get_log_comm()}")
+            log.error(f"Invalid path: {self._cache_data_path}, {self.get_log_comm()}.")
             raise Exception(f'job id: {job_id}, invalid path: {self._cache_data_path}.')
         self._log_data_path = get_repository_path(file_content, RepositoryDataTypeEnum.LOG_REPOSITORY)
         if not verify_path_trustlist(self._log_data_path):
-            log.error(f"Invalid path: {self._log_data_path}, {self.get_log_comm()}")
+            log.error(f"Invalid path: {self._log_data_path}, {self.get_log_comm()}.")
             raise Exception(f'job id: {job_id}, invalid path: {self._log_data_path}.')
 
         self._sub_job_dict = {
@@ -88,7 +89,7 @@ class GoldenDBLogBackupToolService:
             exec_nodes.extend(group[MasterSlavePolicy.MASTER])
             if check_goldendb_structure(MasterSlavePolicy.SLAVE, self._cluster_structure):
                 exec_nodes.extend(group[MasterSlavePolicy.SLAVE])
-        log.debug(f"exec copy nodes:{json.dumps(exec_nodes)}, {self.get_log_comm()}")
+        log.debug(f"exec copy nodes:{json.dumps(exec_nodes)}, {self.get_log_comm()}.")
 
         for exec_node in exec_nodes:
             copy_job = self.__create_sub_job(exec_node, SubJobName.EXEC_COPY_BINLOG, SubJobPriorityEnum.JOB_PRIORITY_2)
@@ -102,13 +103,13 @@ class GoldenDBLogBackupToolService:
 
         # 如果没有子任务，则报错
         if not response:
-            log.error(f'generate zero sub job{self.get_log_comm()}')
+            log.error(f'Generate zero sub job, {self.get_log_comm()}.')
             raise Exception(f'job id: {self._job_id}, generate zero sub job')
         # 加入查询信息子任务，不添加的话不会调用queryCopy方法，不会上报给UBC
-        response.append(
-            SubJobModel(jobId=self._job_id, policy=SubJobPolicyEnum.ANY_NODE, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB,
-                        jobPriority=SubJobPriorityEnum.JOB_PRIORITY_4, jobName='queryCopy').dict(by_alias=True))
-        log.info(f'step 4: finish to execute backup_gen_sub_job, {self.get_log_comm()}')
+        response.append(SubJobModel(jobId=self._job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB.value,
+                                    jobName=SubJobName.QUERY_COPY, jobPriority=SubJobPriorityEnum.JOB_PRIORITY_4.value,
+                                    policy=SubJobPolicyEnum.ANY_NODE.value).dict(by_alias=True))
+        log.info(f'Step 4: finish to execute backup_gen_sub_job, {self.get_log_comm()}.')
         output_result_file(self._req_id, response)
 
     def backup(self):
@@ -120,28 +121,29 @@ class GoldenDBLogBackupToolService:
 
         # 执行子任务
         sub_job_name = JsonParam.get_sub_job_name(self._file_content)
-        log.info(f'sub_job_name: {sub_job_name}, {self.get_log_comm()}')
+        log.info(f'Get sub_job_name: {sub_job_name}, {self.get_log_comm()}.')
         if not sub_job_name:
-            log.error(f"sub_job_name is empty")
+            log.error(f"Empty sub_job_name, {self.get_log_comm()}.")
             return
         self._sub_job_name = sub_job_name
 
         try:
             sub_job_ret = self._sub_job_dict.get(sub_job_name)()
             if not sub_job_ret:
+                log.error(f'Execute {sub_job_name} failed, {self.get_log_comm()}.')
                 self.__report_error()
             else:
-                log.info(f'step 5-2: finish to execute copy log backup result job, {self.get_log_comm()}')
+                log.info(f'Execute {sub_job_name} success, {self.get_log_comm()}.')
                 self.__report_success()
         except Exception as err:
-            log.error(f"do {sub_job_name} fail: {err}, {self.get_log_comm()}")
+            log.error(f"Execute {sub_job_name} failed with exception: {err}, {self.get_log_comm()}.")
             self.__report_error()
 
     def execute_log_backup(self):
         """
         执行日志备份子任务
         """
-        log.info(f'step 5-1: start to execute log backup, {self.get_log_comm()}')
+        log.info(f'Step 5-1: start to execute log backup, {self.get_log_comm()}.')
         self.__sub_job_pre_binlog()
         # 获取集群版本
         version = GoldenDBResourceInfo.get_cluster_version(self._role_name)
@@ -152,18 +154,18 @@ class GoldenDBLogBackupToolService:
         copy_feature = pool.submit(self.__exec_log_backup_cmd)
         while not copy_feature.done():
             time.sleep(Report.REPORT_INTERVAL)
-            log.info(f'step 5-1: log backup cmd is running, {self.get_log_comm()}')
+            log.info(f'Step 5-1: log backup cmd is running, {self.get_log_comm()}.')
         if not copy_feature.result()[2]:
+            log.error(f'Step 5-1: log backup cmd failed, {self.get_log_comm()}.')
             return False
-        log.info(f'step 5-1:finish to execute log backup cmd, {self.get_log_comm()}')
+        log.info(f'Step 5-1: finish to execute log backup cmd, {self.get_log_comm()}.')
         return True
 
     def exec_copy_log_backup_result_job(self):
         """
         执行拷贝备份结果子任务
         """
-        log.info(f'step 5-2: start to execute copy log backup result job， node type:{self._node_type}, '
-                 f'{self.get_log_comm()}')
+        log.info(f'Step 5-2: copy log backup result job start, node type: {self._node_type}, {self.get_log_comm()}.')
 
         if GoldenDBNodeType.ZX_MANAGER_NODE == self._node_type:
             ret = self.__copy_from_manager_node()
@@ -172,18 +174,16 @@ class GoldenDBLogBackupToolService:
         elif GoldenDBNodeType.DATA_NODE == self._node_type:
             ret = self.__copy_from_data_node()
         else:
-            log.error(f"node type[{self._node_type}] is invalid, {self.get_log_comm()}")
-            log.error(f'step 5-2: Failed to execute copy log backup result job, {self.get_log_comm()}')
+            log.error(f"Step 5-2: node type[{self._node_type}] is invalid, {self.get_log_comm()}.")
             return False
 
         if not ret:
-            log.error(f'step 5-2: Failed to execute copy log backup result job, {self.get_log_comm()}')
+            log.error(f'Step 5-2: Failed to execute copy log backup result job, {self.get_log_comm()}.')
 
         return ret
 
     def exec_report_data_size_job(self):
-        log.info(f'step 5-3: start to report data size and speed， node type:{self._node_type}, '
-                 f'{self.get_log_comm()}')
+        log.info(f'Step 5-3: report data size and speed, node type: {self._node_type}, {self.get_log_comm()}.')
 
         # 数据量所有子任务只上报一次，因为UBC会叠加每个子任务上报的值, 所以在这个子任务中一次性上报
         # 这里直接返回True，实际计算在__report_success方法里
@@ -195,18 +195,18 @@ class GoldenDBLogBackupToolService:
         """
         cluster_id = self._cluster_structure.cluster_id
         end_time = self.__get_binlog_backup_end_time()
-        last_time = self.__get_log_last_backup_time()
+        last_time, last_copy_id = self.__get_log_last_backup_info()
         version_file = os.path.join(self._cache_data_path, f"bkp_{self._job_id}_version.json")
         version_json = read_tmp_json_file(version_file)
         version = version_json.get("version")
         copy_info = {
             "extendInfo": {"cluster_id": cluster_id, "endTime": end_time, "beginTime": last_time,
-                           "associatedCopies": [], "logDirName": self._log_data_path, "version": version}
+                           "associatedCopies": last_copy_id, "logDirName": self._log_data_path, "version": version}
         }
         output_result_file(self._req_id, copy_info)
 
     def get_log_comm(self):
-        return f"pid:{self._req_id} jobId:{self._job_id} subjobId:{self._sub_id}"
+        return f"pid: {self._req_id} jobId: {self._job_id} subjobId: {self._sub_id}"
 
     def __create_target_path(self):
         cluster_id = self._cluster_structure.cluster_id
@@ -215,13 +215,9 @@ class GoldenDBLogBackupToolService:
         # /home/goldendb/${role_name}/backup_root
         backup_path = get_backup_path(self._role_name, self._node_type, self._file_content,
                                       GoldenDBJsonConst.PROTECTOBJECT)
-        ini_bkp_root_path = get_bkp_root_dir_via_role(self._node_type, backup_path, self._job_id)
-        if ini_bkp_root_path:
-            log.info(f"Get ini bkp root success for {self._role_name} {self._node_type}, {self.get_log_comm()}")
-            backup_path = ini_bkp_root_path
         group_name, _ = get_user_info(self._role_name)
         if not mkdir_chmod_chown_dir_recursively(target_data_dir, 0o770, self._role_name, group_name, True):
-            log.error(f"fail to make a data path, {self.get_log_comm()}")
+            log.error(f"Failed to make a path in log area, {self.get_log_comm()}.")
             return False, "", ""
         return True, target_data_dir, backup_path
 
@@ -251,13 +247,13 @@ class GoldenDBLogBackupToolService:
             # 不等待
             need_sleep_time = 0
 
-        log.error(f"need_sleep_time:{need_sleep_time}, {self.get_log_comm()}")
+        log.error(f"Copy sequence from gtm failed, need_sleep_time: {need_sleep_time}, {self.get_log_comm()}.")
         time.sleep(need_sleep_time)
         return self.__copy_file_by_time("Sequence")
 
     def __copy_from_manager_node(self):
         """
-        从关联节点拷贝Active_TX_Info
+        从管理节点拷贝MetaData，Active_TX_Info
         """
         cluster_id = self._cluster_structure.cluster_id
         mkdir_ret, target_data_dir, backup_path = self.__create_target_path()
@@ -265,16 +261,17 @@ class GoldenDBLogBackupToolService:
             return False
 
         # 备份meta数据
-        log.info(f"start copy meta data from manager node, {self.get_log_comm()}")
+        log.info(f"Start copy meta data from manager node, {self.get_log_comm()}.")
         # meta数据地址 /home/goldendb/zxmanager/backup_root/DBCluster_3/LOGICAL_BACKUP/MetaData
         meta_data_src_dir = os.path.join(backup_path, f"DBCluster_{cluster_id}", "LOGICAL_BACKUP", "MetaData")
         if not self.__copy_dir(meta_data_src_dir, target_data_dir):
             return False
 
         # 备份活跃事务表
-        log.info(f"start copy Active_TX_Info data from manager node, {self.get_log_comm()}")
+        log.info(f"Start copy Active_TX_Info data from manager node, {self.get_log_comm()}.")
+        prod_act_root = get_etc_ini_path(self._role_name, "active", backup_path, self._job_id)
         # 活跃事务表数据地址 /home/goldendb/zxmanager/backup_root/Active_TX_Info
-        active_tx_info_dir = os.path.join(backup_path, "Active_TX_Info")
+        active_tx_info_dir = os.path.join(prod_act_root, "Active_TX_Info")
         tx_in_data_path = os.path.join(self._log_data_path, "Active_TX_Info")
         if self.__copy_dir(active_tx_info_dir, tx_in_data_path):
             self._remove_redundant_files(tx_in_data_path)
@@ -286,29 +283,28 @@ class GoldenDBLogBackupToolService:
         if os.path.exists(src_dir):
             ret = exec_cp_dir_no_user(src_dir, target_data_dir, is_check_white_list=False, is_overwrite=True)
             if not ret:
-                log.error(f"fail to copy data from {self._node_type} to log repository, {self.get_log_comm()}")
+                log.error(f"Failed to copy data from {self._node_type} to log repository, {self.get_log_comm()}.")
                 return False
-            log.info(f"copy data from {self._node_type}  success, {self.get_log_comm()}")
+            log.info(f"Copy data from {self._node_type} success, {self.get_log_comm()}.")
         else:
-            log.info(f"src dir[{src_dir}] is not exist, {self.get_log_comm()}")
+            log.info(f"The src dir[{src_dir}] is not exist, {self.get_log_comm()}.")
         return True
 
     def __copy_file_by_time(self, source_path):
         """
         按文件时间拷贝
         """
-        log.info(f"5-2-1 start copy {source_path} data from data node, {self.get_log_comm()}")
+        log.info(f"5-2-1 start copy {source_path} data from data node, {self.get_log_comm()}.")
         cluster_id = self._cluster_structure.cluster_id
         mkdir_ret, target_data_dir, backup_path = self.__create_target_path()
         if not mkdir_ret:
             return False
-
         # 日志备份结果目录 /home/zxdb5/backup_root/DBCluster_3/LOGICAL_BACKUP/
         logical_backup_dir = os.path.join(backup_path, f"DBCluster_{cluster_id}", "LOGICAL_BACKUP")
         if not os.path.isdir(logical_backup_dir):
             return True
 
-        last_time = self.__get_log_last_backup_time()
+        last_time, _ = self.__get_log_last_backup_info()
         # 拷贝从上次备份到现在的日志文件（多拷贝10min日志，避免数据不完整）
         time_period_min = (int(time.time()) - int(last_time)) / 60 + 10
 
@@ -320,13 +316,12 @@ class GoldenDBLogBackupToolService:
             f"find {source_path} -mmin -{time_period_min} -type f ",
             "xargs -i /bin/cp --parent -pr {} " + target_data_dir
         ]
-        log.info(f"backup_binlog cp_cmd_list is : {cp_cmd_list}")
+        log.info(f"Get backup_binlog cp_cmd_list: {cp_cmd_list}")
         return_code, out_info, err_info = execute_cmd_list(cp_cmd_list)
         if return_code != CMDResult.SUCCESS:
-            log.error(f'execute copy binlog cmd failed, message: {out_info}, err: {err_info}, '
-                      f'{self.get_log_comm()}')
+            log.error(f'Execute copy binlog cmd failed, message: {out_info}, err: {err_info}, {self.get_log_comm()}.')
             return False
-        log.info(f"5-2-1 finish copy {source_path} data from data node, {self.get_log_comm()}")
+        log.info(f"5-2-1 finish copy {source_path} data from data node, {self.get_log_comm()}.")
         return True
 
     def __get_last_sequence_time(self):
@@ -349,10 +344,10 @@ class GoldenDBLogBackupToolService:
         return 0  # 不等待
 
     def __report_error(self):
-        log.error(f"Exec sub job {self._sub_job_name} failed.{self.get_log_comm()}.")
+        log.error(f"Exec sub job {self._sub_job_name} failed, {self.get_log_comm()}.")
         log_detail_param = [self._sub_id]
         log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[self._sub_id],
-                               logLevel=LogLevel.ERROR.value, logDetailParam=log_detail_param)
+                               logLevel=DBLogLevel.ERROR.value, logDetailParam=log_detail_param)
 
         report_job_details(self._req_id,
                            SubJobDetails(taskId=self._job_id, subTaskId=self._sub_id, progress=100,
@@ -360,14 +355,14 @@ class GoldenDBLogBackupToolService:
 
     def __report_running(self):
         log_detail = LogDetail(logInfo=ReportDBLabel.BACKUP_SUB_START_COPY, logInfoParam=[self._sub_id],
-                               logLevel=LogLevel.INFO)
+                               logLevel=DBLogLevel.INFO.value)
         report_job_details(self._req_id,
                            SubJobDetails(taskId=self._job_id, subTaskId=self._sub_id, progress=0,
                                          logDetail=[log_detail], taskStatus=SubJobStatusEnum.RUNNING.value))
 
     def __report_success(self):
         log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_SUCCESS, logInfoParam=[self._sub_id],
-                               logLevel=LogLevel.INFO)
+                               logLevel=DBLogLevel.INFO.value)
 
         job_detail = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_id, progress=100, logDetail=[log_detail],
                                    taskStatus=SubJobStatusEnum.COMPLETED.value)
@@ -384,8 +379,8 @@ class GoldenDBLogBackupToolService:
         agent_id = execute_node[2]
         goldendb_node_type = execute_node[3]
         job_info = f"{user_name} {goldendb_node_type}"
-        return SubJobModel(jobId=self._job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB, jobName=job_name,
-                           jobPriority=priority, policy=SubJobPolicyEnum.FIXED_NODE, execNodeId=agent_id,
+        return SubJobModel(jobId=self._job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB.value, jobName=job_name,
+                           jobPriority=priority, policy=SubJobPolicyEnum.FIXED_NODE.value, execNodeId=agent_id,
                            jobInfo=job_info).dict(by_alias=True)
 
     def __exec_log_backup_cmd(self):
@@ -395,10 +390,10 @@ class GoldenDBLogBackupToolService:
         # 需要输密码的命令
         ret, out_str = su_exec_cmd(self._role_name, backup_cmd,
                                    param_list=[[("cluster_id", cluster_id, ValidatorEnum.CHAR_CHK_COMMON)]])
-        log.info(f'result: {(ret, out_str)}, {self.get_log_comm()}')
+        log.info(f'Get dbtool log backup result: {(ret, out_str)}, {self.get_log_comm()}.')
 
         if not self.__check_backup_result(ret, out_str):
-            log.error(f'check_backup_result failed: {out_str}, {self.get_log_comm()}')
+            log.error(f'Check dbtool log backup result failed: {out_str}, {self.get_log_comm()}.')
             return "", "", False
         return ret, out_str, True
 
@@ -409,11 +404,12 @@ class GoldenDBLogBackupToolService:
                     "'").strip()
                 log.debug(f"message :{message}")
                 log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[self._sub_id],
-                                       logLevel=LogLevel.ERROR, logDetail=ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL,
-                                       logDetailParam=["LogBackup", message])
+                                       logLevel=DBLogLevel.ERROR.value,
+                                       logDetail=ErrorCode.EXEC_BACKUP_RECOVER_CMD_FAIL,
+                                       logDetailParam=[JobNameConst.LOG_BACKUP, message])
             else:
                 log_detail = LogDetail(logInfo=ReportDBLabel.SUB_JOB_FALIED, logInfoParam=[self._sub_id],
-                                       logLevel=LogLevel.ERROR, logDetail=0)
+                                       logLevel=DBLogLevel.ERROR.value, logDetail=0)
             report_job_details(self._req_id,
                                SubJobDetails(taskId=self._job_id, subTaskId=self._sub_id, progress=100,
                                              logDetail=[log_detail],
@@ -428,8 +424,7 @@ class GoldenDBLogBackupToolService:
         start_time = str(int((time.time())))
         start_time_path = os.path.join(self._cache_data_path, f'T{self._job_id}')
         write_file(start_time_path, start_time)
-        log.info(
-            f"binlog success to write backup start time {start_time} to {start_time_path}, {self.get_log_comm()}")
+        log.info(f"Binlog success to write backup start time {start_time} to {start_time_path}, {self.get_log_comm()}.")
 
         path_all = os.path.abspath(os.path.join(self._log_data_path))
 
@@ -437,20 +432,20 @@ class GoldenDBLogBackupToolService:
         original_size = 0
         ret, size = scan_dir_size(self._job_id, path_all)
         if ret:
-            log.info(f"scan data size {size} success, {self.get_log_comm()}")
+            log.info(f"Scan data size {size} success, {self.get_log_comm()}.")
             original_size = size
 
         original_data_size_path = os.path.join(self._cache_data_path, f'D{self._job_id}')
         write_file(original_data_size_path, str(original_size))
         log.info(f"binlog success to write backup start data size {original_size} to {original_data_size_path}, "
-                 f"{self.get_log_comm()}")
+                 f"{self.get_log_comm()}.")
 
     def __get_binlog_backup_end_time(self):
         start_time_file = os.path.join(self._cache_data_path, f'T{self._job_id}')
         # 读取日志备份开始时间，作为最迟可恢复时间。
         ret, backup_end_time = exec_cat_cmd(start_time_file, encoding='UTF-8')
         if not ret:
-            log.error(f"Time file read failed, {self.get_log_comm()}")
+            log.error(f"Failed to read time file, {self.get_log_comm()}.")
             raise Exception(f"Read GoldenDB log backup start time file failed")
         return int(backup_end_time)
 
@@ -464,7 +459,7 @@ class GoldenDBLogBackupToolService:
         # 读取初始时间
         ret, start_time = exec_cat_cmd(start_time_file, encoding='UTF-8')
         if not ret:
-            log.error(f"Time file read failed, {self.get_log_comm()}")
+            log.error(f"Failed to read time file, {self.get_log_comm()}.")
             return size, speed
 
         start_time = start_time.strip()
@@ -472,59 +467,59 @@ class GoldenDBLogBackupToolService:
         # 读取初始大小
         ret, original_data_size = exec_cat_cmd(original_data_file, encoding='UTF-8')
         if not ret:
-            log.error(f"data file read failed, {self.get_log_comm()}")
+            log.error(f"Read data file failed, {self.get_log_comm()}.")
             return size, speed
         original_data_size = original_data_size.strip()
 
-        log.info(f"query_size_and_speed, start_time: {start_time}, original_data_size: {original_data_size}, "
-                 f"{self.get_log_comm()}")
+        log.info(f"Get start_time: {start_time}, original_data_size: {original_data_size}, {self.get_log_comm()}.")
         ret, size = scan_dir_size(self._job_id, data_path)
         if not ret:
-            log.error(f"scan data size failed, {self.get_log_comm()}")
+            log.error(f"Failed to scan data size, {self.get_log_comm()}.")
             size = original_data_size
         new_time = int((time.time()))
         datadiff = int((size - int(original_data_size)))
         timediff = new_time - int(start_time)
         if timediff == 0:
-            log.info(f"query_size_and_speed, timediff is {timediff}, {self.get_log_comm()}")
+            log.info(f"query_size_and_speed, timediff: {timediff}, {self.get_log_comm()}.")
             return datadiff, speed
         try:
             speed = datadiff / timediff
         except Exception:
-            log.error("Error while calculating speed! time difference is 0!, {self.get_log_comm()}")
+            log.error(f"Error while calculating speed! time difference is 0!, {self.get_log_comm()}.")
             return 0, 0
-        log.info(
-            f"query_size_and_speed, datadiff: {datadiff}, timediff: {timediff}, speed: {speed}, {self.get_log_comm()}")
+        log.info(f"Report datadiff: {datadiff}, timediff: {timediff}, speed: {speed}, {self.get_log_comm()}.")
         return datadiff, speed
 
-    def __get_log_last_backup_time(self):
-        # 以上次日志备份作为起点，如果找不到上一次日志备份，则以上一次数据备份作为起点
-        log.info(f"start get_log_backup_start_time, {self.get_log_comm()}")
+    def __get_log_last_backup_info(self):
+        # 返回上一次备份的时间和备份产生的副本id，以上次日志备份作为起点，如果找不到上一次日志备份，则以上一次数据备份作为起点
+        log.info(f"Start get_log_last_backup_info, {self.get_log_comm()}.")
         last_copy_info = self.__get_last_copy_info(3)
         if not last_copy_info:
-            log.warning(f"This is the first log backup, {self.get_log_comm()}")
+            log.warning(f"This is the first log backup, {self.get_log_comm()}.")
             last_copy_info = self.__get_last_copy_info(1)
         if not last_copy_info:
-            log.error(f"Fail to get previous copy info, {self.get_log_comm()}")
+            log.error(f"Fail to get previous copy info, {self.get_log_comm()}.")
             raise Exception("last copy not exist")
-        log.info(f"last log copy info, id is: {last_copy_info.get('id', 'Null')}, {self.get_log_comm()}")
+        log.info(f"Get last log copy info, id is: {last_copy_info.get('id', 'Null')}, {self.get_log_comm()}.")
 
         last_copy_type = last_copy_info.get("type", "")
-        log.info(f"get_last_any_copy_type copy_type is {last_copy_type}, {self.get_log_comm()}")
+        log.info(f"Get last_copy_type: {last_copy_type}, {self.get_log_comm()}.")
         if not last_copy_type:
-            return ""
+            return []
 
         extend_info = last_copy_info.get("extendInfo")
         if last_copy_type == CopyDataTypeEnum.LOG_COPY:
             last_time = extend_info.get("endTime", "")
+            last_copy_id = extend_info.get("associatedCopies", [])
         else:
             last_time = extend_info.get("backup_time")
-        log.info(f'timestamp, last_copy info:{last_time}, {self.get_log_comm()}')
-        return last_time
+            last_copy_id = extend_info.get("copy_id", "")
+        log.info(f'Success to get last_time: {last_time}, last_copy_id: {last_copy_id}, {self.get_log_comm()}.')
+        return [last_time, last_copy_id]
 
     def __get_last_copy_info(self, copy_type: int):
         # 获取上次数据备份副本信息
-        log.info(f"start get_last_copy_info copy_type {copy_type}, {self.get_log_comm()}")
+        log.info(f"Start get_last_copy_info, copy_type: {copy_type}, {self.get_log_comm()}.")
         last_copy_type = LastCopyType.last_copy_type_dict.get(copy_type)
         input_param = {
             RpcParamKey.APPLICATION: self._file_content.get("job", {}).get("protectObject"),
@@ -532,11 +527,11 @@ class GoldenDBLogBackupToolService:
             RpcParamKey.COPY_ID: "",
             RpcParamKey.JOB_ID: self._job_id
         }
-        log.info(f"start get_last_copy_info, {self.get_log_comm()}")
+        log.info(f"Query previous copy: {input_param}, {self.get_log_comm()}.")
         try:
             result = invoke_rpc_tool_interface(self._job_id, RpcParamKey.QUERY_PREVIOUS_CPOY, input_param)
         except Exception as err_info:
-            log.error(f"Get last copy info fail.{err_info}, {self.get_log_comm()}")
+            log.error(f"Get last copy info fail: {err_info}, {self.get_log_comm()}.")
             return {}
         return result
 

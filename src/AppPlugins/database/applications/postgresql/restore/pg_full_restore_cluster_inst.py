@@ -11,11 +11,16 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
+import os
+
 from common import cleaner
+from common.common import check_command_injection
 from common.const import RepositoryDataTypeEnum, ExecuteResultEnum, RoleType
 from common.logger import Logger
 from common.number_const import NumberConst
-from postgresql.common.const import RestoreAction
+from common.util.cmd_utils import get_livemount_path
+from common.util.exec_utils import read_lines_cmd, exec_overwrite_file
+from postgresql.common.const import RestoreAction, InstallDeployType, PgConst
 from postgresql.common.models import RestoreConfigParam, RestoreProgress
 from postgresql.common.util.get_sensitive_utils import get_env_variable
 from postgresql.common.util.pg_common_utils import PostgreCommonUtils
@@ -29,6 +34,7 @@ LOGGER = Logger().get_logger("postgresql.log")
 class ClusterInstFullRestore(PostgresClusterRestoreAbstract):
     """PostgreSQL集群实例全量副本恢复任务执行类
     """
+
     def __init__(self, pid, job_id, sub_job_id, param_dict):
         super().__init__(pid, job_id, sub_job_id, param_dict)
 
@@ -55,8 +61,11 @@ class ClusterInstFullRestore(PostgresClusterRestoreAbstract):
         cache_path = PostgreRestoreService.get_cache_mount_path(self.param_dict)
 
         # 1.清空目标实例data目录
-        tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
+        tgt_install_path, tgt_data_path, _ = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
+        tgt_wal_path, tgt_real_wal_path = PostgreRestoreService.get_db_pg_wal_dir_real_path(self.param_dict,
+                                                                                            tgt_data_path)
         PostgreRestoreService.backup_conf_file(tgt_data_path, self.job_id)
+        PostgreRestoreService.cleanup_archive_after_restore(self.param_dict)
         PostgreRestoreService.clear_data_dir(PostgreRestoreService.parse_os_user(self.param_dict), tgt_data_path)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                RestoreProgress(progress=15, message="delete data dir success"))
@@ -66,10 +75,11 @@ class ClusterInstFullRestore(PostgresClusterRestoreAbstract):
         copies = PostgreRestoreService.parse_copies(job_dict)
         copy_mount_path = PostgreRestoreService.get_copy_mount_paths(
             copies[0], RepositoryDataTypeEnum.DATA_REPOSITORY.value)[0]
+        copy_mount_path = get_livemount_path(self.job_id, copy_mount_path)
         PostgreRestoreService.clear_table_space_dir(copy_mount_path=copy_mount_path)
 
         # 2.恢复全量副本数据到目标实例
-        self.restore_full_data(cache_path, job_dict, tgt_data_path)
+        self.restore_full_data(cache_path, job_dict, tgt_data_path, tgt_wal_path, tgt_real_wal_path)
 
         # 3.清空目标实例archive_status目录
         tgt_obj_extend_info_dict = job_dict.get("targetObject", {}).get("extendInfo", {})
@@ -88,7 +98,7 @@ class ClusterInstFullRestore(PostgresClusterRestoreAbstract):
         # 5.配置恢复命令
         self.set_recovery_command_and_start_instance(cache_path, job_dict, node_role)
 
-    def restore_full_data(self, cache_path, job_dict, tgt_data_path):
+    def restore_full_data(self, cache_path, job_dict, tgt_data_path, tgt_wal_path, tgt_real_wal_path):
         copies = PostgreRestoreService.parse_copies(job_dict)
         copy_mount_path = PostgreRestoreService.get_copy_mount_paths(
             copies[0], RepositoryDataTypeEnum.DATA_REPOSITORY.value)[0]
@@ -97,7 +107,25 @@ class ClusterInstFullRestore(PostgresClusterRestoreAbstract):
         PostgreRestoreService.change_owner_of_download_data(self.param_dict, copy_mount_path)
         PostgreRestoreService.restore_data(cache_path, copy_mount_path,
                                            tgt_data_path, job_id=self.job_id)
+        PostgreRestoreService.restore_pg_wal_dir(tgt_wal_path, tgt_real_wal_path, job_id=self.job_id)
+        # 获取副本id
+        copy_id = copies[0].get("id")
+        # 恢复完数据后删除没用的文件
+        repl_info_name = os.path.join(tgt_data_path, f"Repl_{copy_id}.info")
+        if not check_command_injection(repl_info_name) and os.path.isfile(repl_info_name) and not os.path.islink(
+                repl_info_name):
+            os.remove(repl_info_name)
         PostgreRestoreService.restore_conf_file(tgt_data_path, self.job_id)
+        # CLup集群类型恢复后需要清空主节点的postgresql.auto.conf中primary_conninfo字段
+        install_deploy_type = job_dict.get("targetEnv", {}).get("extendInfo", {}).get(
+            "installDeployType", InstallDeployType.PGPOOL)
+        if install_deploy_type == InstallDeployType.CLUP:
+            postgresql_auto_conf_path = os.path.join(tgt_data_path, PgConst.POSTGRESQL_AUTO_CONF_FILE_NAME)
+            ret, mount_list = read_lines_cmd(postgresql_auto_conf_path)
+            if mount_list:
+                lines = [line for line in mount_list if not line.startswith("primary_conninfo =")]
+                lines_conn = '\n'.join(lines) + '\n'
+                exec_overwrite_file(postgresql_auto_conf_path, lines_conn, json_flag=False)
         PostgreCommonUtils.write_progress_info(
             cache_path, RestoreAction.QUERY_RESTORE,
             RestoreProgress(progress=NumberConst.SEVENTY, message="restore data success"))
@@ -106,6 +134,10 @@ class ClusterInstFullRestore(PostgresClusterRestoreAbstract):
         primary_ip, primary_inst_port = PostgreRestoreService.get_primary_ip_and_instance_port(self.param_dict)
         repl_user = job_dict.get("targetObject", {}).get("auth", {}).get("extendInfo", {}).get("dbStreamRepUser")
         repl_pwd = get_env_variable(f"job_targetObject_auth_extendInfo_dbStreamRepPwd_{self.pid}")
+        copy_repl_user, copy_repl_pwd = PostgreCommonUtils.get_repl_info(job_dict)
+        if copy_repl_user:
+            repl_user = copy_repl_user
+            repl_pwd = copy_repl_pwd
         try:
             cfg_extend_info = {
                 "primary_ip": primary_ip,
@@ -113,8 +145,9 @@ class ClusterInstFullRestore(PostgresClusterRestoreAbstract):
                 "db_stream_rep_user": repl_user,
                 "db_stream_rep_pwd": repl_pwd
             }
-            tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
-            tgt_archive_path = PostgreCommonUtils.get_archive_path_offline(tgt_data_path)
+            tgt_install_path, tgt_data_path, tgt_archive_dir = PostgreRestoreService.get_db_install_and_data_path(
+                self.param_dict)
+            tgt_archive_path = PostgreCommonUtils.get_archive_path_offline(tgt_data_path, archive_dir=tgt_archive_dir)
             tgt_obj_extend_info_dict = job_dict.get("targetObject", {}).get("extendInfo", {})
             tgt_db_os_user = tgt_obj_extend_info_dict.get("osUsername", "")
             tgt_version = tgt_obj_extend_info_dict.get("version", "")
@@ -143,7 +176,7 @@ class ClusterInstFullRestore(PostgresClusterRestoreAbstract):
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE_POST,
                                                RestoreProgress(progress=0, message="begin"))
 
-        tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
+        tgt_install_path, tgt_data_path, _ = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
         PostgreRestoreService.delete_useless_bak_files(tgt_data_path, self.job_id)
 
         LOGGER.info("Execute restore post task success.")

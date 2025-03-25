@@ -31,6 +31,7 @@ fun = {
     'BackupPrerequisiteProgress': BackupAbility.backup_prerequisite_progress,
     'BackupGenSubJob': BackupAbility.backup_gen_sub_job,
     'Backup': BackupAbility.backup,
+    'QueryScanRepositories': BackupAbility.query_scan_repositories,
     'BackupPostJob': BackupAbility.backup_post_job,
     'BackupPostJobProgress': BackupAbility.backup_post_job_progress,
 

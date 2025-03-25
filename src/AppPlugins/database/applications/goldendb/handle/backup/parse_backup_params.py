@@ -14,16 +14,17 @@
 import collections
 import json
 import os
+import re
 import time
 
 import pexpect
 from goldendb.logger import log
 from common.cleaner import clear
-from common.const import BackupTypeEnum
+from common.const import BackupTypeEnum, CMDResultInt
 from common.parse_parafile import get_env_variable
 from common.util.exec_utils import exec_append_file
 from common.util.scanner_utils import scan_dir_size
-from goldendb.handle.common.const import MasterSlavePolicy
+from goldendb.handle.common.const import MasterSlavePolicy, BackupStrategyPolicy
 
 BackupParams = collections.namedtuple('BackupParams',
                                       ['cluster_id', 'backup_type_str', 'master_or_slave', 'cluster_user'])
@@ -139,7 +140,7 @@ def exec_cmd_spawn(cmd, pid):
         child = pexpect.spawn(cmd, timeout=None)
     except Exception as exception_str:
         log.error(f"Spawn except an exception {exception_str}.")
-        return 1, "cmd error"
+        return CMDResultInt.FAILED.value, "cmd error"
     try:
         ret_code = child.expect(
             ["please input password: ", "Failed to connect to GoldenDB server", pexpect.TIMEOUT, pexpect.EOF])
@@ -147,16 +148,16 @@ def exec_cmd_spawn(cmd, pid):
         # 此处不打印异常，异常会显示用户名
         log.error(f"Exec cmd except an exception {exception_str}.")
         child.close()
-        return 1, "cmd error"
+        return CMDResultInt.FAILED.value, "cmd error"
     if ret_code != 0:
         log.error(f"Exec cmd failed.")
         child.close()
-        return 1, "cmd error"
+        return CMDResultInt.FAILED.value, "cmd error"
     passwd = get_env_variable(f"job_protectObject_auth_authPwd_{pid}")
 
     if not passwd:
         child.close()
-        return False, "get passwd failed"
+        return CMDResultInt.FAILED.value, "get passwd failed"
     child.sendline(passwd)
     clear(passwd)
     try:
@@ -164,7 +165,7 @@ def exec_cmd_spawn(cmd, pid):
     except Exception as exception_str:
         log.error(f"Exec cmd except an exception {exception_str}.")
         child.close()
-        return 1, "cmd error"
+        return CMDResultInt.FAILED.value, "cmd error"
     child.close()
     return child.exitstatus, str(out_str)
 
@@ -186,19 +187,77 @@ def get_backup_param(req_id, file_content, sla_policy):
     return bkp_params
 
 
-def get_copy_result_info(data_path, cluster_id):
+def is_valid_timestamp(timestamp):
+    # 定义正则表达式模式
+    pattern = r'^\d{4}\d{2}\d{2}\d{2}\d{2}\d{2}$'
+
+    # 使用re.match检查字符串是否匹配模式
+    if re.match(pattern, timestamp):
+        return True
+    else:
+        return False
+
+
+def get_bkp_task_id(data_path, cluster_id):
     task_id_path = os.path.join(data_path, f"DBCluster_{cluster_id}/DATA_BACKUP")
     task_ids = []
     for file in os.listdir(task_id_path):
         abs_path = os.path.join(task_id_path, file)
-        if os.path.isdir(abs_path):
+        if os.path.isdir(abs_path) and is_valid_timestamp(file):
             task_ids.append(file)
-    task_ids.sort()
-    task_id = task_ids[-1]
+    if task_ids:
+        task_ids.sort()
+        task_id = task_ids[-1]
+        log.info(f"Get task id {task_id}.")
+        return task_id
+    log.error(f"Failed to get task id from {task_id_path}.")
+    return ""
+
+
+def get_bkp_result_info_file(cluster_id, data_path):
+    # 备份根目录/DBCluster_{cluster_id}/DATA_BACKUP/{task_id}/ResultInfo/{cluster_id}_backup_resultsinfo_1.{timestamp}
+    results_info_file = ""
+    expect_file_name = f"{cluster_id}_backup_"
+    bkp_result_dir = os.path.join(data_path, f'DBCluster_{cluster_id}')
+    task_id = get_bkp_task_id(data_path, cluster_id)
+    if os.path.exists(bkp_result_dir):
+        log.info(f"Get bkp_result_dir {bkp_result_dir}.")
+        cluster_bkp_result_infos = [
+            f
+            for f in os.listdir(bkp_result_dir)
+            if f.startswith(expect_file_name) and f.endswith(task_id)
+        ]
+        if len(cluster_bkp_result_infos) > 0:
+            log.info(f"Getcluster_bkp_result_infos {cluster_bkp_result_infos}.")
+            cluster_bkp_result_infos.sort()
+            results_info_file = cluster_bkp_result_infos[-1]
+    return results_info_file
+
+
+def get_copy_result_info(data_path, cluster_id):
+    task_id_path = os.path.join(data_path, f"DBCluster_{cluster_id}/DATA_BACKUP")
+    task_id = get_bkp_task_id(data_path, cluster_id)
     resultinfo_name = ""
     resultinfo_path = os.path.join(task_id_path, task_id, "ResultInfo")
     for file in os.listdir(resultinfo_path):
         if "backup_resultsinfo" in file and 'audit' not in file:
             resultinfo_name = file
             break
+    log.info(f"Get resultinfo_name: {resultinfo_name}, task_id: {task_id}.")
     return resultinfo_name, task_id
+
+
+def get_backup_param_for_cm_backup(req_id, file_content, sla_policy):
+    # 获取备份参数
+    cluster_info = json.loads(file_content["job"]["protectObject"]["extendInfo"]["clusterInfo"])
+    cluster_id = cluster_info["id"]
+    master_or_slave = sla_policy
+    backup_type = file_content['job']['jobParam']['backupType']
+    log.info(f"backup_type: {backup_type}, req_id: {req_id}.")
+    if backup_type == BackupTypeEnum.FULL_BACKUP:
+        backup_type_str = BackupStrategyPolicy.FULL
+    else:
+        backup_type_str = BackupStrategyPolicy.INCREMENT
+    cluster_user = get_env_variable(f"job_protectObject_auth_authKey_{req_id}")
+    bkp_params = BackupParams(cluster_id, backup_type_str, master_or_slave, cluster_user)
+    return bkp_params

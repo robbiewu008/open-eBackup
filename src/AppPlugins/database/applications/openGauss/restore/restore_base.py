@@ -127,7 +127,7 @@ class RestoreBase(metaclass=abc.ABCMeta):
 
     def exec_sql_cmd(self, cmd):
         if is_cmdb_distribute(self._deploy_type, self._database_type):
-            cmd = f'{self._sql_tool} -c \"{cmd}\" postgres'
+            cmd = f'{self._sql_tool} -c \"{cmd}\" postgres -p {self._resource_info.get_local_cn_port()}'
         else:
             cmd = f'{self._sql_tool} -c \"{cmd}\" postgres -p {self._port}'
         return execute_cmd_by_user(self._user_name, self._env_file, cmd)

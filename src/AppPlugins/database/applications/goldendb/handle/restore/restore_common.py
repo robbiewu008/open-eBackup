@@ -34,7 +34,7 @@ class GoldenDBRestoreCommon:
         """
         sub_name = param.get(GoldenJsonConstant.SUB_JOB, {}).get(GoldenJsonConstant.JOB_NAME, "")
         if sub_name not in (GoldenSubJobName.SUB_CHECK, GoldenSubJobName.SUB_EXEC, GoldenSubJobName.SUB_BINLOG_MERGE,
-                            GoldenSubJobName.SUB_BINLOG_MOUNT, GoldenSubJobName.SUB_VER_CHECK):
+                            GoldenSubJobName.SUB_VER_CHECK):
             log.error(f"{sub_name} not found in sub jobs!")
             return ""
         return sub_name
